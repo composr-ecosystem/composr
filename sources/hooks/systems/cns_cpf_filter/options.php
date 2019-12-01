@@ -30,38 +30,38 @@ class Hook_cns_cpf_filter_options
      */
     public function to_enable()
     {
-        $cpf = array();
+        $cpf = [];
 
         if (get_option('cpf_enable_name') == '1') {
-            $cpf = array_merge($cpf, array('firstname' => true, 'lastname' => true));
+            $cpf = array_merge($cpf, ['firstname' => true, 'lastname' => true]);
         }
 
         if (get_option('cpf_enable_street_address') == '1') {
-            $cpf = array_merge($cpf, array('street_address' => true));
+            $cpf = array_merge($cpf, ['street_address' => true]);
         }
 
         if (get_option('cpf_enable_city') == '1') {
-            $cpf = array_merge($cpf, array('city' => true));
+            $cpf = array_merge($cpf, ['city' => true]);
         }
 
         if (get_option('cpf_enable_county') == '1') {
-            $cpf = array_merge($cpf, array('county' => true));
+            $cpf = array_merge($cpf, ['county' => true]);
         }
 
         if (get_option('cpf_enable_state') == '1') {
-            $cpf = array_merge($cpf, array('state' => true));
+            $cpf = array_merge($cpf, ['state' => true]);
         }
 
         if (get_option('cpf_enable_post_code') == '1') {
-            $cpf = array_merge($cpf, array('post_code' => true));
+            $cpf = array_merge($cpf, ['post_code' => true]);
         }
 
         if (get_option('cpf_enable_country') == '1') {
-            $cpf = array_merge($cpf, array('country' => true));
+            $cpf = array_merge($cpf, ['country' => true]);
         }
 
         if (get_option('cpf_enable_phone') == '1') {
-            $cpf = array_merge($cpf, array('mobile_phone_number' => true));
+            $cpf = array_merge($cpf, ['mobile_phone_number' => true]);
         }
 
         return $cpf;

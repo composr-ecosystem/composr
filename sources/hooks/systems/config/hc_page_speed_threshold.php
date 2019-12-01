@@ -30,7 +30,7 @@ class Hook_config_hc_page_speed_threshold
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_PAGE_SPEED_THRESHOLD',
             'type' => 'float',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_page_speed_threshold
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

@@ -34,13 +34,13 @@ class Hook_commandr_command_clear_caches
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('clear_caches', array('h'), array(true)), '', '');
+            return ['', do_command_help('clear_caches', ['h'], [true]), '', ''];
         } else {
             require_code('caches3');
 
             $_caches = null;
             if (array_key_exists(0, $parameters)) {
-                $_caches = array();
+                $_caches = [];
                 $caches = explode(',', $parameters[0]);
                 foreach ($caches as $cache) {
                     $_caches[] = trim($cache);
@@ -51,7 +51,7 @@ class Hook_commandr_command_clear_caches
             if ($messages == '') {
                 $messages = do_lang('SUCCESS');
             }
-            return array('', $messages, '', '');
+            return ['', $messages, '', ''];
         }
     }
 }

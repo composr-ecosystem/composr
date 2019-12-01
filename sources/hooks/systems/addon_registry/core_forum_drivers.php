@@ -31,7 +31,7 @@ class Hook_addon_registry_core_forum_drivers
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_forum_drivers
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_nuances',
             'codebook_1b',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_forum_drivers
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_forum_drivers
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_forum_drivers.php',
             'sources/forum/.htaccess',
             'sources/forum/forums.ini',
@@ -112,6 +112,6 @@ class Hook_addon_registry_core_forum_drivers
             'sources/forum/mybb.php',
             'sources_custom/forum/.htaccess',
             'sources_custom/forum/index.html',
-        );
+        ];
     }
 }

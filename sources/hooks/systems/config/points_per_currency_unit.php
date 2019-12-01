@@ -30,7 +30,7 @@ class Hook_config_points_per_currency_unit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POINTS_PER_CURRENCY_UNIT',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_per_currency_unit
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

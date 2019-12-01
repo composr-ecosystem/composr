@@ -30,7 +30,7 @@ class Hook_config_global_donext_icons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GLOBAL_DONEXT_ICONS',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_global_donext_icons
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

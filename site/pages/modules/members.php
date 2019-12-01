@@ -30,7 +30,7 @@ class Module_members
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,11 +55,11 @@ class Module_members
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MEMBER_DIRECTORY', 'menu/social/members'),
-        );
+        $ret = [
+            'browse' => ['MEMBER_DIRECTORY', 'menu/social/members'],
+        ];
         if (!$check_perms || !is_guest($member_id)) {
-            $ret['view'] = array('MY_PROFILE', 'menu/social/profile');
+            $ret['view'] = ['MY_PROFILE', 'menu/social/profile'];
         }
         return $ret;
     }
@@ -142,24 +142,24 @@ class Module_members
 
             $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
 
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'identifier' => '_SEARCH:members:view:' . strval($member_id_of),
                 'image' => (($avatar_url == '') && (has_privilege(get_member(), 'view_member_photos'))) ? $photo_url : $avatar_url,
-            ), $member_row, 'member', strval($member_id_of));
+            ], $member_row, 'member', strval($member_id_of));
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse' . propagate_filtercode_page_link(), do_lang_tempcode('MEMBERS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse' . propagate_filtercode_page_link(), do_lang_tempcode('MEMBERS')]]);
 
             if ((get_value('disable_awards_in_titles') !== '1') && (addon_installed('awards'))) {
                 require_code('awards');
                 $awards = find_awards_for('member', strval($member_id_of));
             } else {
-                $awards = array();
+                $awards = [];
             }
 
             //$this->title = get_screen_title('MEMBER_ACCOUNT', true, array(make_fractionable_editable('member', $member_id_of, $username)), null, $awards);
             $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
-            $this->title = get_screen_title('MEMBER_ACCOUNT', true, array(escape_html($displayname), escape_html($username)), null, $awards);
+            $this->title = get_screen_title('MEMBER_ACCOUNT', true, [escape_html($displayname), escape_html($username)], null, $awards);
 
             $this->member_id_of = $member_id_of;
             $this->username = $username;
@@ -203,10 +203,10 @@ class Module_members
      */
     public function directory()
     {
-        $tpl = do_template('CNS_MEMBER_DIRECTORY_SCREEN', array(
+        $tpl = do_template('CNS_MEMBER_DIRECTORY_SCREEN', [
             '_GUID' => '096767e9aaabce9cb3e6591b7bcf95b8',
             'TITLE' => $this->title,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -235,7 +235,7 @@ class Module_members
         $id = get_param_integer('id');
         $hash = get_param_string('hash');
 
-        $_subscriber = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array('id' => $id), '', 1);
+        $_subscriber = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $_subscriber)) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -248,10 +248,10 @@ class Module_members
             warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));
         }
 
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 0), array('id' => $id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails_from_staff' => 0], ['id' => $id], '', 1);
 
         if (addon_installed('newsletter')) {
-            $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array('email' => $_subscriber['m_email_address']));
+            $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $_subscriber['m_email_address']]);
         }
 
         return inform_screen($this->title, do_lang_tempcode('newsletter:MEMBER_NEWSLETTER_UNSUBSCRIBED', escape_html(get_site_name())));

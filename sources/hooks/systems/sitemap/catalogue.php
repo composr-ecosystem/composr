@@ -27,8 +27,8 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
     protected $screen_type = 'index';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('catalogue_category');
-    protected $entry_sitetree_hook = array('catalogue_category');
+    protected $entry_content_type = ['catalogue_category'];
+    protected $entry_sitetree_hook = ['catalogue_category'];
 
     /**
      * Find if a page-link will be covered by this node.
@@ -39,7 +39,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -90,10 +90,10 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -101,9 +101,9 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
 
         $page = $this->_make_zone_concrete($zone, $page_link);
 
-        $map = array();
+        $map = [];
         if (get_forum_type() != 'cns' || !addon_installed('shopping')) {
-            $map = array('c_ecommerce' => 0);
+            $map = ['c_ecommerce' => 0];
         }
 
         if ($child_cutoff !== null) {
@@ -115,10 +115,10 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), $map, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], $map, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if (substr($row['c_name'], 0, 1) != '_') {
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', array('c_name' => $row['c_name']));
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', ['c_name' => $row['c_name']]);
                     if ($test === null) {
                         continue; // No entries
                     }
@@ -171,18 +171,18 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
 
         $this->_make_zone_concrete($zone, $page_link);
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'weekly',
 
-            'edit_url' => build_url(array('page' => 'cms_catalogues', 'type' => '_edit_catalogue', 'id' => $content_id), get_module_zone('cms_catalogues')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_catalogues', 'type' => '_edit_catalogue', 'id' => $content_id], get_module_zone('cms_catalogues')),
+        ] + $partial_struct;
 
         if (strpos($page_link, ':index:') !== false) {
             $struct['extra_meta']['description'] = null;
@@ -198,7 +198,7 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
             }
 
             if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-                $children = array();
+                $children = [];
 
                 // A-to-Z child
                 if (($options & SITEMAP_GEN_REQUIRE_PERMISSION_SUPPORT) == 0) {
@@ -210,16 +210,16 @@ class Hook_sitemap_catalogue extends Hook_sitemap_content
                 }
 
                 // Categories
-                $count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $content_id));
+                $count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $content_id]);
                 $lots = ($count > 3000) || ($child_cutoff !== null) && ($count > $child_cutoff);
                 if (!$lots) {
                     $child_hook_ob = $this->_get_sitemap_object('catalogue_category');
 
-                    $children_entries = array();
+                    $children_entries = [];
                     $start = 0;
                     do {
-                        $where = array('c_name' => $content_id, 'cc_parent_id' => null);
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('*'), $where, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                        $where = ['c_name' => $content_id, 'cc_parent_id' => null];
+                        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], $where, '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
                         foreach ($rows as $child_row) {
                             $child_page_link = $zone . ':' . $page . ':category:' . strval($child_row['id']);
                             $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, $child_row);

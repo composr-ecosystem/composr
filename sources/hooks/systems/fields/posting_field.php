@@ -66,7 +66,7 @@ class Hook_fields_posting_field
      */
     public function get_field_value_row_bits($field, $required = null, $default = null, $db = null)
     {
-        return array('long_trans', $default, 'long_trans');
+        return ['long_trans', $default, 'long_trans'];
     }
 
     /**
@@ -175,9 +175,9 @@ class Hook_fields_posting_field
 
         $ret = new Tempcode();
 
-        $ret->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '2201f130af229cbadd92bb1b377739f5', 'TITLE' => $_cf_name)));
+        $ret->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2201f130af229cbadd92bb1b377739f5', 'TITLE' => $_cf_name]));
 
-        $ret->attach(do_template('POSTING_FIELD', array(
+        $ret->attach(do_template('POSTING_FIELD', [
             '_GUID' => 'b6c65227a28e0650154393033e005f67',
             'REQUIRED' => ($field['cf_required'] == 1),
             'DESCRIPTION' => $_cf_description,
@@ -188,15 +188,15 @@ class Hook_fields_posting_field
             'COMCODE_EDITOR' => $comcode_editor,
             'COMCODE_EDITOR_SMALL' => $comcode_editor_small,
             'CLASS' => $class,
-            'COMCODE_URL' => ($help_zone === null) ? new Tempcode() : build_url(array('page' => 'userguide_comcode'), $help_zone),
+            'COMCODE_URL' => ($help_zone === null) ? new Tempcode() : build_url(['page' => 'userguide_comcode'], $help_zone),
             'EMOTICON_CHOOSER' => $emoticon_chooser,
             'POST' => $actual_value,
             'DEFAULT_PARSED' => $default_parsed,
             'ATTACHMENTS' => $attachments,
-        )));
+        ]));
 
         if (!$last) {
-            $ret->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '168edca41bd0c3da936d9154d696163e', 'TITLE' => do_lang_tempcode('ADDITIONAL_INFO'))));
+            $ret->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '168edca41bd0c3da936d9154d696163e', 'TITLE' => do_lang_tempcode('ADDITIONAL_INFO')]));
         }
 
         return $ret;

@@ -32,11 +32,11 @@ class Hook_notification_member_calendar_changes extends Hook_notification
     public function list_handled_codes()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['member_calendar_changes'] = array(do_lang('calendar:CALENDAR'), do_lang('calendar:NOTIFICATION_TYPE_member_calendar_changes'));
+        $list = [];
+        $list['member_calendar_changes'] = [do_lang('calendar:CALENDAR'), do_lang('calendar:NOTIFICATION_TYPE_member_calendar_changes')];
         return $list;
     }
 }

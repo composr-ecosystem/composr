@@ -35,7 +35,7 @@ class Hook_fields_list_multi extends ListFieldHook
      */
     public function get_search_inputter($field)
     {
-        $fields = array();
+        $fields = [];
         $type = '_LIST';
         $special = new Tempcode();
         $special->attach(form_input_list_entry('', get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX) == '', '---'));
@@ -48,7 +48,7 @@ class Hook_fields_list_multi extends ListFieldHook
 
             $special->attach(form_input_list_entry($l, get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX) == $l));
         }
-        return array('NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -88,7 +88,7 @@ class Hook_fields_list_multi extends ListFieldHook
                 $default = preg_replace('#=.*$#', '', $default); // Get key of first
             }
         }
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -112,19 +112,19 @@ class Hook_fields_list_multi extends ListFieldHook
             return '';
         }
 
-        $exploded_inbuilt = ($field['cf_default'] == '') ? array() : array_flip(explode('|', $field['cf_default']));
-        $exploded_chosen = ($ev == '') ? array() : array_flip(explode("\n", $ev));
+        $exploded_inbuilt = ($field['cf_default'] == '') ? [] : array_flip(explode('|', $field['cf_default']));
+        $exploded_chosen = ($ev == '') ? [] : array_flip(explode("\n", $ev));
 
         $show_unset_values = (option_value_from_field_array($field, 'show_unset_values', 'off') == 'on');
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
 
-        $all = array();
-        $flat = array();
+        $all = [];
+        $flat = [];
         foreach (array_keys($exploded_inbuilt) as $option) {
             $has = isset($exploded_chosen[$option]);
             if ($has || $show_unset_values) {
-                $all[] = array('OPTION' => comcode_to_tempcode($option, null, true), 'HAS' => $has, 'IS_OTHER' => false);
+                $all[] = ['OPTION' => comcode_to_tempcode($option, null, true), 'HAS' => $has, 'IS_OTHER' => false];
             }
             if ($has) {
                 $flat[] = static_evaluate_tempcode(comcode_to_tempcode($option, null, true));
@@ -133,7 +133,7 @@ class Hook_fields_list_multi extends ListFieldHook
         if ($custom_values != 'off') {
             foreach (array_keys($exploded_chosen) as $chosen) {
                 if (!isset($exploded_inbuilt[$chosen])) {
-                    $all[] = array('OPTION' => $chosen, 'HAS' => true, 'IS_OTHER' => true);
+                    $all[] = ['OPTION' => $chosen, 'HAS' => true, 'IS_OTHER' => true];
                     $flat[] = $chosen;
                 }
             }
@@ -150,7 +150,7 @@ class Hook_fields_list_multi extends ListFieldHook
             $template = 'CATALOGUE_other_FIELD_MULTILIST';
         }
 
-        return do_template($template, array('_GUID' => 'x28e21cdbc38a3037d083f619bb31dae', 'SHOW_UNSET_VALUES' => $show_unset_values, 'ALL' => $all, 'FLAT' => $flat, 'FIELD_ID' => strval($field['id'])), null, false, 'CATALOGUE_DEFAULT_FIELD_MULTILIST');
+        return do_template($template, ['_GUID' => 'x28e21cdbc38a3037d083f619bb31dae', 'SHOW_UNSET_VALUES' => $show_unset_values, 'ALL' => $all, 'FLAT' => $flat, 'FIELD_ID' => strval($field['id'])], null, false, 'CATALOGUE_DEFAULT_FIELD_MULTILIST');
     }
 
     // ======================
@@ -177,7 +177,7 @@ class Hook_fields_list_multi extends ListFieldHook
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
 
-        $exploded_chosen = ($actual_value == $default) ? array() : explode("\n", $actual_value);
+        $exploded_chosen = ($actual_value == $default) ? [] : explode("\n", $actual_value);
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
         if ($auto_sort == 'backend' || $auto_sort == 'both') {
@@ -186,7 +186,7 @@ class Hook_fields_list_multi extends ListFieldHook
 
         $custom_name = $input_name . '_other';
         $custom_value = mixed();
-        $custom_value = array();
+        $custom_value = [];
         foreach ($exploded_chosen as $chosen) {
             if (!in_array($chosen, $list)) {
                 $custom_value[] = $chosen;
@@ -213,9 +213,9 @@ class Hook_fields_list_multi extends ListFieldHook
         switch ($widget) {
             case 'vertical_checkboxes':
             case 'horizontal_checkboxes':
-                $_list = array();
+                $_list = [];
                 foreach ($list as $i => $l) {
-                    $_list[] = array($l, $input_name . '_' . strval($i), in_array($l, $exploded_chosen), '');
+                    $_list[] = [$l, $input_name . '_' . strval($i), in_array($l, $exploded_chosen), ''];
                 }
                 return form_input_various_ticks($_list, $_cf_description, null, $_cf_name, ($widget == 'vertical_checkboxes'), $custom_name, $custom_value);
 
@@ -240,7 +240,7 @@ class Hook_fields_list_multi extends ListFieldHook
      */
     public function inputted_to_field_value($editing, $field, $upload_dir = 'uploads/catalogues', $old_value = null)
     {
-        $ret = array();
+        $ret = [];
 
         $tmp_name = 'field_' . strval($field['id']);
 

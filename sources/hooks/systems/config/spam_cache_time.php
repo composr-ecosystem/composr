@@ -30,7 +30,7 @@ class Hook_config_spam_cache_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_CACHE_TIME',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_cache_time
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

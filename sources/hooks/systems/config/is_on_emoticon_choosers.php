@@ -30,7 +30,7 @@ class Hook_config_is_on_emoticon_choosers
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_EMOTICON_CHOOSERS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_is_on_emoticon_choosers
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

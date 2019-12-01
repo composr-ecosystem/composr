@@ -25,7 +25,7 @@ class Module_admin_referrals
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -50,9 +50,9 @@ class Module_admin_referrals
             return null;
         }
 
-        return array(
-            'browse' => array('REFERRALS', 'spare/referrals'),
-        );
+        return [
+            'browse' => ['REFERRALS', 'spare/referrals'],
+        ];
     }
 
     public $title;
@@ -96,7 +96,7 @@ class Module_admin_referrals
             $ini_file = cms_parse_ini_file_safe($path, true);
             $scheme_title = $ini_file[$scheme]['title'];
 
-            $this->title = get_screen_title('MANUALLY_ADJUST_SCHEME_SETTINGS', true, array(escape_html($scheme_title)));
+            $this->title = get_screen_title('MANUALLY_ADJUST_SCHEME_SETTINGS', true, [escape_html($scheme_title)]);
 
             $this->scheme = $scheme;
             $this->ini_file = $ini_file;
@@ -166,13 +166,13 @@ class Module_admin_referrals
 
         require_code('form_templates');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_adjust', 'scheme' => $scheme, 'member_id' => $member_id), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_adjust', 'scheme' => $scheme, 'member_id' => $member_id], '_SELF');
         $submit_name = do_lang_tempcode('SAVE');
 
         list($num_total_qualified_by_referrer) = get_referral_scheme_stats_for($member_id, $scheme);
 
         $referrals_count = $num_total_qualified_by_referrer;
-        $is_qualified = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', array('o_referrer' => $member_id, 'o_scheme_name' => $scheme));
+        $is_qualified = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_is_qualified', ['o_referrer' => $member_id, 'o_scheme_name' => $scheme]);
 
         $fields = new Tempcode();
         $fields->attach(form_input_integer(do_lang_tempcode('QUALIFIED_REFERRALS_COUNT'), '', 'referrals_count', $referrals_count, true));
@@ -182,7 +182,7 @@ class Module_admin_referrals
         $is_qualified_list->attach(form_input_list_entry('0', $is_qualified === 0, do_lang_tempcode('NO')));
         $fields->attach(form_input_list(do_lang_tempcode('IS_QUALIFIED'), '', 'is_qualified', $is_qualified_list, null, false, false));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '7e28b416287fb891c2cd7029795e49f0',
             'TITLE' => $this->title,
             'HIDDEN' => '',
@@ -191,7 +191,7 @@ class Module_admin_referrals
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -214,21 +214,21 @@ class Module_admin_referrals
         $is_qualified = post_param_integer('is_qualified', null);
 
         // Save
-        $GLOBALS['SITE_DB']->query_delete('referrer_override', array(
+        $GLOBALS['SITE_DB']->query_delete('referrer_override', [
             'o_referrer' => $member_id,
             'o_scheme_name' => $scheme,
-        ));
-        $GLOBALS['SITE_DB']->query_insert('referrer_override', array(
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('referrer_override', [
             'o_referrer' => $member_id,
             'o_scheme_name' => $scheme,
             'o_referrals_dif' => $referrals_dif,
             'o_is_qualified' => $is_qualified,
-        ));
+        ]);
 
         log_it('_MANUALLY_ADJUST_SCHEME_SETTINGS', $scheme, strval($referrals_count - $old_referrals_count));
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'));
+        $url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'));
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

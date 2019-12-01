@@ -30,7 +30,7 @@ class Hook_config_long_google_cookies
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LONG_GOOGLE_COOKIES',
             'type' => 'tick',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_long_google_cookies
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'google_analytics',
-        );
+        ];
     }
 
     /**

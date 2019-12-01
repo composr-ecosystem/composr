@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_exclusive_messaging
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_EXCLUSIVE_MESSAGING',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_exclusive_messaging
             'required' => true,
             'public' => false,
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

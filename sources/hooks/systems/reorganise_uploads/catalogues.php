@@ -33,7 +33,7 @@ class Hook_reorganise_uploads_catalogues
         }
 
         require_code('catalogues2');
-        reorganise_uploads__catalogue_categories(array(), true);
-        reorganise_uploads__catalogue_entries(array(), true);
+        reorganise_uploads__catalogue_categories([], true);
+        reorganise_uploads__catalogue_entries([], true);
     }
 }

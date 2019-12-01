@@ -20,14 +20,14 @@ class Block_youtube_channel
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Jason Verhagen';
         $info['organisation'] = 'HolleywoodStudio.com';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 12;
         $info['locked'] = false;
-        $info['parameters'] = array('name', 'playlist_id', 'title', 'template_main', 'template_style', 'start_video', 'max_videos', 'description_type', 'embed_allowed', 'show_player', 'player_align', 'player_width', 'player_height', 'style', 'nothumbplayer', 'thumbnail', 'formorelead', 'formoretext', 'formoreurl');
+        $info['parameters'] = ['name', 'playlist_id', 'title', 'template_main', 'template_style', 'start_video', 'max_videos', 'description_type', 'embed_allowed', 'show_player', 'player_align', 'player_width', 'player_height', 'style', 'nothumbplayer', 'thumbnail', 'formorelead', 'formoretext', 'formoreurl'];
         return $info;
     }
 
@@ -38,8 +38,8 @@ class Block_youtube_channel
      */
     public function caching_environment()
     {
-        $info = array();
-        $info['cache_on'] = array('block_youtube_channel__cache_on');
+        $info = [];
+        $info['cache_on'] = ['block_youtube_channel__cache_on'];
         $info['ttl'] = intval(get_option('youtube_channel_block_update_time'));
         return $info;
     }
@@ -60,8 +60,8 @@ class Block_youtube_channel
         }
 
         // Set up some arrays for dealing with thumbnails
-        $thumb = array('default', 'medium', 'high', 'start', 'middle', 'end', 'standard', 'maxres');
-        $thumbalt = array('default', 'mqdefault', 'hqdefault', '1', '2', '3', 'sddefault', 'maxresdefault');
+        $thumb = ['default', 'medium', 'high', 'start', 'middle', 'end', 'standard', 'maxres'];
+        $thumbalt = ['default', 'mqdefault', 'hqdefault', '1', '2', '3', 'sddefault', 'maxresdefault'];
 
         // Set up variables from parameters
         $channel_name_param = array_key_exists('name', $map) ? trim($map['name']) : '';
@@ -121,7 +121,7 @@ class Block_youtube_channel
         if ($channel_showplayer < 0 || $channel_showplayer + $channel_maxvideos > 50) {
             $channel_showplayer = 50;
         }
-        if (!in_array($channel_playeralign, array('center', 'left', 'right'))) {
+        if (!in_array($channel_playeralign, ['center', 'left', 'right'])) {
             $channel_playeralign = 'center';
         }
         if ($channel_nothumbplayer < 0 || $channel_nothumbplayer > 1) {
@@ -130,7 +130,7 @@ class Block_youtube_channel
         if ($channel_thumbnail < 0 || $channel_thumbnail > 7) {
             $channel_thumbnail = 0;
         }
-        if (!in_array($channel_descriptiontype, array('long', 'short'))) {
+        if (!in_array($channel_descriptiontype, ['long', 'short'])) {
             $channel_descriptiontype = 'long';
         }
 
@@ -148,7 +148,7 @@ class Block_youtube_channel
             //Determine if name is username or channel id.
             if (strtolower(substr($channel_name_param, 0, 9)) == 'username=') {
                 $channel_name =  substr($channel_name_param, 9);
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, ['convert_to_internal_encoding' => true]));
 
                 // Check if we got a user upload playlist and assign it to a variable. If not, set an error.
                 if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
@@ -161,7 +161,7 @@ class Block_youtube_channel
                 $channel_url = 'http://www.youtube.com/user/' . $channel_name;
             } elseif (strtolower(substr($channel_name_param, 0, 3)) == 'id=') {
                 $channel_id =  substr($channel_name_param, 3);
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=' . $channel_id . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=' . $channel_id . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, ['convert_to_internal_encoding' => true]));
 
                 // Get channel title (channel name)
                 if (isset($channel->items[0]->items->snippet->title)) {
@@ -179,7 +179,7 @@ class Block_youtube_channel
                 $channel_url = 'http://www.youtube.com/channel/' . $channel_id;
             } else {
                 $channel_name = $channel_name_param;
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, ['convert_to_internal_encoding' => true]));
 
                 // Check if we got a user upload playlist and assign it to a variable. If not, set an error.
                 if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
@@ -197,7 +197,7 @@ class Block_youtube_channel
         }
 
         // Get playlist video list from YouTube API v3
-        $playlist_items = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&maxResults=' . strval($channel_maxvideos) . '&playlistId=' . $playlist_id . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
+        $playlist_items = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&maxResults=' . strval($channel_maxvideos) . '&playlistId=' . $playlist_id . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . $youtube_api_key, ['convert_to_internal_encoding' => true]));
         if (isset($playlist_items->pageInfo->totalResults)) {
             $total_playlist_items = $playlist_items->pageInfo->totalResults;
         } else {
@@ -255,7 +255,7 @@ class Block_youtube_channel
                     }
 
                     //get more detailed metadata for each individual video from 'videos' YouTube API v3 call
-                    $video_metadata = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics%2Cstatus&id=' . $video_id . '&fields=items(contentDetails(duration)%2Cstatistics(viewCount%2CfavoriteCount%2ClikeCount%2CdislikeCount)%2Cstatus(embeddable))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
+                    $video_metadata = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics%2Cstatus&id=' . $video_id . '&fields=items(contentDetails(duration)%2Cstatistics(viewCount%2CfavoriteCount%2ClikeCount%2CdislikeCount)%2Cstatus(embeddable))&key=' . $youtube_api_key, ['convert_to_internal_encoding' => true]));
 
                     //check if we got a result. If not, set error and move on.
                     if (!isset($video_metadata->items[0]->contentDetails->duration)) {
@@ -325,7 +325,7 @@ class Block_youtube_channel
 
                     //get video duration from YouTube API
                     $video_duration = $video_metadata->items[0]->contentDetails->duration;
-                    $parts = array();
+                    $parts = [];
                     preg_match_all('/(\d+)/', $video_duration, $parts);
 
                     //youTube duration may not include all parts, i.e. may send hours, minutes, and seconds, may send minutes and seconds, or possibly only send seconds.
@@ -424,22 +424,22 @@ class Block_youtube_channel
                     // Set base URL for thumbnails to use for thumbnails that are no longer returned by API call
                     $base_thumb_url = dirname($thumbnails->default->url) . '/';
                     // Predefine thumbimg array first, then set elements and ignore errors for thumbnails that don't exist
-                    $thumbimg = array(array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'),
-                                      array('url' => '', 'width' => '120', 'height' => '90'));
-                    $thumbimg[0] = @array('url' => $thumbnails->default->url, 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height);
-                    $thumbimg[1] = @array('url' => $thumbnails->medium->url, 'width' => $thumbnails->medium->width, 'height' => $thumbnails->medium->height);
-                    $thumbimg[2] = @array('url' => $thumbnails->high->url, 'width' => $thumbnails->high->width, 'height' => $thumbnails->high->height);
-                    $thumbimg[3] = @array('url' => $base_thumb_url . $thumbalt[3] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height);
-                    $thumbimg[4] = @array('url' => $base_thumb_url . $thumbalt[4] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height);
-                    $thumbimg[5] = @array('url' => $base_thumb_url . $thumbalt[5] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height);
-                    $thumbimg[6] = @array('url' => $thumbnails->standard->url, 'width' => $thumbnails->standard->width, 'height' => $thumbnails->standard->height);
-                    $thumbimg[7] = @array('url' => $thumbnails->maxres->url, 'width' => $thumbnails->maxres->width, 'height' => $thumbnails->maxres->height);
+                    $thumbimg = [['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90'],
+                                      ['url' => '', 'width' => '120', 'height' => '90']];
+                    $thumbimg[0] = @['url' => $thumbnails->default->url, 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height];
+                    $thumbimg[1] = @['url' => $thumbnails->medium->url, 'width' => $thumbnails->medium->width, 'height' => $thumbnails->medium->height];
+                    $thumbimg[2] = @['url' => $thumbnails->high->url, 'width' => $thumbnails->high->width, 'height' => $thumbnails->high->height];
+                    $thumbimg[3] = @['url' => $base_thumb_url . $thumbalt[3] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height];
+                    $thumbimg[4] = @['url' => $base_thumb_url . $thumbalt[4] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height];
+                    $thumbimg[5] = @['url' => $base_thumb_url . $thumbalt[5] . '.jpg', 'width' => $thumbnails->default->width, 'height' => $thumbnails->default->height];
+                    $thumbimg[6] = @['url' => $thumbnails->standard->url, 'width' => $thumbnails->standard->width, 'height' => $thumbnails->standard->height];
+                    $thumbimg[7] = @['url' => $thumbnails->maxres->url, 'width' => $thumbnails->maxres->width, 'height' => $thumbnails->maxres->height];
                     $thumb_img = $thumbimg[$channel_thumbnail];
                     $thumb_alt = $thumbalt[$channel_thumbnail];
                     $t = 0;
@@ -467,7 +467,7 @@ class Block_youtube_channel
                     }
 
                     // Style all of the meta info using the Style template and store it all in the content variable which is passed to the main template
-                    $content->attach(do_template("$channel_templatestyle", array(
+                    $content->attach(do_template("$channel_templatestyle", [
                         'EMBED_ALLOWED' => strval($channel_embedallowed),
                         'EMBEDPLAYER_ALLOWED' => strval($embeddable),
                         'VIDEO_ID' => $video_id,
@@ -540,7 +540,7 @@ class Block_youtube_channel
                         'FOR_MORE_LEAD' => $channel_formorelead,
                         'FOR_MORE_TEXT' => $channel_formoretext,
                         'FOR_MORE_URL' => $channel_formoreurl,
-                    )));
+                    ]));
                 }
                 $i++;
             }
@@ -550,12 +550,12 @@ class Block_youtube_channel
         }
 
         // Send styled content to the main template
-        return do_template("$channel_templatemain", array(
+        return do_template("$channel_templatemain", [
             'CHANNEL_ERROR' => $channel_error,
             'CHANNEL_TITLE' => $channel_title,
             'CHANNEL_NAME' => $channel_name,
             'CHANNEL_URL' => $channel_url,
-            'CONTENT' => $content));
+            'CONTENT' => $content]);
     }
 }
 
@@ -567,7 +567,7 @@ class Block_youtube_channel
  */
 function block_youtube_channel__cache_on($map)
 {
-    return array(
+    return [
         array_key_exists('max_videos', $map) ? intval($map['max_videos']) : 25,
         array_key_exists('start_video', $map) ? intval($map['start_video']) : 1,
         array_key_exists('embed_player', $map) ? intval($map['embed_player']) : 1,
@@ -586,5 +586,5 @@ function block_youtube_channel__cache_on($map)
         array_key_exists('template_main', $map) ? $map['template_main'] : '',
         array_key_exists('description_type', $map) ? $map['description_type'] : 'long',
         array_key_exists('playlist_id', $map) ? $map['playlist_id'] : '',
-    );
+    ];
 }

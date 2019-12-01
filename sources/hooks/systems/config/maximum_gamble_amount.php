@@ -30,7 +30,7 @@ class Hook_config_maximum_gamble_amount
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAXIMUM_GAMBLE_AMOUNT',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_maximum_gamble_amount
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

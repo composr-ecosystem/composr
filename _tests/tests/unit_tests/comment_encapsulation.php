@@ -22,9 +22,9 @@ class comment_encapsulation_test_set extends cms_test_case
     {
         require_code('files2');
 
-        foreach (array('javascript' => 'js', 'javascript_custom' => 'js', 'css' => 'css', 'css_custom' => 'css') as $subdir => $suffix) {
+        foreach (['javascript' => 'js', 'javascript_custom' => 'js', 'css' => 'css', 'css_custom' => 'css'] as $subdir => $suffix) {
             $path = get_file_base() . '/themes/default/' . $subdir;
-            $files = get_directory_contents($path, '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array($suffix));
+            $files = get_directory_contents($path, '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, [$suffix]);
             foreach ($files as $file) {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
@@ -34,7 +34,7 @@ class comment_encapsulation_test_set extends cms_test_case
 
                 $c = preg_replace('#/\*.*\*/#Us', '', $c);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\{\+#', $c, $matches, PREG_OFFSET_CAPTURE);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $data = $matches[0][$i][0];

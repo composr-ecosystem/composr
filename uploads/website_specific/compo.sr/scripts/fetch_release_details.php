@@ -52,13 +52,13 @@ $news_id = get_param_integer('news_id');
 
 header('Content-type: text/plain; charset=' . get_charset());
 
-$news_rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('validated' => 1, 'id' => $news_id), '', 1);
+$news_rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['validated' => 1, 'id' => $news_id], '', 1);
 if ((array_key_exists(0, $news_rows)) && (has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'news', $news_rows[0]['news_category']))) {
     $_news_html = get_translated_tempcode('news', $news_rows[0], 'news_article'); // To force it to evaluate, so we can know the TAR URL
     $news_html = $_news_html->evaluate();
     $news = static_evaluate_tempcode(comcode_to_tempcode(get_translated_text($news_rows[0]['news_article']), null, true));
 
-    $matches = array();
+    $matches = [];
     preg_match('#"(https?://compo.sr/upgrades/[^"]*\.cms)"#', $news_html, $matches);
     $tar_url = array_key_exists(1, $matches) ? $matches[1] : '';
     $changes = '';
@@ -76,10 +76,10 @@ if ((array_key_exists(0, $news_rows)) && (has_category_access($GLOBALS['FORUM_DR
     $notes = $news_html;
 
     if (get_param_string('mode', 'serialize') == 'serialize') {
-        echo serialize(array($notes, $tar_url, $changes)); // LEGACY
+        echo serialize([$notes, $tar_url, $changes]); // LEGACY
     } else {
-        echo json_encode(array($notes, $tar_url, $changes));
+        echo json_encode([$notes, $tar_url, $changes]);
     }
 } else {
-    echo serialize(array('', '', ''));
+    echo serialize(['', '', '']);
 }

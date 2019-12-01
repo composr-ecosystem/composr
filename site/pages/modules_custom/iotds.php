@@ -25,7 +25,7 @@ class Module_iotds
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -45,7 +45,7 @@ class Module_iotds
 
         delete_privilege('choose_iotd');
 
-        $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'iotds'));
+        $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'iotds']);
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
@@ -62,7 +62,7 @@ class Module_iotds
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('iotd', array(
+            $GLOBALS['SITE_DB']->create_table('iotd', [
                 'id' => '*AUTO',
                 'url' => 'URLPATH',
                 'i_title' => 'SHORT_TRANS__COMCODE',
@@ -79,17 +79,17 @@ class Module_iotds
                 'submitter' => 'MEMBER',
                 'add_date' => 'TIME',
                 'edit_date' => '?TIME',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_index('iotd', 'iotd_views', array('iotd_views'));
-            $GLOBALS['SITE_DB']->create_index('iotd', 'get_current', array('is_current'));
-            $GLOBALS['SITE_DB']->create_index('iotd', 'ios', array('submitter'));
-            $GLOBALS['SITE_DB']->create_index('iotd', 'iadd_date', array('add_date'));
-            $GLOBALS['SITE_DB']->create_index('iotd', 'date_and_time', array('date_and_time'));
+            $GLOBALS['SITE_DB']->create_index('iotd', 'iotd_views', ['iotd_views']);
+            $GLOBALS['SITE_DB']->create_index('iotd', 'get_current', ['is_current']);
+            $GLOBALS['SITE_DB']->create_index('iotd', 'ios', ['submitter']);
+            $GLOBALS['SITE_DB']->create_index('iotd', 'iadd_date', ['add_date']);
+            $GLOBALS['SITE_DB']->create_index('iotd', 'date_and_time', ['date_and_time']);
 
             add_privilege('IOTDS', 'choose_iotd', false);
 
-            $GLOBALS['SITE_DB']->create_index('iotd', 'ftjoin_icap', array('caption'));
+            $GLOBALS['SITE_DB']->create_index('iotd', 'ftjoin_icap', ['caption']);
         }
     }
 
@@ -108,9 +108,9 @@ class Module_iotds
             return null;
         }
 
-        return array(
-            'browse' => array('IOTDS', 'menu/rich_content/iotds'),
-        );
+        return [
+            'browse' => ['IOTDS', 'menu/rich_content/iotds'],
+        ];
     }
 
     public $title;
@@ -148,10 +148,10 @@ class Module_iotds
             $this->title = get_screen_title('IOTD');
 
             // Breadcrumbs
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IOTD_ARCHIVE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('IOTD_ARCHIVE')]]);
 
             // Fetch details
-            $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => $id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
                 return warn_screen($this->title, do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
             }
@@ -162,9 +162,9 @@ class Module_iotds
             }
 
             // Metadata
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'identifier' => '_SEARCH:iotds:view:' . strval($id),
-            ), $myrow, 'iotd', strval($id));
+            ], $myrow, 'iotd', strval($id));
 
             $this->id = $id;
             $this->myrow = $myrow;
@@ -205,9 +205,9 @@ class Module_iotds
      */
     public function iotd_browse()
     {
-        $content = do_block('main_multi_content', array('param' => 'iotd', 'zone' => get_zone_name(), 'sort' => 'recent', 'max' => '10', 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'block_id' => 'module', 'guid' => 'module'));
+        $content = do_block('main_multi_content', ['param' => 'iotd', 'zone' => get_zone_name(), 'sort' => 'recent', 'max' => '10', 'no_links' => '1', 'pagination' => '1', 'give_context' => '0', 'include_breadcrumbs' => '0', 'block_id' => 'module', 'guid' => 'module']);
 
-        return do_template('PAGINATION_SCREEN', array('_GUID' => 'd8a493c2b007d98074f104ea433c8091', 'TITLE' => $this->title, 'CONTENT' => $content));
+        return do_template('PAGINATION_SCREEN', ['_GUID' => 'd8a493c2b007d98074f104ea433c8091', 'TITLE' => $this->title, 'CONTENT' => $content]);
     }
 
     /**
@@ -230,7 +230,7 @@ class Module_iotds
             $myrow['allow_trackbacks'],
             (($myrow['date_and_time'] === null) && ($myrow['used'] == 0)) ? 0 : 1,
             $myrow['submitter'],
-            build_url(array('page' => '_SELF', 'type' => 'view', 'id' => $id), '_SELF', array(), false, false, true),
+            build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id], '_SELF', [], false, false, true),
             get_translated_text($myrow['i_title']),
             find_overridden_comment_forum('iotds'),
             $myrow['add_date']
@@ -253,12 +253,12 @@ class Module_iotds
 
         // Management links
         if ((has_actual_page_access(null, 'cms_iotds', null, null)) && (has_edit_permission('high', get_member(), $myrow['submitter'], 'cms_iotds'))) {
-            $edit_url = build_url(array('page' => 'cms_iotds', 'type' => '_edit', 'id' => $id), get_module_zone('cms_iotds'));
+            $edit_url = build_url(['page' => 'cms_iotds', 'type' => '_edit', 'id' => $id], get_module_zone('cms_iotds'));
         } else {
             $edit_url = new Tempcode();
         }
 
-        return do_template('IOTD_ENTRY_SCREEN', array(
+        return do_template('IOTD_ENTRY_SCREEN', [
             '_GUID' => 'f508d483459b88fab44cd8b9f4db780b',
             'TITLE' => $this->title,
             'SUBMITTER' => strval($myrow['submitter']),
@@ -276,6 +276,6 @@ class Module_iotds
             'COMMENT_DETAILS' => $comment_details,
             'EDIT_URL' => $edit_url,
             'URL' => $url,
-        ));
+        ]);
     }
 }

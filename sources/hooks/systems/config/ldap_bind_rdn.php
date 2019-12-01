@@ -30,7 +30,7 @@ class Hook_config_ldap_bind_rdn
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERNAME',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_bind_rdn
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

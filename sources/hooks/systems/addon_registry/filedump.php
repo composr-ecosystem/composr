@@ -31,7 +31,7 @@ class Hook_addon_registry_filedump
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_filedump
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_collaboration',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_filedump
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_filedump
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/cms/filedump.svg',
             'themes/default/images/icons_monochrome/menu/cms/filedump.svg',
             'sources/hooks/systems/notifications/filedump.php',
@@ -126,7 +126,7 @@ class Hook_addon_registry_filedump
             'sources/hooks/systems/config/search_filedump.php',
             'themes/default/javascript/filedump.js',
             'sources/hooks/systems/actionlog/filedump.php',
-        );
+        ];
     }
 
     /**
@@ -136,12 +136,12 @@ class Hook_addon_registry_filedump
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/FILEDUMP_SCREEN.tpl' => 'filedump_screen',
             'templates/FILEDUMP_FOOTER.tpl' => 'filedump_screen',
             'templates/FILEDUMP_SEARCH.tpl' => 'filedump_screen',
             'templates/FILEDUMP_EMBED_SCREEN.tpl' => 'filedump_embed_screen',
-        );
+        ];
     }
 
     /**
@@ -155,8 +155,8 @@ class Hook_addon_registry_filedump
     {
         require_css('forms');
 
-        $thumbnails = array();
-        $thumbnails[] = array(
+        $thumbnails = [];
+        $thumbnails[] = [
             'FILENAME' => lorem_word(),
             'SUBPATH' => placeholder_id(),
             'THUMBNAIL' => placeholder_image(),
@@ -173,10 +173,10 @@ class Hook_addon_registry_filedump
             'IS_DIRECTORY' => false,
             'CHOOSABLE' => false,
             'EMBED_URL' => placeholder_url(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('FILEDUMP_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('FILEDUMP_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SUBPATH' => placeholder_id(),
                 'THUMBNAILS' => $thumbnails,
@@ -189,13 +189,13 @@ class Hook_addon_registry_filedump
                 'PAGINATION_LISTING' => placeholder_pagination(),
                 'PAGINATION_THUMBNAILS' => placeholder_pagination(),
                 'POST_URL' => placeholder_url(),
-                'DIRECTORIES' => array(lorem_word()),
-                'OTHER_DIRECTORIES' => array(lorem_word()),
-                'FILTERED_DIRECTORIES' => array(lorem_word()),
-                'FILTERED_DIRECTORIES_MISSES' => array(),
+                'DIRECTORIES' => [lorem_word()],
+                'OTHER_DIRECTORIES' => [lorem_word()],
+                'FILTERED_DIRECTORIES' => [lorem_word()],
+                'FILTERED_DIRECTORIES_MISSES' => [],
                 'SOMETHING_EDITABLE' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -207,21 +207,21 @@ class Hook_addon_registry_filedump
      */
     public function tpl_preview__filedump_embed_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('FILEDUMP_EMBED_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FORM' => placeholder_form(),
-                'IMAGE_SIZES' => array(
-                    array(
+                'IMAGE_SIZES' => [
+                    [
                         'LABEL' => do_lang_tempcode('FILEDUMP_IMAGE_URLS_SMALL', escape_html(get_option('thumb_width')), escape_html(get_option('thumb_width'))),
                         'SIZE_URL' => placeholder_image_url(),
                         'SIZE_WIDTH' => get_option('thumb_width'),
                         'SIZE_HEIGHT' => get_option('thumb_width'),
-                    ),
-                ),
+                    ],
+                ],
                 'URL' => placeholder_image_url(),
                 'EXISTING_COUNT' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

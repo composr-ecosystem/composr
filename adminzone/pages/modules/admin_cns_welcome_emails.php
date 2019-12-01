@@ -41,7 +41,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -69,7 +69,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('f_welcome_emails', array(
+            $GLOBALS['SITE_DB']->create_table('f_welcome_emails', [
                 'id' => '*AUTO',
                 'w_name' => 'SHORT_TEXT',
                 'w_subject' => 'SHORT_TRANS',
@@ -78,7 +78,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
                 'w_newsletter' => '?AUTO_LINK',
                 'w_usergroup' => '?AUTO_LINK',
                 'w_usergroup_type' => 'ID_TEXT', // <blank>, primary, secondary
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
@@ -111,9 +111,9 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('WELCOME_EMAILS', 'menu/adminzone/setup/welcome_emails'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['WELCOME_EMAILS', 'menu/adminzone/setup/welcome_emails'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -140,7 +140,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         set_helper_panel_tutorial('tut_adv_members');
         set_helper_panel_text(comcode_lang_string('DOC_WELCOME_EMAIL_PREVIEW'));
 
-        breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
 
         return parent::pre_run($top_level);
     }
@@ -188,10 +188,10 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         return do_next_manager(
             get_screen_title('WELCOME_EMAILS'),
             comcode_lang_string('DOC_WELCOME_EMAILS'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_WELCOME_EMAIL')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_WELCOME_EMAIL')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_WELCOME_EMAIL')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_WELCOME_EMAIL')],
+            ],
             do_lang('WELCOME_EMAILS')
         );
     }
@@ -217,12 +217,12 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $fields->attach(form_input_huge_comcode(do_lang_tempcode('TEXT'), do_lang_tempcode('DESCRIPTION_WELCOME_EMAIL_TEXT'), 'text', $text, true));
         $fields->attach(form_input_integer(do_lang_tempcode('SEND_TIME'), do_lang_tempcode('DESCRIPTION_SEND_TIME'), 'send_time', $send_time, true));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '3c9bf61e762eb8715a7fdde214b7eac2', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SCOPE'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3c9bf61e762eb8715a7fdde214b7eac2', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SCOPE')]));
 
         if (addon_installed('newsletter')) {
             require_lang('newsletter');
             $newsletters = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
             if (get_forum_type() == 'cns') {
                 $newsletters->attach(form_input_list_entry('', ($newsletter === null), do_lang_tempcode('WELCOME_EMAIL_MEMBERS')));
             }
@@ -247,7 +247,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
             $fields->attach(form_input_radio(do_lang_tempcode('WELCOME_EMAIL_USERGROUP_TYPE'), do_lang_tempcode('DESCRIPTION_WELCOME_EMAIL_USERGROUP_TYPE'), 'usergroup_type', $radios, false));
         }
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -265,32 +265,32 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'w_name' => do_lang_tempcode('NAME'),
             'w_subject' => do_lang_tempcode('SUBJECT'),
             'w_send_time' => do_lang_tempcode('SEND_TIME'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('NAME'),
             do_lang_tempcode('SUBJECT'),
             do_lang_tempcode('SEND_TIME'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $result_entries->attach(results_entry(array($row['w_name'], get_translated_text($row['w_subject']), do_lang_tempcode('HOURS', escape_html(strval($row['w_send_time']))), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))), true));
+            $result_entries->attach(results_entry([$row['w_name'], get_translated_text($row['w_subject']), do_lang_tempcode('HOURS', escape_html(strval($row['w_send_time']))), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -300,7 +300,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', array('*'));
+        $_m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, $m['w_name']));
@@ -317,7 +317,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', array('*'), array('id' => intval($id)), '', 1);
+        $m = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

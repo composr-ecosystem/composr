@@ -38,7 +38,7 @@ function rules_script()
             warn_exit(do_lang_tempcode('ACCESS_DENIED'));
         }
 
-        $forum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('id' => $id), '', 1);
+        $forum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $forum_rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -49,11 +49,11 @@ function rules_script()
         $question = get_translated_tempcode('f_forums', $forum_row, 'f_intro_question', $GLOBALS['FORUM_DB']);
         $answer = $forum_row['f_intro_answer'];
 
-        $output = do_template('CNS_FORUM_INTRO_QUESTION_POPUP', array('_GUID' => '6f2dc12b616219ff982654b73ef979b2', 'QUESTION' => $question, 'ANSWER' => $answer));
+        $output = do_template('CNS_FORUM_INTRO_QUESTION_POPUP', ['_GUID' => '6f2dc12b616219ff982654b73ef979b2', 'QUESTION' => $question, 'ANSWER' => $answer]);
 
         $title = ($answer == '') ? do_lang_tempcode('FORUM_RULES') : do_lang_tempcode('INTRO_QUESTION');
     }
 
-    $tpl = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '26c4dbc7a4737310f089583f1048cb13', 'TITLE' => $title, 'POPUP' => true, 'NOINDEX' => true, 'TARGET' => '_top', 'CONTENT' => $output));
+    $tpl = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '26c4dbc7a4737310f089583f1048cb13', 'TITLE' => $title, 'POPUP' => true, 'NOINDEX' => true, 'TARGET' => '_top', 'CONTENT' => $output]);
     $tpl->evaluate_echo();
 }

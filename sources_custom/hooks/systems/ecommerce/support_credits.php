@@ -31,11 +31,11 @@ class Hook_ecommerce_support_credits
 
         require_lang('customers');
 
-        return array(
+        return [
             'category_name' => do_lang('CREDITS'),
             'category_description' => do_lang_tempcode('CUSTOMER_SUPPORT_CREDITS_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/help'),
-        );
+        ];
     }
 
     /**
@@ -51,10 +51,10 @@ class Hook_ecommerce_support_credits
     {
         require_lang('customers');
 
-        $products = array();
-        $bundles = array(1, 2, 3, 4, 5, 6, 9, 20, 25, 35, 50, 90, 180, 550);
+        $products = [];
+        $bundles = [1, 2, 3, 4, 5, 6, 9, 20, 25, 35, 50, 90, 180, 550];
         foreach ($bundles as $bundle) {
-            $products[strval($bundle) . '_CREDITS'] = array(
+            $products[strval($bundle) . '_CREDITS'] = [
                 'item_name' => do_lang('CUSTOMER_SUPPORT_CREDITS', integer_format($bundle)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
@@ -75,7 +75,7 @@ class Hook_ecommerce_support_credits
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
         }
 
         return $products;
@@ -153,7 +153,7 @@ class Hook_ecommerce_support_credits
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array($fields, null, null);
+        return [$fields, null, null];
     }
 
     /**
@@ -191,8 +191,8 @@ class Hook_ecommerce_support_credits
             }
         }
 
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', array('member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0), true));
-        return array($purchase_id, null);
+        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('credit_purchases', ['member_id' => $member_id, 'date_and_time' => time(), 'num_credits' => $num_credits, 'is_manual' => $manual, 'purchase_validated' => 0], true));
+        return [$purchase_id, null];
     }
 
     /**
@@ -209,7 +209,7 @@ class Hook_ecommerce_support_credits
             return false;
         }
 
-        $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', array('member_id', 'num_credits'), array('purchase_validated' => 0, 'purchase_id' => intval($purchase_id)), '', 1);
+        $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['member_id', 'num_credits'], ['purchase_validated' => 0, 'purchase_id' => intval($purchase_id)], '', 1);
         if (count($row) != 1) {
             return;
         }
@@ -231,9 +231,9 @@ class Hook_ecommerce_support_credits
         cns_set_custom_field($member_id, $cpf_id, strval($fields['field_' . strval($cpf_id)] + $num_credits));
 
         // Update the row in the credit_purchases table
-        $GLOBALS['SITE_DB']->query_update('credit_purchases', array('purchase_validated' => 1), array('purchase_id' => intval($purchase_id)));
+        $GLOBALS['SITE_DB']->query_update('credit_purchases', ['purchase_validated' => 1], ['purchase_id' => intval($purchase_id)]);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CREDITS', null, null, null, get_site_default_lang()), 'details2' => strval($num_credits), 'txn_id' => $details['TXN_ID']]);
 
         return true;
     }
@@ -247,6 +247,6 @@ class Hook_ecommerce_support_credits
      */
     public function member_for($type_code, $purchase_id)
     {
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('credit_purchases', 'member_id', array('purchase_id' => intval($purchase_id)));
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('credit_purchases', 'member_id', ['purchase_id' => intval($purchase_id)]);
     }
 }

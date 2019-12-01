@@ -69,8 +69,8 @@ if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
 
 // Create default news categories
 $categories_path = get_custom_file_base() . '/data_custom/free_article_import__categories.txt';
-$categories_default = is_file($categories_path) ? cms_file_safe($categories_path) : array();
-$categories_existing = collapse_2d_complexity('id', 'nc_title', $GLOBALS['SITE_DB']->query_select('news_categories', array('id', 'nc_title')));
+$categories_default = is_file($categories_path) ? cms_file_safe($categories_path) : [];
+$categories_existing = collapse_2d_complexity('id', 'nc_title', $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title']));
 foreach ($categories_existing as $id => $nc_title) {
     $categories_existing[$id] = get_translated_text($nc_title);
 }
@@ -136,9 +136,9 @@ while (($r = $sheet_reader->read_row()) !== false) {
     $news_article = '[html]' . $r['Body'] . '[/html]';
     $news = empty($r['Summary']) ? '' : $r['Summary'];
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('title') => $title, 'date_and_time' => $time));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('title') => $title, 'date_and_time' => $time]);
     if ($test === null) { // If does not exist yet
-        $id = add_news($title, $news, $author, 1, 1, 1, 1, '', $news_article, $main_news_category, array(), $time);
+        $id = add_news($title, $news, $author, 1, 1, 1, 1, '', $news_article, $main_news_category, [], $time);
         seo_meta_set_for_explicit('news', strval($id), $r['Keywords'], $news);
 
         $done++;
@@ -156,25 +156,25 @@ function parse_ezinearticles($r)
 
     $f = http_get_contents_cached($r['URL']);
 
-    $matches = array();
+    $matches = [];
     preg_match('#&id=(\d+)#s', $r['URL'], $matches);
     $id = $matches[1];
 
-    $matches = array();
+    $matches = [];
     preg_match('#Submitted On (.*)\.#Us', $f, $matches);
     $date = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     cms_preg_match_safe('#<a href="[^"]*" rel="author" class="author-name" title="[^"]*">\s*(.*)\s*</a>#Us', $f, $matches);
     $author = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<h1>(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
     $f = http_get_contents_cached('http://ezinearticles.com/ezinepublisher/?id=' . urlencode($id), $r['URL']);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<textarea id="formatted-article" wrap="physical" style="width:98%;height:200px;" readonly>(.*)</textarea>#Us', $f, $matches);
     $body = $matches[1];
     $body = cms_preg_replace_safe('#.*<body[^<>]*>\s*#si', '', $body);
@@ -182,15 +182,15 @@ function parse_ezinearticles($r)
     $body = cms_preg_replace_safe('#\s*</body>\s*</html>#si', '', $body);
     $body = cms_preg_replace_safe('#^\s*<p>.*<br>\s*By .*</p>#U', '', $body);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<textarea rows="5" id="article-summary" cols="50" wrap="physical" readonly>(.*)</textarea>#Us', $f, $matches);
     $summary = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<input type="text" id="article-keywords" size="75" value="([^"]*)" readonly>#Us', $f, $matches);
     $keywords = html_entity_decode($matches[1], ENT_QUOTES);
 
-    return array(
+    return [
         $r['Category'], // Category
         $r['URL'], // URL
         $author,
@@ -199,26 +199,26 @@ function parse_ezinearticles($r)
         $body,
         $summary,
         $keywords,
-    );
+    ];
 }
 
 function parse_articlesbase($r)
 {
-    $cookies = array_map('urldecode', array(
+    $cookies = array_map('urldecode', [
         'SPSI' => '8209dce6e2947e79c6bf67fb7022ad39',
-    ));
+    ]);
 
     $f = http_get_contents_cached($r['URL'], $r['URL'], $cookies);
 
-    $matches = array();
+    $matches = [];
     preg_match('#-(\d+)\.html$#Us', $r['URL'], $matches);
     $id = $matches[1];
 
-    $matches = array();
+    $matches = [];
     preg_match('#<span class="date">(.*)</span>#Us', $f, $matches);
     $date = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     if ((cms_preg_match_safe('#rel="author" itemprop="author">.*</a>\s*</strong>\s*<p>(.*) is #Us', $f, $matches) != 0) && (strlen($matches[1]) < 20)) {
         $author = html_entity_decode($matches[1], ENT_QUOTES);
     } else {
@@ -226,27 +226,27 @@ function parse_articlesbase($r)
         $author = html_entity_decode($matches[1], ENT_QUOTES);
     }
 
-    $matches = array();
+    $matches = [];
     preg_match('#<h1 class="atitle" itemprop="name">(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
     $f = http_get_contents_cached('http://www.articlesbase.com/ezine/' . $id, $r['URL'], $cookies);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<textarea id="ezine_html" onclick="\$\(this\).select\(\)">(.*)</textarea>#Us', $f, $matches);
     $body = $matches[1];
     $body = cms_preg_replace_safe('#\s*<h1[^<>]*>[^<>]*</h1>\s*#si', '', $body);
     $body = cms_preg_replace_safe('#^\s*<strong>Author: .*</strong><br />#U', '', $body);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<textarea class="summary" id="ezine_summary">(.*)</textarea>#Us', $f, $matches);
     $summary = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<input type="text" value="([^"]*)" />#Us', $f, $matches);
     $keywords = html_entity_decode($matches[1], ENT_QUOTES);
 
-    return array(
+    return [
         $r['Category'], // Category
         $r['URL'], // URL
         $author,
@@ -255,29 +255,29 @@ function parse_articlesbase($r)
         $body,
         $summary,
         $keywords,
-    );
+    ];
 }
 
 function parse_articletrader($r)
 {
     $f = http_get_contents_cached($r['URL']);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<a rel="nofollow" href=\'([^\']*)\'>Get Html Code</a>#Us', $f, $matches);
     $synd_url = $matches[1];
 
-    $matches = array();
+    $matches = [];
     cms_preg_match_safe("#<div style='font-size:80%;margin-top:0px'>Submitted by <a href='[^']*'>(.*)</a><br>\s*(.*)</div>#Us", $f, $matches);
     $author = html_entity_decode($matches[1], ENT_QUOTES);
     $date = html_entity_decode($matches[2], ENT_QUOTES);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<h1 style="margin-bottom:3px">(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
     $f = http_get_contents_cached('http://www.articletrader.com' . $synd_url, $r['URL']);
 
-    $matches = array();
+    $matches = [];
     preg_match('#<textarea style="width:99%" rows=30>(.*)</textarea>#Us', $f, $matches);
     $body = html_entity_decode($matches[1], ENT_QUOTES);
     $body = str_replace("\n", '<br />', $body);
@@ -286,7 +286,7 @@ function parse_articletrader($r)
 
     $keywords = '';
 
-    return array(
+    return [
         $r['Category'], // Category
         $r['URL'], // URL
         $author,
@@ -295,10 +295,10 @@ function parse_articletrader($r)
         $body,
         $summary,
         $keywords,
-    );
+    ];
 }
 
-function http_get_contents_cached($url, $referer = '', $cookies = array())
+function http_get_contents_cached($url, $referer = '', $cookies = [])
 {
     require_code('files');
     $dir = get_custom_file_base() . '/data_custom/free_article_import_cache';
@@ -314,7 +314,7 @@ function http_get_contents_cached($url, $referer = '', $cookies = array())
         }
 
         require_code('files');
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ua' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36', 'cookies' => $cookies, 'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'accept_language' => 'en-US,en;q=0.8', 'referer' => $referer));
+        $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ua' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36', 'cookies' => $cookies, 'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'accept_language' => 'en-US,en;q=0.8', 'referer' => $referer]);
         cms_file_put_contents_safe($cache_file, $data, FILE_WRITE_FIX_PERMISSIONS);
     }
     return $data;

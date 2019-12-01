@@ -30,7 +30,7 @@ class Hook_config_js_overlays
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JS_OVERLAYS',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -42,7 +42,7 @@ class Hook_config_js_overlays
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

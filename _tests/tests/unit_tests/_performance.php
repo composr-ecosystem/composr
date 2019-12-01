@@ -23,15 +23,15 @@ class _performance_test_set extends cms_test_case
     protected $log_file;
     protected $log_warnings_file;
 
-    protected $page_links = array();
-    protected $page_links_warnings = array();
+    protected $page_links = [];
+    protected $page_links_warnings = [];
 
     // Config
     protected $quick = true; // Times will be less accurate if they're fast enough, focus on finding slow pages only
     protected $threshold = 0.50; // If loading times exceed this a page is considered slow
     protected $start_page_link = '';
     protected $whitelist = null;
-    protected $blacklist = array(
+    protected $blacklist = [
         // These are non-bundled tooling screens that are irrevocably slow
         'adminzone:string_scan',
         'adminzone:sql_dump',
@@ -45,7 +45,7 @@ class _performance_test_set extends cms_test_case
 
         // Irrevocably slow for some other reason
         'adminzone:admin_addons:addon_export', // Does full file-system scan, particularly slow on a full git clone
-    );
+    ];
     protected $whitelist_zone = null;
 
     public function setUp()
@@ -62,7 +62,7 @@ class _performance_test_set extends cms_test_case
     public function testSitemapNodes()
     {
         require_code('sitemap');
-        retrieve_sitemap_node($this->start_page_link, array($this, '_test_screen_performance'), null, null, null, SITEMAP_GEN_CHECK_PERMS);
+        retrieve_sitemap_node($this->start_page_link, [$this, '_test_screen_performance'], null, null, null, SITEMAP_GEN_CHECK_PERMS);
     }
 
     public function _test_screen_performance($node)
@@ -90,10 +90,10 @@ class _performance_test_set extends cms_test_case
 
         $url = page_link_to_url($page_link);
 
-        $times = array();
+        $times = [];
         for ($i = 0; $i < 3; $i++) { // We can do it multiple times so that caches are primed for final time
             $before = microtime(true);
-            $result = http_get_contents($url, array('trigger_error' => false/*we're not looking for errors - we may get some under normal conditions, e.g. for site:authors which is 404 until you add your profile*/, 'timeout' => 60.0, 'cookies' => array(get_session_cookie() => $session_id)));
+            $result = http_get_contents($url, ['trigger_error' => false/*we're not looking for errors - we may get some under normal conditions, e.g. for site:authors which is 404 until you add your profile*/, 'timeout' => 60.0, 'cookies' => [get_session_cookie() => $session_id]]);
             $after = microtime(true);
             $time = $after - $before;
             $times[] = $time;

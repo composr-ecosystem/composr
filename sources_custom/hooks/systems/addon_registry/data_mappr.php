@@ -26,7 +26,7 @@ class Hook_addon_registry_data_mappr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_data_mappr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -127,7 +127,7 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -137,13 +137,13 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'catalogues',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -163,7 +163,7 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/data_mappr.php',
             'lang_custom/EN/google_map.ini',
             'sources_custom/blocks/main_google_map.php',
@@ -175,6 +175,6 @@ Coordinates of the Google map centre point and zoom level are configurable. You 
             'sources_custom/catalogues2.php',
             'sources_custom/hooks/systems/upon_query/google_maps.php',
             'themes/default/javascript_custom/data_mappr.js',
-        );
+        ];
     }
 }

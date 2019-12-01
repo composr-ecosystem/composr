@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__calendar_interests
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('calendar_interests', array(), array('i_member_id' => $member_id));
+        return table_to_portable_rows('calendar_interests', [], ['i_member_id' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__calendar_interests
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('calendar_interests', $data, array('i_member_id' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('calendar_interests', $data, ['i_member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_enable_pt_filtering
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_PT_FILTERING',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_enable_pt_filtering
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

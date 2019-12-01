@@ -27,7 +27,7 @@ function get_table_purpose_flags()
         return $ret;
     }
 
-    $more = array(
+    $more = [
         'activities' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'bank' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'bookable' => TABLE_PURPOSE__NORMAL,
@@ -83,7 +83,7 @@ function get_table_purpose_flags()
         'w_rooms' => TABLE_PURPOSE__NORMAL,
         'w_travelhistory' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
         'translation_cache' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
-    );
+    ];
     foreach ($more as $table => $flags) {
         $ret[$table] = $flags | TABLE_PURPOSE__NON_BUNDLED;
     }
@@ -103,8 +103,8 @@ function get_table_descriptions()
         return $ret;
     }
 
-    $more = array(
-    );
+    $more = [
+    ];
     return $ret + $more;
 }
 
@@ -121,8 +121,8 @@ function get_relation_map()
         return $ret;
     }
 
-    $more = array(
-    );
+    $more = [
+    ];
     return $ret + $more;
 }
 
@@ -135,11 +135,11 @@ It is not intended for real-world backups.
 
 function get_all_innodb_tables()
 {
-    $_tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'));
-    $all_tables = array();
+    $_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['*']);
+    $all_tables = [];
     foreach ($_tables as $t) {
         if (!isset($all_tables[$t['m_table']])) {
-            $all_tables[$t['m_table']] = array();
+            $all_tables[$t['m_table']] = [];
         }
 
         $all_tables[$t['m_table']][$t['m_name']] = $t['m_type'];
@@ -148,18 +148,18 @@ function get_all_innodb_tables()
 
     ksort($all_tables);
 
-    $all_tables['anything'] = array('id' => '*ID_TEXT');
+    $all_tables['anything'] = ['id' => '*ID_TEXT'];
 
     return $all_tables;
 }
 
 function get_innodb_tables_by_addon()
 {
-    $tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table')));
+    $tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']));
     $tables = array_fill_keys($tables, '1');
 
     $hooks = find_all_hooks('systems', 'addon_registry');
-    $tables_by = array();
+    $tables_by = [];
     foreach ($hooks as $hook => $hook_type) {
         if ((strpos($hook_type, '_custom') !== false) && (get_param_integer('include_custom', 0) == 0)) {
             continue;
@@ -177,7 +177,7 @@ function get_innodb_tables_by_addon()
 
                 $file_contents = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all("#create_table\('([^']+)'#", $file_contents, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $table_name = $matches[1][$i];
@@ -190,7 +190,7 @@ function get_innodb_tables_by_addon()
                         }
 
                         if (!isset($tables_by[$addon_name])) {
-                            $tables_by[$addon_name] = array();
+                            $tables_by[$addon_name] = [];
                         }
                         $tables_by[$addon_name][] = $table_name;
                         unset($tables[$table_name]);
@@ -217,7 +217,7 @@ function get_innodb_table_sql($tables, $all_tables)
 {
     $out = '';
 
-    $relations = array();
+    $relations = [];
     $relation_map = get_relation_map();
 
     $db = $GLOBALS['SITE_DB'];
@@ -241,7 +241,7 @@ function get_innodb_table_sql($tables, $all_tables)
 
         $fields = $tables_values[$loop_it];
 
-        $keys = array();
+        $keys = [];
 
         if (!is_array($fields)) { // Error
             @print($out);

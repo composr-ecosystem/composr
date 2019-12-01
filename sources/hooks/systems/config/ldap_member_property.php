@@ -30,7 +30,7 @@ class Hook_config_ldap_member_property
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_MEMBER_PROPERTY',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_member_property
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

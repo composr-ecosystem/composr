@@ -30,7 +30,7 @@ class Hook_config_business_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BUSINESS_NAME',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_business_name
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

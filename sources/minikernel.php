@@ -88,7 +88,7 @@ function init__minikernel()
     set_error_handler('composr_error_handler');
     register_shutdown_function('catch_fatal_errors');
     global $SUPPRESS_ERROR_DEATH;
-    $SUPPRESS_ERROR_DEATH = array(false);
+    $SUPPRESS_ERROR_DEATH = [false];
 
     cms_ini_set('ocproducts.type_strictness', '1');
 
@@ -164,7 +164,7 @@ function peek_suppress_error_death()
 function fixup_bad_php_env_vars_pre()
 {
     // Variables may be defined in $_ENV on some servers
-    $understood = array(
+    $understood = [
         'DOCUMENT_ROOT',
         'HTTP_ACCEPT',
         'HTTP_ACCEPT_CHARSET',
@@ -198,7 +198,7 @@ function fixup_bad_php_env_vars_pre()
         'REDIRECT_REMOTE_USER',
         'PHP_AUTH_USER',
         'PHP_AUTH_PW',
-    );
+    ];
     foreach ($understood as $key) {
         if (!isset($_SERVER[$key])) {
             if (isset($_ENV[$key])) {
@@ -234,7 +234,7 @@ function fixup_bad_php_env_vars()
         $path_components = explode(DIRECTORY_SEPARATOR, get_file_base());
         foreach ($path_components as $i => $path_component) {
             $document_root .= $path_component . '/';
-            if (in_array($path_component, array('public_html', 'www', 'webroot', 'httpdocs', 'wwwroot', 'Documents'))) {
+            if (in_array($path_component, ['public_html', 'www', 'webroot', 'httpdocs', 'wwwroot', 'Documents'])) {
                 break;
             }
         }
@@ -432,7 +432,7 @@ function sync_file($filename)
  */
 function php_function_allowed($function)
 {
-    if (!in_array($function, /*These are actually language constructs rather than functions*/array('eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',))) {
+    if (!in_array($function, /*These are actually language constructs rather than functions*/['eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',])) {
         if (!function_exists($function)) {
             return false;
         }
@@ -456,9 +456,9 @@ function get_html_trace()
     push_suppress_error_death(true);
 
     $_trace = debug_backtrace();
-    $trace = array();
+    $trace = [];
     foreach ($_trace as $i => $stage) {
-        $traces = array();
+        $traces = [];
         //if (in_array($stage['function'], array('get_html_trace', 'composr_error_handler', 'fatal_exit'))) continue;
         $file = '';
         $line = '';
@@ -506,14 +506,14 @@ function get_html_trace()
                     ob_end_clean();
                 }
             }
-            $traces[] = array('LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value);
+            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value];
         }
-        $trace[] = array('TRACES' => $traces);
+        $trace[] = ['TRACES' => $traces];
     }
 
     pop_suppress_error_death();
 
-    return do_template('STACK_TRACE', array('_GUID' => 'da6c0ef0d8d793807d22e51555d73929', 'TRACE' => $trace, 'POST' => ''));
+    return do_template('STACK_TRACE', ['_GUID' => 'da6c0ef0d8d793807d22e51555d73929', 'TRACE' => $trace, 'POST' => '']);
 }
 
 /**
@@ -540,7 +540,7 @@ function fatal_exit($text)
 
     $trace = get_html_trace();
     $echo = new Tempcode();
-    $echo->attach(do_template('FATAL_SCREEN', array('_GUID' => '95877d427cf4e785b2f16cc71381e7eb', 'TITLE' => $title, 'TEXT' => $text, 'TRACE' => $trace, 'MAY_SEE_TRACE' => true,)));
+    $echo->attach(do_template('FATAL_SCREEN', ['_GUID' => '95877d427cf4e785b2f16cc71381e7eb', 'TITLE' => $title, 'TEXT' => $text, 'TRACE' => $trace, 'MAY_SEE_TRACE' => true,]));
     $css_url = 'install.php?type=css';
     $css_url_2 = 'install.php?type=css_2';
     $logo_url = 'install.php?type=logo';
@@ -552,17 +552,17 @@ function fatal_exit($text)
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
     if (running_script('restore')) {
-        $out_final = do_template('RESTORE_HTML_WRAP', array(
+        $out_final = do_template('RESTORE_HTML_WRAP', [
             '_GUID' => '190e78523cee0b6782e1e09d73a700a7',
             'CSS_NOCACHE' => $css_nocache,
             'MESSAGE' => $echo,
             'ERROR' => true,
-        ));
+        ]);
     } else {
         $installer_js = new Tempcode();
-        $installer_js->attach(do_template('global', array(), null, false, null, '.js', 'javascript'));
-        $installer_js->attach(do_template('installer', array(), null, false, null, '.js', 'javascript'));
-        $out_final = do_template('INSTALLER_HTML_WRAP', array(
+        $installer_js->attach(do_template('global', [], null, false, null, '.js', 'javascript'));
+        $installer_js->attach(do_template('installer', [], null, false, null, '.js', 'javascript'));
+        $out_final = do_template('INSTALLER_HTML_WRAP', [
             '_GUID' => '990e78523cee0b6782e1e09d73a700a7',
             'CSS_NOCACHE' => $css_nocache,
             'DEFAULT_FORUM' => '',
@@ -574,7 +574,7 @@ function fatal_exit($text)
             'CONTENT' => $echo,
             'VERSION' => $version,
             'INSTALLER_JS' => $installer_js,
-        ));
+        ]);
     }
     $out_final->evaluate_echo();
 
@@ -727,7 +727,7 @@ function get_charset()
     $file = fopen($path, 'rb');
     $contents = unixify_line_format(fread($file, 100));
     fclose($file);
-    $matches = array();
+    $matches = [];
     if (preg_match('#charset=([\w\-]+)\r?\n#', $contents, $matches) != 0) {
         return $matches[1];
     }
@@ -773,7 +773,7 @@ function warn_exit($text)
     $title = get_screen_title('ERROR_OCCURRED');
 
     $echo = new Tempcode();
-    $echo->attach(do_template('WARN_SCREEN', array('_GUID' => '723ede24462dfc4cd4485851819786bc', 'TITLE' => $title, 'TEXT' => $text, 'PROVIDE_BACK' => false)));
+    $echo->attach(do_template('WARN_SCREEN', ['_GUID' => '723ede24462dfc4cd4485851819786bc', 'TITLE' => $title, 'TEXT' => $text, 'PROVIDE_BACK' => false]));
     $css_url = 'install.php?type=css';
     $css_url_2 = 'install.php?type=css_2';
     $logo_url = 'install.php?type=logo';
@@ -785,17 +785,17 @@ function warn_exit($text)
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
     if (running_script('restore')) {
-        $out_final = do_template('RESTORE_HTML_WRAP', array(
+        $out_final = do_template('RESTORE_HTML_WRAP', [
             '_GUID' => '190e78523cee0b6782e1e09d73a700a7',
             'CSS_NOCACHE' => $css_nocache,
             'MESSAGE' => $echo,
             'ERROR' => true,
-        ));
+        ]);
     } else {
         $installer_js = new Tempcode();
-        $installer_js->attach(do_template('global', array(), null, false, null, '.js', 'javascript'));
-        $installer_js->attach(do_template('installer', array(), null, false, null, '.js', 'javascript'));
-        $out_final = do_template('INSTALLER_HTML_WRAP', array(
+        $installer_js->attach(do_template('global', [], null, false, null, '.js', 'javascript'));
+        $installer_js->attach(do_template('installer', [], null, false, null, '.js', 'javascript'));
+        $out_final = do_template('INSTALLER_HTML_WRAP', [
             '_GUID' => '710e7ea5c186b4c42bb3a5453dd915ed',
             'CSS_NOCACHE' => $css_nocache,
             'DEFAULT_FORUM' => '',
@@ -807,7 +807,7 @@ function warn_exit($text)
             'CONTENT' => $echo,
             'VERSION' => $version,
             'INSTALLER_JS' => $installer_js,
-        ));
+        ]);
     }
     $out_final->evaluate_echo();
 

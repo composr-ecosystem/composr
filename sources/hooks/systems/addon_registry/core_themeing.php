@@ -31,7 +31,7 @@ class Hook_addon_registry_core_themeing
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,7 +61,7 @@ class Hook_addon_registry_core_themeing
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_themes',
             'tut_releasing_themes',
             'tut_theme_lifecycle',
@@ -70,7 +70,7 @@ class Hook_addon_registry_core_themeing
             'tut_design',
             'tut_designer_themes',
             'tut_mobile',
-        );
+        ];
     }
 
     /**
@@ -80,11 +80,11 @@ class Hook_addon_registry_core_themeing
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -104,7 +104,7 @@ class Hook_addon_registry_core_themeing
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/style/themes/themes.svg',
             'themes/default/images/icons/menu/adminzone/style/themes/templates.svg',
             'themes/default/images/icons/menu/adminzone/style/themes/css.svg',
@@ -152,7 +152,7 @@ class Hook_addon_registry_core_themeing
             'themes/default/templates/PREVIEW_SVG_SPRITE_ICON.tpl',
             'themes/default/templates/PREVIEW_SVG_SPRITE_SCREEN.tpl',
             'themes/default/templates/GENERATE_SVG_SPRITE_SCREEN.tpl',
-        );
+        ];
     }
 
     /**
@@ -162,7 +162,7 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/THEME_MANAGE_SCREEN.tpl' => 'administrative__theme_manage_screen',
             'templates/THEME_IMAGE_MANAGE_SCREEN.tpl' => 'administrative__theme_image_manage_screen',
             'templates/THEME_IMAGE_PREVIEW.tpl' => 'administrative__theme_image_preview',
@@ -183,7 +183,7 @@ class Hook_addon_registry_core_themeing
             'templates/PREVIEW_SVG_SPRITE_ICON.tpl' => 'administrative__preview_svg_sprite_icon',
             'templates/PREVIEW_SVG_SPRITE_SCREEN.tpl' => 'administrative__preview_svg_sprite_screen',
             'templates/GENERATE_SVG_SPRITE_SCREEN.tpl' => 'administrative__generate_svg_sprite_screen',
-        );
+        ];
     }
 
     /**
@@ -197,9 +197,9 @@ class Hook_addon_registry_core_themeing
     {
         require_lang('zones');
 
-        $themes = array();
+        $themes = [];
         foreach (placeholder_array() as $i => $value) {
-            $themes[] = array(
+            $themes[] = [
                 'THEME_USAGE' => lorem_phrase(),
                 'SEED' => '123456',
                 'DATE' => placeholder_date(),
@@ -215,26 +215,26 @@ class Hook_addon_registry_core_themeing
                 'DELETE_URL' => placeholder_url(),
                 'SCREEN_PREVIEW_URL' => placeholder_url(),
                 'IS_MAIN_THEME' => ($i == 2),
-            );
+            ];
         }
 
-        $zones = array();
+        $zones = [];
         foreach (placeholder_array() as $v) {
-            $zones[] = array(
+            $zones[] = [
                 '0' => lorem_word(),
                 '1' => lorem_word_2(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('THEME_MANAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_MANAGE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'THEMES' => $themes,
                 'THEME_DEFAULT_REASON' => lorem_phrase(),
                 'ZONES' => $zones,
                 'HAS_FREE_CHOICES' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -246,13 +246,13 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_image_manage_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('THEME_IMAGE_MANAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_IMAGE_MANAGE_SCREEN', [
                 'ADD_URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'FORM' => placeholder_form(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -264,14 +264,14 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_image_preview()
     {
-        return array(
-            lorem_globalise(do_lorem_template('THEME_IMAGE_PREVIEW', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_IMAGE_PREVIEW', [
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
                 'URL' => placeholder_image_url(),
                 'UNMODIFIED' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -283,16 +283,16 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_template_detail()
     {
-        return array(
-            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', [
                 'FILE' => lorem_word(),
                 'FULL_PATH' => lorem_word(),
                 'LAST_EDITING_USERNAME' => lorem_word(),
                 'LAST_EDITING_DATE' => placeholder_date(),
                 'FILE_SIZE' => placeholder_number(),
                 'ADDON' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -304,18 +304,18 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_SCREEN', [
                 'TITLE' => lorem_title(),
-                'FILES_TO_LOAD' => array(),
+                'FILES_TO_LOAD' => [],
                 'THEME' => lorem_word(),
                 'LIVE_PREVIEW_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
                 'PING_URL' => placeholder_url(),
                 'ACTIVE_GUID' => placeholder_id(),
                 'DEFAULT_THEME_FILES_LOCATION' => '',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -327,26 +327,26 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_tab()
     {
-        $_parameters = do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array('SELECTED' => true, 'DISABLED' => false, 'CLASS' => '', 'NAME' => placeholder_id(), 'TEXT' => lorem_phrase()));
+        $_parameters = do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => true, 'DISABLED' => false, 'CLASS' => '', 'NAME' => placeholder_id(), 'TEXT' => lorem_phrase()]);
 
-        $parameters = do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', array(
+        $parameters = do_lorem_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', [
             'FILE_ID' => lorem_word(),
             'PARAMETERS' => $_parameters,
             'STUB' => 'parameter',
             'LANG' => do_lang_tempcode('INSERT_PARAMETER'),
-        ));
+        ]);
 
-        $guids = array(array(
+        $guids = [[
             'GUID_FILENAME' => lorem_word(),
             'GUID_LINE' => placeholder_number(),
             'GUID_GUID' => placeholder_id(),
             'GUID_IS_LIVE' => false,
-        ));
+        ]];
 
-        $related = array(placeholder_id());
+        $related = [placeholder_id()];
 
-        return array(
-            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TAB', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_TAB', [
                 'THEME' => lorem_word(),
                 'FILE' => lorem_word(),
                 'FILE_ID' => lorem_word(),
@@ -371,8 +371,8 @@ class Hook_addon_registry_core_themeing
                 'INCLUDE_CSS_EDITING' => false,
 
                 'OWN_FORM' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -384,13 +384,13 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__theme_template_editor_restore_revision()
     {
-        return array(
-            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', array(
+        return [
+            lorem_globalise(do_lorem_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', [
                 'DATE' => placeholder_date(),
                 'FILE' => lorem_word(),
                 'REVISION_ID' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -402,11 +402,11 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__tempcode_tester_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('TEMPCODE_TESTER_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TEMPCODE_TESTER_SCREEN', [
                 'TITLE' => lorem_title(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -421,27 +421,27 @@ class Hook_addon_registry_core_themeing
         $templates = new Tempcode();
         $lis = new Tempcode();
         $ftemp = new Tempcode();
-        $list = array();
+        $list = [];
         foreach (placeholder_array() as $v) {
             $list[] = $v;
         }
         foreach (placeholder_array() as $v) {
-            $lis->attach(do_lorem_template('THEME_SCREEN_PREVIEW', array(
+            $lis->attach(do_lorem_template('THEME_SCREEN_PREVIEW', [
                 'URL' => placeholder_url(),
                 'COLOR' => 'green',
                 'TEMPLATE' => lorem_word(),
                 'LIST' => '',
-            )));
+            ]));
         }
 
-        $post = do_lorem_template('THEME_SCREEN_PREVIEW_WRAP', array(
+        $post = do_lorem_template('THEME_SCREEN_PREVIEW_WRAP', [
             'LI' => $lis,
             'TITLE' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($post, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -453,26 +453,26 @@ class Hook_addon_registry_core_themeing
      */
     public function tpl_preview__administrative__template_edit_links_screen()
     {
-        $parameters = array(
+        $parameters = [
             'FILE' => lorem_phrase(),
             'EDIT_URL' => placeholder_url(),
             'CODENAME' => lorem_word(),
             'GUID' => placeholder_id(),
             'ID' => placeholder_random_id(),
-        );
+        ];
 
-        $param_info = do_lorem_template('PARAM_INFO', array(
+        $param_info = do_lorem_template('PARAM_INFO', [
             'MAP' => $parameters,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('TEMPLATE_EDIT_LINK', array(
+        return [
+            lorem_globalise(do_lorem_template('TEMPLATE_EDIT_LINK', [
                 'PARAM_INFO' => $param_info,
                 'CONTENTS' => lorem_paragraph_html(),
                 'CODENAME' => lorem_word(),
                 'EDIT_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -486,36 +486,36 @@ class Hook_addon_registry_core_themeing
     {
         $tree_items = new Tempcode();
         foreach (placeholder_array() as $value) {
-            $parameters = array(
+            $parameters = [
                 'FILE' => lorem_phrase(),
                 'EDIT_URL' => placeholder_url(),
                 'CODENAME' => lorem_word(),
                 'ID' => placeholder_random_id(),
-            );
+            ];
             $tree_item = do_lorem_template('TEMPLATE_TREE_ITEM', $parameters);
 
-            $tree_items->attach(do_lorem_template('TEMPLATE_TREE_ITEM_WRAP', array(
+            $tree_items->attach(do_lorem_template('TEMPLATE_TREE_ITEM_WRAP', [
                 'CONTENT' => $tree_item,
-            )));
+            ]));
         }
 
         $tree_node = new Tempcode();
-        $tree_node->attach(do_lorem_template('TEMPLATE_TREE_NODE', array(
+        $tree_node->attach(do_lorem_template('TEMPLATE_TREE_NODE', [
             'ITEMS' => $tree_items,
-        )));
+        ]));
 
-        $tree = do_lorem_template('TEMPLATE_TREE', array(
+        $tree = do_lorem_template('TEMPLATE_TREE', [
             'HIDDEN' => '',
             'EDIT_URL' => placeholder_url(),
             'TREE' => $tree_node,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('TEMPLATE_TREE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TEMPLATE_TREE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TREE' => $tree,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -530,12 +530,12 @@ class Hook_addon_registry_core_themeing
         require_lang('themes');
 
         $symbol_id = 'admin__add';
-        return array(
-            lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_ICON', array(
+        return [
+            lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_ICON', [
                 'SPRITE_URL' => find_theme_image('icons_sprite'),
                 'SYMBOL_ID' => $symbol_id,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -550,20 +550,20 @@ class Hook_addon_registry_core_themeing
         require_lang('themes');
 
         $symbol_id = 'admin__add';
-        $icons = do_template('PREVIEW_SVG_SPRITE_ICON', array(
+        $icons = do_template('PREVIEW_SVG_SPRITE_ICON', [
             '_GUID' => '3904c5dbac05f8bb385eeb359e420154',
             'SPRITE_URL' => find_theme_image('icons_sprite'),
             'SYMBOL_ID' => $symbol_id,
             'ICON_NAME' => str_replace('__', '/', $symbol_id),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('PREVIEW_SVG_SPRITE_SCREEN', [
                 'TITLE' => do_lang('themes:PREVIEW_SVG_SPRITE'),
                 'SPRITE_PATH' => get_file_base() . '/themes/default/images/icons_sprite.svg',
                 'ICONS' => $icons,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -577,12 +577,12 @@ class Hook_addon_registry_core_themeing
     {
         require_lang('themes');
 
-        return array(
-            lorem_globalise(do_lorem_template('GENERATE_SVG_SPRITE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GENERATE_SVG_SPRITE_SCREEN', [
                 'TITLE' => do_lang('themes:GENERATE_SVG_SPRITE'),
                 'SPRITE_PATH' => get_file_base() . '/themes/default/images/icons_sprite.svg',
-                'ICONS_ADDED' => array('admin/add'),
-            )), null, '', true)
-        );
+                'ICONS_ADDED' => ['admin/add'],
+            ]), null, '', true)
+        ];
     }
 }

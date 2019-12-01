@@ -30,7 +30,7 @@ class Hook_config_is_on_template_cache
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TEMPLATE_CACHE',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_is_on_template_cache
             'public' => false,
 
             'addon' => 'core_cleanup_tools',
-        );
+        ];
     }
 
     /**

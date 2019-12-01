@@ -30,7 +30,7 @@ class Hook_config_maximum_image_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAXIMUM_IMAGE_SIZE',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_maximum_image_size
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

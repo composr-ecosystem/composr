@@ -30,7 +30,7 @@ class Hook_config_enable_add_topic_btn_in_topic
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_ADD_TOPIC_BTN_IN_TOPIC',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_enable_add_topic_btn_in_topic
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

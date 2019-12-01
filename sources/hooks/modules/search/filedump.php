@@ -53,22 +53,22 @@ class Hook_search_filedump extends FieldsSearchHook
 
         require_lang('filedump');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('FILEDUMP');
         $info['default'] = (get_option('search_filedump') == '1');
-        $info['extra_sort_fields'] = array('file_size' => do_lang_tempcode('FILE_SIZE'));
+        $info['extra_sort_fields'] = ['file_size' => do_lang_tempcode('FILE_SIZE')];
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('filedump'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('filedump'),
                 'page_name' => 'filedump',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -80,7 +80,7 @@ class Hook_search_filedump extends FieldsSearchHook
      */
     public function ajax_tree()
     {
-        return array('choose_filedump_file', array('compound_list' => false, 'folder' => true));
+        return ['choose_filedump_file', ['compound_list' => false, 'folder' => true]];
     }
 
     /**
@@ -112,7 +112,7 @@ class Hook_search_filedump extends FieldsSearchHook
 
         // Calculate our where clause (search)
         if ($author != '') {
-            return array();
+            return [];
         }
 
         require_code('files2');
@@ -123,12 +123,12 @@ class Hook_search_filedump extends FieldsSearchHook
 
         $files = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . (($search_under == '') ? '' : ('/' . $search_under)));
         $_rows = $GLOBALS['SITE_DB']->query_select('filedump');
-        $rows = array();
+        $rows = [];
         foreach ($_rows as $row) {
             $rows[$row['subpath']] = $row;
         }
         $i = 0;
-        $out = array();
+        $out = [];
         foreach ($files as $_path) {
             if ($search_under != '') {
                 $_path = $search_under . '/' . $_path;
@@ -138,17 +138,17 @@ class Hook_search_filedump extends FieldsSearchHook
             if (!$this->_handle_date_check_runtime($cutoff, filemtime($path))) {
                 continue;
             }
-            if (in_memory_search_match(array('content' => $content, 'conjunctive_operator' => $boolean_operator), $path)) {
+            if (in_memory_search_match(['content' => $content, 'conjunctive_operator' => $boolean_operator], $path)) {
                 $caption = array_key_exists($_path, $rows) ? $rows[$_path] : $_path;
                 $dirs = explode('/', dirname($_path));
 
                 $pre = '';
-                $file_breadcrumbs = array();
-                $breadcrumbs_page_link = build_page_link(array('page' => 'filedump', 'subpath' => $pre . '/'), get_module_zone('filedump'));
-                $file_breadcrumbs[] = array($breadcrumbs_page_link, do_lang_tempcode('ROOT'));
+                $file_breadcrumbs = [];
+                $breadcrumbs_page_link = build_page_link(['page' => 'filedump', 'subpath' => $pre . '/'], get_module_zone('filedump'));
+                $file_breadcrumbs[] = [$breadcrumbs_page_link, do_lang_tempcode('ROOT')];
                 foreach ($dirs as $dir) {
-                    $breadcrumbs_page_link = build_page_link(array('page' => 'filedump', 'subpath' => $pre . $dir . '/'), get_module_zone('filedump'));
-                    $file_breadcrumbs[] = array($breadcrumbs_page_link, $dir);
+                    $breadcrumbs_page_link = build_page_link(['page' => 'filedump', 'subpath' => $pre . $dir . '/'], get_module_zone('filedump'));
+                    $file_breadcrumbs[] = [$breadcrumbs_page_link, $dir];
 
                     $pre .= $dir . '/';
                 }
@@ -158,28 +158,28 @@ class Hook_search_filedump extends FieldsSearchHook
                 require_code('images');
                 if (!is_image($url, IMAGE_CRITERIA_WEBSAFE, true)) {
                     $tpl = paragraph(hyperlink($url, $caption, true, true), 'dfdsfu09wl;f');
-                    if ($file_breadcrumbs != array()) {
+                    if ($file_breadcrumbs != []) {
                         $tpl->attach(paragraph(do_lang_tempcode('LOCATED_IN', breadcrumb_segments_to_tempcode($file_breadcrumbs)), '', 'breadcrumbs'));
                     }
 
-                    $out[$i]['template'] = do_template('SIMPLE_PREVIEW_BOX', array(
+                    $out[$i]['template'] = do_template('SIMPLE_PREVIEW_BOX', [
                         '_GUID' => '51bc0cf751f4ccbd0b7f1a247b092368',
                         'ID' => $_path,
                         'TITLE' => basename($_path),
                         'SUMMARY' => $tpl,
                         'RESOURCE_TYPE' => '_filedump_file',
-                    ));
+                    ]);
                 } else {
                     $tpl = do_image_thumb($url, $caption, true, false, null, null, true);
 
-                    $out[$i]['template'] = do_template('SIMPLE_PREVIEW_BOX', array(
+                    $out[$i]['template'] = do_template('SIMPLE_PREVIEW_BOX', [
                         '_GUID' => '61bc0cf751f4ccbd0b7f1a247b092368',
                         'TITLE' => basename($_path),
                         'SUMMARY' => $tpl,
                         'BREADCRUMBS' => $file_breadcrumbs,
                         'URL' => $url,
                         'RESOURCE_TYPE' => '_filedump_file_image',
-                    ));
+                    ]);
                 }
 
                 if ($sort == 'title') {

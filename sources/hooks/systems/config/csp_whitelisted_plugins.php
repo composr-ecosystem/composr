@@ -30,7 +30,7 @@ class Hook_config_csp_whitelisted_plugins
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_WHITELISTED_PLUGINS',
             'type' => 'text',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_csp_whitelisted_plugins
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

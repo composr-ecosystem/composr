@@ -30,7 +30,7 @@ class Module_cms
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,9 +51,9 @@ class Module_cms
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            '!' => array('CMS', 'menu/cms/cms'),
-        );
+        return [
+            '!' => ['CMS', 'menu/cms/cms'],
+        ];
     }
 
     public $title;

@@ -16,12 +16,12 @@
 // Sample function for Photobucket, supporting CLI parameters to define ranges
 function grab_photobucket_content()
 {
-    $opts = array(
+    $opts = [
         'local_save_path' => 'uploads/pbextract',
-        'url_patterns' => array(
+        'url_patterns' => [
             '^' . preg_quote('http://', '#') . '.*' . preg_quote('photobucket.com/', '#') . '.*$',
             '^' . preg_quote(find_script('external_url_proxy') . '?url=', '#') . preg_quote(urlencode('http://'), '#') . '.*' . preg_quote(urlencode('photobucket.com/'), '#') . '.*$',
-        ),
+        ],
         'url_modifier' => function ($url) {
             return $url . '~original';
         },
@@ -35,7 +35,7 @@ function grab_photobucket_content()
         'testing_mode' => false,
         'start_from_id' => db_get_first_id(),
         'end_before_id' => null,
-    );
+    ];
 
     if (isset($_SERVER['argv'][1])) {
         $opts['start_from_id'] = intval($_SERVER['argv'][1]);
@@ -52,19 +52,19 @@ function grab_photobucket_content()
 
 class RemoteContentGrabber
 {
-    protected $url_context_regexps = array();
+    protected $url_context_regexps = [];
 
-    protected $opts = array();
+    protected $opts = [];
 
     public function __construct($opts)
     {
-        $this->opts = array(
+        $this->opts = [
             'local_save_path' => 'uploads/website_specific',
             'has_subdirs' => true,
 
-            'url_patterns' => array(
+            'url_patterns' => [
                 '^' . preg_quote('http://example.com/', '#') . '.*$',
-            ),
+            ],
             'url_modifier' => function ($url) {
                 return $url;
             },
@@ -76,18 +76,18 @@ class RemoteContentGrabber
             'table' => 'f_posts',
             'id_field' => 'id',
             'content_field' => 'p_post',
-            'where' => array(),
+            'where' => [],
             //'start' => 0,
             'start_from_id' => db_get_first_id(),
             'end_before_id' => null,
 
             'testing_mode' => true,
-        );
+        ];
 
-        $this->url_context_regexps = array(
+        $this->url_context_regexps = [
             '\[img[^\[\]]*\]([^\[\]]*)\[\/img\]',
             '<img[^<>]*\ssrc="([^"]*)"',
-        );
+        ];
 
         $this->opts = $opts + $this->opts;
     }
@@ -102,11 +102,11 @@ class RemoteContentGrabber
         $start_from_id = $opts['start_from_id'];
 
         do {
-            $select = array($opts['id_field'], $opts['content_field']);
+            $select = [$opts['id_field'], $opts['content_field']];
 
             $where = $opts['where'];
             if ($where === null) {
-                $where = array();
+                $where = [];
             }
 
             if (empty($where)) {
@@ -152,13 +152,13 @@ class RemoteContentGrabber
         $url_base = get_custom_base_url() . '/' . $_path_base;
 
         // Find referenced URLs in content
-        $referenced_urls = array();
+        $referenced_urls = [];
         foreach ($this->url_context_regexps as $content_regexp) {
-            $matches_context = array();
+            $matches_context = [];
             $num_matches_context = preg_match_all('#' . $content_regexp . '#i', $content, $matches_context);
             for ($i = 0; $i < $num_matches_context; $i++) {
                 foreach ($this->opts['url_patterns'] as $url_regexp) {
-                    $matches_urls = array();
+                    $matches_urls = [];
                     if (preg_match('#' . $url_regexp . '#', $matches_context[1][$i], $matches_urls) != 0) {
                         $referenced_url = $matches_urls[0];
                         $_referenced_url = call_user_func($opts['url_modifier'], $referenced_url);
@@ -169,13 +169,13 @@ class RemoteContentGrabber
         }
 
         // Download referenced URLs
-        $downloaded_urls = array();
+        $downloaded_urls = [];
         foreach ($referenced_urls as $referenced_url => $download_url) {
             // Find target filename
             if ($opts['filename_extractor'] === null) {
                 // No extractor function, so we need to do a HEAD request...
 
-                $test = cms_http_request($download_url, array('trigger_error' => false, 'byte_limit' => 0));
+                $test = cms_http_request($download_url, ['trigger_error' => false, 'byte_limit' => 0]);
                 if ($test === null) {
                     $this->log('Could not touch URL ' . $referenced_url . ' (while processing ' . $_id . ')');
                     continue;
@@ -204,7 +204,7 @@ class RemoteContentGrabber
             if (is_file($file_path)) {
                 $this->log('Already downloaded URL ' . $referenced_url . ' as ' . $filename . ' (while processing ' . $_id . ')');
             } else {
-                $data = http_get_contents($download_url, array('trigger_error' => false));
+                $data = http_get_contents($download_url, ['trigger_error' => false]);
                 if (cms_empty_safe($data)) {
                     $this->log('Could not download URL ' . $referenced_url . ' (while processing ' . $_id . ')');
                     continue;
@@ -237,7 +237,7 @@ class RemoteContentGrabber
 
         // Save content
         if (!$opts['testing_mode']) {
-            $opts['db']->query_update($opts['table'], array($opts['content_field'] => $content), array($opts['id_field'] => $id), '', 1);
+            $opts['db']->query_update($opts['table'], [$opts['content_field'] => $content], [$opts['id_field'] => $id], '', 1);
         }
 
         // Log

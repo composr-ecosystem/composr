@@ -42,8 +42,8 @@ class Hook_endpoint_account_lost_password
         require_lang('cns');
         lost_password_emailer_step($username, $email_address);
 
-        return array(
+        return [
             'message' => do_lang('RESET_CODE_MAILED'),
-        );
+        ];
     }
 }

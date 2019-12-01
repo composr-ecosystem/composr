@@ -30,7 +30,7 @@ class Hook_config_session_prudence
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SESSION_PRUDENCE',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_session_prudence
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

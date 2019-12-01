@@ -47,8 +47,8 @@ class Hook_commandr_fs_newsletter_subscribers extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', array('id'), array('email' => $label));
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', ['id'], ['email' => $label]);
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -124,13 +124,13 @@ class Hook_commandr_fs_newsletter_subscribers extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['email'],
             'join_time' => $row['join_time'],
             'code_confirm' => $row['code_confirm'],
@@ -139,7 +139,7 @@ class Hook_commandr_fs_newsletter_subscribers extends Resource_fs_base
             'language' => $row['language'],
             'forename' => $row['n_forename'],
             'surname' => $row['n_surname'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

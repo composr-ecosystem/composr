@@ -57,7 +57,7 @@ class lang_administrative_split_test_set extends cms_test_case
             if (substr($file, -4) == '.ini') {
                 $strings = get_lang_file_map(fallback_lang(), basename($file, '.ini'), true);
                 foreach ($strings as $key => $val) {
-                    if (in_array($key, array('date_withinweek_joiner', '_HTTP_REDIRECT_PROBLEM_INSTALLING')/*We'll allow these ones*/)) {
+                    if (in_array($key, ['date_withinweek_joiner', '_HTTP_REDIRECT_PROBLEM_INSTALLING']/*We'll allow these ones*/)) {
                         continue;
                     }
 

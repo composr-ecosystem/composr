@@ -39,7 +39,7 @@ function get_num_chatters()
  */
 function get_num_chatrooms()
 {
-    return $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', array('is_im' => 0));
+    return $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0]);
 }
 
 /**

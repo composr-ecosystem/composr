@@ -49,16 +49,16 @@ class Module_admin_newsletter extends Standard_crud_module
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_NEWSLETTER', 'menu/site_meta/newsletters'),
-            'new' => array('NEWSLETTER_SEND', 'menu/site_meta/newsletters'),
-            'whatsnew' => array('WHATSNEW', 'menu/adminzone/tools/newsletter/newsletter_from_changes'),
-            'subscribers' => array('VIEW_NEWSLETTER_SUBSCRIBERS', 'menu/adminzone/tools/newsletter/subscribers'),
-            'import_subscribers' => array('IMPORT_NEWSLETTER_SUBSCRIBERS', 'admin/import_spreadsheet'),
-            'archive' => array('NEWSLETTER_ARCHIVE', 'admin/view_archive'),
-        );
+        $ret = [
+            'browse' => ['MANAGE_NEWSLETTER', 'menu/site_meta/newsletters'],
+            'new' => ['NEWSLETTER_SEND', 'menu/site_meta/newsletters'],
+            'whatsnew' => ['WHATSNEW', 'menu/adminzone/tools/newsletter/newsletter_from_changes'],
+            'subscribers' => ['VIEW_NEWSLETTER_SUBSCRIBERS', 'menu/adminzone/tools/newsletter/subscribers'],
+            'import_subscribers' => ['IMPORT_NEWSLETTER_SUBSCRIBERS', 'admin/import_spreadsheet'],
+            'archive' => ['NEWSLETTER_ARCHIVE', 'admin/view_archive'],
+        ];
         if (!GOOGLE_APPENGINE) {
-            $ret['bounce_filter_a'] = array('BOUNCE_FILTER', 'menu/adminzone/tools/newsletter/newsletter_email_bounce');
+            $ret['bounce_filter_a'] = ['BOUNCE_FILTER', 'menu/adminzone/tools/newsletter/newsletter_email_bounce'];
         }
         $ret += parent::get_entry_points();
         return $ret;
@@ -91,12 +91,12 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         if ($type == 'confirm') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
         }
 
         if ($type == 'send') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:new', do_lang_tempcode('NEWSLETTER_SEND')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -129,7 +129,7 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         if ($type == 'view') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')), array('_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_NEWSLETTER')], ['_SELF:_SELF:archive', do_lang_tempcode('NEWSLETTER_ARCHIVE')]]);
             breadcrumb_set_self(do_lang_tempcode('VIEW'));
         }
 
@@ -155,23 +155,23 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_PERIODIC_NEWSLETTER');
 
-        $this->extra_donext_entries = array(
-            array('menu/site_meta/newsletters', array('_SELF', array('type' => 'new'), '_SELF'), do_lang('NEWSLETTER_SEND')),
-            array('menu/adminzone/tools/newsletter/newsletter_from_changes', array('_SELF', array('type' => 'whatsnew'), '_SELF'), do_lang('WHATSNEW'), 'DOC_WHATSNEW'),
-            array('admin/view_archive', array('_SELF', array('type' => 'archive'), '_SELF'), do_lang('NEWSLETTER_ARCHIVE')),
-            array('menu/adminzone/tools/newsletter/subscribers', array('_SELF', array('type' => 'subscribers'), '_SELF'), do_lang('VIEW_SUBSCRIBERS')),
-            array('admin/import_spreadsheet', array('_SELF', array('type' => 'import_subscribers'), '_SELF'), do_lang('IMPORT_NEWSLETTER_SUBSCRIBERS')),
-        );
+        $this->extra_donext_entries = [
+            ['menu/site_meta/newsletters', ['_SELF', ['type' => 'new'], '_SELF'], do_lang('NEWSLETTER_SEND')],
+            ['menu/adminzone/tools/newsletter/newsletter_from_changes', ['_SELF', ['type' => 'whatsnew'], '_SELF'], do_lang('WHATSNEW'), 'DOC_WHATSNEW'],
+            ['admin/view_archive', ['_SELF', ['type' => 'archive'], '_SELF'], do_lang('NEWSLETTER_ARCHIVE')],
+            ['menu/adminzone/tools/newsletter/subscribers', ['_SELF', ['type' => 'subscribers'], '_SELF'], do_lang('VIEW_SUBSCRIBERS')],
+            ['admin/import_spreadsheet', ['_SELF', ['type' => 'import_subscribers'], '_SELF'], do_lang('IMPORT_NEWSLETTER_SUBSCRIBERS')],
+        ];
 
         if (!GOOGLE_APPENGINE) {
-            $this->extra_donext_entries[] = array('menu/adminzone/tools/newsletter/newsletter_email_bounce', array('_SELF', array('type' => 'bounce_filter_a'), '_SELF'), do_lang('BOUNCE_FILTER'));
+            $this->extra_donext_entries[] = ['menu/adminzone/tools/newsletter/newsletter_email_bounce', ['_SELF', ['type' => 'bounce_filter_a'], '_SELF'], do_lang('BOUNCE_FILTER')];
         }
 
         $this->add_one_label = do_lang_tempcode('ADD_NEWSLETTER');
         $this->edit_this_label = do_lang_tempcode('EDIT_THIS_NEWSLETTER');
         $this->edit_one_label = do_lang_tempcode('EDIT_NEWSLETTER');
 
-        $this->add_text = do_lang_tempcode('HELP_ADD_NEWSLETTER', escape_html(static_evaluate_tempcode(build_url(array('page' => '_SELF', 'type' => 'new'), '_SELF'))));
+        $this->add_text = do_lang_tempcode('HELP_ADD_NEWSLETTER', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'new'], '_SELF'))));
 
         if ($type == 'browse') {
             return $this->browse();
@@ -250,27 +250,27 @@ class Module_admin_newsletter extends Standard_crud_module
         $_eta = intval((floatval($num_in_queue) / floatval($mails_per_send)) * floatval($minutes_between_sends) * 60.0);
         $eta = display_time_period($_eta);
 
-        $queue_url = build_url(array('page' => '_SELF', 'type' => 'archive', 'queued' => 1), '_SELF');
+        $queue_url = build_url(['page' => '_SELF', 'type' => 'archive', 'queued' => 1], '_SELF');
 
-        $newsletter_intro = do_template('NEWSLETTER_STATUS_OVERVIEW', array(
+        $newsletter_intro = do_template('NEWSLETTER_STATUS_OVERVIEW', [
             '_GUID' => '31ecf2e57dc441ec5f153bdbad7a2fd6',
-            'UPDATE_URL' => build_url(array('page' => '_SELF'), '_SELF'),
+            'UPDATE_URL' => build_url(['page' => '_SELF'], '_SELF'),
             'NUM_IN_QUEUE' => integer_format($num_in_queue),
             '_NUM_IN_QUEUE' => strval($num_in_queue),
             'ETA' => $eta,
             '_ETA' => strval($_eta),
             'PAUSED' => (get_option('newsletter_paused') == '1'),
             'QUEUE_URL' => $queue_url,
-        ));
+        ]);
 
         require_code('templates_donext');
         return do_next_manager(
             get_screen_title('MANAGE_NEWSLETTER'),
             $newsletter_intro,
-            array_merge(array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_NEWSLETTER')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_NEWSLETTER')),
-            ), $this->extra_donext_entries),
+            array_merge([
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_NEWSLETTER')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_NEWSLETTER')],
+            ], $this->extra_donext_entries),
             do_lang('MANAGE_NEWSLETTER')
         );
     }
@@ -284,9 +284,9 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function _count_on_newsletter($key, $lang)
     {
-        $send_details = array(
+        $send_details = [
             $key => true,
-        );
+        ];
         list(, $totals) = newsletter_who_send_to($send_details, $lang);
         return isset($totals[$key]) ? $totals[$key] : 0;
     }
@@ -317,7 +317,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
             // Selection
             $newsletters = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
             foreach ($rows as $newsletter) {
                 $newsletters->attach(form_input_list_entry(strval($newsletter['id']), $newsletter['id'] === $default_newsletter_id, get_translated_text($newsletter['title'])));
             }
@@ -345,7 +345,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $hidden->attach(form_input_hidden('lang', $_language));
             handle_max_file_size($hidden);
 
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => '7e0387bcc4a1b7e2846ba357d36dbc15',
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => $hidden,
@@ -355,7 +355,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 'SUBMIT_ICON' => 'admin/import_spreadsheet',
                 'SUBMIT_NAME' => $submit_name,
                 'URL' => $post_url,
-            ));
+            ]);
         }
 
         // Read data
@@ -378,7 +378,7 @@ class Module_admin_newsletter extends Standard_crud_module
         log_it('IMPORT_NEWSLETTER_SUBSCRIBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task($action_title, $this->title, 'import_newsletter_subscribers', array($_language, $newsletter_id, $subscribe, $target_path));
+        return call_user_func_array__long_task($action_title, $this->title, 'import_newsletter_subscribers', [$_language, $newsletter_id, $subscribe, $target_path]);
     }
 
     /**
@@ -403,7 +403,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
             // Selection
             $newsletters = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
             foreach ($rows as $i => $newsletter) {
                 $_key = strval($newsletter['id']);
                 $subscriber_count = $this->_count_on_newsletter($_key, $lang);
@@ -439,8 +439,8 @@ class Module_admin_newsletter extends Standard_crud_module
             $hidden = new Tempcode();
             $hidden->attach(form_input_hidden('lang', $lang));
 
-            $prune_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_a'), '_SELF');
-            return do_template('FORM_SCREEN', array(
+            $prune_url = build_url(['page' => '_SELF', 'type' => 'bounce_filter_a'], '_SELF');
+            return do_template('FORM_SCREEN', [
                 '_GUID' => '0100ae6565474bca0669de1654b6efcf',
                 'GET' => true,
                 'SKIP_WEBSTANDARDS' => true,
@@ -451,32 +451,32 @@ class Module_admin_newsletter extends Standard_crud_module
                 'SUBMIT_ICON' => 'admin/export_spreadsheet',
                 'SUBMIT_NAME' => $submit_name,
                 'URL' => $post_url,
-            ));
+            ]);
         }
 
         // Show subscribers...
 
         if (get_param_integer('spreadsheet', 0) == 1) {
             require_code('tasks');
-            return call_user_func_array__long_task(do_lang('VIEW_SUBSCRIBERS'), $this->title, 'export_newsletter_subscribers', array($lang, $key));
+            return call_user_func_array__long_task(do_lang('VIEW_SUBSCRIBERS'), $this->title, 'export_newsletter_subscribers', [$lang, $key]);
         }
 
         $max = get_param_integer('max', 100);
         $start = get_param_integer('start', 0);
 
-        $send_details = array(
+        $send_details = [
             $key => true,
-        );
+        ];
         $max_rows = $this->_count_on_newsletter($key, $lang);
 
-        $send_details = array();
+        $send_details = [];
         $send_details[$key] = true;
         list($subscribers) = newsletter_who_send_to($send_details, $lang, $start, $max);
 
         $subscribers_table_rows = '';
 
         foreach ($subscribers as $email_address => $subscriber_map) {
-            $tpl = do_template('NEWSLETTER_SUBSCRIBER', array(
+            $tpl = do_template('NEWSLETTER_SUBSCRIBER', [
                 '_GUID' => 'ca45867a23cbaa7c6788d3cd2ba2793c',
                 'EMAIL_ADDRESS' => $email_address,
                 'FORENAME' => $subscriber_map['forename'],
@@ -484,7 +484,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 'NAME' => $subscriber_map['name'],
                 'SEND_ID' => $subscriber_map['send_id'],
                 'HASH' => $subscriber_map['hash'],
-            ));
+            ]);
             $subscribers_table_rows .= $tpl->evaluate();
         }
 
@@ -501,13 +501,13 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
 
-        $tpl = do_template('NEWSLETTER_SUBSCRIBERS_SCREEN', array(
+        $tpl = do_template('NEWSLETTER_SUBSCRIBERS_SCREEN', [
             '_GUID' => '52e5d97d451b622d59f87f021a5b8f01',
             'TITLE' => $this->title,
             'DOMAINS' => $domains,
             'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
             'PAGINATION' => $pagination,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -530,7 +530,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         require_lang('config');
         $mail_server_types = new Tempcode();
-        foreach (array('imap', 'imaps', 'imaps_nocert', 'imapt', 'imapt_nocert', 'pop3', 'pop3s', 'pop3s_nocert', 'pop3t', 'pop3t_nocert') as $_server_type) {
+        foreach (['imap', 'imaps', 'imaps_nocert', 'imapt', 'imapt_nocert', 'pop3', 'pop3s', 'pop3s_nocert', 'pop3t', 'pop3t_nocert'] as $_server_type) {
             $mail_server_types->attach(form_input_list_entry($_server_type, $_server_type == get_option('mail_server_type')));
         }
         $fields->attach(form_input_list(do_lang_tempcode('SERVER_TYPE'), do_lang_tempcode('CONFIG_OPTION_mail_server_type'), 'mail_server_type', $mail_server_types));
@@ -544,8 +544,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $submit_name = do_lang_tempcode('PROCEED');
         $post_url = get_self_url();
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_b'), '_SELF');
-        return do_template('FORM_SCREEN', array(
+        $post_url = build_url(['page' => '_SELF', 'type' => 'bounce_filter_b'], '_SELF');
+        return do_template('FORM_SCREEN', [
             '_GUID' => '87f79d177931bab13f614b9cb24fb877',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
@@ -555,7 +555,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -588,8 +588,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $submit_name = do_lang_tempcode('PROCEED');
         $post_url = get_self_url();
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_c'), '_SELF');
-        return do_template('FORM_SCREEN', array(
+        $post_url = build_url(['page' => '_SELF', 'type' => 'bounce_filter_c'], '_SELF');
+        return do_template('FORM_SCREEN', [
             '_GUID' => '69437ad3611c0ee55d09907985df8205',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => build_keep_post_fields(),
@@ -599,7 +599,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -629,10 +629,10 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $fields = '';
 
-        $all_subscribers = array();
-        $all_subscribers += collapse_2d_complexity('email', 'id', $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', array('email', 'id')));
+        $all_subscribers = [];
+        $all_subscribers += collapse_2d_complexity('email', 'id', $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', ['email', 'id']));
         if (get_forum_type() == 'cns') {
-            $all_subscribers += collapse_2d_complexity('m_email_address', 'id', $GLOBALS['FORUM_DB']->query_select('f_members', array('m_email_address', 'id'), array('m_allow_emails_from_staff' => 1)));
+            $all_subscribers += collapse_2d_complexity('m_email_address', 'id', $GLOBALS['FORUM_DB']->query_select('f_members', ['m_email_address', 'id'], ['m_allow_emails_from_staff' => 1]));
         }
 
         $i = 0;
@@ -654,8 +654,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $submit_name = do_lang_tempcode('PROCEED');
         $post_url = get_self_url();
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_d'), '_SELF');
-        return do_template('FORM_SCREEN', array(
+        $post_url = build_url(['page' => '_SELF', 'type' => 'bounce_filter_d'], '_SELF');
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'a517b87e2080204262d0bcf7fcebdf99',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => build_keep_post_fields(),
@@ -666,7 +666,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'MODSECURITY_WORKAROUND' => true,
-        ));
+        ]);
     }
 
     /**
@@ -683,7 +683,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $title = get_screen_title('BOUNCE_FILTER');
 
-        $bounces = array();
+        $bounces = [];
 
         foreach (array_keys($_POST) as $key) {
             if (substr($key, 0, 6) == 'email_') {
@@ -713,7 +713,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $fields = new Tempcode();
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'fb0234e441fa7673769b34ccfcad0cf4', 'TITLE' => do_lang('AUTOMATIC_ISSUE_SETTINGS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'fb0234e441fa7673769b34ccfcad0cf4', 'TITLE' => do_lang('AUTOMATIC_ISSUE_SETTINGS')]));
 
         $_cutoff_time = get_value('newsletter_whatsnew');
         $cutoff_time = ($_cutoff_time === null) ? null : intval($_cutoff_time);
@@ -731,7 +731,7 @@ class Module_admin_newsletter extends Standard_crud_module
         if (cron_installed()) {
             $periodic_options = new Tempcode();
 
-            $current_periodic_newsletters = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'));
+            $current_periodic_newsletters = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*']);
             if (empty($current_periodic_newsletters)) {
                 $extra_help = do_lang('PERIODIC_NEWSLETTER_EMPTY');
                 $periodic_choice_name = do_lang('PERIODIC_CREATE');
@@ -749,11 +749,11 @@ class Module_admin_newsletter extends Standard_crud_module
                     $periodic_options->attach(form_input_list_entry('replace_existing_' . strval($current_periodic_newsletter['id']), false, do_lang('REPLACE_PERIODIC', $current_periodic_newsletter['np_subject'], strval($current_periodic_newsletter['id'])), false, false));
                 }
             }
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
                 '_GUID' => '9360e476c6fd8ed95176d05b866ee553',
                 'TITLE' => do_lang('PERIODIC_NEWSLETTER_SETTINGS'),
                 'HELP' => do_lang('PERIODIC_NEWSLETTER_HELP', $extra_help),
-            )));
+            ]));
 
             $fields->attach(form_input_list($periodic_choice_name, $periodic_choice_help, 'periodic_choice', $periodic_options, null, false, false));
 
@@ -762,7 +762,7 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'ce1af424e01219c8dee2a7867c1647ef',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -772,8 +772,8 @@ class Module_admin_newsletter extends Standard_crud_module
             'PREVIEW' => true,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('NEXT'),
-            'URL' => get_self_url(false, false, array('lang' => $lang, 'type' => 'whatsnew_2')),
-        ));
+            'URL' => get_self_url(false, false, ['lang' => $lang, 'type' => 'whatsnew_2']),
+        ]);
     }
 
     /**
@@ -798,7 +798,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $text = do_lang_tempcode('SELECT_CATEGORIES_WANTED');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'bacc372b7338d8e1103facc05ae4598f',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -808,8 +808,8 @@ class Module_admin_newsletter extends Standard_crud_module
             'PREVIEW' => true,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('NEXT'),
-            'URL' => get_self_url(false, false, array('lang' => $lang, 'type' => 'whatsnew_3')),
-        ));
+            'URL' => get_self_url(false, false, ['lang' => $lang, 'type' => 'whatsnew_3']),
+        ]);
     }
 
     /**
@@ -822,25 +822,25 @@ class Module_admin_newsletter extends Standard_crud_module
         // Handle requested periodic "What's new" newsletter maintenance
         // =============================================================
 
-        $matches = array();
+        $matches = [];
 
         // Confirm screen for removal
         if (preg_match('#^remove_existing_(\d+)$#', post_param_string('periodic_choice', ''), $matches) != 0) {
             $hidden = new Tempcode();
             $hidden->attach(form_input_hidden('periodic_choice', 'periodic_remove_confirmed_' . $matches[1]));
-            return do_template('PERIODIC_NEWSLETTER_REMOVE', array(
+            return do_template('PERIODIC_NEWSLETTER_REMOVE', [
                 '_GUID' => '4fe61ba93e2a05ae9f987e462687d6d5',
                 'TITLE' => get_screen_title('REMOVE_PERIODIC_NEWSLETTER'),
                 'URL' => get_self_url(),
                 'HIDDEN' => $hidden,
-            ));
+            ]);
         }
         // Actualiser for removal
         if (preg_match('#^periodic_remove_confirmed_(\d+)$#', post_param_string('periodic_choice', ''), $matches) != 0) {
             delete_periodic_newsletter(intval($matches[1]));
 
             // We redirect back to the admin_newsletter main page
-            $url = build_url(array('page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'), get_module_zone('admin_newsletter'));
+            $url = build_url(['page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'], get_module_zone('admin_newsletter'));
             return redirect_screen(do_lang('PERIODIC_REMOVED'), $url, do_lang('PERIODIC_REMOVED_TEXT'));
         }
 
@@ -887,7 +887,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $periodic_action = 'replace';
                 $periodic_subject = do_lang('PERIODIC_SUBJECT_HELP');
                 $periodic_id = intval(preg_replace('#^[^\d]+#', '', $periodic_action_raw));
-                $_defaults = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'), array('id' => $periodic_id), '', 1);
+                $_defaults = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $periodic_id], '', 1);
                 if (!array_key_exists(0, $_defaults)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
@@ -910,7 +910,7 @@ class Module_admin_newsletter extends Standard_crud_module
             return $lang;
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'confirm', 'old_type' => get_param_string('type', '')), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'confirm', 'old_type' => get_param_string('type', '')], '_SELF');
 
         $submit_name = do_lang_tempcode('PREVIEW');
 
@@ -1013,17 +1013,17 @@ class Module_admin_newsletter extends Standard_crud_module
         $spreadsheet_data = post_param_string('spreadsheet_data', null);
         $send_to_help = null;
         if ($spreadsheet_data === null) { // Maybe discern it from passed parameters from search module
-            $_spreadsheet_data = array();
-            $_spreadsheet_data[] = array(do_lang('EMAIL_ADDRESS'), do_lang('NAME'), do_lang('NEWSLETTER_SEND_ID'));
+            $_spreadsheet_data = [];
+            $_spreadsheet_data[] = [do_lang('EMAIL_ADDRESS'), do_lang('NAME'), do_lang('NEWSLETTER_SEND_ID')];
             foreach (array_keys($_POST) as $post_key) {
                 if (!is_string($post_key)) {
                     $post_key = strval($post_key);
                 }
 
-                $matches = array();
+                $matches = [];
                 if ((preg_match('#^result__member_(\d+)$#', $post_key, $matches) != 0) && (post_param_integer($post_key, 0) == 1)) {
                     $member_id = intval($matches[1]);
-                    $_spreadsheet_data[] = array($GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id), 'm' . strval($member_id));
+                    $_spreadsheet_data[] = [$GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id), 'm' . strval($member_id)];
                 }
             }
             if (count($_spreadsheet_data) > 1) {
@@ -1036,9 +1036,9 @@ class Module_admin_newsletter extends Standard_crud_module
             $num_spreadsheet_data = count($_spreadsheet_data) - 1;
             $send_to_help = do_lang_tempcode('SOME_NEWSLETTER_TARGETS_KNOWN', escape_html(integer_format($num_spreadsheet_data)));
         }
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '7e1c75fef01054164abfa72f55e5ba86', 'TITLE' => do_lang_tempcode('CHOOSE_SEND_TO'), 'HELP' => $send_to_help)));
-        $send_details = ($defaults === null) ? array() : unserialize($defaults['np_send_details']);
-        $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7e1c75fef01054164abfa72f55e5ba86', 'TITLE' => do_lang_tempcode('CHOOSE_SEND_TO'), 'HELP' => $send_to_help]));
+        $send_details = ($defaults === null) ? [] : unserialize($defaults['np_send_details']);
+        $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', ['*']);
         foreach ($newsletters as $newsletter) {
             $key = strval($newsletter['id']);
 
@@ -1079,12 +1079,12 @@ class Module_admin_newsletter extends Standard_crud_module
         handle_max_file_size($hidden);
 
         // Which newsletter template?
-        $_template_choices = array();
-        $tpl_paths = array(
+        $_template_choices = [];
+        $tpl_paths = [
             get_custom_file_base() . '/themes/default/templates_custom',
             get_file_base() . '/themes/default/templates_custom',
             get_file_base() . '/themes/default/templates',
-        );
+        ];
         foreach ($tpl_paths as $tpl_path) {
             $default_mail_template = post_param_string('template', null);
             if ($default_mail_template === null) {
@@ -1103,7 +1103,7 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
         $_template_choices = array_unique($_template_choices);
-        if ($_template_choices == array('MAIL')) {
+        if ($_template_choices == ['MAIL']) {
             $hidden->attach(form_input_hidden('template', 'MAIL'));
         } else {
             $template_choices = new Tempcode();
@@ -1118,7 +1118,7 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($periodic_action == 'make' || $periodic_action == 'replace') {
             $hidden->attach(form_input_hidden('make_periodic', '1'));
             $hidden->attach(form_input_hidden('periodic_choice', post_param_string('periodic_choice')));
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '1e6e0f900f85aa4ed54318801a1810bb', 'TITLE' => do_lang('PERIODIC_WHEN'), 'HELP' => do_lang('PERIODIC_WHEN_HELP'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1e6e0f900f85aa4ed54318801a1810bb', 'TITLE' => do_lang('PERIODIC_WHEN'), 'HELP' => do_lang('PERIODIC_WHEN_HELP')]));
 
             // The choices are given as radio buttons: weekly or bi-weekly or monthly?
             // In the labels for these radio buttons, we put a dropdown for day of
@@ -1146,7 +1146,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $week_days_weekly = new Tempcode();
             $week_days_biweekly = new Tempcode();
             require_lang('dates');
-            $week_days = array(1 => do_lang('MONDAY'), 2 => do_lang('TUESDAY'), 3 => do_lang('WEDNESDAY'), 4 => do_lang('THURSDAY'), 5 => do_lang('FRIDAY'), 6 => do_lang('SATURDAY'), 7 => do_lang('SUNDAY'));
+            $week_days = [1 => do_lang('MONDAY'), 2 => do_lang('TUESDAY'), 3 => do_lang('WEDNESDAY'), 4 => do_lang('THURSDAY'), 5 => do_lang('FRIDAY'), 6 => do_lang('SATURDAY'), 7 => do_lang('SUNDAY')];
             foreach ($week_days as $i => $this_day) {
                 $week_days_weekly->attach(form_input_list_entry(strval($i), ($i == $current_day_weekly), $this_day, false, false));
                 $week_days_biweekly->attach(form_input_list_entry(strval($i), ($i == $current_day_biweekly), $this_day, false, false));
@@ -1154,12 +1154,12 @@ class Module_admin_newsletter extends Standard_crud_module
 
             $weekly_desc = new Tempcode();
             $weekly_desc->attach(do_lang('PERIODIC_WEEKLY_ON'));
-            $weekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', array('_GUID' => 'b0c43b5f6883be80af5911a587fc85bf', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_weekly', 'CONTENT' => $week_days_weekly, 'INLINE_LIST' => '0', 'SIZE' => '9')));
+            $weekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => 'b0c43b5f6883be80af5911a587fc85bf', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_weekly', 'CONTENT' => $week_days_weekly, 'INLINE_LIST' => '0', 'SIZE' => '9']));
             $radios->attach(form_input_radio_entry('periodic_when', 'weekly', $frequency == 'weekly', $weekly_desc, null, ''));
 
             $biweekly_desc = new Tempcode();
             $biweekly_desc->attach(do_lang('PERIODIC_BIWEEKLY_ON'));
-            $biweekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', array('_GUID' => '533afb6cdf1da813dd55ae694b962151', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_biweekly', 'CONTENT' => $week_days_biweekly, 'INLINE_LIST' => '0', 'SIZE' => '9')));
+            $biweekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => '533afb6cdf1da813dd55ae694b962151', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_biweekly', 'CONTENT' => $week_days_biweekly, 'INLINE_LIST' => '0', 'SIZE' => '9']));
             $radios->attach(form_input_radio_entry('periodic_when', 'biweekly', $frequency == 'biweekly', $biweekly_desc, null, ''));
 
             $month_days = new Tempcode();
@@ -1169,7 +1169,7 @@ class Module_admin_newsletter extends Standard_crud_module
             }
             $monthly_desc = new Tempcode();
             $monthly_desc->attach(do_lang('PERIODIC_MONTHLY_ON'));
-            $monthly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', array('_GUID' => '352012c3153342f5a954fcfa16c5503b', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_monthly', 'CONTENT' => $month_days, 'INLINE_LIST' => '0', 'SIZE' => '9')));
+            $monthly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => '352012c3153342f5a954fcfa16c5503b', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_monthly', 'CONTENT' => $month_days, 'INLINE_LIST' => '0', 'SIZE' => '9']));
             $radios->attach(form_input_radio_entry('periodic_when', 'monthly', $frequency == 'monthly', $monthly_desc, null, ''));
             $fields->attach(form_input_radio(do_lang('PERIODIC_WHEN_CHOICE'), '', 'periodic_when', $radios, true));
 
@@ -1179,7 +1179,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $fields->attach(form_input_radio(do_lang('CREATE_PERIODIC_FOR'), '', 'periodic_for', $radios, true));
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '0b2a4825ec586d9ff557026d9a1e0cca',
             'TITLE' => $this->title,
             'TEXT' => (($periodic_action == 'make' || $periodic_action == 'replace') ? do_lang_tempcode('PERIODIC_NO_EDIT') : do_lang_tempcode('NEWSLETTER_SEND_TEXT')),
@@ -1189,7 +1189,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -1215,7 +1215,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $name = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
 
         // Read in spreadsheet target
-        $extra_post_data = array();
+        $extra_post_data = [];
         require_code('uploads');
         $_spreadsheet_data = post_param_string('spreadsheet_data', null);
         if ($_spreadsheet_data !== null) {
@@ -1229,7 +1229,7 @@ class Module_admin_newsletter extends Standard_crud_module
                     warn_exit($upload_error_message);
                 }
 
-                $__spreadsheet_data = array();
+                $__spreadsheet_data = [];
                 require_code('files_spreadsheets_read');
                 $sheet_reader = spreadsheet_open_read($tmp_name, $_FILES['file']['name'], CMS_Spreadsheet_Reader::ALGORITHM_RAW);
                 while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
@@ -1268,16 +1268,16 @@ class Module_admin_newsletter extends Standard_crud_module
         $mail_dispatcher = dispatch_mail(
             $full_subject,
             ($html_only == 1) ? $html_version->evaluate() : $message,
-            array($email_address),
+            [$email_address],
             $name/*do_lang('NEWSLETTER_SUBSCRIBER',get_site_name())*/,
             $from_email,
             $from_name,
-            array(
+            [
                 'no_cc' => true,
                 'as_admin' => true,
                 'in_html' => $in_html,
                 'mail_template' => $template,
-            )
+            ]
         );
 
         // Spam check, if possible
@@ -1288,14 +1288,14 @@ class Module_admin_newsletter extends Standard_crud_module
         }
 
         // Inline preview
-        $preview = do_template('NEWSLETTER_CONFIRM_WRAP', array(
+        $preview = do_template('NEWSLETTER_CONFIRM_WRAP', [
             '_GUID' => '02bd5a782620141f8589e647e2c6d90b',
             'SUBJECT' => $full_subject,
             'TEXT_PREVIEW' => $text_version,
             'HTML_PREVIEW' => $html_version,
             'SPAM_REPORT' => $spam_report,
             'SPAM_SCORE' => ($spam_score === null) ? null : $spam_score,
-        ));
+        ]);
 
         // Confirm screen
         require_code('templates_confirm_screen');
@@ -1330,8 +1330,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $from_name = post_param_string('from_name', '');
         $priority = post_param_integer('priority', 3);
 
-        $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('id'));
-        $send_details = array();
+        $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', ['id']);
+        $send_details = [];
         foreach ($newsletters as $newsletter) {
             $key = strval($newsletter['id']);
             $send_details[$key] = (post_param_integer($key, 0) == 1);
@@ -1363,7 +1363,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $day = post_param_integer('periodic_weekday_weekly', 5);
             }
             require_lang('dates');
-            $week_days = array(1 => do_lang('MONDAY'), 2 => do_lang('TUESDAY'), 3 => do_lang('WEDNESDAY'), 4 => do_lang('THURSDAY'), 5 => do_lang('FRIDAY'), 6 => do_lang('SATURDAY'), 7 => do_lang('SUNDAY'));
+            $week_days = [1 => do_lang('MONDAY'), 2 => do_lang('TUESDAY'), 3 => do_lang('WEDNESDAY'), 4 => do_lang('THURSDAY'), 5 => do_lang('FRIDAY'), 6 => do_lang('SATURDAY'), 7 => do_lang('SUNDAY')];
             if ($when == 'weekly') {
                 $each = $week_days[$day];
             } elseif ($when == 'biweekly') {
@@ -1373,7 +1373,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $each = strval($day) . $suffix;
             }
 
-            $matches = array();
+            $matches = [];
             if (preg_match('#^replace_existing_(\d+)$#', post_param_string('periodic_choice', ''), $matches) != 0) {
                 $last_sent = null;
                 if (post_param_string('periodic_for') != 'future') {
@@ -1388,7 +1388,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $message = do_lang('PERIODIC_SUCCESS_MESSAGE_ADD', $when, $each);
             }
 
-            $url = build_url(array('page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'), get_module_zone('admin_newsletter'));
+            $url = build_url(['page' => 'admin_newsletter', 'type' => 'browse', 'redirected' => '1'], get_module_zone('admin_newsletter'));
             return redirect_screen(do_lang('SUCCESS'), $url, $message, false, 'inform');
         }
 
@@ -1446,7 +1446,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $newsletters = new Tempcode();
         foreach ($rows as $newsletter) {
-            $newsletter_line = do_lang('NEWSLETTER_IN_ARCHIVE_LIST', $newsletter['subject'], get_timezoned_date_time($newsletter['date_and_time']), array(integer_format($newsletter['queued']), strval($newsletter['id'])));
+            $newsletter_line = do_lang('NEWSLETTER_IN_ARCHIVE_LIST', $newsletter['subject'], get_timezoned_date_time($newsletter['date_and_time']), [integer_format($newsletter['queued']), strval($newsletter['id'])]);
             $newsletters->attach(form_input_list_entry(strval($newsletter['id']), false, $newsletter_line));
         }
         if ($newsletters->is_empty()) {
@@ -1460,9 +1460,9 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $submit_name = do_lang_tempcode('VIEW');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'view'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF', [], false, true);
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'ee295e41dc86c4583c123e6e0e445380',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -1473,7 +1473,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'SUBMIT_ICON' => 'admin/view_archive',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -1486,17 +1486,17 @@ class Module_admin_newsletter extends Standard_crud_module
         $id = get_param_integer('id');
 
         if (post_param_integer('flush_queue', 0) == 1) {
-            $GLOBALS['SITE_DB']->query_delete('newsletter_drip_send', array('d_message_id' => $id));
+            $GLOBALS['SITE_DB']->query_delete('newsletter_drip_send', ['d_message_id' => $id]);
 
             attach_message(do_lang_tempcode('SUCCESS'), 'inform');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_archive', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_archive', ['*'], ['id' => $id], '', 1);
         if (!isset($rows[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $display_map = array();
+        $display_map = [];
 
         $date = get_timezoned_date_time($rows[0]['date_and_time']);
         $display_map['DATE_TIME'] = $date;
@@ -1506,7 +1506,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $message = $rows[0]['newsletter'];
         list($html_version, $text_version) = newsletter_preview($message, $subject, $rows[0]['html_only'] == 1, null, null, null, null, null, null, $rows[0]['template']);
-        $display_map['HTML_VERSION'] = do_template('NEWSLETTER_PREVIEW', array('_GUID' => '5efb08a7867bd1cd90271568853fcbb9', 'HTML_PREVIEW' => $html_version));
+        $display_map['HTML_VERSION'] = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '5efb08a7867bd1cd90271568853fcbb9', 'HTML_PREVIEW' => $html_version]);
         if ($text_version != '') {
             $display_map['TEXT_VERSION'] = $text_version;
         }
@@ -1535,19 +1535,19 @@ class Module_admin_newsletter extends Standard_crud_module
         $html_only = $rows[0]['html_only'];
         $display_map['HTML_ONLY'] = ($html_only == 1) ? do_lang('YES') : do_lang('NO');
 
-        $queued = $GLOBALS['SITE_DB']->query_select_value('newsletter_drip_send', 'COUNT(*)', array('d_message_id' => $id));
+        $queued = $GLOBALS['SITE_DB']->query_select_value('newsletter_drip_send', 'COUNT(*)', ['d_message_id' => $id]);
         $display_map['NUM_IN_SEND_QUEUE'] = integer_format($queued);
 
         $buttons = new Tempcode();
 
         if ($queued > 0) {
-            $dequeue_url = build_url(array('page' => '_SELF', 'type' => 'view', 'id' => $id), '_SELF');
+            $dequeue_url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $id], '_SELF');
             $hidden = new Tempcode();
             $hidden->attach(form_input_hidden('flush_queue', '1'));
-            $buttons->attach(do_template('BUTTON_SCREEN', array('_GUID' => 'cda2585b0d58b1f15ba46a94e9ef9663', 'IMMEDIATE' => true, 'URL' => $dequeue_url, 'TITLE' => do_lang_tempcode('EMPTY_QUEUE'), 'IMG' => 'admin/delete3', 'HIDDEN' => $hidden)));
+            $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'cda2585b0d58b1f15ba46a94e9ef9663', 'IMMEDIATE' => true, 'URL' => $dequeue_url, 'TITLE' => do_lang_tempcode('EMPTY_QUEUE'), 'IMG' => 'admin/delete3', 'HIDDEN' => $hidden]));
         }
 
-        $copy_url = build_url(array('page' => '_SELF', 'type' => 'new'), '_SELF');
+        $copy_url = build_url(['page' => '_SELF', 'type' => 'new'], '_SELF');
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('subject', $rows[0]['subject']));
         $hidden->attach(form_input_hidden('lang', $rows[0]['language']));
@@ -1557,7 +1557,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $hidden->attach(form_input_hidden('template', $rows[0]['template']));
         $hidden->attach(form_input_hidden('html_only', strval($rows[0]['html_only'])));
         $hidden->attach(form_input_hidden('message', $message));
-        $buttons->attach(do_template('BUTTON_SCREEN', array('_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $copy_url, 'TITLE' => do_lang_tempcode('RESEND_NEWSLETTER'), 'IMG' => 'buttons/send', 'HIDDEN' => $hidden)));
+        $buttons->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'da69b2ee5495c9af670399dd080f662e', 'IMMEDIATE' => true, 'URL' => $copy_url, 'TITLE' => do_lang_tempcode('RESEND_NEWSLETTER'), 'IMG' => 'buttons/send', 'HIDDEN' => $hidden]));
 
         $text = do_lang_tempcode('NEWSLETTER_WITH_SAMPLE_NAME');
 
@@ -1578,7 +1578,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
         $fields->attach(form_input_text(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, true));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -1592,33 +1592,33 @@ class Module_admin_newsletter extends Standard_crud_module
         require_code('templates_results_table');
 
         $current_ordering = get_param_string('sort', 'title ASC', INPUT_FILTER_GET_COMPLEX);
-        list($sortable, $sort_order) = array(substr($current_ordering, 0, strrpos($current_ordering, ' ')), substr($current_ordering, strrpos($current_ordering, ' ') + 1));
-        $sortables = array(
+        list($sortable, $sort_order) = [substr($current_ordering, 0, strrpos($current_ordering, ' ')), substr($current_ordering, strrpos($current_ordering, ' ') + 1)];
+        $sortables = [
             'title' => do_lang_tempcode('TITLE'),
-        );
+        ];
         $sortables['(SELECT COUNT(*) FROM ' . get_table_prefix() . 'newsletter_subscribers n JOIN ' . get_table_prefix() . 'newsletter_subscribe s ON n.id=s.newsletter_id WHERE code_confirm=0)'] = do_lang_tempcode('COUNT_MEMBERS');
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('COUNT_MEMBERS'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $num_readers = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers n JOIN ' . get_table_prefix() . 'newsletter_subscribe s ON n.id=s.newsletter_id', 'COUNT(*)', array('code_confirm' => 0));
+            $num_readers = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers n JOIN ' . get_table_prefix() . 'newsletter_subscribe s ON n.id=s.newsletter_id', 'COUNT(*)', ['code_confirm' => 0]);
 
-            $result_entries->attach(results_entry(array(get_translated_text($row['title']), integer_format($num_readers), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))), true));
+            $result_entries->attach(results_entry([get_translated_text($row['title']), integer_format($num_readers), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -1628,7 +1628,7 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+        $_m = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['title'], $GLOBALS['SITE_DB'])));
@@ -1645,7 +1645,7 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'), array('id' => intval($id)), '', 1);
+        $m = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

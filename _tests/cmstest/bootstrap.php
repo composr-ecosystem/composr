@@ -96,7 +96,7 @@ function unit_testing_run()
             echo '<option>' . escape_html($set) . '</option>' . "\n";
         }
     }
-    $proceed_icon = do_template('ICON', array('_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed'));
+    $proceed_icon = do_template('ICON', ['_GUID' => 'a68405d9206defe034d950fbaab1c336', 'NAME' => 'buttons/proceed']);
     echo "
         </select>
         <p><button class=\"btn btn-primary btn-scr buttons--proceed\" type=\"button\"id=\"select-button\" />{$proceed_icon} Call selection</button></p>
@@ -120,7 +120,7 @@ function unit_testing_run()
 
 function find_testsets($dir = '')
 {
-    $tests = array();
+    $tests = [];
     $dh = opendir(get_file_base() . '/_tests/tests' . $dir);
     while (($file = readdir($dh))) {
         if ((is_dir(get_file_base() . '/_tests/tests' . $dir . '/' . $file)) && (substr($file, 0, 1) != '.')) {
@@ -143,7 +143,7 @@ function run_testset($testset)
     $loader = new SimpleFileLoader();
     $suite = $loader->createSuiteFromClasses(
         $testset,
-        array(basename($testset) . '_test_set'));
+        [basename($testset) . '_test_set']);
     /*$result=*/$suite->run(new DefaultReporter());
 }
 

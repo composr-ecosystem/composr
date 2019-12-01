@@ -60,10 +60,10 @@ class Hook_sitemap_banner extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('banners')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -78,7 +78,7 @@ class Hook_sitemap_banner extends Hook_sitemap_content
         $consider_validation = (($options & SITEMAP_GEN_CONSIDER_VALIDATION) != 0);
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', $consider_validation ? array('validated' => 1) : array());
+            $count = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)', $consider_validation ? ['validated' => 1] : []);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
@@ -86,14 +86,14 @@ class Hook_sitemap_banner extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $where_map = array();
+            $where_map = [];
             if ($consider_validation) {
                 $where_map['validated'] = 1;
             }
             if (!has_privilege(get_member(), 'view_anyones_banner_stats')) {
                 $where_map['submitter'] = get_member();
             }
-            $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), $where_map, 'ORDER BY name', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], $where_map, 'ORDER BY name', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':source=' . $row['name'];
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -137,7 +137,7 @@ class Hook_sitemap_banner extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'page_link' => $page_link,
 
             'sitemap_priority' => SITEMAP_IMPORTANCE_NONE,
@@ -145,17 +145,17 @@ class Hook_sitemap_banner extends Hook_sitemap_content
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_banners', 'type' => '_edit', 'id' => $content_id), get_module_zone('cms_banners')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_banners', 'type' => '_edit', 'id' => $content_id], get_module_zone('cms_banners')),
+        ] + $partial_struct;
 
-        $struct['permissions'][] = array(
+        $struct['permissions'][] = [
             'type' => 'privilege',
             'privilege' => 'view_anyones_banner_stats',
             'permission_module' => null,
             'category_name' => null,
             'page_name' => null,
             '_bypassed' => $row['submitter'] == get_member(),
-        );
+        ];
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

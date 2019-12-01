@@ -40,14 +40,14 @@ class Hook_task_cns_recache
         require_code('cns_posts_action2');
         $start = 0;
         do {
-            $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id'), array(), '', 100, $start);
+            $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], [], '', 100, $start);
             foreach ($forums as $i => $forum) {
                 task_log($this, 'Recaching forum', $i, count($forums));
 
                 cns_force_update_forum_caching($forum['id']);
             }
             $start += 100;
-        } while ($forums != array());
+        } while ($forums != []);
 
         return null;
     }

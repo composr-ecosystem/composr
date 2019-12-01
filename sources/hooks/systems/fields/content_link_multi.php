@@ -31,7 +31,7 @@ class Hook_fields_content_link_multi
     public function get_field_types()
     {
         $hooks = find_all_hooks('systems', 'content_meta_aware');
-        $ret = array();
+        $ret = [];
         foreach (array_keys($hooks) as $hook) {
             if ($hook != 'catalogue_entry'/*got a better field hook specifically for catalogue entries*/) {
                 $ret['ax_' . $hook] = do_lang_tempcode('FIELD_TYPE_content_link_multi_x', escape_html($hook));
@@ -82,7 +82,7 @@ class Hook_fields_content_link_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -104,7 +104,7 @@ class Hook_fields_content_link_multi
 
         $type = preg_replace('#^choose_#', '', substr($field['cf_type'], 3));
 
-        $out = array();
+        $out = [];
         $evs = explode("\n", $ev);
         foreach ($evs as $ev) {
             require_code('content');
@@ -116,7 +116,7 @@ class Hook_fields_content_link_multi
             $page_link = str_replace('_WILD', $ev, $info['view_page_link_pattern']);
             list($zone, $map) = page_link_decode($page_link);
 
-            $out[] = array($title, $map, $zone);
+            $out[] = [$title, $map, $zone];
         }
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
@@ -149,7 +149,7 @@ class Hook_fields_content_link_multi
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
-        $options = array();
+        $options = [];
         $type = substr($field['cf_type'], 3);
 
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
@@ -167,7 +167,7 @@ class Hook_fields_content_link_multi
             return new Tempcode();
         }
         $db = get_db_for($info['table']);
-        $select = array();
+        $select = [];
         append_content_select_for_id($select, $info);
         if ($type == 'comcode_page') {
             $select[] = 'the_zone';
@@ -175,9 +175,9 @@ class Hook_fields_content_link_multi
         if ($info['title_field'] !== null) {
             $select[] = $info['title_field'];
         }
-        $rows = $db->query_select($info['table'], $select, array(), ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
+        $rows = $db->query_select($info['table'], $select, [], ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
         $list = new Tempcode();
-        $_list = array();
+        $_list = [];
         foreach ($rows as $row) {
             $id = extract_content_str_id_from_data($row, $info);
             if ($info['title_field'] === null) {

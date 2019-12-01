@@ -114,12 +114,12 @@ function translate_text($text, $context = 0, $from = null, $to = null, $hook = n
 
     $context_metadata = $translation_object->get_translation_context($context, $from, $to, $errormsg);
 
-    $cache_map = array(
+    $cache_map = [
         't_lang_from' => ($from === null) ? '' : $from,
         't_lang_to' => $to,
         't_text' => $text,
         't_context' => $context,
-    );
+    ];
     $text_result = $GLOBALS['SITE_DB']->query_select_value_if_there('translation_cache', 't_text_result', $cache_map);
 
     if ($text_result === null) { // Not cached
@@ -129,7 +129,7 @@ function translate_text($text, $context = 0, $from = null, $to = null, $hook = n
         }
 
         // Store into cache
-        $GLOBALS['SITE_DB']->query_insert('translation_cache', $cache_map + array('t_text_result' => $text_result));
+        $GLOBALS['SITE_DB']->query_insert('translation_cache', $cache_map + ['t_text_result' => $text_result]);
     }
 
     $ret = $translation_object->put_result_into_context($text_result, $context, $context_metadata);

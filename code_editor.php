@@ -221,7 +221,7 @@ END;
  */
 function ce_do_dir($dir)
 {
-    $out = array();
+    $out = [];
     $_dir = ($dir == '') ? '.' : $dir;
     $dh = @opendir($_dir);
     if ($dh !== false) {
@@ -352,9 +352,9 @@ function open_up_ftp_connection()
     }
     $files = @ftp_nlist($conn, '.');
     if ($files === false) { // :(. Weird bug on some systems
-        $files = array();
+        $files = [];
         if (@ftp_rename($conn, '_config.php', '_config.php')) {
-            $files = array('_config.php');
+            $files = ['_config.php'];
         }
     }
     if (!in_array('_config.php', $files)) {

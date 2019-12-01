@@ -25,11 +25,11 @@ function adminzone_common_pages_code()
 {
     // Run a Health Check
     if (has_zone_access(get_member(), 'adminzone')) {
-        $health_check = array();
+        $health_check = [];
         if (addon_installed('health_check')) {
             require_code('health_check');
             $has_fails = false;
-            $categories = run_health_check($has_fails, array('Stability \\ Error log'));
+            $categories = run_health_check($has_fails, ['Stability \\ Error log']);
             if ($has_fails) {
                 foreach ($categories as $category_label => $sections) {
                     foreach ($sections['SECTIONS'] as $section_label => $results) {
@@ -76,7 +76,7 @@ function adminzone_extended_breadcrumbs()
 {
     global $BREADCRUMB_SET_PARENTS, $SMART_CACHE;
 
-    $breadcrumbs = array();
+    $breadcrumbs = [];
 
     $link = $SMART_CACHE->get('extended_breadcrumbs');
     if ($link !== null) {
@@ -85,7 +85,7 @@ function adminzone_extended_breadcrumbs()
         if ($link_lang !== null) {
             $title = do_lang_tempcode($link_lang); // The language string codename version of the page grouping we found our current module was in
             $page_link = build_page_link($link_map, $link_zone);
-            $breadcrumbs[] = array($page_link, $title);
+            $breadcrumbs[] = [$page_link, $title];
         }
 
         return $breadcrumbs;
@@ -117,7 +117,7 @@ function adminzone_extended_breadcrumbs()
 
         // Loop over menus, hunting for connection
         $hooks = find_all_hooks('systems', 'page_groupings');
-        $_hooks = array();
+        $_hooks = [];
         $page_looking = $page;
         $page_looking = preg_replace('#^(cms|admin)_#', '', $page_looking);
         if (array_key_exists($page_looking, $hooks)) {
@@ -127,7 +127,7 @@ function adminzone_extended_breadcrumbs()
         }
         foreach ($hooks as $hook => $sources_dir) {
             $path = get_file_base() . '/' . $sources_dir . '/hooks/systems/page_groupings/' . $hook . '.php';
-            $run_function = extract_module_functions($path, array('run'));
+            $run_function = extract_module_functions($path, ['run']);
             if ($run_function[0] !== null) {
                 $info = is_array($run_function[0]) ? call_user_func_array($run_function[0][0], $run_function[0][1]) : cms_eval($run_function[0], $path);
 
@@ -139,18 +139,18 @@ function adminzone_extended_breadcrumbs()
                     if ((is_array($i[2])) && ($page == $i[2][0]) && ($i[0] != '') && (((!isset($i[2][1]['type'])) && ($type == 'browse')) || ((isset($i[2][1]['type'])) && (($type == $i[2][1]['type']) || ($i[2][1]['type'] == 'browse')))) && ($zone == $i[2][2])) {
                         if ($i[0] == 'cms') {
                             $link_zone = 'cms';
-                            $link_map = array('page' => 'cms', 'type' => ($i[0] == 'cms') ? null : $i[0]);
+                            $link_map = ['page' => 'cms', 'type' => ($i[0] == 'cms') ? null : $i[0]];
                         } else {
                             $link_zone = 'adminzone';
-                            $link_map = array('page' => 'admin', 'type' => $i[0]);
+                            $link_map = ['page' => 'admin', 'type' => $i[0]];
                         }
                         $link_lang = 'menus:' . strtoupper($i[0]);
 
-                        $SMART_CACHE->set('extended_breadcrumbs', array($link_map, $link_zone, $link_lang));
+                        $SMART_CACHE->set('extended_breadcrumbs', [$link_map, $link_zone, $link_lang]);
 
                         $title = do_lang_tempcode($link_lang); // The language string codename version of the page grouping we found our current module was in
                         $page_link = build_page_link($link_map, $link_zone);
-                        $breadcrumbs[] = array($page_link, $title);
+                        $breadcrumbs[] = [$page_link, $title];
 
                         return $breadcrumbs;
                     }
@@ -159,7 +159,7 @@ function adminzone_extended_breadcrumbs()
         }
     }
 
-    $SMART_CACHE->set('extended_breadcrumbs', array(null, null, null));
+    $SMART_CACHE->set('extended_breadcrumbs', [null, null, null]);
 
     return $breadcrumbs;
 }

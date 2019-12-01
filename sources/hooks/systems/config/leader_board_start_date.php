@@ -30,7 +30,7 @@ class Hook_config_leader_board_start_date
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LEADER_BOARD_START_DATE',
             'type' => 'date',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_leader_board_start_date
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

@@ -105,35 +105,35 @@ function cns_member_handle_promotion($member_id = null)
         $or_list .= 'id=' . strval($id);
     }
     $promotions = $GLOBALS['FORUM_DB']->query('SELECT id,g_promotion_target FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE (' . $or_list . ') AND g_promotion_target IS NOT NULL AND g_promotion_threshold<=' . strval($total_points) . ' ORDER BY g_promotion_threshold');
-    $promotes_today = array();
+    $promotes_today = [];
     foreach ($promotions as $promotion) {
         $_p = $promotion['g_promotion_target'];
         if ((!array_key_exists($_p, $groups)) && (!array_key_exists($_p, $promotes_today))) { // If we're not already in the group
             // If it is our primary
             if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_primary_group') == $promotion['id']) {
-                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_primary_group' => $_p), array('id' => $member_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_primary_group' => $_p], ['id' => $member_id], '', 1);
             } else {
-                $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $member_id, 'gm_group_id' => $_p), '', 1);
-                $GLOBALS['FORUM_DB']->query_insert('f_group_members', array('gm_validated' => 1, 'gm_member_id' => $member_id, 'gm_group_id' => $_p), false, true);
-                $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $member_id, 'gm_group_id' => $promotion['id']), '', 1); // It's a transition, so remove old membership
+                $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id, 'gm_group_id' => $_p], '', 1);
+                $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_validated' => 1, 'gm_member_id' => $member_id, 'gm_group_id' => $_p], false, true);
+                $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id, 'gm_group_id' => $promotion['id']], '', 1); // It's a transition, so remove old membership
             }
-            $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
+            $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
                 'member_id' => $member_id,
                 'usergroup_id' => $_p,
                 'join_time' => time(),
-            ));
+            ]);
 
             // Notify the member
             require_code('notifications');
             require_lang('cns');
             $subject = do_lang('RANK_PROMOTED_MAIL_SUBJECT', cns_get_group_name($_p), null, null, get_lang($member_id));
             $mail = do_notification_lang('RANK_PROMOTED_MAIL', comcode_escape(cns_get_group_name($_p)), null, null, get_lang($member_id));
-            dispatch_notification('cns_rank_promoted', null, $subject, $mail, array($member_id));
+            dispatch_notification('cns_rank_promoted', null, $subject, $mail, [$member_id]);
 
             // Carefully update run-time caching
             global $USERS_GROUPS_CACHE;
-            foreach (array(true, false) as $a) {
-                foreach (array(true, false) as $b) {
+            foreach ([true, false] as $a) {
+                foreach ([true, false] as $b) {
                     if (isset($USERS_GROUPS_CACHE[$member_id][$a][$b])) {
                         $groups = $USERS_GROUPS_CACHE[$member_id][$a][$b];
                         $pos = array_search($_p, $groups);
@@ -181,7 +181,7 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
     }
 
     if ($topic_title == '') {
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $topic_id), '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
             return; // Topic's gone missing somehow (e.g. race condition)
         }
@@ -195,26 +195,26 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
 
     require_code('notifications');
 
-    $subject = do_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL_SUBJECT' : 'POST_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $topic_title, array($sender_displayname, $sender_username));
-    $mail = do_notification_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL' : 'POST_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($url), array(comcode_escape($sender_displayname), $post, $topic_title, ((is_guest($sender_member_id)) && ($poster_name !== null)) ? $poster_name : strval($sender_member_id), comcode_escape($sender_username), strval($sender_member_id)));
+    $subject = do_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL_SUBJECT' : 'POST_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $topic_title, [$sender_displayname, $sender_username]);
+    $mail = do_notification_lang($is_starter ? 'TOPIC_NOTIFICATION_MAIL' : 'POST_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($url), [comcode_escape($sender_displayname), $post, $topic_title, ((is_guest($sender_member_id)) && ($poster_name !== null)) ? $poster_name : strval($sender_member_id), comcode_escape($sender_username), strval($sender_member_id)]);
 
-    $limit_to = ($_limit_to === null) ? array() : array($_limit_to);
+    $limit_to = ($_limit_to === null) ? [] : [$_limit_to];
 
     if ($is_pt) {
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from', 't_cache_first_title'), array('id' => $topic_id), '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from', 't_cache_first_title'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
             return; // Topic's gone missing somehow (e.g. race condition)
         }
 
         $limit_to[] = $topic_info[0]['t_pt_to'];
         $limit_to[] = $topic_info[0]['t_pt_from'];
-        $limit_to = array_merge($limit_to, collapse_1d_complexity('s_member_id', $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', array('s_member_id'), array('s_topic_id' => $topic_id))));
+        $limit_to = array_merge($limit_to, collapse_1d_complexity('s_member_id', $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', ['s_member_id'], ['s_topic_id' => $topic_id])));
     }
 
     if ($is_pt) {
-        $extra = array();
+        $extra = [];
     } else {
-        $extra = array(
+        $extra = [
             'url' => $url,
             'forum_id' => $forum_id,
             'topic_id' => $topic_id,
@@ -223,10 +223,10 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
             'is_starter' => $is_starter,
             'post' => $post,
             'topic_title' => $topic_title,
-        );
+        ];
     }
 
-    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (empty($limit_to)) ? null : $limit_to, $sender_member_id, array('no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra));
+    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (empty($limit_to)) ? null : $limit_to, $sender_member_id, ['no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra]);
 }
 
 /**
@@ -248,7 +248,7 @@ function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last
     $first_title = '';
     if ($last_post_id === null) {
         if ($first) { // We're updating caching of the first
-            $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('p_topic_id' => $topic_id), 'ORDER BY p_time ASC,id ASC', 1);
+            $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['p_topic_id' => $topic_id], 'ORDER BY p_time ASC,id ASC', 1);
             if (!array_key_exists(0, $posts)) {
                 $first_post_id = null;
                 $first_time = null;
@@ -271,7 +271,7 @@ function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last
             } else {
                 $order_by = 'ORDER BY p_time DESC,id DESC';
             }
-            $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('p_intended_solely_for' => null, 'p_topic_id' => $topic_id), $order_by, 1);
+            $posts = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['p_intended_solely_for' => null, 'p_topic_id' => $topic_id], $order_by, 1);
             if (!array_key_exists(0, $posts)) {
                 $last_post_id = null;
                 $last_time = null;
@@ -327,7 +327,7 @@ function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last
                 ?
                 ('t_cache_num_posts=(t_cache_num_posts+' . strval($post_count_dif) . ')')
                 :
-                ('t_cache_num_posts=' . strval($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', array('p_topic_id' => $topic_id, 'p_intended_solely_for' => null))))
+                ('t_cache_num_posts=' . strval($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', ['p_topic_id' => $topic_id, 'p_intended_solely_for' => null])))
             ) .
             ' WHERE id=' . strval($topic_id),
         null,
@@ -408,7 +408,7 @@ function cns_force_update_forum_caching($forum_id, $num_topics_increment = null,
 
     // Now, are there any parents who need updating?
     if ($forum_id !== null) {
-        $parent_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', array('id' => $forum_id));
+        $parent_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id]);
         if (($parent_forum !== null) && ($parent_forum != db_get_first_id())) {
             cns_force_update_forum_caching($parent_forum, $num_topics_increment, $num_posts_increment);
         }

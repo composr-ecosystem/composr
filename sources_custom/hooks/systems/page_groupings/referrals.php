@@ -28,12 +28,12 @@ class Hook_page_groupings_referrals
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('referrals')) {
-            return array();
+            return [];
         }
 
         require_code('files');
 
-        $ret = array();
+        $ret = [];
 
         $path = get_custom_file_base() . '/text_custom/referrals.txt';
         if (!is_file($path)) {
@@ -50,12 +50,12 @@ class Hook_page_groupings_referrals
 
                     $scheme_title = isset($scheme['title']) ? $scheme['title'] : $ini_file_section_name;
 
-                    $ret[] = array('audit', 'spare/referrals', array('admin_referrals', array('type' => 'browse', 'scheme' => $scheme_name), get_page_zone('admin_referrals')), $scheme_title, 'referrals:DOC_REFERRALS');
+                    $ret[] = ['audit', 'spare/referrals', ['admin_referrals', ['type' => 'browse', 'scheme' => $scheme_name], get_page_zone('admin_referrals')], $scheme_title, 'referrals:DOC_REFERRALS'];
                 }
             }
         }
 
-        $ret[] = array('setup', 'spare/referrals', array('referrals', array(), get_page_zone('referrals')), do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS');
+        $ret[] = ['setup', 'spare/referrals', ['referrals', [], get_page_zone('referrals')], do_lang_tempcode('referrals:REFERRALS'), 'referrals:DOC_REFERRALS'];
 
         return $ret;
     }

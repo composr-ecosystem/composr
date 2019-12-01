@@ -34,14 +34,14 @@ class Hook_commandr_command_commands
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('commands', array('h'), array()), '', '');
+            return ['', do_command_help('commands', ['h'], []), '', ''];
         } else {
             $hooks = find_all_hooks('systems', 'commandr_commands');
 
             $commands = array_keys($hooks);
             sort($commands);
 
-            return array('', do_template('COMMANDR_COMMANDS', array('_GUID' => 'bd0354a12a05a6116be62f4d77b47657', 'COMMANDS' => $commands)), '', '');
+            return ['', do_template('COMMANDR_COMMANDS', ['_GUID' => 'bd0354a12a05a6116be62f4d77b47657', 'COMMANDS' => $commands]), '', ''];
         }
     }
 }

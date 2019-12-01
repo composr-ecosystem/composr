@@ -30,7 +30,7 @@ class Hook_config_dashboard_actions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DASHBOARD_ACTIONS',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_dashboard_actions
             'required' => true,
             'public' => false,
             'addon' => 'core_adminzone_dashboard',
-        );
+        ];
     }
 
     /**

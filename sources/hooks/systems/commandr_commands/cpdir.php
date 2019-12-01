@@ -34,10 +34,10 @@ class Hook_commandr_command_cpdir
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('cpdir', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('cpdir', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'cpdir'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'cpdir')];
             } else {
                 $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
             }
@@ -48,20 +48,20 @@ class Hook_commandr_command_cpdir
             }
 
             if (!$commandr_fs->_is_dir($parameters[0])) {
-                return array('', '', '', do_lang('NOT_A_DIR', '1'));
+                return ['', '', '', do_lang('NOT_A_DIR', '1')];
             }
             if (!$commandr_fs->_is_dir($parameters[1])) {
-                return array('', '', '', do_lang('NOT_A_DIR', '2'));
+                return ['', '', '', do_lang('NOT_A_DIR', '2')];
             }
-            if ($commandr_fs->_is_dir(array_merge($parameters[1], array($parameters[0][count($parameters[0]) - 1])))) {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+            if ($commandr_fs->_is_dir(array_merge($parameters[1], [$parameters[0][count($parameters[0]) - 1]]))) {
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
             }
 
             $success = $commandr_fs->copy_directory($parameters[0], $parameters[1]);
             if ($success) {
-                return array('', '', do_lang('SUCCESS'), '');
+                return ['', '', do_lang('SUCCESS'), ''];
             } else {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
             }
         }
     }

@@ -30,7 +30,7 @@ class Hook_config_hc_webstandards_whitelist
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_WEBSTANDARDS_WHITELIST',
             'type' => 'text',
             'category' => 'HEALTH_CHECK',
@@ -43,7 +43,7 @@ class Hook_config_hc_webstandards_whitelist
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_username
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_USERNAME',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_username
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

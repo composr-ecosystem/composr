@@ -30,7 +30,7 @@ class Hook_config_points_wiki
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WIKI',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_wiki
             'public' => false,
 
             'addon' => 'wiki',
-        );
+        ];
     }
 
     /**

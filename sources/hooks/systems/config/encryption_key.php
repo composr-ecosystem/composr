@@ -30,7 +30,7 @@ class Hook_config_encryption_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENCRYPTION_KEY',
             'type' => 'line',
             'category' => 'PRIVACY',
@@ -45,7 +45,7 @@ class Hook_config_encryption_key
             'addon' => 'core_cns',
 
             'maintenance_code' => 'cpf_encryption',
-        );
+        ];
     }
 
     /**

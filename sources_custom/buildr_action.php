@@ -54,12 +54,12 @@ function add_item_wrap($member_id, $name, $price, $not_infinite, $bribable, $hea
     // Get $realm,$x,$y from $member_id
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_EDIT_ACCESS_PRIVATE_REALM'), 'warn');
     }
 
     // Make sure the item does not already exist! (people aren't allowed to arbitrarily duplicate items for security reasons)
-    $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_itemdef', 'bribable', array('name' => $name));
+    $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_itemdef', 'bribable', ['name' => $name]);
     if ($r !== null) {
         buildr_refresh_with_message(do_lang_tempcode('W_DUPE_ITEM'), 'warn');
     }
@@ -100,7 +100,7 @@ function add_item_wrap($member_id, $name, $price, $not_infinite, $bribable, $hea
  */
 function add_item($name, $bribable, $healthy, $picture_url, $owner, $max_per_player, $replicateable, $description)
 {
-    $GLOBALS['SITE_DB']->query_insert('w_itemdef', array(
+    $GLOBALS['SITE_DB']->query_insert('w_itemdef', [
         'name' => $name,
         'bribable' => $bribable,
         'healthy' => $healthy,
@@ -109,7 +109,7 @@ function add_item($name, $bribable, $healthy, $picture_url, $owner, $max_per_pla
         'replicateable' => $replicateable,
         'max_per_player' => $max_per_player,
         'the_description' => $description,
-    ));
+    ]);
 }
 
 /**
@@ -132,16 +132,16 @@ function add_item_wrap_copy($member_id, $name, $price, $not_infinite)
     // Get $realm,$x,$y from $member_id
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_EDIT_ACCESS_PRIVATE_REALM'), 'warn');
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', array('name' => $name)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'replicateable', array('name' => $name)) == 0)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $name]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'replicateable', ['name' => $name]) == 0)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
     // Make sure that they aren't in the brig and adding a bribable!
-    $bribable = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'bribable', array('name' => $name));
+    $bribable = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'bribable', ['name' => $name]);
     if (($x == 0) && ($y == 2) && ($bribable == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_NICE_TRY'), 'warn');
     }
@@ -204,30 +204,30 @@ function add_room_wrap($member_id, $relative, $name, $text, $password_question, 
     // Get $realm,$x,$y from $member_id, $relative
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
     if ($relative == 0) {
-        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_up', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_up', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
         if ($l == 1) {
             buildr_refresh_with_message(do_lang_tempcode('W_WALL_LOCKED'), 'warn');
         }
     }
     if ($relative == 1) {
-        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_down', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_down', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
         if ($l == 1) {
             buildr_refresh_with_message(do_lang_tempcode('W_WALL_LOCKED'), 'warn');
         }
     }
     if ($relative == 2) {
-        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_right', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_right', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
         if ($l == 1) {
             buildr_refresh_with_message(do_lang_tempcode('W_WALL_LOCKED'), 'warn');
         }
     }
     if ($relative == 3) {
-        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_left', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+        $l = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'locked_left', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
         if ($l == 1) {
             buildr_refresh_with_message(do_lang_tempcode('W_WALL_LOCKED'), 'warn');
         }
@@ -250,7 +250,7 @@ function add_room_wrap($member_id, $relative, $name, $text, $password_question, 
     }
 
     // Check there is no room already there
-    $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', array('location_realm' => $realm, 'location_x' => $x, 'location_y' => $y));
+    $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', ['location_realm' => $realm, 'location_x' => $x, 'location_y' => $y]);
     if ($r !== null) {
         buildr_refresh_with_message(do_lang_tempcode('W_ROOM_ALREADY'), 'warn');
     }
@@ -267,7 +267,7 @@ function add_room_wrap($member_id, $relative, $name, $text, $password_question, 
 
     add_room($name, $realm, $x, $y, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $member_id, $allow_portal);
 
-    buildr_refresh_with_message(do_lang_tempcode('W_ROOM_CREATED', escape_html($name), strval($realm), array(strval($x), strval($y))));
+    buildr_refresh_with_message(do_lang_tempcode('W_ROOM_CREATED', escape_html($name), strval($realm), [strval($x), strval($y)]));
 }
 
 /**
@@ -292,7 +292,7 @@ function add_room_wrap($member_id, $relative, $name, $text, $password_question, 
  */
 function add_room($name, $realm, $x, $y, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $owner, $allow_portal)
 {
-    $GLOBALS['SITE_DB']->query_insert('w_rooms', array(
+    $GLOBALS['SITE_DB']->query_insert('w_rooms', [
         'name' => $name,
         'location_realm' => $realm,
         'location_x' => $x,
@@ -309,7 +309,7 @@ function add_room($name, $realm, $x, $y, $text, $password_question, $password_an
         'picture_url' => $picture_url,
         'owner' => $owner,
         'allow_portal' => $allow_portal,
-    ));
+    ]);
 }
 
 /**
@@ -356,7 +356,7 @@ function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, 
     if (($member_id !== null) && (!has_privilege($member_id, 'administer_buildr'))) {
         // Have they been a member long enough for a new realm?
         $fortnights = (time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24 * 7 * 2);
-        $made = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'COUNT(*)', array('owner' => $member_id));
+        $made = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'COUNT(*)', ['owner' => $member_id]);
         if ($fortnights < $made) {
             buildr_refresh_with_message(do_lang_tempcode('W_MEMBER_NOT_LONG_ENOUGH'), 'warn');
         }
@@ -387,7 +387,7 @@ function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, 
 
     // Add troll
     $troll_id = -$realm - 1;
-    $GLOBALS['SITE_DB']->query_insert('w_members', array(
+    $GLOBALS['SITE_DB']->query_insert('w_members', [
         'id' => $troll_id,
         'location_realm' => $realm,
         'location_x' => 0,
@@ -396,7 +396,7 @@ function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, 
         'health' => 1000,
         'trolled' => 0,
         'lastactive' => time(),
-    ));
+    ]);
 
     if ($redirect) {
         buildr_refresh_with_message(do_lang_tempcode('W_REALM_CREATED', escape_html($name), strval($realm)));
@@ -416,7 +416,7 @@ function add_realm_wrap($member_id, $name, $troll_name, $jail_name, $jail_text, 
 function add_realm($id, $name, $troll_name, $qa, $owner, $private)
 {
     $i = 1;
-    $_qa = array(
+    $_qa = [
         'q1' => '', 'q2' => '', 'q3' => '', 'q4' => '',
         'q5' => '', 'q6' => '', 'q7' => '', 'q8' => '',
         'q9' => '', 'q10' => '', 'q11' => '', 'q12' => '',
@@ -433,19 +433,19 @@ function add_realm($id, $name, $troll_name, $qa, $owner, $private)
         'a21' => '', 'a22' => '', 'a23' => '', 'a24' => '',
         'a25' => '', 'a26' => '', 'a27' => '', 'a28' => '',
         'a29' => '', 'a30' => '',
-    );
+    ];
     while (array_key_exists($i, $qa)) {
         $_qa['q' . strval($i)] = $qa[$i]['q'];
         $_qa['a' . strval($i)] = $qa[$i]['a'];
         $i++;
     }
-    $GLOBALS['SITE_DB']->query_insert('w_realms', array_merge($_qa, array(
+    $GLOBALS['SITE_DB']->query_insert('w_realms', array_merge($_qa, [
         'id' => $id,
         'name' => $name,
         'troll_name' => $troll_name,
         'owner' => $owner,
         'r_private' => $private,
-    )));
+    ]));
 }
 
 /**
@@ -477,7 +477,7 @@ function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_loc
     }
 
     // Check $end_location_realm exists
-    $allow_portal = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'allow_portal', array('location_x' => $end_location_x, 'location_y' => $end_location_y, 'location_realm' => $end_location_realm));
+    $allow_portal = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'allow_portal', ['location_x' => $end_location_x, 'location_y' => $end_location_y, 'location_realm' => $end_location_realm]);
     if ($allow_portal === null) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_END'), 'warn');
     }
@@ -486,16 +486,16 @@ function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_loc
     }
 
     // Check we don't have a portal to this realm here already
-    $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_portals', 'name', array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $end_location_realm));
+    $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_portals', 'name', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $end_location_realm]);
     if ($t !== null) {
         buildr_refresh_with_message(do_lang_tempcode('W_DUPE_END'), 'warn');
     }
 
-    if ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'allow_portal', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm)) == 0) {
+    if ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'allow_portal', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]) == 0) {
         buildr_refresh_with_message(do_lang_tempcode('W_BAD_START'), 'warn');
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_EDIT_ACCESS_PRIVATE_REALM'), 'warn');
     }
 
@@ -514,7 +514,7 @@ function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_loc
 
     add_portal($name, $text, $realm, $x, $y, $end_location_realm, $member_id, $end_location_x, $end_location_y);
 
-    $destname = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'name', array('id' => $end_location_realm));
+    $destname = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'name', ['id' => $end_location_realm]);
 
     buildr_refresh_with_message(do_lang_tempcode('W_PORTAL_CREATED', escape_html($name), escape_html($destname)));
 }
@@ -534,7 +534,7 @@ function add_portal_wrap($member_id, $name, $text, $end_location_realm, $end_loc
  */
 function add_portal($name, $text, $realm, $x, $y, $end_location_realm, $owner, $end_location_x, $end_location_y)
 {
-    $GLOBALS['SITE_DB']->query_insert('w_portals', array(
+    $GLOBALS['SITE_DB']->query_insert('w_portals', [
         'name' => $name,
         'p_text' => $text,
         'start_location_realm' => $realm,
@@ -544,7 +544,7 @@ function add_portal($name, $text, $realm, $x, $y, $end_location_realm, $owner, $
         'end_location_x' => $end_location_x,
         'end_location_y' => $end_location_y,
         'owner' => $owner,
-    ));
+    ]);
 }
 
 /**
@@ -555,7 +555,7 @@ function add_portal($name, $text, $realm, $x, $y, $end_location_realm, $owner, $
 function delete_item_wrap($name)
 {
     $attempt_member = get_member();
-    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', array('name' => $name)) != $attempt_member)) {
+    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $name]) != $attempt_member)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
     //if (!has_privilege($attempt_member,'administer_buildr'))
@@ -574,11 +574,11 @@ function delete_item_wrap($name)
     charge_member($attempt_member, intval(-0.7 * $price), do_lang('W_DELETE_BUILDR', $name));
 
     // Remove item from all rooms and people
-    $GLOBALS['SITE_DB']->query_delete('w_items', array('name' => $name));
-    $GLOBALS['SITE_DB']->query_delete('w_inventory', array('item_name' => $name));
+    $GLOBALS['SITE_DB']->query_delete('w_items', ['name' => $name]);
+    $GLOBALS['SITE_DB']->query_delete('w_inventory', ['item_name' => $name]);
 
     // Delete from db
-    $GLOBALS['SITE_DB']->query_delete('w_itemdef', array('name' => $name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('w_itemdef', ['name' => $name], '', 1);
 
     buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
 }
@@ -593,7 +593,7 @@ function delete_room_wrap($member_id)
     list($realm, $x, $y) = get_loc_details($member_id);
 
     $attempt_member = $member_id;
-    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm)) != $attempt_member)) {
+    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]) != $attempt_member)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
@@ -601,7 +601,7 @@ function delete_room_wrap($member_id)
         buildr_refresh_with_message(do_lang_tempcode('W_DEL_MAIN'), 'warn');
     }
 
-    $name = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'name', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+    $name = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'name', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
 
     // Refund them
     require_code('points2');
@@ -621,13 +621,13 @@ function delete_room_wrap($member_id)
 function delete_room($x, $y, $realm)
 {
     // Remove all items from room
-    $GLOBALS['SITE_DB']->query_delete('w_items', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_delete('w_items', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
 
     // Send all people in room back to lobby
-    $GLOBALS['SITE_DB']->query_update('w_members', array('location_x' => 0, 'location_y' => 0), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => 0, 'location_y' => 0], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
 
     // Delete from db
-    $GLOBALS['SITE_DB']->query_delete('w_rooms', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('w_rooms', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
 
     buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
 }
@@ -643,11 +643,11 @@ function delete_portal_wrap($member_id, $dest_realm)
     list($realm, $x, $y) = get_loc_details($member_id);
 
     $attempt_member = $member_id;
-    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm)) != $attempt_member)) {
+    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm]) != $attempt_member)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
-    $name = $GLOBALS['SITE_DB']->query_select_value('w_portals', 'name', array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm));
+    $name = $GLOBALS['SITE_DB']->query_select_value('w_portals', 'name', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm]);
 
     // Refund them
     require_code('points2');
@@ -668,7 +668,7 @@ function delete_portal_wrap($member_id, $dest_realm)
 function delete_portal($x, $y, $realm, $dest_realm)
 {
     // Delete from db
-    $GLOBALS['SITE_DB']->query_delete('w_portals', array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('w_portals', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm], '', 1);
 
     buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
 }
@@ -682,12 +682,12 @@ function delete_realm_wrap($member_id)
 {
     $attempt_member = $member_id;
 
-    $realm = $GLOBALS['SITE_DB']->query_select_value('w_members', 'location_realm', array('id' => $member_id));
+    $realm = $GLOBALS['SITE_DB']->query_select_value('w_members', 'location_realm', ['id' => $member_id]);
     if ($realm == 0) {
         buildr_refresh_with_message(do_lang_tempcode('W_DEL_PRIMARY_REALM'), 'warn');
     }
 
-    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $attempt_member)) {
+    if ((!has_privilege($attempt_member, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $attempt_member)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
@@ -711,19 +711,19 @@ function delete_realm_wrap($member_id)
 function delete_realm($realm)
 {
     // Remove all items from realm
-    $GLOBALS['SITE_DB']->query_delete('w_items', array('location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_delete('w_items', ['location_realm' => $realm]);
 
     // Remove all rooms from realm
-    $GLOBALS['SITE_DB']->query_delete('w_rooms', array('location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_delete('w_rooms', ['location_realm' => $realm]);
 
     // Delete troll
-    $GLOBALS['SITE_DB']->query_delete('w_members', array('id' => -$realm - 1));
+    $GLOBALS['SITE_DB']->query_delete('w_members', ['id' => -$realm - 1]);
 
     // Send all people in realm back to 0
-    $GLOBALS['SITE_DB']->query_update('w_members', array('location_x' => 0, 'location_y' => 0), array('location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => 0, 'location_y' => 0], ['location_realm' => $realm]);
 
     // Delete from db
-    $GLOBALS['SITE_DB']->query_delete('w_realms', array('id' => $realm), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('w_realms', ['id' => $realm], '', 1);
 
     buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
 }
@@ -773,17 +773,17 @@ function edit_room_wrap($member_id, $name, $text, $password_question, $password_
     // Get $realm,$x,$y from $member_id
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm)) != $member_id)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'owner', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]) != $member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $new_realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $new_realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $new_realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $new_realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
     // Make sure the new x,y,realm is free
     if (($x != $new_x) || ($y != $new_y) || ($realm != $new_realm)) {
-        $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', array('location_realm' => $new_realm, 'location_x' => $new_x, 'location_y' => $new_y));
+        $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'name', ['location_realm' => $new_realm, 'location_x' => $new_x, 'location_y' => $new_y]);
         if ($r !== null) {
             buildr_refresh_with_message(do_lang_tempcode('W_ROOM_ALREADY'), 'warn');
         }
@@ -819,9 +819,9 @@ function edit_room_wrap($member_id, $name, $text, $password_question, $password_
  */
 function edit_room($name, $realm, $x, $y, $text, $password_question, $password_answer, $password_fail_message, $required_item, $locked_up, $locked_down, $locked_right, $locked_left, $picture_url, $allow_portal, $new_owner, $new_x, $new_y, $new_realm)
 {
-    $GLOBALS['SITE_DB']->query_update('w_rooms', array('r_text' => $text, 'password_question' => $password_question, 'password_answer' => $password_answer, 'password_fail_message' => $password_fail_message, 'required_item' => $required_item, 'picture_url' => $picture_url, 'locked_up' => $locked_up, 'locked_down' => $locked_down, 'locked_right' => $locked_right, 'locked_left' => $locked_left, 'name' => $name, 'allow_portal' => $allow_portal, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'owner' => $new_owner), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm), '', 1);
-    $GLOBALS['SITE_DB']->query_update('w_members', array('location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm));
-    $GLOBALS['SITE_DB']->query_update('w_portals', array('start_location_x' => $new_x, 'start_location_y' => $new_y, 'start_location_realm' => $new_realm), array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm));
+    $GLOBALS['SITE_DB']->query_update('w_rooms', ['r_text' => $text, 'password_question' => $password_question, 'password_answer' => $password_answer, 'password_fail_message' => $password_fail_message, 'required_item' => $required_item, 'picture_url' => $picture_url, 'locked_up' => $locked_up, 'locked_down' => $locked_down, 'locked_right' => $locked_right, 'locked_left' => $locked_left, 'name' => $name, 'allow_portal' => $allow_portal, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'owner' => $new_owner], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
+    $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm]);
+    $GLOBALS['SITE_DB']->query_update('w_portals', ['start_location_x' => $new_x, 'start_location_y' => $new_y, 'start_location_realm' => $new_realm], ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm]);
 }
 
 /**
@@ -849,9 +849,9 @@ function edit_realm_wrap($member_id, $name, $troll_name, $qa, $private, $new_own
         buildr_refresh_with_message(do_lang_tempcode('W_MISSING_TROLL_NAME'), 'warn');
     }
 
-    $realm = $GLOBALS['SITE_DB']->query_select_value('w_members', 'location_realm', array('id' => $member_id));
+    $realm = $GLOBALS['SITE_DB']->query_select_value('w_members', 'location_realm', ['id' => $member_id]);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $realm)) != $member_id)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $realm]) != $member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
@@ -871,7 +871,7 @@ function edit_realm_wrap($member_id, $name, $troll_name, $qa, $private, $new_own
  */
 function edit_realm($realm, $name, $troll_name, $qa, $private, $new_owner)
 {
-    $_qa = array();
+    $_qa = [];
     for ($i = 1; $i <= 30; $i++) {
         if (strlen($qa[$i]['q']) > 0) {
             $_qa['q' . strval($i)] = $qa[$i]['q'];
@@ -882,7 +882,7 @@ function edit_realm($realm, $name, $troll_name, $qa, $private, $new_owner)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('w_realms', array_merge($_qa, array('name' => $name, 'troll_name' => $troll_name, 'r_private' => $private, 'owner' => $new_owner)), array('id' => $realm), '', 1);
+    $GLOBALS['SITE_DB']->query_update('w_realms', array_merge($_qa, ['name' => $name, 'troll_name' => $troll_name, 'r_private' => $private, 'owner' => $new_owner]), ['id' => $realm], '', 1);
 }
 
 /**
@@ -922,22 +922,22 @@ function edit_portal_wrap($member_id, $dest_realm, $name, $text, $end_location_r
     // Get $realm,$x,$y from $member_id
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm)) != $member_id)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_portals', 'owner', ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm]) != $member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $new_realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $new_realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $new_realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $new_realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_PORTAL_TO_PRIVATE'), 'warn');
     }
 
     if ($new_realm != $realm) {
-        if ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'allow_portal', array('location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm)) == 0) {
+        if ($GLOBALS['SITE_DB']->query_select_value('w_rooms', 'allow_portal', ['location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm]) == 0) {
             buildr_refresh_with_message(do_lang_tempcode('W_BAD_START'), 'warn');
         }
     }
 
     // Check $end_location_realm exists
-    $allow_portal = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'allow_portal', array('location_x' => $end_location_x, 'location_y' => $end_location_y, 'location_realm' => $end_location_realm));
+    $allow_portal = $GLOBALS['SITE_DB']->query_select_value_if_there('w_rooms', 'allow_portal', ['location_x' => $end_location_x, 'location_y' => $end_location_y, 'location_realm' => $end_location_realm]);
     if ($allow_portal === null) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_END'), 'warn');
     }
@@ -947,13 +947,13 @@ function edit_portal_wrap($member_id, $dest_realm, $name, $text, $end_location_r
 
     if (($dest_realm != $end_location_realm) || ($x != $new_x) || ($y != $new_y) || ($realm != $new_realm)) {
         // Check we don't have a portal to this realm here already
-        $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_portals', 'name', array('start_location_x' => $new_x, 'start_location_y' => $new_y, 'start_location_realm' => $new_realm, 'end_location_realm' => $end_location_realm));
+        $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_portals', 'name', ['start_location_x' => $new_x, 'start_location_y' => $new_y, 'start_location_realm' => $new_realm, 'end_location_realm' => $end_location_realm]);
         if ($t !== null) {
             buildr_refresh_with_message(do_lang_tempcode('W_DUPE_END'), 'warn');
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('w_portals', array('name' => $name, 'p_text' => $text, 'end_location_realm' => $end_location_realm, 'end_location_x' => $end_location_x, 'end_location_y' => $end_location_y, 'start_location_realm' => $new_realm, 'start_location_x' => $new_x, 'start_location_y' => $new_y, 'owner' => $new_owner), array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm), '', 1);
+    $GLOBALS['SITE_DB']->query_update('w_portals', ['name' => $name, 'p_text' => $text, 'end_location_realm' => $end_location_realm, 'end_location_x' => $end_location_x, 'end_location_y' => $end_location_y, 'start_location_realm' => $new_realm, 'start_location_x' => $new_x, 'start_location_y' => $new_y, 'owner' => $new_owner], ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $dest_realm], '', 1);
 
     buildr_refresh_with_message(do_lang_tempcode('SUCCESS'));
 }
@@ -978,7 +978,7 @@ function edit_item_wrap($member_id, $original_name, $name, $bribable, $healthy, 
         buildr_refresh_with_message(do_lang_tempcode('W_MISSING_NAME'), 'warn');
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', array('name' => $original_name)) != $member_id)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $original_name]) != $member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
@@ -1015,22 +1015,22 @@ function edit_item($name, $original_name, $bribable, $healthy, $picture_url, $ne
 {
     // Support reuploading
     if (strlen($picture_url) > 0) {
-        $GLOBALS['SITE_DB']->query_update('w_itemdef', array('picture_url' => $picture_url), array('name' => $original_name), '', 1);
+        $GLOBALS['SITE_DB']->query_update('w_itemdef', ['picture_url' => $picture_url], ['name' => $original_name], '', 1);
     }
 
     // Support renaming
     if ((strlen($name) > 0) && ($name != $original_name)) {
-        $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_itemdef', 'bribable', array('name' => $name));
+        $r = $GLOBALS['SITE_DB']->query_select_value_if_there('w_itemdef', 'bribable', ['name' => $name]);
         if ($r !== null) {
             buildr_refresh_with_message(do_lang_tempcode('W_DUPE_ITEM'), 'warn');
         }
-        $GLOBALS['SITE_DB']->query_update('w_itemdef', array('name' => $name), array('name' => $original_name), '', 1);
-        $GLOBALS['SITE_DB']->query_update('w_items', array('name' => $name), array('name' => $original_name), '', 1);
-        $GLOBALS['SITE_DB']->query_update('w_inventory', array('item_name' => $name), array('item_name' => $original_name), '', 1);
+        $GLOBALS['SITE_DB']->query_update('w_itemdef', ['name' => $name], ['name' => $original_name], '', 1);
+        $GLOBALS['SITE_DB']->query_update('w_items', ['name' => $name], ['name' => $original_name], '', 1);
+        $GLOBALS['SITE_DB']->query_update('w_inventory', ['item_name' => $name], ['item_name' => $original_name], '', 1);
     }
 
     // General editing of template
-    $GLOBALS['SITE_DB']->query_update('w_itemdef', array('owner' => $new_owner, 'the_description' => $description, 'max_per_player' => $max_per_player, 'replicateable' => $replicateable, 'bribable' => $bribable, 'healthy' => $healthy), array('name' => $name), '', 1);
+    $GLOBALS['SITE_DB']->query_update('w_itemdef', ['owner' => $new_owner, 'the_description' => $description, 'max_per_player' => $max_per_player, 'replicateable' => $replicateable, 'bribable' => $bribable, 'healthy' => $healthy], ['name' => $name], '', 1);
 }
 
 /**
@@ -1051,27 +1051,27 @@ function edit_item_wrap_copy($member_id, $name, $price, $not_infinite, $new_x, $
         $price = 0;
     }
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_items', 'copy_owner', array('name' => $name)) != $member_id)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_items', 'copy_owner', ['name' => $name]) != $member_id)) {
         buildr_refresh_with_message(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())), 'warn');
     }
 
     // Get $realm,$x,$y from $member_id
     list($realm, $x, $y) = get_loc_details($member_id);
 
-    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', array('id' => $new_realm)) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', array('id' => $new_realm)) == 1)) {
+    if ((!has_privilege($member_id, 'administer_buildr')) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'owner', ['id' => $new_realm]) != $member_id) && ($GLOBALS['SITE_DB']->query_select_value('w_realms', 'r_private', ['id' => $new_realm]) == 1)) {
         buildr_refresh_with_message(do_lang_tempcode('W_NO_ACCESS_MOVE'), 'warn');
     }
 
     if (($x != $new_x) || ($y != $new_y) || ($realm != $new_realm)) {
         // Check we don't have a copy of this item at new dest already
-        $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'name', array('location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'copy_owner' => $member, 'name' => $name));
+        $t = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'name', ['location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm, 'copy_owner' => $member, 'name' => $name]);
         if ($t !== null) {
             buildr_refresh_with_message(do_lang_tempcode('W_COPY_SOURCE_ALREADY'), 'warn');
         }
     }
 
     // Fix infinity source thing... we can never make a non-infinite source into an infinite source
-    $old_not_infinite = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'not_infinite', array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $member, 'name' => $name));
+    $old_not_infinite = $GLOBALS['SITE_DB']->query_select_value_if_there('w_items', 'not_infinite', ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $member, 'name' => $name]);
     if ($old_not_infinite === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -1101,5 +1101,5 @@ function edit_item_wrap_copy($member_id, $name, $price, $not_infinite, $new_x, $
  */
 function edit_item_copy($member_id, $name, $not_infinite, $price, $new_x, $new_y, $new_realm, $x, $y, $realm)
 {
-    $GLOBALS['SITE_DB']->query_update('w_items', array('not_infinite' => $not_infinite, 'price' => $price, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $member_id, 'name' => $name));
+    $GLOBALS['SITE_DB']->query_update('w_items', ['not_infinite' => $not_infinite, 'price' => $price, 'location_x' => $new_x, 'location_y' => $new_y, 'location_realm' => $new_realm], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'copy_owner' => $member_id, 'name' => $name]);
 }

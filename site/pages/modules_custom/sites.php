@@ -41,7 +41,7 @@ class Module_sites
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -70,7 +70,7 @@ class Module_sites
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('sites', array(
+        $GLOBALS['SITE_DB']->create_table('sites', [
             's_codename' => '*ID_TEXT',
             's_name' => 'SHORT_TEXT',
             's_description' => 'LONG_TEXT',
@@ -84,30 +84,30 @@ class Module_sites
             's_sponsored_in_category' => 'BINARY',
             's_show_in_directory' => 'BINARY',
             's_sent_expire_message' => 'BINARY',
-        ));
-        $GLOBALS['SITE_DB']->create_index('sites', 'sponsored', array('s_sponsored_in_category'));
-        $GLOBALS['SITE_DB']->create_index('sites', 'timeorder', array('s_add_time'));
-        $GLOBALS['SITE_DB']->create_index('sites', '#s_name', array('s_name'));
-        $GLOBALS['SITE_DB']->create_index('sites', '#s_description', array('s_description'));
-        $GLOBALS['SITE_DB']->create_index('sites', '#s_codename', array('s_codename'));
+        ]);
+        $GLOBALS['SITE_DB']->create_index('sites', 'sponsored', ['s_sponsored_in_category']);
+        $GLOBALS['SITE_DB']->create_index('sites', 'timeorder', ['s_add_time']);
+        $GLOBALS['SITE_DB']->create_index('sites', '#s_name', ['s_name']);
+        $GLOBALS['SITE_DB']->create_index('sites', '#s_description', ['s_description']);
+        $GLOBALS['SITE_DB']->create_index('sites', '#s_codename', ['s_codename']);
 
-        $GLOBALS['SITE_DB']->create_table('sites_email', array(
+        $GLOBALS['SITE_DB']->create_table('sites_email', [
             's_codename' => '*ID_TEXT',
             's_email_from' => '*ID_TEXT',
             's_email_to' => 'SHORT_TEXT',
-        ));
+        ]);
 
-        $GLOBALS['SITE_DB']->create_table('sites_deletion_codes', array(
+        $GLOBALS['SITE_DB']->create_table('sites_deletion_codes', [
             's_codename' => '*ID_TEXT',
             's_code' => 'ID_TEXT',
             's_time' => 'TIME',
-        ));
+        ]);
 
-        $GLOBALS['SITE_DB']->create_table('sites_advert_pings', array(
+        $GLOBALS['SITE_DB']->create_table('sites_advert_pings', [
             'id' => '*AUTO',
             's_codename' => 'ID_TEXT',
             's_time' => 'TIME',
-        ));
+        ]);
     }
 
     /**
@@ -125,14 +125,14 @@ class Module_sites
             return null;
         }
 
-        $ret = array();
+        $ret = [];
 
         if (strpos(get_db_type(), 'mysql') !== false) {
-            $ret['demonstratr'] = array('CMS_ADD_SITE', 'admin/add');
+            $ret['demonstratr'] = ['CMS_ADD_SITE', 'admin/add'];
         }
 
         if (addon_installed('search')) {
-            $ret['hostingcopy_step1'] = array('HOSTING_COPY', 'menu/rich_content/downloads');
+            $ret['hostingcopy_step1'] = ['HOSTING_COPY', 'menu/rich_content/downloads'];
         }
 
         return $ret;
@@ -230,9 +230,9 @@ class Module_sites
         $fields->attach(form_input_line(do_lang_tempcode('FTP_USERNAME'), '', 'ftp_username', '', true));
         $fields->attach(form_input_password(do_lang_tempcode('FTP_PASSWORD'), '', 'ftp_password', true));
         $fields->attach(form_input_line(do_lang_tempcode('SEARCH_UNDERNEATH'), do_lang_tempcode('DESCRIPTION_FTP_SEARCH_UNDER'), 'search_under', '/', false));
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'hostingcopy_step2'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'hostingcopy_step2'], '_SELF');
         $submit_name = do_lang('PROCEED');
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '32928b56f4f4b0e7d7e835673dc5aff8',
             'TITLE' => $this->title,
             'HIDDEN' => '',
@@ -241,7 +241,7 @@ class Module_sites
             'TEXT' => do_lang_tempcode('CMS_COPYWAIT'),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -357,10 +357,10 @@ class Module_sites
         $fields->attach(form_input_list(do_lang_tempcode('FTP_DIRECTORY'), '', 'path', $list));
         $fields->attach(form_input_line(do_lang_tempcode('NEW_DIRECTORY'), do_lang_tempcode('DESCRIPTION_NEW_DIRECTORY'), 'extra_path', '', false));
         $fields->attach(form_input_line(do_lang_tempcode('BASE_URL'), do_lang_tempcode('DESCRIPTION_BASE_URL'), 'base_url', $base_url, true));
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'hostingcopy_step3'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'hostingcopy_step3'], '_SELF');
         $submit_name = do_lang('HOSTING_COPY');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '0758605aeb4ee00f1eee562c14d16a5f',
             'HIDDEN' => $hidden,
             'TITLE' => $this->title,
@@ -369,7 +369,7 @@ class Module_sites
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/upload',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -405,7 +405,7 @@ class Module_sites
         }
 
         // Do upload to hosting
-        $array = array('install.php' => get_file_base() . '/uploads/downloads/install.php', 'data.cms' => get_file_base() . '/uploads/downloads/data.cms');
+        $array = ['install.php' => get_file_base() . '/uploads/downloads/install.php', 'data.cms' => get_file_base() . '/uploads/downloads/data.cms'];
         foreach ($array as $filename => $tmp_file) {
             if (!@ftp_put($conn_id, $filename, $tmp_file, FTP_BINARY)) {
                 ftp_close($conn_id);
@@ -425,13 +425,13 @@ class Module_sites
         }
         $install_url = $base_url . 'install.php';
 
-        return do_template('CMS_HOSTING_COPY_SUCCESS_SCREEN', array(
+        return do_template('CMS_HOSTING_COPY_SUCCESS_SCREEN', [
             '_GUID' => '5946fe2252fe1a67ba54e2c20a1d4d63',
             'TITLE' => $this->title,
             'FTP_FOLDER' => $path . (($extra_path == '') ? '' : ($extra_path . '/')),
-            'HIDDEN' => build_keep_post_fields(array('path', 'extra_path')),
+            'HIDDEN' => build_keep_post_fields(['path', 'extra_path']),
             'INSTALL_URL' => $install_url,
-        ));
+        ]);
     }
 
     /**
@@ -452,9 +452,9 @@ class Module_sites
         $fields->attach(form_input_password(do_lang_tempcode('CONFIRM_PASSWORD'), '', 'confirm_password', true));
 
         $text = do_lang_tempcode('CMS_ENTER_DETAILS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_demonstratr'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_demonstratr'], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '0ed12af5b64c65a673b9837bd47a80b1',
             'TITLE' => $this->title,
             'SUBMIT_ICON' => 'buttons/proceed',
@@ -463,7 +463,7 @@ class Module_sites
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => '',
-        ));
+        ]);
     }
 
     /**
@@ -492,6 +492,6 @@ class Module_sites
 
         demonstratr_add_site($codename, $name, $email_address, $password, $description, $category, $show_in_directory);
 
-        return do_template('INFORM_SCREEN', array('_GUID' => 'bedc8955800508d6b91515e44e8a58ef', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('CMS_NEW_SITE', escape_html($codename))));
+        return do_template('INFORM_SCREEN', ['_GUID' => 'bedc8955800508d6b91515e44e8a58ef', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('CMS_NEW_SITE', escape_html($codename))]);
     }
 }

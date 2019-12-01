@@ -30,7 +30,7 @@ class Hook_config_spam_ban_threshold
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_BAN_THRESHOLD',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_ban_threshold
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

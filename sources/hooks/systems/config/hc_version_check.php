@@ -30,7 +30,7 @@ class Hook_config_hc_version_check
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_VERSION_CHECK',
             'type' => 'list',
             'category' => 'HEALTH_CHECK',
@@ -43,7 +43,7 @@ class Hook_config_hc_version_check
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

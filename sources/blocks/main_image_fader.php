@@ -30,14 +30,14 @@ class Block_main_image_fader
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'time', 'zone', 'order', 'as_guest', 'check');
+        $info['parameters'] = ['param', 'time', 'zone', 'order', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_image_fader
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
@@ -90,7 +90,7 @@ PHP;
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         if (@cms_empty_safe($map['param'])) {
-            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array(), 'GROUP BY cat ORDER BY COUNT(*) DESC');
+            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', [], 'GROUP BY cat ORDER BY COUNT(*) DESC');
             if ($cat === null) {
                 $cat = 'root';
             }
@@ -109,10 +109,10 @@ PHP;
             $cat_select = selectcode_to_sqlfragment($cat, 'cat', 'galleries', 'parent_id', 'cat', 'name', false, false);
         }
 
-        $images = array();
-        $images_full = array();
-        $titles = array();
-        $html = array();
+        $images = [];
+        $images_full = [];
+        $titles = [];
+        $html = [];
 
         $extra_join_image = '';
         $extra_join_video = '';
@@ -144,9 +144,9 @@ PHP;
             $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
         }
 
-        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, array('title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS'));
-        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,thumb_url AS url,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, array('title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS'));
-        $all_rows = array();
+        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
+        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,thumb_url AS url,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY add_date ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
+        $all_rows = [];
         if ($order != '') {
             foreach (explode(',', $order) as $o) {
                 $num = substr($o, 1);
@@ -189,16 +189,16 @@ PHP;
             $images_full[] = $full_url;
 
             $titles[] = get_translated_text($row['title']);
-            $just_media_row = db_map_restrict($row, array('id', 'the_description'));
+            $just_media_row = db_map_restrict($row, ['id', 'the_description']);
             $html[] = get_translated_tempcode($row['content_type'] . 's', $just_media_row, 'the_description');
         }
 
         if (empty($images)) {
             $submit_url = null;
-            if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', array('galleries', $cat))) && (can_submit_to_gallery($cat))) {
-                $submit_url = build_url(array('page' => 'cms_galleries', 'type' => 'add', 'cat' => $cat, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_galleries'));
+            if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', ['galleries', $cat])) && (can_submit_to_gallery($cat))) {
+                $submit_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => $cat, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_galleries'));
             }
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'aa84d65b8dd134ba6cd7b1b7bde99de2',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => false,
@@ -206,16 +206,16 @@ PHP;
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'image'),
                 'ADD_NAME' => do_lang_tempcode('ADD_IMAGE'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
 
         $nice_cat = str_replace('*', '', $cat);
         if (preg_match('#^[' . URL_CONTENT_REGEXP . ']+$#', $nice_cat) == 0) {
             $nice_cat = 'root';
         }
-        $gallery_url = build_url(array('page' => 'galleries', 'type' => 'browse', 'id' => $nice_cat), $zone);
+        $gallery_url = build_url(['page' => 'galleries', 'type' => 'browse', 'id' => $nice_cat], $zone);
 
-        return do_template('BLOCK_MAIN_IMAGE_FADER', array(
+        return do_template('BLOCK_MAIN_IMAGE_FADER', [
             '_GUID' => '92337749fa084393a97f97eedbcf81f6',
             'BLOCK_ID' => $block_id,
             'GALLERY_URL' => $gallery_url,
@@ -230,6 +230,6 @@ PHP;
             'TITLES' => $titles,
             'HTML' => $html,
             'MILL' => strval($mill),
-        ));
+        ]);
     }
 }

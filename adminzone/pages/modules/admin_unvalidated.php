@@ -30,7 +30,7 @@ class Module_admin_unvalidated
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_unvalidated
             return null;
         }
 
-        return array(
-            '!' => array('UNVALIDATED_RESOURCES', 'menu/adminzone/audit/unvalidated'),
-        );
+        return [
+            '!' => ['UNVALIDATED_RESOURCES', 'menu/adminzone/audit/unvalidated'],
+        ];
     }
 
     public $title;
@@ -92,7 +92,7 @@ class Module_admin_unvalidated
      */
     public function run()
     {
-        $out = array();
+        $out = [];
 
         require_code('form_templates');
 
@@ -105,7 +105,7 @@ class Module_admin_unvalidated
 
             $identifier_select = is_array($info['db_identifier']) ? implode(',', $info['db_identifier']) : $info['db_identifier'];
             $db = array_key_exists('db', $info) ? $info['db'] : $GLOBALS['SITE_DB'];
-            $rows = $db->query_select($info['db_table'], array($identifier_select . (array_key_exists('db_title', $info) ? (',' . $info['db_title']) : '')), array($info['db_validated'] => 0), '', intval(get_option('general_safety_listing_limit')));
+            $rows = $db->query_select($info['db_table'], [$identifier_select . (array_key_exists('db_title', $info) ? (',' . $info['db_title']) : '')], [$info['db_validated'] => 0], '', intval(get_option('general_safety_listing_limit')));
             if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
                 attach_message(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'), 'warn');
             }
@@ -137,11 +137,11 @@ class Module_admin_unvalidated
             }
 
             if (!$content->is_empty()) {
-                $post_url = build_url(array('page' => $info['edit_module'], 'type' => $info['edit_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/), get_module_zone($info['edit_module']), array(), false, true);
+                $post_url = build_url(['page' => $info['edit_module'], 'type' => $info['edit_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/], get_module_zone($info['edit_module']), [], false, true);
                 $fields = form_input_list(do_lang_tempcode('CONTENT'), '', $info['edit_identifier'], $content, null, true);
 
                 // Could debate whether to include "'TARGET' => '_blank',". However it does redirect back, so it's a nice linear process like this. If it was new window it could be more efficient, but also would confuse people with a lot of new windows opening and not closing.
-                $content = do_template('FORM', array(
+                $content = do_template('FORM', [
                     '_GUID' => '51dcee39273a0fee29569190344f2e41',
                     'SKIP_REQUIRED' => true,
                     'GET' => true,
@@ -151,10 +151,10 @@ class Module_admin_unvalidated
                     'FIELDS' => $fields,
                     'URL' => $post_url,
                     'TEXT' => '',
-                ));
+                ]);
             }
 
-            $out[$info['title']->evaluate()] = do_template('UNVALIDATED_SECTION', array('_GUID' => '838240008e190b9cbaa0280fbddd6baf', 'TITLE' => $info['title'], 'CONTENT' => $content));
+            $out[$info['title']->evaluate()] = do_template('UNVALIDATED_SECTION', ['_GUID' => '838240008e190b9cbaa0280fbddd6baf', 'TITLE' => $info['title'], 'CONTENT' => $content]);
         }
 
         cms_mb_ksort($out, SORT_NATURAL | SORT_FLAG_CASE);
@@ -164,11 +164,11 @@ class Module_admin_unvalidated
             $_out->attach($__out);
         }
 
-        return do_template('UNVALIDATED_SCREEN', array(
+        return do_template('UNVALIDATED_SCREEN', [
             '_GUID' => '4e971f1c8851b821af030b5c7bbcb3fb',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('UNVALIDATED_PAGE_TEXT'),
             'SECTIONS' => $_out,
-        ));
+        ]);
     }
 }

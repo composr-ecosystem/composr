@@ -47,17 +47,17 @@ abstract class FieldsSearchHook
      */
     protected function _get_extra_sort_fields($catalogue_name)
     {
-        static $EXTRA_SORT_FIELDS_CACHE = array();
+        static $EXTRA_SORT_FIELDS_CACHE = [];
         if (array_key_exists($catalogue_name, $EXTRA_SORT_FIELDS_CACHE)) {
             return $EXTRA_SORT_FIELDS_CACHE[$catalogue_name];
         }
 
-        $extra_sort_fields = array();
+        $extra_sort_fields = [];
 
         if (addon_installed('catalogues')) {
             require_code('fields');
 
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_name', 'cf_type', 'cf_default'), array('c_name' => $catalogue_name, 'cf_is_sortable' => 1, 'cf_visible' => 1), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_type', 'cf_default'], ['c_name' => $catalogue_name, 'cf_is_sortable' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
             foreach ($rows as $i => $row) {
                 $ob = get_fields_hook($row['cf_type']);
                 $temp = $ob->inputted_to_sql_for_search($row, $i);
@@ -81,11 +81,11 @@ abstract class FieldsSearchHook
     protected function _get_fields($catalogue_name)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        $fields = array();
-        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name, 'cf_allow_template_search' => 1, 'cf_visible' => 1), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = [];
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name, 'cf_allow_template_search' => 1, 'cf_visible' => 1], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         require_code('fields');
         foreach ($rows as $row) {
             $ob = get_fields_hook($row['cf_type']);
@@ -95,7 +95,7 @@ abstract class FieldsSearchHook
                 $special = get_param_string('option_' . strval($row['id']), '', INPUT_FILTER_GET_COMPLEX);
                 $extra = '';
                 $display = get_translated_text($row['cf_name']);
-                $fields[] = array('NAME' => strval($row['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+                $fields[] = ['NAME' => strval($row['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
             } else {
                 $fields[] = $temp;
             }
@@ -124,8 +124,8 @@ abstract class FieldsSearchHook
         }
 
         $table = '';
-        $trans_fields = array('!' => '!');
-        $nontrans_fields = array();
+        $trans_fields = ['!' => '!'];
+        $nontrans_fields = [];
         $title_field = null;
         require_code('fields');
         foreach ($fields as $i => $field) {
@@ -266,7 +266,7 @@ abstract class FieldsSearchHook
             $where_clause .= db_string_equal_to($table_alias . '.c_name', $catalogue_name);
         }
 
-        return array($table, $where_clause, $trans_fields, $nontrans_fields, $title_field);
+        return [$table, $where_clause, $trans_fields, $nontrans_fields, $title_field];
     }
 
     /**
@@ -371,7 +371,7 @@ function is_under_radar($test)
  */
 function find_search_suggestions($request, $search_type = '')
 {
-    $suggestions = array();
+    $suggestions = [];
 
     if (strlen($request) < MINIMUM_AUTOCOMPLETE_LENGTH) {
         return $suggestions;
@@ -499,13 +499,13 @@ function do_search_block($map)
     $conjunctive_operator = array_key_exists('conjunctive_operator', $map) ? $map['conjunctive_operator'] : 'AND';
     $_extra = array_key_exists('extra', $map) ? $map['extra'] : '';
 
-    $map2 = array('page' => 'search', 'type' => 'results');
+    $map2 = ['page' => 'search', 'type' => 'results'];
     if (array_key_exists('search_under', $map)) {
         $map2['search_under'] = $map['search_under'];
     }
-    $url = build_url($map2, $zone, array(), false, true);
+    $url = build_url($map2, $zone, [], false, true);
 
-    $extra = array();
+    $extra = [];
     foreach (explode(',', $_extra) as $_bits) {
         $bits = explode('=', $_bits, 2);
         if (count($bits) == 2) {
@@ -513,9 +513,9 @@ function do_search_block($map)
         }
     }
 
-    $input_fields = array('content' => do_lang('SEARCH_TITLE'));
+    $input_fields = ['content' => do_lang('SEARCH_TITLE')];
     if (array_key_exists('input_fields', $map)) {
-        $input_fields = array();
+        $input_fields = [];
         foreach (explode(',', $map['input_fields']) as $_bits) {
             $bits = explode('=', $_bits, 2);
             if (count($bits) == 2) {
@@ -524,12 +524,12 @@ function do_search_block($map)
         }
     }
 
-    $search_types = array();
+    $search_types = [];
 
-    $limit_to = array('all_defaults');
-    $extrax = array();
+    $limit_to = ['all_defaults'];
+    $extrax = [];
     if ((array_key_exists('limit_to', $map)) && ($map['limit_to'] != 'all_defaults')) {
-        $limit_to = array();
+        $limit_to = [];
         $map['limit_to'] = str_replace('|', ',', $map['limit_to']); // "|" looks cleaner in templates
         foreach (explode(',', $map['limit_to']) as $key) {
             $limit_to[] = 'search_' . $key;
@@ -556,13 +556,13 @@ function do_search_block($map)
     unset($url_map['title']);
     unset($url_map['limit_to']);
     unset($url_map['block']);
-    $full_url = build_url(array('page' => 'search', 'type' => 'browse') + $url_map + $extra + $extrax, $zone);
+    $full_url = build_url(['page' => 'search', 'type' => 'browse'] + $url_map + $extra + $extrax, $zone);
 
     if ((!array_key_exists('content', $input_fields)) && (count($input_fields) != 1)) {
         $extra['content'] = '';
     }
 
-    $options = array();
+    $options = [];
     if ((count($limit_to) == 1) && ($limit_to[0] != 'all_defaults')) { // If we are doing a specific hook
         $id = preg_replace('#^search_#', '', $limit_to[0]);
 
@@ -573,26 +573,26 @@ function do_search_block($map)
             if (array_key_exists('special_on', $info)) {
                 foreach ($info['special_on'] as $name => $display) {
                     $_name = 'option_' . $id . '_' . $name;
-                    $options[$_name] = array('SEARCH_FOR_SEARCH_DOMAIN_OPTION', array('CHECKED' => (get_param_string('content', null, INPUT_FILTER_GET_COMPLEX) === null) || (get_param_integer($_name, 0) == 1), 'DISPLAY' => $display));
+                    $options[$_name] = ['SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['CHECKED' => (get_param_string('content', null, INPUT_FILTER_GET_COMPLEX) === null) || (get_param_integer($_name, 0) == 1), 'DISPLAY' => $display]];
                 }
             }
             if (array_key_exists('special_off', $info)) {
                 foreach ($info['special_off'] as $name => $display) {
                     $_name = 'option_' . $id . '_' . $name;
-                    $options[$_name] = array('SEARCH_FOR_SEARCH_DOMAIN_OPTION', array('CHECKED' => (get_param_integer($_name, 0) == 1), 'DISPLAY' => $display));
+                    $options[$_name] = ['SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['CHECKED' => (get_param_integer($_name, 0) == 1), 'DISPLAY' => $display]];
                 }
             }
             if (method_exists($object, 'get_fields')) {
                 $fields = $object->get_fields();
                 foreach ($fields as $field) {
                     $_name = 'option_' . $field['NAME'];
-                    $options[$_name] = array('SEARCH_FOR_SEARCH_DOMAIN_OPTION' . $field['TYPE'], array('DISPLAY' => $field['DISPLAY'], 'SPECIAL' => $field['SPECIAL'], 'CHECKED' => array_key_exists('checked', $field) ? $field['CHECKED'] : false));
+                    $options[$_name] = ['SEARCH_FOR_SEARCH_DOMAIN_OPTION' . $field['TYPE'], ['DISPLAY' => $field['DISPLAY'], 'SPECIAL' => $field['SPECIAL'], 'CHECKED' => array_key_exists('checked', $field) ? $field['CHECKED'] : false]];
                 }
             }
         }
     }
 
-    $_input_fields = array();
+    $_input_fields = [];
     foreach ($input_fields as $key => $val) {
         $input = new Tempcode();
         if (isset($options['option_' . $key])) { // If there is an input option for this particular $key
@@ -603,13 +603,13 @@ function do_search_block($map)
             }
             $input = do_template($options['option_' . $key][0], $tpl_params);
         }
-        $_input_fields[$key] = array(
+        $_input_fields[$key] = [
             'LABEL' => $val,
             'INPUT' => $input,
-        );
+        ];
     }
 
-    return array(
+    return [
         'TITLE' => $title,
         'INPUT_FIELDS' => $_input_fields,
         'EXTRA' => $extra,
@@ -625,5 +625,5 @@ function do_search_block($map)
         'URL' => $url,
         'FULL_SEARCH_URL' => $full_url,
         'SEARCH_TYPE' => (count($search_types) != 1) ? null : $search_types[0],
-    );
+    ];
 }

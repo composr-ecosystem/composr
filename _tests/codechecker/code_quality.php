@@ -36,7 +36,7 @@ ini_set('display_errors', '1');
 
 ini_set('pcre.jit', '0'); // Compatibility issue in PHP 7.3, "JIT compilation failed: no more memory"
 
-$extra = array();
+$extra = [];
 if (isset($_SERVER['argv'])) {
     foreach ($_SERVER['argv'] as $index => $argv) {
         $argv = str_replace('\\\\', '\\', $argv);
@@ -113,27 +113,27 @@ if (file_exists($COMPOSR_PATH . '/data/db_meta.bin') && (filemtime($COMPOSR_PATH
     $_table_fields = unserialize(file_get_contents($COMPOSR_PATH . '/data/db_meta.bin'));
     $TABLE_FIELDS = $_table_fields['tables'];
 } else {
-    $TABLE_FIELDS = array();
+    $TABLE_FIELDS = [];
 }
-$TABLE_FIELDS['db_meta'] = array(
+$TABLE_FIELDS['db_meta'] = [
     'addon' => 'core',
-    'fields' => array(
+    'fields' => [
         'm_table' => '*ID_TEXT',
         'm_name' => '*ID_TEXT',
         'm_type' => 'ID_TEXT',
-    )
-);
-$TABLE_FIELDS['db_meta_indices'] = array(
+    ]
+];
+$TABLE_FIELDS['db_meta_indices'] = [
     'addon' => 'core',
-    'fields' => array(
+    'fields' => [
         'i_table' => '*ID_TEXT',
         'i_name' => '*ID_TEXT',
         'i_fields' => '*ID_TEXT',
-    )
-);
+    ]
+];
 
 global $KNOWN_EXTRA_FUNCTIONS;
-$KNOWN_EXTRA_FUNCTIONS = array(
+$KNOWN_EXTRA_FUNCTIONS = [
     'critical_error' => true,
     'file_array_exists' => true,
     'file_array_get' => true,
@@ -142,10 +142,10 @@ $KNOWN_EXTRA_FUNCTIONS = array(
     'master__sync_file' => true,
     'master__sync_file_move' => true,
     '__construct' => true,
-);
+];
 
 global $KNOWN_EXTRA_CLASSES;
-$KNOWN_EXTRA_CLASSES = array(
+$KNOWN_EXTRA_CLASSES = [
     'stdClass' => true,
 
     'Exception' => true,
@@ -222,11 +222,11 @@ $KNOWN_EXTRA_CLASSES = array(
     'php_user_filter' => true,
 
     'Directory' => true,
-);
+];
 
 // Special funcs (these may have been defined with stubs, but this says to mark them as requiring guards anyway)...
 global $EXT_FUNCS;
-$EXT_FUNCS = array(
+$EXT_FUNCS = [
     'gzclose' => true,
     'gzopen' => true,
     'gzread' => true,
@@ -300,11 +300,11 @@ $EXT_FUNCS = array(
     'imagetypes' => true,
     'iptcembed' => true,
     'iptcparse' => true,*/
-);
+];
 
 // Error funcs...
 global $FALSE_ERROR_FUNCS;
-$FALSE_ERROR_FUNCS = array(
+$FALSE_ERROR_FUNCS = [
     'base64_decode' => true,
     'fsockopen' => true,
     'ftell' => true,
@@ -468,22 +468,22 @@ $FALSE_ERROR_FUNCS = array(
     'strrpos' => true,
     'strstr' => true,
     'stristr' => true,
-);
+];
 global $NULL_ERROR_FUNCS;
-$NULL_ERROR_FUNCS = array(
+$NULL_ERROR_FUNCS = [
     'array_pop' => true,
     'array_shift' => true,
-);
+];
 global $VAR_ERROR_FUNCS;
-$VAR_ERROR_FUNCS = array(
+$VAR_ERROR_FUNCS = [
     'strpos' => true,
     'strrpos' => true,
     'strstr' => true,
     'stristr' => true,
     'substr_count' => true,
-);
+];
 global $ERROR_FUNCS;
-$ERROR_FUNCS = array(
+$ERROR_FUNCS = [
     'ftp_fput' => true,
     'ftp_nlist' => true,
     'ftp_size' => true,
@@ -598,7 +598,7 @@ $ERROR_FUNCS = array(
     'set_time_limit' => true,
     'exec' => true,
     'passthru' => true,
-);
+];
 
 if (function_exists('set_time_limit')) {
     @set_time_limit(10000);
@@ -606,7 +606,7 @@ if (function_exists('set_time_limit')) {
 
 global $COMPOSR_PATH;
 global $FUNCTION_SIGNATURES;
-$FUNCTION_SIGNATURES = array();
+$FUNCTION_SIGNATURES = [];
 
 if (isset($GLOBALS['API'])) {
     load_function_signatures();
@@ -630,15 +630,15 @@ if (isset($_GET['test'])) {
     $GLOBALS['API'] = 1;
     load_function_signatures();
 
-    $avoid = array();
+    $avoid = [];
     if (isset($_GET['avoid'])) {
         $avoid = explode(',', $_GET['avoid']);
     }
-    $filter = array();
+    $filter = [];
     if (isset($_GET['filter'])) {
         $filter = explode(',', $_GET['filter']);
     }
-    $filter_avoid = array();
+    $filter_avoid = [];
     if (isset($_GET['filter_avoid'])) {
         $filter_avoid = explode(',', $_GET['filter_avoid']);
     }
@@ -666,10 +666,10 @@ if (isset($_GET['test'])) {
 
     $_to_use = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : $_GET['to_use'];
     if (isset($_SERVER['argv']) && array_key_exists('single', $_SERVER['argv'])) {
-        $to_use_multi = array($_to_use);
+        $to_use_multi = [$_to_use];
     } else {
         if ((isset($_SERVER['argv'])) && ((array_key_exists(2, $_SERVER['argv'])) || (array_key_exists('spacedpaths', $_SERVER['argv'])))) {
-            $to_use_multi = array();
+            $to_use_multi = [];
             foreach ($_SERVER['argv'] as $key => $val) {
                 if ((is_integer($key)) && ($key != 0)) {
                     $to_use_multi[] = $val;
@@ -711,7 +711,7 @@ function load_function_signatures()
 function check($structure)
 {
     global $GLOBAL_VARIABLES, $CURRENT_CLASS, $OK_EXTRA_FUNCTIONS, $STRUCTURE;
-    $GLOBAL_VARIABLES = array();
+    $GLOBAL_VARIABLES = [];
     $OK_EXTRA_FUNCTIONS = $structure['ok_extra_functions'];
     $STRUCTURE = $structure;
 
@@ -843,14 +843,14 @@ function check_function($function, $is_closure = false, $inside_class = false)
         if (($ret) && ($func['return']['type'] != 'mixed') && (!in_array('abstract', $function['modifiers'])) && (!isset($LOCAL_VARIABLES['__return']))) {
             log_warning('Function \'' . $function['name'] . '\' is missing a return statement.', $function['offset']);
         }
-        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (array_unique($LOCAL_VARIABLES['__return']['types']) != array('null'))) {
+        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (array_unique($LOCAL_VARIABLES['__return']['types']) != ['null'])) {
             log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function doesn\'t return a value', $LOCAL_VARIABLES['__return']['first_mention']);
         }
 
         // Check return types
         if (($ret) && (isset($LOCAL_VARIABLES['__return']['types']))) {
             foreach ($LOCAL_VARIABLES['__return']['types'] as $i => $ret_type) {
-                ensure_type(array($func['return']['type']), $ret_type, $LOCAL_VARIABLES['__return']['mentions'][$i], 'Bad return type (should be ' . $func['return']['type'] . ' not ' . $ret_type . ')');
+                ensure_type([$func['return']['type']], $ret_type, $LOCAL_VARIABLES['__return']['mentions'][$i], 'Bad return type (should be ' . $func['return']['type'] . ' not ' . $ret_type . ')');
             }
         }
     }
@@ -870,7 +870,7 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
 {
     foreach ($LOCAL_VARIABLES as $name => $v) {
         // Check for type conflicts
-        $observed_types = array();
+        $observed_types = [];
         if (isset($GLOBALS['PEDANTIC'])) {
             foreach ($v['conditioner'] as $conditioner) {
                 if (((!$v['conditioned_null']) && (isset($GLOBALS['NULL_ERROR_FUNCS'][$conditioner]))) || ((!$v['conditioned_false']) && (isset($GLOBALS['FALSE_ERROR_FUNCS'][$conditioner])))) {
@@ -894,23 +894,23 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
             if ($t == 'REAL') {
                 $t = 'float';
             }
-            if (in_array($t, array('MEMBER', 'SHORT_INTEGER', 'UINTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+            if (in_array($t, ['MEMBER', 'SHORT_INTEGER', 'UINTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
                 $t = 'integer';
             }
-            if (in_array($t, array('LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'))) {
+            if (in_array($t, ['LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'])) {
                 $t = 'string';
             }
-            if (in_array($t, array('Tempcode'))) {
+            if (in_array($t, ['Tempcode'])) {
                 $t = 'object';
             }
-            if (in_array($t, array('list', 'map'))) {
+            if (in_array($t, ['list', 'map'])) {
                 $t = 'array';
             }
             if ($t != 'mixed') {
                 $observed_types[$t] = 1;
             }
         }
-        if (array_keys($observed_types) != array('array', 'resource')) {
+        if (array_keys($observed_types) != ['array', 'resource']) {
             if (
                 (count($observed_types) > 3) ||
                 ((count($observed_types) > 1) && (!isset($observed_types['boolean-false'])) && (!isset($observed_types['null']))) ||
@@ -937,7 +937,7 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
         }
 
         // Check for non-used variables
-        if (($GLOBALS['FILENAME'] != 'sources\phpstub.php') && ($v['references'] == 0) && ($name != '__return') && ($name != '_') && (!$v['is_global']) && (!in_array($name, array('db', 'file_base', 'table_prefix', 'old_base_dir', 'upgrade_from_hack', 'upgrade_from', 'this', 'GLOBALS', 'http_response_header',/*'_GET','_POST','_REQUEST','_COOKIE','_SERVER','_ENV', These are intentionally removed as they should only be used at one point in the code*/'_SESSION', '_FILES')))) {
+        if (($GLOBALS['FILENAME'] != 'sources\phpstub.php') && ($v['references'] == 0) && ($name != '__return') && ($name != '_') && (!$v['is_global']) && (!in_array($name, ['db', 'file_base', 'table_prefix', 'old_base_dir', 'upgrade_from_hack', 'upgrade_from', 'this', 'GLOBALS', 'http_response_header',/*'_GET','_POST','_REQUEST','_COOKIE','_SERVER','_ENV', These are intentionally removed as they should only be used at one point in the code*/'_SESSION', '_FILES']))) {
             if (!$v['unused_value']) {
                 log_warning('Non-used ' . ($v['unused_value'] ? 'value' : 'variable') . ' (\'' . $name . '\')', $v['first_mention']);
             }
@@ -945,11 +945,11 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
     }
 }
 
-function check_command($command, $depth, $function_guard = '', $nogo_parameters = array(), $jump_structures = array())
+function check_command($command, $depth, $function_guard = '', $nogo_parameters = [], $jump_structures = [])
 {
     global $LOCAL_VARIABLES, $CURRENT_CLASS, $FUNCTION_SIGNATURES;
     foreach ($command as $i => $c) {
-        if ($c == array()) {
+        if ($c == []) {
             continue;
         }
 
@@ -1008,7 +1008,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 add_variable_reference('__return', $c_pos);
                 set_composr_type('__return', $ret_type);
                 if (!isset($LOCAL_VARIABLES['__return']['mentions'])) {
-                    $LOCAL_VARIABLES['__return']['mentions'] = array();
+                    $LOCAL_VARIABLES['__return']['mentions'] = [];
                 }
                 $LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
                 if (count($command) - 1 > $i) {
@@ -1019,12 +1019,12 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 $switch_type = check_expression($c[1], false, false, $function_guard);
                 foreach ($c[2] as $case) {
                     if ($case[0] !== null) {
-                        $passes = ensure_type(array($switch_type), check_expression($case[0], false, false, $function_guard), $c_pos, 'Switch type inconsistency');
+                        $passes = ensure_type([$switch_type], check_expression($case[0], false, false, $function_guard), $c_pos, 'Switch type inconsistency');
                         if ($passes) {
                             infer_expression_type_to_variable_type($switch_type, $case[0]);
                         }
                     }
-                    check_command($case[1], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('SWITCH')));
+                    check_command($case[1], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['SWITCH']));
                 }
                 break;
             case 'STATIC_ASSIGNMENT':
@@ -1039,15 +1039,15 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
             case 'IF_ELSE':
                 $t = check_expression($c[1], false, false, $function_guard);
                 if ($c[0] == 'IF_ELSE') {
-                    $passes = ensure_type(array('boolean'), $t, $c_pos, 'Conditionals must be boolean (if-else) [is ' . $t . ']', true);
+                    $passes = ensure_type(['boolean'], $t, $c_pos, 'Conditionals must be boolean (if-else) [is ' . $t . ']', true);
                 } else {
-                    $passes = ensure_type(array('boolean'), $t, $c_pos, 'Conditionals must be boolean (if) [is ' . $t . ']', true);
+                    $passes = ensure_type(['boolean'], $t, $c_pos, 'Conditionals must be boolean (if) [is ' . $t . ']', true);
                 }
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
                 $temp_function_guard = $function_guard;
-                foreach (array(0, 1) as $function_parameter_pos) {
+                foreach ([0, 1] as $function_parameter_pos) {
                     if (($c[1][0] == 'BOOLEAN_NOT') && ($c[1][1][0] == 'CALL_DIRECT') && ($c[1][1][1] == 'php_function_allowed' || strpos($c[1][1][1], '_exists') !== false) && (isset($c[1][1][2][$function_parameter_pos])) && ($c[1][1][2][$function_parameter_pos][0][0][0] == 'LITERAL') && ($c[1][1][2][$function_parameter_pos][1][0][0] == 'STRING') && (($c[2][0][0] == 'BREAK') || ($c[2][0][0] == 'CONTINUE') || ($c[2][0][0] == 'RETURN') || (($c[2][0][0] == 'CALL_DIRECT') && ($c[2][0][1] == 'critical_error')))) {
                         $temp_function_guard .= ',' . $c[1][1][2][$function_parameter_pos][0][1][1] . ',';
                     }
@@ -1055,7 +1055,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                         $temp_function_guard .= ',' . $c[1][2][$function_parameter_pos][0][1][1] . ',';
                     }
 
-                    foreach (array(0, 1) as $and_position) { // NB: Can't check 3rd AND position because this is actually nested AND's, so we'd need to write recursive code or more hard-coded checking
+                    foreach ([0, 1] as $and_position) { // NB: Can't check 3rd AND position because this is actually nested AND's, so we'd need to write recursive code or more hard-coded checking
                         if (($c[1][0] == 'BOOLEAN_AND') && ($c[1][$and_position + 1][0] == 'CALL_DIRECT') && ($c[1][$and_position + 1][1] == 'php_function_allowed' || strpos($c[1][$and_position + 1][1], '_exists') !== false) && (isset($c[1][$and_position + 1][2][$function_parameter_pos])) && ($c[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($c[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
                             $temp_function_guard .= ',' . $c[1][$and_position + 1][2][$function_parameter_pos][0][1][1] . ',';
                         }
@@ -1078,7 +1078,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 $class = $c[1];
                 foreach ($class['functions'] as $function) {
                     $temp = $LOCAL_VARIABLES;
-                    $LOCAL_VARIABLES['this'] = array('is_global' => false, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('object'), 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false);
+                    $LOCAL_VARIABLES['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object'], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
                     check_function($function, false, true);
                     $LOCAL_VARIABLES = $temp;
                 }
@@ -1094,7 +1094,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
                 break;
             case 'FOREACH_map':
-                $passes = ensure_type(array('array'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
+                $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
                     infer_expression_type_to_variable_type('array', $c[1]);
                 }
@@ -1116,10 +1116,10 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     log_warning('Re-using a loop variable, ' . $c[3][1], $c_pos);
                 }
 
-                check_command($c[4], $depth + 1, $function_guard, array_merge($nogo_parameters, array($c[2][1], $c[3][1])), array_merge($jump_structures, array('FOREACH_map')));
+                check_command($c[4], $depth + 1, $function_guard, array_merge($nogo_parameters, [$c[2][1], $c[3][1]]), array_merge($jump_structures, ['FOREACH_map']));
                 break;
             case 'FOREACH_list':
-                $passes = ensure_type(array('array'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
+                $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
                     infer_expression_type_to_variable_type('array', $c[1]);
                 }
@@ -1137,32 +1137,32 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     log_warning('Re-using a loop variable, ' . $c[2][1], $c_pos);
                 }
 
-                check_command($c[3], $depth + 1, $function_guard, array_merge($nogo_parameters, array($c[2][1])), array_merge($jump_structures, array('FOREACH_list')));
+                check_command($c[3], $depth + 1, $function_guard, array_merge($nogo_parameters, [$c[2][1]]), array_merge($jump_structures, ['FOREACH_list']));
                 break;
             case 'FOR':
                 if ($c[1] !== null) {
-                    check_command(array($c[1]), $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('FOR')));
+                    check_command([$c[1]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
                 }
-                check_command(array($c[3]), $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('FOR')));
-                $passes = ensure_type(array('boolean'), check_expression($c[2], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (for)', true);
+                check_command([$c[3]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
+                $passes = ensure_type(['boolean'], check_expression($c[2], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (for)', true);
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[2]);
                 }
-                check_command($c[4], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('FOR')));
+                check_command($c[4], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
                 break;
             case 'DO':
-                check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('DO'))); // Goes first so that we get local variables defined inside loop for use in our loop conditional
-                $passes = ensure_type(array('boolean'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (do)', true);
+                check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['DO'])); // Goes first so that we get local variables defined inside loop for use in our loop conditional
+                $passes = ensure_type(['boolean'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (do)', true);
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
                 break;
             case 'WHILE':
-                $passes = ensure_type(array('boolean'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (while)', true);
+                $passes = ensure_type(['boolean'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (while)', true);
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
-                check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, array('WHILE')));
+                check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['WHILE']));
                 break;
             case 'CONTINUE':
                 if (($c[1][0] == 'SOLO') && ($c[1][1][0] == 'LITERAL') && ($c[1][1][1][0] == 'INTEGER')) {
@@ -1186,13 +1186,13 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     }
                 }
 
-                $passes = ensure_type(array('integer'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Loop/switch control must use integers (continue)');
+                $passes = ensure_type(['integer'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Loop/switch control must use integers (continue)');
                 if ($passes) {
                     infer_expression_type_to_variable_type('integer', $c[1]);
                 }
                 break;
             case 'BREAK':
-                $passes = ensure_type(array('integer'), check_expression($c[1], false, false, $function_guard), $c_pos, 'Loop/switch control must use integers (break)');
+                $passes = ensure_type(['integer'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Loop/switch control must use integers (break)');
                 if ($passes) {
                     infer_expression_type_to_variable_type('integer', $c[1]);
                 }
@@ -1202,20 +1202,20 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
                 break;
             case 'PRE_DEC':
-                ensure_type(array('integer', 'float'), check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
+                ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
                 break;
             case 'PRE_INC':
-                ensure_type(array('integer', 'float'), check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
+                ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
                 break;
             case 'DEC':
-                ensure_type(array('integer', 'float'), check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
+                ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
                 break;
             case 'INC':
-                ensure_type(array('integer', 'float'), check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
+                ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
                 break;
             case 'ECHO':
                 foreach ($c[1] as $e) {
-                    $passes = ensure_type(array('string'), check_expression($e, false, false, $function_guard), $c_pos, 'Can only echo strings');
+                    $passes = ensure_type(['string'], check_expression($e, false, false, $function_guard), $c_pos, 'Can only echo strings');
                     if ($passes) {
                         infer_expression_type_to_variable_type('string', $e);
                     }
@@ -1224,7 +1224,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
         }
 
         if ($or) {
-            check_command(array($c[count($c) - 1]), $depth, $function_guard, $nogo_parameters, $jump_structures);
+            check_command([$c[count($c) - 1]], $depth, $function_guard, $nogo_parameters, $jump_structures);
         }
     }
 }
@@ -1294,7 +1294,7 @@ function actual_check_method($class, $method, $params, $c_pos, $function_guard =
         check_expression($e[0], false, false, $function_guard);
     }
 
-    return check_call(array('CALL_DIRECT', $method, $params), $c_pos, $class, $function_guard);
+    return check_call(['CALL_DIRECT', $method, $params], $c_pos, $class, $function_guard);
 }
 
 function check_call($c, $c_pos, $class = null, $function_guard = '')
@@ -1403,7 +1403,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                 }
 
                 $t = check_expression($temp, false, false, $function_guard);
-                $passes = ensure_type(array($param['type']), $t, $c_pos, 'Parameter type error for ' . $function . '/' . ($i + 1) . ' (should be ' . $param['type'] . ' not ' . $t . ')');
+                $passes = ensure_type([$param['type']], $t, $c_pos, 'Parameter type error for ' . $function . '/' . ($i + 1) . ' (should be ' . $param['type'] . ' not ' . $t . ')');
                 if (($t === 'float') && ($function === 'strval')) {
                     log_warning('Floats should not be used with strval, use float_to_raw_string or float_format', $c_pos);
                 }
@@ -1426,12 +1426,12 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         // Look for file-creators, and give notice that chmoding might be required to allow it to be deleted via FTP
         if (in_array('creates-file', $potential['flags'])) {
             if (isset($GLOBALS['CHECKS'])) {
-                if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], array('w', 'a')))) {
+                if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['w', 'a']))) {
                     log_warning('Call to \'' . $function . '\' that may create a file/folder. Check that the code chmods it so that FTP can delete it.', $c_pos);
                 }
             }
 
-            if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], array('t')))) {
+            if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['t']))) {
                 log_warning('Call to \'' . $function . '\' uses a text flag. This creates platform-dependent text files, which we do not want.', $c_pos);
             }
         }
@@ -1448,7 +1448,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         log_warning('Looks like strpos parameters are the wrong way around; you fell for a common API anomaly: unlike most functions like in_array, strpos is haystack followed by needle', $c_pos);
     }
     if ((($function == 'sprintf') || ($function == 'printf')) && (@$params[0][0][0] == 'LITERAL')) {
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\%[+-]?.?-?\d*(\.\d+)?(\$[bcdefuFodsxX])?#', $params[0][0][1][1], $matches);
         if ($num_matches + 1 != count($params)) {
             log_warning('Looks like the wrong number of parameters were sent to this [s]printf function, got ' . integer_format(count($params)) . ', expected, ' . integer_format($num_matches + 1), $c_pos);
@@ -1464,7 +1464,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
     if ((isset($GLOBALS['CHECKS'])) && ($function == 'get_url')) {
         log_warning('Make sure that deleting the entry for this file/URL deletes the disk file', $c_pos);
     }
-    if ((isset($GLOBALS['CHECKS'])) && (in_array($function, array('query_insert', 'insert_lang', 'insert_lang_comcode')))) {
+    if ((isset($GLOBALS['CHECKS'])) && (in_array($function, ['query_insert', 'insert_lang', 'insert_lang_comcode']))) {
         log_warning('Make sure that deleting the entry (or uninstalling) for this row deletes the row (if applicable)', $c_pos);
     }
     if ((isset($GLOBALS['CHECKS'])) && ($function == 'query_delete') && (!array_key_exists(2, $params))) {
@@ -1481,7 +1481,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
     if ((isset($GLOBALS['CHECKS'])) && ($function == 'unlink')) {
         log_warning('Be very careful that shared URLs cannot be deleted (check upload dir, and staff access)', $c_pos);
     }
-    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (in_array($function, array('query_update', 'query_delete')))) {
+    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (in_array($function, ['query_update', 'query_delete']))) {
         log_warning('Check log_it/cat-entry-handling/delete_lang', $c_pos);
     }
     //if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && ($function == 'query_select')) log_warning('Check that non-singular select is wanted for this query', $c_pos);  This is REALLY pedantic ;) I'm sure MySQL is clever enough to see that only one row can match against a key
@@ -1514,7 +1514,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                     ||
                     (
                         (strpos($function_guard, ',' . $class . ',') === false) &&
-                        (!in_array($class, array('mixed', '?mixed', 'object', '?object', ''/*Dynamic*/))) &&
+                        (!in_array($class, ['mixed', '?mixed', 'object', '?object', ''/*Dynamic*/])) &&
                         (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]))
                     )
                 )
@@ -1525,7 +1525,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                     }
                 } else {
                     if (!isset($FUNCTION_SIGNATURES[$class])) {
-                        if (in_array($class, array('integer', 'float', 'string', 'boolean', 'boolean-false', 'null'))) {
+                        if (in_array($class, ['integer', 'float', 'string', 'boolean', 'boolean-false', 'null'])) {
                             log_warning('Mixing variable type', $c_pos);
                         } else {
                             log_warning('Could not find class \'' . $class . '\'', $c_pos);
@@ -1547,7 +1547,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
 
 function check_db_map($table, $expr_map, $c_pos, $must_be_complete = false)
 {
-    $map = array();
+    $map = [];
     $arr_count = 0;
     if ($expr_map[0] == 'CREATE_ARRAY') {
         foreach ($expr_map[1] as $passing) {
@@ -1638,7 +1638,7 @@ function _check_db_field($table, $field, $c_pos, $type = null)
         if (isset($GLOBALS['TABLE_FIELDS'][$table]['fields'][$field])) {
             $expected_type = str_replace('*', '', $GLOBALS['TABLE_FIELDS'][$table]['fields'][$field]);
             if (isset($GLOBALS['CHECKS'])) {
-                ensure_type(array($expected_type), $type, $c_pos, 'DB field ' . $field . ' should be ' . $expected_type . ', not ' . $type);
+                ensure_type([$expected_type], $type, $c_pos, 'DB field ' . $field . ' should be ' . $expected_type . ', not ' . $type);
             }
         }
     }
@@ -1646,7 +1646,7 @@ function _check_db_field($table, $field, $c_pos, $type = null)
 
 function get_insecure_functions()
 {
-    return array(
+    return [
         'eval',
          'ldap_search', 'ldap_list',
          'register_shutdown_function', 'register_tick_function', 'call_user_method_array',
@@ -1659,7 +1659,7 @@ function get_insecure_functions()
          'include', 'include_once', 'require', 'require_once',
          'escapeshellarg', 'escapeshellcmd', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system',
          'DatabaseConnector.query', 'DatabaseConnector._query', 'DatabaseConnector.query_value_if_there',
-     );
+     ];
 }
 
 /*
@@ -1686,8 +1686,8 @@ function check_assignment($c, $c_pos, $function_guard = '')
     $target = $c[2];
 
     // Special assignment operational checks
-    if (in_array($op, array('CONCAT_EQUAL'))) {
-        $passes = ensure_type(array('string'), $e_type, $c_pos, 'Can only concatenate onto and with strings (not ' . $e_type . ')');
+    if (in_array($op, ['CONCAT_EQUAL'])) {
+        $passes = ensure_type(['string'], $e_type, $c_pos, 'Can only concatenate onto and with strings (not ' . $e_type . ')');
         if ($passes) {
             infer_expression_type_to_variable_type('string', $c[3]);
         }
@@ -1696,27 +1696,27 @@ function check_assignment($c, $c_pos, $function_guard = '')
         }
         if ($target[0] == 'VARIABLE') {
             $v_type = get_variable_type($target);
-            ensure_type(array('string'), $v_type, $c_pos, 'Can only concatenate onto and with strings (not ' . $v_type . ')');
+            ensure_type(['string'], $v_type, $c_pos, 'Can only concatenate onto and with strings (not ' . $v_type . ')');
         }
     }
-    if (in_array($op, array('PLUS_EQUAL'))) {
-        ensure_type(array('array', 'integer', 'float'), $e_type, $c_pos, 'Can only perform addition to arrays or numbers (not ' . $e_type . ')');
+    if (in_array($op, ['PLUS_EQUAL'])) {
+        ensure_type(['array', 'integer', 'float'], $e_type, $c_pos, 'Can only perform addition to arrays or numbers (not ' . $e_type . ')');
         if ($target[0] == 'VARIABLE') {
             $v_type = get_variable_type($target);
-            ensure_type(array('array', 'integer', 'float'), $v_type, $c_pos, 'Can only perform addition to arrays or numbers (not ' . $v_type . ')');
+            ensure_type(['array', 'integer', 'float'], $v_type, $c_pos, 'Can only perform addition to arrays or numbers (not ' . $v_type . ')');
         }
     }
-    if (in_array($op, array('DIV_EQUAL', 'MUL_EQUAL', 'MINUS_EQUAL'))) {
-        ensure_type(array('integer', 'float'), $e_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $e_type . ')');
+    if (in_array($op, ['DIV_EQUAL', 'MUL_EQUAL', 'MINUS_EQUAL'])) {
+        ensure_type(['integer', 'float'], $e_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $e_type . ')');
         if ($target[0] == 'VARIABLE') {
             $v_type = get_variable_type($target);
-            ensure_type(array('integer', 'float'), $v_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $v_type . ')');
+            ensure_type(['integer', 'float'], $v_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $v_type . ')');
         }
     }
 
     // Special assignment target checks
     if ($target[0] == 'LIST') {
-        $passes = ensure_type(array('array'), $e_type, $c_pos, 'Can only list from an array (not ' . $e_type . ')');
+        $passes = ensure_type(['array'], $e_type, $c_pos, 'Can only list from an array (not ' . $e_type . ')');
         if ($passes) {
             infer_expression_type_to_variable_type('array', $c[3]);
         }
@@ -1730,7 +1730,7 @@ function check_assignment($c, $c_pos, $function_guard = '')
     if ($target[0] == 'ARRAY_APPEND') {
         if (empty($target[2][2])) { // Simple variable, meaning we can test to see if it's an array
             $v_type = check_variable($target[1], true, $function_guard);
-            $passes = ensure_type(array('array'), $v_type, $c_pos, 'Can only append to an array (not ' . $v_type . ')');
+            $passes = ensure_type(['array'], $v_type, $c_pos, 'Can only append to an array (not ' . $v_type . ')');
             if ($passes) {
                 infer_expression_type_to_variable_type('array', $c[3]);
             }
@@ -1784,7 +1784,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     if ($e[0] == 'EXPRESSION_CHAINING') {
         return check_variable($e, false, $function_guard);
     }
-    if ((in_array($e[0], array('DIVIDE', 'REMAINDER', 'DIV_EQUAL'))) && ($e[2][0] != 'LITERAL')) {
+    if ((in_array($e[0], ['DIVIDE', 'REMAINDER', 'DIV_EQUAL'])) && ($e[2][0] != 'LITERAL')) {
         if (($assignment) && (@is_array($e[2][1][2])) && (empty($e[2][1][2]))) {
             $GLOBALS['LOCAL_VARIABLES'][$e[2][1][1]]['conditioner'][] = '_divide_';
         } elseif (isset($GLOBALS['PEDANTIC'])) {
@@ -1795,33 +1795,33 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         if (($e[1][0] == 'CALL_DIRECT') && ($e[1][1] == 'php_function_allowed' || strpos($e[1][1], '_exists') !== false/*function_exists or method_exists or class_exists*/) && ($e[1][2][0][0][0] == 'LITERAL') && ($e[1][2][0][0][1][0] == 'STRING')) {
             $function_guard .= ',' . $e[1][2][0][0][1][1] . ',';
         }
-        $passes = ensure_type(array('boolean'), check_expression($e[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (ternary)');
+        $passes = ensure_type(['boolean'], check_expression($e[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (ternary)');
         if ($passes) {
             infer_expression_type_to_variable_type('boolean', $e[1]);
         }
         $type_a = check_expression($e[2][0], false, false, $function_guard);
         $type_b = check_expression($e[2][1], false, false, $function_guard);
         if (($type_a != 'null') && ($type_b != 'null')) {
-            $passes = ensure_type(array($type_a, 'mixed'/*imperfect, but useful for performance*/), $type_b, $c_pos, 'Type symettry error in ternary operator');
+            $passes = ensure_type([$type_a, 'mixed'/*imperfect, but useful for performance*/], $type_b, $c_pos, 'Type symettry error in ternary operator');
             if ($passes) {
                 infer_expression_type_to_variable_type($type_a, $e[2][1]);
             }
         }
 
         // Common most egregious cases of horribly ugly code
-        if (in_array($e[1][0], array('TERNARY_IF', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'INSTANCEOF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND'))) {
+        if (in_array($e[1][0], ['TERNARY_IF', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'INSTANCEOF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND'])) {
             log_warning('Raw complex expression in ternary syntax boolean controller should be parenthesised, for clarity', $c_pos);
         }
-        $bad_ops = array('TERNARY_IF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND', 'REFERENCE', 'BW_OR', 'BW_XOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'INSTANCEOF', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ADD', 'SUBTRACT', 'CONC', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'EXPONENTIATION');
+        $bad_ops = ['TERNARY_IF', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_AND', 'REFERENCE', 'BW_OR', 'BW_XOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'INSTANCEOF', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ADD', 'SUBTRACT', 'CONC', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'EXPONENTIATION'];
         if ((in_array($e[2][0][0], $bad_ops)) || (in_array($e[2][1][0], $bad_ops))) {
             log_warning('Raw complex expression in ternary syntax should be parenthesised, for clarity', $c_pos);
         }
 
         return $type_a;
     }
-    if (in_array($e[0], array('BOOLEAN_AND', 'BOOLEAN_OR', 'BOOLEAN_XOR'))) {
-        foreach (array(0, 1) as $function_parameter_pos) {
-            foreach (array(0, 1) as $and_position) {
+    if (in_array($e[0], ['BOOLEAN_AND', 'BOOLEAN_OR', 'BOOLEAN_XOR'])) {
+        foreach ([0, 1] as $function_parameter_pos) {
+            foreach ([0, 1] as $and_position) {
                 if (($e[0] == 'BOOLEAN_AND') && ($e[1][0] == 'PARENTHESISED') && ($e[1][$and_position + 1][0] == 'CALL_DIRECT') && ($e[1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[1][$and_position + 1][1], '_exists') !== false) && (isset($e[1][$and_position + 1][2][$function_parameter_pos])) && ($e[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($e[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
                     $function_guard .= ',' . $e[1][1][2][$function_parameter_pos][0][1][1] . ',';
                 }
@@ -1830,71 +1830,71 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 }
             }
         }
-        $passes = ensure_type(array('boolean'), check_expression($e[1], false, false, $function_guard), $c_pos - 1, 'Can only use boolean combinators with booleans');
+        $passes = ensure_type(['boolean'], check_expression($e[1], false, false, $function_guard), $c_pos - 1, 'Can only use boolean combinators with booleans');
         if ($passes) {
             infer_expression_type_to_variable_type('boolean', $e[1]);
         }
-        $passes = ensure_type(array('boolean'), check_expression($e[2], false, false, $function_guard), $c_pos, 'Can only use boolean combinators with booleans');
+        $passes = ensure_type(['boolean'], check_expression($e[2], false, false, $function_guard), $c_pos, 'Can only use boolean combinators with booleans');
         if ($passes) {
             infer_expression_type_to_variable_type('boolean', $e[2]);
         }
         return 'boolean';
     }
-    if (in_array($e[0], array('SL', 'SR', 'REMAINDER'))) {
-        $passes = ensure_type(array('integer'), check_expression($e[1], false, false, $function_guard), $c_pos - 1, 'Can only use integer combinators with integers');
+    if (in_array($e[0], ['SL', 'SR', 'REMAINDER'])) {
+        $passes = ensure_type(['integer'], check_expression($e[1], false, false, $function_guard), $c_pos - 1, 'Can only use integer combinators with integers');
         if ($passes) {
             infer_expression_type_to_variable_type('integer', $e[1]);
         }
-        $passes = ensure_type(array('integer'), check_expression($e[2], false, false, $function_guard), $c_pos, 'Can only use integer combinators with integers');
+        $passes = ensure_type(['integer'], check_expression($e[2], false, false, $function_guard), $c_pos, 'Can only use integer combinators with integers');
         if ($passes) {
             infer_expression_type_to_variable_type('integer', $e[2]);
         }
         return 'integer';
     }
-    if (in_array($e[0], array('CONC'))) {
+    if (in_array($e[0], ['CONC'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
-        $passes = ensure_type(array('string'), $type_a, $c_pos - 1, 'Can only use string combinators with strings (1) (not ' . $type_a . ')');
+        $passes = ensure_type(['string'], $type_a, $c_pos - 1, 'Can only use string combinators with strings (1) (not ' . $type_a . ')');
         if ($passes) {
             infer_expression_type_to_variable_type('string', $e[1]);
         }
-        $passes = ensure_type(array('string'), $type_b, $c_pos, 'Can only use string combinators with strings (2) (not ' . $type_b . ')');
+        $passes = ensure_type(['string'], $type_b, $c_pos, 'Can only use string combinators with strings (2) (not ' . $type_b . ')');
         if ($passes) {
             infer_expression_type_to_variable_type('string', $e[2]);
         }
         return 'string';
     }
-    if (in_array($e[0], array('SUBTRACT', 'MULTIPLY', 'DIVIDE', 'EXPONENTIATION'))) {
+    if (in_array($e[0], ['SUBTRACT', 'MULTIPLY', 'DIVIDE', 'EXPONENTIATION'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $t = check_expression($e[2], false, false, $function_guard);
-        ensure_type(array('integer', 'float'), $type_a, $c_pos - 1, 'Can only use arithmetical combinators with numbers (1) (not ' . $type_a . ')');
-        ensure_type(array('integer', 'float'), $t, $c_pos, 'Can only use arithmetical combinators with numbers (2) (not ' . $t . ')');
+        ensure_type(['integer', 'float'], $type_a, $c_pos - 1, 'Can only use arithmetical combinators with numbers (1) (not ' . $type_a . ')');
+        ensure_type(['integer', 'float'], $t, $c_pos, 'Can only use arithmetical combinators with numbers (2) (not ' . $t . ')');
         return ($e[0] == 'DIVIDE') ? 'float' : $type_a;
     }
-    if (in_array($e[0], array('ADD'))) {
+    if (in_array($e[0], ['ADD'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $t = check_expression($e[2], false, false, $function_guard);
-        ensure_type(array('integer', 'float', 'array'), $type_a, $c_pos - 1, 'Can only use + combinator with numbers/arrays (1) (not ' . $type_a . ')');
-        ensure_type(array('integer', 'float', 'array'), $t, $c_pos, 'Can only use + combinator with numbers/arrays (2) (not ' . $t . ')');
+        ensure_type(['integer', 'float', 'array'], $type_a, $c_pos - 1, 'Can only use + combinator with numbers/arrays (1) (not ' . $type_a . ')');
+        ensure_type(['integer', 'float', 'array'], $t, $c_pos, 'Can only use + combinator with numbers/arrays (2) (not ' . $t . ')');
         return $type_a;
     }
-    if (in_array($e[0], array('IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'))) {
+    if (in_array($e[0], ['IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
-        ensure_type(array('integer', 'float', 'string'), $type_a, $c_pos - 1, 'Can only use arithmetical comparators with numbers or strings');
-        ensure_type(array('integer', 'float', 'string'), $type_b, $c_pos, 'Can only use arithmetical comparators with numbers or strings');
-        ensure_type(array($type_a), $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
+        ensure_type(['integer', 'float', 'string'], $type_a, $c_pos - 1, 'Can only use arithmetical comparators with numbers or strings');
+        ensure_type(['integer', 'float', 'string'], $type_b, $c_pos, 'Can only use arithmetical comparators with numbers or strings');
+        ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
         return 'boolean';
     }
-    if (in_array($e[0], array('IS_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_NOT_EQUAL'))) {
-        $type_a = check_expression($e[1], false, (in_array($e[0], array('IS_IDENTICAL', 'IS_NOT_IDENTICAL'))) && ($e[2][0] == 'LITERAL') && ($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1]), $function_guard);
+    if (in_array($e[0], ['IS_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_NOT_EQUAL'])) {
+        $type_a = check_expression($e[1], false, (in_array($e[0], ['IS_IDENTICAL', 'IS_NOT_IDENTICAL'])) && ($e[2][0] == 'LITERAL') && ($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1]), $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
         $x = $e;
         if ($x[1][0] == 'EMBEDDED_ASSIGNMENT') {
             $x = $e[1];
         }
         if (($x[1][0] == 'VARIABLE') && (@is_array($x[1][1][2])) && (empty($x[1][1][2])) && ($e[2][0] == 'LITERAL')) {
-            if (in_array($e[0], array('IS_IDENTICAL', 'IS_NOT_IDENTICAL'))) {
+            if (in_array($e[0], ['IS_IDENTICAL', 'IS_NOT_IDENTICAL'])) {
                 if (($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1])) {
                     $GLOBALS['LOCAL_VARIABLES'][$x[1][1][1]]['conditioned_false'] = true;
                 } elseif ($e[2][1][0] == 'null') {
@@ -1912,7 +1912,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             if ($type_b == 'null') {
                 log_warning('Comparing to null is considered bad', $c_pos);
             }
-            $passes = ensure_type(array($type_a), $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
+            $passes = ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
             if ($passes) {
                 infer_expression_type_to_variable_type($type_a, $e[2]);
             }
@@ -1925,7 +1925,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'CLOSURE':
             global $LOCAL_VARIABLES;
             $temp = $LOCAL_VARIABLES;
-            $ret = check_function($inner[1] + array('name' => '(closure)'), true);
+            $ret = check_function($inner[1] + ['name' => '(closure)'], true);
             $LOCAL_VARIABLES = $temp;
             return $ret;
         case 'EMBEDDED_ASSIGNMENT':
@@ -1972,13 +1972,13 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'PARENTHESISED':
             return check_expression($inner[1], false, false, $function_guard);
         case 'BOOLEAN_NOT':
-            $passes = ensure_type(array('boolean'), check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'NOT\' a boolean', true);
+            $passes = ensure_type(['boolean'], check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'NOT\' a boolean', true);
             if ($passes) {
                 infer_expression_type_to_variable_type('boolean', $inner[1]);
             }
             return 'boolean';
         case 'BW_NOT':
-            $passes = ensure_type(array('integer'), check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'BITWISE-NOT\' an integer', true);
+            $passes = ensure_type(['integer'], check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'BITWISE-NOT\' an integer', true);
             if ($passes) {
                 infer_expression_type_to_variable_type('integer', $inner[1]);
             }
@@ -1989,11 +1989,11 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             $exp_1 = check_expression($inner[1], false, false, $function_guard);
             $exp_2 = check_expression($inner[2], false, false, $function_guard);
 
-            $string_mode = ensure_type(array('string'), $exp_1, $c_pos, '', true, true) || ensure_type(array('string'), $exp_2, $c_pos, '', true, true);
-            $integer_mode = ensure_type(array('integer'), $exp_1, $c_pos, '', true, true) || ensure_type(array('integer'), $exp_2, $c_pos, '', true, true);
+            $string_mode = ensure_type(['string'], $exp_1, $c_pos, '', true, true) || ensure_type(['string'], $exp_2, $c_pos, '', true, true);
+            $integer_mode = ensure_type(['integer'], $exp_1, $c_pos, '', true, true) || ensure_type(['integer'], $exp_2, $c_pos, '', true, true);
             $arg_type = ($string_mode ? 'string' : 'integer');
 
-            $passes = ensure_type(array($arg_type), $exp_1, $c_pos, 'Can only bitwise 2 integers or 2 1-byte strings (got ' . $exp_1 . ')', true);
+            $passes = ensure_type([$arg_type], $exp_1, $c_pos, 'Can only bitwise 2 integers or 2 1-byte strings (got ' . $exp_1 . ')', true);
 
             if (($passes) && ($string_mode || $integer_mode)) {
                 infer_expression_type_to_variable_type($arg_type, $inner[1]);
@@ -2003,7 +2003,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             return $arg_type;
         case 'NEGATE':
             $type = check_expression($inner[1], false, false, $function_guard);
-            ensure_type(array('integer', 'float'), $type, $c_pos, 'Can only negate a number');
+            ensure_type(['integer', 'float'], $type, $c_pos, 'Can only negate a number');
             return $type;
         case 'LITERAL':
             $type = check_literal($inner[1]);
@@ -2011,7 +2011,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'NEW_OBJECT':
             $class = preg_replace('#^.*\\\\#', '', $inner[1]); // We strip out namespaces from the name, and just look at the actual class name
             global $FUNCTION_SIGNATURES;
-            if ((!isset($FUNCTION_SIGNATURES[$class])) && ($FUNCTION_SIGNATURES != array()) && (strpos($function_guard, ',' . $class . ',') === false)) {
+            if ((!isset($FUNCTION_SIGNATURES[$class])) && ($FUNCTION_SIGNATURES != []) && (strpos($function_guard, ',' . $class . ',') === false)) {
                 if ((($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $class) == 0))) {
                     if (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]) && $class != '') {
                         if ($class !== null) {
@@ -2024,7 +2024,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 check_expression($param, false, false, $function_guard);
             }
             if (!empty($inner[2])) {
-                check_call(array('CALL_METHOD', '__construct', $inner[2]), $c_pos, $inner[1], $function_guard);
+                check_call(['CALL_METHOD', '__construct', $inner[2]], $c_pos, $inner[1], $function_guard);
             }
             return 'object-' . $inner[1];
         case 'CLONE_OBJECT':
@@ -2043,16 +2043,16 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             check_assignment($inner, $c_pos, $function_guard);
             break;
         case 'PRE_DEC':
-            ensure_type(array('integer', 'float'), check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
+            ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
             break;
         case 'PRE_INC':
-            ensure_type(array('integer', 'float'), check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
+            ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
             break;
         case 'DEC':
-            ensure_type(array('integer', 'float'), check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
+            ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
             break;
         case 'INC':
-            ensure_type(array('integer', 'float'), check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
+            ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
             break;
         case 'VARIABLE':
             return check_variable($inner, true, $function_guard);
@@ -2070,7 +2070,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
 
     if (!is_array($identifier)) {
         global $LOCAL_VARIABLES;
-        if ((!isset($LOCAL_VARIABLES[$identifier])) && !((is_array($identifier) && (in_array($identifier[0], array('CALL_METHOD')))))) {
+        if ((!isset($LOCAL_VARIABLES[$identifier])) && !((is_array($identifier) && (in_array($identifier[0], ['CALL_METHOD']))))) {
             // We skip this check if the "variable" is coming from a function/method
             // (in which case we have a function/method call rather than a variable)
             log_warning('Variable \'' . $identifier . '\' referenced before initialised', $variable[3]);
@@ -2082,14 +2082,14 @@ function check_variable($variable, $reference = false, $function_guard = '')
         }
 
         $variable_stem = $variable;
-        $variable_stem[2] = array();
+        $variable_stem[2] = [];
         $type = get_variable_type($variable_stem);
     } else {
         $type = check_expression($variable[1]);
     }
 
     $next = $variable[2];
-    while ($next != array()) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
+    while ($next != []) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
         /*if ($next[0] == 'CHAR_OF_STRING') {    Deprecated syntax
             check_expression($next[1]);
             $passes = ensure_type(array('string'), check_variable(array('VARIABLE', $identifier, array())), $variable[3], 'Variable \'' . $identifier . '\' must be a string due to dereferencing');
@@ -2106,10 +2106,10 @@ function check_variable($variable, $reference = false, $function_guard = '')
                 $LOCAL_VARIABLES[$gid]['is_global'] = true;
             }
             check_expression($next[1]);
-            $passes = ensure_type(array('array', 'string'), $type, $variable[3], 'Variable must be an array/string due to dereferencing');
-            if (ensure_type(array('string'), $type, $variable[3], '', true, true) == 'string') {
+            $passes = ensure_type(['array', 'string'], $type, $variable[3], 'Variable must be an array/string due to dereferencing');
+            if (ensure_type(['string'], $type, $variable[3], '', true, true) == 'string') {
                 $type_2 = check_expression($variable[2][1]);
-                $passes = ensure_type(array('integer'), $type_2, $variable[3], 'String character extraction must use an integer');
+                $passes = ensure_type(['integer'], $type_2, $variable[3], 'String character extraction must use an integer');
             }
             //if ($passes) infer_expression_type_to_variable_type('array', $next[1]);
             $type = 'mixed'; // We don't know the array data types
@@ -2131,8 +2131,8 @@ function check_variable($variable, $reference = false, $function_guard = '')
                 $type = 'Forum_driver_base';
             }
 
-            ensure_type(array('object', 'resource'), $type, $variable[3], 'Variable must be an object due to dereferencing');
-            if (($next[2] != array()) && ($next[2][0] == 'CALL_METHOD')) {
+            ensure_type(['object', 'resource'], $type, $variable[3], 'Variable must be an object due to dereferencing');
+            if (($next[2] != []) && ($next[2][0] == 'CALL_METHOD')) {
                 $type = actual_check_method($type/*class*/, $next[1][1]/*method*/, $next[2][2]/*params*/, $next[3]/*line number*/, $function_guard);
                 $next = $next[2][5];
             } else {
@@ -2140,7 +2140,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
                 $next = $next[2];
             }
         } else {
-            $next = array();
+            $next = [];
         }
     }
 
@@ -2152,7 +2152,7 @@ function scan_extractive_expressions($variable)
     if (!is_array($variable)) {
         return;
     }
-    if ($variable == array()) {
+    if ($variable == []) {
         return;
     }
 
@@ -2183,8 +2183,8 @@ function get_variable_type($variable)
         return 'mixed'; // There is a problem, but it will be identified elsewhere.
     }
 
-    $temp = array_unique(array_values(array_diff($LOCAL_VARIABLES[$identifier]['types'], array('null'))));
-    if ($temp == array('boolean-false', 'boolean')) {
+    $temp = array_unique(array_values(array_diff($LOCAL_VARIABLES[$identifier]['types'], ['null'])));
+    if ($temp == ['boolean-false', 'boolean']) {
         return 'boolean';
     }
     if (!empty($temp)) {
@@ -2197,7 +2197,7 @@ function check_literal($literal)
 {
     if ($literal[0] == 'NEGATE') {
         $type = check_literal($literal[1]);
-        ensure_type(array('integer', 'float'), $type, $literal[count($literal) - 1], 'Can only negate a number');
+        ensure_type(['integer', 'float'], $type, $literal[count($literal) - 1], 'Can only negate a number');
         return $type;
     }
     if ($literal[0] == 'INTEGER') {
@@ -2245,7 +2245,7 @@ function add_variable_reference($identifier, $first_mention, $reference = true)
 
     global $LOCAL_VARIABLES;
     if (!isset($LOCAL_VARIABLES[$identifier])) {
-        $LOCAL_VARIABLES[$identifier] = array('is_global' => false, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array(), 'references' => $reference ? 1 : 0, 'object_type' => '', 'unused_value' => $unused_value, 'first_mention' => $first_mention, 'mixed_tag' => false);
+        $LOCAL_VARIABLES[$identifier] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => [], 'references' => $reference ? 1 : 0, 'object_type' => '', 'unused_value' => $unused_value, 'first_mention' => $first_mention, 'mixed_tag' => false];
     } else {
         if ($reference) {
             $LOCAL_VARIABLES[$identifier]['references']++;
@@ -2256,21 +2256,21 @@ function add_variable_reference($identifier, $first_mention, $reference = true)
 
 function reinitialise_local_variables($inside_class = false)
 {
-    $ret = array(
-        'http_response_header' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_GET' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_POST' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_REQUEST' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_COOKIE' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_SERVER' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_ENV' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_SESSION' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        '_FILES' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-        'GLOBALS' => array('is_global' => true, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('array'), 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false),
-    );
+    $ret = [
+        'http_response_header' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_GET' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_POST' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_REQUEST' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_COOKIE' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_SERVER' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_ENV' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_SESSION' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        '_FILES' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+        'GLOBALS' => ['is_global' => true, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['array'], 'references' => 0, 'object_type' => '', 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false],
+    ];
     if ($inside_class) {
         global $CURRENT_CLASS;
-        $ret['this'] = array('is_global' => false, 'conditioner' => array(), 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => array('object'), 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false);
+        $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object'], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
     }
     return $ret;
 }
@@ -2298,10 +2298,10 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
     if ((!$extra_strict) && ((in_array('boolean', $_allowed_types)) || (in_array('?boolean', $_allowed_types)))) {
         $_allowed_types[] = 'boolean-false';
     }
-    if (($extra_strict) && ($_allowed_types == array('boolean'))) {
+    if (($extra_strict) && ($_allowed_types == ['boolean'])) {
         $_allowed_types[] = 'boolean-false';
     }
-    $allowed_types = array();
+    $allowed_types = [];
     foreach ($_allowed_types as $type) {
         if (is_array($type)) {
             $type = $type[0];
@@ -2324,16 +2324,16 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
         if ($type == 'REAL') {
             $allowed_types['float'] = true;
         }
-        if (in_array($type, array('AUTO', 'INTEGER', 'UINTEGER', 'SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE', 'MEMBER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+        if (in_array($type, ['AUTO', 'INTEGER', 'UINTEGER', 'SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE', 'MEMBER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
             $allowed_types['integer'] = true;
         }
-        if (in_array($type, array('LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'))) {
+        if (in_array($type, ['LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'])) {
             $allowed_types['string'] = true;
         }
-        if (in_array($type, array('Tempcode'))) {
+        if (in_array($type, ['Tempcode'])) {
             $allowed_types['object'] = true;
         }
-        if (in_array($type, array('list', 'map'))) {
+        if (in_array($type, ['list', 'map'])) {
             $allowed_types['array'] = true;
         }
         $allowed_types[$type] = true;
@@ -2363,22 +2363,22 @@ function ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null, $ex
             return true;
         }
     }
-    if (in_array($actual_type, array('AUTO', 'INTEGER', 'UINTEGER', 'SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE', 'MEMBER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+    if (in_array($actual_type, ['AUTO', 'INTEGER', 'UINTEGER', 'SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE', 'MEMBER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
         if (isset($allowed_types['integer'])) {
             return true;
         }
     }
-    if (in_array($actual_type, array('LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'))) {
+    if (in_array($actual_type, ['LONG_TEXT', 'SHORT_TEXT', 'MINIID_TEXT', 'ID_TEXT', 'LANGUAGE_NAME', 'URLPATH', 'PATH', 'IP', 'EMAIL'])) {
         if (isset($allowed_types['string'])) {
             return true;
         }
     }
-    if (in_array($actual_type, array('Tempcode'))) {
+    if (in_array($actual_type, ['Tempcode'])) {
         if (isset($allowed_types['object'])) {
             return true;
         }
     }
-    if (in_array($actual_type, array('list', 'map'))) {
+    if (in_array($actual_type, ['list', 'map'])) {
         if (isset($allowed_types['array'])) {
             return true;
         }

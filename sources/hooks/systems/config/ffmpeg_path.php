@@ -30,7 +30,7 @@ class Hook_config_ffmpeg_path
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FFMPEG_PATH',
             'type' => 'line',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_ffmpeg_path
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

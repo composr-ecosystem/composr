@@ -33,11 +33,11 @@ class Hook_page_groupings_realtime_rain
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('realtime_rain')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/adminzone/audit/realtime_rain', array('admin_realtime_rain', array('type' => 'browse'), get_module_zone('admin_realtime_rain')), do_lang_tempcode('realtime_rain:_REALTIME_RAIN'), 'realtime_rain:DOC_REALTIME_RAIN'),
-        );
+        return [
+            ['audit', 'menu/adminzone/audit/realtime_rain', ['admin_realtime_rain', ['type' => 'browse'], get_module_zone('admin_realtime_rain')], do_lang_tempcode('realtime_rain:_REALTIME_RAIN'), 'realtime_rain:DOC_REALTIME_RAIN'],
+        ];
     }
 }

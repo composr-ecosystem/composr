@@ -64,7 +64,7 @@ class Hook_fields_state
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -124,7 +124,7 @@ class Hook_fields_state
             require_code('locations');
             $state_list = new Tempcode();
             $state_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
-            $state_list->attach(create_usa_state_selection_list(array($actual_value)));
+            $state_list->attach(create_usa_state_selection_list([$actual_value]));
             return form_input_list($_cf_name, $_cf_description, $input_name, $state_list, null, false, $field['cf_required'] == 1, null, 5, $autocomplete);
         }
 

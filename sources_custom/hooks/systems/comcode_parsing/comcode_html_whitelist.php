@@ -26,10 +26,10 @@ class Hook_comcode_parsing_comcode_html_whitelist
     public function get_allowed_html_seqs()
     {
         if (!addon_installed('comcode_html_whitelist')) {
-            return array();
+            return [];
         }
 
-        $allowed_html_seqs = array();
+        $allowed_html_seqs = [];
 
         require_code('textfiles');
         $whitelists = explode("\n", read_text_file('comcode_whitelist', null, true));

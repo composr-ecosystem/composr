@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_frequency_threshold
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_FREQUENCY_THRESHOLD',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_frequency_threshold
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

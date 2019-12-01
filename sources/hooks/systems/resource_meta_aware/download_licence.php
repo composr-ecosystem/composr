@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_download_licence
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'downloads:DOWNLOAD_LICENCE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_download_licence
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_DOWNLOAD_LICENCE',
-        );
+        ];
     }
 }

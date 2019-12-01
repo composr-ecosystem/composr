@@ -30,14 +30,14 @@ class Block_main_screen_actions
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('title', 'url');
+        $info['parameters'] = ['title', 'url'];
         return $info;
     }
 
@@ -65,19 +65,19 @@ class Block_main_screen_actions
             $from = get_self_url(true);
         }
 
-        $_map = array('page' => 'recommend', 'from' => protect_url_parameter($from));
+        $_map = ['page' => 'recommend', 'from' => protect_url_parameter($from)];
         if (array_key_exists('title', $map)) {
             $_map['title'] = $map['title'];
         }
         $recommend_url = build_url($_map, get_module_zone('recommend'));
 
-        return do_template('BLOCK_MAIN_SCREEN_ACTIONS', array(
+        return do_template('BLOCK_MAIN_SCREEN_ACTIONS', [
             '_GUID' => '2f5ceee4e1cc3d31c184c62e0710b1c3',
             'BLOCK_ID' => $block_id,
-            'PRINT_URL' => get_self_url(true, false, array('wide_print' => 1)),
+            'PRINT_URL' => get_self_url(true, false, ['wide_print' => 1]),
             'RECOMMEND_URL' => $recommend_url,
             'URL_ENCODED_CANONICAL_URL' => urlencode(get_canonical_url()),
             'TITLE' => array_key_exists('title', $map) ? $map['title'] : '',
-        ));
+        ]);
     }
 }

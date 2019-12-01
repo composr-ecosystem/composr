@@ -58,7 +58,7 @@ class CMSSubscriptionWrite
         require_code('notifications');
 
         if ($forum_id === null) {
-            $subscriptions = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_notification_code' => $notification_code, 'l_member_id' => $member_id), ' AND l_code_category LIKE \'forum:%\'');
+            $subscriptions = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => $notification_code, 'l_member_id' => $member_id], ' AND l_code_category LIKE \'forum:%\'');
             foreach ($subscriptions as $subs) {
                 disable_notifications($notification_code, $subs['l_code_category'], $member_id);
             }
@@ -107,7 +107,7 @@ class CMSSubscriptionWrite
         require_code('notifications');
 
         if ($topic_id === null) {
-            $subscriptions = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_notification_code' => $notification_code, 'l_member_id' => $member_id), ' AND l_code_category NOT LIKE \'forum:%\'');
+            $subscriptions = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => $notification_code, 'l_member_id' => $member_id], ' AND l_code_category NOT LIKE \'forum:%\'');
             foreach ($subscriptions as $subs) {
                 if (is_numeric($subs['l_code_category'])) {
                     disable_notifications($notification_code, $subs['l_code_category'], $member_id);

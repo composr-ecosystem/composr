@@ -36,10 +36,10 @@ class Hook_commandr_command_find
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('find', array('h', 'p', 'r', 'f', 'd'), array(true, true)), '', '');
+            return ['', do_command_help('find', ['h', 'p', 'r', 'f', 'd'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'find'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find')];
             }
 
             if (!((array_key_exists('d', $options)) || (array_key_exists('directories', $options)))) {
@@ -65,22 +65,22 @@ class Hook_commandr_command_find
             }
 
             if (!$commandr_fs->_is_dir($parameters[1])) {
-                return array('', '', '', do_lang('NOT_A_DIR', '2'));
+                return ['', '', '', do_lang('NOT_A_DIR', '2')];
             }
 
             $listing = $commandr_fs->search($parameters[0], ((array_key_exists('p', $options)) || (array_key_exists('preg', $options))), ((array_key_exists('r', $options)) || (array_key_exists('recursive', $options))), $files, $directories, $parameters[1]);
 
-            return array(
+            return [
                 '',
-                do_template('COMMANDR_LS', array(
+                do_template('COMMANDR_LS', [
                     '_GUID' => '50336439839279d3d8620d6f2124512a',
                     'DIRECTORY' => $commandr_fs->pwd_to_string($parameters[1]),
                     'DIRECTORIES' => $commandr_fs->prepare_dir_contents_for_listing($listing[0]),
                     'FILES' => $commandr_fs->prepare_dir_contents_for_listing($listing[1]),
-                )),
+                ]),
                 '',
                 ''
-            );
+            ];
         }
     }
 }

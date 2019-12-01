@@ -30,7 +30,7 @@ class Hook_config_keywords
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'KEYWORDS',
             'type' => 'line',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_keywords
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

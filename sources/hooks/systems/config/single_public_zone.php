@@ -30,7 +30,7 @@ class Hook_config_single_public_zone
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SINGLE_PUBLIC_ZONE',
             'type' => 'tick',
             'category' => 'SITE',
@@ -42,7 +42,7 @@ class Hook_config_single_public_zone
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

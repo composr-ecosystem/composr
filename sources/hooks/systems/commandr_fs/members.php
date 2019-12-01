@@ -23,7 +23,7 @@
  */
 class Hook_commandr_fs_members
 {
-    private $field_mapping = array(
+    private $field_mapping = [
         'id' => 'id',
         'email' => 'm_email_address',
         'primary_group' => 'm_primary_group',
@@ -56,7 +56,7 @@ class Hook_commandr_fs_members
         'banned' => 'm_is_perm_banned',
         'ip_address' => 'm_ip_address',
         'max_email_attach_size_mb' => 'm_max_email_attach_size_mb',
-    );
+    ];
 
     /**
      * Standard Commandr-fs listing function for commandr_fs hooks.
@@ -72,7 +72,7 @@ class Hook_commandr_fs_members
             return false;
         }
 
-        $listing = array();
+        $listing = [];
         if (count($meta_dir) < 1) {
             // We're listing the users
             $cnt = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'COUNT(*)');
@@ -80,7 +80,7 @@ class Hook_commandr_fs_members
                 return false; // Too much to process
             }
 
-            $users = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username', 'm_join_time'));
+            $users = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username', 'm_join_time']);
             foreach ($users as $user) {
                 $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', strval($user['id'])) . ' AND  (' . db_string_equal_to('the_type', 'EDIT_EDIT_MEMBER_PROFILE') . ')';
                 $modification_time = $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -88,40 +88,40 @@ class Hook_commandr_fs_members
                     $modification_time = $user['m_join_time'];
                 }
 
-                $listing[] = array(
+                $listing[] = [
                     $user['m_username'],
                     COMMANDR_FS_DIR,
                     null/*don't calculate a filesize*/,
                     $modification_time,
-                );
+                ];
             }
         } elseif (count($meta_dir) == 1) {
             // We're listing the profile fields and Custom Profile Fields of the specified member
             $username = $meta_dir[0];
-            $_member_data = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array('m_username' => $username), '', 1);
+            $_member_data = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_username' => $username], '', 1);
             if (!array_key_exists(0, $_member_data)) {
                 return false;
             }
             $member_data = $_member_data[0];
 
-            $listing = array();
+            $listing = [];
             foreach ($this->field_mapping as $prop => $field) {
-                $listing[] = array(
+                $listing[] = [
                     $prop,
                     COMMANDR_FS_FILE,
                     strlen(@strval($member_data[$field])),
                     $member_data['m_join_time'],
-                );
+                ];
             }
-            $listing[] = array(
+            $listing[] = [
                 'groups',
                 COMMANDR_FS_DIR,
                 null/*don't calculate a filesize*/,
                 $member_data['m_join_time'],
-            );
+            ];
 
             // Custom Profile Fields
-            $_member_custom_fields = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', array('*'), array('mf_member_id' => $member_data['id']), '', 1);
+            $_member_custom_fields = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['*'], ['mf_member_id' => $member_data['id']], '', 1);
             if (!array_key_exists(0, $_member_custom_fields)) {
                 return false;
             }
@@ -134,7 +134,7 @@ class Hook_commandr_fs_members
 
                 $i = intval(substr($_i, strlen('field_')));
 
-                $_cpf_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'cf_name', array('id' => $i));
+                $_cpf_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'cf_name', ['id' => $i]);
                 if ($_cpf_name === null) {
                     continue; // Corrupt data
                 }
@@ -146,12 +146,12 @@ class Hook_commandr_fs_members
 
                 $cpf_value = $member_custom_fields['field_' . strval($i)];
 
-                $listing[] = array(
+                $listing[] = [
                     $cpf_name,
                     COMMANDR_FS_FILE,
                     @strlen(strval($cpf_value)),
                     $member_data['m_join_time'],
-                );
+                ];
             }
         } elseif (count($meta_dir) == 2) {
             if ($meta_dir[1] != 'groups') {
@@ -163,12 +163,12 @@ class Hook_commandr_fs_members
             $group_names = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             foreach ($groups as $group) {
                 if (array_key_exists($group, $group_names)) {
-                    $listing[] = array(
+                    $listing[] = [
                         $group_names[$group],
                         COMMANDR_FS_FILE,
                         0,
                         null,
-                    );
+                    ];
                 }
             }
         } else {
@@ -194,7 +194,7 @@ class Hook_commandr_fs_members
         }
 
         if (count($meta_dir) < 1) {
-            if ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $new_dir_name)) !== null) {
+            if ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $new_dir_name]) !== null) {
                 return false; // Directory exists
             }
 
@@ -210,7 +210,7 @@ class Hook_commandr_fs_members
                 null, // dob_day
                 null, // dob_month
                 null, // dob_year
-                array(), // custom_fields
+                [], // custom_fields
                 null, // timezone
                 '', // language
                 '', // theme
@@ -345,7 +345,7 @@ class Hook_commandr_fs_members
         if (count($meta_dir) == 1) {
             // We're in a member's directory, and reading one of their profile fields
             if (array_key_exists($file_name, $this->field_mapping)) {
-                $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', $this->field_mapping[$file_name], array('id' => $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0])));
+                $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', $this->field_mapping[$file_name], ['id' => $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0])]);
                 $ret = @strval($ret);
                 return $ret;
             }
@@ -397,7 +397,7 @@ class Hook_commandr_fs_members
             if (array_key_exists($file_name, $this->field_mapping)) {
                 $val = mixed();
                 $val = $contents;
-                if (in_array($file_name, array(
+                if (in_array($file_name, [
                     'id',
                     'validated',
                     'primary_group',
@@ -417,11 +417,11 @@ class Hook_commandr_fs_members
                     'highlighted_name',
                     'on_probation_until',
                     'auto_mark_read',
-                ))) {
+                ])) {
                     $val = intval($val);
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', array($this->field_mapping[$file_name] => $val), array('id' => $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0])), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', [$this->field_mapping[$file_name] => $val], ['id' => $GLOBALS['FORUM_DRIVER']->get_member_from_username($meta_dir[0])], '', 1);
                 return true;
             }
 
@@ -462,12 +462,12 @@ class Hook_commandr_fs_members
      */
     protected function get_field_id_for($file_name, $missing_ok = false)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^field_(\d+)#', $file_name, $matches) != 0) {
             return intval($matches[1]);
         }
 
-        $where = array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $file_name);
+        $where = [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $file_name];
 
         if ($missing_ok) {
             $field_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', $where);

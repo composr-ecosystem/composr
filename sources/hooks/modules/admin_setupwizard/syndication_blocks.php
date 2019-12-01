@@ -31,9 +31,9 @@ class Hook_sw_syndication_blocks
     public function get_blocks()
     {
         if (!addon_installed('syndication_blocks')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_rss' => array('YES', 'NO')), array('side_rss' => array('PANEL_NONE', 'PANEL_NONE')));
+        return [['main_rss' => ['YES', 'NO']], ['side_rss' => ['PANEL_NONE', 'PANEL_NONE']]];
     }
 }

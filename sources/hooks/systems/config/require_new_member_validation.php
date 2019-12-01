@@ -30,7 +30,7 @@ class Hook_config_require_new_member_validation
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REQUIRE_NEW_MEMBER_VALIDATION',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_require_new_member_validation
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

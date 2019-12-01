@@ -29,7 +29,7 @@ require_code('database/shared/mysql');
  */
 class Database_Static_mysql extends Database_super_mysql
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
     public $last_select_db = null;
     public $reconnected_once = false;
 
@@ -56,14 +56,14 @@ class Database_Static_mysql extends Database_super_mysql
         }
 
         // Potential caching
-        $x = serialize(array($db_user, $db_host));
+        $x = serialize([$db_user, $db_host]);
         if (array_key_exists($x, $this->cache_db)) {
             if ($this->last_select_db[1] !== $db_name) {
                 mysql_select_db($db_name, $this->cache_db[$x]);
-                $this->last_select_db = array($this->cache_db[$x], $db_name);
+                $this->last_select_db = [$this->cache_db[$x], $db_name];
             }
 
-            return array($this->cache_db[$x], $db_name);
+            return [$this->cache_db[$x], $db_name];
         }
 
         $db_link = $persistent ? @mysql_pconnect($db_host, $db_user, $db_password) : @mysql_connect($db_host, $db_user, $db_password, true);
@@ -89,7 +89,7 @@ class Database_Static_mysql extends Database_super_mysql
                 critical_error('PASSON', $error); //warn_exit(do_lang_tempcode('CONNECT_ERROR'));
             }
         }
-        $this->last_select_db = array($db_link, $db_name);
+        $this->last_select_db = [$db_link, $db_name];
 
         $this->cache_db[$x] = $db_link;
 
@@ -106,7 +106,7 @@ class Database_Static_mysql extends Database_super_mysql
             @mysql_query( 'SET NAMES "' . addslashes('utf8mb4') . '"', $db_link);
         }
 
-        return array($db_link, $db_name);
+        return [$db_link, $db_name];
     }
 
     /**
@@ -152,7 +152,7 @@ class Database_Static_mysql extends Database_super_mysql
             if ((function_exists('mysql_ping')) && ($err == 'MySQL server has gone away') && (!$this->reconnected_once)) {
                 $this->reconnected_once = true;
                 if ((!mysql_ping($db_link)) && (isset($GLOBALS['SITE_DB'])) && ($connection[1] == $GLOBALS['SITE_DB']->connection_write[1])) {
-                    $this->cache_db = array();
+                    $this->cache_db = [];
                     $connection = $this->get_connection(get_use_persistent(), get_db_site(), get_db_site_host(), get_db_site_user(), get_db_site_password());
                     $GLOBALS['SITE_DB']->connection_write = $connection;
                     $GLOBALS['SITE_DB']->connection_read = $connection;
@@ -200,19 +200,19 @@ class Database_Static_mysql extends Database_super_mysql
         $row = mysql_fetch_row($results); // cannot use mysql_fetch_assoc because no dupe results are returned, which knocks off the offsets used by mysql_field_type
         if ($row === false) { // Quick get away
             mysql_free_result($results);
-            return array();
+            return [];
         }
 
         $num_fields = mysql_num_fields($results);
-        $names = array();
-        $types = array();
+        $names = [];
+        $types = [];
         for ($x = 0; $x < $num_fields; $x++) {
             $names[$x] = mysql_field_name($results, $x);
             $types[$x] = mysql_field_type($results, $x);
         }
 
-        $out = array();
-        $newrow = array();
+        $out = [];
+        $newrow = [];
         do {
             $j = 0;
             foreach ($row as $v) {

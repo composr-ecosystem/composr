@@ -45,14 +45,14 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
-        $tickets = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_notification_code' => 'ticket_assigned_staff', 'l_member_id' => get_member()), 'ORDER BY id DESC', 200/*reasonable limit*/);
+        $tickets = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => 'ticket_assigned_staff', 'l_member_id' => get_member()], 'ORDER BY id DESC', 200/*reasonable limit*/);
         if (count($tickets) == 200) {
-            $types2 = array(); // Too many to consider
+            $types2 = []; // Too many to consider
         }
 
         require_lang('tickets');
@@ -66,10 +66,10 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
             }
             list($ticket_title) = $details;
 
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $ticket['l_code_category'],
                 'title' => $ticket_title,
-            );
+            ];
         }
 
         return $page_links;
@@ -107,11 +107,11 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ticket_assigned_staff'] = array(do_lang('MESSAGES'), do_lang('tickets:NOTIFICATION_TYPE_ticket_assigned_staff'));
+        $list = [];
+        $list['ticket_assigned_staff'] = [do_lang('MESSAGES'), do_lang('tickets:NOTIFICATION_TYPE_ticket_assigned_staff')];
         return $list;
     }
 

@@ -31,15 +31,15 @@ function new_conversation_func($raw_params)
     $user_name_list = $params[0];
     $subject = $params[1];
     $body = $params[2];
-    $attachment_ids = isset($params[3]) ? array_map('intval', $params[3]) : array();
+    $attachment_ids = isset($params[3]) ? array_map('intval', $params[3]) : [];
 
     $pt_object = new CMSPtWrite();
     $new_topic_id = $pt_object->new_private_topic($user_name_list, $subject, $body, $attachment_ids);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'conv_id' => mobiquo_val(strval($new_topic_id), 'string'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -59,15 +59,15 @@ function reply_conversation_func($raw_params)
     $topic_id = intval($params[0]);
     $subject = isset($params[2]) ? $params[2] : '';
     $body = $params[1];
-    $attachment_ids = isset($params[3]) ? array_map('intval', $params[3]) : array();
+    $attachment_ids = isset($params[3]) ? array_map('intval', $params[3]) : [];
 
     $pt_object = new CMSPtWrite();
     $new_post_id = $pt_object->reply_private_topic($topic_id, $subject, $body, $attachment_ids);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'msg_id' => mobiquo_val(strval($new_post_id), 'string'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -112,26 +112,26 @@ function get_conversations_func($raw_params)
     $pt_object = new CMSPtRead();
     $result = $pt_object->get_private_topics($start, $max);
 
-    $topics = array();
+    $topics = [];
     foreach ($result['topics'] as $topic) {
-        $participants = array();
+        $participants = [];
         foreach ($topic['participants'] as $participant) {
-            $arr = array(
+            $arr = [
                 'user_id' => mobiquo_val(strval($participant['user_id']), 'string'),
                 'username' => mobiquo_val($participant['username'], 'base64'),
                 'icon_url' => mobiquo_val($participant['icon_url'], 'string'),
                 'is_online' => mobiquo_val($participant['is_online'], 'boolean'),
-            );
+            ];
             $display_text = $GLOBALS['FORUM_DRIVER']->get_username($participant['user_id'], true);
             if ($display_text != $participant['username']) {
-                $arr += array(
+                $arr += [
                     'display_text' => mobiquo_val($display_text, 'base64'),
-                );
+                ];
             }
             $participants[$participant['user_id']] = mobiquo_val($arr, 'struct');
         }
 
-        $topics[] = mobiquo_val(array(
+        $topics[] = mobiquo_val([
             'conv_id' => mobiquo_val(strval($topic['topic_id']), 'string'),
             'total_message_num' => mobiquo_val($topic['total_posts'], 'int'),
             'reply_count' => mobiquo_val($topic['total_posts'] - 1, 'int'),
@@ -152,15 +152,15 @@ function get_conversations_func($raw_params)
             'is_closed' => mobiquo_val($topic['is_closed'], 'boolean'),
             'delete_mode' => mobiquo_val($topic['delete_mode'], 'int'),
             'participants' => mobiquo_val($participants, 'struct'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'conversation_count' => mobiquo_val($result['topics_count'], 'int'),
         'unread_count' => mobiquo_val($result['unread_count'], 'int'),
         'can_upload' => mobiquo_val($result['can_upload'], 'boolean'),
         'list' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -184,26 +184,26 @@ function get_conversation_func($raw_params)
     $pt_object = new CMSPtRead();
     $result = $pt_object->get_private_topic($topic_id, $start, $max, $return_html);
 
-    $participants = array();
+    $participants = [];
     foreach ($result['participants'] as $participant) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($participant['user_id']), 'string'),
             'username' => mobiquo_val($participant['username'], 'base64'),
             'icon_url' => mobiquo_val($participant['icon_url'], 'string'),
             'is_online' => mobiquo_val($participant['is_online'], 'boolean'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($participant['user_id'], true);
         if ($display_text != $participant['username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $participants[$participant['user_id']] = mobiquo_val($arr, 'struct');
     }
 
-    $posts = array();
+    $posts = [];
     foreach ($result['posts'] as $post) {
-        $posts[] = mobiquo_val(array(
+        $posts[] = mobiquo_val([
             'msg_id' => mobiquo_val(strval($post['msg_id']), 'string'),
             'msg_content' => mobiquo_val($post['msg_content'], 'base64'),
             'msg_author_id' => mobiquo_val(strval($post['msg_author_id']), 'string'),
@@ -214,10 +214,10 @@ function get_conversation_func($raw_params)
             'timestamp' => mobiquo_val(strval($post['post_time']), 'string'),
             'new_post' => mobiquo_val($post['new_post'], 'boolean'),
             'attachments' => mobiquo_val(render_tapatalk_attachments($post['attachments']), 'array'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'conv_id' => mobiquo_val(strval($result['topic_id']), 'string'),
         'conv_subject' => mobiquo_val($result['conv_title'], 'base64'),
         'conv_title' => mobiquo_val($result['conv_title'], 'base64'),
@@ -237,7 +237,7 @@ function get_conversation_func($raw_params)
         'delete_mode' => mobiquo_val($result['delete_mode'], 'int'),
         'participants' => mobiquo_val($participants, 'struct'),
         'list' => mobiquo_val($posts, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -259,9 +259,9 @@ function get_quote_conversation_func($raw_params)
     $pt_object = new CMSPtRead();
     $text_body = $pt_object->get_quote_for_private_topic($post_id);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'text_body' => mobiquo_val($text_body, 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 

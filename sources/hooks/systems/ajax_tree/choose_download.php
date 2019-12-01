@@ -40,13 +40,13 @@ class Hook_ajax_tree_choose_download
                 $id_float = floatval(substr($id, 8));
                 do {
                     $str = 'Version ' . float_to_raw_string($id_float, 1, true);
-                    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str));
+                    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
                     if ($_id === null) {
                         $id_float -= 0.1;
                     }
                 } while (($_id === null) && ($id_float > 0.0));
             } else {
-                $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('category') => $id));
+                $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('category') => $id]);
             }
             if ($_id === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_category'));
@@ -64,7 +64,7 @@ class Hook_ajax_tree_choose_download
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'downloads')) {
-            $tree = array();
+            $tree = [];
         }
 
         $file_type = get_param_string('file_type', '');
@@ -79,7 +79,7 @@ class Hook_ajax_tree_choose_download
                 cms_mb_asort($t['entries'], SORT_NATURAL | SORT_FLAG_CASE);
 
                 foreach ($t['entries'] as $eid => $etitle) {
-                    $download_rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('id' => $eid), '', 1);
+                    $download_rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => $eid], '', 1);
 
                     if ($file_type != '') {
                         if (substr($download_rows[0]['original_filename'], -strlen($file_type) - 1) != '.' . $file_type) {
@@ -96,11 +96,11 @@ class Hook_ajax_tree_choose_download
                         $_out = new Tempcode();
                         require_lang('galleries');
                         $cat = 'download_' . strval($eid);
-                        $map = array('cat' => $cat);
+                        $map = ['cat' => $cat];
                         if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
                             $map['validated'] = 1;
                         }
-                        $rows = $GLOBALS['SITE_DB']->query_select('images', array('*'), $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);
+                        $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);
                         $counter = 0;
                         $div = 2;
                         $_out = new Tempcode();
@@ -117,28 +117,28 @@ class Hook_ajax_tree_choose_download
                             $description_image = get_translated_tempcode('images', $row, 'the_description');
                             $thumb = do_image_thumb($thumb_url, '');
                             $iedit_url = new Tempcode();
-                            $_content = do_template('DOWNLOAD_SCREEN_IMAGE', array(
+                            $_content = do_template('DOWNLOAD_SCREEN_IMAGE', [
                                 '_GUID' => '45905cd5823af4b066ccbc18a39edd74',
                                 'ID' => strval($row['id']),
                                 'VIEW_URL' => $view_url,
                                 'EDIT_URL' => $iedit_url,
                                 'THUMB' => $thumb,
                                 'DESCRIPTION' => $description_image,
-                            ));
+                            ]);
 
-                            $_row->attach(do_template('DOWNLOAD_GALLERY_IMAGE_CELL', array('_GUID' => 'e016f7655dc6519d9536aa51e4bed57b', 'CONTENT' => $_content)));
+                            $_row->attach(do_template('DOWNLOAD_GALLERY_IMAGE_CELL', ['_GUID' => 'e016f7655dc6519d9536aa51e4bed57b', 'CONTENT' => $_content]));
 
                             if (($counter % $div == 1) && ($counter != 0)) {
-                                $_out->attach(do_template('DOWNLOAD_GALLERY_ROW', array('_GUID' => '59744ea8227da11901ddb3f4de04c88d', 'CELLS' => $_row)));
+                                $_out->attach(do_template('DOWNLOAD_GALLERY_ROW', ['_GUID' => '59744ea8227da11901ddb3f4de04c88d', 'CELLS' => $_row]));
                                 $_row = new Tempcode();
                             }
 
                             $counter++;
                         }
                         if (!$_row->is_empty()) {
-                            $_out->attach(do_template('DOWNLOAD_GALLERY_ROW', array('_GUID' => '3f368a6baa7e544f76e66d4bd8291c4b', 'CELLS' => $_row)));
+                            $_out->attach(do_template('DOWNLOAD_GALLERY_ROW', ['_GUID' => '3f368a6baa7e544f76e66d4bd8291c4b', 'CELLS' => $_row]));
                         }
-                        $description_html = do_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', array('_GUID' => 'a273f4beb94672ee44bdfdf06bf328c8', 'DESCRIPTION' => $description_html, 'IMAGES' => $_out));
+                        $description_html = do_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', ['_GUID' => 'a273f4beb94672ee44bdfdf06bf328c8', 'DESCRIPTION' => $description_html, 'IMAGES' => $_out]);
                     }
 
                     $out .= '<entry id="' . xmlentities(strval($eid)) . '" description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>';
@@ -157,10 +157,10 @@ class Hook_ajax_tree_choose_download
 
         // Mark parent cats for pre-expansion
         if (!cms_empty_safe($default)) {
-            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', array('id' => intval($default)));
+            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($default)]);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'parent_id', array('id' => $cat));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'parent_id', ['id' => $cat]);
             }
         }
 

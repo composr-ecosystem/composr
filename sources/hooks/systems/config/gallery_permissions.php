@@ -30,7 +30,7 @@ class Hook_config_gallery_permissions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_PERMISSIONS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_permissions
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

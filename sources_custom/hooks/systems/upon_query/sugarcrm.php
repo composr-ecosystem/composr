@@ -47,7 +47,7 @@ class Hook_upon_query_sugarcrm
 
         $prefix = preg_quote($GLOBALS['FORUM_DB']->get_table_prefix(), '#');
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0) {
             require_code('sugarcrm');
 
@@ -57,7 +57,7 @@ class Hook_upon_query_sugarcrm
 
             require_code('tasks');
             $_title = do_lang('SUGARCRM_MEMBER_SYNC');
-            call_user_func_array__long_task($_title, null, 'sugarcrm_sync_member', array(intval($matches[1]), $_GET, $_POST), false, false, false);
+            call_user_func_array__long_task($_title, null, 'sugarcrm_sync_member', [intval($matches[1]), $_GET, $_POST], false, false, false);
 
             return;
         }

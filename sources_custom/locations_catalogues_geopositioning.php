@@ -34,13 +34,13 @@ function fix_geoposition($lstring, $category_id)
     if ($result !== null) {
         list($latitude, $longitude) = $result;
 
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => '_catalogue_category'), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => '_catalogue_category'], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         require_code('content');
         require_code('fields');
         $assocated_catalogue_entry_id = get_bound_content_entry('catalogue_category', strval($category_id));
 
-        $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $latitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[0]['id']), '', 1);
-        $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $longitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[1]['id']), '', 1);
+        $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $latitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[0]['id']], '', 1);
+        $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $longitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[1]['id']], '', 1);
 
         return '1';
     }
@@ -97,9 +97,9 @@ function find_nearest_location($latitude, $longitude, $latitude_field_id = null,
         $query = 'SELECT * FROM ' . get_table_prefix() . 'locations WHERE ' . $where;
         $locations = $GLOBALS['SITE_DB']->query($query);
     } else { // Catalogue query (works both for entries and categories that use custom fields)
-        $where = str_replace(array('l_latitude', 'l_longitude'), array('a.cv_value', 'b.cv_value'), $where);
+        $where = str_replace(['l_latitude', 'l_longitude'], ['a.cv_value', 'b.cv_value'], $where);
         $query = 'SELECT a.ce_id,c.id,cc_title,a.cv_value AS l_latitude,b.cv_value AS l_longitude FROM ' . get_table_prefix() . 'catalogue_efv_float a JOIN ' . get_table_prefix() . 'catalogue_efv_float b ON a.ce_id=b.ce_id AND a.cf_id=' . strval($latitude_field_id) . ' AND b.cf_id=' . strval($longitude_field_id) . ' LEFT JOIN ' . get_table_prefix() . 'catalogue_entry_linkage x ON a.ce_id=x.catalogue_entry_id AND ' . db_string_equal_to('x.content_type', 'catalogue_category') . ' LEFT JOIN ' . get_table_prefix() . 'catalogue_categories c ON ' . db_cast('c.id', 'CHAR') . '=x.content_id WHERE ' . $where;
-        $locations = $GLOBALS['SITE_DB']->query($query, null, 0, false, false, array('cc_title' => 'SHORT_TRANS'));
+        $locations = $GLOBALS['SITE_DB']->query($query, null, 0, false, false, ['cc_title' => 'SHORT_TRANS']);
     }
 
     if (empty($locations)) {
@@ -120,7 +120,7 @@ function find_nearest_location($latitude, $longitude, $latitude_field_id = null,
             $best_at = $l;
         }
     }
-    $locations = array($best_at);
+    $locations = [$best_at];
 
     return $locations[0];
 }

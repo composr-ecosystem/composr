@@ -30,14 +30,14 @@ class Block_main_db_notes
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'title', 'scrolls');
+        $info['parameters'] = ['param', 'title', 'scrolls'];
         return $info;
     }
 
@@ -71,7 +71,7 @@ class Block_main_db_notes
         $post_url = get_self_url();
 
         $map_comcode = get_block_ajax_submit_map($map);
-        return do_template('BLOCK_MAIN_NOTES', array(
+        return do_template('BLOCK_MAIN_NOTES', [
             '_GUID' => '2a9e1c512b66600583735552b56e0911',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
@@ -80,6 +80,6 @@ class Block_main_db_notes
             'SCROLLS' => array_key_exists('scrolls', $map) && ($map['scrolls'] == '1'),
             'CONTENTS' => $contents,
             'URL' => $post_url,
-        ));
+        ]);
     }
 }

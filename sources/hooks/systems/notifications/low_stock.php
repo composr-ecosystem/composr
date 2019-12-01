@@ -44,11 +44,11 @@ class Hook_notification_low_stock extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('shopping')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['low_stock'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('shopping:NOTIFICATION_TYPE_low_stock'));
+        $list = [];
+        $list['low_stock'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('shopping:NOTIFICATION_TYPE_low_stock')];
         return $list;
     }
 }

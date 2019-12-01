@@ -57,9 +57,9 @@ class TicketsEmailIntegration extends EmailIntegration
             $ticket_url = $ticket_url->evaluate();
         }
 
-        $extended_subject = do_lang('TICKET_SIMPLE_SUBJECT_' . ($new ? 'new' : 'reply'), $subject, $ticket_id, array($ticket_type_name, $from_displayname, get_site_name()), get_lang($to_member_id));
-        $extended_message = do_lang('TICKET_SIMPLE_MAIL_' . ($new ? 'new' : 'reply'), get_site_name(), $ticket_type_name, array($ticket_url, $from_displayname, $message), get_lang($to_member_id));
-        $extended_from_displayname = do_lang('TICKET_SIMPLE_FROM', get_site_name(), $from_displayname, array(), get_lang($to_member_id));
+        $extended_subject = do_lang('TICKET_SIMPLE_SUBJECT_' . ($new ? 'new' : 'reply'), $subject, $ticket_id, [$ticket_type_name, $from_displayname, get_site_name()], get_lang($to_member_id));
+        $extended_message = do_lang('TICKET_SIMPLE_MAIL_' . ($new ? 'new' : 'reply'), get_site_name(), $ticket_type_name, [$ticket_url, $from_displayname, $message], get_lang($to_member_id));
+        $extended_from_displayname = do_lang('TICKET_SIMPLE_FROM', get_site_name(), $from_displayname, [], get_lang($to_member_id));
 
         $reply_email = get_option('ticket_mail_email_address');
 
@@ -73,7 +73,7 @@ class TicketsEmailIntegration extends EmailIntegration
      */
     protected function get_sender_email()
     {
-        foreach (array('website_email', 'ticket_mail_email_address', 'staff_address') as $address) {
+        foreach (['website_email', 'ticket_mail_email_address', 'staff_address'] as $address) {
             if (get_option($address) != '') {
                 return get_option($address);
             }
@@ -90,7 +90,7 @@ class TicketsEmailIntegration extends EmailIntegration
      */
     protected function get_system_email()
     {
-        foreach (array('ticket_mail_email_address', 'staff_address', 'website_email') as $address) {
+        foreach (['ticket_mail_email_address', 'staff_address', 'website_email'] as $address) {
             if (get_option($address) != '') {
                 return get_option($address);
             }
@@ -134,8 +134,8 @@ class TicketsEmailIntegration extends EmailIntegration
     {
         // Try to bind to an existing ticket
         $existing_ticket_id = null;
-        $matches = array();
-        $strings = array();
+        $matches = [];
+        $strings = [];
         foreach (array_keys(find_all_langs()) as $lang) {
             if (preg_match('#' . do_lang('TICKET_SIMPLE_SUBJECT_regexp', null, null, null, $lang) . '#', $subject, $matches) != 0) {
                 if (strpos($matches[2], '_') !== false) {
@@ -152,7 +152,7 @@ class TicketsEmailIntegration extends EmailIntegration
 
         // Remove any tags from the subject line
         $num_matches = preg_match_all('# \[([^\[\]]+)\]#', $subject, $matches);
-        $tags = array();
+        $tags = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $tag = $matches[1][$i];
 
@@ -183,13 +183,13 @@ class TicketsEmailIntegration extends EmailIntegration
         }
 
         // Remember the e-mail address to member ID mapping
-        $GLOBALS['SITE_DB']->query_delete('ticket_known_emailers', array(
+        $GLOBALS['SITE_DB']->query_delete('ticket_known_emailers', [
             'email_address' => $from_email,
-        ));
-        $GLOBALS['SITE_DB']->query_insert('ticket_known_emailers', array(
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('ticket_known_emailers', [
             'email_address' => $from_email,
             'member_id' => $member_id,
-        ));
+        ]);
 
         $this->log_message('Recording ' . $from_email . ' as a valid posted for member #' . strval($member_id));
 
@@ -216,7 +216,7 @@ class TicketsEmailIntegration extends EmailIntegration
             $tags[] = do_lang('OTHER');
             $tags[] = do_lang('GENERAL');
             foreach ($tags as $tag) {
-                $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => $tag));
+                $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => $tag]);
                 if ($ticket_type_id !== null) {
                     break;
                 }
@@ -236,9 +236,9 @@ class TicketsEmailIntegration extends EmailIntegration
         } else {
             // Reply to the ticket...
 
-            $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', array(
+            $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', [
                 'ticket_id' => $existing_ticket_id,
-            ));
+            ]);
 
             $ticket_url = ticket_add_post($existing_ticket_id, $ticket_type_id, $subject, $body, false, $member_id);
 
@@ -271,7 +271,7 @@ class TicketsEmailIntegration extends EmailIntegration
      * @param  ?string $existing_ticket_id ID of existing ticket (null: unknown)
      * @return ?MEMBER The member ID (null: not found)
      */
-    protected function find_member_id($from_email, $tags = array(), $existing_ticket_id = null)
+    protected function find_member_id($from_email, $tags = [], $existing_ticket_id = null)
     {
         $member_id = null;
         foreach ($tags as $tag) {
@@ -281,9 +281,9 @@ class TicketsEmailIntegration extends EmailIntegration
             }
         }
         if ($member_id === null) {
-            $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_known_emailers', 'member_id', array(
+            $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_known_emailers', 'member_id', [
                 'email_address' => $from_email,
-            ));
+            ]);
         }
         if ($member_id === null) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($from_email);
@@ -312,7 +312,7 @@ class TicketsEmailIntegration extends EmailIntegration
                 break;
 
             case self::STRIP_HTML:
-                $strings = array();
+                $strings = [];
                 foreach (array_keys(find_all_langs()) as $lang) {
                     $strings[] = do_lang('TICKET_SIMPLE_MAIL_new_regexp', null, null, null, $lang);
                     $strings[] = do_lang('TICKET_SIMPLE_MAIL_reply_regexp', null, null, null, $lang);
@@ -323,7 +323,7 @@ class TicketsEmailIntegration extends EmailIntegration
                 break;
 
             case self::STRIP_TEXT:
-                $strings = array();
+                $strings = [];
                 foreach (array_keys(find_all_langs()) as $lang) {
                     $strings[] = do_lang('TICKET_SIMPLE_MAIL_new_regexp', null, null, null, $lang);
                     $strings[] = do_lang('TICKET_SIMPLE_MAIL_reply_regexp', null, null, null, $lang);
@@ -352,8 +352,8 @@ class TicketsEmailIntegration extends EmailIntegration
             $body = $this->email_comcode_from_html($_body_html, $GLOBALS['FORUM_DRIVER']->get_guest_id());
         }
 
-        $extended_subject = do_lang('TICKET_CANNOT_BIND_SUBJECT', $subject, $email, array(get_site_name()), get_site_default_lang());
-        $extended_message = do_lang('TICKET_CANNOT_BIND_MAIL', strip_comcode($body), $email, array($subject, get_site_name()), get_site_default_lang());
+        $extended_subject = do_lang('TICKET_CANNOT_BIND_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
+        $extended_message = do_lang('TICKET_CANNOT_BIND_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }

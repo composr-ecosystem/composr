@@ -31,7 +31,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_primary_layout
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_themes',
             'tut_designer_themes',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_primary_layout
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_primary_layout.php',
             'themes/default/templates/MESSAGE.tpl',
             'themes/default/css/helper_panel.css',
@@ -117,7 +117,7 @@ class Hook_addon_registry_core_primary_layout
             'themes/default/templates/BREADCRUMB_LONE_WRAP.tpl',
             'themes/default/templates/BREADCRUMB_LINK_WRAP.tpl',
             'themes/default/templates/MAIL_RAW.tpl',
-        );
+        ];
     }
 
     /**
@@ -127,7 +127,7 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BREADCRUMB_SEPARATOR.tpl' => 'breadcrumb',
             'templates/BREADCRUMB_LONE_WRAP.tpl' => 'breadcrumb',
             'templates/BREADCRUMB_LINK_WRAP.tpl' => 'breadcrumb',
@@ -142,7 +142,7 @@ class Hook_addon_registry_core_primary_layout
             'templates/HEADER_CLASSIC.tpl' => 'header_classic',
             'templates/HEADER_MODERN.tpl' => 'header_modern',
             'templates/HEADER_SIDE.tpl' => 'header_side',
-        );
+        ];
     }
 
     /**
@@ -155,12 +155,12 @@ class Hook_addon_registry_core_primary_layout
     public function tpl_preview__breadcrumb()
     {
         $out = new Tempcode();
-        $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', array('URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase())));
-        $out->attach(do_lorem_template('BREADCRUMB_SEPARATOR', array()));
-        $out->attach(do_lorem_template('BREADCRUMB_LONE_WRAP', array('LABEL' => lorem_phrase())));
-        return array(
+        $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', ['URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase()]));
+        $out->attach(do_lorem_template('BREADCRUMB_SEPARATOR', []));
+        $out->attach(do_lorem_template('BREADCRUMB_LONE_WRAP', ['LABEL' => lorem_phrase()]));
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -172,13 +172,13 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__closed_site()
     {
-        return array(
-            lorem_globalise(do_lorem_template('CLOSED_SITE', array(
+        return [
+            lorem_globalise(do_lorem_template('CLOSED_SITE', [
                 'CLOSED' => lorem_phrase(),
                 'LOGIN_URL' => placeholder_url(),
                 'JOIN_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -190,12 +190,12 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__message()
     {
-        return array(
-            lorem_globalise(do_lorem_template('MESSAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('MESSAGE', [
                 'TYPE' => placeholder_img_code('icons/status'),
                 'MESSAGE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -207,11 +207,11 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail_subject()
     {
-        return array(
-            lorem_globalise(do_lorem_template('MAIL_SUBJECT', array(
+        return [
+            lorem_globalise(do_lorem_template('MAIL_SUBJECT', [
                 'SUBJECT_LINE' => lorem_word(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -223,15 +223,15 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail()
     {
-        return array(
-            lorem_globalise(do_lorem_template('MAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('MAIL', [
                 'CSS' => '',
                 'LOGOURL' => placeholder_image_url(),
                 'LANG' => fallback_lang(),
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_paragraph(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -243,16 +243,16 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__mail_raw()
     {
-        return array(
-            lorem_globalise(do_lorem_template('MAIL_RAW', array(
+        return [
+            lorem_globalise(do_lorem_template('MAIL_RAW', [
                 'CSS' => '',
                 'LOGOURL' => placeholder_image_url(),
                 'LOGOMAP' => '',
                 'LANG' => fallback_lang(),
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_paragraph(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -264,13 +264,13 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__global_html_wrap()
     {
-        $out = do_lorem_template('GLOBAL_HTML_WRAP', array(
+        $out = do_lorem_template('GLOBAL_HTML_WRAP', [
             'MIDDLE' => lorem_paragraph_html(),
-        ));
+        ]);
 
-        return array(
+        return [
             $out
-        );
+        ];
     }
 
     /**
@@ -285,19 +285,19 @@ class Hook_addon_registry_core_primary_layout
         $awards = null;
         if (addon_installed('awards')) {
             require_lang('awards');
-            $awards = array(
-                array(
+            $awards = [
+                [
                     'AWARD_TYPE' => lorem_title(),
                     'AWARD_TIMESTAMP' => placeholder_date(),
-                )
-            );
+                ]
+            ];
         }
-        return array(
-            lorem_globalise(do_lorem_template('SCREEN_TITLE', array(
+        return [
+            lorem_globalise(do_lorem_template('SCREEN_TITLE', [
                 'TITLE' => lorem_phrase(),
                 'AWARDS' => $awards,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -309,11 +309,11 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__header_classic()
     {
-        $out = do_lorem_template('HEADER_CLASSIC', array());
+        $out = do_lorem_template('HEADER_CLASSIC', []);
 
-        return array(
+        return [
             $out
-        );
+        ];
     }
 
     /**
@@ -325,11 +325,11 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__header_modern()
     {
-        $out = do_lorem_template('HEADER_MODERN', array());
+        $out = do_lorem_template('HEADER_MODERN', []);
 
-        return array(
+        return [
             $out
-        );
+        ];
     }
 
     /**
@@ -341,10 +341,10 @@ class Hook_addon_registry_core_primary_layout
      */
     public function tpl_preview__header_side()
     {
-        $out = do_lorem_template('HEADER_SIDE', array());
+        $out = do_lorem_template('HEADER_SIDE', []);
 
-        return array(
+        return [
             $out
-        );
+        ];
     }
 }

@@ -34,7 +34,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Make addon tutorial index';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '15320e95a4b92c021e7e9853c1585f7d', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '15320e95a4b92c021e7e9853c1585f7d', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 // Prepare for synonyms
@@ -46,8 +46,8 @@ $synonyms = $admin->_synonyms();
 
 // Find details about addons
 require_code('addons');
-$addons = array();
-$all_tutorials_referenced = array();
+$addons = [];
+$all_tutorials_referenced = [];
 $_addons = find_all_hooks('systems', 'addon_registry');
 ksort($_addons);
 foreach ($_addons as $addon_name => $place) {
@@ -66,13 +66,13 @@ foreach ($_addons as $addon_name => $place) {
         $pretty = titleify($addon_name);
 
         $stemmed_addon = strtolower($stemmer->stem($pretty));
-        $_synonyms = array();
+        $_synonyms = [];
         foreach ($synonyms as $ss) {
-            if (in_array($ss[0], array('export', 'permission'))) {
+            if (in_array($ss[0], ['export', 'permission'])) {
                 continue;
             }
 
-            $_ss = array_map(array($stemmer, 'stem'), $ss);
+            $_ss = array_map([$stemmer, 'stem'], $ss);
             if (in_array($stemmed_addon, $_ss)) {
                 $_synonyms = array_merge($_synonyms, $ss);
                 $test = array_search($stemmed_addon, $_synonyms);
@@ -86,7 +86,7 @@ foreach ($_addons as $addon_name => $place) {
             }
         }
 
-        $addons[$addon_name] = array(
+        $addons[$addon_name] = [
             'pretty' => $pretty,
             'icon' => find_addon_icon($addon_name, false),
             'description' => $ob->get_description(),
@@ -95,13 +95,13 @@ foreach ($_addons as $addon_name => $place) {
             'tutorials' => $tutorials,
             'synonyms' => $_synonyms,
             'tracker_url' => 'https://compo.sr/tracker/search.php?project_id=1&category=' . urlencode($addon_name) . '&status_id=10',
-        );
+        ];
     }
 }
 
 // Find unreferenced tutorials
-$tutorials = array();
-$unreferenced_tutorials = array();
+$tutorials = [];
+$unreferenced_tutorials = [];
 $dh = opendir(get_file_base() . '/docs/pages/comcode_custom/EN');
 while (($f = readdir($dh)) !== false) {
     if (substr($f, -4) == '.txt') {
@@ -150,7 +150,7 @@ foreach ($addons as $addon_name => $addon_info) {
             <td>
                 ' . $icon . escape_html($addon_info['pretty']) . '<br />(<kbd>' . escape_html($addon_name) . '</kbd>)<br /><br />
                 <strong>Core</strong>: ' . escape_html($addon_info['core'] ? 'Yes' : 'No') . '<br /><br />
-                <strong>Dependencies</strong>: ' . (($addon_info['dependencies'] == array()) ? '<em>None</em>' : ('<kbd>' . implode('</kbd>, <kbd>', array_map('escape_html', $addon_info['dependencies'])) . '</kbd>')) . '
+                <strong>Dependencies</strong>: ' . (($addon_info['dependencies'] == []) ? '<em>None</em>' : ('<kbd>' . implode('</kbd>, <kbd>', array_map('escape_html', $addon_info['dependencies'])) . '</kbd>')) . '
             </td>
             <td>' . escape_html($addon_info['description']) . '</td>
             <td>' . $tutorials . '</td>
@@ -188,7 +188,7 @@ echo static_evaluate_tempcode(comcode_to_tempcode($addon_index_file));
 function get_tutorial_title($tutorial)
 {
     $contents = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial . '.txt', FILE_READ_LOCK | FILE_READ_BOM);
-    $matches = array();
+    $matches = [];
     preg_match('#\[title[^\[\]]*\](?-U)(Composr (Tutorial|Supplementary): )?(?U)(.*)\[/title\]#Us', $contents, $matches);
     return $matches[3];
 }

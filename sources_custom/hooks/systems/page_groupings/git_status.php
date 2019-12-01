@@ -28,11 +28,11 @@ class Hook_page_groupings_git_status
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('git_status')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'status/notice', array('admin_git_status', array(), get_page_zone('admin_git_status')), make_string_tempcode('Git status')),
-        );
+        return [
+            ['tools', 'status/notice', ['admin_git_status', [], get_page_zone('admin_git_status')], make_string_tempcode('Git status')],
+        ];
     }
 }

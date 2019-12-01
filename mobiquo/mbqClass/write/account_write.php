@@ -57,12 +57,12 @@ class CMSAccountWrite
         } elseif (!empty($email)) {
             // Do we need a username?
             if (get_option('one_per_email_address') == '0') {
-                return array(
+                return [
                     'status' => self::SIGN_IN_USERNAME_NEEDED_NOT_EMAIL, // We can't login with e-mail, as there may be multiple accounts with the same e-mail address
                     'register' => false,
                     'member_id' => null,
                     'result_text' => do_lang('SIGN_IN_USERNAME_NEEDED_NOT_EMAIL'),
-                );
+                ];
             }
 
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
@@ -73,28 +73,28 @@ class CMSAccountWrite
             // Nothing to look up with or add against even though password provided
             switch (get_option('one_per_email_address')) {
                 case '0':
-                    return array(
+                    return [
                         'status' => self::SIGN_IN_USERNAME_NEEDED,
                         'register' => false,
                         'member_id' => null,
                         'result_text' => do_lang('SIGN_IN_USERNAME_NEEDED'),
-                    );
+                    ];
 
                 case '1':
-                    return array(
+                    return [
                         'status' => self::SIGN_IN_USERNAME_NEEDED,
                         'register' => false,
                         'member_id' => null,
                         'result_text' => do_lang('SIGN_IN_USERNAME_OR_EMAIL_NEEDED'),
-                    );
+                    ];
 
                 case '2':
-                    return array(
+                    return [
                         'status' => self::SIGN_IN_USERNAME_NEEDED,
                         'register' => false,
                         'member_id' => null,
                         'result_text' => do_lang('SIGN_IN_EMAIL_NEEDED'),
-                    );
+                    ];
             }
         }
         $exists = $member_id !== null; // At this point either $exists and $username and $email is set, or !$exists
@@ -106,12 +106,12 @@ class CMSAccountWrite
         if ($test['result']) {
             // Check email matches
             if (($email != '') && (isset($test['email'])) && ($test['email'] != $email)) {
-                return array(
+                return [
                     'status' => self::SIGN_IN_EMAIL_WRONG,
                     'register' => false,
                     'member_id' => $member_id, // Does let it throug though
                     'result_text' => do_lang('SIGN_IN_EMAIL_WRONG'),
-                );
+                ];
             }
 
             // SSO passed
@@ -120,12 +120,12 @@ class CMSAccountWrite
                 $acl_object = new CMSMemberACL();
                 $acl_object->set_auth($member_id);
 
-                return array(
+                return [
                     'status' => self::SIGN_IN_OKAY_TOKEN,
                     'register' => false,
                     'member_id' => $member_id,
                     'result_text' => null,
-                );
+                ];
             } else {
                 // Register (which may pass or fail)
                 return $this->join($username, $email, $password, $custom_fields, false);
@@ -133,12 +133,12 @@ class CMSAccountWrite
         }
 
         // SSO failed
-        return array(
+        return [
             'status' => self::SIGN_IN_SSO_FAILED,
             'register' => false,
             'member_id' => null,
             'result_text' => do_lang('SIGN_IN_SSO_FAILED'),
-        );
+        ];
     }
 
     /**
@@ -162,9 +162,9 @@ class CMSAccountWrite
             warn_exit($result['result_text']);
         }
 
-        return array(
+        return [
             'preview_topic_id' => $result['preview_topic_id'],
-        );
+        ];
     }
 
     /**
@@ -183,22 +183,22 @@ class CMSAccountWrite
 
         // Do we have password for a registration?
         if ($password === null) {
-            return array(
+            return [
                 'status' => self::SIGN_IN_REGISTER_NEEDS_PASSWORD,
                 'register' => false,
                 'member_id' => null,
                 'result_text' => do_lang('SIGN_IN_REGISTER_NEEDS_PASSWORD'),
-            );
+            ];
         }
 
-        if ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $username)) !== null) {
-            return array(
+        if ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username]) !== null) {
+            return [
                 'status' => self::SIGN_IN_REGISTER_USERNAME_OCCUPIED,
                 'register' => false,
                 'member_id' => null,
                 'result_text' => do_lang('SIGN_IN_REGISTER_USERNAME_OCCUPIED'),
                 'preview_topic_id' => null,
-            );
+            ];
         }
 
         require_code('cns_join');
@@ -212,17 +212,17 @@ class CMSAccountWrite
             $email,
             $password,
             $custom_fields,
-            array('email_confirm_join' => $confirm_if_enabled ? '2' : '0', 'is_on_coppa' => '0')
+            ['email_confirm_join' => $confirm_if_enabled ? '2' : '0', 'is_on_coppa' => '0']
         );
 
         if ($member_id === null) {
-            return array(
+            return [
                 'status' => self::SIGN_IN_REGISTER_OTHER_ERROR,
                 'register' => false,
                 'member_id' => null,
                 'result_text' => strip_html($message->evaluate()),
                 'preview_topic_id' => null,
-            );
+            ];
         }
 
         $preview_topic_id = get_option('rules_topic_id');
@@ -231,13 +231,13 @@ class CMSAccountWrite
         $acl_object = new CMSMemberACL();
         $acl_object->set_auth($member_id);
 
-        return array(
+        return [
             'status' => self::SIGN_IN_OKAY_REGISTER,
             'register' => true,
             'member_id' => $member_id,
             'result_text' => null,
             'preview_topic_id' => cms_empty_safe($preview_topic_id) ? null : intval($preview_topic_id),
-        );
+        ];
     }
 
     /**
@@ -259,16 +259,16 @@ class CMSAccountWrite
             if ($key != '') {
                 $boardurl = get_base_url();
                 $verification_url = 'http://directory.tapatalk.com/au_reg_verify.php?token=' . urlencode($token) . '&code=' . urlencode($code) . '&key=' . urlencode($key) . '&url=' . urlencode($boardurl);
-                $response = http_get_contents($verification_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+                $response = http_get_contents($verification_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
                 if (!empty($response)) {
                     $result = json_decode($response, true);
                     $verified = $result['result'];
                 }
                 if ($verified) {
-                    return array(
+                    return [
                         'result' => true,
                         'verified' => $verified,
-                    );
+                    ];
                 }
             }
         }
@@ -280,25 +280,25 @@ class CMSAccountWrite
             $result = $this->lost_password($member_id);
 
             if (!$result['status']) {
-                return array(
+                return [
                     'result' => false,
                     'result_text' => $result['data'],
                     'verified' => false,
-                );
+                ];
             }
 
-            return array(
+            return [
                 'result' => true,
                 'result_text' => $result['data'],
                 'verified' => false,
-            );
+            ];
         }
 
-        return array(
+        return [
             'result' => false,
             'result_text' => do_lang('MEMBER_NO_EXIST'),
             'verified' => false,
-        );
+        ];
     }
 
     /**
@@ -318,30 +318,30 @@ class CMSAccountWrite
 
         // Basic validation
         if ($username == '') {
-            return array(
+            return [
                 'status' => false,
                 'data' => do_lang('PASSWORD_RESET_ERROR'),
-            );
+            ];
         }
         if ($email == '') {
-            return array(
+            return [
                 'status' => false,
                 'data' => do_lang('MEMBER_NO_EMAIL_ADDRESS_RESET_TO'),
-            );
+            ];
         }
 
         // Check we are allowed to do a reset
         if (($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == '') && (has_privilege($member_id, 'disable_lost_passwords'))) {
-            return array(
+            return [
                 'status' => false,
                 'data' => do_lang('NO_RESET_ACCESS'),
-            );
+            ];
         }
         if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'httpauth') {
-            return array(
+            return [
                 'status' => false,
                 'data' => do_lang('NO_PASSWORD_RESET_HTTPAUTH'),
-            );
+            ];
         }
         $is_ldap = cns_is_ldap_member($member_id);
         $is_httpauth = cns_is_httpauth_member($member_id);
@@ -352,24 +352,24 @@ class CMSAccountWrite
         // Start the reset process by generating a reset code
         require_code('crypt');
         $code = get_secure_random_number();
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_password_change_code' => strval($code)), array('id' => $member_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_change_code' => strval($code)], ['id' => $member_id], '', 1);
         log_it('LOST_PASSWORD', strval($member_id), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
 
         // Send confirm mail
         $zone = get_module_zone('lost_password');
-        $_url = build_url(array('page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id), $zone, array(), false, false, true);
+        $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id], $zone, [], false, false, true);
         $url = $_url->evaluate();
-        $_url_simple = build_url(array('page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null), $zone, array(), false, false, true);
+        $_url_simple = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null], $zone, [], false, false, true);
         $url_simple = $_url_simple->evaluate();
-        $message = do_lang('LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), array(comcode_escape($url), $url_simple, strval($member_id), strval($code)), get_lang($member_id));
+        $message = do_lang('LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), [comcode_escape($url), $url_simple, strval($member_id), strval($code)], get_lang($member_id));
         require_code('mail');
-        dispatch_mail(do_lang('LOST_PASSWORD', null, null, null, get_lang($member_id)), $message, array($email), $username, '', '', array('bypass_queue' => true));
+        dispatch_mail(do_lang('LOST_PASSWORD', null, null, null, get_lang($member_id)), $message, [$email], $username, '', '', ['bypass_queue' => true]);
 
         // Return
-        return array(
+        return [
             'status' => true,
             'data' => do_lang('RESET_CODE_MAILED'),
-        );
+        ];
     }
 
     /**
@@ -452,12 +452,12 @@ class CMSAccountWrite
             $password_salted = $password;
         }
 
-        $map = array(
+        $map = [
             'm_pass_salt' => $salt,
             'm_pass_hash_salted' => $password_salted,
             'm_ip_address' => $ip_address,
-        );
-        $GLOBALS['FORUM_DB']->query_update('f_members', $map, array('id' => $member_id), '', 1);
+        ];
+        $GLOBALS['FORUM_DB']->query_update('f_members', $map, ['id' => $member_id], '', 1);
     }
 
     /**
@@ -484,10 +484,10 @@ class CMSAccountWrite
             warn_exit(do_lang_tempcode('MEMBER_BAD_PASSWORD'));
         }
 
-        $map = array(
+        $map = [
             'm_email_address' => $new_email,
             'm_ip_address' => get_ip_address(),
-        );
-        $GLOBALS['FORUM_DB']->query_update('f_members', $map, array('id' => get_member()), '', 1);
+        ];
+        $GLOBALS['FORUM_DB']->query_update('f_members', $map, ['id' => get_member()], '', 1);
     }
 }

@@ -33,11 +33,11 @@ class CMSAccountRead
 
         $tt_cipher = new TT_Cipher();
 
-        $_users = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array(), '', $max, $start);
+        $_users = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], [], '', $max, $start);
 
-        $users = array();
+        $users = [];
         foreach ($_users as $user) {
-            $arr = array(
+            $arr = [
                 'uid' => mobiquo_val(strval($user['id']), 'string'),
                 'username' => mobiquo_val($user['m_username'], 'base64'),
                 'encrypt_email' => base64_encode($tt_cipher->encrypt($user['enc_email'], $api_key)),
@@ -46,12 +46,12 @@ class CMSAccountRead
                 'reg_date' => mobiquo_val($user['m_join_time'], 'dateTime.iso8601'),
                 'post_num' => mobiquo_val($user['m_cache_num_posts'], 'int'),
                 'last_active' => mobiquo_val($user['m_last_submit_time'], 'dateTime.iso8601'),
-            );
+            ];
             $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user['id'], true);
             if ($display_text != $user['m_username']) {
-                $arr += array(
+                $arr += [
                     'display_text' => mobiquo_val($display_text, 'base64'),
-                );
+                ];
             }
             $users[] = mobiquo_val($arr, 'struct');
         }
@@ -73,12 +73,12 @@ class CMSAccountRead
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($user_id);
 
-        return array(
+        return [
             'user_id' => $user_id,
             'login_name' => $username,
             'display_name' => $GLOBALS['FORUM_DRIVER']->get_username($user_id, true),
             'avatar_url' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($user_id),
-        );
+        ];
     }
 
     /**
@@ -88,11 +88,11 @@ class CMSAccountRead
      */
     public function get_custom_register_fields()
     {
-        $custom_register_fields = array();
+        $custom_register_fields = [];
         $_custom_register_fields = $GLOBALS['FORUM_DB']->query_select(
             'f_custom_fields',
-            array('id', 'cf_name', 'cf_description', 'cf_type', 'cf_default'),
-            array('cf_show_on_join_form' => 1, 'cf_required' => 1),
+            ['id', 'cf_name', 'cf_description', 'cf_type', 'cf_default'],
+            ['cf_show_on_join_form' => 1, 'cf_required' => 1],
             'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')
         );
         foreach ($_custom_register_fields as $_custom_register_field) {
@@ -155,7 +155,7 @@ class CMSAccountRead
                     continue 2; // Not supported
             }
 
-            $custom_register_fields[] = array(
+            $custom_register_fields[] = [
                 'id' => $_custom_register_field['id'],
                 'name' => $name,
                 'description' => get_translated_text($_custom_register_field['cf_description'], $GLOBALS['FORUM_DB']),
@@ -163,7 +163,7 @@ class CMSAccountRead
                 'default' => $default,
                 'type' => $type,
                 'options' => $options,
-            );
+            ];
         }
         return $custom_register_fields;
     }

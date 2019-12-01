@@ -34,14 +34,14 @@ class Block_main_friends_list
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('member_id', 'max', 'start', 'mutual');
+        $info['parameters'] = ['member_id', 'max', 'start', 'mutual'];
         return $info;
     }
 
@@ -70,7 +70,7 @@ class Block_main_friends_list
 
         $text_id = do_lang_tempcode('FRIENDS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)));
 
-        $blocked = collapse_1d_complexity('member_blocked', $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocked'), array('member_blocker' => $member_id)));
+        $blocked = collapse_1d_complexity('member_blocked', $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocked'], ['member_blocker' => $member_id]));
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
 
         $msn = is_on_multi_site_network();
@@ -95,9 +95,9 @@ class Block_main_friends_list
         }
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $query);
 
-        $friends_mutual = array();
-        $friends_nonmutual = array();
-        $friends_forward = array();
+        $friends_mutual = [];
+        $friends_nonmutual = [];
+        $friends_forward = [];
         foreach ($rows as $i => $row) {
             if ($row['member_likes'] != $member_id) {
                 // This row just exists for seeing mutual friendships
@@ -133,16 +133,16 @@ class Block_main_friends_list
                 $friend_usergroup_id = $GLOBALS['FORUM_DRIVER']->get_member_row_field($row['member_liked'], 'm_primary_group');
                 $friend_usergroup = array_key_exists($friend_usergroup_id, $all_usergroups) ? $all_usergroups[$friend_usergroup_id] : do_lang_tempcode('UNKNOWN');
                 $mutual_label = do_lang('MUTUAL_FRIEND');
-                $box = render_member_box($row['member_liked'], true, true, ($row['member_liked'] == get_member() || $member_id == get_member()) ? array($mutual_label => do_lang($is_mutual ? 'YES' : 'NO')) : array(), false, 'friends_list');
+                $box = render_member_box($row['member_liked'], true, true, ($row['member_liked'] == get_member() || $member_id == get_member()) ? [$mutual_label => do_lang($is_mutual ? 'YES' : 'NO')] : [], false, 'friends_list');
                 if (!$box->is_empty_shell()) {
-                    $friend_map = array(
+                    $friend_map = [
                         'APPEARS_TWICE' => $is_mutual,
                         'USERGROUP' => $friend_usergroup,
                         'USERNAME' => $friend_username,
                         'URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($row['member_liked'], true),
                         'F_ID' => strval($row['member_liked']),
                         'BOX' => $box,
-                    );
+                    ];
 
                     if ($is_mutual) {
                         $friends_mutual[] = $friend_map;
@@ -161,10 +161,10 @@ class Block_main_friends_list
 
         pop_db_scope_check();
 
-        return do_template('BLOCK_MAIN_FRIENDS_LIST', array(
+        return do_template('BLOCK_MAIN_FRIENDS_LIST', [
             '_GUID' => '70b11d3c01ff551be42a0472d27dd207',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'FRIENDS_MUTUAL' => $friends_mutual,
             'FRIENDS_NONMUTUAL' => $friends_nonmutual,
             'FRIENDS_FORWARD' => $friends_forward,
@@ -176,6 +176,6 @@ class Block_main_friends_list
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
-        ));
+        ]);
     }
 }

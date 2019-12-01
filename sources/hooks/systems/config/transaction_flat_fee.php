@@ -30,7 +30,7 @@ class Hook_config_transaction_flat_fee
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TRANSACTION_FLAT_FEE',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_transaction_flat_fee
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

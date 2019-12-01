@@ -37,20 +37,20 @@ function buildr_messages_script()
     require_css('buildr');
 
     $member_id = get_member();
-    $rows = $GLOBALS['SITE_DB']->query_select('w_members', array('location_realm', 'location_x', 'location_y'), array('id' => $member_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('w_members', ['location_realm', 'location_x', 'location_y'], ['id' => $member_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    list($realm, $x, $y) = array($rows[0]['location_realm'], $rows[0]['location_x'], $rows[0]['location_y']);
+    list($realm, $x, $y) = [$rows[0]['location_realm'], $rows[0]['location_x'], $rows[0]['location_y']];
 
     $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_messages WHERE location_x=' . strval($x) . ' AND location_y=' . strval($y) . ' AND location_realm=' . strval($realm) . ' AND (destination=' . strval($member_id) . ' OR destination IS NULL OR originator_id=' . strval($member_id) . ') ORDER BY m_datetime DESC');
     $messages = new Tempcode();
     foreach ($rows as $myrow) {
         $message_sender = $GLOBALS['FORUM_DRIVER']->get_username($myrow['originator_id']);
-        $messages->attach(do_template('W_MESSAGE_' . (($myrow['destination'] === null) ? 'ALL' : 'TO'), array('MESSAGE_SENDER' => $message_sender, 'MESSAGE' => comcode_to_tempcode($myrow['m_message'], $myrow['originator_id']), 'DATE' => get_timezoned_date_time($myrow['m_datetime']))));
+        $messages->attach(do_template('W_MESSAGE_' . (($myrow['destination'] === null) ? 'ALL' : 'TO'), ['MESSAGE_SENDER' => $message_sender, 'MESSAGE' => comcode_to_tempcode($myrow['m_message'], $myrow['originator_id']), 'DATE' => get_timezoned_date_time($myrow['m_datetime'])]));
     }
 
-    $tpl = do_template('W_MESSAGES_HTML_WRAP', array('_GUID' => '05b40c794578d3221e2775895ecf8dbb', 'MESSAGES' => $messages));
+    $tpl = do_template('W_MESSAGES_HTML_WRAP', ['_GUID' => '05b40c794578d3221e2775895ecf8dbb', 'MESSAGES' => $messages]);
     $tpl->evaluate_echo();
 }
 
@@ -109,10 +109,10 @@ function download_map($realm, $sx, $sy)
     $roomnameclip = 15;
 
     // Get realm mins/maxs/size
-    $x_min = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MIN(location_x)', array('location_realm' => $realm));
-    $y_min = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MIN(location_y)', array('location_realm' => $realm));
-    $x_max = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MAX(location_x)', array('location_realm' => $realm));
-    $y_max = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MAX(location_y)', array('location_realm' => $realm));
+    $x_min = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MIN(location_x)', ['location_realm' => $realm]);
+    $y_min = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MIN(location_y)', ['location_realm' => $realm]);
+    $x_max = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MAX(location_x)', ['location_realm' => $realm]);
+    $y_max = $GLOBALS['SITE_DB']->query_select_value('w_rooms', 'MAX(location_y)', ['location_realm' => $realm]);
     $x_rooms = $x_max - $x_min + 1;
     $y_rooms = $y_max - $y_min + 1;
 
@@ -136,7 +136,7 @@ function download_map($realm, $sx, $sy)
     for ($x = $x_min; $x <= $x_max; $x++) {
         for ($y = $y_min; $y <= $y_max; $y++) {
             // Check the room exists
-            $rooms = $GLOBALS['SITE_DB']->query_select('w_rooms', array('*'), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $realm), '', 1);
+            $rooms = $GLOBALS['SITE_DB']->query_select('w_rooms', ['*'], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
             if (!array_key_exists(0, $rooms)) {
                 continue;
             }
@@ -146,7 +146,7 @@ function download_map($realm, $sx, $sy)
             $portal = ($room['allow_portal'] == 1) ? do_lang('W_PORTAL_SPOT') : '';
 
             // Check user has been in room, to see if we perhaps need to mask the room name
-            $yes = $GLOBALS['SITE_DB']->query_select_value_if_there('w_travelhistory', 'member_id', array('x' => $x, 'y' => $y, 'realm' => $realm, 'member_id' => $member_id));
+            $yes = $GLOBALS['SITE_DB']->query_select_value_if_there('w_travelhistory', 'member_id', ['x' => $x, 'y' => $y, 'realm' => $realm, 'member_id' => $member_id]);
             if (!isset($yes)) {
                 $name = do_lang('W_UNKNOWN_ROOM_NAME');
             }

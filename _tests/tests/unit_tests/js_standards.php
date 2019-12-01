@@ -20,14 +20,14 @@ class js_standards_test_set extends cms_test_case
 {
     public function testSSLIssues()
     {
-        foreach (array('javascript', 'javascript_custom', 'templates', 'templates_custom') as $dir) {
+        foreach (['javascript', 'javascript_custom', 'templates', 'templates_custom'] as $dir) {
             $path = get_file_base() . '/themes/default/' . $dir;
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (strtolower(substr($file, -3)) == '.js') {
                     $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#(?<!\$util\.srl\([\'"])\{\$IMG[;*]+,(\w+)\}(.*)$#m', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $this->assertTrue(false, $file . '/' . $matches[1][$i] . ' not prepared for SSL');

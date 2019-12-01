@@ -20,37 +20,37 @@ class sorting_test_set extends cms_test_case
 {
     public function testSortMapsBy()
     {
-        $results = array(
-            array('a' => 1, 'b' => 1, 'expected' => 1),
-            array('a' => 1, 'b' => 2, 'expected' => 2),
-            array('a' => 2, 'b' => 2, 'expected' => 4),
-            array('a' => 2, 'b' => 1, 'expected' => 3),
-        );
+        $results = [
+            ['a' => 1, 'b' => 1, 'expected' => 1],
+            ['a' => 1, 'b' => 2, 'expected' => 2],
+            ['a' => 2, 'b' => 2, 'expected' => 4],
+            ['a' => 2, 'b' => 1, 'expected' => 3],
+        ];
 
-        $expected = array(
-            array('a' => 1, 'b' => 1, 'expected' => 1),
-            array('a' => 1, 'b' => 2, 'expected' => 2),
-            array('a' => 2, 'b' => 1, 'expected' => 3),
-            array('a' => 2, 'b' => 2, 'expected' => 4),
-        );
+        $expected = [
+            ['a' => 1, 'b' => 1, 'expected' => 1],
+            ['a' => 1, 'b' => 2, 'expected' => 2],
+            ['a' => 2, 'b' => 1, 'expected' => 3],
+            ['a' => 2, 'b' => 2, 'expected' => 4],
+        ];
 
         sort_maps_by($results, 'a,b');
 
         $this->assertTrue($results == $expected);
 
-        $results = array(
-            array('a' => 1, 'b' => 1, 'expected' => 1),
-            array('a' => 1, 'b' => 2, 'expected' => 2),
-            array('a' => 2, 'b' => 2, 'expected' => 4),
-            array('a' => 2, 'b' => 1, 'expected' => 3),
-        );
+        $results = [
+            ['a' => 1, 'b' => 1, 'expected' => 1],
+            ['a' => 1, 'b' => 2, 'expected' => 2],
+            ['a' => 2, 'b' => 2, 'expected' => 4],
+            ['a' => 2, 'b' => 1, 'expected' => 3],
+        ];
 
-        $expected = array(
-            array('a' => 2, 'b' => 2, 'expected' => 4),
-            array('a' => 2, 'b' => 1, 'expected' => 3),
-            array('a' => 1, 'b' => 2, 'expected' => 2),
-            array('a' => 1, 'b' => 1, 'expected' => 1),
-        );
+        $expected = [
+            ['a' => 2, 'b' => 2, 'expected' => 4],
+            ['a' => 2, 'b' => 1, 'expected' => 3],
+            ['a' => 1, 'b' => 2, 'expected' => 2],
+            ['a' => 1, 'b' => 1, 'expected' => 1],
+        ];
 
         sort_maps_by($results, '!a,!b');
 

@@ -37,16 +37,16 @@ function search_topic_func($raw_params)
     $search_object = new CMSSearchRead();
     list($total_topic_num, $_topics) = $search_object->search_topics($search_key, $start, $max);
 
-    $topics = array();
+    $topics = [];
     foreach ($_topics as $topic) {
         $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, $start, $max, $topic, RENDER_TOPIC_POST_KEY_NAME | RENDER_TOPIC_SEARCH);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_topic_num' => mobiquo_val($total_topic_num, 'int'),
         //'search_id' => mobiquo_val($search_id, 'string'), We don't save search result sets
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -72,16 +72,16 @@ function search_post_func($raw_params)
     $search_object = new CMSSearchRead();
     list($total_post_num, $_posts) = $search_object->search_posts($search_key, $start, $max);
 
-    $posts = array();
+    $posts = [];
     foreach ($_posts as $post) {
         $posts[] = render_post_to_tapatalk($post['post_id'], false, $post, RENDER_POST_SHORT_CONTENT | RENDER_POST_FORUM_DETAILS | RENDER_POST_TOPIC_DETAILS | RENDER_POST_SEARCH);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_post_num' => mobiquo_val($total_post_num, 'int'),
         //'search_id' => mobiquo_val($search_id, 'string'), We don't save search result sets
         'posts' => mobiquo_val($posts, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -122,29 +122,29 @@ function search_func($raw_params)
     if ($showposts == 0) {
         list($total_topic_num, $_topics) = $search_object->search_topics($keywords, $start, $max, $userid, $searchuser, $forumid, $titleonly, $searchtime, $only_in, $not_in);
 
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
             $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, $start, $max, $topic, RENDER_TOPIC_POST_KEY_NAME | RENDER_TOPIC_SEARCH);
         }
 
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'total_topic_num' => mobiquo_val($total_topic_num, 'int'),
             //'search_id' => mobiquo_val($search_id, 'string'), We don't save search result sets
             'topics' => mobiquo_val($topics, 'array'),
-        ), 'struct');
+        ], 'struct');
     } else {
         list($total_post_num, $_posts) = $search_object->search_posts($keywords, $start, $max, $userid, $searchuser, $forumid, $threadid, $searchtime, $only_in, $not_in);
 
-        $posts = array();
+        $posts = [];
         foreach ($_posts as $post) {
             $posts[] = render_post_to_tapatalk($post['post_id'], false, $post, RENDER_POST_SHORT_CONTENT | RENDER_POST_FORUM_DETAILS | RENDER_POST_TOPIC_DETAILS | RENDER_POST_SEARCH);
         }
 
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'total_post_num' => mobiquo_val($total_post_num, 'int'),
             //'search_id' => mobiquo_val($search_id, 'string'), We don't save search result sets
             'posts' => mobiquo_val($posts, 'array'),
-        ), 'struct');
+        ], 'struct');
     }
 
     return mobiquo_response($response);

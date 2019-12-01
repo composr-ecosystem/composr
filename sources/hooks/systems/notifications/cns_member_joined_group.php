@@ -44,7 +44,7 @@ class Hook_notification_cns_member_joined_group extends Hook_Notification
      */
     public function create_category_tree($notification_code, $id)
     {
-        $page_links = array();
+        $page_links = [];
 
         $where = '1=1';
         if (has_privilege(get_member(), 'see_hidden_groups')) {
@@ -54,10 +54,10 @@ class Hook_notification_cns_member_joined_group extends Hook_Notification
 
         $types = $GLOBALS['FORUM_DB']->query('SELECT id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where);
         foreach ($types as $type) {
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $type['id'],
                 'title' => get_translated_text($type['g_name'], $GLOBALS['FORUM_DB']),
-            );
+            ];
         }
         sort_maps_by($page_links, 'title', false, true);
 
@@ -85,11 +85,11 @@ class Hook_notification_cns_member_joined_group extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_member_joined_group'] = array(do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_member_joined_group'));
+        $list = [];
+        $list['cns_member_joined_group'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_member_joined_group')];
         return $list;
     }
 
@@ -107,15 +107,15 @@ class Hook_notification_cns_member_joined_group extends Hook_Notification
     public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
     {
         list($members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        list($members, $maybe_more) = $this->_all_members_who_have_enabled_with_page_access(array($members, $maybe_more), 'groups', $notification_code, $category, $to_member_ids, $start, $max);
+        list($members, $maybe_more) = $this->_all_members_who_have_enabled_with_page_access([$members, $maybe_more], 'groups', $notification_code, $category, $to_member_ids, $start, $max);
 
         if (is_numeric($category)) { // Filter if the group is hidden
-            $hidden = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_hidden', array('id' => intval($category)));
+            $hidden = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_hidden', ['id' => intval($category)]);
 
             if ($hidden == 1) {
                 $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups(get_member());
 
-                $members_new = array();
+                $members_new = [];
                 foreach ($members as $member_id => $setting) {
                     if ((has_privilege($member_id, 'see_hidden_groups')) || (in_array(intval($category), $members_groups))) {
                         $members_new[$member_id] = $setting;
@@ -125,6 +125,6 @@ class Hook_notification_cns_member_joined_group extends Hook_Notification
             }
         }
 
-        return array($members, $maybe_more);
+        return [$members, $maybe_more];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_search_filedump
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_SEARCH_FILEDUMP',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_filedump
             'public' => false,
 
             'addon' => 'filedump',
-        );
+        ];
     }
 
     /**

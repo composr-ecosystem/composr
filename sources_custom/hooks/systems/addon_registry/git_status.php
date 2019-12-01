@@ -26,7 +26,7 @@ class Hook_addon_registry_git_status
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_git_status
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ This is useful when using Git for deployment on staging and live servers, where 
      */
     public function get_applicable_tutorials()
     {
-        return array('sup_staging_servers');
+        return ['sup_staging_servers'];
     }
 
     /**
@@ -108,11 +108,11 @@ This is useful when using Git for deployment on staging and live servers, where 
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array('geshi'),
-            'conflicts_with' => array()
-        );
+        return [
+            'requires' => [],
+            'recommends' => ['geshi'],
+            'conflicts_with' => []
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ This is useful when using Git for deployment on staging and live servers, where 
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/git_status.php',
             'sources_custom/hooks/systems/page_groupings/git_status.php',
             'sources_custom/git_status.php',
@@ -140,6 +140,6 @@ This is useful when using Git for deployment on staging and live servers, where 
             'themes/default/templates_custom/GIT_STATUS_SCREEN.tpl',
             'themes/default/templates_custom/GIT_STATUS_DIFF_SCREEN.tpl',
             'themes/default/javascript/git_status.js',
-        );
+        ];
     }
 }

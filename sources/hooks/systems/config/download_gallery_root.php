@@ -30,7 +30,7 @@ class Hook_config_download_gallery_root
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DOWNLOAD_GALLERY_ROOT',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_download_gallery_root
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

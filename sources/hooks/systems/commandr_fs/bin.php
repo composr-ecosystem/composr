@@ -38,17 +38,17 @@ class Hook_commandr_fs_bin
             $path .= '/' . filter_naughty($meta_dir_section);
         }
 
-        $listing = array();
+        $listing = [];
         if (is_dir($path)) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if ($file[0] != '.') {
-                    $listing[] = array(
+                    $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
                         is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
                         filemtime($path . '/' . $file),
-                    );
+                    ];
                 }
             }
             closedir($dh);

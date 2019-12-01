@@ -26,7 +26,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array()
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => []
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_pdf_viewer
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/pdf_viewer.php',
             'data_custom/pdf_viewer/LICENSE',
             'data_custom/pdf_viewer/build/pdf.js',
@@ -663,6 +663,6 @@ class Hook_addon_registry_pdf_viewer
             'data_custom/pdf_viewer/web/locale/zh-TW/index.html',
             'data_custom/pdf_viewer/web/locale/zu/index.html',
             'themes/default/templates_custom/MEDIA_PDF.tpl',
-        );
+        ];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_edit_time_limit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EDIT_TIME_LIMIT',
             'type' => 'integer',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_edit_time_limit
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

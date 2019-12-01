@@ -30,9 +30,9 @@ class Hook_payment_gateway_paypal
      */
     public function get_config()
     {
-        return array(
+        return [
             'supports_remote_memo' => true,
-        );
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_payment_gateway_paypal
         $payment_address = $this->_get_payment_address();
         $form_url = $this->_get_remote_form_url();
 
-        return do_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', array(
+        return do_template('ECOM_TRANSACTION_BUTTON_VIA_PAYPAL', [
             '_GUID' => 'b0d48992ed17325f5e2330bf90c85762',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -111,7 +111,7 @@ class Hook_payment_gateway_paypal
             'PAYMENT_ADDRESS' => $payment_address,
             'FORM_URL' => $form_url,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -135,7 +135,7 @@ class Hook_payment_gateway_paypal
 
         $form_url = $this->_get_remote_form_url();
 
-        return do_template('ECOM_CART_BUTTON_VIA_PAYPAL', array(
+        return do_template('ECOM_CART_BUTTON_VIA_PAYPAL', [
             '_GUID' => '89b7edf976ef0143dd8dfbabd3378c95',
             'ITEMS' => $items,
             'CURRENCY' => $currency,
@@ -146,7 +146,7 @@ class Hook_payment_gateway_paypal
             'ORDER_ID' => strval($order_id),
             'TRANS_EXPECTING_ID' => $trans_expecting_id,
             'TYPE_CODE' => $items[0]['TYPE_CODE'],
-        ));
+        ]);
     }
 
     /**
@@ -168,7 +168,7 @@ class Hook_payment_gateway_paypal
     {
         $payment_address = $this->_get_payment_address();
         $form_url = $this->_get_remote_form_url();
-        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', array(
+        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_PAYPAL', [
             '_GUID' => '7c8b9ce1f60323e118da1bef416adff3',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -183,7 +183,7 @@ class Hook_payment_gateway_paypal
             'PAYMENT_ADDRESS' => $payment_address,
             'FORM_URL' => $form_url,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -238,7 +238,7 @@ class Hook_payment_gateway_paypal
             $country = $shipping_country;
         }
 
-        $member_address = array();
+        $member_address = [];
         $member_address['first_name'] = $shipping_firstname;
         $member_address['last_name'] = $shipping_lastname;
         list($street_address_1, $street_address_2) = split_street_address($street_address, 2);
@@ -255,7 +255,7 @@ class Hook_payment_gateway_paypal
         }
 
         if (($member_address['address1'] == '') || ($member_address['city'] == '') || ($member_address['zip'] == '') || ($member_address['country'] == '')) {
-            $member_address = array(); // Causes error on PayPal due to it crashing when trying to validate the address
+            $member_address = []; // Causes error on PayPal due to it crashing when trying to validate the address
         }
 
         return $member_address;
@@ -269,7 +269,7 @@ class Hook_payment_gateway_paypal
      */
     public function make_cancel_button($purchase_id)
     {
-        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', array('_GUID' => '091d7449161eb5c4f6129cf89e5e8e7e', 'PURCHASE_ID' => $purchase_id));
+        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_PAYPAL', ['_GUID' => '091d7449161eb5c4f6129cf89e5e8e7e', 'PURCHASE_ID' => $purchase_id]);
     }
 
     /**
@@ -282,7 +282,7 @@ class Hook_payment_gateway_paypal
     {
         $trans_expecting_id = post_param_string('custom');
 
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
                 return null;
@@ -300,7 +300,7 @@ class Hook_payment_gateway_paypal
         $pending_reason = post_param_string('pending_reason', '');
         $memo = post_param_string('memo', '');
         foreach (array_keys($_POST) as $key) { // Custom product options go onto the memo
-            $matches = array();
+            $matches = [];
             if (preg_match('#^option_selection(\d+)$#', $key, $matches) != 0) {
                 $memo .= "\n" . post_param_string('option_name' . $matches[1], '') . ' = ' . post_param_string('option_selection' . $matches[1], '');
             }
@@ -471,7 +471,7 @@ class Hook_payment_gateway_paypal
             $res = null;
             do { // Try up to 3 times
                 $url = 'https://' . (ecommerce_test_mode() ? 'www.sandbox.paypal.com' : 'www.paypal.com') . '/cgi-bin/webscr';
-                $res = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $pure_post + array('cmd' => '_notify-validate')));
+                $res = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $pure_post + ['cmd' => '_notify-validate']]);
                 $x++;
             } while (($res === null) && ($x < 3));
             if ($res === null) {
@@ -510,7 +510,7 @@ class Hook_payment_gateway_paypal
             $amount -= $tax; // The sent amount includes tax, but we want it without
         }
 
-        return array($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id);
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**
@@ -522,7 +522,7 @@ class Hook_payment_gateway_paypal
      */
     public function store_shipping_address($trans_expecting_id, $txn_id)
     {
-        $shipping_address = array(
+        $shipping_address = [
             'a_firstname' => post_param_string('first_name', ''),
             'a_lastname' => post_param_string('last_name', ''),
             'a_street_address' => trim(post_param_string('address_name', '') . "\n" . post_param_string('address_street', '')),
@@ -533,7 +533,7 @@ class Hook_payment_gateway_paypal
             'a_country' => post_param_string('address_country', ''),
             'a_email' => post_param_string('payer_email', ''),
             'a_phone' => post_param_string('contact_phone', ''),
-        );
+        ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);
     }
 

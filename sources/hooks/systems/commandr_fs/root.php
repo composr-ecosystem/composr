@@ -36,19 +36,19 @@ class Hook_commandr_fs_root
         $override_path = $this->_customise_directory($meta_dir);
         $nonoverride_path = $this->_customise_directory($meta_dir, false);
 
-        $listing = array();
+        $listing = [];
         $ok = false;
-        foreach (array($override_path, $nonoverride_path) as $path) {
+        foreach ([$override_path, $nonoverride_path] as $path) {
             if (is_dir($path)) {
                 $dh = opendir($path);
                 while (($file = readdir($dh)) !== false) {
                     if (($file != '.') && ($file != '..') && ($file != '.git') && ((strpos($file, '_custom') === false) || (!file_exists($path . str_replace('_custom', '', $file))))) {
-                        $listing[] = array(
+                        $listing[] = [
                             $file,
                             is_dir($path . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
                             is_dir($path . $file) ? null : filesize($path . $file),
                             filemtime($path . $file),
-                        );
+                        ];
                     }
                 }
                 closedir($dh);
@@ -192,7 +192,7 @@ class Hook_commandr_fs_root
      */
     protected function _customise_directory($directory, $change_to_override = true)
     {
-        $dir_replacements = array('sources', 'comcode', 'html', 'minimodules', 'modules', 'data', 'lang', 'text', 'images', 'templates');
+        $dir_replacements = ['sources', 'comcode', 'html', 'minimodules', 'modules', 'data', 'lang', 'text', 'images', 'templates'];
 
         $path = get_custom_file_base() . '/';
         $previous_dir_section = '';

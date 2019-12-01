@@ -30,7 +30,7 @@ class Hook_config_chat_show_stats_count_rooms
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHATROOMS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_chat_show_stats_count_rooms
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

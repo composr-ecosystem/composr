@@ -30,7 +30,7 @@ class Hook_config_chat_default_post_colour
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_OPTIONS_COLOUR_NAME',
             'type' => 'colour',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_default_post_colour
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

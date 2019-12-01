@@ -27,14 +27,14 @@ class CMSBoardStats
     {
         cms_verify_parameters_phpdoc();
 
-        return array(
+        return [
             'total_threads' => $this->get_topics_count(),
             'total_posts' => $this->get_posts_count(),
             'total_members' => $this->get_members_count(),
             'active_members' => $this->get_active_members_count(),
             'total_online' => $this->get_online_users_count(),
             'guest_online' => $this->get_online_guests_count(),
-        );
+        ];
     }
 
     /**
@@ -74,7 +74,7 @@ class CMSBoardStats
      */
     private function get_active_members_count()
     {
-        $where = array('m_validated_email_confirm_code' => '');
+        $where = ['m_validated_email_confirm_code' => ''];
         if (addon_installed('unvalidated')) {
             $where['m_validated'] = 1;
         }

@@ -36,7 +36,7 @@ class Hook_content_meta_aware_banner
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'global:BANNER',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_banner
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_BANNER',
-        );
+        ];
     }
 
     /**

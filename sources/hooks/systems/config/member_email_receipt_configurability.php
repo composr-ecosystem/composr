@@ -30,7 +30,7 @@ class Hook_config_member_email_receipt_configurability
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MEMBER_EMAIL_RECEIPT_CONFIGURABILITY',
             'type' => 'list',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_member_email_receipt_configurability
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

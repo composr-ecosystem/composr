@@ -30,7 +30,7 @@ class Hook_config_minimum_username_length
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINIMUM_USERNAME_LENGTH',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_minimum_username_length
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

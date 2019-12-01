@@ -30,7 +30,7 @@ class Hook_config_security_token_exceptions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SECURITY_TOKEN_EXCEPTIONS',
             'type' => 'text',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_security_token_exceptions
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

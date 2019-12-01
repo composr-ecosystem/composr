@@ -26,7 +26,7 @@ class Hook_addon_registry_theme_debug
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_theme_debug
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_theme_debug
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_theme_debug
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,12 +130,12 @@ class Hook_addon_registry_theme_debug
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/theme_debug.php',
             'pages/minimodules_custom/theme_debug.php',
             'adminzone/pages/minimodules_custom/fix_partial_themewizard_css.php',
             'sources_custom/hooks/systems/page_groupings/theme_debug.php',
             'adminzone/pages/minimodules_custom/css_check.php',
-        );
+        ];
     }
 }

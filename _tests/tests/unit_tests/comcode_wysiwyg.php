@@ -46,7 +46,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = "&#8203;<kbd title=\"require_css\" class=\"cms-keep\">[require_css]a<br />\nb[/require_css]</kbd>&#8203;";
 
-        $got = add_wysiwyg_comcode_markup('require_css', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('require_css', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -72,7 +72,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = "<comcode-quote>a<br />\nb</comcode-quote>";
 
-        $got = add_wysiwyg_comcode_markup('quote', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('quote', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -93,7 +93,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = "<comcode-staff_note>a<br />\nb</comcode-staff_note>";
 
-        $got = add_wysiwyg_comcode_markup('staff_note', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('staff_note', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -114,7 +114,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = "<comcode-code>a<br />\nb</comcode-code>";
 
-        $got = add_wysiwyg_comcode_markup('code', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('code', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -135,7 +135,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = "&#8203;<comcode-if_in_group>a<br />\nb</comcode-if_in_group>&#8203;";
 
-        $got = add_wysiwyg_comcode_markup('if_in_group', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('if_in_group', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -156,7 +156,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
         $in = "a<br />\nb";
         $out = '<button class="cms-keep-ui-controlled" size="45" title="[block]a&lt;br /&gt;' . "\n" . 'b[/block]" type="button">a' . "\n" . do_lang('comcode:COMCODE_EDITABLE_BLOCK', 'b') . '</button>';
 
-        $got = add_wysiwyg_comcode_markup('block', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('block', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($out == $got);
     }
 
@@ -175,7 +175,7 @@ class comcode_wysiwyg_test_set extends cms_test_case
 
         $in = "a<br />\nb";
 
-        $got = add_wysiwyg_comcode_markup('b', array(), make_string_tempcode($in), /*$semihtml*/true);
+        $got = add_wysiwyg_comcode_markup('b', [], make_string_tempcode($in), /*$semihtml*/true);
         $this->assertTrue($got === null); // null-op
     }
 

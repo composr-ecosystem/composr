@@ -61,9 +61,9 @@ function upgrade_sharedinstall_sites($from = 0)
     global $CURRENT_SHARE_USER, $SITE_INFO, $TABLE_LANG_FIELDS_CACHE;
 
     // Find sites
-    $sites = array();
+    $sites = [];
     foreach (array_keys($SITE_INFO) as $key) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^custom_user_(.*)#', $key, $matches) != 0) {
             $sites[] = $matches[1];
         }
@@ -84,7 +84,7 @@ function upgrade_sharedinstall_sites($from = 0)
 
         // Change active site
         $CURRENT_SHARE_USER = $site;
-        $TABLE_LANG_FIELDS_CACHE = array();
+        $TABLE_LANG_FIELDS_CACHE = [];
         _general_db_init();
 
         // Reset DB

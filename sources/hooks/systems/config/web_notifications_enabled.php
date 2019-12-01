@@ -30,7 +30,7 @@ class Hook_config_web_notifications_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WEB_NOTIFICATIONS_ENABLED',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_web_notifications_enabled
             'public' => false,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

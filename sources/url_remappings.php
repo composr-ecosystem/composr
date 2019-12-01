@@ -37,40 +37,40 @@ function get_remappings($url_scheme)
     // The source mapping... null means 'anything' (we'll use it in a variable substitution), else we require a certain value
     // These have to be in longest to shortest number of bindings order, to reduce the potential for &'d attributes
 
-    $rules = array();
+    $rules = [];
     switch ($url_scheme) {
         case 'PG':
             if (addon_installed('wiki')) {
-                $rules[] = array(array('page' => 'wiki', 'type' => 'browse', 'id' => null), 'pg/s/ID', false);
+                $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 'pg/s/ID', false];
             }
-            $rules[] = array(array('page' => null, 'type' => null, 'id' => null), 'pg/PAGE/TYPE/ID', false);
-            $rules[] = array(array('page' => null, 'type' => null), 'pg/PAGE/TYPE', false);
-            $rules[] = array(array('page' => null), 'pg/PAGE', false);
-            $rules[] = array(array('page' => ''), 'pg', false);
-            $rules[] = array(array(), 'pg', true);
+            $rules[] = [['page' => null, 'type' => null, 'id' => null], 'pg/PAGE/TYPE/ID', false];
+            $rules[] = [['page' => null, 'type' => null], 'pg/PAGE/TYPE', false];
+            $rules[] = [['page' => null], 'pg/PAGE', false];
+            $rules[] = [['page' => ''], 'pg', false];
+            $rules[] = [[], 'pg', true];
             break;
 
         case 'HTM':
             if (addon_installed('wiki')) {
-                $rules[] = array(array('page' => 'wiki', 'type' => 'browse', 'id' => null), 's/ID.htm', false);
+                $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 's/ID.htm', false];
             }
-            $rules[] = array(array('page' => null, 'type' => null, 'id' => null), 'PAGE/TYPE/ID.htm', false);
-            $rules[] = array(array('page' => null, 'type' => null), 'PAGE/TYPE.htm', false);
-            $rules[] = array(array('page' => null), 'PAGE.htm', false);
-            $rules[] = array(array('page' => ''), '', false);
-            $rules[] = array(array(), '', false);
+            $rules[] = [['page' => null, 'type' => null, 'id' => null], 'PAGE/TYPE/ID.htm', false];
+            $rules[] = [['page' => null, 'type' => null], 'PAGE/TYPE.htm', false];
+            $rules[] = [['page' => null], 'PAGE.htm', false];
+            $rules[] = [['page' => ''], '', false];
+            $rules[] = [[], '', false];
             break;
 
         case 'SIMPLE':
             if (addon_installed('wiki')) {
-                $rules[] = array(array('page' => 'wiki', 'type' => 'browse', 'id' => null), 's/ID', false);
+                $rules[] = [['page' => 'wiki', 'type' => 'browse', 'id' => null], 's/ID', false];
             }
-            $rules[] = array(array('page' => null, 'type' => null, 'id' => null), 'PAGE/TYPE/ID', false);
-            $rules[] = array(array('page' => null, 'type' => 'browse'), 'PAGE', false);
-            $rules[] = array(array('page' => null, 'type' => null), 'PAGE/TYPE', false);
-            $rules[] = array(array('page' => null), 'PAGE', false);
-            $rules[] = array(array('page' => ''), '', false);
-            $rules[] = array(array(), '', false);
+            $rules[] = [['page' => null, 'type' => null, 'id' => null], 'PAGE/TYPE/ID', false];
+            $rules[] = [['page' => null, 'type' => 'browse'], 'PAGE', false];
+            $rules[] = [['page' => null, 'type' => null], 'PAGE/TYPE', false];
+            $rules[] = [['page' => null], 'PAGE', false];
+            $rules[] = [['page' => ''], '', false];
+            $rules[] = [[], '', false];
             break;
     }
 

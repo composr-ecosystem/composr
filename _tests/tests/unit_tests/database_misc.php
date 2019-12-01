@@ -22,7 +22,7 @@ class database_misc_test_set extends cms_test_case
 {
     public function testCONCAT()
     {
-        $sql = 'SELECT ' . db_function('CONCAT', array('\'a\'', '\'b\''));
+        $sql = 'SELECT ' . db_function('CONCAT', ['\'a\'', '\'b\'']);
         $expected_result = 'ab';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -30,7 +30,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testREPLACE()
     {
-        $sql = 'SELECT ' . db_function('REPLACE', array('\'ab\'', '\'a\'', '\'b\''));
+        $sql = 'SELECT ' . db_function('REPLACE', ['\'ab\'', '\'a\'', '\'b\'']);
         $expected_result = 'bb';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -38,7 +38,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testSUBSTR()
     {
-        $sql = 'SELECT ' . db_function('SUBSTR', array('\'test\'', '1', '1'));
+        $sql = 'SELECT ' . db_function('SUBSTR', ['\'test\'', '1', '1']);
         $expected_result = 't';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -46,7 +46,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testLENGTH()
     {
-        $sql = 'SELECT ' . db_function('LENGTH', array('\'test\''));
+        $sql = 'SELECT ' . db_function('LENGTH', ['\'test\'']);
         $expected_result = 4;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -61,17 +61,17 @@ class database_misc_test_set extends cms_test_case
 
     public function testCOALESCE()
     {
-        $sql = 'SELECT ' . db_function('COALESCE', array('\'a\'', '\'b\''));
+        $sql = 'SELECT ' . db_function('COALESCE', ['\'a\'', '\'b\'']);
         $expected_result = 'a';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
 
-        $sql = 'SELECT ' . db_function('COALESCE', array('NULL', '\'b\''));
+        $sql = 'SELECT ' . db_function('COALESCE', ['NULL', '\'b\'']);
         $expected_result = 'b';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
 
-        $sql = 'SELECT ' . db_function('COALESCE', array('NULL', 'NULL'));
+        $sql = 'SELECT ' . db_function('COALESCE', ['NULL', 'NULL']);
         $expected_result = null;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result === $expected_result);
@@ -79,7 +79,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testLEAST()
     {
-        $sql = 'SELECT ' . db_function('LEAST', array('1', '2', '3'));
+        $sql = 'SELECT ' . db_function('LEAST', ['1', '2', '3']);
         $expected_result = 1;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -87,7 +87,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testGREATEST()
     {
-        $sql = 'SELECT ' . db_function('GREATEST', array('1', '2', '3'));
+        $sql = 'SELECT ' . db_function('GREATEST', ['1', '2', '3']);
         $expected_result = 3;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -95,12 +95,12 @@ class database_misc_test_set extends cms_test_case
 
     public function testMOD()
     {
-        $sql = 'SELECT ' . db_function('MOD', array('4', '2'));
+        $sql = 'SELECT ' . db_function('MOD', ['4', '2']);
         $expected_result = 0;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
 
-        $sql = 'SELECT ' . db_function('MOD', array('5', '2'));
+        $sql = 'SELECT ' . db_function('MOD', ['5', '2']);
         $expected_result = 1;
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql);
         $this->assertTrue($result == $expected_result);
@@ -108,7 +108,7 @@ class database_misc_test_set extends cms_test_case
 
     public function testGROUP_CONCAT()
     {
-        $sql = 'SELECT ' . db_function('GROUP_CONCAT', array('x', '(SELECT \'a\' AS x UNION SELECT \'b\' AS x) x'));
+        $sql = 'SELECT ' . db_function('GROUP_CONCAT', ['x', '(SELECT \'a\' AS x UNION SELECT \'b\' AS x) x']);
         $expected_result = 'a,b';
         $result = $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true);
         $this->assertTrue($result == $expected_result);
@@ -238,10 +238,10 @@ class database_misc_test_set extends cms_test_case
 
     public function testCountApprox()
     {
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', array(), null) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', array('id' => db_get_first_id()), null) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', array(), 'id=' . strval(db_get_first_id())) > 0);
-        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', array('id' => db_get_first_id()), 'id=' . strval(db_get_first_id())) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], null) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], null) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', [], 'id=' . strval(db_get_first_id())) > 0);
+        $this->assertTrue($GLOBALS['SITE_DB']->get_table_count_approx('download_categories', ['id' => db_get_first_id()], 'id=' . strval(db_get_first_id())) > 0);
     }
 
     public function testSmoothUtf8()
@@ -249,18 +249,18 @@ class database_misc_test_set extends cms_test_case
         // Really you should also manually check the DB is storing utf-8, not just working as a byte-bucket
 
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test_2');
-        $GLOBALS['SITE_DB']->create_table('testy_test_test_2', array(
+        $GLOBALS['SITE_DB']->create_table('testy_test_test_2', [
             'id' => '*AUTO',
             'test_data_1' => 'LONG_TEXT',
             'test_data_2' => 'SHORT_TEXT',
-        ));
+        ]);
 
         $data = hex2bin('e280be');
 
-        $GLOBALS['SITE_DB']->query_insert('testy_test_test_2', array(
+        $GLOBALS['SITE_DB']->query_insert('testy_test_test_2', [
             'test_data_1' => $data,
             'test_data_2' => $data,
-        ));
+        ]);
 
         $this->assertTrue($GLOBALS['SITE_DB']->query_select_value('testy_test_test_2', 'test_data_1') == $data);
         $this->assertTrue($GLOBALS['SITE_DB']->query_select_value('testy_test_test_2', 'test_data_2') == $data);
@@ -274,66 +274,66 @@ class database_misc_test_set extends cms_test_case
         $boolean_operator = 'AND';
 
         $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test');
-        $GLOBALS['SITE_DB']->create_table('testy_test_test', array(
+        $GLOBALS['SITE_DB']->create_table('testy_test_test', [
             'id' => '*AUTO',
             'test_data_1' => 'LONG_TEXT',
             'test_data_2' => 'SHORT_TEXT',
-        ));
-        $GLOBALS['SITE_DB']->create_index('testy_test_test', '#testx', array('test_data_1'));
+        ]);
+        $GLOBALS['SITE_DB']->create_index('testy_test_test', '#testx', ['test_data_1']);
 
         $total = 20;
 
         for ($i = 0; $i < $total; $i++) {
-            $id = $GLOBALS['SITE_DB']->query_insert('testy_test_test', array(
+            $id = $GLOBALS['SITE_DB']->query_insert('testy_test_test', [
                 'test_data_1' => ($i == 0) ? 'abacus, this is a test' : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
                 'test_data_2' => 'cheese',
-            ), true);
+            ], true);
             require_code('content2');
             seo_meta_set_for_explicit('test', strval($id), 'sample', '');
         }
 
         sleep(2); // Some databases may take some time to fill up the index, via a background process
 
-        $searches = array(
+        $searches = [
             // By keyword
-            'by_keyword' => array(
+            'by_keyword' => [
                 /*$content = */'sample',
                 /*$boolean_search = */true,
                 /*$expected = */$total,
-                /*$fields = */array(),
-                /*$raw_fields = */array('r.test_data_1'),
-            ),
+                /*$fields = */[],
+                /*$raw_fields = */['r.test_data_1'],
+            ],
 
             // Fulltext
-            'boolean_yes__success' => array(
+            'boolean_yes__success' => [
                 /*$content = */'abacus',
                 /*$boolean_search = */true,
                 /*$expected = */1,
-                /*$fields = */array(),
-                /*$raw_fields = */array('r.test_data_1'),
-            ),
-            'boolean_no__success' => array( // If this is failing on SQL Server, try resetting the SQL Server process (auto-indexing may be buggy or delayed, but nothing we can do)
+                /*$fields = */[],
+                /*$raw_fields = */['r.test_data_1'],
+            ],
+            'boolean_no__success' => [ // If this is failing on SQL Server, try resetting the SQL Server process (auto-indexing may be buggy or delayed, but nothing we can do)
                 /*$content = */'abacus',
                 /*$boolean_search = */false,
                 /*$expected = */1,
-                /*$fields = */array(),
-                /*$raw_fields = */array('r.test_data_1'),
-            ),
-            'boolean_yes__fail' => array(
+                /*$fields = */[],
+                /*$raw_fields = */['r.test_data_1'],
+            ],
+            'boolean_yes__fail' => [
                 /*$content = */'foobar',
                 /*$boolean_search = */true,
                 /*$expected = */0,
-                /*$fields = */array(),
-                /*$raw_fields = */array('r.test_data_1'),
-            ),
-            'boolean_no__fail' => array(
+                /*$fields = */[],
+                /*$raw_fields = */['r.test_data_1'],
+            ],
+            'boolean_no__fail' => [
                 /*$content = */'foobar',
                 /*$boolean_search = */false,
                 /*$expected = */0,
-                /*$fields = */array(),
-                /*$raw_fields = */array('r.test_data_1'),
-            ),
-        );
+                /*$fields = */[],
+                /*$raw_fields = */['r.test_data_1'],
+            ],
+        ];
 
         foreach ($searches as $test_codename => $bits) {
             if (($this->only !== null) && ($this->only != $test_codename)) {

@@ -33,12 +33,12 @@ class Hook_page_groupings_authors
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('authors')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'menu/rich_content/authors', array('cms_authors', array('type' => 'browse'), get_module_zone('cms_authors')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('authors:AUTHORS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('authors', 'COUNT(*)')))))), 'authors:DOC_AUTHORS'),
-            array('rich_content', 'menu/rich_content/authors', array('authors', array(), get_module_zone('authors')), do_lang_tempcode('authors:AUTHORS')),
-        );
+        return [
+            ['cms', 'menu/rich_content/authors', ['cms_authors', ['type' => 'browse'], get_module_zone('cms_authors')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('authors:AUTHORS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('authors', 'COUNT(*)')))))), 'authors:DOC_AUTHORS'],
+            ['rich_content', 'menu/rich_content/authors', ['authors', [], get_module_zone('authors')], do_lang_tempcode('authors:AUTHORS')],
+        ];
     }
 }

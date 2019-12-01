@@ -33,10 +33,10 @@ class Hook_realtime_rain_news
     public function run($from, $to)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'news')) {
             require_code('news');
@@ -55,7 +55,7 @@ class Hook_realtime_rain_news
 
                 $ticker_text = strip_comcode(get_translated_text($row['title']));
 
-                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + [
                     'TYPE' => 'news',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -64,7 +64,7 @@ class Hook_realtime_rain_news
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => $ticker_text,
-                    'URL' => build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), get_module_zone('news')),
+                    'URL' => build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], get_module_zone('news')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -72,7 +72,7 @@ class Hook_realtime_rain_news
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'news_' . strval($row['id']),
-                );
+                ];
             }
         }
 

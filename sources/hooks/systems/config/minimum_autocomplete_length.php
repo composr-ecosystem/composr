@@ -30,7 +30,7 @@ class Hook_config_minimum_autocomplete_length
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINIMUM_AUTOCOMPLETE_LENGTH',
             'type' => 'integer',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_minimum_autocomplete_length
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

@@ -36,7 +36,7 @@ function send_recommendation_email($name, $email_address, $message, $is_invite =
     log_it('RECOMMENDED');
 
     if (!is_array($email_address)) {
-        $email_address = array($email_address);
+        $email_address = [$email_address];
     }
     if ($recommender_email === null) {
         $recommender_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
@@ -69,7 +69,7 @@ function get_num_invites($member_id)
         return 1; // Admin can always have another invite
     }
 
-    $used = $GLOBALS['FORUM_DB']->query_select_value('f_invites', 'COUNT(*)', array('i_inviter' => $member_id));
+    $used = $GLOBALS['FORUM_DB']->query_select_value('f_invites', 'COUNT(*)', ['i_inviter' => $member_id]);
     $per_day = floatval(get_option('invites_per_day'));
     return intval($per_day * floor((time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / (60 * 60 * 24)) - $used);
 }

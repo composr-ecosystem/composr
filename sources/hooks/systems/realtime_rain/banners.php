@@ -33,10 +33,10 @@ class Hook_realtime_rain_banners
     public function run($from, $to)
     {
         if (!addon_installed('banners')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_banners')) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT b.name,img_url,c_ip_address,c_member_id AS member_id,c_date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'banner_clicks c LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'banners b ON b.name=c.c_banner_id WHERE c_date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -56,7 +56,7 @@ class Hook_realtime_rain_banners
                     $image = get_custom_base_url() . '/' . $image;
                 }
 
-                $drops[] = rain_get_special_icons($row['c_ip_address'], $timestamp) + array(
+                $drops[] = rain_get_special_icons($row['c_ip_address'], $timestamp) + [
                     'TYPE' => 'banners',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -73,7 +73,7 @@ class Hook_realtime_rain_banners
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'banner_' . $row['name'],
-                );
+                ];
             }
         }
 

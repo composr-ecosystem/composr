@@ -33,11 +33,11 @@ class Hook_page_groupings_stats
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('stats')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/adminzone/audit/statistics/statistics', array('admin_stats', array('type' => 'browse'), get_module_zone('admin_stats')), do_lang_tempcode('STATISTICS'), 'stats:DOC_STATISTICS'),
-        );
+        return [
+            ['audit', 'menu/adminzone/audit/statistics/statistics', ['admin_stats', ['type' => 'browse'], get_module_zone('admin_stats')], do_lang_tempcode('STATISTICS'), 'stats:DOC_STATISTICS'],
+        ];
     }
 }

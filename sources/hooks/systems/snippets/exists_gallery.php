@@ -36,7 +36,7 @@ class Hook_snippet_exists_gallery
 
         $val = get_param_string('name');
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $val));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $val]);
         if ($test === null) {
             return new Tempcode();
         }

@@ -34,7 +34,7 @@ class Hook_commandr_command_integrity_check
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('integrity_check', array('h'), array()), '', '');
+            return ['', do_command_help('integrity_check', ['h'], []), '', ''];
         } else {
             require_code('upgrade_integrity_scan');
             $result = run_integrity_check(true, false, true);
@@ -42,7 +42,7 @@ class Hook_commandr_command_integrity_check
                 $result = do_lang('NO_ACTION_REQUIRED');
             }
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

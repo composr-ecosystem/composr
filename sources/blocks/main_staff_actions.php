@@ -30,14 +30,14 @@ class Block_main_staff_actions
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = true;
-        $info['parameters'] = array('max', 'filter_by_member', 'include_duplicates', 'include_user_activities', 'sort');
+        $info['parameters'] = ['max', 'filter_by_member', 'include_duplicates', 'include_user_activities', 'sort'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_staff_actions
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             (get_param_integer('filter_by_member', array_key_exists('filter_by_member', $map) ? intval($map['filter_by_member']) : 0) == 1),
@@ -79,7 +79,7 @@ PHP;
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('actionlogs', array(
+        $GLOBALS['SITE_DB']->create_table('actionlogs', [
             'id' => '*AUTO',
             'the_type' => 'ID_TEXT',
             'param_a' => 'ID_TEXT',
@@ -87,12 +87,12 @@ PHP;
             'member_id' => 'MEMBER',
             'ip' => 'IP',
             'date_and_time' => 'TIME',
-        ));
+        ]);
 
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'xas', array('member_id'));
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'ts', array('date_and_time'));
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'aip', array('ip'));
-        $GLOBALS['SITE_DB']->create_index('actionlogs', 'athe_type', array('the_type'));
+        $GLOBALS['SITE_DB']->create_index('actionlogs', 'xas', ['member_id']);
+        $GLOBALS['SITE_DB']->create_index('actionlogs', 'ts', ['date_and_time']);
+        $GLOBALS['SITE_DB']->create_index('actionlogs', 'aip', ['ip']);
+        $GLOBALS['SITE_DB']->create_index('actionlogs', 'athe_type', ['the_type']);
     }
 
     /**
@@ -104,7 +104,7 @@ PHP;
     public function run($map)
     {
         if (!addon_installed('actionlog')) {
-            return do_template('RED_ALERT', array('_GUID' => 'kimazz9b50kv3de1drxujlw7p5haozvo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('actionlog'))));
+            return do_template('RED_ALERT', ['_GUID' => 'kimazz9b50kv3de1drxujlw7p5haozvo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('actionlog'))]);
         }
 
         require_all_lang();
@@ -121,10 +121,10 @@ PHP;
         $max = get_param_integer('sa_max', array_key_exists('max', $map) ? intval($map['max']) : 10);
         $sort = get_param_string('sa_sort', array_key_exists('sort', $map) ? $map['sort'] : 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX);
 
-        $sortables = array(
-            'date_and_time' => array(do_lang_tempcode('TIME'), 'DESC'),
-            'frequency' => array(do_lang_tempcode('POPULARITY'), 'DESC'),
-        );
+        $sortables = [
+            'date_and_time' => [do_lang_tempcode('TIME'), 'DESC'],
+            'frequency' => [do_lang_tempcode('POPULARITY'), 'DESC'],
+        ];
         $test = explode(' ', $sort, 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -137,20 +137,20 @@ PHP;
 
         require_code('templates_results_table');
         $header_row = results_header_row(
-            array(
+            [
                 do_lang_tempcode('USERNAME'),
                 /*do_lang_tempcode('IP_ADDRESS'),*/
                 do_lang_tempcode($include_duplicates ? 'ACTION_WHEN_LAST' : 'ACTION_WHEN'),
                 do_lang_tempcode('ACTION'),
                 do_lang_tempcode('DETAILS'),
                 null,
-            ),
+            ],
             $sortables,
             'sa_sort',
             $sortable . ' ' . $sort_order
         );
 
-        $where = array();
+        $where = [];
         if ($filter_by_member) {
             $where['member_id'] = get_member();
         }
@@ -164,10 +164,10 @@ PHP;
         $result_entries = new Tempcode();
         $done = 0;
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(*)', $where);
-        $done_already = array();
+        $done_already = [];
         $_start = $start;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('actionlogs r', array('*'), $where, 'ORDER BY ' . $_sortable, $max, $_start);
+            $rows = $GLOBALS['SITE_DB']->query_select('actionlogs r', ['*'], $where, 'ORDER BY ' . $_sortable, $max, $_start);
             foreach ($rows as $myrow) {
                 if ($myrow['param_a'] !== null) {
                     $a = $myrow['param_a'];
@@ -201,9 +201,9 @@ PHP;
 
                 if (!$include_duplicates) {
                     if ($sortable == 'frequency') {
-                        $sz_key = serialize(array($myrow['the_type']));
+                        $sz_key = serialize([$myrow['the_type']]);
                     } else {
-                        $sz_key = serialize(array($myrow['the_type'], $_a->evaluate(), ($_b === null) ? null : $_b->evaluate()));
+                        $sz_key = serialize([$myrow['the_type'], $_a->evaluate(), ($_b === null) ? null : $_b->evaluate()]);
                     }
                     if (array_key_exists($sz_key, $done_already)) {
                         continue;
@@ -219,11 +219,11 @@ PHP;
                 $ip = tpl_crop_text_mouse_over($myrow['ip'], 12);
 
                 $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
-                $url = build_url(array('page' => 'admin_actionlog', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode), get_module_zone('admin_actionlog'));
+                $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], get_module_zone('admin_actionlog'));
                 $mode_nice = ($mode == 'cms') ? 'Composr' : 'Conversr';
                 $date = hyperlink(
                     $url,
-                    symbol_tempcode('MAKE_RELATIVE_DATE', array(strval($myrow['date_and_time']), '1', '1'), array(ENTITY_ESCAPED)),
+                    symbol_tempcode('MAKE_RELATIVE_DATE', [strval($myrow['date_and_time']), '1', '1'], [ENTITY_ESCAPED]),
                     false,
                     false,
                     '#' . strval($myrow['id']),
@@ -234,14 +234,14 @@ PHP;
                 );
 
                 $result_entries->attach(results_entry(
-                    array(
+                    [
                         escape_html($username),
                         /*Not enough space $ip,*/
                         $date,
                         $type_str,
                         $_a,
                         $_b
-                    ),
+                    ],
                     false
                 ));
 
@@ -256,10 +256,10 @@ PHP;
         }
         while (!empty($rows));
 
-        $content = results_table(do_lang_tempcode('ACTIONS'), $start, 'sa_start', $max, 'sa_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sa_sort', new Tempcode(), array(), null, 5, '1c8645bc2a3ff5bec2e003142185561g', false, 'tray-actionlog');
+        $content = results_table(do_lang_tempcode('ACTIONS'), $start, 'sa_start', $max, 'sa_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sa_sort', new Tempcode(), [], null, 5, '1c8645bc2a3ff5bec2e003142185561g', false, 'tray-actionlog');
 
         // Render block wrapper template around actions table
-        return do_template('BLOCK_MAIN_STAFF_ACTIONS', array(
+        return do_template('BLOCK_MAIN_STAFF_ACTIONS', [
             '_GUID' => '16a5b384015504a6a57fc4ddedbe91a7',
             'BLOCK_ID' => $block_id,
             'BLOCK_PARAMS' => block_params_arr_to_str($map),
@@ -267,6 +267,6 @@ PHP;
             'FILTER_BY_MEMBER' => $filter_by_member,
             'INCLUDE_DUPLICATES' => $include_duplicates,
             'INCLUDE_USER_ACTIVITIES' => $include_user_activities,
-        ));
+        ]);
     }
 }

@@ -49,10 +49,10 @@ class password_censor_test_set extends cms_test_case
         require_code('password_censor');
         password_censor(true, false, 0);
 
-        $GLOBALS['FORUM_DB']->text_lookup_original_cache = array();
-        $GLOBALS['FORUM_DB']->text_lookup_cache = array();
+        $GLOBALS['FORUM_DB']->text_lookup_original_cache = [];
+        $GLOBALS['FORUM_DB']->text_lookup_cache = [];
 
-        $text = get_translated_text($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_post', array('id' => $post_id)), $GLOBALS['FORUM_DB']);
+        $text = get_translated_text($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_post', ['id' => $post_id]), $GLOBALS['FORUM_DB']);
 
         $this->assertTrue(strpos($text, $test_password) === false);
     }

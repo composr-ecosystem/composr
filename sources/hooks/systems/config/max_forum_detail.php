@@ -30,7 +30,7 @@ class Hook_config_max_forum_detail
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_FORUM_DETAIL',
             'type' => 'integer',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_max_forum_detail
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

@@ -34,14 +34,14 @@ class Hook_ecommerce_work
      */
     public function get_products($search = null)
     {
-        $products = array(
-            'WORK' => array(
+        $products = [
+            'WORK' => [
                 'item_name' => do_lang('ecommerce:CUSTOM_PRODUCT_WORK'),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_INVOICE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -56,8 +56,8 @@ class Hook_ecommerce_work
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            ),
-        );
+            ],
+        ];
         return $products;
     }
 
@@ -72,13 +72,13 @@ class Hook_ecommerce_work
     {
         $fields = new Tempcode();
 
-        $where = array('i_type_code' => $type_code);
+        $where = ['i_type_code' => $type_code];
         if (!$from_admin) {
             $where['i_member_id'] = get_member();
         }
 
         $list = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('*'), $where, 'ORDER BY i_time,id DESC');
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], $where, 'ORDER BY i_time,id DESC');
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
             $list->attach(form_input_list_entry(strval($row['id']), false, do_lang('INVOICE_OF', strval($row['id']), $username)));
@@ -88,7 +88,7 @@ class Hook_ecommerce_work
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array($fields, null, null);
+        return [$fields, null, null];
     }
 
     /**
@@ -101,7 +101,7 @@ class Hook_ecommerce_work
      */
     public function handle_needed_fields($type_code, $from_admin = false)
     {
-        return array(post_param_string('purchase_id'), null);
+        return [post_param_string('purchase_id'), null];
     }
 
     /**
@@ -114,6 +114,6 @@ class Hook_ecommerce_work
     public function member_for($type_code, $purchase_id)
     {
         $invoice_id = intval($purchase_id);
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', array('id' => $invoice_id));
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => $invoice_id]);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_webstandards_javascript
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WEBSTANDARDS_JAVASCRIPT',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -43,7 +43,7 @@ class Hook_config_webstandards_javascript
             'public' => false,
 
             'addon' => 'core_webstandards',
-        );
+        ];
     }
 
     /**

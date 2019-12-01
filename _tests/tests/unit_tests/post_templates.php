@@ -34,7 +34,7 @@ class post_templates_test_set extends cms_test_case
 
         $this->post_id = cns_make_post_template('Test Post', 'Testing', 'Code', 0);
 
-        $this->assertTrue('Test Post' == $GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 't_title', array('id' => $this->post_id)));
+        $this->assertTrue('Test Post' == $GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 't_title', ['id' => $this->post_id]));
     }
 
     public function testEditpost_template()
@@ -45,7 +45,7 @@ class post_templates_test_set extends cms_test_case
 
         cns_edit_post_template($this->post_id, 'Tested Post', 'Hello', 'Nothing', 1);
 
-        $this->assertTrue('Tested Post' == $GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 't_title', array('id' => $this->post_id)));
+        $this->assertTrue('Tested Post' == $GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 't_title', ['id' => $this->post_id]));
     }
 
     public function tearDown()

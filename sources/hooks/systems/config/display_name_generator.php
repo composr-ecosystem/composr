@@ -30,7 +30,7 @@ class Hook_config_display_name_generator
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DISPLAY_NAME_GENERATOR',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_display_name_generator
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

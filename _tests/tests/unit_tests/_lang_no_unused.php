@@ -27,7 +27,7 @@ class _lang_no_unused_test_set extends cms_test_case
         cms_disable_time_limit();
 
         $all_code = '';
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if (preg_match('#^sources_custom/aws/|sources_custom/geshi/|sources_custom/getid3/|sources_custom/ILess/|sources_custom/photobucket/|sources_custom/sabredav/|sources_custom/spout/|sources_custom/swift_mailer/|sources_custom/Transliterator/|tracker/#', $path) != 0) {
@@ -36,18 +36,18 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('tpl'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
         foreach ($files as $path) {
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('js'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             if (strpos($c, '/*{$,parser hint: pure}*/') === false) {
                 $all_code .= $c;
             }
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('txt'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
         foreach ($files as $path) {
             if (preg_match('#^(tracker/|data/modules/admin_stats/)#', $path) != 0) {
                 continue;
@@ -55,13 +55,13 @@ class _lang_no_unused_test_set extends cms_test_case
 
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('xml'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
         foreach ($files as $path) {
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
         }
         $all_code .= cms_file_get_contents_safe(get_file_base() . '/install.php', FILE_READ_LOCK);
 
-        $skip_prefixes = array(
+        $skip_prefixes = [
             'BLOCK_',
             'MODULE_',
             'PRIVILEGE_',
@@ -121,12 +121,12 @@ class _lang_no_unused_test_set extends cms_test_case
             'HEALTH_CHECK_SUBJECT_',
             'RECAPTCHA_ERROR_',
             'AUTOFILL_TYPE_DESCRIPTION_',
-        );
+        ];
         $_skip_prefixes = '#^(' . implode('|', $skip_prefixes) . ')#';
 
         $skip_prefixes_regexp = '#^(' . implode('|', $skip_prefixes) . ')#';
 
-        $skip = array_flip(array(
+        $skip = array_flip([
             'PREDEFINED_CONTENT', // TODO: Can remove once used
             'PREDEFINED_CONTENT_DESCRIPTION', // TODO: Can remove once used
             'CONTINUE_RESTORATION',
@@ -219,18 +219,18 @@ class _lang_no_unused_test_set extends cms_test_case
             'TAX_VAT_NUMBER',
             'TAX_SALES',
             'TAX_VAT',
-        ));
+        ]);
         $_skip = array_flip($skip);
 
         $cli = is_cli();
 
-        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, array('ini'));
+        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, ['ini']);
         foreach ($files as $path) {
             if (($this->only !== null) && ($this->only != basename($path))) {
                 continue;
             }
 
-            $input = array();
+            $input = [];
             _get_lang_file_map($path, $input, 'strings', false, true, 'EN');
 
             if ($cli) {

@@ -31,7 +31,7 @@ class Hook_addon_registry_stats
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_stats
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_statistics',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_stats
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_stats
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/stats.php',
             'themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/clear_stats.svg',
@@ -148,7 +148,7 @@ class Hook_addon_registry_stats
             'data/modules/admin_stats/.htaccess',
             'data_custom/modules/admin_stats/.htaccess',
             'adminzone/stats_graph.php',
-        );
+        ];
     }
 
     /**
@@ -158,12 +158,12 @@ class Hook_addon_registry_stats
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
             'templates/STATS_OVERVIEW_SCREEN.tpl' => 'administrative__stats_screen_overview',
             'templates/STATS_SCREEN_ISCREEN.tpl' => 'administrative__stats_screen_iscreen',
-        );
+        ];
     }
 
     /**
@@ -175,18 +175,18 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen()
     {
-        $graph = do_lorem_template('STATS_GRAPH', array(
+        $graph = do_lorem_template('STATS_GRAPH', [
             'GRAPH' => placeholder_url(),
             'TEXT' => lorem_sentence(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('STATS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('STATS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'GRAPH' => $graph,
                 'STATS' => placeholder_table(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -198,14 +198,14 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen_overview()
     {
-        return array(
-            lorem_globalise(do_lorem_template('STATS_OVERVIEW_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('STATS_OVERVIEW_SCREEN', [
                 'TITLE' => lorem_title(),
                 'STATS_VIEWS' => placeholder_table(),
                 'GRAPH_VIEWS_MONTHLY' => lorem_phrase(),
                 'STATS_VIEWS_MONTHLY' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -217,8 +217,8 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen_iscreen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('STATS_SCREEN_ISCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('STATS_SCREEN_ISCREEN', [
                 'TITLE' => lorem_title(),
                 'GRAPH_REGIONALITY' => lorem_phrase(),
                 'STATS_REGIONALITY' => placeholder_table(),
@@ -239,7 +239,7 @@ class Hook_addon_registry_stats
                 'STATS_REFERRER' => lorem_phrase(),
                 'GRAPH_OS' => lorem_phrase(),
                 'STATS_OS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

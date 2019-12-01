@@ -30,7 +30,7 @@ class Hook_config_is_on_invites
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INVITES_ENABLED',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_invites
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

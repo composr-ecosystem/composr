@@ -30,7 +30,7 @@ class Module_search
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -62,18 +62,18 @@ class Module_search
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('searches_logged', array(
+            $GLOBALS['SITE_DB']->create_table('searches_logged', [
                 'id' => '*AUTO',
                 's_member_id' => 'MEMBER',
                 's_time' => 'TIME',
                 's_primary' => 'SHORT_TEXT',
                 's_auxillary' => 'LONG_TEXT',
                 's_num_results' => 'INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_index('searches_logged', 'past_search', array('s_primary'));
+            $GLOBALS['SITE_DB']->create_index('searches_logged', 'past_search', ['s_primary']);
 
-            $GLOBALS['SITE_DB']->create_index('searches_logged', '#past_search_ft', array('s_primary'));
+            $GLOBALS['SITE_DB']->create_index('searches_logged', '#past_search_ft', ['s_primary']);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 5)) {
@@ -87,7 +87,7 @@ class Module_search
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
-            $GLOBALS['SITE_DB']->create_index('searches_logged', 'member_id', array('s_member_id'));
+            $GLOBALS['SITE_DB']->create_index('searches_logged', 'member_id', ['s_member_id']);
         }
     }
 
@@ -106,9 +106,9 @@ class Module_search
             return null;
         }
 
-        return array(
-            'browse' => array('SEARCH_TITLE', 'buttons/search'),
-        );
+        return [
+            'browse' => ['SEARCH_TITLE', 'buttons/search'],
+        ];
     }
 
     public $title;
@@ -153,10 +153,10 @@ class Module_search
                 $info = $ob->info();
 
                 if (($info !== null) && ($info !== false)) {
-                    $this->title = get_screen_title('_SEARCH_TITLE', true, array($info['lang']));
+                    $this->title = get_screen_title('_SEARCH_TITLE', true, [$info['lang']]);
                 }
 
-                breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('SEARCH'))));
+                breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('SEARCH')]]);
                 breadcrumb_set_self($info['lang']);
 
                 $this->ob = $ob;
@@ -231,12 +231,12 @@ class Module_search
         $days_label = do_lang_tempcode('SUBMITTED_WITHIN');
         $date_range_label = do_lang_tempcode('DATE_RANGE_LABEL');
 
-        $extra_sort_fields = array();
+        $extra_sort_fields = [];
 
         $has_template_search = false;
 
         if ($id != '') { // Specific screen
-            $url_map = array('page' => '_SELF', 'type' => 'results', 'id' => $id, 'specific' => 1);
+            $url_map = ['page' => '_SELF', 'type' => 'results', 'id' => $id, 'specific' => 1];
             $catalogue_name = get_param_string('catalogue_name', '');
             if ($catalogue_name != '') {
                 $url_map['catalogue_name'] = $catalogue_name;
@@ -245,7 +245,7 @@ class Module_search
             if ($embedded == 1) {
                 $url_map['embedded'] = 1;
             }
-            $url = build_url($url_map, '_SELF', array(), false, true);
+            $url = build_url($url_map, '_SELF', [], false, true);
 
             require_code('content');
             $content_type = convert_composr_type_codes('search_hook', $id, 'content_type');
@@ -279,7 +279,7 @@ class Module_search
                 $date_range_label = $info['date_range_label'];
             }
 
-            $extra_sort_fields = array_key_exists('extra_sort_fields', $info) ? $info['extra_sort_fields'] : array();
+            $extra_sort_fields = array_key_exists('extra_sort_fields', $info) ? $info['extra_sort_fields'] : [];
 
             $under = null;
             $got_tree_selector = false;
@@ -305,7 +305,7 @@ class Module_search
                     $nice_label = $under;
                     if ($under !== null) {
                         $simple_content_evaluated = $simple_content->evaluate();
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#<option [^>]*value="' . preg_quote($under, '#') . '(' . ((strpos($under, ',') === false) ? ',' : '') . '[^"]*)?"[^>]*>([^>]* &gt; )?([^>]*)</option>#', $simple_content_evaluated, $matches) != 0) {
                             if (strpos($under, ',') === false) {
                                 $under = $under . $matches[1];
@@ -314,7 +314,7 @@ class Module_search
                     }
 
                     require_code('form_templates');
-                    $tree = do_template('FORM_SCREEN_INPUT_TREE_LIST', array(
+                    $tree = do_template('FORM_SCREEN_INPUT_TREE_LIST', [
                         '_GUID' => '25368e562be3b4b9c6163aa008b47c91',
                         'MULTI_SELECT' => false,
                         'TABINDEX' => strval(get_form_field_tabindex()),
@@ -330,7 +330,7 @@ class Module_search
                         'OPTIONS' => json_encode($ajax_options),
                         'DESCRIPTION' => '',
                         'CONTENT_TYPE' => $content_type,
-                    ));
+                    ]);
                 }
             }
 
@@ -351,12 +351,12 @@ class Module_search
             $options = new Tempcode();
             if (array_key_exists('special_on', $info)) {
                 foreach ($info['special_on'] as $name => $display) {
-                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', array('_GUID' => 'c1853f42d0a110026453f8b94c9f623c', 'CHECKED' => ($content === null) || (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display)));
+                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['_GUID' => 'c1853f42d0a110026453f8b94c9f623c', 'CHECKED' => ($content === null) || (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display]));
                 }
             }
             if (array_key_exists('special_off', $info)) {
                 foreach ($info['special_off'] as $name => $display) {
-                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', array('_GUID' => '2223ada7636c85e6879feb9a6f6885d2', 'CHECKED' => (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display)));
+                    $options->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN_OPTION', ['_GUID' => '2223ada7636c85e6879feb9a6f6885d2', 'CHECKED' => (get_param_integer('option_' . $id . '_' . $name, 0) == 1), 'NAME' => 'option_' . $id . '_' . $name, 'DISPLAY' => $display]));
                 }
             }
             if (method_exists($ob, 'get_fields')) {
@@ -368,30 +368,30 @@ class Module_search
                     if ($has_range) {
                         $fallback = 'SEARCH_FOR_SEARCH_DOMAIN_OPTION' . substr($field['TYPE'], 0, strlen($field['TYPE']) - strlen('_RANGE'));
                     }
-                    $options->attach(do_template($template, array(
+                    $options->attach(do_template($template, [
                         '_GUID' => 'a223ada7636c85e6879feb9a6f6885d2',
                         'NAME' => 'option_' . $field['NAME'],
                         'DISPLAY' => $field['DISPLAY'],
                         'SPECIAL' => $field['SPECIAL'],
                         'CHECKED' => array_key_exists('checked', $field) ? $field['CHECKED'] : false,
                         'HAS_RANGE' => $has_range,
-                    ), null, false, $fallback));
+                    ], null, false, $fallback));
                 }
 
                 $has_template_search = true;
             }
 
-            $specialisation = do_template('SEARCH_ADVANCED', array('_GUID' => 'fad0c147b8291ba972f105c65715f1ac', 'AJAX' => $ajax, 'OPTIONS' => $options, 'TREE' => $tree, 'UNDERNEATH' => $under !== null));
+            $specialisation = do_template('SEARCH_ADVANCED', ['_GUID' => 'fad0c147b8291ba972f105c65715f1ac', 'AJAX' => $ajax, 'OPTIONS' => $options, 'TREE' => $tree, 'UNDERNEATH' => $under !== null]);
         } else { // General screen
-            $map = array('page' => '_SELF', 'type' => 'results');
+            $map = ['page' => '_SELF', 'type' => 'results'];
             $under = get_param_string('search_under', '-1', INPUT_FILTER_GET_COMPLEX);
             if ($under != '-1') {
                 $map['search_under'] = $under;
             }
-            $url = build_url($map, '_SELF', array(), false, true);
+            $url = build_url($map, '_SELF', [], false, true);
 
             $search_domains = new Tempcode();
-            $_search_domains = array();
+            $_search_domains = [];
             $_hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
             foreach ($_hooks as $hook => $ob) {
                 $info = $ob->info();
@@ -403,23 +403,23 @@ class Module_search
 
                 $checked = (get_param_integer('search_' . $hook, ((($content === null) && (get_param_integer('all_defaults', null) !== 0)) || (get_param_integer('all_defaults', 0) == 1)) ? ($is_default_or_advanced ? 1 : 0) : 0) == 1);
 
-                $options_url = ((array_key_exists('special_on', $info)) || (array_key_exists('special_off', $info)) || (array_key_exists('extra_sort_fields', $info)) || (method_exists($ob, 'get_fields')) || (method_exists($ob, 'get_tree')) || (method_exists($ob, 'get_ajax_tree'))) ? build_url(array('page' => '_SELF', 'id' => $hook), '_SELF', array(), false, true) : new Tempcode();
+                $options_url = ((array_key_exists('special_on', $info)) || (array_key_exists('special_off', $info)) || (array_key_exists('extra_sort_fields', $info)) || (method_exists($ob, 'get_fields')) || (method_exists($ob, 'get_tree')) || (method_exists($ob, 'get_ajax_tree'))) ? build_url(['page' => '_SELF', 'id' => $hook], '_SELF', [], false, true) : new Tempcode();
 
-                $_search_domains[] = array('_GUID' => '3d3099872184923aec0f49388f52c750', 'ADVANCED_ONLY' => (array_key_exists('advanced_only', $info)) && ($info['advanced_only']), 'CHECKED' => $checked, 'OPTIONS_URL' => $options_url, 'LANG' => $info['lang'], 'NAME' => $hook);
+                $_search_domains[] = ['_GUID' => '3d3099872184923aec0f49388f52c750', 'ADVANCED_ONLY' => (array_key_exists('advanced_only', $info)) && ($info['advanced_only']), 'CHECKED' => $checked, 'OPTIONS_URL' => $options_url, 'LANG' => $info['lang'], 'NAME' => $hook];
             }
             sort_maps_by($_search_domains, 'LANG');
             foreach ($_search_domains as $sd) {
                 $search_domains->attach(do_template('SEARCH_FOR_SEARCH_DOMAIN', $sd));
             }
 
-            $specialisation = do_template('SEARCH_DOMAINS', array('_GUID' => '1fd8718b540ec475988070ee7a444dc1', 'SEARCH_DOMAINS' => $search_domains));
+            $specialisation = do_template('SEARCH_DOMAINS', ['_GUID' => '1fd8718b540ec475988070ee7a444dc1', 'SEARCH_DOMAINS' => $search_domains]);
         }
 
         $author = get_param_string('author', '');
         $author_id = ($author != '') ? $GLOBALS['FORUM_DRIVER']->get_member_from_username($author) : null;
         $sort = get_param_string('sort', 'relevance');
         $direction = get_param_string('direction', 'DESC');
-        if (!in_array(strtoupper($direction), array('ASC', 'DESC'))) {
+        if (!in_array(strtoupper($direction), ['ASC', 'DESC'])) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         $only_titles = get_param_integer('only_titles', 0) == 1;
@@ -446,7 +446,7 @@ class Module_search
             if (($cutoff_from === null) && ($cutoff_to === null)) {
                 $cutoff = null;
             } else {
-                $cutoff = array($cutoff_from, $cutoff_to);
+                $cutoff = [$cutoff_from, $cutoff_to];
 
                 $cutoff_from_day = ($cutoff_from === null) ? null : intval(date('d', utctime_to_usertime($cutoff_from)));
                 $cutoff_from_month = ($cutoff_from === null) ? null : intval(date('m', utctime_to_usertime($cutoff_from)));
@@ -484,12 +484,12 @@ class Module_search
             list($out, $pagination, $num_results) = $this->results($id, $author, $author_id, $cutoff, $sort, $direction, $only_titles, $search_under);
 
             if (has_zone_access(get_member(), 'adminzone')) {
-                $admin_search_url = build_url(array('page' => 'admin', 'type' => 'search', 'content' => $content), 'adminzone');
+                $admin_search_url = build_url(['page' => 'admin', 'type' => 'search', 'content' => $content], 'adminzone');
                 attach_message(do_lang_tempcode('ALSO_ADMIN_ZONE_SEARCH', escape_html($admin_search_url->evaluate())), 'inform');
             }
         }
 
-        $tpl = do_template('SEARCH_FORM_SCREEN', array(
+        $tpl = do_template('SEARCH_FORM_SCREEN', [
             '_GUID' => '8bb208185740183323a6fe6e89d55de5',
             'SEARCH_TERM' => ($content === null) ? '' : $content,
             'HAS_TEMPLATE_SEARCH' => $has_template_search,
@@ -520,7 +520,7 @@ class Module_search
             'CUTOFF_TO_DAY' => ($cutoff_to_day === null) ? '' : strval($cutoff_to_day),
             'CUTOFF_TO_MONTH' => ($cutoff_to_month === null) ? '' : strval($cutoff_to_month),
             'CUTOFF_TO_YEAR' => ($cutoff_to_year === null) ? '' : strval($cutoff_to_year),
-        ));
+        ]);
 
         //require_code('templates_internalise_screen');
         //return internalise_own_screen($tpl); Annoying due to unreliable URLs
@@ -571,14 +571,14 @@ class Module_search
         require_code('spelling');
         $corrected = spell_correct_phrase($content);
         if (cms_mb_strtolower($corrected) != cms_mb_strtolower($content)) {
-            $search_url = get_self_url(true, false, array('content' => $corrected));
+            $search_url = get_self_url(true, false, ['content' => $corrected]);
             attach_message(do_lang_tempcode('DID_YOU_MEAN', escape_html($corrected), escape_html($search_url)), 'notice');
         }
 
         // Search keyword highlighting in any loaded Comcode
         global $SEARCH__CONTENT_BITS;
         $_content_bits = explode(' ', str_replace('"', '', cms_preg_replace_safe('#(^|\s)\+#', '', cms_preg_replace_safe('#(^|\s)\-#', '', $content))));
-        $SEARCH__CONTENT_BITS = array();
+        $SEARCH__CONTENT_BITS = [];
         require_code('textfiles');
         $too_common_words = explode("\n", read_text_file('too_common_words', '', true));
         foreach ($_content_bits as $content_bit) {
@@ -602,7 +602,7 @@ class Module_search
         disable_php_memory_limit();
 
         // Search under all hooks we've asked to search under
-        $results = array();
+        $results = [];
         $_hooks = find_all_hook_obs('modules', 'search', 'Hook_search_');
         foreach ($_hooks as $hook => $ob) {
             $test = get_param_integer('search_' . $hook, 0);
@@ -672,7 +672,7 @@ class Module_search
                 }
             }
 
-            return array(new Tempcode(), new Tempcode(), 0);
+            return [new Tempcode(), new Tempcode(), 0];
         }
 
         require_code('templates_pagination');
@@ -680,18 +680,18 @@ class Module_search
 
         if ($start == 0) {
             cms_register_shutdown_function_safe(function() use ($content, $results) {
-                $GLOBALS['SITE_DB']->query_insert('searches_logged', array(
+                $GLOBALS['SITE_DB']->query_insert('searches_logged', [
                     's_member_id' => get_member(),
                     's_time' => time(),
                     's_primary' => cms_mb_substr($content, 0, 255),
                     's_auxillary' => serialize(array_merge($_POST, $_GET)),
                     's_num_results' => count($results),
-                ));
+                ]);
             });
         }
 
         spellchecker_shutdown();
 
-        return array($out, $pagination, $GLOBALS['TOTAL_SEARCH_RESULTS']);
+        return [$out, $pagination, $GLOBALS['TOTAL_SEARCH_RESULTS']];
     }
 }

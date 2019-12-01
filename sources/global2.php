@@ -96,12 +96,12 @@ function init__global2()
     }
 
     // Initialise some globals
-    $SUPPRESS_ERROR_DEATH = array(false);
-    $JAVASCRIPTS_DEFAULT = array(
+    $SUPPRESS_ERROR_DEATH = [false];
+    $JAVASCRIPTS_DEFAULT = [
         'global' => true,
         'custom_globals' => true,
-    );
-    $RUNNING_SCRIPT_CACHE = array();
+    ];
+    $RUNNING_SCRIPT_CACHE = [];
     $WHAT_IS_RUNNING_CACHE = current_script();
     $WORDS_TO_FILTER_CACHE = null;
     $FIELD_RESTRICTIONS = null;
@@ -169,7 +169,7 @@ function init__global2()
 
     // CSP nice and early
     require_code('csp');
-    load_csp(array()); // We start maximally strict, then we will reduce down based on config (config system not loaded yet)
+    load_csp([]); // We start maximally strict, then we will reduce down based on config (config system not loaded yet)
 
     // Set cross-domain headers (COR)
     if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -253,7 +253,7 @@ function init__global2()
         if (get_param_integer('keep_xss_detect', null) !== 0) {
             cms_ini_set('ocproducts.xss_detect', '1');
         }
-        array_splice($_POST, 500, count($_POST) - 500, array()); // Simulate max_input_vars
+        array_splice($_POST, 500, count($_POST) - 500, []); // Simulate max_input_vars
         foreach ($_POST as $val) {
             if (is_string($val)) {
                 if (strpos($val, '<script') !== false) {
@@ -324,7 +324,7 @@ function init__global2()
         if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
             $bot_type = get_bot_type();
             if (($bot_type !== null) && (!empty($SITE_INFO['fast_spider_cache']))) {
-                load_csp(array('csp_enabled' => '0'));
+                load_csp(['csp_enabled' => '0']);
                 require_code('static_cache');
                 static_cache(STATIC_CACHE__FAST_SPIDER);
             }
@@ -332,12 +332,12 @@ function init__global2()
                 (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') &&
                 (
                     (get_forum_type() == 'cns') && (!isset($_COOKIE[$SITE_INFO['user_cookie']])) && (!isset($_COOKIE[$SITE_INFO['session_cookie']])) ||
-                    (empty(array_diff_key($_COOKIE, array('__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0))))
+                    (empty(array_diff_key($_COOKIE, ['__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0])))
                 ) &&
                 ((!isset($SITE_INFO['backdoor_ip'])) || ($SITE_INFO['backdoor_ip'] != @strval($_SERVER['REMOTE_ADDR']))) &&
                 (!isset($_GET['keep_session'])
             )) {
-                load_csp(array('csp_enabled' => '0'));
+                load_csp(['csp_enabled' => '0']);
                 require_code('static_cache');
                 static_cache(STATIC_CACHE__GUEST);
             }
@@ -543,7 +543,7 @@ function init__global2()
         register_shutdown_function('memory_tracking');
     }
 
-    if (!empty(array_diff(array_keys($_POST), array('x', 'y', 'http_referer'/*added by our JS*/)))) {
+    if (!empty(array_diff(array_keys($_POST), ['x', 'y', 'http_referer'/*added by our JS*/]))) {
         // Detect and deal with spammers that triggered the spam blackhole
         if (get_option('spam_blackhole_detection') == '1') {
             $blackhole = post_param_string('y' . md5(get_site_name() . ': antispam'), '');
@@ -615,7 +615,7 @@ function fixup_bad_php_env_vars()
             $path_components = explode(DIRECTORY_SEPARATOR, get_file_base());
             foreach ($path_components as $i => $path_component) {
                 $document_root .= $path_component . '/';
-                if (in_array($path_component, array('public_html', 'www', 'webroot', 'httpdocs', 'httpsdocs', 'wwwroot', 'Documents'))) {
+                if (in_array($path_component, ['public_html', 'www', 'webroot', 'httpdocs', 'httpsdocs', 'wwwroot', 'Documents'])) {
                     break;
                 }
             }
@@ -961,7 +961,7 @@ function get_charset()
     $file = fopen($path, 'rb');
     $contents = str_replace("\r", "\n", fread($file, 3000));
     fclose($file);
-    $matches = array();
+    $matches = [];
     if (preg_match('#\[strings\].*charset=([\w\-]+)\n#s', $contents, $matches) != 0) {
         $temp_charset_cache = $matches[1];
         if ($XSS_DETECT) {
@@ -1001,7 +1001,7 @@ function load_user_stuff()
         } elseif ($SITE_INFO['forum_type'] != 'none') {
             $FORUM_DRIVER->db = new DatabaseConnector(get_db_forums(), get_db_forums_host(), get_db_forums_user(), get_db_forums_password(), $FORUM_DRIVER->get_drivered_table_prefix());
         }
-        $FORUM_DRIVER->MEMBER_ROWS_CACHED = array();
+        $FORUM_DRIVER->MEMBER_ROWS_CACHED = [];
         /** The connector to the active forum database.
          *
          * @global object $FORUM_DB
@@ -1207,7 +1207,7 @@ function is_browser_decaching()
     if ((defined('DO_PLANNED_DECACHE')) && (is_writable(get_file_base() . '/_config.php'))) { // Used by decache.sh
         $config_file_orig = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
         $config_file = $config_file_orig;
-        $config_file = rtrim(str_replace(array('if (!defined(\'DO_PLANNED_DECACHE\')) ', 'define(\'DO_PLANNED_DECACHE\', true);'), array('', ''), $config_file)) . "\n\n";
+        $config_file = rtrim(str_replace(['if (!defined(\'DO_PLANNED_DECACHE\')) ', 'define(\'DO_PLANNED_DECACHE\', true);'], ['', ''], $config_file)) . "\n\n";
         require_code('files');
         cms_file_put_contents_safe(get_file_base() . '/_config.php', $config_file, FILE_WRITE_FIX_PERMISSIONS);
         $browser_decaching_cache = true;
@@ -1524,24 +1524,24 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
 {
     $append = '';
     if ($append_keep) {
-        $keep = symbol_tempcode('KEEP', array('1'));
+        $keep = symbol_tempcode('KEEP', ['1']);
         $append .= $keep->evaluate();
     }
 
-    static $find_script_cache = array();
-    if ($find_script_cache === array()) {
+    static $find_script_cache = [];
+    if ($find_script_cache === []) {
         if (function_exists('persistent_cache_get')) {
             $find_script_cache = persistent_cache_get('SCRIPT_PLACES');
         }
         if ($find_script_cache === null) {
-            $find_script_cache = array();
+            $find_script_cache = [];
         }
     }
     if (isset($find_script_cache[$name][$append_keep][$base_url_code])) {
         return $find_script_cache[$name][$append_keep][$base_url_code] . $append;
     }
 
-    $zones = array();
+    $zones = [];
     if (function_exists('get_zone_name')) {
         $zones[] = get_zone_name();
     }
@@ -2000,7 +2000,7 @@ function get_param_integer($name, $default = false, $not_string_ok = false)
             $ret = substr($ret, 0, strlen($ret) - 1);
         }
         if (!is_numeric($ret)) { // Bizarre situation (bug in IIS?)
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(\d+)\#[\w]*$#', $ret, $matches) !== 0) {
                 $ret = $matches[1];
             } else {
@@ -2054,11 +2054,11 @@ function unixify_line_format($in, $desired_charset = null)
 
     static $from = null;
     if ($from === null) {
-        $from = array("\r\n", '&#8298;', "\r"); // &#8298; is very odd- seems to come from open office copy & paste
+        $from = ["\r\n", '&#8298;', "\r"]; // &#8298; is very odd- seems to come from open office copy & paste
     }
     static $to = null;
     if ($to === null) {
-        $to = array("\n", '', "\n");
+        $to = ["\n", '', "\n"];
     }
     $in = str_replace($from, $to, $in);
     return $in;

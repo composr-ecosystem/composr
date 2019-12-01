@@ -30,7 +30,7 @@ class Hook_config_notification_desktop_alerts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATION_DESKTOP_ALERTS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -42,7 +42,7 @@ class Hook_config_notification_desktop_alerts
             'public' => true,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

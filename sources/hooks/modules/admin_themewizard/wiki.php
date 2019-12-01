@@ -31,9 +31,9 @@ class Hook_admin_themewizard_wiki
     public function run()
     {
         if (!addon_installed('wiki')) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        return array(array(), array('page/edit_tree',));
+        return [[], ['page/edit_tree',]];
     }
 }

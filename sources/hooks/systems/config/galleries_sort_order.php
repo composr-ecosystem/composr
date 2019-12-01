@@ -30,7 +30,7 @@ class Hook_config_galleries_sort_order
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_DEFAULT_SORT_ORDER',
             'type' => 'list',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_galleries_sort_order
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_ldap_hostname
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_HOSTNAME',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_hostname
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

@@ -35,7 +35,7 @@ class Hook_unvalidated_images
 
         require_lang('galleries');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'images';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

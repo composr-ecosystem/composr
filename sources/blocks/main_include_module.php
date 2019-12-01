@@ -30,14 +30,14 @@ class Block_main_include_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'strip_title', 'only_if_permissions', 'leave_page_and_zone', 'merge_parameters', 'use_http_status', 'use_metadata', 'use_attached_messages', 'use_breadcrumbs', 'use_refreshes', 'use_helper_panel');
+        $info['parameters'] = ['param', 'strip_title', 'only_if_permissions', 'leave_page_and_zone', 'merge_parameters', 'use_http_status', 'use_metadata', 'use_attached_messages', 'use_breadcrumbs', 'use_refreshes', 'use_helper_panel'];
         return $info;
     }
 
@@ -65,7 +65,7 @@ class Block_main_include_module
         // Find out what we're virtualising
         $param = array_key_exists('param', $map) ? $map['param'] : '';
         if ($param == '') {
-            return do_template('RED_ALERT', array('_GUID' => 'o3plvsqh2931w7kjt0u04c4zn2f93xs6', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')));
+            return do_template('RED_ALERT', ['_GUID' => 'o3plvsqh2931w7kjt0u04c4zn2f93xs6', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')]);
         }
         list($zone, $attributes,) = page_link_decode($param);
         if (!array_key_exists('page', $attributes)) {
@@ -77,7 +77,7 @@ class Block_main_include_module
             $zone = get_zone_name();
         }
         if ($zone === null) {
-            return do_template('RED_ALERT', array('_GUID' => 'tc67wb1v1sg1hsvegsxqkxhf1iodh2m1', 'TEXT' => do_lang_tempcode('MISSING_PAGE', escape_html($attributes['page']))));
+            return do_template('RED_ALERT', ['_GUID' => 'tc67wb1v1sg1hsvegsxqkxhf1iodh2m1', 'TEXT' => do_lang_tempcode('MISSING_PAGE', escape_html($attributes['page']))]);
         }
         foreach ($_GET as $key => $val) {
             if ((substr($key, 0, 5) == 'keep_') || ($merge_parameters)) {
@@ -100,7 +100,7 @@ class Block_main_include_module
         }
         $new_zone = $leave_page_and_zone ? get_zone_name() : $zone;
         list($old_get, $old_zone, $old_current_script) = set_execution_context(
-            ($leave_page_and_zone ? array('page' => $attributes['page']) : array()) + $attributes,
+            ($leave_page_and_zone ? ['page' => $attributes['page']] : []) + $attributes,
             $new_zone
         );
         global $IS_VIRTUALISED_REQUEST;
@@ -120,20 +120,20 @@ class Block_main_include_module
             $old_current_script,
             false
         );
-        $keep = array(
+        $keep = [
             'EXTRA_HEAD',
             'EXTRA_FOOT',
             'JAVASCRIPT',
             'JAVASCRIPTS',
             'CSSS',
-        );
+        ];
         if ($use_http_status) {
-            $keep += array(
+            $keep += [
                 'HTTP_STATUS_CODE',
-            );
+            ];
         }
         if ($use_metadata) {
-            $keep += array(
+            $keep += [
                 'METADATA',
                 'SEO_KEYWORDS',
                 'SEO_DESCRIPTION',
@@ -142,33 +142,33 @@ class Block_main_include_module
                 'FORCE_SET_TITLE',
                 'FEED_URL',
                 'FEED_URL_2',
-            );
+            ];
         }
         if ($use_attached_messages) {
-            $keep += array(
+            $keep += [
                 'ATTACHED_MESSAGES',
                 'ATTACHED_MESSAGES_RAW',
-            );
+            ];
         }
         if ($use_breadcrumbs) {
-            $keep += array(
+            $keep += [
                 'BREADCRUMBS',
                 'BREADCRUMB_SET_PARENTS',
                 'BREADCRUMB_SET_SELF',
-            );
+            ];
         }
         if ($use_refreshes) {
-            $keep += array(
+            $keep += [
                 'REFRESH_URL',
                 'FORCE_META_REFRESH',
                 'QUICK_REDIRECT',
-            );
+            ];
         }
         if ($use_helper_panel) {
-            $keep += array(
+            $keep += [
                 'HELPER_PANEL_TEXT',
                 'HELPER_PANEL_TUTORIAL',
-            );
+            ];
         }
         restore_output_state(false, true, $keep);
         $IS_VIRTUALISED_REQUEST = false;
@@ -178,11 +178,11 @@ class Block_main_include_module
 
         // More replacing, if _SELF wasn't used within the module
         if ($leave_page_and_zone) {
-            $url_from = static_evaluate_tempcode(build_url(array('page' => $attributes['page']), $zone, array(), false, false, true));
+            $url_from = static_evaluate_tempcode(build_url(['page' => $attributes['page']], $zone, [], false, false, true));
             if (substr($url_from, -4) == '.htm') {
                 $url_from = substr($url_from, 0, strlen($url_from) - 4);
             }
-            $url_to = static_evaluate_tempcode(build_url(array('page' => get_page_name()), get_zone_name(), array(), false, false, true));
+            $url_to = static_evaluate_tempcode(build_url(['page' => get_page_name()], get_zone_name(), [], false, false, true));
             if (substr($url_to, -4) == '.htm') {
                 $url_to = substr($url_to, 0, strlen($url_to) - 4);
             }

@@ -46,9 +46,9 @@ function cms_ldap_escape($str, $for_dn = false)
     // http://msdn.microsoft.com/en-us/library/ms675768(VS.85).aspx
     // http://www-03.ibm.com/systems/i/software/ldap/underdn.html
 
-    $meta_chars = $for_dn ? array(',', '=', '+', '<', '>', ';', '\\', '"', '#') : array('*', '(', ')', '\\', chr(0));
+    $meta_chars = $for_dn ? [',', '=', '+', '<', '>', ';', '\\', '"', '#'] : ['*', '(', ')', '\\', chr(0)];
 
-    $quoted_meta_chars = array();
+    $quoted_meta_chars = [];
     foreach ($meta_chars as $key => $value) {
         $quoted_meta_chars[$key] = '\\' . str_pad(dechex(ord($value)), 2, '0');
     }
@@ -195,7 +195,7 @@ function cns_is_ldap_member_potential($cn)
         return false;
     }
 
-    $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', array(member_property()));
+    $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', [member_property()]);
     $entries = ldap_get_entries($LDAP_CONNECTION, $results);
     $answer = (array_key_exists(0, $entries));
     ldap_free_result($results);
@@ -254,7 +254,7 @@ function cns_is_on_ldap($cn)
     global $LDAP_CONNECTION;
     $path = member_search_qualifier() . get_option('ldap_base_dn');
     $query = '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))';
-    $results = @ldap_search($LDAP_CONNECTION, $path, $query, array(member_property()), 1);
+    $results = @ldap_search($LDAP_CONNECTION, $path, $query, [member_property()], 1);
     if ($results === false) {
         require_code('site');
         $message = 'LDAP: ' . ldap_error($LDAP_CONNECTION);
@@ -281,7 +281,7 @@ function cns_get_ldap_hash($cn)
 {
     global $LDAP_CONNECTION;
 
-    $results = @ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', array('userpassword'));
+    $results = @ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', ['userpassword']);
     if ($results === false) {
         require_code('site');
         attach_message(make_string_tempcode('LDAP: ' . ldap_error($LDAP_CONNECTION)), 'warn', false, true);
@@ -390,10 +390,10 @@ function cns_ldap_authorise_login($cn, $password)
         $good = ($try == $there);
 
         if ($good) {
-            return array('m_pass_hash_salted' => $password, 'm_password_compat_scheme' => 'md5'); // A bit of a hack: actually we are doing a plain text check, and the 'hashed' passwords were both never hashed: still works
+            return ['m_pass_hash_salted' => $password, 'm_password_compat_scheme' => 'md5']; // A bit of a hack: actually we are doing a plain text check, and the 'hashed' passwords were both never hashed: still works
         }
 
-        return array('m_pass_hash_salted' => '!!!', 'm_password_compat_scheme' => 'md5'); // Access will be denied
+        return ['m_pass_hash_salted' => '!!!', 'm_password_compat_scheme' => 'md5']; // Access will be denied
     }
 
     $login = ldap_get_login_string($cn);
@@ -403,7 +403,7 @@ function cns_ldap_authorise_login($cn, $password)
         cns_ldap_bind(); // Rebind under normal name, so we're not stuck on this user's bind
 
         // We only get here if we are authorised. As to not complicate Composr's authentication chain, we trick it by setting our db password to that of our given password, ONLY once LDAP login is confirmed.
-        return array('m_pass_hash_salted' => $password, 'm_password_compat_scheme' => 'md5'); // A bit of a hack: actually we are doing a plain text check, and the 'hashed' passwords were both never hashed: still works
+        return ['m_pass_hash_salted' => $password, 'm_password_compat_scheme' => 'md5']; // A bit of a hack: actually we are doing a plain text check, and the 'hashed' passwords were both never hashed: still works
     }
     if (get_param_integer('keep_ldap_debug', 0) == 1) {
         if ($test === false) {
@@ -417,7 +417,7 @@ function cns_ldap_authorise_login($cn, $password)
     }
 
     cns_ldap_bind(); // Rebind under normal name, so we're not stuck on this failed bind
-    return array('m_pass_hash_salted' => '!!!', 'm_password_compat_scheme' => 'md5'); // Access will be denied
+    return ['m_pass_hash_salted' => '!!!', 'm_password_compat_scheme' => 'md5']; // Access will be denied
 }
 
 /**
@@ -428,9 +428,9 @@ function cns_ldap_authorise_login($cn, $password)
  */
 function cns_member_ldapcn_to_cnsid($cn)
 {
-    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $cn, 'm_password_compat_scheme' => 'ldap'));
+    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $cn, 'm_password_compat_scheme' => 'ldap']);
     if ($ret === null) {
-        $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $cn, 'm_password_compat_scheme' => 'httpauth'));
+        $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $cn, 'm_password_compat_scheme' => 'httpauth']);
     }
     return $ret;
 }
@@ -443,9 +443,9 @@ function cns_member_ldapcn_to_cnsid($cn)
  */
 function cns_member_cnsid_to_ldapcn($id)
 {
-    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_username', array('id' => $id, 'm_password_compat_scheme' => 'ldap'));
+    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_username', ['id' => $id, 'm_password_compat_scheme' => 'ldap']);
     if ($ret === null) {
-        $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_username', array('id' => $id, 'm_password_compat_scheme' => 'httpauth'));
+        $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_username', ['id' => $id, 'm_password_compat_scheme' => 'httpauth']);
     }
     return $ret;
 }
@@ -459,13 +459,13 @@ function cns_get_all_ldap_groups()
 {
     global $LDAP_CONNECTION;
 
-    $groups = array();
+    $groups = [];
 
-    $results = @ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), 'objectclass=' . get_group_class(), array(group_property())); // We do ldap_search as Active Directory can be fussy when looking at large sets, like all members
+    $results = @ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), 'objectclass=' . get_group_class(), [group_property()]); // We do ldap_search as Active Directory can be fussy when looking at large sets, like all members
     if ($results === false) {
         require_code('site');
         attach_message((($LDAP_CONNECTION === null) ? do_lang_tempcode('LDAP_DISABLED') : (protect_from_escaping('LDAP: ' . ldap_error($LDAP_CONNECTION)))), 'warn', false, !$GLOBALS['DEV_MODE']);
-        return array();
+        return [];
     }
     $entries = ldap_get_entries($LDAP_CONNECTION, $results);
 
@@ -530,7 +530,7 @@ function cns_group_cnsid_to_ldapcn($id)
         return get_mapped_users_group();
     }
 
-    cns_ensure_groups_cached(array($id));
+    cns_ensure_groups_cached([$id]);
     global $USER_GROUPS_CACHED;
     return $USER_GROUPS_CACHED[$id]['g__name'];
 }
@@ -551,7 +551,7 @@ function cns_ldap_guess_email($cn)
     if (!array_key_exists(0, $entries)) {
         return '';
     }
-    foreach (array('mail', 'email') as $mail_property) {
+    foreach (['mail', 'email'] as $mail_property) {
         if (array_key_exists($mail_property, $entries[0])) {
             return is_array($entries[0][$mail_property]) ? $entries[0][$mail_property][0] : $entries[0][$mail_property];
         }
@@ -577,7 +577,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
     if (get_option('ldap_is_windows') == '0') {
         // Members under group (secondary)
         if (($include_secondaries) && ($cn !== null)) {
-            $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', array('memberuid', 'gidnumber'));
+            $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', ['memberuid', 'gidnumber']);
             $entries = ldap_get_entries($LDAP_CONNECTION, $results);
             if ((array_key_exists(0, $entries)) && (array_key_exists('memberuid', $entries[0]))) { // Might not exist in LDAP
                 foreach ($entries[0]['memberuid'] as $key => $member) {
@@ -588,7 +588,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
                     $member_id = cns_member_ldapcn_to_cnsid(ldap_unescape($member));
                     if ($member_id !== null) {
                         if ($non_validated) {
-                            $members[$member_id] = array('gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape($member), 'implicit' => false);
+                            $members[$member_id] = ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape($member), 'implicit' => false];
                         } else {
                             $members[$member_id] = $member_id;
                         }
@@ -605,7 +605,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
 
         // Groups under member (primary)
         if (($include_primaries) && ($gid !== null)) {
-            $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(gidnumber=' . cms_ldap_escape(strval($gid)) . '))', array(member_property()));
+            $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(gidnumber=' . cms_ldap_escape(strval($gid)) . '))', [member_property()]);
             $entries = ldap_get_entries($LDAP_CONNECTION, $results);
 
             foreach ($entries as $key => $member) { // There will only be one, but I wrote a loop so lets use a loop
@@ -622,7 +622,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
                 $member_id = cns_member_ldapcn_to_cnsid(ldap_unescape($member[member_property()][0]));
                 if ($member_id !== null) {
                     if ($non_validated) {
-                        $members[$member_id] = array('m_username' => ldap_unescape($member[member_property()][0]), 'gm_member_id' => $member_id, 'gm_validated' => 1, 'implicit' => false);
+                        $members[$member_id] = ['m_username' => ldap_unescape($member[member_property()][0]), 'gm_member_id' => $member_id, 'gm_validated' => 1, 'implicit' => false];
                     } else {
                         $members[$member_id] = $member_id;
                     }
@@ -633,7 +633,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
     } else {
         if ($cn !== null) {
             // Groups under member (Active Directory makes no distinction)
-            $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', array('memberof')); // We do ldap_search as Active Directory can be fussy when looking at large sets, like all members
+            $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', ['memberof']); // We do ldap_search as Active Directory can be fussy when looking at large sets, like all members
             $entries = ldap_get_entries($LDAP_CONNECTION, $results);
             if ((array_key_exists(0, $entries)) && (array_key_exists('memberof', $entries[0]))) { // Might not exist in LDAP
                 foreach ($entries[0]['memberof'] as $key => $member) {
@@ -648,7 +648,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
                             ((!$include_primaries) && ($include_secondaries) && (cns_ldap_get_member_primary_group($member_id) != $gid))
                         ) {
                             if ($non_validated) {
-                                $members[$member_id] = array('gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape(cns_long_cn_to_short_cn($member, member_property())), 'implicit' => false);
+                                $members[$member_id] = ['gm_member_id' => $member_id, 'gm_validated' => 1, 'm_username' => ldap_unescape(cns_long_cn_to_short_cn($member, member_property())), 'implicit' => false];
                             } else {
                                 $members[$member_id] = $member_id;
                             }
@@ -669,7 +669,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
  */
 function cns_get_members_groups_ldap($member_id)
 {
-    $groups = array();
+    $groups = [];
 
     global $LDAP_CONNECTION;
 
@@ -677,7 +677,7 @@ function cns_get_members_groups_ldap($member_id)
 
     if (get_option('ldap_is_windows') == '0') {
         // Members under group (secondary)
-        $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(memberuid=' . cms_ldap_escape($cn) . '))', array(group_property()), 1);
+        $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(memberuid=' . cms_ldap_escape($cn) . '))', [group_property()], 1);
         $entries = ldap_get_entries($LDAP_CONNECTION, $results);
         foreach ($entries as $key => $entry) {
             if ($key === 'dn') { // May come out as 'dn'
@@ -707,7 +707,7 @@ function cns_get_members_groups_ldap($member_id)
         ldap_free_result($results);
 
         // Groups under member (primary)
-        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', array('gidnumber'));
+        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', ['gidnumber']);
         $entries = ldap_get_entries($LDAP_CONNECTION, $results);
         $group_id_use = null;
         foreach ($entries as $key => $group) { // There will only be one, but I wrote a loop so lets use a loop
@@ -727,7 +727,7 @@ function cns_get_members_groups_ldap($member_id)
         $groups[$group_id_use] = true;
     } else {
         // Groups under member (Active Directory makes no distinction)
-        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', array('memberof'));
+        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape($cn) . '))', ['memberof']);
         $entries = ldap_get_entries($LDAP_CONNECTION, $results);
         $group_id_use = null;
         if ((array_key_exists(0, $entries)) && (array_key_exists('memberof', $entries[0]))) { // Might not exist in LDAP
@@ -763,7 +763,7 @@ function cns_ldap_get_member_primary_group($member_id)
     global $LDAP_CONNECTION;
 
     if (get_option('ldap_is_windows') == '0') {
-        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape(cns_member_cnsid_to_ldapcn($member_id)) . '))', array('gidnumber'));
+        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape(cns_member_cnsid_to_ldapcn($member_id)) . '))', ['gidnumber']);
         $entries = ldap_get_entries($LDAP_CONNECTION, $results);
         $gid = array_key_exists(0, $entries) ? $entries[0]['gidnumber'][0] : null;
         ldap_free_result($results);
@@ -776,7 +776,7 @@ function cns_ldap_get_member_primary_group($member_id)
         }
     } else {
         // While Windows has primaryGroupID, it has an ID that refers outside of LDAP, so is of no use to us. We use the last a member is in as the primary
-        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape(cns_member_cnsid_to_ldapcn($member_id)) . '))', array('memberof'));
+        $results = ldap_search($LDAP_CONNECTION, member_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_member_class() . ')(' . member_property() . '=' . cms_ldap_escape(cns_member_cnsid_to_ldapcn($member_id)) . '))', ['memberof']);
         $entries = ldap_get_entries($LDAP_CONNECTION, $results);
         if ((array_key_exists(0, $entries)) && (array_key_exists('memberof', $entries[0]))) { // Might not exist in LDAP
             $group = $entries[0]['memberof'][count($entries[0]['memberof']) - 2]; // Last is -2 due to count index
@@ -805,7 +805,7 @@ function cns_ldap_get_member_primary_group($member_id)
 function cns_group_ldapgid_to_cnsid($gid)
 {
     global $LDAP_CONNECTION;
-    $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(gidnumber=' . cms_ldap_escape(strval($gid)) . '))', array(group_property()), 1);
+    $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(gidnumber=' . cms_ldap_escape(strval($gid)) . '))', [group_property()], 1);
     $entries = ldap_get_entries($LDAP_CONNECTION, $results);
     if (!array_key_exists(0, $entries)) {
         return null;
@@ -829,7 +829,7 @@ function cns_group_ldapgid_to_cnsid($gid)
 function cns_group_ldapcn_to_ldapgid($cn)
 {
     global $LDAP_CONNECTION;
-    $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', array('gidnumber'));
+    $results = ldap_search($LDAP_CONNECTION, group_search_qualifier() . get_option('ldap_base_dn'), '(&(objectclass=' . get_group_class() . ')(' . group_property() . '=' . cms_ldap_escape($cn) . '))', ['gidnumber']);
     $entries = ldap_get_entries($LDAP_CONNECTION, $results);
 
     if (!array_key_exists(0, $entries)) {
@@ -848,7 +848,7 @@ function cns_group_ldapcn_to_ldapgid($cn)
  */
 function cns_long_cn_to_short_cn($long, $type)
 {
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(dn|cn|' . preg_quote($type, '#') . ')=([^,]+)(,.*)?$#i', $long, $matches) != 0) {
         return $matches[2];
     }

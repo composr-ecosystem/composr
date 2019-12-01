@@ -29,14 +29,14 @@ class gallery_images_test_set extends cms_test_case
 
         $this->image_id = add_image('', '', '', 'http://www.msn.com/', 'images/test.jpg', 0, 0, 0, 0, '', null, null, null, 0, null);
 
-        $this->assertTrue('http://www.msn.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', array('id' => $this->image_id)));
+        $this->assertTrue('http://www.msn.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
     }
 
     public function testEditGalleryImage()
     {
         edit_image($this->image_id, '', '', '', 'https://duckduckgo.com/', 'images/sample.jpg', 0, 0, 0, 0, '', '', '');
 
-        $this->assertTrue('https://duckduckgo.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', array('id' => $this->image_id)));
+        $this->assertTrue('https://duckduckgo.com/' == $GLOBALS['SITE_DB']->query_select_value('images', 'url', ['id' => $this->image_id]));
     }
 
     public function tearDown()

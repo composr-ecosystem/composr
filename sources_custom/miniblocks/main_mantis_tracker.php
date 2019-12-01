@@ -16,25 +16,25 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('composr_homesite_support_credits')) {
-    return do_template('RED_ALERT', array('_GUID' => '4y9qesedhhw6peuc11wfmnu4eq5zioa1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))));
+    return do_template('RED_ALERT', ['_GUID' => '4y9qesedhhw6peuc11wfmnu4eq5zioa1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))]);
 }
 
 if (!addon_installed('tickets')) {
-    return do_template('RED_ALERT', array('_GUID' => 'xxuw4d79s9qmq2jgaris712w3nj95ce0', 'TEXT' =>do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))));
+    return do_template('RED_ALERT', ['_GUID' => 'xxuw4d79s9qmq2jgaris712w3nj95ce0', 'TEXT' =>do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
 }
 if (!addon_installed('ecommerce')) {
-    return do_template('RED_ALERT', array('_GUID' => 'z9wzu51gk1qa89j52xdc7ccwpq6l3soz', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))));
+    return do_template('RED_ALERT', ['_GUID' => 'z9wzu51gk1qa89j52xdc7ccwpq6l3soz', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
 }
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', array('_GUID' => 'l56duwk68ywo099433j2st5472a25mqd', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))));
+    return do_template('RED_ALERT', ['_GUID' => 'l56duwk68ywo099433j2st5472a25mqd', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 if (get_forum_type() != 'cns') {
-    return do_template('RED_ALERT', array('_GUID' => '5v7eclbf681s79gdkminmik8ykk7abgy', 'TEXT' => do_lang_tempcode('NO_CNS')));
+    return do_template('RED_ALERT', ['_GUID' => '5v7eclbf681s79gdkminmik8ykk7abgy', 'TEXT' => do_lang_tempcode('NO_CNS')]);
 }
 
 if (strpos(get_db_type(), 'mysql') === false) {
-    return do_template('RED_ALERT', array('_GUID' => 'uyjdizierysgbisjrrmbipait8lxfyen', 'TEXT' => 'This works with MySQL only'));
+    return do_template('RED_ALERT', ['_GUID' => 'uyjdizierysgbisjrrmbipait8lxfyen', 'TEXT' => 'This works with MySQL only']);
 }
 
 require_css('tracker');
@@ -49,12 +49,12 @@ if (!running_script('tracker') && get_param_integer('keep_frames', null) !== 0) 
 
     $frame_name = 'frame_' . uniqid('', true);
 
-    $tpl = do_template('BLOCK_MAIN_MANTIS_TRACKER', array(
+    $tpl = do_template('BLOCK_MAIN_MANTIS_TRACKER', [
         '_GUID' => '52af5edf59440ba86c54e0324518561a',
         'BLOCK_ID' => $block_id,
         'FRAME_NAME' => $frame_name,
         'PARAMS' => $params,
-    ));
+    ]);
     $tpl->evaluate_echo();
 
     return;
@@ -169,7 +169,7 @@ $_issues = $GLOBALS['SITE_DB']->query($query, $max, $start);
 $query_count = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $where;
 $max_rows = $GLOBALS['SITE_DB']->query_value_if_there($query_count);
 
-$issues = array();
+$issues = [];
 foreach ($_issues as $issue) {
     $cost = ($issue['hours'] == 0 || ($issue['hours'] === null)) ? null : ($issue['hours'] * $s_credit_value * $credits_per_hour);
     $_cost = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : (static_evaluate_tempcode(comcode_to_tempcode('[currency="' . $s_currency . '"]' . float_to_raw_string($cost) . '[/currency]')));
@@ -181,7 +181,7 @@ foreach ($_issues as $issue) {
 
     $voted = ($GLOBALS['SITE_DB']->query_value_if_there('SELECT user_id FROM mantis_bug_monitor_table WHERE user_id=' . strval(get_member()) . ' AND bug_id=' . strval($issue['id'])) !== null);
 
-    $issues[] = array(
+    $issues[] = [
         'CATEGORY' => $issue['category'],
         'SUMMARY' => $issue['summary'],
         'DESCRIPTION' => nl2br(escape_html($issue['description'])),
@@ -202,7 +202,7 @@ foreach ($_issues as $issue) {
         'UNVOTE_URL' => get_base_url() . '/tracker/bug_monitor_delete.php?bug_id=' . strval($issue['id']),
 
         'FULL_URL' => get_base_url() . '/tracker/view.php?id=' . strval($issue['id']),
-    );
+    ];
 }
 
 // Pagination...
@@ -212,10 +212,10 @@ $pagination = pagination(make_string_tempcode('Issues'), $start, 'mantis_start',
 
 // Templating...
 
-$tpl = do_template('MANTIS_TRACKER', array(
+$tpl = do_template('MANTIS_TRACKER', [
     '_GUID' => '619919c2bf1e5207a4bf25111638f719',
     'BLOCK_ID' => $block_id,
     'ISSUES' => $issues,
     'PAGINATION' => $pagination,
-));
+]);
 $tpl->evaluate_echo();

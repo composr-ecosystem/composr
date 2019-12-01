@@ -39,7 +39,7 @@ class Hook_sitemap_topic extends Hook_sitemap_content
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):topicview(:browse|:id=|$)#', $page_link, $matches) != 0) {
             return SITEMAP_NODE_HANDLED;
         }
@@ -111,7 +111,7 @@ class Hook_sitemap_topic extends Hook_sitemap_content
             $sitemap_refreshfreq = 'daily';
         }
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_LOW,
             'sitemap_refreshfreq' => $sitemap_refreshfreq,
 
@@ -119,8 +119,8 @@ class Hook_sitemap_topic extends Hook_sitemap_content
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'topics', 'type' => 'edit_topic', 'id' => $content_id), get_module_zone('topics')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'topics', 'type' => 'edit_topic', 'id' => $content_id], get_module_zone('topics')),
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

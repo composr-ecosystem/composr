@@ -30,7 +30,7 @@ class Hook_config_minutes_between_sends
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINUTES_BETWEEN_SENDS',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_minutes_between_sends
             'public' => false,
 
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

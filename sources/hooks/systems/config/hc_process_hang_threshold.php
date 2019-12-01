@@ -30,7 +30,7 @@ class Hook_config_hc_process_hang_threshold
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_PROCESS_HANG_THRESHOLD',
             'type' => 'integer',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_process_hang_threshold
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

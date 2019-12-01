@@ -20,7 +20,7 @@ class tutorial_title_structure_test_set extends cms_test_case
 {
     public function testDuplicateTitles()
     {
-        $titles = array();
+        $titles = [];
 
         $path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($path);
@@ -30,7 +30,7 @@ class tutorial_title_structure_test_set extends cms_test_case
 
                 $last_level = 1;
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\[title sub="[^"]*"\](Composr (Supplementary|Tutorial): )?(.*)(?![/title])\[/title\]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $title = $matches[3][$i];
@@ -54,7 +54,7 @@ class tutorial_title_structure_test_set extends cms_test_case
 
                 $last_level = 1;
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\[title="(\d+)"\](.*)(?![/title])\[/title\]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $title_level = intval($matches[1][$i]);
@@ -77,7 +77,7 @@ class tutorial_title_structure_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-                $matches = array();
+                $matches = [];
                 $test = (preg_match('#\[title="(\d+)"\](.*)(?![/title])\[/title\]\s*\[title="\\1"\](.*)(?![/title])\[/title\]#', $c, $matches) == 0);
                 $this->assertTrue($test, 'There seems to be an empty title section; likely it\'s misnumering, ' . $file . ', ' . @$matches[2]);
             }

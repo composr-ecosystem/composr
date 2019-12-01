@@ -25,21 +25,21 @@ class Hook_oauth_youtube
      */
     public function info()
     {
-        return array(
+        return [
             'label' => 'YouTube',
             'available' => addon_installed('gallery_syndication') && addon_installed('galleries') && function_exists('curl_init'),
             'protocol' => 'oauth2',
-            'options' => array(
+            'options' => [
                 'client_id' => 'google_apis_client_id',
                 'client_secret' => 'google_apis_client_secret',
                 'api_key' => 'google_apis_api_key',
-            ),
-            'saved_data' => array(
+            ],
+            'saved_data' => [
                 'refresh_token_key' => 'youtube_refresh_token',
-            ),
+            ],
             'refresh_token' => null,
             'endpoint' => 'https://accounts.google.com/o/oauth2',
             'scope' => 'https://gdata.youtube.com',
-        );
+        ];
     }
 }

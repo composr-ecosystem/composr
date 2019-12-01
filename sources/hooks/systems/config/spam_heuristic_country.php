@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_country
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_COUNTRY',
             'type' => 'country_multi',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_country
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

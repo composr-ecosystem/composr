@@ -33,29 +33,29 @@ class Hook_page_groupings_ecommerce
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $ret = array(
-            array('setup', 'menu/adminzone/audit/ecommerce/ecommerce', array('admin_ecommerce', array('type' => 'browse'), get_module_zone('admin_ecommerce')), do_lang_tempcode('ecommerce:CUSTOM_PRODUCT_USERGROUP'), 'ecommerce:DOC_ECOMMERCE'),
-            array('setup', 'menu/adminzone/setup/ecommerce_products', array('admin_ecommerce', array('type' => 'prices'), get_module_zone('admin_ecommerce')), do_lang_tempcode('ecommerce:ECOM_PRODUCTS_MANAGE_INVENTORY'), 'ecommerce:DOC_ECOMMERCE'),
-            array('audit', 'menu/adminzone/audit/ecommerce/ecommerce', array('admin_ecommerce_logs', array('type' => 'browse'), get_module_zone('admin_ecommerce_logs')), do_lang_tempcode('ecommerce:ECOMMERCE'), 'ecommerce:DOC_ECOMMERCE'),
-            array('rich_content', 'menu/rich_content/ecommerce/purchase', array('purchase', array(), get_module_zone('purchase')), do_lang_tempcode('ecommerce:PURCHASING')),
-        );
-        if ((!is_guest($member_id)) && (intval($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', array('i_member_id' => get_member()))) > 0)) {
-            $ret = array_merge($ret, array(
-                array('rich_content', 'menu/adminzone/audit/ecommerce/invoices', array('invoices', array(), get_module_zone('invoices')), do_lang_tempcode('ecommerce:MY_INVOICES')),
-            ));
+        $ret = [
+            ['setup', 'menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce', ['type' => 'browse'], get_module_zone('admin_ecommerce')], do_lang_tempcode('ecommerce:CUSTOM_PRODUCT_USERGROUP'), 'ecommerce:DOC_ECOMMERCE'],
+            ['setup', 'menu/adminzone/setup/ecommerce_products', ['admin_ecommerce', ['type' => 'prices'], get_module_zone('admin_ecommerce')], do_lang_tempcode('ecommerce:ECOM_PRODUCTS_MANAGE_INVENTORY'), 'ecommerce:DOC_ECOMMERCE'],
+            ['audit', 'menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce_logs', ['type' => 'browse'], get_module_zone('admin_ecommerce_logs')], do_lang_tempcode('ecommerce:ECOMMERCE'), 'ecommerce:DOC_ECOMMERCE'],
+            ['rich_content', 'menu/rich_content/ecommerce/purchase', ['purchase', [], get_module_zone('purchase')], do_lang_tempcode('ecommerce:PURCHASING')],
+        ];
+        if ((!is_guest($member_id)) && (intval($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => get_member()])) > 0)) {
+            $ret = array_merge($ret, [
+                ['rich_content', 'menu/adminzone/audit/ecommerce/invoices', ['invoices', [], get_module_zone('invoices')], do_lang_tempcode('ecommerce:MY_INVOICES')],
+            ]);
         }
-        if ((!is_guest($member_id)) && (intval($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', array('s_member_id' => get_member()))) > 0)) {
-            $ret = array_merge($ret, array(
-                array('rich_content', 'menu/adminzone/audit/ecommerce/subscriptions', array('subscriptions', array(), get_module_zone('subscriptions')), do_lang_tempcode('ecommerce:MY_SUBSCRIPTIONS')),
-            ));
+        if ((!is_guest($member_id)) && (intval($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', ['s_member_id' => get_member()])) > 0)) {
+            $ret = array_merge($ret, [
+                ['rich_content', 'menu/adminzone/audit/ecommerce/subscriptions', ['subscriptions', [], get_module_zone('subscriptions')], do_lang_tempcode('ecommerce:MY_SUBSCRIPTIONS')],
+            ]);
         }
         if (addon_installed('shopping')) {
-            $ret = array_merge($ret, array(
-                array('rich_content', 'menu/rich_content/ecommerce/shopping_cart', array('shopping', array(), get_module_zone('shopping')), do_lang_tempcode('shopping:SHOPPING')),
-            ));
+            $ret = array_merge($ret, [
+                ['rich_content', 'menu/rich_content/ecommerce/shopping_cart', ['shopping', [], get_module_zone('shopping')], do_lang_tempcode('shopping:SHOPPING')],
+            ]);
         }
         return $ret;
     }

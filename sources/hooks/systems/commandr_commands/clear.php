@@ -34,9 +34,9 @@ class Hook_commandr_command_clear
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('clear', array('h'), array()), '', '');
+            return ['', do_command_help('clear', ['h'], []), '', ''];
         } else {
-            return array(/**@lang JavaScript*/'clearCl();', '', do_lang('SUCCESS'), '');
+            return [/**@lang JavaScript*/'clearCl();', '', do_lang('SUCCESS'), ''];
         }
     }
 }

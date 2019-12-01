@@ -26,21 +26,21 @@ class Hook_actionlog_classified_ads extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('classified_ads')) {
-            return array();
+            return [];
         }
 
         require_lang('classifieds');
 
-        return array(
-            'CLASSIFIEDS_PRICING' => array(
+        return [
+            'CLASSIFIEDS_PRICING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CLASSIFIEDS' => '_SEARCH:admin_classifieds',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

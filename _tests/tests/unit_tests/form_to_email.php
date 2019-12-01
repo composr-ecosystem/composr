@@ -31,14 +31,14 @@ class form_to_email_test_set extends cms_test_case
         $bak = get_option('mail_queue_debug');
         set_option('mail_queue_debug', '1');
         $url = find_script('form_to_email');
-        $result = cms_http_request($url, array('trigger_error' => false, 'post_params' => array('foo' => 'bar')));
+        $result = cms_http_request($url, ['trigger_error' => false, 'post_params' => ['foo' => 'bar']]);
         set_option('mail_queue_debug', $bak);
 
         if ($this->debug) {
             @var_dump($result);
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', array('*'), array(), 'ORDER BY m_date_and_time DESC', 2);
+        $rows = $GLOBALS['SITE_DB']->query_select('logged_mail_messages', ['*'], [], 'ORDER BY m_date_and_time DESC', 2);
         foreach ($rows as $row) {
             $this->assertTrue(strpos($row['m_message'], 'bar') !== false);
         }

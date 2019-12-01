@@ -31,7 +31,7 @@ class Hook_addon_registry_debrand
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_debrand
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'codebook_3',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_debrand
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,13 +97,13 @@ class Hook_addon_registry_debrand
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/style/debrand.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/style/debrand.svg',
             'sources/hooks/systems/addon_registry/debrand.php',
             'adminzone/pages/modules/admin_debrand.php',
             'sources/hooks/systems/page_groupings/debrand.php',
             'sources/hooks/systems/actionlog/debrand.php',
-        );
+        ];
     }
 }

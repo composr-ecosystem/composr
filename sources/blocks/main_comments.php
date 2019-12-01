@@ -30,14 +30,14 @@ class Block_main_comments
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'page', 'reverse', 'forum', 'invisible_if_no_comments', 'reviews', 'max', 'title', 'explicit_allow');
+        $info['parameters'] = ['param', 'page', 'reverse', 'forum', 'invisible_if_no_comments', 'reviews', 'max', 'title', 'explicit_allow'];
         return $info;
     }
 
@@ -87,7 +87,7 @@ PHP;
         $block_id = md5(serialize($map));
         $submitted = ((post_param_integer('_comment_form_post', 0) == 1) && (post_param_string('_block_id', '') == $block_id));
 
-        $self_url = build_url(array('page' => '_SELF'), '_SELF', array(), true, false, true);
+        $self_url = build_url(['page' => '_SELF'], '_SELF', [], true, false, true);
         $self_title = @cms_empty_safe($map['title']) ? $page : $map['title'];
         $test_changed = post_param_string('title', null);
         if ($test_changed !== null) {
@@ -101,8 +101,8 @@ PHP;
             if (get_forum_type() == 'cns') {
                 if (addon_installed('unvalidated')) {
                     require_code('submit');
-                    $validate_url = get_self_url(true, false, array('keep_session' => null));
-                    $_validate_url = build_url(array('page' => 'topics', 'type' => 'validate_post', 'id' => $GLOBALS['LAST_POST_ID'], 'redirect' => protect_url_parameter($validate_url)), get_module_zone('topics'), array(), false, false, true);
+                    $validate_url = get_self_url(true, false, ['keep_session' => null]);
+                    $_validate_url = build_url(['page' => 'topics', 'type' => 'validate_post', 'id' => $GLOBALS['LAST_POST_ID'], 'redirect' => protect_url_parameter($validate_url)], get_module_zone('topics'), [], false, false, true);
                     $validate_url = $_validate_url->evaluate();
                     send_validation_request('MAKE_POST', 'f_posts', false, $GLOBALS['LAST_POST_ID'], $validate_url);
                 }

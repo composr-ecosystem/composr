@@ -25,7 +25,7 @@ class Hook_config_confluence_cache_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CONFLUENCE_CACHE_TIME',
             'type' => 'integer',
             'category' => 'COMPOSR_APIS',
@@ -39,7 +39,7 @@ class Hook_config_confluence_cache_time
             'public' => false,
 
             'addon' => 'confluence',
-        );
+        ];
     }
 
     /**

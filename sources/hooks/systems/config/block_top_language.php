@@ -30,7 +30,7 @@ class Hook_config_block_top_language
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BLOCK_TOP_LANGUAGE',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_block_top_language
             'public' => false,
 
             'addon' => 'language_block',
-        );
+        ];
     }
 
     /**

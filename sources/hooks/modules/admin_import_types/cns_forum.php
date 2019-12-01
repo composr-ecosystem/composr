@@ -31,10 +31,10 @@ class Hook_admin_import_types_cns_forum
     public function run()
     {
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
-        $ret = array(
+        $ret = [
             'cns_post_templates' => 'POST_TEMPLATES',
             'cns_announcements' => 'ANNOUNCEMENTS',
             'cns_forum_groupings' => 'FORUM_GROUPINGS',
@@ -45,7 +45,7 @@ class Hook_admin_import_types_cns_forum
             'cns_multi_moderations' => 'MULTI_MODERATIONS',
             'cns_private_topics' => 'PRIVATE_TOPICS',
             'cns_saved_warnings' => 'SAVED_WARNINGS',
-        );
+        ];
 
         if (addon_installed('polls')) {
             $ret['cns_polls_and_votes'] = 'TOPIC_POLLS';

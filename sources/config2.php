@@ -154,7 +154,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
             if ((get_forum_type() == 'cns') && (addon_installed('cns_forum'))) {
                 $current_setting = $current_value;
                 if (!is_numeric($current_setting)) {
-                    $_current_setting = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => $current_setting));
+                    $_current_setting = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => $current_setting]);
                     if ($_current_setting === null) {
                         if ($required) {
                             $current_setting = strval(db_get_first_id());
@@ -166,7 +166,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
                         $current_setting = strval($_current_setting);
                     }
                 }
-                return form_input_tree_list($human_name, $explanation_with_default, $name, null, 'choose_forum', array(), $required, $current_setting);
+                return form_input_tree_list($human_name, $explanation_with_default, $name, null, 'choose_forum', [], $required, $current_setting);
             }
             return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required);
 
@@ -174,7 +174,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
             require_code('locations');
             $_list = new Tempcode();
             $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-            $_list->attach(create_country_selection_list(array($current_value)));
+            $_list->attach(create_country_selection_list([$current_value]));
             return form_input_list($human_name, $explanation_with_default, $name, $_list, null, false, $required);
 
         case 'country_multi':
@@ -184,7 +184,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
 
         case 'forum_grouping':
             if (get_forum_type() == 'cns') {
-                $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => $current_value));
+                $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $current_value]);
 
                 require_code('cns_forums2');
                 $_list = new Tempcode();
@@ -197,7 +197,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
         case 'usergroup':
         case 'usergroup_not_guest':
             if (get_forum_type() == 'cns') {
-                $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $current_value));
+                $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $current_value]);
 
                 require_code('cns_groups');
                 $_list = new Tempcode();
@@ -239,7 +239,7 @@ function get_submitted_config_value($name, $details)
     } elseif ((($details['type'] == 'forum') || ($details['type'] == '?forum')) && (get_forum_type() == 'cns')) {
         $value = post_param_string($name, null);
         if (is_numeric($value)) {
-            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => post_param_integer($name)));
+            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => post_param_integer($name)]);
         }
         if ($value === null) {
             $value = '';
@@ -247,7 +247,7 @@ function get_submitted_config_value($name, $details)
     } elseif (($details['type'] == 'forum_grouping') && (get_forum_type() == 'cns')) {
         $value = post_param_string($name, null);
         if (is_numeric($value)) {
-            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', array('id' => post_param_integer($name)));
+            $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', ['id' => post_param_integer($name)]);
         }
         if ($value === null) {
             $value = '';
@@ -255,7 +255,7 @@ function get_submitted_config_value($name, $details)
     } elseif ((($details['type'] == 'usergroup') || ($details['type'] == 'usergroup_not_guest')) && (get_forum_type() == 'cns')) {
         $value = post_param_string($name, null);
         if (is_numeric($value)) {
-            $_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => post_param_integer($name)));
+            $_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => post_param_integer($name)]);
         } else {
             $_value = ($value === null) ? null : $value;
         }
@@ -283,7 +283,7 @@ function _multi_lang()
     global $MULTI_LANG_CACHE;
 
     $_dir = opendir(get_file_base() . '/lang/');
-    $_langs = array();
+    $_langs = [];
     while (false !== ($file = readdir($_dir))) {
         if (($file != fallback_lang()) && ($file[0] != '.') && ($file[0] != '_') && ($file != 'index.html') && ($file != 'langs.ini') && ($file != 'map.ini')) {
             if (is_dir(get_file_base() . '/lang/' . $file)) {
@@ -392,12 +392,12 @@ function set_option($name, $value, $will_be_formally_set = 1)
 
     if (!isset($CONFIG_OPTIONS_CACHE[$name])) {
         // If not installed with a DB setting row, install it; even if it's just the default, we need it for performance
-        $map = array(
+        $map = [
             'c_name' => $name,
             'c_set' => $will_be_formally_set,
             'c_value' => $value,
             'c_needs_dereference' => $needs_dereference,
-        );
+        ];
         if ($needs_dereference == 1) {
             $map = insert_lang('c_value_trans', $value, 1) + $map;
         } else {
@@ -405,7 +405,7 @@ function set_option($name, $value, $will_be_formally_set = 1)
         }
 
         // For use by get_option during same script execution
-        $CONFIG_OPTIONS_CACHE[$name] = $map + array('_cached_string_value' => $value);
+        $CONFIG_OPTIONS_CACHE[$name] = $map + ['_cached_string_value' => $value];
 
         if ($will_be_formally_set == 0 && $GLOBALS['IN_MINIKERNEL_VERSION']) {
             return; // Don't save in the installer
@@ -415,10 +415,10 @@ function set_option($name, $value, $will_be_formally_set = 1)
         $GLOBALS['SITE_DB']->query_insert('config', $map, false, true/*block race condition errors*/);
     } else {
         // Save edit
-        $map = array(
+        $map = [
             'c_set' => $will_be_formally_set,
             'c_value' => $value,
-        );
+        ];
         if ($needs_dereference == 1) { // Translated
             $current_value = multi_lang_content() ? $CONFIG_OPTIONS_CACHE[$name]['c_value_trans'] : $CONFIG_OPTIONS_CACHE[$name]['c_value'];
             if ($current_value === null) {
@@ -426,13 +426,13 @@ function set_option($name, $value, $will_be_formally_set = 1)
             } else {
                 $map += lang_remap('c_value_trans', $current_value, $value);
             }
-            $GLOBALS['SITE_DB']->query_update('config', $map, array('c_name' => $name), '', 1);
+            $GLOBALS['SITE_DB']->query_update('config', $map, ['c_name' => $name], '', 1);
         } else { // Not translated
-            $GLOBALS['SITE_DB']->query_update('config', $map, array('c_name' => $name), '', 1);
+            $GLOBALS['SITE_DB']->query_update('config', $map, ['c_name' => $name], '', 1);
         }
 
         // For use by get_option during same script execution
-        $CONFIG_OPTIONS_CACHE[$name] = $map + array('_cached_string_value' => $value) + $CONFIG_OPTIONS_CACHE[$name];
+        $CONFIG_OPTIONS_CACHE[$name] = $map + ['_cached_string_value' => $value] + $CONFIG_OPTIONS_CACHE[$name];
     }
 
     // Log it
@@ -460,11 +460,11 @@ function set_option($name, $value, $will_be_formally_set = 1)
 function config_update_value_ref($old_setting, $setting, $type)
 {
     $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-    $all_options = array();
+    $all_options = [];
     foreach ($hooks as $hook => $ob) {
         $details = $ob->get_details();
         if (($details['type'] == $type) && (get_option($hook) == $old_setting)) {
-            $GLOBALS['SITE_DB']->query_update('config', array('c_value' => $setting), array('c_name' => $hook), '', 1);
+            $GLOBALS['SITE_DB']->query_update('config', ['c_value' => $setting], ['c_name' => $hook], '', 1);
         }
     }
 }
@@ -486,7 +486,7 @@ function config_option_url($name)
     $ob = object_factory('Hook_config_' . filter_naughty_harsh($name));
     $details = $ob->get_details();
 
-    $_config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => $details['category']), get_module_zone('admin_config'));
+    $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $details['category']], get_module_zone('admin_config'));
     $config_url = $_config_url->evaluate();
     $config_url .= '#group_' . $details['group'];
 
@@ -500,13 +500,13 @@ function config_option_url($name)
  */
 function delete_config_option($name)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('config', array('*'), array('c_name' => $name), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('config', ['*'], ['c_name' => $name], '', 1);
     if (array_key_exists(0, $rows)) {
         $myrow = $rows[0];
         if (($myrow['c_needs_dereference'] == 1) && (is_numeric($myrow['c_value']))) {
             delete_lang($myrow['c_value_trans']);
         }
-        $GLOBALS['SITE_DB']->query_delete('config', array('c_name' => $name), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('config', ['c_name' => $name], '', 1);
         /*global $CONFIG_OPTIONS_CACHE;  Don't do this, it will cause problems in some parts of the code
         unset($CONFIG_OPTIONS_CACHE[$name]);*/
     }
@@ -523,9 +523,9 @@ function delete_config_option($name)
  */
 function rename_config_option($old, $new)
 {
-    $GLOBALS['SITE_DB']->query_delete('config', array('c_name' => $new), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('config', ['c_name' => $new], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('config', array('c_name' => $new), array('c_name' => $old), '', 1);
+    $GLOBALS['SITE_DB']->query_update('config', ['c_name' => $new], ['c_name' => $old], '', 1);
 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('OPTIONS');

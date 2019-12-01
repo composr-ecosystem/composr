@@ -44,7 +44,7 @@ function check_comcode($comcode, $source_member = null, $as_admin = false, $db =
             }
         }
         foreach ($_FILES as $key => $file) {
-            $matches = array();
+            $matches = [];
             if ((is_uploaded_file($file['tmp_name'])) && (preg_match('#file(\d)#', $key, $matches) != 0)) {
                 $may_have_attachment = true;
             }

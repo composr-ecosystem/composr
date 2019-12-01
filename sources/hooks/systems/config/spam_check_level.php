@@ -30,7 +30,7 @@ class Hook_config_spam_check_level
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_CHECK_LEVEL',
             'type' => 'list',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_check_level
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -31,21 +31,21 @@ class Hook_actionlog_commandr extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('commandr')) {
-            return array();
+            return [];
         }
 
         require_lang('commandr');
 
-        return array(
-            'COMMANDR_COMMAND' => array(
+        return [
+            'COMMANDR_COMMAND' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'COMMANDR' => '_SEARCH:admin_commandr',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

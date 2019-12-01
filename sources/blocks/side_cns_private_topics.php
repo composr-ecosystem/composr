@@ -34,14 +34,14 @@ class Block_side_cns_private_topics
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -52,7 +52,7 @@ class Block_side_cns_private_topics
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -76,7 +76,7 @@ PHP;
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => '0g2we1y689cd9211nq5i3830v32cqsjh', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => '0g2we1y689cd9211nq5i3830v32cqsjh', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         if (is_guest()) {
@@ -94,7 +94,7 @@ PHP;
         require_lang('cns');
         $out = new Tempcode();
         foreach ($rows as $topic) {
-            $topic_url = build_url(array('page' => 'topicview', 'type' => 'findpost', 'id' => $topic['id']), get_module_zone('topicview'));
+            $topic_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $topic['id']], get_module_zone('topicview'));
             $topic_url->attach('#post_' . strval($topic['id']));
             $title = $topic['t_cache_first_title'];
             $date = get_timezoned_date_time_tempcode($topic['t_cache_last_time']);
@@ -117,7 +117,7 @@ PHP;
 
             $is_unread = ($topic['t_cache_last_time'] > time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) && (($topic['l_time'] === null) || ($topic['l_time'] < $topic['p_time']));
 
-            $out->attach(do_template('CNS_PRIVATE_TOPIC_LINK', array(
+            $out->attach(do_template('CNS_PRIVATE_TOPIC_LINK', [
                 '_GUID' => '05beab5a3fab191df988bf101f44a47a',
                 'TOPIC_URL' => $topic_url,
                 'TITLE' => $title,
@@ -137,20 +137,20 @@ PHP;
                 'TO_POSTER_ID' => strval($to_poster_id),
                 'NUM_POSTS' => integer_format($num_posts),
                 'HAS_READ' => !$is_unread,
-            )));
+            ]));
         }
-        $send_url = build_url(array('page' => 'topics', 'type' => 'new_pt', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('topics'));
+        $send_url = build_url(['page' => 'topics', 'type' => 'new_pt', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('topics'));
         if (!cns_may_make_private_topic()) {
             $send_url = new Tempcode();
         }
-        $view_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => get_member()), get_module_zone('members'), array(), true, false, false, 'tab--pts');
-        return do_template('BLOCK_SIDE_CNS_PRIVATE_TOPICS', array(
+        $view_url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'), [], true, false, false, 'tab--pts');
+        return do_template('BLOCK_SIDE_CNS_PRIVATE_TOPICS', [
             '_GUID' => '9376cd47884a78f3d1914c176b67ee28',
             'BLOCK_ID' => $block_id,
             'SEND_URL' => $send_url,
             'VIEW_URL' => $view_url,
             'CONTENT' => $out,
             'FORUM_NAME' => do_lang_tempcode('PRIVATE_TOPICS'),
-        ));
+        ]);
     }
 }

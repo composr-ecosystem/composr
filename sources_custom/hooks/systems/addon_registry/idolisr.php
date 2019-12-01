@@ -26,7 +26,7 @@ class Hook_addon_registry_idolisr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_idolisr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -101,7 +101,7 @@ and
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -111,13 +111,13 @@ and
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'points',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ and
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/idolisr.php',
             'sources_custom/hooks/modules/members/idolisr.php',
             'sources_custom/miniblocks/main_stars.php',
@@ -146,6 +146,6 @@ and
             'themes/default/templates_custom/BLOCK_MAIN_STARS.tpl',
             'themes/default/templates_custom/BLOCK_SIDE_RECENT_POINTS.tpl',
             'themes/default/javascript_custom/idolisr.js',
-        );
+        ];
     }
 }

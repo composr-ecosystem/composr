@@ -114,7 +114,7 @@ class DebugFsStreamWrapper
             return false;
         }
 
-        static $results = array();
+        static $results = [];
 
         if (($path == '') || ($path == '.')) {
             return false;

@@ -31,7 +31,7 @@ class Hook_addon_registry_ldap
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_ldap
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_ldap',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_ldap
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_ldap
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/security/ldap.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/ldap.svg',
             'sources/hooks/systems/config/ldap_allow_joining.php',
@@ -122,7 +122,7 @@ class Hook_addon_registry_ldap
             'sources/cns_ldap.php',
             'sources/hooks/systems/page_groupings/ldap.php',
             'sources/hooks/systems/actionlog/ldap.php',
-        );
+        ];
     }
 
     /**
@@ -132,10 +132,10 @@ class Hook_addon_registry_ldap
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_LDAP_LIST_ENTRY.tpl' => 'administrative__cns_ldap_sync_screen',
             'templates/CNS_LDAP_SYNC_SCREEN.tpl' => 'administrative__cns_ldap_sync_screen',
-        );
+        ];
     }
 
     /**
@@ -151,39 +151,39 @@ class Hook_addon_registry_ldap
 
         $members_delete = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', array(
+            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', [
                 'NAME' => placeholder_random_id(),
                 'NICE_NAME' => lorem_word(),
-            ));
+            ]);
             $members_delete->attach($tpl);
         }
 
         $groups_delete = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', array(
+            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', [
                 'NAME' => placeholder_random_id(),
                 'NICE_NAME' => lorem_word(),
-            ));
+            ]);
             $groups_delete->attach($tpl);
         }
 
         $groups_add = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', array(
+            $tpl = do_lorem_template('CNS_LDAP_LIST_ENTRY', [
                 'NAME' => placeholder_random_id(),
                 'NICE_NAME' => lorem_word(),
-            ));
+            ]);
             $groups_add->attach($tpl);
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_LDAP_SYNC_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_LDAP_SYNC_SCREEN', [
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'MEMBERS_DELETE' => $members_delete,
                 'GROUPS_DELETE' => $groups_delete,
                 'GROUPS_ADD' => $groups_add,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

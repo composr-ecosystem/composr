@@ -30,7 +30,7 @@ class Hook_config_default_comment_sort_order
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_COMMENT_SORT_ORDER',
             'type' => 'list',
             'category' => 'USER_INTERACTION',
@@ -44,7 +44,7 @@ class Hook_config_default_comment_sort_order
             'public' => false,
 
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

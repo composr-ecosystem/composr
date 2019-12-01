@@ -81,7 +81,7 @@ class Hook_rss_cns_forumview
                 }
 
                 $news_title = xmlentities($row['t_cache_first_title']);
-                $post_row = db_map_restrict($row, array('id', 'p_post'), array('id' => 't_cache_first_post_id'));
+                $post_row = db_map_restrict($row, ['id', 'p_post'], ['id' => 't_cache_first_post_id']);
                 $_summary = get_translated_tempcode('f_posts', $post_row, 'p_post', $GLOBALS['FORUM_DB']);
                 $summary = xmlentities($_summary->evaluate());
                 $news = '';
@@ -89,19 +89,19 @@ class Hook_rss_cns_forumview
                 $category = array_key_exists($row['t_forum_id'], $categories) ? $categories[$row['t_forum_id']] : do_lang('NA');
                 $category_raw = strval($row['t_forum_id']);
 
-                $view_url = build_url(array('page' => 'topicview', 'id' => $row['id']), get_module_zone('forumview'), array(), false, false, true);
+                $view_url = build_url(['page' => 'topicview', 'id' => $row['id']], get_module_zone('forumview'), [], false, false, true);
 
                 if ($prefix == 'RSS_') {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => 'f5dd7ba612b989bba5e2d496da5bf161', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => 'f5dd7ba612b989bba5e2d496da5bf161', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('cns');
-        return array($content, do_lang('SECTION_FORUMS'));
+        return [$content, do_lang('SECTION_FORUMS')];
     }
 }

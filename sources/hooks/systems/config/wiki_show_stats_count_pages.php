@@ -30,7 +30,7 @@ class Hook_config_wiki_show_stats_count_pages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WIKI_PAGES',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_wiki_show_stats_count_pages
             'public' => false,
 
             'addon' => 'wiki',
-        );
+        ];
     }
 
     /**

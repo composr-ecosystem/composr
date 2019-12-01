@@ -47,8 +47,8 @@ class Hook_commandr_fs_aggregate_type_instances extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('aggregate_type_instances', array('id'), array('aggregate_label' => $label));
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('aggregate_type_instances', ['id'], ['aggregate_label' => $label]);
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -83,7 +83,7 @@ class Hook_commandr_fs_aggregate_type_instances extends Resource_fs_base
         if ($aggregate_type == '') {
             $aggregate_type = 'example';
         }
-        $other_parameters = empty($properties['other_parameters']) ? array() : $properties['other_parameters'];
+        $other_parameters = empty($properties['other_parameters']) ? [] : $properties['other_parameters'];
         $add_time = $this->_default_property_time($properties, 'add_date');
         $edit_time = $this->_default_property_time_null($properties, 'edit_date');
 
@@ -105,19 +105,19 @@ class Hook_commandr_fs_aggregate_type_instances extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('aggregate_type_instances', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('aggregate_type_instances', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['aggregate_label'],
             'aggregate_type' => $row['aggregate_type'],
             'other_parameters' => $row['other_parameters'],
             'add_date' => remap_time_as_portable($row['add_time']),
             'edit_date' => remap_time_as_portable($row['edit_time']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -142,7 +142,7 @@ class Hook_commandr_fs_aggregate_type_instances extends Resource_fs_base
         if ($aggregate_type == '') {
             $aggregate_type = 'example';
         }
-        $other_parameters = empty($properties['other_parameters']) ? array() : $properties['other_parameters'];
+        $other_parameters = empty($properties['other_parameters']) ? [] : $properties['other_parameters'];
         $add_time = $this->_default_property_time($properties, 'add_date');
         $edit_time = $this->_default_property_time($properties, 'edit_date');
 

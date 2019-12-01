@@ -67,11 +67,11 @@ function get_video_details($file_path, $filename, $delay_errors = false)
                 if (class_exists('getID3')) {
                     $id3_ob = new getID3();
                     $_info = $id3_ob->analyze($file_path);
-                    $info = array(
+                    $info = [
                         isset($_info['video']['resolution_x']) ? $_info['video']['resolution_x'] : null,
                         isset($_info['video']['resolution_y']) ? $_info['video']['resolution_y'] : null,
                         array_key_exists('playtime_seconds', $_info) ? intval($_info['playtime_seconds']) : null,
-                    );
+                    ];
                     if (isset($_info['meta']['onMetaData']['width'])) {
                         $info[0] = intval($_info['meta']['onMetaData']['width']);
                     }
@@ -97,12 +97,12 @@ function get_video_details($file_path, $filename, $delay_errors = false)
         require_code('mime_types');
         $mime_type = get_mime_type($extension, true);
         if (substr($mime_type, 0, 6) == 'audio/') {
-            $info = array(intval(get_option('video_width_setting')), 20, null);
+            $info = [intval(get_option('video_width_setting')), 20, null];
         }
     }
 
     if ($info === null) {
-        return array(null, null, null);
+        return [null, null, null];
     }
     return $info;
 }
@@ -152,7 +152,7 @@ function _get_wmv_details($file)
 {
     // Read in chunks
     list($_, $width, $height, $length) = _get_wmv_details_do_chunk_list($file);
-    return array($width, $height, $length);
+    return [$width, $height, $length];
 }
 
 /**
@@ -224,7 +224,7 @@ function _get_wmv_details_do_chunk_list($file, $chunk_length = null)
         fseek($file, $sub_chunk_length - 24, SEEK_CUR);
     }
 
-    return array($count, $width, $height, $length);
+    return [$count, $width, $height, $length];
 }
 
 /**
@@ -244,7 +244,7 @@ function _get_avi_details($file)
     fseek($file, 12, SEEK_CUR);
     $width = read_intel_endian_int(fread($file, 4));
     $height = read_intel_endian_int(fread($file, 4));
-    return array($width, $height, $length);
+    return [$width, $height, $length];
 }
 
 /**
@@ -262,7 +262,7 @@ function _get_mp4_details($file)
         return null;
     }
     list($_, $width, $height, $length) = $info;
-    return array($width, $height, $length);
+    return [$width, $height, $length];
 }
 
 /**
@@ -283,11 +283,11 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
     while ((!feof($file)) && (($atom_size === null) || ($count < $atom_size)) && (($length === null) || ($width === null) || ($height === null))) {
         $next_read = fread($file, 4);
         if (strlen($next_read) < 4) {
-            return array($count, $width, $height, $length); // END / problem
+            return [$count, $width, $height, $length]; // END / problem
         }
         $size = read_network_endian_int($next_read);
         if ($size < 8) { // NB: uuid atom can be of size 8 (i.e. empty) on some rare files
-            return array($count, $width, $height, $length); // END / problem
+            return [$count, $width, $height, $length]; // END / problem
         }
         $count += 4;
         if ($size == 0) {
@@ -349,7 +349,7 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
         }
     }
 
-    return array($count, $width, $height, $length);
+    return [$count, $width, $height, $length];
 }
 
 /**
@@ -375,7 +375,7 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = array())
+function add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if (get_param_string('type', null) !== '__import') {
         require_code('global4');
@@ -392,7 +392,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'edit_date' => $edit_date,
         'image_views' => $views,
         'add_date' => $add_date,
@@ -405,7 +405,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
         'thumb_url' => $thumb_url,
         'cat' => $cat,
         'validated' => $validated,
-    );
+    ];
     $map += insert_lang('title', $title, 2);
     global $OVERRIDE_MEMBER_ID_COMCODE;
     $OVERRIDE_MEMBER_ID_COMCODE = $submitter; // Needed for installer, which uses complex HTML
@@ -417,10 +417,10 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
     $id = $GLOBALS['SITE_DB']->query_insert('images', $map, true);
 
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'image', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'image', 'content_id' => strval($id), 'region' => $region]);
     }
 
-    reorganise_uploads__gallery_images(array('id' => $id));
+    reorganise_uploads__gallery_images(['id' => $id]);
 
     log_it('ADD_IMAGE', strval($id), $title);
 
@@ -432,7 +432,7 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
     if (!running_script('install')) {
         require_code('content2');
         if (($meta_keywords == '') && ($meta_description == '')) {
-            seo_meta_set_for_implicit('image', strval($id), array($description), $description);
+            seo_meta_set_for_implicit('image', strval($id), [$description], $description);
         } else {
             seo_meta_set_for_explicit('image', strval($id), $meta_keywords, $meta_description);
         }
@@ -443,14 +443,14 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('image', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('galleries');
         require_code('notifications');
         $subject = do_lang('IMAGE_NOTIFICATION_MAIL_SUBJECT', get_site_name(), strip_comcode($title));
-        $self_url = build_url(array('page' => 'galleries', 'type' => 'image', 'id' => $id), get_module_zone('galleries'), array(), false, false, true);
-        $mail = do_notification_lang('IMAGE_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array(comcode_escape($self_url->evaluate())));
+        $self_url = build_url(['page' => 'galleries', 'type' => 'image', 'id' => $id], get_module_zone('galleries'), [], false, false, true);
+        $mail = do_notification_lang('IMAGE_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
@@ -495,13 +495,13 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = array(), $null_is_literal = false)
+function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('images', array('title', 'the_description', 'cat'), array('id' => $id));
+    $rows = $GLOBALS['SITE_DB']->query_select('images', ['title', 'the_description', 'cat'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'image'));
     }
@@ -529,7 +529,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
         send_content_validated_notification('image', strval($id));
     }
 
-    $update_map = array(
+    $update_map = [
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
         'allow_trackbacks' => $allow_trackbacks,
@@ -538,7 +538,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
         'cat' => $cat,
         'url' => $url,
         'thumb_url' => $thumb_url,
-    );
+    ];
     $update_map += lang_remap('title', $_title, $title);
     $update_map += lang_remap_comcode('the_description', $_description, $description);
 
@@ -553,31 +553,31 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
         $update_map['submitter'] = $submitter;
     }
 
-    $GLOBALS['SITE_DB']->query_update('images', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('images', $update_map, ['id' => $id], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'image', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'image', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'image', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'image', 'content_id' => strval($id), 'region' => $region]);
     }
 
-    $self_url = build_url(array('page' => 'galleries', 'type' => 'image', 'id' => $id), get_module_zone('galleries'), array(), false, false, true);
+    $self_url = build_url(['page' => 'galleries', 'type' => 'image', 'id' => $id], get_module_zone('galleries'), [], false, false, true);
 
     if ($just_validated) {
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('image', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('galleries');
         require_code('notifications');
         $subject = do_lang('IMAGE_NOTIFICATION_MAIL_SUBJECT', get_site_name(), strip_comcode($title));
-        $mail = do_notification_lang('IMAGE_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array(comcode_escape($self_url->evaluate())));
+        $mail = do_notification_lang('IMAGE_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
-    reorganise_uploads__gallery_images(array('id' => $id));
+    reorganise_uploads__gallery_images(['id' => $id]);
 
     log_it('EDIT_IMAGE', strval($id), $title);
 
@@ -615,7 +615,7 @@ function edit_image($id, $title, $cat, $description, $url, $thumb_url, $validate
  */
 function delete_image($id, $delete_full = true)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('images', array('title', 'the_description', 'cat'), array('id' => $id));
+    $rows = $GLOBALS['SITE_DB']->query_select('images', ['title', 'the_description', 'cat'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'image'));
     }
@@ -639,10 +639,10 @@ function delete_image($id, $delete_full = true)
     }
 
     // Delete from database
-    $GLOBALS['SITE_DB']->query_delete('images', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'images', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'images', 'trackback_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'image', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('images', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'images', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'images', 'trackback_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'image', 'content_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'images_' . strval($id));
 
@@ -655,7 +655,7 @@ function delete_image($id, $delete_full = true)
     delete_cache_entry('main_image_fader');
     delete_cache_entry('main_image_slider');
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'galleries', 'm_resource_type' => 'image', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'image', 'm_resource_id' => strval($id)]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/galleries');
@@ -683,7 +683,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
 {
     // Try to find a hook that can get a thumbnail easily
     require_code('media_renderer');
-    $hooks = find_media_renderers($src_url, array(), true, null);
+    $hooks = find_media_renderers($src_url, [], true, null);
     if ($hooks !== null) {
         foreach ($hooks as $hook) {
             $ve_ob = object_factory('Hook_media_rendering_' . filter_naughty_harsh($hook));
@@ -699,7 +699,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
                     $_expected_output_path = @fopen($expected_output_path, 'wb');
                     if ($_expected_output_path !== false) {
                         flock($_expected_output_path, LOCK_EX);
-                        http_get_contents($ret, array('write_to_file' => $_expected_output_path));
+                        http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
                         flock($_expected_output_path, LOCK_UN);
                         fclose($_expected_output_path);
                     }
@@ -727,7 +727,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
                 $_expected_output_path = @fopen($expected_output_path, 'wb');
                 if ($_expected_output_path !== false) {
                     flock($_expected_output_path, LOCK_EX);
-                    http_get_contents($ret, array('write_to_file' => $_expected_output_path));
+                    http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
                     flock($_expected_output_path, LOCK_UN);
                     fclose($_expected_output_path);
                 }
@@ -801,7 +801,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
 
             $shell_command = '"' . $ffmpeg_path . 'ffmpeg" -i ' . cms_escapeshellarg($src_file) . ' -an -ss ' . $at . ' -r 1 -vframes 1 -y ' . cms_escapeshellarg($dest_file);
 
-            $shell_commands = array($shell_command, $shell_command . ' -map 0.0:0.0', $shell_command . ' -map 0.1:0.0');
+            $shell_commands = [$shell_command, $shell_command . ' -map 0.0:0.0', $shell_command . ' -map 0.1:0.0'];
             foreach ($shell_commands as $shell_command) {
                 shell_exec($shell_command);
                 if (@filesize($expected_output_path)) {
@@ -824,7 +824,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
             $_expected_output_path = @fopen($expected_output_path, 'wb');
             if ($_expected_output_path !== false) {
                 flock($_expected_output_path, LOCK_EX);
-                http_get_contents($ret, array('write_to_file' => $_expected_output_path));
+                http_get_contents($ret, ['write_to_file' => $_expected_output_path]);
                 flock($_expected_output_path, LOCK_UN);
                 fclose($_expected_output_path);
             }
@@ -859,7 +859,7 @@ function create_video_thumb($src_url, $expected_output_path = null)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the new entry
  */
-function add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = array())
+function add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $submitter = null, $add_date = null, $edit_date = null, $views = 0, $id = null, $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if (get_param_string('type', null) !== '__import') {
         require_code('global4');
@@ -876,7 +876,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'edit_date' => $edit_date,
         'video_views' => $views,
         'add_date' => $add_date,
@@ -892,7 +892,7 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
         'video_length' => $video_length,
         'video_width' => $video_width,
         'video_height' => $video_height,
-    );
+    ];
     $map += insert_lang('title', $title, 2);
     $map += insert_lang_comcode('the_description', $description, 3);
     if ($id !== null) {
@@ -901,10 +901,10 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
     $id = $GLOBALS['SITE_DB']->query_insert('videos', $map, true);
 
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'video', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
 
-    reorganise_uploads__gallery_videos(array('id' => $id));
+    reorganise_uploads__gallery_videos(['id' => $id]);
 
     log_it('ADD_VIDEO', strval($id), $title);
 
@@ -918,20 +918,20 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('video', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('galleries');
         require_code('notifications');
         $subject = do_lang('VIDEO_NOTIFICATION_MAIL_SUBJECT', get_site_name(), strip_comcode($title));
-        $self_url = build_url(array('page' => 'galleries', 'type' => 'video', 'id' => $id), get_module_zone('galleries'), array(), false, false, true);
-        $mail = do_notification_lang('VIDEO_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array(comcode_escape($self_url->evaluate())));
+        $self_url = build_url(['page' => 'galleries', 'type' => 'video', 'id' => $id], get_module_zone('galleries'), [], false, false, true);
+        $mail = do_notification_lang('VIDEO_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('video', strval($id), array($description), $description);
+        seo_meta_set_for_implicit('video', strval($id), [$description], $description);
     } else {
         seo_meta_set_for_explicit('video', strval($id), $meta_keywords, $meta_description);
     }
@@ -983,13 +983,13 @@ function add_video($title, $cat, $description, $url, $thumb_url, $validated, $al
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = array(), $null_is_literal = false)
+function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $meta_keywords, $meta_description, $edit_time = null, $add_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('images', array('title', 'the_description', 'cat', 'url'), array('id' => $id));
+    $rows = $GLOBALS['SITE_DB']->query_select('images', ['title', 'the_description', 'cat', 'url'], ['id' => $id]);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'video'));
     }
@@ -1016,7 +1016,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
         send_content_validated_notification('video', strval($id));
     }
 
-    $update_map = array(
+    $update_map = [
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
         'allow_trackbacks' => $allow_trackbacks,
@@ -1028,7 +1028,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
         'video_length' => $video_length,
         'video_width' => $video_width,
         'video_height' => $video_height,
-    );
+    ];
     $update_map += lang_remap('title', $_title, $title);
     $update_map += lang_remap_comcode('the_description', $_description, $description);
 
@@ -1043,31 +1043,31 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
         $update_map['submitter'] = $submitter;
     }
 
-    $GLOBALS['SITE_DB']->query_update('videos', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('videos', $update_map, ['id' => $id], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'video', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'video', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'video', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
 
-    $self_url = build_url(array('page' => 'galleries', 'type' => 'video', 'id' => $id), get_module_zone('galleries'), array(), false, false, true);
+    $self_url = build_url(['page' => 'galleries', 'type' => 'video', 'id' => $id], get_module_zone('galleries'), [], false, false, true);
 
     if ($just_validated) {
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('video', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('galleries');
         require_code('notifications');
         $subject = do_lang('VIDEO_NOTIFICATION_MAIL_SUBJECT', get_site_name(), strip_comcode($title));
-        $mail = do_notification_lang('VIDEO_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array(comcode_escape($self_url->evaluate())));
+        $mail = do_notification_lang('VIDEO_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('gallery_entry', $cat, $subject, $mail, $privacy_limits);
     }
 
-    reorganise_uploads__gallery_videos(array('id' => $id));
+    reorganise_uploads__gallery_videos(['id' => $id]);
 
     log_it('EDIT_VIDEO', strval($id), $title);
 
@@ -1112,7 +1112,7 @@ function edit_video($id, $title, $cat, $description, $url, $thumb_url, $validate
  */
 function delete_video($id, $delete_full = true)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('videos', array('title', 'the_description', 'cat'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('videos', ['title', 'the_description', 'cat'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'video'));
     }
@@ -1134,10 +1134,10 @@ function delete_video($id, $delete_full = true)
     }
 
     // Delete from database
-    $GLOBALS['SITE_DB']->query_delete('videos', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'videos', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'videos', 'trackback_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'video', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('videos', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'videos', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'videos', 'trackback_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'video', 'content_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'videos_' . strval($id));
 
@@ -1155,7 +1155,7 @@ function delete_video($id, $delete_full = true)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'galleries', 'm_resource_type' => 'video', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'video', 'm_resource_id' => strval($id)]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/galleries');
@@ -1190,7 +1190,7 @@ function find_gallery_watermarks($gallery)
             return null; // We couldn't find any matermarks
         }
 
-        $_gallery = $GLOBALS['SITE_DB']->query_select('galleries', array('parent_id', 'watermark_top_left', 'watermark_top_right', 'watermark_bottom_left', 'watermark_bottom_right'), array('name' => $gallery), '', 1);
+        $_gallery = $GLOBALS['SITE_DB']->query_select('galleries', ['parent_id', 'watermark_top_left', 'watermark_top_right', 'watermark_bottom_left', 'watermark_bottom_right'], ['name' => $gallery], '', 1);
         $watermark_top_left = $_gallery[0]['watermark_top_left'];
         $watermark_top_right = $_gallery[0]['watermark_top_right'];
         $watermark_bottom_left = $_gallery[0]['watermark_bottom_left'];
@@ -1202,7 +1202,7 @@ function find_gallery_watermarks($gallery)
         return null;
     }
 
-    return array($watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right);
+    return [$watermark_top_left, $watermark_top_right, $watermark_bottom_left, $watermark_bottom_right];
 }
 
 /**
@@ -1282,7 +1282,7 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
     }
 
     if (!$skip_exists_check) {
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $name));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $name]);
         if ($test !== null) {
             if ($uniqify) {
                 $name .= '_' . uniqid('', false);
@@ -1292,7 +1292,7 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
         }
     }
 
-    $map = array(
+    $map = [
         'name' => $name,
         'add_date' => $add_date,
         'notes' => $notes,
@@ -1310,12 +1310,12 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
         'allow_comments' => $allow_comments,
         'g_owner' => $g_owner,
         'gallery_views' => 0,
-    );
+    ];
     $map += insert_lang_comcode('the_description', $description, 2);
     $map += insert_lang_comcode('fullname', $fullname, 1);
     $GLOBALS['SITE_DB']->query_insert('galleries', $map);
 
-    reorganise_uploads__galleries(array('name' => $name));
+    reorganise_uploads__galleries(['name' => $name]);
 
     log_it('ADD_GALLERY', $name, $fullname);
 
@@ -1330,10 +1330,10 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
     }
 
     require_code('content2');
-    seo_meta_set_for_implicit('gallery', $name, array($fullname, $description), $description);
+    seo_meta_set_for_implicit('gallery', $name, [$fullname, $description], $description);
 
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('gallery', $name, array($description), $description);
+        seo_meta_set_for_implicit('gallery', $name, [$description], $description);
     } else {
         seo_meta_set_for_explicit('gallery', $name, $meta_keywords, $meta_description);
     }
@@ -1382,7 +1382,7 @@ function add_gallery($name, $fullname, $description, $notes, $parent_id, $accept
  */
 function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent_id = null, $accept_images = 1, $accept_videos = 1, $is_member_synched = 0, $layout_mode = null, $rep_image = '', $watermark_top_left = '', $watermark_top_right = '', $watermark_bottom_left = '', $watermark_bottom_right = '', $meta_keywords = null, $meta_description = null, $allow_rating = 1, $allow_comments = 1, $g_owner = null, $add_time = null, $null_is_literal = false, $uniqify = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('name' => $name), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
     }
@@ -1395,7 +1395,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         if ($name == $under_category_id) {
             warn_exit(do_lang_tempcode('OWN_PARENT_ERROR', 'gallery'));
         }
-        $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('galleries', 'parent_id', array('name' => $under_category_id));
+        $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('galleries', 'parent_id', ['name' => $under_category_id]);
         if ($under_category_id == $_under_category_id) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -1414,7 +1414,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
             warn_exit(do_lang_tempcode('BAD_CODENAME'));
         }
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $name));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $name]);
         if ($test !== null) {
             if ($uniqify) {
                 $name .= '_' . uniqid('', false);
@@ -1424,13 +1424,13 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         }
 
         seo_meta_erase_storage('gallery', $old_name);
-        $GLOBALS['SITE_DB']->query_update('images', array('cat' => $name), array('cat' => $old_name));
-        $GLOBALS['SITE_DB']->query_update('videos', array('cat' => $name), array('cat' => $old_name));
-        $GLOBALS['SITE_DB']->query_update('galleries', array('parent_id' => $name), array('parent_id' => $old_name));
+        $GLOBALS['SITE_DB']->query_update('images', ['cat' => $name], ['cat' => $old_name]);
+        $GLOBALS['SITE_DB']->query_update('videos', ['cat' => $name], ['cat' => $old_name]);
+        $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $name], ['parent_id' => $old_name]);
         if (addon_installed('awards')) {
-            $types = $GLOBALS['SITE_DB']->query_select('award_types', array('id'), array('a_content_type' => 'gallery'));
+            $types = $GLOBALS['SITE_DB']->query_select('award_types', ['id'], ['a_content_type' => 'gallery']);
             foreach ($types as $type) {
-                $GLOBALS['SITE_DB']->query_update('award_archive', array('content_id' => $name), array('content_id' => $old_name, 'a_type_id' => $type['id']));
+                $GLOBALS['SITE_DB']->query_update('award_archive', ['content_id' => $name], ['content_id' => $old_name, 'a_type_id' => $type['id']]);
             }
         }
 
@@ -1446,13 +1446,13 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         seo_meta_set_for_explicit('gallery', $name, $meta_keywords, $meta_description);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('fullname', 'the_description'), array('name' => $old_name), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['fullname', 'the_description'], ['name' => $old_name], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
     }
     $myrow = $rows[0];
 
-    $update_map = array(
+    $update_map = [
         'name' => $name,
         'notes' => $notes,
         'parent_id' => $parent_id,
@@ -1461,7 +1461,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         'is_member_synched' => $is_member_synched,
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
-    );
+    ];
 
     if ($layout_mode !== null) {
         $update_map['layout_mode'] = $layout_mode;
@@ -1499,9 +1499,9 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         $update_map['g_owner'] = $g_owner;
     }
 
-    $GLOBALS['SITE_DB']->query_update('galleries', $update_map, array('name' => $old_name), '', 1);
+    $GLOBALS['SITE_DB']->query_update('galleries', $update_map, ['name' => $old_name], '', 1);
 
-    reorganise_uploads__galleries(array('name' => $name));
+    reorganise_uploads__galleries(['name' => $name]);
 
     log_it('EDIT_GALLERY', $name, $fullname);
 
@@ -1510,7 +1510,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         generate_resource_fs_moniker('gallery', $name);
     }
 
-    $GLOBALS['SITE_DB']->query_update('group_category_access', array('category_name' => $name), array('module_the_name' => 'galleries', 'category_name' => $old_name));
+    $GLOBALS['SITE_DB']->query_update('group_category_access', ['category_name' => $name], ['module_the_name' => 'galleries', 'category_name' => $old_name]);
 
     delete_cache_entry('side_galleries');
     delete_cache_entry('main_personal_galleries_list');
@@ -1520,7 +1520,7 @@ function edit_gallery($old_name, $name, $fullname, $description, $notes, $parent
         $allow_comments != 0,
         'galleries',
         $name,
-        build_url(array('page' => 'galleries', 'type' => 'browse', 'id' => $name), get_module_zone('galleries'), array(), false, false, true),
+        build_url(['page' => 'galleries', 'type' => 'browse', 'id' => $name], get_module_zone('galleries'), [], false, false, true),
         $fullname,
         process_overridden_comment_forum('galleries', $name, $name, $old_name)
     );
@@ -1542,7 +1542,7 @@ function delete_gallery($name)
         warn_exit(do_lang_tempcode('NO_DELETE_ROOT', 'gallery'));
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('name' => $name), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $name], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
     }
@@ -1566,38 +1566,38 @@ function delete_gallery($name)
     do {
         send_http_output_ping();
 
-        $images = $GLOBALS['SITE_DB']->query_select('images', array('id'), array('cat' => $name), '', 200);
+        $images = $GLOBALS['SITE_DB']->query_select('images', ['id'], ['cat' => $name], '', 200);
         foreach ($images as $image) {
             delete_image($image['id'], false);
         }
-    } while ($images != array());
+    } while ($images != []);
     do {
         send_http_output_ping();
 
-        $videos = $GLOBALS['SITE_DB']->query_select('videos', array('id'), array('cat' => $name), '', 200);
+        $videos = $GLOBALS['SITE_DB']->query_select('videos', ['id'], ['cat' => $name], '', 200);
         foreach ($videos as $video) {
             delete_video($video['id'], false);
         }
-    } while ($videos != array());
+    } while ($videos != []);
     cms_set_time_limit($old_limit);
     //... but the subgalleries remain
-    $GLOBALS['SITE_DB']->query_update('galleries', array('parent_id' => $rows[0]['parent_id']), array('parent_id' => $name));
+    $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $rows[0]['parent_id']], ['parent_id' => $name]);
 
-    $GLOBALS['SITE_DB']->query_delete('galleries', array('name' => $name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('galleries', ['name' => $name], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'images', 'rating_for_id' => $name));
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'videos', 'rating_for_id' => $name));
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'images', 'rating_for_id' => $name]);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'videos', 'rating_for_id' => $name]);
 
     require_code('content2');
     seo_meta_erase_storage('gallery', $name);
 
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'galleries', 'category_name' => $name));
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('module_the_name' => 'galleries', 'category_name' => $name));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'galleries', 'category_name' => $name]);
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'galleries', 'category_name' => $name]);
 
     delete_cache_entry('side_galleries');
     delete_cache_entry('main_personal_galleries_list');
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'galleries', 'm_resource_type' => 'browse', 'm_resource_id' => $name));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'galleries', 'm_resource_type' => 'browse', 'm_resource_id' => $name]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/repimages');
@@ -1633,7 +1633,7 @@ function make_member_gallery_if_needed($cat)
     }
 
     // Test to see if it exists
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $cat));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $cat]);
     if ($test === null) {
         $parts = explode('_', $cat, 3);
         $member_id = intval($parts[1]);
@@ -1641,7 +1641,7 @@ function make_member_gallery_if_needed($cat)
         if (!has_privilege($member_id, 'have_personal_category', 'cms_galleries')) {
             return;
         }
-        $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_images', 'accept_videos', 'layout_mode', 'fullname'), array('name' => $parent_id), '', 1);
+        $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'layout_mode', 'fullname'], ['name' => $parent_id], '', 1);
         if (!array_key_exists(0, $_parent_info)) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -1650,9 +1650,9 @@ function make_member_gallery_if_needed($cat)
         $member_gallery_title = get_potential_gallery_title($cat);
         add_gallery($cat, $member_gallery_title, '', '', $parent_id, $parent_info['accept_images'], $parent_info['accept_videos'], 0, $parent_info['layout_mode']);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('group_category_access', array('group_id'), array('module_the_name' => 'galleries', 'category_name' => $parent_id));
+        $rows = $GLOBALS['SITE_DB']->query_select('group_category_access', ['group_id'], ['module_the_name' => 'galleries', 'category_name' => $parent_id]);
         foreach ($rows as $row) {
-            $GLOBALS['SITE_DB']->query_insert('group_category_access', array('module_the_name' => 'galleries', 'category_name' => $cat, 'group_id' => $row['group_id']));
+            $GLOBALS['SITE_DB']->query_insert('group_category_access', ['module_the_name' => 'galleries', 'category_name' => $cat, 'group_id' => $row['group_id']]);
         }
     }
 }
@@ -1666,7 +1666,7 @@ function make_member_gallery_if_needed($cat)
 function get_potential_gallery_title($cat)
 {
     // Test to see if it exists
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', array('name' => $cat));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $cat]);
     if (($test === null) && (substr($cat, 0, 7) == 'member_')) {
         // Does not exist but is a potential member gallery
         $parts = explode('_', $cat, 3);
@@ -1674,7 +1674,7 @@ function get_potential_gallery_title($cat)
 
         // Find about parent (new gallery inherits)
         $parent_id = $parts[2];
-        $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_images', 'accept_videos', 'layout_mode', 'fullname'), array('name' => $parent_id), '', 1);
+        $_parent_info = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'layout_mode', 'fullname'], ['name' => $parent_id], '', 1);
         if (!array_key_exists(0, $_parent_info)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -1699,7 +1699,7 @@ function get_potential_gallery_title($cat)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__galleries($where = array(), $tolerate_errors = false)
+function reorganise_uploads__galleries($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('gallery', 'uploads/repimages', 'rep_image', $where, null, true, $tolerate_errors);
@@ -1714,7 +1714,7 @@ function reorganise_uploads__galleries($where = array(), $tolerate_errors = fals
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__gallery_images($where = array(), $tolerate_errors = false)
+function reorganise_uploads__gallery_images($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('image', 'uploads/galleries', 'url', $where, null, false, $tolerate_errors);
@@ -1726,7 +1726,7 @@ function reorganise_uploads__gallery_images($where = array(), $tolerate_errors =
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__gallery_videos($where = array(), $tolerate_errors = false)
+function reorganise_uploads__gallery_videos($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('video', 'uploads/galleries', 'url', $where, null, false, $tolerate_errors);

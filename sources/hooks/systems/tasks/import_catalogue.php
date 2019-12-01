@@ -55,11 +55,11 @@ class Hook_task_import_catalogue
         require_code('catalogues2');
         require_lang('catalogues');
 
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name]);
 
         // Find out what categories we have in the catalogue
-        $categories = array();
-        $cat_rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('cc_title', 'cc_parent_id', 'id'), array('c_name' => $catalogue_name));
+        $categories = [];
+        $cat_rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['cc_title', 'cc_parent_id', 'id'], ['c_name' => $catalogue_name]);
         foreach ($cat_rows as $cat_row) {
             $categories[get_translated_text($cat_row['cc_title'])] = $cat_row['id'];
 
@@ -68,7 +68,7 @@ class Hook_task_import_catalogue
                 $categories[$catalogue_name] = $cat_row['id'];
             }
         }
-        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', array('cc_parent_id' => null));
+        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['cc_parent_id' => null]);
 
         // Open spreadsheet file
         require_code('files_spreadsheets_read');
@@ -81,7 +81,7 @@ class Hook_task_import_catalogue
         if (($key_field != '') && ($key_field != 'ID')) {
             if (!array_key_exists($key_field, $spreadsheet_field_titles)) {
                 @unlink($spreadsheet_path);
-                return array(null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_KEY_FIELD'));
+                return [null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_KEY_FIELD')];
             }
             $found_key = false;
             foreach ($fields as $field) {
@@ -92,7 +92,7 @@ class Hook_task_import_catalogue
             }
             if (!$found_key) {
                 @unlink($spreadsheet_path);
-                return array(null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_KEY_FIELD'));
+                return [null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_KEY_FIELD')];
             }
         }
 
@@ -100,24 +100,24 @@ class Hook_task_import_catalogue
 
         if (($meta_keywords_field != '') && (!array_key_exists($meta_keywords_field, $spreadsheet_field_titles))) {
             @unlink($spreadsheet_path);
-            return array(null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_META_KEYWORDS_FIELD'));
+            return [null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_META_KEYWORDS_FIELD')];
         }
         if (($meta_description_field != '') && (!array_key_exists($meta_description_field, $spreadsheet_field_titles))) {
             @unlink($spreadsheet_path);
-            return array(null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_META_DESCRIPTION_FIELD'));
+            return [null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_META_DESCRIPTION_FIELD')];
         }
         if (($notes_field != '') && (!array_key_exists($notes_field, $spreadsheet_field_titles))) {
             @unlink($spreadsheet_path);
-            return array(null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_NOTES_FIELD'));
+            return [null, do_lang_tempcode('CATALOGUES_IMPORT_MISSING_NOTES_FIELD')];
         }
 
         // Import, line by line
-        $matched_ids = array();
+        $matched_ids = [];
         $iteration = 0;
         while (($data = $sheet_reader->read_row()) !== false) {
             task_log($this, 'Importing catalogue row', $iteration);
 
-            if ($data === array(null)) {
+            if ($data === [null]) {
                 continue; // blank line
             }
             $test = $this->import_spreadsheet_line($catalogue_name, $data, $root_cat, $fields, $categories, $spreadsheet_field_titles, $key_field, $new_handling, $delete_handling, $update_handling, $matched_ids, $notes_field, $meta_keywords_field, $meta_description_field, $allow_rating, $allow_comments, $allow_trackbacks);
@@ -133,7 +133,7 @@ class Hook_task_import_catalogue
 
         // Handle non-matched existing ones
         if ($delete_handling == 'delete') {
-            $all_entry_ids = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('id'), array('c_name' => $catalogue_name));
+            $all_entry_ids = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id'], ['c_name' => $catalogue_name]);
             foreach ($all_entry_ids as $id) {
                 if (!array_key_exists($id['id'], $matched_ids)) {
                     // Delete entry
@@ -213,7 +213,7 @@ class Hook_task_import_catalogue
         }
 
         // Tidy up fields, to make $map
-        $map = array();
+        $map = [];
         $matched_at_least_one_field = false;
         foreach ($fields as $field) {
             $field_name = get_translated_text($field['cf_name']);
@@ -249,7 +249,7 @@ class Hook_task_import_catalogue
         }
 
         if (!$matched_at_least_one_field) {
-            return array(null, do_lang_tempcode('FIELDS_UNMATCH'));
+            return [null, do_lang_tempcode('FIELDS_UNMATCH')];
         }
 
         // See if we can match to existing record, via $key_field
@@ -258,7 +258,7 @@ class Hook_task_import_catalogue
         if ($key_field != '') {
             if ($key_field == 'ID') {
                 if ($key != '') {
-                    $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', array('id' => intval($key)));
+                    $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', ['id' => intval($key)]);
                 }
             } else {
                 require_code('fields');
@@ -268,17 +268,17 @@ class Hook_task_import_catalogue
                         list(, , $db_type) = $hook_ob->get_field_value_row_bits($field);
                         switch ($db_type) {
                             case 'integer':
-                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', array('c_name' => $catalogue_name, 'cv_value' => intval($key)));
+                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, 'cv_value' => intval($key)]);
                                 break;
                             case 'float':
-                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', array('c_name' => $catalogue_name, 'cv_value' => floatval($key)));
+                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, 'cv_value' => floatval($key)]);
                                 break;
                             case 'short_trans':
                             case 'long_trans':
-                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', array('c_name' => $catalogue_name, $GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $key), '', false, array('cv_value' => strtoupper($db_type)));
+                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, $GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $key], '', false, ['cv_value' => strtoupper($db_type)]);
                                 break;
                             default:
-                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', array('c_name' => $catalogue_name, 'cv_value' => $key));
+                                $has_match = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $db_type . ' x JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=x.ce_id', 'x.id', ['c_name' => $catalogue_name, 'cv_value' => $key]);
                                 break;
                         }
                         break;
@@ -310,7 +310,7 @@ class Hook_task_import_catalogue
                 if (array_key_exists($catalogue_name, $categories)) {
                     $category_id = $categories[$catalogue_name];
                 } else { // If category field is null, record adds to a general category named by catalogue_name.
-                    $catalogue_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', array('c_name' => $catalogue_name));
+                    $catalogue_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', ['c_name' => $catalogue_name]);
 
                     if (array_key_exists($catalogue_title, $categories)) {
                         $category_id = $categories[$catalogue_title];

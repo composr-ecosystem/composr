@@ -31,7 +31,7 @@ class Hook_addon_registry_commandr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_commandr
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_commandr',
             'tut_repository',
-        );
+        ];
     }
 
     /**
@@ -74,13 +74,13 @@ class Hook_addon_registry_commandr
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'import',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ class Hook_addon_registry_commandr
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/commandr.php',
             'sources/hooks/systems/logs/commandr.php',
             'sources/hooks/systems/config/days_to_keep__resource_fs_log.php',
@@ -226,7 +226,7 @@ class Hook_addon_registry_commandr
             'sources/commandr.php',
             'sources/commandr_fs.php',
             'sources/hooks/systems/actionlog/commandr.php',
-        );
+        ];
     }
 
     /**
@@ -236,7 +236,7 @@ class Hook_addon_registry_commandr
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/COMMANDR_MAIN.tpl' => 'administrative__commandr_main',
             'templates/COMMANDR_MAIN_SCREEN.tpl' => 'administrative__commandr_main_screen',
             'templates/COMMANDR_COMMAND.tpl' => 'administrative__commandr_command',
@@ -251,7 +251,7 @@ class Hook_addon_registry_commandr
             'templates/COMMANDR_WHOIS.tpl' => 'administrative__commandr_whois',
             'templates/COMMANDR_ENTRY_POINTS.tpl' => 'administrative__commandr_entry_points',
             'templates/COMMANDR_LS.tpl' => 'administrative__commandr_ls',
-        );
+        ];
     }
 
     /**
@@ -263,14 +263,14 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_main()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_MAIN', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_MAIN', [
                 'COMMANDS' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'page' => lorem_phrase(),
                 'PROMPT' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -282,18 +282,18 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_main_screen()
     {
-        $content = do_lorem_template('COMMANDR_MAIN', array(
+        $content = do_lorem_template('COMMANDR_MAIN', [
             'SUBMIT_URL' => placeholder_url(),
             'PROMPT' => lorem_phrase(),
             'COMMANDS' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_MAIN_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENT' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -305,14 +305,14 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_command()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_COMMAND', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_COMMAND', [
                 'METHOD' => lorem_phrase(),
                 'STDOUT' => lorem_phrase(),
                 'STDHTML' => lorem_phrase(),
                 'STDERR' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -324,17 +324,17 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_array()
     {
-        $elements = array();
-        $elements[] = array(
+        $elements = [];
+        $elements[] = [
             'KEY' => lorem_phrase(),
             'VALUE' => lorem_phrase(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_ARRAY', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_ARRAY', [
                 'ELEMENTS' => $elements,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -346,13 +346,13 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_help()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_HELP', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_HELP', [
                 'INTRODUCTION' => lorem_phrase(),
                 'OPTIONS' => placeholder_array(),
                 'PARAMETERS' => placeholder_array(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -364,11 +364,11 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_box()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_BOX', [
                 'HTML' => lorem_sentence_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -380,11 +380,11 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_commands()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_COMMANDS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_COMMANDS', [
                 'COMMANDS' => placeholder_array(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -396,20 +396,20 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_rss()
     {
-        $content = array();
-        $content[] = array(
+        $content = [];
+        $content[] = [
             'FULL_URL' => placeholder_url(),
             'NEWS_TITLE' => lorem_phrase(),
             'DATE' => placeholder_date(),
             'SUMMARY' => lorem_paragraph(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_RSS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_RSS', [
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -421,13 +421,13 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_edit()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_EDIT', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_EDIT', [
                 'FILE' => lorem_phrase(),
                 'SUBMIT_URL' => placeholder_url(),
                 'FILE_CONTENTS' => lorem_sentence(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -439,16 +439,16 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_users_online()
     {
-        $memb = array();
+        $memb = [];
         foreach (placeholder_array() as $k => $v) {
             $memb[$v] = $k;
         }
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_USERS_ONLINE', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_USERS_ONLINE', [
                 'MEMBERS' => $memb,
                 'GUESTS' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -460,11 +460,11 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_find_codes()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_FIND_CODES', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_FIND_CODES', [
                 'FILES' => placeholder_array(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -476,15 +476,15 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_whois()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_WHOIS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_WHOIS', [
                 'STATS' => lorem_phrase(),
                 'IP_LIST' => placeholder_list_item(),
                 'ID' => placeholder_id(),
                 'IP' => placeholder_ip(),
                 'NAME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -496,15 +496,15 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_entry_points()
     {
-        $points = array();
+        $points = [];
         foreach (placeholder_array() as $k => $v) {
             $points[$v] = $k;
         }
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_ENTRY_POINTS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_ENTRY_POINTS', [
                 'ENTRY_POINTS' => $points,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -516,15 +516,15 @@ class Hook_addon_registry_commandr
      */
     public function tpl_preview__administrative__commandr_ls()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMANDR_LS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMMANDR_LS', [
                 'DIRECTORY' => lorem_phrase(),
                 'DIRECTORIES' => placeholder_array(),
                 'FILES' => placeholder_array(),
                 'FILENAME' => lorem_word(),
                 'FILESIZE' => lorem_word(),
                 'MTIME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

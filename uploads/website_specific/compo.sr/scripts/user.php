@@ -48,4 +48,4 @@ $website_url = substr(get_param_string('url', false, INPUT_FILTER_URL_GENERAL), 
 $website_name = substr(get_param_string('name', false, INPUT_FILTER_GET_COMPLEX), 0, 255);
 require_code('version2');
 $version = get_param_string('version');
-$GLOBALS['SITE_DB']->query_insert('logged', array('website_url' => $website_url, 'website_name' => $website_name, 'is_registered' => 0, 'log_key' => 0, 'expire' => 0, 'l_version' => $version, 'hittime' => time()));
+$GLOBALS['SITE_DB']->query_insert('logged', ['website_url' => $website_url, 'website_name' => $website_name, 'is_registered' => 0, 'log_key' => 0, 'expire' => 0, 'l_version' => $version, 'hittime' => time()]);

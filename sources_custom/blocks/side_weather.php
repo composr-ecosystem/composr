@@ -25,7 +25,7 @@ class Block_side_weather
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Manuprathap';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -33,7 +33,7 @@ class Block_side_weather
         $info['version'] = 7;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'units', 'max_days', 'api');
+        $info['parameters'] = ['param', 'units', 'max_days', 'api'];
         return $info;
     }
 
@@ -44,7 +44,7 @@ class Block_side_weather
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             (array_key_exists('units', $map) && ($map['units'] != '')) ? $map['units'] : 'metric',
@@ -82,7 +82,7 @@ PHP;
         $max_days = isset($map['max_days']) ? intval($map['max_days']) : 5;
         $api = (array_key_exists('api', $map) && ($map['api'] != '')) ? $map['api'] : null;
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^(\-?\d+(\.\d+)?),(\-?\d+(\.\d+)?)$#', $location_search, $matches) != 0) {
             $latitude = floatval($matches[1]);
             $longitude = floatval($matches[3]);
@@ -124,24 +124,24 @@ PHP;
                     return new Tempcode();
                 }
             }
-            return do_template('INLINE_WIP_MESSAGE', array('_GUID' => '046c437a5c3799838155b5c5fbe3be26', 'MESSAGE' => htmlentities($errormsg)));
+            return do_template('INLINE_WIP_MESSAGE', ['_GUID' => '046c437a5c3799838155b5c5fbe3be26', 'MESSAGE' => htmlentities($errormsg)]);
         }
 
         list($current_conditions, $forecast) = $result;
 
-        $weather_days = array();
+        $weather_days = [];
         foreach ($forecast as $weather_day) {
-            $conditions = array();
+            $conditions = [];
             if (isset($weather_day['conditions'])) {
                 foreach ($weather_day['conditions'] as $condition) {
-                    $conditions[] = array(
+                    $conditions[] = [
                         'CONDITION' => $condition['description'],
                         'ICON_URL' => isset($condition['icon_url']) ? $condition['icon_url'] : null,
-                    );
+                    ];
                 }
             }
 
-            $weather_days[] = array(
+            $weather_days[] = [
                 'TIMESTAMP' => strval($weather_day['timestamp']), // Unix timestamp
 
                 'TEMPERATURE_AVERAGE' => isset($weather_day['temperature_average']) ? strval(intval(round($weather_day['temperature_average']))) : null,
@@ -161,28 +161,28 @@ PHP;
                 'WIND_CHILL' => isset($weather_day['wind_chill']) ? strval(intval(round($weather_day['wind_chill']))) : null,
 
                 'CONDITIONS' => $conditions,
-            );
+            ];
 
             if (count($weather_days) >= $max_days) {
                 break;
             }
         }
 
-        $conditions = array();
+        $conditions = [];
         if (isset($current_conditions['conditions'])) {
             foreach ($current_conditions['conditions'] as $condition) {
-                $conditions[] = array(
+                $conditions[] = [
                     'CONDITION' => $condition['description'],
                     'ICON_URL' => isset($condition['icon_url']) ? $condition['icon_url'] : null,
-                );
+                ];
             }
         }
 
-        $tpl_map = array(
+        $tpl_map = [
             '_GUID' => '8b46b3437fbe05e587b11dd3347fa195',
 
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
 
             'LOCATION_SEARCH' => $location_search,
             'UNITS' => $units,
@@ -208,7 +208,7 @@ PHP;
             'CURRENT_CONDITIONS' => $conditions,
 
             'WEATHER_DAYS' => $weather_days,
-        );
+        ];
 
         return do_template('BLOCK_SIDE_WEATHER', $tpl_map);
     }

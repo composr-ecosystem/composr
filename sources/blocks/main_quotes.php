@@ -30,14 +30,14 @@ class Block_main_quotes
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'title');
+        $info['parameters'] = ['param', 'title'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_quotes
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('title', $map) ? $map['title'] : '-',
@@ -95,16 +95,16 @@ PHP;
         }
         $edit_url = new Tempcode();
         if (($file == 'quotes') && (has_actual_page_access(get_member(), 'quotes', 'adminzone'))) {
-            $edit_url = build_url(array('page' => 'quotes'), 'adminzone');
+            $edit_url = build_url(['page' => 'quotes'], 'adminzone');
         }
-        return do_template('BLOCK_MAIN_QUOTES', array(
+        return do_template('BLOCK_MAIN_QUOTES', [
             '_GUID' => '7cab7422f603f7b1197c940de48b99aa',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
             'EDIT_URL' => $edit_url,
             'FILE' => $file,
             'CONTENT' => comcode_to_tempcode($this->get_random_line($path), null, true),
-        ));
+        ]);
     }
 
     /**
@@ -121,7 +121,7 @@ PHP;
             return '';
         }
         $i = 0;
-        $line = array();
+        $line = [];
         while (true) {
             $line[$i] = cms_fgets($myfile, $myfile_charset);
 

@@ -30,7 +30,7 @@ class Hook_config_points_RECOMMEND_SITE
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'RECOMMEND_SITE',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_RECOMMEND_SITE
             'public' => false,
 
             'addon' => 'recommend',
-        );
+        ];
     }
 
     /**

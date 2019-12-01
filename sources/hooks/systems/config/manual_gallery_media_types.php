@@ -30,7 +30,7 @@ class Hook_config_manual_gallery_media_types
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MANUAL_GALLERY_MEDIA_TYPES',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_manual_gallery_media_types
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

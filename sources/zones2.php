@@ -26,7 +26,7 @@
 function init__zones2()
 {
     global $CLASS_CACHE;
-    $CLASS_CACHE = array();
+    $CLASS_CACHE = [];
 }
 
 /**
@@ -44,7 +44,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
 
     $fallback_title = titleify(basename($path, '.txt'));
 
-    $matches = array();
+    $matches = [];
     if (preg_match('#\[title([^\]]*)?[^\]]*\]#', $page_contents, $matches) == 0) {
         // No title
         if ($in_tempcode) {
@@ -79,7 +79,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     }
 
     if ($include_subtitle) {
-        $matches2 = array();
+        $matches2 = [];
         if (preg_match('#\ssub="([^"]*)"#', $tag_attribute_stuff, $matches2) != 0) {
             $subtitle = $matches2[1];
             if (!cms_empty_safe($subtitle)) {
@@ -132,7 +132,7 @@ function render_comcode_page_box($row, $give_context = true, $include_breadcrumb
         return new Tempcode();
     }
 
-    $map = array('page' => $row['the_page']);
+    $map = ['page' => $row['the_page']];
     if ($root !== null) {
         $map['keep_page_root'] = $root;
     }
@@ -147,7 +147,7 @@ function render_comcode_page_box($row, $give_context = true, $include_breadcrumb
         restore_output_state();
     }
 
-    $row2 = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('*'), array('the_zone' => $row['the_zone'], 'the_page' => $row['the_page']), '', 1);
+    $row2 = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['*'], ['the_zone' => $row['the_zone'], 'the_page' => $row['the_page']], '', 1);
     if (array_key_exists(0, $row2)) {
         $cc_page_title = get_translated_text($row2[0]['cc_page_title'], null, null, true);
         if ($cc_page_title === null) {
@@ -166,7 +166,7 @@ function render_comcode_page_box($row, $give_context = true, $include_breadcrumb
         $breadcrumbs = breadcrumb_segments_to_tempcode(comcode_breadcrumbs($row['the_page'], $row['the_zone'], ($root === null) ? get_param_string('keep_page_root', null) : $root));
     }
 
-    return do_template('COMCODE_PAGE_BOX', array(
+    return do_template('COMCODE_PAGE_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'ac70e0b5a003f8dac1ff42f46af28e1d',
         'TITLE' => $cc_page_title,
         'PAGE' => $row['the_page'],
@@ -175,7 +175,7 @@ function render_comcode_page_box($row, $give_context = true, $include_breadcrumb
         'SUMMARY' => $summary,
         'BREADCRUMBS' => $breadcrumbs,
         'GIVE_CONTEXT' => $give_context,
-    ));
+    ]);
 }
 
 /**
@@ -205,7 +205,7 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
     }
 
     // Check doesn't already exist
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', array('zone_name' => $zone));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
     if ($test !== null) {
         if (file_exists(get_file_base() . '/' . $zone)) { // Ok it's here completely, so we can't create
             if ($uniqify) {
@@ -214,15 +214,15 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
                 warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($zone)));
             }
         } else { // In DB, not on disk, so we'll just delete DB record
-            persistent_cache_delete(array('ZONE', $zone));
-            $GLOBALS['SITE_DB']->query_delete('zones', array('zone_name' => $zone), '', 1);
+            persistent_cache_delete(['ZONE', $zone]);
+            $GLOBALS['SITE_DB']->query_delete('zones', ['zone_name' => $zone], '', 1);
         }
     }
 
     make_zone_directory($zone);
 
     afm_make_file($zone . '/pages/comcode_custom/EN/' . filter_naughty($default_page) . '.txt', '[title]' . $title . '[/title]' . "\n\n" . do_lang('YOUR_NEW_ZONE_PAGE', $zone . ':' . $default_page) . "\n\n" . '[block]main_comcode_page_children[/block]', true, true);
-    $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+    $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
         'the_zone' => $zone,
         'the_page' => $default_page,
         'p_parent_page' => '',
@@ -232,14 +232,14 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
         'p_submitter' => get_member(),
         'p_show_as_edit' => 0,
         'p_order' => 0,
-    ));
+    ]);
 
-    $map = array(
+    $map = [
         'zone_name' => $zone,
         'zone_default_page' => $default_page,
         'zone_theme' => $theme,
         'zone_require_session' => $require_session,
-    );
+    ];
     $map += insert_lang('zone_title', $title, 1);
     $map += insert_lang('zone_header_text', $header_text, 1);
     $GLOBALS['SITE_DB']->query_insert('zones', $map);
@@ -283,20 +283,20 @@ function make_zone_directory($zone)
         }
         afm_make_file($zone . '/index.php', cms_file_get_contents_safe(get_file_base() . '/adminzone/index.php', FILE_READ_LOCK), false);
         if (file_exists(get_file_base() . '/pages/modules/.htaccess')) {
-            $index_php = array(
+            $index_php = [
                 'pages/comcode/EN', 'pages/comcode_custom/EN',
                 'pages/html/EN', 'pages/html_custom/EN',
                 'pages/modules', 'pages/modules_custom', 'pages',
-            );
+            ];
             foreach ($index_php as $i) {
                 afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/modules/.htaccess', FILE_READ_LOCK), false);
             }
         }
-        $index_php = array(
+        $index_php = [
             'pages/comcode', 'pages/comcode/EN', 'pages/comcode_custom', 'pages/comcode_custom/EN',
             'pages/html', 'pages/html/EN', 'pages/html_custom', 'pages/html_custom/EN',
             'pages/modules', 'pages/modules_custom', 'pages',
-        );
+        ];
         foreach ($index_php as $i) {
             afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/index.html', '', false);
         }
@@ -319,7 +319,7 @@ function save_zone_base_url($zone, $base_url)
     $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $config_file_before = $config_file;
 
-    $regexp = '#\n?\$SITE_INFO\[\'ZONE_MAPPING_' . preg_quote($zone, '#') . '\'\] = array\(\'[^\']+\', \'[^\']+\'\);\n?#';
+    $regexp = '#\n?\$SITE_INFO\[\'ZONE_MAPPING_' . preg_quote($zone, '#') . '\'\] = \[\'[^\']+\', \'[^\']+\'\];\n?#';
     $config_file = preg_replace($regexp, '', $config_file); // Strip any old entry
 
     if ($base_url != '') { // Add new entry, if appropriate
@@ -361,7 +361,7 @@ function save_zone_base_url($zone, $base_url)
  */
 function upgrade_module($zone, $module)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('modules', array('*'), array('module_the_name' => $module), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('modules', ['*'], ['module_the_name' => $module], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
     }
@@ -371,12 +371,12 @@ function upgrade_module($zone, $module)
 
     $module_path = get_file_base() . '/' . _get_module_path($zone, $module);
 
-    $functions = extract_module_functions($module_path, array('info', 'install'), array($upgrade_from, $upgrade_from_hack));
+    $functions = extract_module_functions($module_path, ['info', 'install'], [$upgrade_from, $upgrade_from_hack]);
     if (($functions[1] === null) && (strpos($module_path, '/modules_custom/') !== false)) {
-        $functions = extract_module_functions($module_path, array('info', 'install'), array($upgrade_from, $upgrade_from_hack));
+        $functions = extract_module_functions($module_path, ['info', 'install'], [$upgrade_from, $upgrade_from_hack]);
     }
     if ($functions[0] === null) {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -404,7 +404,7 @@ function upgrade_module($zone, $module)
     if ($info['hacked_by'] === null) {
         $info['installed_hacked_by'] = '';
     }
-    $GLOBALS['SITE_DB']->query_update('modules', array('module_version' => $info['version'], 'module_hack_version' => $info['hack_version'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']), array('module_the_name' => $module), '', 1);
+    $GLOBALS['SITE_DB']->query_update('modules', ['module_version' => $info['version'], 'module_hack_version' => $info['hack_version'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']], ['module_the_name' => $module], '', 1);
     persistent_cache_delete('MODULES');
 
     return $ret;
@@ -426,14 +426,14 @@ function reinstall_module($zone, $module)
     require_all_core_cms_code();
     require_code('files2');
 
-    $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $module), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module], '', 1);
 
-    $functions = extract_module_functions($module_path, array('info', 'install', 'uninstall'));
+    $functions = extract_module_functions($module_path, ['info', 'install', 'uninstall']);
     if (($functions[1] === null) && (strpos($module_path, '/modules_custom/') !== false)) {
-        $functions = extract_module_functions($module_path, array('info', 'install', 'uninstall'));
+        $functions = extract_module_functions($module_path, ['info', 'install', 'uninstall']);
     }
     if ($functions[0] === null) {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -464,7 +464,7 @@ function reinstall_module($zone, $module)
             cms_eval($functions[1], $module_path);
         }
     }
-    $GLOBALS['SITE_DB']->query_insert('modules', array('module_the_name' => $module, 'module_author' => $info['author'], 'module_organisation' => $info['organisation'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'module_hack_version' => $info['hack_version'], 'module_version' => $info['version']));
+    $GLOBALS['SITE_DB']->query_insert('modules', ['module_the_name' => $module, 'module_author' => $info['author'], 'module_organisation' => $info['organisation'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'module_hack_version' => $info['hack_version'], 'module_version' => $info['version']]);
 
     persistent_cache_delete('MODULES');
 
@@ -484,16 +484,16 @@ function uninstall_module($zone, $module)
     require_all_core_cms_code();
     require_code('files2');
 
-    $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $module), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $module)); // As some modules will try and install this themselves. Entry point permissions they won't.
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('the_page' => $module)); // Ditto
+    $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $module]); // As some modules will try and install this themselves. Entry point permissions they won't.
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['the_page' => $module]); // Ditto
 
     persistent_cache_delete('MODULES');
 
     if (file_exists($module_path)) {
-        $functions = extract_module_functions($module_path, array('uninstall'));
+        $functions = extract_module_functions($module_path, ['uninstall']);
         if (($functions[0] === null) && (strpos($module_path, '/modules_custom/') !== false)) {
-            $functions = extract_module_functions($module_path, array('uninstall'));
+            $functions = extract_module_functions($module_path, ['uninstall']);
         }
         if ($functions[0] === null) {
             return;
@@ -514,7 +514,7 @@ function uninstall_module($zone, $module)
  */
 function find_all_blocks()
 {
-    $out = array();
+    $out = [];
 
     $dh = opendir(get_file_base() . '/sources/blocks');
     while (($file = readdir($dh)) !== false) {
@@ -568,18 +568,18 @@ function get_block_parameters($block, $include_standard_parameters = false)
     $block_path = _get_block_path($block);
     $info = extract_module_info($block_path);
     if ($info === null) {
-        $params = array();
+        $params = [];
 
         $contents = cms_file_get_contents_safe($block_path, FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\$map\[\'(\w+)\'\]#', $contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $params[$matches[1][$i]] = true;
         }
 
-        $parameters = array_diff(array_keys($params), array('cache'));
+        $parameters = array_diff(array_keys($params), ['cache']);
     } else {
-        $parameters = empty($info['parameters']) ? array() : $info['parameters'];
+        $parameters = empty($info['parameters']) ? [] : $info['parameters'];
     }
 
     if ($include_standard_parameters) {
@@ -596,13 +596,13 @@ function get_block_parameters($block, $include_standard_parameters = false)
  */
 function get_standard_block_parameters()
 {
-    return array(
+    return [
         'failsafe',
         'cache',
         'quick_cache',
         'defer',
         'block_id',
-    );
+    ];
 }
 
 /**
@@ -613,7 +613,7 @@ function get_standard_block_parameters()
  */
 function upgrade_block($block)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('blocks', array('*'), array('block_name' => $block), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('blocks', ['*'], ['block_name' => $block], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
     }
@@ -623,7 +623,7 @@ function upgrade_block($block)
 
     $block_path = _get_block_path($block);
 
-    $functions = extract_module_functions($block_path, array('info', 'install'), array($upgrade_from, $upgrade_from_hack));
+    $functions = extract_module_functions($block_path, ['info', 'install'], [$upgrade_from, $upgrade_from_hack]);
     if ($functions[0] === null) {
         return 0;
     }
@@ -645,7 +645,7 @@ function upgrade_block($block)
         if ($info['hacked_by'] === null) {
             $info['installed_hacked_by'] = '';
         }
-        $GLOBALS['SITE_DB']->query_update('blocks', array('block_version' => $info['version'], 'block_hack_version' => $info['hack_version'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']), array('block_name' => $block), '', 1);
+        $GLOBALS['SITE_DB']->query_update('blocks', ['block_version' => $info['version'], 'block_hack_version' => $info['hack_version'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by']], ['block_name' => $block], '', 1);
         $ret = 1;
     }
     return $ret;
@@ -662,12 +662,12 @@ function reinstall_block($block)
 {
     $block_path = _get_block_path($block);
 
-    $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block], '', 1);
 
     require_all_core_cms_code();
     require_code('files2');
 
-    $functions = extract_module_functions($block_path, array('info', 'install', 'uninstall'));
+    $functions = extract_module_functions($block_path, ['info', 'install', 'uninstall']);
     if ($functions[0] === null) {
         return false;
     }
@@ -687,7 +687,7 @@ function reinstall_block($block)
         $info['hacked_by'] = '';
     }
 
-    $GLOBALS['SITE_DB']->query_insert('blocks', array('block_name' => $block, 'block_author' => $info['author'], 'block_organisation' => $info['organisation'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'block_hack_version' => $info['hack_version'], 'block_version' => $info['version']));
+    $GLOBALS['SITE_DB']->query_insert('blocks', ['block_name' => $block, 'block_author' => $info['author'], 'block_organisation' => $info['organisation'], 'block_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'block_hack_version' => $info['hack_version'], 'block_version' => $info['version']]);
     if ($functions[1] !== null) {
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
@@ -711,12 +711,12 @@ function uninstall_block($block)
     require_all_core_cms_code();
     require_code('files2');
 
-    $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('cache_on', array('cached_for' => $block), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('cache', array('cached_for' => $block));
+    $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('cache_on', ['cached_for' => $block], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('cache', ['cached_for' => $block]);
 
     if (file_exists($block_path)) {
-        $functions = extract_module_functions($block_path, array('uninstall'));
+        $functions = extract_module_functions($block_path, ['uninstall']);
         if ($functions[0] === null) {
             return;
         }
@@ -739,19 +739,19 @@ function uninstall_block($block)
  * @param  array $params A list of parameters to pass to our functions
  * @return array A list of pieces of code to do the equivalent of executing the requested functions with the requested parameters
  */
-function extract_module_functions_page($zone, $page, $functions, $params = array())
+function extract_module_functions_page($zone, $page, $functions, $params = [])
 {
     $path = zone_black_magic_filterer(get_file_base() . '/' . filter_naughty_harsh($zone) . (($zone == '') ? '' : '/') . 'pages/modules_custom/' . filter_naughty_harsh($page) . '.php');
     if (file_exists($path)) {
         $ret = extract_module_functions($path, $functions, $params);
-        if (array_unique(array_values($ret)) != array(null)) {
+        if (array_unique(array_values($ret)) != [null]) {
             return $ret;
         }
     }
 
     $path = zone_black_magic_filterer(get_file_base() . '/' . filter_naughty_harsh($zone) . (($zone == '') ? '' : '/') . 'pages/modules/' . filter_naughty_harsh($page) . '.php');
     if (!file_exists($path)) {
-        $ret = array();
+        $ret = [];
         for ($i = 0; $i < count($functions); $i++) {
             array_push($ret, null);
         }
@@ -768,7 +768,7 @@ function extract_module_functions_page($zone, $page, $functions, $params = array
  */
 function extract_module_info($path)
 {
-    $functions = extract_module_functions($path, array('info'));
+    $functions = extract_module_functions($path, ['info']);
     if ($functions[0] === null) {
         return null;
     }
@@ -789,14 +789,14 @@ function extract_module_info($path)
  */
 function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects = false, $show_method = 0, $page_type = null)
 {
-    $pages = array();
+    $pages = [];
     if (($page_type === null) || ($page_type == 'modules')) {
         if (!in_safe_mode()) {
             $pages += find_all_pages($zone, 'modules_custom', 'php', $keep_ext_on, null, $show_method);
         }
         $pages += find_all_pages($zone, 'modules', 'php', $keep_ext_on, null, $show_method);
     }
-    $langs = multi_lang() ? array_keys(find_all_langs()) : array(get_site_default_lang());
+    $langs = multi_lang() ? array_keys(find_all_langs()) : [get_site_default_lang()];
     foreach ($langs as $lang) {
         if (($page_type === null) || ($page_type == 'comcode')) {
             if (!in_safe_mode()) {
@@ -820,9 +820,9 @@ function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects =
 
     if (addon_installed('redirects_editor')) {
         if ($consider_redirects) {
-            static $redirects = array();
+            static $redirects = [];
             if (!isset($redirects[$zone])) {
-                $redirects[$zone] = $GLOBALS['SITE_DB']->query_select('redirects', array('*'), array('r_from_zone' => $zone));
+                $redirects[$zone] = $GLOBALS['SITE_DB']->query_select('redirects', ['*'], ['r_from_zone' => $zone]);
             }
             foreach ($redirects[$zone] as $r) {
                 if ($r['r_is_transparent'] == 0) {
@@ -854,7 +854,7 @@ function _find_all_pages_wrap($zone, $keep_ext_on = false, $consider_redirects =
  */
 function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cutoff_time = null, $show_method = 0, $custom = null)
 {
-    $out = array();
+    $out = [];
 
     $module_path = ($zone == '') ? ('pages/' . filter_naughty($type)) : (filter_naughty($zone) . '/pages/' . filter_naughty($type));
 
@@ -879,8 +879,8 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
                     switch ($show_method) {
                         case FIND_ALL_PAGES__NEWEST: // Only gets newest if it's a large site
                             if (count($out) > intval(get_option('general_safety_listing_limit'))) {
-                                $out = array();
-                                $records = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page'), array('the_zone' => $zone), 'ORDER BY p_add_date DESC', intval(get_option('general_safety_listing_limit')));
+                                $out = [];
+                                $records = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page'], ['the_zone' => $zone], 'ORDER BY p_add_date DESC', intval(get_option('general_safety_listing_limit')));
                                 foreach ($records as $record) {
                                     $file = $record['the_page'] . '.txt';
 
@@ -904,7 +904,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
                         case FIND_ALL_PAGES__PERFORMANT: // Default, chooses selection carefully based on site size
                             if (($show_method == FIND_ALL_PAGES__NEWEST) || (count($out) > intval(get_option('general_safety_listing_limit')))) {
                                 if ($show_method != FIND_ALL_PAGES__NEWEST) {
-                                    $out = array();
+                                    $out = [];
                                 }
                                 $records = $GLOBALS['SITE_DB']->query('SELECT the_page FROM ' . get_table_prefix() . 'comcode_pages WHERE ' . db_string_equal_to('the_zone', $zone) . ' AND (' . db_string_equal_to('the_page', get_zone_default_page($zone)) . ' OR the_page LIKE \'' . db_encode_like('panel\_%') . '\') ORDER BY p_add_date DESC');
                                 foreach ($records as $record) {

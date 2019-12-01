@@ -28,14 +28,14 @@ class newsletters_test_set extends cms_test_case
 
         $this->news_id = add_newsletter('New Offer', 'The new offer of the week.');
 
-        $this->assertTrue('New Offer' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('newsletters', 'title', array('id' => $this->news_id))));
+        $this->assertTrue('New Offer' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('newsletters', 'title', ['id' => $this->news_id])));
     }
 
     public function testEditNewsletter()
     {
         edit_newsletter($this->news_id, 'Thanks', 'Thank you');
 
-        $this->assertTrue('Thanks' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('newsletters', 'title', array('id' => $this->news_id))));
+        $this->assertTrue('Thanks' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('newsletters', 'title', ['id' => $this->news_id])));
     }
 
     public function tearDown()

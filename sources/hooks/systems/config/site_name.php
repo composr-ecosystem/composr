@@ -30,7 +30,7 @@ class Hook_config_site_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITE_NAME',
             'type' => 'line',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_site_name
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

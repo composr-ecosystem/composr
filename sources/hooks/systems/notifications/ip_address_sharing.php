@@ -44,26 +44,26 @@ class Hook_notification_ip_address_sharing extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
         $limit = get_option('max_ip_addresses_per_subscriber');
         if ($limit == '') {
-            return array();
+            return [];
         }
 
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
         if (!addon_installed('stats')) {
-            return array();
+            return [];
         }
         if (is_on_multi_site_network()) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ip_address_sharing'] = array(do_lang('MEMBERS'), do_lang('ecommerce:NOTIFICATION_TYPE_ip_address_sharing'));
+        $list = [];
+        $list['ip_address_sharing'] = [do_lang('MEMBERS'), do_lang('ecommerce:NOTIFICATION_TYPE_ip_address_sharing')];
         return $list;
     }
 }

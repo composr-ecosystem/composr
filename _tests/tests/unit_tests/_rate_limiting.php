@@ -28,9 +28,9 @@ class _rate_limiting_test_set extends cms_test_case
         $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
         file_put_contents($rate_limiter_path, '');
 
-        $url = build_url(array('page' => ''), '');
+        $url = build_url(['page' => ''], '');
         for ($i = 0; $i < 4; $i++) {
-            $result = cms_http_request($url->evaluate(), array('trigger_error' => false));
+            $result = cms_http_request($url->evaluate(), ['trigger_error' => false]);
             if ($i < 3) {
                 $this->assertTrue($result->data !== null);
                 $this->assertTrue($result->message === '200');

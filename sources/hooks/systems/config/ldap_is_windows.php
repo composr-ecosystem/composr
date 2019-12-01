@@ -30,7 +30,7 @@ class Hook_config_ldap_is_windows
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_IS_WINDOWS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_ldap_is_windows
             'required' => true,
             'public' => false,
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

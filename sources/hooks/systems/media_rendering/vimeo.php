@@ -77,7 +77,7 @@ class Hook_media_rendering_vimeo extends Media_renderer_with_fallback
      */
     public function get_video_thumbnail($src_url)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^https?://vimeo\.com(/[\w/]*)?/(\d+)#', $src_url, $matches) != 0) {
             $test = get_value('vimeo_thumb_for__' . $matches[2], null, true);
             if ($test !== null) {
@@ -85,11 +85,11 @@ class Hook_media_rendering_vimeo extends Media_renderer_with_fallback
             }
 
             // Lame method (not so reliable)
-            $html = http_get_contents($src_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $html = http_get_contents($src_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($html === null) {
                 return null;
             }
-            $matches2 = array();
+            $matches2 = [];
             if (preg_match('#<meta property="og:image" content="([^"]+)"#', $html, $matches2) != 0) {
                 //set_value('vimeo_thumb_for__' . $matches[2], $matches2[1], true);     Actually this only happens occasionally (on add/edit), so not needed. Caching would bung up DB and make editing a pain.
                 return $matches2[1];
@@ -119,6 +119,6 @@ class Hook_media_rendering_vimeo extends Media_renderer_with_fallback
             $url = $url->evaluate();
         }
         $attributes['remote_id'] = preg_replace('#^https?://vimeo\.com(/[\w/]*)?/(\d+)#', '${2}', $url);
-        return do_template('MEDIA_VIMEO', array('_GUID' => '490903ba659a899d70d3a2f5afa7d6cb', 'HOOK' => 'vimeo') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_VIMEO', ['_GUID' => '490903ba659a899d70d3a2f5afa7d6cb', 'HOOK' => 'vimeo'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

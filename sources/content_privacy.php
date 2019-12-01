@@ -36,7 +36,7 @@ function get_privacy_where_clause($content_type, $table_alias, $viewing_member_i
 
     $table = get_table_prefix() . 'content_privacy priv';
 
-    $pass_thru = array('', '', $table, '1=1');
+    $pass_thru = ['', '', $table, '1=1'];
 
     if ($submitter == $viewing_member_id) {
         return $pass_thru;
@@ -108,7 +108,7 @@ function get_privacy_where_clause($content_type, $table_alias, $viewing_member_i
 
     $table_where = db_string_equal_to('priv.content_type', $content_type) . $where;
 
-    return array($join, $where, $table, $table_where);
+    return [$join, $where, $table, $table_where];
 }
 
 /**
@@ -191,7 +191,7 @@ function check_privacy($content_type, $content_id, $viewing_member_id = null)
  */
 function privacy_limits_for($content_type, $content_id, $strict_all = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', array('*'), array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         return null;
     }
@@ -205,7 +205,7 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
         return null;
     }
 
-    $members = array();
+    $members = [];
 
     require_code('content');
     list(, $content_submitter) = content_get_details($content_type, $content_id);
@@ -213,14 +213,14 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
     $members[] = $content_submitter;
 
     if (($row['friend_view'] == 1) && (addon_installed('chat'))) {
-        $cnt = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', array('chat_likes' => $content_submitter));
+        $cnt = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['chat_likes' => $content_submitter]);
         if (($strict_all) || ($cnt <= 1000/*safety limit*/)) {
-            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', array('chat_liked'), array('chat_likes' => $content_submitter));
+            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', ['chat_liked'], ['chat_likes' => $content_submitter]);
             $members = array_merge($members, collapse_1d_complexity('member_liked', $friends));
         }
     }
 
-    $individuals = $GLOBALS['SITE_DB']->query_select('content_privacy__members', array('member_id'), array('content_type' => $content_type, 'content_id' => $content_id));
+    $individuals = $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['member_id'], ['content_type' => $content_type, 'content_id' => $content_id]);
     $members = array_merge($members, collapse_1d_complexity('member_id', $individuals));
 
     return $members;

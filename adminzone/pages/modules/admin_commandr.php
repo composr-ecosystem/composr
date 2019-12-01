@@ -30,7 +30,7 @@ class Module_admin_commandr
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Philip Withnall';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -56,9 +56,9 @@ class Module_admin_commandr
             return null;
         }
 
-        return array(
-            '!' => array('COMMANDR', 'menu/adminzone/tools/commandr'),
-        );
+        return [
+            '!' => ['COMMANDR', 'menu/adminzone/tools/commandr'],
+        ];
     }
 
     /**
@@ -70,7 +70,7 @@ class Module_admin_commandr
 
         delete_value('last_commandr_command');
 
-        $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => 'admin_commandr'));
+        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'admin_commandr']);
     }
 
     /**
@@ -84,7 +84,7 @@ class Module_admin_commandr
         if ($upgrade_from === null) {
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
             foreach (array_keys($usergroups) as $id) {
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'admin_commandr', 'zone_name' => 'adminzone', 'group_id' => $id)); // Commandr very dangerous
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_commandr', 'zone_name' => 'adminzone', 'group_id' => $id]); // Commandr very dangerous
             }
         }
 
@@ -130,7 +130,7 @@ class Module_admin_commandr
 
         $this->title = get_screen_title('COMMANDR');
 
-        load_csp(array('csp_allow_eval_js' => '1')); // We need to allow dynamic JavaScript commands to execute through the Commandr interface
+        load_csp(['csp_allow_eval_js' => '1']); // We need to allow dynamic JavaScript commands to execute through the Commandr interface
 
         return null;
     }
@@ -169,17 +169,17 @@ class Module_admin_commandr
             $commands = new Tempcode();
         }
 
-        $content = do_template('COMMANDR_MAIN', array(
+        $content = do_template('COMMANDR_MAIN', [
             '_GUID' => '05c1e7efacc3839babfe58fe624caa61',
-            'SUBMIT_URL' => build_url(array('page' => '_SELF'), '_SELF'),
+            'SUBMIT_URL' => build_url(['page' => '_SELF'], '_SELF'),
             'PROMPT' => do_lang_tempcode('COMMAND_PROMPT', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))),
             'COMMANDS' => $commands,
-        ));
+        ]);
 
-        return do_template('COMMANDR_MAIN_SCREEN', array(
+        return do_template('COMMANDR_MAIN_SCREEN', [
             '_GUID' => 'd71ef9fa2cdaf419fee64cf3d7555225',
             'TITLE' => $this->title,
             'CONTENT' => $content,
-        ));
+        ]);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_tax_detailed
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAX_DETAILED',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_tax_detailed
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

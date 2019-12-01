@@ -22,11 +22,11 @@ function upload_attach_test()
 {
     $result = mobiquo_post_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'method_name' => 'upload_attach',
-        ),
+        ],
         'admin',
-        array('content[]' => get_file_base() . '/themes/default/images/cns_default_avatars/default_set/cartoons/crazy.jpg')
+        ['content[]' => get_file_base() . '/themes/default/images/cns_default_avatars/default_set/cartoons/crazy.jpg']
     );
     print_mobiquo_result($result);
 }
@@ -40,11 +40,11 @@ function upload_avatar_test()
 {
     $result = mobiquo_post_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'method_name' => 'upload_avatar',
-        ),
+        ],
         'admin',
-        array('content[]' => get_file_base() . '/themes/default/images/cns_default_avatars/default_set/cartoons/crazy.jpg')
+        ['content[]' => get_file_base() . '/themes/default/images/cns_default_avatars/default_set/cartoons/crazy.jpg']
     );
     print_mobiquo_result($result);
 }
@@ -58,11 +58,11 @@ function remove_attachment_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '34',
             '',
             '',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);

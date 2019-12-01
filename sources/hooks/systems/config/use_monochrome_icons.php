@@ -30,7 +30,7 @@ class Hook_config_use_monochrome_icons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_MONOCHROME_ICONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_use_monochrome_icons
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

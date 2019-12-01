@@ -30,7 +30,7 @@ class Hook_config_use_site_name_text_as_logo
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_SITE_NAME_TEXT_AS_LOGO',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_use_site_name_text_as_logo
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

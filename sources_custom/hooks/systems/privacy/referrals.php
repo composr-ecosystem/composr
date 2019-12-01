@@ -29,43 +29,43 @@ class Hook_privacy_referrals extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'referees_qualified_for' => array(
+            'database_records' => [
+                'referees_qualified_for' => [
                     'timestamp_field' => 'q_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('q_referee', 'q_referrer'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('q_email_address'),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['q_referee', 'q_referrer'],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['q_email_address'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'referrer_override' => array(
+                ],
+                'referrer_override' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('o_referrer'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['o_referrer'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -81,10 +81,10 @@ class Hook_privacy_referrals extends Hook_privacy_base
 
         switch ($table_name) {
             case 'referees_qualified_for':
-                $ret += array(
+                $ret += [
                     'q_referee__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['q_referee']),
                     'q_referrer__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['q_referrer']),
-                );
+                ];
                 break;
         }
 

@@ -39,31 +39,31 @@ class Hook_task_download_gallery
         require_lang('galleries');
         require_code('zip');
 
-        $gallery_rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('name' => $cat), '', 1);
+        $gallery_rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $cat], '', 1);
         if (!array_key_exists(0, $gallery_rows)) {
-            return array(null, do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
+            return [null, do_lang_tempcode('MISSING_RESOURCE', 'gallery')];
         }
         $gallery_row = $gallery_rows[0];
 
-        $headers = array();
+        $headers = [];
         $headers['Content-Type'] = 'application/octet-stream';
         $filename = 'gallery-' . $cat . '.zip';
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
         $ini_set['zlib.output_compression'] = 'Off';
 
-        $rows_images = $GLOBALS['SITE_DB']->query_select('images', array('id', 'url', 'add_date'), array('cat' => $cat, 'validated' => 1));
-        $rows_videos = $GLOBALS['SITE_DB']->query_select('videos', array('id', 'url', 'add_date'), array('cat' => $cat, 'validated' => 1));
-        $rows_combined = array();
+        $rows_images = $GLOBALS['SITE_DB']->query_select('images', ['id', 'url', 'add_date'], ['cat' => $cat, 'validated' => 1]);
+        $rows_videos = $GLOBALS['SITE_DB']->query_select('videos', ['id', 'url', 'add_date'], ['cat' => $cat, 'validated' => 1]);
+        $rows_combined = [];
         foreach ($rows_images as $row) {
-            $rows_combined[] = $row + array('content_type' => 'image');
+            $rows_combined[] = $row + ['content_type' => 'image'];
         }
         foreach ($rows_videos as $row) {
-            $rows_combined[] = $row + array('content_type' => 'video');
+            $rows_combined[] = $row + ['content_type' => 'video'];
         }
-        $array = array();
+        $array = [];
         foreach ($rows_combined as $row) {
             if (addon_installed('content_privacy')) {
                 require_code('content_privacy');
@@ -91,7 +91,7 @@ class Hook_task_download_gallery
                 $data = http_get_contents($row['url']);
             }
 
-            $array[] = array('name' => preg_replace('#^uploads/galleries/#', '', $name), 'time' => $time, 'data' => $data, 'full_path' => $full_path);
+            $array[] = ['name' => preg_replace('#^uploads/galleries/#', '', $name), 'time' => $time, 'data' => $data, 'full_path' => $full_path];
         }
 
         if ($gallery_row['rep_image'] != '') {
@@ -108,12 +108,12 @@ class Hook_task_download_gallery
                 $name = basename(urldecode($gallery_row['rep_image']));
                 $data = http_get_contents($gallery_row['rep_image']);
             }
-            $array[] = array('name' => preg_replace('#^uploads/(galleries|repimages)/#', '', $name), 'time' => $time, 'data' => $data);
+            $array[] = ['name' => preg_replace('#^uploads/(galleries|repimages)/#', '', $name), 'time' => $time, 'data' => $data];
         }
 
         $outfile_path = cms_tempnam();
         create_zip_file($outfile_path, $array);
 
-        return array('application/octet-stream', array($filename, $outfile_path), $headers, $ini_set);
+        return ['application/octet-stream', [$filename, $outfile_path], $headers, $ini_set];
     }
 }

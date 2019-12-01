@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_default_company
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_DEFAULT_COMPANY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_default_company
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

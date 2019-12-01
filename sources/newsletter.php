@@ -39,11 +39,11 @@ function incoming_bounced_email_script()
 
     $bounce_email = file_get_contents('php://input');
 
-    $matches = array();
+    $matches = [];
     if (preg_match('#^From: .*([^ ]+@[^ ]+)#m', $bounce_email, $matches) != 0) {
         $email = $matches[1];
 
-        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', array('email' => $email));
+        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email]);
         if ($id !== null) {
             delete_newsletter_subscriber($id);
         }
@@ -73,7 +73,7 @@ function basic_newsletter_join($email, $language = null, $get_confirm_mail = fal
         $newsletter_id = db_get_first_id();
     }
 
-    $code_confirm = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'code_confirm', array('email' => $email));
+    $code_confirm = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'code_confirm', ['email' => $email]);
     if ($code_confirm === null) {
         // New, set their details
         require_code('crypt');
@@ -84,7 +84,7 @@ function basic_newsletter_join($email, $language = null, $get_confirm_mail = fal
     } else {
         if ($code_confirm > 0) {
             // Was not confirmed, allow confirm mail to go again as if this was new, and update their details
-            $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', array('email' => $email));
+            $id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email]);
             if ($id !== null) {
                 edit_newsletter_subscriber($id, $email, time(), null, null, null, $language, $forename, $surname);
             }
@@ -97,17 +97,17 @@ function basic_newsletter_join($email, $language = null, $get_confirm_mail = fal
 
     // Send confirm e-mail
     if ($get_confirm_mail) {
-        $_url = build_url(array('page' => 'newsletter', 'type' => 'confirm', 'email' => $email, 'confirm' => $code_confirm), get_module_zone('newsletter'));
+        $_url = build_url(['page' => 'newsletter', 'type' => 'confirm', 'email' => $email, 'confirm' => $code_confirm], get_module_zone('newsletter'));
         $url = $_url->evaluate();
-        $newsletter_url = build_url(array('page' => 'newsletter'), get_module_zone('newsletter'));
-        $message = do_lang('NEWSLETTER_SIGNUP_TEXT', comcode_escape($url), comcode_escape($password), array($forename, $surname, $email, get_site_name(), $newsletter_url->evaluate()), $language);
+        $newsletter_url = build_url(['page' => 'newsletter'], get_module_zone('newsletter'));
+        $message = do_lang('NEWSLETTER_SIGNUP_TEXT', comcode_escape($url), comcode_escape($password), [$forename, $surname, $email, get_site_name(), $newsletter_url->evaluate()], $language);
         require_code('mail');
-        dispatch_mail(do_lang('NEWSLETTER_SIGNUP', null, null, null, $language), $message, array($email), null, '', '', array('bypass_queue' => true));
+        dispatch_mail(do_lang('NEWSLETTER_SIGNUP', null, null, null, $language), $message, [$email], null, '', '', ['bypass_queue' => true]);
     }
 
     // Set subscription
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array('newsletter_id' => $newsletter_id, 'email' => $email), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', array('newsletter_id' => $newsletter_id, 'email' => $email), false, true); // race condition
+    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $email], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', ['newsletter_id' => $newsletter_id, 'email' => $email], false, true); // race condition
 
     return $password;
 }
@@ -135,12 +135,12 @@ function newsletter_get_category_choices($cutoff_time, $lang)
             if (is_object($cats)) {
                 $cats = $cats->evaluate($lang);
             }
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#<option [^>]*value="([^"]*)"[^>]*>([^<]*)</option>#', $cats, $matches); // FUDGE: Reparsing HTML. Needs to do this as Composr's APIs are been used and they output HTML.
             if ($num_matches < 1500) { /*reasonable limit on how many categories to consider*/
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook_result = $object->run($cutoff_time, $lang, $matches[1][$i]);
-                    if ($hook_result == array()) {
+                    if ($hook_result == []) {
                         continue;
                     }
                     list($hook_content, $_title) = $hook_result;
@@ -154,7 +154,7 @@ function newsletter_get_category_choices($cutoff_time, $lang)
         }
         if (!$done) {
             $new = $object->run($cutoff_time, $lang, '*');
-            if ($new != array()) {
+            if ($new != []) {
                 list($hook_content, $_title) = $new;
                 if (!$hook_content->is_empty()) {
                     $chosen_categories .= $_title . ' [' . $hook . "]\n";
@@ -180,7 +180,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
     require_code('global4');
 
     // Generate Comcode for content selected, drawing on hooks
-    $automatic = array();
+    $automatic = [];
     $i = 0;
     $catarr = explode("\n", $chosen_categories);
     $_hooks = find_all_hook_obs('modules', 'admin_newsletter', 'Hook_whatsnew_');
@@ -190,7 +190,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
         $last_cat_id = null;
         $filter = '';
         foreach ($catarr as $find_id => $line) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#\[' . preg_quote($hook, '#') . '/(.*)\]#', $line, $matches) != 0) {
                 $found_one_match = true;
 
@@ -202,13 +202,13 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                         continue;
                     }
                     if (!$temp[0]->is_empty()) {
-                        $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', array(
+                        $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', [
                             '_GUID' => 'bd228cdeafacfffac2d8d98d5f2da565',
                             'I' => strval($i + 1),
                             'TITLE' => $temp[1],
                             'CONTENT' => $temp[0],
                             'THUMBNAIL' => array_key_exists(2, $temp) ? $temp[2] : '',
-                        ), null, false, null, '.txt', 'text');
+                        ], null, false, null, '.txt', 'text');
                         $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                         $i++;
                     }
@@ -241,12 +241,12 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                 continue;
             }
             if (!$temp[0]->is_empty()) {
-                $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', array(
+                $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', [
                     '_GUID' => '64c8870e7c75354c07b2e94f299cd38c',
                     'I' => strval($i + 1),
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
-                ), null, false, null, '.txt', 'text');
+                ], null, false, null, '.txt', 'text');
                 $automatic[$find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;
             }
@@ -256,12 +256,12 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                 continue;
             }
             if (!$temp[0]->is_empty()) {
-                $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', array(
+                $tmp = do_template('NEWSLETTER_WHATSNEW_SECTION_FCOMCODE', [
                     '_GUID' => '8d1e7f448d11853b675a0949b8a0c2c9',
                     'I' => strval($i + 1),
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
-                ), null, false, null, '.txt', 'text');
+                ], null, false, null, '.txt', 'text');
                 $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;
             }
@@ -277,7 +277,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
     foreach ($automatic as $tp) {
         $_automatic .= $tp;
     }
-    $__message = do_template('NEWSLETTER_WHATSNEW_FCOMCODE', array('_GUID' => '20f6adc244b04d9e5206682ec4e0cc0f', 'CONTENT' => $_automatic), null, false, null, '.txt', 'text');
+    $__message = do_template('NEWSLETTER_WHATSNEW_FCOMCODE', ['_GUID' => '20f6adc244b04d9e5206682ec4e0cc0f', 'CONTENT' => $_automatic], null, false, null, '.txt', 'text');
     $_message = $__message->evaluate($lang);
 
     $message = newsletter_wrap($_message, $lang);
@@ -305,7 +305,7 @@ function get_full_newsletter_code($_message, $lang, $default_subject)
         // from_news GET parameter?
         $from_news = get_param_integer('from_news', null);
         if (($from_news !== null) && (addon_installed('news'))) {
-            $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('id' => $from_news), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $from_news], '', 1);
             if (!array_key_exists(0, $rows)) {
                 require_lang('news');
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
@@ -326,7 +326,7 @@ function get_full_newsletter_code($_message, $lang, $default_subject)
 
     $final_message_is_html = (strpos(trim($message), '<') === 0);
 
-    return array($message, $final_message_is_html);
+    return [$message, $final_message_is_html];
 }
 
 /**
@@ -363,7 +363,7 @@ function newsletter_rewrap_with_early_comcode_parse_if_needed($_message, $messag
  */
 function newsletter_wrap($_message, $lang, $subject = '')
 {
-    $message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '53c02947915806e519fe14c318813f42', 'CONTENT' => $_message, 'LANG' => $lang, 'SUBJECT' => $subject), null, false, null, '.txt', 'text');
+    $message_wrapped = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '53c02947915806e519fe14c318813f42', 'CONTENT' => $_message, 'LANG' => $lang, 'SUBJECT' => $subject], null, false, null, '.txt', 'text');
     $message = $message_wrapped->evaluate($lang);
     return $message;
 }
@@ -384,12 +384,12 @@ function newsletter_wrap($_message, $lang, $subject = '')
  * @param  ID_TEXT $mail_template The template used to show the e-mail
  * @return Tempcode UI
  */
-function send_newsletter($message, $subject, $language, $send_details, $html_only = 0, $from_email = '', $from_name = '', $priority = 3, $spreadsheet_data = array(), $mail_template = 'MAIL')
+function send_newsletter($message, $subject, $language, $send_details, $html_only = 0, $from_email = '', $from_name = '', $priority = 3, $spreadsheet_data = [], $mail_template = 'MAIL')
 {
     require_lang('newsletter');
 
     // Put in archive
-    $archive_map = array(
+    $archive_map = [
         'subject' => $subject,
         'newsletter' => $message,
         'language' => $language,
@@ -398,10 +398,10 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
         'priority' => $priority,
         'template' => $mail_template,
         'html_only' => $html_only,
-    );
+    ];
     $message_id = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_archive', 'id', $archive_map);
     if ($message_id === null) {
-        $message_id = $GLOBALS['SITE_DB']->query_insert('newsletter_archive', $archive_map + array('date_and_time' => time()), true);
+        $message_id = $GLOBALS['SITE_DB']->query_insert('newsletter_archive', $archive_map + ['date_and_time' => time()], true);
     }
 
     // Mark as done
@@ -410,7 +410,7 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
 
     // Schedule the task
     require_code('tasks');
-    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', array($message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template), false, get_param_integer('keep_send_immediately', 0) == 1, false);
+    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', [$message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template], false, get_param_integer('keep_send_immediately', 0) == 1, false);
 }
 
 /**
@@ -424,13 +424,13 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
  * @param  boolean $filter_confirms Filter non-confirmed addresses out
  * @return array A pair: List of subscriber detail maps, and a map of newsletter identifier to record count (null if $start is not zero, for performance reasons]
  */
-function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, $max = 0, $spreadsheet_data = array(), $filter_confirms = true)
+function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, $max = 0, $spreadsheet_data = [], $filter_confirms = true)
 {
-    $subscribers = array();
-    $totals = ($start == 0) ? array() : null;
+    $subscribers = [];
+    $totals = ($start == 0) ? [] : null;
 
     // Standard newsletter subscribers
-    $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'));
+    $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', ['*']);
     $where_lang = ((multi_lang()) && ($lang !== null)) ? (' AND ' . db_string_equal_to('language', $lang)) : '';
     foreach ($newsletters as $newsletter) {
         $key = strval($newsletter['id']);
@@ -442,7 +442,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                 $where .= ' AND code_confirm=0';
             }
             $sql = 'SELECT ' . $fields . ' FROM ' . $table . ' WHERE ' . $where . ' ORDER BY n.id';
-            $_rows = ($max == 0) ? array() : $GLOBALS['SITE_DB']->query($sql, $max, $start);
+            $_rows = ($max == 0) ? [] : $GLOBALS['SITE_DB']->query($sql, $max, $start);
 
             if ($start == 0) {
                 $sql_count = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $where;
@@ -458,7 +458,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                         $name = do_lang('NEWSLETTER_SUBSCRIBER_DEFAULT_NAME', get_site_name());
                     }
 
-                    $subscribers[$email_address] = array(
+                    $subscribers[$email_address] = [
                         'forename' => $_temp['n_forename'],
                         'surname' => $_temp['n_surname'],
                         'name' => $name,
@@ -468,7 +468,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                         'salt' => $_temp['pass_salt'],
                         'code_confirm' => strval($_temp['code_confirm']),
                         'join_time' => $_temp['join_time'],
-                    );
+                    ];
                 }
             }
         }
@@ -503,7 +503,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                     $where_b = 'm_primary_group=' . strval($group_id) . ' AND ' . $where;
                     $sql_b = 'SELECT ' . $fields . ' FROM ' . $table_b . ' WHERE ' . $where_b;
 
-                    $_rows = ($max == 0) ? array() : $GLOBALS['FORUM_DB']->query($sql_a . ' UNION ' . $sql_b . ' ORDER BY id', $max, $start, false, true);
+                    $_rows = ($max == 0) ? [] : $GLOBALS['FORUM_DB']->query($sql_a . ' UNION ' . $sql_b . ' ORDER BY id', $max, $start, false, true);
 
                     if ($start == 0) {
                         $sql_count_a = 'SELECT COUNT(*) FROM ' . $table_a . ' WHERE ' . $where_a;
@@ -515,7 +515,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                         $email_address = $_temp['m_email_address'];
 
                         if (!isset($subscribers[$email_address])) {
-                            $subscribers[$email_address] = array(
+                            $subscribers[$email_address] = [
                                 'forename' => '',
                                 'surname' => '',
                                 'name' => $_temp['m_username'],
@@ -525,7 +525,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                                 'salt' => $_temp['m_pass_salt'],
                                 'code_confirm' => $_temp['m_validated_email_confirm_code'],
                                 'join_time' => $_temp['m_join_time'],
-                            );
+                            ];
                         }
                     }
                 }
@@ -536,7 +536,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
         $key = '-1';
         if (($send_details === null) || (!empty($send_details[$key]))) {
             $sql = 'SELECT ' . $fields . ' FROM ' . $table . ' WHERE ' . $where;
-            $_rows = ($max == 0) ? array() : $GLOBALS['FORUM_DB']->query($sql . ' ORDER BY id', $max, $start, false, true);
+            $_rows = ($max == 0) ? [] : $GLOBALS['FORUM_DB']->query($sql . ' ORDER BY id', $max, $start, false, true);
 
             if ($start == 0) {
                 $sql_count = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $where;
@@ -547,7 +547,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                 $email_address = $_temp['m_email_address'];
 
                 if (!isset($subscribers[$email_address])) {
-                    $subscribers[$email_address] = array(
+                    $subscribers[$email_address] = [
                         'forename' => '',
                         'surname' => '',
                         'name' => $_temp['m_username'],
@@ -557,7 +557,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                         'salt' => $_temp['m_pass_salt'],
                         'code_confirm' => $_temp['m_validated_email_confirm_code'],
                         'join_time' => $_temp['m_join_time'],
-                    );
+                    ];
                 }
             }
         }
@@ -606,7 +606,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
 
                 if (($pos >= $start) && ($pos - $start < $max)) {
                     if (!isset($subscribers[$email_address])) {
-                        $subscribers[$email_address] = array(
+                        $subscribers[$email_address] = [
                             'forename' => (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '',
                             'surname' => (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line))) ? $spreadsheet_line[$surname_index] : '',
                             'name' => (($name_index !== null) && (array_key_exists($name_index, $spreadsheet_line))) ? $spreadsheet_line[$name_index] : '',
@@ -616,7 +616,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
                             'salt' => (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '',
                             'code_confirm' => $code_confirm,
                             'join_time' => (($join_time_index !== null) && (array_key_exists($join_time_index, $spreadsheet_line))) ? $spreadsheet_line[$join_time_index] : '',
-                        );
+                        ];
                     }
                 }
 
@@ -629,7 +629,7 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
         }
     }
 
-    return array($subscribers, $totals);
+    return [$subscribers, $totals];
 }
 
 /**
@@ -654,31 +654,31 @@ function detect_newsletter_spreadsheet_columns($header_row)
     $join_time_index = null;
 
     foreach ($header_row as $j => $val) {
-        if (in_array(strtolower($val), array('e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'))) {
+        if (in_array(strtolower($val), ['e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'])) {
             $email_address_index = $j;
         }
-        if (in_array(strtolower($val), array('forename', 'forenames', 'first name', strtolower(do_lang('FORENAME'))))) {
+        if (in_array(strtolower($val), ['forename', 'forenames', 'first name', strtolower(do_lang('FORENAME'))])) {
             $forename_index = $j;
         }
-        if (in_array(strtolower($val), array('surname', 'surnames', 'last name', strtolower(do_lang('SURNAME'))))) {
+        if (in_array(strtolower($val), ['surname', 'surnames', 'last name', strtolower(do_lang('SURNAME'))])) {
             $surname_index = $j;
         }
-        if (in_array(strtolower($val), array('name', 'username', strtolower(do_lang('NAME'))))) {
+        if (in_array(strtolower($val), ['name', 'username', strtolower(do_lang('NAME'))])) {
             $name_index = $j;
         }
-        if (in_array(strtolower($val), array('id', 'identifier', do_lang('NEWSLETTER_SEND_ID')))) {
+        if (in_array(strtolower($val), ['id', 'identifier', do_lang('NEWSLETTER_SEND_ID')])) {
             $send_id_index = $j;
         }
-        if (in_array(strtolower($val), array('hash', 'password', 'pass', 'pword', 'pw', 'p/w', 'code', 'secret', strtolower(do_lang('PASSWORD_HASH'))))) {
+        if (in_array(strtolower($val), ['hash', 'password', 'pass', 'pword', 'pw', 'p/w', 'code', 'secret', strtolower(do_lang('PASSWORD_HASH'))])) {
             $hash_index = $j;
         }
-        if (in_array(strtolower($val), array('salt', strtolower(do_lang('SALT'))))) {
+        if (in_array(strtolower($val), ['salt', strtolower(do_lang('SALT'))])) {
             $salt_index = $j;
         }
-        if (in_array(strtolower($val), array('lang', 'language', strtolower(do_lang('LANGUAGE'))))) {
+        if (in_array(strtolower($val), ['lang', 'language', strtolower(do_lang('LANGUAGE'))])) {
             $language_index = $j;
         }
-        if (in_array(strtolower($val), array('confirm', 'confirm code', strtolower(do_lang('CONFIRM_CODE'))))) {
+        if (in_array(strtolower($val), ['confirm', 'confirm code', strtolower(do_lang('CONFIRM_CODE'))])) {
             $code_confirm_index = $j;
         }
         if ((stripos($val, 'time') !== false) || (stripos($val, 'date') !== false) || (strtolower($val) == do_lang('JOIN_DATE'))) {
@@ -686,7 +686,7 @@ function detect_newsletter_spreadsheet_columns($header_row)
         }
     }
 
-    return array(
+    return [
         $email_address_index,
         $forename_index,
         $surname_index,
@@ -697,7 +697,7 @@ function detect_newsletter_spreadsheet_columns($header_row)
         $salt_index,
         $code_confirm_index,
         $join_time_index,
-    );
+    ];
 }
 
 /**
@@ -709,27 +709,27 @@ function detect_newsletter_spreadsheet_columns($header_row)
  */
 function newsletter_domain_subscriber_stats($key)
 {
-    $domains = array();
+    $domains = [];
     $start = 0;
     do {
         if (substr($key, 0, 1) == 'g') {
             if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email', 'COUNT(*) as cnt'), array('m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))), 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
             } else {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email'), array('m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))), '', 500, $start);
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], '', 500, $start);
             }
         } elseif ($key == '-1') {
             if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email', 'COUNT(*) as cnt'), array('m_allow_emails' => 1), 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
             } else {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email'), array('m_allow_emails' => 1), '', 500, $start);
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_email_address AS email'], ['m_allow_emails' => 1], '', 500, $start);
             }
         } else {
             if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', array('DISTINCT email', 'COUNT(*) as cnt'), array(), 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
+                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', ['DISTINCT email', 'COUNT(*) as cnt'], [], 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
             } else {
-                $where = array('newsletter_id' => $key, 'code_confirm' => 0);
-                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers x ON s.email=x.email', array('DISTINCT s.email'), $where, '', 500, $start);
+                $where = ['newsletter_id' => $key, 'code_confirm' => 0];
+                $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers x ON s.email=x.email', ['DISTINCT s.email'], $where, '', 500, $start);
             }
         }
         foreach ($rows as $row) {
@@ -773,13 +773,13 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
 {
     $unsub_url = new Tempcode();
     if (($hash == '') || ($send_id == '')) {
-        $unsub_url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), array(), false, false, true, 'tab--edit');
+        $unsub_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
     } else {
         $unsub_hash = get_unsubscribe_hash($hash);
         if (substr($send_id, 0, 1) == 'm') {
-            $unsub_url = build_url(array('page' => 'members', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash), get_module_zone('members'), array(), false, false, true);
+            $unsub_url = build_url(['page' => 'members', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('members'), [], false, false, true);
         } else {
-            $unsub_url = build_url(array('page' => 'newsletter', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash), get_module_zone('newsletter'), array(), false, false, true);
+            $unsub_url = build_url(['page' => 'newsletter', 'type' => 'unsub', 'id' => substr($send_id, 1), 'hash' => $unsub_hash], get_module_zone('newsletter'), [], false, false, true);
         }
     }
 
@@ -791,7 +791,7 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
 
     require_lang('newsletter');
 
-    $vars = array(
+    $vars = [
         'title' => $subject,
         'forename' => $forename,
         'surname' => $surname,
@@ -801,7 +801,7 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
         'send_id' => $send_id,
         'unsub_url' => $unsub_url,
         'unsub_comcode' => do_lang(cms_empty_safe($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
-    );
+    ];
 
     foreach ($vars as $var => $sub) {
         $message = str_replace('{' . $var . '}', is_object($sub) ? $sub->evaluate() : $sub, $message);
@@ -887,14 +887,14 @@ function newsletter_preview($message, $subject, $html_only, $forename = null, $s
 
         $html_version = do_template(
             $template,
-            array(
+            [
                 '_GUID' => 'b081cf9104748b090f63b6898027985e',
                 'TITLE' => $subject,
                 'CSS' => css_tempcode(true, true, $comcode_version->evaluate()),
                 'LANG' => get_site_default_lang(),
                 'LOGOURL' => get_logo_url(''),
                 'CONTENT' => $comcode_version,
-            ),
+            ],
             null,
             false,
             null,
@@ -907,7 +907,7 @@ function newsletter_preview($message, $subject, $html_only, $forename = null, $s
     // Text message
     $text_version = $html_only ? '' : strip_comcode($message);
 
-    return array($html_version, $text_version, $html_only);
+    return [$html_version, $text_version, $html_only];
 }
 
 /**
@@ -917,7 +917,7 @@ function newsletter_preview($message, $subject, $html_only, $forename = null, $s
  */
 function newsletter_block_list()
 {
-    $blocked = array();
+    $blocked = [];
     $block_path = get_custom_file_base() . '/uploads/website_specific/newsletter_blocked.csv';
     if (is_file($block_path)) {
         require_code('files_spreadsheets_read');
@@ -944,7 +944,7 @@ function add_newsletter($title, $description)
     require_code('global4');
     prevent_double_submit('ADD_NEWSLETTER', null, $title);
 
-    $map = array();
+    $map = [];
     $map += insert_lang('title', $title, 2);
     $map += insert_lang('the_description', $description, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('newsletters', $map, true);
@@ -970,7 +970,7 @@ function add_newsletter($title, $description)
  */
 function edit_newsletter($id, $title, $description)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'newsletter'));
@@ -979,10 +979,10 @@ function edit_newsletter($id, $title, $description)
     $myrow = $rows[0];
     $_title = $myrow['title'];
     $_description = $myrow['the_description'];
-    $map = array();
+    $map = [];
     $map += lang_remap('title', $_title, $title);
     $map += lang_remap('the_description', $_description, $description);
-    $GLOBALS['SITE_DB']->query_update('newsletters', $map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('newsletters', $map, ['id' => $id], '', 1);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1001,7 +1001,7 @@ function edit_newsletter($id, $title, $description)
  */
 function delete_newsletter($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1011,8 +1011,8 @@ function delete_newsletter($id)
     $_title = $myrow['title'];
     $_description = $myrow['the_description'];
 
-    $GLOBALS['SITE_DB']->query_delete('newsletters', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array('newsletter_id' => $id));
+    $GLOBALS['SITE_DB']->query_delete('newsletters', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['newsletter_id' => $id]);
     delete_lang($_title);
     delete_lang($_description);
 
@@ -1055,7 +1055,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
         $last_sent = time();
     }
 
-    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_periodic', array(
+    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_periodic', [
         'np_subject' => $subject,
         'np_message' => $message,
         'np_lang' => $lang,
@@ -1070,7 +1070,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
         'np_in_full' => $in_full,
         'np_template' => $template,
         'np_last_sent' => $last_sent,
-    ), true);
+    ], true);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1104,13 +1104,13 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
  */
 function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent = null)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $map = array(
+    $map = [
         'np_subject' => $subject,
         'np_message' => $message,
         'np_lang' => $lang,
@@ -1124,11 +1124,11 @@ function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details,
         'np_day' => $day,
         'np_in_full' => $in_full,
         'np_template' => $template,
-    );
+    ];
     if ($last_sent !== null) {
         $map['np_last_sent'] = $last_sent;
     }
-    $GLOBALS['SITE_DB']->query_update('newsletter_periodic', $map, array('id' => $id));
+    $GLOBALS['SITE_DB']->query_update('newsletter_periodic', $map, ['id' => $id]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1145,7 +1145,7 @@ function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details,
  */
 function delete_periodic_newsletter($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => $id], '', 1);
 
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
@@ -1153,7 +1153,7 @@ function delete_periodic_newsletter($id)
 
     $subject = $rows[0]['np_subject'];
 
-    $GLOBALS['SITE_DB']->query_delete('newsletter_periodic', array('id' => $id));
+    $GLOBALS['SITE_DB']->query_delete('newsletter_periodic', ['id' => $id]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1178,10 +1178,10 @@ function delete_periodic_newsletter($id)
  */
 function add_newsletter_subscriber($email, $join_time, $code_confirm, $password, $salt, $language, $forename, $surname)
 {
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', array(
+    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', [
         'email' => $email,
-    ));
-    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', array(
+    ]);
+    $id = $GLOBALS['SITE_DB']->query_insert('newsletter_subscribers', [
         'email' => $email,
         'join_time' => $join_time,
         'code_confirm' => $code_confirm,
@@ -1190,7 +1190,7 @@ function add_newsletter_subscriber($email, $join_time, $code_confirm, $password,
         'language' => $language,
         'n_forename' => $forename,
         'n_surname' => $surname,
-    ), true, true/*race condition*/);
+    ], true, true/*race condition*/);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1215,7 +1215,7 @@ function add_newsletter_subscriber($email, $join_time, $code_confirm, $password,
  */
 function edit_newsletter_subscriber($id, $email = null, $join_time = null, $code_confirm = null, $password = null, $salt = null, $language = null, $forename = null, $surname = null)
 {
-    $map = array();
+    $map = [];
     if ($email !== null) {
         $map['email'] = $email;
     }
@@ -1241,7 +1241,7 @@ function edit_newsletter_subscriber($id, $email = null, $join_time = null, $code
         $map['n_surname'] = $surname;
     }
 
-    $GLOBALS['SITE_DB']->query_update('newsletter_subscribers', $map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('newsletter_subscribers', $map, ['id' => $id], '', 1);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -1256,7 +1256,7 @@ function edit_newsletter_subscriber($id, $email = null, $join_time = null, $code
  */
 function delete_newsletter_subscriber($id)
 {
-    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribers', ['id' => $id], '', 1);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');

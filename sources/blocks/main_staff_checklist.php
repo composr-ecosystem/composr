@@ -30,14 +30,14 @@ class Block_main_staff_checklist
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 4;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         $info['update_require_upgrade'] = true;
 
         return $info;
@@ -50,7 +50,7 @@ class Block_main_staff_checklist
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         // No cache on POST as this is when we save text data
         $info['cache_on'] = <<<'PHP'
         (count($_POST) > 0)
@@ -81,31 +81,31 @@ PHP;
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
-            $GLOBALS['SITE_DB']->create_table('staff_checklist_cus_tasks', array(
+            $GLOBALS['SITE_DB']->create_table('staff_checklist_cus_tasks', [
                 'id' => '*AUTO',
                 'task_title' => 'LONG_TEXT',
                 'add_date' => 'TIME',
                 'recur_interval' => 'INTEGER',
                 'recur_every' => 'ID_TEXT',
                 'task_is_done' => '?TIME',
-            ));
+            ]);
 
             require_lang('staff_checklist');
-            $tasks = array(
+            $tasks = [
                 do_lang('CHECKLIST_INITIAL_TASK_CONTENT'),
                 '[page="adminzone:admin_health_check"]' . do_lang('CHECKLIST_HEALTH_CHECK') . '[/page]',
                 '[url="' . do_lang('CHECKLIST_INITIAL_TASK_UPTIME_MONITOR') . '"]https://uptimerobot.com/[/url]',
                 '[html]<p style="margin: 0">Facebook user? Like Composr on Facebook:</p><iframe src="https://compo.sr/uploads/website_specific/compo.sr/facebook.html" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:330px; height:20px;" allowTransparency="true"></iframe>[/html]',
                 '[page="adminzone:admin_version"]Consider helping out with the Composr project[/page]',
-            );
+            ];
             foreach ($tasks as $task) {
-                $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', array(
+                $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', [
                     'task_title' => $task,
                     'add_date' => time(),
                     'recur_interval' => 0,
                     'recur_every' => '',
                     'task_is_done' => null,
-                ));
+                ]);
             }
         }
     }
@@ -129,11 +129,11 @@ PHP;
         $recur_interval = post_param_integer('recur_interval', 0);
         $recur_every = post_param_string('recur_every', null);
         if (($new_task !== null) && ($recur_interval !== null) && ($recur_every !== null)) {
-            $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', array('task_title' => $new_task, 'add_date' => time(), 'recur_interval' => $recur_interval, 'recur_every' => $recur_every, 'task_is_done' => null));
+            $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', ['task_title' => $new_task, 'add_date' => time(), 'recur_interval' => $recur_interval, 'recur_every' => $recur_every, 'task_is_done' => null]);
             delete_cache_entry('main_staff_checklist');
         }
         $custom_tasks = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('staff_checklist_cus_tasks', array('*'));
+        $rows = $GLOBALS['SITE_DB']->query_select('staff_checklist_cus_tasks', ['*']);
         foreach ($rows as $r) {
             $recur_every = '';
             switch ($r['recur_every']) {
@@ -150,7 +150,7 @@ PHP;
                     $recur_every = do_lang('DPLU_MONTHS');
                     break;
             }
-            $custom_tasks->attach(do_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', array(
+            $custom_tasks->attach(do_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', [
                 '_GUID' => 'fa747347ad7b9eb1a7f3f54867154db4',
                 'TASK_TITLE' => comcode_to_tempcode($r['task_title']),
                 'ADD_DATE' => display_time_period($r['add_date']),
@@ -159,14 +159,14 @@ PHP;
                 'TASK_DONE' => (($r['task_is_done'] !== null) && (($r['recur_interval'] == 0) || (($r['recur_every'] != 'mins') || (time() < $r['task_is_done'] + 60 * $r['recur_interval'])) && (($r['recur_every'] != 'hours') || (time() < $r['task_is_done'] + 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'days') || (time() < $r['task_is_done'] + 24 * 60 * 60 * $r['recur_interval'])) && (($r['recur_every'] != 'months') || (time() < $r['task_is_done'] + 31 * 24 * 60 * 60 * $r['recur_interval'])))) ? 'checklist_done' : 'checklist_todo',
                 'ID' => strval($r['id']),
                 'ADD_TIME' => do_lang_tempcode('_AGO', do_lang_tempcode('DAYS', escape_html(integer_format(intval(round(floatval(time() - $r['add_date']) / 60.0 / 60.0 / 24.0)))))),
-            )));
+            ]));
         }
 
         // Handle built-in items
 
-        $rets_no_times = array();
-        $rets_todo_counts = array();
-        $rets_dates = array();
+        $rets_no_times = [];
+        $rets_todo_counts = [];
+        $rets_dates = [];
 
         $_hooks = find_all_hook_obs('blocks', 'main_staff_checklist', 'Hook_checklist_');
         ksort($_hooks);
@@ -201,7 +201,7 @@ PHP;
             $out_dates->attach($item[0]);
         }
 
-        return do_template('BLOCK_MAIN_STAFF_CHECKLIST', array(
+        return do_template('BLOCK_MAIN_STAFF_CHECKLIST', [
             '_GUID' => 'aefbca8252dc1d6edc44fc6d1e78b3ec',
             'BLOCK_ID' => $block_id,
             'URL' => get_self_url(),
@@ -209,7 +209,7 @@ PHP;
             'NO_TIMES' => $out_no_times,
             'TODO_COUNTS' => $out_todo_counts,
             'CUSTOM_TASKS' => $custom_tasks,
-        ));
+        ]);
     }
 }
 
@@ -226,22 +226,22 @@ function staff_checklist_time_ago_and_due($seconds_ago, $recur_hours = null)
         $seconds_to_go = $seconds_ago; // Actually, if only one parameter given, meaning is different
         $seconds_ago = null;
         if ($seconds_to_go === null) {
-            return array(do_lang_tempcode('DUE_NOT'), 1000000);
+            return [do_lang_tempcode('DUE_NOT'), 1000000];
         }
     } else { // Recurring
         if ($seconds_ago === null) {
-            return array(do_lang_tempcode('DUE_NOW'), 0); // Due for first time now
+            return [do_lang_tempcode('DUE_NOW'), 0]; // Due for first time now
         } else {
             $seconds_to_go = $recur_hours * 60 * 60 - $seconds_ago;
         }
     }
 
     if ($seconds_to_go == 0) {
-        return array(do_lang_tempcode('DUE_NOW'), 0); // Due for first time now (this is a special encoding for non-recurring tasks that still need doing on some form of schedule and need doing for first time now)
+        return [do_lang_tempcode('DUE_NOW'), 0]; // Due for first time now (this is a special encoding for non-recurring tasks that still need doing on some form of schedule and need doing for first time now)
     }
     if ($seconds_to_go > 0) {
-        return array(do_lang_tempcode('DUE_TIME', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period($seconds_to_go)))), $seconds_to_go);
+        return [do_lang_tempcode('DUE_TIME', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period($seconds_to_go)))), $seconds_to_go];
     } else {
-        return array(do_lang_tempcode('DUE_TIME_AGO', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period(-$seconds_to_go)))), $seconds_to_go);
+        return [do_lang_tempcode('DUE_TIME_AGO', ($seconds_ago === null) ? do_lang_tempcode('NA_EM') : make_string_tempcode(escape_html(display_time_period($seconds_ago))), make_string_tempcode(escape_html(display_time_period(-$seconds_to_go)))), $seconds_to_go];
     }
 }

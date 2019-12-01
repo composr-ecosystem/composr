@@ -52,24 +52,24 @@ class Hook_search_downloads extends FieldsSearchHook
 
         require_lang('downloads');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('SECTION_DOWNLOADS');
         $info['default'] = (get_option('search_downloads') == '1');
         $info['category'] = 'category_id';
         $info['integer_category'] = true;
-        $info['extra_sort_fields'] = array('file_size' => do_lang_tempcode('FILE_SIZE')) + $this->_get_extra_sort_fields('_download');
+        $info['extra_sort_fields'] = ['file_size' => do_lang_tempcode('FILE_SIZE')] + $this->_get_extra_sort_fields('_download');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('downloads'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('downloads'),
                 'page_name' => 'downloads',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -81,7 +81,7 @@ class Hook_search_downloads extends FieldsSearchHook
      */
     public function ajax_tree()
     {
-        return array('choose_download_category', array('compound_list' => true));
+        return ['choose_download_category', ['compound_list' => true]];
     }
 
     /**
@@ -146,7 +146,7 @@ class Hook_search_downloads extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('submitter', $author_id, $author, 'author');
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -165,14 +165,14 @@ class Hook_search_downloads extends FieldsSearchHook
         }
 
         $table = 'download_downloads r';
-        $trans_fields = array('r.name' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE', 'r.additional_details' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array('r.original_filename', 'r.download_data_mash');
+        $trans_fields = ['r.name' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE', 'r.additional_details' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = ['r.original_filename', 'r.download_data_mash'];
         $this->_get_search_parameterisation_advanced_for_content_type('_download', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('downloads_download', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . $privacy_join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'downloads', 'category_id');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -195,7 +195,7 @@ class Hook_search_downloads extends FieldsSearchHook
     public function render($row)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
 
         if ((array_key_exists(0, $highlight_bits)) && ($row['download_data_mash'] != '')) {
             $pos = strpos($row['download_data_mash'], $highlight_bits[0]) - 1000;

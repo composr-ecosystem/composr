@@ -30,7 +30,7 @@ class Module_admin_security
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -58,7 +58,7 @@ class Module_admin_security
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('hackattack', array(
+            $GLOBALS['SITE_DB']->create_table('hackattack', [
                 'id' => '*AUTO',
                 'url' => 'URLPATH',
                 'data_post' => 'LONG_TEXT',
@@ -72,9 +72,9 @@ class Module_admin_security
                 'reason_param_a' => 'SHORT_TEXT',
                 'reason_param_b' => 'SHORT_TEXT',
                 'percentage_score' => 'INTEGER',
-            ));
-            $GLOBALS['SITE_DB']->create_index('hackattack', 'otherhacksby', array('ip'));
-            $GLOBALS['SITE_DB']->create_index('hackattack', 'h_date_and_time', array('date_and_time'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('hackattack', 'otherhacksby', ['ip']);
+            $GLOBALS['SITE_DB']->create_index('hackattack', 'h_date_and_time', ['date_and_time']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
@@ -107,9 +107,9 @@ class Module_admin_security
             return null;
         }
 
-        return array(
-            'browse' => array('SECURITY_LOG', 'menu/adminzone/audit/security_log'),
-        );
+        return [
+            'browse' => ['SECURITY_LOG', 'menu/adminzone/audit/security_log'],
+        ];
     }
 
     public $title;
@@ -146,15 +146,15 @@ class Module_admin_security
         }
 
         if ($type == 'view') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('SECURITY_LOG'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('SECURITY_LOG')]]);
 
             $id = get_param_integer('id');
-            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', array('*'), array('id' => $id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], ['id' => $id], '', 1);
             $row = $rows[0];
 
             $date = get_timezoned_date_time($row['date_and_time']);
 
-            $this->title = get_screen_title('VIEW_ALERT', true, array(escape_html($date)));
+            $this->title = get_screen_title('VIEW_ALERT', true, [escape_html($date)]);
 
             $this->id = $id;
             $this->row = $row;
@@ -200,7 +200,7 @@ class Module_admin_security
         $start = get_param_integer('failed_start', 0);
         $max = get_param_integer('failed_max', 50);
 
-        $sortables = array('date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS'));
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS')];
         $test = explode(' ', get_param_string('failed_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -212,20 +212,20 @@ class Module_admin_security
 
         require_code('templates_results_table');
 
-        $header_row = results_header_row(array(do_lang_tempcode('USERNAME'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('IP_ADDRESS')), $sortables, 'failed_sort', $_sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('USERNAME'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('IP_ADDRESS')], $sortables, 'failed_sort', $_sortable . ' ' . $sort_order);
 
         $member_id = post_param_integer('member_id', null);
-        $map = ($member_id !== null) ? array('failed_account' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL)) : null;
+        $map = ($member_id !== null) ? ['failed_account' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL)] : null;
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('failedlogins', 'COUNT(*)', $map);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('failedlogins', array('*'), $map, 'ORDER BY ' . $_sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('failedlogins', ['*'], $map, 'ORDER BY ' . $_sortable . ' ' . $sort_order, $max, $start);
 
         $result_entries = new Tempcode();
         foreach ($rows as $row) {
             $date = get_timezoned_date_time($row['date_and_time']);
-            $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), '_SELF');
-            $result_entries->attach(results_entry(array($row['failed_account'], $date, hyperlink($lookup_url, $row['ip'], false, true)), true));
+            $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], '_SELF');
+            $result_entries->attach(results_entry([$row['failed_account'], $date, hyperlink($lookup_url, $row['ip'], false, true)], true));
         }
 
         $failed_logins = results_table(do_lang_tempcode('FAILED_LOGINS'), $start, 'failed_start', $max, 'failed_max', $max_rows, $header_row, $result_entries, $sortables, $_sortable, $sort_order, 'failed_sort', new Tempcode());
@@ -233,14 +233,14 @@ class Module_admin_security
         // Hack-attacks...
 
         $member_id = post_param_integer('member_id', null);
-        $map = ($member_id !== null) ? array('member_id' => $member_id) : null;
+        $map = ($member_id !== null) ? ['member_id' => $member_id] : null;
         list($alerts, $num_alerts) = find_security_alerts($map);
 
         // Render UI...
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'clean', 'start' => $start, 'max' => $max), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'clean', 'start' => $start, 'max' => $max], '_SELF');
 
-        $tpl = do_template('SECURITY_SCREEN', array(
+        $tpl = do_template('SECURITY_SCREEN', [
             '_GUID' => 'e0b5e6557686b2320a8ce8166df07328',
             'TITLE' => $this->title,
             'FAILED_LOGINS' => $failed_logins,
@@ -248,7 +248,7 @@ class Module_admin_security
             'ALERTS' => $alerts,
             'NUM_ALERTS' => strval($num_alerts),
             'URL' => $post_url,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -265,7 +265,7 @@ class Module_admin_security
         $count = 0;
         foreach (array_keys($_REQUEST) as $key) {
             if (substr($key, 0, 4) == 'del_') {
-                $GLOBALS['SITE_DB']->query_delete('hackattack', array('id' => intval(substr($key, 4))), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('hackattack', ['id' => intval(substr($key, 4))], '', 1);
                 $count++;
             }
         }
@@ -275,7 +275,7 @@ class Module_admin_security
         }
 
         // Redirect
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse', 'start' => get_param_integer('start'), 'max' => get_param_integer('max')), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse', 'start' => get_param_integer('start'), 'max' => get_param_integer('max')], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -289,15 +289,15 @@ class Module_admin_security
         $id = $this->id;
         $row = $this->row;
 
-        $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), '_SELF');
-        $member_url = build_url(array('page' => 'admin_lookup', 'param' => $row['member_id']), '_SELF');
+        $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], '_SELF');
+        $member_url = build_url(['page' => 'admin_lookup', 'param' => $row['member_id']], '_SELF');
         $reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b']);
 
         $post = with_whitespace(unixify_line_format($row['data_post']));
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id']);
 
-        return do_template('SECURITY_ALERT_SCREEN', array(
+        return do_template('SECURITY_ALERT_SCREEN', [
             '_GUID' => '6c5543151af09c79bf204bea5df61dde',
             'TITLE' => $this->title,
             'USER_AGENT' => $row['user_agent'],
@@ -309,6 +309,6 @@ class Module_admin_security
             'POST' => $post,
             'URL' => $row['url'],
             'PERCENTAGE_SCORE' => integer_format($row['percentage_score']),
-        ));
+        ]);
     }
 }

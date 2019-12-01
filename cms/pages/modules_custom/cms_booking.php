@@ -52,56 +52,56 @@ class Module_cms_booking extends Standard_crud_module
             $member_id = get_member();
         }
 
-        $ret = array(
-           'browse' => array('BOOKINGS', 'menu/booking'),
-        );
+        $ret = [
+           'browse' => ['BOOKINGS', 'menu/booking'],
+        ];
 
         if (has_privilege($member_id, 'submit_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'add_booking' => array('ADD_BOOKING', 'booking/booking'),
-            );
+            $ret += [
+               'add_booking' => ['ADD_BOOKING', 'booking/booking'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'edit_booking' => array('EDIT_BOOKING', 'booking/booking'),
-            );
+            $ret += [
+               'edit_booking' => ['EDIT_BOOKING', 'booking/booking'],
+            ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'add' => array('ADD_BOOKABLE', 'booking/bookable'),
-            );
+            $ret += [
+               'add' => ['ADD_BOOKABLE', 'booking/bookable'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'edit' => array('EDIT_BOOKABLE', 'booking/bookable'),
-            );
+            $ret += [
+               'edit' => ['EDIT_BOOKABLE', 'booking/bookable'],
+            ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'add_category' => array('ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'),
-            );
+            $ret += [
+               'add_category' => ['ADD_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'edit_category' => array('EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'),
-            );
+            $ret += [
+               'edit_category' => ['EDIT_BOOKABLE_SUPPLEMENT', 'booking/supplement'],
+            ];
         }
 
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'add_other' => array('ADD_BOOKABLE_BLACKED', 'booking/blacked'),
-            );
+            $ret += [
+               'add_other' => ['ADD_BOOKABLE_BLACKED', 'booking/blacked'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_cat_highrange_content', 'cms_booking')) {
-            $ret += array(
-               'edit_other' => array('EDIT_BOOKABLE_BLACKED', 'booking/blacked'),
-            );
+            $ret += [
+               'edit_other' => ['EDIT_BOOKABLE_BLACKED', 'booking/blacked'],
+            ];
         }
 
         $ret += parent::get_entry_points();
@@ -117,7 +117,7 @@ class Module_cms_booking extends Standard_crud_module
     public function get_privilege_overrides()
     {
         require_lang('booking');
-        return array('submit_cat_highrange_content' => array(0, 'ADD_BOOKABLE'), 'edit_cat_highrange_content' => array(0, 'EDIT_BOOKABLE'), 'delete_cat_highrange_content' => array(0, 'DELETE_BOOKABLE'));
+        return ['submit_cat_highrange_content' => [0, 'ADD_BOOKABLE'], 'edit_cat_highrange_content' => [0, 'EDIT_BOOKABLE'], 'delete_cat_highrange_content' => [0, 'DELETE_BOOKABLE']];
     }
 
     public $title;
@@ -235,18 +235,18 @@ class Module_cms_booking extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'title' => do_lang_tempcode('TITLE'),
             'categorisation' => do_lang_tempcode('BOOKABLE_CATEGORISATION'),
             'price' => do_lang_tempcode('PRICE'),
             'sort_order' => do_lang_tempcode('SORT_ORDER'),
             'enabled' => do_lang_tempcode('ENABLED'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $fh = array();
+        $fh = [];
         $fh[] = do_lang_tempcode('TITLE');
         $fh[] = do_lang_tempcode('BOOKABLE_CATEGORISATION');
         $fh[] = do_lang_tempcode('PRICE');
@@ -260,11 +260,11 @@ class Module_cms_booking extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $_row = db_map_restrict($row, array('id', 'title', 'categorisation'));
+            $_row = db_map_restrict($row, ['id', 'title', 'categorisation']);
 
-            $fr = array();
+            $fr = [];
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable', $_row, 'title'));
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable', $_row, 'categorisation'));
             $fr[] = float_format($row['price']);
@@ -276,7 +276,7 @@ class Module_cms_booking extends Standard_crud_module
             $result_entries->attach(results_entry($fr, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -288,7 +288,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  array $codes List of codes
      * @return array Tuple: form fields, hidden fields
      */
-    public function get_form_fields($details = null, $supplements = array(), $blacks = array(), $codes = array())
+    public function get_form_fields($details = null, $supplements = [], $blacks = [], $codes = [])
     {
         if ($details === null) {
             $max_sort_order = $GLOBALS['SITE_DB']->query_select_value('bookable', 'MAX(sort_order)');
@@ -296,7 +296,7 @@ class Module_cms_booking extends Standard_crud_module
                 $max_sort_order = 0;
             }
 
-            $details = array(
+            $details = [
                 'title' => null,
                 'the_description' => null,
                 'price' => 0.00,
@@ -316,7 +316,7 @@ class Module_cms_booking extends Standard_crud_module
                 'active_to_day' => null,
                 'active_to_month' => null,
                 'active_to_year' => null,
-            );
+            ];
         }
 
         $hidden = new Tempcode();
@@ -331,7 +331,7 @@ class Module_cms_booking extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_BOOKABLE_PRICE'), 'price', float_to_raw_string($details['price'], 2), true));
         $categorisation = ($details['categorisation'] === null) ? '' : get_translated_text($details['categorisation']);
         if ($categorisation == '') {
-            $_categorisation = $GLOBALS['SITE_DB']->query_select_value_if_there('bookable', 'categorisation', array(), 'GROUP BY categorisation ORDER BY COUNT(*) DESC');
+            $_categorisation = $GLOBALS['SITE_DB']->query_select_value_if_there('bookable', 'categorisation', [], 'GROUP BY categorisation ORDER BY COUNT(*) DESC');
             if ($_categorisation === null) {
                 $categorisation = do_lang('GENERAL');
             } else {
@@ -348,7 +348,7 @@ class Module_cms_booking extends Standard_crud_module
         $fields->attach(form_input_text(do_lang_tempcode('BOOKABLE_CODES'), do_lang_tempcode('DESCRIPTION_BOOKABLE_CODES'), 'codes', implode("\n", $codes), true));
 
         $_supplements = new Tempcode();
-        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', array('id', 'title'), array(), 'ORDER BY sort_order');
+        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['id', 'title'], [], 'ORDER BY sort_order');
         foreach ($all_supplements as $s) {
             $_supplements->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $supplements), get_translated_text($s['title'])));
         }
@@ -357,7 +357,7 @@ class Module_cms_booking extends Standard_crud_module
         }
 
         $_blacks = new Tempcode();
-        $all_blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked', array('id', 'blacked_explanation'), array(), 'ORDER BY blacked_from_year,blacked_from_month,blacked_from_day');
+        $all_blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked', ['id', 'blacked_explanation'], [], 'ORDER BY blacked_from_year,blacked_from_month,blacked_from_day');
         foreach ($all_blacks as $s) {
             $_blacks->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $blacks), get_translated_text($s['blacked_explanation'])));
         }
@@ -365,14 +365,14 @@ class Module_cms_booking extends Standard_crud_module
             $fields->attach(form_input_multi_list(do_lang_tempcode('BLACKOUTS'), do_lang_tempcode('DESCRIPTION_BOOKABLE_BLACKS'), 'blacks', $_blacks));
         }
 
-        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_FROM'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_FROM'), 'active_from', true, false, false, array(0, 0, $details['active_from_month'], $details['active_from_day'], $details['active_from_year']), 10, null, null, true, get_server_timezone()));
-        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_TO'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_TO'), 'active_to', false, true, false, ($details['active_to_month'] === null) ? null : array(0, 0, $details['active_to_month'], $details['active_to_day'], $details['active_to_year']), 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_FROM'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_FROM'), 'active_from', true, false, false, [0, 0, $details['active_from_month'], $details['active_from_day'], $details['active_from_year']], 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('BOOKABLE_ACTIVE_TO'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ACTIVE_TO'), 'active_to', false, true, false, ($details['active_to_month'] === null) ? null : [0, 0, $details['active_to_month'], $details['active_to_day'], $details['active_to_year']], 10, null, null, true, get_server_timezone()));
 
         $fields->attach(form_input_integer(do_lang_tempcode('SORT_ORDER'), do_lang_tempcode('DESCRIPTION_SORT_ORDER'), 'sort_order', $details['sort_order'], true));
 
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), do_lang_tempcode('DESCRIPTION_BOOKABLE_ENABLED'), 'enabled', $details['enabled'] == 1));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -385,15 +385,15 @@ class Module_cms_booking extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $myrow = $rows[0];
 
-        $supplements = collapse_1d_complexity('supplement_id', $GLOBALS['SITE_DB']->query_select('bookable_supplement_for', array('supplement_id'), array('bookable_id' => $id)));
-        $blacks = collapse_1d_complexity('blacked_id', $GLOBALS['SITE_DB']->query_select('bookable_blacked_for', array('blacked_id'), array('bookable_id' => $id)));
-        $codes = collapse_1d_complexity('code', $GLOBALS['SITE_DB']->query_select('bookable_codes', array('code'), array('bookable_id' => $id)));
+        $supplements = collapse_1d_complexity('supplement_id', $GLOBALS['SITE_DB']->query_select('bookable_supplement_for', ['supplement_id'], ['bookable_id' => $id]));
+        $blacks = collapse_1d_complexity('blacked_id', $GLOBALS['SITE_DB']->query_select('bookable_blacked_for', ['blacked_id'], ['bookable_id' => $id]));
+        $codes = collapse_1d_complexity('code', $GLOBALS['SITE_DB']->query_select('bookable_codes', ['code'], ['bookable_id' => $id]));
 
         return $this->get_form_fields($myrow, $supplements, $blacks, $codes);
     }
@@ -484,16 +484,16 @@ class Module_cms_booking_supplements extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'title' => do_lang_tempcode('TITLE'),
             'price' => do_lang_tempcode('PRICE'),
             'sort_order' => do_lang_tempcode('SORT_ORDER'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $fh = array();
+        $fh = [];
         $fh[] = do_lang_tempcode('TITLE');
         $fh[] = do_lang_tempcode('PRICE');
         $fh[] = do_lang_tempcode('ACTIONS');
@@ -503,11 +503,11 @@ class Module_cms_booking_supplements extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $_row = db_map_restrict($row, array('id', 'title'));
+            $_row = db_map_restrict($row, ['id', 'title']);
 
-            $fr = array();
+            $fr = [];
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable_supplement', $_row, 'title'));
             $fr[] = float_format($row['price']);
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true));
@@ -515,7 +515,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
             $fields->attach(results_entry($fr, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -525,7 +525,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  array $bookables List of bookables this is for
      * @return array Tuple: form fields, hidden fields
      */
-    public function get_form_fields($details = null, $bookables = array())
+    public function get_form_fields($details = null, $bookables = [])
     {
         if ($details === null) {
             $max_sort_order = $GLOBALS['SITE_DB']->query_select_value('bookable_supplement', 'MAX(sort_order)');
@@ -533,7 +533,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
                 $max_sort_order = 0;
             }
 
-            $details = array(
+            $details = [
                 'price' => 0.00,
                 'price_is_per_period' => 0,
                 'supports_quantities' => 0,
@@ -541,9 +541,9 @@ class Module_cms_booking_supplements extends Standard_crud_module
                 'promo_code' => '',
                 'supports_notes' => 0,
                 'sort_order' => 1,
-            );
+            ];
 
-            $bookables = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('bookable', array('id')));
+            $bookables = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('bookable', ['id']));
         }
 
         $hidden = new Tempcode();
@@ -560,7 +560,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
         $fields->attach(form_input_integer(do_lang_tempcode('SORT_ORDER'), do_lang_tempcode('DESCRIPTION_SORT_ORDER'), 'sort_order', $details['sort_order'], true));
 
         $_bookables = new Tempcode();
-        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', array('id', 'title'), array(), 'ORDER BY sort_order');
+        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title'], [], 'ORDER BY sort_order');
         foreach ($all_bookables as $s) {
             $_bookables->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $bookables), get_translated_text($s['title'])));
         }
@@ -568,7 +568,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
             $fields->attach(form_input_multi_list(do_lang_tempcode('BOOKABLES'), do_lang_tempcode('DESCRIPTION_SUPPLEMENT_BOOKABLES'), 'bookables', $_bookables));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -581,13 +581,13 @@ class Module_cms_booking_supplements extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement', array('*'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $myrow = $rows[0];
 
-        $bookables = collapse_1d_complexity('bookable_id', $GLOBALS['SITE_DB']->query_select('bookable_supplement_for', array('bookable_id'), array('supplement_id' => $id)));
+        $bookables = collapse_1d_complexity('bookable_id', $GLOBALS['SITE_DB']->query_select('bookable_supplement_for', ['bookable_id'], ['supplement_id' => $id]));
 
         return $this->get_form_fields($myrow, $bookables);
     }
@@ -678,14 +678,14 @@ class Module_cms_booking_blacks extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'blacked_from_year,blacked_from_month,blacked_from_day' => do_lang_tempcode('DATE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $fh = array();
+        $fh = [];
         $fh[] = do_lang_tempcode('FROM');
         $fh[] = do_lang_tempcode('TO');
         $fh[] = do_lang_tempcode('BLACKED_EXPLANATION');
@@ -696,11 +696,11 @@ class Module_cms_booking_blacks extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $_row = db_map_restrict($row, array('id', 'blacked_explanation'));
+            $_row = db_map_restrict($row, ['id', 'blacked_explanation']);
 
-            $fr = array();
+            $fr = [];
             $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['blacked_from_month'], $row['blacked_from_day'], $row['blacked_from_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['blacked_to_month'], $row['blacked_to_day'], $row['blacked_to_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             $fr[] = protect_from_escaping(get_translated_tempcode('bookable_blacked', $_row, 'blacked_explanation'));
@@ -709,7 +709,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
             $fields->attach(results_entry($fr, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -719,10 +719,10 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  array $bookables List of bookables this is for
      * @return array Tuple: form fields, hidden fields
      */
-    public function get_form_fields($details = null, $bookables = array())
+    public function get_form_fields($details = null, $bookables = [])
     {
         if ($details === null) {
-            $details = array(
+            $details = [
                 'blacked_from_day' => intval(date('d')),
                 'blacked_from_month' => intval(date('m')),
                 'blacked_from_year' => intval(date('Y')),
@@ -730,27 +730,27 @@ class Module_cms_booking_blacks extends Standard_crud_module
                 'blacked_to_month' => intval(date('m')),
                 'blacked_to_year' => intval(date('Y')),
                 'blacked_explanation' => null,
-            );
+            ];
 
-            $bookables = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('bookable', array('id')));
+            $bookables = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('bookable', ['id']));
         }
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('timezone', get_server_timezone()));
 
         $fields = new Tempcode();
-        $fields->attach(form_input_date(do_lang_tempcode('BLACKED_FROM'), do_lang_tempcode('DESCRIPTION_BLACKED_FROM'), 'blacked_from', true, false, false, array(0, 0, $details['blacked_from_month'], $details['blacked_from_day'], $details['blacked_from_year']), 10, null, null, true, get_server_timezone()));
-        $fields->attach(form_input_date(do_lang_tempcode('BLACKED_TO'), do_lang_tempcode('DESCRIPTION_BLACKED_TO'), 'blacked_to', true, false, false, array(0, 0, $details['blacked_to_month'], $details['blacked_to_day'], $details['blacked_to_year']), 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('BLACKED_FROM'), do_lang_tempcode('DESCRIPTION_BLACKED_FROM'), 'blacked_from', true, false, false, [0, 0, $details['blacked_from_month'], $details['blacked_from_day'], $details['blacked_from_year']], 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('BLACKED_TO'), do_lang_tempcode('DESCRIPTION_BLACKED_TO'), 'blacked_to', true, false, false, [0, 0, $details['blacked_to_month'], $details['blacked_to_day'], $details['blacked_to_year']], 10, null, null, true, get_server_timezone()));
         $fields->attach(form_input_text(do_lang_tempcode('BLACKED_EXPLANATION'), do_lang_tempcode('DESCRIPTION_BLACKED_EXPLANATION'), 'blacked_explanation', ($details['blacked_explanation'] === null) ? '' : get_translated_text($details['blacked_explanation']), true));
 
         $_bookables = new Tempcode();
-        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', array('id', 'title'), array(), 'ORDER BY sort_order');
+        $all_bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['id', 'title'], [], 'ORDER BY sort_order');
         foreach ($all_bookables as $s) {
             $_bookables->attach(form_input_list_entry(strval($s['id']), in_array($s['id'], $bookables), get_translated_text($s['title'])));
         }
         $fields->attach(form_input_multi_list(do_lang_tempcode('BOOKABLES'), do_lang_tempcode('DESCRIPTION_BLACKED_BOOKABLES'), 'bookables', $_bookables));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -763,13 +763,13 @@ class Module_cms_booking_blacks extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('bookable_blacked', array('*'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('bookable_blacked', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $myrow = $rows[0];
 
-        $bookables = collapse_1d_complexity('bookable_id', $GLOBALS['SITE_DB']->query_select('bookable_blacked_for', array('bookable_id'), array('blacked_id' => $id)));
+        $bookables = collapse_1d_complexity('bookable_id', $GLOBALS['SITE_DB']->query_select('bookable_blacked_for', ['bookable_id'], ['blacked_id' => $id]));
 
         return $this->get_form_fields($myrow, $bookables);
     }
@@ -858,25 +858,25 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ?integer $max Maximum to show (null: standard)
      * @return array A pair: Rows for selection from, Total results
      */
-    public function get_entry_rows($recache = false, $orderer = null, $where = array(), $force_site_db = false, $join = '', $max = null)
+    public function get_entry_rows($recache = false, $orderer = null, $where = [], $force_site_db = false, $join = '', $max = null)
     {
-        if ((!$recache) && ($orderer !== null) && ($where !== array())) {
+        if ((!$recache) && ($orderer !== null) && ($where !== [])) {
             if (isset($this->cached_entry_rows)) {
-                return array($this->cached_entry_rows, $this->cached_max_rows);
+                return [$this->cached_entry_rows, $this->cached_max_rows];
             }
         }
 
         if ($orderer === null) {
             $orderer = 'id';
         }
-        $request = array();
+        $request = [];
         if (get_param_integer('id', null) !== null) {
-            $where = array('member_id' => get_param_integer('id'));
+            $where = ['member_id' => get_param_integer('id')];
         }
         if (get_option('member_booking_only') == '1') {
-            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, array('DISTINCT member_id', $orderer), $where, 'ORDER BY ' . $orderer);
+            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['DISTINCT member_id', $orderer], $where, 'ORDER BY ' . $orderer);
         } else {
-            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, array('id'), $where, 'ORDER BY ' . $orderer);
+            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['id'], $where, 'ORDER BY ' . $orderer);
         }
         foreach ($_rows as $row) {
             if (get_option('member_booking_only') == '1') {
@@ -887,7 +887,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     $request[] = $r;
                 }
             } else {
-                $member_request = get_booking_request_from_db(array($row['id']));
+                $member_request = get_booking_request_from_db([$row['id']]);
 
                 $r = $member_request[0];
                 $r['_id'] = strval($row['id']);
@@ -900,7 +900,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
         }
         $start = get_param_integer('start', 0);
 
-        $_entries = array();
+        $_entries = [];
         foreach ($request as $i => $row) {
             if ($i < $start) {
                 continue;
@@ -912,12 +912,12 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $_entries[] = $row;
         }
 
-        if (($orderer !== null) && ($where !== array())) {
+        if (($orderer !== null) && ($where !== [])) {
             $this->cached_entry_rows = $_entries;
             $this->cached_max_rows = count($request);
         }
 
-        return array($_entries, count($request));
+        return [$_entries, count($request)];
     }
 
     /**
@@ -934,16 +934,16 @@ class Module_cms_booking_bookings extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'b_year DESC,b_month DESC,b_day DESC', INPUT_FILTER_GET_COMPLEX);
         list(, $sortable, $sort_order) = preg_split('#(.*) (ASC|DESC)#', $current_ordering, 2, PREG_SPLIT_DELIM_CAPTURE);
-        $sortables = array(
+        $sortables = [
             'b_year DESC,b_month DESC,b_day' => do_lang_tempcode('DATE'),
             'bookable_id' => do_lang_tempcode('BOOKABLE'),
             'booked_at' => do_lang_tempcode('BOOKING_DATE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $fh = array();
+        $fh = [];
         $fh[] = do_lang_tempcode('BOOKABLE');
         $fh[] = do_lang_tempcode('FROM');
         $fh[] = do_lang_tempcode('TO');
@@ -958,10 +958,10 @@ class Module_cms_booking_bookings extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['_id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['_id']], '_SELF');
 
-            $fr = array();
-            $fr[] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('bookable', 'title', array('id' => $row['bookable_id'])));
+            $fr = [];
+            $fr[] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('bookable', 'title', ['id' => $row['bookable_id']]));
             $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['start_month'], $row['start_day'], $row['start_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             $fr[] = get_timezoned_date(mktime(0, 0, 0, $row['end_month'], $row['end_day'], $row['end_year']), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
             if (get_option('member_booking_only') == '1') {
@@ -981,7 +981,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $fields->attach(results_entry($fr, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -1000,7 +1000,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
         if ($details === null) {
             $bookable_id = get_param_integer('bookable_id', null);
             if ($bookable_id === null) {
-                $bookables = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array(), 'ORDER BY sort_order');
+                $bookables = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], [], 'ORDER BY sort_order');
                 if (empty($bookables)) {
                     inform_exit(do_lang_tempcode('NO_CATEGORIES'));
                 }
@@ -1011,11 +1011,11 @@ class Module_cms_booking_bookings extends Standard_crud_module
                 }
 
                 $fields = form_input_huge_list(do_lang_tempcode('BOOKABLE'), '', 'bookable_id', $bookables_list, null, true);
-                $post_url = get_self_url(false, false, array(), false, true);
+                $post_url = get_self_url(false, false, [], false, true);
                 $submit_name = do_lang_tempcode('PROCEED');
                 $hidden = build_keep_post_fields();
 
-                return do_template('FORM_SCREEN', array(
+                return do_template('FORM_SCREEN', [
                     '_GUID' => '05c227f908ce664269b2bb6ba0fff75e',
                     'TARGET' => '_self',
                     'GET' => true,
@@ -1027,10 +1027,10 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     'FIELDS' => $fields,
                     'SUBMIT_ICON' => 'buttons/proceed',
                     'SUBMIT_NAME' => $submit_name,
-                ));
+                ]);
             }
 
-            $details = array(
+            $details = [
                 'bookable_id' => $bookable_id,
                 'start_day' => get_param_integer('day', intval(date('d'))),
                 'start_month' => get_param_integer('month', intval(date('m'))),
@@ -1040,31 +1040,31 @@ class Module_cms_booking_bookings extends Standard_crud_module
                 'end_year' => get_param_integer('year', intval(date('Y'))),
                 'quantity' => 1,
                 'notes' => '',
-                'supplements' => array(),
+                'supplements' => [],
                 'customer_name' => '',
                 'customer_email' => '',
                 'customer_mobile' => '',
                 'customer_phone' => '',
-            );
+            ];
         }
         if ($member_id === null) {
             $member_id = get_member();
         }
 
-        $_bookable = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array('id' => $details['bookable_id']), '', 1);
+        $_bookable = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $details['bookable_id']], '', 1);
         if (!array_key_exists(0, $_bookable)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $bookable = $_bookable[0];
 
-        $fields->attach(form_input_date(do_lang_tempcode('FROM'), '', 'bookable_' . strval($details['bookable_id']) . '_date_from', true, false, false, array(0, 0, $details['start_month'], $details['start_day'], $details['start_year']), 10, null, null, true, get_server_timezone()));
+        $fields->attach(form_input_date(do_lang_tempcode('FROM'), '', 'bookable_' . strval($details['bookable_id']) . '_date_from', true, false, false, [0, 0, $details['start_month'], $details['start_day'], $details['start_year']], 10, null, null, true, get_server_timezone()));
         if ($bookable['dates_are_ranges'] == 1) {
-            $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'bookable_' . strval($details['bookable_id']) . '_date_to', true, false, false, array(0, 0, $details['end_month'], $details['end_day'], $details['end_year']), 10, null, null, true, get_server_timezone()));
+            $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'bookable_' . strval($details['bookable_id']) . '_date_to', true, false, false, [0, 0, $details['end_month'], $details['end_day'], $details['end_year']], 10, null, null, true, get_server_timezone()));
         }
         $fields->attach(form_input_integer(do_lang_tempcode('QUANTITY'), '', 'bookable_' . strval($details['bookable_id']) . '_quantity', $details['quantity'], true));
         $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_notes', $details['notes'], false));
 
-        $member_directory_url = build_url(array('page' => 'members'), get_module_zone('members'));
+        $member_directory_url = build_url(['page' => 'members'], get_module_zone('members'));
         if (get_option('member_booking_only') == '1') {
             $fields->attach(form_input_username(do_lang_tempcode('BOOKING_FOR'), do_lang_tempcode('DESCRIPTION_BOOKING_FOR', escape_html($member_directory_url->evaluate())), 'username', $GLOBALS['FORUM_DRIVER']->get_username($member_id), true, false));
         } else {
@@ -1074,7 +1074,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $fields->attach(form_input_line(do_lang_tempcode('PHONE_NUMBER'), '', 'customer_phone', $details['customer_phone'], true));
         }
 
-        $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', array('a.*'), array('bookable_id' => $details['bookable_id']), 'ORDER BY sort_order');
+        $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.*'], ['bookable_id' => $details['bookable_id']], 'ORDER BY sort_order');
         foreach ($supplement_rows as $supplement_row) {
             $quantity = 0;
             $notes = '';
@@ -1083,9 +1083,9 @@ class Module_cms_booking_bookings extends Standard_crud_module
                 $notes = $details['supplements'][$supplement_row['id']]['notes'];
             }
 
-            $_supplement_row = db_map_restrict($supplement_row, array('id', 'title'));
+            $_supplement_row = db_map_restrict($supplement_row, ['id', 'title']);
 
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '384b1451a2e83190ec50555e30ceeedc', 'TITLE' => do_lang_tempcode('SUPPLEMENT', get_translated_tempcode('bookable_supplement', $_supplement_row, 'title')))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '384b1451a2e83190ec50555e30ceeedc', 'TITLE' => do_lang_tempcode('SUPPLEMENT', get_translated_tempcode('bookable_supplement', $_supplement_row, 'title'))]));
 
             if ($supplement_row['supports_quantities'] == 1) {
                 $fields->attach(form_input_integer(do_lang_tempcode('QUANTITY'), '', 'bookable_' . strval($details['bookable_id']) . '_supplement_' . strval($supplement_row['id']) . '_quantity', $quantity, true));
@@ -1095,7 +1095,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $fields->attach(form_input_text(do_lang_tempcode('NOTES'), '', 'bookable_' . strval($details['bookable_id']) . '_supplement_' . strval($supplement_row['id']) . '_notes', $notes, false));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -1107,7 +1107,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
     public function fill_in_edit_form($_id)
     {
         if (get_option('member_booking_only') == '0') {
-            $request = get_booking_request_from_db(array(intval($_id)));
+            $request = get_booking_request_from_db([intval($_id)]);
             return $this->get_form_fields($request[0]);
         }
 
@@ -1137,7 +1137,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     null, // dob_day
                     null, // dob_month
                     null, // dob_year
-                    array(), // custom_fields
+                    [], // custom_fields
                     null, // timezone
                     null, // language
                     '', // theme
@@ -1171,7 +1171,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
         }
 
         $request = get_booking_request_from_form();
-        $request = save_booking_form_to_db($request, array(), $member_id);
+        $request = save_booking_form_to_db($request, [], $member_id);
 
         if ($request === null) {
             warn_exit(do_lang_tempcode('ERROR_OCCURRED'));
@@ -1202,13 +1202,13 @@ class Module_cms_booking_bookings extends Standard_crud_module
     public function edit_actualisation($_id)
     {
         if (get_option('member_booking_only') == '0') {
-            $old_request = get_booking_request_from_db(array(intval($_id)));
+            $old_request = get_booking_request_from_db([intval($_id)]);
             $i = 0;
         } else {
             list($member_id, $i) = array_map('intval', explode('_', $_id, 2));
             $old_request = get_member_booking_request($member_id);
         }
-        $ignore_bookings = array();
+        $ignore_bookings = [];
         foreach ($old_request[$i]['_rows'] as $row) {
             $ignore_bookings[] = $row['id'];
         }
@@ -1232,7 +1232,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
     public function delete_actualisation($_id)
     {
         if (get_option('member_booking_only') == '0') {
-            $request = get_booking_request_from_db(array(intval($_id)));
+            $request = get_booking_request_from_db([intval($_id)]);
             $i = 0;
         } else {
             list($member_id, $i) = array_map('intval', explode('_', $_id, 2));

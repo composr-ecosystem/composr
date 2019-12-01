@@ -48,12 +48,12 @@ class Hook_snippet_commandr
 
             $title = get_screen_title('COMMANDR');
 
-            return do_template('COMMANDR_MAIN', array(
+            return do_template('COMMANDR_MAIN', [
                 '_GUID' => '2f29170f4f8320a26fad66e0d0f52b7a',
                 'COMMANDS' => '',
-                'SUBMIT_URL' => build_url(array('page' => 'admin_commandr'), 'adminzone'),
+                'SUBMIT_URL' => build_url(['page' => 'admin_commandr'], 'adminzone'),
                 'PROMPT' => do_lang_tempcode('COMMAND_PROMPT', escape_html($GLOBALS['FORUM_DRIVER']->get_username(get_member()))),
-            ));
+            ]);
         }
 
         return new Tempcode();

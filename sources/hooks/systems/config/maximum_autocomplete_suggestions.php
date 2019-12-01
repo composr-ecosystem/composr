@@ -30,7 +30,7 @@ class Hook_config_maximum_autocomplete_suggestions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAXIMUM_AUTOCOMPLETE_SUGGESTIONS',
             'type' => 'integer',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_maximum_autocomplete_suggestions
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

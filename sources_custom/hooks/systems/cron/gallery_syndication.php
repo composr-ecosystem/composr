@@ -39,11 +39,11 @@ class Hook_cron_gallery_syndication
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Synchronise galleries',
             'num_queued' => null, // Too time-consuming to calculate
             'minutes_between_runs' => 60,
-        );
+        ];
     }
 
     /**

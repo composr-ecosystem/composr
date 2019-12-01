@@ -30,7 +30,7 @@ class Hook_config_allow_auto_notifications
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_AUTO_NOTIFICATIONS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_allow_auto_notifications
             'public' => false,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

@@ -71,7 +71,7 @@ if (strpos($git_result, 'git: command not found') !== false) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $git_commit_id = post_param_string('git_commit_id', '');
 
-    $done = array();
+    $done = [];
     $version_dotted = post_param_string('version');
     $title = post_param_string('title');
     $notes = post_param_string('notes', '');
@@ -79,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (post_param_string('fixed_files', null) !== null) {
         $fixed_files = explode(',', post_param_string('fixed_files'));
     } else {
-        $fixed_files = array();
+        $fixed_files = [];
         $git_command = $GIT_PATH . ' show --pretty="format:" --name-only ' . $git_commit_id;
         $git_result = shell_exec($git_command . ' 2>&1');
         $_fixed_files = explode("\n", $git_result);
-        $fixed_files = array();
+        $fixed_files = [];
         foreach ($_fixed_files as $file) {
             if ($file != '') {
                 $fixed_files[] = $file;
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Find what addons are involved with this
     require_code('addons2');
-    $addons_involved = array();
+    $addons_involved = [];
     $hooks = find_all_hooks('systems', 'addon_registry');
     foreach ($fixed_files as $file) {
         foreach ($hooks as $addon_name => $place) {
@@ -282,7 +282,7 @@ foreach ($categories as $category_id => $category_title) {
     $categories_list .= '<option value="' . escape_html(strval($category_id)) . '">' . escape_html($category_title) . '</option>';
 }
 
-$projects = array(
+$projects = [
     1 => 'Composr',
     2 => 'Composr alpha testing',
     8 => 'Composr build tools',
@@ -291,8 +291,8 @@ $projects = array(
     9 => 'Composr testing platform',
     10 => 'Composr website (compo.sr)',
     4 => 'Composr non-bundled addons',
-);
-if (in_array(cms_version_branch_status(), array(VERSION_ALPHA, VERSION_BETA))) {
+];
+if (in_array(cms_version_branch_status(), [VERSION_ALPHA, VERSION_BETA])) {
     $default_project_id = 2;
 } else {
     $default_project_id = 1;
@@ -416,7 +416,7 @@ END;
 END;
 }
 
-$proceed_icon = static_evaluate_tempcode(do_template('ICON', array('_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/proceed')));
+$proceed_icon = static_evaluate_tempcode(do_template('ICON', ['_GUID' => '3806e63e8f1e854871afe200b9c0dabe', 'NAME' => 'buttons/proceed']));
 
 echo <<<END
     <fieldset>
@@ -562,12 +562,12 @@ function git_find_uncommitted_files()
     $git_command = $GIT_PATH . ' status';
     $git_result = shell_exec($git_command . ' 2>&1');
     $lines = explode("\n", $git_result);
-    $git_found = array();
+    $git_found = [];
     foreach ($lines as $line) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#\t(both )?modified:\s+(.*)$#', $line, $matches) != 0) {
             if (($matches[2] != 'data/files.bin') && (basename($matches[2]) != 'push_bugfix.php')) {
-                $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', array('filename' => $matches[2]));
+                $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', ['filename' => $matches[2]]);
                 if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
                     $file_addon = null;
                 }
@@ -601,7 +601,7 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
     $cmd .= ' -m ' . cms_escapeshellarg($git_commit_message);
     $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
 
-    $matches = array();
+    $matches = [];
     if (preg_match('# ([\da-z]+)\]#', $git_commit_command_data, $matches) != 0) {
         // Success, do a push too
         $cmd = $GIT_PATH . ' push';
@@ -618,7 +618,7 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 function get_tracker_categories()
 {
     $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (empty($result)) {
         return null;
     }
@@ -632,7 +632,7 @@ function get_tracker_categories()
 function create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project)
 {
     $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (cms_empty_safe($result)) {
         return null;
     }
@@ -642,7 +642,7 @@ function create_tracker_issue($version_dotted, $tracker_title, $tracker_message,
 function create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
     $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (!is_numeric($result)) {
         return null;
     }
@@ -651,7 +651,7 @@ function create_tracker_post($tracker_id, $tracker_comment_message, $version_dot
 
 function upload_to_tracker_issue($tracker_id, $tar_path)
 {
-    $result = make_call('upload_to_tracker_issue', array('parameters' => array($tracker_id)), $tar_path);
+    $result = make_call('upload_to_tracker_issue', ['parameters' => [$tracker_id]], $tar_path);
     if (!is_numeric($result)) {
         return null;
     }
@@ -661,14 +661,14 @@ function upload_to_tracker_issue($tracker_id, $tar_path)
 function close_tracker_issue($tracker_id)
 {
     $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    $result = make_call(__FUNCTION__, ['parameters' => $args]);
     return ($result === '1');
 }
 
 function create_forum_post($replying_to_post, $post_reply_title, $post_reply_message, $post_important)
 {
     $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    $result = make_call(__FUNCTION__, ['parameters' => $args]);
     if (!is_numeric($result)) {
         return null;
     }
@@ -732,7 +732,7 @@ function make_call($call, $post_params, $file = null)
     if ($_username !== null) {
         $_password = post_param_string('password', '', INPUT_FILTER_NONE);
         if ($post_params === null) {
-            $post_params = array();
+            $post_params = [];
         }
         $post_params['password'] = ($_username == '') ? $_password : ($_username . ':' . $_password);
     }
@@ -740,9 +740,9 @@ function make_call($call, $post_params, $file = null)
     global $REMOTE_BASE_URL;
     $call_url = $REMOTE_BASE_URL . '/data_custom/composr_homesite_web_service.php?call=' . urlencode($call);
 
-    $files = ($file === null) ? null : array('upload' => $file);
+    $files = ($file === null) ? null : ['upload' => $file];
 
-    $result = http_get_contents($call_url, array('post_params' => $post_params, 'files' => $files));
+    $result = http_get_contents($call_url, ['post_params' => $post_params, 'files' => $files]);
 
     return $result;
 }
@@ -752,7 +752,7 @@ function push_bugfix_do_dir($git_found, $seconds_since, $subdir = '')
     require_code('files');
 
     $stub = get_file_base() . '/' . (($subdir == '') ? '' : ($subdir . '/'));
-    $out = array();
+    $out = [];
     $dh = @opendir($stub);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {

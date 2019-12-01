@@ -30,7 +30,7 @@ class Hook_config_send_error_emails_ocproducts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SEND_ERROR_EMAILS_OCPRODUCTS',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_send_error_emails_ocproducts
             'public' => false,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

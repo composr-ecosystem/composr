@@ -30,7 +30,7 @@ class Hook_config_show_content_tagging_inline
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_CONTENT_TAGGING_INLINE',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_show_content_tagging_inline
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

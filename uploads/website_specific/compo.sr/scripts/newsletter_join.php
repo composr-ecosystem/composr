@@ -54,7 +54,7 @@ $advertise_on = get_param_integer('advertise_on', 0);
 $lang = get_param_string('lang');
 
 if ($advertise_on == 1) {
-    $GLOBALS['SITE_DB']->query_insert('may_feature', array('url' => $url));
+    $GLOBALS['SITE_DB']->query_insert('may_feature', ['url' => $url]);
 }
 
 if (($email != 'dont_sign_me_up@compo.sr') && ($email != '')) {

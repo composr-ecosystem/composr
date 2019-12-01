@@ -26,10 +26,10 @@ class Hook_cns_cpf_filter_latitude
     public function to_enable()
     {
         if (!addon_installed('user_mappr')) {
-            return array();
+            return [];
         }
 
-        $cpf = array();
+        $cpf = [];
         $cpf['latitude'] = true;
         $cpf['longitude'] = true;
         return $cpf;

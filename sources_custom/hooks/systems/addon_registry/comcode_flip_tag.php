@@ -26,7 +26,7 @@ class Hook_addon_registry_comcode_flip_tag
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_comcode_flip_tag
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Luca Manno',
-        );
+        ];
     }
 
     /**
@@ -102,7 +102,7 @@ The above example creates a flip between text A and text B, taking 400ms. This i
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,11 +112,11 @@ The above example creates a flip between text A and text B, taking 400ms. This i
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,13 +136,13 @@ The above example creates a flip between text A and text B, taking 400ms. This i
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/comcode_flip_tag.php',
             'themes/default/css_custom/flip.css',
             'themes/default/templates_custom/COMCODE_FLIP.tpl',
             'themes/default/javascript_custom/jquery_flip.js',
             'sources_custom/hooks/systems/comcode/flip.php',
             'themes/default/javascript_custom/comcode_flip_tag.js',
-        );
+        ];
     }
 }

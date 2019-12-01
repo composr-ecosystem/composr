@@ -30,7 +30,7 @@ class Hook_config_hc_cron_sections_to_run
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_CRON_SECTIONS_TO_RUN',
             'type' => 'special',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_cron_sections_to_run
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**
@@ -74,7 +74,7 @@ class Hook_config_hc_cron_sections_to_run
     {
         require_code('health_check');
 
-        $current = (get_option($name) == '') ? array() : explode(',', get_option($name));
+        $current = (get_option($name) == '') ? [] : explode(',', get_option($name));
         $list = create_selection_list_health_check_sections($current);
 
         return form_input_multi_list($human_name, $explanation, $name, $list, null, 15);

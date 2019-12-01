@@ -30,7 +30,7 @@ class Hook_config_password_change_days
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD_CHANGE_DAYS',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_password_change_days
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

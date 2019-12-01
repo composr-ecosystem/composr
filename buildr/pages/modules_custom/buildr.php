@@ -25,7 +25,7 @@ class Module_buildr
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -61,7 +61,7 @@ class Module_buildr
             require_code('buildr');
             $prices = get_buildr_prices_default();
             foreach (array_keys($prices) as $name) {
-                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', array('name' => $name), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', ['name' => $name], '', 1);
             }
         }
 
@@ -95,22 +95,22 @@ class Module_buildr
         }
 
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('w_attempts', array(
+            $GLOBALS['SITE_DB']->create_table('w_attempts', [
                 'id' => '*AUTO',
                 'a_datetime' => 'TIME',
                 'attempt' => 'SHORT_TEXT',
                 'x' => 'INTEGER',
                 'y' => 'INTEGER',
                 'realm' => 'INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_inventory', array(
+            $GLOBALS['SITE_DB']->create_table('w_inventory', [
                 'item_name' => '*ID_TEXT',
                 'item_count' => 'INTEGER',
                 'item_owner' => '*MEMBER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_itemdef', array(
+            $GLOBALS['SITE_DB']->create_table('w_itemdef', [
                 'name' => '*ID_TEXT',
                 'bribable' => 'BINARY',
                 'healthy' => 'BINARY',
@@ -119,9 +119,9 @@ class Module_buildr
                 'replicateable' => 'BINARY',
                 'max_per_player' => 'INTEGER',
                 'the_description' => 'SHORT_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_items', array(
+            $GLOBALS['SITE_DB']->create_table('w_items', [
                 'name' => '*ID_TEXT',
                 'location_realm' => '*INTEGER',
                 'location_x' => '*INTEGER',
@@ -130,9 +130,9 @@ class Module_buildr
                 'price' => 'INTEGER',
                 'i_count' => 'INTEGER',
                 'copy_owner' => '*MEMBER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_members', array(
+            $GLOBALS['SITE_DB']->create_table('w_members', [
                 'id' => '*INTEGER', // NOT MEMBER because it can be negative for a troll
                 'location_realm' => 'INTEGER',
                 'location_x' => 'INTEGER',
@@ -141,9 +141,9 @@ class Module_buildr
                 'health' => 'INTEGER',
                 'trolled' => 'INTEGER',
                 'lastactive' => 'TIME',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_messages', array(
+            $GLOBALS['SITE_DB']->create_table('w_messages', [
                 'id' => '*AUTO',
                 'location_realm' => 'INTEGER',
                 'location_x' => 'INTEGER',
@@ -152,9 +152,9 @@ class Module_buildr
                 'originator_id' => 'MEMBER',
                 'm_datetime' => 'TIME',
                 'destination' => 'MEMBER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_portals', array(
+            $GLOBALS['SITE_DB']->create_table('w_portals', [
                 'name' => 'ID_TEXT',
                 'p_text' => 'ID_TEXT',
                 'start_location_realm' => '*INTEGER',
@@ -164,9 +164,9 @@ class Module_buildr
                 'end_location_x' => 'INTEGER',
                 'end_location_y' => 'INTEGER',
                 'owner' => '?MEMBER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_rooms', array(
+            $GLOBALS['SITE_DB']->create_table('w_rooms', [
                 'name' => 'ID_TEXT',
                 'location_realm' => '*INTEGER',
                 'location_x' => '*INTEGER',
@@ -183,16 +183,16 @@ class Module_buildr
                 'picture_url' => 'URLPATH',
                 'owner' => '?MEMBER',
                 'allow_portal' => 'BINARY',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_travelhistory', array(
+            $GLOBALS['SITE_DB']->create_table('w_travelhistory', [
                 'member_id' => '*MEMBER',
                 'x' => '*INTEGER',
                 'y' => '*INTEGER',
                 'realm' => '*INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('w_realms', array(
+            $GLOBALS['SITE_DB']->create_table('w_realms', [
                 'id' => '*INTEGER',
                 'name' => 'SHORT_TEXT',
                 'troll_name' => 'SHORT_TEXT',
@@ -258,17 +258,17 @@ class Module_buildr
                 'a28' => 'SHORT_TEXT',
                 'a29' => 'SHORT_TEXT',
                 'a30' => 'SHORT_TEXT',
-            ), true, false, true);
+            ], true, false, true);
 
             require_code('buildr');
 
             require_code('buildr_action');
-            add_realm_wrap(null, do_lang('W_DEFAULT_REALM'), do_lang('W_DEFAULT_TROLL'), do_lang('W_DEFAULT_JAIL'), do_lang('W_DEFAULT_IN_JAIL'), '', do_lang('W_DEFAULT_JAIL_HOUSE'), do_lang('W_DEFAULT_IN_JAIL_HOUSE'), '', do_lang('W_DEFAULT_LOBBY'), do_lang('W_DEFAULT_LOBBY_TEXT'), '', array(), 0, false);
+            add_realm_wrap(null, do_lang('W_DEFAULT_REALM'), do_lang('W_DEFAULT_TROLL'), do_lang('W_DEFAULT_JAIL'), do_lang('W_DEFAULT_IN_JAIL'), '', do_lang('W_DEFAULT_JAIL_HOUSE'), do_lang('W_DEFAULT_IN_JAIL_HOUSE'), '', do_lang('W_DEFAULT_LOBBY'), do_lang('W_DEFAULT_LOBBY_TEXT'), '', [], 0, false);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 5)) {
-            $GLOBALS['SITE_DB']->create_index('w_messages', 'destination', array('destination'));
-            $GLOBALS['SITE_DB']->create_index('w_messages', 'originator_id', array('originator_id'));
+            $GLOBALS['SITE_DB']->create_index('w_messages', 'destination', ['destination']);
+            $GLOBALS['SITE_DB']->create_index('w_messages', 'originator_id', ['originator_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
@@ -291,9 +291,9 @@ class Module_buildr
             return null;
         }
 
-        return array(
-            'browse' => array('BUILDR', 'spare/world'),
-        );
+        return [
+            'browse' => ['BUILDR', 'spare/world'],
+        ];
     }
 
     public $title;
@@ -392,7 +392,7 @@ class Module_buildr
             if (addon_installed('ecommerce')) {
                 $prices = get_buildr_prices_default();
                 foreach ($prices as $name => $price) {
-                    $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', array('name' => $name, 'price' => null, 'tax_code' => '', 'price_points' => $price));
+                    $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', ['name' => $name, 'price' => null, 'tax_code' => '', 'price_points' => $price]);
                 }
 
                 set_value('buildr_prices_installed', '1', true);
@@ -411,9 +411,9 @@ class Module_buildr
         $item = either_param_string('item', '');
 
         // Create the member if they aren't already in the system
-        $member_rows = $GLOBALS['SITE_DB']->query_select('w_members', array('*'), array('id' => $member_id), '', 1);
+        $member_rows = $GLOBALS['SITE_DB']->query_select('w_members', ['*'], ['id' => $member_id], '', 1);
         if (!array_key_exists(0, $member_rows)) {
-            $member_rows[0] = array(
+            $member_rows[0] = [
                 'id' => $member_id,
                 'location_realm' => 0,
                 'location_x' => 0,
@@ -422,7 +422,7 @@ class Module_buildr
                 'health' => 10,
                 'trolled' => 0,
                 'lastactive' => time(),
-            );
+            ];
             $GLOBALS['SITE_DB']->query_insert('w_members', $member_rows[0]);
         }
         $member_row = $member_rows[0];
@@ -435,12 +435,12 @@ class Module_buildr
         // Check for death
         if ($member_row['health'] < 1) {
             take_items($member_id);
-            $GLOBALS['SITE_DB']->query_update('w_members', array('location_realm' => 0, 'location_x' => 0, 'location_y' => 0, 'banned' => 0, 'health' => 10), array('id' => $member_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('w_members', ['location_realm' => 0, 'location_x' => 0, 'location_y' => 0, 'banned' => 0, 'health' => 10], ['id' => $member_id], '', 1);
             buildr_refresh_with_message(do_lang_tempcode('W_YOU_DIED'), 'warn');
         }
 
         // Mark as active
-        $GLOBALS['SITE_DB']->query_update('w_members', array('lastactive' => time()), array('id' => $member_id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('w_members', ['lastactive' => time()], ['id' => $member_id], '', 1);
 
         destick($member_id);
 
@@ -451,12 +451,12 @@ class Module_buildr
             // Get the questions that were asked
             $i = 0;
             $trolled = $member_row['trolled'];
-            $q = array();
-            $a = array();
+            $q = [];
+            $a = [];
             while (($trolled & (255 << ($i * 8))) != 0) {
                 $q_num = ($trolled >> ($i * 8)) & 255;
-                $q[$i + 1] = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'q' . strval($q_num), array('id' => $realm));
-                $a[$i + 1] = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'a' . strval($q_num), array('id' => $realm));
+                $q[$i + 1] = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'q' . strval($q_num), ['id' => $realm]);
+                $a[$i + 1] = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'a' . strval($q_num), ['id' => $realm]);
                 $i++;
             }
             $num_questions = $i;
@@ -476,7 +476,7 @@ class Module_buildr
                 }
 
                 // Regardless they have had their chance: no more questions
-                $GLOBALS['SITE_DB']->query_update('w_members', array('trolled' => 0), array('id' => $member_id), '', 1);
+                $GLOBALS['SITE_DB']->query_update('w_members', ['trolled' => 0], ['id' => $member_id], '', 1);
 
                 if ($pass == 0) {
                     $pen_id = mt_rand(0, 2);
@@ -500,13 +500,13 @@ class Module_buildr
                     buildr_refresh_with_message(do_lang_tempcode('W_TROLL_THANKYOU', escape_html(integer_format($pass))));
                 }
             } else { // Answer question screen
-                $troll_name = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'troll_name', array('id' => $realm));
-                $this->title = get_screen_title('W_TROLL_Q', true, array(escape_html($troll_name)));
+                $troll_name = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'troll_name', ['id' => $realm]);
+                $this->title = get_screen_title('W_TROLL_Q', true, [escape_html($troll_name)]);
                 $questions = new Tempcode();
                 for ($i = 1; $i <= $num_questions; $i++) {
-                    $questions->attach(do_template('W_TROLL_QUESTION', array('_GUID' => 'b09eb44e4264a9dca5bdf651ca9a48d4', 'Q' => $q[$i], 'I' => strval($i))));
+                    $questions->attach(do_template('W_TROLL_QUESTION', ['_GUID' => 'b09eb44e4264a9dca5bdf651ca9a48d4', 'Q' => $q[$i], 'I' => strval($i)]));
                 }
-                return do_template('W_TROLL', array('_GUID' => 'e108ccaebc5b1adfa9db6b5b23e93602', 'TITLE' => $this->title, 'TROLL' => $troll_name, 'QUESTIONS' => $questions));
+                return do_template('W_TROLL', ['_GUID' => 'e108ccaebc5b1adfa9db6b5b23e93602', 'TITLE' => $this->title, 'TROLL' => $troll_name, 'QUESTIONS' => $questions]);
             }
         }
 
@@ -523,7 +523,7 @@ class Module_buildr
                     $dx = mt_rand(-1, 1);
                     $dy = mt_rand(-1, 1);
                 } while (!room_exists($troll_x + $dx, $troll_y + $dy, $realm));
-                $GLOBALS['SITE_DB']->query_update('w_members', array('location_x' => ($troll_x + $dx), 'location_y' => ($troll_y + $dy)), array('id' => $troll_id), '', 1);
+                $GLOBALS['SITE_DB']->query_update('w_members', ['location_x' => ($troll_x + $dx), 'location_y' => ($troll_y + $dy)], ['id' => $troll_id], '', 1);
             }
         }
 
@@ -531,13 +531,13 @@ class Module_buildr
 
         // What command are we being asked to do?
         if ($type == 'confirm') {
-            $url = build_url(array('page' => 'buildr'), '_SELF');
+            $url = build_url(['page' => 'buildr'], '_SELF');
             $type2 = either_param_string('btype', '');
             $item = either_param_string('item', '');
             $member = either_param_integer('member', -1);
             $param = either_param_string('param', '');
 
-            return do_template('W_CONFIRM_SCREEN', array(
+            return do_template('W_CONFIRM_SCREEN', [
                 '_GUID' => '365870cb4c6cb4282ff6c7a11f4f8a5b',
                 'TITLE' => $this->title,
                 'URL' => $url,
@@ -545,7 +545,7 @@ class Module_buildr
                 'ITEM' => $item,
                 'MEMBER' => strval($member),
                 'PARAM' => $param,
-            ));
+            ]);
         }
 
         if ($type == 'reallocate') {
@@ -555,16 +555,16 @@ class Module_buildr
 
             $out = new Tempcode();
 
-            $rows = $GLOBALS['SITE_DB']->query_select('items', array('*'), array('copy_owner' => null), 'ORDER BY name');
+            $rows = $GLOBALS['SITE_DB']->query_select('items', ['*'], ['copy_owner' => null], 'ORDER BY name');
             foreach ($rows as $myrow) {
-                $owner = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', array('name' => $myrow['name']));
+                $owner = $GLOBALS['SITE_DB']->query_select_value('w_itemdef', 'owner', ['name' => $myrow['name']]);
                 if ($owner !== null) {
-                    $GLOBALS['SITE_DB']->query_update('w_items', array('copy_owner' => $owner), array('name' => $myrow['name'], 'copy_owner' => null));
+                    $GLOBALS['SITE_DB']->query_update('w_items', ['copy_owner' => $owner], ['name' => $myrow['name'], 'copy_owner' => null]);
                     $out->attach(paragraph(do_lang_tempcode('W_REALLOCATING', escape_html($myrow['name']), 'tfgdfgd4rf')));
                 }
             }
 
-            return do_template('W_REALLOCATE', array('_GUID' => '8fa4b9205310d6bc2fc28348a52898d5', 'TITLE' => $this->title, 'OUT' => $out));
+            return do_template('W_REALLOCATE', ['_GUID' => '8fa4b9205310d6bc2fc28348a52898d5', 'TITLE' => $this->title, 'OUT' => $out]);
         }
 
         if ($type == 'portal') {
@@ -667,7 +667,7 @@ class Module_buildr
 
             $name = post_param_string('item_name', '');
             if ($name == '') {
-                $tpl = do_template('W_ITEM_SCREEN', array(
+                $tpl = do_template('W_ITEM_SCREEN', [
                     '_GUID' => '0246f7037a360996bdfb4f1dcf96bcfc',
                     'PRICE' => integer_format(get_product_price_points('mud_item')),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_TEXT')),
@@ -680,7 +680,7 @@ class Module_buildr
                     'PICTURE_URL' => '',
                     'MAX_PER_PLAYER' => '10',
                     'REPLICATEABLE' => '1',
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -706,7 +706,7 @@ class Module_buildr
                     ocp_mark_as_escaped($items);
                 }
 
-                $tpl = do_template('W_ITEMCOPY_SCREEN', array(
+                $tpl = do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => '15799930bca51eafdee3c0a8e197866a',
                     'PRICE' => integer_format(get_product_price_points('mud_item_copy')),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ITEM_COPY_TEXT')),
@@ -714,7 +714,7 @@ class Module_buildr
                     'PAGE_TYPE' => 'additemcopy',
                     'NOT_INFINITE' => '1',
                     'ITEMS' => $items,
-                ));
+                ]);
                 return $tpl;
             }
             add_item_wrap_copy($member_id, $name, post_param_integer('price'), post_param_integer('not_infinite', 0));
@@ -727,7 +727,7 @@ class Module_buildr
 
             if ($name == '') {
                 list($realm, $x, $y) = get_loc_details($member_id);
-                $tpl = do_template('W_ROOM_SCREEN', array(
+                $tpl = do_template('W_ROOM_SCREEN', [
                     '_GUID' => '5357a6cf8648c952cf29c2b7234cfa6c',
                     'PRICE' => integer_format(get_product_price_points('mud_room')),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_ROOM_TEXT')),
@@ -745,7 +745,7 @@ class Module_buildr
                     'LOCKED_RIGHT' => '0',
                     'ALLOW_PORTAL' => '1',
                     'PICTURE_URL' => '',
-                ));
+                ]);
                 return $tpl;
             }
             $urls = get_url('url', 'pic', 'uploads/buildr_addon', 0, CMS_UPLOAD_IMAGE);
@@ -759,15 +759,15 @@ class Module_buildr
 
             if ($name == '') {
                 $fortnights = (time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp(get_member())) / (60 * 60 * 24 * 7 * 2);
-                $made = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'COUNT(*)', array('owner' => get_member()));
+                $made = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'COUNT(*)', ['owner' => get_member()]);
                 $left = intval(round($fortnights - $made));
 
                 $_qa = new Tempcode();
                 for ($i = 1; $i <= 30; $i++) {
-                    $_qa->attach(do_template('W_REALM_SCREEN_QUESTION', array('_GUID' => '5fa7725f11b0df7e58ff83f2f1751515', 'I' => strval($i), 'Q' => '', 'A' => '')));
+                    $_qa->attach(do_template('W_REALM_SCREEN_QUESTION', ['_GUID' => '5fa7725f11b0df7e58ff83f2f1751515', 'I' => strval($i), 'Q' => '', 'A' => '']));
                 }
 
-                $tpl = do_template('W_REALM_SCREEN', array(
+                $tpl = do_template('W_REALM_SCREEN', [
                     '_GUID' => '7ae26fe1766aed02233e1be84772759b',
                     'PRICE' => integer_format(get_product_price_points('mud_realm')),
                     'TEXT' => paragraph(do_lang_tempcode('W_ADD_REALM_TEXT', integer_format($left))),
@@ -777,14 +777,14 @@ class Module_buildr
                     'NAME' => '',
                     'TROLL_NAME' => '',
                     'PRIVATE' => '0',
-                ));
+                ]);
                 return $tpl;
             }
 
             $i = 1;
-            $qa = array();
+            $qa = [];
             while (strlen(post_param_string('question' . strval($i), '')) > 0) {
-                $qa[$i] = array();
+                $qa[$i] = [];
                 $qa[$i]['q'] = post_param_string('question' . strval($i));
                 $qa[$i]['a'] = post_param_string('answer' . strval($i));
                 $i++;
@@ -801,7 +801,7 @@ class Module_buildr
             $name = post_param_string('portal_name', '');
 
             if ($name == '') {
-                $tpl = do_template('W_PORTAL_SCREEN', array(
+                $tpl = do_template('W_PORTAL_SCREEN', [
                     '_GUID' => '69e74a964f69721d0381a920c4a25ce5',
                     'PRICE' => integer_format(get_product_price_points('mud_portal')),
                     'TEXT' => paragraph(do_lang_tempcode('W_ABOUT_PORTALS')),
@@ -812,7 +812,7 @@ class Module_buildr
                     'END_LOCATION_REALM' => '',
                     'END_LOCATION_X' => '',
                     'END_LOCATION_Y' => '',
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -883,13 +883,13 @@ class Module_buildr
             $name = post_param_string('item_name', '');
 
             if ($name == '') {
-                $rows = $GLOBALS['SITE_DB']->query_select('w_itemdef', array('*'), array('name' => either_param_string('item')), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('w_itemdef', ['*'], ['name' => either_param_string('item')], '', 1);
                 if (!array_key_exists(0, $rows)) {
                     buildr_refresh_with_message(do_lang_tempcode('MISSING_RESOURCE'), 'warn');
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_ITEM_SCREEN', array(
+                $tpl = do_template('W_ITEM_SCREEN', [
                     '_GUID' => '1f581864bd2f0cbe05742e03ab6c2a53',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'edititem',
@@ -901,7 +901,7 @@ class Module_buildr
                     'OWNER' => ($row['owner'] === null) ? '' : strval($row['owner']),
                     'MAX_PER_PLAYER' => strval($row['max_per_player']),
                     'REPLICATEABLE' => strval($row['replicateable']),
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -918,10 +918,10 @@ class Module_buildr
                 $member = get_param_integer('member');
                 list($realm, $x, $y) = get_loc_details($member_id);
 
-                $price = $GLOBALS['SITE_DB']->query_select_value('w_items', 'price', array('copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)));
-                $not_infinite = $GLOBALS['SITE_DB']->query_select_value('w_items', 'not_infinite', array('copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)));
+                $price = $GLOBALS['SITE_DB']->query_select_value('w_items', 'price', ['copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
+                $not_infinite = $GLOBALS['SITE_DB']->query_select_value('w_items', 'not_infinite', ['copy_owner' => $member, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm, 'name' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX)]);
 
-                $tpl = do_template('W_ITEMCOPY_SCREEN', array(
+                $tpl = do_template('W_ITEMCOPY_SCREEN', [
                     '_GUID' => 'a8d28f6516408dba96a8b57ddcd7cee6',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'edititemcopy',
@@ -932,7 +932,7 @@ class Module_buildr
                     'ITEM' => get_param_string('item', false, INPUT_FILTER_GET_COMPLEX),
                     'OWNER' => strval($member),
                     'PRICE' => strval($price),
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -947,13 +947,13 @@ class Module_buildr
             if ($name == '') {
                 list($location_realm, $x, $y) = get_loc_details($member_id);
 
-                $rows = $GLOBALS['SITE_DB']->query_select('w_rooms', array('*'), array('location_x' => $x, 'location_y' => $y, 'location_realm' => $location_realm), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('w_rooms', ['*'], ['location_x' => $x, 'location_y' => $y, 'location_realm' => $location_realm], '', 1);
                 if (!array_key_exists(0, $rows)) {
                     buildr_refresh_with_message(do_lang_tempcode('MISSING_RESOURCE'), 'warn');
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_ROOM_SCREEN', array(
+                $tpl = do_template('W_ROOM_SCREEN', [
                     '_GUID' => 'a4c5f8ae962cdbaa304135cf07c583a0',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editroom',
@@ -973,7 +973,7 @@ class Module_buildr
                     'ALLOW_PORTAL' => strval($row['allow_portal']),
                     'PICTURE_URL' => $row['picture_url'],
                     'OWNER' => ($row['owner'] === null) ? '' : strval($row['owner']),
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -989,7 +989,7 @@ class Module_buildr
             if ($name == '') {
                 list($realm, ,) = get_loc_details($member_id);
 
-                $rows = $GLOBALS['SITE_DB']->query_select('w_realms', array('*'), array('id' => $realm), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('w_realms', ['*'], ['id' => $realm], '', 1);
                 if (!array_key_exists(0, $rows)) {
                     buildr_refresh_with_message(do_lang_tempcode('MISSING_RESOURCE'), 'warn');
                 }
@@ -997,10 +997,10 @@ class Module_buildr
 
                 $qatc = new Tempcode();
                 for ($i = 1; $i <= 30; $i++) {
-                    $qatc->attach(do_template('W_REALM_SCREEN_QUESTION', array('_GUID' => '0510427a3895969dede2bd13db7d46a6', 'I' => strval($i), 'Q' => $row['q' . strval($i)], 'A' => $row['a' . strval($i)])));
+                    $qatc->attach(do_template('W_REALM_SCREEN_QUESTION', ['_GUID' => '0510427a3895969dede2bd13db7d46a6', 'I' => strval($i), 'Q' => $row['q' . strval($i)], 'A' => $row['a' . strval($i)]]));
                 }
 
-                $tpl = do_template('W_REALM_SCREEN', array(
+                $tpl = do_template('W_REALM_SCREEN', [
                     '_GUID' => 'f2503e0be6e45a296baa8625cafb4d72',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editrealm',
@@ -1009,7 +1009,7 @@ class Module_buildr
                     'NAME' => $row['name'],
                     'TROLL_NAME' => $row['troll_name'],
                     'PRIVATE' => strval($row['r_private']),
-                ));
+                ]);
                 return $tpl;
             }
 
@@ -1029,13 +1029,13 @@ class Module_buildr
                 list($realm, $x, $y) = get_loc_details($member_id);
                 $end_realm = get_param_integer('param');
 
-                $rows = $GLOBALS['SITE_DB']->query_select('w_portals', array('*'), array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $end_realm), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('w_portals', ['*'], ['start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm, 'end_location_realm' => $end_realm], '', 1);
                 if (!array_key_exists(0, $rows)) {
                     buildr_refresh_with_message(do_lang_tempcode('MISSING_RESOURCE'), 'warn');
                 }
                 $row = $rows[0];
 
-                $tpl = do_template('W_PORTAL_SCREEN', array(
+                $tpl = do_template('W_PORTAL_SCREEN', [
                     '_GUID' => 'cad0e01c1c4c410e67b775c3ff6eeb3a',
                     'TITLE' => $this->title,
                     'PAGE_TYPE' => 'editportal',
@@ -1049,7 +1049,7 @@ class Module_buildr
                     'END_LOCATION_X' => strval($row['end_location_x']),
                     'END_LOCATION_Y' => strval($row['end_location_y']),
                     'OWNER' => ($row['owner'] === null) ? '' : strval($row['owner']),
-                ));
+                ]);
                 return $tpl;
             }
 

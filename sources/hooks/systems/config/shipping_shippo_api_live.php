@@ -30,7 +30,7 @@ class Hook_config_shipping_shippo_api_live
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHIPPING_SHIPPO_API_LIVE',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -46,7 +46,7 @@ class Hook_config_shipping_shippo_api_live
             'addon' => 'ecommerce',
 
             'maintenance_code' => 'shippo',
-        );
+        ];
     }
 
     /**

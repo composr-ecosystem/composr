@@ -23,7 +23,7 @@ class external_code_considerations_test_set extends cms_test_case
     public function testConsistency()
     {
         $a = cms_file_get_contents_safe(get_file_base() . '/.editorconfig', FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         $does_match = (preg_match('#git checkout -- (.*)\(ends\)#s', $a, $matches) != 0);
         $this->assertTrue($does_match);
         if ($does_match) {
@@ -39,11 +39,11 @@ class external_code_considerations_test_set extends cms_test_case
             $end_pos = strpos($b, $end);
             $this->assertTrue($end_pos !== false);
             $_parts_line_count = explode('\|', substr($b, $start_pos, $end_pos - $start_pos));
-            $parts_line_count = array();
-            $skip = array(
+            $parts_line_count = [];
+            $skip = [
                 '.*/.htaccess',
                 '.*/index.html',
-            );
+            ];
             foreach ($_parts_line_count as $regexp_part) {
                 $part = stripslashes($regexp_part);
                 $has_dotslash = substr($part, 0, 2) == './';
@@ -71,14 +71,14 @@ class external_code_considerations_test_set extends cms_test_case
             }
 
             // Check files exists
-            $skip = array(
+            $skip = [
                 'data_custom/latest_activity.bin',
                 'data_custom/permission_checks.log',
                 'data_custom/execute_temp.php',
                 'docs/api',
                 '_old',
                 'nbproject',
-            );
+            ];
             foreach ($all_parts as $part) {
                 if (in_array($part, $skip)) {
                     continue;
@@ -92,7 +92,7 @@ class external_code_considerations_test_set extends cms_test_case
             }
 
             // Check libraries excluded
-            $skip = array(
+            $skip = [
                 'themes/default/javascript_custom/activity_feed.js',
                 'themes/default/javascript_custom/buildr.js',
                 'themes/default/javascript_custom/comcode_flip_tag.js',
@@ -133,12 +133,12 @@ class external_code_considerations_test_set extends cms_test_case
                 'sources_custom/hooks',
                 'sources_custom/locations',
                 'sources_custom/miniblocks',
-            );
-            $dirs = array(
+            ];
+            $dirs = [
                 'themes/default/javascript_custom' => false,
                 'themes/default/css_custom' => false,
                 'sources_custom' => true,
-            );
+            ];
             foreach ($dirs as $dir => $subdirs_only) {
                 $dh = opendir(get_file_base() . '/' . $dir);
                 while (($file = readdir($dh)) !== false) {
@@ -160,7 +160,7 @@ class external_code_considerations_test_set extends cms_test_case
 
                     if (is_dir(get_file_base() . '/' . $dir . '/' . $file)) {
                         $files = scandir(get_file_base() . '/' . $dir . '/' . $file);
-                        if (($files == array('.', '..')) || ($files == array('.', '..', '.DS_Store'))) {
+                        if (($files == ['.', '..']) || ($files == ['.', '..', '.DS_Store'])) {
                             // Empty directory
                             continue;
                         }

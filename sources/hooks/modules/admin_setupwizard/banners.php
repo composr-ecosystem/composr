@@ -30,10 +30,10 @@ class Hook_sw_banners
      */
     public function get_current_settings()
     {
-        $settings = array();
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => 'donate'));
+        $settings = [];
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'donate']);
         $settings['have_default_banners_donation'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => 'advertise_here'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'advertise_here']);
         $settings['have_default_banners_advertising'] = ($test === null) ? '0' : '1';
         return $settings;
     }
@@ -47,7 +47,7 @@ class Hook_sw_banners
     public function get_fields($field_defaults)
     {
         if (!addon_installed('banners') || post_param_integer('addon_banners', null) === 0) {
-            return array(new Tempcode(), new Tempcode());
+            return [new Tempcode(), new Tempcode()];
         }
 
         $current_settings = $this->get_current_settings();
@@ -61,7 +61,7 @@ class Hook_sw_banners
         if ($current_settings['have_default_banners_advertising'] == '1') {
             $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_BANNERS_ADVERTISING'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_BANNERS_ADVERTISING'), 'have_default_banners_advertising', $field_defaults['have_default_banners_advertising'] == '1'));
         }
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -74,7 +74,7 @@ class Hook_sw_banners
         }
 
         if (post_param_integer('have_default_banners_donation', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => 'donate'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'donate']);
             if ($test !== null) {
                 require_code('banners2');
                 delete_banner('donate');
@@ -84,7 +84,7 @@ class Hook_sw_banners
             }
         }
         if (post_param_integer('have_default_banners_advertising', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => 'advertise_here'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => 'advertise_here']);
             if ($test !== null) {
                 require_code('banners2');
                 delete_banner('advertise_here');

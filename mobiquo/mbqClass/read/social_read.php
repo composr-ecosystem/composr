@@ -32,33 +32,33 @@ class CMSSocialRead
         require_code('users2');
 
         if (is_guest()) {
-            return array();
+            return [];
         }
 
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => get_member()));
-        $followers = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()]);
+        $followers = [];
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], false, USERNAME_DEFAULT_NULL);
             if ($username === null) {
                 continue;
             }
 
-            $arr = array(
+            $arr = [
                 'user_id' => $row['member_liked'],
                 'username' => $username,
                 'display_text' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], true),
                 'is_online' => member_is_online($row['member_liked']),
-            );
+            ];
 
             $display_text = $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], true);
             if ($display_text != $username) {
-                $arr += array(
+                $arr += [
                     'display_text' => mobiquo_val($display_text, 'base64'),
-                );
+                ];
             }
 
             $followers[] = $arr;
@@ -78,33 +78,33 @@ class CMSSocialRead
         require_code('users2');
 
         if (is_guest()) {
-            return array();
+            return [];
         }
 
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_likes'), array('member_liked' => get_member()));
-        $followers = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_likes'], ['member_liked' => get_member()]);
+        $followers = [];
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_likes'], false, USERNAME_DEFAULT_NULL);
             if ($username === null) {
                 continue;
             }
 
-            $arr = array(
+            $arr = [
                 'user_id' => $row['member_likes'],
                 'username' => $username,
                 'display_text' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_likes'], true),
                 'is_online' => member_is_online($row['member_likes']),
-            );
+            ];
 
             $display_text = $GLOBALS['FORUM_DRIVER']->get_username($row['member_likes'], true);
             if ($display_text != $username) {
-                $arr += array(
+                $arr += [
                     'display_text' => mobiquo_val($display_text, 'base64'),
-                );
+                ];
             }
 
             $followers[] = $arr;
@@ -124,17 +124,17 @@ class CMSSocialRead
         cms_verify_parameters_phpdoc();
 
         if (is_guest()) {
-            return array(0, array());
+            return [0, []];
         }
 
-        $where = array(
+        $where = [
             'd_frequency' => A_WEB_NOTIFICATION,
             'd_to_member_id' => get_member(),
-        );
-        $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('*'), $where, '', $max, $start);
+        ];
+        $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['*'], $where, '', $max, $start);
         $total = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where);
 
-        $items = array();
+        $items = [];
         foreach ($rows as $row) {
             if (is_guest($row['d_from_member_id'])) {
                 $username = do_lang('SYSTEM');
@@ -142,7 +142,7 @@ class CMSSocialRead
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['d_from_member_id']);
             }
 
-            $arr = array(
+            $arr = [
                 'user_id' => $row['d_from_member_id'],
                 'username' => $username,
                 'icon_url' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($row['d_from_member_id']),
@@ -151,10 +151,10 @@ class CMSSocialRead
                 'content_type' => $row['d_notification_code'],
                 'content_id' => $row['d_code_category'],
                 'unread' => ($row['d_read'] == 0),
-            );
+            ];
 
             // Try and extract topic from URL in notification
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\[url[^\[\]]*\](.*)\[/url\]#U', $row['d_message'], $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $test = get_id_by_url($matches[1][$i]);
@@ -168,7 +168,7 @@ class CMSSocialRead
             $items[] = $arr;
         }
 
-        return array($total, $items);
+        return [$total, $items];
     }
 
     /**
@@ -191,7 +191,7 @@ class CMSSocialRead
         $total = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'activities' . $where_str);
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities' . $where_str . ' ORDER BY a_time DESC', $max, $start);
 
-        $items = array();
+        $items = [];
         foreach ($rows as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_member_id']);
 
@@ -212,7 +212,7 @@ class CMSSocialRead
                     break;*/
             }
 
-            $items[] = array(
+            $items[] = [
                 'user_id' => $row['a_member_id'],
                 'username' => $username,
                 'icon_url' => $memberpic,
@@ -220,9 +220,9 @@ class CMSSocialRead
                 'timestamp' => $date,
                 'content_type' => $content_type,
                 'content_id' => $content_id,
-            );
+            ];
         }
 
-        return array($total, $items);
+        return [$total, $items];
     }
 }

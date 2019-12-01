@@ -112,9 +112,9 @@ if ($lstring !== null) {
             if (($with_contents) && (isset($bits['id'])) && (get_param_integer('latitude_search_field', null) !== null) && (get_param_integer('longitude_search_field', null) !== null)) {
                 $backup = $bits['id'];
                 do { // Ensure we have some entries under the idealised location
-                    $num_entries = $GLOBALS['SITE_DB']->query_select_value('catalogue_childcountcache', 'c_num_rec_entries', array('cc_id' => $bits['id']));
+                    $num_entries = $GLOBALS['SITE_DB']->query_select_value('catalogue_childcountcache', 'c_num_rec_entries', ['cc_id' => $bits['id']]);
                     if ($num_entries == 0) {
-                        $bits['id'] = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'cc_parent_id', array('id' => $bits['id']));
+                        $bits['id'] = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'cc_parent_id', ['id' => $bits['id']]);
                         if ($bits['id'] === null) {
                             break;
                         }
@@ -143,7 +143,7 @@ if ($lstring !== null) {
                 $parent_id = $bits['id'];
                 do {
                     if ($parent_id !== null) {
-                        $row = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('cc_parent_id', 'cc_title'), array('id' => $parent_id), '', 1);
+                        $row = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['cc_parent_id', 'cc_title'], ['id' => $parent_id], '', 1);
                         $parent_id = $row[0]['cc_parent_id'];
                         if ($parent_id !== null) { // Top level skipped also
                             if ($done_one) {

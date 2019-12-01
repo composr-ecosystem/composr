@@ -26,16 +26,16 @@ class Hook_checklist_community_billboard
     public function run()
     {
         if (!addon_installed('community_billboard')) {
-            return array();
+            return [];
         }
 
         require_lang('community_billboard');
 
         $num_queue = $this->get_num_community_billboard_queue();
 
-        $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', array('activation_time', 'days'), array('active_now' => 1));
+        $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', ['activation_time', 'days'], ['active_now' => 1]);
         if ($rows === null) {
-            return array();
+            return [];
         }
         $seconds_due_in = null;
         if (array_key_exists(0, $rows)) {
@@ -56,18 +56,18 @@ class Hook_checklist_community_billboard
 
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $url = build_url(array('page' => 'admin_community_billboard', 'type' => 'browse'), 'adminzone');
+        $url = build_url(['page' => 'admin_community_billboard', 'type' => 'browse'], 'adminzone');
         $num_queue = $this->get_num_community_billboard_queue();
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_due_in);
         $info->attach(do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($num_queue))));
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '820e0e3cd80754dc7dfd9a0d05a43ec0',
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('CHOOSE_COMMUNITY_BILLBOARD'),
             'INFO' => $info,
-        ));
-        return array(array($tpl, $seconds_due_in, null, null));
+        ]);
+        return [[$tpl, $seconds_due_in, null, null]];
     }
 
     /**
@@ -77,7 +77,7 @@ class Hook_checklist_community_billboard
      */
     public function get_num_community_billboard_queue()
     {
-        $c = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'COUNT(*)', array('activation_time' => null));
+        $c = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'COUNT(*)', ['activation_time' => null]);
         if ($c === null) {
             return 0;
         }

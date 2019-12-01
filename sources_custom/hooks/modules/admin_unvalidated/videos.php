@@ -35,7 +35,7 @@ class Hook_unvalidated_videos
 
         require_lang('galleries');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'videos';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

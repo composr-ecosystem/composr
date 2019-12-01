@@ -31,11 +31,11 @@ class Hook_cron_password_censor
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Censor old written passwords',
             'num_queued' => null, // Too time-consuming to calculate
             'minutes_between_runs' => 60 * 12,
-        );
+        ];
     }
 
     /**

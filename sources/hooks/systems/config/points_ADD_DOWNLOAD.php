@@ -30,7 +30,7 @@ class Hook_config_points_ADD_DOWNLOAD
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ADD_DOWNLOAD',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_ADD_DOWNLOAD
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

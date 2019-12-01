@@ -26,7 +26,7 @@ class Hook_addon_registry_directory_protect
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_directory_protect
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,7 +109,7 @@ RewriteRule (.*) - [L]
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -119,11 +119,11 @@ RewriteRule (.*) - [L]
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -143,9 +143,9 @@ RewriteRule (.*) - [L]
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/directory_protect.php',
             'data_custom/directory_protect.php',
-        );
+        ];
     }
 }

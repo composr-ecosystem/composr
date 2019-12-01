@@ -31,11 +31,11 @@ class Hook_ecommerce_disastr
 
         require_lang('disastr');
 
-        return array(
+        return [
             'category_name' => do_lang('DISEASES_CURES_IMMUNISATIONS_TITLE'),
             'category_description' => do_lang_tempcode('DISEASES_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/spare/disaster'),
-        );
+        ];
     }
 
     /**
@@ -51,9 +51,9 @@ class Hook_ecommerce_disastr
     {
         require_lang('disastr');
 
-        $products = array();
+        $products = [];
 
-        $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), array(), 'ORDER BY name');
+        $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], [], 'ORDER BY name');
         foreach ($rows as $disease) {
             $image_url = $disease['image'];
             if ($image_url != '') {
@@ -62,13 +62,13 @@ class Hook_ecommerce_disastr
                 }
             }
 
-            $products['CURE_' . strval($disease['id'])] = array(
+            $products['CURE_' . strval($disease['id'])] = [
                 'item_name' => do_lang('__CURE', $disease['name'], $disease['cure']),
                 'item_description' => do_lang_tempcode('_CURE', escape_html($disease['name']), escape_html($disease['cure'])),
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -83,15 +83,15 @@ class Hook_ecommerce_disastr
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
 
-            $products['IMMUNISATION_' . strval($disease['id'])] = array(
+            $products['IMMUNISATION_' . strval($disease['id'])] = [
                 'item_name' => do_lang('__IMMUNISATION', $disease['name'], $disease['immunisation']),
                 'item_description' => do_lang_tempcode('_IMMUNISATION', escape_html($disease['name']), escape_html($disease['immunisation'])),
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -106,7 +106,7 @@ class Hook_ecommerce_disastr
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
         }
 
         return $products;
@@ -139,23 +139,23 @@ class Hook_ecommerce_disastr
             return ECOMMERCE_PRODUCT_NO_GUESTS;
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^(CURE|IMMUNISATION)_(\d+)$#', $type_code, $matches) == 0) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         $disease_id = intval($matches[2]);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), array('id' => $disease_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], ['id' => $disease_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return ECOMMERCE_PRODUCT_MISSING;
         }
         $disease = $rows[0];
 
-        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', array('*'), array('member_id' => $member_id, 'disease_id' => $disease['id']), '', 1);
+        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', ['*'], ['member_id' => $member_id, 'disease_id' => $disease['id']], '', 1);
         if (array_key_exists(0, $member_rows)) {
             $member_row = $member_rows[0];
         } else {
-            $member_row = array('sick' => 0, 'cure' => 0, 'immunisation' => 0);
+            $member_row = ['sick' => 0, 'cure' => 0, 'immunisation' => 0];
         }
 
         if ($member_row['cure'] == 1) {
@@ -209,7 +209,7 @@ class Hook_ecommerce_disastr
 
         require_lang('disastr');
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^(CURE|IMMUNISATION)_(\d+)$#', $type_code, $matches) == 0) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -217,18 +217,18 @@ class Hook_ecommerce_disastr
 
         $member_id = intval($purchase_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('diseases', array('*'), array('id' => $disease_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], ['id' => $disease_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         $disease_row = $rows[0];
 
-        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', array('*'), array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
+        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', ['*'], ['member_id' => $member_id, 'disease_id' => $disease_id], '', 1);
 
-        $map = array(
+        $map = [
             'member_id' => $member_id,
             'disease_id' => $disease_id,
-        );
+        ];
         if ($matches[1] == 'CURE') {
             $map['cure'] = 1;
             $map['sick'] = 0;
@@ -243,17 +243,17 @@ class Hook_ecommerce_disastr
             }
         }
 
-        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', array('*'), array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
+        $member_rows = $GLOBALS['SITE_DB']->query_select('members_diseases', ['*'], ['member_id' => $member_id, 'disease_id' => $disease_id], '', 1);
         if (array_key_exists(0, $member_rows)) {
-            $GLOBALS['SITE_DB']->query_update('members_diseases', $map, array('member_id' => $member_id, 'disease_id' => $disease_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('members_diseases', $map, ['member_id' => $member_id, 'disease_id' => $disease_id], '', 1);
         } else {
             $GLOBALS['SITE_DB']->query_insert('members_diseases', $map);
         }
 
         if ($matches[1] == 'CURE') {
-            $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CURE', null, null, null, get_site_default_lang()), 'details2' => $disease_row['cure'], 'txn_id' => $details['TXN_ID']));
+            $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('CURE', null, null, null, get_site_default_lang()), 'details2' => $disease_row['cure'], 'txn_id' => $details['TXN_ID']]);
         } elseif ($matches[1] == 'IMMUNISATION') {
-            $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('IMMUNISATION', null, null, null, get_site_default_lang()), 'details2' => $disease_row['immunisation'], 'txn_id' => $details['TXN_ID']));
+            $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('IMMUNISATION', null, null, null, get_site_default_lang()), 'details2' => $disease_row['immunisation'], 'txn_id' => $details['TXN_ID']]);
         }
 
         // There's an urgency, so show an instant message (plus buying via points, so will definitely be seen)

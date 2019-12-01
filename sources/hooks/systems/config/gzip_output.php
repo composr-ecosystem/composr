@@ -30,7 +30,7 @@ class Hook_config_gzip_output
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GZIP_OUTPUT',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_gzip_output
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

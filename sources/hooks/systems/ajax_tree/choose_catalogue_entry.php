@@ -44,7 +44,7 @@ class Hook_ajax_tree_choose_catalogue_entry
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'catalogues')) {
-            $tree = array();
+            $tree = [];
         }
 
         $out = '';
@@ -74,10 +74,10 @@ class Hook_ajax_tree_choose_catalogue_entry
 
         // Mark parent cats for pre-expansion
         if (!cms_empty_safe($default)) {
-            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', array('id' => intval($default)));
+            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => intval($default)]);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'cc_parent_id', array('id' => $cat));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'cc_parent_id', ['id' => $cat]);
             }
         }
 

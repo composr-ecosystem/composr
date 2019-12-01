@@ -30,7 +30,7 @@ class Hook_config_attachment_default_height
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_VIDEO_HEIGHT',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_attachment_default_height
             'public' => false,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

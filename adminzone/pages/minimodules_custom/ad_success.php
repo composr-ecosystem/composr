@@ -33,9 +33,9 @@ if (!addon_installed__messaged('ad_success', $error_msg)) {
 $title = get_screen_title('Simple referral tracker', false);
 $title->evaluate_echo();
 
-$success = array();
-$joining = array();
-$failure = array();
+$success = [];
+$joining = [];
+$failure = [];
 $query = 'SELECT member_id,s_get,ip,date_and_time FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24 * get_param_integer('days', 1)) . ' AND s_get LIKE \'' . db_encode_like('%<param>_t=%') . '\'';
 if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
     $query .= ' GROUP BY member_id';
@@ -43,7 +43,7 @@ if ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) {
 $advertiser_sessions = $GLOBALS['SITE_DB']->query($query);
 $advertiser_sessions = remove_duplicate_rows($advertiser_sessions, 'member_id');
 foreach ($advertiser_sessions as $session) {
-    $matches = array();
+    $matches = [];
     if (!preg_match('#<param>_t=([' . URL_CONTENT_REGEXP . ']+)</param>#', $session['s_get'], $matches)) {
         continue;
     }
@@ -64,12 +64,12 @@ foreach ($advertiser_sessions as $session) {
         }
     }
 
-    $ip = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', array('the_page' => 'site/pages/modules/join.php', 'member_id' => $member_id));
-    $member_id = ($ip === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'member_id', array('ip' => $ip));
+    $ip = $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', ['the_page' => 'site/pages/modules/join.php', 'member_id' => $member_id]);
+    $member_id = ($ip === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'member_id', ['ip' => $ip]);
     if ($member_id !== null) {
         $joining[$_t]++;
     }
-    $test = ($member_id === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'id', array('the_page' => 'site/pages/modules_custom/purchase.php', 'member_id' => $member_id));
+    $test = ($member_id === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'id', ['the_page' => 'site/pages/modules_custom/purchase.php', 'member_id' => $member_id]);
     if ($test !== null) {
         $success[$_t]++;
     } else {

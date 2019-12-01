@@ -30,14 +30,14 @@ class Block_side_calendar
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'zone', 'days', 'title', 'filter', 'private', 'as_guest', 'check');
+        $info['parameters'] = ['param', 'zone', 'days', 'title', 'filter', 'private', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_calendar
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             ((array_key_exists('private', $map)) && ($map['private'] != '')) ? intval($map['private']) : null,
@@ -107,7 +107,7 @@ PHP;
 
         $box_title = array_key_exists('title', $map) ? $map['title'] : do_lang_tempcode('COMING_SOON');
 
-        $calendar_url = build_url($filter + array('page' => 'calendar', 'type' => 'browse', 'view' => 'month', 'id' => strval($year) . '-' . strval($month)), $zone);
+        $calendar_url = build_url($filter + ['page' => 'calendar', 'type' => 'browse', 'view' => 'month', 'id' => strval($year) . '-' . strval($month)], $zone);
 
         $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
         $member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : get_member();
@@ -120,8 +120,8 @@ PHP;
 
             $happenings = calendar_matches($member_id, $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start, $period_end, $filter, true, $private, $check_perms);
 
-            $entries = array();
-            $priorities = array();
+            $entries = [];
+            $priorities = [];
 
             for ($hap_i = 0; $hap_i < count($happenings); $hap_i++) {
                 $happening = $happenings[$hap_i];
@@ -131,7 +131,7 @@ PHP;
                 $view_id = date('Y-m', $real_from);
 
                 if (is_numeric($e_id)) {
-                    $map2 = $filter + array('page' => 'calendar', 'type' => 'view', 'id' => $event['e_id'], 'day' => $day, 'date' => $view_id, 'back' => 'month');
+                    $map2 = $filter + ['page' => 'calendar', 'type' => 'view', 'id' => $event['e_id'], 'day' => $day, 'date' => $view_id, 'back' => 'month'];
                     $url = build_url($map2, $zone);
                 } else {
                     $url = $e_id;
@@ -141,7 +141,7 @@ PHP;
                 $date = cms_strftime(do_lang('calendar_date'), $real_from);
                 $_day = intval(date('d', $from));
                 if (!array_key_exists($_day, $entries)) {
-                    $entries[$_day] = array('ID' => strval($event['e_id']), 'T_TITLE' => array_key_exists('t_title', $event) ? (is_string($event['t_title']) ? $event['t_title'] : get_translated_text($event['t_title'])) : 'RSS', 'PRIORITY' => strval($event['e_priority']), 'ICON' => $icon, 'TIME' => $date, 'TITLE' => $title, 'URL' => $url);
+                    $entries[$_day] = ['ID' => strval($event['e_id']), 'T_TITLE' => array_key_exists('t_title', $event) ? (is_string($event['t_title']) ? $event['t_title'] : get_translated_text($event['t_title'])) : 'RSS', 'PRIORITY' => strval($event['e_priority']), 'ICON' => $icon, 'TIME' => $date, 'TITLE' => $title, 'URL' => $url];
                     $priorities[$_day] = $event['e_priority'];
                 } else {
                     $entries[$_day] = (is_array($entries[$_day])) ? 2 : ($entries[$_day] + 1);
@@ -154,7 +154,7 @@ PHP;
                     if (((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
                         $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
                         if ($ntime < $period_end) {
-                            $happenings[] = array($e_id, $event, $ntime, $to, $real_from, $real_to);
+                            $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
                         }
                     }
                 }
@@ -168,9 +168,9 @@ PHP;
             $__entries = new Tempcode();
             $_dotw = date('D', $_period_start); // date() does not use locale so this is safe
             if (get_option('ssw') == '0') {
-                $ex_array = array('Mon' => 0, 'Tue' => 1, 'Wed' => 2, 'Thu' => 3, 'Fri' => 4, 'Sat' => 5, 'Sun' => 6);
+                $ex_array = ['Mon' => 0, 'Tue' => 1, 'Wed' => 2, 'Thu' => 3, 'Fri' => 4, 'Sat' => 5, 'Sun' => 6];
             } else {
-                $ex_array = array('Sun' => 0, 'Mon' => 1, 'Tue' => 2, 'Wed' => 3, 'Thu' => 4, 'Fri' => 5, 'Sat' => 6);
+                $ex_array = ['Sun' => 0, 'Mon' => 1, 'Tue' => 2, 'Wed' => 3, 'Thu' => 4, 'Fri' => 5, 'Sat' => 6];
             }
             $dotw = $ex_array[$_dotw];
             for ($j = 0; $j < $dotw; $j++) {
@@ -179,21 +179,21 @@ PHP;
             for ($j = 1; $j <= $_days + 1; $j++) {
                 $date = strval($year) . '-' . str_pad(strval($month), 2, '0', STR_PAD_LEFT) . '-' . str_pad(strval($j), 2, '0', STR_PAD_LEFT);
                 $date_formatted = cms_strftime(do_lang('calendar_date'), mktime(0, 0, 0, $month, $j, $year));
-                $map2 = $filter + array('page' => 'calendar', 'type' => 'browse', 'view' => 'day', 'id' => $date);
+                $map2 = $filter + ['page' => 'calendar', 'type' => 'browse', 'view' => 'day', 'id' => $date];
                 $day_url = build_url($map2, $zone);
 
                 if (!array_key_exists($j, $entries)) {
                     $class = 'free-time';
-                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_FREE', array('_GUID' => 'd9ac194adf9fef87f3ee0161f0582b88', 'CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date, 'DAY_URL' => $day_url, 'DATE' => $date_formatted, 'DAY' => strval($j), 'CLASS' => $class)));
+                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_FREE', ['_GUID' => 'd9ac194adf9fef87f3ee0161f0582b88', 'CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date, 'DAY_URL' => $day_url, 'DATE' => $date_formatted, 'DAY' => strval($j), 'CLASS' => $class]));
                 } elseif (is_array($entries[$j])) {
                     $class = 'single';
                     $events_and_priority_lang = do_lang_tempcode('TOTAL_EVENTS_AND_HIGHEST_PRIORITY', '1', do_lang_tempcode('PRIORITY_' . strval($priorities[$j])));
-                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', array_merge(array('CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date, 'DAY_URL' => $day_url, 'DATE' => $date_formatted, 'DAY' => strval($j), 'CLASS' => $class, 'COUNT' => '1', 'EVENTS_AND_PRIORITY_LANG' => $events_and_priority_lang), $entries[$j])));
+                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', array_merge(['CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date, 'DAY_URL' => $day_url, 'DATE' => $date_formatted, 'DAY' => strval($j), 'CLASS' => $class, 'COUNT' => '1', 'EVENTS_AND_PRIORITY_LANG' => $events_and_priority_lang], $entries[$j])));
                 } else {
                     $class = 'multiple';
                     $e_count = integer_format($entries[$j]);
                     $events_and_priority_lang = do_lang_tempcode('TOTAL_EVENTS_AND_HIGHEST_PRIORITY', make_string_tempcode($e_count), do_lang_tempcode('PRIORITY_' . strval($priorities[$j])));
-                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', array(
+                    $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ACTIVE', [
                         '_GUID' => '2190cdba146d5d18c01033fd0d9a09a1',
                         'CURRENT' => date('Y-m-d', utctime_to_usertime()) == $date,
                         'DAY_URL' => $day_url,
@@ -207,11 +207,11 @@ PHP;
                         'ICON' => '',
                         'COUNT' => $e_count,
                         'EVENTS_AND_PRIORITY_LANG' => $events_and_priority_lang,
-                    )));
+                    ]));
                 }
 
                 if ($dotw == 6) {
-                    $_entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ROW', array('_GUID' => '4b4b1e5bcf541c66d1ba9a57c6521070', 'ENTRIES' => $__entries)));
+                    $_entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ROW', ['_GUID' => '4b4b1e5bcf541c66d1ba9a57c6521070', 'ENTRIES' => $__entries]));
                     $__entries = new Tempcode();
                     $dotw = 0;
                 } else {
@@ -223,17 +223,17 @@ PHP;
                 for ($j = $dotw; $j < 7; $j++) {
                     $__entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_SPACER'));
                 }
-                $_entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ROW', array('_GUID' => '262279cb164be0fa908ec57c27dd727b', 'ENTRIES' => $__entries)));
+                $_entries->attach(do_template('CALENDAR_YEAR_MONTH_DAY_ROW', ['_GUID' => '262279cb164be0fa908ec57c27dd727b', 'ENTRIES' => $__entries]));
             }
 
-            return do_template('BLOCK_SIDE_CALENDAR', array(
+            return do_template('BLOCK_SIDE_CALENDAR', [
                 '_GUID' => '1324e98b4debf7ebd6d398fae65fe29f',
                 'BLOCK_ID' => $block_id,
                 'CALENDAR_URL' => $calendar_url,
                 'ENTRIES' => $_entries,
                 '_MONTH' => strval($_period_start),
                 'MONTH' => cms_strftime(do_lang('calendar_month_in_year'), $_period_start),
-            ));
+            ]);
         }
 
         // Listing mode
@@ -244,7 +244,7 @@ PHP;
 
         $happenings = calendar_matches($member_id, $member_id, !has_privilege(get_member(), 'assume_any_member'), $period_start - 100 * 60 * 60 * 24, $period_end, $filter, true, $private, $check_perms);
 
-        $days = array();
+        $days = [];
         for ($hap_i = 0; $hap_i < count($happenings); $hap_i++) {
             $happening = $happenings[$hap_i];
 
@@ -273,7 +273,7 @@ PHP;
                 if (($from < $period_start) && ($date_section != do_lang('YESTERDAY'))) {
                     $date_section = do_lang('DATE_IN_PAST', $date_section);
                 }
-                $days[$day_start] = array('TIMESTAMP' => strval($day_start), 'DATE' => $date_section, 'EVENTS' => array());
+                $days[$day_start] = ['TIMESTAMP' => strval($day_start), 'DATE' => $date_section, 'EVENTS' => []];
             }
 
             $view_id = date('Y-m', $real_from);
@@ -281,15 +281,15 @@ PHP;
             $icon = $event['t_logo'];
             $title = is_integer($event['e_title']) ? get_translated_text($event['e_title']) : $event['e_title'];
             if (is_numeric($e_id)) {
-                $map2 = $filter + array('page' => 'calendar', 'type' => 'view', 'id' => $event['e_id'], 'day' => $__day, 'date' => $view_id, 'back' => 'month');
+                $map2 = $filter + ['page' => 'calendar', 'type' => 'view', 'id' => $event['e_id'], 'day' => $__day, 'date' => $view_id, 'back' => 'month'];
                 $view_url = build_url($map2, $zone);
             } else {
                 $view_url = $e_id;
             }
 
-            $just_event_row = db_map_restrict($event, array('id', 'e_content'));
+            $just_event_row = db_map_restrict($event, ['id', 'e_content']);
 
-            $days[$day_start]['EVENTS'][] = array(
+            $days[$day_start]['EVENTS'][] = [
                 'T_TITLE' => array_key_exists('t_title', $event) ? (is_string($event['t_title']) ? $event['t_title'] : get_translated_text($event['t_title'])) : 'RSS',
                 'E_TITLE' => is_string($event['e_title']) ? protect_from_escaping($title) : make_string_tempcode($title),
                 'VIEW_URL' => $view_url,
@@ -305,25 +305,25 @@ PHP;
                 'TO_TIME' => ($real_to === null) ? null : (($event['e_end_hour'] !== null) ? get_timezoned_date_time($real_to) : get_timezoned_date($real_to)),
                 'TO_TIME_RAW' => ($real_to === null) ? '' : strval($real_to),
                 'TO_TIME_VCAL' => ($real_to === null) ? null : (date('Y-m-d', $real_to) . ' ' . date('H:i:s', $real_to)),
-            );
+            ];
 
             $test = date('d', $to);
             $test2 = date('d', $from);
             if (($to !== null) && ((intval($test) > intval($test2)) || (intval(date('m', $to)) != intval(date('m', $from))) || (intval(date('Y', $to)) != intval(date('Y', $from))))) {
                 $ntime = mktime(0, 0, 0, intval(date('m', $from)), intval($test2) + 1, intval(date('Y', $from)));
                 if ($ntime < $period_end) {
-                    $happenings[] = array($e_id, $event, $ntime, $to, $real_from, $real_to);
+                    $happenings[] = [$e_id, $event, $ntime, $to, $real_from, $real_to];
                 }
             }
         }
 
-        return do_template('BLOCK_SIDE_CALENDAR_LISTING', array(
+        return do_template('BLOCK_SIDE_CALENDAR_LISTING', [
             '_GUID' => '52afb27d866fa6b620a55d223e2fd3ae',
             'BLOCK_ID' => $block_id,
             'DAYS' => $days,
             'CALENDAR_URL' => $calendar_url,
             'TITLE' => $box_title,
-        ));
+        ]);
     }
 
     /**
@@ -335,7 +335,7 @@ PHP;
      */
     protected function get_filter($filter_map, $private_events)
     {
-        $filter = array();
+        $filter = [];
 
         if (!is_array($filter_map)) {
             return $filter;
@@ -343,7 +343,7 @@ PHP;
 
         $some_pos = false;
 
-        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id'));
+        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id']);
 
         foreach ($types as $type) {
             $t = $type['id'];
@@ -357,7 +357,7 @@ PHP;
         }
 
         if (!$some_pos) {
-            $filter = array();
+            $filter = [];
         }
 
         if ($private_events === null) {

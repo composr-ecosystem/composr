@@ -27,7 +27,7 @@
  */
 function get_function_hash($code, $function)
 {
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(function ' . $function . '\(.*\n\{.*\n\})#msU', $code, $matches) != 0) {
         return md5(preg_replace('#\s#', '', $matches[1]));
     }

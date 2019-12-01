@@ -34,23 +34,23 @@ class Hook_privacy_captcha extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-                (get_option('recaptcha_site_key') == '') ? null : array(
+            'general' => [
+                (get_option('recaptcha_site_key') == '') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_recaptcha'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_recaptcha'),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-            ),
-        );
+            'database_records' => [
+            ],
+        ];
     }
 }

@@ -30,7 +30,7 @@ class standard_dir_files_test_set extends cms_test_case
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_LANGS);
         sort($files);
-        $types = array();
+        $types = [];
         foreach ($files as $path) {
             // Exceptions
             if ($path == '.htaccess') {
@@ -43,7 +43,7 @@ class standard_dir_files_test_set extends cms_test_case
             if (basename($path) == '.htaccess') {
                 $md5 = md5(cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK));
                 if (!array_key_exists($md5, $types)) {
-                    $types[$md5] = array();
+                    $types[$md5] = [];
                 }
                 $types[$md5][] = $path;
             }
@@ -56,7 +56,7 @@ class standard_dir_files_test_set extends cms_test_case
             echo "\t\t\t'" . $type . "',\n";
         }*/
 
-        $this->assertTrue(array_keys($types) == array(
+        $this->assertTrue(array_keys($types) == [
             '296a0f42479e015438791d0b21e22a07',
             '3184b8b93e2d9b02dea0c4ec3133ee9c',
             '35524c96fbfc2361a6dff117f3a19bc8',
@@ -70,7 +70,7 @@ class standard_dir_files_test_set extends cms_test_case
             'b4af30b08914c4a8240106cf7c614034',
             'de9b5b7778090cf4376839b6aebb9f45',
             'e829b8bdcef68c92b0926288106048b6',
-        ));
+        ]);
     }
 
     public function testStandardDirFiles()
@@ -93,11 +93,11 @@ class standard_dir_files_test_set extends cms_test_case
 
                 // Exceptions
                 if ($dir_stub == '') {
-                    if (in_array($file, array('tracker'))) {
+                    if (in_array($file, ['tracker'])) {
                         continue;
                     }
                 } elseif ($dir_stub == '_tests/codechecker') {
-                    if (in_array($file, array('netbeans'))) { // Auto-generated folder, should not be meddled with
+                    if (in_array($file, ['netbeans'])) { // Auto-generated folder, should not be meddled with
                         continue;
                     }
                 }
@@ -143,8 +143,8 @@ class standard_dir_files_test_set extends cms_test_case
 
     public function testParallelHookDirs()
     {
-        foreach (array('systems', 'blocks', 'modules') as $dir) {
-            $a = array();
+        foreach (['systems', 'blocks', 'modules'] as $dir) {
+            $a = [];
             $_dir = get_file_base() . '/sources/hooks/' . $dir;
             $dh = opendir($_dir);
             while (($file = readdir($dh)) !== false) {
@@ -159,7 +159,7 @@ class standard_dir_files_test_set extends cms_test_case
             closedir($dh);
             sort($a);
 
-            $b = array();
+            $b = [];
             $_dir = get_file_base() . '/sources_custom/hooks/' . $dir;
             $dh = opendir($_dir);
             while (($file = readdir($dh)) !== false) {

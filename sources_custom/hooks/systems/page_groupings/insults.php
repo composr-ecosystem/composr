@@ -28,11 +28,11 @@ class Hook_page_groupings_insults
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('bantr')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'spare/heartbreak', array('insults', array(), get_page_zone('insults')), do_lang_tempcode('insults:MANAGE_INSULTS'), 'insults:DOC_INSULTS'),
-        );
+        return [
+            ['setup', 'spare/heartbreak', ['insults', [], get_page_zone('insults')], do_lang_tempcode('insults:MANAGE_INSULTS'), 'insults:DOC_INSULTS'],
+        ];
     }
 }

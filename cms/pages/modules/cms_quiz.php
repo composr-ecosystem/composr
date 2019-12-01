@@ -44,7 +44,7 @@ class Module_cms_quiz extends Standard_crud_module
     protected $donext_entry_content_type = 'quiz';
     protected $donext_category_content_type = null;
 
-    public $js_function_calls = array('moduleCmsQuiz');
+    public $js_function_calls = ['moduleCmsQuiz'];
 
     /**
      * Find privileges defined as overridable by this module.
@@ -54,7 +54,7 @@ class Module_cms_quiz extends Standard_crud_module
     public function get_privilege_overrides()
     {
         require_lang('quiz');
-        return array('submit_highrange_content' => array(0, 'ADD_QUIZ'), 'bypass_validation_highrange_content' => array(0, 'BYPASS_VALIDATION_QUIZ'), 'edit_own_highrange_content' => array(0, 'EDIT_OWN_QUIZ'), 'edit_highrange_content' => array(0, 'EDIT_QUIZ'), 'delete_own_highrange_content' => array(0, 'DELETE_OWN_QUIZ'), 'delete_highrange_content' => array(0, 'DELETE_QUIZ'));
+        return ['submit_highrange_content' => [0, 'ADD_QUIZ'], 'bypass_validation_highrange_content' => [0, 'BYPASS_VALIDATION_QUIZ'], 'edit_own_highrange_content' => [0, 'EDIT_OWN_QUIZ'], 'edit_highrange_content' => [0, 'EDIT_QUIZ'], 'delete_own_highrange_content' => [0, 'DELETE_OWN_QUIZ'], 'delete_highrange_content' => [0, 'DELETE_QUIZ']];
     }
 
     /**
@@ -72,9 +72,9 @@ class Module_cms_quiz extends Standard_crud_module
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_QUIZZES', 'menu/rich_content/quiz'),
-        ) + parent::get_entry_points();
+        $ret = [
+            'browse' => ['MANAGE_QUIZZES', 'menu/rich_content/quiz'],
+        ] + parent::get_entry_points();
 
         if ($support_crosslinks) {
             require_code('fields');
@@ -110,7 +110,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         if ($type == 'browse') {
             if (has_actual_page_access(get_member(), 'admin_quiz')) {
-                $also_url = build_url(array('page' => 'admin_quiz'), get_module_zone('admin_quiz'));
+                $also_url = build_url(['page' => 'admin_quiz'], get_module_zone('admin_quiz'));
                 attach_message(do_lang_tempcode('menus:ALSO_SEE_ADMIN', escape_html($also_url->evaluate())), 'inform', true);
             }
         }
@@ -154,10 +154,10 @@ class Module_cms_quiz extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_QUIZZES'),
             comcode_lang_string('DOC_QUIZZES'),
-            array_merge(array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_QUIZ')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_QUIZ')),
-            ), manage_custom_fields_donext_link('quiz')),
+            array_merge([
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_QUIZ')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_QUIZ')],
+            ], manage_custom_fields_donext_link('quiz')),
             do_lang('MANAGE_QUIZZES')
         );
     }
@@ -177,19 +177,19 @@ class Module_cms_quiz extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'q_name' => do_lang_tempcode('TITLE'),
             'q_type' => do_lang_tempcode('TYPE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $_header_row = array(
+        $_header_row = [
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('TYPE'),
             do_lang_tempcode('DATE'),
-        );
+        ];
         if (addon_installed('points')) {
             $_header_row[] = do_lang_tempcode('POINTS');
         }
@@ -200,15 +200,15 @@ class Module_cms_quiz extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $type = do_lang_tempcode($row['q_type']);
 
-            $results_entry = array(
-                protect_from_escaping(hyperlink(build_url(array('page' => 'quiz', 'type' => 'do', 'id' => $row['id']), get_module_zone('quiz')), get_translated_text($row['q_name']), false, true)),
+            $results_entry = [
+                protect_from_escaping(hyperlink(build_url(['page' => 'quiz', 'type' => 'do', 'id' => $row['id']], get_module_zone('quiz')), get_translated_text($row['q_name']), false, true)),
                 $type,
                 get_timezoned_date($row['q_add_date']),
-            );
+            ];
             if (addon_installed('points')) {
                 $results_entry[] = integer_format($row['q_points_for_passing']);
             }
@@ -217,10 +217,10 @@ class Module_cms_quiz extends Standard_crud_module
             $result_entries->attach(results_entry($results_entry, true));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'quiz'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'quiz'), get_module_zone('quiz'));
+        $search_url = build_url(['page' => 'search', 'id' => 'quiz'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'quiz'], get_module_zone('quiz'));
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
     }
 
     /**
@@ -230,7 +230,7 @@ class Module_cms_quiz extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', array('id', 'q_name'), array(), 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -306,19 +306,19 @@ class Module_cms_quiz extends Standard_crud_module
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));
         }
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '43499b3d39e5743f27852e84cd6d3296', 'TITLE' => do_lang_tempcode('TEST'), 'SECTION_HIDDEN' => $type != 'TEST')));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '43499b3d39e5743f27852e84cd6d3296', 'TITLE' => do_lang_tempcode('TEST'), 'SECTION_HIDDEN' => $type != 'TEST']));
         $fields->attach(form_input_integer(do_lang_tempcode('COMPLETION_PERCENTAGE'), do_lang_tempcode('DESCRIPTION_COMPLETION_PERCENTAGE'), 'percentage', $percentage, true));
         $fields->attach(form_input_tick(do_lang_tempcode('REVEAL_ANSWERS'), do_lang_tempcode('DESCRIPTION_REVEAL_ANSWERS'), 'reveal_answers', $reveal_answers == 1));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_END_TEXT_FAIL'), do_lang_tempcode('DESCRIPTION_QUIZ_END_TEXT_FAIL'), 'end_text_fail', $end_text_fail, false));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '40f0d67ae21fd3768cc7688d90c99d6e', 'TITLE' => do_lang_tempcode('COMPETITION'), 'SECTION_HIDDEN' => $type != 'COMPETITION')));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '40f0d67ae21fd3768cc7688d90c99d6e', 'TITLE' => do_lang_tempcode('COMPETITION'), 'SECTION_HIDDEN' => $type != 'COMPETITION']));
         $fields->attach(form_input_integer(do_lang_tempcode('NUM_WINNERS'), do_lang_tempcode('DESCRIPTION_NUM_WINNERS'), 'num_winners', $num_winners, true));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '00b9a6a21eab07864d41d5465d9569cd',
             'SECTION_HIDDEN' => ($redo_time === null) && ($timeout === null) && (($open_time === null) || ($open_time <= time())) && ($close_time === null) && $points_for_passing == 0 && ($tied_newsletter === null) && $notes == '',
             'TITLE' => do_lang_tempcode('ADVANCED'),
-        )));
+        ]));
         $fields->attach(form_input_tick(do_lang_tempcode('SHUFFLE_QUESTIONS'), do_lang_tempcode('DESCRIPTION_SHUFFLE_QUESTIONS'), 'shuffle_questions', $shuffle_questions == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('SHUFFLE_ANSWERS'), do_lang_tempcode('DESCRIPTION_SHUFFLE_ANSWERS'), 'shuffle_answers', $shuffle_answers == 1));
         $fields->attach(form_input_integer(do_lang_tempcode('REDO_TIME'), do_lang_tempcode('DESCRIPTION_REDO_TIME'), 'redo_time', $redo_time, false));
@@ -331,7 +331,7 @@ class Module_cms_quiz extends Standard_crud_module
         if (addon_installed('newsletter')) {
             $newsletters = new Tempcode();
             $newsletters->attach(form_input_list_entry('', false, do_lang_tempcode('NONE_EM')));
-            $_newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'));
+            $_newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('title'));
             foreach ($_newsletters as $n) {
                 $newsletters->attach(form_input_list_entry(strval($n['id']), $tied_newsletter == $n['id'], get_translated_text($n['title'])));
             }
@@ -354,7 +354,7 @@ class Module_cms_quiz extends Standard_crud_module
         // Permissions
         $fields->attach($this->get_permission_fields(($id === null) ? null : strval($id), null, ($id === null)));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -365,11 +365,11 @@ class Module_cms_quiz extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('quizzes', array('q_submitter', 'q_add_date'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['q_submitter', 'q_add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['q_submitter'], $rows[0]['q_add_date']);
+        return [$rows[0]['q_submitter'], $rows[0]['q_add_date']];
     }
 
     /**
@@ -382,7 +382,7 @@ class Module_cms_quiz extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
         }
@@ -495,8 +495,8 @@ class Module_cms_quiz extends Standard_crud_module
         $name = post_param_string('quiz_name', STRING_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', array('id' => $id)) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_submitter', array('id' => $id));
+        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_submitter', ['id' => $id]);
 
             if (has_actual_page_access(get_modal_user(), 'quiz')) {
                 require_code('activities');

@@ -45,7 +45,7 @@ function add_iotd($url, $title, $caption, $thumb_url, $current, $allow_rating, $
         $submitter = get_member();
     }
 
-    $map = array(
+    $map = [
         'add_date' => time(),
         'edit_date' => $edit_date,
         'iotd_views' => $views,
@@ -59,7 +59,7 @@ function add_iotd($url, $title, $caption, $thumb_url, $current, $allow_rating, $
         'thumb_url' => $thumb_url,
         'submitter' => $submitter,
         'is_current' => $current,
-    );
+    ];
     $map += insert_lang_comcode('i_title', $title, 2);
     $map += insert_lang_comcode('caption', $caption, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('iotd', $map, true);
@@ -97,7 +97,7 @@ function add_iotd($url, $title, $caption, $thumb_url, $current, $allow_rating, $
  */
 function edit_iotd($id, $title, $caption, $thumb_url, $url, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $edit_time = null, $add_time = null, $views = null, $submitter = null, $null_is_literal = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
     }
@@ -117,14 +117,14 @@ function edit_iotd($id, $title, $caption, $thumb_url, $url, $allow_rating, $allo
     delete_upload('uploads/iotds_addon', 'iotd', 'url', 'id', $id, $url);
     delete_upload('uploads/iotds_thumbs_addon', 'iotd', 'thumb_url', 'id', $id, $thumb_url);
 
-    $update_map = array(
+    $update_map = [
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
         'allow_trackbacks' => $allow_trackbacks,
         'notes' => $notes,
         'thumb_url' => $thumb_url,
         'url' => $url,
-    );
+    ];
     $update_map += lang_remap_comcode('i_title', $_title, $title);
     $update_map += lang_remap_comcode('caption', $_caption, $caption);
 
@@ -139,7 +139,7 @@ function edit_iotd($id, $title, $caption, $thumb_url, $url, $allow_rating, $allo
         $update_map['submitter'] = $submitter;
     }
 
-    $GLOBALS['SITE_DB']->query_update('iotd', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('iotd', $update_map, ['id' => $id], '', 1);
 
     require_code('urls2');
     suggest_new_idmoniker_for('iotds', 'view', strval($id), '', $title);
@@ -151,7 +151,7 @@ function edit_iotd($id, $title, $caption, $thumb_url, $url, $allow_rating, $allo
         $allow_comments != 0,
         'videos',
         strval($id),
-        build_url(array('page' => 'iotds', 'type' => 'view', 'id' => $id), get_module_zone('iotds'), array(), false, false, true),
+        build_url(['page' => 'iotds', 'type' => 'view', 'id' => $id], get_module_zone('iotds'), [], false, false, true),
         $title,
         find_overridden_comment_forum('iotds')
     );
@@ -174,7 +174,7 @@ function edit_iotd($id, $title, $caption, $thumb_url, $url, $allow_rating, $allo
  */
 function delete_iotd($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
     }
@@ -190,15 +190,15 @@ function delete_iotd($id)
     delete_upload('uploads/iotds_thumbs_addon', 'iotd', 'thumb_url', 'id', $id);
 
     // Delete from the database
-    $GLOBALS['SITE_DB']->query_delete('iotd', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'iotds', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'iotds', 'trackback_for_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('iotd', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'iotds', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'iotds', 'trackback_for_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'iotds_' . strval($id));
 
     delete_cache_entry('main_iotd');
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'iotds', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'iotds', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)]);
 
     log_it('DELETE_IOTD', strval($id), get_translated_text($caption));
 
@@ -218,7 +218,7 @@ function delete_iotd($id)
  */
 function set_iotd($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => $id], '', 1);
     $title = get_translated_text($rows[0]['i_title']);
     $submitter = $rows[0]['submitter'];
 
@@ -238,20 +238,20 @@ function set_iotd($id)
     }
 
     // Turn all others off
-    $GLOBALS['SITE_DB']->query_update('iotd', array('is_current' => 0), array('is_current' => 1));
+    $GLOBALS['SITE_DB']->query_update('iotd', ['is_current' => 0], ['is_current' => 1]);
 
     // Turn ours on
-    $GLOBALS['SITE_DB']->query_update('iotd', array('is_current' => 1, 'used' => 1, 'date_and_time' => time()), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('iotd', ['is_current' => 1, 'used' => 1, 'date_and_time' => time()], ['id' => $id], '', 1);
 
     require_lang('iotds');
     require_code('notifications');
-    $view_url = build_url(array('page' => 'iotds', 'type' => 'view', 'id' => $id), get_module_zone('iotds'), array(), false, false, true);
+    $view_url = build_url(['page' => 'iotds', 'type' => 'view', 'id' => $id], get_module_zone('iotds'), [], false, false, true);
     $thumb_url = $rows[0]['thumb_url'];
     if (url_is_local($thumb_url)) {
         $thumb_url = get_custom_base_url() . '/' . $thumb_url;
     }
     $subject = do_lang('IOTD_CHOSEN_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $title);
-    $mail = do_notification_lang('IOTD_CHOSEN_NOTIFICATION_MAIL', comcode_escape(get_site_name()), $title, array($view_url->evaluate(), $thumb_url));
+    $mail = do_notification_lang('IOTD_CHOSEN_NOTIFICATION_MAIL', comcode_escape(get_site_name()), $title, [$view_url->evaluate(), $thumb_url]);
     dispatch_notification('iotd_chosen', null, $subject, $mail);
 
     delete_cache_entry('main_iotd');

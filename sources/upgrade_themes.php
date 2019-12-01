@@ -85,12 +85,12 @@ function upgrader_theme_upgrade_screen()
  */
 function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
 {
-    $errors = array();
-    $successes = array();
+    $errors = [];
+    $successes = [];
 
     if (!$test_run) {
         require_code('abstract_file_manager');
-        force_have_afm_details(array(
+        force_have_afm_details([
             'themes/' . $theme . '/images_custom',
             'themes/' . $theme . '/images_custom/*',
             'themes/' . $theme . '/css_custom',
@@ -103,59 +103,59 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
             'themes/' . $theme . '/xml_custom/*.xml',
             'themes/' . $theme . '/text_custom',
             'themes/' . $theme . '/text_custom/*.txt',
-        ));
+        ]);
     }
 
-    $css_replace__single_match = array();
-    $css_prepend__single_match = array();
-    $css_append__single_match = array();
-    $css_replace__multi_match = array();
-    $css_prepend__multi_match = array();
-    $css_append__multi_match = array();
-    $css_file_append = array();
-    $theme_images_new = array();
-    $theme_images_renames = array();
-    $templates_replace = array();
-    $templates_rename = array();
-    $templates_borked = array();
+    $css_replace__single_match = [];
+    $css_prepend__single_match = [];
+    $css_append__single_match = [];
+    $css_replace__multi_match = [];
+    $css_prepend__multi_match = [];
+    $css_append__multi_match = [];
+    $css_file_append = [];
+    $theme_images_new = [];
+    $theme_images_renames = [];
+    $templates_replace = [];
+    $templates_rename = [];
+    $templates_borked = [];
 
     if (false) {
         $css_recognition_string = '2004-2011'; // Must be defined. Ensures theme is right version.
 
-        $css_replace__multi_match = array(
-            '*' => array(),
-            'global.css' => array(),
-        );
+        $css_replace__multi_match = [
+            '*' => [],
+            'global.css' => [],
+        ];
 
-        $css_replace__single_match = array();
+        $css_replace__single_match = [];
 
-        $css_prepend__single_match = array();
+        $css_prepend__single_match = [];
 
-        $css_append__single_match = array();
+        $css_append__single_match = [];
 
-        $css_file_append = array();
+        $css_file_append = [];
 
         // NB: This UNIX command can work out what theme images are added...
         // OLD=/Library/WebServer/Documents/test/themes/default/images ; NEW=/Library/WebServer/Documents/git/themes/default/images ; diff -r $OLD $NEW | grep "Only in $NEW" | grep -v .DS_Store | sed "s#Only in "$NEW"##g" | sed "s#: #/#g" | sed "s#^/##g" | sed "s#^EN/##g" | sed "s#\.*$##"
         // Obviously only theme-wizable images should go here
-        $theme_images_new = array();
+        $theme_images_new = [];
 
-        $theme_images_renames = array();
+        $theme_images_renames = [];
 
-        $templates_replace = array(
-            '*' => array(),
-        );
+        $templates_replace = [
+            '*' => [],
+        ];
 
         /*Find deleted/renamed templates:
         OLD=/Library/WebServer/Documents/test/themes/default/templates ; NEW=/Library/WebServer/Documents/git/themes/default/templates ; diff -r $OLD $NEW | grep .tpl$ | grep "Only in "$OLD | sed "s#Only in "$OLD": ##"*/
-        $templates_rename = array();
+        $templates_rename = [];
 
         /*Find diff of changes templates
         OLD=/Library/WebServer/Documents/test/themes/default/templates ; NEW=/Library/WebServer/Documents/git/themes/default/templates ; diff -u $OLD $NEW > ~/Desktop/diff.txt*/
-        $templates_borked = array();
+        $templates_borked = [];
     } else {
         $errors[] = do_lang_tempcode('NO_DEFINED_THEME_UPGRADER');
-        return array($errors, array());
+        return [$errors, []];
     }
 
     if (addon_installed('themewizard')) {
@@ -185,7 +185,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
             }
 
             // Apply single match rules. First check single match rules apply exactly once (means rule is bogus if it matches more than once, or unusable if not at all)
-            foreach (array('css_replace' => $css_replace__single_match, 'css_prepend' => $css_prepend__single_match, 'css_append' => $css_append__single_match) as $rule_set_type => $rule_set) {
+            foreach (['css_replace' => $css_replace__single_match, 'css_prepend' => $css_prepend__single_match, 'css_append' => $css_append__single_match] as $rule_set_type => $rule_set) {
                 foreach ($rule_set as $target_file => $_rule_set) {
                     // If people have moved CSS into global.css, to optimise page load times
                     if (($target_file != '*') && ($target_file != 'global.css') && ($css_file == 'global.css')) {
@@ -239,7 +239,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
             }
 
             // Apply multi-match rules
-            foreach (array('css_replace' => $css_replace__multi_match, 'css_prepend' => $css_prepend__multi_match, 'css_append' => $css_append__multi_match) as $rule_set_type => $rule_set) {
+            foreach (['css_replace' => $css_replace__multi_match, 'css_prepend' => $css_prepend__multi_match, 'css_append' => $css_append__multi_match] as $rule_set_type => $rule_set) {
                 foreach ($rule_set as $target_file => $_rule_set) {
                     if (($target_file == '*') || ($target_file == $css_file)) {
                         foreach ($_rule_set as $from_a => $to) {
@@ -248,7 +248,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
                                 $to = themewizard_colours_to_css($to, $landscape, 'default', 'equations', $seed);
                             }
 
-                            $froms = array($from_a);
+                            $froms = [$from_a];
                             if (addon_installed('themewizard')) {
                                 $froms[] = themewizard_colours_to_css($from_a, $landscape, 'default', 'equations', $seed);
                             }
@@ -328,7 +328,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
     // Theme images
     require_code('themes2');
     require_code('themes3');
-    $langs = array('EN' => 'lang');//find_all_langs();
+    $langs = ['EN' => 'lang'];//find_all_langs();
     foreach ($theme_images_renames as $old => $new) {
         foreach (array_keys($langs) as $lang) {
             $path = urldecode(find_theme_image($old, true, true, $theme, $lang));
@@ -340,7 +340,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
                             afm_move($path, $new_path);
                         }
 
-                        $where_map = array('theme' => $theme, 'id' => $new);
+                        $where_map = ['theme' => $theme, 'id' => $new];
                         if (($lang != '') && ($lang !== null)) {
                             $where_map['lang'] = $lang;
                         }
@@ -383,12 +383,12 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
     }
 
     // Templates
-    $directories = array(
+    $directories = [
         'templates' => 'tpl',
         'javascript' => 'js',
         'xml' => 'xml',
         'text' => 'txt',
-    );
+    ];
     foreach ($directories as $directory => $ext) {
         $templates_dir = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/' . $directory . '_custom/';
         $dh = @opendir($templates_dir);
@@ -436,5 +436,5 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
         }
     }
 
-    return array($errors, $successes);
+    return [$errors, $successes];
 }

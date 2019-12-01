@@ -57,17 +57,17 @@ class Hook_commandr_fs_banners extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'banner':
-                $ret = $GLOBALS['SITE_DB']->query_select('banners', array('name'), array('name' => $label));
+                $ret = $GLOBALS['SITE_DB']->query_select('banners', ['name'], ['name' => $label]);
                 return collapse_1d_complexity('name', $ret);
 
             case 'banner_type':
                 if ($label == 'untitled') {
                     $label = '';
                 }
-                $ret = $GLOBALS['SITE_DB']->query_select('banner_types', array('id'), array('id' => $label));
+                $ret = $GLOBALS['SITE_DB']->query_select('banner_types', ['id'], ['id' => $label]);
                 return collapse_1d_complexity('id', $ret);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -144,20 +144,20 @@ class Hook_commandr_fs_banners extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('banner_types', array('*'), array('id' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['*'], ['id' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['id'],
             'is_textual' => $row['t_is_textual'],
             'image_width' => $row['t_image_width'],
             'image_height' => $row['t_image_height'],
             'max_file_size' => $row['t_max_file_size'],
             'comcode_inline' => $row['t_comcode_inline'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -244,7 +244,7 @@ class Hook_commandr_fs_banners extends Resource_fs_base
     public function folder_convert_filename_to_id($filename, $resource_type = null)
     {
         if ($filename == 'untitled') {
-            return array('banner_type', '');
+            return ['banner_type', ''];
         }
 
         return parent::folder_convert_filename_to_id($filename, $resource_type);
@@ -297,8 +297,8 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             $validated = 1;
         }
         $b_type = $category;
-        $b_types = empty($properties['b_types']) ? array() : $properties['b_types'];
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $b_types = empty($properties['b_types']) ? [] : $properties['b_types'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
         $notes = $this->_default_property_str($properties, 'notes');
         $time = $this->_default_property_time($properties, 'add_date');
         $hits_from = $this->_default_property_int($properties, 'hits_from');
@@ -325,13 +325,13 @@ class Hook_commandr_fs_banners extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), array('name' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ['name' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['name'],
             'img_url' => remap_urlpath_as_portable($row['img_url']),
             'title_text' => $row['title_text'],
@@ -343,8 +343,8 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             'deployment_agreement' => $row['deployment_agreement'],
             'expiry_date' => remap_time_as_portable($row['expiry_date']),
             'validated' => $row['validated'],
-            'b_types' => collapse_1d_complexity('b_type', $GLOBALS['SITE_DB']->query_select('banners_types', array('b_type'), array('name' => $row['name']))),
-            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'banner', 'content_id' => $row['name']))),
+            'b_types' => collapse_1d_complexity('b_type', $GLOBALS['SITE_DB']->query_select('banners_types', ['b_type'], ['name' => $row['name']])),
+            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'banner', 'content_id' => $row['name']])),
             'hits_from' => $row['hits_from'],
             'hits_to' => $row['hits_to'],
             'views_from' => $row['views_from'],
@@ -352,7 +352,7 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),
             'add_date' => remap_time_as_portable($row['add_date']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -394,8 +394,8 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             $validated = 1;
         }
         $b_type = $category;
-        $b_types = empty($properties['b_types']) ? array() : $properties['b_types'];
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $b_types = empty($properties['b_types']) ? [] : $properties['b_types'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
         $add_time = $this->_default_property_time($properties, 'add_date');
         $hits_from = $this->_default_property_int($properties, 'hits_from');
         $hits_to = $this->_default_property_int($properties, 'hits_to');

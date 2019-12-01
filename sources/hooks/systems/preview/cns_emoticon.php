@@ -33,7 +33,7 @@ class Hook_preview_cns_emoticon
     public function applies()
     {
         $applies = (get_page_name() == 'admin_cns_emoticons');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -48,7 +48,7 @@ class Hook_preview_cns_emoticon
         $urls = get_url('', 'file', 'uploads/auto_thumbs', 0, CMS_UPLOAD_IMAGE, false);
         if ($urls[0] == '') {
             if (post_param_integer('id', null) !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('cns_emoticons', array('e_theme_img_code'), array('id' => post_param_integer('id')), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('cns_emoticons', ['e_theme_img_code'], ['id' => post_param_integer('id')], '', 1);
                 $urls = $rows[0];
 
                 $url = find_theme_image($urls['e_theme_img_code']);
@@ -64,6 +64,6 @@ class Hook_preview_cns_emoticon
         require_code('images');
         $preview = do_image_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, post_param_string('code'), true);
 
-        return array($preview, null, false);
+        return [$preview, null, false];
     }
 }

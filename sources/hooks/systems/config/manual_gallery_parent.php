@@ -30,7 +30,7 @@ class Hook_config_manual_gallery_parent
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MANUAL_GALLERY_PARENT',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_manual_gallery_parent
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

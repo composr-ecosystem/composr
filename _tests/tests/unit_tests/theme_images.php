@@ -41,18 +41,18 @@ class theme_images_test_set extends cms_test_case
                 continue;
             }
 
-            $dirs = array(
+            $dirs = [
                 get_file_base() . '/themes/' . $theme . '/images/icons',
                 get_file_base() . '/themes/' . $theme . '/images/' . fallback_lang() . '/icons',
                 get_file_base() . '/themes/' . $theme . '/images_custom/icons',
                 get_file_base() . '/themes/' . $theme . '/images_custom/' . fallback_lang() . '/icons',
-            );
-            $files = array();
+            ];
+            $files = [];
             foreach ($dirs as $dir) {
                 $files = array_merge($files, get_directory_contents($dir, $dir));
             }
 
-            $files2 = array();
+            $files2 = [];
             foreach ($files as $path) {
                 if ($path == get_file_base() . '/themes/default/images/icons/sprite.svg') {
                     continue;
@@ -60,7 +60,7 @@ class theme_images_test_set extends cms_test_case
 
                 if (substr($path, -4) == '.svg') {
                     $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-                    $matches = array();
+                    $matches = [];
                     $ok = (preg_match('#width="(\d+)px" height="(\d+)px"#', $c, $matches) != 0);
                     $this->assertTrue($ok, 'Cannot find SVG width/height in ' . $path);
                     if (!$ok) {
@@ -84,7 +84,7 @@ class theme_images_test_set extends cms_test_case
         }
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, array('svg'));
+        $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, ['svg']);
 
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
@@ -92,13 +92,13 @@ class theme_images_test_set extends cms_test_case
 
             $this->assertTrue(strpos($c, '<image') === false, 'Raster data in ' . $path);
 
-            $bad_patterns = array(
+            $bad_patterns = [
                 '<!-- Generator.*-->',
                 '\s+xml:space="preserve"',
                 '\s+enable-background="[^"]*"',
                 '\s+xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"',
                 '<[^<>]* display="none"[^<>]*/>\n',
-            );
+            ];
             foreach ($bad_patterns as $bad_pattern) {
                 if (preg_match('#' . $bad_pattern . '#', $c) != 0) {
                     $this->assertTrue(false, 'Found: ' . $bad_pattern . ' in ' . $path . '; fix with &auto_fix=1');
@@ -125,16 +125,16 @@ class theme_images_test_set extends cms_test_case
                 continue;
             }
 
-            $dirs = array(
+            $dirs = [
                 get_file_base() . '/themes/' . $theme . '/images_custom',
                 get_file_base() . '/themes/' . $theme . '/images_custom/' . fallback_lang(),
-            );
-            $files = array();
+            ];
+            $files = [];
             foreach ($dirs as $dir) {
                 $files = array_merge($files, get_directory_contents($dir));
             }
 
-            $files2 = array();
+            $files2 = [];
             foreach ($files as $path) {
                 $trimmed = preg_replace('#\.\w+$#', '', $path);
                 $this->assertTrue(!isset($files2[$trimmed]), 'Duplicate theme image ' . $trimmed . ' in theme ' . $theme);
@@ -150,13 +150,13 @@ class theme_images_test_set extends cms_test_case
         }
 
         // Find default images
-        $default_images_referenced = array(); // true means referenced and exists, false means referenced and is not yet known to exist
+        $default_images_referenced = []; // true means referenced and exists, false means referenced and is not yet known to exist
         $default_images_there = $this->get_theme_images('default');
 
         // Get theme list, but 'default' must come first
         $themes = find_all_themes();
         unset($themes['default']);
-        $themes = array_merge(array('default' => null), $themes);
+        $themes = array_merge(['default' => null], $themes);
 
         // Go through each theme
         foreach (array_keys($themes) as $theme) {
@@ -169,7 +169,7 @@ class theme_images_test_set extends cms_test_case
             $images_there = $default_images_there;
 
             if ($theme == 'default') {
-                $directories = array(
+                $directories = [
                      get_file_base() . '/themes/default/css_custom',
                      get_file_base() . '/themes/default/css',
                      get_file_base() . '/themes/default/templates_custom',
@@ -180,9 +180,9 @@ class theme_images_test_set extends cms_test_case
                      get_file_base() . '/themes/default/xml',
                      get_file_base() . '/site/pages/comcode_custom/EN',
                      get_file_base() . '/pages/comcode_custom/EN',
-                );
+                ];
             } else {
-                $directories = array_merge($directories, array(
+                $directories = array_merge($directories, [
                     get_file_base() . '/themes/' . $theme . '/css_custom',
                     get_file_base() . '/themes/' . $theme . '/css',
                     get_file_base() . '/themes/' . $theme . '/templates_custom',
@@ -191,20 +191,20 @@ class theme_images_test_set extends cms_test_case
                     get_file_base() . '/themes/' . $theme . '/javascript',
                     get_file_base() . '/themes/' . $theme . '/xml_custom',
                     get_file_base() . '/themes/' . $theme . '/xml',
-                ));
+                ]);
 
                 $images_there = array_merge($images_there, $this->get_theme_images($theme));
             }
 
-            $db_reference_sources = array(
+            $db_reference_sources = [
                 'f_emoticons' => 'e_theme_img_code',
                 'f_groups' => 'g_rank_image',
                 'calendar_types' => 't_logo',
                 'news_categories' => 'nc_img',
-            );
+            ];
             foreach ($db_reference_sources as $table => $field) {
                 $db = get_db_for($table);
-                $_images_referenced = $db->query_select($table, array('DISTINCT ' . $field));
+                $_images_referenced = $db->query_select($table, ['DISTINCT ' . $field]);
                 foreach ($_images_referenced as $_image_referenced) {
                     if (isset($images_there[$_image_referenced[$field]])) {
                         $images_referenced[$_image_referenced[$field]] = true;
@@ -229,7 +229,7 @@ class theme_images_test_set extends cms_test_case
                             }
 
                             // Find referenced images
-                            $matches = array();
+                            $matches = [];
                             $num_matches = preg_match_all('#\{\$(IMG|IMG_INLINE)[^\w\{\},]*,([^{},]+)\}#', $c, $matches);
                             for ($i = 0; $i < $num_matches; $i++) {
                                 $images_referenced[$matches[2][$i]] = isset($images_there[$matches[2][$i]]);
@@ -251,13 +251,13 @@ class theme_images_test_set extends cms_test_case
 
             foreach ($images_there as $image => $is_used) {
                 // Exceptions
-                if (in_array($image, array('icons_sprite', 'icons_monochrome_sprite', 'cns_emoticons/none', 'audio_thumb', 'button1', 'button2', 'na', 'under_construction_animated', '-logo', 'standalone_logo', 'maps/star_highlight', 'google_translate'))) { // Used dynamically
+                if (in_array($image, ['icons_sprite', 'icons_monochrome_sprite', 'cns_emoticons/none', 'audio_thumb', 'button1', 'button2', 'na', 'under_construction_animated', '-logo', 'standalone_logo', 'maps/star_highlight', 'google_translate'])) { // Used dynamically
                     continue;
                 }
-                if (in_array($image, array('icons/calendar/activity', 'icons/calendar/duty', 'icons/calendar/festival', 'icons/calendar/rss'))) { // Not used by default but useful
+                if (in_array($image, ['icons/calendar/activity', 'icons/calendar/duty', 'icons/calendar/festival', 'icons/calendar/rss'])) { // Not used by default but useful
                     continue;
                 }
-                if (in_array($image, array('tracker/credit', 'icons/calendar/booking', 'youtube_channel_integration/youtube_channel_integration_icon'))) { // Addon files not used by default but useful
+                if (in_array($image, ['tracker/credit', 'icons/calendar/booking', 'youtube_channel_integration/youtube_channel_integration_icon'])) { // Addon files not used by default but useful
                     continue;
                 }
                 if (preg_match('#^([12]x/)?(chatcode_editor|results|cns_post_map|cns_general|progress_indicator|comcode_editor|realtime_rain|logo|cns_default_avatars|flags|flags_large|icons/spare|icons|icons_monochrome|twitter_feed)/#', $image) != 0) { // Dynamic choices / dynamic sets
@@ -286,12 +286,12 @@ class theme_images_test_set extends cms_test_case
 
     protected function get_theme_images($theme)
     {
-        $dirs = array(
+        $dirs = [
             get_file_base() . '/themes/' . $theme . '/images',
             get_file_base() . '/themes/' . $theme . '/images_custom',
             get_file_base() . '/themes/' . $theme . '/images/EN',
-        );
-        $images = array();
+        ];
+        $images = [];
         foreach ($dirs as $dir) {
             $files = get_directory_contents($dir);
             foreach ($files as $path) {

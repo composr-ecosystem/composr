@@ -30,14 +30,14 @@ class Block_main_contact_simple
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'title', 'private', 'email_optional', 'subject', 'subject_prefix', 'subject_suffix', 'body_prefix', 'body_suffix', 'redirect', 'guid', 'attachments');
+        $info['parameters'] = ['param', 'title', 'private', 'email_optional', 'subject', 'subject_prefix', 'subject_suffix', 'body_prefix', 'body_suffix', 'redirect', 'guid', 'attachments'];
         return $info;
     }
 
@@ -137,7 +137,7 @@ class Block_main_contact_simple
             $attach_size_field = null;
         }
 
-        $comment_details = do_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_template('COMMENTS_POSTING_FORM', [
             '_GUID' => $guid,
             'TITLE' => $box_title,
             'HIDDEN' => $hidden,
@@ -161,14 +161,14 @@ class Block_main_contact_simple
             'SUBMIT_ICON' => 'buttons/send',
             'SKIP_PREVIEW' => true,
             'ANALYTIC_EVENT_CATEGORY' => do_lang('CONTACT_US'),
-        ));
+        ]);
 
-        $out = do_template('BLOCK_MAIN_CONTACT_SIMPLE', array(
+        $out = do_template('BLOCK_MAIN_CONTACT_SIMPLE', [
             '_GUID' => $guid,
             'BLOCK_ID' => $block_id,
             'COMMENT_DETAILS' => $comment_details,
             'MESSAGE' => $message,
-        ));
+        ]);
 
         return $out;
     }

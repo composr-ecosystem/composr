@@ -28,14 +28,14 @@ class Hook_page_groupings_make_release
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('composr_release_build')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'admin/tool', array('plug_guid', array(), get_page_zone('plug_guid')), make_string_tempcode('Release tools: Plug in missing GUIDs')),
-            array('tools', 'admin/tool', array('make_release', array(), get_page_zone('make_release')), make_string_tempcode('Release tools: Make a Composr release')),
-            array('tools', 'admin/tool', array('push_bugfix', array(), get_page_zone('push_bugfix')), make_string_tempcode('Release tools: Push a Composr bugfix')),
-            array('tools', 'admin/tool', array('doc_index_build', array(), get_page_zone('doc_index_build')), make_string_tempcode('Doc tools: Make addon tutorial index')),
-        );
+        return [
+            ['tools', 'admin/tool', ['plug_guid', [], get_page_zone('plug_guid')], make_string_tempcode('Release tools: Plug in missing GUIDs')],
+            ['tools', 'admin/tool', ['make_release', [], get_page_zone('make_release')], make_string_tempcode('Release tools: Make a Composr release')],
+            ['tools', 'admin/tool', ['push_bugfix', [], get_page_zone('push_bugfix')], make_string_tempcode('Release tools: Push a Composr bugfix')],
+            ['tools', 'admin/tool', ['doc_index_build', [], get_page_zone('doc_index_build')], make_string_tempcode('Doc tools: Make addon tutorial index')],
+        ];
     }
 }

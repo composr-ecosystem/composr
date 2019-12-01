@@ -30,7 +30,7 @@ class Hook_config_filter_regions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FILTER_REGIONS',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_filter_regions
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

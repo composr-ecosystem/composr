@@ -26,7 +26,7 @@ class Hook_addon_registry_shoutr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_shoutr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ After installing this addon your shout box will essentially be treated as an emb
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,13 +108,13 @@ After installing this addon your shout box will essentially be treated as an emb
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'chat',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,12 +134,12 @@ After installing this addon your shout box will essentially be treated as an emb
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/shoutr.php',
             'sources_custom/blocks/side_shoutbox.php',
             'themes/default/templates_custom/BLOCK_SIDE_SHOUTBOX.tpl',
             'themes/default/css_custom/shoutbox.css',
             'themes/default/javascript_custom/shoutr.js',
-        );
+        ];
     }
 }

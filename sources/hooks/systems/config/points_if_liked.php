@@ -30,7 +30,7 @@ class Hook_config_points_if_liked
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POINTS_IF_LIKED',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_if_liked
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

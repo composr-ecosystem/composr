@@ -24,7 +24,7 @@ Metrics and dimension reference: https://developers.google.com/analytics/devguid
 
 function init__google_analytics()
 {
-    load_csp(array('csp_allow_eval_js' => '1')); // Needed for its JSON implementation to work
+    load_csp(['csp_allow_eval_js' => '1']); // Needed for its JSON implementation to work
 }
 
 function google_analytics_initialise($weak_test = false)
@@ -62,7 +62,7 @@ function google_analytics_initialise($weak_test = false)
 
 function enumerate_google_analytics_metrics()
 {
-    $ret = array(
+    $ret = [
         'hits' => 'Hits',
         'bounces' => 'Bounces',
         'duration' => 'Session duration',
@@ -85,14 +85,14 @@ function enumerate_google_analytics_metrics()
         'entry_pages' => 'Entry pages',
         'exit_pages' => 'Exit pages',
         'popular_pages' => 'Popular pages',
-    );
+    ];
 
     require_code('oauth');
     $refresh_token = get_oauth_refresh_token('google_search_console');
     if ($refresh_token !== null) {
-        $ret += array(
+        $ret += [
             'keywords' => 'Search keywords',
-        );
+        ];
     }
 
     return $ret;
@@ -126,7 +126,7 @@ function _render_google_analytics_tabs($metric, $days, $access_token)
     $all_metrics = enumerate_google_analytics_metrics();
 
     if ($metric === null) {
-        $metrics = array(
+        $metrics = [
             'hits',
             'speed',
             'browsers',
@@ -138,7 +138,7 @@ function _render_google_analytics_tabs($metric, $days, $access_token)
             'referrers_social',
             'referral_mediums',
             'popular_pages',
-        );
+        ];
         if (array_key_exists('keywords', $all_metrics)) {
             $metrics[] = 'keywords';
         }
@@ -146,30 +146,30 @@ function _render_google_analytics_tabs($metric, $days, $access_token)
         $metrics = ($metric == '*') ? array_keys($all_metrics) : explode(',', $metric);
     }
 
-    $tab_contents = array();
-    $tabs = array();
+    $tab_contents = [];
+    $tabs = [];
 
     $i = 0;
     foreach ($metrics as $metric) {
         $metric_title = $all_metrics[$metric];
 
-        $tab_contents[] = array(
+        $tab_contents[] = [
             'TITLE' => $metric_title,
             'CONTENT' => _render_google_analytics_chart($metric, fix_id($metric_title), $days, ($i != 0), $access_token),
-        );
+        ];
 
         $tabs[] = $metric_title;
 
         $i++;
     }
 
-    return do_template('GOOGLE_ANALYTICS_TABS', array(
+    return do_template('GOOGLE_ANALYTICS_TABS', [
         '_GUID' => 'cc3382bab5e34421b05dd6f30343e4fc',
         'TABS' => $tabs,
         'TAB_CONTENTS' => $tab_contents,
         'SWITCH_TIME' => null,
         'PASS_ID' => 'ga',
-    ));
+    ]);
 }
 
 function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access_token)
@@ -184,190 +184,190 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
 
     $property_id = get_value('ga_property_id', null, true);
 
-    $extra = array();
+    $extra = [];
     switch ($metric) {
         case 'hits':
-            $metrics = array('ga:sessions', 'ga:users', 'ga:hits', 'ga:socialInteractions');
+            $metrics = ['ga:sessions', 'ga:users', 'ga:hits', 'ga:socialInteractions'];
             $dimension = 'ga:date';
             $chart_type = 'LINE';
             break;
 
         case 'bounces':
-            $metrics = array('ga:bounceRate');
+            $metrics = ['ga:bounceRate'];
             $dimension = 'ga:date';
             $chart_type = 'LINE';
             break;
 
         case 'duration':
-            $metrics = array('ga:avgSessionDuration');
+            $metrics = ['ga:avgSessionDuration'];
             $dimension = 'ga:date';
             $chart_type = 'LINE';
             break;
 
         case 'read_time':
-            $metrics = array('ga:avgTimeOnPage');
+            $metrics = ['ga:avgTimeOnPage'];
             $dimension = 'ga:date';
             $chart_type = 'LINE';
             break;
 
         case 'speed':
-            $metrics = array('ga:avgPageLoadTime');
+            $metrics = ['ga:avgPageLoadTime'];
             $dimension = 'ga:date';
             $chart_type = 'LINE';
             break;
 
         case 'browsers':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:browser';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' =>  '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'operating_systems':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:operatingSystem';
             $chart_type = 'PIE';
             break;
 
         case 'device_types':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:deviceCategory';
             $chart_type = 'PIE';
             break;
 
         case 'screen_sizes':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:screenResolution';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'countries':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:country';
             //$chart_type = 'GEO'; Does not work well unfortunately due to not having any logarithmic scale (so almost all countries are the same colour)
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'ages':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:userAgeBracket';
             $chart_type = 'PIE';
             break;
 
         case 'genders':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:userGender';
             $chart_type = 'PIE';
             break;
 
         case 'languages':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:language';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'interests_affinities':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:interestAffinityCategory';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 20,
-            );
+            ];
             break;
 
         case 'interests_markets':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:interestInMarketCategory';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 20,
-            );
+            ];
             break;
 
         case 'interests_other':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:interestOtherCategory';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 20,
-            );
+            ];
             break;
 
         case 'referrers':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:source';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'referrers_social':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:socialNetwork';
             $chart_type = 'PIE';
             break;
 
         case 'referral_mediums':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:medium';
             $chart_type = 'PIE';
             break;
 
         case 'entry_pages':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:landingPagePath';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'exit_pages':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:exitPagePath';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         case 'popular_pages':
-            $metrics = array('ga:sessions');
+            $metrics = ['ga:sessions'];
             $dimension = 'ga:pageTitle';
             $chart_type = 'COLUMN';
-            $extra = array(
+            $extra = [
                 'sort' => '-ga:sessions',
                 'max-results' => 10,
-            );
+            ];
             break;
 
         default:
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    return do_template('GOOGLE_ANALYTICS', array(
+    return do_template('GOOGLE_ANALYTICS', [
         '_GUID' => 'e783bf8d946c14dc3766a06ed93635fb',
         'ID' => $id,
         'UNDER_TAB' => $under_tab,
@@ -378,7 +378,7 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
         'METRICS' => $metrics,
         'EXTRA' => $extra,
         'CHART_TYPE' => $chart_type,
-    ));
+    ]);
 }
 
 // https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics/query#dimensionFilterGroups.filters.dimension
@@ -399,19 +399,19 @@ function _render_google_search_console_keywords($id, $days, $under_tab)
     $base_url = get_base_url();
     $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($base_url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
 
-    $_json = array(
+    $_json = [
         'startDate' => date('Y-m-d', time() - 60 * 60 * 24 * $days),
         'endDate' => date('Y-m-d'),
-        'dimensions' => array('query'),
+        'dimensions' => ['query'],
         'rowLimit' => 30,
-    );
+    ];
     $json = json_encode($_json);
 
     require_code('character_sets');
     $json = convert_to_internal_encoding($json, get_charset(), 'utf-8');
 
     $trigger_error = (!$under_tab) && (get_page_name() == 'admin_stats');
-    $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error, 'post_params' => array($json), 'raw_post' => true, 'raw_content_type' => 'application/json'));
+    $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error, 'post_params' => [$json], 'raw_post' => true, 'raw_content_type' => 'application/json']);
     if ($_result === null) {
         $msg = 'Failed to query the Google Search Console API';
         return paragraph(make_string_tempcode($msg), 'red-alert');
@@ -420,33 +420,33 @@ function _render_google_search_console_keywords($id, $days, $under_tab)
 
     require_code('templates_columned_table');
 
-    $_header_row = array(
+    $_header_row = [
         'Query',
         'Clicks',
         'Impressions',
         'Click-through rate',
         'Position',
-    );
+    ];
     $header_row = columned_table_header_row($_header_row);
 
     $rows = new Tempcode();
     foreach ($result['rows'] as $row) {
-        $values = array(
+        $values = [
             $row['keys'][0],
             integer_format(intval($row['clicks'])),
             integer_format(intval($row['impressions'])),
             float_format($row['ctr'] * 100.0) . '%',
             integer_format(intval($row['position'])),
-        );
+        ];
         $rows->attach(columned_table_row($values, true));
     }
 
-    $table = do_template('COLUMNED_TABLE', array('_GUID' => '00c9731002eea4822ca91d21a4d25fc0', 'HEADER_ROW' => $header_row, 'ROWS' => $rows));
+    $table = do_template('COLUMNED_TABLE', ['_GUID' => '00c9731002eea4822ca91d21a4d25fc0', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
 
-    return do_template('GOOGLE_SEARCH_CONSOLE_KEYWORDS', array(
+    return do_template('GOOGLE_SEARCH_CONSOLE_KEYWORDS', [
         '_GUID' => 'c7ff763455bd1fc31bab7a70c6859127',
         'ID' => $id,
         'TABLE' => $table,
         'DAYS' => strval($days),
-    ));
+    ]);
 }

@@ -30,7 +30,7 @@ class Hook_config_show_empty_cpfs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_EMPTY_CPFS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_show_empty_cpfs
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -29,11 +29,11 @@ $y_axis_label = @cms_empty_safe($map['y_axis_label']) ? '' : $map['y_axis_label'
 $begin_at_zero = !empty($map['begin_at_zero']);
 $show_data_labels = !empty($map['show_data_labels']);
 
-$color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_pool']);
+$color_pool = empty($map['color_pool']) ? [] : explode(',', $map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/line_chart.csv' : $map['file'];
 
-$datasets = array();
+$datasets = [];
 require_code('files_spreadsheets_read');
 $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 $x_labels = $sheet_reader->read_row();
@@ -44,25 +44,25 @@ while (($line = $sheet_reader->read_row()) !== false) {
     }
 
     $label = array_shift($line);
-    $datapoints = array();
+    $datapoints = [];
     $i = 0;
     foreach ($line as $x) {
         if (is_numeric($x)) {
-            $datapoints[$i] = array(
+            $datapoints[$i] = [
                 'value' => $x,
-            );
+            ];
             $i++;
         } elseif ($i > 0) {
-            $datapoints[$i - 1] += array(
+            $datapoints[$i - 1] += [
                 'tooltip' => $x,
-            );
+            ];
         }
     }
 
-    $datasets[] = array(
+    $datasets[] = [
         'label' => $label,
         'datapoints' => $datapoints,
-    );
+    ];
 }
 $sheet_reader->close();
 

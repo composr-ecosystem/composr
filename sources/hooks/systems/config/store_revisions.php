@@ -30,7 +30,7 @@ class Hook_config_store_revisions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STORE_REVISIONS',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_store_revisions
             'public' => false,
 
             'addon' => 'actionlog',
-        );
+        ];
     }
 
     /**

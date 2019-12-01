@@ -72,10 +72,10 @@ class Commandr_fs
 
         // Build up the filesystem structure
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
-        $this->commandr_fs = array();
+        $this->commandr_fs = [];
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         require_code('content');
-        $var = array();
+        $var = [];
         foreach (array_keys($cma_hooks) as $hook) { // Find 'var' hooks, for content
             $cma_ob = get_content_object($hook);
             $cma_info = $cma_ob->info();
@@ -110,7 +110,7 @@ class Commandr_fs
         if (array_key_exists('commandr_dir', $_COOKIE)) {
             return $this->_pwd_to_array(base64_decode($_COOKIE['commandr_dir']));
         } else {
-            $default_dir = array();
+            $default_dir = [];
             require_code('users_active_actions');
             cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($default_dir)));
             return $default_dir;
@@ -137,11 +137,11 @@ class Commandr_fs
                 $dir_remaining = '/';
             }
 
-            $ret = array();
+            $ret = [];
             if (strpos($dir_remaining, '*') !== false) { // Showing everything underneath any outcome of the wildcards of directories paths
                 $before = $this->_get_current_dir_contents($dir, true);
                 foreach ($before as $entry) {
-                    $_ret = $this->_get_current_dir_contents(array_merge(explode('/', $entry[0]), array($end_bit)), $full_paths);
+                    $_ret = $this->_get_current_dir_contents(array_merge(explode('/', $entry[0]), [$end_bit]), $full_paths);
                     if ($_ret !== false) {
                         $ret = array_merge($ret, $_ret);
                     }
@@ -159,7 +159,7 @@ class Commandr_fs
             return $ret;
         }
 
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $current_dir = $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $dir);
@@ -189,12 +189,12 @@ class Commandr_fs
     {
         // Convert a string-form pwd to an array-form pwd, and sanitise it
         if ($pwd == '') {
-            return array();
+            return [];
         }
         $absolute = ($pwd[0] == '/');
         $_pwd = explode('/', $pwd);
         if ($absolute) {
-            $target_directory = array();
+            $target_directory = [];
         } else {
             $target_directory = $this->pwd;
         }
@@ -347,7 +347,7 @@ class Commandr_fs
             } else { // Known directory, and we've not got to a meta-dir yet -- must therefore be the meta-dir
                 $meta_root_node = $section;
                 $meta_root_node_type = $inspected_dir[$section][4];
-                $inspected_dir = array();
+                $inspected_dir = [];
                 break; // We've found the meta-dir we're under, so we can stop going through now
             }
         }
@@ -365,15 +365,15 @@ class Commandr_fs
      */
     protected function _convert_meta_dir_to_detailed_dir($_inspected_dir)
     {
-        $inspected_dir = array();
+        $inspected_dir = [];
         foreach ($_inspected_dir as $dir_name => $contents) {
-            $inspected_dir[$dir_name/*only here for hard-coded dirs*/] = array(
+            $inspected_dir[$dir_name/*only here for hard-coded dirs*/] = [
                 $dir_name,
                 COMMANDR_FS_DIR,
                 null,
                 null,
                 $contents, // This is only here for hard-coded dirs; it will either be a string (i.e. hook name) or an array (more hard-coded depth to go)
-            );
+            ];
         }
         return $inspected_dir;
     }
@@ -386,16 +386,16 @@ class Commandr_fs
      */
     public function prepare_dir_contents_for_listing($entries)
     {
-        $out = array();
+        $out = [];
         require_code('files');
         foreach ($entries as $entry) {
-            $out[] = array(
+            $out[] = [
                 'FILENAME' => $entry[0],
                 'FILESIZE' => ($entry[2] === null) ? '' : clean_file_size($entry[2]),
                 '_FILESIZE' => ($entry[2] === null) ? '' : strval($entry[2]),
                 'MTIME' => ($entry[3] === null) ? '' : date('Y-m-d H:i', $entry[3]),
                 '_MTIME' => ($entry[3] === null) ? '' : strval($entry[3]),
-            );
+            ];
         }
         return $out;
     }
@@ -427,11 +427,11 @@ class Commandr_fs
         // Return an array list of all the directories and files in the pwd
         $current_dir_contents = $this->_get_current_dir_contents($dir);
         if ($current_dir_contents === false) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        $directories = array();
-        $files = array();
+        $directories = [];
+        $files = [];
 
         foreach ($current_dir_contents as $entry) {
             if ($entry[1] == COMMANDR_FS_DIR) {
@@ -447,7 +447,7 @@ class Commandr_fs
         asort($directories);
         asort($files);
 
-        return array($directories, $files);
+        return [$directories, $files];
     }
 
     /**
@@ -466,8 +466,8 @@ class Commandr_fs
         // Search!
         $current_dir_contents = $this->listing($dir);
         $dir_string = $this->pwd_to_string($dir);
-        $output_directories = array();
-        $output_files = array();
+        $output_directories = [];
+        $output_files = [];
 
         if ($regexp) {
             if (($pattern == '') || (($pattern[0] != '#') && ($pattern[0] != '/'))) {
@@ -506,7 +506,7 @@ class Commandr_fs
         asort($output_directories);
         asort($output_files);
 
-        return array($output_directories, $output_files);
+        return [$output_directories, $output_files];
     }
 
     /**
@@ -538,7 +538,7 @@ class Commandr_fs
     public function make_directory($directory)
     {
         $directory_name = array_pop($directory);
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $directory);
@@ -562,7 +562,7 @@ class Commandr_fs
     public function remove_directory($directory)
     {
         $directory_name = $directory[count($directory) - 1];
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $directory);
@@ -580,7 +580,7 @@ class Commandr_fs
                         $object->remove_file($directory, $meta_root_node, $value[0], $this);
                         break;
                     case COMMANDR_FS_DIR:
-                        $this->remove_directory(array_merge($directory, array($value[0]))); // Recurse
+                        $this->remove_directory(array_merge($directory, [$value[0]])); // Recurse
                         break;
                 }
             }
@@ -640,14 +640,14 @@ class Commandr_fs
      */
     public function move_directory($to_move, $destination)
     {
-        $to_move_meta_dir = array();
+        $to_move_meta_dir = [];
         $to_move_meta_root_node = '';
         $to_move_meta_root_node_type = '';
         $this->_discern_meta_dir($to_move_meta_dir, $to_move_meta_root_node, $to_move_meta_root_node_type, $to_move);
         require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($to_move_meta_root_node_type));
         $to_move_object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($to_move_meta_root_node_type));
 
-        $destination_meta_dir = array();
+        $destination_meta_dir = [];
         $destination_meta_root_node = '';
         $destination_meta_root_node_type = '';
         $this->_discern_meta_dir($destination_meta_dir, $destination_meta_root_node, $destination_meta_root_node_type, $destination);
@@ -657,7 +657,7 @@ class Commandr_fs
         if ($destination_meta_root_node == $to_move_meta_root_node_type) {
             if (method_exists($to_move_object, 'folder_save')) { // Resource-fs wants a better renaming technique
                 $new_label = array_pop($destination_meta_dir);
-                return $to_move_object->folder_save(array_pop($to_move_meta_dir), implode('/', $destination_meta_dir), array('label' => $new_label));
+                return $to_move_object->folder_save(array_pop($to_move_meta_dir), implode('/', $destination_meta_dir), ['label' => $new_label]);
             }
         }
 
@@ -692,14 +692,14 @@ class Commandr_fs
      */
     public function move_file($to_move, $destination)
     {
-        $to_move_meta_dir = array();
+        $to_move_meta_dir = [];
         $to_move_meta_root_node = '';
         $to_move_meta_root_node_type = '';
         $this->_discern_meta_dir($to_move_meta_dir, $to_move_meta_root_node, $to_move_meta_root_node_type, $to_move);
         require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($to_move_meta_root_node_type));
         $to_move_object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($to_move_meta_root_node_type));
 
-        $destination_meta_dir = array();
+        $destination_meta_dir = [];
         $destination_meta_root_node = '';
         $destination_meta_root_node_type = '';
         $this->_discern_meta_dir($destination_meta_dir, $destination_meta_root_node, $destination_meta_root_node_type, $destination);
@@ -709,7 +709,7 @@ class Commandr_fs
         if ($destination_meta_root_node == $to_move_meta_root_node_type) {
             if (method_exists($to_move_object, 'file_save')) { // Resource-fs wants a better renaming technique
                 $new_label = basename(array_pop($destination_meta_dir), '.' . RESOURCE_FS_DEFAULT_EXTENSION);
-                return $to_move_object->file_save(array_pop($to_move_meta_dir), implode('/', $destination_meta_dir), array('label' => $new_label));
+                return $to_move_object->file_save(array_pop($to_move_meta_dir), implode('/', $destination_meta_dir), ['label' => $new_label]);
             }
         }
 
@@ -729,7 +729,7 @@ class Commandr_fs
     public function remove_file($to_remove)
     {
         $filename = array_pop($to_remove);
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $to_remove);
@@ -753,7 +753,7 @@ class Commandr_fs
     public function read_file($to_read)
     {
         $filename = array_pop($to_read);
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $to_read);
@@ -778,7 +778,7 @@ class Commandr_fs
     public function write_file($to_write, $contents)
     {
         $filename = array_pop($to_write);
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $to_write);
@@ -803,7 +803,7 @@ class Commandr_fs
     public function append_file($to_append, $contents)
     {
         $filename = array_pop($to_append);
-        $meta_dir = array();
+        $meta_dir = [];
         $meta_root_node = '';
         $meta_root_node_type = '';
         $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $to_append);

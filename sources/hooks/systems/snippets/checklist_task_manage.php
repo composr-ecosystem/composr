@@ -46,13 +46,13 @@ class Hook_snippet_checklist_task_manage
 
                 $task_title = post_param_string('task_title', false);
 
-                $id = $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', array(
+                $id = $GLOBALS['SITE_DB']->query_insert('staff_checklist_cus_tasks', [
                     'task_title' => $task_title,
                     'add_date' => time(),
                     'recur_interval' => $recur_interval,
                     'recur_every' => post_param_string('recur_every'),
                     'task_is_done' => null,
-                ), true);
+                ], true);
 
                 require_code('notifications');
                 $subject = do_lang('CT_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $task_title);
@@ -63,7 +63,7 @@ class Hook_snippet_checklist_task_manage
 
                 log_it('CHECK_LIST_ADD', strval($id), $task_title);
 
-                return do_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', array(
+                return do_template('BLOCK_MAIN_STAFF_CHECKLIST_CUSTOM_TASK', [
                     '_GUID' => 'e95228a3740dc7eda2d1b0ccc7d3d9d3',
                     'TASK_TITLE' => comcode_to_tempcode(post_param_string('task_title', false)),
                     'ADD_DATE' => display_time_period(time()),
@@ -71,15 +71,15 @@ class Hook_snippet_checklist_task_manage
                     'RECUR_EVERY' => post_param_string('recur_every'),
                     'TASK_DONE' => 'checklist_todo',
                     'ID' => strval($id),
-                ));
+                ]);
 
             case 'delete':
                 $id = post_param_integer('id');
-                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', array('id' => $id));
+                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', ['id' => $id]);
                 if ($task_title !== null) {
-                    $GLOBALS['SITE_DB']->query_delete('staff_checklist_cus_tasks', array(
+                    $GLOBALS['SITE_DB']->query_delete('staff_checklist_cus_tasks', [
                         'id' => $id,
-                    ), '', 1);
+                    ], '', 1);
 
                     log_it('CHECK_LIST_DELETE', strval($id), $task_title);
                 }
@@ -88,10 +88,10 @@ class Hook_snippet_checklist_task_manage
 
             case 'mark_done':
                 $id = post_param_integer('id');
-                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', array('id' => $id));
+                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', ['id' => $id]);
 
                 if ($task_title !== null) {
-                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', array('task_is_done' => time()), array('id' => $id), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['task_is_done' => time()], ['id' => $id], '', 1);
 
                     log_it('CHECK_LIST_MARK_DONE', strval($id), $task_title);
                 }
@@ -100,10 +100,10 @@ class Hook_snippet_checklist_task_manage
 
             case 'mark_undone':
                 $id = post_param_integer('id');
-                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', array('id' => $id));
+                $task_title = $GLOBALS['SITE_DB']->query_select_value_if_there('staff_checklist_cus_tasks', 'task_title', ['id' => $id]);
 
                 if ($task_title !== null) {
-                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', array('task_is_done' => null), array('id' => $id), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('staff_checklist_cus_tasks', ['task_is_done' => null], ['id' => $id], '', 1);
 
                     log_it('CHECK_LIST_MARK_UNDONE', strval($id), $task_title);
                 }

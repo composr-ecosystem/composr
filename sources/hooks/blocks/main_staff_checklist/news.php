@@ -31,16 +31,16 @@ class Hook_checklist_news
     public function run()
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
         if (get_option('news_update_time') == '' || get_option('news_update_time') == '0') {
-            return array();
+            return [];
         }
 
         require_lang('news');
 
-        $date = $GLOBALS['SITE_DB']->query_select_value_if_there('news n JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_categories c ON n.news_category=c.id', 'MAX(date_and_time)', array('validated' => 1, 'nc_owner' => null));
+        $date = $GLOBALS['SITE_DB']->query_select_value_if_there('news n JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_categories c ON n.news_category=c.id', 'MAX(date_and_time)', ['validated' => 1, 'nc_owner' => null]);
 
         $limit_hours = intval(get_option('news_update_time'));
         $seconds_ago = null;
@@ -56,16 +56,16 @@ class Hook_checklist_news
         require_code('config2');
         $config_url = config_option_url('news_update_time');
 
-        $url = build_url(array('page' => 'cms_news', 'type' => 'add'), get_module_zone('cms_news'));
+        $url = build_url(['page' => 'cms_news', 'type' => 'add'], get_module_zone('cms_news'));
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'dd14f34eafa4f24c4c173c195cd84fe3',
             'CONFIG_URL' => $config_url,
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('ADD_NEWS'),
             'INFO' => $info,
-        ));
-        return array(array($tpl, $seconds_due_in, null, 'news_update_time'));
+        ]);
+        return [[$tpl, $seconds_due_in, null, 'news_update_time']];
     }
 }

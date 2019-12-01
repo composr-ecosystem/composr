@@ -30,7 +30,7 @@ class Hook_config_show_screen_actions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_SCREEN_ACTIONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_show_screen_actions
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

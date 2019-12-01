@@ -46,7 +46,7 @@ class Hook_cron_topic_pin
             $time_now = time();
             $sql = 'SELECT details FROM ' . get_table_prefix() . 'ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id WHERE ' . db_string_equal_to('t_type_code', 'topic_pin') . ' AND ' . db_string_not_equal_to('details2', '') . ' AND date_and_time<' . strval($time_now) . '-details2*24*60*60' . ' AND date_and_time>' . strval($last_run) . '-details2*24*60*60';
             $rows = $GLOBALS['SITE_DB']->query($sql);
-            $this->topics = array();
+            $this->topics = [];
             foreach ($rows as $row) {
                 $topic_id = intval($row['details']);
                 $this->topics[$topic_id] = true;
@@ -57,11 +57,11 @@ class Hook_cron_topic_pin
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Topic unpinning',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 6,
-        );
+        ];
     }
 
     /**

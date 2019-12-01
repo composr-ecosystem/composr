@@ -37,7 +37,7 @@ class galleries_test_set extends cms_test_case
         require_code('permissions2');
         require_code('form_templates');
 
-        $this->access_mapping = array(db_get_first_id() => 4);
+        $this->access_mapping = [db_get_first_id() => 4];
         // Creating cms catalogues object
         if (file_exists(get_file_base() . '/cms/pages/modules_custom/cms_galleries.php')) {
             require_code('cms/pages/modules_custom/cms_galleries.php');
@@ -63,14 +63,14 @@ class galleries_test_set extends cms_test_case
     public function testAddGalleryActualiser()
     {
         // Cleanup after failed prior execution
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => 'a_test_gallery_for_ut'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'a_test_gallery_for_ut']);
         if ($test !== null) {
             require_code('galleries2');
             delete_gallery('a_test_gallery_for_ut');
         }
 
         // Setting sample data to POST
-        $_POST = array(
+        $_POST = [
             'fullname' => 'A test gallery for UT',
             'require__fullname' => 1,
             'gallery_name' => 'a_test_gallery_for_ut',
@@ -135,7 +135,7 @@ class galleries_test_set extends cms_test_case
             'tick_on_form__award_3' => 0,
             'require__award_3' => 0,
             'description__is_wysiwyg' => 1,
-        );
+        ];
 
         $_GET['type'] = '_add';
         $this->cms_gal_category->pre_run();
@@ -145,7 +145,7 @@ class galleries_test_set extends cms_test_case
     public function testEditGalleryActualiser()
     {
         // Setting sample data to POST
-        $_POST = array(
+        $_POST = [
             'fullname' => 'A test gallery for UT- Edited',
             'require__fullname' => 1,
             'name' => 'a_test_gallery_for_ut',
@@ -157,9 +157,9 @@ class galleries_test_set extends cms_test_case
             'hid_file_id_rep_image' => -1,
             'parent_id' => 'root',
             'require__parent_id' => 1,
-            'secondary_parents' => array(
+            'secondary_parents' => [
                 '0' => 'a_test_image',
-            ),
+            ],
             'require__secondary_parents' => 0,
             'accept_images' => 1,
             'tick_on_form__accept_images' => 0,
@@ -214,7 +214,7 @@ class galleries_test_set extends cms_test_case
             'tick_on_form__award_3' => 0,
             'require__award_3' => 0,
             'description__is_wysiwyg' => 1,
-        );
+        ];
         //$this->cms_gal_category->_edit();
     }
 
@@ -229,7 +229,7 @@ class galleries_test_set extends cms_test_case
     public function testAddImageActualiser()
     {
         // Test data add to POST
-        $_POST = array(
+        $_POST = [
             'title' => 'A test image',
             'require__title' => 0,
             'cat' => 'a_test_gallery_for_ut',
@@ -265,7 +265,7 @@ class galleries_test_set extends cms_test_case
             'meta_description' => '',
             'require__meta_description' => 0,
             'description__is_wysiwyg' => 1,
-        );
+        ];
 
         $_GET['type'] = '_add';
         $this->cms_gal->pre_run();
@@ -281,7 +281,7 @@ class galleries_test_set extends cms_test_case
 
     public function testAddVideoActuliser()
     {
-        $_POST = array(
+        $_POST = [
             'title' => 'A test video',
             'require__title' => 0,
             'cat' => 'a_test_gallery_for_ut',
@@ -317,7 +317,7 @@ class galleries_test_set extends cms_test_case
             'meta_description' => '',
             'require__meta_description' => 0,
             'description__is_wysiwyg' => 1,
-        );
+        ];
         //$this->cms_gal_alt->_add();
     }
 

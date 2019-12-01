@@ -70,7 +70,7 @@ class Hook_fields_email
                 $default = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
             }
         }
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -85,7 +85,7 @@ class Hook_fields_email
         if ($ev == '') {
             return '';
         }
-        return do_template('HYPERLINK_EMAIL', array('_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'VALUE' => $ev));
+        return do_template('HYPERLINK_EMAIL', ['_GUID' => 'f074c9a299fb3b1836a5a76270378666', 'VALUE' => $ev]);
     }
 
     // ======================

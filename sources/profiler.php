@@ -52,7 +52,7 @@ function init__profiler()
     $PROFILER_FILEHANDLE = null; // Will be opened if we have profiling enabled
 
     global $PROFILER_DATA;
-    $PROFILER_DATA = array();
+    $PROFILER_DATA = [];
 
     register_shutdown_function('_cms_profiler_script_end');
 }
@@ -99,13 +99,13 @@ function _cms_profile_start_for($identifier)
     global $PROFILER_DATA;
 
     if (!isset($PROFILER_DATA[$identifier])) {
-        $PROFILER_DATA[$identifier] = array();
+        $PROFILER_DATA[$identifier] = [];
     }
 
-    $at = array(
+    $at = [
         'time_start' => microtime(true),
         'specifics' => null,
-    );
+    ];
     $PROFILER_DATA[$identifier][] = $at;
 }
 
@@ -133,11 +133,11 @@ function _cms_profile_end_for($identifier, $specifics = null)
     $at = &$PROFILER_DATA[$identifier][$key];
     $time_start = $at['time_start'];
     $time_end = microtime(true);
-    $at = array(
+    $at = [
               'time_end' => $time_end,
               'time_length' => ($time_end - $time_start),
               'specifics' => $specifics,
-          ) + $at;
+          ] + $at;
 
     _cms_profile_log_line(_cms_profile_generate_line($identifier, $at, $key + 1));
 }

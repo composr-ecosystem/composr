@@ -25,7 +25,7 @@ class Hook_config_community_billboard_price
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRICE_community_billboard_price',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -38,7 +38,7 @@ class Hook_config_community_billboard_price
             'public' => false,
 
             'addon' => 'community_billboard',
-        );
+        ];
     }
 
     /**

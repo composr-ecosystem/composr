@@ -34,43 +34,43 @@ class Hook_privacy_polls extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'poll' => array(
+            'database_records' => [
+                'poll' => [
                     'timestamp_field' => 'add_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('submitter'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['submitter'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'poll_votes' => array(
+                ],
+                'poll_votes' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('v_voter_id'),
-                    'ip_address_fields' => array('v_voter_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['v_voter_id'],
+                    'ip_address_fields' => ['v_voter_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -86,12 +86,12 @@ class Hook_privacy_polls extends Hook_privacy_base
 
         switch ($table_name) {
             case 'poll_votes':
-                $poll_rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => $row['v_poll_id']), '', 1);
+                $poll_rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $row['v_poll_id']], '', 1);
                 if (array_key_exists(0, $poll_rows)) {
-                    $ret += array(
+                    $ret += [
                         'v_poll_id__dereferenced' => get_translated_text($poll_rows[0]['question']),
                         'v_vote_for__dereferenced' => ($row['v_vote_for'] === null) ? null : get_translated_text($poll_rows[0]['option' . strval($row['v_vote_for'])]),
-                    );
+                    ];
                 }
                 break;
         }

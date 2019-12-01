@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_periodic_newsletter
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'newsletter:PERIODIC_CREATE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_periodic_newsletter
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_PERIODIC_NEWSLETTER',
-        );
+        ];
     }
 }

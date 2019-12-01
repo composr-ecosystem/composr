@@ -25,7 +25,7 @@ class Hook_config_tapatalk_enable_sync_user
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_ENABLE_SYNC_USER',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_tapatalk_enable_sync_user
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

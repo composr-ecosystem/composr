@@ -30,7 +30,7 @@ class Hook_config_ping_url
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PING_URL',
             'type' => 'text',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_ping_url
             'public' => false,
 
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

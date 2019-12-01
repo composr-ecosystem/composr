@@ -26,7 +26,7 @@ class Hook_addon_registry_bantr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_bantr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -100,7 +100,7 @@ The insulted member has to try and make the right reply, if they succeed then th
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -110,16 +110,16 @@ The insulted member has to try and make the right reply, if they succeed then th
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'System scheduler',
                 'Conversr',
                 'points',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -139,7 +139,7 @@ The insulted member has to try and make the right reply, if they succeed then th
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/bantr.php',
             'adminzone/pages/comcode_custom/EN/insults.txt',
             'lang_custom/EN/insults.ini',
@@ -148,6 +148,6 @@ The insulted member has to try and make the right reply, if they succeed then th
             'sources_custom/hooks/systems/upon_query/insults.php',
             'text_custom/EN/insults.txt',
             'sources_custom/hooks/systems/config/insult_points.php',
-        );
+        ];
     }
 }

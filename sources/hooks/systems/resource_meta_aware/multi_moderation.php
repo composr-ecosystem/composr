@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_multi_moderation
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'cns_multi_moderations:MULTI_MODERATION',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_multi_moderation
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_MULTI_MODERATION',
-        );
+        ];
     }
 }

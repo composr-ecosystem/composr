@@ -39,11 +39,11 @@ class Hook_cron_group_member_timeouts
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Expire temporary usergroup subscriptions',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
-        );
+        ];
     }
 
     /**

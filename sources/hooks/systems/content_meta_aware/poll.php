@@ -36,7 +36,7 @@ class Hook_content_meta_aware_poll
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'polls:POLL',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_poll
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_POLL',
-        );
+        ];
     }
 
     /**

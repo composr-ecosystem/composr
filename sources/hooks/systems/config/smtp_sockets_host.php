@@ -30,7 +30,7 @@ class Hook_config_smtp_sockets_host
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HOST',
             'type' => 'line',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_smtp_sockets_host
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -25,7 +25,7 @@ class Hook_config_support_priority_backburner_minutes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUPPORT_PRIORITY_BACKBURNER_MINUTES',
             'type' => 'float',
             'category' => 'FEATURE',
@@ -38,7 +38,7 @@ class Hook_config_support_priority_backburner_minutes
             'public' => false,
 
             'addon' => 'composr_homesite_support_credits',
-        );
+        ];
     }
 
     /**

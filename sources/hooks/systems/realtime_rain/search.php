@@ -33,10 +33,10 @@ class Hook_realtime_rain_search
     public function run($from, $to)
     {
         if (!addon_installed('search')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_stats')) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT s_primary,s_member_id AS member_id,s_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'searches_logged WHERE s_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -45,7 +45,7 @@ class Hook_realtime_rain_search
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
 
-                $drops[] = rain_get_special_icons(null, $timestamp) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'search',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -54,7 +54,7 @@ class Hook_realtime_rain_search
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'search', 'type' => 'results', 'content' => $row['s_primary']), get_module_zone('search')),
+                    'URL' => build_url(['page' => 'search', 'type' => 'results', 'content' => $row['s_primary']], get_module_zone('search')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -62,7 +62,7 @@ class Hook_realtime_rain_search
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'search_' . $row['s_primary'],
-                );
+                ];
             }
         }
 

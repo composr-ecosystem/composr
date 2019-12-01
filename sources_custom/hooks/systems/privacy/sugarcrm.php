@@ -31,23 +31,23 @@ class Hook_privacy_sugarcrm extends Hook_privacy_base
 
         require_lang('sugarcrm');
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-                array(
+            'general' => [
+                [
                     'heading' => do_lang('INFORMATION_STORAGE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_sugarcrm'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_sugarcrm'),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-            ),
-        );
+            'database_records' => [
+            ],
+        ];
     }
 }

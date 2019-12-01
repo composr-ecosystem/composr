@@ -55,10 +55,10 @@ class Hook_upon_query_banner_click_points
 
                 $dest = get_param_string('dest', '');
 
-                $cnt = $GLOBALS['SITE_DB']->query_select_value('banner_clicks', 'COUNT(*)', array(
+                $cnt = $GLOBALS['SITE_DB']->query_select_value('banner_clicks', 'COUNT(*)', [
                     'c_member_id' => $member_id,
                     'c_banner_id' => $dest,
-                ));
+                ]);
                 if ($cnt == 0) {
                     require_code('points');
                     require_code('points2');

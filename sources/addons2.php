@@ -52,14 +52,14 @@ function resolve_addon_dependency_problems(&$installing, &$uninstalling)
     $addons_not_installed = find_available_addons(false); // filename => addon details
     $addons_installed = find_installed_addons(false, true, true); // addon name => addon details
 
-    $addon_names_to_filenames = array();
+    $addon_names_to_filenames = [];
     foreach ($addons_not_installed as $addon_file => $addon_info) {
         $addon_names_to_filenames[$addon_info['name']] = $addon_file;
     }
 
     // Only uninstall if we're not working from a git repository
     if (file_exists(get_file_base() . '/.git')) {
-        $uninstalling = array();
+        $uninstalling = [];
     }
 
     // Resolve dependency problems
@@ -73,7 +73,7 @@ function resolve_addon_dependency_problems(&$installing, &$uninstalling)
         foreach ($installing as $addon_file => $addon_info) {
             $addon_name = $addon_info['name'];
 
-            $dependencies = isset($addon_info['dependencies']) ? explode(',', $addon_info['dependencies']) : array();
+            $dependencies = isset($addon_info['dependencies']) ? explode(',', $addon_info['dependencies']) : [];
             foreach ($dependencies as $dep) {
                 $dep_filename = isset($addon_names_to_filenames[$dep]) ? $addon_names_to_filenames[$dep] : null;
 
@@ -129,7 +129,7 @@ CREATING ADDONS
  * @param  array $mtimes A map of file mtimes to use
  * @param  ?PATH $file_base Alternate file base to get addon files from (null: main website file base)
  */
-function create_addon($file, $files, $addon_name, $incompatibilities, $dependencies, $author, $organisation, $version, $category, $copyright_attribution, $licence, $description, $dir = 'exports/addons', $mtimes = array(), $file_base = null)
+function create_addon($file, $files, $addon_name, $incompatibilities, $dependencies, $author, $organisation, $version, $category, $copyright_attribution, $licence, $description, $dir = 'exports/addons', $mtimes = [], $file_base = null)
 {
     require_code('tar');
 
@@ -190,7 +190,7 @@ function create_addon($file, $files, $addon_name, $incompatibilities, $dependenc
         if ((substr($val, 0, 7) == 'themes/') && (substr($val, 0, 15) == 'themes/default/') && (substr($val, 0, 12) != 'themes/admin/') && (substr($val, -10) == '/theme.ini')) {
             $theme = substr($val, 7, strpos($val, '/theme.ini') - 7);
 
-            $images = $GLOBALS['SITE_DB']->query_select('theme_images', array('*'), array('theme' => $theme));
+            $images = $GLOBALS['SITE_DB']->query_select('theme_images', ['*'], ['theme' => $theme]);
             $data = '<' . '?php' . "\n";
             foreach ($images as $image) {
                 if (($image['url'] != '') && ($image['url'] != find_theme_image($image['id'], true, true, 'default'))) {
@@ -203,7 +203,7 @@ function create_addon($file, $files, $addon_name, $incompatibilities, $dependenc
 
     // Our special file; for auto-compiled addons these details will be copied from the addon_registry hook
     $addon_inf = '';
-    $settings = array(
+    $settings = [
         'name' => $addon_name,
         'author' => $author,
         'organisation' => $organisation,
@@ -214,7 +214,7 @@ function create_addon($file, $files, $addon_name, $incompatibilities, $dependenc
         'description' => $description,
         'incompatibilities' => $incompatibilities,
         'dependencies' => $dependencies,
-    );
+    ];
     foreach ($settings as $setting_name => $setting_value) {
         $addon_inf .= $setting_name . '="' . str_replace("\n", '\n', str_replace('"', '\'', $setting_value)) . '"' . "\n";
     }
@@ -245,17 +245,17 @@ QUERYING ADDONS
  * @param  array $already_known Addons we already have details for, performance optimisation
  * @return array Maps of maps describing the available addons (filename => details)
  */
-function find_available_addons($installed_too = true, $gather_mtimes = true, $already_known = array())
+function find_available_addons($installed_too = true, $gather_mtimes = true, $already_known = [])
 {
-    $addons_available_for_installation = array();
-    $files = array();
+    $addons_available_for_installation = [];
+    $files = [];
 
     // Find addons available for installation
     $dh = @opendir(get_custom_file_base() . '/imports/addons/');
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.tar') {
-                $files[] = array($file, null);
+                $files[] = [$file, null];
             }
         }
         closedir($dh);
@@ -296,14 +296,14 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
             if (!empty($info['copyright_attribution'])) {
                 $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
             } else {
-                $info['copyright_attribution'] = array();
+                $info['copyright_attribution'] = [];
             }
             if (empty($info['licence'])) {
                 $info['category'] = '(Unstated)';
             }
 
             $files_rows = tar_get_directory($tar);
-            $info['files'] = array();
+            $info['files'] = [];
             foreach ($files_rows as $file_row) {
                 $info['files'][] = $file_row['path'];
             }
@@ -339,15 +339,15 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
  */
 function find_remote_addons()
 {
-    static $addons = array();
-    if ($addons !== array()) {
+    static $addons = [];
+    if ($addons !== []) {
         return $addons; // Caching
     }
     $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
-    $contents = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
-    $matches = array();
+    $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+    $matches = [];
     $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
         $id = intval($matches[1][$i]);
@@ -369,7 +369,7 @@ function find_remote_addons()
  */
 function find_installed_addons($just_non_bundled = false, $get_info = true, $get_dependencies = false)
 {
-    $addons_installed = array();
+    $addons_installed = [];
 
     $hooks = find_all_hooks('systems', 'addon_registry');
 
@@ -384,7 +384,7 @@ function find_installed_addons($just_non_bundled = false, $get_info = true, $get
     }
 
     // Find installed addons- database registration method
-    $_rows = $GLOBALS['SITE_DB']->query_select('addons', array('*'));
+    $_rows = $GLOBALS['SITE_DB']->query_select('addons', ['*']);
     foreach ($_rows as $row) {
         $addon_name = $row['addon_name'];
 
@@ -409,12 +409,12 @@ function find_installed_addons($just_non_bundled = false, $get_info = true, $get
 function find_addon_dependencies_on($addon_name)
 {
     // From DB
-    $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0)));
+    $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0]));
 
     // From ocProducts addons
     static $ocproducts_addon_dep_cache = null;
     if ($ocproducts_addon_dep_cache === null) {
-        $ocproducts_addon_dep_cache = array();
+        $ocproducts_addon_dep_cache = [];
         $hooks = find_all_hooks('systems', 'addon_registry');
         foreach (array_keys($hooks) as $hook) {
             $_found_hook = false;
@@ -430,16 +430,16 @@ function find_addon_dependencies_on($addon_name)
             if (!$_found_hook) {
                 continue; // May have been uninstalled, find_all_hooks could have stale caching
             }
-            $_hook_bits = extract_module_functions($path, array('get_dependencies'));
+            $_hook_bits = extract_module_functions($path, ['get_dependencies']);
             if ($_hook_bits[0] === null) {
-                $dep = array();
+                $dep = [];
             } else {
                 $dep = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             }
             $ocproducts_addon_dep_cache[$hook] = $dep['requires'];
         }
     }
-    $list_b = array();
+    $list_b = [];
     foreach ($ocproducts_addon_dep_cache as $hook => $hook_requires) {
         if (in_array($addon_name, $hook_requires)) {
             $list_b[] = $hook;
@@ -464,7 +464,7 @@ INSTALLING ADDONS
  * @param  boolean $always_return Whether to make sure we always return, rather than possibly bombing out with a dependency management UI
  * @return array Triple: warnings, files, addon info array
  */
-function inform_about_addon_install($file, $also_uninstalling = array(), $also_installing = array(), $always_return = false)
+function inform_about_addon_install($file, $also_uninstalling = [], $also_installing = [], $always_return = false)
 {
     $full = get_custom_file_base() . '/imports/addons/' . $file;
 
@@ -486,13 +486,13 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
     if (!empty($info['copyright_attribution'])) {
         $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
     } else {
-        $info['copyright_attribution'] = array();
+        $info['copyright_attribution'] = [];
     }
     $info += get_default_addon_info();
     $addon_name = $info['name'];
     $php = false;
     $overwrite = new Tempcode();
-    $dirs = array();
+    $dirs = [];
     $files = new Tempcode();
     $files_warnings = new Tempcode();
 
@@ -556,14 +556,14 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
 
         // Template
         if ($this_comcode_page) {
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', array('_GUID' => 'd0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_COMCODE_PAGE'))));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'd0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_COMCODE_PAGE')]));
         } elseif ($this_overwrite) {
             $backup = (substr($entry['path'], -4) == '.txt');
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', array('_GUID' => 'c62168dee316d8f73d20a0d70d41b1a4', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode($backup ? 'ADDON_FILE_WILL_OVERWRITE_BACKUP' : 'ADDON_FILE_WILL_OVERWRITE'))));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'c62168dee316d8f73d20a0d70d41b1a4', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode($backup ? 'ADDON_FILE_WILL_OVERWRITE_BACKUP' : 'ADDON_FILE_WILL_OVERWRITE')]));
         } elseif ($this_php) {
-            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', array('_GUID' => 'c0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_PHP'))));
+            $files_warnings->attach(do_template('ADDON_INSTALL_FILES_WARNING', ['_GUID' => 'c0cf99f96262296df4afe2387f4cd3e8', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_IS_PHP')]));
         } else {
-            $files->attach(do_template('ADDON_INSTALL_FILES', array('_GUID' => '74edcf396387c842cab5cfd0ab74b8f6', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_NORMAL'))));
+            $files->attach(do_template('ADDON_INSTALL_FILES', ['_GUID' => '74edcf396387c842cab5cfd0ab74b8f6', 'I' => strval($i), 'PATH' => $entry['path'], 'ABOUT' => do_lang_tempcode('ADDON_FILE_NORMAL')]));
         }
     }
     tar_close($tar);
@@ -597,11 +597,11 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
     if ($info['author'] != 'Core Team') {
         static $done_non_core_warn = false;
         if (!$done_non_core_warn) {
-            $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => 'dd66b2c540908de60753a1ced73b8ac0', 'WARNING' => do_lang_tempcode('ADDON_WARNING_GENERAL'))));
+            $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => 'dd66b2c540908de60753a1ced73b8ac0', 'WARNING' => do_lang_tempcode('ADDON_WARNING_GENERAL')]));
         }
         $done_non_core_warn = true;
     }
-    $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 1)));
+    $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 1]));
     $_incompatibilities = new Tempcode();
     foreach ($incompatibilities as $in) {
         if (!$_incompatibilities->is_empty()) {
@@ -610,12 +610,12 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
         $_incompatibilities->attach(escape_html($in));
     }
     if (!empty($incompatibilities)) {
-        $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '7ee5935df99b7b863477ec96989df0eb', 'WARNING' => do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES', $_incompatibilities, escape_html($file)))));
+        $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '7ee5935df99b7b863477ec96989df0eb', 'WARNING' => do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES', $_incompatibilities, escape_html($file))]));
     }
 
     // Check dependencies
     $_dependencies = explode(',', array_key_exists('dependencies', $info) ? $info['dependencies'] : '');
-    $dependencies = array();
+    $dependencies = [];
     foreach ($_dependencies as $dependency) {
         if ($dependency == '') {
             continue;
@@ -637,7 +637,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
             $_dependencies_str->attach(do_lang_tempcode('LIST_SEP'));
         }
         if (file_exists(get_custom_file_base() . '/imports/addons/' . $in . '.tar')) {
-            $in_tpl = hyperlink(build_url(array('page' => 'admin_addons', 'type' => 'addon_install', 'file' => $in . '.tar'), get_module_zone('admin_addons')), $in, true, true);
+            $in_tpl = hyperlink(build_url(['page' => 'admin_addons', 'type' => 'addon_install', 'file' => $in . '.tar'], get_module_zone('admin_addons')), $in, true, true);
         } else {
             $in_tpl = make_string_tempcode(escape_html($in));
         }
@@ -653,20 +653,20 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
 
             if (get_param_string('type', 'browse') == 'addon_install') {
                 $post_fields->attach(form_input_hidden('install_' . $file, $file));
-                $url = static_evaluate_tempcode(build_url(array('page' => '_SELF', 'type' => 'multi_action'), '_SELF'));
+                $url = static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF'));
             } else {
                 $url = get_self_url(true);
             }
-            warn_exit(do_lang_tempcode('_ADDON_WARNING_MISSING_DEPENDENCIES', $_dependencies_str->evaluate(), escape_html($addon_name), array(escape_html($url), $post_fields)));
+            warn_exit(do_lang_tempcode('_ADDON_WARNING_MISSING_DEPENDENCIES', $_dependencies_str->evaluate(), escape_html($addon_name), [escape_html($url), $post_fields]));
         } else {
-            $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => 'ba2146fb91a940e0b2793d985563fb9e', 'WARNING' => do_lang_tempcode('ADDON_WARNING_MISSING_DEPENDENCIES', $_dependencies_str, escape_html($file)))));
+            $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => 'ba2146fb91a940e0b2793d985563fb9e', 'WARNING' => do_lang_tempcode('ADDON_WARNING_MISSING_DEPENDENCIES', $_dependencies_str, escape_html($file))]));
         }
     }
 
     //if (!$overwrite->is_empty()) $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => 'fe40ed8192a452a835be4c0fde64406b', 'WARNING' => do_lang_tempcode('ADDON_WARNING_OVERWRITE', escape_html($overwrite), escape_html($file)))));
     if ($info['author'] != 'Core Team') {
         if ($php) {
-            $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '8cf249a119d10b2e97fc94cb9981dcea', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PHP', escape_html($file)))));
+            $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '8cf249a119d10b2e97fc94cb9981dcea', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PHP', escape_html($file))]));
         }
     }
     //if ($chmod != '') $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '78121e40b9a26c2f33d09f7eee7b74be', 'WARNING' => do_lan g_tempcode('ADDON_WARNING_CHMOD', escape_html($chmod))))); // Now uses AFM
@@ -675,7 +675,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
     $files_combined->attach($files_warnings);
     $files_combined->attach($files);
 
-    return array($warnings, $files_combined, $info);
+    return [$warnings, $files_combined, $info];
 }
 
 /**
@@ -689,14 +689,14 @@ function has_feature($dependency)
     // Normalise
     $dependency = str_replace(' ', '', strtolower(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
 
-    $remapping = array( // Useful for carrying legacy remappings, currently there are none
-    );
+    $remapping = [ // Useful for carrying legacy remappings, currently there are none
+    ];
     if (array_key_exists($dependency, $remapping)) {
         $dependency = $remapping[$dependency];
     }
 
     // Non-bundled addon
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', array('addon_name' => $dependency));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $dependency]);
     if ($test !== null) {
         return true;
     }
@@ -756,7 +756,7 @@ function has_feature($dependency)
  */
 function get_addon_install_writable_paths($file)
 {
-    $writable_paths = array();
+    $writable_paths = [];
 
     require_code('tar');
     $full = get_custom_file_base() . '/imports/addons/' . $file;
@@ -812,30 +812,30 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true, $c
 
     // Install new zones
     if ($do_db) {
-        $zones = array('');
+        $zones = [''];
         foreach ($directory as $dir) {
             $addon_file = $dir['path'];
 
             if (($files === null) || (in_array($addon_file, $files))) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#(\w*)/index\.php$#', $addon_file, $matches) != 0) {
                     $zone = $matches[1];
 
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', array('zone_name' => $zone));
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', ['zone_name' => $zone]);
                     if ($test === null) {
-                        $map = array(
+                        $map = [
                             'zone_name' => $zone,
                             'zone_default_page' => ($zone == 'forum') ? 'forumview' : DEFAULT_ZONE_PAGE_NAME,
                             'zone_theme' => '-1',
                             'zone_require_session' => 0,
-                        );
+                        ];
                         $map += insert_lang('zone_title', titleify($zone), 1);
                         $map += insert_lang('zone_header_text', '', 1);
                         $GLOBALS['SITE_DB']->query_insert('zones', $map);
 
                         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
                         foreach (array_keys($groups) as $group_id) {
-                            $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => $zone, 'group_id' => $group_id), false, true); // errors suppressed in case already there
+                            $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => $zone, 'group_id' => $group_id], false, true); // errors suppressed in case already there
                         }
                     }
 
@@ -895,7 +895,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true, $c
 
     // Install addon itself
     if ($do_db) {
-        $_files = array();
+        $_files = [];
         foreach ($directory as $dir) {
             $addon_file = $dir['path'];
             if ($addon_file == 'addon.inf') {
@@ -915,7 +915,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true, $c
             }
         }
         if (!$was_already_installed) {
-            reinstall_addon_soft($addon_name, $info + array('files' => $_files));
+            reinstall_addon_soft($addon_name, $info + ['files' => $_files]);
         } else {
             upgrade_addon_soft($addon_name);
         }
@@ -928,7 +928,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true, $c
         erase_block_cache(true);
         erase_persistent_cache();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
-        $template_files_to_erase = array();
+        $template_files_to_erase = [];
         foreach ($directory as $dir) {
             $addon_file = $dir['path'];
             if (substr($addon_file, 0, 7) == 'themes/') {
@@ -984,12 +984,12 @@ function reinstall_addon_soft($addon_name, $ini_info = null)
 
     $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
-    $GLOBALS['SITE_DB']->query_delete('addons_files', array('addon_name' => $addon_name));
-    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', array('addon_name' => $addon_name));
-    $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon_name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
+    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
+    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon_name), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('addons', array(
+    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('addons', [
         'addon_name' => $addon_name,
         'addon_author' => $addon_info['author'],
         'addon_organisation' => $addon_info['organisation'],
@@ -999,28 +999,28 @@ function reinstall_addon_soft($addon_name, $ini_info = null)
         'addon_licence' => $addon_info['licence'],
         'addon_description' => $addon_info['description'],
         'addon_install_time' => time(),
-    ));
+    ]);
 
     foreach ($addon_info['dependencies'] as $dependency) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
             'addon_name' => $addon_name,
             'addon_name_dependant_upon' => trim($dependency),
             'addon_name_incompatibility' => 0,
-        ));
+        ]);
     }
     foreach ($addon_info['incompatibilities'] as $incompatibility) {
-        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', array(
+        $GLOBALS['SITE_DB']->query_insert('addons_dependencies', [
             'addon_name' => $addon_name,
             'addon_name_dependant_upon' => trim($incompatibility),
             'addon_name_incompatibility' => 1,
-        ));
+        ]);
     }
 
     foreach ($addon_info['files'] as $filepath) {
-        $GLOBALS['SITE_DB']->query_insert('addons_files', array(
+        $GLOBALS['SITE_DB']->query_insert('addons_files', [
             'addon_name' => $addon_name,
             'filepath' => $filepath,
-        ));
+        ]);
     }
 }
 
@@ -1047,7 +1047,7 @@ function find_updated_addons()
 
     $addons = find_installed_addons(true, false);
     if (empty($addons)) {
-        return array();
+        return [];
     }
 
     $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/addon_manifest.php?version=' . urlencode(float_to_raw_string(cms_version_number(), 2, true));
@@ -1056,9 +1056,9 @@ function find_updated_addons()
     }
 
     require_code('http');
-    list($addon_data) = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 5/*5 minute cache*/);
+    list($addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 5/*5 minute cache*/);
     if (empty($addon_data)) {
-        return array();
+        return [];
         //warn_exit(do_lang('INTERNAL_ERROR'));
     }
 
@@ -1066,10 +1066,10 @@ function find_updated_addons()
     sort_maps_by($available_addons, 'mtime');
     $available_addons = array_reverse($available_addons);
 
-    $updated_addons = array();
+    $updated_addons = [];
     $_addon_data = @unserialize($addon_data);
     if ($_addon_data === false) {
-        return array();
+        return [];
     }
     foreach ($_addon_data as $i => $addon_bits) {
         $found = false;
@@ -1078,7 +1078,7 @@ function find_updated_addons()
             if ($available_addon['name'] == $addon_bits[3]) {
                 $found = true;
                 if (($addon_bits[0] !== null) && ($available_addon['mtime'] < $addon_bits[0])) { // If known to server, and updated
-                    $updated_addons[$addon_bits[3]] = array($addon_bits[1]); // Is known to server though
+                    $updated_addons[$addon_bits[3]] = [$addon_bits[1]]; // Is known to server though
                 }
                 break;
             }
@@ -1086,7 +1086,7 @@ function find_updated_addons()
         if (!$found) { // Don't have our original .tar, so lets say we need to reinstall
             $mtime = find_addon_effective_mtime($addon_bits[3]);
             if (($addon_bits[0] !== null) && ($mtime !== null) && ($mtime < $addon_bits[0])) { // If server has it and is newer
-                $updated_addons[$addon_bits[3]] = array($addon_bits[1]);
+                $updated_addons[$addon_bits[3]] = [$addon_bits[1]];
             }
         }
     }
@@ -1124,7 +1124,7 @@ function upgrade_addon_soft($addon_name)
     require_code('files2');
     require_all_core_cms_code();
 
-    $rows = $GLOBALS['SITE_DB']->query_select('addons', array('*'), array('addon_name' => $addon_name), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('addons', ['*'], ['addon_name' => $addon_name], '', 1);
     if (!array_key_exists(0, $rows)) {
         return (-2); // Not installed, so can't upgrade
     }
@@ -1148,7 +1148,7 @@ function upgrade_addon_soft($addon_name)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('addons', array('addon_version' => $disk_version), array('addon_name' => $addon_name), '', 1);
+    $GLOBALS['SITE_DB']->query_update('addons', ['addon_version' => $disk_version], ['addon_name' => $addon_name], '', 1);
 
     return $ret;
 }
@@ -1168,7 +1168,7 @@ UNINSTALLING ADDONS
  * @param  boolean $always_return Whether to make sure we always return, rather than possibly bombing out with a dependency management UI
  * @return array Pair: warnings, files
  */
-function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(), $addon_info = null, $always_return = false)
+function inform_about_addon_uninstall($addon_name, $also_uninstalling = [], $addon_info = null, $always_return = false)
 {
     // Read/show info
     if ($addon_info === null) {
@@ -1183,7 +1183,7 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(),
         $loopable = explode("\n", $addon_info['files']);
     }
     foreach ($loopable as $i => $filepath) {
-        $files->attach(do_template('ADDON_INSTALL_FILES', array('_GUID' => '235d09a3cc041cea03f5421f639e8edf', 'I' => strval($i), 'DISABLED' => true, 'PATH' => $filepath)));
+        $files->attach(do_template('ADDON_INSTALL_FILES', ['_GUID' => '235d09a3cc041cea03f5421f639e8edf', 'I' => strval($i), 'DISABLED' => true, 'PATH' => $filepath]));
     }
 
     // Check dependencies
@@ -1210,17 +1210,17 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(),
             $post_fields->attach(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
             if (get_param_string('type', 'browse') == 'addon_uninstall') {
                 $post_fields->attach(form_input_hidden('uninstall_' . $addon_name, $addon_name));
-                $url = static_evaluate_tempcode(build_url(array('page' => '_SELF', 'type' => 'multi_action'), '_SELF'));
+                $url = static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF'));
             } else {
                 $url = get_self_url(true);
             }
-            warn_exit(do_lang_tempcode('_ADDON_WARNING_PRESENT_DEPENDENCIES', $_dependencies_str->evaluate(), escape_html($addon_name), array(escape_html($url), $post_fields)));
+            warn_exit(do_lang_tempcode('_ADDON_WARNING_PRESENT_DEPENDENCIES', $_dependencies_str->evaluate(), escape_html($addon_name), [escape_html($url), $post_fields]));
         } else {
-            $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '95b9f58ac4f19afe974082a4185642a4', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PRESENT_DEPENDENCIES', $_dependencies_str, escape_html($addon_name)))));
+            $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '95b9f58ac4f19afe974082a4185642a4', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PRESENT_DEPENDENCIES', $_dependencies_str, escape_html($addon_name))]));
         }
     }
 
-    return array($warnings, $files);
+    return [$warnings, $files];
 }
 
 /**
@@ -1232,12 +1232,12 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(),
 function find_addons_for_files($paths)
 {
     if (empty($paths)) {
-        return array();
+        return [];
     }
 
-    $addons = array();
+    $addons = [];
     foreach ($paths as $path) {
-        $addons[$path] = array();
+        $addons[$path] = [];
     }
 
     $or_list = '';
@@ -1247,7 +1247,7 @@ function find_addons_for_files($paths)
         }
         $or_list .= db_string_equal_to('filepath', $path);
     }
-    $addon_files = $GLOBALS['SITE_DB']->query_select('addons_files', array('addon_name', 'filepath'), array(), 'WHERE ' . $or_list);
+    $addon_files = $GLOBALS['SITE_DB']->query_select('addons_files', ['addon_name', 'filepath'], [], 'WHERE ' . $or_list);
     foreach ($addon_files as $_path) {
         if (in_array($_path['filepath'], $paths)) {
             $addons[$_path['filepath']][] = $_path['addon_name'];
@@ -1285,17 +1285,17 @@ function get_addon_uninstall_writable_paths($addon_name)
 
     // Try and cleanup some empty/unneeded dirs
     do {
-        $dirs = array();
+        $dirs = [];
         $changes = false;
         foreach ($writable_paths as $writable_path) {
             if (strpos($writable_path, '/') !== false) {
                 $dir = dirname($writable_path);
                 if (!isset($dirs[$dir])) {
-                    $dirs[$dir] = array();
+                    $dirs[$dir] = [];
                 }
                 $dirs[$dir][] = basename($writable_path);
 
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^([^/]*)/index\.php#', $writable_path, $matches) != 0) {
                     $zone = $matches[1];
                     if (!in_array($zone, $writable_paths)) {
@@ -1306,7 +1306,7 @@ function get_addon_uninstall_writable_paths($addon_name)
             }
         }
         foreach ($dirs as $dir => $dir_contents_being_deleted) {
-            $dir_contents = array_diff(scandir(get_file_base() . '/' . $dir), array('..', '.'), $dir_contents_being_deleted);
+            $dir_contents = array_diff(scandir(get_file_base() . '/' . $dir), ['..', '.'], $dir_contents_being_deleted);
             if (empty($dir_contents)) {
                 if (!in_array($dir, $writable_paths)) {
                     $writable_paths[] = $dir; // Directory is going to be empty
@@ -1340,8 +1340,8 @@ function uninstall_addon($addon_name, $clear_caches = true)
 
     // Remove addon info from database, modules, blocks, and files
     uninstall_addon_soft($addon_name);
-    $last = array();
-    $zones_gone = array();
+    $last = [];
+    $zones_gone = [];
     $addons_for_files = find_addons_for_files($addon_info['files']);
     foreach ($addon_info['files'] as $filepath) {
         if (file_exists(get_file_base() . '/' . $filepath)) {
@@ -1351,7 +1351,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
                     continue;
                 }
 
-                $matches = array();
+                $matches = [];
                 if (preg_match('#([^/]*)/?pages/modules(_custom)?/(.*)\.php#', $filepath, $matches) != 0) {
                     if ($matches[2] != '_custom' || ($matches[2] == '_custom' && !is_file(get_file_base() . '/' . str_replace('_custom/', '/', $filepath)))) {
                         $zone = $matches[1];
@@ -1396,7 +1396,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
             }
         }
     }
-    $dirs = array();
+    $dirs = [];
     foreach ($last as $filepath) {
         afm_delete_file($filepath);
         $dirs[dirname($filepath)] = true;
@@ -1405,7 +1405,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
     // Try and cleanup some empty/unneeded dirs
     krsort($dirs);
     foreach ($dirs as $dir => $true) {
-        if (array_diff(scandir(get_file_base() . '/' . $dir), array('..', '.')) == array()) {
+        if (array_diff(scandir(get_file_base() . '/' . $dir), ['..', '.']) == []) {
             afm_delete_directory($dir);
             if (strpos($dir, '/') !== false) {
                 $dirs[dirname($dir)] = true;
@@ -1428,7 +1428,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
         erase_block_cache(true);
         erase_persistent_cache();
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
-        $template_files_to_erase = array();
+        $template_files_to_erase = [];
         foreach ($addon_info['files'] as $addon_file) {
             if (substr($addon_file, 0, 7) == 'themes/') {
                 $template_files_to_erase[] = preg_replace('#\..*$#', '', basename($addon_file));
@@ -1438,7 +1438,7 @@ function uninstall_addon($addon_name, $clear_caches = true)
         erase_cached_language();
         erase_theme_images_cache();
         global $HOOKS_CACHE;
-        $HOOKS_CACHE = array();
+        $HOOKS_CACHE = [];
 
         if (function_exists('persistent_cache_set')) {
             persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
@@ -1455,11 +1455,11 @@ function uninstall_addon($addon_name, $clear_caches = true)
  */
 function uninstall_addon_soft($addon_name)
 {
-    $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon_name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 
-    $GLOBALS['SITE_DB']->query_delete('addons_files', array('addon_name' => $addon_name));
-    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', array('addon_name' => $addon_name));
-    $GLOBALS['SITE_DB']->query_delete('addons', array('addon_name' => $addon_name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('addons_files', ['addon_name' => $addon_name]);
+    $GLOBALS['SITE_DB']->query_delete('addons_dependencies', ['addon_name' => $addon_name]);
+    $GLOBALS['SITE_DB']->query_delete('addons', ['addon_name' => $addon_name], '', 1);
 
     require_code('files2');
     require_all_core_cms_code();

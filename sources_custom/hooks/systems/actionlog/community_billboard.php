@@ -26,51 +26,51 @@ class Hook_actionlog_community_billboard extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('community_billboard')) {
-            return array();
+            return [];
         }
 
         require_lang('community_billboard');
 
-        return array(
-            'ADD_COMMUNITY_BILLBOARD' => array(
+        return [
+            'ADD_COMMUNITY_BILLBOARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:_edit:{ID}',
                     'ADD_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:add',
-                ),
-            ),
-            'EDIT_COMMUNITY_BILLBOARD' => array(
+                ],
+            ],
+            'EDIT_COMMUNITY_BILLBOARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:_edit:{ID}',
                     'ADD_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:add',
-                ),
-            ),
-            'CHOOSE_COMMUNITY_BILLBOARD' => array(
+                ],
+            ],
+            'CHOOSE_COMMUNITY_BILLBOARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:_edit:{ID}',
                     'ADD_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:add',
-                ),
-            ),
-            'DELETE_COMMUNITY_BILLBOARD' => array(
+                ],
+            ],
+            'DELETE_COMMUNITY_BILLBOARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_COMMUNITY_BILLBOARD' => '_SEARCH:admin_community_billboard:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

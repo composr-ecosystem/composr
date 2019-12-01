@@ -30,16 +30,16 @@ class lang_duplication_test_set extends cms_test_case
     {
         $verbose = false;
 
-        $vals = array();
+        $vals = [];
 
         $num = 0;
 
-        $all_keys = array();
+        $all_keys = [];
 
-        $exceptions = array(
+        $exceptions = [
             'GOOGLE_MAP',
             'GOOGLE_MAP_KEY',
-        );
+        ];
 
         $lang_files = get_lang_files(fallback_lang());
         foreach (array_keys($lang_files) as $file) {
@@ -52,7 +52,7 @@ class lang_duplication_test_set extends cms_test_case
 
             $c = preg_replace('#^.*\[strings\]#s', '', $c); // Remove descriptions section
 
-            $input = array();
+            $input = [];
             _get_lang_file_map($path, $input, 'strings', false, true, 'EN');
 
             foreach ($input as $key => $val) {
@@ -65,7 +65,7 @@ class lang_duplication_test_set extends cms_test_case
                         @print('<p><strong>' . escape_html($val) . '</strong>:<br />' . escape_html($file . ':' . $key . ' = ' . implode(' = ', $vals[$val])) . '</p>');
                     }
                 } else {
-                    $vals[$val] = array();
+                    $vals[$val] = [];
                 }
                 $vals[$val][] = $file . ':' . $key;
 

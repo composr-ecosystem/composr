@@ -99,9 +99,9 @@ class Module_cms_tutorials extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('tutorials:TUTORIALS', 'help'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['tutorials:TUTORIALS', 'help'],
+        ] + parent::get_entry_points();
     }
 
     /**
@@ -116,10 +116,10 @@ class Module_cms_tutorials extends Standard_crud_module
         return do_next_manager(
             get_screen_title('TUTORIALS'),
             new Tempcode(),
-            array(
-                has_privilege(get_member(), 'submit_lowrange_content', 'cms_tutorials') ? array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_TUTORIAL')) : null,
-                has_privilege(get_member(), 'edit_own_lowrange_content', 'cms_tutorials') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_TUTORIAL')) : null,
-            ),
+            [
+                has_privilege(get_member(), 'submit_lowrange_content', 'cms_tutorials') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_TUTORIAL')] : null,
+                has_privilege(get_member(), 'edit_own_lowrange_content', 'cms_tutorials') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_TUTORIAL')] : null,
+            ],
             do_lang('TUTORIALS')
         );
     }
@@ -158,7 +158,7 @@ class Module_cms_tutorials extends Standard_crud_module
             $tag = get_param_string('tag', null);
             if ($tag !== null) {
                 if ($tags === null) {
-                    $tags = array($tag);
+                    $tags = [$tag];
                 }
                 if ($icon == '') {
                     $icon = _find_tutorial_image_for_tag($tag);
@@ -166,7 +166,7 @@ class Module_cms_tutorials extends Standard_crud_module
             }
         }
         if ($tags === null) {
-            $tags = array();
+            $tags = [];
         }
 
         $fields = new Tempcode();
@@ -184,13 +184,13 @@ class Module_cms_tutorials extends Standard_crud_module
         $fields->attach(form_input_theme_image('Icon', 'Icon for the tutorial.', 'icon', $ids, null, $icon));
 
         $content = new Tempcode();
-        foreach (array('document', 'video', 'audio', 'slideshow', 'book') as $_media_type) {
+        foreach (['document', 'video', 'audio', 'slideshow', 'book'] as $_media_type) {
             $content->attach(form_input_list_entry($_media_type, $_media_type == $media_type, titleify($_media_type)));
         }
         $fields->attach(form_input_list('Media type', 'What kind of media is the tutorial presented in.', 'media_type', $content));
 
         $content = new Tempcode();
-        foreach (array('novice', 'regular', 'expert') as $_difficulty_level) {
+        foreach (['novice', 'regular', 'expert'] as $_difficulty_level) {
             $content->attach(form_input_list_entry($_difficulty_level, $_difficulty_level == $difficulty_level, titleify($_difficulty_level)));
         }
         $fields->attach(form_input_list('Difficulty level', 'A realistic assessment of who should be reading this. If it has different sections for different levels, choose the lowest, but make sure the tutorial somehow specifies which are the hard bits.', 'difficulty_level', $content));
@@ -207,7 +207,7 @@ class Module_cms_tutorials extends Standard_crud_module
         }
         $fields->attach(form_input_multi_list('Tags', 'At least one tag to classify the tutorial. Use as many as are appropriate.', 'tags', $content, null, 5, true));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -218,11 +218,11 @@ class Module_cms_tutorials extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', array('t_submitter', 't_add_date'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['t_submitter', 't_add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['t_submitter'], $rows[0]['t_add_date']);
+        return [$rows[0]['t_submitter'], $rows[0]['t_add_date']];
     }
 
     /**
@@ -233,15 +233,15 @@ class Module_cms_tutorials extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', array('*'), array('id' => intval($id)));
+        $rows = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $myrow = $rows[0];
 
-        $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', array('t_tag'), array(
+        $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', ['t_tag'], [
             't_id' => intval($id),
-        )));
+        ]));
 
         return $this->get_form_fields($myrow['id'], $myrow['t_url'], $myrow['t_title'], $myrow['t_summary'], $myrow['t_icon'], $myrow['t_media_type'], $myrow['t_difficulty_level'], $myrow['t_pinned'], $myrow['t_author'], $tags);
     }
@@ -264,9 +264,9 @@ class Module_cms_tutorials extends Standard_crud_module
             $pinned = 0;
         }
         $author = post_param_string('author');
-        $tags = empty($_POST['tags']) ? array() : $_POST['tags'];
+        $tags = empty($_POST['tags']) ? [] : $_POST['tags'];
 
-        $id = $GLOBALS['SITE_DB']->query_insert('tutorials_external', array(
+        $id = $GLOBALS['SITE_DB']->query_insert('tutorials_external', [
             't_url' => $url,
             't_title' => $title,
             't_summary' => $summary,
@@ -279,13 +279,13 @@ class Module_cms_tutorials extends Standard_crud_module
             't_views' => 0,
             't_add_date' => time(),
             't_edit_date' => time(),
-        ), true);
+        ], true);
 
         foreach ($tags as $tag) {
-            $GLOBALS['SITE_DB']->query_insert('tutorials_external_tags', array(
+            $GLOBALS['SITE_DB']->query_insert('tutorials_external_tags', [
                 't_id' => $id,
                 't_tag' => $tag,
-            ));
+            ]);
         }
 
         log_it('ADD_TUTORIAL', strval($id), $title);
@@ -315,9 +315,9 @@ class Module_cms_tutorials extends Standard_crud_module
             $pinned = 0;
         }
         $author = post_param_string('author');
-        $tags = empty($_POST['tags']) ? array() : $_POST['tags'];
+        $tags = empty($_POST['tags']) ? [] : $_POST['tags'];
 
-        $GLOBALS['SITE_DB']->query_update('tutorials_external', array(
+        $GLOBALS['SITE_DB']->query_update('tutorials_external', [
             't_url' => $url,
             't_title' => $title,
             't_summary' => $summary,
@@ -327,14 +327,14 @@ class Module_cms_tutorials extends Standard_crud_module
             't_pinned' => $pinned,
             't_author' => $author,
             't_edit_date' => time(),
-        ), array('id' => $id), '', 1);
+        ], ['id' => $id], '', 1);
 
-        $GLOBALS['SITE_DB']->query_delete('tutorials_external_tags', array('t_id' => $id));
+        $GLOBALS['SITE_DB']->query_delete('tutorials_external_tags', ['t_id' => $id]);
         foreach ($tags as $tag) {
-            $GLOBALS['SITE_DB']->query_insert('tutorials_external_tags', array(
+            $GLOBALS['SITE_DB']->query_insert('tutorials_external_tags', [
                 't_id' => $id,
                 't_tag' => $tag,
-            ));
+            ]);
         }
 
         log_it('EDIT_TUTORIAL', strval($id), $title);
@@ -351,13 +351,13 @@ class Module_cms_tutorials extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $title = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_title', array('id' => $id));
+        $title = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_title', ['id' => $id]);
         if ($title === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $GLOBALS['SITE_DB']->query_delete('tutorials_external', array('id' => $id), '', 1);
-        $GLOBALS['SITE_DB']->query_delete('tutorials_external_tags', array('t_id' => $id));
+        $GLOBALS['SITE_DB']->query_delete('tutorials_external', ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('tutorials_external_tags', ['t_id' => $id]);
 
         log_it('DELETE_TUTORIAL', strval($id), $title);
 

@@ -30,7 +30,7 @@ class Hook_config_ldap_version
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_VERSION',
             'type' => 'integer',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_version
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

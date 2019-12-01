@@ -66,7 +66,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
     $_lead_source_description = either_param_string('_lead_source_description', do_lang('JOINED'));
 
     $hidden = new Tempcode();
-    $hidden->attach(build_keep_post_fields(($_lead_source_description == '') ? array() : array('_lead_source_description')));
+    $hidden->attach(build_keep_post_fields(($_lead_source_description == '') ? [] : ['_lead_source_description']));
 
     $hidden->attach(form_input_hidden('_joining', '1'));
 
@@ -78,7 +78,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
     $primary_group = either_param_integer('primary_group', null);
     if (($primary_group !== null) && (!in_array($primary_group, $groups))) {
         // Check security
-        $test = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_is_presented_at_install', array('id' => $primary_group));
+        $test = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_is_presented_at_install', ['id' => $primary_group]);
         if ($test == 1) {
             $groups = cns_get_all_default_groups(false);
             $hidden->attach(form_input_hidden('primary_group', strval($primary_group)));
@@ -94,14 +94,14 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
     if ($intro_message_if_enabled) {
         $forum_id = get_option('intro_forum_id');
         if ($forum_id != '') {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'b8197832e4467b08e953535202235501', 'TITLE' => do_lang_tempcode('INTRODUCE_YOURSELF'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'b8197832e4467b08e953535202235501', 'TITLE' => do_lang_tempcode('INTRODUCE_YOURSELF')]));
             $fields->attach(form_input_line(do_lang_tempcode('TITLE'), '', 'intro_title', do_lang('INTRO_POST_DEFAULT', '___'), false));
             $fields->attach(form_input_text_comcode(do_lang_tempcode('POST_COMMENT'), do_lang_tempcode('DESCRIPTION_INTRO_POST'), 'intro_post', '', false));
         }
     }
 
     if (($captcha_if_enabled) && (get_option('recaptcha_site_key') == '') && ($added_section)) {
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'a8197832e4467b08e953535202235501', 'TITLE' => do_lang_tempcode('SPECIAL_REGISTRATION_FIELDS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'a8197832e4467b08e953535202235501', 'TITLE' => do_lang_tempcode('SPECIAL_REGISTRATION_FIELDS')]));
     }
 
     /*PSEUDO-HOOK: cns_join_form special fields*/
@@ -121,7 +121,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
 
     $submit_name = do_lang_tempcode('PROCEED');
 
-    return do_template('JOIN_FORM', array(
+    return do_template('JOIN_FORM', [
         '_GUID' => 'f6dba5638ae50a04562df50b1f217311',
         'TEXT' => '',
         'HIDDEN' => $hidden,
@@ -135,7 +135,7 @@ function cns_join_form($url, $captcha_if_enabled = true, $intro_message_if_enabl
         'INVITES_ENABLED' => $invites_if_enabled && (get_option_with_overrides('is_on_invites', $adjusted_config_options) == '1'),
         'ONE_PER_EMAIL_ADDRESS' => (get_option_with_overrides('one_per_email_address', $adjusted_config_options) != '0'),
         'USE_CAPTCHA' => $captcha_if_enabled && addon_installed('captcha') && use_captcha(),
-    ));
+    ]);
 }
 
 /**
@@ -209,7 +209,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
 
     if ($invites_if_enabled) { // code branch also triggers general tracking of referrals
         if (get_option_with_overrides('is_on_invites', $adjusted_config_options) == '1') {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', array('i_email_address' => $email_address, 'i_taken' => 0));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address, 'i_taken' => 0]);
             if ($test === null) {
                 warn_exit(do_lang_tempcode('NO_INVITE'));
             }
@@ -217,7 +217,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
 
         /*PSEUDO-HOOK: cns_join_actual referrals*/
 
-        $GLOBALS['FORUM_DB']->query_update('f_invites', array('i_taken' => 1), array('i_email_address' => $email_address, 'i_taken' => 0), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_invites', ['i_taken' => 1], ['i_email_address' => $email_address, 'i_taken' => 0], '', 1);
     }
 
     require_code('temporal2');
@@ -252,7 +252,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
     $primary_group = post_param_integer('primary_group', null);
     if (($primary_group !== null) && (!in_array($primary_group, $groups)/*= not built-in default, which is automatically ok to join without extra security*/)) {
         // Check security
-        $test = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_is_presented_at_install', array('id' => $primary_group));
+        $test = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'g_is_presented_at_install', ['id' => $primary_group]);
         if ($test == 1) {
             $groups = cns_get_all_default_groups(false); // Get it so it does not include the built-in default primary group
             $groups[] = $primary_group; // And add in the *chosen* primary group
@@ -285,10 +285,10 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
     // Check that the given address isn't already used (if one_per_email_address on)
     $member_id = null;
     if (get_option_with_overrides('one_per_email_address', $adjusted_config_options) != '0') {
-        $test = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username'), array('m_email_address' => $email_address), '', 1);
+        $test = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username'], ['m_email_address' => $email_address], '', 1);
         if (array_key_exists(0, $test)) {
             if ($test[0]['m_username'] != $username) {
-                $reset_url = build_url(array('page' => 'lost_password', 'email' => $email_address), get_module_zone('lost_password'));
+                $reset_url = build_url(['page' => 'lost_password', 'email' => $email_address], get_module_zone('lost_password'));
                 warn_exit(do_lang_tempcode('EMAIL_ADDRESS_IN_USE', escape_html(get_site_name()), escape_html($reset_url->evaluate())));
             }
             $member_id = $test[0]['id'];
@@ -367,53 +367,53 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
     // Send confirm mail
     if ($email_validation) {
         $zone = get_module_zone('join');
-        $_url = build_url(array('page' => 'join', 'type' => 'step4', 'email' => $email_address, 'code' => $validated_email_confirm_code), $zone, array(), false, false, true);
+        $_url = build_url(['page' => 'join', 'type' => 'step4', 'email' => $email_address, 'code' => $validated_email_confirm_code], $zone, [], false, false, true);
         $url = $_url->evaluate();
-        $_url_simple = build_url(array('page' => 'join', 'type' => 'step4'), $zone, array(), false, false, true);
+        $_url_simple = build_url(['page' => 'join', 'type' => 'step4'], $zone, [], false, false, true);
         $url_simple = $_url_simple->evaluate();
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($redirect != '') {
             $url .= '&redirect=' . cms_urlencode(static_evaluate_tempcode(protect_url_parameter($redirect)));
         }
-        $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), array($url_simple, $email_address, $validated_email_confirm_code), $language);
+        $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), [$url_simple, $email_address, $validated_email_confirm_code], $language);
         require_code('mail');
         if (!$coppa) {
-            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, array($email_address), $username, '', '', array('bypass_queue' => true));
+            dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, [$email_address], $username, '', '', ['bypass_queue' => true]);
         }
     }
 
     // Send COPPA mail
     if ($coppa) {
         require_code('fields');
-        $fields_done = array();
-        $fields_done[] = array('LABEL' => do_lang('USERNAME'), 'VALUE' => make_string_tempcode(escape_html($username)));
+        $fields_done = [];
+        $fields_done[] = ['LABEL' => do_lang('USERNAME'), 'VALUE' => make_string_tempcode(escape_html($username))];
         foreach ($custom_fields as $custom_field) {
             if (isset($actual_custom_fields[$custom_field['id']])) {
                 $fields_ob = get_fields_hook($custom_field['cf_type']);
                 $ev = $actual_custom_fields[$custom_field['id']];
                 $rendered = $fields_ob->render_field_value($custom_field, $ev);
-                $fields_done[] = array('LABEL' => $custom_field['trans_name'], 'VALUE' => $rendered);
+                $fields_done[] = ['LABEL' => $custom_field['trans_name'], 'VALUE' => $rendered];
             }
         }
 
-        $privacy_policy_url = build_url(array('page' => 'privacy'), '_SEARCH', array(), false, false, true);
+        $privacy_policy_url = build_url(['page' => 'privacy'], '_SEARCH', [], false, false, true);
 
-        $message = do_template('COPPA_MAIL', array(
+        $message = do_template('COPPA_MAIL', [
             'FAX' => get_option('privacy_fax'),
             'POSTAL_ADDRESS' => get_option('privacy_postal_address'),
             'EMAIL_ADDRESS' => get_option('staff_address'),
             'FIELDS_DONE' => $fields_done,
             'PRIVACY_POLICY_URL' => $privacy_policy_url,
-        ), $language, false, null, '.txt', 'text');
+        ], $language, false, null, '.txt', 'text');
 
         require_code('mail');
-        dispatch_mail(do_lang('COPPA_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), array($email_address), $username);
+        dispatch_mail(do_lang('COPPA_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), [$email_address], $username);
     }
 
     // Send 'validate this member' notification
     if ($staff_validation) {
         require_code('notifications');
-        $_validation_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, true, 'tab--edit');
+        $_validation_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, true, 'tab--edit');
         $validation_url = $_validation_url->evaluate();
         $message = do_notification_lang('VALIDATE_NEW_MEMBER_MAIL', comcode_escape($username), comcode_escape($validation_url), comcode_escape(strval($member_id)), get_site_default_lang());
         dispatch_notification('cns_member_needs_validation', null, do_lang('VALIDATE_NEW_MEMBER_SUBJECT', $username, null, null, get_site_default_lang()), $message, null, A_FROM_SYSTEM_PRIVILEGED);
@@ -421,9 +421,9 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
 
     // Send new member notification
     require_code('notifications');
-    $_member_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, true);
+    $_member_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, true);
     $member_url = $_member_url->evaluate();
-    $message = do_notification_lang('NEW_MEMBER_NOTIFICATION_MAIL', comcode_escape($username), comcode_escape(get_site_name()), array(comcode_escape($member_url), comcode_escape(strval($member_id))), get_site_default_lang());
+    $message = do_notification_lang('NEW_MEMBER_NOTIFICATION_MAIL', comcode_escape($username), comcode_escape(get_site_name()), [comcode_escape($member_url), comcode_escape(strval($member_id))], get_site_default_lang());
     dispatch_notification('cns_new_member', null, do_lang('NEW_MEMBER_NOTIFICATION_MAIL_SUBJECT', $username, get_site_name(), null, get_site_default_lang()), $message, null, A_FROM_SYSTEM_PRIVILEGED);
 
     // Intro post
@@ -431,7 +431,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
         $forum_id = get_option('intro_forum_id');
         if ($forum_id != '') {
             if (!is_numeric($forum_id)) {
-                $_forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'id', array('f_name' => $forum_id));
+                $_forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'id', ['f_name' => $forum_id]);
                 if ($_forum_id === null) {
                     $forum_id = strval(db_get_first_id());
                 } else {
@@ -474,7 +474,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
             $message->attach(do_lang_tempcode('CNS_LOGIN_AUTO'));
         } else { // Invite them to explicitly instant log in
             $redirect = get_param_string('redirect', (get_page_name() == 'join') ? null : get_self_url(true), INPUT_FILTER_URL_INTERNAL);
-            $_login_url = build_url(array('page' => 'login', 'type' => 'browse', 'redirect' => protect_url_parameter($redirect)), get_module_zone('login'));
+            $_login_url = build_url(['page' => 'login', 'type' => 'browse', 'redirect' => protect_url_parameter($redirect)], get_module_zone('login'));
             $login_url = $_login_url->evaluate();
             $message->attach(do_lang_tempcode('CNS_LOGIN_INSTANT', escape_html($login_url)));
         }
@@ -489,5 +489,5 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
 
     /*PSEUDO-HOOK: cns_join_actual ends*/
 
-    return array($message, $member_id, $ready);
+    return [$message, $member_id, $ready];
 }

@@ -30,23 +30,23 @@ class seo_test_set extends cms_test_case
         //  no word repetition
         //  no stop words
         //  first word detected
-        list($keywords) = _seo_meta_find_data(array('hello Mr Tester this Is a world-renowned luxorious test. Epic epic testing, it shan\'t fail.'), '');
+        list($keywords) = _seo_meta_find_data(['hello Mr Tester this Is a world-renowned luxorious test. Epic epic testing, it shan\'t fail.'], '');
         $_keywords = explode(',' , $keywords);
         sort($_keywords); // We need to re-sort, as the occurrence-based sort order isn't fully defined
         $keywords = implode(',', $_keywords);
         $this->assertTrue($keywords == 'Mr Tester,epic,fail,hello,luxorious,shan\'t,testing,world-renowned', 'Got: ' . $keywords);
 
         // Test last word detected
-        list($keywords) = _seo_meta_find_data(array('Epic'), '');
+        list($keywords) = _seo_meta_find_data(['Epic'], '');
         $this->assertTrue($keywords == 'Epic', 'Got: ' . $keywords);
 
         // Test unicode too; also capitalised stop words still stripped
         $emoji = hex2bin('f09f9881');
-        list($keywords) = _seo_meta_find_data(array('This is epic' . $emoji), '');
+        list($keywords) = _seo_meta_find_data(['This is epic' . $emoji], '');
         $this->assertTrue($keywords == 'epic', 'Got: ' . $keywords);
 
         // Test filtering
-        list($keywords) = _seo_meta_find_data(array('Hello [attachment]new_1[/attachment] [media]uploads/downloads/example.png[/media] [b]World[/b] [Example]'), '');
+        list($keywords) = _seo_meta_find_data(['Hello [attachment]new_1[/attachment] [media]uploads/downloads/example.png[/media] [b]World[/b] [Example]'], '');
         $this->assertTrue($keywords == 'Example,World,Hello', 'Got: ' . $keywords);
     }
 }

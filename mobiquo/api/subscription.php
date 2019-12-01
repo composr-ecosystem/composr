@@ -32,21 +32,21 @@ function get_subscribed_forum_func($raw_params)
 
     $result = $subscription_object->get_subscribed_forums();
 
-    $forum_list = array();
+    $forum_list = [];
     foreach ($result as $forum) {
-        $forum_list[] = mobiquo_val(array(
+        $forum_list[] = mobiquo_val([
             'forum_id' => mobiquo_val(strval($forum['forum_id']), 'string'),
             'forum_name' => mobiquo_val($forum['forum_name'], 'base64'),
             'icon_url' => mobiquo_val($forum['icon_url'], 'string'),
             'new_post' => mobiquo_val($forum['new_post'], 'boolean'),
             'is_protected' => mobiquo_val($forum['is_protected'], 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_forums_num' => mobiquo_val(count($forum_list), 'int'),
         'forums' => mobiquo_val($forum_list, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -106,10 +106,10 @@ function get_subscribed_topic_func($raw_params)
     $subscription_object = new CMSSubscriptionRead();
     list($total_topic_num, $topics) = $subscription_object->get_subscribed_topics($start, $max);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_topic_num' => mobiquo_val($total_topic_num, 'int'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -181,10 +181,10 @@ function user_subscription_func($raw_params)
     $forums = $account_object->get_member_forum_monitoring($uid);
     $topics = $account_object->get_member_topic_monitoring($uid);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'forums' => mobiquo_val($forums, 'array'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }

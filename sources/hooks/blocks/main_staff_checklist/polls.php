@@ -31,16 +31,16 @@ class Hook_checklist_polls
     public function run()
     {
         if (!addon_installed('polls')) {
-            return array();
+            return [];
         }
 
         if (get_option('poll_update_time') == '' || get_option('poll_update_time') == '0') {
-            return array();
+            return [];
         }
 
         require_lang('polls');
 
-        $date = $GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'date_and_time', array('is_current' => 1));
+        $date = $GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'date_and_time', ['is_current' => 1]);
 
         $limit_hours = intval(get_option('poll_update_time'));
         $seconds_ago = null;
@@ -61,19 +61,19 @@ class Hook_checklist_polls
             $task_label = do_lang_tempcode('PRIVILEGE_choose_poll');
         }
 
-        $url = build_url(array('page' => 'cms_polls', 'type' => 'edit'), get_module_zone('cms_polls'));
+        $url = build_url(['page' => 'cms_polls', 'type' => 'edit'], get_module_zone('cms_polls'));
         $num_queue = $this->get_num_poll_queue();
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
         $info->attach(do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($num_queue))));
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '5d709aa8a09bbf3e46aefa7fe7e02660',
             'CONFIG_URL' => $config_url,
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => $task_label,
             'INFO' => $info,
-        ));
-        return array(array($tpl, $seconds_due_in, null, 'poll_update_time'));
+        ]);
+        return [[$tpl, $seconds_due_in, null, 'poll_update_time']];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_chat_default_post_font
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_OPTIONS_TEXT_NAME',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_default_post_font
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

@@ -40,7 +40,7 @@ function cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_sel
         access_denied('I_ERROR');
     }
 
-    $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', array(
+    $poll_id = $GLOBALS['FORUM_DB']->query_insert('f_polls', [
         'po_question' => $question,
         'po_cache_total_votes' => 0,
         'po_is_private' => $is_private,
@@ -48,7 +48,7 @@ function cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_sel
         'po_minimum_selections' => $minimum_selections,
         'po_maximum_selections' => $maximum_selections,
         'po_requires_reply' => $requires_reply,
-    ), true);
+    ], true);
 
     foreach ($answers as $answer) {
         if (is_array($answer)) {
@@ -57,16 +57,16 @@ function cns_make_poll($topic_id, $question, $is_private, $is_open, $minimum_sel
             $num_votes = 0;
         }
 
-        $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', array(
+        $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
             'pa_poll_id' => $poll_id,
             'pa_answer' => $answer,
             'pa_cache_num_votes' => $num_votes,
-        ));
+        ]);
     }
 
-    $map = array('t_poll_id' => $poll_id);
+    $map = ['t_poll_id' => $poll_id];
 
-    $GLOBALS['FORUM_DB']->query_update('f_topics', $map, array('id' => $topic_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_topics', $map, ['id' => $topic_id], '', 1);
 
     return $poll_id;
 }

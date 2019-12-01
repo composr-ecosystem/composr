@@ -31,21 +31,21 @@ class Hook_actionlog_robots_txt extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('robots_txt')) {
-            return array();
+            return [];
         }
 
         require_lang('robots_txt');
 
-        return array(
-            'ROBOTS_TXT' => array(
+        return [
+            'ROBOTS_TXT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ROBOTS_TXT' => '_SEARCH:admin_robots_txt',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

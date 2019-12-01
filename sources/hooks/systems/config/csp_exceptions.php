@@ -30,7 +30,7 @@ class Hook_config_csp_exceptions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_EXCEPTIONS',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_csp_exceptions
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

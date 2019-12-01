@@ -36,7 +36,7 @@ class Hook_content_meta_aware_group
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'global:USERGROUP',
@@ -114,7 +114,7 @@ class Hook_content_meta_aware_group
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_GROUP',
-        );
+        ];
     }
 
     /**

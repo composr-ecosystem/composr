@@ -43,7 +43,7 @@ class Hook_symbol_GALLERY_VIDEO_FOR_URL
                 $url = rawurlencode(str_replace('%2F', '/', $url)); // In case was not properly encoded as URL
             }
             if ((url_is_local($url)) && (is_file(get_custom_file_base() . '/' . rawurldecode($url)))) {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'id', array('url' => $url));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'id', ['url' => $url]);
                 if ($test !== null) {
                     $value = strval($test);
                 } else {

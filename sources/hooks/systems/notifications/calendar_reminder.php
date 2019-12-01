@@ -32,11 +32,11 @@ class Hook_notification_calendar_reminder extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['calendar_reminder'] = array(do_lang('GENERAL'), do_lang('calendar:NOTIFICATION_TYPE_calendar_reminder'));
+        $list = [];
+        $list['calendar_reminder'] = [do_lang('GENERAL'), do_lang('calendar:NOTIFICATION_TYPE_calendar_reminder')];
         return $list;
     }
 

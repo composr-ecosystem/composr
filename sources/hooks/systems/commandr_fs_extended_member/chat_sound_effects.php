@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__chat_sound_effects
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('chat_sound_effects', array(), array('s_member' => $member_id));
+        return table_to_portable_rows('chat_sound_effects', [], ['s_member' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__chat_sound_effects
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('chat_sound_effects', $data, array('s_member' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('chat_sound_effects', $data, ['s_member' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

@@ -26,7 +26,7 @@ class Hook_addon_registry_nested_cpf_spreadsheet_lists
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_nested_cpf_spreadsheet_lists
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ Set Custom Profile Field list fields to have a default value like [tt]countries.
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,11 +108,11 @@ Set Custom Profile Field list fields to have a default value like [tt]countries.
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,12 +132,12 @@ Set Custom Profile Field list fields to have a default value like [tt]countries.
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/nested_cpf_spreadsheet_lists.php',
             'sources_custom/miniblocks/nested_spreadsheet_lists_javascript.php',
             'sources_custom/nested_spreadsheet.php',
             'themes/default/javascript_custom/global.js',
             'lang_custom/EN/nested_spreadsheet.ini',
-        );
+        ];
     }
 }

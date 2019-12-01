@@ -30,7 +30,7 @@ class Hook_config_header_menu_call_string
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HEADER_MENU_CALL_STRING',
             'type' => 'transline',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_header_menu_call_string
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

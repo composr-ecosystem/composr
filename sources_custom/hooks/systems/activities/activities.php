@@ -87,7 +87,7 @@ class Hook_activities_activities
         if ((has_privilege(get_member(), 'syndicate_site_activity')) && (has_external_site_wide_syndication())) {
             require_lang('activities');
 
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'ded75eeb85f5bb8a6c1b6da597555750', 'TITLE' => do_lang_tempcode('SYNDICATION'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'ded75eeb85f5bb8a6c1b6da597555750', 'TITLE' => do_lang_tempcode('SYNDICATION')]));
             $default = in_array($content_type, array_map('trim', explode(',', get_option('syndicate_site_activity_default'))));
             $fields->attach(form_input_tick(do_lang_tempcode('SYNDICATE_THIS'), do_lang_tempcode('DESCRIPTION_SYNDICATE_THIS'), 'syndicate_this', $default));
         }

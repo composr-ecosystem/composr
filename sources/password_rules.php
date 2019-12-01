@@ -32,7 +32,7 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
     // Take out completely insecure elements from the password so that they won't contribute to the scoring...
 
     // Tainted strings based on something a hacker may know
-    $tainted_strings_source = array();
+    $tainted_strings_source = [];
     if ($username != '') {
         $tainted_strings_source[cms_mb_strtoupper($username)] = 3;
     }
@@ -43,7 +43,7 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
         $tainted_strings_source[cms_mb_strtoupper(date('Y', $dob))] = 4;
         $tainted_strings_source[cms_mb_strtoupper(date('y', $dob))] = 2;
     }
-    $tainted_substrings_pool = array();
+    $tainted_substrings_pool = [];
     foreach ($tainted_strings_source as $tainted_string => $minimum_substring_length_to_consider) {
         $len = cms_mb_strlen($tainted_string);
         for ($start = 0; $start <= $len; $start++) {
@@ -76,7 +76,7 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
     require_code('spelling');
     $spell_checker = _find_spell_checker();
     if ($spell_checker !== null) {
-        $test = run_spellcheck__words(array(cms_mb_strtolower($password)), null, /*$skip_known_words_in_db = */true, /*$provide_corrections = */false);
+        $test = run_spellcheck__words([cms_mb_strtolower($password)], null, /*$skip_known_words_in_db = */true, /*$provide_corrections = */false);
         if (count($test) == 0) { // Fully matches dictionary
             $password = '';
         }
@@ -139,19 +139,19 @@ function bump_password_times_forward()
 {
     $start = 0;
     do {
-        $members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_pass_hash_salted', 'm_pass_salt'), array(), '', 500, $start);
+        $members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_pass_hash_salted', 'm_pass_salt'], [], '', 500, $start);
         foreach ($members as $member) {
-            $GLOBALS['FORUM_DB']->query_delete('f_password_history', array(
+            $GLOBALS['FORUM_DB']->query_delete('f_password_history', [
                 'p_member_id' => $member['id'],
                 'p_hash_salted' => $member['m_pass_hash_salted'],
                 'p_salt' => $member['m_pass_salt'],
-            ), '', 1);
-            $GLOBALS['FORUM_DB']->query_insert('f_password_history', array(
+            ], '', 1);
+            $GLOBALS['FORUM_DB']->query_insert('f_password_history', [
                 'p_member_id' => $member['id'],
                 'p_hash_salted' => $member['m_pass_hash_salted'],
                 'p_salt' => $member['m_pass_salt'],
                 'p_time' => time(),
-            ));
+            ]);
         }
 
         $start += 500;
@@ -189,9 +189,9 @@ function member_password_too_old($member_id)
     $change_days = intval(get_option('password_change_days'));
 
     if ($change_days > 0) {
-        $last_time = $GLOBALS['FORUM_DB']->query_select_value('f_password_history', 'MAX(p_time)', array(
+        $last_time = $GLOBALS['FORUM_DB']->query_select_value('f_password_history', 'MAX(p_time)', [
             'p_member_id' => $member_id,
-        ));
+        ]);
         if ($last_time === null) {
             $last_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_join_time');
         }
@@ -270,7 +270,7 @@ function bump_password_change_date($member_id, $password, $password_salted, $sal
     if ($check_correctness) {
         require_code('crypt');
 
-        $past_passwords = $GLOBALS['FORUM_DB']->query_select('f_password_history', array('*'), array('p_member_id' => $member_id), 'ORDER BY p_time DESC', 1000/*reasonable limit*/);
+        $past_passwords = $GLOBALS['FORUM_DB']->query_select('f_password_history', ['*'], ['p_member_id' => $member_id], 'ORDER BY p_time DESC', 1000/*reasonable limit*/);
         foreach ($past_passwords as $past_password) {
             if (ratchet_hash_verify($password, $past_password['p_salt'], $past_password['p_hash_salted'])) {
                 require_lang('password_rules');
@@ -280,10 +280,10 @@ function bump_password_change_date($member_id, $password, $password_salted, $sal
     }
 
     // Insert into log
-    $GLOBALS['FORUM_DB']->query_insert('f_password_history', array(
+    $GLOBALS['FORUM_DB']->query_insert('f_password_history', [
         'p_member_id' => $member_id,
         'p_hash_salted' => $password_salted,
         'p_salt' => $salt,
         'p_time' => $time,
-    ));
+    ]);
 }

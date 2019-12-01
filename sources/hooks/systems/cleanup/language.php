@@ -30,7 +30,7 @@ class Hook_cleanup_language
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('LANGUAGE_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_LANGUAGE_CACHE');
         $info['type'] = 'cache';

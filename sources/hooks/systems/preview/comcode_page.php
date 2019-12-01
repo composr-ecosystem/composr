@@ -31,7 +31,7 @@ class Hook_preview_comcode_page
     public function applies()
     {
         $applies = (get_page_name() == 'cms_comcode_pages');
-        return array($applies, 'comcode_page', false, array('post'));
+        return [$applies, 'comcode_page', false, ['post']];
     }
 
     /**
@@ -51,7 +51,7 @@ class Hook_preview_comcode_page
         $post_comcode = $post_bits['comcode'];
         $post_html = $post_bits['tempcode'];
 
-        $output = do_template('COMCODE_PAGE_SCREEN', array(
+        $output = do_template('COMCODE_PAGE_SCREEN', [
             '_GUID' => '08595d86788f09cc77f8f88098ff6fcd',
             'IS_PANEL' => (substr($codename, 0, 6) == 'panel_'),
             'BEING_INCLUDED' => false,
@@ -66,8 +66,8 @@ class Hook_preview_comcode_page
             'NAME' => $codename,
             'ZONE' => $zone,
             'NATIVE_ZONE' => $zone,
-        ));
+        ]);
 
-        return array($output, $post_comcode);
+        return [$output, $post_comcode];
     }
 }

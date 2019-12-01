@@ -26,7 +26,7 @@ class Hook_addon_registry_image_slider
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,10 +66,10 @@ class Hook_addon_registry_image_slider
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Thiago Silva Ferreira',
             'Robert Penner',
-        );
+        ];
     }
 
     /**
@@ -101,7 +101,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -111,13 +111,13 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'galleries',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/image_slider.php',
             'sources_custom/blocks/main_image_slider.php',
             'themes/default/css_custom/skitter.css',
@@ -152,6 +152,6 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=IFIl_
             'themes/default/javascript_custom/skitter.js',
             'lang_custom/EN/image_slider.ini',
             'themes/default/javascript_custom/image_slider.js',
-        );
+        ];
     }
 }

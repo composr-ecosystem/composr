@@ -26,9 +26,9 @@ class Hook_addon_registry_giftr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array(
+        return [
             'uploads/giftr_addon',
-        );
+        ];
     }
 
     /**
@@ -68,7 +68,7 @@ class Hook_addon_registry_giftr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,7 +108,7 @@ When creating new gifts please only use images which are free to use, we suggest
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -118,16 +118,16 @@ When creating new gifts please only use images which are free to use, we suggest
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'points',
                 'ecommerce',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -147,7 +147,7 @@ When creating new gifts please only use images which are free to use, we suggest
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/giftr.php',
             'sources_custom/hooks/systems/privacy/giftr.php',
             'sources_custom/hooks/systems/notifications/gift.php',
@@ -188,6 +188,6 @@ When creating new gifts please only use images which are free to use, we suggest
             'themes/default/templates_custom/BLOCK_MAIN_BOTTOM_BAR.tpl',
             'themes/default/templates_custom/CNS_USER_MEMBER.tpl',
             'sources_custom/hooks/systems/actionlog/giftr.php',
-        );
+        ];
     }
 }

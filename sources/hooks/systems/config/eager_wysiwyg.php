@@ -30,7 +30,7 @@ class Hook_config_eager_wysiwyg
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EAGER_WYSIWYG',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_eager_wysiwyg
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

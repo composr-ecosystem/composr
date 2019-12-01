@@ -78,9 +78,9 @@ function lost_password_emailer_step($username, $email_address)
     if (($code == '') || ($password_reset_process == 'ultra') && ($session_id != get_session_id())) {
         $code = get_secure_random_string();
         if ($password_reset_process == 'ultra') {
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_password_change_code' => $code . '__' . get_session_id()), array('id' => $member_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_change_code' => $code . '__' . get_session_id()], ['id' => $member_id], '', 1);
         } else {
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_password_change_code' => $code), array('id' => $member_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_change_code' => $code], ['id' => $member_id], '', 1);
         }
     }
 
@@ -98,13 +98,13 @@ function lost_password_emailer_step($username, $email_address)
     // Send confirm mail
     if ($password_reset_process != 'ultra') {
         $zone = get_module_zone('lost_password');
-        $_url = build_url(array('page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id), $zone, array(), false, false, true);
+        $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => $code, 'member' => $member_id], $zone, [], false, false, true);
         $url = $_url->evaluate();
-        $_url_simple = build_url(array('page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null), $zone, array(), false, false, true);
+        $_url_simple = build_url(['page' => 'lost_password', 'type' => 'step3', 'code' => null, 'username' => null, 'member' => null], $zone, [], false, false, true);
         $url_simple = $_url_simple->evaluate();
-        $message = do_lang($temporary_passwords ? 'LOST_PASSWORD_TEXT_TEMPORARY' : 'LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), array($url, comcode_escape($url_simple), strval($member_id), $code), get_lang($member_id));
+        $message = do_lang($temporary_passwords ? 'LOST_PASSWORD_TEXT_TEMPORARY' : 'LOST_PASSWORD_TEXT', comcode_escape(get_site_name()), comcode_escape($username), [$url, comcode_escape($url_simple), strval($member_id), $code], get_lang($member_id));
         require_code('mail');
-        dispatch_mail(do_lang('LOST_PASSWORD_CONFIRM', null, null, null, get_lang($member_id)), $message, array($email), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', array('bypass_queue' => true, 'require_recipient_valid_since' => $join_time));
+        dispatch_mail(do_lang('LOST_PASSWORD_CONFIRM', null, null, null, get_lang($member_id)), $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['bypass_queue' => true, 'require_recipient_valid_since' => $join_time]);
     } else {
         $old_php_self = $_SERVER['PHP_SELF'];
         $old_server_name = $_SERVER['SERVER_NAME'];
@@ -127,5 +127,5 @@ function lost_password_emailer_step($username, $email_address)
 
     $email_address_masked = preg_replace('#^(\w).*@.*(\w\.\w+)$#', '${1}...@...${2}', $email);
 
-    return array($email, $email_address_masked, $member_id);
+    return [$email, $email_address_masked, $member_id];
 }

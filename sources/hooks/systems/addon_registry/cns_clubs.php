@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_subcom',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/cms/clubs.svg',
             'themes/default/images/icons_monochrome/menu/cms/clubs.svg',
             'sources/hooks/systems/notifications/cns_club.php',
@@ -107,6 +107,6 @@ class Hook_addon_registry_cns_clubs
             'sources/hooks/systems/config/club_forum_parent_forum_grouping.php',
             'sources/hooks/systems/config/club_forum_parent_forum.php',
             'sources/hooks/systems/config/search_cns_clubs.php',
-        );
+        ];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_invites_per_day
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INVITES_PER_DAY',
             'type' => 'integer',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_invites_per_day
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

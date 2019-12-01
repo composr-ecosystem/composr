@@ -27,7 +27,7 @@
  */
 function comcode_page_hints_ui($name, &$post)
 {
-    $hints = array();
+    $hints = [];
 
     $hooks = find_all_hook_obs('systems', 'comcode_page_hints', 'Hook_comcode_page_hints_');
     foreach ($hooks as $hook => $object) {
@@ -46,12 +46,12 @@ function comcode_page_hints_ui($name, &$post)
                 $selected = $present;
             }
 
-            $hints[] = array(
+            $hints[] = [
                 'HINT_CODENAME' => $hook,
                 'HINT_LABEL' => $details['label'],
                 'HINT_DESCRIPTION' => $details['description'],
                 'HINT_SELECTED' => $selected,
-            );
+            ];
         }
     }
 
@@ -121,7 +121,7 @@ function comcode_censored_raw_code_access($comcode, $aggressive = null)
  */
 function download_associated_media(&$text)
 {
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#<(img|source)\s[^<>]*src="([^"<>]*)"#i', $text, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
         $old_url = $matches[2][$i];
@@ -153,13 +153,13 @@ function _download_associated_media(&$text, $old_url)
         $temp_path = $temp_dir . '/' . $temp_filename;
 
         $write_to_file = fopen($temp_path, 'wb');
-        $http_result = cms_http_request($old_url, array('write_to_file' => $write_to_file));
+        $http_result = cms_http_request($old_url, ['write_to_file' => $write_to_file]);
         if ($http_result->data === null) {
             @unlink($temp_path);
             return;
         }
 
-        $mapping = array(
+        $mapping = [
             'image/png' => 'png',
             'image/gif' => 'png',
             'image/jpeg' => 'png',
@@ -168,7 +168,7 @@ function _download_associated_media(&$text, $old_url)
             'video/webm' => 'webm',
             'video/mpeg' => 'mp3',
             'audio/ogg' => 'ogg',
-        );
+        ];
         if (!isset($mapping[$http_result->download_mime_type])) {
             @unlink($temp_path);
             return;

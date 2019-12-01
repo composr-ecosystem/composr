@@ -26,7 +26,7 @@ class Hook_addon_registry_member_comments
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_member_comments
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_member_comments
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,13 +106,13 @@ class Hook_addon_registry_member_comments
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,12 +132,12 @@ class Hook_addon_registry_member_comments
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/member_comments.php',
             'sources_custom/hooks/systems/profiles_tabs/comments.php',
             'lang_custom/EN/member_comments.ini',
             'themes/default/templates_custom/CNS_MEMBER_PROFILE_COMMENTS.tpl',
             'sources_custom/hooks/systems/config/member_comments_forum_name.php',
-        );
+        ];
     }
 }

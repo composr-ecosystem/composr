@@ -65,7 +65,7 @@ class Hook_fields_picture_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -93,9 +93,9 @@ class Hook_fields_picture_multi
 
                 $img_url = find_theme_image($ev);
 
-                set_extra_request_metadata(array(
+                set_extra_request_metadata([
                     'image' => $img_url,
-                ));
+                ]);
             }
         }
     }
@@ -125,9 +125,9 @@ class Hook_fields_picture_multi
         }
 
         if ((($table === 'catalogue_efv_short') || ($table === 'catalogue_efv_long')) && ($id !== null)) {
-            $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => $id));
+            $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $id]);
             if (substr($c_name, 0, 1) != '_') { // Doesn't work on custom fields (this is documented)
-                $cc_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', array('id' => $id));
+                $cc_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', ['id' => $id]);
             }
         }
 
@@ -182,14 +182,14 @@ class Hook_fields_picture_multi
             $width = option_value_from_field_array($field, 'width', '');
             $height = option_value_from_field_array($field, 'height', '');
 
-            $ret->attach(do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', array(
+            $ret->attach(do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', [
                 'I' => ($only_fields === null) ? '-1' : strval($j),
                 'CATALOGUE' => $field['c_name'],
                 'URL' => $download_url,
                 'THUMB_URL' => $img_thumb_url,
                 'WIDTH' => $width,
                 'HEIGHT' => $height,
-            ), null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE'));
+            ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE'));
         }
         return $ret;
     }
@@ -218,7 +218,7 @@ class Hook_fields_picture_multi
         $hidden = new Tempcode();
         handle_max_file_size($hidden, 'image');
 
-        return array($ffield, $hidden);
+        return [$ffield, $hidden];
     }
 
     /**
@@ -241,7 +241,7 @@ class Hook_fields_picture_multi
 
             $value = '';
 
-            $_old_value = (($old_value === null) || ($old_value['cv_value'] == '')) ? array() : explode("\n", $old_value['cv_value']);
+            $_old_value = (($old_value === null) || ($old_value['cv_value'] == '')) ? [] : explode("\n", $old_value['cv_value']);
 
             require_code('uploads');
             is_plupload(true);

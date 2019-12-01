@@ -25,7 +25,7 @@ class Hook_config_support_credit_price
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUPPORT_CREDIT_PRICE',
             'type' => 'float',
             'category' => 'FEATURE',
@@ -38,7 +38,7 @@ class Hook_config_support_credit_price
             'public' => false,
 
             'addon' => 'composr_homesite_support_credits',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Module_admin_broken_urls
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,9 +51,9 @@ class Module_admin_broken_urls
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('BROKEN_URLS', 'menu/adminzone/tools/broken_urls'),
-        );
+        return [
+            'browse' => ['BROKEN_URLS', 'menu/adminzone/tools/broken_urls'],
+        ];
     }
 
     public $title;
@@ -75,7 +75,7 @@ class Module_admin_broken_urls
         $this->title = get_screen_title('BROKEN_URLS');
 
         if ($type != 'browse') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('BROKEN_URLS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BROKEN_URLS')]]);
         }
 
         if ($type == 'choose') {
@@ -89,7 +89,7 @@ class Module_admin_broken_urls
         return null;
     }
 
-    protected $link_types = array();
+    protected $link_types = [];
 
     /**
      * Execute the module.
@@ -104,26 +104,26 @@ class Module_admin_broken_urls
 
         require_lang('zones');
 
-        $this->link_types = array(
+        $this->link_types = [
             'comcode_pages' => do_lang('COMCODE_PAGES'),
             'comcode_fields' => do_lang('_COMCODE'),
             'url_fields' => do_lang('URL_FIELDS'),
             'catalogue_fields' => do_lang('CATALOGUE_FIELDS'),
-        );
+        ];
 
         if (!empty(get_option('moz_access_id'))) {
-            $this->link_types = array_merge($this->link_types, array(
+            $this->link_types = array_merge($this->link_types, [
                 'moz_backlinks' => do_lang('MOZ_BACKLINKS'),
-            ));
+            ]);
         }
 
         if ((get_oauth_refresh_token('google_search_console') !== null) && (get_option('google_apis_api_key') != '')) {
-            $this->link_types = array_merge($this->link_types, array(
+            $this->link_types = array_merge($this->link_types, [
                 'google_broken_backlinks__auth_permissions' => do_lang('GOOGLE_BROKEN_BACKLINKS__auth_permissions'),
                 'google_broken_backlinks__not_found' => do_lang('GOOGLE_BROKEN_BACKLINKS__not_found'),
                 'google_broken_backlinks__server_error' => do_lang('GOOGLE_BROKEN_BACKLINKS__server_error'),
                 'google_broken_backlinks__soft404' => do_lang('GOOGLE_BROKEN_BACKLINKS__soft404'),
-            ));
+            ]);
         }
 
         // Decide what we're doing
@@ -158,15 +158,15 @@ class Module_admin_broken_urls
         $fields->attach(form_input_multi_list(do_lang_tempcode('TYPE'), do_lang_tempcode('DESCRIPTION_LINK_TYPES'), 'chosen_link_types', $list));
 
         $_live_base_urls = get_value('live_base_urls', get_base_url(), true);
-        $fields->attach(form_input_line_multi(do_lang_tempcode('LIVE_BASE_URLS'), do_lang_tempcode('DESCRIPTION_LIVE_BASE_URLS'), 'live_base_urls[]', ($_live_base_urls === null) ? array() : explode('|', $_live_base_urls), 0));
+        $fields->attach(form_input_line_multi(do_lang_tempcode('LIVE_BASE_URLS'), do_lang_tempcode('DESCRIPTION_LIVE_BASE_URLS'), 'live_base_urls[]', ($_live_base_urls === null) ? [] : explode('|', $_live_base_urls), 0));
 
         $fields->attach(form_input_integer(do_lang_tempcode('MAXIMUM_API_RESULTS'), do_lang_tempcode('DESCRIPTION_MAXIMUM_API_RESULTS'), 'maximum_api_results', 50, true));
 
         $submit_name = do_lang_tempcode('FIND_URLS');
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'choose'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'choose'], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '2269926b89593b1f63b67c56974d911e',
             'TITLE' => $this->title,
             'SKIP_WEBSTANDARDS' => true,
@@ -177,7 +177,7 @@ class Module_admin_broken_urls
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -192,9 +192,9 @@ class Module_admin_broken_urls
 
         $url_scanner = new BrokenURLScanner();
 
-        $chosen_link_types = isset($_POST['chosen_link_types']) ? $_POST['chosen_link_types'] : array();
+        $chosen_link_types = isset($_POST['chosen_link_types']) ? $_POST['chosen_link_types'] : [];
 
-        $live_base_urls = isset($_POST['live_base_urls']) ? $_POST['live_base_urls'] : array();
+        $live_base_urls = isset($_POST['live_base_urls']) ? $_POST['live_base_urls'] : [];
         $_live_base_urls = '';
         foreach ($live_base_urls as $live_base_url) {
             if ($live_base_url != '') {
@@ -208,7 +208,7 @@ class Module_admin_broken_urls
 
         $maximum_api_results = post_param_integer('maximum_api_results');
 
-        $urls = array();
+        $urls = [];
         foreach ($this->link_types as $type => $type_title) {
             send_http_output_ping();
 
@@ -216,7 +216,7 @@ class Module_admin_broken_urls
                 continue;
             }
 
-            $_urls = call_user_func(array($url_scanner, 'enumerate_' . $type), $live_base_urls, $maximum_api_results);
+            $_urls = call_user_func([$url_scanner, 'enumerate_' . $type], $live_base_urls, $maximum_api_results);
             foreach ($_urls as $url_bits) {
                 $url = $url_bits['url'];
 
@@ -245,19 +245,19 @@ class Module_admin_broken_urls
                 $full_url = qualify_url($url, get_base_url());
 
                 if (!isset($urls[$url])) {
-                    $urls[$url] = array(
+                    $urls[$url] = [
                         'FULL_URL' => $full_url,
-                        'TABLE_NAMES' => array(),
-                        'FIELD_NAMES' => array(),
-                        'IDENTIFIERS' => array(),
-                        'CONTENT_TYPES' => array(),
+                        'TABLE_NAMES' => [],
+                        'FIELD_NAMES' => [],
+                        'IDENTIFIERS' => [],
+                        'CONTENT_TYPES' => [],
                         'STATUS' => null,
-                    );
+                    ];
                 }
 
                 $urls[$url]['TABLE_NAMES'][] = $url_bits['table_name'];
                 $urls[$url]['FIELD_NAMES'][] = $url_bits['field_name'];
-                $urls[$url]['IDENTIFIERS'][] = array('IDENTIFIER' => $url_bits['identifier'], 'EDIT_URL' => $url_bits['edit_url']);
+                $urls[$url]['IDENTIFIERS'][] = ['IDENTIFIER' => $url_bits['identifier'], 'EDIT_URL' => $url_bits['edit_url']];
                 $urls[$url]['CONTENT_TYPES'][] = $type_title;
             }
         }
@@ -267,7 +267,7 @@ class Module_admin_broken_urls
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        $table = do_template('BROKEN_URLS', array('_GUID' => '98816b6ea5f175cb5d46550a5fbc37aa', 'URLS' => $urls, 'DONE' => false));
+        $table = do_template('BROKEN_URLS', ['_GUID' => '98816b6ea5f175cb5d46550a5fbc37aa', 'URLS' => $urls, 'DONE' => false]);
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('urls', serialize($urls)));
@@ -278,9 +278,9 @@ class Module_admin_broken_urls
 
         $submit_name = do_lang_tempcode('CHECK_URLS');
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'check'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'check'], '_SELF');
 
-        $form = do_template('FORM', array(
+        $form = do_template('FORM', [
             '_GUID' => '7579230ca42b6023bbba8771cc67a5b4',
             'SKIP_WEBSTANDARDS' => true,
             'SKIP_REQUIRED' => true,
@@ -291,15 +291,15 @@ class Module_admin_broken_urls
             'TEXT' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
 
-        return do_template('RESULTS_TABLE_SCREEN', array(
+        return do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '1a9f8b65d4bc63110df08af255a37da8',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('PENDING_LINK_CHECK'),
             'RESULTS_TABLE' => $table,
             'FORM' => $form,
-        ));
+        ]);
     }
 
     /**
@@ -314,6 +314,6 @@ class Module_admin_broken_urls
         $show_passes = (post_param_integer('show_passes', 0) == 1);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', array($urls, $show_passes));
+        return call_user_func_array__long_task(do_lang('BROKEN_URLS'), get_screen_title('BROKEN_URLS'), 'find_broken_urls', [$urls, $show_passes]);
     }
 }

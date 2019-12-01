@@ -48,8 +48,8 @@ class _tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
 
         $session_id = $this->establish_admin_callback_session();
-        $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'), 'adminzone');
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => array(get_session_cookie() => $session_id)));
+        $url = build_url(['page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'], 'adminzone');
+        $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);
@@ -66,7 +66,7 @@ class _tasks_test_set extends cms_test_case
             $this->assertTrue(false, 'Cannot run test without catalogues addon');
         }
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'links'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']);
         if ($test === null) {
             $this->assertTrue(false, 'links catalogue not available, test cannot run');
             return;
@@ -119,7 +119,7 @@ class _tasks_test_set extends cms_test_case
         // Add event with start only
         $simple_event_id = add_calendar_event(8, 'none', null, 0, 'simple event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, null, 1, null, 1, 1, 1, 1, '', null, 0, null, null, null);
 
-        $last_rows_before = $GLOBALS['SITE_DB']->query_select('calendar_events', array('*'), array(), 'ORDER BY e_add_date DESC,id DESC', 2);
+        $last_rows_before = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], [], 'ORDER BY e_add_date DESC,id DESC', 2);
         $this->clean_event_rows_for_comparison($last_rows_before);
 
         require_code('calendar_ical');
@@ -144,7 +144,7 @@ class _tasks_test_set extends cms_test_case
         }
         */
 
-        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0));
+        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
         if ($result !== null) {
             /* Could not get this working with upload method
             $matches = array();
@@ -160,14 +160,14 @@ class _tasks_test_set extends cms_test_case
             $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers));
             */
 
-            $matches = array();
+            $matches = [];
             preg_match('#<form [^<>]*method="post" action="([^"]*snippetForm[^"]*)"#', $result, $matches);
             $rel_url = $matches[1];
             require_code('character_sets');
             $ical = convert_to_internal_encoding($ical, get_charset(), 'utf-8');
-            $post_params = array('snippet' => $ical);
+            $post_params = ['snippet' => $ical];
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params));
+            $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params]);
             if ($this->debug) {
                 @var_dump($url);
                 @var_dump($result);
@@ -188,7 +188,7 @@ class _tasks_test_set extends cms_test_case
         $num_events_after = $GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)');
         $this->assertTrue($num_events_after > $num_events_before, 'Did not appear to import events (' . integer_format($num_events_after) . ' after, ' . integer_format($num_events_before) . ' before)');
 
-        $_last_rows_after = $GLOBALS['SITE_DB']->query_select('calendar_events', array('*'), array(), 'ORDER BY e_add_date DESC,id DESC', 2);
+        $_last_rows_after = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], [], 'ORDER BY e_add_date DESC,id DESC', 2);
         $last_rows_after = $_last_rows_after;
         $this->clean_event_rows_for_comparison($last_rows_after);
 
@@ -245,7 +245,7 @@ class _tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/export_members');
         $ob_export = new Hook_task_export_members();
-        $results = $ob_export->run(false, array('ID', 'Username'), array(), 'ID', 'csv');
+        $results = $ob_export->run(false, ['ID', 'Username'], [], 'ID', 'csv');
         $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
         $ob_import->run('', false, $results[1][1], 'test.csv');

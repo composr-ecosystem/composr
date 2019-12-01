@@ -40,7 +40,7 @@ $title = get_screen_title('FACEBOOK_OAUTH');
 $facebook_appid = get_option('facebook_appid');
 
 if ($facebook_appid == '') {
-    $config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('admin_config'), array(), false, false, false, 'group_FACEBOOK_SYNDICATION');
+    $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'COMPOSR_APIS', 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('admin_config'), [], false, false, false, 'group_FACEBOOK_SYNDICATION');
     $echo = redirect_screen($title, $config_url, do_lang_tempcode('FACEBOOK_SETUP_FIRST'));
     $echo->evaluate_echo();
     return;
@@ -49,7 +49,7 @@ if ($facebook_appid == '') {
 require_code('hooks/systems/syndication/facebook');
 $ob = new Hook_syndication_facebook();
 
-$result = $ob->auth_set(null, get_self_url(false, false, array('oauth_in_progress' => 1)));
+$result = $ob->auth_set(null, get_self_url(false, false, ['oauth_in_progress' => 1]));
 
 if ($result) {
     $out = do_lang_tempcode('FACEBOOK_OAUTH_SUCCESS');

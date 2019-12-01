@@ -26,7 +26,7 @@ class Hook_addon_registry_addon_publish
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_addon_publish
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ Includes the code for pulling translations from {$IS_MAINTAINED,transifex,Transi
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,14 +108,14 @@ Includes the code for pulling translations from {$IS_MAINTAINED,transifex,Transi
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'downloads',
                 'galleries',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -135,13 +135,13 @@ Includes the code for pulling translations from {$IS_MAINTAINED,transifex,Transi
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/addon_publish.php',
             'adminzone/pages/minimodules_custom/publish_addons_as_downloads.php',
             'adminzone/pages/minimodules_custom/build_addons.php',
             'sources_custom/hooks/systems/page_groupings/addon_publish.php',
             'sources_custom/addon_publish.php',
             'data_custom/change_addon_bundling.php',
-        );
+        ];
     }
 }

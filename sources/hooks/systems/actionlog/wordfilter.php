@@ -31,43 +31,43 @@ class Hook_actionlog_wordfilter extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('wordfilter')) {
-            return array();
+            return [];
         }
 
         require_lang('wordfilter');
 
-        return array(
-            'ADD_WORDFILTER' => array(
+        return [
+            'ADD_WORDFILTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
                     'ADD_WORDFILTER' => '_SEARCH:admin_wordfilter:add',
                     'EDIT_WORDFILTER' => '_SEARCH:admin_wordfilter:_edit:{ID}',
-                ),
-            ),
-            'EDIT_WORDFILTER' => array(
+                ],
+            ],
+            'EDIT_WORDFILTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
                     'EDIT_WORDFILTER' => '_SEARCH:admin_wordfilter:_edit:{ID}',
-                ),
-            ),
-            'DELETE_WORDFILTER' => array(
+                ],
+            ],
+            'DELETE_WORDFILTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
                     'ADD_WORDFILTER' => '_SEARCH:admin_wordfilter:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

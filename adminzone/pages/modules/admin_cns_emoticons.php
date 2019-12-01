@@ -52,9 +52,9 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('EMOTICONS', 'menu/adminzone/style/emoticons'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['EMOTICONS', 'menu/adminzone/style/emoticons'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -80,11 +80,11 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         set_helper_panel_tutorial('tut_emoticons');
 
         if ($type == 'import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')]]);
         }
 
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_EMOTICONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMOTICONS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_EMOTICONS')]]);
         }
 
         if ($type == 'import' || $type == '_import') {
@@ -143,11 +143,11 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         return do_next_manager(
             get_screen_title('EMOTICONS'),
             comcode_lang_string('DOC_EMOTICONS'),
-            array(
-                array('admin/import', array('_SELF', array('type' => 'import'), '_SELF'), do_lang('IMPORT_EMOTICONS')),
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_EMOTICON')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_EMOTICON')),
-            ),
+            [
+                ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_EMOTICONS')],
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_EMOTICON')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_EMOTICON')],
+            ],
             do_lang('EMOTICONS')
         );
     }
@@ -163,7 +163,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             attach_message(do_lang_tempcode('EDITING_ON_WRONG_MSN'), 'warn');
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import', 'uploading' => 1), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_import', 'uploading' => 1], '_SELF');
         $fields = new Tempcode();
         $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_IMAGES', escape_html(str_replace(',', ', ', get_option('valid_images')))), 'file', true, null, null, true, str_replace(' ', '', get_option('valid_images'))));
 
@@ -179,7 +179,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         $hidden->attach(form_input_hidden('test', '1'));
         handle_max_file_size($hidden);
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '1910e01ec183392f6b254671dc7050a3',
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -188,7 +188,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => $hidden,
-        ));
+        ]);
     }
 
     /**
@@ -243,16 +243,16 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         $full_path = get_custom_file_base() . '/' . $path;
         handle_images_cleanup_pipeline($full_path);
 
-        $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $image_code));
-        $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $image_code, 'theme' => 'default', 'url' => $url, 'lang' => get_site_default_lang()));
-        $GLOBALS['FORUM_DB']->query_delete('f_emoticons', array('e_code' => ':' . $emoticon_code . ':'), '', 1);
-        $GLOBALS['FORUM_DB']->query_insert('f_emoticons', array(
+        $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $image_code]);
+        $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $image_code, 'theme' => 'default', 'url' => $url, 'lang' => get_site_default_lang()]);
+        $GLOBALS['FORUM_DB']->query_delete('f_emoticons', ['e_code' => ':' . $emoticon_code . ':'], '', 1);
+        $GLOBALS['FORUM_DB']->query_insert('f_emoticons', [
             'e_code' => ':' . $emoticon_code . ':',
             'e_theme_img_code' => $image_code,
             'e_relevance_level' => 2,
             'e_use_topics' => 0,
             'e_is_special' => 0,
-        ));
+        ]);
 
         Self_learning_cache::erase_smart_cache();
     }
@@ -315,7 +315,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('USE_TOPICS'), do_lang_tempcode('DESCRIPTION_USE_TOPICS'), 'use_topics', $use_topics == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('EMOTICON_IS_SPECIAL'), do_lang_tempcode('DESCRIPTION_EMOTICON_IS_SPECIAL'), 'is_special', $is_special == 1));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -325,18 +325,18 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      */
     public function create_selection_list_radio_entries()
     {
-        $_m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', array('e_code', 'e_theme_img_code'));
+        $_m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['e_code', 'e_theme_img_code']);
         $entries = new Tempcode();
         $first = true;
         foreach ($_m as $m) {
             $url = find_theme_image($m['e_theme_img_code'], true);
 
             if ($url == '') { // Automatic cleanup of ones deleted from disk
-                $GLOBALS['FORUM_DB']->query_delete('f_emoticons', array('e_code' => $m['e_code']), '', 1);
+                $GLOBALS['FORUM_DB']->query_delete('f_emoticons', ['e_code' => $m['e_code']], '', 1);
                 continue;
             }
 
-            $entries->attach(do_template('FORM_SCREEN_INPUT_THEME_IMAGE_ENTRY', array(
+            $entries->attach(do_template('FORM_SCREEN_INPUT_THEME_IMAGE_ENTRY', [
                 '_GUID' => 'f7f64637d1c4984881f7acc68c2fe6c7',
                 'PRETTY' => $m['e_code'],
                 'CHECKED' => $first,
@@ -344,7 +344,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
                 'CODE' => $m['e_code'],
                 'URL' => $url,
                 'VECTOR' => (substr($url, -4) == '.svg'),
-            )));
+            ]));
             $first = false;
         }
 
@@ -359,7 +359,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', array('*'), array('e_code' => $id), '', 1);
+        $m = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['*'], ['e_code' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

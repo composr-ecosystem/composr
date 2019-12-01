@@ -31,7 +31,7 @@ class Hook_checklist_content_reviews
     public function run()
     {
         if (!addon_installed('content_reviews')) {
-            return array();
+            return [];
         }
 
         $num_to_review = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'content_reviews WHERE next_review_time<=' . strval(time()));
@@ -42,14 +42,14 @@ class Hook_checklist_content_reviews
         }
         require_lang('content_reviews');
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
-        $url = build_url(array('page' => 'admin_content_reviews'), 'adminzone');
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $url = build_url(['page' => 'admin_content_reviews'], 'adminzone');
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'c00c54ed0e3095ff0b653a5799b7cd92',
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_CONTENT_REVIEWS', escape_html_tempcode($url)),
             'INFO' => do_lang_tempcode('CONTENT_NEEDING_REVIEWING', escape_html(integer_format($num_to_review))),
-        ));
-        return array(array($tpl, null, $num_to_review, null));
+        ]);
+        return [[$tpl, null, $num_to_review, null]];
     }
 }

@@ -31,12 +31,12 @@ class Hook_logs_commandr
     public function enumerate_logs()
     {
         if (!addon_installed('commandr')) {
-            return array(
-            );
+            return [
+            ];
         }
 
-        return array(
-            'resource_fs.log' => array('days_to_keep' => (get_option('days_to_keep__resource_fs_log') == '') ? null : intval(get_option('days_to_keep__resource_fs_log'))),
-        );
+        return [
+            'resource_fs.log' => ['days_to_keep' => (get_option('days_to_keep__resource_fs_log') == '') ? null : intval(get_option('days_to_keep__resource_fs_log'))],
+        ];
     }
 }

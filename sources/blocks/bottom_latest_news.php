@@ -30,14 +30,14 @@ class Block_bottom_latest_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Salman Abbas';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'blogs', 'historic', 'zone', 'select', 'select_and', 'title', 'as_guest', 'check');
+        $info['parameters'] = ['param', 'blogs', 'historic', 'zone', 'select', 'select_and', 'title', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_bottom_latest_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? intval($map['param']) : 5,
@@ -84,7 +84,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => '2xrvldyykmd1p8qonelxje3rgzstfpwt', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => '2xrvldyykmd1p8qonelxje3rgzstfpwt', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         require_lang('news');
@@ -103,11 +103,11 @@ PHP;
 
         global $NEWS_CATS_CACHE;
         if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
             $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
         }
 
-        $news_items = array();
+        $news_items = [];
 
         // News Query
         if ($select == '*') {
@@ -169,7 +169,7 @@ PHP;
             $start = 0;
             do {
                 $_rows = $GLOBALS['SITE_DB']->query('SELECT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON p.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ' AND validated=1' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY p.date_and_time DESC', 200, $start, false, true);
-                $news = array();
+                $news = [];
                 foreach ($_rows as $row) {
                     $ok = false;
                     switch ($historic) {
@@ -213,7 +213,7 @@ PHP;
         $base_url = get_base_url();
 
         foreach ($news as $myrow) {
-            $url_map = array('page' => 'news', 'type' => 'view', 'id' => $myrow['id']);
+            $url_map = ['page' => 'news', 'type' => 'view', 'id' => $myrow['id']];
             if ($select != '*') {
                 $url_map['select'] = $select;
             }
@@ -225,7 +225,7 @@ PHP;
             }
             $full_url = build_url($url_map, $zone);
 
-            $just_news_row = db_map_restrict($myrow, array('id', 'title', 'news', 'news_article'));
+            $just_news_row = db_map_restrict($myrow, ['id', 'title', 'news', 'news_article']);
 
             $news_title = get_translated_tempcode('news', $just_news_row, 'title');
 
@@ -237,7 +237,7 @@ PHP;
             }
 
             if (!array_key_exists($myrow['news_category'], $NEWS_CATS_CACHE)) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('id' => $myrow['news_category']), '', 1);
+                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $myrow['news_category']], '', 1);
                 if (array_key_exists(0, $_news_cats)) {
                     $NEWS_CATS_CACHE[$myrow['news_category']] = $_news_cats[0];
                 }
@@ -254,7 +254,7 @@ PHP;
                 $img_raw = get_news_category_image_url($news_cat_row['nc_img']);
             }
 
-            $news_items[] = array(
+            $news_items[] = [
                 'IMG_URL' => $img_raw,
                 'AUTHOR' => $myrow['author'],
                 'ID' => strval($myrow['id']),
@@ -266,15 +266,15 @@ PHP;
                 'NEWS_TITLE' => $news_title,
                 '_DATE' => strval($myrow['date_and_time']),
                 'DATE' => $date,
-            );
+            ];
         }
 
-        return do_template('BLOCK_BOTTOM_LATEST_NEWS', array(
+        return do_template('BLOCK_BOTTOM_LATEST_NEWS', [
             '_GUID' => 'ef104b4762d84a07866064e818544c16',
             'BLOCK_ID' => $block_id,
             'BLOG' => $blogs === 1,
             'TITLE' => $_title,
             'NEWS_ITEMS' => $news_items,
-        ));
+        ]);
     }
 }

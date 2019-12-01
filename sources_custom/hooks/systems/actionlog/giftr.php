@@ -26,41 +26,41 @@ class Hook_actionlog_giftr extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('giftr')) {
-            return array();
+            return [];
         }
 
         require_lang('giftr');
 
-        return array(
-            'ADD_GIFT' => array(
+        return [
+            'ADD_GIFT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_GIFT' => '_SEARCH:admin_giftr:_edit:{ID}',
                     'ADD_GIFT' => '_SEARCH:admin_giftr:add',
-                ),
-            ),
-            'EDIT_GIFT' => array(
+                ],
+            ],
+            'EDIT_GIFT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_GIFT' => '_SEARCH:admin_giftr:_edit:{ID}',
                     'ADD_GIFT' => '_SEARCH:admin_giftr:add',
-                ),
-            ),
-            'DELETE_GIFT' => array(
+                ],
+            ],
+            'DELETE_GIFT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_GIFT' => '_SEARCH:admin_giftr:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

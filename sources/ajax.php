@@ -122,7 +122,7 @@ function namelike_script()
     echo '<request><result>';
 
     if ($special == 'admin_search') {
-        $names = array();
+        $names = [];
         if ($id != '') {
             require_all_lang();
             $hooks = find_all_hook_obs('systems', 'page_groupings', 'Hook_page_groupings_');
@@ -143,7 +143,7 @@ function namelike_script()
                 }
             }
             if (count($names) > 10) {
-                $names = array();
+                $names = [];
             }
             cms_mb_sort($names, SORT_NATURAL | SORT_FLAG_CASE);
         }
@@ -156,7 +156,7 @@ function namelike_script()
             require_code('search');
             $names = find_search_suggestions($id, get_param_string('search_type', ''));
         } else {
-            $names = array();
+            $names = [];
         }
 
         foreach ($names as $name) {
@@ -164,8 +164,8 @@ function namelike_script()
         }
     } else {
         if ((strlen($id) == 0) && (addon_installed('chat'))) {
-            $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => get_member()), 'ORDER BY date_and_time', 100);
-            $names = array();
+            $rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()], 'ORDER BY date_and_time', 100);
+            $names = [];
             foreach ($rows as $row) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], false, USERNAME_DEFAULT_NULL);
                 if ($username !== null) {
@@ -177,7 +177,7 @@ function namelike_script()
                 echo '<option value="' . escape_html($name) . '" displayname="" />';
             }
         } else {
-            $names = array();
+            $names = [];
             if ((addon_installed('authors')) && ($special == 'author')) {
                 $num_authors = $GLOBALS['SITE_DB']->query_select_value('authors', 'COUNT(*)');
                 $like = ($num_authors < 1000) ? db_encode_like('%' . str_replace('_', '\_', $id) . '%') : db_encode_like(str_replace('_', '\_', $id) . '%'); // performance issue
@@ -231,7 +231,7 @@ function find_permissions_script()
 
     $serverid = get_param_string('serverid');
     $x = get_param_string('x');
-    $matches = array();
+    $matches = [];
     preg_match('#^access_(\d+)_privilege_(.+)$#', $x, $matches);
     $group_id = intval($matches[1]);
     $privilege = $matches[2];
@@ -274,7 +274,7 @@ function fractional_edit_script()
     $page = get_page_name();
 
     global $SESSION_CONFIRMED_CACHE;
-    if ((!$SESSION_CONFIRMED_CACHE) && ($GLOBALS['SITE_DB']->query_select_value('zones', 'zone_require_session', array('zone_name' => $zone)) == 1) && (!is_guest())) {
+    if ((!$SESSION_CONFIRMED_CACHE) && ($GLOBALS['SITE_DB']->query_select_value('zones', 'zone_require_session', ['zone_name' => $zone]) == 1) && (!is_guest())) {
         return;
     }
 
@@ -344,14 +344,14 @@ function edit_ping_script()
 
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE the_time<' . strval(time() - 200));
 
-    $GLOBALS['SITE_DB']->query_insert_or_replace('edit_pings', array(
+    $GLOBALS['SITE_DB']->query_insert_or_replace('edit_pings', [
         'the_time' => time(),
-    ), array(
+    ], [
         'the_page' => cms_mb_substr(get_page_name(), 0, 80),
         'the_type' => cms_mb_substr(get_param_string('type'), 0, 80),
         'the_id' => cms_mb_substr(get_param_string('id', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
         'the_member' => get_member(),
-    ));
+    ]);
 
     echo '1';
 
@@ -398,7 +398,7 @@ function ajax_tree_script()
     echo($html_mask ? '<html>' : '<request>');
     $_options = get_param_string('options', '', INPUT_FILTER_GET_COMPLEX);
     if ($_options == '') {
-        $_options = json_encode(array());
+        $_options = json_encode([]);
     }
     $options = @json_decode($_options, true);
     if (($options === false) || ($options === null)) {

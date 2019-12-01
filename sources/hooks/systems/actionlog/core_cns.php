@@ -31,261 +31,261 @@ class Hook_actionlog_core_cns extends Hook_actionlog
     public function get_handlers()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         require_lang('cns');
 
-        return array(
-            'ADD_EMOTICON' => array(
+        return [
+            'ADD_EMOTICON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'emoticon',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_EMOTICON' => '_SEARCH:admin_cns_emoticons:_edit:{ID}',
                     'ADD_EMOTICON' => '_SEARCH:admin_cns_emoticons:add',
-                ),
-            ),
-            'EDIT_EMOTICON' => array(
+                ],
+            ],
+            'EDIT_EMOTICON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'emoticon',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_EMOTICON' => '_SEARCH:admin_cns_emoticons:_edit:{ID}',
                     'ADD_EMOTICON' => '_SEARCH:admin_cns_emoticons:add',
-                ),
-            ),
-            'DELETE_EMOTICON' => array(
+                ],
+            ],
+            'DELETE_EMOTICON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'emoticon',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_EMOTICON' => '_SEARCH:admin_cns_emoticons:add',
-                ),
-            ),
-            'IMPORT_EMOTICONS' => array(
+                ],
+            ],
+            'IMPORT_EMOTICONS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EMOTICONS' => '_SEARCH:admin_cns_emoticons',
-                ),
-            ),
-            'ADD_GROUP' => array(
+                ],
+            ],
+            'ADD_GROUP' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'group',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:groups:view:{ID}',
                     'EDIT_THIS_GROUP' => '_SEARCH:admin_cns_groups:_edit:{ID}',
                     'ADD_GROUP' => '_SEARCH:admin_cns_groups:add',
-                ),
-            ),
-            'EDIT_GROUP' => array(
+                ],
+            ],
+            'EDIT_GROUP' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'group',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:groups:view:{ID}',
                     'EDIT_THIS_GROUP' => '_SEARCH:admin_cns_groups:_edit:{ID}',
                     'ADD_GROUP' => '_SEARCH:admin_cns_groups:add',
-                ),
-            ),
-            'DELETE_GROUP' => array(
+                ],
+            ],
+            'DELETE_GROUP' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'group',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_GROUP' => '_SEARCH:admin_cns_groups:add',
-                ),
-            ),
-            'MEMBER_PROMOTED_AUTOMATICALLY' => array(
+                ],
+            ],
+            'MEMBER_PROMOTED_AUTOMATICALLY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'MEMBER_ADDED_TO_GROUP' => array(
+                ],
+            ],
+            'MEMBER_ADDED_TO_GROUP' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'USERGROUP' => '_SEARCH:groups:view:{1}',
-                ),
-            ),
-            'MEMBER_PRIMARY_GROUP_CHANGED' => array(
+                ],
+            ],
+            'MEMBER_PRIMARY_GROUP_CHANGED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'USERGROUP' => '_SEARCH:groups:view:{1}',
-                ),
-            ),
-            'MEMBER_REMOVED_FROM_GROUP' => array(
+                ],
+            ],
+            'MEMBER_REMOVED_FROM_GROUP' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'USERGROUP' => '_SEARCH:groups:view:{1}',
-                ),
-            ),
-            'IMPORT_MEMBERS' => array(
+                ],
+            ],
+            'IMPORT_MEMBERS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'EXPORT_MEMBERS' => array(
+                ],
+            ],
+            'EXPORT_MEMBERS' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'VIEW_PROFILE' => array(
+                ],
+            ],
+            'VIEW_PROFILE' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'PRIVATE_TOPIC' => array(
+                ],
+            ],
+            'PRIVATE_TOPIC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'PRIVATE_TOPICS_INBOX' => array(
+                ],
+            ],
+            'PRIVATE_TOPICS_INBOX' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'MEMBER_SEARCH' => array(
+                ],
+            ],
+            'MEMBER_SEARCH' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'ADD_MEMBER' => array(
+                ],
+            ],
+            'ADD_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'ADD_MEMBER' => '_SEARCH:admin_cns_members:step1',
-                ),
-            ),
-            'EDIT_MEMBER_PROFILE' => array(
+                ],
+            ],
+            'EDIT_MEMBER_PROFILE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'DELETE_MEMBER' => array(
+                ],
+            ],
+            'DELETE_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MEMBER_DIRECTORY' => '_SEARCH:members',
-                ),
-            ),
-            'DELETE_LURKERS' => array(
+                ],
+            ],
+            'DELETE_LURKERS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DELETE_LURKERS' => '_SEARCH:admin_cns_members:delurk',
-                ),
-            ),
-            'MERGE_MEMBERS' => array(
+                ],
+            ],
+            'MERGE_MEMBERS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MERGE_MEMBERS' => '_SEARCH:admin_cns_merge_members',
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'BAN_MEMBER' => array(
+                ],
+            ],
+            'BAN_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'UNBAN_MEMBER' => array(
+                ],
+            ],
+            'UNBAN_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'LOST_PASSWORD' => array(
+                ],
+            ],
+            'LOST_PASSWORD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'EMAIL' => array(
+                ],
+            ],
+            'EMAIL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -307,7 +307,7 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                     $username = '#' . $actionlog_row['param_a'];
                 }
 
-                $_usergroup = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => intval($actionlog_row['param_b'])));
+                $_usergroup = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => intval($actionlog_row['param_b'])]);
                 if ($_usergroup === null) {
                     $usergroup = '#' . $actionlog_row['param_b'];
                 } else {

@@ -42,9 +42,9 @@ class Hook_payment_gateway_worldpay
      */
     public function get_config()
     {
-        return array(
+        return [
             'supports_remote_memo' => false,
-        );
+        ];
     }
 
     /**
@@ -89,7 +89,7 @@ class Hook_payment_gateway_worldpay
         $address = str_replace("\n", '<br />', escape_html(get_full_business_address()));
         $email = get_option('pd_email');
         $number = get_option('pd_number');
-        return do_template('ECOM_LOGOS_WORLDPAY', array('_GUID' => '4b3254b330b3b1719d66d2b754c7a8c8', 'INST_ID' => $inst_id, 'PD_ADDRESS' => $address, 'PD_EMAIL' => $email, 'PD_NUMBER' => $number));
+        return do_template('ECOM_LOGOS_WORLDPAY', ['_GUID' => '4b3254b330b3b1719d66d2b754c7a8c8', 'INST_ID' => $inst_id, 'PD_ADDRESS' => $address, 'PD_EMAIL' => $email, 'PD_NUMBER' => $number]);
     }
 
     /**
@@ -125,7 +125,7 @@ class Hook_payment_gateway_worldpay
         //$digest = md5((($digest_option == '') ? ($digest_option . ':') : '') . $trans_expecting_id . ':' . float_to_raw_string($price + $tax + $shipping_cost) . ':' . $currency);  Deprecated
         $digest = md5((($digest_option == '') ? ($digest_option . ':') : '') . ';' . 'cartId:amount:currency;' . $trans_expecting_id . ';' . float_to_raw_string($price + $tax + $shipping_cost) . ';' . $currency);
 
-        return do_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', array(
+        return do_template('ECOM_TRANSACTION_BUTTON_VIA_WORLDPAY', [
             '_GUID' => '56c78a4e16c0e7f36fcfbe57d37bc3d3',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -142,7 +142,7 @@ class Hook_payment_gateway_worldpay
             'FORM_URL' => $form_url,
             'EMAIL_ADDRESS' => $email_address,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -190,7 +190,7 @@ class Hook_payment_gateway_worldpay
         //$digest = md5((($digest_option == '') ? ($digest_option . ':') : '') . $trans_expecting_id . ':' . float_to_raw_string($price + $tax) . ':' . $currency . $length_units_2 . strval($length));   Deprecated
         $digest = md5((($digest_option == '') ? ($digest_option . ':') : '') . ';' . 'cartId:amount:currency:intervalUnit:intervalMult;' . $trans_expecting_id . ';' . float_to_raw_string($price + $tax) . ';' . $currency . $length_units_2 . strval($length));
 
-        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', array(
+        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_WORLDPAY', [
             '_GUID' => '1f88716137762a467edbf5fbb980c6fe',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -208,7 +208,7 @@ class Hook_payment_gateway_worldpay
             'USERNAME' => $username,
             'FORM_URL' => $form_url,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -218,7 +218,7 @@ class Hook_payment_gateway_worldpay
      */
     protected function _build_member_address()
     {
-        $member_address = array();
+        $member_address = [];
 
         $shipping_email = '';
         $shipping_phone = '';
@@ -265,7 +265,7 @@ class Hook_payment_gateway_worldpay
             $country = $shipping_country;
         }
 
-        $member_address = array();
+        $member_address = [];
         $member_address['ship_name'] = trim($shipping_firstname . ' ' . $shipping_lastname);
         list($street_address_1, $street_address_2, $street_address_3) = split_street_address($street_address, 3);
         $member_address['address1'] = $street_address_1;
@@ -289,7 +289,7 @@ class Hook_payment_gateway_worldpay
      */
     public function make_cancel_button($purchase_id)
     {
-        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', array('_GUID' => '187fba57424e7850b9e21fc147de48eb', 'PURCHASE_ID' => $purchase_id));
+        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_WORLDPAY', ['_GUID' => '187fba57424e7850b9e21fc147de48eb', 'PURCHASE_ID' => $purchase_id]);
     }
 
     /**
@@ -304,7 +304,7 @@ class Hook_payment_gateway_worldpay
 
         $trans_expecting_id = post_param_string('cartId');
 
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
                 return null;
@@ -356,7 +356,7 @@ class Hook_payment_gateway_worldpay
 
         $tax = null;
 
-        return array($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id);
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**
@@ -370,7 +370,7 @@ class Hook_payment_gateway_worldpay
     {
         $txn_id = post_param_string('transId');
         $message = do_lang('TRANSACTION_ID_WRITTEN', $txn_id);
-        $url = build_url(array('page' => 'purchase', 'type' => 'finish', 'type_code' => $type_code, 'message' => $message, 'from' => 'worldpay'), get_module_zone('purchase'));
+        $url = build_url(['page' => 'purchase', 'type' => 'finish', 'type_code' => $type_code, 'message' => $message, 'from' => 'worldpay'], get_module_zone('purchase'));
         return '<meta http-equiv="refresh" content="0;url=' . escape_html($url->evaluate()) . '" />';
     }
 
@@ -384,14 +384,14 @@ class Hook_payment_gateway_worldpay
     public function store_shipping_address($trans_expecting_id, $txn_id)
     {
         $_name = explode(' ', post_param_string('delvName', ''));
-        $name = array();
+        $name = [];
         if (!empty($_name)) {
             $name[1] = $_name[count($_name) - 1];
             unset($_name[count($_name) - 1]);
         }
         $name[0] = implode(' ', $_name);
 
-        $shipping_address = array(
+        $shipping_address = [
             'a_firstname' => $name[0],
             'a_lastname' => $name[1],
             'a_street_address' => trim(post_param_string('delvAddress1', '') . ' ' . post_param_string('delvAddress2', '') . ' ' . post_param_string('delvAddress3', '')),
@@ -402,7 +402,7 @@ class Hook_payment_gateway_worldpay
             'a_country' => post_param_string('delvCountryString', ''),
             'a_email' => post_param_string('email', ''),
             'a_phone' => post_param_string('tel', ''),
-        );
+        ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);
     }
 

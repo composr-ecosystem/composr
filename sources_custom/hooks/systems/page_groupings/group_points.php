@@ -28,11 +28,11 @@ class Hook_page_groupings_group_points
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('group_points')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'menu/rich_content/ecommerce/purchase', array('group_points', array('type' => 'browse'), get_page_zone('group_points')), make_string_tempcode('Usergroup point assignments')),
-        );
+        return [
+            ['setup', 'menu/rich_content/ecommerce/purchase', ['group_points', ['type' => 'browse'], get_page_zone('group_points')], make_string_tempcode('Usergroup point assignments')],
+        ];
     }
 }

@@ -25,7 +25,7 @@ class Module_admin_cmsusers
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -54,12 +54,12 @@ class Module_admin_cmsusers
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('may_feature', array(
+            $GLOBALS['SITE_DB']->create_table('may_feature', [
                 'id' => '*AUTO',
                 'url' => 'URLPATH',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('logged', array(
+            $GLOBALS['SITE_DB']->create_table('logged', [
                 'id' => '*AUTO',
                 'website_url' => 'URLPATH',
                 'website_name' => 'SHORT_TEXT',
@@ -68,7 +68,7 @@ class Module_admin_cmsusers
                 'expire' => 'INTEGER', // 0 means never   // NOT CURRENTLY USED
                 'l_version' => 'ID_TEXT',
                 'hittime' => 'TIME',
-            ));
+            ]);
         }
 
         if ($upgrade_from !== null) {
@@ -91,9 +91,9 @@ class Module_admin_cmsusers
             return null;
         }
 
-        return array(
-            'browse' => array('CMS_SITES_INSTALLED', 'admin/tool'),
-        );
+        return [
+            'browse' => ['CMS_SITES_INSTALLED', 'admin/tool'],
+        ];
     }
 
     public $title;
@@ -190,7 +190,7 @@ class Module_admin_cmsusers
         $rows = $GLOBALS['SITE_DB']->query('SELECT website_url,website_name,MAX(l_version) AS l_version,MAX(hittime) AS hittime FROM ' . get_table_prefix() . 'logged WHERE website_url NOT LIKE \'%.composr.info%\' AND ' . db_string_not_equal_to('website_name', '') . ' AND ' . db_string_not_equal_to('website_name', '(unnamed)') . ' ' . $order_by, $max);
         $rows = remove_duplicate_rows($rows, 'website_url');
 
-        $seen_before = array();
+        $seen_before = [];
 
         $_rows = new Tempcode();
         foreach ($rows as $i => $r) {
@@ -199,12 +199,12 @@ class Module_admin_cmsusers
             if (!array_key_exists('host', $url_parts)) {
                 continue;
             }
-            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', array('url' => $url_parts['scheme'] . '://' . $url_parts['host']));
+            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
             if (($perm === null) && (get_param_integer('no_feature', 0) == 1)) {
                 continue;
             }
 
-            $rt = array();
+            $rt = [];
             $rt['VERSION'] = $r['l_version'];
             $rt['WEBSITE_URL'] = $r['website_url'];
             $rt['WEBSITE_NAME'] = $r['website_name'];
@@ -213,7 +213,7 @@ class Module_admin_cmsusers
             if ($i < 100) {
                 $active = get_value_newer_than('testing__' . $r['website_url'] . '/_config.php', time() - 60 * 60 * 10, true);
                 if ($active === null) {
-                    $test = cms_http_request($r['website_url'] . '/_config.php', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 0, 'ua' => 'Simple install stats', 'timeout' => 2.0));
+                    $test = cms_http_request($r['website_url'] . '/_config.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 0, 'ua' => 'Simple install stats', 'timeout' => 2.0]);
                     if ($test->data !== null) {
                         $active = do_lang('YES');
                     } else {
@@ -236,7 +236,7 @@ class Module_admin_cmsusers
             $_rows->attach(do_template('CMS_SITE', $rt));
         }
 
-        return do_template('CMS_SITES_SCREEN', array(
+        return do_template('CMS_SITES_SCREEN', [
             '_GUID' => '7f4b56c730f2b613994a3fe6f00ed525',
             'TITLE' => $this->title,
             'ROWS' => $_rows,
@@ -244,6 +244,6 @@ class Module_admin_cmsusers
             'ACPORD' => $acpord,
             'KEYORD' => $keyord,
             'VERORD' => $versord,
-        ));
+        ]);
     }
 }

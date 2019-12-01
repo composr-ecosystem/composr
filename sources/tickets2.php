@@ -31,11 +31,11 @@ function add_ticket_type($ticket_type_name, $guest_emails_mandatory = 0, $search
     require_code('global4');
     prevent_double_submit('ADD_TICKET_TYPE', null, $ticket_type_name);
 
-    $map = array(
+    $map = [
         'guest_emails_mandatory' => $guest_emails_mandatory,
         'search_faq' => $search_faq,
         'cache_lead_time' => null,
-    );
+    ];
     $map += insert_lang('ticket_type_name', $ticket_type_name, 1);
     $ticket_type_id = $GLOBALS['SITE_DB']->query_insert('ticket_types', $map, true);
 
@@ -59,19 +59,19 @@ function add_ticket_type($ticket_type_name, $guest_emails_mandatory = 0, $search
  */
 function edit_ticket_type($ticket_type_id, $ticket_type_name, $guest_emails_mandatory, $search_faq)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array('id' => $ticket_type_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => $ticket_type_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket_type'));
     }
 
     $old_ticket_type_name = $rows[0]['ticket_type_name'];
 
-    $map = array(
+    $map = [
         'guest_emails_mandatory' => $guest_emails_mandatory,
         'search_faq' => $search_faq,
-    );
+    ];
     $map += lang_remap('ticket_type_name', $old_ticket_type_name, $ticket_type_name);
-    $GLOBALS['SITE_DB']->query_update('ticket_types', $map, array('id' => $ticket_type_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('ticket_types', $map, ['id' => $ticket_type_id], '', 1);
 
     log_it('EDIT_TICKET_TYPE', strval($ticket_type_id), $ticket_type_name);
 
@@ -88,18 +88,18 @@ function edit_ticket_type($ticket_type_id, $ticket_type_name, $guest_emails_mand
  */
 function delete_ticket_type($ticket_type_id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array('id' => $ticket_type_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => $ticket_type_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket_type'));
     }
 
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)));
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)]);
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)]);
 
     $ticket_type_name = $rows[0]['ticket_type_name'];
     $_ticket_type_name = get_translated_text($ticket_type_name);
 
-    $GLOBALS['SITE_DB']->query_delete('ticket_types', array('id' => $ticket_type_id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('ticket_types', ['id' => $ticket_type_id], '', 1);
 
     delete_lang($ticket_type_name);
 
@@ -123,10 +123,10 @@ function delete_ticket_type($ticket_type_id)
  * @param  array $ticket_types_to_let_through List of ticket types to show regardless of access permissions
  * @return array A map between ticket types, and template-ready details about them
  */
-function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through = array())
+function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through = [])
 {
-    $_types = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name'));
-    $types = array();
+    $_types = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name'));
+    $types = [];
     foreach ($_types as $type) {
         if ((!has_category_access(get_member(), 'tickets', strval($type['id']))) && (!in_array($type['id'], $ticket_types_to_let_through))) {
             continue;
@@ -137,12 +137,12 @@ function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through
         } else {
             $lead_time = display_time_period($type['cache_lead_time']);
         }
-        $types[$type['id']] = array(
+        $types[$type['id']] = [
             'TICKET_TYPE_ID' => strval($type['id']),
             'SELECTED' => ($type['id'] === $selected_ticket_type_id),
             'NAME' => get_translated_text($type['ticket_type_name']),
             'LEAD_TIME' => $lead_time,
-        );
+        ];
     }
     return $types;
 }
@@ -155,21 +155,21 @@ function build_types_list($selected_ticket_type_id, $ticket_types_to_let_through
  */
 function get_ticket_type($ticket_type_id)
 {
-    $default = array(
+    $default = [
         'ticket_type' => null,
         'ticket_type_name' => do_lang('UNKNOWN'),
         'ticket_type_name_trans' => do_lang('UNKNOWN'),
         'guest_emails_mandatory' => 0,
         'search_faq' => 0,
         'cache_lead_time' => null,
-    );
+    ];
 
     if ($ticket_type_id === null) {
         // Malformed ticket
         return $default;
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array('id' => $ticket_type_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => $ticket_type_id], '', 1);
     if (empty($rows)) {
         return $default;
     }
@@ -214,7 +214,7 @@ function ticket_add_post($ticket_id, $ticket_type_id, $title, $post, $staff_only
     $ticket_url = ticket_url($ticket_id);
 
     // Get the forum ID first
-    $fid = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'forum_id', array('ticket_id' => $ticket_id));
+    $fid = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'forum_id', ['ticket_id' => $ticket_id]);
     if ($fid === null) {
         $fid = get_ticket_forum_id($ticket_type_id);
     }
@@ -251,7 +251,7 @@ function ticket_add_post($ticket_id, $ticket_type_id, $title, $post, $staff_only
     $topic_id = $GLOBALS['LAST_TOPIC_ID'];
     $is_new = $GLOBALS['LAST_TOPIC_IS_NEW'];
     if (($is_new) && ($ticket_type_id !== null)) {
-        $GLOBALS['SITE_DB']->query_insert('tickets', array('ticket_id' => $ticket_id, 'forum_id' => $fid, 'topic_id' => $topic_id, 'ticket_type' => $ticket_type_id));
+        $GLOBALS['SITE_DB']->query_insert('tickets', ['ticket_id' => $ticket_id, 'forum_id' => $fid, 'topic_id' => $topic_id, 'ticket_type' => $ticket_type_id]);
     }
 
     return $ticket_url;
@@ -273,7 +273,7 @@ function ticket_wrap_with_email_address($post, $email, $mandatory_guest_email = 
         if (substr($body, -2) == '> ') {
             $body = substr($body, 0, strlen($body) - 2);
         }
-        $email_comcode = do_lang('GUEST_TICKET_REPLY_LINK', comcode_escape(post_param_string('title')), comcode_escape(get_site_name()), array(comcode_escape($body), $email));
+        $email_comcode = do_lang('GUEST_TICKET_REPLY_LINK', comcode_escape(post_param_string('title')), comcode_escape(get_site_name()), [comcode_escape($body), $email]);
         $new_post = '';
         $new_post .= $email_comcode;
         $new_post .= "\n";
@@ -329,9 +329,9 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
     if ($new_ticket) {
         $ticket_type_id = $ticket_type_id_if_new;
     } else {
-        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', array('ticket_id' => $ticket_id));
+        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $ticket_id]);
     }
-    $_ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', array('id' => $ticket_type_id));
+    $_ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', ['id' => $ticket_type_id]);
     if ($_ticket_type_name === null) {
         $ticket_type_name = do_lang('UNKNOWN');
     } else {
@@ -368,13 +368,13 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
                     'TICKET_REPLY_MESSAGE',
                     comcode_escape($title),
                     comcode_escape($ticket_url),
-                    array(
+                    [
                         comcode_escape($staff_displayname),
                         $post,
                         comcode_escape($ticket_type_name),
                         strval($new_poster),
                         comcode_escape($staff_username),
-                    ),
+                    ],
                     $uid_lang
                 );
 
@@ -383,7 +383,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
                     ($ticket_type_id === null) ? '' : strval($ticket_type_id),
                     $subject,
                     $message,
-                    array($uid)
+                    [$uid]
                 );
             }
         }
@@ -405,17 +405,17 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
             $new_ticket ? 'TICKET_NEW_MESSAGE_FOR_STAFF' : 'TICKET_REPLY_MESSAGE_FOR_STAFF',
             comcode_escape($title),
             comcode_escape($ticket_url),
-            array(
+            [
                 comcode_escape($uid_displayname),
                 $post,
                 comcode_escape($ticket_type_name),
                 strval($new_poster),
                 comcode_escape($uid_username),
-            ),
+            ],
             get_site_default_lang()
         );
 
-        $attachments = array();
+        $attachments = [];
         if ($new_ticket) {
             if (addon_installed('securitylogging')) {
                 require_code('lookup');
@@ -431,7 +431,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
             $message,
             null,
             null,
-            array('attachments' => $attachments)
+            ['attachments' => $attachments]
         );
 
         // ALSO: Tell member that their message was received
@@ -443,7 +443,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
                 $email_ob->outgoing_message($ticket_id, $ticket_url, $ticket_type_name, $title, $post, $uid, $uid_displayname, $uid_email, '', true);
             } else {
                 require_code('mail');
-                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), array($uid_email), cms_empty_safe($uid_displayname) ? null : $uid_displayname, '', '', array('require_recipient_valid_since' => $new_poster));
+                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), [$uid_email], cms_empty_safe($uid_displayname) ? null : $uid_displayname, '', '', ['require_recipient_valid_since' => $new_poster]);
             }
         }
     }
@@ -463,11 +463,11 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
             'TICKET_ACTIVITY_BODY',
             comcode_escape($title),
             comcode_escape($ticket_url),
-            array(
+            [
                 $post,
                 comcode_escape($GLOBALS['FORUM_DRIVER']->get_username($new_poster_real, true)),
                 comcode_escape($GLOBALS['FORUM_DRIVER']->get_username($new_poster_real)),
-            ),
+            ],
             get_site_default_lang()
         );
 
@@ -487,7 +487,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
  */
 function delete_ticket_by_topic_id($topic_id)
 {
-    $GLOBALS['SITE_DB']->query_delete('tickets', array('topic_id' => $topic_id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('tickets', ['topic_id' => $topic_id], '', 1);
 }
 
 /**
@@ -516,7 +516,7 @@ function get_ticket_meta_details($ticket_id, $hard_error = true)
     $_temp = explode('_', $ticket_id, 2);
     $uid = intval($_temp[0]);
 
-    return array($ticket_title, $topic_id, $forum, $uid);
+    return [$ticket_title, $topic_id, $forum, $uid];
 }
 
 /**
@@ -532,7 +532,7 @@ function get_ticket_meta_details($ticket_id, $hard_error = true)
  */
 function get_ticket_posts($ticket_id, &$forum = null, &$topic_id = null, &$total_ticket_posts = null, $start = 0, $max = null)
 {
-    $ticket = $GLOBALS['SITE_DB']->query_select('tickets', array('*'), array('ticket_id' => $ticket_id), '', 1);
+    $ticket = $GLOBALS['SITE_DB']->query_select('tickets', ['*'], ['ticket_id' => $ticket_id], '', 1);
     if (count($ticket) == 1) {
         // We know about it, so grab details from tickets table...
 
@@ -575,9 +575,9 @@ function get_ticket_posts($ticket_id, &$forum = null, &$topic_id = null, &$total
  */
 function find_ticket_assigned_to($ticket_id)
 {
-    $assigned = array();
-    $where = array('l_notification_code' => 'ticket_assigned_staff', 'l_code_category' => $ticket_id);
-    $_assigned = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('l_member_id'), $where, 'ORDER BY id DESC', 200/*reasonable limit*/);
+    $assigned = [];
+    $where = ['l_notification_code' => 'ticket_assigned_staff', 'l_code_category' => $ticket_id];
+    $_assigned = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_member_id'], $where, 'ORDER BY id DESC', 200/*reasonable limit*/);
     foreach ($_assigned as $__assigned) {
         $username = $GLOBALS['FORUM_DRIVER']->get_username($__assigned['l_member_id'], true, USERNAME_DEFAULT_NULL);
         if ($username !== null) {
@@ -595,12 +595,12 @@ function update_ticket_type_lead_times()
 {
     require_code('feedback');
 
-    $ticket_types = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'));
+    $ticket_types = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*']);
     foreach ($ticket_types as $ticket_type) {
         $total_lead_time = 0;
         $tickets_counted = 0;
 
-        $tickets = $GLOBALS['SITE_DB']->query_select('tickets', array('*'), array('ticket_type' => $ticket_type['id']));
+        $tickets = $GLOBALS['SITE_DB']->query_select('tickets', ['*'], ['ticket_type' => $ticket_type['id']]);
         foreach ($tickets as $ticket) {
             $max_rows = 0;
             $topic = $GLOBALS['FORUM_DRIVER']->show_forum_topics($ticket['forum_id'], 1, 0, $max_rows, $ticket['ticket_id'], true, 'lasttime', false, do_lang('SUPPORT_TICKET') . ': #' . $ticket['ticket_id']);
@@ -642,7 +642,7 @@ function update_ticket_type_lead_times()
 
         // Calculate the new lead time and store it in the DB
         if ($tickets_counted > 0) {
-            $GLOBALS['SITE_DB']->query_update('ticket_types', array('cache_lead_time' => $total_lead_time / $tickets_counted), array('id' => $ticket_type['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_update('ticket_types', ['cache_lead_time' => $total_lead_time / $tickets_counted], ['id' => $ticket_type['id']], '', 1);
         }
     }
 }

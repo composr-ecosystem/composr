@@ -31,192 +31,192 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
     public function get_handlers()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
         require_lang('cns');
 
-        return array(
-            'ADD_FORUM_GROUPING' => array(
+        return [
+            'ADD_FORUM_GROUPING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum_grouping',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_FORUM_GROUPING' => '_SEARCH:admin_cns_forum_groupings:_edit:{ID}',
                     'ADD_FORUM_GROUPING' => '_SEARCH:admin_cns_forum_groupings:add',
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add:forum_grouping_id={ID}',
-                ),
-            ),
-            'EDIT_FORUM_GROUPING' => array(
+                ],
+            ],
+            'EDIT_FORUM_GROUPING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum_grouping',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_FORUM_GROUPING' => '_SEARCH:admin_cns_forum_groupings:_edit:{ID}',
                     'ADD_FORUM_GROUPING' => '_SEARCH:admin_cns_forum_groupings:add',
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add:forum_grouping_id={ID}',
-                ),
-            ),
-            'DELETE_FORUM_GROUPING' => array(
+                ],
+            ],
+            'DELETE_FORUM_GROUPING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum_grouping',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_FORUM_GROUPING' => '_SEARCH:admin_cns_forum_groupings:add',
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add',
-                ),
-            ),
-            'ADD_FORUM' => array(
+                ],
+            ],
+            'ADD_FORUM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FORUM' => '_SEARCH:forumview:browse:{ID}',
                     'EDIT_THIS_FORUM' => '_SEARCH:admin_cns_forums:_edit:{ID}',
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add',
-                ),
-            ),
-            'EDIT_FORUM' => array(
+                ],
+            ],
+            'EDIT_FORUM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FORUM' => '_SEARCH:forumview:browse:{ID}',
                     'EDIT_THIS_FORUM' => '_SEARCH:admin_cns_forums:_edit:{ID}',
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add',
-                ),
-            ),
-            'DELETE_FORUM' => array(
+                ],
+            ],
+            'DELETE_FORUM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_FORUM' => '_SEARCH:admin_cns_forums:add',
-                ),
-            ),
-            'EDIT_TOPIC' => array(
+                ],
+            ],
+            'EDIT_TOPIC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
-                ),
-            ),
-            'EDIT_TOPIC_POLL' => array(
+                ],
+            ],
+            'EDIT_TOPIC_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => null,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
-                ),
-            ),
-            'DELETE_TOPIC' => array(
+                ],
+            ],
+            'DELETE_TOPIC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FORUM' => '_SEARCH:forumview',
-                ),
-            ),
-            'DELETE_TOPIC_POLL' => array(
+                ],
+            ],
+            'DELETE_TOPIC_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
-                ),
-            ),
-            'MOVE_TOPICS' => array(
+                ],
+            ],
+            'MOVE_TOPICS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'forum',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FORUM' => '_SEARCH:forumview:browse:{ID}',
-                ),
-            ),
-            'EDIT_POST' => array(
+                ],
+            ],
+            'EDIT_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
-                ),
-            ),
-            'DELETE_POST' => array(
+                ],
+            ],
+            'DELETE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
-                ),
-            ),
-            'DELETE_POSTS' => array(
+                ],
+            ],
+            'DELETE_POSTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
-                ),
-            ),
-            'VALIDATE_POST' => array(
+                ],
+            ],
+            'VALIDATE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
-                ),
-            ),
-            'UNVALIDATE_POST' => array(
+                ],
+            ],
+            'UNVALIDATE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
-                ),
-            ),
-            'MOVE_POSTS' => array(
+                ],
+            ],
+            'MOVE_POSTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'topic',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{ID}',
-                ),
-            ),
-            'MAKE_ANONYMOUS_POST' => array(
+                ],
+            ],
+            'MAKE_ANONYMOUS_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{TOPIC}',
                     'EDIT_POST' => '_SEARCH:topics:edit_post:{ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -234,7 +234,7 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
             case 'VALIDATE_POST':
             case 'UNVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
-                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', array('id' => intval($actionlog_row['param_a'])));
+                $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['id' => intval($actionlog_row['param_a'])]);
                 if ($member_id !== null) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                     if ($username === null) {
@@ -244,9 +244,9 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                     $username = do_lang('UNKNOWN');
                 }
 
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => intval($actionlog_row['param_a'])));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($topic_id !== null) {
-                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
+                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
                     if ($topic_title === null) {
                         $topic_title = '#' . strval($topic_id);
                     }
@@ -258,9 +258,9 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                 return $written_context;
 
             case 'DELETE_POST':
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => intval($actionlog_row['param_a'])));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($topic_id !== null) {
-                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
+                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
                     if ($topic_title === null) {
                         $topic_title = '#' . strval($topic_id);
                     }
@@ -272,9 +272,9 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                 return $written_context;
 
             case 'DELETE_POSTS':
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => intval($actionlog_row['param_a'])));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($topic_id !== null) {
-                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
+                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
                     if ($topic_title === null) {
                         $topic_title = '#' . strval($topic_id);
                     }
@@ -286,9 +286,9 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
                 return $written_context;
 
             case 'MOVE_POSTS':
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => intval($actionlog_row['param_a'])));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($topic_id !== null) {
-                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
+                    $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
                     if ($topic_title === null) {
                         $topic_title = '#' . strval($topic_id);
                     }
@@ -317,9 +317,9 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
             case 'DELETE_TOPIC_POLL':
                 $parts = explode(':', $identifier, 2);
                 if (array_key_exists(1, $parts)) {
-                    $bindings += array(
+                    $bindings += [
                         'TOPIC' => $parts[0],
-                    );
+                    ];
                 }
                 break;
 
@@ -327,11 +327,11 @@ class Hook_actionlog_cns_forum extends Hook_actionlog
             case 'VALIDATE_POST':
             case 'UNVALIDATE_POST':
             case 'MAKE_ANONYMOUS_POST':
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => intval($identifier)));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => intval($identifier)]);
                 if ($topic_id !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'TOPIC' => strval($topic_id),
-                    );
+                    ];
                 }
                 break;
         }

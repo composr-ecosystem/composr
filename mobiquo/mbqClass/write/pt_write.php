@@ -48,7 +48,7 @@ class CMSPtWrite
 
         $from_id = get_member();
 
-        $member_ids = array();
+        $member_ids = [];
         foreach ($user_name_list as $username) {
             $to_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($to_member === null) {
@@ -126,7 +126,7 @@ class CMSPtWrite
 
         require_code('cns_topics_action2');
 
-        $member_ids = array();
+        $member_ids = [];
         foreach ($user_name_list as $username) {
             $to_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($to_member === null) {
@@ -161,7 +161,7 @@ class CMSPtWrite
 
         require_code('cns_topics_action2');
 
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_from', 't_pt_to', 't_pt_from_category', 't_pt_to_category'), array('id' => $topic_id), '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_from', 't_pt_to', 't_pt_from_category', 't_pt_to_category'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
@@ -181,7 +181,7 @@ class CMSPtWrite
         if ((get_option('delete_trashed_pts') == '1') && ($topic_info[0][$them] == do_lang('TRASH'))) {
             cns_delete_topic($topic_id, do_lang('REASON_TAPATALK_DELETING_TOPIC'));
         } else {
-            $GLOBALS['FORUM_DB']->query_update('f_topics', array($us => do_lang('TRASH')), array('id' => $topic_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_topics', [$us => do_lang('TRASH')], ['id' => $topic_id], '', 1);
         }
     }
 
@@ -198,7 +198,7 @@ class CMSPtWrite
             access_denied('NOT_AS_GUEST');
         }
 
-        $GLOBALS['FORUM_DB']->query_delete('f_read_logs', array('l_member_id' => get_member(), 'l_topic_id' => $topic_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_delete('f_read_logs', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id], '', 1);
     }
 
     /**

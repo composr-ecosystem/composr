@@ -30,7 +30,7 @@ class Hook_config_point_logs_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POINT_LOGS_PER_PAGE',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_point_logs_per_page
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

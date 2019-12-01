@@ -30,7 +30,7 @@ class Hook_config_activity_show_stats_count_users_online_forum
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_ONFORUMS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_activity_show_stats_count_users_online_forum
             'public' => false,
 
             'addon' => 'stats_block',
-        );
+        ];
     }
 
     /**

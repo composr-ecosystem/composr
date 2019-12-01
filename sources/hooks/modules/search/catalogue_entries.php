@@ -53,30 +53,30 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         require_lang('catalogues');
         require_code('catalogues');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('CATALOGUE_ENTRIES');
         $info['default'] = (get_option('search_catalogue_entries') == '1');
         $info['category'] = 'cc_id';
         $info['integer_category'] = true;
 
-        $extra_sort_fields = array();
+        $extra_sort_fields = [];
         $catalogue_name = get_param_string('catalogue_name', null);
         if ($catalogue_name !== null) {
             $extra_sort_fields = $this->_get_extra_sort_fields($catalogue_name);
         }
         $info['extra_sort_fields'] = $extra_sort_fields;
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('catalogues'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('catalogues'),
                 'page_name' => 'catalogues',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -101,12 +101,12 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
 
             require_code('form_templates');
             $fields = form_input_list(do_lang_tempcode('NAME'), '', 'catalogue_name', $tree, null, true);
-            $post_url = get_self_url(false, false, array(), false, true);
+            $post_url = get_self_url(false, false, [], false, true);
             $submit_name = do_lang_tempcode('PROCEED');
             $hidden = build_keep_post_fields();
 
             $title = get_screen_title('SEARCH');
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => 'a2812ac8056903811f444682d45ee448',
                 'TARGET' => '_self',
                 'GET' => true,
@@ -118,10 +118,10 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/search',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         }
 
-        return array('choose_catalogue_category', array('catalogue_name' => $catalogue_name));
+        return ['choose_catalogue_category', ['catalogue_name' => $catalogue_name]];
     }
 
     /**
@@ -133,7 +133,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
     {
         $catalogue_name = get_param_string('catalogue_name', '');
         if ($catalogue_name == '') {
-            return array();
+            return [];
         }
         return $this->_get_fields($catalogue_name);
     }
@@ -194,7 +194,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('ce_submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -230,7 +230,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             $extra_select = '';
 
             if ($title_field === null) {
-                return array(); // No fields in catalogue -- very odd
+                return []; // No fields in catalogue -- very odd
             }
             if ($g_or == '') {
                 $rows = get_search_rows('catalogue_entry', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,r.id AS id,r.cc_id AS r_cc_id,' . $title_field . ' AS b_cv_value' . $extra_select, $nontrans_fields);
@@ -239,16 +239,16 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             }
         } else {
             if (multi_lang_content() && $GLOBALS['SITE_DB']->query_select_value('translate', 'COUNT(*)') > 10000) { // Big sites can't do indiscriminate catalogue translatable searches for performance reasons
-                $trans_fields = array();
+                $trans_fields = [];
                 $join = ' JOIN ' . get_table_prefix() . 'catalogue_efv_short c ON (r.id=c.ce_id AND f.id=c.cf_id)';
                 $extra_select = '';
-                $non_trans_fields = array('c.cv_value');
+                $non_trans_fields = ['c.cv_value'];
             } else {
                 $join = ' LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_short_trans a ON (r.id=a.ce_id AND f.id=a.cf_id) LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_long_trans b ON (r.id=b.ce_id AND f.id=b.cf_id) LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_long d ON (r.id=d.ce_id AND f.id=d.cf_id) LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_short c ON (r.id=c.ce_id AND f.id=c.cf_id)';
                 //' LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_float g ON (r.id=g.ce_id AND f.id=g.cf_id) LEFT JOIN ' . get_table_prefix() . 'catalogue_efv_integer h ON (r.id=h.ce_id AND f.id=h.cf_id)';       No search is done on these unless it's an advanced search
-                $trans_fields = array('a.cv_value' => 'LONG_TRANS__COMCODE', 'b.cv_value' => 'LONG_TRANS__COMCODE');
+                $trans_fields = ['a.cv_value' => 'LONG_TRANS__COMCODE', 'b.cv_value' => 'LONG_TRANS__COMCODE'];
                 $extra_select = ',b.cv_value AS b_cv_value';
-                $non_trans_fields = array('c.cv_value', 'd.cv_value'/*, 'g.cv_value', 'h.cv_value'*/);
+                $non_trans_fields = ['c.cv_value', 'd.cv_value'/*, 'g.cv_value', 'h.cv_value'*/];
             }
 
             $where_clause .= ' AND ';
@@ -266,9 +266,9 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
             }
         }
 
-        $out = array();
+        $out = [];
         if (empty($rows)) {
-            return array();
+            return [];
         }
 
         global $SEARCH_CATALOGUE_ENTRIES_CATALOGUES_CACHE;

@@ -40,7 +40,7 @@ class Hook_unvalidated_cns_topics
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'f_topics';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 't_validated';

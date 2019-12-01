@@ -31,21 +31,21 @@ class Hook_actionlog_ldap extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('ldap')) {
-            return array();
+            return [];
         }
 
         require_lang('cns');
 
-        return array(
-            'LDAP_SYNC' => array(
+        return [
+            'LDAP_SYNC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'LDAP_SYNC' => '_SEARCH:admin_ldap',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

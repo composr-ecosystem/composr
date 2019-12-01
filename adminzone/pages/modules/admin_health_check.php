@@ -30,7 +30,7 @@ class Module_admin_health_check
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_health_check
             return null;
         }
 
-        return array(
-            'browse' => array('HEALTH_CHECK', 'menu/adminzone/tools/health_check'),
-        );
+        return [
+            'browse' => ['HEALTH_CHECK', 'menu/adminzone/tools/health_check'],
+        ];
     }
 
     public $title;
@@ -112,13 +112,13 @@ class Module_admin_health_check
     public function browse()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : array();
+            $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : [];
 
             $passes = (post_param_integer('passes', 0) == 1);
             $skips = (post_param_integer('skips', 0) == 1);
             $manual_checks = (post_param_integer('manual_checks', 0) == 1);
         } else {
-            $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? array() : explode(',', get_option('hc_cron_sections_to_run'));
+            $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? [] : explode(',', get_option('hc_cron_sections_to_run'));
 
             $passes = true;
             $skips = true;
@@ -133,14 +133,14 @@ class Module_admin_health_check
             $has_fails = false;
             $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks, $automatic_repair);
 
-            $results = do_template('HEALTH_CHECK_RESULTS', array('_GUID' => 'f428b63eacc19bdd041d2b1a1d2f1155', 'CATEGORIES' => $categories));
+            $results = do_template('HEALTH_CHECK_RESULTS', ['_GUID' => 'f428b63eacc19bdd041d2b1a1d2f1155', 'CATEGORIES' => $categories]);
 
             log_it('HEALTH_CHECK');
         } else {
             $results = null;
         }
 
-        return do_template('HEALTH_CHECK_SCREEN', array(
+        return do_template('HEALTH_CHECK_SCREEN', [
             '_GUID' => 'cd2a0ec2477dcc6545cb0825b098cfc5',
             'TITLE' => $this->title,
             'SECTIONS' => $sections,
@@ -148,6 +148,6 @@ class Module_admin_health_check
             'SKIPS' => $skips,
             'MANUAL_CHECKS' => $manual_checks,
             'RESULTS' => $results,
-        ));
+        ]);
     }
 }

@@ -31,7 +31,7 @@ class Hook_preview_image
     public function applies()
     {
         $applies = (addon_installed('galleries')) && (get_page_name() == 'cms_galleries') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -52,7 +52,7 @@ class Hook_preview_image
 
         if ($url == '') {
             if (post_param_integer('id', null) !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('images', array('url', 'thumb_url'), array('id' => post_param_integer('id')), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('images', ['url', 'thumb_url'], ['id' => post_param_integer('id')], '', 1);
                 $urls = $rows[0];
 
                 $url = $urls['url'];
@@ -66,6 +66,6 @@ class Hook_preview_image
         $thumb = do_image_thumb(url_is_local($thumb_url) ? (get_custom_base_url() . '/' . $thumb_url) : $thumb_url, post_param_string('description'), true);
         $preview = hyperlink(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, $thumb, false, true);
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

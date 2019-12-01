@@ -34,17 +34,17 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
     push_db_scope_check(false);
 
     // Get a list of tables
-    $tables = $GLOBALS['SITE_DB']->query_select($db_meta, array('DISTINCT m_table AS m_table'));
+    $tables = $GLOBALS['SITE_DB']->query_select($db_meta, ['DISTINCT m_table AS m_table']);
 
     // For each table, build up a Composr table creation command
     foreach ($tables as $_table) {
         $table = $_table['m_table'];
 
         if ($callback !== null) {
-            call_user_func_array($callback, array('Backing up table ' . $table));
+            call_user_func_array($callback, ['Backing up table ' . $table]);
         }
 
-        $fields = $GLOBALS['SITE_DB']->query_select($db_meta, array('*'), array('m_table' => $table));
+        $fields = $GLOBALS['SITE_DB']->query_select($db_meta, ['*'], ['m_table' => $table]);
 
         fwrite($install_php_file, "//\n");
 
@@ -68,7 +68,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
 
         $start = 0;
         do {
-            $data = $GLOBALS['SITE_DB']->query_select($table, array('*'), array(), '', 100, $start, false, array());
+            $data = $GLOBALS['SITE_DB']->query_select($table, ['*'], [], '', 100, $start, false, []);
             foreach ($data as $d) {
                 $list = '';
                 $value = mixed();
@@ -111,7 +111,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
     }
 
     // For each index, build up a Composr index creation command
-    $indices = $GLOBALS['SITE_DB']->query_select($db_meta_indices, array('*'));
+    $indices = $GLOBALS['SITE_DB']->query_select($db_meta_indices, ['*']);
     foreach ($indices as $index) {
         if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', array(\'' . str_replace(',', '\', \'', $index['i_fields']) . '\'));' . "\n")) == 0) {
             warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
@@ -230,7 +230,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 
     if ($b_type == 'full') {
         set_value('last_backup', strval(time()));
-        $avoid_backing_up = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK)) : array();
+        $avoid_backing_up = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK)) : [];
         $root_only_dirs = directories_to_backup();
         tar_add_folder($backup_file, $log_file, get_custom_file_base(), $max_size, '', $avoid_backing_up, $root_only_dirs, !running_script('cron_bridge'), IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
     } elseif ($b_type == 'incremental') {
@@ -337,7 +337,7 @@ function directories_to_backup()
     $root_only_dirs['pages'] = true;
 
     // Other directories
-    $root_only_dirs += array_flip(array(
+    $root_only_dirs += array_flip([
         'data',
         'data_custom',
 
@@ -356,10 +356,10 @@ function directories_to_backup()
         'themes',
 
         'uploads',
-    ));
+    ]);
 
     // Also directories from addons, e.g. mobiquo from cns_tapatalk
-    $addon_files = $GLOBALS['SITE_DB']->query_select('addons_files', array('filepath'));
+    $addon_files = $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath']);
     foreach ($addon_files as $addon_file) {
         if (strpos($addon_file['filepath'], '/') !== false) {
             $root_only_dirs[preg_replace('#/.*#', '', $addon_file['filepath'])] = true;

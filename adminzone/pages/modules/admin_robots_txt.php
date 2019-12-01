@@ -30,7 +30,7 @@ class Module_admin_robots_txt
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_robots_txt
             return null;
         }
 
-        return array(
-            '!' => array('ROBOTS_TXT', 'spare/seo'),
-        );
+        return [
+            '!' => ['ROBOTS_TXT', 'spare/seo'],
+        ];
     }
 
     public $title;
@@ -117,17 +117,17 @@ class Module_admin_robots_txt
      */
     public function robots_txt()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_robots_txt'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_robots_txt'], '_SELF');
 
         $path = find_robots_txt_path();
 
-        return do_template('ROBOTS_TXT_SCREEN', array(
+        return do_template('ROBOTS_TXT_SCREEN', [
             '_GUID' => '656f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'TEXT' => file_exists($path) ? cms_file_get_contents_safe($path, FILE_READ_LOCK) : '',
             'DEFAULT' => get_robots_txt(),
-        ));
+        ]);
     }
 
     /**

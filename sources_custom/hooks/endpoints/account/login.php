@@ -65,9 +65,9 @@ class Hook_endpoint_account_login
         require_code('permissions');
         $where_groups = get_permission_where_clause_groups($member_id);
         if ($where_groups === null) {
-            $privileges_perhaps = $GLOBALS['SITE_DB']->query_select('privilege_list', array('the_name AS privilege'));
-            $pages_blacklist = array();
-            $zones_perhaps = $GLOBALS['SITE_DB']->query_select('zones', array('zone_name'));
+            $privileges_perhaps = $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name AS privilege']);
+            $pages_blacklist = [];
+            $zones_perhaps = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name']);
         } else {
             $where = ' AND ' . db_string_equal_to('the_page', '');
             $where .= ' AND ' . db_string_equal_to('module_the_name', '');
@@ -88,15 +88,15 @@ class Hook_endpoint_account_login
             $zones_perhaps = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
         }
 
-        $groups = array();
+        $groups = [];
         foreach (array_keys($_groups) as $group_id) {
-            $groups[] = array(
+            $groups[] = [
                 'id' => $group_id,
                 'name' => cns_get_group_name($group_id),
-            );
+            ];
         }
 
-        $data += array(
+        $data += [
             'memberID' => $member_id,
             'privileges' => collapse_1d_complexity('privilege', $privileges_perhaps),
             'pages_blacklist' => collapse_1d_complexity('page_name', $pages_blacklist),
@@ -111,7 +111,7 @@ class Hook_endpoint_account_login
             'device_auth_pass_hashed_cn' => get_pass_cookie(),
             'device_auth_member_id_vl' => strval($member_id),
             'device_auth_pass_hashed_vl' => $password_hashed_salted,
-        );
+        ];
 
         return $data;
     }

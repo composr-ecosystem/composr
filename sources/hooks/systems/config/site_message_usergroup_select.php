@@ -37,7 +37,7 @@ class Hook_config_site_message_usergroup_select
             $guest_group_id = 1;
         }
 
-        return array(
+        return [
             'human_name' => 'SITE_MESSAGE_USERGROUP_SELECT',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -53,7 +53,7 @@ class Hook_config_site_message_usergroup_select
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

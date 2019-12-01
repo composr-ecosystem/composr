@@ -30,7 +30,7 @@ class Hook_config_message_received_emails
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MESSAGE_RECEIVED_EMAILS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_message_received_emails
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

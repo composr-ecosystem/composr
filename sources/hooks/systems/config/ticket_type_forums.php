@@ -30,7 +30,7 @@ class Hook_config_ticket_type_forums
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TICKET_TYPE_FORUMS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_ticket_type_forums
             'required' => true,
             'public' => false,
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

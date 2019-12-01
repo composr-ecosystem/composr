@@ -31,7 +31,7 @@ class Hook_addon_registry_msn
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_msn
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_msn',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_msn
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_msn
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/multi_site_network.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/multi_site_network.svg',
             'sources/hooks/systems/config/network_links.php',
@@ -111,7 +111,7 @@ class Hook_addon_registry_msn
             'sources/hooks/systems/page_groupings/msn.php',
             'sources/multi_site_networks.php',
             'sources/blocks/side_network.php',
-        );
+        ];
     }
 
     /**
@@ -121,10 +121,10 @@ class Hook_addon_registry_msn
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_NETWORK.tpl' => 'block_side_network',
             'templates/NETLINK.tpl' => 'netlink',
-        );
+        ];
     }
 
     /**
@@ -136,12 +136,12 @@ class Hook_addon_registry_msn
      */
     public function tpl_preview__block_side_network()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_NETWORK', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_NETWORK', [
                 'BLOCK_ID' => lorem_word(),
                 'CONTENT' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -159,10 +159,10 @@ class Hook_addon_registry_msn
             $content->attach(form_input_list_entry($url->evaluate(), false, lorem_word()));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('NETLINK', array(
+        return [
+            lorem_globalise(do_lorem_template('NETLINK', [
                 'CONTENT' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

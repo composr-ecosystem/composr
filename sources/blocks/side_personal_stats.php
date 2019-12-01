@@ -30,14 +30,14 @@ class Block_side_personal_stats
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -56,7 +56,7 @@ class Block_side_personal_stats
         $member_id = get_member();
 
         if (get_forum_type() == 'none') {
-            return do_template('RED_ALERT', array('_GUID' => 'kc6kp12z4myd48e2cf9p1nzco1ynartu', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => 'kc6kp12z4myd48e2cf9p1nzco1ynartu', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         if (!is_guest($member_id)) {
@@ -72,7 +72,7 @@ class Block_side_personal_stats
             require_code('global4');
             list($links, $links_ecommerce, $details, $num_unread_pps) = member_personal_links_and_details($member_id);
 
-            return do_template('BLOCK_SIDE_PERSONAL_STATS', array(
+            return do_template('BLOCK_SIDE_PERSONAL_STATS', [
                 '_GUID' => '99f9bc3387102daaeeedf99843b0502e',
                 'BLOCK_ID' => $block_id,
                 'NUM_UNREAD_PTS' => strval($num_unread_pps),
@@ -82,19 +82,19 @@ class Block_side_personal_stats
                 'LINKS' => $links,
                 'LINKS_ECOMMERCE' => $links_ecommerce,
                 'DETAILS' => $details,
-            ));
+            ]);
         } else {
             $title = do_lang_tempcode('NOT_LOGGED_IN');
 
             list($full_url, $login_url, $join_url) = get_login_url();
-            return do_template('BLOCK_SIDE_PERSONAL_STATS_NO', array(
+            return do_template('BLOCK_SIDE_PERSONAL_STATS_NO', [
                 '_GUID' => '32aade68b98dfd191f0f84c6648f7dde',
                 'BLOCK_ID' => $block_id,
                 'TITLE' => $title,
                 'FULL_LOGIN_URL' => $full_url,
                 'JOIN_URL' => $join_url,
                 'LOGIN_URL' => $login_url,
-            ));
+            ]);
         }
     }
 }

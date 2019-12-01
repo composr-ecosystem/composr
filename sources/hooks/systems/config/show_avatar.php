@@ -30,7 +30,7 @@ class Hook_config_show_avatar
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AVATAR',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_show_avatar
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

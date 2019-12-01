@@ -486,7 +486,7 @@ function cms_parse_ini_file_fast($path, $contents = null)
         }
     }
 
-    $ini_array = array();
+    $ini_array = [];
     $lines = explode("\n", $contents);
     foreach ($lines as $line) {
         $line = rtrim($line);
@@ -531,7 +531,7 @@ function should_ignore_file($path, $bitmask = 0)
     }
     $filename_lower = strtolower($filename);
 
-    $ignore_filenames_and_dir_names = array( // Case insensitive, define in lower case
+    $ignore_filenames_and_dir_names = [ // Case insensitive, define in lower case
         '.' => '.*',
         '..' => '.*',
 
@@ -616,9 +616,9 @@ function should_ignore_file($path, $bitmask = 0)
 
         // Composr testing platform
         'checker.ini' => '_tests/codechecker',
-    );
+    ];
 
-    $ignore_extensions = array( // Case insensitive, define in lower case
+    $ignore_extensions = [ // Case insensitive, define in lower case
         // Cache files
         'lcd' => 'caches/.*',
         'gcd' => 'caches/.*',
@@ -646,48 +646,48 @@ function should_ignore_file($path, $bitmask = 0)
         'clpprj' => '', // Code Lobster
         'csprj' => '', // Code Lobster
         'geany' => '', // Geany
-    );
+    ];
 
-    $ignore_filename_and_dir_name_patterns = array( // Case insensitive
+    $ignore_filename_and_dir_name_patterns = [ // Case insensitive
         // Operating system files
-        array('\..*\.(png|gif|jpeg|jpg)', '.*'), // Image metadata file, e.g. ".example.png"
-        array('\.\_.*', '.*'), // Mac OS extended attributes
+        ['\..*\.(png|gif|jpeg|jpg)', '.*'], // Image metadata file, e.g. ".example.png"
+        ['\.\_.*', '.*'], // Mac OS extended attributes
 
         // Web server files
-        array('\_vti\_.*', '.*'), // Frontpage
+        ['\_vti\_.*', '.*'], // Frontpage
 
         // Authorisation files
-        array('google.*\.html', ''),
-    );
+        ['google.*\.html', ''],
+    ];
 
-    $ignore_filename_patterns = array( // Case insensitive; we'll use this only when we *need* directories that would match to be valid
-    );
+    $ignore_filename_patterns = [ // Case insensitive; we'll use this only when we *need* directories that would match to be valid
+    ];
 
     if (($bitmask & IGNORE_ACCESS_CONTROLLERS) != 0) {
-        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
+        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             '.htaccess' => '.*',
             'index.html' => '.*',
-        ));
+        ]);
     }
 
     if (($bitmask & IGNORE_HIDDEN_FILES) != 0) {
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('\..*', '.*'),
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['\..*', '.*'],
+        ]);
     }
 
     if (($bitmask & IGNORE_EDITFROM_FILES) != 0) {
-        $ignore_extensions = array_merge($ignore_extensions, array(
+        $ignore_extensions = array_merge($ignore_extensions, [
             'editfrom' => '.*',
-        ));
+        ]);
     }
 
     if (($bitmask & IGNORE_REVISION_FILES) != 0) { // E.g. global.css.<timestamp>
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('.*\.\d+.*', '.*'),
-            array('.*\.latest_in_cms_edit', '.*'),
-            array('.*\.\d+.*', 'exports/file_backups'),
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['.*\.\d+.*', '.*'],
+            ['.*\.latest_in_cms_edit', '.*'],
+            ['.*\.\d+.*', 'exports/file_backups'],
+        ]);
     }
 
     if (($bitmask & IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP) != 0) {
@@ -700,13 +700,13 @@ function should_ignore_file($path, $bitmask = 0)
     }
 
     if (($bitmask & IGNORE_CUSTOM_ZONES) != 0) {
-        if ((is_dir(get_file_base() . '/' . $path)) && (is_file(get_file_base() . '/' . $path . '/index.php')) && (is_dir(get_file_base() . '/' . $path . '/pages')) && (!in_array($filename_lower, array('adminzone', 'cms', 'forum', 'site')))) {
+        if ((is_dir(get_file_base() . '/' . $path)) && (is_file(get_file_base() . '/' . $path . '/index.php')) && (is_dir(get_file_base() . '/' . $path . '/pages')) && (!in_array($filename_lower, ['adminzone', 'cms', 'forum', 'site']))) {
             return true;
         }
     }
 
     if (($bitmask & IGNORE_CUSTOM_THEMES) != 0) {
-        if ((preg_match('#^themes($|/)#i', $dir) != 0) && (substr($path, 0, strlen('themes/default/')) != 'themes/default/') && (substr($path, 0, strlen('themes/admin/')) != 'themes/admin/') && (!in_array($path, array('themes/default', 'themes/admin', 'themes/index.html', 'themes/map.ini')))) {
+        if ((preg_match('#^themes($|/)#i', $dir) != 0) && (substr($path, 0, strlen('themes/default/')) != 'themes/default/') && (substr($path, 0, strlen('themes/admin/')) != 'themes/admin/') && (!in_array($path, ['themes/default', 'themes/admin', 'themes/index.html', 'themes/map.ini']))) {
             return true;
         }
     }
@@ -721,7 +721,7 @@ function should_ignore_file($path, $bitmask = 0)
     if (($bitmask & IGNORE_NONBUNDLED) != 0) {
         static $addon_files = null;
         if ($addon_files === null) {
-            $addon_files = array();
+            $addon_files = [];
             $hooks = find_all_hooks('systems', 'addon_registry');
             if (!defined('DEFAULT_ZONE_PAGE_NAME')) {
                 define('DEFAULT_ZONE_PAGE_NAME', 'home');
@@ -771,7 +771,7 @@ function should_ignore_file($path, $bitmask = 0)
             return true; // Development version of CKEditor
         }
 
-        $ignore_extensions = array_merge($ignore_extensions, array(
+        $ignore_extensions = array_merge($ignore_extensions, [
             'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/guest_pages|imports/.*|exports/.*)',
 
             // Import/Export files
@@ -779,14 +779,14 @@ function should_ignore_file($path, $bitmask = 0)
             'txt' => '(imports|exports)/.*',
 
             'xml' => 'data_custom/sitemaps',
-        ));
+        ]);
 
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/chat'), // Various chat data files
-            array('(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/admin_stats'), // Various temporary XML files get created under here, for SVG graphs
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/chat'], // Various chat data files
+            ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/admin_stats'], // Various temporary XML files get created under here, for SVG graphs
+        ]);
 
-        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
+        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             'critical_errors' => '',
 
             // Non-bundled addons inside the git repository
@@ -796,45 +796,45 @@ function should_ignore_file($path, $bitmask = 0)
             // API docs
             'api' => 'docs',
             'composr-api-template' => 'docs',
-        ));
+        ]);
     }
 
     if (($bitmask & IGNORE_CUSTOM_DIRS) != 0) {
-        $ignore_filename_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('(?!index\.html$)(?!\.htaccess$).*', '.*_custom(/.*)?'), // Stuff under custom folders
-        ));
+        $ignore_filename_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', '.*_custom(/.*)?'], // Stuff under custom folders
+        ]);
     }
 
     if (($bitmask & IGNORE_CUSTOM_DIR_FLOATING_CONTENTS) != 0) {
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('(?!index\.html$)(?!\.htaccess$).*', 'themes/default/images_custom'), // We don't want deep images_custom directories either
-            array('(?!index\.html$)(?!\.htaccess$).*', '.*/(comcode|html)_custom/.*'), // Comcode pages
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', 'themes/default/images_custom'], // We don't want deep images_custom directories either
+            ['(?!index\.html$)(?!\.htaccess$).*', '.*/(comcode|html)_custom/.*'], // Comcode pages
+        ]);
     }
 
     if (($bitmask & IGNORE_UPLOADS) != 0) {
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('(?!index\.html$)(?!\.htaccess$).*', 'uploads/.*'), // Uploads
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', 'uploads/.*'], // Uploads
+        ]);
     }
 
     if (($bitmask & IGNORE_SHIPPED_VOLATILE) != 0) {
-        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
+        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             '_config.php' => '',
             'map.ini' => 'themes',
             'functions.bin' => 'data_custom',
             'errorlog.php' => 'data_custom',
             'execute_temp.php' => 'data_custom',
             '.user.ini' => '.*',
-        ));
+        ]);
     }
 
     if (($bitmask & IGNORE_UNSHIPPED_VOLATILE) != 0) {
-        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(
-            array('(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/chat'), // Various chat data files
-        ));
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/chat'], // Various chat data files
+        ]);
 
-        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
+        $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, [
             'upgrader.cms.tmp' => 'data_custom',
             'unit_test_positive_ignore_sampler.xxx' => 'data_custom', // To help us test this function. This file won't ever exist.
             'latest.bin' => 'data_custom/modules/web_notifications',
@@ -852,7 +852,7 @@ function should_ignore_file($path, $bitmask = 0)
             'request_helper.bin' => 'mobiquo/include', // tapatalk
             'server_certificates.pem' => 'data_custom/modules/composr_mobile_sdk/ios', // composr_mobile_sdk
             'if_hosted_service.txt' => 'text', // composr_homesite (Demonstratr)
-        ));
+        ]);
     }
 
     // Special case checks...
@@ -877,7 +877,7 @@ function should_ignore_file($path, $bitmask = 0)
             return true; // Check dir context
         }
     }
-    foreach (array_merge($is_file ? $ignore_filename_patterns : array(), $ignore_filename_and_dir_name_patterns) as $pattern) {
+    foreach (array_merge($is_file ? $ignore_filename_patterns : [], $ignore_filename_and_dir_name_patterns) as $pattern) {
         list($filename_pattern, $dir_pattern) = $pattern;
         if (preg_match('#^' . $filename_pattern . '$#i', $filename) != 0) {
             if (preg_match('#^' . $dir_pattern . '$#i', $dir) != 0) { // Check dir context

@@ -52,16 +52,16 @@ class Hook_search_cns_members extends FieldsSearchHook
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('MEMBERS');
         $info['default'] = (get_option('search_cns_members') == '1');
-        $info['special_on'] = array();
-        $info['special_off'] = array();
+        $info['special_on'] = [];
+        $info['special_off'] = [];
         $info['user_label'] = do_lang_tempcode('USERNAME');
         $info['days_label'] = do_lang_tempcode('JOINED_AGO');
         $info['days_label'] = do_lang_tempcode('JOINED_DATE_RANGE');
 
-        $extra_sort_fields = array();
+        $extra_sort_fields = [];
         if (has_privilege($member_id, 'view_profiles')) {
             require_code('cns_members');
             $rows = cns_get_all_custom_fields_match(
@@ -75,7 +75,7 @@ class Hook_search_cns_members extends FieldsSearchHook
         }
         $info['extra_sort_fields'] = $extra_sort_fields;
 
-        $info['permissions'] = array();
+        $info['permissions'] = [];
 
         return $info;
     }
@@ -89,7 +89,7 @@ class Hook_search_cns_members extends FieldsSearchHook
     {
         require_code('cns_members');
 
-        $fields = array();
+        $fields = [];
         if (has_privilege(get_member(), 'view_profiles')) {
             $rows = cns_get_all_custom_fields_match(
                 null, // groups
@@ -108,14 +108,14 @@ class Hook_search_cns_members extends FieldsSearchHook
                     $type = '_TEXT';
                     $special = make_string_tempcode(get_param_string('option_' . strval($row['id']), ''));
                     $display = $row['trans_name'];
-                    $fields[] = array('NAME' => strval($row['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+                    $fields[] = ['NAME' => strval($row['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
                 } else {
                     $fields[] = $temp;
                 }
             }
 
             $age_range = get_param_string('option__age_range', get_param_string('option__age_range_from', '') . '-' . get_param_string('option__age_range_to', ''));
-            $fields[] = array('NAME' => '_age_range', 'DISPLAY' => do_lang_tempcode('AGE_RANGE'), 'TYPE' => '_TEXT', 'SPECIAL' => $age_range);
+            $fields[] = ['NAME' => '_age_range', 'DISPLAY' => do_lang_tempcode('AGE_RANGE'), 'TYPE' => '_TEXT', 'SPECIAL' => $age_range];
         }
 
         $where = '1=1';
@@ -127,10 +127,10 @@ class Hook_search_cns_members extends FieldsSearchHook
         if ($group_count > 300) {
             $where .= ' AND g_is_private_club=0';
         }
-        $rows = $GLOBALS['FORUM_DB']->query('SELECT g.id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where . ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), null, 0, false, false, array('g_name' => 'SHORT_TRANS'));
+        $rows = $GLOBALS['FORUM_DB']->query('SELECT g.id,g_name FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $where . ' ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), null, 0, false, false, ['g_name' => 'SHORT_TRANS']);
         $groups = form_input_list_entry('', false, '---');
         $default_group = get_param_string('option__user_group', '');
-        $group_titles = array();
+        $group_titles = [];
         $bits = explode(',', $default_group);
         foreach ($rows as $row) {
             $name = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
@@ -152,7 +152,7 @@ class Hook_search_cns_members extends FieldsSearchHook
             }
             $groups->attach(form_input_list_entry(strval($default_group), true, do_lang_tempcode('USERGROUP_SEARCH_COMBO', escape_html($combination))));
         }
-        $fields[] = array('NAME' => '_user_group', 'DISPLAY' => do_lang_tempcode('USERGROUP'), 'TYPE' => '_MULTI_LIST', 'SPECIAL' => $groups);
+        $fields[] = ['NAME' => '_user_group', 'DISPLAY' => do_lang_tempcode('USERGROUP'), 'TYPE' => '_MULTI_LIST', 'SPECIAL' => $groups];
         return $fields;
     }
 
@@ -207,7 +207,7 @@ class Hook_search_cns_members extends FieldsSearchHook
 
         require_lang('cns');
 
-        $indexes = collapse_2d_complexity('i_fields', 'i_name', $GLOBALS['FORUM_DB']->query_select('db_meta_indices', array('i_fields', 'i_name'), array('i_table' => 'f_member_custom_fields'), 'ORDER BY i_name'));
+        $indexes = collapse_2d_complexity('i_fields', 'i_name', $GLOBALS['FORUM_DB']->query_select('db_meta_indices', ['i_fields', 'i_name'], ['i_table' => 'f_member_custom_fields'], 'ORDER BY i_name'));
 
         // Calculate our where clause (search)
         if ($author != '') {
@@ -215,8 +215,8 @@ class Hook_search_cns_members extends FieldsSearchHook
             $where_clause .= db_string_equal_to('m_username', $author);
         }
         $this->_handle_date_check($cutoff, 'm_join_time', $where_clause);
-        $raw_fields = array('m_username');
-        $trans_fields = array();
+        $raw_fields = ['m_username'];
+        $trans_fields = [];
         $rows = cns_get_all_custom_fields_match(
             null, // groups
             has_privilege(get_member(), 'view_any_profile_field') ? null : 1, // public view
@@ -340,9 +340,9 @@ class Hook_search_cns_members extends FieldsSearchHook
         $where_clause .= ' AND r.id IS NOT NULL';
 
         // Calculate and perform query
-        $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, array('!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE') + $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,a.*,r.id AS id', $raw_fields);
+        $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_members r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields a ON r.id=a.mf_member_id' . $table, ['!' => '!', 'm_signature' => 'LONG_TRANS__COMCODE'] + $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,a.*,r.id AS id', $raw_fields);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             if (!is_guest($row['id'])) {
                 $out[$i]['data'] = $row;

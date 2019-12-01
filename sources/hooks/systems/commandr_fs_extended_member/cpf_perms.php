@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__cpf_perms
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('f_member_cpf_perms', array(), array('member_id' => $member_id));
+        return table_to_portable_rows('f_member_cpf_perms', [], ['member_id' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__cpf_perms
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('f_member_cpf_perms', $data, array('member_id' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('f_member_cpf_perms', $data, ['member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

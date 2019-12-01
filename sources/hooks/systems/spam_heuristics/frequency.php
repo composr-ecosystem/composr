@@ -49,9 +49,9 @@ class Hook_spam_heuristics_frequency
             if (!empty($cma_info['support_spam_heuristics'])) {
                 $data = post_param_string($cma_info['support_spam_heuristics'], null);
                 if (!cms_empty_safe($data)) {
-                    $where = array(
+                    $where = [
                         $cma_info['submitter_field'] => get_member(),
-                    );
+                    ];
 
                     $threshold = 60 * intval(get_option('spam_heuristic_frequency'));
 

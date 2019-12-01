@@ -30,7 +30,7 @@ class Module_admin_tickets
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -59,9 +59,9 @@ class Module_admin_tickets
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_TICKET_TYPES', 'menu/site_meta/tickets'),
-        );
+        return [
+            'browse' => ['MANAGE_TICKET_TYPES', 'menu/site_meta/tickets'],
+        ];
     }
 
     public $title;
@@ -85,7 +85,7 @@ class Module_admin_tickets
         set_helper_panel_tutorial('tut_support_desk');
 
         if ($type != 'browse') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_TICKET_TYPES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_TICKET_TYPES')]]);
         }
 
         if ($type == 'browse') {
@@ -152,16 +152,16 @@ class Module_admin_tickets
 
         $list = new Tempcode();
         require_code('form_templates');
-        $ticket_types = collapse_2d_complexity('id', 'ticket_type_name', $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name')));
+        $ticket_types = collapse_2d_complexity('id', 'ticket_type_name', $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name')));
         foreach ($ticket_types as $ticket_type_id => $ticket_type_name) {
             $list->attach(form_input_list_entry(strval($ticket_type_id), false, get_translated_text($ticket_type_name)));
         }
         if (!$list->is_empty()) {
-            $edit_url = build_url(array('page' => '_SELF', 'type' => 'edit'), '_SELF', array(), false, true);
+            $edit_url = build_url(['page' => '_SELF', 'type' => 'edit'], '_SELF', [], false, true);
             $submit_name = do_lang_tempcode('EDIT');
             $fields = form_input_huge_list(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TICKET_TYPE'), 'ticket_type_id', $list);
 
-            $tpl = do_template('FORM', array(
+            $tpl = do_template('FORM', [
                 '_GUID' => '2d2e76f5cfc397a78688db72170918d4',
                 'TABINDEX' => strval(get_form_field_tabindex()),
                 'GET' => true,
@@ -171,14 +171,14 @@ class Module_admin_tickets
                 'URL' => $edit_url,
                 'SUBMIT_ICON' => 'admin/edit_this_category',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         } else {
             $tpl = new Tempcode();
         }
 
         // Do a form so people can add...
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'add'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'add'], '_SELF');
 
         $submit_name = do_lang_tempcode('ADD');
 
@@ -187,7 +187,7 @@ class Module_admin_tickets
         $fields->attach(form_input_tick(do_lang_tempcode('TICKET_SEARCH_FAQ'), do_lang_tempcode('DESCRIPTION_TICKET_SEARCH_FAQ'), 'search_faq', false));
 
         // Permissions
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '87ef39b0a5c3c45c1c1319c7f85d0e2a', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'SECTION_HIDDEN' => true)));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '87ef39b0a5c3c45c1c1319c7f85d0e2a', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'SECTION_HIDDEN' => true]));
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach ($groups as $id => $group_name) {
@@ -201,7 +201,7 @@ class Module_admin_tickets
             $fields->attach(permission_product_form('ticket_type'));
         }
 
-        $add_form = do_template('FORM', array(
+        $add_form = do_template('FORM', [
             '_GUID' => '382f6fab6c563d81303ecb26495e76ec',
             'TABINDEX' => strval(get_form_field_tabindex()),
             'SECONDARY_FORM' => true,
@@ -212,9 +212,9 @@ class Module_admin_tickets
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
 
-        return do_template('SUPPORT_TICKET_TYPE_SCREEN', array('_GUID' => '28645dc4a86086fa865ec7e166b84bb6', 'TITLE' => $this->title, 'TPL' => $tpl, 'ADD_FORM' => $add_form));
+        return do_template('SUPPORT_TICKET_TYPE_SCREEN', ['_GUID' => '28645dc4a86086fa865ec7e166b84bb6', 'TITLE' => $this->title, 'TPL' => $tpl, 'ADD_FORM' => $add_form]);
     }
 
     /**
@@ -236,7 +236,7 @@ class Module_admin_tickets
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -254,7 +254,7 @@ class Module_admin_tickets
         $details = get_ticket_type($ticket_type_id);
         $ticket_type_name = get_translated_text($details['ticket_type_name']);
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_edit', 'ticket_type_id' => $ticket_type_id), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_edit', 'ticket_type_id' => $ticket_type_id], '_SELF');
 
         $submit_name = do_lang_tempcode('SAVE');
 
@@ -271,10 +271,10 @@ class Module_admin_tickets
             $fields->attach(permission_product_form('ticket_type', ($ticket_type_id === null) ? null : strval($ticket_type_id)));
         }
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '09e6f1d2276ee679f280b33a79bff089', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '09e6f1d2276ee679f280b33a79bff089', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '0a505a779c1639fd2d3ee10c24a7905a',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
@@ -285,7 +285,7 @@ class Module_admin_tickets
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -302,7 +302,7 @@ class Module_admin_tickets
         } else {
             edit_ticket_type($ticket_type_id, post_param_string('ticket_type_name'), post_param_integer('guest_emails_mandatory', 0), post_param_integer('search_faq', 0));
 
-            $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'tickets', 'category_name' => strval($ticket_type_id)], '', 1);
             require_code('permissions2');
             set_category_permissions_from_environment('tickets', strval($ticket_type_id));
             if (addon_installed('ecommerce')) {
@@ -312,7 +312,7 @@ class Module_admin_tickets
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

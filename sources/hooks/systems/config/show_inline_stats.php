@@ -30,7 +30,7 @@ class Hook_config_show_inline_stats
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_INLINE_STATS',
             'type' => 'tick',
             'category' => 'SITE',
@@ -42,7 +42,7 @@ class Hook_config_show_inline_stats
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -63,7 +63,7 @@ function _check_sizes($table_name, $primary_key, $fields, $id_name, $skip_size_c
 {
     // Check constraints
     $take_unicode_into_account = $save_bytes ? 3 : 4;
-    $data_sizes = array(
+    $data_sizes = [
         // The maximum size fields could be from a database-neutral perspective
         'AUTO' => 4,
         'AUTO_LINK' => 4,
@@ -93,7 +93,7 @@ function _check_sizes($table_name, $primary_key, $fields, $id_name, $skip_size_c
         'unicode_LANGUAGE_NAME' => $take_unicode_into_account * 5 + 1,
         'unicode_URLPATH' => $take_unicode_into_account * 255 + 1,
         'unicode_MD5' => $take_unicode_into_account * 33 + 1,
-    );
+    ];
     $keywords = get_db_keywords();
     //if (in_array(strtoupper($table_name), $keywords)) fatal_exit($table_name . ' is a keyword'); // No point, as we have table prefixes
     $key_size = 0;
@@ -215,9 +215,9 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
 
     // Note that interbase has a 31000byte limit on LONG_TEXT/LONG_TRANS, because we can't use blobs on it (those have too many restraints)
 
-    $ins_m_table = array();
-    $ins_m_name = array();
-    $ins_m_type = array();
+    $ins_m_table = [];
+    $ins_m_name = [];
+    $ins_m_type = [];
     $fields_copy = $fields;
     foreach ($fields_copy as $name => $type) {
         if (($table_name != 'db_meta') && ($table_name != 'db_meta_indices')) {
@@ -238,7 +238,7 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
         }
     }
 
-    $this_ref->query_insert('db_meta', array('m_table' => $ins_m_table, 'm_name' => $ins_m_name, 'm_type' => $ins_m_type), false, true); // Allow errors because sometimes bugs when developing can call for this happening twice
+    $this_ref->query_insert('db_meta', ['m_table' => $ins_m_table, 'm_name' => $ins_m_name, 'm_type' => $ins_m_type], false, true); // Allow errors because sometimes bugs when developing can call for this happening twice
 
     $this_ref->ensure_connected();
 
@@ -263,7 +263,7 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
     if (!multi_lang_content()) {
         foreach ($fields_copy as $name => $type) {
             if (strpos($type, '_TRANS') !== false) {
-                $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, array($name));
+                $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, [$name]);
             }
         }
     }
@@ -284,9 +284,9 @@ function _helper_create_table($this_ref, $table_name, $fields, $skip_size_check 
  */
 function _helper_create_index($this_ref, $table_name, $index_name, $fields, $unique_key_fields = null)
 {
-    $fields_with_types = array();
+    $fields_with_types = [];
     if ($table_name != 'db_meta') {
-        $db_types = collapse_2d_complexity('m_name', 'm_type', $this_ref->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table_name)));
+        $db_types = collapse_2d_complexity('m_name', 'm_type', $this_ref->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table_name]));
 
         $sized = false;
         foreach ($fields as $field_name) {
@@ -336,8 +336,8 @@ function _helper_create_index($this_ref, $table_name, $index_name, $fields, $uni
 
     $_fields = _helper_generate_index_fields($table_name, $fields_with_types, $is_full_text);
 
-    $insert_map = array('i_table' => $table_name, 'i_name' => $index_name, 'i_fields' => implode(',', $fields));
-    $test = $this_ref->query_select('db_meta_indices', array('*'), $insert_map);
+    $insert_map = ['i_table' => $table_name, 'i_name' => $index_name, 'i_fields' => implode(',', $fields)];
+    $test = $this_ref->query_select('db_meta_indices', ['*'], $insert_map);
     if (!empty($test)) { // Already exists, so we'll recreate it
         _helper_delete_index_if_exists($this_ref, $table_name, $index_name);
     }
@@ -367,7 +367,7 @@ function _helper_create_index($this_ref, $table_name, $index_name, $fields, $uni
  */
 function _helper_get_table_key_fields($table_name)
 {
-    return collapse_1d_complexity('m_name', $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name'), array('m_table' => $table_name), ' AND m_type LIKE \'' . db_encode_like('*%') . '\''));
+    return collapse_1d_complexity('m_name', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name'], ['m_table' => $table_name], ' AND m_type LIKE \'' . db_encode_like('*%') . '\''));
 }
 
 /**
@@ -423,20 +423,20 @@ function _helper_delete_index_if_exists($this_ref, $table_name, $index_name)
         $index_name = substr($index_name, 1);
     }
 
-    $possible_final_index_names = array(
+    $possible_final_index_names = [
         $index_name,
 
         // Some DB drivers have to make it globally unique via using table name in name
         $index_name . '__' . $table_name,
         $index_name . '__' . $this_ref->get_table_prefix() . $table_name,
-    );
+    ];
 
     foreach ($possible_final_index_names as $_index_name) {
         $query = 'DROP INDEX ' . $_index_name . ' ON ' . $this_ref->get_table_prefix() . $table_name;
         $this_ref->query($query, null, 0, true); // Suppress errors in case does not exist
     }
 
-    $this_ref->query_delete('db_meta_indices', array('i_table' => $table_name, 'i_name' => $full_index_name));
+    $this_ref->query_delete('db_meta_indices', ['i_table' => $table_name, 'i_name' => $full_index_name]);
 }
 
 /**
@@ -452,10 +452,10 @@ function _helper_drop_table_if_exists($this_ref, $table)
     if (($table != 'db_meta') && ($table != 'db_meta_indices')) {
         if ((!running_script('install')) && (multi_lang_content())) {
             require_code('lang3');
-            $attrs = $this_ref->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table));
-            $_attrs = array();
+            $attrs = $this_ref->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]);
+            $_attrs = [];
             foreach ($attrs as $attr) {
-                if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), array('SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'))) {
+                if (in_array(preg_replace('#[^\w]#', '', $attr['m_type']), ['SHORT_TRANS', 'LONG_TRANS', 'SHORT_TRANS__COMCODE', 'LONG_TRANS__COMCODE'])) {
                     $_attrs[] = $attr['m_name'];
                 }
             }
@@ -463,13 +463,13 @@ function _helper_drop_table_if_exists($this_ref, $table)
         }
 
         // In case DB needs pre-cleanup for full-text indexes if they get left behind (for example)
-        $indices = $this_ref->query_select('db_meta_indices', array('*'), array('i_table' => $table));
+        $indices = $this_ref->query_select('db_meta_indices', ['*'], ['i_table' => $table]);
         foreach ($indices as $index) {
             $this_ref->delete_index_if_exists($table, $index['i_name']);
         }
 
-        $this_ref->query_delete('db_meta', array('m_table' => $table));
-        $this_ref->query_delete('db_meta_indices', array('i_table' => $table));
+        $this_ref->query_delete('db_meta', ['m_table' => $table]);
+        $this_ref->query_delete('db_meta_indices', ['i_table' => $table]);
     }
 
     $this_ref->ensure_connected();
@@ -519,8 +519,8 @@ function _helper_rename_table($this_ref, $old, $new)
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $old . ' RENAME ' . $this_ref->table_prefix . $new;
     $this_ref->query($query);
 
-    $this_ref->query_update('db_meta', array('m_table' => $new), array('m_table' => $old));
-    $this_ref->query_update('db_meta_indices', array('i_table' => $new), array('i_table' => $old));
+    $this_ref->query_update('db_meta', ['m_table' => $new], ['m_table' => $old]);
+    $this_ref->query_update('db_meta_indices', ['i_table' => $new], ['i_table' => $old]);
 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('TABLE_LANG_FIELDS_CACHE');
@@ -597,17 +597,17 @@ function _helper_add_table_field($this_ref, $table_name, $name, $_type, $default
         }
     }
 
-    $this_ref->query_insert('db_meta', array('m_table' => $table_name, 'm_name' => $name, 'm_type' => $_type));
+    $this_ref->query_insert('db_meta', ['m_table' => $table_name, 'm_name' => $name, 'm_type' => $_type]);
     reload_lang_fields(false, $table_name);
 
     if (strpos($_type, '_TRANS') !== false) {
-        $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, array($name));
+        $GLOBALS['SITE_DB']->create_index($table_name, '#' . $name, [$name]);
     }
 
     if ((!multi_lang_content()) && (strpos($_type, '__COMCODE') !== false)) {
         $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
 
-        foreach (array('text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER') as $_sub_name => $sub_type) {
+        foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $_sub_name => $sub_type) {
             $sub_name = $name . '__' . $_sub_name;
             $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name . ' ADD ' . $sub_name . ' ' . $type_remap[$sub_type];
             if ($_sub_name == 'text_parsed') {
@@ -644,7 +644,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
     $default_st = null;
 
     if ($default === null) {
-        switch (str_replace(array('*', '?'), array('', ''), $_type)) {
+        switch (str_replace(['*', '?'], ['', ''], $_type)) {
             case 'AUTO':
                 $default = null;
                 break;
@@ -706,7 +706,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
     } else {
         $tag = ' NOT NULL';
     }
-    $final_type = str_replace(array('*', '?'), array('', ''), $_final_type);
+    $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
     $extra = '';
     if ((($final_type != 'LONG_TEXT') || ($GLOBALS['DB_STATIC_OBJECT']->has_default_for_text_fields())) && (($_final_type[0] != '?') || ($default !== null))) {
         $extra = ($default === null) ? 'DEFAULT NULL' : ('DEFAULT ' . (is_string($default) ? ('\'' . db_escape_string($default) . '\'') : strval($default)));
@@ -714,7 +714,7 @@ function _helper_add_table_field_sql($this_ref, $table_name, $name, $_type, $def
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
     $query .= ' ADD ' . $name . ' ' . $type_remap[$final_type] . ' ' . $extra . ' ' . $tag;
 
-    return array($query, $default_st);
+    return [$query, $default_st];
 }
 
 /**
@@ -733,14 +733,14 @@ function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_n
 
     $this_ref->_query($query);
 
-    $update_map = array('m_type' => $_type);
+    $update_map = ['m_type' => $_type];
     if ($new_name !== null) {
         $update_map['m_name'] = $new_name;
     }
-    $this_ref->query_update('db_meta', $update_map, array('m_table' => $table_name, 'm_name' => $name));
+    $this_ref->query_update('db_meta', $update_map, ['m_table' => $table_name, 'm_name' => $name]);
 
     if ($new_name !== null) {
-        $indices = $this_ref->query_select('db_meta_indices', array('*'), array('i_table' => $table_name));
+        $indices = $this_ref->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
         foreach ($indices as $index) {
             $changed_index = false;
             $fields = explode(',', $index['i_fields']);
@@ -751,7 +751,7 @@ function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_n
                 }
             }
             if ($changed_index) {
-                $this_ref->query_update('db_meta_indices', array('i_fields' => implode(',', $fields)), array('i_table' =>$table_name, 'i_name' => $index['i_name']));
+                $this_ref->query_update('db_meta_indices', ['i_fields' => implode(',', $fields)], ['i_table' =>$table_name, 'i_name' => $index['i_name']]);
             }
         }
     }
@@ -778,7 +778,7 @@ function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $n
     $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
 
     if ((strpos($_type, '__COMCODE') !== false) && ($new_name !== null) && ($new_name != $name) && (!multi_lang_content())) {
-        foreach (array('text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER') as $sub_name => $sub_type) {
+        foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
             $sub_old_name = $name . '__' . $sub_name;
             $sub_new_name = $new_name . '__' . $sub_name;
             $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name . ' CHANGE ' . $sub_old_name . ' ' . $sub_new_name . ' ' . $type_remap[$sub_type];
@@ -805,7 +805,7 @@ function _helper_alter_table_field_sql($this_ref, $table_name, $name, $_type, $n
     } else {
         $tag = ' NOT NULL';
     }
-    $final_type = str_replace(array('*', '?'), array('', ''), $_final_type);
+    $final_type = str_replace(['*', '?'], ['', ''], $_final_type);
     $extra = ($new_name !== null) ? $new_name : $name;
     $query = 'ALTER TABLE ' . $this_ref->table_prefix . $table_name;
     $query .= ' CHANGE ';
@@ -831,7 +831,7 @@ function _helper_change_primary_key($this_ref, $table_name, $new_key)
 
     $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name));
     foreach ($new_key as $_new_key) {
-        $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', array('\'*\'', 'm_type')) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
+        $this_ref->query('UPDATE ' . $this_ref->get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key) . ' AND m_type NOT LIKE \'' . db_encode_like('*%') . '\'');
     }
 
     $GLOBALS['DB_STATIC_OBJECT']->change_primary_key($this_ref->table_prefix . $table_name, $new_key, $this_ref->connection_write);
@@ -857,9 +857,9 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
     $start = 0;
     $i = db_get_first_id();
     do {
-        $rows = $this_ref->query_select($table_name, array('*'), array(), '', 100, $start);
+        $rows = $this_ref->query_select($table_name, ['*'], [], '', 100, $start);
         foreach ($rows as $row) {
-            $this_ref->query_update($table_name, array($field_name => $i) + $row, $row, '', 1);
+            $this_ref->query_update($table_name, [$field_name => $i] + $row, $row, '', 1);
             $i++;
         }
         $start += 100;
@@ -867,7 +867,7 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
     while (!empty($rows));
 
     // Set the new key
-    $this_ref->change_primary_key($table_name, array($field_name));
+    $this_ref->change_primary_key($table_name, [$field_name]);
 
     // Switch to auto_increment in DB, and update meta DB
     $this_ref->alter_table_field($table_name, $field_name, '*AUTO');
@@ -888,7 +888,7 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
  */
 function _helper_promote_text_field_to_comcode($this_ref, $table_name, $name, $key = 'id', $level = 2, $in_assembly = false)
 {
-    $rows = $this_ref->query_select($table_name, array($name, $key));
+    $rows = $this_ref->query_select($table_name, [$name, $key]);
     if ($rows === null) {
         return; // Issue in upgrader
     }
@@ -900,7 +900,7 @@ function _helper_promote_text_field_to_comcode($this_ref, $table_name, $name, $k
         } else {
             $map = insert_lang($name, $row[$name], $level, $this_ref);
         }
-        $this_ref->query_update($table_name, $map, array($key => $row[$key]));
+        $this_ref->query_update($table_name, $map, [$key => $row[$key]]);
     }
 
     if (function_exists('persistent_cache_delete')) {
@@ -919,17 +919,17 @@ function _helper_promote_text_field_to_comcode($this_ref, $table_name, $name, $k
  */
 function _helper_delete_table_field($this_ref, $table_name, $name)
 {
-    $type = $this_ref->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $table_name, 'm_name' => $name));
+    $type = $this_ref->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $name]);
     if ($type === null) {
         $type = 'SHORT_TEXT';
     }
 
     if ((strpos($type, '_TRANS') !== false) && (multi_lang_content())) {
         require_code('lang3');
-        mass_delete_lang($table_name, array($name), $this_ref);
+        mass_delete_lang($table_name, [$name], $this_ref);
     }
 
-    $cols_to_delete = array($name);
+    $cols_to_delete = [$name];
     if (strpos($type, '_TRANS__COMCODE') !== false) {
         if (!multi_lang_content()) {
             $cols_to_delete[] = $name . '__text_parsed';
@@ -942,8 +942,8 @@ function _helper_delete_table_field($this_ref, $table_name, $name)
         $this_ref->_query($query);
     }
 
-    $this_ref->query_delete('db_meta', array('m_table' => $table_name, 'm_name' => $name));
-    $this_ref->query_delete('db_meta_indices', array('i_table' => $table_name, 'i_fields' => $name));
+    $this_ref->query_delete('db_meta', ['m_table' => $table_name, 'm_name' => $name]);
+    $this_ref->query_delete('db_meta_indices', ['i_table' => $table_name, 'i_fields' => $name]);
 
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('TABLE_LANG_FIELDS_CACHE');
@@ -960,10 +960,10 @@ function _helper_delete_table_field($this_ref, $table_name, $name)
  */
 function _helper_refresh_field_definition($this_ref, $type)
 {
-    $do = array();
-    $rows = $this_ref->query_select('db_meta', array('*'), array('m_type' => $type));
+    $do = [];
+    $rows = $this_ref->query_select('db_meta', ['*'], ['m_type' => $type]);
     foreach ($rows as $row) {
-        $do[] = array($row['m_table'], $row['m_name']);
+        $do[] = [$row['m_table'], $row['m_name']];
     }
 
     foreach ($do as $it) {
@@ -978,7 +978,7 @@ function _helper_refresh_field_definition($this_ref, $type)
  */
 function get_db_keywords()
 {
-    $words = array(
+    $words = [
         'ABSOLUTE', 'ACCESS', 'ACCESSIBLE', 'ACTION', 'ACTIVE', 'ADA', 'ADD', 'ADMIN',
         'AFTER', 'ALIAS', 'ALL', 'ALLOCATE', 'ALLOW', 'ALPHANUMERIC', 'ALTER', 'ANALYSE',
         'ANALYZE', 'AND', 'ANY', 'APPLICATION', 'ARE', 'ARITH_OVERFLOW', 'ARRAY', 'AS',
@@ -1119,6 +1119,6 @@ function get_db_keywords()
 
         // Added in MariaDB 10.0
         'RETURNING',
-    );
+    ];
     return $words;
 }

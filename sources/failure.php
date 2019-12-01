@@ -63,15 +63,15 @@ function suggest_fatalistic()
     if ((may_see_stack_traces()) && (get_param_integer('keep_fatalistic', 0) == 0) && (running_script('index'))) {
         require_code('urls');
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $stack_trace_url = build_url(array('page' => '_SELF', 'keep_fatalistic' => 1), '_SELF', array(), true);
+            $stack_trace_url = build_url(['page' => '_SELF', 'keep_fatalistic' => 1], '_SELF', [], true);
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE', escape_html($stack_trace_url->evaluate()));
         } elseif (empty($_FILES) || function_exists('is_plupload') && is_plupload()) {
-            $stack_trace_url = build_url(array('page' => '_SELF', 'keep_fatalistic' => 1), '_SELF', array(), true);
+            $stack_trace_url = build_url(['page' => '_SELF', 'keep_fatalistic' => 1], '_SELF', [], true);
             $p = build_keep_post_fields();
             $p->attach(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE_2', escape_html($stack_trace_url->evaluate()), $p->evaluate());
         } else {
-            $stack_trace_url = build_url(array('page' => '', 'keep_fatalistic' => 1), '');
+            $stack_trace_url = build_url(['page' => '', 'keep_fatalistic' => 1], '');
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE_3', escape_html($stack_trace_url->evaluate()));
         }
         require_code('site');
@@ -88,7 +88,7 @@ function suggest_fatalistic()
  */
 function zip_error($errno, $mzip = false)
 {
-    $zip_file_function_errors = array(
+    $zip_file_function_errors = [
         // Based on comment from php.net
         'ZIPARCHIVE::ER_MULTIDISK' => 'Multi-disk zip archives not supported.',
         'ZIPARCHIVE::ER_RENAME' => 'Renaming temporary file failed.',
@@ -113,7 +113,7 @@ function zip_error($errno, $mzip = false)
         'ZIPARCHIVE::ER_INCONS' => 'ZIP archive inconsistent',
         'ZIPARCHIVE::ER_REMOVE' => 'Can\'t remove file',
         'ZIPARCHIVE::ER_DELETED' => 'Entry has been deleted',
-    );
+    ];
     $errmsg = 'unknown';
     foreach ($zip_file_function_errors as $const_name => $error_message) {
         if ((defined($const_name)) && (@constant($const_name)) == $errno) {
@@ -344,13 +344,13 @@ function _warn_screen($title, $text, $provide_back = true, $support_match_key_me
         _generic_exit($text, 'FATAL_SCREEN', false, false, 500);
     }
 
-    return do_template('WARN_SCREEN', array(
+    return do_template('WARN_SCREEN', [
         '_GUID' => 'a762a7ac8cd08623a0ed6413d9250d97',
         'TITLE' => $title,
         'WEBSERVICE_RESULT' => get_webservice_result($text),
         'TEXT' => $text,
         'PROVIDE_BACK' => $provide_back,
-    ));
+    ]);
 }
 
 /**
@@ -364,7 +364,7 @@ function _warn_screen($title, $text, $provide_back = true, $support_match_key_me
 function _sanitise_error_msg($text)
 {
     // Strip paths, for security reasons
-    return str_replace(array(get_custom_file_base() . '/', get_file_base() . '/'), array('', ''), $text);
+    return str_replace([get_custom_file_base() . '/', get_file_base() . '/'], ['', ''], $text);
 }
 
 /**
@@ -457,11 +457,11 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         require_lang('tasks');
         $n_subject = do_lang('_TASK_FAILED_SUBJECT');
         $n_message = do_notification_lang('TASK_FAILED_BODY', '[semihtml]' . $text_eval . '[/semihtml]');
-        dispatch_notification('task_completed', null, $n_subject, $n_message, array(get_member()), A_FROM_SYSTEM_PRIVILEGED, array('priority' => 2, 'send_immediately' => true));
+        dispatch_notification('task_completed', null, $n_subject, $n_message, [get_member()], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'send_immediately' => true]);
     }
 
     if ($support_match_key_messages === null) {
-        $support_match_key_messages = in_array($text_eval, array(do_lang('NO_ENTRIES'), do_lang('NO_CATEGORIES')));
+        $support_match_key_messages = in_array($text_eval, [do_lang('NO_ENTRIES'), do_lang('NO_CATEGORIES')]);
     }
     $tmp = _look_for_match_key_message($text_eval, false, !$support_match_key_messages);
     if ($tmp !== null) {
@@ -511,7 +511,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
     if ((get_forum_type() == 'cns') && (get_db_type() != 'xml') && (isset($GLOBALS['FORUM_DRIVER']))) {
         require_code('cns_groups');
         $restrict_answer = cns_get_best_group_property($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()), 'flood_control_submit_secs');
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_last_submit_time' => time() - $restrict_answer - 1), array('id' => get_member()), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_last_submit_time' => time() - $restrict_answer - 1], ['id' => get_member()], '', 1);
     }
 
     if (($template == 'INFORM_SCREEN') && (is_object($GLOBALS['DISPLAYED_TITLE']))) {
@@ -534,14 +534,14 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         $trace = null;
     }
 
-    $middle = do_template($template, array(
+    $middle = do_template($template, [
         'TITLE' => $title,
         'TEXT' => $text,
         'PROVIDE_BACK' => true,
         'WEBSERVICE_RESULT' => $webservice_result,
         'MAY_SEE_TRACE' => $may_see_trace,
         'TRACE' => $trace,
-    ));
+    ]);
     $echo = globalise($middle, null, '', true);
     $echo->evaluate_echo(null, true);
     exit();
@@ -621,13 +621,13 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
     // Automatic ban needed?...
 
-    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', array('ip' => $ip))) / 100.0;
+    $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', ['ip' => $ip])) / 100.0;
     $hack_threshold = intval(get_option('hack_ban_threshold'));
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $count = 0.0;
     }
 
-    $new_row = array(
+    $new_row = [
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
         'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
         'user_os' => cms_mb_substr(get_os_string(), 0, 255),
@@ -640,16 +640,16 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         'date_and_time' => time(),
         'ip' => $ip,
         'percentage_score' => $percentage_score,
-    );
+    ];
 
     $ip_ban_todo = null;
-    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', array('ip' => $ip)) === null)) {
+    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
             // Prepare message about a ban...
 
-            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', array('*'), array('ip' => $ip), 'ORDER BY date_and_time');
+            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], ['ip' => $ip], 'ORDER BY date_and_time');
             $rows[] = $new_row;
 
             $summary = '[list]';
@@ -680,11 +680,11 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
             // Prepare notification text...
 
-            $_ip_ban_url = build_url(array('page' => 'admin_ip_ban', 'type' => 'browse'), get_module_zone('admin_ip_ban'), array(), false, false, true);
+            $_ip_ban_url = build_url(['page' => 'admin_ip_ban', 'type' => 'browse'], get_module_zone('admin_ip_ban'), [], false, false, true);
             $ip_ban_url = $_ip_ban_url->evaluate();
 
             if ($ban_happened) {
-                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $ip, integer_format($hack_threshold), array($summary, $ip_ban_url), get_site_default_lang());
+                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $ip, integer_format($hack_threshold), [$summary, $ip_ban_url], get_site_default_lang());
             }
         }
     }
@@ -707,7 +707,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
         $message = do_notification_template(
             'HACK_ATTEMPT_MAIL',
-            array(
+            [
                 '_GUID' => '6253b3c42c5e6c70d20afa9d1f5b40bd',
                 'STACK_TRACE' => $stack_trace,
                 'USER_AGENT' => get_browser_string(),
@@ -721,7 +721,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
                 'DATE' => $date,
                 'URL' => $url,
                 'POST' => $post,
-            ),
+            ],
             get_site_default_lang(),
             false,
             null,
@@ -731,7 +731,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
         // Hack-attack notification...
 
-        if (!in_array($reason, array('CAPTCHAFAIL', 'CAPTCHAFAIL_HACK', 'LAME_SPAM_HACK')/*Don't generate notification noise from very common bot behaviours*/)) {
+        if (!in_array($reason, ['CAPTCHAFAIL', 'CAPTCHAFAIL_HACK', 'LAME_SPAM_HACK']/*Don't generate notification noise from very common bot behaviours*/)) {
             $subject = do_lang('HACK_ATTACK_SUBJECT', $ip, null, null, get_site_default_lang());
             dispatch_notification('hack_attack', null, $subject, $message->evaluate(get_site_default_lang()), null, A_FROM_SYSTEM_PRIVILEGED);
         }
@@ -771,10 +771,10 @@ function is_unbannable_bot_dns($ip)
     $resolved = cms_gethostbyname($dns);
 
     if (($resolved === $ip) || ($resolved == $dns)) { // Verify it's not faking the DNS (either it resolves back, or there's no forward resolution on the domain name anyway)
-        $dns_lists = array(
+        $dns_lists = [
             get_file_base() . '/text/unbannable_dns.txt',
             get_file_base() . '/text_custom/unbannable_dns.txt',
-        );
+        ];
 
         foreach ($dns_lists as $dns_list) {
             if (is_file($dns_list)) {
@@ -803,12 +803,12 @@ function is_unbannable_bot_dns($ip)
  */
 function is_unbannable_bot_ip($ip)
 {
-    $ip_lists = array(
+    $ip_lists = [
         get_file_base() . '/text/unbannable_ips.txt',
         get_file_base() . '/text_custom/unbannable_ips.txt',
-    );
+    ];
 
-    $ip_stack = array();
+    $ip_stack = [];
     $ip_bits = explode((strpos($ip, '.') !== false) ? '.' : ':', $ip);
     foreach ($ip_bits as $i => $ip_bit) {
         $buildup = '';
@@ -864,8 +864,8 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
         return false; // Don't allow shortening ban period automatically, or having a negative ban negating a positive one!
     }
 
-    $GLOBALS['SITE_DB']->query_delete('banned_ip', array('ip' => $ip), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('banned_ip', array('ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0), false, true); // To stop weird race-like conditions
+    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('banned_ip', ['ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0], false, true); // To stop weird race-like conditions
     persistent_cache_delete('IP_BANS');
     if ((cms_is_writable(get_file_base() . '/.htaccess')) && ($ban_until === null)) {
         $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
@@ -895,7 +895,7 @@ function remove_ip_ban($ip)
         return;
     }
 
-    $GLOBALS['SITE_DB']->query_delete('banned_ip', array('ip' => $ip), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip], '', 1);
     persistent_cache_delete('IP_BANS');
     if (cms_is_writable(get_file_base() . '/.htaccess')) {
         $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
@@ -910,7 +910,7 @@ function remove_ip_ban($ip)
             cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
     }
-    $GLOBALS['SITE_DB']->query_delete('hackattack', array('ip' => $ip));
+    $GLOBALS['SITE_DB']->query_delete('hackattack', ['ip' => $ip]);
 }
 
 /**
@@ -921,7 +921,7 @@ function remove_ip_ban($ip)
  */
 function get_webservice_result($error_message)
 {
-    if (in_array(get_base_url_hostname(), array('compo.sr', 'ocproducts.com'))) {
+    if (in_array(get_base_url_hostname(), ['compo.sr', 'ocproducts.com'])) {
         return null;
     }
 
@@ -982,7 +982,7 @@ function get_webservice_result($error_message)
     require_code('version2');
     require_code('http');
     $url = 'http://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
-    list($http_result) = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 60 * 24 * 31/*once a month*/);
+    list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {
         return null;
@@ -1118,12 +1118,12 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'File(/tmp/) is not within the allowed path') === false)
     ) {
         require_code('mail');
-        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, array('errors_final' . strval(cms_version()) . '@compo.sr'), '', '', '', array('no_cc' => true, 'as_admin' => true));
+        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, ['errors_final' . strval(cms_version()) . '@compo.sr'], '', '', '', ['no_cc' => true, 'as_admin' => true]);
     }
     if (($ocproducts) && (get_value('agency_email_address') !== null)) {
         require_code('mail');
         $agency_email_address = get_value('agency_email_address');
-        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, array($agency_email_address), '', '', '', array('no_cc' => true, 'as_admin' => true));
+        dispatch_mail(cms_version_pretty() . ': ' . do_lang('ERROR_OCCURRED_SUBJECT', get_page_or_script_name(), null, null, get_site_default_lang()), $mail, [$agency_email_address], '', '', '', ['no_cc' => true, 'as_admin' => true]);
     }
 }
 
@@ -1256,9 +1256,9 @@ function get_html_trace()
 
     push_suppress_error_death(true);
     $_trace = debug_backtrace();
-    $trace = array();
+    $trace = [];
     foreach ($_trace as $i => $stage) {
-        $traces = array();
+        $traces = [];
         //if (in_array($stage['function'], array('get_html_trace', 'composr_error_handler', 'fatal_exit'))) continue;  Hinders more than helps
         $file = '';
         $line = '';
@@ -1282,13 +1282,13 @@ function get_html_trace()
                 $_value = put_value_in_stack_trace($__value);
             }
 
-            $traces[] = array('LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value);
+            $traces[] = ['LINE' => $line, 'FILE' => $file, 'KEY' => ucfirst($key), 'VALUE' => $_value];
         }
-        $trace[] = array('TRACES' => $traces);
+        $trace[] = ['TRACES' => $traces];
     }
     pop_suppress_error_death();
 
-    return do_template('STACK_TRACE', array('_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : array(), 'TRACE' => $trace));
+    return do_template('STACK_TRACE', ['_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : [], 'TRACE' => $trace]);
 }
 
 /**
@@ -1312,7 +1312,7 @@ function _look_for_match_key_message($natural_text, $only_if_zone = false, $only
     if (!isset($GLOBALS['SITE_DB'])) {
         return null;
     }
-    $match_keys = $GLOBALS['SITE_DB']->query_select('match_key_messages', array('*'));
+    $match_keys = $GLOBALS['SITE_DB']->query_select('match_key_messages', ['*']);
     sort_maps_by__strlen($match_keys, 'k_match_key');
     $match_keys = array_reverse($match_keys);
     foreach ($match_keys as $match_key) {
@@ -1324,7 +1324,7 @@ function _look_for_match_key_message($natural_text, $only_if_zone = false, $only
 
         $pass = false;
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^((.*) )?"(.*)"$#', $match_key['k_match_key'], $matches) != 0) {
             if (strpos($natural_text, $matches[3]) !== false) {
                 if ($matches[1] == '') {
@@ -1357,7 +1357,7 @@ function _look_for_match_key_message($natural_text, $only_if_zone = false, $only
                     if ((isset($map['error_message'])) && ($map['error_message'] == '')) {
                         $map['error_message'] = $natural_text;
                     }
-                    $url = static_evaluate_tempcode(build_url($map, $zone, array(), false, false, false, $hash));
+                    $url = static_evaluate_tempcode(build_url($map, $zone, [], false, false, false, $hash));
                     require_code('site2');
                     assign_refresh($url, 0.0); // redirect_screen not used because there is already a legitimate output screen happening
                     $message = do_lang_tempcode('_REDIRECTING');
@@ -1430,11 +1430,11 @@ function _access_denied($class, $param, $force_login)
         cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
 
         $real_page = get_page_name();
-        $redirect = get_self_url(true, false, array('page' => $real_page)); // We have to pass in 'page' because an access-denied situation tells get_page_name() (which get_self_url() relies on) that we are on page ''.
-        set_extra_request_metadata(array(
+        $redirect = get_self_url(true, false, ['page' => $real_page]); // We have to pass in 'page' because an access-denied situation tells get_page_name() (which get_self_url() relies on) that we are on page ''.
+        set_extra_request_metadata([
             'real_page' => $real_page,
-        ));
-        ecv_CANONICAL_URL(user_lang(), array(), array()); // Cause this to be pre-cached with the correct value
+        ]);
+        ecv_CANONICAL_URL(user_lang(), [], []); // Cause this to be pre-cached with the correct value
         $_GET['redirect'] = $redirect;
         $_GET['page'] = 'login';
         $_GET['type'] = 'browse';

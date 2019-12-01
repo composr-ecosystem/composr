@@ -36,11 +36,11 @@ class Hook_cron_ticket_type_lead_times
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Support lead time calculation',
             'num_queued' => null,
             'minutes_between_runs' => 24 * 60,
-        );
+        ];
     }
 
     /**

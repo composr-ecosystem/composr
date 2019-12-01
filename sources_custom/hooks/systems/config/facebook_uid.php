@@ -25,7 +25,7 @@ class Hook_config_facebook_uid
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_UID',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_uid
             'public' => false,
 
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

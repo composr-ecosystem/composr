@@ -30,7 +30,7 @@ class Hook_config_enable_markup_webstandards
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_MARKUP_WEBSTANDARDS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_markup_webstandards
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

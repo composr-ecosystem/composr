@@ -30,14 +30,14 @@ class Block_main_pt_notifications
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -55,7 +55,7 @@ class Block_main_pt_notifications
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => 'joqcoq45aqit7q2kz0xm1tkkfa1xueql', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => 'joqcoq45aqit7q2kz0xm1tkkfa1xueql', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_code('cns_general');
@@ -72,10 +72,10 @@ class Block_main_pt_notifications
             $num_unread_pps = 0;
         }
 
-        return do_template('BLOCK_MAIN_PT_NOTIFICATIONS', array(
+        return do_template('BLOCK_MAIN_PT_NOTIFICATIONS', [
             '_GUID' => '7606c3bf73f059ec5b194bc33d881763',
             'BLOCK_ID' => $block_id,
             'NOTIFICATIONS' => $notifications,
-        ));
+        ]);
     }
 }

@@ -34,16 +34,16 @@ class Hook_commandr_command_themewizard_compute_equation
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('themewizard')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         require_lang('themes');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('themewizard_compute_equation', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('themewizard_compute_equation', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_compute_equation'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_compute_equation')];
             }
 
             $equation = $parameters[0];
@@ -64,14 +64,14 @@ class Hook_commandr_command_themewizard_compute_equation
             $colours = calculate_theme($seed, $theme, 'equations', 'colours', $dark);
             $parsed_equation = parse_css_colour_expression($equation);
             if ($parsed_equation === null) {
-                return array('', '', '', '?');
+                return ['', '', '', '?'];
             }
             $answer = execute_css_colour_expression($parsed_equation, $colours[0]);
             if ($answer === null) {
-                return array('', '', '', '?');
+                return ['', '', '', '?'];
             }
 
-            return array('', '<span style="padding: 0.5em 0.8em; display: inline-block; background: white"><span style="border: 1px solid black; width: 2em; height: 1em; display: inline-block; background: #' . escape_html($answer) . '"></span></span>', '#' . $answer, '');
+            return ['', '<span style="padding: 0.5em 0.8em; display: inline-block; background: white"><span style="border: 1px solid black; width: 2em; height: 1em; display: inline-block; background: #' . escape_html($answer) . '"></span></span>', '#' . $answer, ''];
         }
     }
 }

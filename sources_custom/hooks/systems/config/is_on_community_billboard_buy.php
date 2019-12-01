@@ -25,7 +25,7 @@ class Hook_config_is_on_community_billboard_buy
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -38,7 +38,7 @@ class Hook_config_is_on_community_billboard_buy
             'required' => true,
             'public' => false,
             'addon' => 'community_billboard',
-        );
+        ];
     }
 
     /**

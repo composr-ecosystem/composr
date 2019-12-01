@@ -166,15 +166,15 @@ define('PLEXER_EMBEDDED_VARIABLE', 10); // grab variable (and return to previous
 
 // These are characters that can be used to continue an identifier lexer token (any other character starts a new token).
 global $PCONTINUATIONS;
-$PCONTINUATIONS = array(
+$PCONTINUATIONS = [
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '_', '\\');
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '_', '\\'];
 global $PCONTINUATIONS_SIMPLE;
-$PCONTINUATIONS_SIMPLE = array(
+$PCONTINUATIONS_SIMPLE = [
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    '_');
+    '_'];
 // For non-identifier tokens, tokenisation is driven purely upon "best match".
 
 function lex($text = null)
@@ -237,7 +237,7 @@ function lex($text = null)
 
     // ---
 
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#(<\?php|<\?)(?-U)(=)?(?U)(.*)(\?' . '>)#sU', $TEXT, $matches, PREG_OFFSET_CAPTURE);
 
     // Bring it together from the different code components...
@@ -287,7 +287,7 @@ function lex($text = null)
         $TEXT .= "\n";
     }
 
-    $tokens = array(); // We will be lexing into this list of tokens
+    $tokens = []; // We will be lexing into this list of tokens
 
     $special_token_value = ''; // This will be used during special lexing modes to build up the special token value being lexed
     $special_token_value_2 = '';
@@ -296,14 +296,14 @@ function lex($text = null)
     $lex_state = PLEXER_FREE;
     $escape_flag = false; // Used for string_literal escaping
     $heredoc_simple = false;
-    $heredoc_buildup = array();
+    $heredoc_buildup = [];
     $heredoc_nowdoc_symbol = '';
 
     $tokens_since_comment = 0;
 
     $indentation = 0;
     $new_line = false;
-    $brace_stack = array();
+    $brace_stack = [];
 
     // Lex the code. Hard coded state changes occur. Understanding of tokenisation implicit. Trying to match tokens to $PTOKENS, otherwise an identifier.
     $char = '';
@@ -376,7 +376,7 @@ function lex($text = null)
 
                 // Try and work out what token we're looking at next
                 $maybe_applicable_tokens = $PTOKENS;
-                $applicable_tokens = array();
+                $applicable_tokens = [];
                 $token_so_far = '';
                 while (!empty($maybe_applicable_tokens)) {
                     list($reached_end, $i, $char) = plex__get_next_char($i);
@@ -404,7 +404,7 @@ function lex($text = null)
                 // Special case, don't allow tokens in object dereferencing chains
                 $_last_token = end($tokens);
                 if ($_last_token[0] == 'OBJECT_OPERATOR') {
-                    $applicable_tokens = array();
+                    $applicable_tokens = [];
                 }
 
                 // If we have any applicable tokens, find the longest and move $i so it's as we just read it
@@ -420,7 +420,7 @@ function lex($text = null)
                         $lex_state = PLEXER_VARIABLE;
                         break;
                     } elseif ($token_found == 'START_HEREDOC_NOWDOC') {
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#\'([A-Za-z0-9\_]+)\'#A', $TEXT, $matches, 0, $i) != 0) {
                             $lex_state = PLEXER_NOWDOC;
                             $heredoc_nowdoc_symbol = $matches[1];
@@ -444,7 +444,7 @@ function lex($text = null)
                         $lex_state = PLEXER_SINGLE_QUOTE_STRING_LITERAL;
                         break;
                     } else {
-                        if (!in_array($token_found, array('COMMA', 'DOUBLE_ARROW'))) { // We don't count array definitions, etc
+                        if (!in_array($token_found, ['COMMA', 'DOUBLE_ARROW'])) { // We don't count array definitions, etc
                             $tokens_since_comment++;
                             if ((isset($GLOBALS['pedantic'])) && ($tokens_since_comment > 200)) {
                                 log_warning('Bad comment density', $i, true);
@@ -476,7 +476,7 @@ function lex($text = null)
                                     break 2;
                                 }
 
-                                $tokens[] = array('IDENTIFIER', $token_found, $i);
+                                $tokens[] = ['IDENTIFIER', $token_found, $i];
                                 break;
                             } else {
                                 $i--;
@@ -484,20 +484,20 @@ function lex($text = null)
                         }
                     }
 
-                    if (($i_current > 0) && (isset($TEXT[$i_current - 2])) && ($TEXT[$i_current - 1] == ' ') && ($TEXT[$i_current - 2] != ' ') && (in_array($token_found, array('OBJECT_OPERATOR')))) {
+                    if (($i_current > 0) && (isset($TEXT[$i_current - 2])) && ($TEXT[$i_current - 1] == ' ') && ($TEXT[$i_current - 2] != ' ') && (in_array($token_found, ['OBJECT_OPERATOR']))) {
                         log_warning('Superfluous spacing (for ' . $token_found . ') against coding standards', $i, true);
                     }
-                    if (($i_current > 0) && (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != ')') && ($TEXT[$i] != "/") && ($TEXT[$i] != "\r")) && (in_array($token_found, array('COMMA', 'COMMAND_TERMINATE')))) {
+                    if (($i_current > 0) && (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != ')') && ($TEXT[$i] != "/") && ($TEXT[$i] != "\r")) && (in_array($token_found, ['COMMA', 'COMMAND_TERMINATE']))) {
                         log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
                     }
-                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, array('IS_EQUAL', 'IS_GREATER', 'IS_SMALLER', 'IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_IDENTICAL', 'IS_NOT_EQUAL', 'IS_NOT_IDENTICAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'EQUAL', 'BW_XOR', 'BW_OR', 'SL', 'SR', 'CONC', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER')))) {
+                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['IS_EQUAL', 'IS_GREATER', 'IS_SMALLER', 'IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_IDENTICAL', 'IS_NOT_EQUAL', 'IS_NOT_IDENTICAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MINUS_EQUAL', 'MUL_EQUAL', 'PLUS_EQUAL', 'BOR_EQUAL', 'EQUAL', 'BW_XOR', 'BW_OR', 'SL', 'SR', 'CONC', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER']))) {
                         if ($token_found != 'SUBTRACT' || is_alphanumeric($TEXT[$i_current - 1])) { // As could be minus sign
                             if (count($tokens) >= 3 && $tokens[count($tokens) - 3][0] != 'DECLARE') { // As declare has no spaces
                                 log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
                             }
                         }
                     }
-                    if (in_array($token_found, array('IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'))) {
+                    if (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH', 'INTERFACE', 'CLASS', 'FUNCTION'])) {
                         $line_end = strpos($TEXT, "\n", $i);
                         if ($line_end !== false) {
                             $remaining_line = str_replace("\r", '', substr($TEXT, $i, $line_end - $i + 1));
@@ -505,19 +505,19 @@ function lex($text = null)
                             $next_line_end = strpos($TEXT, "\n", $line_end + 1);
                             $next_line = ($next_line_end === false) ? '' : substr($TEXT, $line_end + 1, $next_line_end - $line_end - 1 + 1);
 
-                            if ((strpos($remaining_line, ' {') === false) && (strpos($remaining_line, '/*') === false) && (($token_found != 'WHILE') || (substr($remaining_line, -2) != ";\n")) && (strpos($next_line, '{') !== false/*brace should move to own line for multi-line boolean checks*/) && (in_array($token_found, array('IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH')))) {
+                            if ((strpos($remaining_line, ' {') === false) && (strpos($remaining_line, '/*') === false) && (($token_found != 'WHILE') || (substr($remaining_line, -2) != ";\n")) && (strpos($next_line, '{') !== false/*brace should move to own line for multi-line boolean checks*/) && (in_array($token_found, ['IF', 'ELSE', 'ELSEIF', 'FOREACH', 'FOR', 'FOREACH', 'WHILE', 'DO', 'TRY', 'CATCH', 'SWITCH']))) {
                                 log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
                             }
-                            if ((strpos($remaining_line, ' {') !== false) && (strpos($remaining_line, ' (') === false) && (strpos($next_line, '{') === false/*To weed out edge cases like when a parameter default contains ' {'*/) && (in_array($token_found, array('INTERFACE', 'CLASS', 'FUNCTION')))) {
+                            if ((strpos($remaining_line, ' {') !== false) && (strpos($remaining_line, ' (') === false) && (strpos($next_line, '{') === false/*To weed out edge cases like when a parameter default contains ' {'*/) && (in_array($token_found, ['INTERFACE', 'CLASS', 'FUNCTION']))) {
                                 log_warning('Incorrect bracing spacing (for ' . $token_found . ') against coding standards', $i, true);
                             }
                         }
                     }
-                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, array('BOOLEAN_AND', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_OR_2')))) {
+                    if (($i_current > 0) && (($TEXT[$i_current - 1] != ' ') || (($TEXT[$i] != ' ') && ($TEXT[$i] != "\n") && ($TEXT[$i] != "\r"))) && (in_array($token_found, ['BOOLEAN_AND', 'BOOLEAN_XOR', 'BOOLEAN_OR', 'BOOLEAN_OR_2']))) {
                         log_warning('Missing surrounding spacing (for ' . $token_found . ') against coding standards', $i, true);
                     }
 
-                    $tokens[] = array($token_found, $i);
+                    $tokens[] = [$token_found, $i];
                 } else {
                     // Otherwise, we've found an identifier or numerical literal token, so extract it
                     $token_found = '';
@@ -528,7 +528,7 @@ function lex($text = null)
                             break 3;
                         }
                         if ($numeric === null) {
-                            $numeric = in_array($char, array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
+                            $numeric = in_array($char, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
                         }
 
                         if ((!in_array($char, $PCONTINUATIONS)) && (($numeric === false) || ($char != '.') || (!is_numeric($TEXT[$i])))) {
@@ -541,13 +541,13 @@ function lex($text = null)
 
                     if ($numeric) {
                         if (strpos($token_found, '.') !== false) {
-                            $tokens[] = array('float_literal', floatval($token_found), $i);
+                            $tokens[] = ['float_literal', floatval($token_found), $i];
                         } elseif (strpos($token_found, 'x') !== false) {
-                            $tokens[] = array('integer_literal', intval($token_found, 16), $i);
+                            $tokens[] = ['integer_literal', intval($token_found, 16), $i];
                         } elseif ($token_found[0] == '0') {
-                            $tokens[] = array('integer_literal', intval($token_found, 8), $i);
+                            $tokens[] = ['integer_literal', intval($token_found, 8), $i];
                         } else {
-                            $tokens[] = array('integer_literal', intval($token_found), $i);
+                            $tokens[] = ['integer_literal', intval($token_found), $i];
                         }
                     } else {
                         if ($token_found == 'NULL' || $token_found == 'TRUE' || $token_found == 'FALSE') {
@@ -559,7 +559,7 @@ function lex($text = null)
                             break 2;
                         }
 
-                        $tokens[] = array('IDENTIFIER', $token_found, $i);
+                        $tokens[] = ['IDENTIFIER', $token_found, $i];
                     }
                 }
 
@@ -578,7 +578,7 @@ function lex($text = null)
                 // Exit case
                 if (!in_array($char, $PCONTINUATIONS)) {
                     $lex_state = PLEXER_FREE;
-                    $tokens[] = array('variable', $special_token_value, $i);
+                    $tokens[] = ['variable', $special_token_value, $i];
                     $special_token_value = '';
                     $i--;
                     break;
@@ -599,8 +599,8 @@ function lex($text = null)
                     if ((isset($GLOBALS['CHECKS'])) && (preg_match('#<[^<>]*>#', $special_token_value) != 0)) {
                         log_warning('It looks like HTML used outside of templates', $i, true);
                     }
-                    $tokens[] = array('string_literal', $special_token_value, $i);
-                    $tokens[] = array('COMMAND_TERMINATE', $i);
+                    $tokens[] = ['string_literal', $special_token_value, $i];
+                    $tokens[] = ['COMMAND_TERMINATE', $i];
                     if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
@@ -632,12 +632,12 @@ function lex($text = null)
                             if (!$heredoc_simple) {
                                 $i++;
                             }
-                            $tokens[] = array('string_literal', $special_token_value, $i);
-                            $tokens[] = array('CONC', $i);
+                            $tokens[] = ['string_literal', $special_token_value, $i];
+                            $tokens[] = ['CONC', $i];
                             $special_token_value = '';
                             $lex_state = PLEXER_EMBEDDED_VARIABLE;
                             $previous_state = PLEXER_HEREDOC;
-                            $heredoc_buildup = array();
+                            $heredoc_buildup = [];
                             break;
                         } elseif (($char == '\\') || ($char == '{')) {
                             $actual_char = '';// Technically we should only allow "$whatever" if whatever exists, but this future proofs checked code
@@ -665,25 +665,25 @@ function lex($text = null)
                         if ($char == '}') {
                             $exit = true;
                         } else {
-                            $matches = array();
+                            $matches = [];
                             if (($char == '[') && ($TEXT[$i] == '\'') && (preg_match('#\[\'([^\']*)\'\]#A', $TEXT, $matches, 0, $i - 1) != 0)) { // NOTE: Have disallowed escaping within the quotes
-                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                                 $special_token_value_2 = '';
-                                $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
-                                $heredoc_buildup[] = array('string_literal', $matches[1], $i);
-                                $heredoc_buildup[] = array('EXTRACT_CLOSE', $i);
+                                $heredoc_buildup[] = ['EXTRACT_OPEN', $i];
+                                $heredoc_buildup[] = ['string_literal', $matches[1], $i];
+                                $heredoc_buildup[] = ['EXTRACT_CLOSE', $i];
                                 $i += strlen($matches[1]) + 3;
                             } elseif (($char == '[') && (preg_match('#\[([A-Za-z0-9_]+)\]#A', $TEXT, $matches, 0, $i - 1) != 0)) {
-                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                                 $special_token_value_2 = '';
-                                $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
-                                $heredoc_buildup[] = array('IDENTIFIER', $matches[1], $i);
-                                $heredoc_buildup[] = array('EXTRACT_CLOSE', $i);
+                                $heredoc_buildup[] = ['EXTRACT_OPEN', $i];
+                                $heredoc_buildup[] = ['IDENTIFIER', $matches[1], $i];
+                                $heredoc_buildup[] = ['EXTRACT_CLOSE', $i];
                                 $i += strlen($matches[1]) + 1;
                             } elseif (($char == '-') && ($TEXT[$i] == '>')) {
-                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                                 $special_token_value_2 = '';
-                                $heredoc_buildup[] = array('OBJECT_OPERATOR', $i);
+                                $heredoc_buildup[] = ['OBJECT_OPERATOR', $i];
                                 $i++;
                             } else {
                                 log_warning('Bad token found', $i, true);
@@ -692,22 +692,22 @@ function lex($text = null)
                         }
                     } else {
                         // Simple
-                        $matches = array();
+                        $matches = [];
                         if (($char == '-') && ($TEXT[$i] == '>')) {
-                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                             $special_token_value_2 = '';
-                            $heredoc_buildup[] = array('OBJECT_OPERATOR', $i);
+                            $heredoc_buildup[] = ['OBJECT_OPERATOR', $i];
                             $i++;
                         } elseif (($char == '[') && (preg_match('#\[([\'A-Za-z0-9_]+)\]#A', $TEXT, $matches, 0, $i - 1) != 0)) {
                             if (strpos($matches[1], "'") !== false) {
                                 log_warning('Do not use quotes with the simple variable embedding syntax', $i, true);
                                 break 2;
                             }
-                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                             $special_token_value_2 = '';
-                            $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
-                            $heredoc_buildup[] = array('string_literal', $matches[1], $i);
-                            $heredoc_buildup[] = array('EXTRACT_CLOSE', $i);
+                            $heredoc_buildup[] = ['EXTRACT_OPEN', $i];
+                            $heredoc_buildup[] = ['string_literal', $matches[1], $i];
+                            $heredoc_buildup[] = ['EXTRACT_CLOSE', $i];
                             $i += strlen($matches[1]) + 1;
                         } else {
                             $exit = true;
@@ -717,14 +717,14 @@ function lex($text = null)
                     if ($exit) {
                         $lex_state = $previous_state;
                         if ($special_token_value_2 != '') {
-                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = [(empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i];
                         }
                         if (!empty($heredoc_buildup)) {
-                            $tokens[] = array('IDENTIFIER', 'strval', $i);
-                            $tokens[] = array('PARENTHESIS_OPEN', $i);
+                            $tokens[] = ['IDENTIFIER', 'strval', $i];
+                            $tokens[] = ['PARENTHESIS_OPEN', $i];
                             $tokens = array_merge($tokens, $heredoc_buildup);
-                            $tokens[] = array('PARENTHESIS_CLOSE', $i);
-                            $tokens[] = array('CONC', $i);
+                            $tokens[] = ['PARENTHESIS_CLOSE', $i];
+                            $tokens[] = ['CONC', $i];
                         }
                         $special_token_value_2 = '';
 
@@ -751,7 +751,7 @@ function lex($text = null)
                 // Exit case
                 if ($char == "\n") {
                     $lex_state = PLEXER_FREE;
-                    $tokens[] = array('comment', $special_token_value, $i);
+                    $tokens[] = ['comment', $special_token_value, $i];
                     $special_token_value = '';
                     $i--;
                     break;
@@ -770,7 +770,7 @@ function lex($text = null)
                 // Exit case
                 if ($char == '*/') {
                     $lex_state = PLEXER_FREE;
-                    $tokens[] = array('comment', $special_token_value, $i);
+                    $tokens[] = ['comment', $special_token_value, $i];
                     $special_token_value = '';
                     break;
                 }
@@ -795,7 +795,7 @@ function lex($text = null)
                 // Exit case
                 if (($char == '"') && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
-                    $tokens[] = array('string_literal', $special_token_value, $i);
+                    $tokens[] = ['string_literal', $special_token_value, $i];
                     if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
@@ -820,12 +820,12 @@ function lex($text = null)
                         if (!$heredoc_simple) {
                             $i++;
                         }
-                        $tokens[] = array('string_literal', $special_token_value, $i);
-                        $tokens[] = array('CONC', $i);
+                        $tokens[] = ['string_literal', $special_token_value, $i];
+                        $tokens[] = ['CONC', $i];
                         $special_token_value = '';
                         $lex_state = PLEXER_EMBEDDED_VARIABLE;
                         $previous_state = PLEXER_DOUBLE_QUOTE_STRING_LITERAL;
-                        $heredoc_buildup = array();
+                        $heredoc_buildup = [];
                         break;
                     }
                     if ($char == '\\') {
@@ -849,7 +849,7 @@ function lex($text = null)
                 // Exit case
                 if (($char == "'") && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
-                    $tokens[] = array('string_literal', $special_token_value, $i);
+                    $tokens[] = ['string_literal', $special_token_value, $i];
                     if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Shouldn\'t this be templated?', $i, true);
                     }
@@ -905,15 +905,15 @@ function plex__get_next_char($i)
 {
     global $TEXT;
     if ($i >= strlen($TEXT)) {
-        return array(true, $i + 1, '');
+        return [true, $i + 1, ''];
     }
     $char = $TEXT[$i];
-    return array(false, $i + 1, $char);
+    return [false, $i + 1, $char];
 }
 
 function plex__get_next_chars($i, $num)
 {
     global $TEXT;
     $str = substr($TEXT, $i, $num);
-    return array(strlen($str) < $num, $i + $num, $str);
+    return [strlen($str) < $num, $i + $num, $str];
 }

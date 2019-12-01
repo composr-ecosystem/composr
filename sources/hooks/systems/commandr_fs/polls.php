@@ -47,8 +47,8 @@ class Hook_commandr_fs_polls extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('poll', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('question') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('poll', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('question') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -155,13 +155,13 @@ class Hook_commandr_fs_polls extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['question']),
             'answer1' => get_translated_text($row['option1']),
             'answer2' => get_translated_text($row['option2']),
@@ -193,7 +193,7 @@ class Hook_commandr_fs_polls extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),
             'add_date' => remap_time_as_portable($row['add_time']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

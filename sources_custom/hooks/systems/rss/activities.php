@@ -58,13 +58,13 @@ class Hook_rss_activities
             $category = '';
             $category_raw = '';
 
-            $view_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $row['a_member_id']), get_module_zone('members'), array(), false, false, true);
+            $view_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $row['a_member_id']], get_module_zone('members'), [], false, false, true);
 
             $if_comments = new Tempcode();
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
-        return array($content, do_lang('ACTIVITY'));
+        return [$content, do_lang('ACTIVITY')];
     }
 }

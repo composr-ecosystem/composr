@@ -30,7 +30,7 @@ class Hook_config_use_true_from
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_TRUE_FROM',
             'type' => 'list',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_use_true_from
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_site_closed
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLOSED_SITE_OPTION',
             'type' => 'special',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_site_closed
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -30,14 +30,14 @@ class Block_main_countdown
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'precision', 'tailing');
+        $info['parameters'] = ['param', 'precision', 'tailing'];
         return $info;
     }
 
@@ -73,7 +73,7 @@ class Block_main_countdown
         } else {
             $target = @strtotime($_target);
             if ($target === false) {
-                return do_template('RED_ALERT', array('_GUID' => '6wdxknuqmjvqbg1jxifeljakzg10ghou', 'TEXT' => do_lang_tempcode('OUT_OF_BOUNDS_TIME')));
+                return do_template('RED_ALERT', ['_GUID' => '6wdxknuqmjvqbg1jxifeljakzg10ghou', 'TEXT' => do_lang_tempcode('OUT_OF_BOUNDS_TIME')]);
             }
         }
 
@@ -156,7 +156,7 @@ class Block_main_countdown
                 break;
         }
 
-        return do_template('BLOCK_MAIN_COUNTDOWN', array(
+        return do_template('BLOCK_MAIN_COUNTDOWN', [
             '_GUID' => '7bfbaf09b256edcdfc0aeb04d282c3b8',
             'BLOCK_ID' => $block_id,
             'TAILING' => strval($tailing),
@@ -165,6 +165,6 @@ class Block_main_countdown
             'PRECISION' => strval($precision),
             'MILLISECONDS_FOR_PRECISION' => strval($milliseconds_for_precision),
             'DISTANCE_FOR_PRECISION' => strval($distance_for_precision),
-        ));
+        ]);
     }
 }

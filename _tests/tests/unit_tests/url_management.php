@@ -46,10 +46,10 @@ class url_management_test_set extends cms_test_case
         set_option('url_scheme', 'PLAIN');
 
         $test_zone = 'adminzone';
-        $test_attributes = array('page' => DEFAULT_ZONE_PAGE_NAME, 'type' => 'bar', 'x' => 'y');
+        $test_attributes = ['page' => DEFAULT_ZONE_PAGE_NAME, 'type' => 'bar', 'x' => 'y'];
         $test_hash = 'fish';
 
-        $test_url = build_url($test_attributes, $test_zone, array(), false, false, true, $test_hash);
+        $test_url = build_url($test_attributes, $test_zone, [], false, false, true, $test_hash);
         $test_page_link = $test_zone . ':' . DEFAULT_ZONE_PAGE_NAME . ':bar:x=y#' . $test_hash;
 
         $_url = $test_url->evaluate();
@@ -69,32 +69,32 @@ class url_management_test_set extends cms_test_case
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'RAW');
-        $url = build_url(array('page' => 'a'), '');
+        $url = build_url(['page' => 'a'], '');
         $this->assertTrue(strpos($url->evaluate(), '.php') !== false);
 
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'PG');
-        $url = build_url(array('page' => 'b'), '');
+        $url = build_url(['page' => 'b'], '');
         $this->assertTrue(strpos($url->evaluate(), '/pg/') !== false);
 
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'HTM');
-        $url = build_url(array('page' => 'c'), '');
+        $url = build_url(['page' => 'c'], '');
         $this->assertTrue(strpos($url->evaluate(), '.htm') !== false);
 
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'SIMPLE');
-        $url = build_url(array('page' => 'd'), '');
+        $url = build_url(['page' => 'd'], '');
         $this->assertTrue(strpos($url->evaluate(), '.htm') === false && strpos($url->evaluate(), '.php') === false);
 
         $SITE_INFO['block_url_schemes'] = '1';
         $CAN_TRY_URL_SCHEMES_CACHE = null;
         $URL_REMAPPINGS = null;
         set_option('url_scheme', 'HTM');
-        $url = build_url(array('page' => 'e'), '');
+        $url = build_url(['page' => 'e'], '');
         $this->assertTrue(strpos($url->evaluate(), '.php') !== false);
     }
 }

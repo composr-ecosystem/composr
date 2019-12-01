@@ -47,11 +47,11 @@ class Hook_cron_bank
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Bankr',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
-        );
+        ];
     }
 
     /**
@@ -71,7 +71,7 @@ class Hook_cron_bank
                 $restore_amount = round(floatval($deposit['amount']) * (1.0 + floatval($bank_dividend) / 100.0));
                 system_gift_transfer(do_lang('RESTORED_DEPOSIT'), intval($restore_amount), $deposit['member_id']);
 
-                $GLOBALS['SITE_DB']->query_delete('bank', array('id' => $deposit['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('bank', ['id' => $deposit['id']], '', 1);
             }
         }
     }

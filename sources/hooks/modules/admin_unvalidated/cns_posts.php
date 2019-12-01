@@ -40,7 +40,7 @@ class Hook_unvalidated_cns_posts
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'f_posts';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'p_validated';

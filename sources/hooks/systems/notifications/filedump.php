@@ -45,7 +45,7 @@ class Hook_notification_filedump extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
         require_code('files2');
@@ -57,17 +57,17 @@ class Hook_notification_filedump extends Hook_Notification
         $files = get_directory_contents($path, '', IGNORE_ACCESS_CONTROLLERS, false);
 
         if (count($files) > 30) {
-            return array(); // Too many, so don't show
+            return []; // Too many, so don't show
         }
 
-        $page_links = array();
+        $page_links = [];
         foreach ($files as $file) {
             if (is_dir($path . '/' . $file)) {
-                $page_links[] = array(
+                $page_links[] = [
                     'id' => (($id == '') ? '' : ($id . '/')) . $file,
                     'title' => $file,
                     'child_count' => count($this->create_category_tree($notification_code, (($id == '') ? '' : ($id . '/')) . $file)),
-                );
+                ];
             }
         }
 
@@ -95,11 +95,11 @@ class Hook_notification_filedump extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['filedump'] = array(do_lang('CONTENT'), do_lang('filedump:NOTIFICATION_TYPE_filedump'));
+        $list = [];
+        $list['filedump'] = [do_lang('CONTENT'), do_lang('filedump:NOTIFICATION_TYPE_filedump')];
         return $list;
     }
 

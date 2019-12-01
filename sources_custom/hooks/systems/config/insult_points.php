@@ -25,7 +25,7 @@ class Hook_config_insult_points
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INSULT_POINTS',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -37,7 +37,7 @@ class Hook_config_insult_points
             'public' => false,
 
             'addon' => 'bantr',
-        );
+        ];
     }
 
     /**

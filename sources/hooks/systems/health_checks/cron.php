@@ -42,7 +42,7 @@ class Hook_health_check_cron extends Hook_Health_Check
         $this->process_checks_section('testCronSetUp', 'System scheduler set up', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCronSlow', 'Slow system scheduler', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**

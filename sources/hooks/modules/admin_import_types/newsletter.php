@@ -31,11 +31,11 @@ class Hook_admin_import_types_newsletter
     public function run()
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'newsletter_subscriptions' => 'NEWSLETTER_SUBSCRIPTIONS',
-        );
+        ];
     }
 }

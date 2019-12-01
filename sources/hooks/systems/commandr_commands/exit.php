@@ -34,9 +34,9 @@ class Hook_commandr_command_exit
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('exit', array('h'), array()), '', '');
+            return ['', do_command_help('exit', ['h'], []), '', ''];
         } else {
-            return array(/**@lang JavaScript*/'if (document.getElementById(\'commandr-button\')) { document.getElementById(\'commandr-button\').click(); } else { window.location.href=\'' . addslashes(static_evaluate_tempcode(build_url(array('page' => ''), ''))) . '\'; }', '', do_lang('SUCCESS'), '');
+            return [/**@lang JavaScript*/'if (document.getElementById(\'commandr-button\')) { document.getElementById(\'commandr-button\').click(); } else { window.location.href=\'' . addslashes(static_evaluate_tempcode(build_url(['page' => ''], ''))) . '\'; }', '', do_lang('SUCCESS'), ''];
         }
     }
 }

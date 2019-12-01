@@ -41,10 +41,10 @@ class _installer_forum_drivers_test_set extends cms_test_case
         }
         $forum_base_url = dirname(get_base_url()) . '/phpBB3';
         $database_forums = 'forum_phpbb_31';
-        $extra_settings = array(
+        $extra_settings = [
             'phpbb_table_prefix' => 'phpbb_',
             'use_multi_db' => '1',
-        );
+        ];
         $cmd = 'mysql -uroot';
         if ($password != '') {
             $cmd .= ' -p' . $password;
@@ -68,7 +68,7 @@ class _installer_forum_drivers_test_set extends cms_test_case
         $this->do_headless_install(false, 'none', $username, $password);
     }
 
-    protected function do_headless_install($safe_mode = false, $forum_driver = 'cns', $username = null, $password = null, $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = array())
+    protected function do_headless_install($safe_mode = false, $forum_driver = 'cns', $username = null, $password = null, $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [])
     {
         $database = 'test';
         $table_prefix = 'cms_forumdriver_test_';

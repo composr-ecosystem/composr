@@ -36,7 +36,7 @@ class Hook_cleanup_catalogues
 
         require_lang('catalogues');
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('CATALOGUES');
         $info['description'] = do_lang_tempcode('DESCRIPTION_CATALOGUES_CACHE');
         $info['type'] = 'cache';

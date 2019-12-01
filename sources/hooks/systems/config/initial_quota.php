@@ -30,7 +30,7 @@ class Hook_config_initial_quota
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'QUOTA',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_initial_quota
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

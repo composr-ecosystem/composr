@@ -68,7 +68,7 @@ class Hook_fields_guid
         if (empty($default)) { // We need to calculate a default even if not required, because the defaults are programmatic
             $default = $this->get_field_guid();
         }
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**

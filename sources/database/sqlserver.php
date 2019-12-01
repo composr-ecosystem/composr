@@ -33,7 +33,7 @@ require_code('database/shared/sqlserver');
  */
 class Database_Static_sqlserver extends Database_super_sqlserver
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
 
     private $query_timeout = 3000;
 
@@ -67,7 +67,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
         if ($db_host == '127.0.0.1' || $db_host == 'localhost') {
             $db_host = '(local)';
         }
-        $connection = @sqlsrv_connect($db_host, ($db_user == '') ? array('Database' => $db_name) : array('UID' => $db_user, 'PWD' => $db_password, 'Database' => $db_name, 'CharacterSet' => 'UTF-8'));
+        $connection = @sqlsrv_connect($db_host, ($db_user == '') ? ['Database' => $db_name] : ['UID' => $db_user, 'PWD' => $db_password, 'Database' => $db_name, 'CharacterSet' => 'UTF-8']);
         if ($connection === false) {
             $err = serialize(sqlsrv_errors());
             $error = 'Could not connect to database-server (' . $err . ')';
@@ -98,13 +98,13 @@ class Database_Static_sqlserver extends Database_super_sqlserver
     public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
     {
         if ($max === 0) {
-            return array();
+            return [];
         }
         $this->apply_sql_limit_clause($query, $max, $start);
 
         $this->rewrite_to_unicode_syntax($query);
 
-        $results = @sqlsrv_query($connection, $query, array(), array('Scrollable' => 'static', 'QueryTimeout' => $this->query_timeout));
+        $results = @sqlsrv_query($connection, $query, [], ['Scrollable' => 'static', 'QueryTimeout' => $this->query_timeout]);
         if (($results === false) && (strtoupper(substr(ltrim($query), 0, 12)) == 'INSERT INTO ') && ((strpos($query, '(id, ') !== false) || (strpos($query, '(_id, ') !== false))) {
             $pos = strpos($query, '(');
             $table_name = substr($query, 12, $pos - 13);
@@ -159,7 +159,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      */
     protected function get_query_rows($results, $query, $start)
     {
-        $out = array();
+        $out = [];
 
         while (($row = sqlsrv_fetch_array($results, SQLSRV_FETCH_ASSOC)) !== null) {
             $out[] = $row;
@@ -174,7 +174,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      */
     public function close_connections()
     {
-        $this->cache_db = array();
+        $this->cache_db = [];
     }
 
     /**

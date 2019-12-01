@@ -38,7 +38,7 @@ class iotds_test_set extends cms_test_case
 
         $this->iotd_id = add_iotd('https://duckduckgo.com/', 'Welcome', 'DuckDuckGo', 'images/duckduckgo.jpg', 0, 0, 0, 0, 'Notes ?', null, null, 0, null, 0, null);
 
-        $this->assertTrue('https://duckduckgo.com/' == $GLOBALS['SITE_DB']->query_select_value('iotd', 'url', array('id' => $this->iotd_id)));
+        $this->assertTrue('https://duckduckgo.com/' == $GLOBALS['SITE_DB']->query_select_value('iotd', 'url', ['id' => $this->iotd_id]));
     }
 
     public function testEditIotd()
@@ -54,7 +54,7 @@ class iotds_test_set extends cms_test_case
 
         edit_iotd($this->iotd_id, 'Thank you', 'Caption ?', 'images/yahoo.jpg', 'yahoo.com', 0, 0, 0, 'Notes');
 
-        $this->assertTrue('yahoo.com' == $GLOBALS['SITE_DB']->query_select_value('iotd', 'url', array('id' => $this->iotd_id)));
+        $this->assertTrue('yahoo.com' == $GLOBALS['SITE_DB']->query_select_value('iotd', 'url', ['id' => $this->iotd_id]));
     }
 
     public function tearDown()

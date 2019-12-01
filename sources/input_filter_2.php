@@ -32,7 +32,7 @@ function modsecurity_workaround_enable()
 
     $data = post_param_string('_data', null);
     if ($data !== null) {
-        $remapper = array(
+        $remapper = [
             '<' => '\\',
             '>' => '/',
             '\'' => '<',
@@ -43,7 +43,7 @@ function modsecurity_workaround_enable()
             '%' => '&',
             '@' => ':',
             ':' => '@',
-        );
+        ];
         $len = strlen($data);
         for ($i = 0; $i < $len; $i++) {
             $char = $data[$i];
@@ -70,7 +70,7 @@ function rescue_shortened_post_request()
 
     $setting_value = null;
     $setting_name = null;
-    foreach (array('max_input_vars', 'suhosin.post.max_vars', 'suhosin.request.max_vars') as $setting) {
+    foreach (['max_input_vars', 'suhosin.post.max_vars', 'suhosin.request.max_vars'] as $setting) {
         if ((@is_numeric(ini_get($setting))) && (intval(ini_get($setting)) > 10)) {
             $this_setting_value = intval(ini_get($setting));
             if (($setting_value === null) || ($this_setting_value < $setting_value)) {
@@ -131,7 +131,7 @@ function parse_raw_http_request()
     $input = file_get_contents('php://input');
 
     // Grab multipart boundary from content type header
-    $matches = array();
+    $matches = [];
     preg_match('#boundary=(.*)$#', $_SERVER['CONTENT_TYPE'], $matches);
 
     if (empty($matches)) {
@@ -156,7 +156,7 @@ function parse_raw_http_request()
  */
 function _parse_raw_http_request_urlencoded($input)
 {
-    $post_data = array();
+    $post_data = [];
 
     $pairs = explode('&', $input);
     foreach ($pairs as $pair) {
@@ -168,7 +168,7 @@ function _parse_raw_http_request_urlencoded($input)
             if (substr($key, -2) == '[]') {
                 $key = substr($key, 0, strlen($key) - 2);
                 if (!isset($post_data[$key])) {
-                    $post_data[$key] = array();
+                    $post_data[$key] = [];
                 }
                 $post_data[$key][] = $val;
             } else {
@@ -191,13 +191,13 @@ function _parse_raw_http_request_urlencoded($input)
  */
 function _parse_raw_http_request_multipart($input, $boundary)
 {
-    $post_data = array();
+    $post_data = [];
 
     // Split content by boundary and get rid of last -- element
     $blocks = preg_split("#-+$boundary#", $input);
     array_pop($blocks);
 
-    $matches = array();
+    $matches = [];
 
     // Loop data blocks
     foreach ($blocks as $block) {
@@ -211,7 +211,7 @@ function _parse_raw_http_request_multipart($input, $boundary)
                 if (substr($key, -2) == '[]') {
                     $key = substr($key, 0, strlen($key) - 2);
                     if (!isset($post_data[$key])) {
-                        $post_data[$key] = array();
+                        $post_data[$key] = [];
                     }
                     $post_data[$key][] = $val;
                 } else {

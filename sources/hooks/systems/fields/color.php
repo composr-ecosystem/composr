@@ -70,7 +70,7 @@ class Hook_fields_color
                 $default = '666666';
             }
         }
-        return array('short_text', $default, 'short');
+        return ['short_text', $default, 'short'];
     }
 
     /**

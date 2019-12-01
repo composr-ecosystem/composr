@@ -39,18 +39,18 @@ class Hook_rss_comcode_pages
         $filters = explode(',', $_filters);
 
         $content = new Tempcode();
-        $_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('the_page', 'the_zone', 'cc_page_title'));
-        $rows = array();
+        $_rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_page', 'the_zone', 'cc_page_title']);
+        $rows = [];
         foreach ($_rows as $row) {
             $rows[$row['the_zone'] . ':' . $row['the_page']] = $row;
         }
-        $_rows2 = $GLOBALS['SITE_DB']->query_select('seo_meta', array('*'), array('meta_for_type' => 'comcode_page'));
-        $rows2 = array();
+        $_rows2 = $GLOBALS['SITE_DB']->query_select('seo_meta', ['*'], ['meta_for_type' => 'comcode_page']);
+        $rows2 = [];
         foreach ($_rows2 as $row) {
             $rows2[$row['meta_for_id']] = $row;
         }
         $_rows3 = $GLOBALS['SITE_DB']->query_select('comcode_pages');
-        $rows3 = array();
+        $rows3 = [];
         foreach ($_rows3 as $row) {
             $rows3[$row['the_zone'] . ':' . $row['the_page']] = $row;
         }
@@ -60,7 +60,7 @@ class Hook_rss_comcode_pages
                 continue;
             }
 
-            if ($filters != array('*')) {
+            if ($filters != ['*']) {
                 $ok = false;
                 foreach ($filters as $filter) {
                     if ($zone == $filter) {
@@ -137,15 +137,15 @@ class Hook_rss_comcode_pages
                 $category = $zone_details[1];
                 $category_raw = $zone;
 
-                $view_url = build_url(array('page' => $page), $zone, array(), false, false, true);
+                $view_url = build_url(['page' => $page], $zone, [], false, false, true);
 
                 $if_comments = new Tempcode();
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('zones');
-        return array($content, do_lang('COMCODE_PAGES'));
+        return [$content, do_lang('COMCODE_PAGES')];
     }
 }

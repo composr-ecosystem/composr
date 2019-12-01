@@ -27,11 +27,11 @@ class Hook_members_referrals
     public function run($member_id)
     {
         if (!addon_installed('referrals')) {
-            return array();
+            return [];
         }
 
         if ((!has_zone_access(get_member(), 'adminzone')) && ($member_id !== get_member())) {
-            return array();
+            return [];
         }
 
         require_code('files');
@@ -40,7 +40,7 @@ class Hook_members_referrals
 
         $keep = symbol_tempcode('KEEP');
 
-        $ret = array();
+        $ret = [];
 
         $path = get_custom_file_base() . '/text_custom/referrals.txt';
         if (!is_file($path)) {
@@ -57,24 +57,24 @@ class Hook_members_referrals
                 $scheme_title = isset($scheme['title']) ? $scheme['title'] : $ini_file_section_name;
 
                 if (has_zone_access(get_member(), 'adminzone')) {
-                    $ret[] = array(
+                    $ret[] = [
                         'views',
                         do_lang_tempcode('MANUALLY_ADJUST_SCHEME_SETTINGS', escape_html($scheme_title)),
-                        build_url(array('page' => 'admin_referrals', 'type' => 'adjust', 'scheme' => $scheme_name, 'member_id' => $member_id), get_module_zone('admin_referrals')),
+                        build_url(['page' => 'admin_referrals', 'type' => 'adjust', 'scheme' => $scheme_name, 'member_id' => $member_id], get_module_zone('admin_referrals')),
                         'spare/referrals'
-                    );
+                    ];
                 }
 
                 if (!referrer_is_qualified($scheme, $member_id)) {
                     continue;
                 }
 
-                $ret[] = array(
+                $ret[] = [
                     'audit',
                     make_string_tempcode(escape_html($scheme_title)),
                     find_script('referrer_report') . '?scheme=' . urlencode($scheme_name) . '&member_id=' . strval($member_id) . $keep->evaluate(),
                     'spare/referrals'
-                );
+                ];
             }
         }
 
@@ -90,11 +90,11 @@ class Hook_members_referrals
     public function get_tracking_details($member_id)
     {
         if (!addon_installed('referrals')) {
-            return array();
+            return [];
         }
 
         if ((!has_zone_access(get_member(), 'adminzone')) && ($member_id !== get_member())) {
-            return array();
+            return [];
         }
 
         require_code('files');
@@ -103,7 +103,7 @@ class Hook_members_referrals
 
         $keep = symbol_tempcode('KEEP');
 
-        $ret = array();
+        $ret = [];
 
         $path = get_custom_file_base() . '/text_custom/referrals.txt';
         if (!is_file($path)) {
@@ -133,11 +133,11 @@ class Hook_members_referrals
 
         if (has_privilege(get_member(), 'member_maintenance')) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-            $referrer = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', array('i_email_address' => $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id)));
+            $referrer = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id)]);
             if ($referrer !== null) {
                 $referrer_username = $GLOBALS['FORUM_DRIVER']->get_username($referrer, false, USERNAME_DEFAULT_DELETED);
                 $referrer_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($referrer, false);
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'id', array('q_referee' => $member_id));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('referees_qualified_for', 'id', ['q_referee' => $member_id]);
                 $link = do_lang_tempcode(($test === null) ? 'MEMBER_REFERRED_BY_NONQUALIFIED' : 'MEMBER_REFERRED_BY_QUALIFIED', escape_html($username), escape_html($referrer_username), escape_html($referrer_url));
                 $ret[do_lang('TYPE_REFERRER')] = $link;
             } else {

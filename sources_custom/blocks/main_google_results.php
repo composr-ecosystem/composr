@@ -25,14 +25,14 @@ class Block_main_google_results
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Kamen / Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_google_results
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -71,9 +71,9 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        return do_template('BLOCK_MAIN_GOOGLE_SEARCH_RESULTS', array(
+        return do_template('BLOCK_MAIN_GOOGLE_SEARCH_RESULTS', [
             '_GUID' => 'e2bd264817a6ad7852918583986bd373',
             'BLOCK_ID' => $block_id,
-        ));
+        ]);
     }
 }

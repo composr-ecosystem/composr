@@ -57,10 +57,10 @@ class Hook_rss_iotds
             $category = '';
             $category_raw = '';
 
-            $view_url = build_url(array('page' => 'iotds', 'type' => 'view', 'id' => $row['id']), get_module_zone('iotds'), array(), false, false, true);
+            $view_url = build_url(['page' => 'iotds', 'type' => 'view', 'id' => $row['id']], get_module_zone('iotds'), [], false, false, true);
 
             if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => 'a8ccf291cb27c8ffb34f023416b85664', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => 'a8ccf291cb27c8ffb34f023416b85664', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
@@ -69,7 +69,7 @@ class Hook_rss_iotds
             $enclosure_url = ensure_thumbnail($row['url'], $row['thumb_url'], 'iotds', 'iotd', $row['id']);
             list($enclosure_length, $enclosure_type) = get_enclosure_details($row['url'], $enclosure_url);
 
-            $content->attach(do_template($prefix . 'ENTRY', array(
+            $content->attach(do_template($prefix . 'ENTRY', [
                 'ENCLOSURE_URL' => $enclosure_url,
                 'ENCLOSURE_LENGTH' => $enclosure_length,
                 'ENCLOSURE_TYPE' => $enclosure_type,
@@ -84,10 +84,10 @@ class Hook_rss_iotds
                 'ID' => $id,
                 'NEWS' => $news,
                 'DATE' => $news_date,
-            ), null, false, null, '.xml', 'xml'));
+            ], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('iotds');
-        return array($content, do_lang('IOTDS'));
+        return [$content, do_lang('IOTDS')];
     }
 }

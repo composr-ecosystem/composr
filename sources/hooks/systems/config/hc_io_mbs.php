@@ -30,7 +30,7 @@ class Hook_config_hc_io_mbs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_IO_MBS',
             'type' => 'float',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_io_mbs
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

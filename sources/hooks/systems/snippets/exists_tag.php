@@ -36,7 +36,7 @@ class Hook_snippet_exists_tag
 
         $val = get_param_string('name');
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', array('tag_tag' => $val));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $val]);
         if ($test === null) {
             return new Tempcode();
         }

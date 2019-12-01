@@ -25,7 +25,7 @@ class Module_booking
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -60,7 +60,7 @@ class Module_booking
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('bookable', array(
+            $GLOBALS['SITE_DB']->create_table('bookable', [
                 'id' => '*AUTO',
                 //'num_available' => 'INTEGER',      Implied by number of bookable_codes attached to bookable_id
                 'title' => 'SHORT_TRANS__COMCODE',
@@ -87,9 +87,9 @@ class Module_booking
                 'active_to_day' => '?SHORT_INTEGER',
                 'active_to_month' => '?SHORT_INTEGER',
                 'active_to_year' => '?INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('bookable_blacked', array(
+            $GLOBALS['SITE_DB']->create_table('bookable_blacked', [
                 'id' => '*AUTO',
                 'blacked_from_day' => 'SHORT_INTEGER',
                 'blacked_from_month' => 'SHORT_INTEGER',
@@ -98,19 +98,19 @@ class Module_booking
                 'blacked_to_month' => 'SHORT_INTEGER',
                 'blacked_to_year' => 'INTEGER',
                 'blacked_explanation' => 'LONG_TRANS__COMCODE',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('bookable_blacked_for', array(
+            $GLOBALS['SITE_DB']->create_table('bookable_blacked_for', [
                 'bookable_id' => '*AUTO_LINK',
                 'blacked_id' => '*AUTO_LINK',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('bookable_codes', array(
+            $GLOBALS['SITE_DB']->create_table('bookable_codes', [
                 'bookable_id' => '*AUTO_LINK',
                 'code' => '*ID_TEXT', // (room numbers, seats, etc) ; can be auto-generated if requested
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('bookable_supplement', array(
+            $GLOBALS['SITE_DB']->create_table('bookable_supplement', [
                 'id' => '*AUTO',
                 'price' => 'REAL',
                 'price_is_per_period' => 'BINARY', // If this is the case, the supplement will actually be repeated out in separate records, each tied to a booking for that date
@@ -119,14 +119,14 @@ class Module_booking
                 'promo_code' => 'ID_TEXT', // If non-blank, the user must enter this promo-code to purchase this
                 'supports_notes' => 'BINARY',
                 'sort_order' => 'INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('bookable_supplement_for', array(
+            $GLOBALS['SITE_DB']->create_table('bookable_supplement_for', [
                 'supplement_id' => '*AUTO_LINK',
                 'bookable_id' => '*AUTO_LINK',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('booking', array(
+            $GLOBALS['SITE_DB']->create_table('booking', [
                 'id' => '*AUTO',
                 'bookable_id' => 'AUTO_LINK',
                 'member_id' => 'MEMBER',
@@ -142,14 +142,14 @@ class Module_booking
                 'customer_email' => 'SHORT_TEXT',
                 'customer_mobile' => 'SHORT_TEXT',
                 'customer_phone' => 'SHORT_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('booking_supplement', array(
+            $GLOBALS['SITE_DB']->create_table('booking_supplement', [
                 'booking_id' => '*AUTO_LINK',
                 'supplement_id' => '*AUTO_LINK',
                 'quantity' => 'INTEGER',
                 'notes' => 'LONG_TEXT',
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
@@ -160,7 +160,7 @@ class Module_booking
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
-            $GLOBALS['SITE_DB']->create_index('booking', 'member_id', array('member_id'));
+            $GLOBALS['SITE_DB']->create_index('booking', 'member_id', ['member_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
@@ -183,9 +183,9 @@ class Module_booking
             return null;
         }
 
-        return array(
-            'browse' => array('CREATE_BOOKING', 'booking/book'),
-        );
+        return [
+            'browse' => ['CREATE_BOOKING', 'booking/book'],
+        ];
     }
 
     public $title;
@@ -293,7 +293,7 @@ class Module_booking
         $date_from = time();
         $date_to = time();
 
-        $categories = array();
+        $categories = [];
         foreach ($bookables as $bookable) {
             $active_from = mktime(0, 0, 0, $bookable['active_from_month'], $bookable['active_from_day'], $bookable['active_from_year']);
             $active_to = ($bookable['active_to_year'] === null) ? null : mktime(0, 0, 0, $bookable['active_to_month'], $bookable['active_to_day'], $bookable['active_to_year']);
@@ -315,7 +315,7 @@ class Module_booking
                 $has_single_ranges = true;
             }
 
-            $messages = array();
+            $messages = [];
 
             // Message if not currently active
             if ($active_from > time()) {
@@ -330,10 +330,10 @@ class Module_booking
             // Message about any black-outs within next 6 months
             $blacked = $GLOBALS['SITE_DB']->query_select(
                 'bookable_blacked b JOIN ' . get_table_prefix() . 'bookable_blacked_for f ON f.blacked_id=b.id',
-                array('*'),
-                array(
+                ['*'],
+                [
                     'bookable_id' => $bookable['id'],
-                ),
+                ],
                 'ORDER BY id'
             );
             foreach ($blacked as $black) {
@@ -352,10 +352,10 @@ class Module_booking
             $category = get_translated_text($bookable['categorisation']);
 
             if (!array_key_exists($category, $categories)) {
-                $categories[$category] = array('CATEGORY_TITLE' => $category, 'BOOKABLES' => array());
+                $categories[$category] = ['CATEGORY_TITLE' => $category, 'BOOKABLES' => []];
             }
 
-            $quantity_available = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', array('bookable_id' => $bookable['id']));
+            $quantity_available = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable['id']]);
 
             list($quantity, $date_from, $date_to) = $this->_read_chosen_bookable_settings($bookable);
 
@@ -369,7 +369,7 @@ class Module_booking
                 $has_details = true;
             }
 
-            $categories[$category]['BOOKABLES'][] = array(
+            $categories[$category]['BOOKABLES'][] = [
                 'BOOKABLE_ID' => strval($bookable['id']),
                 'BOOKABLE_QUANTITY_AVAILABLE' => strval($quantity_available),
                 'BOOKABLE_MESSAGES' => $messages,
@@ -393,14 +393,14 @@ class Module_booking
                 'BOOKABLE_DATE_TO_DAY' => date('d', $date_to),
                 'BOOKABLE_DATE_TO_MONTH' => date('m', $date_to),
                 'BOOKABLE_DATE_TO_YEAR' => date('Y', $date_to),
-            );
+            ];
             // Wrong - we're sorting by sort_order  sort_maps_by($categories[$category]['BOOKABLES'], 'BOOKABLE_TITLE', false, true);
         }
 
         cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
 
         // Messages shared by all bookables will be transferred so as to avoid repetition
-        $shared_messages = array();
+        $shared_messages = [];
         $done_one = false;
         foreach ($categories as $category_title => $bookables) {
             foreach ($bookables['BOOKABLES'] as $i => $bookable) {
@@ -427,11 +427,11 @@ class Module_booking
             }
         }
 
-        return do_template('BOOKING_START_SCREEN', array(
+        return do_template('BOOKING_START_SCREEN', [
             '_GUID' => '12787a01e3408b56f61f4b41cefa1325',
             'TITLE' => $this->title,
             'CATEGORIES' => $categories,
-            'POST_URL' => build_url(array('page' => '_SELF', 'type' => 'flesh_out', 'usergroup' => get_param_integer('usergroup', null)), '_SELF'),
+            'POST_URL' => build_url(['page' => '_SELF', 'type' => 'flesh_out', 'usergroup' => get_param_integer('usergroup', null)], '_SELF'),
             'SHARED_MESSAGES' => $shared_messages,
             'HAS_DATE_RANGES' => $has_date_ranges,
             'HAS_SINGLE_DATES' => $has_single_dates,
@@ -451,7 +451,7 @@ class Module_booking
             'DATE_TO_YEAR' => date('Y', $date_to),
             'HIDDEN' => build_keep_post_fields(),
             'CURRENCY' => get_option('currency'),
-        ));
+        ]);
     }
 
     /**
@@ -478,7 +478,7 @@ class Module_booking
             $date_to = $date_from;
         }
 
-        return array($quantity, $date_from, $date_to);
+        return [$quantity, $date_from, $date_to];
     }
 
     /**
@@ -490,35 +490,35 @@ class Module_booking
     {
         // Check booking: redirect to last step as re-entrant if not valid
         $request = get_booking_request_from_form();
-        $test = check_booking_dates_available($request, array());
+        $test = check_booking_dates_available($request, []);
         if ($test !== null) {
             attach_message($test, 'warn');
             return $this->choose_bookables_and_dates();
         }
 
-        $bookables = array();
+        $bookables = [];
 
         $found = false;
 
-        $bookable_rows = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array(), 'ORDER BY sort_order');
+        $bookable_rows = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], [], 'ORDER BY sort_order');
         foreach ($bookable_rows as $bookable_row) {
             if (post_param_integer('bookable_' . strval($bookable_row['id']) . '_quantity', 0) > 0) {
                 $found = true;
 
-                $supplements = array();
-                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', array('a.*'), array('bookable_id' => $bookable_row['id']), 'ORDER BY sort_order');
+                $supplements = [];
+                $supplement_rows = $GLOBALS['SITE_DB']->query_select('bookable_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement_for b ON a.id=b.supplement_id', ['a.*'], ['bookable_id' => $bookable_row['id']], 'ORDER BY sort_order');
                 foreach ($supplement_rows as $supplement_row) {
-                    $supplements[] = array(
+                    $supplements[] = [
                         'SUPPLEMENT_ID' => strval($supplement_row['id']),
                         'SUPPLEMENT_TITLE' => get_translated_tempcode('bookable_supplement', $supplement_row, 'title'),
                         'SUPPLEMENT_SUPPORTS_QUANTITY' => $supplement_row['supports_quantities'] == 1,
                         'SUPPLEMENT_QUANTITY' => strval(post_param_integer('bookable_' . strval($bookable_row['id']) . '_supplement_' . strval($supplement_row['id']) . '_quantity', 0)),
                         'SUPPLEMENT_SUPPORTS_NOTES' => $supplement_row['supports_notes'] == 1,
                         'SUPPLEMENT_NOTES' => post_param_string('bookable_' . strval($bookable_row['id']) . '_supplement_' . strval($supplement_row['id']) . '_notes', ''),
-                    );
+                    ];
                 }
 
-                $bookables[] = array(
+                $bookables[] = [
                     'BOOKABLE_ID' => strval($bookable_row['id']),
                     'BOOKABLE_TITLE' => get_translated_tempcode('bookable', $bookable_row, 'title'),
                     'BOOKABLE_SUPPORTS_NOTES' => $bookable_row['supports_notes'] == 1,
@@ -526,7 +526,7 @@ class Module_booking
                     'BOOKABLE_SUPPLEMENTS' => $supplements,
 
                     'BOOKABLE_QUANTITY' => strval(post_param_integer('bookable_' . strval($bookable_row['id']) . '_quantity')), // Can select up to this many supplements
-                );
+                ];
             }
         }
 
@@ -536,16 +536,16 @@ class Module_booking
 
         require_javascript('checking');
 
-        return do_template('BOOKING_FLESH_OUT_SCREEN', array(
+        return do_template('BOOKING_FLESH_OUT_SCREEN', [
             '_GUID' => '255280fa4f9bb37e3dae76f5bca46ace',
             'TITLE' => $this->title,
             'BOOKABLES' => $bookables,
             'PRICE' => float_format(find_booking_price($request)),
             'CURRENCY' => get_option('currency'),
-            'POST_URL' => build_url(array('page' => '_SELF', 'type' => 'account', 'usergroup' => get_param_integer('usergroup', null)), '_SELF'),
-            'BACK_URL' => build_url(array('page' => '_SELF', 'type' => 'browse', 'usergroup' => get_param_integer('usergroup', null)), '_SELF'),
+            'POST_URL' => build_url(['page' => '_SELF', 'type' => 'account', 'usergroup' => get_param_integer('usergroup', null)], '_SELF'),
+            'BACK_URL' => build_url(['page' => '_SELF', 'type' => 'browse', 'usergroup' => get_param_integer('usergroup', null)], '_SELF'),
             'HIDDEN' => build_keep_post_fields(),
-        ));
+        ]);
     }
 
     /**
@@ -562,7 +562,7 @@ class Module_booking
             }
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'done'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'done'], '_SELF');
 
         $hidden = build_keep_post_fields();
 
@@ -576,7 +576,7 @@ class Module_booking
             $fields->attach(form_input_line(do_lang_tempcode('YOUR_MOBILE_NUMBER'), '', 'customer_mobile', '', false));
             $fields->attach(form_input_line(do_lang_tempcode('YOUR_PHONE_NUMBER'), '', 'customer_phone', '', true));
             $submit_name = do_lang_tempcode('BOOK');
-            $form = do_template('FORM', array(
+            $form = do_template('FORM', [
                 '_GUID' => '18e831a00ac918b06c7f761c7d7d5fb0',
                 'TEXT' => do_lang_tempcode('A_FEW_DETAILS'),
                 'HIDDEN' => $hidden,
@@ -584,13 +584,13 @@ class Module_booking
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => $submit_name,
                 'URL' => $url,
-            ));
+            ]);
         } else {
             // Integrated signup
             $form = cns_join_form($url, true, false, false);
         }
 
-        return do_template('BOOKING_JOIN_OR_LOGIN_SCREEN', array('_GUID' => 'b6e499588de8e2136122949478bac2e7', 'TITLE' => $this->title, 'FORM' => $form, 'HIDDEN' => $hidden));
+        return do_template('BOOKING_JOIN_OR_LOGIN_SCREEN', ['_GUID' => 'b6e499588de8e2136122949478bac2e7', 'TITLE' => $this->title, 'FORM' => $form, 'HIDDEN' => $hidden]);
     }
 
     /**
@@ -602,7 +602,7 @@ class Module_booking
     {
         // Finish join operation, if applicable
         if ((is_guest()) && (get_option('member_booking_only') == '1')) {
-            list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, array('email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0'));
+            list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, ['email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0']);
             if (!$messages->is_empty()) {
                 return inform_screen($this->title, $messages);
             }
@@ -615,7 +615,7 @@ class Module_booking
         }
 
         // Save
-        $test = save_booking_form_to_db($request, array());
+        $test = save_booking_form_to_db($request, []);
         if ($test === null) {
             warn_exit(do_lang_tempcode('BOOKING_ERROR'));
         }

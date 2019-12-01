@@ -30,7 +30,7 @@ class Hook_import_spreadsheet_members
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['product'] = 'Members (spreadsheet files)';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'admin_cns_members';

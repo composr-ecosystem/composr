@@ -29,12 +29,12 @@
  */
 function cns_edit_post_template($id, $title, $text, $forum_multi_code, $use_default_forums)
 {
-    $GLOBALS['FORUM_DB']->query_update('f_post_templates', array(
+    $GLOBALS['FORUM_DB']->query_update('f_post_templates', [
         't_title' => $title,
         't_text' => $text,
         't_forum_multi_code' => $forum_multi_code,
         't_use_default_forums' => $use_default_forums,
-    ), array('id' => $id), '', 1);
+    ], ['id' => $id], '', 1);
 
     log_it('EDIT_POST_TEMPLATE', strval($id), $title);
 
@@ -51,12 +51,12 @@ function cns_edit_post_template($id, $title, $text, $forum_multi_code, $use_defa
  */
 function cns_delete_post_template($id)
 {
-    $title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_post_templates', 't_title', array('id' => $id));
+    $title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_post_templates', 't_title', ['id' => $id]);
     if ($title === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post_template'));
     }
 
-    $GLOBALS['FORUM_DB']->query_delete('f_post_templates', array('id' => $id), '', 1);
+    $GLOBALS['FORUM_DB']->query_delete('f_post_templates', ['id' => $id], '', 1);
 
     log_it('DELETE_POST_TEMPLATE', strval($id), $title);
 
@@ -75,7 +75,7 @@ function cns_delete_post_template($id)
 function import_custom_emoticons($remove_old_core = false)
 {
     if ($remove_old_core) {
-        $codes = array(    // All except    :P  ;)  :(  :)  :|
+        $codes = [    // All except    :P  ;)  :(  :)  :|
                            ':\'(',
                            ':dry:',
                            ':$',
@@ -86,15 +86,15 @@ function import_custom_emoticons($remove_old_core = false)
                            ':thumbs:',
                            ':ninja:',
                            ':o',
-        );
+        ];
         foreach ($codes as $code) {
-            $GLOBALS['FORUM_DB']->query_update('f_emoticons', array('e_relevance_level' => 1), array('e_relevance_level' => 0, 'e_code' => $code), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_emoticons', ['e_relevance_level' => 1], ['e_relevance_level' => 0, 'e_code' => $code], '', 1);
         }
     }
 
     require_code('cns_general_action');
     require_code('images');
-    $core_emoticons = array();
+    $core_emoticons = [];
     $dh = opendir(get_custom_file_base() . '/themes/default/images_custom/cns_emoticons');
     while (($f = readdir($dh)) !== false) {
         if (is_image($f, IMAGE_CRITERIA_WEBSAFE, true)) {
@@ -119,25 +119,25 @@ function import_custom_emoticons($remove_old_core = false)
 function cns_edit_emoticon($old_code, $code, $theme_img_code, $relevance_level, $use_topics, $is_special = 0)
 {
     if ($code != $old_code) {
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', array('e_code' => $code));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $code]);
         if ($test !== null) {
             require_lang('cns');
             warn_exit(do_lang_tempcode('CONFLICTING_EMOTICON_CODE', escape_html($code)));
         }
     }
 
-    $old_theme_img_code = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_theme_img_code', array('e_code' => $old_code));
+    $old_theme_img_code = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_theme_img_code', ['e_code' => $old_code]);
     if ($old_theme_img_code === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $GLOBALS['FORUM_DB']->query_update('f_emoticons', array(
+    $GLOBALS['FORUM_DB']->query_update('f_emoticons', [
         'e_code' => $code,
         'e_theme_img_code' => $theme_img_code,
         'e_relevance_level' => $relevance_level,
         'e_use_topics' => $use_topics,
         'e_is_special' => $is_special,
-    ), array('e_code' => $old_code), '', 1);
+    ], ['e_code' => $old_code], '', 1);
 
     require_code('themes2');
     tidy_theme_img_code($theme_img_code, $old_theme_img_code, 'f_emoticons', 'e_theme_img_code');
@@ -159,12 +159,12 @@ function cns_edit_emoticon($old_code, $code, $theme_img_code, $relevance_level, 
  */
 function cns_delete_emoticon($code)
 {
-    $old_theme_img_code = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_theme_img_code', array('e_code' => $code));
+    $old_theme_img_code = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_theme_img_code', ['e_code' => $code]);
     if ($old_theme_img_code === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $GLOBALS['FORUM_DB']->query_delete('f_emoticons', array('e_code' => $code), '', 1);
+    $GLOBALS['FORUM_DB']->query_delete('f_emoticons', ['e_code' => $code], '', 1);
 
     require_code('themes2');
     tidy_theme_img_code(null, $old_theme_img_code, 'f_emoticons', 'e_theme_img_code');
@@ -194,21 +194,21 @@ function cns_delete_emoticon($code)
  */
 function cns_edit_welcome_email($id, $name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type)
 {
-    $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', array('id' => $id));
+    $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    $_text = $GLOBALS['SITE_DB']->query_select_value('f_welcome_emails', 'w_text', array('id' => $id));
-    $map = array(
+    $_text = $GLOBALS['SITE_DB']->query_select_value('f_welcome_emails', 'w_text', ['id' => $id]);
+    $map = [
         'w_name' => $name,
         'w_newsletter' => $newsletter,
         'w_send_time' => $send_time,
         'w_usergroup' => $usergroup,
         'w_usergroup_type' => $usergroup_type,
-    );
+    ];
     $map += lang_remap('w_subject', $_subject, $subject);
     $map += lang_remap('w_text', $_text, $text);
-    $GLOBALS['SITE_DB']->query_update('f_welcome_emails', $map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('f_welcome_emails', $map, ['id' => $id], '', 1);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -225,13 +225,13 @@ function cns_edit_welcome_email($id, $name, $subject, $text, $send_time, $newsle
  */
 function cns_delete_welcome_email($id)
 {
-    $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', array('id' => $id));
+    $_subject = $GLOBALS['SITE_DB']->query_select_value_if_there('f_welcome_emails', 'w_subject', ['id' => $id]);
     if ($_subject === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
-    $_text = $GLOBALS['SITE_DB']->query_select_value('f_welcome_emails', 'w_text', array('id' => $id));
+    $_text = $GLOBALS['SITE_DB']->query_select_value('f_welcome_emails', 'w_text', ['id' => $id]);
 
-    $GLOBALS['SITE_DB']->query_delete('f_welcome_emails', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('f_welcome_emails', ['id' => $id], '', 1);
     delete_lang($_subject);
     delete_lang($_text);
 
@@ -288,12 +288,12 @@ function cns_mod_log_it($the_type, $param_a = '', $param_b = '', $reason = '', $
     require_code('autosave');
     clear_cms_autosave();
 
-    return $GLOBALS['FORUM_DB']->query_insert('f_moderator_logs', array(
+    return $GLOBALS['FORUM_DB']->query_insert('f_moderator_logs', [
         'l_the_type' => $the_type,
         'l_param_a' => $param_a,
         'l_param_b' => $param_b,
         'l_date_and_time' => $timestamp,
         'l_reason' => $reason,
         'l_by' => $by,
-    ), true);
+    ], true);
 }

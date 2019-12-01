@@ -31,7 +31,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Publish addons';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '06eba6d4c63652892ec737c96ccaf3fa', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '06eba6d4c63652892ec737c96ccaf3fa', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 $title = get_screen_title('Publish addons', false);
@@ -135,7 +135,7 @@ function publish_addon($addon_name, $version_branch, $cat_id)
 
     $fsize = filesize(get_file_base() . '/' . urldecode($addon_url));
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', array('url' => $addon_url));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
         $tar = tar_open($from, 'rb');
         $info_file = tar_get_file($tar, 'addon.inf', true);
@@ -186,7 +186,7 @@ function publish_theme($file, $version_branch, $cat_id)
 
     $fsize = filesize(get_file_base() . '/' . urldecode($addon_url));
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', array('url' => $addon_url));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $addon_url]);
     if ($test === null) {
         $tar = tar_open($from, 'rb');
         $info_file = tar_get_file($tar, 'addon.inf', true);

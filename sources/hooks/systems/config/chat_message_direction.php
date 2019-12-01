@@ -30,7 +30,7 @@ class Hook_config_chat_message_direction
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_MESSAGE_DIRECTION',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -42,7 +42,7 @@ class Hook_config_chat_message_direction
             'public' => true,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

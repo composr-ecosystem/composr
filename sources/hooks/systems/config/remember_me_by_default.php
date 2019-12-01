@@ -30,7 +30,7 @@ class Hook_config_remember_me_by_default
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REMEMBER_ME_BY_DEFAULT',
             'type' => 'tick',
             'category' => (get_forum_type() == 'cns') ? 'USERS' : 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_remember_me_by_default
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

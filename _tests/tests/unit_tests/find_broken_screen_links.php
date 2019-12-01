@@ -27,19 +27,19 @@ class find_broken_screen_links_test_set extends cms_test_case
     {
         cms_disable_time_limit();
 
-        $found = array();
+        $found = [];
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
-            $num_matches = preg_match_all("#build_url\(array\('page'\s*=>\s*'(\w+)',\s*'type'\s*=>\s*'(\w+)'#", $c, $matches);
+            $matches = [];
+            $num_matches = preg_match_all("#build_url\(\['page'\s*=>\s*'(\w+)',\s*'type'\s*=>\s*'(\w+)'#", $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $page = $matches[1][$i];
                 $type = $matches[2][$i];
                 $all = $matches[0][$i];
-                $found[$all] = array($page, $type); // To de-duplicate
+                $found[$all] = [$page, $type]; // To de-duplicate
             }
         }
 
@@ -59,7 +59,7 @@ class find_broken_screen_links_test_set extends cms_test_case
                 }
                 $c2 = cms_file_get_contents_safe($module_path);
                 if (strpos($c2, "'{$type}'") === false) {
-                    if ((strpos($c2, 'extends Standard_crud_module') !== false) && (in_array($type, array('add', '_add', 'edit', '_edit', '__edit', 'add_category', '_add_category', 'edit_category', '_edit_category', '__edit_category', 'add_other', '_add_other', 'edit_other', '_edit_other', '__edit_other')))) {
+                    if ((strpos($c2, 'extends Standard_crud_module') !== false) && (in_array($type, ['add', '_add', 'edit', '_edit', '__edit', 'add_category', '_add_category', 'edit_category', '_edit_category', '__edit_category', 'add_other', '_add_other', 'edit_other', '_edit_other', '__edit_other']))) {
                         continue;
                     }
 

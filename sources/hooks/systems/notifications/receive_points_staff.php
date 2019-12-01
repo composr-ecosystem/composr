@@ -44,11 +44,11 @@ class Hook_notification_receive_points_staff extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('points')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['receive_points_staff'] = array(do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_receive_points_staff'));
+        $list = [];
+        $list['receive_points_staff'] = [do_lang('ACTIVITY'), do_lang('points:NOTIFICATION_TYPE_receive_points_staff')];
         return $list;
     }
 }

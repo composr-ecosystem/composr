@@ -30,7 +30,7 @@ class Hook_config_taxcloud_api_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAXCLOUD_API_ID',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_taxcloud_api_id
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

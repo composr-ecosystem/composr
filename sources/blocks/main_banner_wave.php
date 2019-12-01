@@ -30,14 +30,14 @@ class Block_main_banner_wave
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'max', 'name', 'region');
+        $info['parameters'] = ['param', 'max', 'name', 'region'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_banner_wave
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : '',
@@ -95,7 +95,7 @@ PHP;
             $myquery = banner_select_sql($b_type, false, null, $region) . ' ORDER BY name';
             $banners = $GLOBALS['SITE_DB']->query($myquery, 200/*just in case of insane amounts of data*/);
         } else {
-            $banners = $GLOBALS['SITE_DB']->query_select('banners', array('*'), array('name' => $name), '', 1);
+            $banners = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ['name' => $name], '', 1);
         }
 
         if (count($banners) > $max) {
@@ -106,16 +106,16 @@ PHP;
         $assemble = new Tempcode();
         foreach ($banners as $i => $banner) {
             $banner = show_banner($banner['name'], $banner['title_text'], get_translated_tempcode('banners', $banner, 'caption'), $banner['direct_code'], $banner['img_url'], '', $banner['site_url'], $banner['b_type'], $banner['submitter']);
-            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP', array('_GUID' => 'bbb0851f015305da014f0a55006770f5', 'TYPE' => $b_type, 'BANNER' => $banner, 'MAX' => strval($max), 'REGION' => $region)));
+            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP', ['_GUID' => 'bbb0851f015305da014f0a55006770f5', 'TYPE' => $b_type, 'BANNER' => $banner, 'MAX' => strval($max), 'REGION' => $region]));
         }
 
-        return do_template('BLOCK_MAIN_BANNER_WAVE', array(
+        return do_template('BLOCK_MAIN_BANNER_WAVE', [
             '_GUID' => '8bced3f44675de9ef0bd5f4d286aea76',
             'BLOCK_ID' => $block_id,
             'TYPE' => $b_type,
             'ASSEMBLE' => $assemble,
             'MAX' => strval($max),
             'REGION' => $region,
-        ));
+        ]);
     }
 }

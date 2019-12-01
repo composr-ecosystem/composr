@@ -36,7 +36,7 @@ class Hook_unvalidated_banners
 
         require_lang('banners');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'banners';
         $info['db_identifier'] = 'name';
         $info['db_validated'] = 'validated';

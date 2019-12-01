@@ -42,7 +42,7 @@ class Hook_comcode_link_handler_media_rendering
     public function bind($url, $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, $highlight_bits)
     {
         require_code('media_renderer');
-        $ret = render_media_url($url, $url, array('context' => 'comcode_link', 'likely_not_framed' => '1'), $as_admin, $source_member);
+        $ret = render_media_url($url, $url, ['context' => 'comcode_link', 'likely_not_framed' => '1'], $as_admin, $source_member);
         return $ret;
     }
 }

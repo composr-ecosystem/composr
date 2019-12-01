@@ -31,9 +31,9 @@ class Hook_cns_cpf_filter_points
     public function to_enable()
     {
         if (!addon_installed('points')) {
-            return array();
+            return [];
         }
 
-        return array('points_used' => true, 'gift_points_used' => true, 'points_gained_given' => true, 'points_gained_visiting' => true, 'points_gained_rating' => true, 'points_gained_voting' => true);
+        return ['points_used' => true, 'gift_points_used' => true, 'points_gained_given' => true, 'points_gained_visiting' => true, 'points_gained_rating' => true, 'points_gained_voting' => true];
     }
 }

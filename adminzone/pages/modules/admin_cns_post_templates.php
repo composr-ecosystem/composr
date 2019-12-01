@@ -60,9 +60,9 @@ class Module_admin_cns_post_templates extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array(do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('POST_TEMPLATES'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/post_templates'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('POST_TEMPLATES'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_post_templates', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/post_templates'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -97,14 +97,14 @@ class Module_admin_cns_post_templates extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_support_desk');
 
-        breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
 
         if ($type == 'import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('POST_TEMPLATES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('POST_TEMPLATES')]]);
         }
 
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('POST_TEMPLATES')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES_PT'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('POST_TEMPLATES')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES_PT')]]);
         }
 
         if ($type == 'import' || $type == '_import') {
@@ -154,11 +154,11 @@ class Module_admin_cns_post_templates extends Standard_crud_module
         return do_next_manager(
             get_screen_title('POST_TEMPLATES'),
             comcode_lang_string('DOC_POST_TEMPLATES'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_POST_TEMPLATE')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_POST_TEMPLATE')),
-                array('admin/import', array('_SELF', array('type' => 'import'), '_SELF'), do_lang('IMPORT_STOCK_RESPONSES_PT')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_POST_TEMPLATE')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_POST_TEMPLATE')],
+                ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_STOCK_RESPONSES_PT')],
+            ],
             do_lang('POST_TEMPLATES')
         );
     }
@@ -170,7 +170,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      */
     public function import()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import', 'uploading' => 1), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_import', 'uploading' => 1], '_SELF');
 
         $fields = new Tempcode();
 
@@ -191,7 +191,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
 
         $text = paragraph(do_lang_tempcode('DESCRIPTION_IMPORT_STOCK_RESPONSES_PT'));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '7089deefe20d3917020610768e0f7f24',
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -200,7 +200,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => '',
-        ));
+        ]);
     }
 
     /**
@@ -224,7 +224,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
 
         $target_forum = read_multi_code('forum_multi_code');
 
-        $post_templates = $GLOBALS['FORUM_DB']->query_select('f_post_templates', array('id'), array('t_forum_multi_code' => $target_forum));
+        $post_templates = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['id'], ['t_forum_multi_code' => $target_forum]);
         require_code('cns_general_action2');
         foreach ($post_templates as $post_template) {
             cns_delete_post_template($post_template['id']);
@@ -328,7 +328,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
     {
         require_code('cns_general_action');
 
-        $name = do_lang('STOCK_RESPONSE_PT', ucwords(str_replace(array('/', '\\'), array(': ', ': '), preg_replace('#\.txt$#', '', $path))));
+        $name = do_lang('STOCK_RESPONSE_PT', ucwords(str_replace(['/', '\\'], [': ', ': '], preg_replace('#\.txt$#', '', $path))));
 
         $data = fix_bad_unicode($data);
 
@@ -350,31 +350,31 @@ class Module_admin_cns_post_templates extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             't_title' => do_lang_tempcode('TITLE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $result_entries->attach(results_entry(array($row['t_title'], protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))), true));
+            $result_entries->attach(results_entry([$row['t_title'], protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
         $search_url = null;
         $archive_url = null;
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
     }
 
     /**
@@ -394,7 +394,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
         $fields->attach(cns_get_forum_multi_code_field($forum_multi_code));
         $fields->attach(form_input_tick(do_lang_tempcode('DEFAULT'), do_lang_tempcode('USE_AS_DEFAULT_ON_APPLICABLE_FORUMS'), 'use_default_forums', $use_default_forums == 1));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -405,7 +405,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['FORUM_DB']->query_select('f_post_templates', array('*'), array('id' => intval($id)), '', 1);
+        $m = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post_template'));
         }

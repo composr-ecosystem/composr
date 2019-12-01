@@ -36,10 +36,10 @@ class Hook_commandr_command_whois
         require_code('lookup');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('whois', array('h', 's', 'm', 'f', 'o'), array(true)), '', '');
+            return ['', do_command_help('whois', ['h', 's', 'm', 'f', 'o'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'whois'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'whois')];
             }
 
             $start = (array_key_exists('s', $options)) ? intval($options['s']) : 0;
@@ -68,19 +68,19 @@ class Hook_commandr_command_whois
             if (addon_installed('securitylogging')) {
                 $all_banned = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query('SELECT ip FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_positive=1 AND (i_ban_until IS NULL OR i_ban_until>' . strval(time()) . ')'));
             } else {
-                $all_banned = array();
+                $all_banned = [];
             }
 
             $ip_list = new Tempcode();
             foreach ($rows as $row) {
                 $date = get_timezoned_date_time($row['date_and_time']);
-                $lookup_url = build_url(array('page' => '_SELF', 'param' => $row['ip']), '_SELF');
-                $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', array('_GUID' => '01e74a2a146dab9a407b23c40f4555ad', 'LOOKUP_URL' => $lookup_url, 'DATE' => $date, '_DATE' => strval($row['date_and_time']), 'IP' => $row['ip'], 'BANNED' => in_array($row['ip'], $all_banned))));
+                $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
+                $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', ['_GUID' => '01e74a2a146dab9a407b23c40f4555ad', 'LOOKUP_URL' => $lookup_url, 'DATE' => $date, '_DATE' => strval($row['date_and_time']), 'IP' => $row['ip'], 'BANNED' => in_array($row['ip'], $all_banned)]));
             }
 
             $stats = get_stats_track($id, $ip, $start, $max, $sortable, $sort_order);
 
-            return array('', commandr_make_normal_html_visible(do_template('COMMANDR_WHOIS', array('_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05', 'STATS' => $stats, 'IP_LIST' => $ip_list, 'ID' => strval($id), 'IP' => $ip, 'NAME' => $name))), '', '');
+            return ['', commandr_make_normal_html_visible(do_template('COMMANDR_WHOIS', ['_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05', 'STATS' => $stats, 'IP_LIST' => $ip_list, 'ID' => strval($id), 'IP' => $ip, 'NAME' => $name])), '', ''];
         }
     }
 }

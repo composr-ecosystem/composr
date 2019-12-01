@@ -30,7 +30,7 @@ class Hook_config_search_cns_members
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_SEARCH_CNS_MEMBERS',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_cns_members
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -31,41 +31,41 @@ class Hook_actionlog_welcome_emails extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('welcome_emails')) {
-            return array();
+            return [];
         }
 
         require_lang('cns_welcome_emails');
 
-        return array(
-            'ADD_WELCOME_EMAIL' => array(
+        return [
+            'ADD_WELCOME_EMAIL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'welcome_email',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_WELCOME_EMAIL' => '_SEARCH:admin_cns_welcome_emails:_edit:{ID}',
                     'ADD_WELCOME_EMAIL' => '_SEARCH:admin_cns_welcome_emails:add',
-                ),
-            ),
-            'EDIT_WELCOME_EMAIL' => array(
+                ],
+            ],
+            'EDIT_WELCOME_EMAIL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'welcome_email',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_WELCOME_EMAIL' => '_SEARCH:admin_cns_welcome_emails:_edit:{ID}',
                     'ADD_WELCOME_EMAIL' => '_SEARCH:admin_cns_welcome_emails:add',
-                ),
-            ),
-            'DELETE_WELCOME_EMAIL' => array(
+                ],
+            ],
+            'DELETE_WELCOME_EMAIL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'welcome_email',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_WELCOME_EMAIL' => '_SEARCH:admin_cns_welcome_emails:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

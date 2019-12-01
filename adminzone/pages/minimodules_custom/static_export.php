@@ -24,7 +24,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Export static site (TAR file)';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '517159d4bde58ca67392922f3a53c0d7', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '517159d4bde58ca67392922f3a53c0d7', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 disable_php_memory_limit();
@@ -72,7 +72,7 @@ if ((get_param_integer('do__headers', 1) == 1) && (get_param_integer('dir', 0) =
 }
 
 global $STATIC_EXPORT_TAR, $STATIC_EXPORT_WARNINGS;
-$STATIC_EXPORT_WARNINGS = array();
+$STATIC_EXPORT_WARNINGS = [];
 if (get_forum_type() != 'none') {
     $STATIC_EXPORT_WARNINGS[] = 'Not on \'none\' forum driver, you may possibly still have some bundled login links etc to remove';
 }
@@ -114,20 +114,20 @@ if (get_param_integer('save__pages', 1) == 1) {
 
 // Other media
 if (get_param_integer('save__uploads', 1) == 1) {
-    $subpaths = array();
+    $subpaths = [];
     foreach (get_directory_contents(get_custom_file_base() . '/uploads', '', IGNORE_ACCESS_CONTROLLERS, false, false) as $subpath) {
         if (($subpath != 'downloads') && ($subpath != 'attachments') && ($subpath != 'attachments_thumbs')) {
-            $subpaths = array_merge($subpaths, array('uploads/' . $subpath));
+            $subpaths = array_merge($subpaths, ['uploads/' . $subpath]);
         }
     }
-    $subpaths = array_merge($subpaths, array('themes/default/templates_cached', 'themes/default/images', 'themes/default/images_custom'));
+    $subpaths = array_merge($subpaths, ['themes/default/templates_cached', 'themes/default/images', 'themes/default/images_custom']);
     $theme = $GLOBALS['FORUM_DRIVER']->get_theme('');
     if ($theme != 'default') {
-        $subpaths = array_merge($subpaths, array('themes/' . $theme . '/templates_cached', 'themes/' . $theme . '/images', 'themes/' . $theme . '/images_custom'));
+        $subpaths = array_merge($subpaths, ['themes/' . $theme . '/templates_cached', 'themes/' . $theme . '/images', 'themes/' . $theme . '/images_custom']);
     }
     foreach ($subpaths as $subpath) {
         if (substr($subpath, -strlen('/templates_cached')) == '/templates_cached') {
-            foreach (get_directory_contents(get_custom_file_base() . '/' . $subpath, '', 0, false, true, array('css', 'js')) as $file) {
+            foreach (get_directory_contents(get_custom_file_base() . '/' . $subpath, '', 0, false, true, ['css', 'js']) as $file) {
                 tar_add_file($STATIC_EXPORT_TAR, $subpath . '/' . $file, get_custom_file_base() . '/' . $subpath . '/' . $file, 0644, time(), true);
             }
         } else {
@@ -147,7 +147,7 @@ $data .= "\n";
 $data .= "\n";
 $directory = $STATIC_EXPORT_TAR['directory'];
 $langs = find_all_langs();
-$done_non_spec = array();
+$done_non_spec = [];
 foreach ($directory as $entry) {
     $dir_name = preg_replace('#^[A-Z][A-Z]/#', '', dirname($entry['path']));
     if ($dir_name == '.') {
@@ -415,7 +415,7 @@ if (trim($post) != "") {
         $mailer_path = get_custom_file_base() . '/pages/html_custom/' . $lang . '/mailer_temp.htm';
         cms_file_put_contents_safe($mailer_path, $mailer_script, FILE_WRITE_FIX_PERMISSIONS);
         $session_cookie_id = get_session_cookie();
-        $data = http_get_contents(static_evaluate_tempcode(build_url(array('page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null), '', array(), false, false, true)), array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => array($session_cookie_id => get_secure_random_string())));
+        $data = http_get_contents(static_evaluate_tempcode(build_url(['page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null], '', [], false, false, true)), ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => [$session_cookie_id => get_secure_random_string()]]);
         unlink($mailer_path);
         $data = preg_replace('#<title>.*</title>#', '<title>' . escape_html(get_site_name()) . '</title>', $data);
         $relative_root = (count($langs) != 1) ? '../' : '';
@@ -428,7 +428,7 @@ tar_add_file($STATIC_EXPORT_TAR, 'robots.txt', 'User-agent: *' . "\n" . $robots_
 
 // Add warnings file
 if (get_param_integer('save__warnings', 1) == 1) {
-    if ($STATIC_EXPORT_WARNINGS != array()) {
+    if ($STATIC_EXPORT_WARNINGS != []) {
         tar_add_file($STATIC_EXPORT_TAR, '_warnings.txt', implode("\n", $STATIC_EXPORT_WARNINGS), 0644, time(), false);
     }
 }

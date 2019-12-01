@@ -30,7 +30,7 @@ class Hook_config_mapquest_geocoding_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAPQUEST_GEOCODE_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -43,7 +43,7 @@ class Hook_config_mapquest_geocoding_api_key
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

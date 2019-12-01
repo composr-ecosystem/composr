@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_lead_metadata_field
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_LEAD_METADATA_FIELD',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_lead_metadata_field
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

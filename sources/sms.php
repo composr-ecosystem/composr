@@ -125,7 +125,7 @@ END;
         require_code('character_sets');
         $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
 
-        $result = http_get_contents('http://api.clickatell.com/xml/xml', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => array('data' => $xml)));
+        $result = http_get_contents('http://api.clickatell.com/xml/xml', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => ['data' => $xml]]);
         if (strpos($result, 'fault') !== false) {
             attach_message($result, 'warn', false, true);
             continue;
@@ -133,7 +133,7 @@ END;
 
         $num_sent++;
 
-        $GLOBALS['SITE_DB']->query_insert('sms_log', array('s_trigger_ip' => get_ip_address(2), 's_member_id' => $to_member, 's_time' => time()));
+        $GLOBALS['SITE_DB']->query_insert('sms_log', ['s_trigger_ip' => get_ip_address(2), 's_member_id' => $to_member, 's_time' => time()]);
     }
 
     return $num_sent;

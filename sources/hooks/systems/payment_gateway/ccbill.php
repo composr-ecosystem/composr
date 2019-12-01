@@ -31,14 +31,14 @@ class Hook_payment_gateway_ccbill
     //  your encryption key is the Composr "Gateway VPN password".
     //  create a form with dynamic pricing from the form admin and enter its code name as the "Gateway digest code". You can optionally enter two values separated by a comma; the first one will be used for simple transactions and the second for subscriptions.
 
-    protected $length_unit_to_days = array(
+    protected $length_unit_to_days = [
         'd' => 1,
         'w' => 7,
         'm' => 30,
         'y' => 365,
-    );
+    ];
 
-    protected $currency_numeric_to_alphabetic_code = array(
+    protected $currency_numeric_to_alphabetic_code = [
         // Currencies supported by CCBill
         840 => 'USD',
         978 => 'EUR',
@@ -46,9 +46,9 @@ class Hook_payment_gateway_ccbill
         124 => 'CAD',
         36 => 'AUD',
         392 => 'JPY',
-    );
+    ];
 
-    protected $currency_alphabetic_to_numeric_code = array(
+    protected $currency_alphabetic_to_numeric_code = [
         // Currencies supported by CCBill
         'USD' => 840,
         'EUR' => 978,
@@ -56,7 +56,7 @@ class Hook_payment_gateway_ccbill
         'CAD' => 124,
         'AUD' => 36,
         'JPY' => 392,
-    );
+    ];
 
     /**
      * Get a standardised config map.
@@ -65,9 +65,9 @@ class Hook_payment_gateway_ccbill
      */
     public function get_config()
     {
-        return array(
+        return [
             'supports_remote_memo' => false,
-        );
+        ];
     }
 
     /**
@@ -136,7 +136,7 @@ class Hook_payment_gateway_ccbill
         $form_period = '99';
         $digest = md5(float_to_raw_string($price + $tax + $shipping_cost) . $form_period . $currency . get_option('payment_gateway_vpn_password'));
 
-        return do_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', array(
+        return do_template('ECOM_TRANSACTION_BUTTON_VIA_CCBILL', [
             '_GUID' => '24a0560541cedd4c45898f4d19e99249',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -155,7 +155,7 @@ class Hook_payment_gateway_ccbill
             'FORM_NAME' => $form_name,
             'FORM_PERIOD' => $form_period,
             'DIGEST' => $digest,
-        ));
+        ]);
     }
 
     /**
@@ -191,7 +191,7 @@ class Hook_payment_gateway_ccbill
         $form_period = strval($length * $this->length_unit_to_days[$length_units]);
         $digest = md5(float_to_raw_string($price + $tax) . $form_period . float_to_raw_string($price + $tax) . $form_period . '99' . $currency . get_option('payment_gateway_vpn_password')); // formPrice.formPeriod.formRecurringPrice.formRecurringPeriod.formRebills.currencyCode.salt
 
-        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', array(
+        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_CCBILL', [
             '_GUID' => 'f8c174f38ae06536833f1510027ba233',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -211,7 +211,7 @@ class Hook_payment_gateway_ccbill
             'FORM_NAME' => $form_name,
             'FORM_PERIOD' => $form_period,
             'DIGEST' => $digest,
-        ));
+        ]);
     }
 
     /**
@@ -266,7 +266,7 @@ class Hook_payment_gateway_ccbill
             $country = $shipping_country;
         }
 
-        $member_address = array();
+        $member_address = [];
         $member_address['customer_fname'] = $shipping_firstname;
         $member_address['customer_lname'] = $shipping_lastname;
         $member_address['address1'] = $street_address;
@@ -288,7 +288,7 @@ class Hook_payment_gateway_ccbill
      */
     public function make_cancel_button($purchase_id)
     {
-        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', array('_GUID' => 'f1aaed809380c3fdca22728393eaef75', 'PURCHASE_ID' => $purchase_id));
+        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_CCBILL', ['_GUID' => 'f1aaed809380c3fdca22728393eaef75', 'PURCHASE_ID' => $purchase_id]);
     }
 
     /**
@@ -301,7 +301,7 @@ class Hook_payment_gateway_ccbill
     {
         $trans_expecting_id = post_param_integer('customPurchaseId');
 
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
                 return null;
@@ -346,7 +346,7 @@ class Hook_payment_gateway_ccbill
 
         $tax = null;
 
-        return array($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id);
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**
@@ -358,7 +358,7 @@ class Hook_payment_gateway_ccbill
      */
     public function store_shipping_address($trans_expecting_id, $txn_id)
     {
-        $shipping_address = array(
+        $shipping_address = [
             'a_firstname' => post_param_string('customer_fname', ''),
             'a_lastname' => post_param_string('customer_lname', ''),
             'a_street_address' => trim(post_param_string('address1', '') . "\n" . post_param_string('address2', '')),
@@ -369,7 +369,7 @@ class Hook_payment_gateway_ccbill
             'a_country' => post_param_string('country', ''),
             'a_email' => post_param_string('email', ''),
             'a_phone' => post_param_string('phone_number', ''),
-        );
+        ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);
     }
 

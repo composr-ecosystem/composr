@@ -33,12 +33,12 @@ class Hook_page_groupings_newsletter
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'menu/site_meta/newsletters', array('admin_newsletter', array('type' => 'browse'), get_module_zone('admin_newsletter')), do_lang_tempcode('newsletter:NEWSLETTER'), 'newsletter:DOC_NEWSLETTER'),
-            array('site_meta', 'menu/site_meta/newsletters', array('newsletter', array(), get_module_zone('newsletter')), do_lang_tempcode('newsletter:NEWSLETTER')),
-        );
+        return [
+            ['tools', 'menu/site_meta/newsletters', ['admin_newsletter', ['type' => 'browse'], get_module_zone('admin_newsletter')], do_lang_tempcode('newsletter:NEWSLETTER'), 'newsletter:DOC_NEWSLETTER'],
+            ['site_meta', 'menu/site_meta/newsletters', ['newsletter', [], get_module_zone('newsletter')], do_lang_tempcode('newsletter:NEWSLETTER')],
+        ];
     }
 }

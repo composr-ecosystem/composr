@@ -34,11 +34,11 @@ class Hook_ecommerce_topic_pin
             return null;
         }
 
-        return array(
+        return [
             'category_name' => do_lang('TOPIC_PINNING'),
             'category_description' => do_lang_tempcode('TOPIC_PINNING_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/buttons/add_topic'),
-        );
+        ];
     }
 
     /**
@@ -54,18 +54,18 @@ class Hook_ecommerce_topic_pin
     {
         require_lang('cns');
 
-        $products = array();
+        $products = [];
 
         $price_points = get_option('topic_pin_price_points');
 
-        foreach (array(1, 3, 5, 10, 20, 31, 90) as $days) {
-            $products['TOPIC_PIN_' . strval($days)] = automatic_discount_calculation(array(
+        foreach ([1, 3, 5, 10, 20, 31, 90] as $days) {
+            $products['TOPIC_PIN_' . strval($days)] = automatic_discount_calculation([
                 'item_name' => do_lang('TOPIC_PINNED_FOR', integer_format($days)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => (get_option('topic_pin_price') == '') ? null : (floatval(get_option('topic_pin_price')) * $days),
                 'currency' => get_option('currency'),
@@ -80,7 +80,7 @@ class Hook_ecommerce_topic_pin
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            ));
+            ]);
         }
 
         return $products;
@@ -130,7 +130,7 @@ class Hook_ecommerce_topic_pin
             $set_title = do_lang_tempcode('FORUM_TOPIC');
             $field_set = alternate_fields_set__start($set_name);
 
-            $field_set->attach(form_input_tree_list(do_lang_tempcode('CHOOSE'), '', 'select_topic_id', null, 'choose_topic', array(), false));
+            $field_set->attach(form_input_tree_list(do_lang_tempcode('CHOOSE'), '', 'select_topic_id', null, 'choose_topic', [], false));
 
             $field_set->attach(form_input_integer(do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DESCRIPTION_FORUM_TOPIC_ID'), 'manual_topic_id', null, false));
 
@@ -141,7 +141,7 @@ class Hook_ecommerce_topic_pin
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array($fields, null, null);
+        return [$fields, null, null];
     }
 
     /**
@@ -163,14 +163,14 @@ class Hook_ecommerce_topic_pin
             $_topic_id = post_param_string('manual_topic_id', $from_admin ? '' : false);
 
             if ($_topic_id == '') {
-                return array('', null); // Default is blank
+                return ['', null]; // Default is blank
             }
 
             $topic_id = intval($_topic_id);
         }
 
         if (get_forum_type() == 'cns') {
-            $currently_pinned = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_pinned', array('id' => $topic_id));
+            $currently_pinned = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_pinned', ['id' => $topic_id]);
             if ($currently_pinned === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
             }
@@ -179,7 +179,7 @@ class Hook_ecommerce_topic_pin
             }
         }
 
-        return array(json_encode(array($member_id, $topic_id)), null);
+        return [json_encode([$member_id, $topic_id]), null];
     }
 
     /**
@@ -203,7 +203,7 @@ class Hook_ecommerce_topic_pin
         list($member_id, $topic_id) = json_decode($purchase_id);
 
         if (get_forum_type() == 'cns') {
-            $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
+            $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $topic_id]);
             if ($topic_title === null) {
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
@@ -213,7 +213,7 @@ class Hook_ecommerce_topic_pin
 
         $GLOBALS['FORUM_DRIVER']->pin_topic($topic_id);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('PIN_SPECIFIC_TOPIC', $topic_title, null, null, get_site_default_lang()), 'details2' => strval($days), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('PIN_SPECIFIC_TOPIC', $topic_title, null, null, get_site_default_lang()), 'details2' => strval($days), 'txn_id' => $details['TXN_ID']]);
 
         return true;
     }

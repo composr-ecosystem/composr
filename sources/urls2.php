@@ -68,10 +68,10 @@ function set_execution_context($new_get, $new_zone = '_SEARCH', $new_current_scr
         $IN_SELF_ROUTING_SCRIPT = $new_in_self_routing_script;
     }
     global $RUNNING_SCRIPT_CACHE, $WHAT_IS_RUNNING_CACHE;
-    $RUNNING_SCRIPT_CACHE = array();
+    $RUNNING_SCRIPT_CACHE = [];
     $WHAT_IS_RUNNING_CACHE = $new_current_script;
 
-    return array($old_get, $old_zone, $old_current_script, $old_in_self_routing_script, true);
+    return [$old_get, $old_zone, $old_current_script, $old_in_self_routing_script, true];
 }
 
 /**
@@ -101,7 +101,7 @@ function remove_url_mistakes($url)
  *
  * @ignore
  */
-function _build_keep_form_fields($page = '', $keep_all = false, $exclude = array())
+function _build_keep_form_fields($page = '', $keep_all = false, $exclude = [])
 {
     if ($page == '_SELF') {
         $page = get_page_name();
@@ -185,7 +185,7 @@ function _fixed_post_parser($key, $value)
  *
  * @ignore
  */
-function _build_keep_post_fields($exclude = array(), $force_everything = false)
+function _build_keep_post_fields($exclude = [], $force_everything = false)
 {
     $out = '';
     foreach ($_POST as $key => $val) {
@@ -224,7 +224,7 @@ function _build_keep_post_fields($exclude = array(), $force_everything = false)
  */
 function _url_to_filename($url_full)
 {
-    $bad_chars = array('!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', '!', ';', '~', ' ');
+    $bad_chars = ['!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', '!', ';', '~', ' '];
     $new_name = $url_full;
     foreach ($bad_chars as $bad_char) {
         $good_char = '~' . strval(ord($bad_char));
@@ -445,13 +445,13 @@ function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
     }
     $parsed_url['path'] = ($slash_pos === false) ? substr($parsed_url['path'], 1) : substr($parsed_url['path'], $slash_pos + 1); // everything AFTER the zone
     $parsed_url['path'] = preg_replace('#/index\.php$#', '', $parsed_url['path']);
-    $attributes = array();
+    $attributes = [];
     $attributes['page'] = ''; // hopefully will get overwritten with a real one
 
     // Convert URL Scheme path info into extra implied attribute data
     require_code('url_remappings');
     $does_match = false;
-    foreach (array('PG', 'HTM', 'SIMPLE', 'RAW') as $url_scheme) {
+    foreach (['PG', 'HTM', 'SIMPLE', 'RAW'] as $url_scheme) {
         $mappings = get_remappings($url_scheme);
         foreach ($mappings as $mapping) { // e.g. array(array('page' => 'wiki', 'id' => null), 'pg/s/ID', true),
             if ($mapping === null) {
@@ -543,7 +543,7 @@ function _url_to_page_link($url, $abs_only = false, $perfect_only = true)
     }
     if ($id !== null) {
         if (!is_numeric($attributes['id'])) {
-            $moniker_id = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', array('m_resource_page' => $page, 'm_resource_type' => isset($attributes['type']) ? $attributes['type'] : 'browse', 'm_moniker' => $attributes['id']));
+            $moniker_id = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', ['m_resource_page' => $page, 'm_resource_type' => isset($attributes['type']) ? $attributes['type'] : 'browse', 'm_moniker' => $attributes['id']]);
             if ($moniker_id !== null) {
                 $attributes['id'] = $moniker_id;
             }
@@ -596,7 +596,7 @@ function _page_path_to_page_link($page)
     if ((substr($page, 0, 1) == '/') && (substr($page, 0, 6) != '/pages')) {
         $page = substr($page, 1);
     }
-    $matches = array();
+    $matches = [];
     if (preg_match('#^([^/]*)/?pages/([^/]+)/(\w\w/)?([^/\.]+)\.(php|txt|htm)$#', $page, $matches) == 1) {
         $page2 = $matches[1] . ':' . $matches[4];
         if (($matches[2] == 'comcode') || ($matches[2] == 'comcode_custom')) {
@@ -627,7 +627,7 @@ function autogenerate_new_url_moniker($ob_info, $url_parts, $zone)
 
     push_db_scope_check(false);
     require_code('content');
-    $select = array();
+    $select = [];
     append_content_select_for_id($select, $ob_info);
     if (substr($ob_info['title_field'], 0, 5) != 'CALL:') {
         $select[] = $ob_info['title_field'];
@@ -688,7 +688,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
         return '';
     }
 
-    static $force_called = array();
+    static $force_called = [];
     $ref = $zone . ':' . $page . ':' . $type . ':' . $id;
     if ($moniker !== null) {
         $force_called[$ref] = $moniker;
@@ -699,14 +699,14 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
     }
 
     if (!$is_new) {
-        $manually_chosen = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_moniker', array('m_manually_chosen' => 1, 'm_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id));
+        $manually_chosen = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_moniker', ['m_manually_chosen' => 1, 'm_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id]);
         if ($manually_chosen !== null) {
             return $manually_chosen;
         }
 
         // Deprecate old one(s) if already existing (there should only be 1 non-deprecated, but possible DB state may have gotten into a mess somehow)
         $old_moniker_okay = null;
-        $old_monikers = $GLOBALS['SITE_DB']->query_select('url_id_monikers', array('m_moniker'), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0), 'ORDER BY id DESC');
+        $old_monikers = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker'], ['m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0], 'ORDER BY id DESC');
         foreach (collapse_1d_complexity('m_moniker', $old_monikers) as $old) {
             // See if it is same as current
             if ($moniker === null) {
@@ -721,7 +721,7 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
             // It's not. Although, the later call to _choose_moniker will allow us to use the same stem as the current active one, or even re-activate an old deprecated one, so long as it is on this same m_resource_page/m_resource_page/m_resource_id.
 
             // Deprecate
-            $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0), '', 1); // Deprecate
+            $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $id, 'm_deprecated' => 0], '', 1); // Deprecate
 
             // Deprecate anything underneath
             global $CONTENT_OBS;
@@ -754,13 +754,13 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
     }
 
     // Insert
-    $GLOBALS['SITE_DB']->query_delete('url_id_monikers', array(
+    $GLOBALS['SITE_DB']->query_delete('url_id_monikers', [
         // It's possible we're re-activating a deprecated one
         'm_resource_page' => $page,
         'm_resource_type' => $type,
         'm_moniker' => $moniker,
-    ), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('url_id_monikers', array(
+    ], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('url_id_monikers', [
         'm_resource_page' => $page,
         'm_resource_type' => $type,
         'm_resource_id' => $id,
@@ -768,10 +768,10 @@ function suggest_new_idmoniker_for($page, $type, $id, $zone, $moniker_src, $is_n
         'm_moniker_reversed' => strrev($moniker),
         'm_deprecated' => 0,
         'm_manually_chosen' => 0,
-    ));
+    ]);
 
     global $LOADED_MONIKERS_CACHE;
-    $LOADED_MONIKERS_CACHE = array();
+    $LOADED_MONIKERS_CACHE = [];
 
     return $moniker;
 }
@@ -934,7 +934,7 @@ function _give_moniker_scope($page, $type, $id, $zone, $main)
         // Lookup DB record so we can discern the category
         push_db_scope_check(false);
         require_code('content');
-        $select = array();
+        $select = [];
         append_content_select_for_id($select, $ob_info);
         if (substr($ob_info['title_field'], 0, 5) != 'CALL:') {
             $select[] = $ob_info['title_field'];
@@ -965,9 +965,9 @@ function _give_moniker_scope($page, $type, $id, $zone, $main)
         } else {
             $view_category_page_link_pattern = explode(':', $ob_info['view_category_page_link_pattern']);
             if ($type == '') {
-                $tree = find_id_moniker(array('page' => $parent), $zone);
+                $tree = find_id_moniker(['page' => $parent], $zone);
             } else {
-                $tree = find_id_moniker(array('page' => $view_category_page_link_pattern[1], 'type' => $view_category_page_link_pattern[2], 'id' => $parent), $zone);
+                $tree = find_id_moniker(['page' => $view_category_page_link_pattern[1], 'type' => $view_category_page_link_pattern[2], 'id' => $parent], $zone);
             }
         }
 
@@ -1003,7 +1003,7 @@ function find_id_via_url_moniker($content_type, $url_moniker)
     }
 
     list(, $url_bits) = page_link_decode($cma_info['view_page_link_pattern']);
-    $where = array('m_resource_page' => $url_bits['page'], 'm_resource_type' => $url_bits['type'], 'm_moniker' => $url_moniker);
+    $where = ['m_resource_page' => $url_bits['page'], 'm_resource_type' => $url_bits['type'], 'm_moniker' => $url_moniker];
 
     $ret = $cma_info['db']->query_select_value_if_there('url_id_monikers', 'm_resource_id', $where);
     return $ret;
@@ -1057,5 +1057,5 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
 
     $url = cms_rawurlrecode(str_replace('%2F', '/', rawurlencode($subdir . '/' . $adjusted_filename)));
 
-    return array($path, $url, $adjusted_filename);
+    return [$path, $url, $adjusted_filename];
 }

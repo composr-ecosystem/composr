@@ -30,7 +30,7 @@ class Hook_config_spam_blackhole_detection
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_BLACKHOLE_DETECTION',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_spam_blackhole_detection
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

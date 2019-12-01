@@ -30,7 +30,7 @@ class Hook_config_hc_processes_to_monitor
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_PROCESSES_TO_MONITOR',
             'type' => 'line',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_processes_to_monitor
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**
@@ -58,11 +58,11 @@ class Hook_config_hc_processes_to_monitor
             return null;
         }
 
-        $processes = array(
+        $processes = [
             'php\d*(\.dSYM)?',
             'php\d*-cgi(\.dSYM)?',
             //'php\d*-fpm(\.dSYM)?', FastCGI
-        );
+        ];
         return implode('|', $processes);
     }
 }

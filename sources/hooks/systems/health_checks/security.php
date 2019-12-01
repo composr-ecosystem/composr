@@ -51,7 +51,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->process_checks_section('testExposedBackups', 'Exposed backups', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testExposedExecuteTemp', 'Exposed execute_temp.php', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -95,42 +95,42 @@ class Hook_health_check_security extends Hook_Health_Check
 
             $page_links = $this->process_urls_into_page_links();
 
-            $urls = array();
+            $urls = [];
             foreach ($page_links as $page_link) {
                 $_url = page_link_to_url($page_link);
                 if (!empty($_url)) {
-                    $urls[] = array('url' => $_url);
+                    $urls[] = ['url' => $_url];
                 }
             }
         } else {
             if ($use_test_data_for_pass) {
-                $urls = array(array('url' => 'http://example.com'));
+                $urls = [['url' => 'http://example.com']];
             } else {
-                $urls = array(array('url' => 'http://www23.omrtw.com'));
+                $urls = [['url' => 'http://www23.omrtw.com']];
             }
         }
 
         $url = 'https://safebrowsing.googleapis.com/v4/threatMatches:find?key=' . urlencode(trim($key));
 
         require_code('version2');
-        $data = array(
-            'client' => array(
+        $data = [
+            'client' => [
                 'clientId' => 'Composr',
                 'clientVersion' => get_version_dotted(),
-            ),
-            'threatInfo' => array(
-                'threatTypes' => array('MALWARE', 'SOCIAL_ENGINEERING'),
-                'platformTypes' => array('ANY_PLATFORM'),
-                'threatEntryTypes' => array('URL'),
+            ],
+            'threatInfo' => [
+                'threatTypes' => ['MALWARE', 'SOCIAL_ENGINEERING'],
+                'platformTypes' => ['ANY_PLATFORM'],
+                'threatEntryTypes' => ['URL'],
                 'threatEntries' => $urls,
-            ),
-        );
+            ],
+        ];
         $_data = json_encode($data);
         require_code('character_sets');
         $_data = convert_to_internal_encoding($_data, get_charset(), 'utf-8');
 
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => array($_data), 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json'));
+            $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$_data], 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json']);
 
             if ($http_result->data !== null) {
                 break;
@@ -140,10 +140,10 @@ class Hook_health_check_security extends Hook_Health_Check
             }
         }
 
-        $this->assertTrue(!in_array($http_result->message, array('401', '403')), 'Error with our Google Safe Browsing API key (' . $http_result->message . ')');
-        $this->assertTrue(!in_array($http_result->message, array('400', '501', '503', '504')), 'Internal error with our Google Safe Browsing check (' . $http_result->message . ')');
+        $this->assertTrue(!in_array($http_result->message, ['401', '403']), 'Error with our Google Safe Browsing API key (' . $http_result->message . ')');
+        $this->assertTrue(!in_array($http_result->message, ['400', '501', '503', '504']), 'Internal error with our Google Safe Browsing check (' . $http_result->message . ')');
 
-        $ok = in_array($http_result->message, array('200'));
+        $ok = in_array($http_result->message, ['200']);
         if ($ok) {
             $result = json_decode($http_result->data, true);
 
@@ -178,11 +178,11 @@ class Hook_health_check_security extends Hook_Health_Check
             return;
         }
 
-        $to_check = array(
+        $to_check = [
             'data_custom/ecommerce.log',
             'caches/test.txt',
             'temp/test.txt',
-        );
+        ];
         foreach ($to_check as $c) {
             $full_path = get_custom_file_base() . '/' . $c;
             $exists = is_file($full_path);
@@ -190,7 +190,7 @@ class Hook_health_check_security extends Hook_Health_Check
                 require_code('files');
                 cms_file_put_contents_safe($full_path, '');
             }
-            $http_result = cms_http_request(get_custom_base_url() . '/' . $c, array('trigger_error' => false));
+            $http_result = cms_http_request(get_custom_base_url() . '/' . $c, ['trigger_error' => false]);
             $this->assertTrue($http_result->message == '403' || $http_result->message == '404', 'Should not be able to download [tt]' . $c . '[/tt], should be secured by some kind of server configuration');
             if (!$exists) {
                 @unlink($full_path);
@@ -219,7 +219,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $data = get_secure_random_string();
         require_code('files');
         cms_file_put_contents_safe(get_custom_file_base() . '/' . $path, $data);
-        $result = http_get_contents(get_custom_base_url() . '/' . $path, array('trigger_error' => false));
+        $result = http_get_contents(get_custom_base_url() . '/' . $path, ['trigger_error' => false]);
         $this->assertTrue($result === $data, 'Website does not seem to be running on the base URL that is configured');
         @unlink(get_custom_file_base() . '/' . $path);
 
@@ -230,10 +230,10 @@ class Hook_health_check_security extends Hook_Health_Check
                 foreach ($domains as $domain) {
                     $regexp = '#\nName:\s+' . $domain . '\nAddress:\s+(.*)\n#';
 
-                    $matches_local = array();
+                    $matches_local = [];
                     $dns_lookup_local = shell_exec('nslookup ' . $domain);
                     $matched_local = preg_match($regexp, $dns_lookup_local, $matches_local);
-                    $matches_remote = array();
+                    $matches_remote = [];
                     $dns_lookup_remote = shell_exec('nslookup ' . $domain . ' 8.8.8.8');
                     $matched_remote = preg_match($regexp, $dns_lookup_remote, $matches_remote);
                     if (($matched_local != 0) && ($matched_remote != 0)) {
@@ -270,7 +270,7 @@ class Hook_health_check_security extends Hook_Health_Check
         global $SITE_INFO;
         $ok = !isset($SITE_INFO['master_password']);
         if (!$ok) {
-            $ok = (http_get_contents(get_base_url() . '/config_editor.php', array('trigger_error' => false)) === null);
+            $ok = (http_get_contents(get_base_url() . '/config_editor.php', ['trigger_error' => false]) === null);
         }
         $this->assertTrue($ok, 'Should not have a master password defined, or should control access to config scripts');
     }
@@ -322,9 +322,9 @@ class Hook_health_check_security extends Hook_Health_Check
         $fb = get_file_base();
 
         $files = $this->getBaseDirectoriesFiles();
-        $files = array_merge($files, get_directory_contents($fb, '', 0, false, true, array('php'))); // base directory
-        $files = array_merge($files, get_directory_contents($fb . '/uploads', 'uploads', 0, true, true, array('php'))); // common uploads location
-        $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, array('php'))); // common uploads location
+        $files = array_merge($files, get_directory_contents($fb, '', 0, false, true, ['php'])); // base directory
+        $files = array_merge($files, get_directory_contents($fb . '/uploads', 'uploads', 0, true, true, ['php'])); // common uploads location
+        $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, ['php'])); // common uploads location
 
         foreach ($files as $file) {
             $c = @cms_file_get_contents_safe($fb . '/' . $file);
@@ -346,7 +346,7 @@ class Hook_health_check_security extends Hook_Health_Check
      */
     protected function isLikelyWebShell($file, $c)
     {
-        $triggers = array(
+        $triggers = [
             '[^\w]system\(',
             '[^\w]exec\(',
             '[^\w]shell_exec\(',
@@ -359,7 +359,7 @@ class Hook_health_check_security extends Hook_Health_Check
             '\$_FILES',
             '/etc/passwd',
             '(require|include)(_once)?\([\'"]https?://',
-        );
+        ];
 
         foreach ($triggers as $trigger) {
             if (preg_match('#' . $trigger . '#i', $c) != 0) {
@@ -395,7 +395,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         foreach ($files as $file) {
             if (stripos($file, 'phpMyAdmin') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, array('trigger_error' => false));
+                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed phpMyAdmin script: [tt]' . $file . '[/tt]');
             }
         }
@@ -426,7 +426,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         foreach ($files as $file) {
             if (stripos($file, 'bigdump') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, array('trigger_error' => false));
+                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed BigDump script: [tt]' . $file . '[/tt]');
             }
         }
@@ -457,7 +457,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         foreach ($files as $file) {
             if (stripos($file, 'phpinfo.php') !== false) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, array('trigger_error' => false));
+                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed PHP-Info script: [tt]' . $file . '[/tt]');
             }
         }
@@ -484,11 +484,11 @@ class Hook_health_check_security extends Hook_Health_Check
 
         require_code('http');
 
-        $files = $this->getBaseDirectoriesFiles(array('tar', 'gz', 'zip', 'sql'));
+        $files = $this->getBaseDirectoriesFiles(['tar', 'gz', 'zip', 'sql']);
 
         foreach ($files as $file) {
             if (preg_match('#back.*\.(tar|gz|zip)$|\.(sql)$#i', basename($file)) != 0) {
-                $http_result = cms_http_request(get_base_url() . '/' . $file, array('trigger_error' => false));
+                $http_result = cms_http_request(get_base_url() . '/' . $file, ['trigger_error' => false]);
                 $this->assertTrue($http_result->message != '200', 'Likely exposed backup: [tt]' . $file . '[/tt]');
             }
         }
@@ -501,13 +501,13 @@ class Hook_health_check_security extends Hook_Health_Check
      * @param  boolean $files_wanted Whether to get files (if not, will return directories instead of files)
      * @return array List of file paths relative to real base directory
      */
-    protected function getBaseDirectoriesFiles($file_extensions = array('php'), $files_wanted = true)
+    protected function getBaseDirectoriesFiles($file_extensions = ['php'], $files_wanted = true)
     {
         require_code('files2');
 
         $fb = get_file_base();
 
-        $files = array();
+        $files = [];
 
         $base_url_path = parse_url(get_base_url(), PHP_URL_PATH);
         if ($base_url_path != '/') {
@@ -520,7 +520,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = array_merge($files, get_directory_contents($fb, '', 0, false, $files_wanted, $file_extensions)); // base directory
 
         // Common backup directories, if they exist
-        foreach (array('_old', 'old', '_backup', 'backup', '_backups', 'backups', '_temp', 'temp') as $old_dir) {
+        foreach (['_old', 'old', '_backup', 'backup', '_backups', 'backups', '_temp', 'temp'] as $old_dir) {
             $files = array_merge($files, get_directory_contents($fb . '/' . $old_dir, '', 0, false, $files_wanted, $file_extensions));
         }
 

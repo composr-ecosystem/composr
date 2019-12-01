@@ -31,7 +31,7 @@ class Hook_addon_registry_code_editor
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_code_editor
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_framework',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_code_editor
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,12 +97,12 @@ class Hook_addon_registry_code_editor
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/code_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/code_editor.svg',
             'sources/hooks/systems/addon_registry/code_editor.php',
             'code_editor.php',
             'exports/file_backups/index.html',
-        );
+        ];
     }
 }

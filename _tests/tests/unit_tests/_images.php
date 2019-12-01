@@ -107,24 +107,24 @@ class _images_test_set extends cms_test_case
 
     public function testConvertImage()
     {
-        $file_aspects = array(
+        $file_aspects = [
             16 => 9,
             9 => 16,
             4 => 3,
             3 => 4,
             1 => 1
-        );
+        ];
 
         $file_type = get_param_string('file_type', null);
         if ($file_type === null) {
-            $file_types = array(
+            $file_types = [
                 'png',
                 'jpg',
                 'jpeg',
                 'gif',
-            );
+            ];
         } else {
-            $file_types = array($file_type);
+            $file_types = [$file_type];
         }
 
         $additional_information = '';
@@ -288,17 +288,17 @@ class _images_test_set extends cms_test_case
 
         $file_type = get_param_string('file_type', null);
         if ($file_type === null) {
-            $file_types = array(
+            $file_types = [
                 'png',
                 'jpg',
                 'jpeg',
                 'gif',
-            );
+            ];
         } else {
-            $file_types = array($file_type);
+            $file_types = [$file_type];
         }
 
-        $wheres = array('both', 'start', 'end', 'start_if_vertical', 'start_if_horizontal', 'end_if_vertical', 'end_if_horizontal');
+        $wheres = ['both', 'start', 'end', 'start_if_vertical', 'start_if_horizontal', 'end_if_vertical', 'end_if_horizontal'];
 
         $this->cleanupOutFiles();
 
@@ -943,7 +943,7 @@ class _images_test_set extends cms_test_case
         if ($this->only == $name) {
             return true;
         }
-        $matches = array();
+        $matches = [];
         if (preg_match('#^(\d+)\-(\d+)$#', $this->only, $matches) != 0) {
             $from = intval($matches[1]);
             $to = intval($matches[2]);
@@ -1307,7 +1307,7 @@ class _images_test_set extends cms_test_case
 
     protected function convertImage($in_path, &$out_path, $convert_width, $convert_height, $box_size, $only_make_smaller, &$additional_information)
     {
-        foreach (array($in_path, preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', get_base_url() . '/', $in_path)) as $_source) {
+        foreach ([$in_path, preg_replace('#^' . preg_quote(get_file_base() . '/') . '#', get_base_url() . '/', $in_path)] as $_source) {
             $converted_url = convert_image($_source, $out_path, $convert_width, $convert_height, $box_size, true, null, true, $only_make_smaller);
             if ($converted_url === null) {
                 $additional_information = 'convert_image failed on ' . $_source . '.';
@@ -1337,7 +1337,7 @@ class _images_test_set extends cms_test_case
             $this->outputDebugVisual($out_path);
             return false;
         }
-        return array($image_width, $image_height);
+        return [$image_width, $image_height];
     }
 
     protected function getImageContents($path, &$additional_information)

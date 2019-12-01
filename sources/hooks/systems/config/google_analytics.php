@@ -30,7 +30,7 @@ class Hook_config_google_analytics
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_ANALYTICS',
             'type' => 'line',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_google_analytics
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'google_analytics',
-        );
+        ];
     }
 
     /**

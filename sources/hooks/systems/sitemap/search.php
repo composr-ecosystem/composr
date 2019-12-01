@@ -32,7 +32,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):search(:browse)?(:|$)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = 'search';
@@ -64,10 +64,10 @@ class Hook_sitemap_search extends Hook_sitemap_base
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('search')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array('_search', $valid_node_types))) {
             return $nodes;
@@ -88,7 +88,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             }
         }
 
-        $hooks = array();
+        $hooks = [];
         require_code('database_search');
         require_code('search');
         foreach ($_hooks as $hook => $ob) {
@@ -136,7 +136,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             return null;
         }
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
         $hook = $matches[4];
@@ -146,19 +146,19 @@ class Hook_sitemap_search extends Hook_sitemap_base
             $catalogue_name = $matches[5];
 
             if ($row === null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array('c_name' => $catalogue_name), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], ['c_name' => $catalogue_name], '', 1);
                 $row = $rows[0];
             }
 
-            $struct = array(
+            $struct = [
                 'title' => get_translated_text($row['c_title']),
                 'content_type' => '_search',
                 'content_id' => null,
-                'modifiers' => array(),
+                'modifiers' => [],
                 'only_on_page' => '',
                 'page_link' => $page_link,
                 'url' => null,
-                'extra_meta' => array(
+                'extra_meta' => [
                     'description' => null,
                     'image' => null,
                     'add_time' => null,
@@ -171,23 +171,23 @@ class Hook_sitemap_search extends Hook_sitemap_base
                     'categories' => null,
                     'validated' => null,
                     'db_row' => null,
-                ),
-                'permissions' => array(
-                    array(
+                ],
+                'permissions' => [
+                    [
                         'type' => 'category',
                         'permission_module' => 'catalogues_catalogue',
                         'category_name' => $catalogue_name,
                         'page_name' => $page,
                         'is_owned_at_this_level' => false,
-                    ),
-                ),
+                    ],
+                ],
                 'has_possible_children' => false,
-                'children' => array(),
+                'children' => [],
 
                 // These are likely to be changed in individual hooks
                 'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
                 'sitemap_refreshfreq' => 'yearly',
-            );
+            ];
 
             if (!$this->_check_node_permissions($struct, $options)) {
                 return null;
@@ -210,15 +210,15 @@ class Hook_sitemap_search extends Hook_sitemap_base
             return null;
         }
 
-        $struct = array(
+        $struct = [
             'title' => $info['lang'],
             'content_type' => null,
             'content_id' => null,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => null,
                 'add_time' => null,
@@ -231,7 +231,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
+            ],
             'permissions' => $info['permissions'],
             'has_possible_children' => ($hook == 'catalogue_entry'),
 
@@ -240,7 +240,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'yearly',
 
             'privilege_page' => null,
-        );
+        ];
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;
@@ -252,7 +252,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
 
         // Categories done after node callback, to ensure sensible ordering
         if ($hook == 'catalogue_entry') {
-            $children = array();
+            $children = [];
             if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
                 $skip_children = false;
                 if ($child_cutoff !== null) {
@@ -265,7 +265,7 @@ class Hook_sitemap_search extends Hook_sitemap_base
                 if (!$skip_children) {
                     $start = 0;
                     do {
-                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array(), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+                        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
                         foreach ($rows as $row) {
                             if (substr($row['c_name'], 0, 1) == '_') {
                                 continue;

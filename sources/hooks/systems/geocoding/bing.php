@@ -69,7 +69,7 @@ class Hook_geocoding_bing
         $sw_latitude = $r['bbox'][2];
         $sw_longitude = $r['bbox'][3];
 
-        return array($latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -121,7 +121,7 @@ class Hook_geocoding_bing
         $sw_latitude = $r['bbox'][2];
         $sw_longitude = $r['bbox'][3];
 
-        return array($location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -145,7 +145,7 @@ class Hook_geocoding_bing
         $url .= '?o=json';
         $url .= '&key=' . urlencode(get_option('bing_geocoding_api_key'));
 
-        $_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false));
+        $_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false]);
 
         if (empty($_result->data)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

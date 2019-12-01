@@ -26,12 +26,12 @@ function init__user_export()
     define('USER_EXPORT_EMAIL', null);
 
     global $USER_EXPORT_WANTED;
-    $USER_EXPORT_WANTED = array(
+    $USER_EXPORT_WANTED = [
         // LOCAL => REMOTE
         'id' => 'Composr member ID',
         'm_username' => 'Username',
         'm_email_address' => 'E-mail address',
-    );
+    ];
 }
 
 function do_user_export($to_file = true)
@@ -58,7 +58,7 @@ function do_user_export($to_file = true)
     $start = 0;
     $max = 50;
     do {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members m JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON m.id=c.mf_member_id', array('*'), array(), 'ORDER BY m.id ASC', $max, $start);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members m JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON m.id=c.mf_member_id', ['*'], [], 'ORDER BY m.id ASC', $max, $start);
         foreach ($rows as $row) {
             if (is_guest($row['id'])) {
                 continue;
@@ -66,7 +66,7 @@ function do_user_export($to_file = true)
 
             $row = cns_get_all_custom_fields_match_member($row['id']) + $row;
 
-            $sheet_row = array();
+            $sheet_row = [];
             foreach (array_keys($USER_EXPORT_WANTED) as $i => $local_key) {
                 $sheet_row[] = is_array($row[$local_key]) ? $row[$local_key]['RAW'] : $row[$local_key];
             }
@@ -101,7 +101,7 @@ function do_user_export__single_ipc($member_id, $delete = false)
     }
 
     global $USER_EXPORT_WANTED;
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_members m JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON m.id=c.mf_member_id', array('*'), array('id' => $member_id), '', 1);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_members m JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON m.id=c.mf_member_id', ['*'], ['id' => $member_id], '', 1);
     if (array_key_exists(0, $rows)) {
         $row = $rows[0];
 
@@ -123,11 +123,11 @@ function do_user_export__single_ipc($member_id, $delete = false)
 
         if ($delete) {
             if (USER_EXPORT_IPC_URL_DELETE !== null) {
-                http_get_contents(USER_EXPORT_IPC_URL_DELETE . '?' . $out, array('trigger_error' => false));
+                http_get_contents(USER_EXPORT_IPC_URL_DELETE . '?' . $out, ['trigger_error' => false]);
             }
         } else {
             if (USER_EXPORT_IPC_URL_EDIT !== null) {
-                http_get_contents(USER_EXPORT_IPC_URL_EDIT . '?' . $out, array('trigger_error' => false));
+                http_get_contents(USER_EXPORT_IPC_URL_EDIT . '?' . $out, ['trigger_error' => false]);
             }
 
             if (USER_EXPORT_EMAIL !== null) {
@@ -142,7 +142,7 @@ function do_user_export__single_ipc($member_id, $delete = false)
                 }
 
                 require_code('mail');
-                dispatch_mail('Updated member record', $message_raw, array(USER_EXPORT_EMAIL));
+                dispatch_mail('Updated member record', $message_raw, [USER_EXPORT_EMAIL]);
             }
         }
     }

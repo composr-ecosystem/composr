@@ -30,7 +30,7 @@ class Hook_config_business_post_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BUSINESS_POST_CODE',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_business_post_code
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

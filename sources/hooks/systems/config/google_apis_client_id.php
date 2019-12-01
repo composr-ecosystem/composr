@@ -30,7 +30,7 @@ class Hook_config_google_apis_client_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_APIS_CLIENT_ID',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -44,7 +44,7 @@ class Hook_config_google_apis_client_id
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

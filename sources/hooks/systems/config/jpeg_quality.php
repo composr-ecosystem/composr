@@ -30,7 +30,7 @@ class Hook_config_jpeg_quality
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JPEG_QUALITY',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_jpeg_quality
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

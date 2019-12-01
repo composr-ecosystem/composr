@@ -81,19 +81,19 @@ class Hook_rss_cns_topicview
 
                 $category_raw = $id;
 
-                $view_url = build_url(array('page' => 'topicview', 'type' => 'findpost', 'id' => $row['id']), get_module_zone('forumview'), array(), false, false, true);
+                $view_url = build_url(['page' => 'topicview', 'type' => 'findpost', 'id' => $row['id']], get_module_zone('forumview'), [], false, false, true);
 
                 if ($prefix == 'RSS_') {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => 'ed06bc8f174a5427e1789820666fdd81', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => 'ed06bc8f174a5427e1789820666fdd81', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('cns');
-        return array($content, do_lang('FORUM_TOPICS'));
+        return [$content, do_lang('FORUM_TOPICS')];
     }
 }

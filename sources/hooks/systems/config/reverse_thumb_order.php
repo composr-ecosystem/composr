@@ -30,7 +30,7 @@ class Hook_config_reverse_thumb_order
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REVERSE_THUMB_ORDER',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_reverse_thumb_order
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_shipping_weight_units
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHIPPING_WEIGHT_UNITS',
             'type' => 'list',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_shipping_weight_units
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

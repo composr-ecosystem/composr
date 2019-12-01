@@ -26,21 +26,21 @@ class Hook_actionlog_health_check extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('health_check')) {
-            return array();
+            return [];
         }
 
         require_lang('health_check');
 
-        return array(
-            'HEALTH_CHECK' => array(
+        return [
+            'HEALTH_CHECK' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'HEALTH_CHECK' => '_SEARCH:admin_health_check',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

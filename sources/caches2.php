@@ -29,12 +29,12 @@
 function _delete_cache_entry($cached_for, $identifier = null, $member_id = null)
 {
     if (!is_array($cached_for)) {
-        $cached_for = array($cached_for);
+        $cached_for = [$cached_for];
     }
 
-    $cached_for_sz = serialize(array($cached_for, $identifier, $member_id));
+    $cached_for_sz = serialize([$cached_for, $identifier, $member_id]);
 
-    static $done_already = array();
+    static $done_already = [];
     if ($identifier === null) {
         if (array_key_exists($cached_for_sz, $done_already)) {
             return;
@@ -43,7 +43,7 @@ function _delete_cache_entry($cached_for, $identifier = null, $member_id = null)
 
     $where = '';
 
-    $bot_statuses = array(true, false);
+    $bot_statuses = [true, false];
     $timezones = array_keys(get_timezone_list());
 
     foreach ($cached_for as $_cached_for) {
@@ -108,7 +108,7 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
     get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl, $theme, $lang);
 
     global $TEMPCODE_SETGET;
-    $map = array(
+    $map = [
         'c_codename' => $codename,
         'c_map' => serialize($map),
         'c_store_as_tempcode' => $tempcode ? 1 : 0,
@@ -120,7 +120,7 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
         'c_is_ssl' => $is_ssl,
         'c_theme' => $theme,
         'c_lang' => $lang,
-    );
+    ];
     if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_caching_requests', 'id', $map) === null) {
         $GLOBALS['SITE_DB']->query_insert('cron_caching_requests', $map);
     }
@@ -147,7 +147,7 @@ function request_via_cron($codename, $map, $special_cache_flags, $tempcode)
  * @param  ?ID_TEXT $theme The theme this is being cached for (null: Get from environment)
  * @param  ?LANGUAGE_NAME $lang The language this is being cached for (null: Get from environment)
  */
-function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags = CACHE_AGAINST_DEFAULT, $_langs_required = array(), $_javascripts_required = array(), $_csss_required = array(), $tempcode = false, $staff_status = null, $member_id = null, $groups = null, $is_bot = null, $timezone = null, $is_ssl = null, $theme = null, $lang = null)
+function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags = CACHE_AGAINST_DEFAULT, $_langs_required = [], $_javascripts_required = [], $_csss_required = [], $tempcode = false, $staff_status = null, $member_id = null, $groups = null, $is_bot = null, $timezone = null, $is_ssl = null, $theme = null, $lang = null)
 {
     get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl, $theme, $lang);
 
@@ -168,16 +168,16 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
     }
 
     if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
-        $pcache = array('dependencies' => $dependencies, 'date_and_time' => time(), 'the_value' => $cache);
-        persistent_cache_set(array('CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl), $pcache, false, $ttl * 60);
+        $pcache = ['dependencies' => $dependencies, 'date_and_time' => time(), 'the_value' => $cache];
+        persistent_cache_set(['CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl], $pcache, false, $ttl * 60);
     } else {
-        $GLOBALS['SITE_DB']->query_delete('cache', array(
+        $GLOBALS['SITE_DB']->query_delete('cache', [
             'lang' => $lang,
             'the_theme' => $theme,
             'cached_for' => $codename,
             'identifier' => md5($cache_identifier),
-        ), '', 1);
-        $GLOBALS['SITE_DB']->query_insert_or_replace('cache', array(
+        ], '', 1);
+        $GLOBALS['SITE_DB']->query_insert_or_replace('cache', [
             'dependencies' => $dependencies,
             'staff_status' => $staff_status,
             'the_member' => $member_id,
@@ -187,12 +187,12 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
             'is_ssl' => $is_ssl,
             'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
             'date_and_time' => time(),
-        ), array(
+        ], [
             'lang' => $lang,
             'the_theme' => $theme,
             'cached_for' => $codename,
             'identifier' => md5($cache_identifier),
-        ), false, true);
+        ], false, true);
     }
 
     if ($big_mainstream_cache) {

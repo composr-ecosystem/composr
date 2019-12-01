@@ -43,17 +43,17 @@ function results_launcher($title, $page, $category_id, $max, $max_rows, $type, $
         $part = new Tempcode();
         $num_pages = ($max == 0) ? 0 : min(intval(ceil(floatval($max_rows) / floatval($max))), $max_page_links);
         for ($x = 0; $x < $num_pages; $x++) {
-            $cat_url = build_url(array('page' => $page, 'type' => $type, $start_name => ($x == 0) ? null : ($x * $max), 'id' => $category_id), get_module_zone($page));
-            $part->attach(do_template('RESULTS_LAUNCHER_PAGE_NUMBER_LINK', array('_GUID' => 'd19c001f3ecff62105f803d541f7d945', 'TITLE' => $title, 'URL' => $cat_url, 'P' => strval($x + 1))));
+            $cat_url = build_url(['page' => $page, 'type' => $type, $start_name => ($x == 0) ? null : ($x * $max), 'id' => $category_id], get_module_zone($page));
+            $part->attach(do_template('RESULTS_LAUNCHER_PAGE_NUMBER_LINK', ['_GUID' => 'd19c001f3ecff62105f803d541f7d945', 'TITLE' => $title, 'URL' => $cat_url, 'P' => strval($x + 1)]));
         }
 
         $num_pages = intval(ceil(floatval($max_rows) / floatval($max)));
         if ($num_pages > $max_page_links) {
-            $url_stub = build_url(array('page' => $page, 'type' => $type, 'id' => $category_id), '_SELF');
-            $part->attach(do_template('RESULTS_LAUNCHER_CONTINUE', array('_GUID' => '0a55d3c1274618c16bd6d8d2cf36676c', 'TITLE' => $title, 'MAX' => strval($max), 'NUM_PAGES' => integer_format($num_pages), 'URL_STUB' => $url_stub)));
+            $url_stub = build_url(['page' => $page, 'type' => $type, 'id' => $category_id], '_SELF');
+            $part->attach(do_template('RESULTS_LAUNCHER_CONTINUE', ['_GUID' => '0a55d3c1274618c16bd6d8d2cf36676c', 'TITLE' => $title, 'MAX' => strval($max), 'NUM_PAGES' => integer_format($num_pages), 'URL_STUB' => $url_stub]));
         }
 
-        $out->attach(do_template('RESULTS_LAUNCHER_WRAP', array('_GUID' => 'c1c01ee07c456832e7e66a03f26c2288', 'PART' => $part)));
+        $out->attach(do_template('RESULTS_LAUNCHER_WRAP', ['_GUID' => 'c1c01ee07c456832e7e66a03f26c2288', 'PART' => $part]));
     }
 
     return $out;

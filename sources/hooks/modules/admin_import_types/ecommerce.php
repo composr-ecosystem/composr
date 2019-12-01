@@ -31,11 +31,11 @@ class Hook_admin_import_types_ecommerce
     public function run()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'ecommerce' => 'ECOMMERCE',
-        );
+        ];
     }
 }

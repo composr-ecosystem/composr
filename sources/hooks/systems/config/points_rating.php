@@ -30,7 +30,7 @@ class Hook_config_points_rating
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'RATING',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_rating
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

@@ -184,21 +184,21 @@ function get_next_purchase_step($product_object, $type_code, $step_before)
  */
 function get_product_purchase_steps($product_object, $type_code, $consider_categories)
 {
-    $steps = array();
+    $steps = [];
 
     $more_params = '';
     foreach ($_GET as $key => $val) {
-        if ((is_string($val)) && (!in_array($key, array('page', 'type', 'category', 'type_code', 'purchase_id', 'points', 'cancel', 'from', 'message')))) {
+        if ((is_string($val)) && (!in_array($key, ['page', 'type', 'category', 'type_code', 'purchase_id', 'points', 'cancel', 'from', 'message']))) {
             $more_params .= ':' . $key . '=' . cms_urlencode($val);
         }
     }
 
-    $steps[] = array('_SELF:_SELF:browse' . $more_params, 'browse', do_lang_tempcode('ECOM_PURCHASE_STAGE_browse'));
+    $steps[] = ['_SELF:_SELF:browse' . $more_params, 'browse', do_lang_tempcode('ECOM_PURCHASE_STAGE_browse')];
 
     if ($consider_categories) {
         if (method_exists($product_object, 'get_product_category')) {
             $product_category = $product_object->get_product_category();
-            $steps[] = array('_SELF:_SELF:browse:category=' . preg_replace('#^Hook_ecommerce_#', '', get_class($product_object)) . ':' . $more_params, 'browse', $product_category['category_name']);
+            $steps[] = ['_SELF:_SELF:browse:category=' . preg_replace('#^Hook_ecommerce_#', '', get_class($product_object)) . ':' . $more_params, 'browse', $product_category['category_name']];
         }
     }
 
@@ -207,17 +207,17 @@ function get_product_purchase_steps($product_object, $type_code, $consider_categ
     $message = method_exists($product_object, 'get_message') ? $product_object->get_message($type_code) : null;
     $has_message = ($message !== null) && (!$message->is_empty());
     if (($has_message) && (get_param_integer('include_message', 0) == 0)) {
-        $steps[] = array('_SELF:_SELF:message' . ':' . $more_params, 'message', do_lang_tempcode('ECOM_PURCHASE_STAGE_message'));
+        $steps[] = ['_SELF:_SELF:message' . ':' . $more_params, 'message', do_lang_tempcode('ECOM_PURCHASE_STAGE_message')];
     }
 
     $terms = method_exists($product_object, 'get_terms') ? $product_object->get_terms($type_code) : '';
     $has_terms = ($terms != '');
     if ($has_terms) {
-        $steps[] = array('_SELF:_SELF:terms' . ':' . $more_params, 'terms', do_lang_tempcode('ECOM_PURCHASE_STAGE_terms'));
+        $steps[] = ['_SELF:_SELF:terms' . ':' . $more_params, 'terms', do_lang_tempcode('ECOM_PURCHASE_STAGE_terms')];
     }
 
     if (has_needed_fields($type_code)) {
-        $steps[] = array('_SELF:_SELF:details' . ':' . $more_params, 'details', do_lang_tempcode('ECOM_PURCHASE_STAGE_details'));
+        $steps[] = ['_SELF:_SELF:details' . ':' . $more_params, 'details', do_lang_tempcode('ECOM_PURCHASE_STAGE_details')];
     }
 
     $purchase_id = get_param_string('purchase_id', null);
@@ -225,9 +225,9 @@ function get_product_purchase_steps($product_object, $type_code, $consider_categ
         $more_params .= ':purchase_id=' . cms_urlencode($purchase_id);
     }
 
-    $steps[] = array('_SELF:_SELF:pay' . ':' . $more_params, 'pay', do_lang_tempcode('ECOM_PURCHASE_STAGE_pay'));
+    $steps[] = ['_SELF:_SELF:pay' . ':' . $more_params, 'pay', do_lang_tempcode('ECOM_PURCHASE_STAGE_pay')];
 
-    $steps[] = array('_SELF:_SELF:finish' . ':' . $more_params, 'finish', do_lang_tempcode('ECOM_PURCHASE_STAGE_finish'));
+    $steps[] = ['_SELF:_SELF:finish' . ':' . $more_params, 'finish', do_lang_tempcode('ECOM_PURCHASE_STAGE_finish')];
 
     return $steps;
 }
@@ -320,7 +320,7 @@ function get_needed_fields($type_code, $force_extended = false)
             $fields = new Tempcode();
         }
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '6d9d9d785a2f776aa10fa0a8a26fc405', 'TITLE' => do_lang_tempcode($details['needs_shipping_address'] ? 'SHIPPING_ADDRESS' : 'INVOICING_ADDRESS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6d9d9d785a2f776aa10fa0a8a26fc405', 'TITLE' => do_lang_tempcode($details['needs_shipping_address'] ? 'SHIPPING_ADDRESS' : 'INVOICING_ADDRESS')]));
 
         $fields->attach(get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $require_all_details));
 
@@ -338,7 +338,7 @@ function get_needed_fields($type_code, $force_extended = false)
         $fields->attach(get_shipping_contact_fields($shipping_email, $shipping_phone, $require_all_details));
     }
 
-    return array($fields, $text, $js_function_calls);
+    return [$fields, $text, $js_function_calls];
 }
 
 /**
@@ -393,7 +393,7 @@ function get_transaction_fee($amount, $payment_gateway)
         return round($fee, 2);
     }
 
-    if (in_array($payment_gateway, array('', 'manual', 'points'))) {
+    if (in_array($payment_gateway, ['', 'manual', 'points'])) {
         return 0.00;
     }
 
@@ -421,12 +421,12 @@ function get_product_details_url($type_code, $post_purchase_access_url = false, 
 {
     static $permission_product_rows = null;
     if ($permission_product_rows === null) {
-        $permission_product_rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('id', 'p_module', 'p_category')));
+        $permission_product_rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['id', 'p_module', 'p_category']));
     }
 
     $product_details_url = null;
 
-    $matches = array();
+    $matches = [];
     if (($post_purchase_access_url) && (preg_match('#^PERMISSION_(\d+)$#', $type_code, $matches) != 0)) {
         $permission_product_id = intval($matches[1]);
         if (isset($permission_product_rows[$permission_product_id])) {
@@ -451,20 +451,20 @@ function get_product_details_url($type_code, $post_purchase_access_url = false, 
         }
     } elseif (($post_purchase_access_url) && (preg_match('#^CART_ORDER_(\d+)$#', $type_code, $matches) != 0)) {
         if (has_actual_page_access(get_member(), 'admin_shopping')) {
-            $product_details_url = build_url(array('page' => 'admin_shopping', 'type' => 'order_details', 'id' => $matches[1]), get_module_zone('admin_shopping'), array(), false, false, $email_safe);
+            $product_details_url = build_url(['page' => 'admin_shopping', 'type' => 'order_details', 'id' => $matches[1]], get_module_zone('admin_shopping'), [], false, false, $email_safe);
         } else {
-            $product_details_url = build_url(array('page' => 'shopping', 'type' => 'order_details', 'id' => $matches[1]), get_module_zone('shopping'), array(), false, false, $email_safe);
+            $product_details_url = build_url(['page' => 'shopping', 'type' => 'order_details', 'id' => $matches[1]], get_module_zone('shopping'), [], false, false, $email_safe);
         }
     } elseif (is_numeric($type_code)) {
-        $product_details_url = build_url(array('page' => 'catalogues', 'type' => 'entry', 'id' => $type_code), get_module_zone('catalogues'), array(), false, false, $email_safe);
+        $product_details_url = build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $type_code], get_module_zone('catalogues'), [], false, false, $email_safe);
     } elseif (($member_id !== null) && ($post_purchase_access_url) && (preg_match('#^USERGROUP(\d+)$#', $type_code, $matches) != 0)) {
-        $product_details_url = build_url(array('page' => 'subscriptions', 'id' => ($member_id == get_member()) ? null : $member_id), get_module_zone('subscriptions'), array(), false, false, $email_safe);
+        $product_details_url = build_url(['page' => 'subscriptions', 'id' => ($member_id == get_member()) ? null : $member_id], get_module_zone('subscriptions'), [], false, false, $email_safe);
     } elseif (($member_id !== null) && ($post_purchase_access_url) && ($type_code == 'work')) {
-        $product_details_url = build_url(array('page' => 'invoices', 'id' => ($member_id == get_member()) ? array() : $member_id), get_module_zone('invoices'), array(), false, false, $email_safe);
+        $product_details_url = build_url(['page' => 'invoices', 'id' => ($member_id == get_member()) ? [] : $member_id], get_module_zone('invoices'), [], false, false, $email_safe);
     }
 
     if ($product_details_url === null) {
-        $product_details_url = build_url(array('page' => 'purchase', 'type' => 'message', 'product' => $type_code), get_module_zone('purchase'), array(), false, false, $email_safe);
+        $product_details_url = build_url(['page' => 'purchase', 'type' => 'message', 'product' => $type_code], get_module_zone('purchase'), [], false, false, $email_safe);
     }
 
     return $product_details_url;
@@ -487,7 +487,7 @@ function build_transaction_linker($txn_id, $awaiting_payment, $transaction_row =
         }
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce_logs')) {
-            $transaction_details_url = build_url(array('page' => 'admin_ecommerce_logs', 'type' => 'logs', 'type_code' => $transaction_row['t_type_code'], 'txn_id' => $transaction_row['id']), get_module_zone('admin_ecommerce_logs'));
+            $transaction_details_url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'logs', 'type_code' => $transaction_row['t_type_code'], 'txn_id' => $transaction_row['id']], get_module_zone('admin_ecommerce_logs'));
             $transaction_link = hyperlink($transaction_details_url, $txn_id, false, true);
         } else {
             $transaction_link = make_string_tempcode(escape_html($txn_id));
@@ -495,7 +495,7 @@ function build_transaction_linker($txn_id, $awaiting_payment, $transaction_row =
 
         require_code('templates_map_table');
 
-        $transaction_fields = array(
+        $transaction_fields = [
             'TRANSACTION' => $txn_id,
             'PURCHASE_ID' => $transaction_row['t_purchase_id'],
             'PARENT' => $transaction_row['t_parent_txn_id'],
@@ -505,16 +505,16 @@ function build_transaction_linker($txn_id, $awaiting_payment, $transaction_row =
             'STATUS' => get_transaction_status_string($transaction_row['t_status']),
             'REASON' => trim($transaction_row['t_reason'] . '; ' . $transaction_row['t_pending_reason'], '; '),
             'NOTES' => $transaction_row['t_memo'],
-        );
+        ];
         $_transaction_fields = new Tempcode();
         foreach ($transaction_fields as $key => $val) {
             if ($val != '') {
                 $_transaction_fields->attach(map_table_field(do_lang_tempcode($key), $val));
             }
         }
-        $map_table = do_template('MAP_TABLE', array('_GUID' => '1fd78e5f75f9f838b468fc6151a2da02', 'FIELDS' => $_transaction_fields));
+        $map_table = do_template('MAP_TABLE', ['_GUID' => '1fd78e5f75f9f838b468fc6151a2da02', 'FIELDS' => $_transaction_fields]);
 
-        $transaction_linker = do_template('CROP_TEXT_MOUSE_OVER', array('_GUID' => '2f364d18dc8a4073f8d29d9c09cb46c1', 'TEXT_LARGE' => $map_table, 'TEXT_SMALL' => $transaction_link));
+        $transaction_linker = do_template('CROP_TEXT_MOUSE_OVER', ['_GUID' => '2f364d18dc8a4073f8d29d9c09cb46c1', 'TEXT_LARGE' => $map_table, 'TEXT_SMALL' => $transaction_link]);
     } else {
         $transaction_linker = do_lang_tempcode('PAYMENT_STATE_new');
     }
@@ -549,7 +549,7 @@ function make_transaction_button($type_code, $item_name, $purchase_id, $price, $
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax, $shipping_cost, $shipping_tax);
 
     $trans_expecting_id = $payment_gateway_object->generate_trans_id();
-    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', array(
+    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
         'e_purchase_id' => $purchase_id,
@@ -568,7 +568,7 @@ function make_transaction_button($type_code, $item_name, $purchase_id, $price, $
         'e_length_units' => '',
         'e_memo' => post_param_string('memo', ''),
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-    ));
+    ]);
     store_shipping_address($trans_expecting_id);
 
     $amount = $price + $tax;
@@ -605,7 +605,7 @@ function make_subscription_button($type_code, $item_name, $purchase_id, $price, 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, $purchase_id, $price, $tax);
 
     $trans_expecting_id = $payment_gateway_object->generate_trans_id();
-    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', array(
+    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
         'e_purchase_id' => $purchase_id,
@@ -624,7 +624,7 @@ function make_subscription_button($type_code, $item_name, $purchase_id, $price, 
         'e_length_units' => $length_units,
         'e_memo' => post_param_string('memo', ''),
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-    ));
+    ]);
     store_shipping_address($trans_expecting_id);
 
     $amount = $price + $tax;
@@ -641,7 +641,7 @@ function make_subscription_button($type_code, $item_name, $purchase_id, $price, 
  */
 function make_cancel_button($purchase_id, $payment_gateway)
 {
-    if (in_array($payment_gateway, array('', 'manual', 'points'))) {
+    if (in_array($payment_gateway, ['', 'manual', 'points'])) {
         return null;
     }
     require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway));
@@ -660,7 +660,7 @@ function make_cancel_button($purchase_id, $payment_gateway)
 function find_all_products()
 {
     $_hooks = find_all_hook_obs('systems', 'ecommerce', 'Hook_ecommerce_');
-    $products = array();
+    $products = [];
     foreach ($_hooks as $hook => $product_object) {
         $_products = $product_object->get_products();
         foreach ($_products as $type_code => $details) {
@@ -680,14 +680,14 @@ function find_all_products()
  */
 function find_product_details($search)
 {
-    static $cache = array();
+    static $cache = [];
     $sz = $search;
     if (isset($cache[$sz])) {
         return $cache[$sz];
     }
 
-    static $hook_products_cache = array();
-    $has_cache = ($hook_products_cache != array());
+    static $hook_products_cache = [];
+    $has_cache = ($hook_products_cache != []);
 
     $_hooks = find_all_hooks('systems', 'ecommerce');
     foreach (array_keys($_hooks) as $hook) {
@@ -715,7 +715,7 @@ function find_product_details($search)
             }
 
             if ($type_code == $search) {
-                $ret = array($details, $product_object);
+                $ret = [$details, $product_object];
                 $cache[$sz] = $ret;
                 return $ret;
             }
@@ -724,11 +724,11 @@ function find_product_details($search)
 
     // Cache miss?
     if ($has_cache) {
-        $hook_products_cache = array();
+        $hook_products_cache = [];
         return find_product_details($search);
     }
 
-    $ret = array(null, null);
+    $ret = [null, null];
     $cache[$sz] = $ret;
     return $ret;
 }
@@ -793,7 +793,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
 
     $trans_expecting_id = $payment_gateway_object->generate_trans_id(); // gateway-compatible, probably random, transaction ID
 
-    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', array(
+    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
         'e_purchase_id' => $purchase_id,
@@ -812,7 +812,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
         'e_length_units' => $length_units,
         'e_memo' => post_param_string('memo', ''),
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-    ));
+    ]);
     store_shipping_address($trans_expecting_id);
 
     require_code('form_templates');
@@ -850,7 +850,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
 
     // Card fields...
 
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '04537d33c50cda8aaee4029cbe05b023', 'TITLE' => do_lang_tempcode('PAYMENT_DETAILS'))));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '04537d33c50cda8aaee4029cbe05b023', 'TITLE' => do_lang_tempcode('PAYMENT_DETAILS')]));
 
     $fields->attach(form_input_line(do_lang_cpf('payment_cardholder_name'), do_lang_tempcode('DESCRIPTION_CARDHOLDER_NAME'), 'payment_cardholder_name', $cardholder_name, true));
     if (method_exists($payment_gateway_object, 'create_selection_list_card_types')) {
@@ -869,7 +869,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
     // Billing address fields...
 
     if (post_param_string('billing_firstname', null) === null) {
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'e0771f0a6c479b01a4a29ae9aa7fef3a', 'TITLE' => do_lang_tempcode('BILLING_ADDRESS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'e0771f0a6c479b01a4a29ae9aa7fef3a', 'TITLE' => do_lang_tempcode('BILLING_ADDRESS')]));
 
         $fields->attach(get_address_fields('billing_', $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country));
 
@@ -881,7 +881,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
     // Shipping address fields...
 
     if (($needs_shipping_address) && (post_param_string('shipping_firstname', null) === null)) {
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '656bf860685c8f63434bca7423d5c52a', 'TITLE' => do_lang_tempcode('SHIPPING_ADDRESS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '656bf860685c8f63434bca7423d5c52a', 'TITLE' => do_lang_tempcode('SHIPPING_ADDRESS')]));
 
         $fields->attach(get_shipping_address_fields($shipping_email, $shipping_phone, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country));
 
@@ -903,7 +903,7 @@ function get_transaction_form_fields($type_code, $item_name, $purchase_id, $pric
 
     require_javascript('ecommerce');
 
-    return array($fields, $hidden, $logos, $payment_processor_links);
+    return [$fields, $hidden, $logos, $payment_processor_links];
 }
 
 /**
@@ -938,7 +938,7 @@ function get_address_fields($prefix, $street_address, $city, $county, $state, $p
             if (!$definitely_usa) {
                 $state_list->attach(form_input_list_entry('', '' == $state, do_lang_tempcode('NA_EM'))); // Need to provide an N/A option if different countries may be selected
             }
-            $state_list->attach(create_usa_state_selection_list(array($state)));
+            $state_list->attach(create_usa_state_selection_list([$state]));
             $fields->attach(form_input_list(do_lang_cpf('state'), '', $prefix . 'state', $state_list, null, false, false));
         } else {
             $fields->attach(form_input_line(do_lang_cpf('state'), '', $prefix . 'state', $state, false));
@@ -952,7 +952,7 @@ function get_address_fields($prefix, $street_address, $city, $county, $state, $p
     if (get_option('cpf_enable_country') == '1') {
         $countries = new Tempcode();
         $countries->attach(form_input_list_entry('', $country == ''));
-        $countries->attach(create_country_selection_list(array($country)));
+        $countries->attach(create_country_selection_list([$country]));
         $fields->attach(form_input_list(do_lang_cpf('country'), '', $prefix . 'country', $countries, null, false, $require_all_details));
     }
 
@@ -1040,12 +1040,12 @@ function get_default_ecommerce_fields($member_id = null, &$shipping_email = '', 
         $card_number = empty($_card_number) ? null : intval($_card_number);
 
         $_card_start_date = get_cms_cpf('payment_card_start_date');
-        list($_card_start_date_year, $_card_start_date_month) = empty($_card_start_date) ? array('', '') : explode('/', $_card_start_date);
+        list($_card_start_date_year, $_card_start_date_month) = empty($_card_start_date) ? ['', ''] : explode('/', $_card_start_date);
         $card_start_date_year = ($_card_start_date_year == '') ? null : intval($_card_start_date_year);
         $card_start_date_month = ($_card_start_date_month == '') ? null : intval($_card_start_date_month);
 
         $_card_expiry_date = get_cms_cpf('payment_card_expiry_date');
-        list($_card_expiry_date_year, $_card_expiry_date_month) = empty($_card_expiry_date) ? array('', '') : explode('/', $_card_expiry_date);
+        list($_card_expiry_date_year, $_card_expiry_date_month) = empty($_card_expiry_date) ? ['', ''] : explode('/', $_card_expiry_date);
         $card_expiry_date_year = ($_card_expiry_date_year == '') ? null : intval($_card_expiry_date_year);
         $card_expiry_date_month = ($_card_expiry_date_month == '') ? null : intval($_card_expiry_date_month);
 
@@ -1096,7 +1096,7 @@ function get_default_ecommerce_fields($member_id = null, &$shipping_email = '', 
     $cardholder_name = post_param_string('cardholder_name', $cardholder_name);
     $card_type = post_param_string('card_type', $card_type);
     $_card_number = post_param_string('card_number', ($card_number === null) ? '' : strval($card_number));
-    $card_number = ($_card_number == '') ? null : str_replace(array('-', ' '), array('', ''), $_card_number);
+    $card_number = ($_card_number == '') ? null : str_replace(['-', ' '], ['', ''], $_card_number);
     $card_start_date_year = post_param_integer('card_start_date_year', $card_start_date_year);
     $card_start_date_month = post_param_integer('card_start_date_month', $card_start_date_month);
     $card_expiry_date_year = post_param_integer('card_expiry_date_year', $card_expiry_date_year);
@@ -1239,7 +1239,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
 
     $trans_expecting_id = post_param_string('trans_id');
 
-    $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+    $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
     if (!array_key_exists(0, $transaction_rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -1301,7 +1301,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
 
     if ((get_param_integer('payment_save_to_account', 0) == 1) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
         require_code('cns_members_action2');
-        $changes = array();
+        $changes = [];
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_cardholder_name'), $cardholder_name, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_type'), $card_type, null, true);
         //$changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_number'), $card_number, null, true);   PCI rules mean we can't save this without encrypting it and obfuscating when displayed; too onerous to force encryption keys that aren't backed up, so let's save everything but this
@@ -1309,13 +1309,13 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_expiry_date'), $card_expiry_date, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_issue_number'), $card_issue_number, null, true);
         if (!empty($changes)) {
-            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => get_member()], '', 1);
         }
     }
 
     if ((get_param_integer('billing_save_to_account', 0) == 1) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
         require_code('cns_members_action2');
-        $changes = array();
+        $changes = [];
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_street_address'), $billing_street_address, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_city'), $billing_city, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_county'), $billing_county, null, true);
@@ -1323,13 +1323,13 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_post_code'), $billing_post_code, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_country'), $billing_country, null, true);
         if (!empty($changes)) {
-            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => get_member()], '', 1);
         }
     }
 
     if ((get_param_integer('shipping_save_to_account', 0) == 1) && (get_forum_type() == 'cns') && (get_option('store_credit_card_numbers') == '1')) {
         require_code('cns_members_action2');
-        $changes = array();
+        $changes = [];
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_firstname'), $shipping_firstname, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_lastname'), $shipping_lastname, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_street_address'), $shipping_street_address, null, true);
@@ -1340,7 +1340,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_country'), $shipping_country, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_mobile_phone_number'), $shipping_phone, null, true);
         if (!empty($changes)) {
-            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => get_member()], '', 1);
         }
     }
 
@@ -1348,7 +1348,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
 
     list($success, $message, $message_raw, $txn_id) = $payment_gateway_object->do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $amount, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_county, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone, $length, $length_units);
 
-    $GLOBALS['SITE_DB']->query_update('ecom_trans_addresses', array('a_txn_id' => $txn_id, 'a_trans_expecting_id' => ''), array('a_trans_expecting_id' => $trans_expecting_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('ecom_trans_addresses', ['a_txn_id' => $txn_id, 'a_trans_expecting_id' => ''], ['a_trans_expecting_id' => $trans_expecting_id], '', 1);
 
     if (($success) || ($length !== null)) {
         $status = (($length !== null) && (!$success)) ? 'SCancelled' : 'Completed';
@@ -1363,7 +1363,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $message = null;
     }
 
-    return array($success, $message, $message_raw);
+    return [$success, $message, $message_raw];
 }
 
 /**
@@ -1448,8 +1448,8 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
 
     // We need to grab these from somewhere
     $expected_amount = null;
-    $expected_tax_derivation = array();
-    $expected_tax_tracking = array();
+    $expected_tax_derivation = [];
+    $expected_tax_tracking = [];
     $expected_tax = null;
     $expected_price_points = null;
     $invoicing_breakdown = '';
@@ -1459,17 +1459,17 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
 
     // Grab expected price and tax: Locked in in advance in ecom_trans_expecting transaction (this is the standard case for an IPN)
     if ($trans_expecting_id !== null) {
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (array_key_exists(0, $transaction_rows)) {
             $transaction_row = $transaction_rows[0];
 
             if (time() - $transaction_rows[0]['e_time'] < 24 * 60 * 60 * intval(get_option('ecom_price_honour_time'))) {
                 $expected_amount = $transaction_row['e_price'];
-                $expected_tax_derivation = ($transaction_row['e_tax_derivation'] == '') ? array() : json_decode($transaction_row['e_tax_derivation'], true);
+                $expected_tax_derivation = ($transaction_row['e_tax_derivation'] == '') ? [] : json_decode($transaction_row['e_tax_derivation'], true);
                 $expected_tax = $transaction_row['e_tax'];
                 $expected_price_points = $transaction_row['e_price_points'];
             }
-            $expected_tax_tracking = ($transaction_row['e_tax_tracking'] == '') ? array() : json_decode($transaction_row['e_tax_tracking'], true);
+            $expected_tax_tracking = ($transaction_row['e_tax_tracking'] == '') ? [] : json_decode($transaction_row['e_tax_tracking'], true);
             $sale_timestamp = $transaction_row['e_time']; // Important: as sales tax should be locked in at the time of it all being generated, not when the payment came through
             $session_id = $transaction_row['e_session_id'];
             $member_id_paying = $transaction_row['e_member_id'];
@@ -1547,10 +1547,10 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
     } else {
         if ($member_id === null) {
             if ($found['type'] == PRODUCT_SUBSCRIPTION) {
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 's_member_id', array('id' => intval($purchase_id)));
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 's_member_id', ['id' => intval($purchase_id)]);
             }
             elseif ($found['type'] == PRODUCT_INVOICE) {
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', array('id' => intval($purchase_id)));
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($purchase_id)]);
             }
         }
     }
@@ -1563,28 +1563,28 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
 
     // Grab expected price and tax: Invoice
     if (($found['type'] == PRODUCT_INVOICE) && ($expected_amount === null)) {
-        $invoice_rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('*'), array('id' => intval($purchase_id)), '', 1);
+        $invoice_rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['id' => intval($purchase_id)], '', 1);
         if (!array_key_exists(0, $invoice_rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $expected_amount = $invoice_rows[0]['i_amount'];
-        $expected_tax_derivation = ($invoice_rows[0]['i_tax_derivation'] == '') ? array() : json_decode($invoice_rows[0]['i_tax_derivation'], true);
+        $expected_tax_derivation = ($invoice_rows[0]['i_tax_derivation'] == '') ? [] : json_decode($invoice_rows[0]['i_tax_derivation'], true);
         $expected_tax = $invoice_rows[0]['i_tax'];
-        $expected_tax_tracking = ($invoice_rows[0]['i_tax_tracking'] == '') ? array() : json_decode($invoice_rows[0]['i_tax_tracking'], true);
+        $expected_tax_tracking = ($invoice_rows[0]['i_tax_tracking'] == '') ? [] : json_decode($invoice_rows[0]['i_tax_tracking'], true);
         $expected_price_points = 0;
         $expected_currency = $invoice_rows[0]['i_currency'];
     }
 
     // Grab expected price and tax: Subscription
     if (($found['type'] == PRODUCT_SUBSCRIPTION) && ($expected_amount === null)) {
-        $subscription_rows = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', array('*'), array('id' => intval($purchase_id)), '', 1);
+        $subscription_rows = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], ['id' => intval($purchase_id)], '', 1);
         if (!array_key_exists(0, $subscription_rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $expected_amount = $subscription_rows[0]['s_amount'];
-        $expected_tax_derivation = ($subscription_rows[0]['s_tax_derivation'] == '') ? array() : json_decode($subscription_rows[0]['s_tax_derivation'], true);
+        $expected_tax_derivation = ($subscription_rows[0]['s_tax_derivation'] == '') ? [] : json_decode($subscription_rows[0]['s_tax_derivation'], true);
         $expected_tax = $subscription_rows[0]['s_tax'];
-        $expected_tax_tracking = ($subscription_rows[0]['s_tax_tracking'] == '') ? array() : json_decode($subscription_rows[0]['s_tax_tracking'], true);
+        $expected_tax_tracking = ($subscription_rows[0]['s_tax_tracking'] == '') ? [] : json_decode($subscription_rows[0]['s_tax_tracking'], true);
         $expected_price_points = 0;
         $expected_currency = $subscription_rows[0]['s_currency'];
     }
@@ -1621,7 +1621,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
         $expected_currency = isset($found['currency']) ? $found['currency'] : get_option('currency');
     }
     if ($trans_expecting_id !== null) {
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if ((array_key_exists(0, $transaction_rows)) && (time() - $transaction_rows[0]['e_time'] < 24 * 60 * 60 * intval(get_option('ecom_price_honour_time')))) {
             $transaction_row = $transaction_rows[0];
             $expected_currency = $transaction_row['e_currency'];
@@ -1659,7 +1659,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
     $amount_points = $expected_price_points;
 
     // Store
-    $GLOBALS['SITE_DB']->query_insert('ecom_transactions', array(
+    $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
         'id' => $txn_id,
         't_memo' => $memo,
         't_type_code' => $type_code,
@@ -1678,7 +1678,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
         't_invoicing_breakdown' => $invoicing_breakdown,
         't_member_id' => $member_id_paying,
         't_session_id' => $session_id,
-    ));
+    ]);
 
     // Mark tax collected with external services as required
     foreach ($expected_tax_tracking as $tracking_service => $tracking_id) {
@@ -1698,9 +1698,9 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
         $found['ORDER_STATUS'] = 'ORDER_STATUS_awaiting_payment';
 
         if ($found['type'] == PRODUCT_INVOICE) { // Invoices have special support for tracking the order status
-            $GLOBALS['SITE_DB']->query_update('ecom_invoices', array('i_state' => 'pending'), array('id' => intval($purchase_id)), '', 1);
+            $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
         } elseif ($found['type'] == PRODUCT_SUBSCRIPTION) { // Subscriptions have special support for tracking the order status
-            $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', array('s_state' => 'pending'), array('id' => intval($purchase_id)), '', 1);
+            $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_state' => 'pending'], ['id' => intval($purchase_id)], '', 1);
         }
 
         // Call actualiser code
@@ -1724,7 +1724,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
 
     // Subscription: Completed (Made active)
     if (($status == 'Completed') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', array('s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'active'), array('id' => intval($purchase_id)), '', 1);
+        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'active'], ['id' => intval($purchase_id)], '', 1);
     }
 
     // Subscription: Modified
@@ -1734,12 +1734,12 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
 
     // Subscription: Cancelled
     if (($status == 'SCancelled') && ($found['type'] == PRODUCT_SUBSCRIPTION)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', array('s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'cancelled'), array('id' => intval($purchase_id)), '', 1);
+        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_auto_fund_source' => $payment_gateway, 's_auto_fund_key' => $txn_id, 's_state' => 'cancelled'], ['id' => intval($purchase_id)], '', 1);
     }
 
     // Invoice handling
     if (($status == 'Completed') && ($found['type'] == PRODUCT_INVOICE)) {
-        $GLOBALS['SITE_DB']->query_update('ecom_invoices', array('i_state' => 'paid'), array('id' => intval($purchase_id)), '', 1);
+        $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'paid'], ['id' => intval($purchase_id)], '', 1);
     }
 
     // Set order dispatch status
@@ -1770,7 +1770,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
     // Cleanup very old data
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'ecom_sales_expecting WHERE e_time<' . strval(time() - 60 * 60 * 24 * 90));
 
-    return array($type_code, $member_id);
+    return [$type_code, $member_id];
 }
 
 /**
@@ -1804,11 +1804,11 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
     $tax_invoice = generate_tax_invoice($txn_id);
 
     // Prepare for notification
-    $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', array('*'), array('a_txn_id' => $txn_id), '', 1);
+    $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $txn_id], '', 1);
     if (array_key_exists(0, $existing)) {
         $address = $existing[0];
     } else {
-        $address = array(
+        $address = [
             'a_firstname' => '',
             'a_lastname' => '',
             'a_street_address' => '',
@@ -1819,9 +1819,9 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
             'a_country' => '',
             'a_email' => '',
             'a_phone' => '',
-        );
+        ];
     }
-    $address_parts = array(
+    $address_parts = [
         'name' => trim($address['a_firstname'] . ' ' . $address['a_lastname']),
         'street_address' => $address['a_street_address'],
         'city' => $address['a_city'],
@@ -1831,8 +1831,8 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
         'country' => $address['a_country'],
         'email' => $address['a_email'],
         'phone' => $address['a_phone'],
-    );
-    $parameter_map = array(
+    ];
+    $parameter_map = [
         'AUTOMATIC_SETUP' => $automatic_setup,
         'AMOUNT' => $_amount,
         'CURRENCY' => $_currency,
@@ -1855,7 +1855,7 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
         'SHIPPING_EMAIL' => $address['a_email'],
         'SHIPPING_PHONE' => $address['a_phone'],
         'SHIPPING_FORMATTED_ADDRESS' => get_formatted_address($address_parts),
-    );
+    ];
 
     // Send completed notification to user
     if (($member_id === null) || (is_guest($member_id))) {
@@ -1874,7 +1874,7 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
                 $body = $_body->evaluate(get_site_default_lang());
 
                 require_code('mail');
-                dispatch_mail($subject, $body, array($email), $to_name);
+                dispatch_mail($subject, $body, [$email], $to_name);
             }
         }
     } else {
@@ -1883,7 +1883,7 @@ function send_transaction_mails($txn_id, $item_name, $shipped, $automatic_setup,
         $_body = do_notification_template('ECOM_PAYMENT_SENT_MAIL', $parameter_map, get_lang($member_id), false, null, '.txt', 'text');
         $body = $_body->evaluate(get_lang($member_id));
 
-        dispatch_notification('payment_received', null, $subject, $body, array($member_id), A_FROM_SYSTEM_PRIVILEGED);
+        dispatch_notification('payment_received', null, $subject, $body, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
     }
 
     // Send completed notification to staff...
@@ -1949,12 +1949,12 @@ function fatal_ipn_exit($error, $dont_trigger = false)
 function get_discounted_price($details, $consider_free = false, $member_id = null)
 {
     if ((!addon_installed('points')) || (is_guest())) {
-        return array(
+        return [
             null,
             $details['tax_code'],
             null,
             false,
-        );
+        ];
     }
 
     if ($member_id === null) {
@@ -1964,12 +1964,12 @@ function get_discounted_price($details, $consider_free = false, $member_id = nul
     if (($consider_free) && ($details['price_points'] !== null)) {
         require_code('points');
         if ((available_points($member_id) >= $details['price_points']) || ($details['price'] === null/*has to be points as no monetary-price*/) || (has_privilege($member_id, 'give_points_self'))) {
-            return array(
+            return [
                 0.00,
                 '0.00',
                 $details['price_points'],
                 false,
-            );
+            ];
         }
     }
 
@@ -1977,21 +1977,21 @@ function get_discounted_price($details, $consider_free = false, $member_id = nul
         require_code('points');
         if ((available_points($member_id) >= $details['discount_points__num_points']) || (has_privilege($member_id, 'give_points_self'))) {
             $discounted_price = max(0.00, $details['price'] - $details['discount_points__price_reduction']);
-            return array(
+            return [
                 $discounted_price,
                 tax_multiplier($details['tax_code'], ($discounted_price / $details['price'])),
                 $details['discount_points__num_points'],
                 true,
-            );
+            ];
         }
     }
 
-    return array(
+    return [
         null,
         $details['tax_code'],
         null,
         false,
-    );
+    ];
 }
 
 /**
@@ -2002,7 +2002,7 @@ function get_discounted_price($details, $consider_free = false, $member_id = nul
  */
 function get_transaction_row($txn_id)
 {
-    $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', array('*'), array('id' => $txn_id), '', 1);
+    $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['*'], ['id' => $txn_id], '', 1);
     if (!array_key_exists(0, $transaction_rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -2048,12 +2048,12 @@ function get_transaction_status_string($_status)
  */
 function get_transaction_status_list()
 {
-    $status = array(
+    $status = [
         'Pending' => do_lang_tempcode('PAYMENT_STATE_pending'),
         'Completed' => do_lang_tempcode('PAYMENT_STATE_paid'),
         'SCancelled' => do_lang_tempcode('PAYMENT_STATE_cancelled'),
         'SModified' => do_lang_tempcode('PAYMENT_STATE_smodified'),
-    );
+    ];
 
     $status_list = new Tempcode();
 
@@ -2072,7 +2072,7 @@ function get_transaction_status_list()
  */
 function get_full_business_address()
 {
-    $_address_parts = array(
+    $_address_parts = [
         'name',
         'street_address',
         'city',
@@ -2080,8 +2080,8 @@ function get_full_business_address()
         'state',
         'post_code',
         'country',
-    );
-    $address_parts = array();
+    ];
+    $address_parts = [];
     foreach ($_address_parts as $address_part_codename) {
         $address_part = get_option('business_' . $address_part_codename);
         $address_parts[$address_part_codename] = $address_part;
@@ -2136,7 +2136,7 @@ function split_street_address($compound_street_address, $num_parts, $find_compan
             // First part looks more like a street address than a company name, so we'll make the company name blank
             $parts = explode("\n", trim($compound_street_address), $num_parts - 1);
             $parts[count($parts) - 1] = str_replace("\n", ", ", $parts[count($parts) - 1]);
-            $parts = array_merge(array(''), $parts);
+            $parts = array_merge([''], $parts);
         }
     }
 

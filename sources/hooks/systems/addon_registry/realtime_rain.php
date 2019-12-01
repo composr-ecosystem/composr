@@ -31,7 +31,7 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_statistics',
-        );
+        ];
     }
 
     /**
@@ -73,13 +73,13 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'stats',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/audit/realtime_rain.svg',
             'themes/default/images/icons/tool_buttons/realtime_rain_off.svg',
             'themes/default/images/icons/tool_buttons/realtime_rain_on.svg',
@@ -391,7 +391,7 @@ class Hook_addon_registry_realtime_rain
             'themes/default/images/flags/ZM.gif',
             'themes/default/images/flags/ZW.gif',
             'themes/default/images/flags/index.html',
-        );
+        ];
     }
 
     /**
@@ -401,10 +401,10 @@ class Hook_addon_registry_realtime_rain
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/REALTIME_RAIN_OVERLAY.tpl' => 'administrative__realtime_rain_overlay',
             'templates/REALTIME_RAIN_BUBBLE.tpl' => 'administrative__realtime_rain_bubble',
-        );
+        ];
     }
 
     /**
@@ -416,11 +416,11 @@ class Hook_addon_registry_realtime_rain
      */
     public function tpl_preview__administrative__realtime_rain_overlay()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', array(
+        return [
+            lorem_globalise(do_lorem_template('REALTIME_RAIN_OVERLAY', [
                 'MIN_TIME' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -432,8 +432,8 @@ class Hook_addon_registry_realtime_rain
      */
     public function tpl_preview__administrative__realtime_rain_bubble()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REALTIME_RAIN_BUBBLE', array(
+        return [
+            lorem_globalise(do_lorem_template('REALTIME_RAIN_BUBBLE', [
                 'TITLE' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'IMAGE' => placeholder_image_url(),
@@ -443,7 +443,7 @@ class Hook_addon_registry_realtime_rain
                 'TYPE' => lorem_word(),
                 'IS_POSITIVE' => true,
                 'IS_NEGATIVE' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

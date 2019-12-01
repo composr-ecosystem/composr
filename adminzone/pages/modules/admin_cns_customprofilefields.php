@@ -53,18 +53,18 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             return null;
         }
 
-        $ret = array();
+        $ret = [];
 
         if (!$be_deferential && !$support_crosslinks) {
-            $ret += array(
-                'browse' => array('CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'),
-            );
+            $ret += [
+                'browse' => ['CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'],
+            ];
         }
 
-        $ret += array(
-            'stats' => array('CUSTOM_PROFILE_FIELD_STATS', 'menu/adminzone/tools/users/custom_profile_fields'),
-            'predefined_content' => array('PREDEFINED_FIELDS', 'admin/import'),
-        );
+        $ret += [
+            'stats' => ['CUSTOM_PROFILE_FIELD_STATS', 'menu/adminzone/tools/users/custom_profile_fields'],
+            'predefined_content' => ['PREDEFINED_FIELDS', 'admin/import'],
+        ];
 
         if (!$be_deferential && !$support_crosslinks) {
             $ret += parent::get_entry_points();
@@ -101,23 +101,23 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_adv_members');
 
-        breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
 
         $ret = parent::pre_run($top_level);
 
         if ($type == 'stats') {
-            breadcrumb_set_parents(array());
+            breadcrumb_set_parents([]);
         }
 
         if ($type == '_stats') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:stats', do_lang_tempcode('CUSTOM_PROFILE_FIELD_STATS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:stats', do_lang_tempcode('CUSTOM_PROFILE_FIELD_STATS')]]);
         }
 
         if ($type == 'predefined_content') {
         }
 
         if ($type == '_predefined_content') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('CUSTOM_PROFILE_FIELDS')), array('_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_FIELDS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('CUSTOM_PROFILE_FIELDS')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_FIELDS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -180,11 +180,11 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         return do_next_manager(
             get_screen_title('CUSTOM_PROFILE_FIELDS'),
             comcode_lang_string('DOC_CUSTOM_PROFILE_FIELDS'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_CUSTOM_PROFILE_FIELD')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_CUSTOM_PROFILE_FIELD')),
-                array('admin/install', array('_SELF', array('type' => 'predefined_content'), '_SELF'), do_lang('PREDEFINED_FIELDS')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_CUSTOM_PROFILE_FIELD')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CUSTOM_PROFILE_FIELD')],
+                ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_FIELDS')],
+            ],
             do_lang('CUSTOM_PROFILE_FIELDS')
         );
     }
@@ -253,7 +253,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $hidden->attach(form_input_hidden('type', $type));
         }
 
-        $possible_autofill_types = array(
+        $possible_autofill_types = [
             'autocomplete-disabled',
             'name',
             'honorific-prefix',
@@ -292,7 +292,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             'cc-exp-year',
             'cc-csc',
             'cc-type',
-        );
+        ];
 
         $autofill_types_option_list = new Tempcode();
         $autofill_types_option_list->attach(form_input_list_entry('', empty($autofill_type), do_lang('NA')));
@@ -305,11 +305,11 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         require_lang('ecommerce');
 
-        $possible_autofill_hints =  array(
+        $possible_autofill_hints =  [
             '' => do_lang('NA'),
             'shipping' => do_lang('SHIPPING'),
             'billing' => do_lang('BILLING'),
-        );
+        ];
 
         $autofill_hints_option_list = new Tempcode();
 
@@ -337,15 +337,15 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH'), do_lang_tempcode('DESCRIPTION_INCLUDE_IN_MAIN_SEARCH'), 'include_in_main_search', $include_in_main_search == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ALLOW_TEMPLATE_SEARCH'), do_lang_tempcode('DESCRIPTION_ALLOW_TEMPLATE_SEARCH'), 'allow_template_search', $allow_template_search == 1));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '7648f571ac21b86c2dbe82d3e8378a52', 'SECTION_HIDDEN' => $tempcode == '' && $section == '' && $icon == '', 'TITLE' => do_lang_tempcode('ADVANCED'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7648f571ac21b86c2dbe82d3e8378a52', 'SECTION_HIDDEN' => $tempcode == '' && $section == '' && $icon == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_is_super_admin'), array('g_is_private_club' => 0));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_is_super_admin'], ['g_is_private_club' => 0]);
         if ($locked == 0 || $allow_full_edit) {
             $groups = new Tempcode();
             //$groups = form_input_list_entry('-1', false, do_lang_tempcode('_ALL'));
             foreach ($rows as $group) {
                 if ($group['id'] != db_get_first_id()) {
-                    $groups->attach(form_input_list_entry(strval($group['id']), !empty(array_intersect(array($group['id']), explode(',', $only_group))), get_translated_text($group['g_name'], $GLOBALS['FORUM_DB'])));
+                    $groups->attach(form_input_list_entry(strval($group['id']), !empty(array_intersect([$group['id']], explode(',', $only_group))), get_translated_text($group['g_name'], $GLOBALS['FORUM_DB'])));
                 }
             }
             $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUP'), do_lang_tempcode('DESCRIPTION_FIELD_ONLY_GROUP'), 'only_group', $groups));
@@ -358,14 +358,14 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $fields->attach(form_input_theme_image(do_lang_tempcode('IMAGE'), '', 'icon', $ids, null, $icon, null, true));
 
         $sections = new Tempcode();
-        foreach (array('' => do_lang_tempcode('NA_EM'), 'contact' => do_lang_tempcode('menus:CONTACT')) as $_section => $section_label) {
+        foreach (['' => do_lang_tempcode('NA_EM'), 'contact' => do_lang_tempcode('menus:CONTACT')] as $_section => $section_label) {
             $sections->attach(form_input_list_entry($_section, $section == $_section, $section_label));
         }
         $fields->attach(form_input_list(do_lang_tempcode('SECTION'), do_lang_tempcode('DESCRIPTION_CPF_SECTION'), 'section', $sections, null, false, false));
 
         $fields->attach(form_input_line(do_lang_tempcode('CODE'), do_lang_tempcode('DESCRIPTION_CPF_CODE'), 'tempcode', $tempcode, false, null, null, 'text', null, null, null, 130));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -383,14 +383,14 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'cf_name' => do_lang_tempcode('NAME'),
             'cf_owner_view' => do_lang_tempcode('OWNER_VIEW'),
             'cf_owner_set' => do_lang_tempcode('OWNER_SET'),
             'cf_public_view' => do_lang_tempcode('PUBLIC_VIEW'),
             'cf_required' => do_lang_tempcode('REQUIRED'),
             'cf_order' => do_lang_tempcode('ORDER'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
@@ -399,13 +399,13 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $standard_ordering = (($current_ordering == 'cf_order ASC') && ($num_cpfs < 200));
 
-        $fh = array(
+        $fh = [
             do_lang_tempcode('NAME'),
             do_lang_tempcode('OWNER_VIEW'),
             do_lang_tempcode('OWNER_SET'),
             do_lang_tempcode('PUBLIC_VIEW'),
             do_lang_tempcode('REQUIRED'),
-        );
+        ];
         $fh[] = do_lang_tempcode('SHOW_ON_JOIN_FORM');
         //$fh[]=do_lang_tempcode('SHOW_IN_POSTS'); Save space
         //$fh[]=do_lang_tempcode('SHOW_IN_POST_PREVIEWS');
@@ -415,16 +415,16 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         // Load up filters
         $hooks = find_all_hook_obs('systems', 'cns_cpf_filter', 'Hook_cns_cpf_filter_');
-        $to_keep = array();
+        $to_keep = [];
         foreach ($hooks as $ob) {
             $to_keep += $ob->to_enable();
         }
 
         // Normalise ordering
         if ($standard_ordering) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id'), array(), 'ORDER BY cf_order ASC');
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id'], [], 'ORDER BY cf_order ASC');
             foreach ($rows as $i => $row) {
-                $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_order' => $i), array('id' => $row['id']), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_order' => $i], ['id' => $row['id']], '', 1);
             }
         }
 
@@ -469,7 +469,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                 }
             }
 
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $order = $row['cf_order'];
             if ($standard_ordering) {
@@ -485,12 +485,12 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                 if (!$selected_one) {
                     $order_list .= '<option value="' . strval($i) . '" selected="selected">' . (($order == ORDER_AUTOMATED_CRITERIA) ? do_lang('NA') : strval($order + 1)) . '</option>';
                 }
-                $orderer = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', array('_GUID' => '0c35279246e34d94fd4a41c432cdffed', 'LABEL' => do_lang_tempcode('SORT'), 'NAME' => 'order_' . strval($row['id']), 'LIST' => $order_list));
+                $orderer = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', ['_GUID' => '0c35279246e34d94fd4a41c432cdffed', 'LABEL' => do_lang_tempcode('SORT'), 'NAME' => 'order_' . strval($row['id']), 'LIST' => $order_list]);
             } else {
                 $orderer = make_string_tempcode('#' . escape_html($order + 1));
             }
 
-            $fr = array();
+            $fr = [];
             $fr[] = $name;
             $fr[] = ($row['cf_owner_view'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             $fr[] = ($row['cf_owner_set'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
@@ -510,8 +510,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             $result_entries->attach(results_entry($fr, true));
         }
         require_javascript('cns_cpfs');
-        $this->js_function_calls_for_choose[] = array('moduleAdminCnsCustomProfileFields_createSelectionListChooseTable', $this->form_id);
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', null, array(), null, 8, 'gdfg43tfdgdfgdrfgd', true), true);
+        $this->js_function_calls_for_choose[] = ['moduleAdminCnsCustomProfileFields_createSelectionListChooseTable', $this->form_id];
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gdfg43tfdgdfgdrfgd', true), true];
     }
 
     /**
@@ -526,7 +526,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $sql = 'SELECT r.id AS r_id,r.cf_order FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields r WHERE cf_order BETWEEN ';
         $sql .= strval(min($old_order, $new_order)) . ' AND ' . strval(max($old_order, $new_order));
         $sql .= ' ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name');
-        $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, array('cf_name' => 'SHORT_TRANS'));
+        $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, ['cf_name' => 'SHORT_TRANS']);
 
         foreach ($rows as $row) {
             if ($id == $row['r_id']) {
@@ -539,7 +539,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                 }
             }
 
-            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_order' => $_new_order), array('id' => $row['r_id']), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_order' => $_new_order], ['id' => $row['r_id']], '', 1);
         }
     }
 
@@ -552,7 +552,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     public function may_delete_this($_id)
     {
         $id = intval($_id);
-        $locked = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_locked', array('id' => $id));
+        $locked = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_locked', ['id' => $id]);
         return ($locked == 0);
     }
 
@@ -564,7 +564,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array('id' => intval($id)));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'cpf'));
         }
@@ -587,7 +587,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         if (!array_key_exists('cf_show_on_join_form', $myrow)) {
             $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_show_on_join_form', 'BINARY', 0);
             $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields SET cf_show_on_join_form=cf_required');
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array('id' => intval($id)));
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], ['id' => intval($id)]);
             $myrow = $rows[0];
         }
         $show_on_join_form = $myrow['cf_show_on_join_form'];
@@ -698,16 +698,16 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         require_lang('fields');
 
         require_code('templates_columned_table');
-        $header_row = columned_table_header_row(array(
+        $header_row = columned_table_header_row([
             do_lang_tempcode('IMAGE'),
             do_lang_tempcode('NAME'),
             do_lang_tempcode('SECTION'),
             do_lang_tempcode('TYPE'),
             do_lang_tempcode('CHOOSE'),
-        ));
+        ]);
 
-        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_name'));
-        $existing_fields = array();
+        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_name']);
+        $existing_fields = [];
         foreach ($_existing_fields as $field) {
             $existing_fields[get_translated_text($field['cf_name'])] = $field['id'];
         }
@@ -735,35 +735,35 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
             $type = do_lang_tempcode('FIELD_TYPE_' . $details['type']);
 
-            $choose_action = do_template('COLUMNED_TABLE_ROW_CELL_TICK', array(
+            $choose_action = do_template('COLUMNED_TABLE_ROW_CELL_TICK', [
                 '_GUID' => 'c355b82d286c3f10180b8a0ecddf070f',
                 'LABEL' => do_lang_tempcode('CHOOSE'),
                 'NAME' => 'select__' . $field_code,
                 'VALUE' => '1',
                 'HIDDEN' => '',
                 'TICKED' => isset($existing_fields[$details['title']]),
-            ));
+            ]);
 
-            $rows->attach(columned_table_row(array(
+            $rows->attach(columned_table_row([
                 $icon,
                 $title,
                 $section,
                 $type,
                 $choose_action,
-            ), false));
+            ], false));
         }
 
-        $table = do_template('COLUMNED_TABLE', array('_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $rows));
+        $table = do_template('COLUMNED_TABLE', ['_GUID' => 'b5765aca9ffe84242ca2c9d17f5ec0a6', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
 
-        return do_template('COLUMNED_TABLE_SCREEN', array(
+        return do_template('COLUMNED_TABLE_SCREEN', [
             '_GUID' => 'ddfa0fb6ea396d3b57cb447bc228a885',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('PREDEFINED_FIELDS_DESCRIPTION'),
             'TABLE' => $table,
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
-            'POST_URL' => build_url(array('page' => '_SELF', 'type' => '_predefined_content'), '_SELF'),
-        ));
+            'POST_URL' => build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'),
+        ]);
     }
 
     /**
@@ -775,8 +775,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     {
         $fields = _cns_predefined_custom_field_details();
 
-        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_name'));
-        $existing_fields = array();
+        $_existing_fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_name']);
+        $existing_fields = [];
         foreach ($_existing_fields as $field) {
             $existing_fields[get_translated_text($field['cf_name'])] = $field['id'];
         }
@@ -809,12 +809,12 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     {
         $fields = new Tempcode();
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_name', 'cf_type'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_name', 'cf_type']);
 
         require_code('fields');
 
         $list = new Tempcode();
-        $_list = array();
+        $_list = [];
         foreach ($rows as $row) {
             $ob = get_fields_hook($row['cf_type']);
             list(, , $storage_type) = $ob->get_field_value_row_bits(null);
@@ -838,10 +838,10 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $fields->attach(form_input_date(do_lang_tempcode('FROM'), do_lang_tempcode('DESCRIPTION_MEMBERS_JOINED_FROM'), 'start', false, false, false, time() - 60 * 60 * 24 * 30, 10, intval(date('Y')) - 10));
         $fields->attach(form_input_date(do_lang_tempcode('TO'), do_lang_tempcode('DESCRIPTION_MEMBERS_JOINED_TO'), 'end', false, false, false, time(), 10, intval(date('Y')) - 10));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_stats'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => '_stats'], '_SELF', [], false, true);
         $submit_name = do_lang_tempcode('CUSTOM_PROFILE_FIELD_STATS');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '393bac2180c9e135ae9c31565ddf7761',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -852,7 +852,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -871,7 +871,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         if (count($members_in_range) == 300) {
             attach_message(do_lang_tempcode('TOO_MUCH_CHOOSE__TOP_ONLY', escape_html(integer_format(300))), 'warn');
         }
-        $lines = array();
+        $lines = [];
         foreach ($members_in_range as $row) {
             if ($row[$f_name] !== null) {
                 $val = $row[$f_name];
@@ -880,13 +880,13 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
                     continue;
                 }
 
-                $lines[] = array('CNT' => integer_format($row['cnt']), 'VAL' => is_integer($val) ? integer_format($val) : $val);
+                $lines[] = ['CNT' => integer_format($row['cnt']), 'VAL' => is_integer($val) ? integer_format($val) : $val];
             }
         }
-        if ($lines === array()) {
+        if ($lines === []) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        return do_template('CNS_CPF_STATS_SCREEN', array('_GUID' => 'bb7be7acf936cd008e16bd515f7f39ac', 'TITLE' => $this->title, 'STATS' => $lines));
+        return do_template('CNS_CPF_STATS_SCREEN', ['_GUID' => 'bb7be7acf936cd008e16bd515f7f39ac', 'TITLE' => $this->title, 'STATS' => $lines]);
     }
 }

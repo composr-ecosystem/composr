@@ -37,7 +37,7 @@ class Hook_content_meta_aware_catalogue_entry
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'catalogues:CATALOGUE_ENTRY',
@@ -51,12 +51,12 @@ class Hook_content_meta_aware_catalogue_entry
             'parent_category_meta_aware_type' => 'catalogue_category',
             'is_category' => false,
             'is_entry' => true,
-            'category_field' => array('c_name', 'cc_id'), // For category permissions
-            'category_type' => array('catalogues_catalogue', 'catalogues_category'), // For category permissions
+            'category_field' => ['c_name', 'cc_id'], // For category permissions
+            'category_type' => ['catalogues_catalogue', 'catalogues_category'], // For category permissions
             'parent_spec__table_name' => 'catalogue_categories',
             'parent_spec__parent_name' => 'cc_parent_id',
             'parent_spec__field_name' => 'id',
-            'category_is_string' => array(true, false),
+            'category_is_string' => [true, false],
 
             'title_field' => 'CALL: generate_catalogue_entry_title',
             'title_field_dereference' => false,
@@ -102,7 +102,7 @@ class Hook_content_meta_aware_catalogue_entry
             'module' => 'catalogues',
 
             'filtercode' => 'catalogues::_catalogues_filtercode',
-            'filtercode_protected_fields' => array(), // These are ones even some staff should never know
+            'filtercode_protected_fields' => [], // These are ones even some staff should never know
 
             'commandr_filesystem_hook' => 'catalogues',
             'commandr_filesystem__is_folder' => false,
@@ -116,7 +116,7 @@ class Hook_content_meta_aware_catalogue_entry
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CATALOGUE_ENTRY',
-        );
+        ];
     }
 
     /**
@@ -155,13 +155,13 @@ function generate_catalogue_entry_title($url_parts, $resource_fs_style = false)
     if (isset($CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']])) {
         $catalogue_name = $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']];
     } else {
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => intval($url_parts['id'])));
+        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => intval($url_parts['id'])]);
         $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']] = $catalogue_name;
     }
 
     $unique_key_num = 0;
     if ($resource_fs_style) {
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         foreach ($fields as $i => $f) {
             if ($f['cf_type'] == 'codename') {
                 $unique_key_num = $i;
@@ -171,7 +171,7 @@ function generate_catalogue_entry_title($url_parts, $resource_fs_style = false)
     }
 
     require_code('catalogues');
-    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), array($unique_key_num), $fields);
+    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), [$unique_key_num], $fields);
     if (!isset($field_values[$unique_key_num])) {
         return uniqid('', true);
     }
@@ -198,7 +198,7 @@ function generate_catalogue_entry_thumb_url($url_parts, $row)
     if (isset($CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']])) {
         $catalogue_name = $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']];
     } else {
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => intval($url_parts['id'])));
+        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => intval($url_parts['id'])]);
         $CMA_HOOK_CATALOGUE_NAME_CACHE[$url_parts['id']] = $catalogue_name;
     }
 
@@ -206,7 +206,7 @@ function generate_catalogue_entry_thumb_url($url_parts, $row)
     if (array_key_exists($catalogue_name, $CAT_FIELDS_CACHE)) {
         $fields = $CAT_FIELDS_CACHE[$catalogue_name];
     } else {
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
     }
     foreach ($fields as $i => $f) {
         if ($f['cf_type'] == 'picture') {
@@ -220,7 +220,7 @@ function generate_catalogue_entry_thumb_url($url_parts, $row)
     }
 
     require_code('catalogues');
-    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), array($unique_key_num), $fields);
+    $field_values = get_catalogue_entry_field_values($catalogue_name, intval($url_parts['id']), [$unique_key_num], $fields);
     $field = $field_values[$unique_key_num];
     if ($field === null) {
         return '';

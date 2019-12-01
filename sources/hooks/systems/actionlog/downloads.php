@@ -31,124 +31,124 @@ class Hook_actionlog_downloads extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
         require_lang('downloads');
 
-        return array(
-            'ADD_DOWNLOAD_CATEGORY' => array(
+        return [
+            'ADD_DOWNLOAD_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:downloads:browse',
                     'EDIT_THIS_DOWNLOAD_CATEGORY' => '_SEARCH:cms_downloads:_edit_category:{ID}',
                     'ADD_DOWNLOAD_CATEGORY' => '_SEARCH:cms_downloads:add_category',
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={ID}',
-                ),
-            ),
-            'EDIT_DOWNLOAD_CATEGORY' => array(
+                ],
+            ],
+            'EDIT_DOWNLOAD_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:downloads:browse',
                     'EDIT_THIS_DOWNLOAD_CATEGORY' => '_SEARCH:cms_downloads:_edit_category:{ID}',
                     'ADD_DOWNLOAD_CATEGORY' => '_SEARCH:cms_downloads:add_category',
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={ID}',
-                ),
-            ),
-            'DELETE_DOWNLOAD_CATEGORY' => array(
+                ],
+            ],
+            'DELETE_DOWNLOAD_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_DOWNLOAD_CATEGORY' => '_SEARCH:cms_downloads:add_category',
-                ),
-            ),
-            'ADD_DOWNLOAD_LICENCE' => array(
+                ],
+            ],
+            'ADD_DOWNLOAD_LICENCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_licence',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_DOWNLOAD_LICENCE' => '_SEARCH:cms_downloads:_edit_other:{ID}',
                     'ADD_DOWNLOAD_LICENCE' => '_SEARCH:cms_downloads:add_other',
-                ),
-            ),
-            'EDIT_DOWNLOAD_LICENCE' => array(
+                ],
+            ],
+            'EDIT_DOWNLOAD_LICENCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_licence',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_DOWNLOAD_LICENCE' => '_SEARCH:cms_downloads:_edit_other:{ID}',
                     'ADD_DOWNLOAD_LICENCE' => '_SEARCH:cms_downloads:add_other',
-                ),
-            ),
-            'DELETE_DOWNLOAD_LICENCE' => array(
+                ],
+            ],
+            'DELETE_DOWNLOAD_LICENCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download_licence',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_DOWNLOAD_LICENCE' => '_SEARCH:cms_downloads:add_other',
-                ),
-            ),
-            'ADD_DOWNLOAD' => array(
+                ],
+            ],
+            'ADD_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:downloads:entry:{ID}',
                     'EDIT_THIS_DOWNLOAD' => '_SEARCH:cms_downloads:_edit:{ID}',
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'EDIT_DOWNLOAD' => array(
+                ],
+            ],
+            'EDIT_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:downloads:entry:{ID}',
                     'EDIT_THIS_DOWNLOAD' => '_SEARCH:cms_downloads:_edit:{ID}',
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'DELETE_DOWNLOAD' => array(
+                ],
+            ],
+            'DELETE_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'download',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_DOWNLOAD' => '_SEARCH:cms_downloads:add',
-                ),
-            ),
-            'FILESYSTEM_DOWNLOADS' => array(
+                ],
+            ],
+            'FILESYSTEM_DOWNLOADS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DOWNLOADS_HOME' => '_SEARCH:downloads',
-                ),
-            ),
-            'FTP_DOWNLOADS' => array(
+                ],
+            ],
+            'FTP_DOWNLOADS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DOWNLOADS_HOME' => '_SEARCH:downloads',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -164,11 +164,11 @@ class Hook_actionlog_downloads extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_DOWNLOAD':
             case 'EDIT_DOWNLOAD':
-                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', array('id' => intval($identifier)));
+                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => intval($identifier)]);
                 if ($category_id !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => strval($category_id),
-                    );
+                    ];
                 }
                 break;
         }

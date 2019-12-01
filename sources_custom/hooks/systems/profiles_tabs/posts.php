@@ -49,12 +49,12 @@ class Hook_profiles_tabs_posts
         $order = 20;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/social/forum/forums');
+            return [$title, null, $order, 'menu/social/forum/forums'];
         }
 
-        $topics = do_block('main_cns_involved_topics', array('member_id' => strval($member_id_of), 'max' => '10', 'start' => '0'));
-        $content = do_template('CNS_MEMBER_PROFILE_POSTS', array('_GUID' => '365391fb674468b94c1e7006bc1279b8', 'MEMBER_ID' => strval($member_id_of), 'TOPICS' => $topics));
+        $topics = do_block('main_cns_involved_topics', ['member_id' => strval($member_id_of), 'max' => '10', 'start' => '0']);
+        $content = do_template('CNS_MEMBER_PROFILE_POSTS', ['_GUID' => '365391fb674468b94c1e7006bc1279b8', 'MEMBER_ID' => strval($member_id_of), 'TOPICS' => $topics]);
 
-        return array($title, $content, $order, 'menu/social/forum/forums');
+        return [$title, $content, $order, 'menu/social/forum/forums'];
     }
 }

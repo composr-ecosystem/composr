@@ -36,7 +36,7 @@ class Hook_content_meta_aware_download_category
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'downloads:DOWNLOAD_CATEGORY',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_download_category
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_DOWNLOAD_CATEGORY',
-        );
+        ];
     }
 
     /**

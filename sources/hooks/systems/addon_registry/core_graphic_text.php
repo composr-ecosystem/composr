@@ -31,7 +31,7 @@ class Hook_addon_registry_core_graphic_text
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_core_graphic_text
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_fringe',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_core_graphic_text
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_core_graphic_text
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_graphic_text.php',
             'sources/fonts.php',
             'themes/default/css/fonts.css',
@@ -116,6 +116,6 @@ class Hook_addon_registry_core_graphic_text
             'data/fonts/index.html',
             'data/gd_text.php',
             'data_custom/fonts/index.html',
-        );
+        ];
     }
 }

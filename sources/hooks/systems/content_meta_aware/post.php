@@ -43,7 +43,7 @@ class Hook_content_meta_aware_post
             }
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'cns:FORUM_POST',
@@ -119,7 +119,7 @@ class Hook_content_meta_aware_post
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_POST',
-        );
+        ];
     }
 
     /**

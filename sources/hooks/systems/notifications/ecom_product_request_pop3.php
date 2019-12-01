@@ -32,11 +32,11 @@ class Hook_notification_ecom_product_request_pop3 extends Hook_notification__Sta
     public function list_handled_codes()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ecom_product_request_pop3'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_pop3'));
+        $list = [];
+        $list['ecom_product_request_pop3'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_pop3')];
         return $list;
     }
 }

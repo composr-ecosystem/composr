@@ -30,7 +30,7 @@ class Hook_config_css_captcha
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSS_CAPTCHA',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_css_captcha
             'required' => true,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

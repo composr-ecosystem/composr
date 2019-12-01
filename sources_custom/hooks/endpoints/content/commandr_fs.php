@@ -52,9 +52,9 @@ class Hook_endpoint_content_commandr_fs
         require_code('commandr_fs');
         $commandr_fs = new Commandr_fs();
 
-        $data = array(
+        $data = [
             'message' => strip_html(do_lang('SUCCESS')),
-        );
+        ];
 
         $path_arr = $commandr_fs->_pwd_to_array('/' . $id);
 
@@ -104,9 +104,9 @@ class Hook_endpoint_content_commandr_fs
                 // Search format is <resource-type>/<resource-id> (e.g. download/10) OR <guid>
                 require_code('resource_fs');
                 if (strpos($id, '/') === false) {
-                    $details = $GLOBALS['SITE_DB']->query_select('alternative_ids', array('*'), array(
+                    $details = $GLOBALS['SITE_DB']->query_select('alternative_ids', ['*'], [
                         'resource_guid' => $id,
-                    ), '', 1);
+                    ], '', 1);
                     if (!array_key_exists(0, $details)) {
                         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                     }
@@ -137,9 +137,9 @@ class Hook_endpoint_content_commandr_fs
                             if (is_array($_data)) {
                                 $data = $_data;
                             } else {
-                                $data = array(
+                                $data = [
                                     'data' => $__data,
-                                );
+                                ];
                             }
                         } else {
                             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

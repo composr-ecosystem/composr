@@ -34,11 +34,11 @@ class Hook_symbol_HAS_READ
             return '0'; // Not installed yet
         }
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('content_read', 'r_time', array(
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('content_read', 'r_time', [
             'r_content_type' => $param[0],
             'r_content_id' => $param[1],
             'r_member_id' => get_member()
-        ));
+        ]);
 
         if ($test !== null) {
             return '1';

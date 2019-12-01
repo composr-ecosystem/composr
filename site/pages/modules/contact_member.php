@@ -30,7 +30,7 @@ class Module_contact_member
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -50,7 +50,7 @@ class Module_contact_member
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => 'contact_member'));
+        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'contact_member']);
     }
 
     /**
@@ -66,8 +66,8 @@ class Module_contact_member
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach (array_keys($usergroups) as $id) {
             if ((!isset($staff_groups[$id])) && $id != (db_get_first_id())) {
-                $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => 'contact_member', 'zone_name' => 'site', 'group_id' => $id), '', 1); // in case already exists
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'contact_member', 'zone_name' => 'site', 'group_id' => $id));
+                $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'contact_member', 'zone_name' => 'site', 'group_id' => $id], '', 1); // in case already exists
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'contact_member', 'zone_name' => 'site', 'group_id' => $id]);
             }
         }
     }
@@ -87,7 +87,7 @@ class Module_contact_member
             return null;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -118,7 +118,7 @@ class Module_contact_member
             $member_id = get_param_integer('id');
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_DEFAULT_ERROR);
 
-            $this->title = get_screen_title('EMAIL_MEMBER', true, array(escape_html($username)));
+            $this->title = get_screen_title('EMAIL_MEMBER', true, [escape_html($username)]);
 
             $this->member_id = $member_id;
             $this->username = $username;
@@ -128,10 +128,10 @@ class Module_contact_member
             $member_id = get_param_integer('id');
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true, USERNAME_DEFAULT_ERROR);
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('EMAIL_MEMBER', escape_html($to_name)))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EMAIL_MEMBER', escape_html($to_name))]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
-            $this->title = get_screen_title('EMAIL_MEMBER', true, array(escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true))));
+            $this->title = get_screen_title('EMAIL_MEMBER', true, [escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true))]);
 
             $this->member_id = $member_id;
             $this->to_name = $to_name;
@@ -217,7 +217,7 @@ class Module_contact_member
 
         if (!is_guest()) {
             if (ini_get('suhosin.mail.protect') !== '2') {
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '7f7e5aa2fa469ebbca9ca61e9f869882', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => true)));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7f7e5aa2fa469ebbca9ca61e9f869882', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => true]));
 
                 if ($default_name != '') {
                     $fields->attach($name_field);
@@ -226,9 +226,9 @@ class Module_contact_member
                     $fields->attach($email_field);
                 }
 
-                $fields->attach(form_input_username_multi(do_lang_tempcode('EMAIL_CC_ADDRESS'), do_lang_tempcode('DESCRIPTION_EMAIL_CC_ADDRESS'), 'cc_', array(), 0, false));
+                $fields->attach(form_input_username_multi(do_lang_tempcode('EMAIL_CC_ADDRESS'), do_lang_tempcode('DESCRIPTION_EMAIL_CC_ADDRESS'), 'cc_', [], 0, false));
 
-                $fields->attach(form_input_username_multi(do_lang_tempcode('EMAIL_BCC_ADDRESS'), do_lang_tempcode('DESCRIPTION_EMAIL_BCC_ADDRESS'), 'bcc_', array(), 0, false));
+                $fields->attach(form_input_username_multi(do_lang_tempcode('EMAIL_BCC_ADDRESS'), do_lang_tempcode('DESCRIPTION_EMAIL_BCC_ADDRESS'), 'bcc_', [], 0, false));
             }
         }
 
@@ -243,20 +243,20 @@ class Module_contact_member
             }
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'actual', 'id' => $member_id, 'redirect' => protect_url_parameter($redirect)), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual', 'id' => $member_id, 'redirect' => protect_url_parameter($redirect)], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e06557e6eceacf1f46ee930c99ac5bb5',
             'TITLE' => $this->title,
             'HIDDEN' => $hidden,
-            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? array(captcha_ajax_check_function()) : array(),
+            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
             'FIELDS' => $fields,
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/send',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -291,14 +291,14 @@ class Module_contact_member
         require_code('antispam');
         inject_action_spamcheck(null, $from_email);
 
-        $extra_cc_addresses = array();
-        $extra_bcc_addresses = array();
+        $extra_cc_addresses = [];
+        $extra_bcc_addresses = [];
         if (!is_guest()) {
             foreach ($_POST as $key => $val) {
                 if (($val != '') && ((substr($key, 0, 3) == 'cc_') || (substr($key, 0, 4) == 'bcc_'))) {
                     $address = post_param_string($key);
                     if (!is_email_address($address)) {
-                        $address = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_email_address', array('m_username' => $address));
+                        $address = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_email_address', ['m_username' => $address]);
                         if ($address === null) {
                             warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                         }
@@ -317,7 +317,7 @@ class Module_contact_member
         }
 
         require_code('mail');
-        $attachments = array();
+        $attachments = [];
         $size_so_far = 0;
         require_code('uploads');
         is_plupload(true);
@@ -338,18 +338,18 @@ class Module_contact_member
         dispatch_mail(
             do_lang('EMAIL_MEMBER_SUBJECT', get_site_name(), post_param_string('subject'), null, get_lang($member_id)),
             post_param_string('message'),
-            array($email_address),
+            [$email_address],
             $to_name,
             $from_email,
             $from_name,
-            array(
+            [
                 'attachments' => $attachments,
                 'as' => get_member(),
                 'bypass_queue' => (!empty($attachments)),
                 'extra_cc_addresses' => $extra_cc_addresses,
                 'extra_bcc_addresses' => $extra_bcc_addresses,
                 'require_recipient_valid_since' => $join_time,
-            )
+            ]
         );
 
         log_it('EMAIL', strval($member_id), $to_name);

@@ -34,29 +34,29 @@ class CMSModerationRead
         }
 
         if (!addon_installed('unvalidated')) {
-            return array(0, array());
+            return [0, []];
         }
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        $where = array('t_validated' => 0);
+        $where = ['t_validated' => 0];
 
         $total_topic_num = $GLOBALS['FORUM_DB']->query_select_value('f_topics t JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', 'COUNT(*)', $where);
 
         $_topics = $GLOBALS['FORUM_DB']->query_select(
             'f_topics t JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id',
-            array('*', 't.id AS topic_id', 'f.id AS forum_id', 'p.id AS post_id'),
+            ['*', 't.id AS topic_id', 'f.id AS forum_id', 'p.id AS post_id'],
             $where,
             'ORDER BY t_cache_first_time DESC',
             $max,
             $start
         );
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
             $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_MODERATED_BY);
         }
 
-        return array($total_topic_num, $topics);
+        return [$total_topic_num, $topics];
     }
 
     /**
@@ -75,17 +75,17 @@ class CMSModerationRead
         }
 
         if (!addon_installed('unvalidated')) {
-            return array(0, array());
+            return [0, []];
         }
 
-        $where = array('p_validated' => 0);
+        $where = ['p_validated' => 0];
 
         $total_post_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', $where);
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $table = 'f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id';
 
-        $select = array('*', 'p.id AS post_id', 't.id AS topic_id', 'f.id AS forum_id');
+        $select = ['*', 'p.id AS post_id', 't.id AS topic_id', 'f.id AS forum_id'];
 
         $extra = '';
         if (!has_privilege(get_member(), 'view_other_pt')) {
@@ -94,11 +94,11 @@ class CMSModerationRead
         $extra .= ' ORDER BY p_time DESC,p.id DESC';
 
         $_posts = $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra, $max, $start);
-        $posts = array();
+        $posts = [];
         foreach ($_posts as $post) {
             $posts[] = render_post_to_tapatalk($post['post_id'], false, $post, RENDER_POST_SHORT_CONTENT | RENDER_POST_MODERATED_BY);
         }
 
-        return array($total_post_num, $posts);
+        return [$total_post_num, $posts];
     }
 }

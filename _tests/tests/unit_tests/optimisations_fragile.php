@@ -20,14 +20,14 @@ class optimisations_fragile_test_set extends cms_test_case
 {
     public function testSymbols2Optimisation()
     {
-        $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'forum', 'group_id' => db_get_first_id()), false, true); // errors suppressed in case already there
+        $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'forum', 'group_id' => db_get_first_id()], false, true); // errors suppressed in case already there
 
         $db = $GLOBALS[(get_forum_type() == 'cns') ? 'FORUM_DB' : 'SITE_DB'];
-        $db->query_insert('group_category_access', array(
+        $db->query_insert('group_category_access', [
             'module_the_name' => 'forums',
             'category_name' => strval(db_get_first_id()),
             'group_id' => db_get_first_id(),
-        ), false, true);
+        ], false, true);
 
         require_code('site');
 

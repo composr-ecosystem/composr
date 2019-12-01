@@ -30,7 +30,7 @@ class Hook_config_email_log_store_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EMAIL_LOG_STORE_TIME',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_email_log_store_time
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

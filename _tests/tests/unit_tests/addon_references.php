@@ -26,7 +26,7 @@ class addon_references_test_set extends cms_test_case
 
         require_code('files2');
 
-        $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('php', 'tpl'));
+        $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl']);
         $this->files[] = 'install.php';
     }
 
@@ -38,7 +38,7 @@ class addon_references_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#addon_installed\(\'([^\']*)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $addon_name = $matches[1][$i];
@@ -55,7 +55,7 @@ class addon_references_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\{\$ADDON_INSTALLED,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $addon_name = $matches[1][$i];

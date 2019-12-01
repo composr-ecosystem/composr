@@ -30,7 +30,7 @@ class Module_admin_ssl
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_ssl
             return null;
         }
 
-        return array(
-            'browse' => array('SSL_CONFIGURATION', 'menu/adminzone/security/ssl'),
-        );
+        return [
+            'browse' => ['SSL_CONFIGURATION', 'menu/adminzone/security/ssl'],
+        ];
     }
 
     public $title;
@@ -115,7 +115,7 @@ class Module_admin_ssl
      */
     public function ssl_interface()
     {
-        $entries = array();
+        $entries = [];
         $zones = find_all_zones();
         foreach ($zones as $zone) {
             $pages = find_all_pages_wrap($zone);
@@ -126,12 +126,12 @@ class Module_admin_ssl
                     $page = strval($page); // strval($page) as $page could have become numeric due to array imprecision
                 }
                 $ticked = is_page_https($zone, $page);
-                $entries[] = array('TICKED' => $ticked, 'PAGE' => $page, 'ZONE' => $zone);
+                $entries[] = ['TICKED' => $ticked, 'PAGE' => $page, 'ZONE' => $zone];
             }
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'set'), '_SELF');
-        return do_template('SSL_CONFIGURATION_SCREEN', array('_GUID' => '823f395205f0c018861847e80c622710', 'TITLE' => $this->title, 'URL' => $url, 'ENTRIES' => $entries));
+        $url = build_url(['page' => '_SELF', 'type' => 'set'], '_SELF');
+        return do_template('SSL_CONFIGURATION_SCREEN', ['_GUID' => '823f395205f0c018861847e80c622710', 'TITLE' => $this->title, 'URL' => $url, 'ENTRIES' => $entries]);
     }
 
     /**
@@ -150,9 +150,9 @@ class Module_admin_ssl
                 }
                 $id = $zone . ':' . $page;
                 $value = post_param_integer('ssl_' . $zone . '__' . $page, 0);
-                $GLOBALS['SITE_DB']->query_delete('https_pages', array('https_page_name' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $id], '', 1);
                 if ($value == 1) {
-                    $GLOBALS['SITE_DB']->query_insert('https_pages', array('https_page_name' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('https_pages', ['https_page_name' => $id]);
                 }
             }
         }
@@ -162,7 +162,7 @@ class Module_admin_ssl
         log_it('SSL_CONFIGURATION');
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

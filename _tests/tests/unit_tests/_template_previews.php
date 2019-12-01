@@ -56,9 +56,9 @@ class _template_previews_test_set extends cms_test_case
 
     public function testNoMissingPreviews()
     {
-        $templates = array();
+        $templates = [];
 
-        $files = get_directory_contents(get_file_base() . '/themes/default/templates', get_file_base() . '/themes/default/templates', null, false, true, array('tpl'));
+        $files = get_directory_contents(get_file_base() . '/themes/default/templates', get_file_base() . '/themes/default/templates', null, false, true, ['tpl']);
         foreach ($files as $path) {
             $templates[] = 'templates/' . basename($path);
         }
@@ -106,7 +106,7 @@ class _template_previews_test_set extends cms_test_case
         global $RECORD_TEMPLATES_USED, $RECORDED_TEMPLATES_USED;
         $RECORD_TEMPLATES_USED = true;
 
-        $only_do_these = array(); // If you want to test specific templates temporarily put the template names (without .tpl) in this array. But remove again before you commit!
+        $only_do_these = []; // If you want to test specific templates temporarily put the template names (without .tpl) in this array. But remove again before you commit!
 
         $lists = find_all_previews__by_template();
         $this->shuffle_assoc($lists); // So parallelism can work
@@ -143,11 +143,11 @@ class _template_previews_test_set extends cms_test_case
 
             init__lorem();
             push_output_state();
-            $LOADED_TPL_CACHE = array();
-            $BLOCKS_CACHE = array();
-            $PANELS_CACHE = array();
+            $LOADED_TPL_CACHE = [];
+            $BLOCKS_CACHE = [];
+            $PANELS_CACHE = [];
 
-            $RECORDED_TEMPLATES_USED = array();
+            $RECORDED_TEMPLATES_USED = [];
 
             $out = render_screen_preview($template, $hook, $function);
 
@@ -170,7 +170,7 @@ class _template_previews_test_set extends cms_test_case
                 }
                 if ($list_2[1] == $function) {
                     // Ignore templates designed for indirect inclusion
-                    if (in_array($template_2, array(
+                    if (in_array($template_2, [
                         'templates/NEWSLETTER_PREVIEW.tpl',
                         'templates/GLOBAL_HELPER_PANEL.tpl',
                         'templates/HTML_HEAD.tpl',
@@ -196,7 +196,7 @@ class _template_previews_test_set extends cms_test_case
                         'templates/CNS_MEMBER_PROFILE_FIELD.tpl',
                         'templates/ICON.tpl',
                         'templates/RED_ALERT.tpl',
-                    ))) {
+                    ])) {
                         continue;
                     }
 
@@ -261,18 +261,18 @@ class _template_previews_test_set extends cms_test_case
 
             init__lorem();
             push_output_state();
-            $LOADED_TPL_CACHE = array();
-            $BLOCKS_CACHE = array();
-            $PANELS_CACHE = array();
+            $LOADED_TPL_CACHE = [];
+            $BLOCKS_CACHE = [];
+            $PANELS_CACHE = [];
             $out1 = render_screen_preview($template, $hook, $function);
             $_out1 = $this->cleanup_varying_code($out1->evaluate());
             restore_output_state();
 
             init__lorem();
             push_output_state();
-            $LOADED_TPL_CACHE = array();
-            $BLOCKS_CACHE = array();
-            $PANELS_CACHE = array();
+            $LOADED_TPL_CACHE = [];
+            $BLOCKS_CACHE = [];
+            $PANELS_CACHE = [];
             $out2 = render_screen_preview($template, $hook, $function);
             $_out2 = $this->cleanup_varying_code($out2->evaluate());
             restore_output_state();
@@ -336,7 +336,7 @@ class _template_previews_test_set extends cms_test_case
             cms_disable_time_limit();
 
             $ATTACHED_MESSAGES = new Tempcode();
-            $ATTACHED_MESSAGES_RAW = array();
+            $ATTACHED_MESSAGES_RAW = [];
             $out1 = render_screen_preview($template, $hook, $function);
 
             if ($ATTACHED_MESSAGES === null) {
@@ -370,7 +370,7 @@ class _template_previews_test_set extends cms_test_case
 
             $code = cms_file_get_contents_safe(get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . $hook . '.php');
 
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#function tpl_preview__(.*)\(#U', $code, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $this->assertTrue(in_array($matches[1][$i], $used), 'Non-used screen function ' . $matches[1][$i]);
@@ -383,7 +383,7 @@ class _template_previews_test_set extends cms_test_case
 
     public function testNoDoublePreviews()
     {
-        $all_used = array();
+        $all_used = [];
 
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $ob) {
@@ -406,7 +406,7 @@ class _template_previews_test_set extends cms_test_case
         $keys = array_keys($array);
         shuffle($keys);
 
-        $new = array();
+        $new = [];
         foreach ($keys as $key) {
             $new[$key] = $array[$key];
         }

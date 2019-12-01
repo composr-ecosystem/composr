@@ -30,7 +30,7 @@ class Hook_config_user_postsize_errors
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USER_POSTSIZE_ERRORS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_user_postsize_errors
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

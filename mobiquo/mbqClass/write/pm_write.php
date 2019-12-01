@@ -74,7 +74,7 @@ class CMSPmWrite
 
         $from_id = get_member();
 
-        $member_ids = array();
+        $member_ids = [];
         foreach ($user_name_list as $username) {
             $to_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($to_member === null) {
@@ -90,7 +90,7 @@ class CMSPmWrite
 
         $first_new_post_id = null;
 
-        $message = add_attachments_from_comcode($message, array());
+        $message = add_attachments_from_comcode($message, []);
 
         require_code('wordfilter');
         $subject = check_wordfilter($subject);
@@ -120,7 +120,7 @@ class CMSPmWrite
                 }
 
                 foreach ($member_ids as $to_member) {
-                    $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $post_id));
+                    $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_id]);
                     $new_post_id = cns_make_post($topic_id, $subject, $message);
                     if ($first_new_post_id === null) {
                         $first_new_post_id = $new_post_id;
@@ -133,7 +133,7 @@ class CMSPmWrite
                 if ($post_id === null) {
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
-                $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+                $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
                 if (!isset($post_details[0])) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
                 }
@@ -183,12 +183,12 @@ class CMSPmWrite
 
         require_code('cns_posts_action3');
 
-        $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+        $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
         if ($topic_id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
 
-        cns_delete_posts_topic($topic_id, array($post_id), do_lang('REASON_TAPATALK_DELETING_POSTS')); // NB: Checks perms implicitly
+        cns_delete_posts_topic($topic_id, [$post_id], do_lang('REASON_TAPATALK_DELETING_POSTS')); // NB: Checks perms implicitly
     }
 
     /**
@@ -212,12 +212,12 @@ class CMSPmWrite
             $rows = $GLOBALS['FORUM_DB']->query($sql);
             $topic_ids = collapse_1d_complexity('id', $rows);
             foreach ($topic_ids as $topic_id) {
-                $GLOBALS['FORUM_DB']->query_delete('f_read_logs', array('l_member_id' => get_member(), 'l_topic_id' => $topic_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_delete('f_read_logs', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id], '', 1);
             }
         } else {
             foreach ($message_ids as $message_id) {
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $message_id));
-                $GLOBALS['FORUM_DB']->query_delete('f_read_logs', array('l_member_id' => get_member(), 'l_topic_id' => $topic_id), '', 1);
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $message_id]);
+                $GLOBALS['FORUM_DB']->query_delete('f_read_logs', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id], '', 1);
             }
         }
     }
@@ -247,7 +247,7 @@ class CMSPmWrite
             }
         } else {
             foreach ($message_ids as $message_id) {
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $message_id));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $message_id]);
                 cns_ping_topic_read($topic_id);
             }
         }

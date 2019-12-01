@@ -42,7 +42,7 @@ class Hook_ajax_tree_choose_topic
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'forumview')) {
-            $tree = array();
+            $tree = [];
         }
 
         $out = '';
@@ -69,10 +69,10 @@ class Hook_ajax_tree_choose_topic
 
         // Mark parent cats for pre-expansion
         if (!cms_empty_safe($default)) {
-            $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', array('id' => intval($default)));
+            $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => intval($default)]);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';
-                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', array('id' => $cat));
+                $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $cat]);
             }
         }
 

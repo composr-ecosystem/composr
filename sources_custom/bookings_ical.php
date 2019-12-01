@@ -78,7 +78,7 @@ function bookables_ical_script()
         echo "CLASS:" . (($event['price'] == 0.0) ? 'PUBLIC' : 'PRIVATE') . "\n";
         echo "STATUS:" . (($event['enabled'] == 1) ? 'CONFIRMED' : 'TENTATIVE') . "\n";
         echo "UID:" . ical_escape(strval($event['id']) . '-bookable@' . get_base_url()) . "\n";
-        $_url = build_url(array('page' => 'booking', 'type' => 'browse', 'filter' => $event['id']), get_module_zone('booking'), array(), false, false, true);
+        $_url = build_url(['page' => 'booking', 'type' => 'browse', 'filter' => $event['id']], get_module_zone('booking'), [], false, false, true);
         $url = $_url->evaluate();
         echo "URL:" . ical_escape($url) . "\n";
 
@@ -131,9 +131,9 @@ function bookables_ical_script()
             echo "DTSTART:" . date('Ymd', $time) . "\n";
 
             if ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())) {
-                $attendees = $GLOBALS['SITE_DB']->query_select('booking', array('*'), array('bookable_id' => $event['id']), '', 5000/*reasonable limit*/);
+                $attendees = $GLOBALS['SITE_DB']->query_select('booking', ['*'], ['bookable_id' => $event['id']], '', 5000/*reasonable limit*/);
                 if (count($attendees) == 5000) {
-                    $attendees = array();
+                    $attendees = [];
                 }
                 foreach ($attendees as $attendee) {
                     if (!is_guest($event['member_id'])) {
@@ -211,7 +211,7 @@ function bookings_ical_script()
     echo "VERSION:2.0\n";
     echo "PRODID:-//ocProducts/Composr//NONSGML v1.0//EN\n";
     echo "CALSCALE:GREGORIAN\n";
-    $bookable_category = get_translated_text($GLOBALS['SITE_DB']->query_select_value('bookable', 'title', array('id' => $id)));
+    $bookable_category = get_translated_text($GLOBALS['SITE_DB']->query_select_value('bookable', 'title', ['id' => $id]));
     echo "X-WR-CALNAME:" . ical_escape(get_site_name() . ': ' . do_lang('BOOKINGS') . ': ' . $bookable_category) . "\n";
 
     require_code('booking2');
@@ -234,11 +234,11 @@ function bookings_ical_script()
                 $codes .= $row['code_allocation'];
             }
 
-            $supplements = $GLOBALS['SITE_DB']->query_select('booking_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement b ON a.supplement_id=b.id', array('quantity', 'notes', 'title'), array(
+            $supplements = $GLOBALS['SITE_DB']->query_select('booking_supplement a JOIN ' . get_table_prefix() . 'bookable_supplement b ON a.supplement_id=b.id', ['quantity', 'notes', 'title'], [
                 'booking_id' => $booking['id'],
-            ));
+            ]);
 
-            $_url = build_url(array('page' => 'cms_booking', 'type' => '_edit_booking', 'id' => find_booking_under($booking['member_id'], $booking['id'])), get_module_zone('cms_booking'), array(), false, false, true);
+            $_url = build_url(['page' => 'cms_booking', 'type' => '_edit_booking', 'id' => find_booking_under($booking['member_id'], $booking['id'])], get_module_zone('cms_booking'), [], false, false, true);
             $url = $_url->evaluate();
 
             $time_start = mktime(0, 0, 0, $r['start_month'], $r['start_day'], $r['start_year']);
@@ -296,14 +296,14 @@ function bookings_ical_script()
 
     // Show free slots
     if (get_param_integer('free', 0) == 1) {
-        $codes_in_total = collapse_1d_complexity('code', $GLOBALS['SITE_DB']->query_select('bookable_codes', array('code'), array('bookable_id' => $id)));
+        $codes_in_total = collapse_1d_complexity('code', $GLOBALS['SITE_DB']->query_select('bookable_codes', ['code'], ['bookable_id' => $id]));
         $i = $time;
         $up_to = strtotime('+2 days', $max_time);
         do {
             $day = intval(date('d', $i));
             $month = intval(date('m', $i));
             $year = intval(date('Y', $i));
-            $codes_taken_already = collapse_1d_complexity('code_allocation', $GLOBALS['SITE_DB']->query_select('booking', array('code_allocation'), array('b_day' => $day, 'b_month' => $month, 'b_year' => $year)));
+            $codes_taken_already = collapse_1d_complexity('code_allocation', $GLOBALS['SITE_DB']->query_select('booking', ['code_allocation'], ['b_day' => $day, 'b_month' => $month, 'b_year' => $year]));
 
             foreach (array_diff($codes_in_total, $codes_taken_already) as $code) {
                 echo "BEGIN:VEVENT\n";
@@ -317,7 +317,7 @@ function bookings_ical_script()
                 echo "CLASS:PUBLIC\n";
                 echo "STATUS:TENTATIVE\n";
                 echo "UID:" . ical_escape(strval($day) . '/' . strval($month) . '/' . strval($year) . '-' . $code . '-booking@' . get_base_url()) . "\n";
-                $_url = build_url(array('page' => 'cms_booking', 'type' => 'add_booking', 'bookable_id' => $id, 'day' => $day, 'month' => $month, 'year' => $year, 'code' => $code), get_module_zone('cms_booking'), array(), false, false, true);
+                $_url = build_url(['page' => 'cms_booking', 'type' => 'add_booking', 'bookable_id' => $id, 'day' => $day, 'month' => $month, 'year' => $year, 'code' => $code], get_module_zone('cms_booking'), [], false, false, true);
                 $url = $_url->evaluate();
                 echo "URL:" . ical_escape($url) . "\n";
 

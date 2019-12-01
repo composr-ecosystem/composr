@@ -20,12 +20,12 @@ class mail_test_set extends cms_test_case
 {
     public function testAttachmentCleanup()
     {
-        foreach (array('MAIL', 'NOTIFICATIONS') as $mode) {
+        foreach (['MAIL', 'NOTIFICATIONS'] as $mode) {
             $a = cms_tempnam();
             cms_file_put_contents_safe($a, 'test');
             $b = get_custom_file_base() . '/temp/' . uniqid('', true);
             cms_file_put_contents_safe($b, 'test');
-            $attachments = array($a => 'foo.txt', $b => 'bar.txt');
+            $attachments = [$a => 'foo.txt', $b => 'bar.txt'];
 
             $GLOBALS['SITE_INFO']['no_email_output'] = '1';
 
@@ -35,14 +35,14 @@ class mail_test_set extends cms_test_case
             switch ($mode) {
                 case 'MAIL':
                     require_code('mail');
-                    dispatch_mail('test', 'test', array('test@example.com'), null, '', '', array('attachments' => $attachments));
+                    dispatch_mail('test', 'test', ['test@example.com'], null, '', '', ['attachments' => $attachments]);
                     break;
 
                 case 'NOTIFICATIONS':
                     require_code('notifications');
                     set_mass_import_mode();
                     $_GET['keep_debug_notifications'] = '1';
-                    dispatch_notification('error_occurred', '', 'test', 'test', array(get_member()), get_member(), array('attachments' => $attachments));
+                    dispatch_notification('error_occurred', '', 'test', 'test', [get_member()], get_member(), ['attachments' => $attachments]);
                     break;
             }
 

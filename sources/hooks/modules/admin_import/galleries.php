@@ -34,7 +34,7 @@ class Hook_import_galleries
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['product'] = 'Gallery media';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'cms_galleries';

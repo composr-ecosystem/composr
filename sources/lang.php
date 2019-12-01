@@ -28,7 +28,7 @@
 function init__lang()
 {
     global $COMCODE_LANG_STRING_CACHE;
-    $COMCODE_LANG_STRING_CACHE = array();
+    $COMCODE_LANG_STRING_CACHE = [];
 
     global $LANG_LOADED, $LANG_LOADED_LANG, $LANG_REQUESTED_LANG, $LANGS_REQUESTED;
     // Tracks what has already been require'd, although loading may have been deferred.
@@ -36,18 +36,18 @@ function init__lang()
      *
      * @global boolean $LANG_REQUESTED_LANG
      */
-    $LANG_REQUESTED_LANG = array();
+    $LANG_REQUESTED_LANG = [];
     /** What language files have been requested.
      *
      * @global boolean $LANGS_REQUESTED
      */
-    $LANGS_REQUESTED = array();
+    $LANGS_REQUESTED = [];
     // Tracks what has already been require'd and not deferred. This will not track all require_lang calls, as Composr will try and use the page's own lang cache first.
-    $LANG_LOADED_LANG = array(); // By lang pack and lang file
-    $LANG_LOADED = array(); // Just by lang file
+    $LANG_LOADED_LANG = []; // By lang pack and lang file
+    $LANG_LOADED = []; // Just by lang file
 
     global $LANGUAGE_STRINGS_CACHE;
-    $LANGUAGE_STRINGS_CACHE = array();
+    $LANGUAGE_STRINGS_CACHE = [];
 
     global $LANGS_MAP_CACHE;
     $LANGS_MAP_CACHE = null;
@@ -55,27 +55,27 @@ function init__lang()
     global $USER_LANG_CACHED, $USER_LANG_EARLY_CACHED, $USER_LANG_LOOP, $REQUIRE_LANG_LOOP;
     global $RECORD_LANG_STRINGS, $RECORDED_LANG_STRINGS, $RECORD_CONTENT_LANG_STRINGS, $RECORDED_CONTENT_LANG_STRINGS;
     $RECORD_LANG_STRINGS = false;
-    $RECORDED_LANG_STRINGS = array();
+    $RECORDED_LANG_STRINGS = [];
     $RECORD_CONTENT_LANG_STRINGS = false;
-    $RECORDED_CONTENT_LANG_STRINGS = array();
+    $RECORDED_CONTENT_LANG_STRINGS = [];
     $USER_LANG_LOOP = false;
     $USER_LANG_CACHED = null;
     $USER_LANG_EARLY_CACHED = null;
     $REQUIRE_LANG_LOOP = 0;
     global $REQUIRED_ALL_LANG;
-    $REQUIRED_ALL_LANG = array();
+    $REQUIRED_ALL_LANG = [];
 
     // Lazy loading code: learning algorithm to cache strings against different pages without loading all, unless we get a cache miss in the page's pool
     global $PAGE_CACHE_LANG_LOADED, $PAGE_CACHE_LAZY_LOAD, $PAGE_CACHE_LANGS_REQUESTED, $SMART_CACHE;
-    $PAGE_CACHE_LANG_LOADED = array();
+    $PAGE_CACHE_LANG_LOADED = [];
     $PAGE_CACHE_LAZY_LOAD = false;
-    $PAGE_CACHE_LANGS_REQUESTED = array();
+    $PAGE_CACHE_LANGS_REQUESTED = [];
     if (((function_exists('get_option')) && (get_option('is_on_lang_cache') == '1') && ((!array_key_exists('page', $_GET)) || ((is_string($_GET['page'])) && (strpos($_GET['page'], '..') === false))))) {
         if ($SMART_CACHE !== null) {
             $contents = $SMART_CACHE->get('lang_strings_' . user_lang());
             if ($contents !== null) {
                 $PAGE_CACHE_LANG_LOADED = $contents;
-                $LANGUAGE_STRINGS_CACHE = array(user_lang() => $contents);
+                $LANGUAGE_STRINGS_CACHE = [user_lang() => $contents];
                 $PAGE_CACHE_LAZY_LOAD = true;
             }
         }
@@ -509,17 +509,17 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
             if ($lang === null) {
                 $lang = user_lang();
             }
-            $PAGE_CACHE_LANGS_REQUESTED[] = array($codename, $lang);
+            $PAGE_CACHE_LANGS_REQUESTED[] = [$codename, $lang];
             return;
         } else { // Invalidate it, as our smart cache was dirty compared to latest .ini version
             global $SMART_CACHE;
             if ($SMART_CACHE !== null) {
                 $SMART_CACHE->invalidate();
             }
-            $LANGUAGE_STRINGS_CACHE = array();
+            $LANGUAGE_STRINGS_CACHE = [];
             $PAGE_CACHE_LAZY_LOAD = false;
-            $LANG_LOADED_LANG = array();
-            $PAGE_CACHE_LANGS_REQUESTED[] = array($codename, $lang);
+            $LANG_LOADED_LANG = [];
+            $PAGE_CACHE_LANGS_REQUESTED[] = [$codename, $lang];
 
             foreach ($PAGE_CACHE_LANGS_REQUESTED as $request) {
                 list($that_codename, $that_lang) = $request;
@@ -548,7 +548,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
     $done = false;
 
     if (!isset($LANGUAGE_STRINGS_CACHE[$lang])) {
-        $LANGUAGE_STRINGS_CACHE[$lang] = array();
+        $LANGUAGE_STRINGS_CACHE[$lang] = [];
     }
 
     $cache_path = $cfb . '/caches/lang/' . $lang . '/' . $codename . '.lcd';
@@ -598,7 +598,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
     $LANG_LOADED[$codename] = $type;
 
     if (!isset($LANG_LOADED_LANG[$lang])) {
-        $LANG_LOADED_LANG[$lang] = array();
+        $LANG_LOADED_LANG[$lang] = [];
     }
     $LANG_LOADED_LANG[$lang][$codename] = true;
 
@@ -650,7 +650,7 @@ function require_all_open_lang_files($lang = null)
 {
     global $PAGE_CACHE_LAZY_LOAD, $LANG_REQUESTED_LANG, $LANGS_REQUESTED;
     $PAGE_CACHE_LAZY_LOAD = false;
-    $LANG_REQUESTED_LANG = array(); // So require_lang will do a re-load
+    $LANG_REQUESTED_LANG = []; // So require_lang will do a re-load
     $langs_requested_copy = $LANGS_REQUESTED;
     foreach (array_keys($langs_requested_copy) as $toload) {
         require_lang($toload, $lang, null, true);
@@ -791,7 +791,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
     }
 
     // Put in parameters
-    static $non_plural_non_vowel = array('1', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{'/*for no-op param usage*/);
+    static $non_plural_non_vowel = ['1', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{'/*for no-op param usage*/];
     $out = $LANGUAGE_STRINGS_CACHE[$lang][$codename];
     if ($out === null) {
         return null; // Learning cache pool has told us this string definitely does not exist
@@ -834,7 +834,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
 
             if (isset($LANG_RUNTIME_PROCESSING[$codename])) {
                 $flag = $LANG_RUNTIME_PROCESSING[$codename];
-                $parameters = array($parameter1, $parameter2);
+                $parameters = [$parameter1, $parameter2];
                 if (is_array($parameter3)) {
                     $parameters = array_merge($parameters, $parameter3);
                 } else {
@@ -880,7 +880,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
             if ($parameter3 !== null) {
                 $i = 3;
                 if (!is_array($parameter3)) {
-                    $parameter3 = array($parameter3);
+                    $parameter3 = [$parameter3];
                 }
                 foreach ($parameter3 as $parameter) {
                     if ($kg) {
@@ -906,7 +906,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
 
     if (isset($LANG_RUNTIME_PROCESSING[$codename])) {
         $flag = $LANG_RUNTIME_PROCESSING[$codename];
-        $parameters = array($parameter1, $parameter2);
+        $parameters = [$parameter1, $parameter2];
         if (is_array($parameter3)) {
             $parameters = array_merge($parameters, $parameter3);
         } else {
@@ -1055,7 +1055,7 @@ function delete_lang($id, $db = null)
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
     }
-    $db->query_delete('translate', array('id' => $id));
+    $db->query_delete('translate', ['id' => $id]);
 }
 
 /**
@@ -1083,9 +1083,9 @@ function get_translated_tempcode__and_simplify($table, $row, $field_name, $db = 
     }
     $ret = make_string_tempcode($ret->evaluate());
     if (multi_lang_content()) {
-        $db->query_update('translate', array('text_parsed' => $ret->to_assembly()), array('id' => $row[$field_name], 'language' => $lang), '', 1);
+        $db->query_update('translate', ['text_parsed' => $ret->to_assembly()], ['id' => $row[$field_name], 'language' => $lang], '', 1);
     } else {
-        $db->query_update($table, array($field_name . '__text_parsed' => $ret->to_assembly()), $row, '', 1);
+        $db->query_update($table, [$field_name . '__text_parsed' => $ret->to_assembly()], $row, '', 1);
     }
     return $ret;
 }
@@ -1150,7 +1150,7 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
 
         global $SEARCH__CONTENT_BITS;
         if ($SEARCH__CONTENT_BITS !== null) { // Doing a search so we need to reparse, with highlighting on
-            $_result = $db->query_select('translate', array('text_original', 'source_user'), array('id' => $entry, 'language' => $lang), '', 1);
+            $_result = $db->query_select('translate', ['text_original', 'source_user'], ['id' => $entry, 'language' => $lang], '', 1);
             if (array_key_exists(0, $_result)) {
                 push_lax_comcode(true);
 
@@ -1169,7 +1169,7 @@ function get_translated_tempcode($table, $row, $field_name, $db = null, $lang = 
             }
         }
 
-        $_result = $db->query_select('translate', array('text_parsed', 'text_original'), array('id' => $entry, 'language' => $lang), '', 1);
+        $_result = $db->query_select('translate', ['text_parsed', 'text_original'], ['id' => $entry, 'language' => $lang], '', 1);
         $result = isset($_result[0]) ? $_result[0]['text_parsed'] : null;
         if (isset($_result[0])) {
             if ($lang === user_lang()) {
@@ -1261,23 +1261,23 @@ function get_translated_text($entry, $db = null, $lang = null, $force = false)
     if ($lang === 'xxx') {
         return '!!!'; // Helpful for testing language compliancy. We don't expect to see non x's/!'s if we're running this language
     }
-    $result = $db->query_select('translate', array('text_original', 'text_parsed'), array('id' => $entry, 'language' => $lang), '', 1);
+    $result = $db->query_select('translate', ['text_original', 'text_parsed'], ['id' => $entry, 'language' => $lang], '', 1);
     if (!isset($result[0])) {
         if ($force) {
             return null;
         }
 
-        $result = $db->query_select('translate', array('*'), array('id' => $entry, 'language' => get_site_default_lang()), '', 1);
+        $result = $db->query_select('translate', ['*'], ['id' => $entry, 'language' => get_site_default_lang()], '', 1);
         if (!isset($result[0])) {
-            $result = $db->query_select('translate', array('*'), array('id' => $entry), '', 1);
+            $result = $db->query_select('translate', ['*'], ['id' => $entry], '', 1);
         }
         if (isset($result[0])) {
-            $db->query_insert('translate', array('broken' => 1, 'language' => $lang) + $result[0]);
+            $db->query_insert('translate', ['broken' => 1, 'language' => $lang] + $result[0]);
         }
     }
     if (!isset($result[0])) {
         $member_id = function_exists('get_member') ? get_member() : $GLOBALS['FORUM_DRIVER']->get_guest_id();
-        $db->query_insert('translate', array('id' => $entry, 'source_user' => $member_id, 'broken' => 0, 'importance_level' => 3, 'text_original' => '', 'text_parsed' => '', 'language' => $lang));
+        $db->query_insert('translate', ['id' => $entry, 'source_user' => $member_id, 'broken' => 0, 'importance_level' => 3, 'text_original' => '', 'text_parsed' => '', 'language' => $lang]);
         $msg = do_lang('FIXED_CONTENT_LANG_STRING', strval($entry));
         if ($GLOBALS['DEV_MODE']) {
             fatal_exit($msg);
@@ -1329,7 +1329,7 @@ function choose_language($title, $tip = false, $allow_all_selection = false)
 function get_ordinal_suffix($index)
 {
     // Based on http://stackoverflow.com/questions/3109978/php-display-number-with-ordinal-suffix
-    $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+    $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
     if (($index % 100) >= 11 && ($index % 100) <= 13) {
         $abbreviation = 'th';
     } else {

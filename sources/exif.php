@@ -30,16 +30,16 @@
  */
 function get_exif_data($path, $filename = null)
 {
-    $out = array();
+    $out = [];
 
     if ($filename === null) {
         $filename = rawurldecode(basename($path));
     }
 
     if (!function_exists('exif_read_data')) {
-        return array( // EXIF extension not installed
+        return [ // EXIF extension not installed
             'UserComment' => '',
-        );
+        ];
     }
 
     $metadata = @exif_read_data($path, 'ANY_TAG');
@@ -68,13 +68,13 @@ function _get_simple_gps($exif)
 {
     // Based on http://stackoverflow.com/questions/2526304/php-extract-gps-exif-data
 
-    $result = array();
+    $result = [];
 
     if (!isset($exif['GPSLatitude'])) {
-        return array();
+        return [];
     }
     if (!isset($exif['GPSLongitude'])) {
-        return array();
+        return [];
     }
 
     // get the Hemisphere multiplier
@@ -88,7 +88,7 @@ function _get_simple_gps($exif)
     }
 
     // get the GPS data
-    $gps = array();
+    $gps = [];
     if (!is_array($exif['GPSLatitude'])) {
         $result['Latitude'] = $exif['GPSLatitude'];
         $result['Latitude'] = $exif['GPSLatitude'];
@@ -149,7 +149,7 @@ function get_exif_image_caption($path, $filename)
         }
 
         if (isset($file_cap)) {
-            $get_result = array();
+            $get_result = [];
 
             preg_match('/<photoshop:Headline>(.*)<\/photoshop:Headline>/', $file_cap, $get_result); // Headline
             if (array_key_exists(1, $get_result)) {
@@ -191,7 +191,7 @@ function get_exif_image_caption($path, $filename)
     }
     if ($comments == '') { // IF XMP and EXIF fail, attempt IPTC binary
         if ((function_exists('iptcparse')) && (function_exists('getimagesize'))) {
-            $metadata2 = array();
+            $metadata2 = [];
             @getimagesize($path, $metadata2);
             if (isset($metadata2['APP13'])) {
                 $metadata2 = iptcparse($metadata2['APP13']);
@@ -242,7 +242,7 @@ function get_exif_image_caption($path, $filename)
  * @param  array $exif The EXIF data
  * @param  array $map Extra metadata to store, against explicit field IDs
  */
-function store_exif($content_type, $content_id, $exif, $map = array())
+function store_exif($content_type, $content_id, $exif, $map = [])
 {
     require_code('fields');
 
@@ -255,7 +255,7 @@ function store_exif($content_type, $content_id, $exif, $map = array())
     }
 
     // Get field values
-    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_name'), array('c_name' => '_' . $content_type), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name'], ['c_name' => '_' . $content_type], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
     foreach ($fields as $field) {
         $name = get_translated_text($field['cf_name'], null, 'EN');
 
@@ -285,22 +285,22 @@ function store_exif($content_type, $content_id, $exif, $map = array())
         return;
     }
 
-    $first_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', array('c_name' => '_' . $content_type));
+    $first_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', ['c_name' => '_' . $content_type]);
 
     require_code('catalogues2');
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', array(
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', [
         'content_type' => $content_type,
         'content_id' => $content_id,
-    ));
+    ]);
     if ($test === null) {
         $catalogue_entry_id = actual_add_catalogue_entry($first_cat, 1, '', 0, 0, 0, $map);
 
-        $GLOBALS['SITE_DB']->query_insert('catalogue_entry_linkage', array(
+        $GLOBALS['SITE_DB']->query_insert('catalogue_entry_linkage', [
             'catalogue_entry_id' => $catalogue_entry_id,
             'content_type' => $content_type,
             'content_id' => $content_id,
-        ));
+        ]);
     } else {
         // Cannot handle this
     }

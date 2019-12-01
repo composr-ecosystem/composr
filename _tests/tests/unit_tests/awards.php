@@ -28,14 +28,14 @@ class awards_test_set extends cms_test_case
 
         $this->award_id = add_award_type('test', 'test', 1, 'download', 0, 250);
 
-        $this->assertTrue('download' == $GLOBALS['SITE_DB']->query_select_value('award_types', 'a_content_type', array('id' => $this->award_id)));
+        $this->assertTrue('download' == $GLOBALS['SITE_DB']->query_select_value('award_types', 'a_content_type', ['id' => $this->award_id]));
     }
 
     public function testEditawards()
     {
         edit_award_type($this->award_id, 'test', 'test', 2, 'image', 0, 194);
 
-        $this->assertTrue('image' == $GLOBALS['SITE_DB']->query_select_value('award_types', 'a_content_type', array('id' => $this->award_id)));
+        $this->assertTrue('image' == $GLOBALS['SITE_DB']->query_select_value('award_types', 'a_content_type', ['id' => $this->award_id]));
     }
 
     public function tearDown()

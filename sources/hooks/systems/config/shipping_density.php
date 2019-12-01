@@ -30,7 +30,7 @@ class Hook_config_shipping_density
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHIPPING_DENSITY',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_shipping_density
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

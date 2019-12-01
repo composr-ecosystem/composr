@@ -57,23 +57,23 @@ class Hook_rss_tickets
         require_code('tickets');
         require_lang('tickets');
 
-        $_ticket_types = collapse_2d_complexity('id', '_null', $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'NULL as _null')));
+        $_ticket_types = collapse_2d_complexity('id', '_null', $GLOBALS['SITE_DB']->query_select('ticket_types', ['id', 'NULL as _null']));
         $ticket_types = selectcode_to_idlist_using_memory($_filters, $_ticket_types);
         if (!empty($ticket_types)) {
-            $rows = array();
+            $rows = [];
             foreach ($ticket_types as $ticket_type_id) {
                 if (!has_category_access(get_member(), 'tickets', strval($ticket_type_id))) {
                     continue;
                 }
-                $rows = array_merge($rows, get_tickets(array('ticket_type_id' => $ticket_type_id, 'only_open' => true), true));
+                $rows = array_merge($rows, get_tickets(['ticket_type_id' => $ticket_type_id, 'only_open' => true], true));
             }
         } else {
-            $rows = get_tickets(array('only_open' => true), true);
+            $rows = get_tickets(['only_open' => true], true);
         }
 
         require_code('feedback');
 
-        $ticket_type_rows = collapse_2d_complexity('id', 'ticket_type_name', $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'ticket_type_name')));
+        $ticket_type_rows = collapse_2d_complexity('id', 'ticket_type_name', $GLOBALS['SITE_DB']->query_select('ticket_types', ['id', 'ticket_type_name']));
 
         $content = new Tempcode();
         foreach ($rows as $i => $row) {
@@ -86,7 +86,7 @@ class Hook_rss_tickets
             }
 
             $ticket_id = extract_topic_identifier($row['description']);
-            $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', array('ticket_id' => $ticket_id));
+            $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $ticket_id]);
 
             $author = $row['firstusername'];
             $date = date($date_string, $row['firsttime']);
@@ -102,18 +102,18 @@ class Hook_rss_tickets
                 $category_raw = strval($ticket_type_id);
             }
 
-            $view_url = build_url(array('page' => 'tickets', 'type' => 'ticket', 'id' => $ticket_id), get_module_zone('tickets'), array(), false, false, true);
+            $view_url = build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => $ticket_id], get_module_zone('tickets'), [], false, false, true);
 
             if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1')) {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '32c536b95de70994d0a13cfed18aa6ec', 'COMMENT_URL' => $view_url, 'ID' => strval($ticket_id)), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '32c536b95de70994d0a13cfed18aa6ec', 'COMMENT_URL' => $view_url, 'ID' => strval($ticket_id)], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $ticket_id, 'NEWS' => '', 'DATE' => $date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $ticket_id, 'NEWS' => '', 'DATE' => $date], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('tickets');
-        return array($content, do_lang('SUPPORT_TICKETS'));
+        return [$content, do_lang('SUPPORT_TICKETS')];
     }
 }

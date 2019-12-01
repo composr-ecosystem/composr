@@ -31,10 +31,10 @@ class Hook_comcode_page_hints_make_mobile
     public function get_details()
     {
         require_lang('comcode');
-        return array(
+        return [
             'label' => do_lang_tempcode('PAGE_HINT_MAKE_MOBILE_LABEL'),
             'description' => do_lang_tempcode('PAGE_HINT_MAKE_MOBILE_DESCRIPTION'),
             'inverted' => false,
-        );
+        ];
     }
 }

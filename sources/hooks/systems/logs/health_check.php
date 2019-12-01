@@ -31,12 +31,12 @@ class Hook_logs_health_check
     public function enumerate_logs()
     {
         if (!addon_installed('health_check')) {
-            return array(
-            );
+            return [
+            ];
         }
 
-        return array(
-            'health_check.log' => array('days_to_keep' => (get_option('days_to_keep__health_check_log') == '') ? null : intval(get_option('days_to_keep__health_check_log'))),
-        );
+        return [
+            'health_check.log' => ['days_to_keep' => (get_option('days_to_keep__health_check_log') == '') ? null : intval(get_option('days_to_keep__health_check_log'))],
+        ];
     }
 }

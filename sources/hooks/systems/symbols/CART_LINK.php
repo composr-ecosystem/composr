@@ -39,9 +39,9 @@ class Hook_symbol_CART_LINK
 
         require_lang('shopping');
 
-        $cart_url = build_url(array('page' => 'shopping', 'type' => 'browse'), get_module_zone('shopping'));
+        $cart_url = build_url(['page' => 'shopping', 'type' => 'browse'], get_module_zone('shopping'));
 
-        $where = array();
+        $where = [];
         if (is_guest()) {
             $where['session_id'] = get_session_id();
         } else {
@@ -55,7 +55,7 @@ class Hook_symbol_CART_LINK
             $title = do_lang_tempcode('BUTTON_CART_EMPTY');
         }
 
-        $_value = do_template('ECOM_CART_LINK', array('_GUID' => '46ae00c8a605b84fee1b1c68fc57cd32', 'URL' => $cart_url, 'ITEMS' => strval($item_count), 'TITLE' => $title));
+        $_value = do_template('ECOM_CART_LINK', ['_GUID' => '46ae00c8a605b84fee1b1c68fc57cd32', 'URL' => $cart_url, 'ITEMS' => strval($item_count), 'TITLE' => $title]);
 
         $value = $_value->evaluate();
         return $value;

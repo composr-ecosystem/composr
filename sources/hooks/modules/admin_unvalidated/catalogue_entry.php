@@ -36,7 +36,7 @@ class Hook_unvalidated_catalogue_entry
 
         require_lang('catalogues');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'catalogue_entries';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'ce_validated';

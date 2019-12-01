@@ -36,11 +36,11 @@ class Hook_cron_mail_queue
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Send queued e-mails',
-            'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', array('m_queued' => 1)) : null,
+            'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_queued' => 1]) : null,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**
@@ -52,8 +52,8 @@ class Hook_cron_mail_queue
     {
         $mails = $GLOBALS['SITE_DB']->query_select(
             'logged_mail_messages',
-            array('*'),
-            array('m_queued' => 1),
+            ['*'],
+            ['m_queued' => 1],
             '',
             intval(get_option('max_queued_mails_per_cron_cycle'))
         );
@@ -65,8 +65,8 @@ class Hook_cron_mail_queue
                 $subject = $row['m_subject'];
                 $message = $row['m_message'];
                 $to_email = @unserialize($row['m_to_email']);
-                $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? array() : @unserialize($row['m_extra_cc_addresses']);
-                $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? array() : @unserialize($row['m_extra_bcc_addresses']);
+                $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? [] : @unserialize($row['m_extra_cc_addresses']);
+                $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? [] : @unserialize($row['m_extra_bcc_addresses']);
                 $to_name = @unserialize($row['m_to_name']);
                 $from_email = $row['m_from_email'];
                 $from_name = $row['m_from_name'];
@@ -85,7 +85,7 @@ class Hook_cron_mail_queue
                     $to_name,
                     $from_email,
                     $from_name,
-                    array(
+                    [
                         'priority' => $row['m_priority'],
                         'attachments' => unserialize($row['m_attachments']),
                         'no_cc' => ($row['m_no_cc'] == 1),
@@ -99,12 +99,12 @@ class Hook_cron_mail_queue
                         'require_recipient_valid_since' => $join_time,
                         'sender_email' => $sender_email,
                         'plain_subject' => $plain_subject == 1,
-                    )
+                    ]
                 );
                 $success = $result_ob->worked;
 
                 if ($success) {
-                    $GLOBALS['SITE_DB']->query_update('logged_mail_messages', array('m_queued' => 0), array('id' => $row['id']), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 0], ['id' => $row['id']], '', 1);
                 }
             }
 

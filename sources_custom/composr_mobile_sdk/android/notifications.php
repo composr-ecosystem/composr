@@ -36,13 +36,13 @@ class AndroidPushNotifications
      */
     private function android_dispatch($to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from)
     {
-        $notification = array(
+        $notification = [
             'title' => $subject,
             'body' => $message,
             'icon' => get_option('android_icon_name'),
-        );
+        ];
 
-        $data = array();
+        $data = [];
         $data['identifier'] = $notification_code . '_' . (($code_category === null) ? '' : $code_category) . '_' . strval(get_member()) . '_' . strval(time());
         $data['notification_code'] = $notification_code;
         $data['code_category'] = ($code_category === null) ? '' : $code_category;
@@ -65,24 +65,24 @@ class AndroidPushNotifications
             $data[$key] = $val;
         }
 
-        $token = $GLOBALS['SITE_DB']->query_select_value('device_token_details', 'device_token', array('member_id' => $to_member_id, 'token_type' => 'android'));
-        $fields = array(
+        $token = $GLOBALS['SITE_DB']->query_select_value('device_token_details', 'device_token', ['member_id' => $to_member_id, 'token_type' => 'android']);
+        $fields = [
             'to' => $token,
             'notification' => $notification,
             'data' => $data,
             'priority' => ($priority < 3) ? 'high' : 'normal',
             'delay_while_idle' => ($priority == 5),
-        );
+        ];
 
         $post_params = json_encode($fields);
         require_code('character_sets');
         $post_params = convert_to_internal_encoding($post_params, get_charset(), 'utf-8');
 
         $api_access_key = get_option('enable_notifications_instant_android');
-        $extra_headers = array(
+        $extra_headers = [
             'Authorization' => 'key=' . $api_access_key,
-        );
+        ];
         $url = 'https://android.googleapis.com/gcm/send';
-        http_get_contents($url, array('trigger_error' => true, 'post_params' => array($post_params), 'raw_post' => true, 'extra_headers' => $extra_headers, 'raw_content_type' => 'application/json'));
+        http_get_contents($url, ['trigger_error' => true, 'post_params' => [$post_params], 'raw_post' => true, 'extra_headers' => $extra_headers, 'raw_content_type' => 'application/json']);
     }
 }

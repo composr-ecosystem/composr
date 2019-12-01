@@ -30,7 +30,7 @@ class Hook_config_support_operator
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUPPORT_OPERATOR',
             'type' => 'username',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_support_operator
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

@@ -46,11 +46,11 @@ class Hook_cron_cns_forum_email_integration
             return null; // Possibly due to not being fully configured yet
         }
 
-        return array(
+        return [
             'label' => 'Forum email integration',
             'num_queued' => null,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**

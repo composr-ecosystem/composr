@@ -30,7 +30,7 @@ class Hook_config_username_profile_links
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERNAME_PROFILE_LINKS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_username_profile_links
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

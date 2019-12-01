@@ -46,7 +46,7 @@ function block_helper_script()
         // Find what addons all our block files are in, and icons if possible
         $hooks = find_all_hooks('systems', 'addon_registry');
         $hook_keys = array_keys($hooks);
-        $hook_files = array();
+        $hook_files = [];
         foreach ($hook_keys as $hook) {
             $path = get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
             if (!file_exists($path)) {
@@ -55,15 +55,15 @@ function block_helper_script()
             $hook_files[$hook] = $path;
         }
         unset($hook_keys);
-        $addon_icons = array();
-        $addons_blocks = array();
+        $addon_icons = [];
+        $addons_blocks = [];
         foreach ($hook_files as $addon_name => $hook_path) {
             $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
-            $matches = array();
+            $matches = [];
             if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) {
                 $addon_files = cms_eval($matches[1], $hook_path);
                 if ($addon_files === false) {
-                    $addon_files = array(); // Some kind of PHP error
+                    $addon_files = []; // Some kind of PHP error
                 }
                 foreach ($addon_files as $file) {
                     if ((substr($file, 0, 21) == 'sources_custom/blocks/') || (substr($file, 0, 15) == 'sources/blocks/')) {
@@ -75,20 +75,20 @@ function block_helper_script()
         }
 
         // Find where blocks have been used
-        $block_usage = array();
+        $block_usage = [];
         $zones = find_all_zones(false, true);
         foreach ($zones as $_zone) {
             $zone = $_zone[0];
             $pages = find_all_pages_wrap($zone, true);
             foreach ($pages as $filename => $type) {
                 if (strtolower(substr($filename, -4)) == '.txt') {
-                    $matches = array();
+                    $matches = [];
                     $contents = cms_file_get_contents_safe(zone_black_magic_filterer(((substr($type, 0, 15) == 'comcode_custom/') ? get_custom_file_base() : get_file_base()) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/' . $type . '/' . $filename), FILE_READ_LOCK);
                     $num_matches = preg_match_all('#\[block[^\]]*\](.*)\[/block\]#U', $contents, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $block_used = $matches[1][$i];
                         if (!array_key_exists($block_used, $block_usage)) {
-                            $block_usage[$block_used] = array();
+                            $block_usage[$block_used] = [];
                         }
                         $block_usage[$block_used][] = $zone . ':' . basename($filename, '.txt');
                     }
@@ -112,9 +112,9 @@ function block_helper_script()
 
         // Show block list
         $links = new Tempcode();
-        $block_types = array();
-        $block_types_icon = array();
-        $block_meta = array();
+        $block_types = [];
+        $block_types_icon = [];
+        $block_meta = [];
         $keep = symbol_tempcode('KEEP');
         foreach (array_keys($blocks) as $block) {
             if (array_key_exists($block, $addons_blocks)) {
@@ -156,27 +156,27 @@ function block_helper_script()
             $block_title = cleanup_block_name($block);
             $link_caption = do_lang_tempcode('NICE_BLOCK_NAME', escape_html($block_title), escape_html($block));
 
-            $usage = array_key_exists($block, $block_usage) ? $block_usage[$block] : array();
+            $usage = array_key_exists($block, $block_usage) ? $block_usage[$block] : [];
 
-            $block_meta[$block_title . ': ' . $block] = array(
+            $block_meta[$block_title . ': ' . $block] = [
                 $this_block_type,
                 $usage,
                 $descriptiont,
                 $url,
                 $link_caption,
-            );
+            ];
         }
         ksort($block_meta);
         foreach ($block_meta as $bits) {
             list($this_block_type, $usage, $descriptiont, $url, $link_caption) = $bits;
 
-            $block_types[$this_block_type]->attach(do_template('BLOCK_HELPER_BLOCK_CHOICE', array(
+            $block_types[$this_block_type]->attach(do_template('BLOCK_HELPER_BLOCK_CHOICE', [
                 '_GUID' => '079e9b37fc142d292d4a64940243178a',
                 'USAGE' => $usage,
                 'DESCRIPTION' => $descriptiont,
                 'URL' => $url,
                 'LINK_CAPTION' => $link_caption,
-            )));
+            ]));
         }
         ksort($block_types);
         $move_after = $block_types['adminzone_dashboard'];
@@ -199,9 +199,9 @@ function block_helper_script()
                     $img = array_key_exists($block_type, $block_types_icon) ? $block_types_icon[$block_type] : null;
                     break;
             }
-            $links->attach(do_template('BLOCK_HELPER_BLOCK_GROUP', array('_GUID' => '975a881f5dbd054ced9d2e3b35ed59bf', 'IMG' => $img, 'TITLE' => $type_title, 'LINKS' => $_links)));
+            $links->attach(do_template('BLOCK_HELPER_BLOCK_GROUP', ['_GUID' => '975a881f5dbd054ced9d2e3b35ed59bf', 'IMG' => $img, 'TITLE' => $type_title, 'LINKS' => $_links]));
         }
-        $content = do_template('BLOCK_HELPER_START', array('_GUID' => '1d58238a6d00eb7f79d5a4f0e85fb1a4', 'GET' => true, 'TITLE' => $title, 'LINKS' => $links));
+        $content = do_template('BLOCK_HELPER_START', ['_GUID' => '1d58238a6d00eb7f79d5a4f0e85fb1a4', 'GET' => true, 'TITLE' => $title, 'LINKS' => $links]);
     }
 
     if ($type == 'step2') { // Ask for block fields
@@ -218,7 +218,7 @@ function block_helper_script()
         }
 
         $block = trim(get_param_string('block'));
-        $title = get_screen_title('_BLOCK_HELPER', true, array(escape_html($block), escape_html($back_url)));
+        $title = get_screen_title('_BLOCK_HELPER', true, [escape_html($block), escape_html($back_url)]);
         $fields = new Tempcode();
 
         // Load up renderer hooks
@@ -231,10 +231,10 @@ function block_helper_script()
             $defaults['cache'] = block_cache_default($block);
         }
         if ($parameters === null) {
-            $parameters = array();
+            $parameters = [];
         }
         $advanced_ind = do_lang('BLOCK_IND_ADVANCED');
-        $param_classes = array('normal' => array(), 'advanced' => array());
+        $param_classes = ['normal' => [], 'advanced' => []];
         foreach ($parameters as $parameter) {
             $param_class = 'normal';
             if (in_array($parameter, get_standard_block_parameters())) {
@@ -252,14 +252,14 @@ function block_helper_script()
         foreach ($param_classes as $param_class => $parameters) {
             if (empty($parameters)) {
                 if ($param_class == 'normal') {
-                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'e50ed41cc58bc234ccd314127583a1f2', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PARAMETERS'), 'HELP' => protect_from_escaping(paragraph(do_lang_tempcode('BLOCK_HELPER_NO_PARAMETERS'), '', 'nothing-here')))));
+                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'e50ed41cc58bc234ccd314127583a1f2', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PARAMETERS'), 'HELP' => protect_from_escaping(paragraph(do_lang_tempcode('BLOCK_HELPER_NO_PARAMETERS'), '', 'nothing-here'))]));
                 }
 
                 continue;
             }
 
             if ($param_class == 'advanced') {
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '3d9642b17f6be2067f4fd6e102c344bf', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3d9642b17f6be2067f4fd6e102c344bf', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
             }
 
             foreach ($parameters as $parameter) {
@@ -271,7 +271,7 @@ function block_helper_script()
                 }
 
                 // Work out and cleanup the description
-                $matches = array();
+                $matches = [];
                 switch ($parameter) {
                     case 'quick_cache':
                     case 'cache':
@@ -314,9 +314,9 @@ function block_helper_script()
                     }
                 }
                 if ($block . ':' . $parameter == 'menu:type') { // special case for menus
-                    $matches = array();
+                    $matches = [];
                     $dh = opendir(get_file_base() . '/themes/default/templates/');
-                    $options = array();
+                    $options = [];
                     while (($file = readdir($dh)) !== false) {
                         if (preg_match('^MENU_([a-z]+)\.tpl$^', $file, $matches) != 0) {
                             $options[] = $matches[1];
@@ -338,7 +338,7 @@ function block_helper_script()
                     $fields->attach(form_input_list($parameter_title, escape_html($description), $parameter, $list, null, false, false));
                 } elseif ($block . ':' . $parameter == 'menu:param') { // special case for menus
                     $list = new Tempcode();
-                    $rows = $GLOBALS['SITE_DB']->query_select('menu_items', array('DISTINCT i_menu'), array(), 'ORDER BY i_menu');
+                    $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
                     foreach ($rows as $row) {
                         $list->attach(form_input_list_entry($row['i_menu'], $has_default && $row['i_menu'] == $default));
                     }
@@ -348,7 +348,7 @@ function block_helper_script()
                     $list->attach(form_input_list_entry('_SEARCH', ($default == '')));
                     $list->attach(create_selection_list_zones(($default == '') ? null : $default));
                     $fields->attach(form_input_list($parameter_title, escape_html($description), $parameter, $list, null, false, false));
-                } elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, array('main_forum_topics'))))) && (get_forum_type() == 'cns'))) { // Conversr forum list
+                } elseif ((($default == '') || (is_numeric(str_replace(',', '', $default)))) && ((($parameter == 'forum') || (($parameter == 'param') && (in_array($block, ['main_forum_topics'])))) && (get_forum_type() == 'cns'))) { // Conversr forum list
                     require_code('cns_forums');
                     require_code('cns_forums2');
                     if (!addon_installed('cns_forum')) {
@@ -369,7 +369,7 @@ function block_helper_script()
                     $description = preg_replace('# ' . do_lang('BLOCK_IND_EITHER') . '.*$#Ui', '', $description);
 
                     $list = new Tempcode();
-                    $matches2 = array();
+                    $matches2 = [];
                     $num_matches = preg_match_all('#\'([^\']*)\'="([^"]*)"#', $matches[1], $matches2);
                     if ($num_matches != 0) {
                         for ($i = 0; $i < $num_matches; $i++) {
@@ -419,7 +419,7 @@ function block_helper_script()
             $submit_name = do_lang_tempcode('SAVE');
 
             // Allow remove option
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '9fafd87384a20a8ccca561b087cbe1fc', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ACTIONS'), 'HELP' => '')));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9fafd87384a20a8ccca561b087cbe1fc', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ACTIONS'), 'HELP' => '']));
             $fields->attach(form_input_tick(do_lang_tempcode('REMOVE'), '', '_delete', false));
         } else {
             $submit_name = do_lang_tempcode('USE');
@@ -438,7 +438,7 @@ function block_helper_script()
             $text = do_lang_tempcode('BLOCK_HELPER_2', escape_html(cleanup_block_name($block)), escape_html($block_description), escape_html($block_use));
         }
         $hidden = form_input_hidden('block', $block);
-        $content = do_template('FORM_SCREEN', array(
+        $content = do_template('FORM_SCREEN', [
             '_GUID' => '62f8688bf0ae4223a2ba1f76fef3b0b4',
             'TITLE' => $title,
             'TARGET' => '_self',
@@ -451,7 +451,7 @@ function block_helper_script()
             'HIDDEN' => $hidden,
             'PREVIEW' => true,
             'THEME' => $GLOBALS['FORUM_DRIVER']->get_theme(),
-        ));
+        ]);
 
         if ($fields->is_empty()) {
             $type = 'step3';
@@ -469,7 +469,7 @@ function block_helper_script()
         $block = trim(either_param_string('block'));
         $parameters = get_block_parameters($block, true);
         if (in_array('param', $parameters)) {
-            $_parameters = array('param');
+            $_parameters = ['param'];
             unset($parameters[array_search('param', $parameters)]);
             $parameters = array_merge($_parameters, $parameters);
         }
@@ -499,7 +499,7 @@ function block_helper_script()
 
         $comcode_semihtml = comcode_to_tempcode($comcode, null, false, null, null, COMCODE_SEMIPARSE_MODE);
 
-        $content = do_template('BLOCK_HELPER_DONE', array(
+        $content = do_template('BLOCK_HELPER_DONE', [
             '_GUID' => '575d6c8120d6001c8156560be518f296',
             'TITLE' => $title,
             'FIELD_NAME' => $field_name,
@@ -509,10 +509,10 @@ function block_helper_script()
             'BLOCK' => $block,
             'COMCODE' => $comcode,
             'COMCODE_SEMIHTML' => $comcode_semihtml,
-        ));
+        ]);
     }
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => 'ccb57d45d593eb8aabc2a5e99ea7711f', 'TITLE' => do_lang_tempcode('BLOCK_HELPER'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'ccb57d45d593eb8aabc2a5e99ea7711f', 'TITLE' => do_lang_tempcode('BLOCK_HELPER'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }

@@ -27,8 +27,8 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
     protected $screen_type = 'browse';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('download');
-    protected $entry_sitetree_hook = array('download');
+    protected $entry_content_type = ['download'];
+    protected $entry_sitetree_hook = ['download'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -60,10 +60,10 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -74,7 +74,7 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
         $parent = (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) ? db_get_first_id() : null;
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'COUNT(*)', array('parent_id' => $parent));
+            $count = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'COUNT(*)', ['parent_id' => $parent]);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
@@ -82,7 +82,7 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('*'), array('parent_id' => $parent), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['*'], ['parent_id' => $parent], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -141,14 +141,14 @@ class Hook_sitemap_download_category extends Hook_sitemap_content
             $sitemap_priority = SITEMAP_IMPORTANCE_MEDIUM;
         }
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'weekly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_downloads', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_downloads')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_downloads', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_downloads')),
+        ] + $partial_struct;
 
         $struct['extra_meta']['is_a_category_tree_root'] = true;
 

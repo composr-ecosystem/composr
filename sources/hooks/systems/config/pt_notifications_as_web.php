@@ -30,7 +30,7 @@ class Hook_config_pt_notifications_as_web
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PT_NOTIFICATIONS_AS_WEB',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_pt_notifications_as_web
             'public' => false,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

@@ -54,13 +54,13 @@ class Hook_cron_cns_welcome_emails
                 $last_run = $this->time_now - self::INITIAL_BACK_TIME;
             }
 
-            $this->member_sets_to_send_to = array();
+            $this->member_sets_to_send_to = [];
 
-            $mails = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', array('*'));
+            $mails = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*']);
             foreach ($mails as $mail) {
                 $send_seconds_after_joining = $mail['w_send_time'] * 60 * 60;
 
-                $members = array();
+                $members = [];
 
                 $newsletter_style = false;
 
@@ -86,7 +86,7 @@ class Hook_cron_cns_welcome_emails
                                 $ok = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member['id'], 'm_primary_group') == $mail['w_usergroup']); // If member still in the group
                                 break;
                             case 'secondary':
-                                $ok = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', array('gm_group_id' => $mail['w_usergroup'], 'gm_member_id' => $member['id'], 'gm_validated' => 1)) !== null);
+                                $ok = ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_group_members', 'gm_member_id', ['gm_group_id' => $mail['w_usergroup'], 'gm_member_id' => $member['id'], 'gm_validated' => 1]) !== null);
                                 break;
                         }
                         if ($ok) {
@@ -108,18 +108,18 @@ class Hook_cron_cns_welcome_emails
                     $members = array_merge($members, $GLOBALS['FORUM_DB']->query($query));
                 }
 
-                $this->member_sets_to_send_to[] = array($members, $newsletter_style, $mail);
+                $this->member_sets_to_send_to[] = [$members, $newsletter_style, $mail];
                 $num_queued += count($members);
             }
         } else {
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send welcome e-mails',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**
@@ -142,11 +142,11 @@ class Hook_cron_cns_welcome_emails
                         $text = str_replace('{{' . strval($i) . '}}', get_timezoned_date_time($this->time_now + $i * 60 * 60 * 24), $text);
                     }
                 }
-                $_text = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90f', 'CONTENT' => $text, 'LANG' => get_site_default_lang()), null, false, null, '.txt', 'text');
+                $_text = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '8ffc0470c6e457cee14c413c10f7a90f', 'CONTENT' => $text, 'LANG' => get_site_default_lang()], null, false, null, '.txt', 'text');
                 if (stripos($_text->evaluate(), '<html') !== false) {
                     $is_html = true;
                     $text_comcode = comcode_to_tempcode($text, null, true);
-                    $_text = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => '8ffc0470c6e457cee14c413c10f7a90g', 'CONTENT' => $text_comcode, 'LANG' => get_lang($member['id'])));
+                    $_text = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => '8ffc0470c6e457cee14c413c10f7a90g', 'CONTENT' => $text_comcode, 'LANG' => get_lang($member['id'])]);
                 } else {
                     $is_html = false;
                 }
@@ -188,7 +188,7 @@ class Hook_cron_cns_welcome_emails
                 }
 
                 if (get_value('notification_safety_testing') === '1') {
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('logged_mail_messages', 'm_date_and_time', array('m_subject' => $subject, 'm_to_email' => serialize(array($member['m_email_address']))));
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('logged_mail_messages', 'm_date_and_time', ['m_subject' => $subject, 'm_to_email' => serialize([$member['m_email_address']])]);
                     if ($test !== null) {
                         if ($test > $member['m_join_time']) {
                             fatal_exit(do_lang('INTERNAL_ERROR') . ' [' . $member['m_email_address'] . ']');
@@ -197,7 +197,7 @@ class Hook_cron_cns_welcome_emails
                     }
                 }
 
-                dispatch_mail($subject, $message, array($member['m_email_address']), $name, '', '', array('as_admin' => true, 'in_html' => $is_html));
+                dispatch_mail($subject, $message, [$member['m_email_address']], $name, '', '', ['as_admin' => true, 'in_html' => $is_html]);
             }
         }
     }

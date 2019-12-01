@@ -30,7 +30,7 @@ class Hook_config_store_credit_card_numbers
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STORE_CREDIT_CARD_NUMBERS',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_store_credit_card_numbers
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

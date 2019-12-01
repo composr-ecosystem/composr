@@ -34,10 +34,10 @@ class Hook_commandr_command_cat
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('cat', array('h'), array('l')), '', '');
+            return ['', do_command_help('cat', ['h'], ['l']), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'cat'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'cat')];
             }
 
             $line_numbers = array_key_exists('l', $options);
@@ -46,7 +46,7 @@ class Hook_commandr_command_cat
             for ($i = 0; $i < count($parameters); $i++) {
                 $parameters[$i] = $commandr_fs->_pwd_to_array($parameters[$i]);
                 if (!$commandr_fs->_is_file($parameters[$i])) {
-                    return array('', '', '', do_lang('NOT_A_FILE', integer_format($i + 1)));
+                    return ['', '', '', do_lang('NOT_A_FILE', integer_format($i + 1))];
                 }
                 $data = $commandr_fs->read_file($parameters[$i]);
                 $lines = explode("\n", $data);
@@ -58,7 +58,7 @@ class Hook_commandr_command_cat
                 }
             }
 
-            return array('', '', $output, '');
+            return ['', '', $output, ''];
         }
     }
 }

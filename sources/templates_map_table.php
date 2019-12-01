@@ -40,14 +40,14 @@ function map_table_screen($title, $fields, $text = null, $buttons = null, $respo
         $_fields->attach(map_table_field(do_lang_tempcode($key), $val, $raw));
     }
 
-    return do_template('MAP_TABLE_SCREEN', array(
+    return do_template('MAP_TABLE_SCREEN', [
         '_GUID' => 'c8c6cbc8e7b5a47a3078fd69feb057a0',
         'TITLE' => $title,
         'TEXT' => $text,
         'FIELDS' => $_fields,
         'BUTTONS' => $buttons,
         'RESPONSIVE' => $responsive,
-    ));
+    ]);
 }
 
 /**
@@ -64,5 +64,5 @@ function map_table_field($name, $value, $raw = false, $abbr = '') // Not for use
     if ($raw) {
         $value = protect_from_escaping($value);
     }
-    return do_template('MAP_TABLE_FIELD', array('_GUID' => '7cd6e583cac2dacc99e3185419d67930', 'ABBR' => $abbr, 'NAME' => $name, 'VALUE' => $value));
+    return do_template('MAP_TABLE_FIELD', ['_GUID' => '7cd6e583cac2dacc99e3185419d67930', 'ABBR' => $abbr, 'NAME' => $name, 'VALUE' => $value]);
 }

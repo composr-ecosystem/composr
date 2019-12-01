@@ -30,7 +30,7 @@ class Hook_config_network_links
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NETWORK_LINKS',
             'type' => 'line',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_network_links
             'public' => false,
 
             'addon' => 'msn',
-        );
+        ];
     }
 
     /**

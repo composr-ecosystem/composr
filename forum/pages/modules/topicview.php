@@ -45,7 +45,7 @@ class Module_topicview
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -74,13 +74,13 @@ class Module_topicview
             return null;
         }
         if ($be_deferential) {
-            return array();
+            return [];
         }
         if ($check_perms && is_guest($member_id)) {
-            return array();
+            return [];
         }
 
-        return array('!' => array('INLINE_PERSONAL_POSTS', 'menu/social/forum/inline_personal_posts'));
+        return ['!' => ['INLINE_PERSONAL_POSTS', 'menu/social/forum/inline_personal_posts']];
     }
 
     /**
@@ -113,11 +113,11 @@ class Module_topicview
         }
 
         if ($id !== null) {
-            $notification_where_map = array('d_notification_code' => 'cns_topic', 'd_code_category' => strval($id), 'd_to_member_id' => get_member(), 'd_read' => 0);
-            $notification_ids = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('id'), $notification_where_map);
-            if ($notification_ids !== array()) {
+            $notification_where_map = ['d_notification_code' => 'cns_topic', 'd_code_category' => strval($id), 'd_to_member_id' => get_member(), 'd_read' => 0];
+            $notification_ids = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['id'], $notification_where_map);
+            if ($notification_ids !== []) {
                 foreach ($notification_ids as $notification_id) {
-                    $GLOBALS['SITE_DB']->query_update('digestives_tin', array('d_read' => 1), array('id' => $notification_id['id']));
+                    $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['id' => $notification_id['id']]);
                 }
                 delete_cache_entry('_get_notifications', null, get_member());
             }
@@ -170,16 +170,16 @@ class Module_topicview
             $title = get_screen_title('INLINE_PERSONAL_POSTS');
         } else {
             if ($topic_info['forum_id'] === null) {
-                $title = get_screen_title(do_lang_tempcode('NAMED_PRIVATE_TOPIC', escape_html($topic_info['title'])), false, array(), do_lang_tempcode('READING_PRIVATE_TOPIC'));
+                $title = get_screen_title(do_lang_tempcode('NAMED_PRIVATE_TOPIC', escape_html($topic_info['title'])), false, [], do_lang_tempcode('READING_PRIVATE_TOPIC'));
             } else {
                 if ((get_value('disable_awards_in_titles') !== '1') && (addon_installed('awards'))) {
                     require_code('awards');
                     $awards = find_awards_for('topic', strval($id));
                 } else {
-                    $awards = array();
+                    $awards = [];
                 }
 
-                $title = get_screen_title(do_lang_tempcode('NAMED_TOPIC', make_fractionable_editable('topic', $id, $topic_info['title'])), false, array(), null, $awards);
+                $title = get_screen_title(do_lang_tempcode('NAMED_TOPIC', make_fractionable_editable('topic', $id, $topic_info['title'])), false, [], null, $awards);
             }
         }
 
@@ -187,28 +187,28 @@ class Module_topicview
         if ($topic_info['forum_id'] !== null) {
             $breadcrumbs = cns_forum_breadcrumbs($topic_info['forum_id'], null, null, false);
         } else {
-            $breadcrumbs = array();
-            $breadcrumbs[] = array(build_page_link(array('page' => 'members'), get_module_zone('members')), do_lang_tempcode('MEMBERS'));
+            $breadcrumbs = [];
+            $breadcrumbs[] = [build_page_link(['page' => 'members'], get_module_zone('members')), do_lang_tempcode('MEMBERS')];
             if (has_privilege(get_member(), 'view_other_pt')) {
                 $of_member = ($topic_info['pt_from'] == get_member()) ? $topic_info['pt_from'] : $topic_info['pt_to'];
             } else {
                 $of_member = get_member();
             }
             $of_username = $GLOBALS['FORUM_DRIVER']->get_username($of_member, true);
-            $private_topic_page_link = build_page_link(array('page' => 'members', 'type' => 'view', 'id' => $of_member), get_module_zone('members'), array(), 'tab--pts');
-            $breadcrumbs[] = array($private_topic_page_link, do_lang_tempcode('MEMBER_ACCOUNT', escape_html($of_username)));
+            $private_topic_page_link = build_page_link(['page' => 'members', 'type' => 'view', 'id' => $of_member], get_module_zone('members'), [], 'tab--pts');
+            $breadcrumbs[] = [$private_topic_page_link, do_lang_tempcode('MEMBER_ACCOUNT', escape_html($of_username))];
         }
 
         if ($id !== null) {
-            $breadcrumbs[] = array('', do_lang_tempcode(($topic_info['forum_id'] === null) ? 'VIEW_PRIVATE_TOPIC' : 'VIEW_TOPIC'));
+            $breadcrumbs[] = ['', do_lang_tempcode(($topic_info['forum_id'] === null) ? 'VIEW_PRIVATE_TOPIC' : 'VIEW_TOPIC')];
             breadcrumb_set_parents($breadcrumbs);
         }
 
         if ($id === null) { // Just inline personal posts
-            $root_forum_name = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', array('id' => db_get_first_id()));
-            $breadcrumbs = array();
-            $breadcrumbs[] = array(build_page_link(array('page' => 'forumview', 'id' => db_get_first_id()), get_module_zone('forumview')), $root_forum_name);
-            $breadcrumbs[] = array('', do_lang_tempcode('INLINE_PERSONAL_POSTS'));
+            $root_forum_name = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => db_get_first_id()]);
+            $breadcrumbs = [];
+            $breadcrumbs[] = [build_page_link(['page' => 'forumview', 'id' => db_get_first_id()], get_module_zone('forumview')), $root_forum_name];
+            $breadcrumbs[] = ['', do_lang_tempcode('INLINE_PERSONAL_POSTS')];
             breadcrumb_set_parents($breadcrumbs);
         }
 
@@ -216,16 +216,16 @@ class Module_topicview
         if (!$threaded) {
             $jump_post_id = get_param_integer('post_id', null);
 
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'description' => $topic_info['description'],
-            ));
+            ]);
             foreach ($topic_info['posts'] as $array_id => $_postdetails) {
                 if (($GLOBALS['METADATA']['description'] == '') && (($_postdetails['id'] === $jump_post_id) || (($array_id == 0) && ($jump_post_id === null)))) {
                     // NB: A side-effect of this is that the Tempcode is evaluated, causing the 'image' metadata for an attachment (in MEDIA_WEBSAFE.tpl) to fill. We want this.
-                    $truncated = symbol_truncator(array($_postdetails['post'], '200', '0', '1', '0.2'), 'left'); // FUDGE: Ideally wouldn't hard-code '200', but adding an option would be bloat.
-                    set_extra_request_metadata(array(
+                    $truncated = symbol_truncator([$_postdetails['post'], '200', '0', '1', '0.2'], 'left'); // FUDGE: Ideally wouldn't hard-code '200', but adding an option would be bloat.
+                    set_extra_request_metadata([
                         'description' => strip_html($truncated),
-                    ));
+                    ]);
                 }
             }
         } else {
@@ -248,11 +248,11 @@ class Module_topicview
             $threaded_topic_ob->is_threaded = true;
 
             // Render posts
-            list($posts, $serialized_options, $hash) = $threaded_topic_ob->render_posts($num_to_show_limit, $max_thread_depth, $may_reply, $topic_info['first_poster'], array(), $topic_info['forum_id'], $topic_info['row'], null, false);
+            list($posts, $serialized_options, $hash) = $threaded_topic_ob->render_posts($num_to_show_limit, $max_thread_depth, $may_reply, $topic_info['first_poster'], [], $topic_info['forum_id'], $topic_info['row'], null, false);
 
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'description' => $threaded_topic_ob->topic_description,
-            ));
+            ]);
 
             $this->posts = $posts;
             $this->serialized_options = $serialized_options;
@@ -307,7 +307,7 @@ class Module_topicview
             if ($topic_info['forum_id'] === null) {
                 $this->_update_read_status(); // Done early because we need to have updated read status set when the pt_notifications show up
             } else {
-                cms_register_shutdown_function_safe(array($this, '_update_read_status')); // done at end after output in case of locking (don't make the user wait)
+                cms_register_shutdown_function_safe([$this, '_update_read_status']); // done at end after output in case of locking (don't make the user wait)
             }
         }
 
@@ -324,7 +324,7 @@ class Module_topicview
                 decache_private_topics(get_member());
             }
             $second_poster = $topic_info['first_poster'];
-            $poster_details_cache = array();
+            $poster_details_cache = [];
             foreach ($topic_info['posts'] as $array_id => $_postdetails) {
                 if ($array_id == 0) {
                     $description = $topic_info['description'];
@@ -341,13 +341,13 @@ class Module_topicview
                 }
 
                 if (array_key_exists('last_edit_time', $_postdetails)) {
-                    $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', array(
+                    $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
                         '_GUID' => '77a28e8bc3cf2ec2211aafdb5ba192bf',
                         'LAST_EDIT_DATE_RAW' => ($_postdetails['last_edit_time'] === null) ? '' : strval($_postdetails['last_edit_time']),
                         'LAST_EDIT_DATE' => $_postdetails['last_edit_date'],
                         'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($_postdetails['last_edit_by'], true),
                         'LAST_EDIT_USERNAME' => $_postdetails['last_edit_by_username'],
-                    ));
+                    ]);
                 } else {
                     $last_edited = new Tempcode();
                 }
@@ -373,7 +373,7 @@ class Module_topicview
 
                     // Avatar
                     if ((array_key_exists('avatar', $_postdetails)) && ($_postdetails['avatar'] != '')) {
-                        $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', array('_GUID' => 'd647ada9c11d56eedc0ff7894d33e83c', 'AVATAR' => $_postdetails['avatar']));
+                        $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', ['_GUID' => 'd647ada9c11d56eedc0ff7894d33e83c', 'AVATAR' => $_postdetails['avatar']]);
                     } else {
                         $post_avatar = new Tempcode();
                     }
@@ -388,13 +388,13 @@ class Module_topicview
                             $group_name = cns_get_group_name($group);
                             $rank_image_pri_only = cns_get_group_property($group, 'rank_image_pri_only');
                             if (($rank_image != '') && (($rank_image_pri_only == 0) || ($group == $GLOBALS['FORUM_DRIVER']->get_member_row_field($_postdetails['poster'], 'm_primary_group')))) {
-                                $rank_images->attach(do_template('CNS_RANK_IMAGE', array(
+                                $rank_images->attach(do_template('CNS_RANK_IMAGE', [
                                     '_GUID' => '0ff7855482b901be95591964d4212c44',
                                     'GROUP_NAME' => $group_name,
                                     'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($_postdetails['poster']),
                                     'IMG' => $rank_image,
                                     'IS_LEADER' => $group_leader == $_postdetails['poster'],
-                                )));
+                                ]));
                             }
                         }
                     }
@@ -403,12 +403,12 @@ class Module_topicview
                     if (!$is_spacer_post) {
                         if (!is_guest($_postdetails['poster'])) {
                             require_code('cns_members2');
-                            $poster_details = render_member_box($_postdetails['poster'], false, false, array(), false);
+                            $poster_details = render_member_box($_postdetails['poster'], false, false, [], false);
                         } else {
                             $custom_fields = new Tempcode();
                             if (array_key_exists('ip_address', $_postdetails)) {
-                                $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => 'd85be094dff0d039a64120d6f8f381bb', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($_postdetails['ip_address']))));
-                                $poster_details = do_template('CNS_GUEST_DETAILS', array('_GUID' => 'e43534acaf598008602e8da8f9725f38', 'CUSTOM_FIELDS' => $custom_fields));
+                                $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => 'd85be094dff0d039a64120d6f8f381bb', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($_postdetails['ip_address'])]));
+                                $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'e43534acaf598008602e8da8f9725f38', 'CUSTOM_FIELDS' => $custom_fields]);
                             } else {
                                 $poster_details = new Tempcode();
                             }
@@ -419,7 +419,7 @@ class Module_topicview
 
                     if (!is_guest($_postdetails['poster'])) {
                         require_code('users2');
-                        $poster = do_template('CNS_POSTER_MEMBER', array(
+                        $poster = do_template('CNS_POSTER_MEMBER', [
                             '_GUID' => 'dbbed1850b6c01a6c9601d85c6aee43f',
                             'ONLINE' => $_postdetails['online'],
                             'ID' => strval($_postdetails['poster']),
@@ -427,15 +427,15 @@ class Module_topicview
                             'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($_postdetails['poster'], true),
                             'POSTER_USERNAME' => $_postdetails['poster_username'],
                             'HIGHLIGHT_NAME' => array_key_exists('highlighted_name', $_postdetails) ? ($_postdetails['highlighted_name'] ? '1' : '0') : null,
-                        ));
+                        ]);
                     } else {
-                        $ip_url = ((addon_installed('securitylogging')) && (array_key_exists('ip_address', $_postdetails)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(array('page' => 'admin_lookup', 'param' => $_postdetails['ip_address']), get_module_zone('admin_lookup')) : new Tempcode();
-                        $poster = do_template('CNS_POSTER_GUEST', array(
+                        $ip_url = ((addon_installed('securitylogging')) && (array_key_exists('ip_address', $_postdetails)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(['page' => 'admin_lookup', 'param' => $_postdetails['ip_address']], get_module_zone('admin_lookup')) : new Tempcode();
+                        $poster = do_template('CNS_POSTER_GUEST', [
                             '_GUID' => '36a8e550222cdac5165ef8f722be3def',
                             'LOOKUP_IP_URL' => $ip_url,
                             'POSTER_DETAILS' => $poster_details,
                             'POSTER_USERNAME' => $_postdetails['poster_username'],
-                        ));
+                        ]);
                     }
 
                     // Signature
@@ -444,7 +444,7 @@ class Module_topicview
                         $signature = $_postdetails['signature'];
                     }
 
-                    $poster_details_cache[$_postdetails['poster']][$_postdetails['poster_username']] = array($poster_online, $post_avatar, $rank_images, $poster_details, $poster, $signature);
+                    $poster_details_cache[$_postdetails['poster']][$_postdetails['poster_username']] = [$poster_online, $post_avatar, $rank_images, $poster_details, $poster, $signature];
                 }
 
                 $post_title = $_postdetails['title'];
@@ -471,12 +471,12 @@ class Module_topicview
                 }
 
                 if ((isset($GLOBALS['METADATA']['description'])) && ($GLOBALS['METADATA']['description'] == '') && (($_postdetails['id'] === $jump_post_id) || (($array_id == 0) && ($jump_post_id === null)))) {
-                    set_extra_request_metadata(array(
-                        'description' => strip_html(symbol_truncator(array($_postdetails['post'], '200', '0', '1', '0.2'), 'left')),
-                    ));
+                    set_extra_request_metadata([
+                        'description' => strip_html(symbol_truncator([$_postdetails['post'], '200', '0', '1', '0.2'], 'left')),
+                    ]);
                 }
 
-                $rendered_post = do_template('CNS_TOPIC_POST', array(
+                $rendered_post = do_template('CNS_TOPIC_POST', [
                     '_GUID' => 'sacd09wekfofpw2f',
                     'GIVE_CONTEXT' => false,
                     'ID' => $is_spacer_post ? '' : strval($_postdetails['id']),
@@ -507,7 +507,7 @@ class Module_topicview
                     'RATING' => $rating,
                     'POSTER_ONLINE' => $poster_online,
                     'FORUM_ID' => ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']),
-                ));
+                ]);
                 $posts->attach($rendered_post);
             }
 
@@ -530,15 +530,15 @@ class Module_topicview
         }
 
         // Buttons for topic as whole
-        $button_array = array();
+        $button_array = [];
         if ($id !== null) {
             if (get_option('threaded_buttons') == '1') {
                 if ($threaded) {
-                    $view_as_linear_url = get_self_url(false, false, array('threaded' => 0));
-                    $button_array[] = array('immediate' => true, 'title' => do_lang_tempcode('_VIEW_AS_LINEAR'), 'url' => $view_as_linear_url, 'img' => 'buttons/linear');
+                    $view_as_linear_url = get_self_url(false, false, ['threaded' => 0]);
+                    $button_array[] = ['immediate' => true, 'title' => do_lang_tempcode('_VIEW_AS_LINEAR'), 'url' => $view_as_linear_url, 'img' => 'buttons/linear'];
                 } else {
-                    $view_as_threaded_url = get_self_url(false, false, array('threaded' => 1));
-                    $button_array[] = array('immediate' => true, 'title' => do_lang_tempcode('_VIEW_AS_THREADED'), 'url' => $view_as_threaded_url, 'img' => 'buttons/threaded');
+                    $view_as_threaded_url = get_self_url(false, false, ['threaded' => 1]);
+                    $button_array[] = ['immediate' => true, 'title' => do_lang_tempcode('_VIEW_AS_THREADED'), 'url' => $view_as_threaded_url, 'img' => 'buttons/threaded'];
                 }
             }
 
@@ -548,21 +548,21 @@ class Module_topicview
                 require_code('users');
 
                 if (($GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_auto_mark_read') != 1) && (get_option('enable_mark_topic_unread') === '1') && !cns_has_read_topic($id)) {
-                    $redirect_map = array('page' => 'topicview', 'id' => $id);
+                    $redirect_map = ['page' => 'topicview', 'id' => $id];
                     $test_threaded = get_param_integer('threaded', null);
                     if ($test_threaded !== null) {
                         $redirect_map['threaded'] = $test_threaded;
                     }
                     $redirect = build_url($redirect_map, get_module_zone('topicview'));
-                    $map = array('page' => 'topics', 'type' => 'mark_read_topic', 'id' => $id, 'redirect' => protect_url_parameter($redirect->evaluate()));
+                    $map = ['page' => 'topics', 'type' => 'mark_read_topic', 'id' => $id, 'redirect' => protect_url_parameter($redirect->evaluate())];
                     if ($test_threaded !== null) {
                         $map['threaded'] = $test_threaded;
                     }
                     $mark_read_url = build_url($map, get_module_zone('topics'));
-                    $button_array[] = array('immediate' => true, 'title' => do_lang_tempcode('MARK_READ'), 'url' => $mark_read_url, 'img' => 'buttons/mark_read');
+                    $button_array[] = ['immediate' => true, 'title' => do_lang_tempcode('MARK_READ'), 'url' => $mark_read_url, 'img' => 'buttons/mark_read'];
                 } else {
                     if ((get_option('enable_mark_topic_unread') === '1') && !$too_old) {
-                        $map = array('page' => 'topics', 'type' => 'mark_unread_topic', 'id' => $id);
+                        $map = ['page' => 'topics', 'type' => 'mark_unread_topic', 'id' => $id];
                         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                         if (($test !== null) && ($test !== '0')) {
                             $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -572,7 +572,7 @@ class Module_topicview
                             $map['threaded'] = $test_threaded;
                         }
                         $mark_unread_url = build_url($map, get_module_zone('topics'));
-                        $button_array[] = array('immediate' => true, 'title' => do_lang_tempcode('MARK_UNREAD'), 'url' => $mark_unread_url, 'img' => 'buttons/mark_unread');
+                        $button_array[] = ['immediate' => true, 'title' => do_lang_tempcode('MARK_UNREAD'), 'url' => $mark_unread_url, 'img' => 'buttons/mark_unread'];
                     }
                 }
             }
@@ -590,7 +590,7 @@ class Module_topicview
 
                         require_lang('tickets');
                         require_css('tickets');
-                        $map = array('page' => 'topics', 'type' => 'new_post', 'id' => $id, 'intended_solely_for' => $GLOBALS['FORUM_DRIVER']->get_guest_id());
+                        $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $id, 'intended_solely_for' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
                         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                         if (($test !== null) && ($test !== '0')) {
                             $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -600,13 +600,13 @@ class Module_topicview
                             $map['threaded'] = $test_threaded;
                         }
                         $new_post_url = build_url($map, get_module_zone('topics'));
-                        $button_array[] = array('immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode('TICKET_STAFF_ONLY_REPLY'), 'url' => $new_post_url, 'img' => 'buttons/new_reply_staff_only');
+                        $button_array[] = ['immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode('TICKET_STAFF_ONLY_REPLY'), 'url' => $new_post_url, 'img' => 'buttons/new_reply_staff_only'];
                     }
                 }
 
                 if (!$reply_prevented) {
                     if ($topic_info['is_threaded'] == 0) { // For threaded ones (i.e. not this) we want to encourage people to click the reply button by a post
-                        $map = array('page' => 'topics', 'type' => 'new_post', 'id' => $id);
+                        $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $id];
                         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                         if (($test !== null) && ($test !== '0')) {
                             $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -616,14 +616,14 @@ class Module_topicview
                             $map['threaded'] = $test_threaded;
                         }
                         $new_post_url = build_url($map, get_module_zone('topics'));
-                        $button_array[] = array('immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode($topic_info['is_open'] ? '_REPLY' : 'CLOSED'), 'url' => $new_post_url, 'img' => $topic_info['is_open'] ? 'buttons/new_reply' : 'buttons/closed');
+                        $button_array[] = ['immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode($topic_info['is_open'] ? '_REPLY' : 'CLOSED'), 'url' => $new_post_url, 'img' => $topic_info['is_open'] ? 'buttons/new_reply' : 'buttons/closed'];
                     }
                 } else {
                     unset($topic_info['may_use_quick_reply']);
                 }
             } // Maybe we can let them edit their last post instead?
-            elseif ((($topic_info['forum_id'] === null) || (has_privilege(get_member(), 'submit_lowrange_content', 'topics', array('forums', $topic_info['forum_id'])))) && ($topic_info['last_poster'] == get_member()) && (!is_guest()) && (cns_may_edit_post_by($topic_info['last_post_id'], $topic_info['last_time'], get_member(), $topic_info['forum_id'], null, $topic_info['is_open'] == 0))) {
-                $map = array('page' => 'topics', 'type' => 'edit_post', 'id' => $topic_info['last_post_id']);
+            elseif ((($topic_info['forum_id'] === null) || (has_privilege(get_member(), 'submit_lowrange_content', 'topics', ['forums', $topic_info['forum_id']]))) && ($topic_info['last_poster'] == get_member()) && (!is_guest()) && (cns_may_edit_post_by($topic_info['last_post_id'], $topic_info['last_time'], get_member(), $topic_info['forum_id'], null, $topic_info['is_open'] == 0))) {
+                $map = ['page' => 'topics', 'type' => 'edit_post', 'id' => $topic_info['last_post_id']];
                 $test = get_param_string('kfs' . strval($topic_info['forum_id']), null, INPUT_FILTER_GET_COMPLEX);
                 if (($test !== null) && ($test !== '0')) {
                     $map['kfs' . strval($topic_info['forum_id'])] = $test;
@@ -633,19 +633,19 @@ class Module_topicview
                     $map['threaded'] = $test_threaded;
                 }
                 $new_post_url = build_url($map, get_module_zone('topics'));
-                $button_array[] = array('immediate' => false, 'rel' => 'edit', 'title' => do_lang_tempcode('LAST_POST'), 'url' => $new_post_url, 'img' => 'admin/edit');
+                $button_array[] = ['immediate' => false, 'rel' => 'edit', 'title' => do_lang_tempcode('LAST_POST'), 'url' => $new_post_url, 'img' => 'admin/edit'];
             }
 
             if ($topic_info['forum_id'] !== null) {
                 if (get_option('enable_add_topic_btn_in_topic') == '1') {
                     if (cns_may_post_topic($topic_info['forum_id'], get_member())) {
-                        $new_topic_url = build_url(array('page' => 'topics', 'type' => 'new_topic', 'id' => $topic_info['forum_id']), get_module_zone('topics'));
-                        $button_array[] = array('immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode('ADD_TOPIC'), 'url' => $new_topic_url, 'img' => 'buttons/add_topic');
+                        $new_topic_url = build_url(['page' => 'topics', 'type' => 'new_topic', 'id' => $topic_info['forum_id']], get_module_zone('topics'));
+                        $button_array[] = ['immediate' => false, 'rel' => 'add', 'title' => do_lang_tempcode('ADD_TOPIC'), 'url' => $new_topic_url, 'img' => 'buttons/add_topic'];
                     }
                 }
             } else {
-                $invite_url = build_url(array('page' => 'topics', 'type' => 'invite_member', 'id' => $id), get_module_zone('topics'));
-                $button_array[] = array('immediate' => false, 'title' => do_lang_tempcode('_INVITE_MEMBER_TO_PT'), 'url' => $invite_url, 'img' => 'admin/add_to_category');
+                $invite_url = build_url(['page' => 'topics', 'type' => 'invite_member', 'id' => $id], get_module_zone('topics'));
+                $button_array[] = ['immediate' => false, 'title' => do_lang_tempcode('_INVITE_MEMBER_TO_PT'), 'url' => $invite_url, 'img' => 'admin/add_to_category'];
             }
         }
         $buttons = cns_button_screen_wrap($button_array);
@@ -670,7 +670,7 @@ class Module_topicview
                             $button = do_lang_tempcode('NOVOTE');
                         } else {
                             require_lang('polls');
-                            $map = array('page' => 'topicview', 'id' => $id, 'view_poll_results' => 1, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max);
+                            $map = ['page' => 'topicview', 'id' => $id, 'view_poll_results' => 1, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
                             $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
                             if (($test !== null) && ($test !== '0')) {
                                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -680,7 +680,7 @@ class Module_topicview
                                 $map['threaded'] = $test_threaded;
                             }
                             $results_url = build_url($map, get_module_zone('topics'));
-                            $button = do_template('CNS_TOPIC_POLL_BUTTON', array('_GUID' => '94b932fd01028df8f67bb5864d9235f9', 'RESULTS_URL' => $results_url));
+                            $button = do_template('CNS_TOPIC_POLL_BUTTON', ['_GUID' => '94b932fd01028df8f67bb5864d9235f9', 'RESULTS_URL' => $results_url]);
                             $real_button = true;
                         }
                     }
@@ -697,7 +697,7 @@ class Module_topicview
                     } else {
                         $width = 0;
                     }
-                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER_RESULTS', array(
+                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER_RESULTS', [
                         '_GUID' => 'b32f4c526e147abf20ca0d668e40d515',
                         'ID' => strval($_poll['id']),
                         'NUM_VOTES' => integer_format($num_votes),
@@ -705,13 +705,13 @@ class Module_topicview
                         'WIDTH' => strval($width),
                         'ANSWER' => $answer['answer'],
                         'I' => strval($answer['id']),
-                    ));
+                    ]);
                 } else {
-                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER' . (($_poll['maximum_selections'] == 1) ? '_RADIO' : ''), array('REAL_BUTTON' => $real_button, 'ID' => strval($_poll['id']), 'ANSWER' => $answer['answer'], 'I' => strval($answer['id'])));
+                    $answer_tpl = do_template('CNS_TOPIC_POLL_ANSWER' . (($_poll['maximum_selections'] == 1) ? '_RADIO' : ''), ['REAL_BUTTON' => $real_button, 'ID' => strval($_poll['id']), 'ANSWER' => $answer['answer'], 'I' => strval($answer['id'])]);
                 }
                 $answers->attach($answer_tpl);
             }
-            $map = array('page' => 'topics', 'type' => 'vote_poll', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max);
+            $map = ['page' => 'topics', 'type' => 'vote_poll', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
             $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
             if (($test !== null) && ($test !== '0')) {
                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -732,7 +732,7 @@ class Module_topicview
                 $num_choices = new Tempcode();
             }
 
-            $poll = do_template('CNS_TOPIC_POLL' . ($poll_results ? '_VIEW_RESULTS' : ''), array(
+            $poll = do_template('CNS_TOPIC_POLL' . ($poll_results ? '_VIEW_RESULTS' : ''), [
                 'ID' => strval($_poll['id']),
                 'NUM_CHOICES' => $num_choices,
                 'PRIVATE' => $private,
@@ -744,14 +744,14 @@ class Module_topicview
                 'MINIMUM_SELECTIONS' => integer_format($_poll['minimum_selections']),
                 'MAXIMUM_SELECTIONS' => integer_format($_poll['maximum_selections']),
                 'TOTAL_VOTES' => strval($total_votes),
-            ));
+            ]);
         } else {
             $poll = new Tempcode();
         }
 
         // Quick reply
         if ((array_key_exists('may_use_quick_reply', $topic_info)) && ($may_reply) && ($id !== null)) {
-            $map = array('page' => 'topics', 'type' => '_add_reply', 'topic_id' => $id, 'timestamp' => time());
+            $map = ['page' => 'topics', 'type' => '_add_reply', 'topic_id' => $id, 'timestamp' => time()];
             $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
             if (($test !== null) && ($test !== '0')) {
                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -764,13 +764,13 @@ class Module_topicview
             $map['wide_high'] = get_param_integer('wide_high', null);
             $_post_url = build_url($map, get_module_zone('topics'));
             $post_url = $_post_url->evaluate();
-            $map = array('page' => 'topics', 'type' => 'new_post', 'id' => $id, 'timestamp' => time());
+            $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $id, 'timestamp' => time()];
             if (($test !== null) && ($test !== '0')) {
                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
             }
             $more_url = build_url($map, get_module_zone('topics'));
             if (isset($topic_info['first_post'])) {
-                $post_row = db_map_restrict($topic_info['row'], array('id', 'p_post'), array('id' => 't_cache_first_post_id'));
+                $post_row = db_map_restrict($topic_info['row'], ['id', 'p_post'], ['id' => 't_cache_first_post_id']);
                 $_postdetails = get_translated_tempcode('f_posts', $post_row, 'p_post', $GLOBALS['FORUM_DB']);
             } else {
                 $_postdetails = new Tempcode();
@@ -808,7 +808,7 @@ class Module_topicview
             require_code('form_templates');
             list($attachments, $attach_size_field) = get_attachments('post');
 
-            $quick_reply = do_template('COMMENTS_POSTING_FORM', array(
+            $quick_reply = do_template('COMMENTS_POSTING_FORM', [
                 '_GUID' => '4c532620f3eb68d9cc820b18265792d7',
                 'TITLE' => do_lang_tempcode('QUICK_REPLY'),
                 'USE_CAPTCHA' => $use_captcha,
@@ -830,12 +830,12 @@ class Module_topicview
                 'COMMENT_URL' => $post_url,
                 'SUBMIT_NAME' => do_lang_tempcode('REPLY'),
                 'MORE_URL' => $more_url,
-            ));
+            ]);
         } else {
             $quick_reply = new Tempcode();
         }
 
-        $action_url = build_url(array('page' => 'topics', 'id' => $id), get_module_zone('topics'));
+        $action_url = build_url(['page' => 'topics', 'id' => $id], get_module_zone('topics'));
         if ($id !== null) {
             // Moderation options
             $moderator_actions = ''; // XHTMLXHTML
@@ -898,7 +898,7 @@ class Module_topicview
             if (addon_installed('actionlog')) {
                 require_code('revisions_engine_database');
                 $revision_engine = new RevisionEngineDatabase(true);
-                if ($revision_engine->has_revisions(array('post'), null, strval($id))) {
+                if ($revision_engine->has_revisions(['post'], null, strval($id))) {
                     $moderator_actions .= '<option value="topic_history">' . do_lang('actionlog:REVISIONS') . '</option>';
                 }
             }
@@ -911,7 +911,7 @@ class Module_topicview
             }
 
             // Marked post actions
-            $map = array('page' => 'topics', 'id' => $id);
+            $map = ['page' => 'topics', 'id' => $id];
             $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
             if (($test !== null) && ($test !== '0')) {
                 $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -920,7 +920,7 @@ class Module_topicview
             if ($test_threaded !== null) {
                 $map['threaded'] = $test_threaded;
             }
-            $action_url = build_url($map, get_module_zone('topics'), array(), false, true);
+            $action_url = build_url($map, get_module_zone('topics'), [], false, true);
             $marked_post_actions = ''; // XHTMLXHTML
             if (array_key_exists('may_move_posts', $topic_info)) {
                 $marked_post_actions .= '<option value="move_posts_a">' . do_lang('MERGE_POSTS') . '</option>';
@@ -949,7 +949,7 @@ class Module_topicview
         $max_rows = $topic_info['max_rows'];
         if (($max_rows > $max) && (!$threaded)) {
             require_code('templates_pagination');
-            $pagination = pagination(do_lang_tempcode('FORUM_POSTS'), $start, 'topic_start', $max, 'topic_max', $max_rows, false, 7, array(10, 20, 30));
+            $pagination = pagination(do_lang_tempcode('FORUM_POSTS'), $start, 'topic_start', $max, 'topic_max', $max_rows, false, 7, [10, 20, 30]);
         } else {
             $pagination = new Tempcode();
         }
@@ -968,10 +968,10 @@ class Module_topicview
         }
 
         if (($topic_info['validated'] == 0) && (addon_installed('unvalidated'))) {
-            $warning_details = do_template('WARNING_BOX', array(
+            $warning_details = do_template('WARNING_BOX', [
                 '_GUID' => '313de370c1aeab9545c4bee4e35e7f84',
                 'WARNING' => do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'topic'),
-            ));
+            ]);
         } else {
             $warning_details = new Tempcode();
         }
@@ -986,7 +986,7 @@ class Module_topicview
             $is_ticket_forum = false;
         }
 
-        $topic_tpl = do_template('CNS_TOPIC_SCREEN', array(
+        $topic_tpl = do_template('CNS_TOPIC_SCREEN', [
             '_GUID' => 'bb201d5d59559e5e2bd60e7cf2e6f7e9',
             'TITLE' => $this->title,
             'SERIALIZED_OPTIONS' => $serialized_options,
@@ -1014,7 +1014,7 @@ class Module_topicview
             'FORUM_ID' => ($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']),
             'IS_ALREADY_READ' => cns_has_read_topic($id),
             'TICKET_FORUM' => $is_ticket_forum,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($topic_tpl);

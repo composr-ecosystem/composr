@@ -30,7 +30,7 @@ class Hook_config_vote_member_ip_restrict
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'VOTE_MEMBER_IP_RESTRICT',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_vote_member_ip_restrict
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

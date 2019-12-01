@@ -34,7 +34,7 @@ class Hook_import_rss
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['product'] = 'News RSS/Atom';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'cms_news';

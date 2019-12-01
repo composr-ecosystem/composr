@@ -30,7 +30,7 @@ class Hook_config_staff_address
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EMAIL_ADDRESS',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_staff_address
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_password_cookies
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD_COOKIES',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_password_cookies
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

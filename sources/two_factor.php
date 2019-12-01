@@ -26,7 +26,7 @@ function approve_ip_script()
     require_code('site');
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-    $keep = keep_symbol(array('1'));
+    $keep = keep_symbol(['1']);
 
     $code = either_param_string('code', '');
     if ($code == '') {
@@ -36,7 +36,7 @@ function approve_ip_script()
         $fields->attach(form_input_codename(do_lang_tempcode('CODE'), '', 'code', '', true));
         $submit_name = do_lang_tempcode('PROCEED');
         $url = find_script('approve_ip') . $keep;
-        $middle = do_template('FORM_SCREEN', array(
+        $middle = do_template('FORM_SCREEN', [
             '_GUID' => 'd92ce4ec82dc709f920a4ce6760778de',
             'TITLE' => $title,
             'SKIP_WEBSTANDARDS' => true,
@@ -46,7 +46,7 @@ function approve_ip_script()
             'TEXT' => do_lang_tempcode('MISSING_CONFIRM_CODE'),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
         $echo = globalise($middle, null, '', true, true);
         $echo->evaluate_echo();
         exit();
@@ -54,11 +54,11 @@ function approve_ip_script()
 
     // If we're still here, we're ok to go
     require_lang('cns');
-    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', array('i_val_code' => $code));
+    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_val_code' => $code]);
     if ($test === null) {
         warn_exit(do_lang_tempcode('ALREADY_APPROVED_IP'));
     }
-    $GLOBALS['FORUM_DB']->query_update('f_member_known_login_ips', array('i_val_code' => '', 'i_time' => time()), array('i_val_code' => $code), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_member_known_login_ips', ['i_val_code' => '', 'i_time' => time()], ['i_val_code' => $code], '', 1);
     if ((get_option('maintenance_script_htaccess') == '1') && (maintenance_script_htaccess_option_available())) {
         adjust_htaccess();
     }
@@ -99,17 +99,17 @@ function adjust_htaccess()
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
-    $lines = array(
+    $lines = [
         '<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>',
         'Require all denied',
-    );
-    $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', array('i_ip'), array('i_val_code' => ''));
+    ];
+    $ips = $GLOBALS['FORUM_DB']->query_select('f_member_known_login_ips', ['i_ip'], ['i_val_code' => '']);
     foreach ($ips as $ip) {
         $lines[] = 'Require ip ' . $ip['i_ip'];
     }
-    $lines = array_merge($lines, array(
+    $lines = array_merge($lines, [
         '</FilesMatch>',
-    ));
+    ]);
 
     $final_line = $lines[count($lines) - 1];
 

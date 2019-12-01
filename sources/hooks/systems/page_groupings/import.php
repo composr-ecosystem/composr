@@ -33,11 +33,11 @@ class Hook_page_groupings_import
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('import')) {
-            return array();
+            return [];
         }
 
-        return array(
-            (get_value('hide_import') === '1') ? null : array('tools', 'admin/import', array('admin_import', array('type' => 'browse'), get_module_zone('admin_import')), do_lang_tempcode('IMPORT'), 'import:DOC_IMPORT'),
-        );
+        return [
+            (get_value('hide_import') === '1') ? null : ['tools', 'admin/import', ['admin_import', ['type' => 'browse'], get_module_zone('admin_import')], do_lang_tempcode('IMPORT'), 'import:DOC_IMPORT'],
+        ];
     }
 }

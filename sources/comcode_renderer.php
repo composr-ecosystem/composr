@@ -29,13 +29,13 @@ function init__comcode_renderer()
 
     global $IMPORTED_CUSTOM_COMCODE, $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE;
     $IMPORTED_CUSTOM_COMCODE = false;
-    $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE = array();
+    $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE = [];
 
     global $STRUCTURE_LIST;
-    $STRUCTURE_LIST = array();
+    $STRUCTURE_LIST = [];
 
     global $DONT_CARE_MISSING_PAGES;
-    $DONT_CARE_MISSING_PAGES = array('topics', 'chat', 'forumview', 'topicview', 'search');
+    $DONT_CARE_MISSING_PAGES = ['topics', 'chat', 'forumview', 'topicview', 'search'];
 
     if (!defined('MAX_URLS_TO_READ')) {
         define('MAX_URLS_TO_READ', 5);
@@ -64,7 +64,7 @@ function _apply_emoticons($text)
     }
 
     // Pre-check, optimisation
-    $emoticons = array();
+    $emoticons = [];
     foreach ($_emoticons as $code => $imgcode) {
         if (strpos($text, $code) !== false) {
             $emoticons[$code] = $imgcode;
@@ -120,7 +120,7 @@ function _apply_emoticons($text)
  */
 function do_emoticon($imgcode)
 {
-    $tpl = do_template($imgcode[0], array('SRC' => $imgcode[1], 'EMOTICON' => $imgcode[2]));
+    $tpl = do_template($imgcode[0], ['SRC' => $imgcode[1], 'EMOTICON' => $imgcode[2]]);
     return $tpl;
 }
 
@@ -141,7 +141,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
     if ((!$as_admin) && (!has_privilege($source_member, 'use_very_dangerous_comcode'))) {
         $url2 = strtolower($url);
 
-        $matches = array();
+        $matches = [];
         $bad = preg_match_all('#&\#(\d+)#', preg_replace('#\s#', '', $url), $matches) != 0;
         if ($bad) {
             for ($i = 0; $i < count($matches[0]); $i++) {
@@ -214,18 +214,18 @@ function _custom_comcode_import($db)
                 if ($code['dangerous_tag'] == 1) {
                     $DANGEROUS_TAGS[$code['tag']] = true;
                 }
-                $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$code['tag']] = array('replace' => $code['replace'], 'parameters' => $code['parameters']);
+                $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$code['tag']] = ['replace' => $code['replace'], 'parameters' => $code['parameters']];
             }
         }
 
         // From Custom Comcode
-        $tags = array();
+        $tags = [];
         if (addon_installed('custom_comcode')) {
             if (is_on_multi_site_network()) {
                 if ($db->is_forum_db()) {
-                    $from_db = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'), array('tag_enabled' => 1));
+                    $from_db = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]);
                 } elseif (($GLOBALS['FORUM_DB'] !== null) && (get_forum_type() == 'cns')) {
-                    $from_db = $GLOBALS['FORUM_DB']->query_select('custom_comcode', array('tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'), array('tag_enabled' => 1));
+                    $from_db = $GLOBALS['FORUM_DB']->query_select('custom_comcode', ['tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]);
                 } else {
                     $from_db = null;
                 }
@@ -233,7 +233,7 @@ function _custom_comcode_import($db)
                     $tags = array_merge($tags, $from_db);
                 }
             }
-            $tags = array_merge($tags, $db->query_select('custom_comcode', array('tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'), array('tag_enabled' => 1)));
+            $tags = array_merge($tags, $db->query_select('custom_comcode', ['tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], ['tag_enabled' => 1]));
         }
         foreach ($tags as $tag) {
             $tag['tag_tag'] = strtolower($tag['tag_tag']);
@@ -248,7 +248,7 @@ function _custom_comcode_import($db)
             if ($tag['tag_dangerous_tag'] == 1) {
                 $DANGEROUS_TAGS[$tag['tag_tag']] = true;
             }
-            $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag['tag_tag']] = array('replace' => $tag['tag_replace'], 'parameters' => $tag['tag_parameters']);
+            $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag['tag_tag']] = ['replace' => $tag['tag_replace'], 'parameters' => $tag['tag_parameters']];
         }
 
         // From Comcode hooks
@@ -272,7 +272,7 @@ function _custom_comcode_import($db)
             if ($tag['tag_dangerous_tag'] == 1) {
                 $DANGEROUS_TAGS[$tag['tag_tag']] = true;
             }
-            $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag['tag_tag']] = array('replace' => $tag['tag_replace'], 'parameters' => $tag['tag_parameters']);
+            $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag['tag_tag']] = ['replace' => $tag['tag_replace'], 'parameters' => $tag['tag_parameters']];
         }
     }
 
@@ -294,7 +294,7 @@ function _custom_comcode_import($db)
  *
  * @ignore
  */
-function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = array(), $on_behalf_of_member = null)
+function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = [], $on_behalf_of_member = null)
 {
     $structure_sweep = ($flags & COMCODE_STRUCTURE_SWEEP) != 0;
 
@@ -317,7 +317,7 @@ function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false
     // Ensures the 'title' tags are incremental with their anchors
     global $STRUCTURE_LIST;
     $old_structure_list = $STRUCTURE_LIST;
-    $STRUCTURE_LIST = array();
+    $STRUCTURE_LIST = [];
 
     $comcode = convert_guids_to_ids($comcode);
 
@@ -374,7 +374,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
     if (!$check_only) {
         if (((get_mass_import_mode()) || (!has_interesting_post_fields()) || (!$posted)) && (!$preparse_mode)) {
             $line = substr_count(substr($comcode, 0, $pos), "\n") + 1;
-            $out = do_template('COMCODE_CRITICAL_PARSE_ERROR', array('_GUID' => '29da9dc5c6b9a527cb055b7da35bb6b8', 'LINE' => integer_format($line), 'MESSAGE' => $message, 'SOURCE' => $comcode)); // Won't parse, but we can't help it, so we will skip on
+            $out = do_template('COMCODE_CRITICAL_PARSE_ERROR', ['_GUID' => '29da9dc5c6b9a527cb055b7da35bb6b8', 'LINE' => integer_format($line), 'MESSAGE' => $message, 'SOURCE' => $comcode]); // Won't parse, but we can't help it, so we will skip on
             return $out;
         }
     }
@@ -392,7 +392,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
             $line = $number;
         }
         if ($char == "\n") {
-            $lines->attach(do_template('COMCODE_MISTAKE_LINE', array('_GUID' => '2022be3de10590d525f333b6ac0da37b', 'NUMBER' => integer_format($number), 'LINE' => make_string_tempcode($sofar))));
+            $lines->attach(do_template('COMCODE_MISTAKE_LINE', ['_GUID' => '2022be3de10590d525f333b6ac0da37b', 'NUMBER' => integer_format($number), 'LINE' => make_string_tempcode($sofar)]));
             $sofar = '';
             $number++;
         }
@@ -402,7 +402,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
         $tmp_tpl = do_template('COMCODE_MISTAKE_ERROR');
         $sofar .= $tmp_tpl->evaluate();
     }
-    $lines->attach(do_template('COMCODE_MISTAKE_LINE', array('_GUID' => 'eebfe1342f3129d4e31fc9fc1963af2b', 'NUMBER' => integer_format($number), 'LINE' => make_string_tempcode($sofar))));
+    $lines->attach(do_template('COMCODE_MISTAKE_LINE', ['_GUID' => 'eebfe1342f3129d4e31fc9fc1963af2b', 'NUMBER' => integer_format($number), 'LINE' => make_string_tempcode($sofar)]));
     if ($line === null) {
         $line = $number;
     }
@@ -445,11 +445,11 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
 
     // Output our error / correction form
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
-    $hidden = build_keep_post_fields(array($name));
+    $hidden = build_keep_post_fields([$name]);
     require_code('form_templates');
     $fields = form_input_huge_comcode(do_lang_tempcode('FIXED_COMCODE'), do_lang_tempcode('COMCODE_REPLACEMENT'), $name, $comcode, true, null, 20, null, null, false, true);
-    $post_url = get_self_url(false, false, array('_corrected_comcode' => '1'));
-    $form = do_template('FORM', array(
+    $post_url = get_self_url(false, false, ['_corrected_comcode' => '1']);
+    $form = do_template('FORM', [
         '_GUID' => '207bad1252add775029b34ba36e02856',
         'URL' => $post_url,
         'TEXT' => '',
@@ -459,8 +459,8 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
         'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
         'SKIP_REQUIRED' => true,
         'MODSECURITY_WORKAROUND' => true,
-    ));
-    $output = do_template('COMCODE_MISTAKE_SCREEN', array(
+    ]);
+    $output = do_template('COMCODE_MISTAKE_SCREEN', [
         '_GUID' => '0010230e6612b0775566d07ddf54305a',
         'EDITABLE' => !running_script('preview'),
         'FORM' => $form,
@@ -468,7 +468,7 @@ function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $ch
         'LINE' => integer_format($line),
         'MESSAGE' => $message,
         'LINES' => $lines,
-    ));
+    ]);
     $echo = globalise($output, null, '', true);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo(null, true);
@@ -528,9 +528,9 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
     }
 
     // Exceptions that we don't want to check (typically things we use by default)
-    if (in_array($url_full, array(
+    if (in_array($url_full, [
         'https://www.google.com/webmasters/tools/home',
-    ))) {
+    ])) {
         return new Tempcode();
     }
 
@@ -548,18 +548,18 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
             return new Tempcode();
         }
 
-        $test = cms_http_request($url_full, array('trigger_error' => false, 'byte_limit' => 0));
+        $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 0]);
         if (($test === null) && ($test->message == '403')) {
-            $test = cms_http_request($url_full, array('trigger_error' => false, 'byte_limit' => 1)); // Try without HEAD, sometimes it's not liked
+            $test = cms_http_request($url_full, ['trigger_error' => false, 'byte_limit' => 1]); // Try without HEAD, sometimes it's not liked
         }
-        if (($test->data === null) && (in_array($test->message, array('404')))) {
+        if (($test->data === null) && (in_array($test->message, ['404']))) {
             if ($test->message != 'could not connect to host'/*don't show for random connectivity issue*/) {
-                $temp_tpl = do_template('WARNING_BOX', array(
+                $temp_tpl = do_template('WARNING_BOX', [
                     '_GUID' => '7bcea67226f89840394614d88020e3ac',
                     'RESTRICT_VISIBILITY' => strval($source_member),
                     //'INLINE' => true, Looks awful
                     'WARNING' => do_lang_tempcode('MISSING_URL_COMCODE', escape_html($tag_type), escape_html($url_full)),
-                ));
+                ]);
             }
             if ((!in_array(get_page_name(), $DONT_CARE_MISSING_PAGES)) && (running_script('index'))) {
                 $found_in_post = false; // We don't want to send e-mail if someone's just posting it right now, because they'll see the error on their screen, and we don't want staff spammed by member mistakes
@@ -644,7 +644,7 @@ function comcode_white_listed($tag, $marker, $comcode)
  *
  * @ignore
  */
-function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_id, $marker, $source_member, $as_admin, $db, &$comcode, $structure_sweep, $semiparse_mode, $highlight_bits = array(), $on_behalf_of_member = null, $in_semihtml = false, $is_all_semihtml = false, $html_errors = false)
+function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_id, $marker, $source_member, $as_admin, $db, &$comcode, $structure_sweep, $semiparse_mode, $highlight_bits = [], $on_behalf_of_member = null, $in_semihtml = false, $is_all_semihtml = false, $html_errors = false)
 {
     if (($structure_sweep) && ($tag != 'title')) {
         return new Tempcode();
@@ -662,11 +662,11 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
         if ($semiparse_mode) { // Can't load through error for this, so just show it as a tag
             return make_string_tempcode(add_wysiwyg_comcode_markup($tag, $attributes, $embed, ($in_semihtml) || ($is_all_semihtml), WYSIWYG_COMCODE__STANDOUT_BLOCK, $html_errors));
         }
-        return do_template('WARNING_BOX', array(
+        return do_template('WARNING_BOX', [
             '_GUID' => 'faea04a9d6f1e409d99b8485d28b2225',
             'RESTRICT_VISIBILITY' => strval($source_member),
             'WARNING' => do_lang_tempcode('comcode:NO_ACCESS_FOR_TAG', escape_html($tag), escape_html($username)),
-        ));
+        ]);
     } // These are just for convenience.. we will remap to more formalised Comcode
     elseif ($tag == 'codebox') {
         $attributes['scroll'] = '1';
@@ -687,8 +687,8 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
         if (strpos($eval, '<') !== false) {
             $html_errors = false;
 
-            $xml_tag_stack = array();
-            $matches = array();
+            $xml_tag_stack = [];
+            $matches = [];
             $num_matches = preg_match_all('#<(/)?([^\s<>]*)(\s[^<>]*)?' . '>#', $eval, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $xml_tag = $matches[2][$i];
@@ -733,7 +733,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = new Tempcode();
                 foreach (explode(',', $_embed) as $css) {
                     if ($css != '') {
-                        $temp_tpl->attach(symbol_tempcode('REQUIRE_CSS', array($css)));
+                        $temp_tpl->attach(symbol_tempcode('REQUIRE_CSS', [$css]));
                     }
                 }
             }
@@ -744,7 +744,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = new Tempcode();
                 foreach (explode(',', $_embed) as $javascript) {
                     if ($javascript != '') {
-                        $temp_tpl->attach(symbol_tempcode('REQUIRE_JAVASCRIPT', array($javascript)));
+                        $temp_tpl->attach(symbol_tempcode('REQUIRE_JAVASCRIPT', [$javascript]));
                     }
                 }
             }
@@ -759,7 +759,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 require_code('currency');
                 $from_currency = $attributes['param'];
                 $to_currency = get_currency();
-                $temp_tpl = symbol_tempcode('CURRENCY', array($embed->evaluate(), $from_currency, $to_currency, strval($bracket ? CURRENCY_DISPLAY_TEMPLATED : CURRENCY_DISPLAY_WITH_CURRENCY_SIMPLIFIED)));
+                $temp_tpl = symbol_tempcode('CURRENCY', [$embed->evaluate(), $from_currency, $to_currency, strval($bracket ? CURRENCY_DISPLAY_TEMPLATED : CURRENCY_DISPLAY_WITH_CURRENCY_SIMPLIFIED)]);
             }
             break;
 
@@ -770,7 +770,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $height = strval(array_key_exists('height', $attributes) ? intval($attributes['height']) : 300);
             $timein = strval(array_key_exists('timein', $attributes) ? intval($attributes['timein']) : 0);
             $timeout = strval(array_key_exists('timeout', $attributes) ? intval($attributes['timeout']) : -1);
-            $temp_tpl = do_template('COMCODE_OVERLAY', array(
+            $temp_tpl = do_template('COMCODE_OVERLAY', [
                 '_GUID' => 'dfd0f7a72cc2bf6b613b28f8165a0034',
                 'EMBED' => $embed,
                 'ID' => ($attributes['param'] != '') ? $attributes['param'] : ('rand' . uniqid('', true)),
@@ -780,7 +780,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 'HEIGHT' => $height,
                 'TIMEIN' => $timein,
                 'TIMEOUT' => $timeout,
-            ));
+            ]);
             break;
 
         case 'code':
@@ -792,7 +792,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 } else {
                     $style = '';
                 }
-                $temp_tpl = do_template($tpl, array('_GUID' => 'c5d46d0927272fcacbbabcfab0ef6b0c', 'STYLE' => $style, 'TYPE' => $attributes['param'], 'CONTENT' => $_embed, 'TITLE' => $title));
+                $temp_tpl = do_template($tpl, ['_GUID' => 'c5d46d0927272fcacbbabcfab0ef6b0c', 'STYLE' => $style, 'TYPE' => $attributes['param'], 'CONTENT' => $_embed, 'TITLE' => $title]);
             } else {
                 $_embed = '';
             }
@@ -815,7 +815,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 } else {
                     $style = '';
                 }
-                $temp_tpl = do_template($tpl, array('CONTENT' => $_embed, 'TITLE' => $title, 'STYLE' => $style, 'TYPE' => $attributes['param']));
+                $temp_tpl = do_template($tpl, ['CONTENT' => $_embed, 'TITLE' => $title, 'STYLE' => $style, 'TYPE' => $attributes['param']]);
             }
             break;
 
@@ -830,7 +830,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             if (!empty($embed->preprocessable_bits)) {
                 if (!isset($temp_tpl->preprocessable_bits)) {
-                    $temp_tpl->preprocessable_bits = array();
+                    $temp_tpl->preprocessable_bits = [];
                 }
                 $temp_tpl->preprocessable_bits = array_merge($temp_tpl->preprocessable_bits, $embed->preprocessable_bits);
             }
@@ -846,13 +846,13 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     $type = 'lower-roman';
                 } elseif ($type == 'x') {
                     $type = 'none';
-                } elseif (!in_array($type, array('circle', 'disc', 'square', 'armenian', 'decimal', 'decimal-leading-zero', 'georgian', 'lower-alpha', 'lower-greek', 'lower-latin', 'lower-roman', 'upper-alpha', 'upper-latin', 'upper-roman'))) {
+                } elseif (!in_array($type, ['circle', 'disc', 'square', 'armenian', 'decimal', 'decimal-leading-zero', 'georgian', 'lower-alpha', 'lower-greek', 'lower-latin', 'lower-roman', 'upper-alpha', 'upper-latin', 'upper-roman'])) {
                     $type = 'disc';
                 }
-                $tag = in_array($type, array('circle', 'disc', 'square')) ? 'ul' : 'ol';
+                $tag = in_array($type, ['circle', 'disc', 'square']) ? 'ul' : 'ol';
                 $temp_tpl->attach('<' . $tag . ' style="list-style-type: ' . $type . '">');
                 foreach ($parts as $i => $part) {
-                    if (($i == 0) && (str_replace(array('&nbsp;', '<br />', ' '), array('', '', ''), trim($part)) == '')) {
+                    if (($i == 0) && (str_replace(['&nbsp;', '<br />', ' '], ['', '', ''], trim($part)) == '')) {
                         continue;
                     }
                     $temp_tpl->attach('<li>' . cms_preg_replace_safe('#<br />(\&nbsp;|\s)*$#D', '', cms_preg_replace_safe('#^<br />(\&nbsp;|\s)*#D', '', $part)) . '</li>');
@@ -861,7 +861,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 $temp_tpl->attach('<ul>');
                 foreach ($parts as $i => $part) {
-                    if (($i == 0) && (str_replace(array('&nbsp;', '<br />', ' '), array('', '', ''), trim($part)) == '')) {
+                    if (($i == 0) && (str_replace(['&nbsp;', '<br />', ' '], ['', '', ''], trim($part)) == '')) {
                         continue;
                     }
                     $temp_tpl->attach('<li>' . cms_preg_replace_safe('#<br />(\&nbsp;|\s)*$#D', '', preg_replace('#^<br />(\&nbsp;|\s)*#D', '', $part)) . '</li>');
@@ -877,15 +877,15 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $_date = null;
             if (get_forum_type() == 'cns') {
-                $_date = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_time', array('id' => $post_id));
+                $_date = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_time', ['id' => $post_id]);
             }
 
             $s_title = null;
             if ($attributes['param'] == '') {
                 if (get_forum_type() == 'cns') {
-                    $_s_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_title', array('id' => $post_id));
+                    $_s_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_title', ['id' => $post_id]);
                     if ($_s_title != '') {
-                        $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_cache_forum_id', array('id' => $post_id));
+                        $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_cache_forum_id', ['id' => $post_id]);
                         if (($forum_id !== null) && (has_category_access($source_member, 'forums', strval($forum_id)))) {
                             $s_title = make_string_tempcode($_s_title);
                         }
@@ -901,14 +901,14 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $forum = array_key_exists('forum', $attributes) ? $attributes['forum'] : '';
 
-            $temp_tpl = do_template('COMCODE_SNAPBACK', array(
+            $temp_tpl = do_template('COMCODE_SNAPBACK', [
                 '_GUID' => 'af7b6920e58027256d536a8cdb8a164a',
                 'URL' => $GLOBALS['FORUM_DRIVER']->post_url($post_id, $forum, true),
                 'TITLE' => $s_title,
                 'DATE' => ($_date === null) ? null : get_timezoned_date($_date, false),
                 '_DATE' => ($_date === null) ? null : strval($_date),
                 'POST_ID' => strval($post_id),
-            ));
+            ]);
             break;
 
         case 'post':
@@ -934,18 +934,18 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
         case 'section':
             $name = (array_key_exists('param', $attributes)) ? $attributes['param'] : ('section' . strval(mt_rand(0, mt_getrandmax())));
             $default = (array_key_exists('default', $attributes)) ? $attributes['default'] : '0';
-            $temp_tpl = do_template('COMCODE_SECTION', array('_GUID' => 'a902962ccdc80046c999d6fed907d105', 'PASS_ID' => 'x' . $pass_id, 'DEFAULT' => $default == '1', 'NAME' => $name, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_SECTION', ['_GUID' => 'a902962ccdc80046c999d6fed907d105', 'PASS_ID' => 'x' . $pass_id, 'DEFAULT' => $default == '1', 'NAME' => $name, 'CONTENT' => $embed]);
             break;
 
         case 'section_controller':
             $sections = explode(',', $embed->evaluate());
-            $temp_tpl = do_template('COMCODE_SECTION_CONTROLLER', array('_GUID' => '133bf24892e9e3ec2a01146d6ec418fe', 'SECTIONS' => $sections, 'PASS_ID' => 'x' . $pass_id));
+            $temp_tpl = do_template('COMCODE_SECTION_CONTROLLER', ['_GUID' => '133bf24892e9e3ec2a01146d6ec418fe', 'SECTIONS' => $sections, 'PASS_ID' => 'x' . $pass_id]);
             break;
 
         case 'big_tab':
             $name = (array_key_exists('param', $attributes)) ? $attributes['param'] : ('big_tab' . strval(mt_rand(0, mt_getrandmax())));
             $default = (array_key_exists('default', $attributes)) ? $attributes['default'] : '0';
-            $temp_tpl = do_template('COMCODE_BIG_TABS_TAB', array('_GUID' => 'f6219b1acd6999acae770da20b95fb99', 'PASS_ID' => 'x' . $pass_id, 'DEFAULT' => $default == '1', 'NAME' => $name, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_BIG_TABS_TAB', ['_GUID' => 'f6219b1acd6999acae770da20b95fb99', 'PASS_ID' => 'x' . $pass_id, 'DEFAULT' => $default == '1', 'NAME' => $name, 'CONTENT' => $embed]);
             break;
 
         case 'big_tab_controller':
@@ -953,41 +953,41 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             if (!array_key_exists('switch_time', $attributes)) {
                 $attributes['switch_time'] = '6000';
             }
-            $temp_tpl = do_template('COMCODE_BIG_TABS_CONTROLLER', array(
+            $temp_tpl = do_template('COMCODE_BIG_TABS_CONTROLLER', [
                 '_GUID' => 'b6cc1835b688f086e34837e3c345ba0a',
                 'SWITCH_TIME' => ($attributes['switch_time'] == '' || intval($attributes['switch_time']) <= 0) ? null : strval(intval($attributes['switch_time'])),
                 'TABS' => $tabs,
                 'PASS_ID' => 'x' . $pass_id,
-            ));
+            ]);
             break;
 
         case 'tab':
             $default = (array_key_exists('default', $attributes)) ? $attributes['default'] : '0';
             $is_page_link = preg_match('#^\s*[' . URL_CONTENT_REGEXP . ']*(:[^\s\n]+)+\s*$#', $embed->evaluate()) != 0;
-            $temp_tpl = do_template('COMCODE_TAB_BODY', array(
+            $temp_tpl = do_template('COMCODE_TAB_BODY', [
                 '_GUID' => '2d63ed21f8d8b939b8db21b20c147b41',
                 'DEFAULT' => $default == '1',
                 'TITLE' => trim($attributes['param']),
                 'CONTENT' => $is_page_link ? null : $embed,
                 'PAGE_LINK' => $is_page_link ? $embed : null,
-            ));
+            ]);
             break;
 
         case 'tabs':
             $heads = new Tempcode();
             $tabs = explode(',', $attributes['param']);
             foreach ($tabs as $i => $tab) {
-                $heads->attach(do_template('COMCODE_TAB_HEAD', array('_GUID' => '735f70b1c8dcc78a0876136cfb4822a0', 'TITLE' => trim($tab), 'FIRST' => $i == 0, 'LAST' => !array_key_exists($i + 1, $tabs))));
+                $heads->attach(do_template('COMCODE_TAB_HEAD', ['_GUID' => '735f70b1c8dcc78a0876136cfb4822a0', 'TITLE' => trim($tab), 'FIRST' => $i == 0, 'LAST' => !array_key_exists($i + 1, $tabs)]));
             }
 
-            $temp_tpl = do_template('COMCODE_TAB_CONTROLLER', array('_GUID' => '0e56cf180973c57f3633aae54dd9cddc', 'HEADS' => $heads, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_TAB_CONTROLLER', ['_GUID' => '0e56cf180973c57f3633aae54dd9cddc', 'HEADS' => $heads, 'CONTENT' => $embed]);
             break;
 
         case 'carousel':
             if ($attributes['param'] == '') {
                 $attributes['param'] = '40';
             }
-            $temp_tpl = do_template('COMCODE_CAROUSEL', array('_GUID' => '2d0a327a6cb60e3168a5022eb0cfba9a', 'CONTENT' => $embed, 'SCROLL_AMOUNT' => $attributes['param']));
+            $temp_tpl = do_template('COMCODE_CAROUSEL', ['_GUID' => '2d0a327a6cb60e3168a5022eb0cfba9a', 'CONTENT' => $embed, 'SCROLL_AMOUNT' => $attributes['param']]);
             break;
 
         case 'menu':
@@ -1028,25 +1028,25 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     $groups .= strval($find);
                 }
             }
-            $temp_tpl = do_template('COMCODE_IF_IN_GROUP', array(
+            $temp_tpl = do_template('COMCODE_IF_IN_GROUP', [
                 '_GUID' => '761a7cc07f7b4b68508d68ce19b87d2c',
                 'TYPE' => array_key_exists('type', $attributes) ? $attributes['type'] : '',
                 'CONTENT' => $embed,
                 'GROUPS' => $groups,
-            ));
+            ]);
             break;
 
         case 'acronym':
         case 'abbr':
-            $temp_tpl = do_template('COMCODE_ABBR', array('_GUID' => 'acbc4f991dsf03f81b61919b74ac24c9', 'CONTENT' => $embed, 'TITLE' => $attributes['param']));
+            $temp_tpl = do_template('COMCODE_ABBR', ['_GUID' => 'acbc4f991dsf03f81b61919b74ac24c9', 'CONTENT' => $embed, 'TITLE' => $attributes['param']]);
             break;
 
         case 'address':
-            $temp_tpl = do_template('COMCODE_ADDRESS', array('_GUID' => 'acbcsdf9910703f81b61919b74ac24c9', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_ADDRESS', ['_GUID' => 'acbcsdf9910703f81b61919b74ac24c9', 'CONTENT' => $embed]);
             break;
 
         case 'dfn':
-            $temp_tpl = do_template('COMCODE_DFN', array('_GUID' => 'acbc4f9910703f81b61sf19b74ac24c9', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_DFN', ['_GUID' => 'acbc4f9910703f81b61sf19b74ac24c9', 'CONTENT' => $embed]);
             break;
 
         case 'pulse':
@@ -1060,7 +1060,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             }
             $speed = ($attributes['param'] == '') ? 100 : intval($attributes['param']);
 
-            $temp_tpl = do_template('COMCODE_PULSE', array('_GUID' => 'adsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'MIN_COLOR' => $min_color, 'MAX_COLOR' => $max_color, 'SPEED' => strval($speed)));
+            $temp_tpl = do_template('COMCODE_PULSE', ['_GUID' => 'adsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'MIN_COLOR' => $min_color, 'MAX_COLOR' => $max_color, 'SPEED' => strval($speed)]);
             break;
 
         case 'del':
@@ -1069,7 +1069,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = test_url($cite, 'del', $cite, $source_member);
             }
             $datetime = array_key_exists('datetime', $attributes) ? $attributes['datetime'] : null;
-            $temp_tpl->attach(do_template('COMCODE_DEL', array('_GUID' => 'acsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'CITE' => $cite, 'DATETIME' => $datetime)));
+            $temp_tpl->attach(do_template('COMCODE_DEL', ['_GUID' => 'acsd4f9910sfd03f81b61919b74ac24c', 'CONTENT' => $embed, 'CITE' => $cite, 'DATETIME' => $datetime]));
             break;
 
         case 'ins':
@@ -1081,11 +1081,11 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
             }
             $datetime = array_key_exists('datetime', $attributes) ? $attributes['datetime'] : null;
-            $temp_tpl->attach(do_template('COMCODE_INS', array('_GUID' => 'asss4f9910703f81b61919bsfc24c91', 'CONTENT' => $embed, 'CITE' => $cite, 'DATETIME' => $datetime)));
+            $temp_tpl->attach(do_template('COMCODE_INS', ['_GUID' => 'asss4f9910703f81b61919bsfc24c91', 'CONTENT' => $embed, 'CITE' => $cite, 'DATETIME' => $datetime]));
             break;
 
         case 'cite':
-            $temp_tpl = do_template('COMCODE_CITE', array('_GUID' => 'acbcsf910703f81b61919b74ac24c91', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_CITE', ['_GUID' => 'acbcsf910703f81b61919b74ac24c91', 'CONTENT' => $embed]);
             break;
 
         case 'b':
@@ -1093,12 +1093,12 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = make_string_tempcode('<b>' . $embed->evaluate() . '</b>');
                 break;
             }
-            $temp_tpl = do_template('COMCODE_BOLD', array('_GUID' => 'acbc4fds910703f81b619sf74ac24c91', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_BOLD', ['_GUID' => 'acbc4fds910703f81b619sf74ac24c91', 'CONTENT' => $embed]);
             break;
 
         case 'align':
             $align = array_key_exists('param', $attributes) ? $attributes['param'] : 'left';
-            $temp_tpl = do_template('COMCODE_ALIGN', array('_GUID' => '950b4d9db12cac6bf536860bedd96a36', 'ALIGN' => $align, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_ALIGN', ['_GUID' => '950b4d9db12cac6bf536860bedd96a36', 'ALIGN' => $align, 'CONTENT' => $embed]);
             break;
 
         case 'indent':
@@ -1106,7 +1106,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             if (!is_numeric($indent)) {
                 $indent = '10';
             }
-            $temp_tpl = do_template('COMCODE_INDENT', array('_GUID' => 'd8e69fa17eebd5312e3ad5788e3a1343', 'INDENT' => $indent, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_INDENT', ['_GUID' => 'd8e69fa17eebd5312e3ad5788e3a1343', 'INDENT' => $indent, 'CONTENT' => $embed]);
             break;
 
         case 'surround':
@@ -1120,7 +1120,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             if (!$comcode_dangerous) {
                 $style = null;
             }
-            $temp_tpl = do_template('COMCODE_SURROUND', array('_GUID' => 'e8e69fa17eebd5312e3ad5788e3a1343', 'STYLE' => $style, 'CLASS' => $class, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_SURROUND', ['_GUID' => 'e8e69fa17eebd5312e3ad5788e3a1343', 'STYLE' => $style, 'CLASS' => $class, 'CONTENT' => $embed]);
             break;
 
         case 'i':
@@ -1128,7 +1128,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = make_string_tempcode('<i>' . $embed->evaluate() . '</i>');
                 break;
             }
-            $temp_tpl = do_template('COMCODE_ITALICS', array('_GUID' => '4321a1fe3825418e57a29410183c0c60', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_ITALICS', ['_GUID' => '4321a1fe3825418e57a29410183c0c60', 'CONTENT' => $embed]);
             break;
 
         case 'u':
@@ -1136,7 +1136,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = make_string_tempcode('<u>' . $embed->evaluate() . '</u>');
                 break;
             }
-            $temp_tpl = do_template('COMCODE_UNDERLINE', array('_GUID' => '69cc8e73b17f9e6a35eb1af2bd1dc6ab', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_UNDERLINE', ['_GUID' => '69cc8e73b17f9e6a35eb1af2bd1dc6ab', 'CONTENT' => $embed]);
             break;
 
         case 's':
@@ -1145,26 +1145,26 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 break;
             }
 
-            $temp_tpl = do_template('COMCODE_STRIKE', array('_GUID' => 'ed242591cefd365497cc0c63abbb11a9', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_STRIKE', ['_GUID' => 'ed242591cefd365497cc0c63abbb11a9', 'CONTENT' => $embed]);
             break;
 
         case 'tooltip':
             $param = comcode_to_tempcode($attributes['param'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
 
-            $temp_tpl = do_template('COMCODE_TOOLTIP', array(
+            $temp_tpl = do_template('COMCODE_TOOLTIP', [
                 '_GUID' => 'c9f4793dc0c1a92cd7d08ae1b87c2308',
                 'URL' => array_key_exists('url', $attributes) ? $attributes['url'] : '',
                 'TOOLTIP' => $param,
                 'CONTENT' => $embed,
-            ));
+            ]);
             break;
 
         case 'sup':
-            $temp_tpl = do_template('COMCODE_SUP', array('_GUID' => '74d2ecfe193dacb6d922bc288828196a', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_SUP', ['_GUID' => '74d2ecfe193dacb6d922bc288828196a', 'CONTENT' => $embed]);
             break;
 
         case 'sub':
-            $temp_tpl = do_template('COMCODE_SUB', array('_GUID' => '515e310e00a6d7c30f7dca0a5956ebcf', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_SUB', ['_GUID' => '515e310e00a6d7c30f7dca0a5956ebcf', 'CONTENT' => $embed]);
             break;
 
         case 'include':
@@ -1186,16 +1186,16 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $temp = request_page($codename, false, $zone, null, true);
             restore_output_state();
             if ($temp->is_empty()) {
-                $temp_tpl = do_template('WARNING_BOX', array(
+                $temp_tpl = do_template('WARNING_BOX', [
                     '_GUID' => '1d617fd24b632640dddeeadd8432d7a9',
-                    'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'include', hyperlink(build_url(array('page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $codename), get_module_zone('cms_comcode_pages')), $zone . ':' . $codename, false, true)),
-                ));
+                    'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'include', hyperlink(build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')), $zone . ':' . $codename, false, true)),
+                ]);
                 if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
                     require_code('failure');
                     relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'include', $zone . ':' . $codename), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
                 }
             } else {
-                $temp_tpl = symbol_tempcode('LOAD_PAGE', array($codename, $zone));
+                $temp_tpl = symbol_tempcode('LOAD_PAGE', [$codename, $zone]);
             }
             break;
 
@@ -1211,22 +1211,22 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
             }
 
-            $_parts = array();
+            $_parts = [];
             krsort($attributes);
             foreach ($attributes as $num => $val) {
-                $_parts[] = array('NUM' => strval($num), 'VAL' => $val);
+                $_parts[] = ['NUM' => strval($num), 'VAL' => $val];
             }
 
-            $temp_tpl = do_template('COMCODE_RANDOM', array('_GUID' => '9b77aaf593b12c763fb0c367fab415b6', 'FULL' => $embed, 'MAX' => strval($max), 'PARTS' => $_parts));
+            $temp_tpl = do_template('COMCODE_RANDOM', ['_GUID' => '9b77aaf593b12c763fb0c367fab415b6', 'FULL' => $embed, 'MAX' => strval($max), 'PARTS' => $_parts]);
             break;
 
         case 'jumping':
             unset($attributes['param']);
 
-            $_parts = array();
+            $_parts = [];
             foreach ($attributes as $val) {
                 $_temp = comcode_to_tempcode($val, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
-                $_parts[] = array('PART' => $_temp->evaluate());
+                $_parts[] = ['PART' => $_temp->evaluate()];
             }
 
             $time = intval($embed->evaluate());
@@ -1234,11 +1234,11 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $time = 4000;
             }
 
-            $temp_tpl = do_template('COMCODE_JUMPING', array('_GUID' => '85e9f83ed134868436a7db7692f56047', 'FULL' => implode(', ', $attributes), 'TIME' => strval($time), 'PARTS' => $_parts));
+            $temp_tpl = do_template('COMCODE_JUMPING', ['_GUID' => '85e9f83ed134868436a7db7692f56047', 'FULL' => implode(', ', $attributes), 'TIME' => strval($time), 'PARTS' => $_parts]);
             break;
 
         case 'shocker':
-            $_parts = array();
+            $_parts = [];
             foreach ($attributes as $key => $val) {
                 if (substr($key, 0, 5) == 'left_') {
                     $left = $val;
@@ -1247,7 +1247,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     $left = comcode_to_tempcode($left, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
                     $right = comcode_to_tempcode($right, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
 
-                    $_parts[] = array('LEFT' => $left, 'RIGHT' => $right);
+                    $_parts[] = ['LEFT' => $left, 'RIGHT' => $right];
                 }
             }
 
@@ -1265,14 +1265,14 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $time = 4000;
             }
 
-            $temp_tpl = do_template('COMCODE_SHOCKER', array(
+            $temp_tpl = do_template('COMCODE_SHOCKER', [
                 '_GUID' => 'd648de0a5e3b5f84d82d781f4964e04a',
                 'MIN_COLOR' => $min_color,
                 'MAX_COLOR' => $max_color,
                 'FULL' => implode(', ', $attributes),
                 'TIME' => strval($time),
                 'PARTS' => $_parts,
-            ));
+            ]);
             break;
 
         case 'ticker':
@@ -1281,12 +1281,12 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $width = '300';
             }
             $fspeed = array_key_exists('speed', $attributes) ? float_to_raw_string(floatval($attributes['speed'])) : '1';
-            $temp_tpl = do_template('COMCODE_TICKER', array('_GUID' => 'e48893cda61995261577f0556443c537', 'SPEED' => $fspeed, 'WIDTH' => $width, 'TEXT' => $embed));
+            $temp_tpl = do_template('COMCODE_TICKER', ['_GUID' => 'e48893cda61995261577f0556443c537', 'SPEED' => $fspeed, 'WIDTH' => $width, 'TEXT' => $embed]);
 
             break;
 
         case 'highlight':
-            $temp_tpl = do_template('COMCODE_HIGHLIGHT', array('_GUID' => '695d041b6605f06ec2aeee1e82f87185', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_HIGHLIGHT', ['_GUID' => '695d041b6605f06ec2aeee1e82f87185', 'CONTENT' => $embed]);
             break;
 
         case 'size':
@@ -1330,30 +1330,30 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $size_len = strlen($size);
             filter_html($as_admin, $source_member, 0, $size_len, $size, false, false);
-            $temp_tpl = do_template('COMCODE_FONT', array('_GUID' => 'fb23fdcb45aabdfeca9f37ed8098948e', 'CONTENT' => $embed, 'SIZE' => $size, 'COLOR' => '', 'FACE' => ''));
+            $temp_tpl = do_template('COMCODE_FONT', ['_GUID' => 'fb23fdcb45aabdfeca9f37ed8098948e', 'CONTENT' => $embed, 'SIZE' => $size, 'COLOR' => '', 'FACE' => '']);
             break;
 
         case 'color':
             $color = array_key_exists('param', $attributes) ? ('color: ' . $attributes['param'] . ';') : '';
-            $temp_tpl = do_template('COMCODE_FONT', array('_GUID' => 'bd146414c9239ba2076f4b683df437d7', 'CONTENT' => $embed, 'SIZE' => '', 'COLOR' => $color, 'FACE' => ''));
+            $temp_tpl = do_template('COMCODE_FONT', ['_GUID' => 'bd146414c9239ba2076f4b683df437d7', 'CONTENT' => $embed, 'SIZE' => '', 'COLOR' => $color, 'FACE' => '']);
             $color_len = strlen($color);
             filter_html($as_admin, $source_member, 0, $color_len, $color, false, false);
             break;
 
         case 'tt':
-            $temp_tpl = do_template('COMCODE_TELETYPE', array('_GUID' => '422a4785fc9bb0d1a26a09a59184f107', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_TELETYPE', ['_GUID' => '422a4785fc9bb0d1a26a09a59184f107', 'CONTENT' => $embed]);
             break;
 
         case 'samp':
-            $temp_tpl = do_template('COMCODE_SAMP', array('_GUID' => '386eddbd74f45a8596f2f21680df99f8', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_SAMP', ['_GUID' => '386eddbd74f45a8596f2f21680df99f8', 'CONTENT' => $embed]);
             break;
 
         case 'q':
-            $temp_tpl = do_template('COMCODE_Q', array('_GUID' => 'ab5dc7cddf0ec01be969605cde87356c', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_Q', ['_GUID' => 'ab5dc7cddf0ec01be969605cde87356c', 'CONTENT' => $embed]);
             break;
 
         case 'var':
-            $temp_tpl = do_template('COMCODE_VAR', array('_GUID' => '75097f9f0de04bfd92507fdc07547237', 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_VAR', ['_GUID' => '75097f9f0de04bfd92507fdc07547237', 'CONTENT' => $embed]);
             break;
 
         case 'font':
@@ -1422,7 +1422,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             filter_html($as_admin, $source_member, 0, $color_len, $color, false, false);
             $face_len = strlen($face);
             filter_html($as_admin, $source_member, 0, $face_len, $face, false, false);
-            $temp_tpl = do_template('COMCODE_FONT', array('_GUID' => 'f5fcafe737b8fdf466a6a51773e09c9b', 'CONTENT' => $embed, 'SIZE' => $size, 'COLOR' => $color, 'FACE' => $face));
+            $temp_tpl = do_template('COMCODE_FONT', ['_GUID' => 'f5fcafe737b8fdf466a6a51773e09c9b', 'CONTENT' => $embed, 'SIZE' => $size, 'COLOR' => $color, 'FACE' => $face]);
             break;
 
         case 'box':
@@ -1434,36 +1434,36 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $links = ($comcode_dangerous && isset($attributes['links'])) ? $attributes['links'] : ''; // Insecure, unneeded here
             $converted_title = comcode_to_tempcode($attributes['param'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
 
-            $temp_tpl = directive_tempcode('BOX', $embed, array($converted_title, make_string_tempcode($type), $width, make_string_tempcode($options), make_string_tempcode($meta), make_string_tempcode($links), new Tempcode(), make_string_tempcode($class)));
+            $temp_tpl = directive_tempcode('BOX', $embed, [$converted_title, make_string_tempcode($type), $width, make_string_tempcode($options), make_string_tempcode($meta), make_string_tempcode($links), new Tempcode(), make_string_tempcode($class)]);
             if (isset($attributes['float'])) {
-                $temp_tpl = do_template('FLOATER', array('_GUID' => '54e8fc9ec1e16cfc5c8824e22f1e8745', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl));
+                $temp_tpl = do_template('FLOATER', ['_GUID' => '54e8fc9ec1e16cfc5c8824e22f1e8745', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl]);
             }
             break;
 
         case 'concept':
             if ((!array_key_exists('param', $attributes)) || ($attributes['param'] == '')) {
                 $key = $embed->evaluate();
-                $temp_tpl = symbol_tempcode('DISPLAY_CONCEPT', array($key));
+                $temp_tpl = symbol_tempcode('DISPLAY_CONCEPT', [$key]);
             } else {
-                $temp_tpl = do_template('COMCODE_CONCEPT_INLINE', array('_GUID' => '381a59de4d6f8967446c12bf4641a9ce', 'TEXT' => $embed, 'FULL' => $attributes['param']));
+                $temp_tpl = do_template('COMCODE_CONCEPT_INLINE', ['_GUID' => '381a59de4d6f8967446c12bf4641a9ce', 'TEXT' => $embed, 'FULL' => $attributes['param']]);
             }
             break;
 
         case 'concepts':
             $title = $embed->evaluate();
 
-            $concepts = array();
+            $concepts = [];
             foreach ($attributes as $_key => $_value) {
                 if (substr($_key, -4) == '_key') {
                     $key = $_value;
                     $cid = substr($_key, 0, strlen($_key) - 4);
                     $to_parse = array_key_exists($cid . '_value', $attributes) ? $attributes[$cid . '_value'] : '';
                     $value = comcode_to_tempcode($to_parse, $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
-                    $concepts[] = array('A' => 'concept__' . preg_replace('#[^\w]#', '_', $key), 'KEY' => $key, 'VALUE' => $value);
+                    $concepts[] = ['A' => 'concept__' . preg_replace('#[^\w]#', '_', $key), 'KEY' => $key, 'VALUE' => $value];
                 }
             }
 
-            $temp_tpl = do_template('COMCODE_CONCEPTS', array('_GUID' => '4c7a1d70753dc1d209b9951aa10f361a', 'TITLE' => $title, 'CONCEPTS' => $concepts));
+            $temp_tpl = do_template('COMCODE_CONCEPTS', ['_GUID' => '4c7a1d70753dc1d209b9951aa10f361a', 'TITLE' => $title, 'CONCEPTS' => $concepts]);
             break;
 
         case 'hide':
@@ -1472,7 +1472,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 $text = do_lang_tempcode('EXPAND');
             }
-            $temp_tpl = do_template('COMCODE_HIDE', array('_GUID' => 'a591a0d1e6bb3dde0f22cebb9c7ab93e', 'TEXT' => $text, 'CONTENT' => $embed));
+            $temp_tpl = do_template('COMCODE_HIDE', ['_GUID' => 'a591a0d1e6bb3dde0f22cebb9c7ab93e', 'TEXT' => $text, 'CONTENT' => $embed]);
             break;
 
         case 'quote':
@@ -1491,9 +1491,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             if ($attributes['param'] != '') {
                 $attributes['param'] = protect_from_escaping(comcode_to_tempcode($attributes['param'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member));
-                $temp_tpl->attach(do_template('COMCODE_QUOTE_BY', array('_GUID' => '18f55a548892ad08b0b50b3b586b5b95', 'CITE' => $cite, 'CONTENT' => $embed, 'BY' => $attributes['param'], 'SAIDLESS' => array_key_exists('saidless', $attributes) ? $attributes['saidless'] : '0')));
+                $temp_tpl->attach(do_template('COMCODE_QUOTE_BY', ['_GUID' => '18f55a548892ad08b0b50b3b586b5b95', 'CITE' => $cite, 'CONTENT' => $embed, 'BY' => $attributes['param'], 'SAIDLESS' => array_key_exists('saidless', $attributes) ? $attributes['saidless'] : '0']));
             } else {
-                $temp_tpl->attach(do_template('COMCODE_QUOTE', array('_GUID' => 'fa275de59433c17da19b22814c17fdc5', 'CITE' => $cite, 'CONTENT' => $embed)));
+                $temp_tpl->attach(do_template('COMCODE_QUOTE', ['_GUID' => 'fa275de59433c17da19b22814c17fdc5', 'CITE' => $cite, 'CONTENT' => $embed]));
             }
             break;
 
@@ -1508,10 +1508,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
         case 'block':
             $attributes['block'] = trim($embed->evaluate());
             if (preg_match('#^[\w\-]*$#', $attributes['block']) == 0) {
-                $temp_tpl = do_template('WARNING_BOX', array('_GUID' => 'b5638d953c400b7f194b62bc34f89181', 'WARNING' => do_lang_tempcode('MISSING_BLOCK_FILE', escape_html($attributes['block']))));
+                $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'b5638d953c400b7f194b62bc34f89181', 'WARNING' => do_lang_tempcode('MISSING_BLOCK_FILE', escape_html($attributes['block']))]);
                 break; // Avoids a suspected hack attempt by just filtering early
             }
-            $_attributes = array();
+            $_attributes = [];
             foreach ($attributes as $key => $val) {
                 if (is_integer($key)) {
                     $key = strval($key);
@@ -1529,7 +1529,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             }
 
             $uniq_id = strval(count($STRUCTURE_LIST));
-            $STRUCTURE_LIST[] = array($level, $embed, $uniq_id);
+            $STRUCTURE_LIST[] = [$level, $embed, $uniq_id];
             if ($level == 1) {
                 $template = 'SCREEN_TITLE';
             } else {
@@ -1546,10 +1546,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $base = array_key_exists('base', $attributes) ? intval($attributes['base']) : 1;
             if ((array_key_exists('number', $attributes)) && ($level >= $base)) {
-                $list_types = ($attributes['number'] == '') ? array() : explode(',', $attributes['number']);
-                $list_types += array('decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc');
-                $numerals = array('i', 'ii', 'iii', 'iv', 'v', 'vi', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx');
-                $symbol_lookup = array('decimal' => range(1, 100), 'lower-alpha' => range('a', 'z'), 'lower-roman' => $numerals, 'upper-alpha' => range('A', 'Z'), 'upper-roman' => str_replace('i', 'I', str_replace('v', 'V', str_replace('x', 'X', $numerals))));
+                $list_types = ($attributes['number'] == '') ? [] : explode(',', $attributes['number']);
+                $list_types += ['decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc'];
+                $numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx'];
+                $symbol_lookup = ['decimal' => range(1, 100), 'lower-alpha' => range('a', 'z'), 'lower-roman' => $numerals, 'upper-alpha' => range('A', 'Z'), 'upper-roman' => str_replace('i', 'I', str_replace('v', 'V', str_replace('x', 'X', $numerals)))];
 
                 $level_text = '';
                 $list_pos = count($STRUCTURE_LIST) - 2;
@@ -1580,13 +1580,13 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $temp_tpl = make_string_tempcode('<h' . strval($level) . (($level == 1) ? ' class="screen-title"' : '') . '>' . $embed->evaluate() . '</h' . strval($level) . '>');
                 break;
             }
-            $tpl_map = array(
+            $tpl_map = [
                 'ID' => (substr($pass_id, 0, 5) == 'panel') ? null : $uniq_id,
                 'TITLE' => $embed,
                 'HELP_URL' => '',
                 'HELP_TERM' => '',
                 'LEVEL' => strval($level),
-            );
+            ];
             if (array_key_exists('sub', $attributes)) {
                 $tpl_map['SUB'] = protect_from_escaping(comcode_to_tempcode($attributes['sub'], $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member));
             }
@@ -1595,29 +1595,29 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
         case 'contents':
             // Do structure sweep
-            $urls_for = array();
+            $urls_for = [];
 
             // Backup then reset so we can track new titles
             $old_structure_list = $STRUCTURE_LIST;
-            $STRUCTURE_LIST = array();
+            $STRUCTURE_LIST = [];
 
             if ((array_key_exists('files', $attributes)) && ($comcode_dangerous)) {
                 $s_zone = array_key_exists('zone', $attributes) ? $attributes['zone'] : get_zone_name();
 
                 $pages = find_all_pages($s_zone, 'comcode_custom/' . get_site_default_lang(), 'txt') + find_all_pages($s_zone, 'comcode/' . get_site_default_lang(), 'txt');
                 $prefix = $attributes['files'];
-                $_structure_list = array();
+                $_structure_list = [];
                 foreach ($pages as $pg_name => $pg_type) {
                     if (substr($pg_name, 0, strlen($prefix)) == $prefix) {
                         $i = count($STRUCTURE_LIST);
                         $c = cms_file_get_contents_safe(zone_black_magic_filterer(get_file_base() . '/' . $s_zone . '/pages/' . $pg_type . '/' . $pg_name . '.txt'), FILE_READ_LOCK | FILE_READ_BOM);
-                        __comcode_to_tempcode($c, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, array(), $on_behalf_of_member);
-                        $page_url = build_url(array('page' => $pg_name), $s_zone);
+                        __comcode_to_tempcode($c, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, [], $on_behalf_of_member);
+                        $page_url = build_url(['page' => $pg_name], $s_zone);
                         foreach ($STRUCTURE_LIST as $struct) {
                             $urls_for[] = $page_url;
                             $_structure_list[] = $struct;
                         }
-                        $STRUCTURE_LIST = array(); // Reset again, so the title increments for individual pages start from 0 again
+                        $STRUCTURE_LIST = []; // Reset again, so the title increments for individual pages start from 0 again
                     }
                 }
                 $STRUCTURE_LIST = $_structure_list;
@@ -1626,7 +1626,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 require_code('comcode_compiler');
 
-                __comcode_to_tempcode($comcode, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, array(), $on_behalf_of_member);
+                __comcode_to_tempcode($comcode, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, [], $on_behalf_of_member);
 
                 $base = array_key_exists('base', $attributes) ? intval($attributes['base']) : 1;
             }
@@ -1634,7 +1634,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $_embed = $embed->evaluate();
             if (preg_match('#^test\d+$#', $_embed) != 0) { // Little bit of inbuilt test code, for a particularly dangerously wrong tree
                 if ($_embed == 'test1') {
-                    $test_data = array(
+                    $test_data = [
                         2,
                         3,
                         2,
@@ -1647,50 +1647,50 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         2,
                         1,
                         1,
-                    );
+                    ];
                 } elseif ($_embed == 'test2') {
-                    $test_data = array(
+                    $test_data = [
                         1,
                         2,
                         3,
                         1,
                         2,
                         3,
-                    );
+                    ];
                 } elseif ($_embed == 'test3') {
-                    $test_data = array(
+                    $test_data = [
                         1,
                         4,
                         6,
                         1,
                         4,
                         6,
-                    );
+                    ];
                 } else {
-                    $test_data = array(
+                    $test_data = [
                         6,
                         4,
                         1,
                         6,
                         4,
                         1,
-                    );
+                    ];
                 }
-                $STRUCTURE_LIST = array();
+                $STRUCTURE_LIST = [];
                 foreach ($test_data as $t) {
-                    $STRUCTURE_LIST[] = array($t, make_string_tempcode(strval($t)), uniqid('', true));
+                    $STRUCTURE_LIST[] = [$t, make_string_tempcode(strval($t)), uniqid('', true)];
                 }
-                $list_types = array();
+                $list_types = [];
             } else {
-                $list_types = ($embed->evaluate() == '') ? array() : explode(',', $_embed);
+                $list_types = ($embed->evaluate() == '') ? [] : explode(',', $_embed);
             }
-            $list_types = array_merge($list_types, array('decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc'));
+            $list_types = array_merge($list_types, ['decimal', 'lower-alpha', 'lower-roman', 'upper-alpha', 'upper-roman', 'disc']);
 
             $levels_allowed = array_key_exists('levels', $attributes) ? intval($attributes['levels']) : null;
 
             // Convert the list structure into a tree structure
-            $past_level_stack = array();
-            $subtree_stack = array(array('', '', '', array())); // Children will be gathered into a 4th entry in the tuple by the end of the stack unravelling process -- our result
+            $past_level_stack = [];
+            $subtree_stack = [['', '', '', []]]; // Children will be gathered into a 4th entry in the tuple by the end of the stack unravelling process -- our result
             $actual_past_stack_levels = 0;
             foreach ($STRUCTURE_LIST as $i => $struct) { // Really complex stack of trees algorithm
                 $level = $struct[0];
@@ -1716,7 +1716,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
                 // Going down the tree
                 array_push($past_level_stack, $level);
-                array_push($subtree_stack, array($uniq_id, $_title, $url, array()));
+                array_push($subtree_stack, [$uniq_id, $_title, $url, []]);
                 $actual_past_stack_levels++;
             }
 
@@ -1733,7 +1733,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             // Now we have the structure to display
             $levels_t = _do_contents_level($subtree_stack[0][3], $list_types, $base);
 
-            $temp_tpl = do_template('COMCODE_CONTENTS', array('_GUID' => 'ca2f5320fa930e2257a2e74e4f98e5a0', 'LEVELS' => $levels_t));
+            $temp_tpl = do_template('COMCODE_CONTENTS', ['_GUID' => 'ca2f5320fa930e2257a2e74e4f98e5a0', 'LEVELS' => $levels_t]);
 
             $STRUCTURE_LIST = $old_structure_list; // Restore, so subsequent 'title' tags have correct numbering
 
@@ -1747,7 +1747,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $param_temp = comcode_to_tempcode(escape_html($attributes['param']), $source_member, $as_admin, null, $db, COMCODE_NORMAL, $highlight_bits, $on_behalf_of_member);
                 global $ADVERTISING_BANNERS_CACHE;
                 $temp_ab = $ADVERTISING_BANNERS_CACHE;
-                $ADVERTISING_BANNERS_CACHE = array();
+                $ADVERTISING_BANNERS_CACHE = [];
                 $caption = $param_temp;
                 $ADVERTISING_BANNERS_CACHE = $temp_ab;
             } else {
@@ -1831,7 +1831,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             } else {
                 $title = '';
             }
-            $temp_tpl->attach(do_template('COMCODE_URL', array('_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => $rel, 'TARGET' => $attributes['target'], 'URL' => $url_full, 'CAPTION' => $caption)));
+            $temp_tpl->attach(do_template('COMCODE_URL', ['_GUID' => 'd1657530e6d3d57e6a4791fb3bfa0dd7', 'TITLE' => $title, 'REL' => $rel, 'TARGET' => $attributes['target'], 'URL' => $url_full, 'CAPTION' => $caption]));
             break;
 
         case 'email':
@@ -1856,14 +1856,14 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             if (array_key_exists('title', $attributes)) {
                 $title = $attributes['title'];
             }
-            $temp_tpl = do_template('COMCODE_EMAIL', array(
+            $temp_tpl = do_template('COMCODE_EMAIL', [
                 '_GUID' => '5f6ade8fe07701b6858575153d78f4e9',
                 'TITLE' => $title,
                 'ADDRESS' => obfuscate_email_address($_embed),
                 'SUBJECT' => $subject,
                 'BODY' => $body,
                 'CAPTION' => $attributes['param'],
-            ));
+            ]);
             break;
 
         case 'reference':
@@ -1881,7 +1881,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
                 $embed = hyperlink($_embed, $title, true, false);
             }
-            $temp_tpl = do_template('COMCODE_REFERENCE', array_merge($attributes, array('SOURCE' => $embed)));
+            $temp_tpl = do_template('COMCODE_REFERENCE', array_merge($attributes, ['SOURCE' => $embed]));
             break;
 
         case 'page':
@@ -1907,7 +1907,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
             }
             $external = (array_key_exists('external', $attributes) && $attributes['external'] == '1');
-            $pl_url = build_url($_attributes, $zone, array(), false, false, false, $hash);
+            $pl_url = build_url($_attributes, $zone, [], false, false, false, $hash);
             $temp_tpl = hyperlink($pl_url, $caption, $external, true);
             $page = $_attributes['page'];
 
@@ -1925,10 +1925,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if ($ptest !== false) {
                     if (($page == 'topicview') && (get_forum_type() == 'cns') && (array_key_exists('id', $_attributes))) {
                         if (!is_numeric($_attributes['id'])) {
-                            $_attributes['id'] = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', array('m_resource_page' => $page, 'm_moniker' => $_attributes['id']));
+                            $_attributes['id'] = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', ['m_resource_page' => $page, 'm_moniker' => $_attributes['id']]);
                         }
                         if ($_attributes['id'] !== null) {
-                            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', array('id' => $_attributes['id']));
+                            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['id' => $_attributes['id']]);
                             if ($test === null) {
                                 $ptest = false;
                             }
@@ -1941,7 +1941,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     //$temp_tpl->attach(' [' . do_lang('MISSING_RESOURCE') . ']');  // Don't want this as we might be making the page immediately
                     if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (!in_array($page, $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
                         if ($ignore_if_hidden) {
-                            $temp_tpl = do_template('COMCODE_DEL', array('_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption));
+                            $temp_tpl = do_template('COMCODE_DEL', ['_GUID' => 'df638c61bc17ca975e95cf5f749836f5', 'CONTENT' => $caption]);
                         } else {
                             require_code('failure');
                             relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'page_link', $page_link), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
@@ -1978,10 +1978,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $caption = array_key_exists('caption', $attributes) ? $attributes['caption'] : '';
 
-            $temp_tpl = do_template('COMCODE_THUMB', array('_GUID' => '1b0d25f72ef5f816091269e29c586d60', 'CAPTION' => $caption, 'ALIGN' => $align, 'URL_THUMB' => $url_thumb, 'URL_FULL' => $url_full));
+            $temp_tpl = do_template('COMCODE_THUMB', ['_GUID' => '1b0d25f72ef5f816091269e29c586d60', 'CAPTION' => $caption, 'ALIGN' => $align, 'URL_THUMB' => $url_thumb, 'URL_FULL' => $url_full]);
 
             if (array_key_exists('float', $attributes)) {
-                $temp_tpl = do_template('FLOATER', array('_GUID' => 'cbc56770714a44f56676f43da282cc7a', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl));
+                $temp_tpl = do_template('FLOATER', ['_GUID' => 'cbc56770714a44f56676f43da282cc7a', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl]);
             }
             break;
 
@@ -2019,10 +2019,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             $refresh_time = array_key_exists('refresh_time', $attributes) ? strval(intval($attributes['refresh_time'])) : '0';
 
-            $temp_tpl->attach(do_template('COMCODE_IMG', array('_GUID' => '70166d8dbb0aff064b99c0dd30ed77a8', 'WIDTH' => ($width === null) ? null : strval($width), 'HEIGHT' => ($height === null) ? null : strval($height), 'REFRESH_TIME' => $refresh_time, 'ROLLOVER' => $rollover, 'ALIGN' => $align, 'URL' => $url_full, 'TOOLTIP' => $tooltip, 'CAPTION' => $caption)));
+            $temp_tpl->attach(do_template('COMCODE_IMG', ['_GUID' => '70166d8dbb0aff064b99c0dd30ed77a8', 'WIDTH' => ($width === null) ? null : strval($width), 'HEIGHT' => ($height === null) ? null : strval($height), 'REFRESH_TIME' => $refresh_time, 'ROLLOVER' => $rollover, 'ALIGN' => $align, 'URL' => $url_full, 'TOOLTIP' => $tooltip, 'CAPTION' => $caption]));
 
             if (array_key_exists('float', $attributes)) {
-                $temp_tpl = do_template('FLOATER', array('_GUID' => '918162250c80e10212efd9a051545b9b', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl));
+                $temp_tpl = do_template('FLOATER', ['_GUID' => '918162250c80e10212efd9a051545b9b', 'FLOAT' => $attributes['float'], 'CONTENT' => $temp_tpl]);
             }
 
             break;
@@ -2031,12 +2031,12 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $width = array_key_exists('width', $attributes) ? $attributes['width'] : '';
             $height = array_key_exists('height', $attributes) ? $attributes['height'] : '';
 
-            $temp_tpl = do_template('COMCODE_MEDIA_SET', array(
+            $temp_tpl = do_template('COMCODE_MEDIA_SET', [
                 '_GUID' => 'd8f811e2f3d13263edd32a3fe46678aa',
                 'WIDTH' => $width,
                 'HEIGHT' => $height,
                 'MEDIA' => $embed,
-            ));
+            ]);
             break;
 
         case 'media':
@@ -2050,7 +2050,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $temp_tpl = render_media_url(
                 $url_full,
                 $url_full,
-                $attributes + array('context' => 'comcode_media'),
+                $attributes + ['context' => 'comcode_media'],
                 $as_admin,
                 $source_member,
                 MEDIA_TYPE_ALL,
@@ -2127,7 +2127,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         $attach_size += floatval($_file['size']) / 1024.0 / 1024.0;
                     }
                     if (($size_uploaded_today + $attach_size) > floatval($daily_quota)) {
-                        $syn_services = array();
+                        $syn_services = [];
                         $hooks = find_all_hook_obs('systems', 'upload_syndication', 'Hook_upload_syndication_');
                         foreach ($hooks as $ob) {
                             if ($ob->is_enabled()) {
@@ -2148,19 +2148,19 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                             }
                         }
 
-                        $temp_tpl = do_template('WARNING_BOX', array(
+                        $temp_tpl = do_template('WARNING_BOX', [
                             '_GUID' => '89b7982164ccf8d98f3d0596ad425f78',
                             'RESTRICT_VISIBILITY' => strval($source_member),
                             'WARNING' => do_lang_tempcode($over_quota_str,
                                 escape_html(integer_format($daily_quota)),
                                 escape_html(float_format($size_uploaded_today)),
-                                array(
+                                [
                                     escape_html($GLOBALS['FORUM_DRIVER']->get_username($source_member)),
                                     escape_html(get_site_name()),
                                     escape_html(isset($syn_services[0]) ? $syn_services[0] : ''),
-                                )
+                                ]
                             ),
-                        ));
+                        ]);
                         break;
                     }
                 }
@@ -2170,7 +2170,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             if ((!is_numeric($id)) && (substr($id, 0, 4) != 'new_')) {
                 $file = base64_decode(str_replace("\n", '', $id));
                 if ($file === false) {
-                    $temp_tpl = do_template('WARNING_BOX', array('_GUID' => '422658aee3c0eea77ad85d8621af742b', 'WARNING' => do_lang_tempcode('comcode:CORRUPT_ATTACHMENT')));
+                    $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '422658aee3c0eea77ad85d8621af742b', 'WARNING' => do_lang_tempcode('comcode:CORRUPT_ATTACHMENT')]);
                     break;
                 }
                 $md5 = md5(substr($file, 0, 30));
@@ -2186,7 +2186,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $path = get_custom_file_base() . '/uploads/attachments/' . $new_filename;
                 $success_status = cms_file_put_contents_safe($path, $file, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
                 if (!$success_status) {
-                    $temp_tpl = do_template('WARNING_BOX', array('_GUID' => '428a36aa6cea693d01429f3d21caac36', 'WARNING' => intelligent_write_error_inline($path)));
+                    $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '428a36aa6cea693d01429f3d21caac36', 'WARNING' => intelligent_write_error_inline($path)]);
                     break;
                 }
                 $_size = strlen($file);
@@ -2202,7 +2202,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     // Get/test ID
                     $_id = substr($id, 4);
                     if (!is_numeric($_id)) {
-                        $temp_tpl = do_template('WARNING_BOX', array('_GUID' => 'dd7035da4ad83b55fbd185267ab31fe6', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')));
+                        $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'dd7035da4ad83b55fbd185267ab31fe6', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')]);
                         break;
                     }
 
@@ -2224,7 +2224,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     require_code('upload_syndication');
                     $urls[0] = handle_upload_syndication('file' . $_id, '', array_key_exists('description', $attributes) ? $attributes['description'] : '', $urls[0], $original_filename, true);
                 } else { // Should not get here
-                    $temp_tpl = do_template('WARNING_BOX', array('_GUID' => 'f7c0ead08bf7e19f3b78a536c755d6a5', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')));
+                    $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'f7c0ead08bf7e19f3b78a536c755d6a5', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')]);
                     break;
                 }
 
@@ -2232,10 +2232,10 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if ($urls[0] == '') {
                     require_code('images');
                     require_code('files2');
-                    $temp_tpl = do_template('WARNING_BOX', array(
+                    $temp_tpl = do_template('WARNING_BOX', [
                         '_GUID' => '81dce25ce8c1e0a9a2407315df0cf99c',
                         'WARNING' => do_lang_tempcode('ATTACHMENT_WOULD_NOT_UPLOAD', escape_html(float_format(get_max_file_size() / 1024 / 1024)), escape_html(float_format(get_max_image_size() / 1024 / 1024))),
-                    ));
+                    ]);
                     break;
                 }
 
@@ -2249,9 +2249,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $__id = intval($id);
 
                 // Load attachment
-                $attachment_rows = $db->query_select('attachments', array('*'), array('id' => $__id), '', 1);
+                $attachment_rows = $db->query_select('attachments', ['*'], ['id' => $__id], '', 1);
                 if (!array_key_exists(0, $attachment_rows)) { // Missing attachment!
-                    $temp_tpl = do_template('WARNING_BOX', array('_GUID' => 'be1c9c26a8802a00955fbd7a55b08bd3', 'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'attachment', escape_html(strval($__id)))));
+                    $temp_tpl = do_template('WARNING_BOX', ['_GUID' => 'be1c9c26a8802a00955fbd7a55b08bd3', 'WARNING' => do_lang_tempcode('MISSING_RESOURCE_COMCODE', 'attachment', escape_html(strval($__id)))]);
                     if ((!in_array(get_page_name(), $GLOBALS['DONT_CARE_MISSING_PAGES'])) && (running_script('index'))) {
                         require_code('failure');
                         relay_error_notification(do_lang('MISSING_RESOURCE_COMCODE', 'attachment', strval($__id)), false, $GLOBALS['FORUM_DRIVER']->is_staff($source_member) ? 'error_occurred_missing_reference_important' : 'error_occurred_missing_reference');
@@ -2268,15 +2268,15 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     if (!array_key_exists('type', $attributes)) {
                         $attributes['type'] = 'auto';
                     }
-                    $COMCODE_ATTACHMENTS[$pass_id][] = array('tag_type' => $tag, 'time' => $attachment_row['a_add_time'], 'type' => 'existing', 'initial_id' => $id, 'id' => $__id, 'attachmenttype' => $attributes['type'], 'comcode' => $comcode);
+                    $COMCODE_ATTACHMENTS[$pass_id][] = ['tag_type' => $tag, 'time' => $attachment_row['a_add_time'], 'type' => 'existing', 'initial_id' => $id, 'id' => $__id, 'attachmenttype' => $attributes['type'], 'comcode' => $comcode];
                 } else { // No permission
                     require_lang('permissions');
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($source_member, false, USERNAME_DEFAULT_DELETED);
-                    $temp_tpl = do_template('WARNING_BOX', array(
+                    $temp_tpl = do_template('WARNING_BOX', [
                         '_GUID' => 'af61f96b5cc6819979ce681d6f49b384',
                         'RESTRICT_VISIBILITY' => strval($source_member),
                         'WARNING' => do_lang_tempcode('permissions:ACCESS_DENIED__REUSE_ATTACHMENT', $username),
-                    ));
+                    ]);
                     break;
                 }
             }
@@ -2329,7 +2329,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
 
                 // Insert attachment
-                $attachment_row = array(
+                $attachment_row = [
                     'a_member_id' => $on_behalf_of_member,
                     'a_file_size' => $_size,
                     'a_url' => $url,
@@ -2339,16 +2339,16 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     'a_last_downloaded_time' => null,
                     'a_add_time' => time(),
                     'a_description' => array_key_exists('description', $attributes) ? $attributes['description'] : '',
-                );
+                ];
                 $attachment_row['id'] = $db->query_insert('attachments', $attachment_row, true);
 
                 // Create and document attachment
-                $COMCODE_ATTACHMENTS[$pass_id][] = array('type' => 'new', 'initial_id' => $id, 'id' => $attachment_row['id']); // Marker will allow us to search back and replace this with the added ID
+                $COMCODE_ATTACHMENTS[$pass_id][] = ['type' => 'new', 'initial_id' => $id, 'id' => $attachment_row['id']]; // Marker will allow us to search back and replace this with the added ID
             }
 
             // Lock it if we are doing a 'safe' attachment
             if ($tag == 'attachment_safe') {
-                $db->query_insert_or_replace('attachment_refs', array(), array('r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']));
+                $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']]);
             }
 
             // Now, render it
@@ -2368,7 +2368,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
         if (array_key_exists($tag, $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE)) {
             $replace = $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag]['replace'];
             $parameters = explode(',', $CUSTOM_COMCODE_REPLACE_TARGETS_CACHE[$tag]['parameters']);
-            $binding = array('CONTENT' => $embed);
+            $binding = ['CONTENT' => $embed];
             foreach ($parameters as $parameter) {
                 $parameter = trim($parameter);
                 $parts = explode('=', $parameter);
@@ -2473,7 +2473,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
         }
     }
 
-    return array($_embed, $title);
+    return [$_embed, $title];
 }
 
 /**
@@ -2489,7 +2489,7 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
  */
 function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
 {
-    $lines = array();
+    $lines = [];
     foreach ($tree_structure as $level) {
         if (array_key_exists(3, $level)) {
             $under = _do_contents_level($level[3], $list_types, $base, $the_level + 1);
@@ -2500,14 +2500,14 @@ function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
             $under = new Tempcode();
         }
 
-        $lines[] = array('ID' => $level[0], 'LINE' => $level[1], 'URL' => $level[2], 'UNDER' => $under);
+        $lines[] = ['ID' => $level[0], 'LINE' => $level[1], 'URL' => $level[2], 'UNDER' => $under];
     }
 
-    if ($lines === array()) {
+    if ($lines === []) {
         return new Tempcode();
     }
 
-    return do_template('COMCODE_CONTENTS_LEVEL', array('_GUID' => 'cd2811bf69387ca05bf9612319db956b', 'TYPE' => $list_types[max($the_level - $base + 1/*because $base counts from 1 not 0*/, 0)], 'LINES' => $lines));
+    return do_template('COMCODE_CONTENTS_LEVEL', ['_GUID' => 'cd2811bf69387ca05bf9612319db956b', 'TYPE' => $list_types[max($the_level - $base + 1/*because $base counts from 1 not 0*/, 0)], 'LINES' => $lines]);
 }
 
 /**
@@ -2518,11 +2518,11 @@ function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
  */
 function get_tutorial_link($name)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$name])) {
         $ret = $cache[$name];
     } else {
-        $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorial_links', 'the_value', array('the_name' => cms_mb_strtolower($name)));
+        $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorial_links', 'the_value', ['the_name' => cms_mb_strtolower($name)]);
         $cache[$name] = $ret;
     }
     return $ret;
@@ -2541,6 +2541,6 @@ function set_tutorial_link($name, $value)
     }
 
     if (get_tutorial_link($name) !== $value) {
-        $GLOBALS['SITE_DB']->query_insert_or_replace('tutorial_links', array('the_value' => $value), array('the_name' => cms_mb_strtolower($name)));
+        $GLOBALS['SITE_DB']->query_insert_or_replace('tutorial_links', ['the_value' => $value], ['the_name' => cms_mb_strtolower($name)]);
     }
 }

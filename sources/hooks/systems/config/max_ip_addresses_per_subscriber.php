@@ -30,7 +30,7 @@ class Hook_config_max_ip_addresses_per_subscriber
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_IP_ADDRESSES_PER_SUBSCRIBER',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_max_ip_addresses_per_subscriber
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

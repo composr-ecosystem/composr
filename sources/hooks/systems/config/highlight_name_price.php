@@ -30,7 +30,7 @@ class Hook_config_highlight_name_price
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRICE_highlight_name_price',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_highlight_name_price
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

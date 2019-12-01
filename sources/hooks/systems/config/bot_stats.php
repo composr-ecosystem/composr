@@ -30,7 +30,7 @@ class Hook_config_bot_stats
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BOT_STATS',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_bot_stats
             'public' => false,
 
             'addon' => 'stats',
-        );
+        ];
     }
 
     /**

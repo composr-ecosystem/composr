@@ -33,13 +33,13 @@ class Hook_page_groupings_quiz
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/rich_content/quiz', array('admin_quiz', array('type' => 'browse'), get_module_zone('admin_quiz')), do_lang_tempcode('quiz:QUIZZES'), 'quiz:DOC_QUIZZES'),
-            array('cms', 'menu/rich_content/quiz', array('cms_quiz', array('type' => 'browse'), get_module_zone('cms_quiz')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('quiz:QUIZZES'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)')))))), 'quiz:DOC_QUIZZES'),
-            array('rich_content', 'menu/rich_content/quiz', array('quiz', array(), get_module_zone('quiz')), do_lang_tempcode('quiz:QUIZZES')),
-        );
+        return [
+            ['audit', 'menu/rich_content/quiz', ['admin_quiz', ['type' => 'browse'], get_module_zone('admin_quiz')], do_lang_tempcode('quiz:QUIZZES'), 'quiz:DOC_QUIZZES'],
+            ['cms', 'menu/rich_content/quiz', ['cms_quiz', ['type' => 'browse'], get_module_zone('cms_quiz')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('quiz:QUIZZES'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)')))))), 'quiz:DOC_QUIZZES'],
+            ['rich_content', 'menu/rich_content/quiz', ['quiz', [], get_module_zone('quiz')], do_lang_tempcode('quiz:QUIZZES')],
+        ];
     }
 }

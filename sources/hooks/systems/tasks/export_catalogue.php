@@ -38,15 +38,15 @@ class Hook_task_export_catalogue
 
         require_code('catalogues');
 
-        $catalogue_row = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array('c_name' => $catalogue_name));
+        $catalogue_row = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], ['c_name' => $catalogue_name]);
         if ($catalogue_row === null) {
-            $catalogue_row = array();
+            $catalogue_row = [];
         }
         if (isset($catalogue_row[0])) {
             $catalogue_row = $catalogue_row[0];
         }
 
-        $category_names = array();
+        $category_names = [];
 
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
@@ -56,26 +56,26 @@ class Hook_task_export_catalogue
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         global $CAT_FIELDS_CACHE;
         $CAT_FIELDS_CACHE[$catalogue_name] = $fields;
-        $header_row = array('ID', 'CATEGORY');
+        $header_row = ['ID', 'CATEGORY'];
         foreach ($fields as $k) {
             $header_row[] = get_translated_text($k['cf_name']);
         }
         $sheet_writer->write_row($header_row);
 
-        $num_rows = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', array('c_name' => $catalogue_name));
+        $num_rows = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $catalogue_name]);
 
         $start = 0;
         do {
-            $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('c_name' => $catalogue_name), 'ORDER BY ce_add_date ASC', 4000, $start);
+            $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['c_name' => $catalogue_name], 'ORDER BY ce_add_date ASC', 4000, $start);
 
             foreach ($entry_rows as $i => $entry_row) {
                 task_log($this, 'Exporting catalogue row', $i, $num_rows);
 
                 if ($entry_row === null) {
-                    $entry_row = array();
+                    $entry_row = [];
                 }
                 if (isset($entry_row[0])) {
                     $entry_row = $entry_row[0];
@@ -85,11 +85,11 @@ class Hook_task_export_catalogue
 
                 if (!isset($category_names[$entry_row['cc_id']])) {
                     if (!array_key_exists($entry_row['cc_id'], $category_names)) {
-                        $category_names[$entry_row['cc_id']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'cc_title', array('id' => $entry_row['cc_id'])));
+                        $category_names[$entry_row['cc_id']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'cc_title', ['id' => $entry_row['cc_id']]));
                     }
                 }
 
-                $row = array($entry_row['id'], $category_names[$entry_row['cc_id']]);
+                $row = [$entry_row['id'], $category_names[$entry_row['cc_id']]];
                 foreach ($details as $val) {
                     $row[] = $val['effective_value_pure'];
                 }
@@ -101,13 +101,13 @@ class Hook_task_export_catalogue
         } while (!empty($entry_rows));
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 }

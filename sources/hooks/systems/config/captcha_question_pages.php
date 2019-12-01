@@ -30,7 +30,7 @@ class Hook_config_captcha_question_pages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CAPTCHA_QUESTION_PAGES',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_captcha_question_pages
             'required' => false,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

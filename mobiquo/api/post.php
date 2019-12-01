@@ -53,7 +53,7 @@ function reply_post_func($raw_params)
     $topic_id = intval($params[1]);
     $title = $params[2];
     $post = $params[3];
-    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : array();
+    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : [];
     $return_html = isset($params[6]) && $params[6];
 
     $post_object = new CMSPostWrite();
@@ -87,11 +87,11 @@ function get_quote_post_func($raw_params)
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', $params[0], 'post'));
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'post_id' => mobiquo_val($params[0], 'string'),
         'post_title' => mobiquo_val($quote_title, 'base64'),
         'post_content' => mobiquo_val($quote_content, 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -113,14 +113,14 @@ function get_raw_post_func($raw_params)
     $post_object = new CMSPostRead();
     $post_details = $post_object->get_raw_post($post_id);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'post_id' => mobiquo_val($post_details['post_id'], 'string'),
         'post_title' => mobiquo_val($post_details['post_title'], 'base64'),
         'post_content' => mobiquo_val($post_details['post_content'], 'base64'),
         'show_reason' => mobiquo_val(true, 'boolean'),
         'edit_reason' => mobiquo_val($post_details['post_content'], 'base64'),
         'attachments' => mobiquo_val(render_tapatalk_attachments($post_details['attachments']), 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -141,7 +141,7 @@ function save_raw_post_func($raw_params)
     $title = $params[1];
     $post = $params[2];
     $return_html = isset($params[3]) && $params[3];
-    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : array();
+    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : [];
     $reason = empty($params[6]) ? do_lang('REASON_TAPATALK_EDITING_POST') : $params[6];
 
     $post_object = new CMSPostWrite();
@@ -191,7 +191,7 @@ function get_thread_by_unread_func($raw_params)
     $max = isset($params[1]) ? $params[1] : 20;
     $return_html = isset($params[2]) && $params[2];
 
-    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => get_member(), 'l_topic_id' => $topic_id));
+    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id]);
     if ($last_read_time === null) {
         // Assumes that everything made in the last two weeks has not been read
         $unread_details = $GLOBALS['FORUM_DB']->query('SELECT id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($topic_id) . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' ORDER BY p_time', 1);
@@ -240,7 +240,7 @@ function get_thread_by_post_func($raw_params)
     $max = isset($params[1]) ? $params[1] : 20;
     $return_html = isset($params[2]) && $params[2];
 
-    $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+    $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
     if ($topic_id === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }

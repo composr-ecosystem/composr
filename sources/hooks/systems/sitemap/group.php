@@ -27,8 +27,8 @@ class Hook_sitemap_group extends Hook_sitemap_content
     protected $screen_type = 'view';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('member');
-    protected $entry_sitetree_hook = array('member');
+    protected $entry_content_type = ['member'];
+    protected $entry_sitetree_hook = ['member'];
 
     /**
      * Find whether the hook is active.
@@ -57,7 +57,7 @@ class Hook_sitemap_group extends Hook_sitemap_content
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -131,14 +131,14 @@ class Hook_sitemap_group extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_LOW,
             'sitemap_refreshfreq' => 'yearly',
 
             'privilege_page' => null,
 
-            'edit_url' => build_url(array('page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $content_id), get_module_zone('admin_cns_groups')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $content_id], get_module_zone('admin_cns_groups')),
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

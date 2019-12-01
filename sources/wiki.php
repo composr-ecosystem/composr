@@ -42,7 +42,7 @@ function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $in
 
     require_lang('wiki');
 
-    $map = array('page' => 'wiki', 'type' => 'browse', 'id' => $row['page_id']);
+    $map = ['page' => 'wiki', 'type' => 'browse', 'id' => $row['page_id']];
     if ($root !== null) {
         $map['keep_forum_root'] = $root;
     }
@@ -60,13 +60,13 @@ function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $in
     }
 
     if ($text_summary === null) {
-        $just_wiki_post_row = db_map_restrict($row, array('id', 'the_message'));
+        $just_wiki_post_row = db_map_restrict($row, ['id', 'the_message']);
         $summary = get_translated_tempcode('wiki_posts', $just_wiki_post_row, 'the_message');
     } else {
         $summary = $text_summary;
     }
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'f271c035af57eb45b7f3b37e437baf3c',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -74,7 +74,7 @@ function render_wiki_post_box($row, $zone = '_SEARCH', $give_context = true, $in
         'SUMMARY' => $summary,
         'URL' => $url,
         'RESOURCE_TYPE' => 'wiki_post',
-    ));
+    ]);
 }
 
 /**
@@ -97,7 +97,7 @@ function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $in
 
     require_lang('wiki');
 
-    $map = array('page' => 'wiki', 'type' => 'browse', 'id' => $row['id']);
+    $map = ['page' => 'wiki', 'type' => 'browse', 'id' => $row['id']];
     if ($root !== null) {
         $map['keep_forum_root'] = $root;
     }
@@ -116,13 +116,13 @@ function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $in
     }
 
     if ($text_summary === null) {
-        $just_wiki_page_row = db_map_restrict($row, array('id', 'the_description'));
+        $just_wiki_page_row = db_map_restrict($row, ['id', 'the_description']);
         $summary = get_translated_tempcode('wiki_pages', $just_wiki_page_row, 'the_description');
     } else {
         $summary = $text_summary;
     }
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'd2c37a1f68e684dc4ac85e3d4e4bf959',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -130,7 +130,7 @@ function render_wiki_page_box($row, $zone = '_SEARCH', $give_context = true, $in
         'SUMMARY' => $summary,
         'URL' => $url,
         'RESOURCE_TYPE' => 'wiki_page',
-    ));
+    ]);
 }
 
 /**
@@ -165,14 +165,14 @@ function wiki_add_post($page_id, $message, $validated = 1, $member_id = null, $s
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'validated' => $validated,
         'member_id' => $member_id,
         'date_and_time' => $add_time,
         'page_id' => $page_id,
         'wiki_views' => $views,
         'edit_date' => $edit_date,
-    );
+    ];
     if (multi_lang_content()) {
         $map['the_message'] = 0;
     } else {
@@ -183,7 +183,7 @@ function wiki_add_post($page_id, $message, $validated = 1, $member_id = null, $s
     $post_id = $GLOBALS['SITE_DB']->query_insert('wiki_posts', $map, true);
 
     require_code('attachments2');
-    $GLOBALS['SITE_DB']->query_update('wiki_posts', insert_lang_comcode_attachments('the_message', 2, $message, 'wiki_post', strval($post_id)), array('id' => $post_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('wiki_posts', insert_lang_comcode_attachments('the_message', 2, $message, 'wiki_post', strval($post_id)), ['id' => $post_id], '', 1);
 
     // Log
     log_it('WIKI_MAKE_POST', strval($post_id), strval($page_id));
@@ -238,7 +238,7 @@ function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('*'), array('id' => $post_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['*'], ['id' => $post_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'wiki_post'));
     }
@@ -276,9 +276,9 @@ function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page
         );
     }
 
-    $update_map = array(
+    $update_map = [
         'validated' => $validated,
-    );
+    ];
     $update_map += update_lang_comcode_attachments('the_message', $_message, $message, 'wiki_post', strval($post_id), null, $original_poster);
 
     if ($page_id !== null) {
@@ -296,7 +296,7 @@ function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page
         $update_map['member_id'] = $member_id;
     }
 
-    $GLOBALS['SITE_DB']->query_update('wiki_posts', $update_map, array('id' => $post_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('wiki_posts', $update_map, ['id' => $post_id], '', 1);
 
     if (post_param_integer('send_notification', null) !== 0) {
         if ($just_validated) {
@@ -324,7 +324,7 @@ function wiki_delete_post($post_id, $member_id = null)
         $member_id = get_member();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('*'), array('id' => $post_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['*'], ['id' => $post_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'wiki_post'));
     }
@@ -353,8 +353,8 @@ function wiki_delete_post($post_id, $member_id = null)
     require_code('attachments3');
     delete_lang_comcode_attachments($_message, 'wiki_post', strval($post_id));
 
-    $GLOBALS['SITE_DB']->query_delete('wiki_posts', array('id' => $post_id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'wiki_post', 'rating_for_id' => $post_id));
+    $GLOBALS['SITE_DB']->query_delete('wiki_posts', ['id' => $post_id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'wiki_post', 'rating_for_id' => $post_id]);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('wiki_post', strval($post_id), '');
@@ -405,14 +405,14 @@ function wiki_add_page($title, $description, $notes, $show_posts, $member_id = n
         $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'points_gained_wiki', $count + 1);
     }
 
-    $map = array(
+    $map = [
         'show_posts' => $show_posts,
         'notes' => $notes,
         'submitter' => $member_id,
         'wiki_views' => $views,
         'add_date' => time(),
         'edit_date' => $edit_date,
-    );
+    ];
     if (multi_lang_content()) {
         $map['the_description'] = 0;
     } else {
@@ -425,7 +425,7 @@ function wiki_add_page($title, $description, $notes, $show_posts, $member_id = n
         $page_id = $GLOBALS['SITE_DB']->query_insert('wiki_pages', $map, true);
 
         require_code('attachments2');
-        $GLOBALS['SITE_DB']->query_update('wiki_pages', insert_lang_comcode_attachments('the_description', 2, $description, 'wiki_page', strval($page_id), null, false, $member_id), array('id' => $page_id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('wiki_pages', insert_lang_comcode_attachments('the_description', 2, $description, 'wiki_page', strval($page_id), null, false, $member_id), ['id' => $page_id], '', 1);
     } else {
         $map = insert_lang_comcode('the_description', $description, 2) + $map;
         $page_id = $GLOBALS['SITE_DB']->query_insert('wiki_pages', $map, true);
@@ -437,7 +437,7 @@ function wiki_add_page($title, $description, $notes, $show_posts, $member_id = n
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('wiki_page', strval($page_id), array($title, $description), $description);
+        seo_meta_set_for_implicit('wiki_page', strval($page_id), [$title, $description], $description);
     } else {
         seo_meta_set_for_explicit('wiki_page', strval($page_id), $meta_keywords, $meta_description);
     }
@@ -481,7 +481,7 @@ function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $me
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => $page_id), '', 1);
+    $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => $page_id], '', 1);
     if (!array_key_exists(0, $pages)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'wiki_page'));
     }
@@ -505,10 +505,10 @@ function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $me
         );
     }
 
-    $update_map = array(
+    $update_map = [
         'show_posts' => $show_posts,
         'notes' => $notes,
-    );
+    ];
 
     $update_map['edit_date'] = $edit_time;
     if ($add_time !== null) {
@@ -529,7 +529,7 @@ function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $me
     $update_map += lang_remap('title', $_title, $title);
     $update_map += update_lang_comcode_attachments('the_description', $_description, $description, 'wiki_page', strval($page_id), null, $member_id);
 
-    $GLOBALS['SITE_DB']->query_update('wiki_pages', $update_map, array('id' => $page_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('wiki_pages', $update_map, ['id' => $page_id], '', 1);
 
     require_code('content2');
     seo_meta_set_for_explicit('wiki_page', strval($page_id), $meta_keywords, $meta_description);
@@ -557,7 +557,7 @@ function wiki_delete_page($page_id)
     $old_limit = cms_disable_time_limit();
 
     // Get page details
-    $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => $page_id), '', 1);
+    $pages = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => $page_id], '', 1);
     if (!array_key_exists(0, $pages)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'wiki_page'));
     }
@@ -570,7 +570,7 @@ function wiki_delete_page($page_id)
     do {
         send_http_output_ping();
 
-        $posts = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('id'), array('page_id' => $page_id), '', 500, $start);
+        $posts = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['id'], ['page_id' => $page_id], '', 500, $start);
         foreach ($posts as $post) {
             wiki_delete_post($post['id']);
         }
@@ -600,9 +600,9 @@ function wiki_delete_page($page_id)
 
     delete_lang($_description);
     delete_lang($_title);
-    $GLOBALS['SITE_DB']->query_delete('wiki_pages', array('id' => $page_id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('wiki_children', array('parent_id' => $page_id));
-    $GLOBALS['SITE_DB']->query_delete('wiki_children', array('child_id' => $page_id));
+    $GLOBALS['SITE_DB']->query_delete('wiki_pages', ['id' => $page_id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('wiki_children', ['parent_id' => $page_id]);
+    $GLOBALS['SITE_DB']->query_delete('wiki_children', ['child_id' => $page_id]);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('wiki_page', strval($page_id), '');
@@ -642,7 +642,7 @@ function get_param_wiki_chain($parameter_name, $default_value = null)
         if (is_numeric($part)) {
             $id = intval($part);
         } else {
-            $url_moniker_where = array('m_resource_page' => 'wiki', 'm_moniker' => $part);
+            $url_moniker_where = ['m_resource_page' => 'wiki', 'm_moniker' => $part];
             $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', $url_moniker_where);
             if ($_id === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
@@ -650,7 +650,7 @@ function get_param_wiki_chain($parameter_name, $default_value = null)
             $id = intval($_id);
         }
     }
-    return array($id, $chain);
+    return [$id, $chain];
 }
 
 /**
@@ -665,7 +665,7 @@ function get_param_wiki_chain($parameter_name, $default_value = null)
  */
 function wiki_breadcrumbs($chain, $current_title = null, $final_link = false, $links = true, $this_link_virtual_root = false)
 {
-    $segments = array();
+    $segments = [];
     $token = strtok($chain, '/');
     $rebuild_chain = '';
     while ($token !== false) {
@@ -681,32 +681,32 @@ function wiki_breadcrumbs($chain, $current_title = null, $final_link = false, $l
         if (is_numeric($token)) {
             $id = intval($token);
         } else {
-            $url_moniker_where = array('m_resource_page' => 'wiki', 'm_moniker' => $token);
+            $url_moniker_where = ['m_resource_page' => 'wiki', 'm_moniker' => $token];
             $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', $url_moniker_where);
             if ($_id === null) {
-                return array();
+                return [];
             }
             $id = intval($_id);
         }
 
-        $page_link = build_page_link(array('page' => 'wiki', 'type' => 'browse', 'id' => $link_id) + (($this_link_virtual_root && ($next_token === false)) ? array('keep_wiki_root' => $id) : array()), get_module_zone('wiki'));
+        $page_link = build_page_link(['page' => 'wiki', 'type' => 'browse', 'id' => $link_id] + (($this_link_virtual_root && ($next_token === false)) ? ['keep_wiki_root' => $id] : []), get_module_zone('wiki'));
 
         if ($next_token !== false) { // If not the last token (i.e. not the current page)
-            $title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', array('id' => $id));
+            $title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $id]);
             if ($title === null) {
                 continue;
             }
             $token_title = get_translated_text($title);
-            $segments[] = $links ? array($page_link, $token_title) : array('', $token_title);
+            $segments[] = $links ? [$page_link, $token_title] : ['', $token_title];
         } else {
             if ($current_title === null) {
-                $_current_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', array('id' => $id));
+                $_current_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $id]);
                 $current_title = ($_current_title === null) ? do_lang('MISSING_RESOURCE', 'wiki_page') : get_translated_text($_current_title);
             }
             if ($final_link) {
-                $segments[] = array($page_link, $current_title);
+                $segments[] = [$page_link, $current_title];
             } else {
-                $segments[] = array('', $current_title);
+                $segments[] = ['', $current_title];
             }
         }
 
@@ -727,9 +727,9 @@ function wiki_derive_chain($id, $root = null)
 {
     static $parent_details = null;
     if ($parent_details === null) {
-        $parent_details = array(
-            db_get_first_id() => array(null, do_lang('WIKI')),
-        );
+        $parent_details = [
+            db_get_first_id() => [null, do_lang('WIKI')],
+        ];
     }
 
     if ($root === null) {
@@ -740,17 +740,17 @@ function wiki_derive_chain($id, $root = null)
 
     $page_id = $id;
     $chain = '';
-    $seen_before = array();
+    $seen_before = [];
     while (true) {
         $seen_before[$page_id] = true;
 
         if (!array_key_exists($page_id, $parent_details)) {
-            $parent_rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('parent_id', 'title'), array('child_id' => $page_id), '', 1);
+            $parent_rows = $GLOBALS['SITE_DB']->query_select('wiki_children', ['parent_id', 'title'], ['child_id' => $page_id], '', 1);
             $new_page_id = null;
             if (!array_key_exists(0, $parent_rows)) {
                 break; // Orphaned, so we can't find a chain
             }
-            $parent_details[$page_id] = array($parent_rows[0]['parent_id'], $parent_rows[0]['title']);
+            $parent_details[$page_id] = [$parent_rows[0]['parent_id'], $parent_rows[0]['title']];
         }
 
         if ($chain != '') {
@@ -802,8 +802,8 @@ function create_selection_list_wiki_page_tree($select = null, $id = null, $bread
         return new Tempcode();
     }
 
-    $wiki_seen = array();
-    $title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', array('id' => $id)));
+    $wiki_seen = [];
+    $title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', ['id' => $id]));
     $out = _create_selection_list_wiki_page_tree($wiki_seen, $select, $id, $breadcrumbs, $title, $use_compound_list, $ins_format);
 
     if ($include_orphans) {
@@ -849,7 +849,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
 
     $sub_breadcrumbs = ($breadcrumbs == '') ? ($title . ' > ') : ($breadcrumbs . $title . ' > ');
 
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $id), 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', ['*'], ['parent_id' => $id], 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     $compound_list = strval($id) . ',';
     $_below = new Tempcode();
     foreach ($rows as $i => $myrow) {
@@ -859,7 +859,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
             }
 
             if ($myrow['title'] === null) {
-                $temp_rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('title'), array('id' => $myrow['child_id']), '', 1);
+                $temp_rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['title'], ['id' => $myrow['child_id']], '', 1);
 
                 if (!array_key_exists(0, $temp_rows)) {
                     continue; // Broken database reference
@@ -867,7 +867,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
 
                 $myrow['title'] = get_translated_text($temp_rows[0]['title']);
                 $rows[$i]['title'] = $myrow['title'];
-                $GLOBALS['SITE_DB']->query_update('wiki_children', array('title' => $myrow['title']), array('parent_id' => $id, 'child_id' => $myrow['child_id']));
+                $GLOBALS['SITE_DB']->query_update('wiki_children', ['title' => $myrow['title']], ['parent_id' => $id, 'child_id' => $myrow['child_id']]);
             }
             $below = _create_selection_list_wiki_page_tree($wiki_seen, $select, $myrow['child_id'], $sub_breadcrumbs, $myrow['title'], $use_compound_list, $ins_format);
             if ($use_compound_list) {
@@ -882,7 +882,7 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
     $out->attach($_below);
 
     if ($use_compound_list) {
-        return array($out, $compound_list);
+        return [$out, $compound_list];
     } else {
         return $out;
     }
@@ -904,7 +904,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
 {
     if (!$use_compound_list) {
         if ($levels == -1) {
-            return array();
+            return [];
         }
     }
 
@@ -918,7 +918,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
     $wiki_seen[] = $page_id;
 
     if ($page_details === null) {
-        $_page_details = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('title'), array('id' => $page_id), '', 1);
+        $_page_details = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['title'], ['id' => $page_id], '', 1);
         if (!array_key_exists(0, $_page_details)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'wiki_page'));
         }
@@ -929,18 +929,18 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
     $breadcrumbs .= $title;
 
     // We'll be putting all children in this entire tree into a single list
-    $children = array();
-    $children[0] = array();
+    $children = [];
+    $children[0] = [];
     $children[0]['id'] = $page_id;
     $children[0]['title'] = $title;
     $children[0]['breadcrumbs'] = $breadcrumbs;
     $children[0]['compound_list'] = strval($page_id) . ',';
     if ($do_stats) {
-        $children[0]['post_count'] = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'COUNT(*)', array('page_id' => $page_id));
+        $children[0]['post_count'] = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'COUNT(*)', ['page_id' => $page_id]);
     }
 
     // Children of this category
-    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', array('*'), array('parent_id' => $page_id), 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
+    $rows = $GLOBALS['SITE_DB']->query_select('wiki_children', ['*'], ['parent_id' => $page_id], 'ORDER BY title', intval(get_option('general_safety_listing_limit'))/*reasonable limit*/);
     $children[0]['child_count'] = count($rows);
     $child_breadcrumbs = ($breadcrumbs == '') ? '' : ($breadcrumbs . ' > ');
     if (($levels !== 0) || ($use_compound_list)) {
@@ -952,7 +952,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
 
                 // Fix child title
                 if ($child['title'] === null) {
-                    $temp_rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('title'), array('id' => $child['child_id']), '', 1);
+                    $temp_rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['title'], ['id' => $child['child_id']], '', 1);
 
                     if (!array_key_exists(0, $temp_rows)) {
                         continue; // Broken database reference
@@ -960,7 +960,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
 
                     $child['title'] = get_translated_text($temp_rows[0]['title']);
 
-                    $GLOBALS['SITE_DB']->query_update('wiki_children', array('title' => $child['title']), array('parent_id' => $page_id, 'child_id' => $child['child_id']));
+                    $GLOBALS['SITE_DB']->query_update('wiki_children', ['title' => $child['title']], ['parent_id' => $page_id, 'child_id' => $child['child_id']]);
                 }
 
                 $child_id = $child['child_id'];
@@ -978,7 +978,7 @@ function get_wiki_page_tree(&$wiki_seen, $page_id = null, $breadcrumbs = null, $
         }
     }
 
-    return $use_compound_list ? array($children, $children[0]['compound_list']) : $children;
+    return $use_compound_list ? [$children, $children[0]['compound_list']] : $children;
 }
 
 /**
@@ -992,12 +992,12 @@ function dispatch_wiki_post_notification($post_id, $type)
 {
     require_lang('wiki');
 
-    $page_id = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'page_id', array('id' => $post_id));
-    $the_message = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'the_message', array('id' => $post_id));
-    $page_name = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', array('id' => $page_id)));
+    $page_id = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'page_id', ['id' => $post_id]);
+    $the_message = $GLOBALS['SITE_DB']->query_select_value('wiki_posts', 'the_message', ['id' => $post_id]);
+    $page_name = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', ['id' => $page_id]));
     $_the_message = get_translated_text($the_message);
 
-    $_view_url = build_url(array('page' => 'wiki', 'type' => 'browse', 'id' => $page_id), get_page_zone('wiki'), array(), false, false, true);
+    $_view_url = build_url(['page' => 'wiki', 'type' => 'browse', 'id' => $page_id], get_page_zone('wiki'), [], false, false, true);
     $view_url = $_view_url->evaluate();
     $their_displayname = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
     $their_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -1005,7 +1005,7 @@ function dispatch_wiki_post_notification($post_id, $type)
     require_code('notifications');
 
     $subject = do_lang($type . '_WIKI_POST_SUBJECT', $page_name, $their_displayname, $their_username, get_site_default_lang());
-    $message_raw = do_notification_lang($type . '_WIKI_POST_BODY', comcode_escape($their_displayname), comcode_escape($page_name), array(comcode_escape($view_url), $_the_message, strval(get_member()), comcode_escape($their_username)), get_site_default_lang());
+    $message_raw = do_notification_lang($type . '_WIKI_POST_BODY', comcode_escape($their_displayname), comcode_escape($page_name), [comcode_escape($view_url), $_the_message, strval(get_member()), comcode_escape($their_username)], get_site_default_lang());
 
     dispatch_notification('wiki', strval($page_id), $subject, $message_raw);
 }
@@ -1021,10 +1021,10 @@ function dispatch_wiki_page_notification($page_id, $type)
 {
     require_lang('wiki');
 
-    $page_name = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', array('id' => $page_id)));
-    $_the_message = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'the_description', array('id' => $page_id)));
+    $page_name = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'title', ['id' => $page_id]));
+    $_the_message = get_translated_text($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'the_description', ['id' => $page_id]));
 
-    $_view_url = build_url(array('page' => 'wiki', 'type' => 'browse', 'id' => $page_id), get_page_zone('wiki'), array(), false, false, true);
+    $_view_url = build_url(['page' => 'wiki', 'type' => 'browse', 'id' => $page_id], get_page_zone('wiki'), [], false, false, true);
     $view_url = $_view_url->evaluate();
     $their_displayname = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
     $their_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -1032,7 +1032,7 @@ function dispatch_wiki_page_notification($page_id, $type)
     require_code('notifications');
 
     $subject = do_lang($type . '_WIKI_PAGE_SUBJECT', $page_name, $their_displayname, $their_username, get_site_default_lang());
-    $message_raw = do_notification_lang($type . '_WIKI_PAGE_BODY', comcode_escape($their_displayname), comcode_escape($page_name), array(comcode_escape($view_url), $_the_message, comcode_escape($their_username)), get_site_default_lang());
+    $message_raw = do_notification_lang($type . '_WIKI_PAGE_BODY', comcode_escape($their_displayname), comcode_escape($page_name), [comcode_escape($view_url), $_the_message, comcode_escape($their_username)], get_site_default_lang());
 
     dispatch_notification('wiki', strval($page_id), $subject, $message_raw);
 }

@@ -30,7 +30,7 @@ class Hook_config_gallery_media_title_required
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_MEDIA_TITLE_REQUIRED',
             'type' => 'list',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_media_title_required
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

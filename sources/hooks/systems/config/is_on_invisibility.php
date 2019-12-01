@@ -30,7 +30,7 @@ class Hook_config_is_on_invisibility
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_INVISIBILITY',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_invisibility
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -26,7 +26,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_image_source_files
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/image_source_files.php',
             'data_custom/images/source_files/blank_emoticon.png',
             'data_custom/images/source_files/dark_emoticons/blink.gif',
@@ -146,6 +146,6 @@ class Hook_addon_registry_image_source_files
             'data_custom/images/source_files/dark_emoticons/shutup.gif',
             'data_custom/images/source_files/dark_emoticons/index.html',
             'data_custom/images/source_files/index.html',
-        );
+        ];
     }
 }

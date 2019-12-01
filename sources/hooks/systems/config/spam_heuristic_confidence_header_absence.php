@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_confidence_header_absence
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_CONFIDENCE_HEADER_ABSENCE',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_confidence_header_absence
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

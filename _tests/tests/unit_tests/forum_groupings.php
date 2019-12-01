@@ -36,7 +36,7 @@ class forum_groupings_test_set extends cms_test_case
 
         $this->forum_cat_id = cns_make_forum_grouping('Test_cat', 'nothing', 1);
 
-        $this->assertTrue('Test_cat' == $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'c_title', array('id' => $this->forum_cat_id)));
+        $this->assertTrue('Test_cat' == $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'c_title', ['id' => $this->forum_cat_id]));
     }
 
     public function testEditForumGrouping()
@@ -47,7 +47,7 @@ class forum_groupings_test_set extends cms_test_case
 
         cns_edit_forum_grouping($this->forum_cat_id, 'New_title', 'somthing', 1);
 
-        $this->assertTrue('New_title' == $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'c_title', array('id' => $this->forum_cat_id)));
+        $this->assertTrue('New_title' == $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'c_title', ['id' => $this->forum_cat_id]));
     }
 
     public function tearDown()

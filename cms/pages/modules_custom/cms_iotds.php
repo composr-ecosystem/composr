@@ -118,9 +118,9 @@ class Module_cms_iotds extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_IOTDS', 'menu/rich_content/iotds'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['MANAGE_IOTDS', 'menu/rich_content/iotds'],
+        ] + parent::get_entry_points();
     }
 
     /**
@@ -131,7 +131,7 @@ class Module_cms_iotds extends Standard_crud_module
     public function get_privilege_overrides()
     {
         require_lang('iotds');
-        return array('submit_midrange_content' => array(0, 'ADD_IOTD'), 'bypass_validation_midrange_content' => array(0, 'BYPASS_VALIDATION_IOTD'), 'edit_own_midrange_content' => array(0, 'EDIT_OWN_IOTD'), 'edit_midrange_content' => array(0, 'EDIT_IOTD'), 'delete_own_midrange_content' => array(0, 'DELETE_OWN_IOTD'), 'delete_midrange_content' => array(0, 'DELETE_IOTD'), 'edit_own_highrange_content' => array(0, 'EDIT_OWN_LIVE_IOTD'), 'edit_highrange_content' => array(0, 'EDIT_LIVE_IOTD'), 'delete_own_highrange_content' => array(0, 'DELETE_OWN_LIVE_IOTD'), 'delete_highrange_content' => array(0, 'DELETE_LIVE_IOTD'));
+        return ['submit_midrange_content' => [0, 'ADD_IOTD'], 'bypass_validation_midrange_content' => [0, 'BYPASS_VALIDATION_IOTD'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_IOTD'], 'edit_midrange_content' => [0, 'EDIT_IOTD'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_IOTD'], 'delete_midrange_content' => [0, 'DELETE_IOTD'], 'edit_own_highrange_content' => [0, 'EDIT_OWN_LIVE_IOTD'], 'edit_highrange_content' => [0, 'EDIT_LIVE_IOTD'], 'delete_own_highrange_content' => [0, 'DELETE_OWN_LIVE_IOTD'], 'delete_highrange_content' => [0, 'DELETE_LIVE_IOTD']];
     }
 
     /**
@@ -145,10 +145,10 @@ class Module_cms_iotds extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_IOTDS'),
             comcode_lang_string('DOC_IOTDS'),
-            array(
-                has_privilege(get_member(), 'submit_midrange_content', 'cms_iotds') ? array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_IOTD')) : null,
-                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_iotds') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_OR_CHOOSE_IOTD')) : null,
-            ),
+            [
+                has_privilege(get_member(), 'submit_midrange_content', 'cms_iotds') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_IOTD')] : null,
+                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_iotds') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_OR_CHOOSE_IOTD')] : null,
+            ],
             do_lang('MANAGE_IOTDS')
         );
     }
@@ -188,7 +188,7 @@ class Module_cms_iotds extends Standard_crud_module
 
         if (has_privilege(get_member(), 'choose_iotd')) {
             if ($caption == '') {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('iotd', 'is_current', array('is_current' => 1));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('iotd', 'is_current', ['is_current' => 1]);
                 if ($test === null) {
                     $current = true;
                 }
@@ -199,14 +199,14 @@ class Module_cms_iotds extends Standard_crud_module
         // Metadata
         require_code('feedback2');
         $feedback_fields = feedback_fields($this->content_type, $allow_rating == 1, $allow_comments == 1, $allow_trackbacks == 1, false, $notes, $allow_comments == 2, false, true, false);
-        $fields->attach(metadata_get_fields('iotd', ($id === null) ? null : strval($id), false, array(), ($feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
+        $fields->attach(metadata_get_fields('iotd', ($id === null) ? null : strval($id), false, [], ($feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
             $fields->attach(content_review_get_fields('iotd', ($id === null) ? null : strval($id)));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -231,13 +231,13 @@ class Module_cms_iotds extends Standard_crud_module
         if ($used == 1) {
             $used_iotd = $this->_get_iotd_boxes(1);
         }
-        $used_url = build_url(array('page' => '_SELF', 'type' => 'edit', 'used' => 1), '_SELF');
+        $used_url = build_url(['page' => '_SELF', 'type' => 'edit', 'used' => 1], '_SELF');
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'iotds'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'iotds'), get_module_zone('iotds'));
+        $search_url = build_url(['page' => 'search', 'id' => 'iotds'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'iotds'], get_module_zone('iotds'));
         $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_LIST_EXTRA', escape_html($search_url->evaluate()), escape_html($archive_url->evaluate())));
 
-        return do_template('IOTD_ADMIN_CHOOSE_SCREEN', array(
+        return do_template('IOTD_ADMIN_CHOOSE_SCREEN', [
             '_GUID' => '3ee2847c986bf349caa40d462f45eb9c',
             'SHOWING_OLD' => $used == 1,
             'TITLE' => $this->title,
@@ -246,7 +246,7 @@ class Module_cms_iotds extends Standard_crud_module
             'CURRENT_IOTD' => $current_iotd,
             'UNUSED_IOTD' => $unused_iotd,
             'USED_IOTD' => $used_iotd,
-        ));
+        ]);
     }
 
     /**
@@ -259,11 +259,11 @@ class Module_cms_iotds extends Standard_crud_module
      */
     public function _get_iotd_boxes($used = 0, $current = 0, $submitter = null)
     {
-        $where = array('used' => $used, 'is_current' => $current);
+        $where = ['used' => $used, 'is_current' => $current];
         if ($submitter !== null) {
             $where['submitter'] = $submitter;
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), $where, 'ORDER BY add_date DESC', 100);
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], $where, 'ORDER BY add_date DESC', 100);
         $previews = new Tempcode();
         foreach ($rows as $myrow) {
             require_code('iotds');
@@ -284,11 +284,11 @@ class Module_cms_iotds extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('submitter', 'add_date'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['submitter', 'add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['submitter'], $rows[0]['add_date']);
+        return [$rows[0]['submitter'], $rows[0]['add_date']];
     }
 
     /**
@@ -299,7 +299,7 @@ class Module_cms_iotds extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => intval($id)));
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
         }
@@ -371,7 +371,7 @@ class Module_cms_iotds extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('is_current', 'submitter'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['is_current', 'submitter'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
         }
@@ -393,8 +393,8 @@ class Module_cms_iotds extends Standard_crud_module
         $current = post_param_integer('validated', 0);
         $title = post_param_string('title');
 
-        if (($current == 1) && ($GLOBALS['SITE_DB']->query_select_value('iotd', 'is_current', array('id' => $id)) == 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('iotd', 'submitter', array('id' => $id));
+        if (($current == 1) && ($GLOBALS['SITE_DB']->query_select_value('iotd', 'is_current', ['id' => $id]) == 0)) { // Just became validated, syndicate as just added
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('iotd', 'submitter', ['id' => $id]);
 
             if (has_actual_page_access(get_modal_user(), 'iotds')) {
                 require_code('activities');
@@ -446,7 +446,7 @@ class Module_cms_iotds extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('is_current', 'submitter'), array('id' => $id));
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['is_current', 'submitter'], ['id' => $id]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'iotd'));
         }

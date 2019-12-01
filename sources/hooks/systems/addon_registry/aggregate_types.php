@@ -31,7 +31,7 @@ class Hook_addon_registry_aggregate_types
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_aggregate_types
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_aggregate_types',
-        );
+        ];
     }
 
     /**
@@ -73,14 +73,14 @@ class Hook_addon_registry_aggregate_types
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'commandr',
                 'import',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ class Hook_addon_registry_aggregate_types
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/aggregate_types.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/aggregate_types.svg',
             'sources/hooks/systems/addon_registry/aggregate_types.php',
@@ -113,6 +113,6 @@ class Hook_addon_registry_aggregate_types
             'sources/hooks/modules/admin_import_types/aggregate_types.php',
             'sources/hooks/systems/page_groupings/aggregate_types.php',
             'sources/hooks/systems/actionlog/aggregate_types.php',
-        );
+        ];
     }
 }

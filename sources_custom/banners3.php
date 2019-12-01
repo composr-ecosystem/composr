@@ -55,12 +55,12 @@ function add_banner_quiet($name, $imgurl, $title_text, $caption, $campaign_remai
         $submitter = get_member();
     }
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => $name));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => $name]);
     if ($test === null) {
         if (!addon_installed('unvalidated')) {
             $validated = 1;
         }
-        $map = array(
+        $map = [
             'title_text' => $title_text,
             'direct_code' => '',
             'b_type' => $b_type,
@@ -80,7 +80,7 @@ function add_banner_quiet($name, $imgurl, $title_text, $caption, $campaign_remai
             'hits_to' => $hits_to,
             'views_from' => $views_from,
             'views_to' => $views_to,
-        );
+        ];
         $map += insert_lang_comcode('caption', $caption, 2);
         $GLOBALS['SITE_DB']->query_insert('banners', $map);
 

@@ -42,13 +42,13 @@ class download_indexing_test_set extends cms_test_case
 
     public function testZipIndexing()
     {
-        $file_array = array(
-            array(
+        $file_array = [
+            [
                 'name' => 'test.txt',
                 'data' => 'foobar blah',
                 'time' => time(),
-            ),
-        );
+            ],
+        ];
 
         require_code('zip');
         $tmp_path2 = cms_tempnam();

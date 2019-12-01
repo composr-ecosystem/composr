@@ -81,14 +81,14 @@ class Hook_profiles_tabs_edit_privacy
                     $groups_view = post_param_string('groups_' . strval($field_id), '');
                     $members_view = ($groups_view == 'all') ? 1 : 0;
                 }
-                $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', array('*'), array('member_id' => $member_id_of, 'field_id' => $field_id), '', 1);
+                $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', ['*'], ['member_id' => $member_id_of, 'field_id' => $field_id], '', 1);
 
                 // If there are permissions saved already
                 if (array_key_exists(0, $cpf_permissions) && $cpf_permissions[0]['field_id'] == $field_id) {
-                    $GLOBALS['FORUM_DB']->query_update('f_member_cpf_perms', array('guest_view' => $guests_view, 'member_view' => $members_view, 'friend_view' => $friends_view, 'group_view' => $groups_view), array('member_id' => $member_id_of, 'field_id' => $field_id), '', 1);
+                    $GLOBALS['FORUM_DB']->query_update('f_member_cpf_perms', ['guest_view' => $guests_view, 'member_view' => $members_view, 'friend_view' => $friends_view, 'group_view' => $groups_view], ['member_id' => $member_id_of, 'field_id' => $field_id], '', 1);
                 } else {
                     // Insert the custom permissions the user chose
-                    $GLOBALS['FORUM_DB']->query_insert('f_member_cpf_perms', array('guest_view' => $guests_view, 'member_view' => $members_view, 'friend_view' => $friends_view, 'group_view' => $groups_view, 'member_id' => $member_id_of, 'field_id' => $field_id));
+                    $GLOBALS['FORUM_DB']->query_insert('f_member_cpf_perms', ['guest_view' => $guests_view, 'member_view' => $members_view, 'friend_view' => $friends_view, 'group_view' => $groups_view, 'member_id' => $member_id_of, 'field_id' => $field_id]);
                 }
             }
 
@@ -114,7 +114,7 @@ class Hook_profiles_tabs_edit_privacy
 
         $tmp_groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true);
 
-        $cpf_ids = array();
+        $cpf_ids = [];
         foreach ($custom_fields as $cpf_title => $custom_field) {
             $cpf_id = intval($custom_field['FIELD_ID']);
             $cpf = $custom_field['RAW'];
@@ -129,19 +129,19 @@ class Hook_profiles_tabs_edit_privacy
             $cpf_ids[] = $cpf_id;
 
             // Work out current settings for this field
-            $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', array('*'), array('member_id' => $member_id_of, 'field_id' => $cpf_id), '', 1);
+            $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', ['*'], ['member_id' => $member_id_of, 'field_id' => $cpf_id], '', 1);
             if (!array_key_exists(0, $cpf_permissions)) {
                 $view_by_guests = true;
                 $view_by_members = true;
                 $view_by_friends = true;
-                $view_by_groups = array('all');
+                $view_by_groups = ['all'];
             } else {
                 $view_by_guests = ($cpf_permissions[0]['guest_view'] == 1);
                 $view_by_members = ($cpf_permissions[0]['member_view'] == 1);
                 $view_by_friends = ($cpf_permissions[0]['friend_view'] == 1);
-                $view_by_groups = (strlen($cpf_permissions[0]['group_view']) > 0) ? array_map('intval', explode(',', $cpf_permissions[0]['group_view'])) : array();
+                $view_by_groups = (strlen($cpf_permissions[0]['group_view']) > 0) ? array_map('intval', explode(',', $cpf_permissions[0]['group_view'])) : [];
                 if (count($view_by_groups) == count($tmp_groups) || $view_by_members) {
-                    $view_by_groups = array('all');
+                    $view_by_groups = ['all'];
                 }
             }
 
@@ -163,14 +163,14 @@ class Hook_profiles_tabs_edit_privacy
                 $privacy_options->attach(form_input_list_entry('staff', !$view_by_friends && !$view_by_members && !$view_by_guests, do_lang_tempcode('VISIBLE_TO_STAFF')));
                 $fields->attach(form_input_list(do_lang_tempcode('WHO_CAN_SEE_YOUR', escape_html($cpf_title)), '', 'privacy_' . strval($cpf_id), $privacy_options));
             } else { // Complex style
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '00c9fa8c21c17b30dc06bd2e86518d6f', 'TITLE' => do_lang_tempcode('WHO_CAN_SEE_YOUR', escape_html($cpf_title)))));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00c9fa8c21c17b30dc06bd2e86518d6f', 'TITLE' => do_lang_tempcode('WHO_CAN_SEE_YOUR', escape_html($cpf_title))]));
 
                 $fields->attach(form_input_tick(do_lang_tempcode('GUESTS'), do_lang_tempcode('DESCRIPTION_VISIBLE_TO_GUESTS'), 'guests_' . strval($cpf_id), $view_by_guests));
                 //$fields->attach(form_input_tick(do_lang_tempcode('MEMBERS'), do_lang_tempcode('DESCRIPTION_VISIBLE_TO_MEMBERS'), 'members_' . strval($cpf_id), $view_by_members));  Same as 'all' in groups
                 $fields->attach(form_input_tick(do_lang_tempcode('FRIENDS'), do_lang_tempcode('DESCRIPTION_VISIBLE_TO_FRIENDS'), 'friends_' . strval($cpf_id), $view_by_friends));
 
                 $groups = new Tempcode();
-                $groups->attach(form_input_list_entry('all', $view_by_groups == array('all'), do_lang_tempcode('_ALL')));
+                $groups->attach(form_input_list_entry('all', $view_by_groups == ['all'], do_lang_tempcode('_ALL')));
                 $probation_group = get_probation_group();
                 foreach ($tmp_groups as $gr_key => $group) {
                     if ($gr_key == db_get_first_id()) {
@@ -190,7 +190,7 @@ class Hook_profiles_tabs_edit_privacy
 
         if (addon_installed('content_privacy') && addon_installed('cns_member_photos')) {
             require_code('content_privacy2');
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '23f6382125592da7a449311b6dd9137b', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PHOTO'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '23f6382125592da7a449311b6dd9137b', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PHOTO')]));
             $fields->attach(get_privacy_form_fields('_photo', strval($member_id_of), false, 'photo_'));
         }
 
@@ -198,10 +198,10 @@ class Hook_profiles_tabs_edit_privacy
         $cpfs_hidden = form_input_hidden('cpf_fields', implode(',', $cpf_ids));
 
         // UI
-        $text = do_template('CNS_CPF_PERMISSIONS_TAB', array('_GUID' => '1ca98f8ea5009be2229491d341ec6e87', 'FIELDS' => $fields));
+        $text = do_template('CNS_CPF_PERMISSIONS_TAB', ['_GUID' => '1ca98f8ea5009be2229491d341ec6e87', 'FIELDS' => $fields]);
 
         $javascript = '';
 
-        return array($title, $fields, $text, $javascript, $order, $cpfs_hidden, 'menu/pages/privacy_policy');
+        return [$title, $fields, $text, $javascript, $order, $cpfs_hidden, 'menu/pages/privacy_policy'];
     }
 }

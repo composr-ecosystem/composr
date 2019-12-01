@@ -35,7 +35,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
         }
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
-        $okay_words = array(
+        $okay_words = [
             'unionised',
             'blobby',
             'reparsing',
@@ -3295,14 +3295,14 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'unescaping',
             'storable',
             'determinative',
-        );
+        ];
 
         $spell_link = spellcheck_initialise('en_GB');
         add_spellchecker_words_temp($spell_link, $okay_words);
 
         // Check disk files...
 
-        $paths = array(
+        $paths = [
             '' => 'php',
 
             'sources' => 'php',
@@ -3349,10 +3349,10 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'text_custom/EN' => 'txt',
             'data/modules/cms_comcode_pages/EN' => 'txt',
             '_tests' => 'txt',
-        );
+        ];
         foreach ($paths as $_path => $_ext) {
             $recurse = ($_path != '');
-            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, array($_ext));
+            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, [$_ext]);
 
             foreach ($files as $path) {
                 $ext = get_file_extension($path);
@@ -3386,12 +3386,12 @@ class _lang_spelling_epic_test_set extends cms_test_case
                         break;
 
                     case 'txt':
-                        if (in_array($path, array(
+                        if (in_array($path, [
                             'text/EN/licence.txt',
                             'docs/pages/comcode_custom/EN/tut_addon_index.txt',
                             'text/EN/synonyms.txt',
                             '_tests/codechecker/netbeans/dist/README.TXT',
-                        ))) {
+                        ])) {
                             continue 2;
                         }
 
@@ -3409,7 +3409,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             continue 2;
                         }
 
-                        if (in_array($path, array(
+                        if (in_array($path, [
                             'themes/default/javascript/jquery.js',
                             'themes/default/javascript/jquery_ui.js',
                             'themes/default/javascript/jquery_autocomplete.js',
@@ -3444,7 +3444,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'sources_custom/hooks/modules/chat_bots/trickstr.php',
                             '_tests/tests/unit_tests/lang_spelling.php',
                             'sources/mail_dkim.php',
-                        ))) {
+                        ])) {
                             continue 2;
                         }
 
@@ -3453,7 +3453,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                         $c = preg_replace('#https?://[^\s\'"]*#', '', $c);
 
                         $_c = '';
-                        $matches = array();
+                        $matches = [];
 
                         if ($ext != 'css') {
                             $num_matches = preg_match_all('#[^:]//(.*)#', $c, $matches);

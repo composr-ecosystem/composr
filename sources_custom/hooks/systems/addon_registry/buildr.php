@@ -26,9 +26,9 @@ class Hook_addon_registry_buildr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array(
+        return [
             'buildr_addon',
-        );
+        ];
     }
 
     /**
@@ -68,9 +68,9 @@ class Hook_addon_registry_buildr
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Clip art from "Madlantern Arts Clipart" used with permission.',
-        );
+        ];
     }
 
     /**
@@ -106,9 +106,9 @@ Buildr is a full zone addon for Composr.';
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_points',
-        );
+        ];
     }
 
     /**
@@ -118,16 +118,16 @@ Buildr is a full zone addon for Composr.';
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'points',
                 'ecommerce',
                 'chat',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -147,7 +147,7 @@ Buildr is a full zone addon for Composr.';
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/buildr.php',
             'sources_custom/hooks/systems/addon_registry/buildr.php',
             'data_custom/modules/buildr/index.html',
@@ -261,6 +261,6 @@ Buildr is a full zone addon for Composr.';
             'data_custom/modules/buildr/docs/roompw1.0.png',
             'data_custom/modules/buildr/docs/roompw1.1.png',
             'themes/default/javascript_custom/buildr.js',
-        );
+        ];
     }
 }

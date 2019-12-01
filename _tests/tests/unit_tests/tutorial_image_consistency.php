@@ -27,7 +27,7 @@ class tutorial_image_consistency_test_set extends cms_test_case
         require_code('images');
         require_code('tutorials');
 
-        $this->images = array();
+        $this->images = [];
         $path = get_file_base() . '/data_custom/images/docs';
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
@@ -51,8 +51,8 @@ class tutorial_image_consistency_test_set extends cms_test_case
         }
         closedir($dh);
 
-        $this->images_referenced = array();
-        $this->images_referenced_by_tutorial = array();
+        $this->images_referenced = [];
+        $this->images_referenced_by_tutorial = [];
         $path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
@@ -61,18 +61,18 @@ class tutorial_image_consistency_test_set extends cms_test_case
 
                 $c = remove_code_block_contents(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#data_custom/images/docs/([^"\'\s]*\.(gif|jpg|jpeg|png))#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $this->images_referenced[$matches[1][$i]] = $path . '/' . $file;
                 }
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\[media[^\[\]]*]data_custom/images/docs/([^\[\]]*)\[/media\]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $dir = dirname($matches[1][$i]);
                     if (!isset($this->images_referenced_by_tutorial[$tutorial])) {
-                        $this->images_referenced_by_tutorial[$tutorial] = array();
+                        $this->images_referenced_by_tutorial[$tutorial] = [];
                     }
                     $this->images_referenced_by_tutorial[$tutorial][] = $dir;
 
@@ -101,10 +101,10 @@ class tutorial_image_consistency_test_set extends cms_test_case
 
     public function testNoMissingScreenshots()
     {
-        $exceptions = array(
+        $exceptions = [
             'tut_install/install_step2_1.png',
             'tut_install/install_step3_1.png',
-        );
+        ];
 
         foreach (array_keys($this->images) as $x) {
             if (in_array($x, $exceptions)) {

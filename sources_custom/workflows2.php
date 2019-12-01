@@ -34,15 +34,15 @@ function add_approval_point_to_workflow($bits, $workflow_id, $position = null)
     // together but their specific order is undefined)
     if ($position === null) {
         // The easy case, we simply grab the existing approval points in order of position and +1 to the highest.
-        $current_position = $GLOBALS['SITE_DB']->query_select_value('workflow_approval_points', 'MAX(the_position)', array('workflow_id' => $workflow_id));
+        $current_position = $GLOBALS['SITE_DB']->query_select_value('workflow_approval_points', 'MAX(the_position)', ['workflow_id' => $workflow_id]);
         $position = ($current_position === null) ? 1 : ($current_position + 1);
     }
 
     // Do the insertion.
-    $map = array(
+    $map = [
        'workflow_id' => $workflow_id,
        'the_position' => $position,
-    ) + $bits;
+    ] + $bits;
     return $GLOBALS['SITE_DB']->query_insert('workflow_approval_points', $map, true);
 }
 
@@ -57,27 +57,27 @@ function add_approval_point_to_workflow($bits, $workflow_id, $position = null)
 function delete_workflow($id)
 {
     // Grab all of the content in this workflow
-    $content = $GLOBALS['SITE_DB']->query_select('workflow_content', array('id', 'content_type', 'content_id'), array('workflow_id' => $id));
+    $content = $GLOBALS['SITE_DB']->query_select('workflow_content', ['id', 'content_type', 'content_id'], ['workflow_id' => $id]);
 
     // Now remove those references
-    $GLOBALS['SITE_DB']->query_delete('workflow_content', array('workflow_id' => $id));
+    $GLOBALS['SITE_DB']->query_delete('workflow_content', ['workflow_id' => $id]);
 
     // Then remove their workflow status
     foreach ($content as $content_item) {
-        $GLOBALS['SITE_DB']->query_delete('workflow_content_status', array('workflow_content_id' => $content_item['id']));
+        $GLOBALS['SITE_DB']->query_delete('workflow_content_status', ['workflow_content_id' => $content_item['id']]);
     }
 
     // Grab the approval points in this workflow and remove those which aren't used by any other workflows
-    $points = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', array('id', 'workflow_approval_name'), array('workflow_id' => $id));
+    $points = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['id', 'workflow_approval_name'], ['workflow_id' => $id]);
     foreach ($points as $p) {
         delete_lang($p['workflow_approval_name']);
-        $GLOBALS['SITE_DB']->query_delete('workflow_permissions', array('workflow_approval_point_id' => $p['id']));
+        $GLOBALS['SITE_DB']->query_delete('workflow_permissions', ['workflow_approval_point_id' => $p['id']]);
     }
 
     // Now remove the workflow from the database and remove its association with approval points
-    delete_lang($GLOBALS['SITE_DB']->query_select_value('workflows', 'workflow_name', array('id' => $id)));
-    $GLOBALS['SITE_DB']->query_delete('workflows', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('workflow_approval_points', array('workflow_id' => $id));
+    delete_lang($GLOBALS['SITE_DB']->query_select_value('workflows', 'workflow_name', ['id' => $id]));
+    $GLOBALS['SITE_DB']->query_delete('workflows', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('workflow_approval_points', ['workflow_id' => $id]);
 }
 
 /**
@@ -89,7 +89,7 @@ function delete_workflow($id)
 function delete_approval_point($name)
 {
     // Grab all content awaiting this approval
-    $content = $GLOBALS['SITE_DB']->query_select('workflow_content_status', array('status_code', 'workflow_content_id'), array('workflow_approval_point_id' => $name));
+    $content = $GLOBALS['SITE_DB']->query_select('workflow_content_status', ['status_code', 'workflow_content_id'], ['workflow_approval_point_id' => $name]);
 
     // Now go through each, approving them if needed
     foreach ($content as $content_item) {
@@ -100,20 +100,20 @@ function delete_approval_point($name)
         }
     }
     // Now remove these approval points en-mass from the content
-    $GLOBALS['SITE_DB']->query_delete('workflow_content_status', array('workflow_content_id' => $name));
+    $GLOBALS['SITE_DB']->query_delete('workflow_content_status', ['workflow_content_id' => $name]);
 
     // We have to be careful about removing approval points from workflows, since a workflow is defined by the approval points it requires.
     // We must check to see if we're about to throw out any workflows as  result of removing this point. If so then we'd like to remove the workflow sanely and completely.
-    $affected_workflows = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', array('workflow_id'), array('workflow_approval_name' => $name));
+    $affected_workflows = $GLOBALS['SITE_DB']->query_select('workflow_approval_points', ['workflow_id'], ['workflow_approval_name' => $name]);
     foreach ($affected_workflows as $workflow) {
         // If there is only one approval point then it's the one we've been asked to remove. Let's just remove the whole workflow.
         if (count(get_approval_points_for_workflow($workflow['workflow_id'])) == 1) {
             delete_workflow($workflow['workflow_id']); // Otherwise we can just remove this one point
         } else {
-            $GLOBALS['SITE_DB']->query_delete('workflow_approval_points', array('workflow_approval_name' => $name, 'workflow_id' => $workflow['workflow_id']), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('workflow_approval_points', ['workflow_approval_name' => $name, 'workflow_id' => $workflow['workflow_id']], '', 1);
         }
     }
 
     // Now we remove the permissions associated with this approval point
-    $GLOBALS['SITE_DB']->query_delete('workflow_permissions', array('workflow_approval_point_id' => $name));
+    $GLOBALS['SITE_DB']->query_delete('workflow_permissions', ['workflow_approval_point_id' => $name]);
 }

@@ -29,16 +29,16 @@
  * @param  ?Tempcode $fields Form fields to pass through as post data on confirmation (null: none)
  * @return Tempcode The confirmation page
  */
-function confirm_screen($title, $preview, $url_type, $back_url_type = null, $sup_post = array(), $fields = null)
+function confirm_screen($title, $preview, $url_type, $back_url_type = null, $sup_post = [], $fields = null)
 {
     if ((is_string($back_url_type)) && (strlen($back_url_type) < 10)) {
-        $back_url = build_url(array('page' => '_SELF', 'type' => $back_url_type), '_SELF', array(), true);
+        $back_url = build_url(['page' => '_SELF', 'type' => $back_url_type], '_SELF', [], true);
     } else {
         $back_url = $back_url_type;
     }
 
     if ((is_string($url_type)) && (!looks_like_url($url_type))) {
-        $url = build_url(array('page' => '_SELF', 'type' => $url_type), '_SELF', array(), true);
+        $url = build_url(['page' => '_SELF', 'type' => $url_type], '_SELF', [], true);
     } else {
         $url = $url_type;
     }
@@ -51,5 +51,5 @@ function confirm_screen($title, $preview, $url_type, $back_url_type = null, $sup
         $fields->attach(form_input_hidden($key, is_string($val) ? $val : strval($val)));
     }
 
-    return do_template('CONFIRM_SCREEN', array('_GUID' => 'a99b861d24ab876a40cc010af2b26bc8', 'URL' => $url, 'BACK_URL' => $back_url, 'PREVIEW' => $preview, 'FIELDS' => $fields, 'TITLE' => $title));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => 'a99b861d24ab876a40cc010af2b26bc8', 'URL' => $url, 'BACK_URL' => $back_url, 'PREVIEW' => $preview, 'FIELDS' => $fields, 'TITLE' => $title]);
 }

@@ -31,7 +31,7 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_adv_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/welcome_emails.svg',
             'sources/hooks/systems/addon_registry/welcome_emails.php',
@@ -109,6 +109,6 @@ class Hook_addon_registry_welcome_emails
             'sources/hooks/systems/resource_meta_aware/welcome_email.php',
             'themes/default/javascript/welcome_emails.js',
             'sources/hooks/systems/actionlog/welcome_emails.php',
-        );
+        ];
     }
 }

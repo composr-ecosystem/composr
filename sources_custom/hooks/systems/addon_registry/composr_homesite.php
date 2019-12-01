@@ -26,7 +26,7 @@ class Hook_addon_registry_composr_homesite
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_composr_homesite
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -105,7 +105,7 @@ This addon does not contain the compo.sr install code and the overall site and t
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -115,11 +115,11 @@ This addon does not contain the compo.sr install code and the overall site and t
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'all_icons',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'downloads',
                 'news',
                 'tickets',
@@ -128,9 +128,9 @@ This addon does not contain the compo.sr install code and the overall site and t
                 'composr_homesite_support_credits',
                 'composr_release_build',
                 'composr_tutorials',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -150,7 +150,7 @@ This addon does not contain the compo.sr install code and the overall site and t
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/composr_homesite.php',
             'sources_custom/hooks/systems/addon_registry/composr_homesite.php',
             'adminzone/pages/minimodules_custom/_make_release.php',
@@ -228,6 +228,6 @@ This addon does not contain the compo.sr install code and the overall site and t
             'uploads/website_specific/compo.sr/upgrades/sample_data/index.html',
             'uploads/website_specific/compo.sr/upgrades/tars/index.html',
             'uploads/website_specific/compo.sr/upgrades/tar_build/index.html',
-        );
+        ];
     }
 }

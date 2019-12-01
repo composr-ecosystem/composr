@@ -30,7 +30,7 @@ class Hook_config_allow_audio_videos
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_AUDIO_VIDEOS',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_allow_audio_videos
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

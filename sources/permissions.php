@@ -46,22 +46,22 @@ function clear_permissions_runtime_cache()
 {
     global $PRIVILEGE_CACHE, $GROUP_PRIVILEGE_CACHE, $ZONE_ACCESS_CACHE, $PAGE_ACCESS_CACHE, $PAGE_ACCESS_CACHE_MATCH_KEYS, $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE, $SUBMIT_PERMISSION_CACHE, $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED;
 
-    $PRIVILEGE_CACHE = array();
+    $PRIVILEGE_CACHE = [];
 
-    $GROUP_PRIVILEGE_CACHE = array();
+    $GROUP_PRIVILEGE_CACHE = [];
 
-    $ZONE_ACCESS_CACHE = array();
+    $ZONE_ACCESS_CACHE = [];
 
-    $PAGE_ACCESS_CACHE = array();
-    $PAGE_ACCESS_CACHE_MATCH_KEYS = array();
+    $PAGE_ACCESS_CACHE = [];
+    $PAGE_ACCESS_CACHE_MATCH_KEYS = [];
 
-    $CATEGORY_ACCESS_CACHE = array();
-    $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE = array();
+    $CATEGORY_ACCESS_CACHE = [];
+    $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE = [];
 
-    $SUBMIT_PERMISSION_CACHE = array();
+    $SUBMIT_PERMISSION_CACHE = [];
 
     $PERMISSION_CHECK_LOGGER = null;
-    $PERMISSIONS_ALREADY_LOGGED = array();
+    $PERMISSIONS_ALREADY_LOGGED = [];
 }
 
 /**
@@ -103,7 +103,7 @@ function handle_permission_check_logging($member_id, $op, $params, $result)
     if (($PERMISSION_CHECK_LOGGER === false) && ((!$fbe) || (get_param_integer('keep_firephp', 0) == 0))) {
         return;
     }
-    $sz = serialize(array($member_id, $op, $params));
+    $sz = serialize([$member_id, $op, $params]);
     if (array_key_exists($sz, $PERMISSIONS_ALREADY_LOGGED)) {
         return;
     }
@@ -149,7 +149,7 @@ function has_zone_access($member_id, $zone)
 
     if (isset($ZONE_ACCESS_CACHE[$member_id][$zone])) {
         $result = $ZONE_ACCESS_CACHE[$member_id][$zone];
-        handle_permission_check_logging($member_id, 'has_zone_access', array($zone), $result);
+        handle_permission_check_logging($member_id, 'has_zone_access', [$zone], $result);
         return $result;
     }
 
@@ -167,10 +167,10 @@ function has_zone_access($member_id, $zone)
         $SMART_CACHE->append('zone_access_needed', $zone, true);
         $all_zone_access_needed = $SMART_CACHE->get('zone_access_needed');
         if ($all_zone_access_needed === null) {
-            $all_zone_access_needed = array();
+            $all_zone_access_needed = [];
         }
     } else {
-        $all_zone_access_needed = array();
+        $all_zone_access_needed = [];
     }
     $all_zone_access_needed[$zone] = true;
     foreach ($all_zone_access_needed as $zone_access_needed => $_) {
@@ -187,7 +187,7 @@ function has_zone_access($member_id, $zone)
     $sql .= 'SELECT DISTINCT zone_name FROM ' . get_table_prefix() . 'member_zone_access WHERE member_id=' . strval($member_id) . ' AND (active_until IS NULL OR active_until>' . strval(time()) . ')' . $where;
     $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
     if (!array_key_exists($member_id, $ZONE_ACCESS_CACHE)) {
-        $ZONE_ACCESS_CACHE[$member_id] = array();
+        $ZONE_ACCESS_CACHE[$member_id] = [];
     }
     foreach ($rows as $row) {
         $ZONE_ACCESS_CACHE[$member_id][$row['zone_name']] = true;
@@ -258,7 +258,7 @@ function has_actual_page_access($member_id = null, $page = null, $zone = null, $
     }
     if ($privilege !== null) {
         if (!is_array($privilege)) {
-            $privilege = array($privilege);
+            $privilege = [$privilege];
         }
         $privilege_acceptable = false;
         foreach ($privilege as $perm) {
@@ -304,7 +304,7 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
 
         // Regular page access
         $result = $PAGE_ACCESS_CACHE[$member_id][$page_access_needed];
-        handle_permission_check_logging($member_id, 'has_page_access', array($page_access_needed), $result);
+        handle_permission_check_logging($member_id, 'has_page_access', [$page_access_needed], $result);
         return $result;
     }
 
@@ -324,10 +324,10 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
         $SMART_CACHE->append('page_access_needed', $page_access_needed, true);
         $all_page_access_needed = $SMART_CACHE->get('page_access_needed');
         if ($all_page_access_needed === null) {
-            $all_page_access_needed = array();
+            $all_page_access_needed = [];
         }
     } else {
-        $all_page_access_needed = array();
+        $all_page_access_needed = [];
     }
     $all_page_access_needed[$page_access_needed] = true;
     foreach ($all_page_access_needed as $_page_access_needed => $_) {
@@ -352,10 +352,10 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
     $sql .= ' UNION ';
     $sql .= 'SELECT zone_name,page_name,NULL AS group_id FROM ' . get_table_prefix() . 'member_page_access WHERE member_id=' . strval($member_id) . ' AND (active_until IS NULL OR active_until>' . strval(time()) . ')' . $where;
     $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
-    $rows_organised_for_groups = array();
-    $rows_organised_for_member = array();
-    $rows_organised_for_groups_match_key = array();
-    $rows_organised_for_member_match_key = array();
+    $rows_organised_for_groups = [];
+    $rows_organised_for_member = [];
+    $rows_organised_for_groups_match_key = [];
+    $rows_organised_for_member_match_key = [];
     foreach ($rows as $row) {
         if ($row['zone_name'] == '/') {
             // Match-keys
@@ -375,10 +375,10 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
     }
 
     if (!array_key_exists($member_id, $PAGE_ACCESS_CACHE)) {
-        $PAGE_ACCESS_CACHE[$member_id] = array();
+        $PAGE_ACCESS_CACHE[$member_id] = [];
     }
     if (!array_key_exists($member_id, $PAGE_ACCESS_CACHE_MATCH_KEYS)) {
-        $PAGE_ACCESS_CACHE_MATCH_KEYS[$member_id] = array();
+        $PAGE_ACCESS_CACHE_MATCH_KEYS[$member_id] = [];
     }
     foreach ($all_page_access_needed as $_page_access_needed => $_) {
         list($_zone, $_page) = explode(':', $_page_access_needed);
@@ -391,7 +391,7 @@ function has_page_access($member_id, $page, $zone, $at_now = false)
         }
 
         // Match-keys
-        $regexp = array();
+        $regexp = [];
         $regexp[] = '(_WILD:' . preg_quote($_page, '#') . ':.*)';
         $regexp[] = '(' . preg_quote($_zone, '#') . ':' . preg_quote($_page, '#') . ':.*)';
         $regexp[] = '(_WILD:_WILD:.*)';
@@ -448,7 +448,7 @@ function load_up_all_module_category_permissions($member_id, $module = null)
 
     $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$module][$member_id] = true;
 
-    $CATEGORY_ACCESS_CACHE[$member_id] = array();
+    $CATEGORY_ACCESS_CACHE[$member_id] = [];
     foreach ($perhaps as $row) {
         if ($module !== null) {
             $for = $module . '/' . $row['category_name'];
@@ -475,7 +475,7 @@ function has_category_access($member_id, $module, $category)
 
     global $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE;
     if ((isset($CATEGORY_ACCESS_CACHE[$member_id])) && (isset($CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]))) {
-        handle_permission_check_logging($member_id, 'has_category_access', array($module, $category), $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]);
+        handle_permission_check_logging($member_id, 'has_category_access', [$module, $category], $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]);
         return $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category];
     }
 
@@ -487,7 +487,7 @@ function has_category_access($member_id, $module, $category)
     }
 
     if (isset($LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE[$module][$member_id])) {
-        handle_permission_check_logging($member_id, 'has_category_access', array($module, $category), false);
+        handle_permission_check_logging($member_id, 'has_category_access', [$module, $category], false);
         return false; // As we know $CATEGORY_ACCESS_CACHE would have had a true entry if we did have access
     }
 
@@ -499,13 +499,13 @@ function has_category_access($member_id, $module, $category)
             $SMART_CACHE->append('category_access_needed', $module . '/' . $category, true);
             $all_category_access_needed = $SMART_CACHE->get('category_access_needed');
             if ($all_category_access_needed === null) {
-                $all_category_access_needed = array();
+                $all_category_access_needed = [];
             }
         } else {
-            $all_category_access_needed = array();
+            $all_category_access_needed = [];
         }
     } else {
-        $all_category_access_needed = array();
+        $all_category_access_needed = [];
     }
     $all_category_access_needed[$module . '/' . $category] = true;
     foreach ($all_category_access_needed as $category_access_needed_parts => $_) {
@@ -629,10 +629,10 @@ function filter_group_permissivity($groups)
     if (get_forum_type() == 'cns') {
         static $permissive_groups = null;
         if ($permissive_groups === null) {
-            $permissive_groups = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_groups', array('id'), array('g_is_private_club' => 0)));
+            $permissive_groups = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['id'], ['g_is_private_club' => 0]));
         }
 
-        $groups_new = array();
+        $groups_new = [];
         foreach ($groups as $id) {
             if (in_array($id, $permissive_groups)) {
                 $groups_new[] = $id;
@@ -765,7 +765,7 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
                     if (isset($PRIVILEGE_CACHE[$member_id][$privilege][''][$cats[$i * 2 + 0]][$cats[$i * 2 + 1]])) {
                         $result = $PRIVILEGE_CACHE[$member_id][$privilege][''][$cats[$i * 2 + 0]][$cats[$i * 2 + 1]];
                         if (!$result) { // Negative overrides take precedence over positive ones; got to be careful of that!
-                            handle_permission_check_logging($member_id, 'has_privilege', array_merge(array($privilege, $page), ($cats === null) ? array() : $cats), $result);
+                            handle_permission_check_logging($member_id, 'has_privilege', array_merge([$privilege, $page], ($cats === null) ? [] : $cats), $result);
                             return $result;
                         }
                         $okay = true;
@@ -783,20 +783,20 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
             }
             if ($okay) {
                 $result = $okay;
-                handle_permission_check_logging($member_id, 'has_privilege', array_merge(array($privilege, $page), ($cats === null) ? array() : (is_array($cats) ? $cats : array($cats))), $result);
+                handle_permission_check_logging($member_id, 'has_privilege', array_merge([$privilege, $page], ($cats === null) ? [] : (is_array($cats) ? $cats : [$cats])), $result);
                 return $result;
             }
         }
         if ($page != '') {
             if (isset($PRIVILEGE_CACHE[$member_id][$privilege][$page][''][''])) {
                 $result = $PRIVILEGE_CACHE[$member_id][$privilege][$page][''][''];
-                handle_permission_check_logging($member_id, 'has_privilege', array_merge(array($privilege, $page), ($cats === null) ? array() : (is_array($cats) ? $cats : array($cats))), $result);
+                handle_permission_check_logging($member_id, 'has_privilege', array_merge([$privilege, $page], ($cats === null) ? [] : (is_array($cats) ? $cats : [$cats])), $result);
                 return $result;
             }
         }
         if (isset($PRIVILEGE_CACHE[$member_id][$privilege][''][''][''])) {
             $result = $PRIVILEGE_CACHE[$member_id][$privilege][''][''][''];
-            handle_permission_check_logging($member_id, 'has_privilege', array_merge(array($privilege, $page), ($cats === null) ? array() : (is_array($cats) ? $cats : array($cats))), $result);
+            handle_permission_check_logging($member_id, 'has_privilege', array_merge([$privilege, $page], ($cats === null) ? [] : (is_array($cats) ? $cats : [$cats])), $result);
             return $result;
         }
     }
@@ -810,10 +810,10 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
         $SMART_CACHE->append('privileges_needed', $privilege, true);
         $all_privileges_needed = $SMART_CACHE->get('privileges_needed');
         if ($all_privileges_needed === null) {
-            $all_privileges_needed = array();
+            $all_privileges_needed = [];
         }
     } else {
-        $all_privileges_needed = array();
+        $all_privileges_needed = [];
     }
     $all_privileges_needed[$privilege] = true;
     foreach ($all_privileges_needed as $privilege_needed => $_) {
@@ -836,7 +836,7 @@ function has_privilege($member_id, $privilege, $page = null, $cats = null)
         $perhaps = array_merge($perhaps, $GLOBALS['FORUM_DB']->query($sql, null, null, false, true));
     }
     if (!array_key_exists($member_id, $PRIVILEGE_CACHE)) {
-        $PRIVILEGE_CACHE[$member_id] = array();
+        $PRIVILEGE_CACHE[$member_id] = [];
     }
     foreach ($perhaps as $p) {
         if (empty($PRIVILEGE_CACHE[$member_id][$p['privilege']][$p['the_page']][$p['module_the_name']][$p['category_name']])) {
@@ -898,7 +898,7 @@ function has_submit_permission($range, $member_id, $ip, $page, $cats = null)
 
     if ((addon_installed('securitylogging')) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && ((get_value('pinpoint_submitban_check') !== '1') || (get_zone_name() == 'cms'))) {
         if ($USERSUBMITBAN_MEMBER_CACHE === null) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', array('the_member' => $member_id));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $member_id]);
             $USERSUBMITBAN_MEMBER_CACHE = ($test !== null);
         }
         if ($USERSUBMITBAN_MEMBER_CACHE) {
@@ -1061,7 +1061,7 @@ function has_add_comcode_page_permission($zone = null, $member_id = null)
     $cats = mixed();
     $cats = 'zone_page';
     if ($zone !== null) {
-        $cats = array('zone_page', $zone);
+        $cats = ['zone_page', $zone];
     }
     return has_privilege($member_id, 'submit_highrange_content', 'cms_comcode_pages', $cats);
 }
@@ -1091,7 +1091,7 @@ function has_bypass_validation_comcode_page_permission($zone = null, $member_id 
     $cats = mixed();
     $cats = 'zone_page';
     if ($zone !== null) {
-        $cats = array('zone_page', $zone);
+        $cats = ['zone_page', $zone];
     }
     return has_privilege($member_id, 'bypass_validation_highrange_content', 'cms_comcode_pages', $cats);
 }
@@ -1121,7 +1121,7 @@ function has_some_edit_comcode_page_permission($scope, $zone = null, $member_id 
 
     $cats = null;
     if ($zone !== null) {
-        $cats = array('zone_page', $zone);
+        $cats = ['zone_page', $zone];
     }
 
     if (($scope & COMCODE_EDIT_ANY) != 0) {
@@ -1147,7 +1147,7 @@ function has_some_edit_comcode_page_permission($scope, $zone = null, $member_id 
  */
 function get_comcode_page_editability_per_zone($member_id = null)
 {
-    $zones = array();
+    $zones = [];
 
     $_zones = find_all_zones();
     foreach ($_zones as $zone) {
@@ -1160,7 +1160,7 @@ function get_comcode_page_editability_per_zone($member_id = null)
         }
 
         if ($mask != COMCODE_EDIT_NONE) {
-            $zones[] = array($zone, $mask);
+            $zones[] = [$zone, $mask];
         }
     }
 
@@ -1183,7 +1183,7 @@ function has_edit_comcode_page_permission($zone, $page, $owner = null, $member_i
     }
 
     if ($owner === null) {
-        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', array('the_zone' => $zone, 'the_page' => $page));
+        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_submitter', ['the_zone' => $zone, 'the_page' => $page]);
     }
 
     if (!has_actual_page_access($member_id, $page, $zone)) {
@@ -1198,7 +1198,7 @@ function has_edit_comcode_page_permission($zone, $page, $owner = null, $member_i
 
     $cats = null;
     if ($zone !== null) {
-        $cats = array('zone_page', $zone);
+        $cats = ['zone_page', $zone];
     }
 
     return has_privilege($member_id, $privilege, 'cms_comcode_pages', $cats);

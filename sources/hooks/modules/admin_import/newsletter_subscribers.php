@@ -34,7 +34,7 @@ class Hook_import_newsletter_subscribers
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['product'] = 'Newsletter subscribers (spreadsheet files)';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'admin_newsletter';

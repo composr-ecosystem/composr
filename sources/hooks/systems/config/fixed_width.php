@@ -30,7 +30,7 @@ class Hook_config_fixed_width
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FIXED_WIDTH',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_fixed_width
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

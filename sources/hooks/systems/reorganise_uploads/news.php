@@ -33,6 +33,6 @@ class Hook_reorganise_uploads_news
         }
 
         require_code('news2');
-        reorganise_uploads__news_categories(array(), true);
+        reorganise_uploads__news_categories([], true);
     }
 }

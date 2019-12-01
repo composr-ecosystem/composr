@@ -33,10 +33,10 @@ class Hook_realtime_rain_security
     public function run($from, $to)
     {
         if (!addon_installed('securitylogging')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_security')) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT id,reason,ip,date_and_time AS timestamp,member_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'hackattack WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -47,7 +47,7 @@ class Hook_realtime_rain_security
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
 
-                $drops[] = rain_get_special_icons($row['ip'], $timestamp) + array(
+                $drops[] = rain_get_special_icons($row['ip'], $timestamp) + [
                     'TYPE' => 'security',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -56,7 +56,7 @@ class Hook_realtime_rain_security
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'admin_security', 'type' => 'view', 'id' => $row['id']), get_module_zone('admin_security')),
+                    'URL' => build_url(['page' => 'admin_security', 'type' => 'view', 'id' => $row['id']], get_module_zone('admin_security')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => true,
 
@@ -64,7 +64,7 @@ class Hook_realtime_rain_security
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'hack_type_' . $row['reason'],
-                );
+                ];
             }
         }
 

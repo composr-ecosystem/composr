@@ -47,17 +47,17 @@ class CMSPtRead
         $_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id' . $sql, $max, $start);
         $topics_count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $sql);
 
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
-            $p_time_low = db_function('COALESCE', array('(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0'));
+            $p_time_low = db_function('COALESCE', ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
             $extra = ' AND p_time>' . $p_time_low . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days')));
-            $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', array('p.p_topic_id' => $topic['topic_id']), $extra);
+            $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', ['p.p_topic_id' => $topic['topic_id']], $extra);
 
             $participants = get_topic_participants($topic['topic_id'], null, $topic);
 
             $can_upload = (cns_get_member_best_group_property(get_member(), 'max_attachments_per_post') > 0);
 
-            $topics[] = array(
+            $topics[] = [
                 'topic_id' => $topic['topic_id'],
                 'total_posts' => $topic['t_cache_num_posts'],
                 'participant_count' => count($participants),
@@ -75,17 +75,17 @@ class CMSPtRead
                 'is_closed' => ($topic['t_is_open'] == 0),
                 'delete_mode' => 1, // soft-delete mode only
                 'participants' => $participants,
-            );
+            ];
         }
 
         $can_upload = (cns_get_member_best_group_property(get_member(), 'max_attachments_per_post') > 0);
 
-        return array(
+        return [
             'topics_count' => $topics_count,
             'unread_count' => get_num_unread_private_topics(),
             'can_upload' => $can_upload,
             'topics' => $topics,
-        );
+        ];
     }
 
     /**
@@ -108,7 +108,7 @@ class CMSPtRead
         }
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', array('*', 't.id AS topic_id', 'p.id AS post_id'), array('t.id' => $topic_id), '', 1);
+        $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', ['*', 't.id AS topic_id', 'p.id AS post_id'], ['t.id' => $topic_id], '', 1);
         if (!isset($topic_details[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
@@ -124,17 +124,17 @@ class CMSPtRead
         $_posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS post_id,p.p_topic_id AS topic_id' . $sql, $max, $start);
         $total_post_count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $sql);
 
-        $last_read_sql = db_function('COALESCE' , array('(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0'));
+        $last_read_sql = db_function('COALESCE' , ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
 
-        $extra = ' AND p_time>' . db_function('GREATEST', array(
+        $extra = ' AND p_time>' . db_function('GREATEST', [
             strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))),
             $last_read_sql,
-        ));
-        $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', array('p.p_topic_id' => $topic_id), $extra);
+        ]);
+        $unread_num = $GLOBALS['FORUM_DB']->query_select_value('f_posts p', 'COUNT(*)', ['p.p_topic_id' => $topic_id], $extra);
 
-        $topic_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => get_member(), 'l_topic_id' => $topic_id));
+        $topic_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $topic_id]);
 
-        $posts = array();
+        $posts = [];
         foreach ($_posts as $post) {
             $content = prepare_post_for_tapatalk($post, $return_html);
 
@@ -142,7 +142,7 @@ class CMSPtRead
 
             $is_unread = ($topic_read_time === null) || ($post['p_time'] > $topic_read_time);
 
-            $posts[] = array(
+            $posts[] = [
                 'msg_id' => $post['post_id'],
                 'msg_content' => $content,
                 'msg_author_id' => $post['p_poster'],
@@ -152,7 +152,7 @@ class CMSPtRead
                 'post_time' => $post['p_time'],
                 'new_post' => $is_unread,
                 'attachments' => $attachments,
-            );
+            ];
         }
 
         $participants = get_topic_participants($topic_id, null, $topic_details[0]);
@@ -161,7 +161,7 @@ class CMSPtRead
 
         cns_ping_topic_read($topic_id);
 
-        return array(
+        return [
             'topic_id' => $topic_id,
             'conv_title' => $topic_details[0]['t_cache_first_title'],
             'participant_count' => count($participants),
@@ -179,7 +179,7 @@ class CMSPtRead
             'delete_mode' => 1, // soft-delete mode only
             'participants' => $participants,
             'posts' => $posts,
-        );
+        ];
     }
 
     /**

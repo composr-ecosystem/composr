@@ -27,7 +27,7 @@ class _health_check_test_set extends cms_test_case
         $sections_to_run = null;
 
         if ($this->only !== null) {
-            $sections_to_run = array($this->only);
+            $sections_to_run = [$this->only];
         }
 
         $has_fails = false;

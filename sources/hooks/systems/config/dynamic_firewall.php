@@ -30,7 +30,7 @@ class Hook_config_dynamic_firewall
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DYNAMIC_FIREWALL',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_dynamic_firewall
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -57,7 +57,7 @@ function endpoint_script()
 
             // Path-info is translated to $hook_type/$hook/$id
             $path_info = $_SERVER['PATH_INFO'];
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(/\w+)(/\w+)?(/.+)?#', $path_info, $matches) != 0) {
                 $hook_type = ltrim($matches[1], '/');
                 $hook = isset($matches[2]) ? ltrim($matches[2], '/') : false;
@@ -105,18 +105,18 @@ function endpoint_script()
         $result = $ob->run($type, $id);
 
         // Process into output structure
-        $return_data = array(
+        $return_data = [
             'success' => isset($result['success']) ? $result['success'] : true,
             'error_details' => isset($result['error_details']) ? $result['error_details'] : null,
-            'response_data' => array_diff_key($result, array('success' => true, 'error_details' => true)),
-        );
+            'response_data' => array_diff_key($result, ['success' => true, 'error_details' => true]),
+        ];
     }
     catch (Exception $e) {
-        $return_data = array(
+        $return_data = [
             'success' => false,
             'error_details' => strip_html($e->getMessage()),
-            'response_data' => array(),
-        );
+            'response_data' => [],
+        ];
     }
 
     // Output

@@ -30,7 +30,7 @@ function init__facebook_connect()
     $FACEBOOK_CONNECT = null;
     $appid = get_option('facebook_appid');
     $appsecret = get_option('facebook_secret_code');
-    $FACEBOOK_CONNECT = new Facebook(array('appId' => $appid, 'secret' => $appsecret));
+    $FACEBOOK_CONNECT = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
 }
 
 // This is only called if we know we have a user logged into Facebook, who has authorised to our app
@@ -63,7 +63,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         return $current_logged_in_member;
     }
     try {
-        $details = $FACEBOOK_CONNECT->api('/me', array('fields' => 'id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday'));
+        $details = $FACEBOOK_CONNECT->api('/me', ['fields' => 'id,name,email,about,website,currency,first_name,last_name,gender,location,hometown,picture,timezone,locale,birthday']);
     } catch (Exception $e) {
         header('Facebook-Error: ' . escape_header($e->getMessage()));
 
@@ -72,7 +72,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
     if (!is_array($details)) {
         return $current_logged_in_member;
     }
-    $details2 = $FACEBOOK_CONNECT->api('/me', array('fields' => 'picture', 'type' => 'normal'));
+    $details2 = $FACEBOOK_CONNECT->api('/me', ['fields' => 'picture', 'type' => 'normal']);
     if (!is_array($details2)) { // NB: This can happen even if there is a Facebook session, if the session ID in the cookie has expired. In this case Guest will be the user until the frontend does a refresh
         return $current_logged_in_member;
     }
@@ -125,7 +125,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
     }
 
     // See if they have logged in before - i.e. have a synched account
-    $member_row = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array('m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => $facebook_uid), 'ORDER BY m_join_time DESC,id DESC', 1);
+    $member_row = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => $facebook_uid], 'ORDER BY m_join_time DESC,id DESC', 1);
     $member_id = array_key_exists(0, $member_row) ? $member_row[0]['id'] : null;
     if (is_guest($member_id)) {
         $member_id = null;
@@ -150,11 +150,11 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             }
         }
 
-        $update_map = array();
+        $update_map = [];
 
         // Username
         if (get_option('facebook_sync_username') == '1') {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $username));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username]);
             if ($test === null) { // Make sure there's no conflict yet the name has changed
                 $update_map['m_username'] = $username;
             }
@@ -162,7 +162,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
 
         // DOB
         if (get_option('facebook_sync_dob') == '1') {
-            $update_map += array('m_dob_day' => $dob_day, 'm_dob_month' => $dob_month, 'm_dob_year' => $dob_year);
+            $update_map += ['m_dob_day' => $dob_day, 'm_dob_month' => $dob_month, 'm_dob_year' => $dob_year];
         }
 
         // Email
@@ -186,7 +186,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
         }
 
         // Run update
-        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, array('m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => strval($facebook_uid)), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => strval($facebook_uid)], '', 1);
 
         // Caching
         if ((array_key_exists('m_username', $update_map)) && ($username != $member_row[0]['m_username'])) {
@@ -218,10 +218,10 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             }
             */
 
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => $facebook_uid), array('id' => $current_logged_in_member), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'facebook', 'm_pass_hash_salted' => $facebook_uid], ['id' => $current_logged_in_member], '', 1);
             require_code('site');
             require_lang('facebook');
-            attach_message(do_lang_tempcode('FACEBOOK_ACCOUNT_CONNECTED', escape_html(get_site_name()), escape_html($GLOBALS['FORUM_DRIVER']->get_username($current_logged_in_member)), array(escape_html($username))), 'inform');
+            attach_message(do_lang_tempcode('FACEBOOK_ACCOUNT_CONNECTED', escape_html(get_site_name()), escape_html($GLOBALS['FORUM_DRIVER']->get_username($current_logged_in_member)), [escape_html($username)]), 'inform');
             return $current_logged_in_member;
         }
 
@@ -279,16 +279,16 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             $member_id = cns_member_external_linker('facebook', $username, $facebook_uid, false, $email_address, $dob_day, $dob_month, $dob_year, $timezone, $language, $avatar_url, $photo_url, $photo_thumb_url);
 
             // Custom Profile Fields should be filled, as possible
-            $changes = array();
+            $changes = [];
             require_lang('cns_special_cpf');
-            $mappings = array(
+            $mappings = [
                 'about' => do_lang('DEFAULT_CPF_about_NAME'),
                 'website' => do_lang('DEFAULT_CPF_website_NAME'),
                 'currency' => 'cms_currency',
                 'first_name' => 'cms_firstname',
                 'last_name' => 'cms_lastname',
                 'gender' => do_lang('DEFAULT_CPF_gender_NAME'),
-            );
+            ];
             foreach ($mappings as $facebook_field => $composr_field_title) {
                 if (!@cms_empty_safe($details[$facebook_field])) {
                     $composr_field_id = find_cms_cpf_field_id($composr_field_title);
@@ -310,15 +310,15 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             $facebook_field = 'location'; // Could also be 'hometown', but tends to get left outdated
             if (!@cms_empty_safe($details[$facebook_field])) {
                 try {
-                    $details3 = $FACEBOOK_CONNECT->api('/' . $details[$facebook_field], array('fields' => 'location'));
+                    $details3 = $FACEBOOK_CONNECT->api('/' . $details[$facebook_field], ['fields' => 'location']);
 
-                    $mappings = array(
+                    $mappings = [
                         'latitude' => 'cms_latitude',
                         'longitude' => 'cms_longitude',
                         'city' => 'cms_city',
                         'state' => 'cms_state',
                         'country' => 'cms_country',
-                    );
+                    ];
                     foreach ($mappings as $facebook_field => $composr_field_title) {
                         if (!@cms_empty_safe($details3[$facebook_field])) {
                             $composr_field_id = find_cms_cpf_field_id($composr_field_title);
@@ -332,7 +332,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
                 }
             }
             if (!empty($changes)) {
-                $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => $member_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => $member_id], '', 1);
             }
         }
     }

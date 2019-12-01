@@ -59,7 +59,7 @@ class Hook_task_notify_topics_moved
 
                 // Now lets inform people tracking the topic that it has moved
                 $subject = do_lang('TOPIC_MOVE_MAIL_SUBJECT', get_site_name(), $topic_title);
-                $mail = do_notification_lang('TOPIC_MOVE_MAIL', comcode_escape(get_site_name()), comcode_escape($topic_title), array(comcode_escape($forum_name)));
+                $mail = do_notification_lang('TOPIC_MOVE_MAIL', comcode_escape(get_site_name()), comcode_escape($topic_title), [comcode_escape($forum_name)]);
                 dispatch_notification('cns_topic', strval($topic_id), $subject, $mail);
             }
         } while (count($topics2) == 100);

@@ -31,7 +31,7 @@ class Hook_addon_registry_core_configuration
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_core_configuration
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_configuration',
             'tut_adv_configuration',
             'tut_moving',
-        );
+        ];
     }
 
     /**
@@ -75,11 +75,11 @@ class Hook_addon_registry_core_configuration
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_core_configuration
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/setup/config/config.svg',
             'themes/default/images/icons/menu/adminzone/setup/oauth.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/config/config.svg',
@@ -405,7 +405,7 @@ class Hook_addon_registry_core_configuration
             'themes/default/templates/XML_CONFIG_SCREEN.tpl',
             'themes/default/javascript/core_configuration.js',
             'sources/hooks/systems/config/use_site_name_text_as_logo.php',
-        );
+        ];
     }
 
     /**
@@ -415,11 +415,11 @@ class Hook_addon_registry_core_configuration
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CONFIG_CATEGORY_SCREEN.tpl' => 'administrative__config_category_screen',
             'templates/XML_CONFIG_SCREEN.tpl' => 'administrative__xml_config_screen',
             'templates/OAUTH_SCREEN.tpl' => 'administrative__oauth_screen',
-        );
+        ];
     }
 
     /**
@@ -431,19 +431,19 @@ class Hook_addon_registry_core_configuration
      */
     public function tpl_preview__administrative__config_category_screen()
     {
-        $groups = array();
+        $groups = [];
 
         foreach (placeholder_array() as $k => $group) {
-            $groups[] = array(
+            $groups[] = [
                 'GROUP_DESCRIPTION' => lorem_word(),
                 'GROUP_NAME' => $group,
                 'GROUP' => placeholder_fields(),
                 'GROUP_TITLE' => 'ID' . strval($k),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('CONFIG_CATEGORY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CONFIG_CATEGORY_SCREEN', [
                 'CATEGORY_DESCRIPTION' => lorem_word_2(),
                 '_GROUPS' => placeholder_array(),
                 'PING_URL' => placeholder_url(),
@@ -453,8 +453,8 @@ class Hook_addon_registry_core_configuration
                 'GROUPS' => $groups,
                 'SUBMIT_ICON' => 'buttons/save',
                 'SUBMIT_NAME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -466,13 +466,13 @@ class Hook_addon_registry_core_configuration
      */
     public function tpl_preview__administrative__xml_config_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('XML_CONFIG_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('XML_CONFIG_SCREEN', [
                 'XML' => '<test />',
                 'POST_URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -484,9 +484,9 @@ class Hook_addon_registry_core_configuration
      */
     public function tpl_preview__administrative__oauth_screen()
     {
-        $services = array();
+        $services = [];
 
-        $services[] = array(
+        $services[] = [
             'LABEL' => lorem_phrase(),
             'PROTOCOL' => lorem_word(),
             'AVAILABLE' => true,
@@ -498,13 +498,13 @@ class Hook_addon_registry_core_configuration
             'CLIENT_SECRET' => lorem_word(),
             'API_KEY' => null,
             'REFRESH_TOKEN' => lorem_word(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('OAUTH_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('OAUTH_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SERVICES' => $services,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

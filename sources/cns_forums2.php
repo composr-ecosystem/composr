@@ -36,9 +36,9 @@ function cns_has_mailing_list_style($forum_id = null)
     if ($forum_id !== null) {
         $test = $GLOBALS['FORUM_DB']->query($sql . $sql_sup, 1);
         if ((empty($test)) || (!cns_supports_mailing_list_style($test[0]))) {
-            return array(0, false);
+            return [0, false];
         }
-        return array(1, true);
+        return [1, true];
     }
 
     // Consider whether each has it or not
@@ -53,7 +53,7 @@ function cns_has_mailing_list_style($forum_id = null)
         }
     }
 
-    return array($cnt_yes, $cnt_no == 0);
+    return [$cnt_yes, $cnt_no == 0];
 }
 
 /**
@@ -86,7 +86,7 @@ function cns_supports_mailing_list_style($row)
  */
 function cns_create_selection_list_forum_groupings($avoid = null, $it = null)
 {
-    $_m = $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', array('*'));
+    $_m = $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', ['*']);
     $entries = new Tempcode();
     foreach ($_m as $m) {
         if ($m['id'] !== $avoid) {
@@ -111,7 +111,7 @@ function cns_create_selection_list_topic_tree($it = null)
     foreach ($tree as $forum) {
         foreach ($forum['entries'] as $topic_id => $ttitle) {
             $selected = ($topic_id == $it);
-            $line = do_template('CNS_FORUM_TOPIC_LIST_LINE', array('_GUID' => 'd58e4176ef0efefa85c83a8b9fa2de51', 'PRE' => $forum['breadcrumbs'], 'TOPIC_TITLE' => $ttitle));
+            $line = do_template('CNS_FORUM_TOPIC_LIST_LINE', ['_GUID' => 'd58e4176ef0efefa85c83a8b9fa2de51', 'PRE' => $forum['breadcrumbs'], 'TOPIC_TITLE' => $ttitle]);
             $out .= '<option value="' . strval($topic_id) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
         }
     }
@@ -142,35 +142,35 @@ function cns_get_topic_tree($forum_id = null, $breadcrumbs = null, $title = null
     }
 
     if (!has_category_access(get_member(), 'forums', strval($forum_id))) {
-        return array();
+        return [];
     }
 
     // Put our title onto our breadcrumbs
     if ($title === null) {
-        $title = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', array('id' => $forum_id));
+        $title = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_name', ['id' => $forum_id]);
     }
     $breadcrumbs .= $title;
 
     // We'll be putting all children in this entire tree into a single list
-    $children = array();
-    $children[0] = array();
+    $children = [];
+    $children[0] = [];
     $children[0]['id'] = $forum_id;
     $children[0]['title'] = $title;
     $children[0]['breadcrumbs'] = $breadcrumbs;
 
     // Children of this forum
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id', 'f_name'), array('f_parent_forum' => $forum_id), 'ORDER BY f_forum_grouping_id,f_position', 200);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_name'], ['f_parent_forum' => $forum_id], 'ORDER BY f_forum_grouping_id,f_position', 200);
     if (count($rows) == 200) {
-        $rows = array(); // Too many, this method will suck
+        $rows = []; // Too many, this method will suck
     }
-    $tmap = array('t_forum_id' => $forum_id);
+    $tmap = ['t_forum_id' => $forum_id];
     if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
         $tmap['t_validated'] = 1;
     }
-    $children[0]['entries'] = collapse_2d_complexity('id', 't_cache_first_title', $GLOBALS['FORUM_DB']->query_select('f_topics', array('id', 't_cache_first_title'), $tmap, 'ORDER BY t_cache_first_time DESC', 12));
+    $children[0]['entries'] = collapse_2d_complexity('id', 't_cache_first_title', $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_first_title'], $tmap, 'ORDER BY t_cache_first_time DESC', 12));
     $children[0]['child_entry_count'] = count($children[0]['entries']);
     if ($levels === 0) { // We throw them away now because they're not on the desired level
-        $children[0]['entries'] = array();
+        $children[0]['entries'] = [];
     }
     $children[0]['child_count'] = count($rows);
     $breadcrumbs .= ' > ';
@@ -230,12 +230,12 @@ function create_selection_list_forum_tree($member_id = null, $base_forum = null,
             }
         }
 
-        $line = do_template('CNS_FORUM_LIST_LINE', array(
+        $line = do_template('CNS_FORUM_LIST_LINE', [
             '_GUID' => '2fb4bd9ed5c875de6155bef588c877f9',
             'PRE' => $t['breadcrumbs'],
             'NAME' => $t['title'],
             'CAT_BIT' => $t['second_cat'],
-        ));
+        ]);
 
         $real_out .= '<option value="' . (!$use_compound_list ? strval($t['id']) : $t['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
     }
@@ -263,7 +263,7 @@ function create_selection_list_forum_tree($member_id = null, $base_forum = null,
 function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs = '', $skip = null, $forum_details = null, $use_compound_list = false, $levels = null, $do_stats = false, $updated_since = null)
 {
     if (($levels == -1) && (!$use_compound_list)) {
-        return $use_compound_list ? array(array(), '') : array();
+        return $use_compound_list ? [[], ''] : [];
     }
 
     static $forum_tree_secure_cache = null;
@@ -274,9 +274,9 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
 
     if ($forum_details === null) {
         if ($base_forum === null) {
-            $forum_details = array('f_order_sub_alpha' => 0); // Optimisation
+            $forum_details = ['f_order_sub_alpha' => 0]; // Optimisation
         } else {
-            $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', array('f_order_sub_alpha'), array('id' => $base_forum), '', 1);
+            $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_order_sub_alpha'], ['id' => $base_forum], '', 1);
             if (!array_key_exists(0, $_forum_details)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'forum'));
             }
@@ -285,9 +285,9 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
     }
     $order_sub_alpha = $forum_details['f_order_sub_alpha'];
 
-    $out = array();
+    $out = [];
     $order = $order_sub_alpha ? 'f_name' : 'f_position,id';
-    $forums = array();
+    $forums = [];
     if ($forum_tree_secure_cache === null) {
         $forum_tree_secure_cache = mixed();
         $num_forums = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)');
@@ -317,7 +317,7 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
             if ($forum['f_forum_grouping_id'] !== null) {
                 static $forum_groupings_titles_cache = null;
                 if ($forum_groupings_titles_cache === null) {
-                    $forum_groupings_titles_cache = collapse_2d_complexity('id', 'c_title', $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', array('id', 'c_title')));
+                    $forum_groupings_titles_cache = collapse_2d_complexity('id', 'c_title', $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', ['id', 'c_title']));
                 }
                 $cat_bit = array_key_exists($forum['f_forum_grouping_id'], $forum_groupings_titles_cache) ? $forum_groupings_titles_cache[$forum['f_forum_grouping_id']] : do_lang('NA');
             }
@@ -328,7 +328,7 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
                 $compound_list .= strval($forum['id']) . ',' . $_compound_list;
             }
 
-            $child = array(
+            $child = [
                 'id' => $forum['id'],
                 'title' => $forum['f_name'],
                 'breadcrumbs' => $child_breadcrumbs,
@@ -336,27 +336,27 @@ function cns_get_forum_tree($member_id = null, $base_forum = null, $breadcrumbs 
                 'second_cat' => $cat_bit,
                 'group' => $forum['f_forum_grouping_id'],
                 'children' => $below,
-            );
+            ];
             if ($do_stats) {
-                $child['child_count'] = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', array('f_parent_forum' => $forum['id']));
+                $child['child_count'] = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', ['f_parent_forum' => $forum['id']]);
                 $child['updated_since'] = $forum['f_cache_last_time'];
             }
 
             if (!array_key_exists($cat_sort_key, $out)) {
-                $out[$cat_sort_key] = array();
+                $out[$cat_sort_key] = [];
             }
             $out[$cat_sort_key][] = $child;
         }
     }
 
     // Up to now we worked into an array, so we could benefit from how it would auto-sort into the grouping>forum-position ordering Composr uses. Now we need to unzip it
-    $real_out = array();
+    $real_out = [];
     foreach ($out as $arr) {
         $real_out = array_merge($real_out, $arr);
     }
 
     if ($use_compound_list) {
-        return array($real_out, $compound_list);
+        return [$real_out, $compound_list];
     } else {
         return $real_out;
     }

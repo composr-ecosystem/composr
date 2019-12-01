@@ -31,7 +31,7 @@ class Hook_addon_registry_custom_comcode
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_custom_comcode
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_adv_comcode',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_custom_comcode
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_page_management'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_page_management'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_custom_comcode
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/setup/custom_comcode.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/custom_comcode.svg',
             'sources/hooks/systems/resource_meta_aware/custom_comcode_tag.php',
@@ -127,7 +127,7 @@ class Hook_addon_registry_custom_comcode
             'sources/hooks/systems/commandr_fs/custom_comcode_tags.php',
             'themes/default/javascript/custom_comcode.js',
             'sources/hooks/systems/actionlog/custom_comcode.php',
-        );
+        ];
     }
 
     /**
@@ -137,9 +137,9 @@ class Hook_addon_registry_custom_comcode
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_CUSTOM_COMCODE_TAGS.tpl' => 'block_main_custom_comcode_tags',
-        );
+        ];
     }
 
     /**
@@ -151,21 +151,21 @@ class Hook_addon_registry_custom_comcode
      */
     public function tpl_preview__block_main_custom_comcode_tags()
     {
-        $tags = array();
+        $tags = [];
         foreach (placeholder_array() as $tag) {
-            $tags[] = array(
+            $tags[] = [
                 'TITLE' => lorem_word(),
                 'DESCRIPTION' => lorem_paragraph(),
                 'EXAMPLE' => lorem_word(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', [
                 'BLOCK_ID' => lorem_word(),
                 'TAGS' => $tags,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -175,7 +175,7 @@ class Hook_addon_registry_custom_comcode
     {
         require_code('custom_comcode');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_tag'), array($GLOBALS['SITE_DB']->translate_field_ref('tag_title') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_tag'], [$GLOBALS['SITE_DB']->translate_field_ref('tag_title') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_custom_comcode_tag($record['tag_tag']);
         }

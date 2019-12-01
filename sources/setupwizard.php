@@ -81,11 +81,11 @@ function uninstall_test_content()
  */
 function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones, $installprofile)
 {
-    $page_structure = array();
+    $page_structure = [];
 
     // Find blocks used, from environment
-    $zone_blocks = array();
-    $zone_blocks['site'] = array();
+    $zone_blocks = [];
+    $zone_blocks['site'] = [];
     foreach ($_POST as $key => $value) {
         if (substr($key, 0, 6) == 'block_') {
             $block = substr($key, 6);
@@ -102,7 +102,7 @@ function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones,
             if (isset($zone_blocks['site'][$block])) {
                 $value = $zone_blocks['site'][$block];
                 unset($zone_blocks['site'][$block]);
-                $zone_blocks['site'] += array($block => $value);
+                $zone_blocks['site'] += [$block => $value];
             }
         }
     }
@@ -118,7 +118,7 @@ function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones,
             }
         }
 
-        $page_structure[$zone] = array();
+        $page_structure[$zone] = [];
 
         // Generally work out what Comcode goes where
         $cells = '';

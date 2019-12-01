@@ -30,7 +30,7 @@ class Hook_config_ldap_is_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_IS_ENABLED',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_ldap_is_enabled
             'required' => true,
             'public' => false,
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

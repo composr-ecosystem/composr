@@ -129,7 +129,7 @@ class Hook_profiles_tabs_edit_settings
                 null, // owner view
                 (($member_id_of == $member_id_viewing) && (!has_privilege($member_id_viewing, 'view_any_profile_field'))) ? 1 : null // owner set
             );
-            $actual_custom_fields = ((post_param_integer('submitting_profile_tab', 0) == 1) || (fractional_edit())) ? cns_read_in_custom_fields($custom_fields, $member_id_of) : array();
+            $actual_custom_fields = ((post_param_integer('submitting_profile_tab', 0) == 1) || (fractional_edit())) ? cns_read_in_custom_fields($custom_fields, $member_id_of) : [];
 
             if (!fractional_edit()) {
                 $timezone = post_param_string('timezone', get_site_timezone());
@@ -248,13 +248,13 @@ class Hook_profiles_tabs_edit_settings
                 if (has_actual_page_access(get_member(), 'groups', get_module_zone('groups'))) {
                     //if (array_key_exists('secondary_groups', $_POST)) { Can't use this line, because deselecting all will result in it not being passed
                     if (!array_key_exists('secondary_groups', $_POST)) {
-                        $_POST['secondary_groups'] = array();
+                        $_POST['secondary_groups'] = [];
                     }
 
                     require_code('cns_groups_action2');
                     $members_groups = $GLOBALS['CNS_DRIVER']->get_members_groups($member_id_of);
                     $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-                    $groups = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), ($group_count > 200) ? array('g_is_private_club' => 0) : array()));
+                    $groups = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ($group_count > 200) ? ['g_is_private_club' => 0] : []));
 
                     foreach ($_POST['secondary_groups'] as $group_id) { // Add to new secondary groups
                         $group = $groups[intval($group_id)];
@@ -289,7 +289,7 @@ class Hook_profiles_tabs_edit_settings
                 }
 
                 if (($username !== null) && ($username != $username_old)) {
-                    $title = get_screen_title('MEMBER_ACCOUNT', true, array(escape_html($username), escape_html($username)));
+                    $title = get_screen_title('MEMBER_ACCOUNT', true, [escape_html($username), escape_html($username)]);
                     require_code('site2');
                     redirect_exit(get_self_url(), $title, do_lang_tempcode('SUCCESS_SAVE'));
                 }
@@ -297,10 +297,10 @@ class Hook_profiles_tabs_edit_settings
                 attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
             }
         } elseif (post_param_integer('validated', 0) == 1) { // Special support for just approving
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_validated' => 1), array('id' => $member_id_of), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated' => 1], ['id' => $member_id_of], '', 1);
 
             require_code('mail');
-            $_login_url = build_url(array('page' => 'login'), get_module_zone('login'), array(), false, false, true);
+            $_login_url = build_url(['page' => 'login'], get_module_zone('login'), [], false, false, true);
             $login_url = $_login_url->evaluate();
 
             $username = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_username');
@@ -309,11 +309,11 @@ class Hook_profiles_tabs_edit_settings
 
             // NB: Same mail also sent in cns_members_action2.php (validate upon full edit)
             require_code('mail');
-            $_login_url = build_url(array('page' => 'login'), get_module_zone('login'), array(), false, false, true);
+            $_login_url = build_url(['page' => 'login'], get_module_zone('login'), [], false, false, true);
             $login_url = $_login_url->evaluate();
             $vm_subject = do_lang('VALIDATED_MEMBER_SUBJECT', get_site_name(), null, get_lang($member_id_of));
             $vm_body = do_lang('MEMBER_VALIDATED', get_site_name(), $username, $login_url, get_lang($member_id_of));
-            dispatch_mail($vm_subject, $vm_body, array($email_address), $username, '', '', array('require_recipient_valid_since' => $join_time));
+            dispatch_mail($vm_subject, $vm_body, [$email_address], $username, '', '', ['require_recipient_valid_since' => $join_time]);
 
             attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
         }
@@ -378,9 +378,9 @@ class Hook_profiles_tabs_edit_settings
         $hidden->attach(form_input_hidden('submitting_settings_tab', '1'));
 
         require_javascript('core_cns');
-        $js_function_calls = array('hookProfilesTabsEditSettingsRenderTab');
+        $js_function_calls = ['hookProfilesTabsEditSettingsRenderTab'];
         $text = '';
 
-        return array($title, $fields, $text, $js_function_calls, $order, $hidden, 'tabs/member_account/edit/settings');
+        return [$title, $fields, $text, $js_function_calls, $order, $hidden, 'tabs/member_account/edit/settings'];
     }
 }

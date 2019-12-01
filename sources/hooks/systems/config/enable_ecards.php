@@ -30,7 +30,7 @@ class Hook_config_enable_ecards
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_ECARDS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_enable_ecards
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

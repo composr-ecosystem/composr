@@ -36,7 +36,7 @@ class Hook_unvalidated_news
 
         require_lang('news');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'news';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

@@ -30,7 +30,7 @@ class Hook_config_ldap_none_bind_logins
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_NONE_BIND_LOGINS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_ldap_none_bind_logins
             'required' => true,
             'public' => false,
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

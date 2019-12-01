@@ -31,53 +31,53 @@ class Hook_actionlog_aggregate_types extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('aggregate_types')) {
-            return array();
+            return [];
         }
 
         require_lang('aggregate_types');
 
-        return array(
-            'EDIT_AGGREGATE_TYPES' => array(
+        return [
+            'EDIT_AGGREGATE_TYPES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'AGGREGATE_TYPES' => '_SEARCH:admin_aggregate_types',
                     'ADD_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:add',
-                ),
-            ),
-            'ADD_AGGREGATE_TYPE_INSTANCE' => array(
+                ],
+            ],
+            'ADD_AGGREGATE_TYPE_INSTANCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'aggregate_type_instance',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:_edit:{ID}',
                     'ADD_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:add',
                     'AGGREGATE_TYPES' => '_SEARCH:admin_aggregate_types',
-                ),
-            ),
-            'EDIT_AGGREGATE_TYPE_INSTANCE' => array(
+                ],
+            ],
+            'EDIT_AGGREGATE_TYPE_INSTANCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'aggregate_type_instance',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:_edit:{ID}',
                     'ADD_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:add',
                     'AGGREGATE_TYPES' => '_SEARCH:admin_aggregate_types',
-                ),
-            ),
-            'DELETE_AGGREGATE_TYPE_INSTANCE' => array(
+                ],
+            ],
+            'DELETE_AGGREGATE_TYPE_INSTANCE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'aggregate_type_instance',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_AGGREGATE_TYPE_INSTANCE' => '_SEARCH:admin_aggregate_types:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

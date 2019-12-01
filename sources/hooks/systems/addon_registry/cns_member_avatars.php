@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/tabs/member_account/edit/avatar.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/avatar.svg',
             'sources/hooks/systems/notifications/cns_choose_avatar.php',
@@ -109,7 +109,7 @@ class Hook_addon_registry_cns_member_avatars
             'themes/default/images/cns_default_avatars/index.html',
             'themes/default/images/cns_default_avatars/system.png',
             'sources/hooks/systems/config/random_avatars.php',
-        );
+        ];
     }
 
     /**
@@ -119,9 +119,9 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_EDIT_AVATAR_TAB.tpl' => 'cns_edit_avatar_tab',
-        );
+        ];
     }
 
     /**
@@ -136,17 +136,17 @@ class Hook_addon_registry_cns_member_avatars
         require_lang('cns');
         require_css('cns');
 
-        $avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', array(
+        $avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', [
             'AVATAR' => placeholder_image_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_EDIT_AVATAR_TAB', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_EDIT_AVATAR_TAB', [
                 'USERNAME' => lorem_word(),
                 'AVATAR' => $avatar,
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

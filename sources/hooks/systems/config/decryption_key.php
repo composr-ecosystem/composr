@@ -30,7 +30,7 @@ class Hook_config_decryption_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DECRYPTION_KEY',
             'type' => 'line',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_decryption_key
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

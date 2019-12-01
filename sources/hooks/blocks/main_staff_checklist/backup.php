@@ -31,11 +31,11 @@ class Hook_checklist_backup
     public function run()
     {
         if (!addon_installed('backup')) {
-            return array();
+            return [];
         }
 
         if (get_option('backup_time') == '' || get_option('backup_time') == '0') {
-            return array();
+            return [];
         }
         $limit_hours = intval(get_option('backup_time'));
 
@@ -56,16 +56,16 @@ class Hook_checklist_backup
         require_code('config2');
         $config_url = config_option_url('backup_time');
 
-        $url = build_url(array('page' => 'admin_backup', 'type' => 'browse'), 'adminzone');
+        $url = build_url(['page' => 'admin_backup', 'type' => 'browse'], 'adminzone');
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '432685ec6c9f7548ce8b488b6ce00030',
             'CONFIG_URL' => $config_url,
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('BACKUP'),
             'INFO' => $info,
-        ));
-        return array(array($tpl, $seconds_due_in, null, 'backup_time'));
+        ]);
+        return [[$tpl, $seconds_due_in, null, 'backup_time']];
     }
 }

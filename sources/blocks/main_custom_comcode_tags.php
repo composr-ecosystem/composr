@@ -30,14 +30,14 @@ class Block_main_custom_comcode_tags
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -58,14 +58,14 @@ class Block_main_custom_comcode_tags
 
         $block_id = get_block_id($map);
 
-        $tags = array();
-        $wmap = array('tag_enabled' => 1);
+        $tags = [];
+        $wmap = ['tag_enabled' => 1];
         if (!has_privilege(get_member(), 'comcode_dangerous')) {
             $wmap['tag_dangerous_tag'] = 0;
         }
-        $tags = array_merge($tags, $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'), $wmap));
+        $tags = array_merge($tags, $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], $wmap));
         if ((is_on_multi_site_network()) && (get_forum_type() == 'cns')) {
-            $tags = array_merge($tags, $GLOBALS['FORUM_DB']->query_select('custom_comcode', array('tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'), $wmap));
+            $tags = array_merge($tags, $GLOBALS['FORUM_DB']->query_select('custom_comcode', ['tag_title', 'tag_description', 'tag_example', 'tag_parameters', 'tag_replace', 'tag_tag', 'tag_dangerous_tag', 'tag_block_tag', 'tag_textual_tag'], $wmap));
         }
 
         // From Comcode hooks
@@ -81,20 +81,20 @@ class Block_main_custom_comcode_tags
             return paragraph(do_lang_tempcode('NONE_EM'), 'wa7toclrdmr6di83mmc2te5kgb34qslc', 'nothing-here');
         }
 
-        $_tags = array();
+        $_tags = [];
         foreach ($tags as $tag) {
-            $_tags[] = array(
+            $_tags[] = [
                 '_GUID' => '28c257f5d0c596aa828fd9556b0df4a9',
                 'TITLE' => is_string($tag['tag_title']) ? $tag['tag_title'] : get_translated_text($tag['tag_title']),
                 'DESCRIPTION' => is_string($tag['tag_description']) ? $tag['tag_description'] : get_translated_text($tag['tag_description']),
                 'EXAMPLE' => $tag['tag_example'],
-            );
+            ];
         }
 
-        return do_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', array(
+        return do_template('BLOCK_MAIN_CUSTOM_COMCODE_TAGS', [
             '_GUID' => 'b8d3436e6e5fe679ae9b0a368e607610',
             'BLOCK_ID' => $block_id,
             'TAGS' => $_tags,
-        ));
+        ]);
     }
 }

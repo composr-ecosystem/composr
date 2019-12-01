@@ -50,10 +50,10 @@ class Hook_task_export_points_log
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
-        $quizzes = array();
+        $quizzes = [];
         if (addon_installed('quizzes')) {
             require_lang('quiz');
-            $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', array('id', 'q_name'), array(), 'ORDER BY q_add_date DESC', 100);
+            $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], [], 'ORDER BY q_add_date DESC', 100);
         }
 
         $members = $GLOBALS['FORUM_DRIVER']->get_matching_members('', 10000/*reasonable limit -- works via returning 'most active' first*/);
@@ -80,7 +80,7 @@ class Hook_task_export_points_log
             $points_gained = total_points($member_id, $to) - total_points($member_id, $from);
             $points_now = total_points($member_id);
 
-            $data_point = array();
+            $data_point = [];
 
             $data_point[do_lang('IDENTIFIER')] = $member_id;
             $data_point[do_lang('USERNAME')] = $username;
@@ -91,7 +91,7 @@ class Hook_task_export_points_log
 
             if (addon_installed('quizzes')) {
                 foreach ($quizzes as $quiz) {
-                    $entered = ($GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'id', array('q_member' => $member_id, 'q_quiz' => $quiz['id'])) !== null);
+                    $entered = ($GLOBALS['SITE_DB']->query_select_value_if_there('quiz_entries', 'id', ['q_member' => $member_id, 'q_quiz' => $quiz['id']]) !== null);
                     $data_point[do_lang('ENTERED_THIS_QUIZ', get_translated_text($quiz['q_name']))] = do_lang($entered ? 'YES' : 'NO');
                 }
             }
@@ -100,13 +100,13 @@ class Hook_task_export_points_log
         }
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 }

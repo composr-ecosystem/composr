@@ -38,12 +38,12 @@ class Hook_stats_quiz
 
         $bits = new Tempcode();
         if (get_option('quiz_show_stats_count_total_open') == '1') {
-            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', array('_GUID' => '736e5008b15c984768234dde7586adf7', 'KEY' => do_lang_tempcode('QUIZZES'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)')))));
+            $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', ['_GUID' => '736e5008b15c984768234dde7586adf7', 'KEY' => do_lang_tempcode('QUIZZES'), 'VALUE' => integer_format($GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)'))]));
         }
         if ($bits->is_empty_shell()) {
             return new Tempcode();
         }
-        $section = do_template('BLOCK_SIDE_STATS_SECTION', array('_GUID' => '88c7eb369ee73af200f71d029b84baf5', 'SECTION' => do_lang_tempcode('QUIZZES'), 'CONTENT' => $bits));
+        $section = do_template('BLOCK_SIDE_STATS_SECTION', ['_GUID' => '88c7eb369ee73af200f71d029b84baf5', 'SECTION' => do_lang_tempcode('QUIZZES'), 'CONTENT' => $bits]);
 
         return $section;
     }

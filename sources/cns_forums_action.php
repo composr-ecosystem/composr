@@ -31,11 +31,11 @@ function cns_make_forum_grouping($title, $description, $expanded_by_default = 1)
     require_code('global4');
     prevent_double_submit('ADD_FORUM_GROUPING', null, $title);
 
-    $forum_grouping_id = $GLOBALS['FORUM_DB']->query_insert('f_forum_groupings', array(
+    $forum_grouping_id = $GLOBALS['FORUM_DB']->query_insert('f_forum_groupings', [
         'c_title' => $title,
         'c_description' => $description,
         'c_expanded_by_default' => $expanded_by_default,
-    ), true);
+    ], true);
 
     log_it('ADD_FORUM_GROUPING', strval($forum_grouping_id), $title);
 
@@ -91,7 +91,7 @@ function cns_make_forum($name, $description, $forum_grouping_id, $access_mapping
         }
     }
 
-    $map = array(
+    $map = [
         'f_name' => $name,
         'f_forum_grouping_id' => $forum_grouping_id,
         'f_parent_forum' => $parent_forum,
@@ -120,7 +120,7 @@ function cns_make_forum($name, $description, $forum_grouping_id, $access_mapping
         'f_mail_password' => $mail_password,
         'f_mail_nonmatch_policy' => $mail_nonmatch_policy,
         'f_mail_unconfirmed_notice' => $mail_unconfirmed_notice,
-    );
+    ];
     $map += insert_lang_comcode('f_description', $description, 2, $GLOBALS['FORUM_DB']);
     $map += insert_lang_comcode('f_intro_question', $intro_question, 3, $GLOBALS['FORUM_DB']);
     $forum_id = $GLOBALS['FORUM_DB']->query_insert('f_forums', $map, true);
@@ -129,16 +129,16 @@ function cns_make_forum($name, $description, $forum_grouping_id, $access_mapping
     if ($access_mapping !== null) {
         $groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(false, true);
 
-        $cat_ins_module_the_name = array();
-        $cat_ins_category_name = array();
-        $cat_ins_group_id = array();
+        $cat_ins_module_the_name = [];
+        $cat_ins_category_name = [];
+        $cat_ins_group_id = [];
 
-        $ins_privilege = array();
-        $ins_group_id = array();
-        $ins_the_page = array();
-        $ins_module_the_name = array();
-        $ins_category_name = array();
-        $ins_the_value = array();
+        $ins_privilege = [];
+        $ins_group_id = [];
+        $ins_the_page = [];
+        $ins_module_the_name = [];
+        $ins_category_name = [];
+        $ins_the_value = [];
 
         foreach (array_keys($groups) as $group_id) {
             $level = 0; // No-access
@@ -186,20 +186,20 @@ function cns_make_forum($name, $description, $forum_grouping_id, $access_mapping
             }
         }
 
-        $GLOBALS['FORUM_DB']->query_insert('group_category_access', array(
+        $GLOBALS['FORUM_DB']->query_insert('group_category_access', [
             'module_the_name' => $cat_ins_module_the_name,
             'category_name' => $cat_ins_category_name,
             'group_id' => $cat_ins_group_id,
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array(
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', [
             'privilege' => $ins_privilege,
             'group_id' => $ins_group_id,
             'the_page' => $ins_the_page,
             'module_the_name' => $ins_module_the_name,
             'category_name' => $ins_category_name,
             'the_value' => $ins_the_value,
-        ));
+        ]);
     }
 
     log_it('ADD_FORUM', strval($forum_id), $name);

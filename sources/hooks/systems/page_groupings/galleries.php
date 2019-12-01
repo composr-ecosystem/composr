@@ -33,16 +33,16 @@ class Hook_page_groupings_galleries
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
         $cnt = 0;
         $cnt += intval($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)'));
         $cnt += intval($GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)'));
 
-        return array(
-            array('cms', 'menu/rich_content/galleries', array('cms_galleries', array('type' => 'browse'), get_module_zone('cms_galleries')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'galleries:DOC_GALLERIES'),
-            array('rich_content', 'menu/rich_content/galleries', array('galleries', array(), get_module_zone('galleries')), do_lang_tempcode('galleries:GALLERIES')),
-        );
+        return [
+            ['cms', 'menu/rich_content/galleries', ['cms_galleries', ['type' => 'browse'], get_module_zone('cms_galleries')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('galleries:GALLERIES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'galleries:DOC_GALLERIES'],
+            ['rich_content', 'menu/rich_content/galleries', ['galleries', [], get_module_zone('galleries')], do_lang_tempcode('galleries:GALLERIES')],
+        ];
     }
 }

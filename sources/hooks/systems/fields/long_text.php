@@ -65,7 +65,7 @@ class Hook_fields_long_text
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_text', $default, 'long');
+        return ['long_text', $default, 'long'];
     }
 
     /**

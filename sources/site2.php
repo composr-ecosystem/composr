@@ -27,29 +27,29 @@ function get_staff_actions_list()
 {
     require_lang('lang');
     require_lang('themes');
-    $list = array(
+    $list = [
         'view' => do_lang_tempcode('SCREEN_DEV_TOOLS'),
-    );
-    $list += array(
+    ];
+    $list += [
         'spacer_1' => do_lang_tempcode('THEME'),
         'templates' => do_lang_tempcode('EDIT_TEMPLATES'),
         'show_edit_links' => do_lang_tempcode('TEMPLATES_WITH_EDIT_LINKS'),
         'show_markers' => do_lang_tempcode('TEMPLATES_WITH_HTML_COMMENT_MARKERS'),
         'theme_images' => do_lang_tempcode('THEME_IMAGE_EDITING'),
         'code' => do_lang_tempcode('WEBSTANDARDS'),
-    );
+    ];
     require_code('lang2');
-    $list += array(
+    $list += [
         'spacer_2' => do_lang_tempcode('PAGE'),
         'sitemap' => do_lang_tempcode('FIND_IN_SITEMAP'),
         'spacer_3' => do_lang_tempcode('LANGUAGE'),
-    );
-    $all_langs = multi_lang() ? find_all_langs() : array(user_lang() => 'lang_custom');
+    ];
+    $all_langs = multi_lang() ? find_all_langs() : [user_lang() => 'lang_custom'];
     $tcode = do_lang('lang:TRANSLATE_CODE');
     foreach (array_keys($all_langs) as $lang) {
-        $list += array(
+        $list += [
             'lang_' . $lang => $tcode . ((count($all_langs) == 1) ? '' : (': ' . lookup_language_full_name($lang))),
-        );
+        ];
     }
     if ((multi_lang()) && (multi_lang_content())) {
         $tcontent = do_lang('TRANSLATE_CONTENT');
@@ -57,12 +57,12 @@ function get_staff_actions_list()
             $list['lang_content_' . $lang] = $tcontent . ': ' . lookup_language_full_name($lang);
         }
     }
-    $list += array(
+    $list += [
         'spacer_4' => do_lang_tempcode('DEVELOPMENT_VIEWS'),
         'query' => do_lang_tempcode('VIEW_PAGE_QUERIES'),
         'ide_linkage' => do_lang_tempcode('IDE_LINKAGE'),
         'memory' => do_lang_tempcode('_MEMORY_USAGE'),
-    );
+    ];
     $special_page_type = get_param_string('special_page_type', 'view');
     $staff_actions = ''; // XHTMLXHTML
     $started_opt_group = false;
@@ -107,13 +107,13 @@ function get_page_warning_details($zone, $codename, $edit_url)
                 if (!$menu_items_linking->is_empty()) {
                     $menu_items_linking->attach(do_lang_tempcode('LIST_SEP'));
                 }
-                $menu_edit_url = build_url(array('page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_link['i_menu']), get_module_zone('admin_menus'));
+                $menu_edit_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_link['i_menu']], get_module_zone('admin_menus'));
                 $menu_items_linking->attach(hyperlink($menu_edit_url, $menu_link['i_menu'], false, true));
             }
             $uv_warning = do_lang_tempcode('UNVALIDATED_TEXT_STAFF', $menu_items_linking, 'comcode_page');
         }
     }
-    $warning_details->attach(do_template('WARNING_BOX', array('_GUID' => 'ee79289f87986bcb916a5f1810a25330', 'WARNING' => $uv_warning)));
+    $warning_details->attach(do_template('WARNING_BOX', ['_GUID' => 'ee79289f87986bcb916a5f1810a25330', 'WARNING' => $uv_warning]));
     return $warning_details;
 }
 
@@ -175,7 +175,7 @@ function assign_refresh($url, $multiplier = 0.0)
         $restrict_answer = cns_get_best_group_property($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()), 'flood_control_access_secs');
         if ($restrict_answer != 0) {
             $restrict_setting = 'm_last_visit_time';
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_last_visit_time' => time() - $restrict_answer - 1), array('id' => get_member()), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_last_visit_time' => time() - $restrict_answer - 1], ['id' => get_member()], '', 1);
         }
     }
 
@@ -228,12 +228,12 @@ function closed_site_exit()
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
         list($login_url, , $join_url) = get_login_url();
-        $middle = do_template('CLOSED_SITE', array(
+        $middle = do_template('CLOSED_SITE', [
             '_GUID' => '4e753c50eca7c98344d2107fc18c4554',
             'CLOSED' => comcode_to_tempcode(get_option('closed'), null, true),
             'LOGIN_URL' => $login_url,
             'JOIN_URL' => $join_url,
-        ));
+        ]);
         $echo = globalise($middle, null, '', true);
         $echo->evaluate_echo();
 
@@ -274,14 +274,14 @@ function page_not_found($codename, $zone)
 
     // "Did you mean?" support
     $all_pages_in_zone = array_keys(find_all_pages_wrap($zone));
-    $did_mean = array();
+    $did_mean = [];
     foreach ($all_pages_in_zone as $possibility) {
         if (is_integer($possibility)) {
             $possibility = strval($possibility); // e.g. '404' page has been converted to integer by PHP, grr
         }
 
-        $from = str_replace(array('-', 'cms_', 'admin_'), array('_', '', ''), $possibility);
-        $to = str_replace(array('-', 'cms_', 'admin_'), array('_', '', ''), $codename);
+        $from = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $possibility);
+        $to = str_replace(['-', 'cms_', 'admin_'], ['_', '', ''], $codename);
         //$dist = levenshtein($from, $to);  If we use this, change > to < also
         //$threshold = 4;
         $dist = 0.0;
@@ -307,16 +307,16 @@ function page_not_found($codename, $zone)
     $add_access = has_add_comcode_page_permission($zone);
     $redirect_access = addon_installed('redirects_editor') && has_actual_page_access(get_member(), 'admin_redirects');
     require_lang('zones');
-    $add_url = $add_access ? build_url(array('page' => 'cms_comcode_pages', 'type' => '_edit', 'may_choose_template' => '1', 'page_link' => $zone . ':' . $codename), get_module_zone('cms_comcode_pages')) : new Tempcode();
-    $add_redirect_url = $redirect_access ? build_url(array('page' => 'admin_redirects', 'type' => 'page', 'page_link' => $zone . ':' . $codename), get_module_zone('admin_redirects')) : new Tempcode();
-    return do_template('MISSING_SCREEN', array(
+    $add_url = $add_access ? build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'may_choose_template' => '1', 'page_link' => $zone . ':' . $codename], get_module_zone('cms_comcode_pages')) : new Tempcode();
+    $add_redirect_url = $redirect_access ? build_url(['page' => 'admin_redirects', 'type' => 'page', 'page_link' => $zone . ':' . $codename], get_module_zone('admin_redirects')) : new Tempcode();
+    return do_template('MISSING_SCREEN', [
         '_GUID' => '22f371577cd2ba437e7b0cb241931575',
         'TITLE' => $title,
         'DID_MEAN' => $_did_mean,
         'ADD_URL' => $add_url,
         'ADD_REDIRECT_URL' => $add_redirect_url,
         'PAGE' => $codename,
-    ));
+    ]);
 }
 
 /**
@@ -382,28 +382,28 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
     $text_parsed = $_text_parsed->to_assembly();
 
     // Check it still needs inserting (it might actually be there, but not translated)
-    $trans_key = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'string_index', array('the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()));
+    $trans_key = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'string_index', ['the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()]);
     if ($COMCODE_PARSE_TITLE === null) {
         $COMCODE_PARSE_TITLE = '';
     }
     $title_to_use = clean_html_title($COMCODE_PARSE_TITLE);
     if ($trans_key === null) {
-        $map = array(
+        $map = [
             'the_zone' => $zone,
             'the_page' => $codename,
             'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
-        );
+        ];
         $map += insert_lang('cc_page_title', clean_html_title($COMCODE_PARSE_TITLE), 1, null, false, null, null, false, null, null, true, true);
         if (multi_lang_content()) {
             $map['string_index'] = null;
             $lock = false;
             table_id_locking_start($GLOBALS['SITE_DB'], $map['string_index'], $lock);
 
-            $trans_map = array('source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $comcode, 'text_parsed' => $text_parsed, 'language' => $lang);
+            $trans_map = ['source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $comcode, 'text_parsed' => $text_parsed, 'language' => $lang];
             if ($map['string_index'] === null) {
                 $map['string_index'] = $GLOBALS['SITE_DB']->query_insert('translate', $trans_map, true, true, true);
             } else {
-                $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $map['string_index']) + $trans_map, false, true, true); // errors suppressed in case of race condition
+                $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $map['string_index']] + $trans_map, false, true, true); // errors suppressed in case of race condition
             }
 
             table_id_locking_end($GLOBALS['SITE_DB'], $map['string_index'], $lock);
@@ -427,7 +427,7 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
             }
         }
     } else {
-        $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('*'), array('the_zone' => $zone, 'the_page' => $codename), '', 1);
+        $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['*'], ['the_zone' => $zone, 'the_page' => $codename], '', 1);
         if (array_key_exists(0, $_comcode_page_row)) {
             $comcode_page_row = $_comcode_page_row[0];
         } else {
@@ -442,32 +442,32 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
 
         // Check to see if it needs translating
         if (multi_lang_content()) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'id', array('id' => $trans_key, 'language' => $lang));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'id', ['id' => $trans_key, 'language' => $lang]);
             if ($test === null) {
-                $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $trans_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $comcode, 'text_parsed' => $text_parsed, 'language' => $lang), false, true, true); // errors suppressed in case of race condition
+                $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $trans_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $comcode, 'text_parsed' => $text_parsed, 'language' => $lang], false, true, true); // errors suppressed in case of race condition
                 $index = $trans_key;
 
-                $trans_cc_page_title_key = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', array('the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()));
+                $trans_cc_page_title_key = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', ['the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()]);
                 if ($trans_cc_page_title_key !== null) {
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'id', array('id' => $trans_cc_page_title_key, 'language' => $lang));
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'id', ['id' => $trans_cc_page_title_key, 'language' => $lang]);
                     if ($test === null) {
-                        $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $trans_cc_page_title_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => '', 'language' => $lang), false, true, true); // errors suppressed in case of race condition
+                        $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $trans_cc_page_title_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => '', 'language' => $lang], false, true, true); // errors suppressed in case of race condition
                     }
                 } // else race condition, decached while being recached
             }
         } else {
-            $map = array();
+            $map = [];
             $map += insert_lang('cc_page_title', clean_html_title($COMCODE_PARSE_TITLE), 1, null, false, null, null, false, null, null, true, true);
             $map['string_index'] = $comcode;
             $map['string_index__source_user'] = $page_submitter;
             $map['string_index__text_parsed'] = $text_parsed;
-            $GLOBALS['SITE_DB']->query_update('cached_comcode_pages', $map, array('the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()), '', 1);
+            $GLOBALS['SITE_DB']->query_update('cached_comcode_pages', $map, ['the_page' => $codename, 'the_zone' => $zone, 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme()], '', 1);
         }
     }
 
     pop_query_limiting();
 
-    return array($_text_parsed, $title_to_use, $comcode_page_row, $comcode);
+    return [$_text_parsed, $title_to_use, $comcode_page_row, $comcode];
 }
 
 /**
@@ -512,7 +512,7 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
         }
     }
 
-    $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('*'), array('the_zone' => $zone, 'the_page' => $codename), '', 1);
+    $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['*'], ['the_zone' => $zone, 'the_page' => $codename], '', 1);
 
     $comcode = cms_file_get_contents_safe($file_base . '/' . $string, FILE_READ_LOCK | FILE_READ_BOM);
     if ($GLOBALS['IS_TEMPLATE_PREVIEW_OP_CACHE']) {
@@ -548,7 +548,7 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
         }
     }
 
-    return array($html, $comcode_page_row, $title_to_use, $comcode);
+    return [$html, $comcode_page_row, $title_to_use, $comcode];
 }
 
 /**
@@ -561,7 +561,7 @@ function clean_html_title($title)
 {
     $_title = trim(strip_html($title));
     if ($_title == '') { // Complex case
-        $matches = array();
+        $matches = [];
         if (preg_match('#<img[^>]*alt="([^"]+)"#', $title, $matches) != 0) {
             return $matches[1];
         }

@@ -30,7 +30,7 @@ class Hook_config_manual_subscription_expiry_notice
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MANUAL_SUBSCRIPTION_EXPIRY_NOTICE',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_manual_subscription_expiry_notice
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

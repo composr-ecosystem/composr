@@ -119,6 +119,6 @@ class Hook_media_rendering_audio_general extends Media_renderer_with_fallback
             $attributes['height'] = '30';
         }
 
-        return do_template('MEDIA_VIDEO_GENERAL', array('_GUID' => '2ed16d6e74265c0b51c2415731378827', 'HOOK' => 'audio_general') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_VIDEO_GENERAL', ['_GUID' => '2ed16d6e74265c0b51c2415731378827', 'HOOK' => 'audio_general'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

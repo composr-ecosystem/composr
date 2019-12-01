@@ -30,7 +30,7 @@ class Hook_config_galleries_show_stats_count_images
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IMAGES',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_galleries_show_stats_count_images
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

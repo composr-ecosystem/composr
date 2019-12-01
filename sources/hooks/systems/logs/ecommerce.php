@@ -31,12 +31,12 @@ class Hook_logs_ecommerce
     public function enumerate_logs()
     {
         if (!addon_installed('ecommerce')) {
-            return array(
-            );
+            return [
+            ];
         }
 
-        return array(
-            'ecommerce.log' => array('days_to_keep' => (get_option('days_to_keep__ecommerce_log') == '') ? null : intval(get_option('days_to_keep__ecommerce_log'))),
-        );
+        return [
+            'ecommerce.log' => ['days_to_keep' => (get_option('days_to_keep__ecommerce_log') == '') ? null : intval(get_option('days_to_keep__ecommerce_log'))],
+        ];
     }
 }

@@ -37,7 +37,7 @@ class Hook_fields_list extends ListFieldHook
     {
         $current = get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX);
 
-        $fields = array();
+        $fields = [];
         $type = '_LIST';
         $special = new Tempcode();
         $special->attach(form_input_list_entry('', get_param_string('option_' . strval($field['id']), '', INPUT_FILTER_GET_COMPLEX) == '', '---'));
@@ -50,7 +50,7 @@ class Hook_fields_list extends ListFieldHook
 
             $special->attach(form_input_list_entry($l, $current != '' && $current === $l, $written));
         }
-        return array('NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -90,7 +90,7 @@ class Hook_fields_list extends ListFieldHook
                 $default = preg_replace('#=.*$#', '', $default); // Get key of first
             }
         }
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -165,12 +165,12 @@ class Hook_fields_list extends ListFieldHook
                 }
 
                 if ($custom_values == 'on') {
-                    $list_tpl->attach(do_template('FORM_SCREEN_INPUT_RADIO_LIST_COMBO_ENTRY', array(
+                    $list_tpl->attach(do_template('FORM_SCREEN_INPUT_RADIO_LIST_COMBO_ENTRY', [
                         '_GUID' => '4eb01c365b63d4ef09fd99b5c05ca3d5',
                         'TABINDEX' => strval(get_form_field_tabindex()),
                         'NAME' => $input_name,
                         'VALUE' => $custom_value ? $actual_value : '',
-                    )));
+                    ]));
                 }
 
                 return form_input_radio($_cf_name, $_cf_description, $input_name, $list_tpl, $field['cf_required'] == 1);

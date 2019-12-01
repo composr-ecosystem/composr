@@ -30,7 +30,7 @@ class Hook_config_bcc
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BCC',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_bcc
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

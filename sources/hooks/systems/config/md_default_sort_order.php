@@ -30,7 +30,7 @@ class Hook_config_md_default_sort_order
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MD_DEFAULT_SORT_ORDER',
             'type' => 'list',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_md_default_sort_order
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

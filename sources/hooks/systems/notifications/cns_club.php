@@ -44,15 +44,15 @@ class Hook_notification_cns_club extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_clubs')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_club'] = array(do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_club'));
+        $list = [];
+        $list['cns_club'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_club')];
         return $list;
     }
 

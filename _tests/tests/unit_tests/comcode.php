@@ -159,7 +159,7 @@ class comcode_test_set extends cms_test_case
 
     public function testCodeTags()
     {
-        $expects_no_parse = array(
+        $expects_no_parse = [
             '[tt]{$IMG,under_construction_animated}[/tt]',
             '[no_parse]{$IMG,under_construction_animated}[/no_parse]',
             '[code]{$IMG,under_construction_animated}[/code]',
@@ -169,28 +169,28 @@ class comcode_test_set extends cms_test_case
             semihtml_to_comcode('<kbd>{$IMG,under_construction_animated}</kbd>', true), // Should convert to 'tt' tag
             semihtml_to_comcode('<code>{$IMG,under_construction_animated}</code>', true), // Should convert to 'code' tag
             semihtml_to_comcode('[code]{$IMG,under_construction_animated}[/code]', true),
-        );
+        ];
         foreach ($expects_no_parse as $comcode) {
             $actual = comcode_to_tempcode($comcode);
             $this->assertTrue(strpos($actual->evaluate(), '{$IMG') !== false, 'Tempcode was parsed when it should not have been, in (1): ' . $comcode);
         }
 
-        $expects_no_parse = array(
+        $expects_no_parse = [
             '[tt]{$IMG,under_construction_animated}[/tt]',
             '[no_parse]{$IMG,under_construction_animated}[/no_parse]',
             '[code]{$IMG,under_construction_animated}[/code]',
             '[codebox]{$IMG,under_construction_animated}[/codebox]',
-        );
+        ];
         foreach ($expects_no_parse as $comcode) {
             $actual = comcode_to_tempcode($comcode, null, false, null, null, COMCODE_IS_ALL_SEMIHTML);
             $this->assertTrue((strpos($actual->evaluate(), '{$IMG') !== false) || (strpos($actual->evaluate(), '&#123;$IMG') !== false), 'Tempcode was parsed when it should not have been, in (2): ' . $comcode . '; got: ' . $actual->evaluate());
         }
 
-        $expects_parse = array(
+        $expects_parse = [
             '{$IMG,under_construction_animated}',
             '[semihtml]{$IMG,under_construction_animated}[/semihtml]',
             '[url]{$IMG,under_construction_animated}[/url]',
-        );
+        ];
         foreach ($expects_parse as $comcode) {
             $actual = comcode_to_tempcode($comcode);
             $this->assertTrue(strpos($actual->evaluate(), '{$IMG') === false, 'Tempcode was not parsed when it should have been, in: ' . $comcode);
@@ -199,7 +199,7 @@ class comcode_test_set extends cms_test_case
 
     public function testComcode()
     {
-        $expectations = array(" - foo  " => "<ul><li>foo</li></ul>", " - foo\n - bar" => "<ul><li>foo</li><li>bar</li></ul>", " - foo - bar" => " - foo - bar", "" => " ", " -foo" => "-foo", "-foo" => "-foo", "--foo" => "&ndash;foo", "[b]bar[/b]" => "<strong class=\"comcode-bold\">bar</strong>");
+        $expectations = [" - foo  " => "<ul><li>foo</li></ul>", " - foo\n - bar" => "<ul><li>foo</li><li>bar</li></ul>", " - foo - bar" => " - foo - bar", "" => " ", " -foo" => "-foo", "-foo" => "-foo", "--foo" => "&ndash;foo", "[b]bar[/b]" => "<strong class=\"comcode-bold\">bar</strong>"];
 
         foreach ($expectations as $comcode => $html) {
             $actual = comcode_to_tempcode($comcode);
@@ -221,7 +221,7 @@ class comcode_test_set extends cms_test_case
 
         global $MEMBER_MENTIONS_IN_COMCODE;
 
-        $tests = array(
+        $tests = [
             // Positives
             '@test' => true,
             ' @test' => true,
@@ -234,10 +234,10 @@ class comcode_test_set extends cms_test_case
             ',@test,' => false, // "
             'x@test ' => false, // "
             '@testxppp' => false, // Must not have junk on tail-end
-        );
+        ];
 
         foreach ($tests as $test => $expected) {
-            $MEMBER_MENTIONS_IN_COMCODE = array();
+            $MEMBER_MENTIONS_IN_COMCODE = [];
             comcode_to_tempcode($test);
 
             if ($expected) {

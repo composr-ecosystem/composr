@@ -30,7 +30,7 @@ class Hook_sw_stats
      */
     public function get_current_settings()
     {
-        $settings = array();
+        $settings = [];
         $settings['stats_store_time'] = get_option('stats_store_time');
         return $settings;
     }
@@ -44,7 +44,7 @@ class Hook_sw_stats
     public function get_fields($field_defaults)
     {
         if (!addon_installed('stats') || post_param_integer('addon_stats', null) === 0) {
-            return array(new Tempcode(), new Tempcode());
+            return [new Tempcode(), new Tempcode()];
         }
 
         $field_defaults += $this->get_current_settings(); // $field_defaults will take precedence, due to how "+" operator works in PHP
@@ -55,7 +55,7 @@ class Hook_sw_stats
         $fields = new Tempcode();
         $fields->attach(form_input_integer(do_lang_tempcode('STORE_TIME'), do_lang_tempcode('CONFIG_OPTION_stats_store_time'), 'stats_store_time', intval($stats_store_time), true));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**

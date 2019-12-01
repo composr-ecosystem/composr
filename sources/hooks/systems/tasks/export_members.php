@@ -45,14 +45,14 @@ class Hook_task_export_members
                 $fields_to_use[] = $_order_by;
             }
         }
-        $headings = array();
+        $headings = [];
         foreach ($fields_to_use as $field_label) {
             $field_name = isset($_headings[$field_label]) ? $_headings[$field_label] : $field_label;/*Must be a pseudo-field so just carry it forward*/
             $headings[$field_label] = is_numeric($field_name) ? intval($field_name) : $field_name;
         }
 
         // Derive filtering
-        if ($usergroups != array()) {
+        if ($usergroups != []) {
             // Filter just for f_group_members
             $group_filter = '(';
             foreach ($usergroups as $i => $usergroup) {
@@ -90,7 +90,7 @@ class Hook_task_export_members
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 
-        $fields = array('id', 'm_username', 'm_email_address', 'm_last_visit_time', 'm_cache_num_posts', 'm_pass_hash_salted', 'm_pass_salt', 'm_password_compat_scheme', 'm_signature', 'm_validated', 'm_join_time', 'm_primary_group', 'm_is_perm_banned', 'm_dob_day', 'm_dob_month', 'm_dob_year', 'm_reveal_age', 'm_language', 'm_allow_emails', 'm_allow_emails_from_staff');
+        $fields = ['id', 'm_username', 'm_email_address', 'm_last_visit_time', 'm_cache_num_posts', 'm_pass_hash_salted', 'm_pass_salt', 'm_password_compat_scheme', 'm_signature', 'm_validated', 'm_join_time', 'm_primary_group', 'm_is_perm_banned', 'm_dob_day', 'm_dob_month', 'm_dob_year', 'm_reveal_age', 'm_language', 'm_allow_emails', 'm_allow_emails_from_staff'];
         if (addon_installed('cns_member_avatars')) {
             $fields[] = 'm_avatar_url';
         }
@@ -100,11 +100,11 @@ class Hook_task_export_members
 
         // Read member groups
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true);
-        $member_groups_count = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', array('gm_validated' => 1), ' AND ' . $group_filter);
+        $member_groups_count = $GLOBALS['FORUM_DB']->query_select_value('f_group_members', 'COUNT(*)', ['gm_validated' => 1], ' AND ' . $group_filter);
         if ($member_groups_count < 500) {
-            $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', array('gm_member_id', 'gm_group_id'), array('gm_validated' => 1), ' AND ' . $group_filter);
+            $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], ['gm_validated' => 1], ' AND ' . $group_filter);
         } else {
-            $member_groups = array();
+            $member_groups = [];
         }
 
         // Member count
@@ -114,7 +114,7 @@ class Hook_task_export_members
         $sheet_writer->write_row(array_keys($headings));
 
         // Filter
-        $where = array();
+        $where = [];
         if ($filter_by_allow) {
             $where['m_allow_emails_from_staff'] = 1;
         }
@@ -152,14 +152,14 @@ class Hook_task_export_members
         } while (count($members) == 200);
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 
     /**
@@ -207,7 +207,7 @@ class Hook_task_export_members
         }
 
         $at = null;
-        $out = array();
+        $out = [];
         $i = 0;
         foreach ($headings as $written_heading => $f) {
             if ($f === null) {

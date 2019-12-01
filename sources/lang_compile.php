@@ -57,13 +57,13 @@ function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_erro
                     foreach ($comcode_lang_strings as $comcode_lang_string) {
                         $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', $comcode_lang_string);
                         delete_lang($comcode_lang_string['string_index']);
-                        $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
+                        $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
                     }
                 }
             }
         }
 
-        $load_target = array();
+        $load_target = [];
     } else {
         $load_target = &$LANGUAGE_STRINGS_CACHE[$lang];
     }
@@ -117,7 +117,7 @@ function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_erro
             }
 
             if (!array_key_exists($lang, $LANG_LOADED_LANG)) {
-                $LANG_LOADED_LANG[$lang] = array();
+                $LANG_LOADED_LANG[$lang] = [];
             }
             $LANG_LOADED_LANG[$lang][$codename] = true;
 
@@ -165,10 +165,10 @@ function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_erro
  */
 function get_lang_file_section($lang, $file = null, $section = 'descriptions')
 {
-    $entries = array();
+    $entries = [];
 
     if ($file === null) {
-        foreach (array('lang', 'lang_custom') as $dir) {
+        foreach (['lang', 'lang_custom'] as $dir) {
             $dh = @opendir(get_file_base() . '/' . $dir . '/' . $lang);
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
@@ -221,12 +221,12 @@ function get_lang_file_map($lang, $file, $non_custom = false, $apply_filter = tr
             $a = $b;
         } else {
             if ($non_custom) {
-                return array();
+                return [];
             }
         }
     }
 
-    $target = array();
+    $target = [];
     _get_lang_file_map($a, $target, 'strings', false, $apply_filter, $lang);
     return $target;
 }

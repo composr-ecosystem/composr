@@ -30,7 +30,7 @@ class Hook_config_enable_feedback
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_FEEDBACK',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_enable_feedback
             'required' => true,
             'public' => false,
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

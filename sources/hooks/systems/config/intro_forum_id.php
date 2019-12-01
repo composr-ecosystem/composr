@@ -30,7 +30,7 @@ class Hook_config_intro_forum_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INTRO_FORUM_ID',
             'type' => 'forum',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_intro_forum_id
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

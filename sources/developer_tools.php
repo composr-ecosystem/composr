@@ -37,10 +37,10 @@ Also see:
 function init__developer_tools()
 {
     global $MEMORY_PROFILING_POINTS;
-    $MEMORY_PROFILING_POINTS = array();
+    $MEMORY_PROFILING_POINTS = [];
 
     global $PREVIOUS_XSS_STATE;
-    $PREVIOUS_XSS_STATE = array('1');
+    $PREVIOUS_XSS_STATE = ['1'];
 }
 
 /**
@@ -114,14 +114,14 @@ function semi_dev_mode_startup()
                 $rs = get_resources();
                 foreach ($rs as $r) {
                     $type = get_resource_type($r);
-                    if (!in_array($type, array('Unknown', 'stream-context', 'pspell', 'pspell config'))) {
+                    if (!in_array($type, ['Unknown', 'stream-context', 'pspell', 'pspell config'])) {
                         if ($type == 'stream') {
                             $stream_meta = stream_get_meta_data($r);
                         } else {
                             $stream_meta = null;
                         }
 
-                        if (($stream_meta === null) || (!in_array($stream_meta['stream_type'], array('TEMP', 'MEMORY', 'STDIO')))) {
+                        if (($stream_meta === null) || (!in_array($stream_meta['stream_type'], ['TEMP', 'MEMORY', 'STDIO']))) {
                             @exit(escape_html('Unexpected resource left open of type, ' . $type . (($type == 'stream') ? ('; ' . var_export($stream_meta, true)) : '')));
                         }
                     }
@@ -189,10 +189,10 @@ function restrictify()
 
     // Reset functions
     if (isset($_CREATED_FILES)) {
-        $_CREATED_FILES = array();
+        $_CREATED_FILES = [];
     }
     if (isset($_MODIFIED_FILES)) {
-        $_MODIFIED_FILES = array();
+        $_MODIFIED_FILES = [];
     }
 
     // Put back strictness
@@ -313,7 +313,7 @@ function memory_trace_point($name = null)
     if ($name === null) {
         $name = '#' . integer_format(count($MEMORY_PROFILING_POINTS) + 1);
     }
-    $MEMORY_PROFILING_POINTS[] = array(memory_get_usage(), $name);
+    $MEMORY_PROFILING_POINTS[] = [memory_get_usage(), $name];
 }
 
 /**
@@ -386,7 +386,7 @@ function cms_verify_parameters_phpdoc($dev_only = false)
     $class = isset($trace[1]['class']) ? $trace[1]['class'] : '__global';
     $function = $trace[1]['function'];
 
-    static $api = array();
+    static $api = [];
     if (!isset($api[$filename])) {
         require_code('php');
         $api[$filename] = get_php_file_api($filename, false);

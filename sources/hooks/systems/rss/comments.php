@@ -137,7 +137,7 @@ class Hook_rss_comments
                     $category = '';
                     $category_raw = '';
 
-                    $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => new Tempcode(), 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                    $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => new Tempcode(), 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
                 }
             } else {
                 break;
@@ -148,6 +148,6 @@ class Hook_rss_comments
 
         $title = do_lang('COMMENTS');
 
-        return array($content, $title);
+        return [$content, $title];
     }
 }

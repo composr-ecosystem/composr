@@ -135,12 +135,12 @@ function erase_block_cache($erase_cache_signatures_too = false, $theme = null)
     cms_profile_start_for('erase_tempcode_cache');
 
     if ($erase_cache_signatures_too) {
-        $GLOBALS['SITE_DB']->query_delete('cache_on', array(), '', null, 0, true); // May fail because the table might not exist when this is called
+        $GLOBALS['SITE_DB']->query_delete('cache_on', [], '', null, 0, true); // May fail because the table might not exist when this is called
     }
 
-    $where_map = array();
+    $where_map = [];
     if ($theme !== null) {
-        $where_map = array('the_theme' => $theme);
+        $where_map = ['the_theme' => $theme];
     }
     $GLOBALS['SITE_DB']->query_delete('cache', $where_map);
 
@@ -205,7 +205,7 @@ function erase_thumb_cache()
         $start = 0;
         $max = 500;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select($field['m_table'], array($field['m_name']), array(), '', $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select($field['m_table'], [$field['m_name']], [], '', $max, $start);
             foreach ($rows as $row) {
                 $thumb_url = $row[$field['m_name']];
                 if (($thumb_url != '') && (url_is_local($thumb_url))) {
@@ -216,14 +216,14 @@ function erase_thumb_cache()
         }
         while (!empty($rows));
 
-        $GLOBALS['SITE_DB']->query_update($field['m_table'], array($field['m_name'] => ''));
+        $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => '']);
     }
 
     $full = get_custom_file_base() . '/uploads/auto_thumbs';
     $dh = @opendir($full);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
-            if (!in_array($file, array('index.html', '.htaccess'))) {
+            if (!in_array($file, ['index.html', '.htaccess'])) {
                 @unlink($full . '/' . $file);
             }
         }
@@ -248,7 +248,7 @@ function erase_cached_language()
     cms_profile_start_for('erase_cached_language');
 
     $langs = find_all_langs(true);
-    foreach (array_merge(array_keys($langs), array('')) as $lang) {
+    foreach (array_merge(array_keys($langs), ['']) as $lang) {
         $path = get_custom_file_base() . '/caches/lang' . (($lang == '') ? '' : '/') . $lang;
         $_dir = @opendir($path);
         if ($_dir === false) {
@@ -311,7 +311,7 @@ function erase_cached_language()
  */
 function erase_cached_templates($preserve_some = false, $only_templates = null, $raw_file_regexp = null, $rebuild_some_deleted_files = false)
 {
-    if ($only_templates === array()) {
+    if ($only_templates === []) {
         return; // Optimisation
     }
 
@@ -334,7 +334,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
     $themes = array_keys(find_all_themes());
     $langs = find_all_langs(true);
 
-    $relevant_templates_in_cache = array();
+    $relevant_templates_in_cache = [];
     foreach ($themes as $theme) {
         $using_less =
             (addon_installed('less')) || /*LESS-regeneration is too intensive and assumed cache-safe anyway*/
@@ -348,7 +348,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                 require_code('files2');
                 @make_missing_directory($path);
             } else {
-                $rebuilt = array();
+                $rebuilt = [];
 
                 while (false !== ($file = readdir($_dir))) {
                     // Basic filter
@@ -384,9 +384,9 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                     }
 
                     if (!isset($relevant_templates_in_cache[$file_template_name])) {
-                        $relevant_templates_in_cache[$file_template_name] = array();
+                        $relevant_templates_in_cache[$file_template_name] = [];
                     }
-                    $relevant_templates_in_cache[$file_template_name][] = array($file, $path);
+                    $relevant_templates_in_cache[$file_template_name][] = [$file, $path];
                 }
                 closedir($_dir);
             }
@@ -395,14 +395,14 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
 
     static $all_template_data = null;
     if (($raw_file_regexp !== null) && ($all_template_data === null)) {
-        $all_template_data = array();
+        $all_template_data = [];
 
-        $base_dirs = array(get_custom_file_base());
+        $base_dirs = [get_custom_file_base()];
         if (get_custom_file_base() != get_file_base()) {
             $base_dirs[] = get_file_base();
         }
 
-        $theme_dirs = array(
+        $theme_dirs = [
             'css' => '.css',
             'css_custom' => '.css',
             'javascript' => '.js',
@@ -413,7 +413,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
             'text_custom' => '.txt',
             'xml' => '.xml',
             'xml_custom' => '.xml',
-        );
+        ];
 
         foreach ($base_dirs as $base_dir) {
             foreach ($themes as $theme) {
@@ -431,7 +431,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                             }
 
                             if (!isset($all_template_data[$file])) {
-                                $all_template_data[$file] = array();
+                                $all_template_data[$file] = [];
                             }
                             $contents = @cms_file_get_contents_safe($dir_path . '/' . $file);
                             if ($contents !== false) {
@@ -486,7 +486,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
         // Recreate static files right away because of parallelism...
         if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!running_script('upgrader')) && ($rebuild_some_deleted_files)) {
             if ((!$preserve_some) && (!isset($rebuilt[$file_template_name]))) {
-                if (/*filter what we'll do due to memory limitation*/in_array($file_template_name, array('global.css', 'cns.css', 'forms.css', 'menu__dropdown.css', 'ajax.js', 'editing.js', 'global.js', 'posting.js'))) {
+                if (/*filter what we'll do due to memory limitation*/in_array($file_template_name, ['global.css', 'cns.css', 'forms.css', 'menu__dropdown.css', 'ajax.js', 'editing.js', 'global.js', 'posting.js'])) {
                     if ((isset($GLOBALS['SITE_DB'])) && (function_exists('find_theme_image')) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($GLOBALS['FORUM_DRIVER'] !== null)) {
                         if (substr($file_template_name, -3) == '.js') {
                             require_code('web_resources');
@@ -520,7 +520,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
 
     if (!$GLOBALS['IN_MINIKERNEL_VERSION']) {
         $zones = find_all_zones();
-        $values = array();
+        $values = [];
         foreach ($zones as $zone) {
             $values[] = 'merged__' . $zone . '.css';
             $values[] = 'merged__' . $zone . '.js';
@@ -530,7 +530,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
         delete_values($values);
     }
 
-    if ((class_exists('Self_learning_cache')) && ($raw_file_regexp === null) && ($only_templates === array())) {
+    if ((class_exists('Self_learning_cache')) && ($raw_file_regexp === null) && ($only_templates === [])) {
         Self_learning_cache::erase_smart_cache();
     }
 
@@ -557,7 +557,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
  */
 function erase_comcode_page_cache()
 {
-    $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
+    $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
 
     if (!multi_lang_content()) {
         $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages');
@@ -567,13 +567,13 @@ function erase_comcode_page_cache()
     push_query_limiting(false);
 
     do {
-        $rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('string_index'), array(), '', 50, 0, false, array());
+        $rows = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], [], '', 50, 0, false, []);
         if ($rows === null) {
-            $rows = array();
+            $rows = [];
         }
         foreach ($rows as $row) {
             delete_lang($row['string_index']);
-            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('string_index' => $row['string_index']));
+            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['string_index' => $row['string_index']]);
         }
     } while (!empty($rows));
     erase_persistent_cache();
@@ -590,7 +590,7 @@ function erase_theme_images_cache()
 
     Self_learning_cache::erase_smart_cache();
 
-    $urls = $GLOBALS['SITE_DB']->query_select('theme_images', array('url', 'id'));
+    $urls = $GLOBALS['SITE_DB']->query_select('theme_images', ['url', 'id']);
     foreach ($urls as $url) {
         if ($url['url'] == '') {
             $GLOBALS['SITE_DB']->query_delete('theme_images', $url, '', 1);

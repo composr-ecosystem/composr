@@ -33,13 +33,13 @@ if (!function_exists('system_gift_transfer')) {
             return;
         }
 
-        $map = array(
+        $map = [
             'date_and_time' => time(),
             'amount' => $amount,
             'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
             'gift_to' => $member_id,
             'anonymous' => 1,
-        );
+        ];
         $map += insert_lang_comcode('reason', $reason, 4);
         $GLOBALS['SITE_DB']->query_insert('gifts', $map);
         $_before = point_info($member_id);
@@ -57,17 +57,17 @@ if (!function_exists('system_gift_transfer')) {
 
         if (addon_installed('mentorr')) {
             // Start add to mentor points if needed
-            $mentor_id = $GLOBALS['SITE_DB']->query_select_value_if_there('members_mentors', 'mentor_id', array('member_id' => $member_id));
+            $mentor_id = $GLOBALS['SITE_DB']->query_select_value_if_there('members_mentors', 'mentor_id', ['member_id' => $member_id]);
 
             if ((isset($mentor_id)) && ($mentor_id !== null) && (intval($mentor_id) != 0)) {
                 // Give points to mentor too
-                $map = array(
+                $map = [
                     'date_and_time' => time(),
                     'amount' => $amount,
                     'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                     'gift_to' => $mentor_id,
                     'anonymous' => 1,
-                );
+                ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $GLOBALS['SITE_DB']->query_insert('gifts', $map);
                 $_before = point_info($mentor_id);

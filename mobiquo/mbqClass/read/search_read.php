@@ -142,14 +142,14 @@ class CMSSearchRead
             $count_sql = $count_sql1;
         }
 
-        $topics = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query($full_sql, null, 0, false, true);
+        $topics = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($full_sql, null, 0, false, true);
         $total_topic_num = (get_allowed_forum_sql() == '') ? 0 : $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
 
         if (($keywords != '') && (!$titleonly)) {
             $topics = array_slice($topics, $start, $max); // We do it a weird way due to our UNION
         }
 
-        return array($total_topic_num, $topics);
+        return [$total_topic_num, $topics];
     }
 
     /**
@@ -250,7 +250,7 @@ class CMSSearchRead
         if ($keywords == '') {
             $full_sql .= ' ORDER BY p_time DESC,p.id DESC';
         }
-        $posts = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query($full_sql, $max, $start);
+        $posts = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($full_sql, $max, $start);
         if ($keywords != '') {
             $count_sql = '(SELECT COUNT(*) FROM (';
             $count_sql .= 'SELECT 1' . $sql;
@@ -260,6 +260,6 @@ class CMSSearchRead
         }
         $total_post_num = (get_allowed_forum_sql() == '') ? 0 : $GLOBALS['FORUM_DB']->query_value_if_there($count_sql);
 
-        return array($total_post_num, $posts);
+        return [$total_post_num, $posts];
     }
 }

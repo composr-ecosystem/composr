@@ -65,7 +65,7 @@ class Hook_fields_url_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -91,7 +91,7 @@ class Hook_fields_url_multi
             return '';
         }
 
-        $out = array();
+        $out = [];
         $evs = explode("\n", $ev);
         foreach ($evs as $ev) {
             require_code('http');
@@ -138,7 +138,7 @@ class Hook_fields_url_multi
         }
 
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        return form_input_line_multi($_cf_name, $_cf_description, $input_name, ($actual_value == '') ? array() : explode("\n", $actual_value), ($field['cf_required'] == 1) ? 1 : 0, null, 'url');
+        return form_input_line_multi($_cf_name, $_cf_description, $input_name, ($actual_value == '') ? [] : explode("\n", $actual_value), ($field['cf_required'] == 1) ? 1 : 0, null, 'url');
     }
 
     /**

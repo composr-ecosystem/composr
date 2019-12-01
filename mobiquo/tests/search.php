@@ -22,11 +22,11 @@ function search_topic_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '%Ggfd',
             0,
             5,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -40,11 +40,11 @@ function search_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '%fgddf',
             0,
             8,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -58,8 +58,8 @@ function search_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
-            array(
+        [
+            [
                 'page' => 1,
                 'perpage' => 10,
                 'keywords' => '%fgddf',
@@ -70,8 +70,8 @@ function search_test()
                 'titleonly' => 0,
                 'showposts' => 1,
                 'searchtime' => 60 * 60 * 24 * 365 * 2, // 2 years
-            )
-        )
+            ]
+        ]
     );
     print_mobiquo_result($result);
 }

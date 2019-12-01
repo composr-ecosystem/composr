@@ -55,13 +55,13 @@ class Hook_profiles_tabs_edit_notifications
             $smart_topic_notification = post_param_integer('smart_topic_notification', 0);
             $mailing_list_style = post_param_integer('mailing_list_style', 0);
 
-            $update_map = array(
+            $update_map = [
                 'm_auto_monitor_contrib_content' => $auto_monitor_contrib_content,
                 'm_smart_topic_notification' => $smart_topic_notification,
                 'm_mailing_list_style' => $mailing_list_style,
-            );
+            ];
 
-            $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, array('id' => $member_id_of), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id_of], '', 1);
 
             // Decache from run-time cache
             unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id_of]);
@@ -79,6 +79,6 @@ class Hook_profiles_tabs_edit_notifications
             return null;
         }
 
-        return array($title, new Tempcode(), $text, null, $order, null, 'tool_buttons/notifications2');
+        return [$title, new Tempcode(), $text, null, $order, null, 'tool_buttons/notifications2'];
     }
 }

@@ -50,9 +50,9 @@ class Module_cms_cns_groups extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_CLUBS', 'menu/cms/clubs'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['MANAGE_CLUBS', 'menu/cms/clubs'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -120,10 +120,10 @@ class Module_cms_cns_groups extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_CLUBS'),
             comcode_lang_string('DOC_CLUBS'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_CLUB')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_CLUB')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_CLUB')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CLUB')],
+            ],
             do_lang('MANAGE_CLUBS')
         );
     }
@@ -148,7 +148,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         $fields->attach(form_input_username(do_lang_tempcode('GROUP_LEADER'), do_lang_tempcode('DESCRIPTION_GROUP_LEADER'), 'group_leader', $group_leader, false));
         $fields->attach(form_input_tick(do_lang_tempcode('OPEN_MEMBERSHIP'), do_lang_tempcode('OPEN_MEMBERSHIP_DESCRIPTION'), 'open_membership', $open_membership == 1));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -163,9 +163,9 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         $default_order = 'g_name ASC';
         $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
-        $sortables = array(
+        $sortables = [
             'g_name' => do_lang_tempcode('NAME'),
-        );
+        ];
         if (strpos($current_ordering, ' ') === false) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -174,33 +174,33 @@ class Module_cms_cns_groups extends Standard_crud_module
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('NAME'),
             do_lang_tempcode('OPEN_MEMBERSHIP'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
-        $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', array('g_is_private_club' => 1));
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($count > 300 || (!has_privilege(get_member(), 'control_usergroups'))) ? array('g_group_leader' => get_member(), 'g_is_private_club' => 1) : array('g_is_private_club' => 1));
+        $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 1]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($count > 300 || (!has_privilege(get_member(), 'control_usergroups'))) ? ['g_group_leader' => get_member(), 'g_is_private_club' => 1] : ['g_is_private_club' => 1]);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $fr = array(
+            $fr = [
                 protect_from_escaping(cns_get_group_link($row['id'])),
                 ($row['g_open_membership'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
-            );
+            ];
 
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])));
 
             $result_entries->attach(results_entry($fr, true));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'cns_clubs'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'groups'), get_module_zone('groups'));
+        $search_url = build_url(['page' => 'search', 'id' => 'cns_clubs'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'groups'], get_module_zone('groups'));
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort'), false, $search_url, $archive_url);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort'), false, $search_url, $archive_url];
     }
 
     /**
@@ -211,11 +211,11 @@ class Module_cms_cns_groups extends Standard_crud_module
     public function create_selection_list_entries()
     {
         $fields = new Tempcode();
-        $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', array('g_is_private_club' => 1));
+        $count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 1]);
         if ($count < intval(get_option('general_safety_listing_limit'))) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'), array('g_is_private_club' => 1), 'ORDER BY g_name');
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'], ['g_is_private_club' => 1], 'ORDER BY g_name');
         } else {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'), array('g_group_leader' => get_member(), 'g_is_private_club' => 1), 'ORDER BY g_name');
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'], ['g_group_leader' => get_member(), 'g_is_private_club' => 1], 'ORDER BY g_name');
             if (empty($rows)) {
                 warn_exit(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             }
@@ -249,7 +249,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), array('id' => intval($id), 'g_is_private_club' => 1));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => intval($id), 'g_is_private_club' => 1]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'group'));
         }
@@ -283,7 +283,7 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         // Create forum
         $mods = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
-        $access_mapping = array();
+        $access_mapping = [];
         foreach ($mods as $m_id) {
             $access_mapping[$m_id] = 5;
         }
@@ -291,7 +291,7 @@ class Module_cms_cns_groups extends Standard_crud_module
         if (is_numeric($_cat)) {
             $cat = intval($_cat);
         } else {
-            $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => $_cat));
+            $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $_cat]);
             if ($cat === null) {
                 $cat = $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'MIN(id)');
             }
@@ -300,13 +300,13 @@ class Module_cms_cns_groups extends Standard_crud_module
         if (is_numeric($_forum)) {
             $forum = intval($_forum);
         } else {
-            $forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => $_forum));
+            $forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => $_forum]);
             if ($forum === null) {
                 $forum = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'MIN(id)');
             }
         }
-        $is_threaded = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_is_threaded', array('id' => $forum));
-        $allows_anonymous_posts = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_allows_anonymous_posts', array('id' => $forum));
+        $is_threaded = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_is_threaded', ['id' => $forum]);
+        $allows_anonymous_posts = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_allows_anonymous_posts', ['id' => $forum]);
         $forum_id = cns_make_forum($name, do_lang('FORUM_FOR_CLUB', $name), $cat, $access_mapping, $forum, 1, 1, 0, '', '', '', 'last_post', $is_threaded, $allows_anonymous_posts);
         $this->_set_permissions($id, $forum_id);
 
@@ -330,26 +330,26 @@ class Module_cms_cns_groups extends Standard_crud_module
     public function _set_permissions($id, $forum_id)
     {
         // Cleanup
-        $GLOBALS['FORUM_DB']->query_delete('group_privileges', array('group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id)));
-        $GLOBALS['FORUM_DB']->query_delete('group_category_access', array(
+        $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id)]);
+        $GLOBALS['FORUM_DB']->query_delete('group_category_access', [
             'module_the_name' => 'forums',
             'category_name' => strval($forum_id),
             'group_id' => $id,
-        ));
+        ]);
 
         // Create permissions
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-        $GLOBALS['FORUM_DB']->query_insert('group_category_access', array(
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_midrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_lowrange_content', 'group_id' => $id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+        $GLOBALS['FORUM_DB']->query_insert('group_category_access', [
             'module_the_name' => 'forums',
             'category_name' => strval($forum_id),
             'group_id' => $id,
-        ));
+        ]);
     }
 
     /**
@@ -382,7 +382,7 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         cns_edit_group($group_id, $name, null, null, null, null, null, null, null, $group_leader, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, post_param_integer('open_membership', 0), 1);
 
-        $forum_where = array('f_name' => $old_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum')));
+        $forum_where = ['f_name' => $old_name, 'f_forum_grouping_id' => intval(get_option('club_forum_parent_forum_grouping')), 'f_parent_forum' => intval(get_option('club_forum_parent_forum'))];
         $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', $forum_where);
         if ($forum_id !== null) {
             $this->_set_permissions(intval($id), $forum_id);
@@ -390,7 +390,7 @@ class Module_cms_cns_groups extends Standard_crud_module
 
         // Rename forum
         if ($name != $old_name) {
-            $GLOBALS['FORUM_DB']->query_update('f_forums', array('f_name' => $name), $forum_where, 'ORDER BY id DESC', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_name' => $name], $forum_where, 'ORDER BY id DESC', 1);
         }
 
         return null;

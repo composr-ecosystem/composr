@@ -27,19 +27,19 @@ class Hook_members_classifieds
     public function run($member_id)
     {
         if (!addon_installed('classified_ads')) {
-            return array();
+            return [];
         }
 
         if (!has_actual_page_access(get_member(), 'classifieds', get_module_zone('classifieds'))) {
-            return array();
+            return [];
         }
 
         require_lang('classifieds');
 
-        $result = array();
+        $result = [];
 
         if (($member_id == get_member()) || (has_privilege(get_member(), 'assume_any_member'))) {
-            $result[] = array('content', do_lang('CLASSIFIED_ADVERTS'), build_url(array('page' => 'classifieds', 'type' => 'adverts', 'member_id' => $member_id), get_module_zone('classifieds')), 'spare/classifieds');
+            $result[] = ['content', do_lang('CLASSIFIED_ADVERTS'), build_url(['page' => 'classifieds', 'type' => 'adverts', 'member_id' => $member_id], get_module_zone('classifieds')), 'spare/classifieds'];
         }
 
         return $result;

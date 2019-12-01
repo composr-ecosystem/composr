@@ -54,11 +54,11 @@ class Hook_rss_filedump
 
         $content = new Tempcode();
         $files = get_directory_contents(get_custom_file_base() . '/uploads/filedump');
-        $_rows = $GLOBALS['SITE_DB']->query_select('filedump', array('*'));
+        $_rows = $GLOBALS['SITE_DB']->query_select('filedump', ['*']);
         if ($_rows === null) {
             return null;
         }
-        $rows = array();
+        $rows = [];
         foreach ($_rows as $row) {
             $rows[$row['subpath']] = $row;
         }
@@ -67,7 +67,7 @@ class Hook_rss_filedump
                 break;
             }
 
-            if ($filters != array('*')) {
+            if ($filters != ['*']) {
                 $ok = false;
                 foreach ($filters as $filter) {
                     if (substr($file, 0, strlen($filter)) == $filter) {
@@ -108,10 +108,10 @@ class Hook_rss_filedump
 
             $if_comments = new Tempcode();
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('filedump');
-        return array($content, do_lang('FILEDUMP'));
+        return [$content, do_lang('FILEDUMP')];
     }
 }

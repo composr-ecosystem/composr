@@ -28,11 +28,11 @@ class Hook_page_groupings_giftr
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('giftr')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'spare/gifts', array('admin_giftr', array(), get_page_zone('admin_giftr')), do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'),
-        );
+        return [
+            ['setup', 'spare/gifts', ['admin_giftr', [], get_page_zone('admin_giftr')], do_lang_tempcode('giftr:GIFTR_TITLE'), 'giftr:DOC_GIFTR'],
+        ];
     }
 }

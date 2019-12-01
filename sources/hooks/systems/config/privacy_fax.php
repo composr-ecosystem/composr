@@ -30,7 +30,7 @@ class Hook_config_privacy_fax
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FAX_NUMBER',
             'type' => 'line',
             'category' => 'PRIVACY',
@@ -44,7 +44,7 @@ class Hook_config_privacy_fax
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

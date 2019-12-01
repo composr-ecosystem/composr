@@ -30,7 +30,7 @@ class Hook_config_output_streaming
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OUTPUT_STREAMING',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_output_streaming
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

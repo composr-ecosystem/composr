@@ -30,7 +30,7 @@ class Hook_config_users_online_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERS_ONLINE_TIME',
             'type' => 'integer',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_users_online_time
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

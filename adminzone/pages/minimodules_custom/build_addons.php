@@ -31,7 +31,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Public non-bundled addons';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => 'e68a3b48474d9c8ad4d7107009fb3e83', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => 'e68a3b48474d9c8ad4d7107009fb3e83', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 restrictify();
@@ -93,7 +93,7 @@ foreach ($addons as $name => $place) {
         $directory = list_to_map('path', tar_get_directory($tar_file));
     } else {
         $tar_file = null;
-        $directory = array();
+        $directory = [];
 
         if (!$done_message) {
             attach_message(comcode_to_tempcode('At least one addon file isn\'t on disk already. If this build is updating addons already released for this major/minor version you should put the addons in [tt]exports/addons[/tt] so that mtimes can be set properly, then refresh.'), 'warn');
@@ -102,8 +102,8 @@ foreach ($addons as $name => $place) {
     }
 
     // Build up file list
-    $new_addon_files = array();
-    $mtimes = array();
+    $new_addon_files = [];
+    $mtimes = [];
     foreach ($addon_info['files'] as $_file) {
         if (substr($_file, -9) != '.editfrom') { // This would have been added back in automatically
             if (isset($directory[$_file])) {
@@ -164,7 +164,7 @@ if (get_param_integer('export_themes', 0) == 1) {
     require_code('files2');
     $themes = find_all_themes();
 
-    $page_files = get_directory_contents(get_custom_file_base(), '', 0, true, true, array('txt'));
+    $page_files = get_directory_contents(get_custom_file_base(), '', 0, true, true, ['txt']);
     foreach (array_keys($themes) as $theme) {
         if (($only !== null) && ($only !== $theme)) {
             continue;
@@ -189,13 +189,13 @@ if (get_param_integer('export_themes', 0) == 1) {
 
         $file = 'theme-' . preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $theme)) . '-' . get_version_branch() . '.tar';
 
-        $files2 = array();
+        $files2 = [];
         $theme_files = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, 'themes/' . $theme, IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES);
         foreach ($theme_files as $file2) {
             $files2[] = $file2;
         }
         foreach ($page_files as $file2) {
-            $matches = array();
+            $matches = [];
             $regexp = '#^((\w+)/)?pages/comcode_custom/[^/]*/\_' . preg_quote($theme, '#') . '__(\w+)\.txt$#';
             if ((preg_match($regexp, $file2, $matches) != 0) && ($matches[1] != 'docs')) {
                 $files2[] = dirname($file2) . '/' . $matches[2];

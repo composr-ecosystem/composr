@@ -30,7 +30,7 @@ class Hook_config_newsletter_smtp_sockets_use
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLED',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_newsletter_smtp_sockets_use
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

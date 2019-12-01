@@ -30,7 +30,7 @@ class Hook_config_points_joining
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JOINING',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_joining
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

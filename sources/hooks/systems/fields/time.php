@@ -45,7 +45,7 @@ class Hook_fields_time
             $type .= '_RANGE';
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -103,7 +103,7 @@ class Hook_fields_time
                 $default = date('H:i:s', utctime_to_usertime());
             }
         }
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -174,7 +174,7 @@ class Hook_fields_time
                 $time_bits[2] = '00';
             }
 
-            $time = array(intval($time_bits[1]), @intval($time_bits[0]), intval(date('m')), intval(date('d')), intval(date('Y')));
+            $time = [intval($time_bits[1]), @intval($time_bits[0]), intval(date('m')), intval(date('d')), intval(date('Y'))];
         }
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($time === null), true, $time, 1, 1900, null, false, null, false);
@@ -215,7 +215,7 @@ class Hook_fields_time
             $time = post_param_string($stub, null);
         }
         if ($time !== null) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(\d\d):(\d\d)$#', $time, $matches) != 0) {
                 $hour = intval($matches[1]);
                 $minute = intval($matches[2]);

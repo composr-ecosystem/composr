@@ -30,14 +30,14 @@ class Block_bottom_tag_cloud
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'title', 'zone', 'max');
+        $info['parameters'] = ['param', 'title', 'zone', 'max'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_bottom_tag_cloud
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('title', $map) ? $map['title'] : do_lang('search:TAG_CLOUD'),
@@ -83,11 +83,11 @@ PHP;
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search');
         $max_tags = array_key_exists('max', $map) ? intval($map['max']) : 20;
 
-        $tags = array();
+        $tags = [];
         $largest_num = 0;
         $smallest_num = null;
 
-        $search_limiter = array('all_defaults' => '1');
+        $search_limiter = ['all_defaults' => '1'];
 
         // Find all keywords, hence all tags
         $limit_to = array_key_exists('param', $map) ? $map['param'] : '';
@@ -114,7 +114,7 @@ PHP;
             WHERE ' . $where . '
             GROUP BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword') . '
             ORDER BY COUNT(*) DESC';
-        $meta_rows = $GLOBALS['SITE_DB']->query($sql, 300/*reasonable limit*/, 0, false, false, array('meta_keyword' => 'SHORT_TRANS'));
+        $meta_rows = $GLOBALS['SITE_DB']->query($sql, 300/*reasonable limit*/, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
         foreach ($meta_rows as $mr) {
             $keyword = $mr['meta_keyword'];
             if (strlen(is_numeric($keyword) ? strval(intval($keyword)) : $keyword) < 4) {
@@ -124,7 +124,7 @@ PHP;
         }
         arsort($tags, SORT_NATURAL | SORT_FLAG_CASE);
         $_tags = $tags;
-        $tags = array();
+        $tags = [];
         foreach ($_tags as $tag => $count) {
             if (!is_string($tag)) {
                 $tag = strval($tag);
@@ -137,7 +137,7 @@ PHP;
         ksort($tags, SORT_NATURAL | SORT_FLAG_CASE);
 
         if (empty($tags)) {
-            return do_template('RED_ALERT', array('_GUID' => 'qsgdln7dvorwfrtjwa1fuvqb9fbyf8sj', 'TEXT' => do_lang_tempcode('NO_ENTRIES')));
+            return do_template('RED_ALERT', ['_GUID' => 'qsgdln7dvorwfrtjwa1fuvqb9fbyf8sj', 'TEXT' => do_lang_tempcode('NO_ENTRIES')]);
         }
 
         // Work out variation in sizings
@@ -150,25 +150,25 @@ PHP;
             }
         }
 
-        $tpl_tags = array();
+        $tpl_tags = [];
         foreach ($tags as $tag => $count) {
             if (!is_string($tag)) {
                 $tag = strval($tag);
             }
 
-            $tpl_tags[] = array(
+            $tpl_tags[] = [
                 'TAG' => $tag,
-                'URL' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1') + $search_limiter, $zone),
-            );
+                'URL' => build_url(['page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1'] + $search_limiter, $zone),
+            ];
         }
 
         $title = array_key_exists('title', $map) ? $map['title'] : do_lang('TAG_CLOUD');
 
-        return do_template('BLOCK_BOTTOM_TAG_CLOUD', array(
+        return do_template('BLOCK_BOTTOM_TAG_CLOUD', [
             '_GUID' => 'bde97d8c5b634f4194bce52adf09d73e',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
             'TAGS' => $tpl_tags,
-        ));
+        ]);
     }
 }

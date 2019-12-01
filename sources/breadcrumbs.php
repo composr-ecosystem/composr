@@ -45,7 +45,7 @@ function load_breadcrumb_substitutions($segments)
         }
 
         if (trim($data) == '') {
-            persistent_cache_set('BREADCRUMBS_CACHE_' . user_lang(), array());
+            persistent_cache_set('BREADCRUMBS_CACHE_' . user_lang(), []);
 
             return $segments;
         }
@@ -57,7 +57,7 @@ function load_breadcrumb_substitutions($segments)
         persistent_cache_set('BREADCRUMBS_CACHE_' . user_lang(), $substitutions);
     }
 
-    $segments_new = array();
+    $segments_new = [];
     $done_one = false;
     $final = false;
 
@@ -66,7 +66,7 @@ function load_breadcrumb_substitutions($segments)
 
         if (!$done_one && $segment[0] !== '') {
             if ($segment[0] === null) {
-                list($segment_zone, $segment_attributes, $segment_hash) = array(null, null, null); // active page
+                list($segment_zone, $segment_attributes, $segment_hash) = [null, null, null]; // active page
             } else {
                 list($segment_zone, $segment_attributes, $segment_hash) = page_link_decode($segment[0]);
             }
@@ -90,7 +90,7 @@ function load_breadcrumb_substitutions($segments)
                         if (!$done_one) {
                             // New stem found
                             $segments_new_bak = $segments_new;
-                            $segments_new = array();
+                            $segments_new = [];
                             foreach ($substitution_links as $new_segment) {
                                 if ((empty($new_segment[0])) && (empty($new_segment[1]))) { // <link /> indicating to keep existing links on tail, possibly new links on head
                                     $segments_new = array_merge($segments_new, $segments_new_bak);
@@ -151,13 +151,13 @@ class Breadcrumb_substitution_loader
      */
     public function go($data)
     {
-        $this->tag_stack = array();
-        $this->attribute_stack = array();
+        $this->tag_stack = [];
+        $this->attribute_stack = [];
 
         $this->substitution_current_match_key = null;
-        $this->substitution_current_links = array();
+        $this->substitution_current_links = [];
 
-        $this->substitutions = array();
+        $this->substitutions = [];
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
@@ -193,7 +193,7 @@ class Breadcrumb_substitution_loader
     public function startElement($parser, $tag, $_attributes)
     {
         array_push($this->tag_stack, $tag);
-        $tag_attributes = array();
+        $tag_attributes = [];
         foreach ($_attributes as $key => $val) {
             $tag_attributes[$key] = $val;
         }
@@ -201,7 +201,7 @@ class Breadcrumb_substitution_loader
 
         switch ($tag) {
             case 'substitution':
-                $this->substitution_current_links = array();
+                $this->substitution_current_links = [];
                 break;
 
             case 'link':
@@ -239,23 +239,23 @@ class Breadcrumb_substitution_loader
 
                 $_substitution_current_match_key = isset($tag_attributes['match_key']) ? $tag_attributes['match_key'] : '_WILD:_WILD';
                 //$substitution_current_match_key = page_link_decode($_substitution_current_match_key); match_key_match doesn't actually want it like this
-                $substitution_current_match_key = array(explode(':', $_substitution_current_match_key));
+                $substitution_current_match_key = [explode(':', $_substitution_current_match_key)];
 
-                $this->substitutions[] = array(
+                $this->substitutions[] = [
                     $substitution_current_match_key,
                     isset($tag_attributes['label']) ? $tag_attributes['label'] : null,
                     $this->substitution_current_links,
                     isset($tag_attributes['include_self']) ? ($tag_attributes['include_self'] == 'true') : true,
                     isset($tag_attributes['final']) ? ($tag_attributes['final'] == 'true') : false,
-                );
+                ];
                 break;
 
             case 'link':
                 $page_link = trim(str_replace('\n', "\n", $this->text_so_far));
-                $this->substitution_current_links[] = array(
+                $this->substitution_current_links[] = [
                     $page_link,
                     isset($tag_attributes['label']) ? protect_from_escaping(comcode_to_tempcode($tag_attributes['label'])) : new Tempcode()
-                );
+                ];
                 break;
         }
     }

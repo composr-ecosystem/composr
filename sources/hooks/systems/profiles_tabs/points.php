@@ -56,7 +56,7 @@ class Hook_profiles_tabs_points
         $order = 40;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/social/points');
+            return [$title, null, $order, 'menu/social/points'];
         }
 
         require_code('points3');
@@ -64,6 +64,6 @@ class Hook_profiles_tabs_points
 
         $content = points_profile($member_id_of, $member_id_viewing);
 
-        return array($title, $content, $order, 'menu/social/points');
+        return [$title, $content, $order, 'menu/social/points'];
     }
 }

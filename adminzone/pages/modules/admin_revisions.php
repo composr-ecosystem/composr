@@ -35,7 +35,7 @@ class Module_admin_revisions
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -69,7 +69,7 @@ class Module_admin_revisions
         add_privilege('SUBMISSION', 'undo_revisions', false);
         add_privilege('SUBMISSION', 'delete_revisions', false);
 
-        $GLOBALS['SITE_DB']->create_table('revisions', array(
+        $GLOBALS['SITE_DB']->create_table('revisions', [
             'id' => '*AUTO',
             'r_resource_type' => 'ID_TEXT',
             'r_resource_id' => 'ID_TEXT',
@@ -82,11 +82,11 @@ class Module_admin_revisions
             'r_original_resource_fs_record' => 'LONG_TEXT',
             'r_actionlog_id' => '?AUTO_LINK',
             'r_moderatorlog_id' => '?AUTO_LINK',
-        ));
-        $GLOBALS['SITE_DB']->create_index('revisions', 'lookup_by_id', array('r_resource_type', 'r_resource_id'));
-        $GLOBALS['SITE_DB']->create_index('revisions', 'lookup_by_cat', array('r_resource_type', 'r_category_id'));
-        $GLOBALS['SITE_DB']->create_index('revisions', 'actionlog_link', array('r_actionlog_id'));
-        $GLOBALS['SITE_DB']->create_index('revisions', 'moderatorlog_link', array('r_moderatorlog_id'));
+        ]);
+        $GLOBALS['SITE_DB']->create_index('revisions', 'lookup_by_id', ['r_resource_type', 'r_resource_id']);
+        $GLOBALS['SITE_DB']->create_index('revisions', 'lookup_by_cat', ['r_resource_type', 'r_category_id']);
+        $GLOBALS['SITE_DB']->create_index('revisions', 'actionlog_link', ['r_actionlog_id']);
+        $GLOBALS['SITE_DB']->create_index('revisions', 'moderatorlog_link', ['r_moderatorlog_id']);
     }
 
     /**
@@ -104,9 +104,9 @@ class Module_admin_revisions
             return null;
         }
 
-        return array(
-            'browse' => array('REVISIONS', 'admin/revisions'),
-        );
+        return [
+            'browse' => ['REVISIONS', 'admin/revisions'],
+        ];
     }
 
     public $title;
@@ -201,15 +201,15 @@ class Module_admin_revisions
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         }
 
-        $row_renderer = array($this, '_render_revision');
-        $_header_row = array(
+        $row_renderer = [$this, '_render_revision'];
+        $_header_row = [
             do_lang_tempcode('CONTENT'),
             do_lang_tempcode('MEMBER'),
             do_lang_tempcode('DATE'),
             do_lang_tempcode('CONTENT_OWNER'),
             do_lang_tempcode('CONTENT_DATE_TIME'),
             do_lang_tempcode('ACTION'),
-        );
+        ];
         if (has_privilege(get_member(), 'delete_revisions')) {
             $_header_row[] = do_lang_tempcode('DELETE');
         }
@@ -245,24 +245,24 @@ class Module_admin_revisions
         $action = do_lang_tempcode($revision['log_action']);
         $do_actionlog = has_actual_page_access(get_member(), 'admin_actionlog');
         if ($do_actionlog) {
-            $actionlog_url = build_url(array('page' => 'admin_actionlog', 'type' => 'view', 'id' => ($revision['r_actionlog_id'] === null) ? $revision['r_moderatorlog_id'] : $revision['r_actionlog_id'], 'mode' => ($revision['r_actionlog_id'] === null) ? 'cns' : 'cms'), get_module_zone('admin_actionlog'));
+            $actionlog_url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => ($revision['r_actionlog_id'] === null) ? $revision['r_moderatorlog_id'] : $revision['r_actionlog_id'], 'mode' => ($revision['r_actionlog_id'] === null) ? 'cns' : 'cms'], get_module_zone('admin_actionlog'));
             $date = hyperlink($actionlog_url, $date, false, false, '#' . strval(($revision['r_actionlog_id'] === null) ? $revision['r_moderatorlog_id'] : $revision['r_actionlog_id']));
         }
 
         $action = do_lang_tempcode($revision['log_action']);
 
-        $_revision = array(
+        $_revision = [
             $view_link,
             $member_link,
             escape_html($date),
             $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($revision['r_original_content_owner']),
             escape_html(get_timezoned_date_time($revision['r_original_content_timestamp'])),
             $action,
-        );
+        ];
 
         if (has_privilege(get_member(), 'delete_revisions')) {
-            $delete_url = get_self_url(false, false, array('type' => 'delete', 'id' => $revision['id']));
-            $delete = do_template('BUTTON_SCREEN_ITEM', array(
+            $delete_url = get_self_url(false, false, ['type' => 'delete', 'id' => $revision['id']]);
+            $delete = do_template('BUTTON_SCREEN_ITEM', [
                 '_GUID' => 'fff6126f163c05a6966208a6f1244e08',
                 'REL' => 'delete',
                 'IMMEDIATE' => true,
@@ -270,7 +270,7 @@ class Module_admin_revisions
                 'FULL_TITLE' => do_lang_tempcode('DELETE_REVISION'),
                 'TITLE' => do_lang_tempcode('DELETE'),
                 'IMG' => 'admin/delete3',
-            ));
+            ]);
             $_revision[] = $delete;
         }
 
@@ -322,7 +322,7 @@ class Module_admin_revisions
             $revision_engine_files->delete_revision($directory, $filename_id, $ext, $id);
         }
 
-        $url = get_param_string('redirect', get_self_url(true, false, array('type' => 'browse')), INPUT_FILTER_URL_INTERNAL);
+        $url = get_param_string('redirect', get_self_url(true, false, ['type' => 'browse']), INPUT_FILTER_URL_INTERNAL);
 
         log_it('DELETE_REVISION', $revision_type, strval($id));
 

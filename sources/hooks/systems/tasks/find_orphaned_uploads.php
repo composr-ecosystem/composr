@@ -35,13 +35,13 @@ class Hook_task_find_orphaned_uploads
         push_db_scope_check(false);
 
         // Find known paths
-        $known_urls = array();
-        $url_paths = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => 'URLPATH'));
+        $known_urls = [];
+        $url_paths = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => 'URLPATH']);
         $base_url = get_custom_base_url();
         foreach ($url_paths as $iteration => $url_path) {
             task_log($this, 'Processing table for referenced URLs, ' . $url_path['m_table'], $iteration, count($url_paths));
 
-            $ofs = $GLOBALS['SITE_DB']->query_select($url_path['m_table'], array($url_path['m_name']));
+            $ofs = $GLOBALS['SITE_DB']->query_select($url_path['m_table'], [$url_path['m_name']]);
             foreach ($ofs as $of) {
                 $url = $of[$url_path['m_name']];
                 if (url_is_local($url)) {
@@ -56,23 +56,23 @@ class Hook_task_find_orphaned_uploads
 
         $all_files = $this->do_dir('uploads');
         sort($all_files);
-        $orphaned = array();
+        $orphaned = [];
         foreach ($all_files as $file) {
             if (!array_key_exists($file, $known_urls)) {
-                $orphaned[] = array(
+                $orphaned[] = [
                     'URL' => get_custom_base_url() . '/' . str_replace('%2F', '/', rawurlencode($file)),
                     'PATH' => $file,
-                );
+                ];
             }
         }
 
         pop_db_scope_check();
 
-        $ret = do_template('CLEANUP_ORPHANED_UPLOADS', array(
+        $ret = do_template('CLEANUP_ORPHANED_UPLOADS', [
             '_GUID' => '21049d738f67554cff0891d343c02ad3',
             'FOUND' => $orphaned,
-        ));
-        return array('text/html', $ret);
+        ]);
+        return ['text/html', $ret];
     }
 
     /**
@@ -85,14 +85,14 @@ class Hook_task_find_orphaned_uploads
     {
         task_log($this, 'Processing ' . $dir . ' directory for uploads');
 
-        $out = array();
+        $out = [];
         $_dir = ($dir == '') ? get_custom_file_base() : (get_custom_file_base() . '/' . $dir);
         $dh = @opendir($_dir);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
                 if ($file[0] != '.') {
                     if ($dir == 'uploads') {
-                        if (in_array($file, array('filedump', 'auto_thumbs', 'website_specific', 'index.html', '.htaccess'))) {
+                        if (in_array($file, ['filedump', 'auto_thumbs', 'website_specific', 'index.html', '.htaccess'])) {
                             continue;
                         }
                     }

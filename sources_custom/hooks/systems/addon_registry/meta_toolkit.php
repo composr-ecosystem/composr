@@ -26,7 +26,7 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,13 +106,13 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/meta_toolkit.php',
             'adminzone/pages/minimodules_custom/sql_schema_generate.php',
             'adminzone/pages/minimodules_custom/sql_schema_generate_by_addon.php',
@@ -148,6 +148,6 @@ class Hook_addon_registry_meta_toolkit
             'delete_alien_files.php',
             'line_count.sh',
             'sources_custom/install_headless.php',
-        );
+        ];
     }
 }

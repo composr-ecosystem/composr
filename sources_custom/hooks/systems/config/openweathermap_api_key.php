@@ -25,7 +25,7 @@ class Hook_config_openweathermap_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OPENWEATHERMAP_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_openweathermap_api_key
             'public' => false,
 
             'addon' => 'weather',
-        );
+        ];
     }
 
     /**

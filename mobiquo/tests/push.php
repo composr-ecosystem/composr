@@ -37,9 +37,9 @@ function reset_push_slug_test()
 {
     $result = mobiquo_post_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'code' => '456',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -53,10 +53,10 @@ function push_content_check_test()
 {
     $result = mobiquo_post_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'code' => '456',
             'format' => 'serialize',
-            'data' => serialize(array(
+            'data' => serialize([
                 'type' => 'newtopic',
 
                 // For posts
@@ -67,8 +67,8 @@ function push_content_check_test()
 
                 // For PMs
                 //'mid' => 123,
-            )),
-        )
+            ]),
+        ]
     );
     print_mobiquo_result($result);
 }

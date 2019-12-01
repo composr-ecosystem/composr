@@ -61,7 +61,7 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
     $_ret = call_user_func_array($func, $args);
     require_code('files');
     if ($func === 'cms_http_request') {
-        $ret = array($_ret->data, $_ret->download_mime_type, $_ret->download_size, $_ret->download_url, $_ret->message, $_ret->message_b, $_ret->new_cookies, $_ret->filename, $_ret->charset, $_ret->download_mtime);
+        $ret = [$_ret->data, $_ret->download_mime_type, $_ret->download_size, $_ret->download_url, $_ret->message, $_ret->message_b, $_ret->new_cookies, $_ret->filename, $_ret->charset, $_ret->download_mtime];
         if (($cache_errors) || (($_ret->message !== null) && (substr($_ret->message, 0, 1) == '2'))) {
             cms_file_put_contents_safe($path, serialize($ret), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
         }
@@ -80,13 +80,13 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
  */
 function get_webpage_meta_details($url)
 {
-    static $cache = array();
+    static $cache = [];
 
     if (array_key_exists($url, $cache)) {
         return $cache[$url];
     }
     if (get_param_integer('keep_oembed_cache', 1) == 1) {
-        $_meta_details = $GLOBALS['SITE_DB']->query_select('url_title_cache', array('*'), array('t_url' => $url), '', 1);
+        $_meta_details = $GLOBALS['SITE_DB']->query_select('url_title_cache', ['*'], ['t_url' => $url], '', 1);
         if (array_key_exists(0, $_meta_details)) {
             $meta_details = $_meta_details[0];
             $cache[$url] = $meta_details;
@@ -94,7 +94,7 @@ function get_webpage_meta_details($url)
         }
     }
 
-    $meta_details = array(
+    $meta_details = [
         't_url' => substr($url, 0, 255),
         't_title' => '',
         't_meta_title' => '',
@@ -104,7 +104,7 @@ function get_webpage_meta_details($url)
         't_mime_type' => '',
         't_json_discovery' => '',
         't_xml_discovery' => '',
-    );
+    ];
 
     if (url_is_local($url)) {
         $url = get_custom_base_url() . '/' . $url;
@@ -114,16 +114,16 @@ function get_webpage_meta_details($url)
         return $meta_details;
     }
 
-    $result = cache_and_carry('cms_http_request', array($url, array('byte_limit' => 1024 * 10, 'trigger_error' => false, 'timeout' => 2.0)));
+    $result = cache_and_carry('cms_http_request', [$url, ['byte_limit' => 1024 * 10, 'trigger_error' => false, 'timeout' => 2.0]]);
     if ((is_array($result)) && ($result[1] !== null) && (strpos($result[1], 'html') !== false) && $result[4] == '200') {
         $html = $result[0];
 
         // In ascending precedence
-        $headers = array(
-            't_title' => array(
+        $headers = [
+            't_title' => [
                 '<title[^>]*>\s*(.*)\s*</title>',
-            ),
-            't_meta_title' => array(
+            ],
+            't_meta_title' => [
                 '<meta\s+name="DC\.Title"\s+content="([^"<>]*)"[^<>]*>',
                 '<meta\s+name="twitter:title"\s+content="([^"<>]*)"[^<>]*>',
                 '<meta\s+name="og:title"\s+content="([^"<>]*)"[^<>]*>',
@@ -137,13 +137,13 @@ function get_webpage_meta_details($url)
                 '<meta\s+property=\'og:title\'\s+content=\'([^\'<>]*)\'[^<>]*>',
                 '<meta\s+property=\'og:title\'\s+name=\'og:title\'\s+content=\'([^\'<>]*)\'[^<>]*>',
                 '<meta\s+name=\'og:title\'\s+property=\'og:title\'\s+content=\'([^\'<>]*)\'[^<>]*>',
-            ),
-            't_keywords' => array(
+            ],
+            't_keywords' => [
                 '<meta\s+name="keywords"\s+content="([^"<>]*)"[^<>]*>',
 
                 '<meta\s+name=\'keywords\'\s+content=\'([^\'<>]*)\'[^<>]*>',
-            ),
-            't_description' => array(
+            ],
+            't_description' => [
                 '<meta\s+name="description"\s+content="([^"<>]*)"[^<>]*>',
                 '<meta\s+name="DC\.Description"\s+content="([^"<>]*)"[^<>]*>',
                 '<meta\s+name="twitter:description"\s+content="([^"<>]*)"[^<>]*>',
@@ -159,8 +159,8 @@ function get_webpage_meta_details($url)
                 '<meta\s+property=\'og:description\'\s+content=\'([^\'<>]*)\'[^<>]*>',
                 '<meta\s+property=\'og:description\'\s+name=\'og:description\'\s+content=\'([^\'<>]*)\'[^<>]*>',
                 '<meta\s+name=\'og:description\'\s+property=\'og:description\'\s+content=\'([^\'<>]*)\'[^<>]*>',
-            ),
-            't_image_url' => array(
+            ],
+            't_image_url' => [
                 '<meta\s+name="twitter:image"\s+content="([^"<>]*)"[^<>]*>',
                 '<meta\s+property="og:image"\s+content="([^"]*)"[^<>]*>',
                 '<meta\s+property="og:image"\s+name="og:image"\s+content="([^"]*)"[^<>]*>',
@@ -170,20 +170,20 @@ function get_webpage_meta_details($url)
                 '<meta\s+property=\'og:image\'\s+content=\'([^\']*)\'[^<>]*>',
                 '<meta\s+property=\'og:image\'\s+name=\'og:image\'\s+content=\'([^\']*)\'[^<>]*>',
                 '<meta\s+name=\'og:image\'\s+property=\'og:image\'\s+content=\'([^\']*)\'[^<>]*>',
-            ),
-        );
+            ],
+        ];
 
         require_code('character_sets');
         $html = convert_to_internal_encoding($html, $result[8]);
 
         foreach ($headers as $header => $regexps) {
             foreach ($regexps as $regexp) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#' . $regexp . '#isU', $html, $matches) != 0) {
                     $value = str_replace('"', '&quot;', stripslashes($matches[1]));
 
                     if ($header == 't_title' || $header == 't_image_url') { // Non-HTML
-                        $value = str_replace(array('&ndash;', '&mdash;'), array('-', '-'), $value);
+                        $value = str_replace(['&ndash;', '&mdash;'], ['-', '-'], $value);
                         $value = @html_entity_decode($value, ENT_QUOTES);
                         $value = trim($value);
                         $value = substr($value, 0, 255);
@@ -211,11 +211,11 @@ function get_webpage_meta_details($url)
             $meta_details['t_mime_type'] = $result[1];
         }
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#<link\s+[^<>]*>#i', $html, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $line = $matches[0][$i];
-            $matches2 = array();
+            $matches2 = [];
             if ((preg_match('#\srel=["\']?alternate["\']?#i', $line) != 0) && (preg_match('#\shref=["\']?([^"\']+)["\']?#i', $line, $matches2) != 0)) {
                 if (preg_match('#\stype=["\']?application/json\+oembed["\']?#i', $line) != 0) {
                     $meta_details['t_json_discovery'] = @html_entity_decode($matches2[1], ENT_QUOTES);
@@ -248,7 +248,7 @@ function get_webpage_meta_details($url)
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return object HttpDownloader object, which can be checked for return data
  */
-function _cms_http_request($url, $options = array())
+function _cms_http_request($url, $options = [])
 {
     $curl = new HttpDownloaderCurl();
     $curl_priority = $curl->may_run_for($url, $options);
@@ -310,7 +310,7 @@ abstract class HttpDownloader
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
     protected $ua = 'Composr'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
     protected $post_params = null; // ?array. An optional array of POST parameters to send; if this is null, a GET request is used (null: none). If $raw_post is set, it should be array($data)
-    protected $cookies = array(); // array. An optional array of cookies to send
+    protected $cookies = []; // array. An optional array of cookies to send
     protected $accept = null; // ?string. 'accept' header value (null: don't pass one)
     protected $accept_charset = null; // ?string. 'accept-charset' header value (null: don't pass one)
     protected $accept_language = null; // ?string. 'accept-language' header value (null: don't pass one)
@@ -319,8 +319,8 @@ abstract class HttpDownloader
     protected $auth = null; // ?array. A pair: authentication username and password (null: none)
     protected $timeout = 6.0; // float. The timeout (for connecting/stalling, not for overall download time); usually it is rounded up to the nearest second, depending on the downloader implementation
     protected $raw_post = false; // boolean. Whether to treat the POST parameters as a raw POST (rather than using MIME)
-    protected $files = array(); // array. Files to send. Map between field name to file path
-    protected $extra_headers = array(); // array. Extra headers to send
+    protected $files = []; // array. Files to send. Map between field name to file path
+    protected $extra_headers = []; // array. Extra headers to send
     protected $http_verb = null; // ?string. HTTP verb (null: auto-decide based on other parameters)
     protected $raw_content_type = 'application/xml'; // string. The content type to use if a raw HTTP post
     protected $ignore_http_status = false; // boolean. Return a result regardless of HTTP status
@@ -352,10 +352,10 @@ abstract class HttpDownloader
     public $download_mtime = null; // ?ID_TEXT. The file modification time returned from the last HTTP lookup.
     public $message = null; // string. The status code returned from the last HTTP lookup (e.g. "200" or "404").
     public $message_b = null; // string. The status messagereturned from the last HTTP lookup.
-    public $new_cookies = array(); // ?ID_TEXT. The cookies returned from the last HTTP lookup.
+    public $new_cookies = []; // ?ID_TEXT. The cookies returned from the last HTTP lookup.
     public $filename = null; // ?ID_TEXT. The filename returned from the last HTTP lookup.
     public $charset = null; // ?ID_TEXT. The character set returned from the last HTTP lookup.
-    public $headers = array(); // Any HTTP headers collected.
+    public $headers = []; // Any HTTP headers collected.
     public $implementation_used = null; // For debugging.
 
     /**
@@ -365,7 +365,7 @@ abstract class HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    abstract public function may_run_for($url, $options = array());
+    abstract public function may_run_for($url, $options = []);
 
     /**
      * Return the file in the URL by downloading it over HTTP. If a byte limit is given, it will only download that many bytes. It outputs warnings, returning null, on error.
@@ -374,7 +374,7 @@ abstract class HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return ~?string The data downloaded (null: error) (false: backend failed)
      */
-    public function run($url, $options = array())
+    public function run($url, $options = [])
     {
         global $DOWNLOAD_LEVEL;
 
@@ -412,9 +412,9 @@ abstract class HttpDownloader
 
         // HTTP authentication in URL
         if ($this->auth === null) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^https?://([^:@/]+):([^:@/]+)@#', $url, $matches) != 0) {
-                $this->auth = array($matches[1], $matches[2]);
+                $this->auth = [$matches[1], $matches[2]];
             }
         }
 
@@ -475,9 +475,9 @@ abstract class HttpDownloader
         $this->put = null;
         $this->put_path = null;
         $this->put_no_delete = false;
-        if (($this->post_params !== null) || ($this->raw_post) || ($this->files != array())) {
+        if (($this->post_params !== null) || ($this->raw_post) || ($this->files != [])) {
             if ($this->post_params === null) {
-                $this->post_params = array(); // POST is implied
+                $this->post_params = []; // POST is implied
             }
 
             $this->sent_http_post_content = true;
@@ -486,7 +486,7 @@ abstract class HttpDownloader
                 $_postdetails_params = $this->post_params[0];
             } else {
                 $_postdetails_params = '';//$this->url_parts['scheme'] . '://' . $this->url_parts['host'] . $url2 . '?';
-                if (array_keys($this->post_params) === array('_')) {
+                if (array_keys($this->post_params) === ['_']) {
                     $_postdetails_params = $this->post_params['_'];
                 } else {
                     if (!empty($this->post_params)) {
@@ -495,7 +495,7 @@ abstract class HttpDownloader
                 }
             }
 
-            if ($this->files == array()) { // If no files, use simple application/x-www-form-urlencoded
+            if ($this->files == []) { // If no files, use simple application/x-www-form-urlencoded
                 if (!$this->add_content_type_header_manually) {
                     if ($this->raw_post) {
                         if (!isset($this->extra_headers['Content-Type'])) {
@@ -608,7 +608,7 @@ abstract class HttpDownloader
         }
 
         if ($this->http_verb === null) {
-            $this->http_verb = ((($this->post_params === null) && ($this->files == array())) ? (($this->byte_limit === 0) ? 'HEAD' : 'GET') : 'POST');
+            $this->http_verb = ((($this->post_params === null) && ($this->files == [])) ? (($this->byte_limit === 0) ? 'HEAD' : 'GET') : 'POST');
         }
 
         // Call downloader method...
@@ -735,7 +735,7 @@ abstract class HttpDownloader
     protected function get_cookie_string()
     {
         // Prep cookies
-        if ($this->cookies != array()) {
+        if ($this->cookies != []) {
             $cookies = '';
             $done_one_cookie = false;
             foreach ($this->cookies as $key => $val) {
@@ -770,7 +770,7 @@ abstract class HttpDownloader
     protected function get_header_string()
     {
         $headers = '';
-        if ($this->cookies != array()) {
+        if ($this->cookies != []) {
             $headers .= 'Cookie: ' . $this->get_cookie_string() . "\r\n";
         }
         if (is_string($this->ua)) {
@@ -806,7 +806,7 @@ abstract class HttpDownloader
      */
     protected function read_in_headers($line)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match("#Content-Disposition: [^\r\n]*filename=\"([^;\r\n]*)\"\r\n#i", $line, $matches) != 0) {
             $this->filename = $matches[1];
         }
@@ -818,7 +818,7 @@ abstract class HttpDownloader
             $cookie_value = trim($matches[2]);
             $_cookie_parts = explode('; ', $cookie_value);
 
-            $cookie_parts = array();
+            $cookie_parts = [];
 
             $cookie_parts['key'] = $cookie_key;
             $cookie_parts['value'] = trim(rawurldecode(array_shift($_cookie_parts)));
@@ -864,7 +864,7 @@ abstract class HttpDownloader
     protected function detect_character_encoding()
     {
         if (($this->charset === null) && ($this->data !== null)) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^\s*<' . '?xml[^<>]*\s+encoding="([^"]+)"#', $this->data, $matches) != 0) {
                 $this->charset = trim($matches[1]);
             } elseif (preg_match('#<meta\s+http-equiv="Content-Type"\s+content="[^"]*;\s*charset=([^"]+)"#i', substr($this->data, 0, 2048), $matches) != 0) {
@@ -943,7 +943,7 @@ class HttpDownloaderCurl extends HttpDownloader
     protected $add_files_manually = true;
 
     // Data collection
-    protected $curl_headers = array();
+    protected $curl_headers = [];
     protected $curl_body = null;
 
     /**
@@ -953,7 +953,7 @@ class HttpDownloaderCurl extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = array())
+    public function may_run_for($url, $options = [])
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
@@ -994,7 +994,7 @@ class HttpDownloaderCurl extends HttpDownloader
         $ch = curl_init($this->do_ip_forwarding ? $this->connecting_url : $url);
 
         // Cookie prep
-        if ($this->cookies != array()) {
+        if ($this->cookies != []) {
             curl_setopt($ch, CURLOPT_COOKIE, $this->get_cookie_string());
         }
 
@@ -1030,7 +1030,7 @@ class HttpDownloaderCurl extends HttpDownloader
         }
 
         // Headers
-        $curl_headers = array();
+        $curl_headers = [];
         if ($this->accept !== null) {
             $curl_headers[] = 'Accept: ' . $this->accept;
         }
@@ -1043,7 +1043,7 @@ class HttpDownloaderCurl extends HttpDownloader
         foreach ($this->extra_headers as $key => $val) {
             $curl_headers[] = $key . ': ' . $val;
         }
-        if (($this->raw_post) && (($this->files == array()) || ($this->put !== null))) {
+        if (($this->raw_post) && (($this->files == []) || ($this->put !== null))) {
             if (!isset($this->extra_headers['Content-Type'])) {
                 $curl_headers[] = 'Content-Type: ' . $this->raw_content_type;
             }
@@ -1058,7 +1058,7 @@ class HttpDownloaderCurl extends HttpDownloader
             } else {
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $this->raw_payload);
-                if ($this->files != array()) { // We will be doing a multipart/form-data call
+                if ($this->files != []) { // We will be doing a multipart/form-data call
                     $curl_headers[] = 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset();
                 }
                 $curl_headers[] = 'Expect:'; // Suppress  automatic Expect header
@@ -1099,8 +1099,8 @@ class HttpDownloaderCurl extends HttpDownloader
         }
 
         // Data collection
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, array($this, 'file_curl_headers'));
-        curl_setopt($ch, CURLOPT_WRITEFUNCTION, array($this, 'file_curl_body'));
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, [$this, 'file_curl_headers']);
+        curl_setopt($ch, CURLOPT_WRITEFUNCTION, [$this, 'file_curl_body']);
 
         // Response
         $curl_result = curl_exec($ch);
@@ -1113,7 +1113,7 @@ class HttpDownloaderCurl extends HttpDownloader
             $curl_errno = curl_errno($ch);
             curl_close($ch);
 
-            $possible_internal_curl_errors = array(1, 2, 4, 5, 16, 34, 35, 41, 43, 45, 48, 52, 53, 54, 55, 56, 58, 59, 60, 64, 66, 77, 80, 81, 82, 83, 89, 90, 91, 92);
+            $possible_internal_curl_errors = [1, 2, 4, 5, 16, 34, 35, 41, 43, 45, 48, 52, 53, 54, 55, 56, 58, 59, 60, 64, 66, 77, 80, 81, 82, 83, 89, 90, 91, 92];
             if (!in_array($curl_errno, $possible_internal_curl_errors)) {
                 if ($this->trigger_error) {
                     warn_exit(protect_from_escaping($error), false, true);
@@ -1205,7 +1205,7 @@ class HttpDownloaderCurl extends HttpDownloader
 
         // Receive headers
         foreach ($this->curl_headers as $header) {
-            $matches = array();
+            $matches = [];
 
             $this->read_in_headers($header);
 
@@ -1260,7 +1260,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->curl_body === null) {
             $this->curl_body = '';
         }
-        if ((!in_array($this->message, array('200', '201'))) && (!$this->ignore_http_status)) {
+        if ((!in_array($this->message, ['200', '201'])) && (!$this->ignore_http_status)) {
             $this->curl_body = null;
         }
 
@@ -1319,7 +1319,7 @@ class HttpDownloaderSockets extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = array())
+    public function may_run_for($url, $options = [])
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
@@ -1412,7 +1412,7 @@ class HttpDownloaderSockets extends HttpDownloader
             $first_fail_time = null;
             $chunked = false;
             $buffer_unprocessed = '';
-            $_frh = array($mysock);
+            $_frh = [$mysock];
             $_fwh = null;
             $time_init = time();
             $line = '';
@@ -1529,7 +1529,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
                         $tally += strlen($line);
 
-                        $matches = array();
+                        $matches = [];
                         if (preg_match("#Transfer-Encoding: chunked\r\n#i", $line, $matches) != 0) {
                             $chunked = true;
                         }
@@ -1783,7 +1783,7 @@ class HttpDownloaderFileWrapper extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = array())
+    public function may_run_for($url, $options = [])
     {
         return HttpDownloader::RUN_PRIORITY_LOW;
     }
@@ -1818,22 +1818,22 @@ class HttpDownloaderFileWrapper extends HttpDownloader
                 !$this->do_ip_forwarding &&
                 ((!function_exists('get_value')) || (get_value('disable_ssl_for__' . $this->url_parts['host']) === '0'));
 
-            $opts = array(
-                'http' => array(
+            $opts = [
+                'http' => [
                     'method' => $this->http_verb,
                     'header' => rtrim((($this->url_parts['host'] != $this->connect_to) ? ('Host: ' . $this->url_parts['host'] . "\r\n") : '') . $this->get_header_string()),
                     'content' => $this->raw_payload,
                     'follow_location' => $this->no_redirect ? 0 : 1,
                     'ignore_errors' => $this->ignore_http_status,
-                    'ssl' => array(
+                    'ssl' => [
                         'verify_peer' => $verifypeer_enabled,
                         'verify_peer_name' => $verifypeer_enabled,
                         'cafile' => $crt_path,
                         'SNI_enabled' => true,
                         'ciphers' => 'TLSv1',
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
 
             if (is_string($this->ua)) {
                 $opts['http']['user_agent'] = $this->ua;
@@ -1931,13 +1931,13 @@ class HttpDownloaderFilesystem extends HttpDownloader
      * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
      * @return integer The execution priority
      */
-    public function may_run_for($url, $options = array())
+    public function may_run_for($url, $options = [])
     {
         $this->url_parts = @parse_url(normalise_idn_url($url));
         $this->read_in_options($options);
 
         $faux = function_exists('get_value') ? get_value('http_faux_loopback') : null;
-        if ((!cms_empty_safe($faux)) && ($this->post_params === null) && ($this->files == array())) { // NB: Does not support cookies, accept headers, referers
+        if ((!cms_empty_safe($faux)) && ($this->post_params === null) && ($this->files == [])) { // NB: Does not support cookies, accept headers, referers
             if (substr($faux, 0, 1) != '#') {
                 $faux = '#' . $faux . '#i';
             }

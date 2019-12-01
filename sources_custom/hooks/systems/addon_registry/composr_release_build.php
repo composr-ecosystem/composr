@@ -26,7 +26,7 @@ class Hook_addon_registry_composr_release_build
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_composr_release_build
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -103,7 +103,7 @@ You may want to put them in your git \'cmd\' directory, as that is in your path.
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -113,17 +113,17 @@ You may want to put them in your git \'cmd\' directory, as that is in your path.
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'meta_toolkit',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'composr_homesite',
                 'composr_homesite_support_credits',
                 'composr_tutorials',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -143,7 +143,7 @@ You may want to put them in your git \'cmd\' directory, as that is in your path.
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/composr_release_build.php',
             'data_custom/build_rewrite_rules.php',
             'sources_custom/make_release.php',
@@ -186,6 +186,6 @@ You may want to put them in your git \'cmd\' directory, as that is in your path.
             'aps/test/index.html',
             'exports/builds/build/index.html',
             'exports/builds/hotfixes/index.html',
-        );
+        ];
     }
 }

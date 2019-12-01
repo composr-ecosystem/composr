@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_moderation',
-        );
+        ];
     }
 
     /**
@@ -73,13 +73,13 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'cns_forum',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/forum/multi_moderations.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/multi_moderations.svg',
             'sources/hooks/systems/resource_meta_aware/multi_moderation.php',
@@ -108,6 +108,6 @@ class Hook_addon_registry_cns_multi_moderations
             'adminzone/pages/modules/admin_cns_multi_moderations.php',
             'lang/EN/cns_multi_moderations.ini',
             'sources/hooks/systems/actionlog/cns_multi_moderations.php',
-        );
+        ];
     }
 }

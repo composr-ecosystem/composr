@@ -30,7 +30,7 @@ class Hook_config_timezone
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TIMEZONE',
             'type' => 'special',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_timezone
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -30,14 +30,14 @@ class Block_main_count
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'start', 'hit_count');
+        $info['parameters'] = ['param', 'start', 'hit_count'];
         return $info;
     }
 
@@ -90,12 +90,12 @@ class Block_main_count
             $update = $name;
         }
 
-        return do_template('BLOCK_MAIN_COUNT', array(
+        return do_template('BLOCK_MAIN_COUNT', [
             '_GUID' => '49d3ba8fb5b5544ac817f9a7d18f9d35',
             'BLOCK_ID' => $block_id,
             'NAME' => $name,
             'UPDATE' => $update,
             'VALUE' => strval($current_value + 1),
-        ));
+        ]);
     }
 }

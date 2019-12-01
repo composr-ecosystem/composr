@@ -33,12 +33,12 @@ class Hook_symbol_FORM_TO_EMAIL_URL
     {
         $url = find_script('form_to_email');
         if (isset($param[0])) {
-            $redirect_url = static_evaluate_tempcode(build_url(array('page' => $param[0]), '_SEARCH'));
+            $redirect_url = static_evaluate_tempcode(build_url(['page' => $param[0]], '_SEARCH'));
         } else {
             $redirect_url = get_self_url(true);
         }
         $url .= '?redirect=' . cms_urlencode(static_evaluate_tempcode(protect_url_parameter($redirect_url)));
-        $url .= keep_symbol(array());
+        $url .= keep_symbol([]);
         return $url;
     }
 }

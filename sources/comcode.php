@@ -35,7 +35,7 @@ function init__comcode()
     $VALID_COMCODE_TAGS = null;
 
     global $LAX_COMCODE;
-    $LAX_COMCODE = array(!function_exists('get_option') || get_option('lax_comcode') === '1');
+    $LAX_COMCODE = [!function_exists('get_option') || get_option('lax_comcode') === '1'];
 
     if (!defined('COMCODE_NORMAL')) {
         define('COMCODE_NORMAL', 0);
@@ -96,7 +96,7 @@ function init_valid_comcode_tags()
      *
      * @global array $VALID_COMCODE_TAGS
      */
-    $VALID_COMCODE_TAGS = array(
+    $VALID_COMCODE_TAGS = [
         'samp' => true, 'q' => true, 'var' => true, 'overlay' => true, 'tooltip' => true,
         'section' => true, 'section_controller' => true,
         'big_tab' => true, 'big_tab_controller' => true, 'tabs' => true, 'tab' => true,
@@ -108,7 +108,7 @@ function init_valid_comcode_tags()
         'attachment' => true, 'attachment_safe' => true, 'align' => true, 'left' => true, 'center' => true, 'right' => true,
         'snapback' => true, 'post' => true, 'topic' => true, 'include' => true, 'random' => true, 'ticker' => true, 'jumping' => true, 'surround' => true, 'pulse' => true, 'shocker' => true,
         'require_css' => true, 'require_javascript' => true,
-    );
+    ];
     //if (addon_installed('ecommerce')) {
     $VALID_COMCODE_TAGS['currency'] = true;
     //}
@@ -121,12 +121,12 @@ function init_potential_js_naughty_array()
 {
     // We're not allowed to specify any of these as entities
     global $POTENTIAL_JS_NAUGHTY_ARRAY;
-    $POTENTIAL_JS_NAUGHTY_ARRAY = array(
+    $POTENTIAL_JS_NAUGHTY_ARRAY = [
         'd' => true, /*'a' => true, 't' => true, 'a' => true,*/
         'j' => true, 'a' => true, 'v' => true, 's' => true, 'c' => true, 'r' => true, 'i' => true, 'p' => true, 't' => true,
         'J' => true, 'A' => true, 'V' => true, 'S' => true, 'C' => true, 'R' => true, 'I' => true, 'P' => true, 'T' => true,
         ' ' => true, "\t" => true, "\n" => true, "\r" => true, ':' => true, '/' => true, '*' => true, '\\' => true,
-    );
+    ];
     $POTENTIAL_JS_NAUGHTY_ARRAY[chr(0)] = true;
 }
 
@@ -194,9 +194,9 @@ function apply_emoticons($text)
  * @param  ?MEMBER $on_behalf_of_member The member we are running on behalf of, with respect to how attachments are handled; we may use this members attachments that are already within this post, and our new attachments will be handed to this member (null: member evaluating)
  * @return Tempcode The Tempcode generated
  */
-function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = array(), $on_behalf_of_member = null)
+function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false, $pass_id = null, $db = null, $flags = 0, $highlight_bits = [], $on_behalf_of_member = null)
 {
-    $matches = array();
+    $matches = [];
     if (preg_match('#^\{\!([A-Z_]+)\}$#', $comcode, $matches) != 0) {
         return do_lang_tempcode($matches[1]);
     }
@@ -242,7 +242,7 @@ function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false,
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Purified plain-text
  */
-function strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), $include_urls = true)
+function strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = true)
 {
     $text = $in;
 
@@ -250,14 +250,14 @@ function strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), $
         return '';
     }
 
-    static $done = array();
+    static $done = [];
     if (isset($done[$text])) {
         return $done[$text];
     }
 
     $input_text = $text;
 
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(\[semihtml\])?([\w\-\(\) \.,:;/"\'\!\?]*)(\[/semihtml\])?$#', $text, $matches) != 0) {
         $done[$text] = $matches[2];
         return $matches[2]; // Optimisation

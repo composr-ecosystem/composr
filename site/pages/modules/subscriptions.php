@@ -30,7 +30,7 @@ class Module_subscriptions
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -65,7 +65,7 @@ class Module_subscriptions
         push_db_scope_check(false);
 
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('ecom_subscriptions', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_subscriptions', [
                 'id' => '*AUTO',
                 's_type_code' => 'ID_TEXT',
                 's_member_id' => 'MEMBER',
@@ -85,9 +85,9 @@ class Module_subscriptions
                 // Copied through from what the hook says at setup, in case the hook later changes
                 's_length' => 'INTEGER',
                 's_length_units' => 'SHORT_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('f_usergroup_subs', array(
+            $GLOBALS['SITE_DB']->create_table('f_usergroup_subs', [
                 'id' => '*AUTO',
                 's_title' => 'SHORT_TRANS',
                 's_description' => 'LONG_TRANS__COMCODE',
@@ -102,25 +102,25 @@ class Module_subscriptions
                 's_mail_end' => 'LONG_TRANS',
                 's_mail_uhoh' => 'LONG_TRANS',
                 's_uses_primary' => 'BINARY',
-            ));
+            ]);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 5)) {
-            $GLOBALS['SITE_DB']->create_table('f_usergroup_sub_mails', array(
+            $GLOBALS['SITE_DB']->create_table('f_usergroup_sub_mails', [
                 'id' => '*AUTO',
                 'm_usergroup_sub_id' => 'AUTO_LINK',
                 'm_ref_point' => 'ID_TEXT', // start|term_start|term_end|expiry
                 'm_ref_point_offset' => 'INTEGER',
                 'm_subject' => 'SHORT_TRANS',
                 'm_body' => 'LONG_TRANS',
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('subscriptions', 's_special', 'ID_TEXT', 's_purchase_id');
             $GLOBALS['SITE_DB']->add_table_field('subscriptions', 's_length', 'INTEGER', 1);
             $GLOBALS['SITE_DB']->add_table_field('subscriptions', 's_length_units', 'SHORT_TEXT', 'm');
-            $subscriptions = $GLOBALS['SITE_DB']->query_select('subscriptions', array('*'));
+            $subscriptions = $GLOBALS['SITE_DB']->query_select('subscriptions', ['*']);
             foreach ($subscriptions as $sub) {
                 if (substr($sub['s_type_code'], 0, 9) != 'USERGROUP') {
                     continue;
@@ -129,17 +129,17 @@ class Module_subscriptions
                 $db = get_db_for('f_usergroup_subs');
 
                 $usergroup_subscription_id = intval(substr($sub['s_type_code'], 9));
-                $usergroup_subscription_rows = $db->query_select('f_usergroup_subs', array('*'), array('id' => $usergroup_subscription_id), '', 1);
+                $usergroup_subscription_rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $usergroup_subscription_id], '', 1);
                 if (!array_key_exists(0, $usergroup_subscription_rows)) {
                     continue;
                 }
                 $usergroup_subscription_row = $usergroup_subscription_rows[0];
 
-                $update_map = array(
+                $update_map = [
                     's_length' => $usergroup_subscription_row['s_length'],
                     's_length_units' => $usergroup_subscription_row['s_length_units'],
-                );
-                $GLOBALS['SITE_DB']->query_update('subscriptions', $update_map, array('id' => $sub['id']), '', 1);
+                ];
+                $GLOBALS['SITE_DB']->query_update('subscriptions', $update_map, ['id' => $sub['id']], '', 1);
             }
 
             $GLOBALS['SITE_DB']->add_table_field('f_usergroup_subs', 's_auto_recur', 'BINARY', 1);
@@ -161,7 +161,7 @@ class Module_subscriptions
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
-            $GLOBALS['SITE_DB']->create_index('ecom_subscriptions', 's_member_id', array('s_member_id'));
+            $GLOBALS['SITE_DB']->create_index('ecom_subscriptions', 's_member_id', ['s_member_id']);
         }
 
         pop_db_scope_check();
@@ -183,11 +183,11 @@ class Module_subscriptions
         }
 
         if ((!$check_perms || !is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)') > 0)) {
-            return array(
-                'browse' => array('MY_SUBSCRIPTIONS', 'menu/adminzone/audit/ecommerce/subscriptions'),
-            );
+            return [
+                'browse' => ['MY_SUBSCRIPTIONS', 'menu/adminzone/audit/ecommerce/subscriptions'],
+            ];
         }
-        return array();
+        return [];
     }
 
     public $title;
@@ -213,7 +213,7 @@ class Module_subscriptions
         }
 
         if ($type == 'cancel') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MY_SUBSCRIPTIONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MY_SUBSCRIPTIONS')]]);
 
             $this->title = get_screen_title('SUBSCRIPTION_CANCEL');
         }
@@ -265,12 +265,12 @@ class Module_subscriptions
         require_code('ecommerce_subscriptions');
         $_subscriptions = find_member_subscriptions($member_id);
 
-        $subscriptions = array();
+        $subscriptions = [];
         foreach ($_subscriptions as $_subscription) {
             $subscriptions[] = prepare_templated_subscription($_subscription);
         }
 
-        return do_template('ECOM_SUBSCRIPTIONS_SCREEN', array('_GUID' => 'e39cd1883ba7b87599314c1f8b67902d', 'TITLE' => $this->title, 'SUBSCRIPTIONS' => $subscriptions));
+        return do_template('ECOM_SUBSCRIPTIONS_SCREEN', ['_GUID' => 'e39cd1883ba7b87599314c1f8b67902d', 'TITLE' => $this->title, 'SUBSCRIPTIONS' => $subscriptions]);
     }
 
     /**
@@ -281,26 +281,26 @@ class Module_subscriptions
     public function cancel()
     {
         $id = get_param_integer('id');
-        $payment_gateway = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 's_payment_gateway', array('id' => $id));
+        $payment_gateway = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 's_payment_gateway', ['id' => $id]);
         if ($payment_gateway === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        if (!in_array($payment_gateway, array('', 'manual', 'points'))) {
+        if (!in_array($payment_gateway, ['', 'manual', 'points'])) {
             require_code('hooks/systems/payment_gateway/' . filter_naughty_harsh($payment_gateway, true));
             $payment_gateway_object = object_factory(filter_naughty_harsh($payment_gateway, true));
             if ($payment_gateway_object->auto_cancel($id) !== true) {
                 // Because we cannot TRIGGER a REMOTE cancellation, we have it so the local user action triggers that notification, informing the staff to manually do a remote cancellation
                 require_code('notifications');
-                $trans_id = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 'id', array('t_purchase_id' => strval($id)));
+                $trans_id = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 'id', ['t_purchase_id' => strval($id)]);
                 $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
                 dispatch_notification('subscription_cancelled_staff', null, do_lang('SUBSCRIPTION_CANCELLED_SUBJECT', null, null, null, get_site_default_lang()), do_notification_lang('SUBSCRIPTION_CANCELLED_BODY', $trans_id, $username, null, get_site_default_lang()));
             }
         }
 
-        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', array('s_state' => 'cancelled'), array('id' => $id, 's_member_id' => get_member()), '', 1);
+        $GLOBALS['SITE_DB']->query_update('ecom_subscriptions', ['s_state' => 'cancelled'], ['id' => $id, 's_member_id' => get_member()], '', 1);
 
-        $url = build_url(array('page' => '_SELF'), '_SELF');
+        $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

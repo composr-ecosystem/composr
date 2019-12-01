@@ -26,7 +26,7 @@ function install_location_data()
     require_code('files_spreadsheets_read');
 
     // Open WorldGazetteer.csv
-    $locations = array();
+    $locations = [];
     $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/WorldGazetteer.csv');
     while (($line = $sheet_reader->read_row()) !== false) {
         if ($line['Latitude'] != '') {
@@ -48,7 +48,7 @@ function install_location_data()
     $sheet_reader->close();
 
     // Load US locations using CivicSpace-zipcodes.csv
-    $us_locations = array();
+    $us_locations = [];
     require_code('locations/us');
     $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/CivicSpace-zipcodes.csv');
     while (($line = $sheet_reader->read_row()) !== false) {
@@ -58,7 +58,7 @@ function install_location_data()
     $sheet_reader->close();
 
     // Load World locations using World_Cities_Location_table.csv
-    $world_locations = array();
+    $world_locations = [];
     require_code('locations/us');
     $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/World_Cities_Location_table.csv');
     while (($line = $sheet_reader->read_row()) !== false) {
@@ -96,7 +96,7 @@ function install_location_data()
             }
         }
 
-        $GLOBALS['SITE_DB']->query_insert('locations', array(
+        $GLOBALS['SITE_DB']->query_insert('locations', [
             'l_place' => $location['Name'],
             'l_type' => $location['Type'],
             'l_continent' => find_continent($location['Country']),
@@ -107,7 +107,7 @@ function install_location_data()
             'l_population' => intval($location['Population']),
             'l_latitude' => ($location['Latitude'] == '') ? null : floatval($location['Latitude']),
             'l_longitude' => ($location['Longitude'] == '') ? null : floatval($location['Longitude']),
-        ));
+        ]);
     }
 }
 
@@ -127,7 +127,7 @@ function remove_accents($string)
 
     static $chars = null;
     if ($chars === null) {
-        $chars = array(
+        $chars = [
             // Decompositions for Latin-1 Supplement
             chr(195) . chr(128) => 'A', chr(195) . chr(129) => 'A',
             chr(195) . chr(130) => 'A', chr(195) . chr(131) => 'A',
@@ -226,7 +226,7 @@ function remove_accents($string)
             chr(226) . chr(130) . chr(172) => 'E',
             // GBP (Pound) Sign
             chr(194) . chr(163) => '',
-        );
+        ];
     }
 
     return strtr($string, $chars);
@@ -237,7 +237,7 @@ function _worldcities_remaining_locations()
     require_code('locations');
 
     // Load US locations using worldcitiespop.csv
-    $many_locations = array();
+    $many_locations = [];
     require_code('files_spreadsheets_read');
     $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/worldcitiespop.csv');
     while (($line = $sheet_reader->read_row()) !== false) {
@@ -256,7 +256,7 @@ function _worldcities_remaining_locations()
             $place = strtolower(remove_accents($location['l_place']));
             if (isset($many_locations[$location['l_country']][$place])) {
                 list($latitude, $longitude) = explode(',', $many_locations[$location['l_country']][$place]);
-                $GLOBALS['SITE_DB']->query_update('locations', array('l_latitude' => floatval($latitude), 'l_longitude' => floatval($longitude)), array('id' => $location['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_update('locations', ['l_latitude' => floatval($latitude), 'l_longitude' => floatval($longitude)], ['id' => $location['id']], '', 1);
             }
 
             $from = $location['id'];
@@ -291,15 +291,15 @@ function transcode_remaining_locations()
                 $from = $location['id'];
             }
 
-            $_result = http_get_contents($url, array('convert_to_internal_encoding' => true));
+            $_result = http_get_contents($url, ['convert_to_internal_encoding' => true]);
 
-            $matches = array();
+            $matches = [];
             if (strpos($_result, '<lat>') !== false) {
                 foreach ($unknown as $i => $location) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#<location>' . preg_quote($location['l_string'], '#')/*<<< xmlentities doesn't work around this for some reason*/ . '</location>.*<geocodeQualityCode>(.*)</geocodeQualityCode>.*<lat>([\-\d\.]+)</lat>\s*<lng>([\-\d\.]+)</lng>#sU', $_result, $matches) != 0) {
                         if (($matches[1] == 'A5XAX') || ($matches[1] == 'A5XBX')) {
-                            $GLOBALS['SITE_DB']->query_update('locations', array('l_latitude' => floatval($matches[2]), 'l_longitude' => floatval($matches[3])), array('id' => $location['id']), '', 1);
+                            $GLOBALS['SITE_DB']->query_update('locations', ['l_latitude' => floatval($matches[2]), 'l_longitude' => floatval($matches[3])], ['id' => $location['id']], '', 1);
                         }
                     }
                 }
@@ -318,7 +318,7 @@ function transcode_remaining_locations()
                 $result = geocode($lstring, $error_msg);
                 if ($result !== null) {
                     list($latitude, $longitude) = $result;
-                    $GLOBALS['SITE_DB']->query_update('locations', array('l_latitude' => $latitude, 'l_longitude' => $longitude), array('id' => $location['id']), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('locations', ['l_latitude' => $latitude, 'l_longitude' => $longitude], ['id' => $location['id']], '', 1);
                     $errored = 0;
                 } else {
                     $errored++;
@@ -337,7 +337,7 @@ function transcode_remaining_locations()
 function create_catalogue_category_tree($catalogue_name = 'places', $country = null, $fixup = false/*used to fix old bug where countries without regions were not imported*/)
 {
     if ($country === null) { // We will do this by looping through each country, recursing back into this function to do just this country. This will take about 5 hours to run, so it's important to be able to do in a measured way.
-        $countries = $GLOBALS['SITE_DB']->query_select('locations', array('DISTINCT l_country'), array(), 'ORDER BY l_country');
+        $countries = $GLOBALS['SITE_DB']->query_select('locations', ['DISTINCT l_country'], [], 'ORDER BY l_country');
         foreach ($countries as $country) {
             create_catalogue_category_tree($catalogue_name, $country['l_country'], $fixup);
             echo('Done ' . $country['l_country'] . "\n");
@@ -354,13 +354,13 @@ function create_catalogue_category_tree($catalogue_name = 'places', $country = n
 
     static $root_cat = null;
     if ($root_cat === null) {
-        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', array('c_name' => $catalogue_name));
+        $root_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', ['c_name' => $catalogue_name]);
     }
 
-    $locations = $GLOBALS['SITE_DB']->query_select('locations', array('*'), array('l_country' => $country) + ($fixup ? array('l_parent_1' => '') : array()));
+    $locations = $GLOBALS['SITE_DB']->query_select('locations', ['*'], ['l_country' => $country] + ($fixup ? ['l_parent_1' => ''] : []));
 
     // Go through from deepest, ensuring tree structure for each
-    $full_tree = array();
+    $full_tree = [];
     require_code('catalogues2');
     require_code('fields');
     foreach ($locations as $location) {
@@ -380,7 +380,7 @@ function create_catalogue_category_tree($catalogue_name = 'places', $country = n
             continue; // No info, probably an error or unconventional location
         }
 
-        $tree_pos = array();
+        $tree_pos = [];
         $tree_pos[] = $location['l_continent'];
         $tree_pos[] = $location['l_country'];
         if ($location['l_parent_1'] != '') {
@@ -417,11 +417,11 @@ function create_catalogue_category_tree($catalogue_name = 'places', $country = n
     // Create root nodes under catalogue root
     static $fields = null;
     if ($fields === null) {
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => '_catalogue_category'), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => '_catalogue_category'], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
     }
     static $first_cat = null;
     if ($first_cat === null) {
-        $first_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', array('c_name' => '_catalogue_category'));
+        $first_cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'MIN(id)', ['c_name' => '_catalogue_category']);
     }
     if ($first_cat === null) { // Repair needed, must have a category
         require_code('catalogues2');
@@ -430,20 +430,20 @@ function create_catalogue_category_tree($catalogue_name = 'places', $country = n
     }
     foreach ($full_tree as $name => $child) {
         if (!array_key_exists('details', $child)) { // Continent, which is not in DB
-            $child['details'] = array(
+            $child['details'] = [
                 'l_latitude' => null,
                 'l_longitude' => null,
-            );
+            ];
         }
 
-        _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_cat, $full_tree, $child, array($name));
+        _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_cat, $full_tree, $child, [$name]);
     }
 }
 
 function _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_cat, $full_tree, $node, $tree_pos)
 {
     if (!array_key_exists('children', $node)) {
-        $node['children'] = array(); // Bottom level
+        $node['children'] = []; // Bottom level
     }
 
     $id = _create_catalogue_position($catalogue_name, $tree_pos, $root_cat, $node['details'], $full_tree);
@@ -455,13 +455,13 @@ function _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_c
 
     foreach ($node['children'] as $name => $child) {
         if (!array_key_exists('details', $child)) { // Continent, which is not in DB
-            $child['details'] = array(
+            $child['details'] = [
                 'l_latitude' => null,
                 'l_longitude' => null,
-            );
+            ];
         }
 
-        $child = _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_cat, $full_tree, $child, array_merge($tree_pos, array($name)));
+        $child = _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_cat, $full_tree, $child, array_merge($tree_pos, [$name]));
         $node['children'][$name] = $child; // If updated
 
         // Work out latitude/longitude bounding boxes
@@ -487,14 +487,14 @@ function _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_c
     }
 
     // Save into category: bounding box, and own latitude/longitude if specified
-    $map = array(
+    $map = [
         $fields[0]['id'] => float_to_raw_string($node['details']['l_latitude'], 10),
         $fields[1]['id'] => float_to_raw_string($node['details']['l_longitude'], 10),
         $fields[2]['id'] => float_to_raw_string($node['details']['l_min_latitude'], 10),
         $fields[3]['id'] => float_to_raw_string($node['details']['l_max_latitude'], 10),
         $fields[4]['id'] => float_to_raw_string($node['details']['l_min_longitude'], 10),
         $fields[5]['id'] => float_to_raw_string($node['details']['l_max_longitude'], 10),
-    );
+    ];
 
     if ($id !== null) {
         $existing = get_bound_content_entry('catalogue_category', strval($id));
@@ -503,11 +503,11 @@ function _create_catalogue_subtree($fields, $first_cat, $catalogue_name, $root_c
         } else {
             $catalogue_entry_id = actual_add_catalogue_entry($first_cat, 1, '', 0, 0, 0, $map);
 
-            $GLOBALS['SITE_DB']->query_insert('catalogue_entry_linkage', array(
+            $GLOBALS['SITE_DB']->query_insert('catalogue_entry_linkage', [
                 'catalogue_entry_id' => $catalogue_entry_id,
                 'content_type' => 'catalogue_category',
                 'content_id' => strval($id),
-            ));
+            ]);
         }
     }
 
@@ -520,14 +520,14 @@ function _create_catalogue_position($catalogue_name, $tree_pos, $cat, $location,
 
     static $cache = null;
     if ($cache === null) {
-        $cache = array();
+        $cache = [];
     }
 
     foreach ($tree_pos as $name) {
         $tree = &$tree['children'][$name];
 
         if (!isset($tree['cc_id'])) {
-            $tree['cc_id'] = isset($cache[$cat][$name]) ? $cache[$cat][$name] : $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', array('cc_parent_id' => $cat, $GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $name));
+            $tree['cc_id'] = isset($cache[$cat][$name]) ? $cache[$cat][$name] : $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['cc_parent_id' => $cat, $GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $name]);
 
             if ($tree['cc_id'] === null) {
                 $tree['cc_id'] = actual_add_catalogue_category($catalogue_name, $name, '', '', $cat);
@@ -552,9 +552,9 @@ function recalculate_continent_bounds($catalogue_name = 'places')
 {
     require_code('locations');
     $continents = find_continents();
-    $first_cat = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', array('c_name' => $catalogue_name));
+    $first_cat = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => $catalogue_name]);
     foreach ($continents as $continent) {
-        $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', array('cc_parent_id' => $first_cat, $GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $continent));
+        $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['cc_parent_id' => $first_cat, $GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $continent]);
         recalculate_bounding_long_lat($category_id);
     }
 }
@@ -563,7 +563,7 @@ function recalculate_bounding_long_lat($category)
 {
     static $fields = null;
     if ($fields === null) {
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => '_catalogue_category'), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => '_catalogue_category'], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
     }
 
     $min_latitude = null;
@@ -571,15 +571,15 @@ function recalculate_bounding_long_lat($category)
     $min_longitude = null;
     $max_longitude = null;
 
-    $subcategories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('id'), array('cc_parent_id' => $category));
+    $subcategories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id'], ['cc_parent_id' => $category]);
     require_code('fields');
     foreach ($subcategories as $subcat) {
         $assocated_catalogue_entry_id = get_bound_content_entry('catalogue_category', strval($subcat['id']));
 
-        $_min_latitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[2]['id']));
-        $_max_latitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[3]['id']));
-        $_min_longitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[4]['id']));
-        $_max_longitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']));
+        $_min_latitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[2]['id']]);
+        $_max_latitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[3]['id']]);
+        $_min_longitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[4]['id']]);
+        $_max_longitude = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_float', 'cv_value', ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']]);
 
         if (($min_latitude === null) || ($_min_latitude < $min_latitude)) {
             $min_latitude = $_min_latitude;
@@ -597,8 +597,8 @@ function recalculate_bounding_long_lat($category)
 
     $assocated_catalogue_entry_id = get_bound_content_entry('catalogue_category', strval($category));
 
-    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $min_latitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']), '', 1);
-    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $max_latitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']), '', 1);
-    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $min_longitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']), '', 1);
-    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', array('cv_value' => $max_longitude), array('ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']), '', 1);
+    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $min_latitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']], '', 1);
+    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $max_latitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']], '', 1);
+    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $min_longitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']], '', 1);
+    $GLOBALS['SITE_DB']->query_update('catalogue_efv_float', ['cv_value' => $max_longitude], ['ce_id' => $assocated_catalogue_entry_id, 'cf_id' => $fields[5]['id']], '', 1);
 }

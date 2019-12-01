@@ -30,7 +30,7 @@ class Hook_config_cookie_notice
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COOKIE_NOTICE_OPTION',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -42,7 +42,7 @@ class Hook_config_cookie_notice
             'public' => true,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

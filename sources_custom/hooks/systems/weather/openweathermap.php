@@ -50,7 +50,7 @@ class Hook_weather_openweathermap
         require_code('http');
         require_code('locations');
 
-        $wind_directions = array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW');
+        $wind_directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
         // Current conditions...
 
@@ -59,15 +59,15 @@ class Hook_weather_openweathermap
             return null;
         }
 
-        $conditions = array();
+        $conditions = [];
         foreach ($_current_conditions['weather'] as $_condition) {
-            $conditions[] = array(
+            $conditions[] = [
                 'description' => $_condition['description'],
                 'icon_url' => 'https://openweathermap.org/img/w/' . $_condition['icon'] . '.png',
-            );
+            ];
         }
 
-        $current_conditions = array(
+        $current_conditions = [
             'city_name' => $_current_conditions['name'],
             'country_name' => find_country_name_from_iso($_current_conditions['sys']['country']),
             'temperature' => $_current_conditions['main']['temp'],
@@ -80,7 +80,7 @@ class Hook_weather_openweathermap
             'conditions' => $conditions,
             'sunrise' => $_current_conditions['sys']['sunrise'],
             'sunset' => $_current_conditions['sys']['sunset'],
-        );
+        ];
 
         // Forecast...
 
@@ -88,15 +88,15 @@ class Hook_weather_openweathermap
         if ($_forecast_hourly === null) {
             return null;
         }
-        $forecast_hourly = array();
+        $forecast_hourly = [];
         foreach ($_forecast_hourly['list'] as $__forecast) {
-            $conditions = array();
+            $conditions = [];
             foreach ($__forecast['weather'] as $_condition) {
-                $conditions[$_condition['description']] = array(
+                $conditions[$_condition['description']] = [
                     'description' => $_condition['description'],
                     'icon_url' => 'https://openweathermap.org/img/w/' . $_condition['icon'] . '.png',
                     'count' => 1,
-                );
+                ];
             }
 
             $rain = (isset($__forecast['rain']['3h']) ? $__forecast['rain']['3h'] : 0);
@@ -109,7 +109,7 @@ class Hook_weather_openweathermap
                 $snow = $snow * self::INCHES_PER_MM; // Convert to inches
             }
 
-            $forecast_arr = array(
+            $forecast_arr = [
                 'timestamp' => $__forecast['dt'],
 
                 'temperature' => $__forecast['main']['temp'],
@@ -127,7 +127,7 @@ class Hook_weather_openweathermap
                 'wind_chill' => null,
 
                 'conditions' => $conditions,
-            );
+            ];
             $forecast_hourly[] = $forecast_arr;
         }
         if (empty($forecast_hourly)) {
@@ -136,14 +136,14 @@ class Hook_weather_openweathermap
         }
 
         // Convert from 3-hour intervals to daily intervals
-        $forecasts_within_daytime = array();
+        $forecasts_within_daytime = [];
         $day_sunrise = $current_conditions['sunrise'];
         $day_sunset = $current_conditions['sunset'];
         while ($day_sunset < $forecast_hourly[0]['timestamp']) {
             $day_sunrise += 60 * 60 * 24;
             $day_sunset += 60 * 60 * 24;
         }
-        $forecast = array();
+        $forecast = [];
         foreach ($forecast_hourly as $i => $forecast_arr) {
             $within_daytime = ($forecast_arr['timestamp'] >= $day_sunrise) && ($forecast_arr['timestamp'] < $day_sunset);
             $end_of_data = ($i == count($forecast_hourly) - 1);
@@ -157,12 +157,12 @@ class Hook_weather_openweathermap
                 $precipitation = 0.0;
                 $rain = 0.0;
                 $snow = 0.0;
-                $temperatures = array();
-                $humidities = array();
-                $cloudiness = array();
-                $wind_speeds = array();
-                $wind_degs = array();
-                $conditions = array();
+                $temperatures = [];
+                $humidities = [];
+                $cloudiness = [];
+                $wind_speeds = [];
+                $wind_degs = [];
+                $conditions = [];
                 foreach ($forecasts_within_daytime as $_forecast_arr) {
                     $precipitation += $_forecast_arr['precipitation'];
                     $rain += $_forecast_arr['rain'];
@@ -185,7 +185,7 @@ class Hook_weather_openweathermap
                 foreach ($conditions as $key => $condition) {
                     unset($conditions[$key]['count']);
                 }
-                $forecast[] = array(
+                $forecast[] = [
                     'timestamp' => intval(round(($day_sunrise + $day_sunset) / 2.0)),
 
                     'city_name' => $current_conditions['city_name'],
@@ -208,11 +208,11 @@ class Hook_weather_openweathermap
                     'wind_chill' => null,
 
                     'conditions' => $conditions,
-                );
+                ];
 
                 // Set for next day
                 if (!$end_of_data) {
-                    $forecasts_within_daytime = array();
+                    $forecasts_within_daytime = [];
                     while ($day_sunset < $forecast_hourly[$i + 1]['timestamp']) {
                         $day_sunrise += 60 * 60 * 24;
                         $day_sunset += 60 * 60 * 24;
@@ -223,7 +223,7 @@ class Hook_weather_openweathermap
 
         // ---
 
-        $result = array($current_conditions, $forecast);
+        $result = [$current_conditions, $forecast];
 
         return $result;
     }
@@ -240,7 +240,7 @@ class Hook_weather_openweathermap
         $url .= '&units=' . urlencode($units);
         $url .= '&format=json';
 
-        $response = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true)), 30);
+        $response = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]], 30);
         list($data, , , , $http_message) = $response;
 
         if ($http_message != '200') {

@@ -30,7 +30,7 @@ class Hook_config_homepage_slider_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLED',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_homepage_slider_enabled
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

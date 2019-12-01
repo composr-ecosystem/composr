@@ -66,7 +66,7 @@ class Hook_fields_short_trans
      */
     public function get_field_value_row_bits($field, $required = null, $default = null, $db = null)
     {
-        return array('short_trans', $default, 'short_trans');
+        return ['short_trans', $default, 'short_trans'];
     }
 
     /**

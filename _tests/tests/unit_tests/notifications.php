@@ -38,15 +38,15 @@ class notifications_test_set extends cms_test_case
         $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
         $GLOBALS['SITE_DB']->query_delete('member_zone_access');
 
-        $all_members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id'), array(), 'WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND m_validated=1 AND ' . db_string_equal_to('m_validated_email_confirm_code', ''));
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails' => 1, 'm_allow_emails_from_staff' => 1));
+        $all_members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], 'WHERE id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND m_validated=1 AND ' . db_string_equal_to('m_validated_email_confirm_code', ''));
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails' => 1, 'm_allow_emails_from_staff' => 1]);
 
         foreach ($all_members as $member) {
-            $GLOBALS['SITE_DB']->query_insert('member_zone_access', array(
+            $GLOBALS['SITE_DB']->query_insert('member_zone_access', [
                 'zone_name' => 'site',
                 'member_id' => $member['id'],
                 'active_until' => null,
-            ));
+            ]);
         }
 
         // Check default empty state...
@@ -54,7 +54,7 @@ class notifications_test_set extends cms_test_case
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
         $this->assertTrue(empty($results[0]));
-        $results = $ob->list_members_who_have_enabled('comment_posted', null, array(get_member())); // Just make sure the member-ID filter doesn't crash
+        $results = $ob->list_members_who_have_enabled('comment_posted', null, [get_member()]); // Just make sure the member-ID filter doesn't crash
 
         $ob = new Hook_notification_cns_password_changed();
         $results = $ob->list_members_who_have_enabled('cns_password_changed');
@@ -63,19 +63,19 @@ class notifications_test_set extends cms_test_case
         // Check explicitly flipped state...
 
         foreach ($all_members as $member) {
-            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', array(
+            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
                 'l_member_id' => $member['id'],
                 'l_notification_code' => 'comment_posted',
                 'l_code_category' => '',
                 'l_setting' => A_INSTANT_EMAIL,
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', array(
+            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
                 'l_member_id' => $member['id'],
                 'l_notification_code' => 'cns_password_changed',
                 'l_code_category' => '',
                 'l_setting' => A_NA,
-            ));
+            ]);
         }
 
         $ob = new Hook_notification_comment_posted();
@@ -88,14 +88,14 @@ class notifications_test_set extends cms_test_case
 
         // Check with locking...
 
-        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', array(
+        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
             'l_notification_code' => 'comment_posted',
             'l_setting' => A_NA,
-        ));
-        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', array(
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
             'l_notification_code' => 'cns_password_changed',
             'l_setting' => A_INSTANT_EMAIL,
-        ));
+        ]);
 
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');

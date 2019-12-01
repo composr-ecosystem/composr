@@ -30,7 +30,7 @@ class Module_admin_config
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,31 +51,31 @@ class Module_admin_config
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        $ret = array(
-            'browse' => array('CONFIGURATION', 'menu/adminzone/setup/config/config'),
-        );
+        $ret = [
+            'browse' => ['CONFIGURATION', 'menu/adminzone/setup/config/config'],
+        ];
 
-        $ret['base'] = array('BASE_CONFIGURATION', 'menu/adminzone/setup/config/base_config');
+        $ret['base'] = ['BASE_CONFIGURATION', 'menu/adminzone/setup/config/base_config'];
 
         if (!$be_deferential) {
             if (addon_installed('xml_fields')) {
-                $ret['xml_fields'] = array('FIELD_FILTERS', 'menu/adminzone/setup/xml_fields');
+                $ret['xml_fields'] = ['FIELD_FILTERS', 'menu/adminzone/setup/xml_fields'];
             }
 
             if (addon_installed('breadcrumbs')) {
-                $ret['xml_breadcrumbs'] = array('BREADCRUMB_OVERRIDES', 'menu/adminzone/structure/breadcrumbs');
+                $ret['xml_breadcrumbs'] = ['BREADCRUMB_OVERRIDES', 'menu/adminzone/structure/breadcrumbs'];
             }
 
             if (get_value('brand_base_url') === null) {
-                $ret['upgrader'] = array('UPGRADER_UPGRADER_TITLE', 'menu/adminzone/tools/upgrade');
+                $ret['upgrader'] = ['UPGRADER_UPGRADER_TITLE', 'menu/adminzone/tools/upgrade'];
             }
 
             if (addon_installed('syndication')) {
-                $ret['backend'] = array('FEEDS', 'links/rss');
+                $ret['backend'] = ['FEEDS', 'links/rss'];
             }
 
             if (addon_installed('code_editor')) {
-                $ret['code_editor'] = array('CODE_EDITOR', 'menu/adminzone/tools/code_editor');
+                $ret['code_editor'] = ['CODE_EDITOR', 'menu/adminzone/tools/code_editor'];
             }
         }
 
@@ -123,7 +123,7 @@ class Module_admin_config
 
                 $this->title = get_screen_title('CONFIGURATION');
             } else {
-                breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('CONFIGURATION'))));
+                breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('CONFIGURATION')]]);
                 breadcrumb_set_self(do_lang_tempcode('CONFIG_CATEGORY_' . $category));
 
                 $this->title = get_screen_title(do_lang_tempcode('CONFIG_CATEGORY_' . $category), false);
@@ -253,7 +253,7 @@ class Module_admin_config
     {
         // Find all categories
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        $categories = array();
+        $categories = [];
         foreach ($hooks as $ob) {
             $details = $ob->get_details();
             if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
@@ -288,7 +288,7 @@ class Module_admin_config
 
             // Put together details...
 
-            $url = build_url(array('page' => '_SELF', 'type' => 'category', 'id' => $category), '_SELF');
+            $url = build_url(['page' => '_SELF', 'type' => 'category', 'id' => $category], '_SELF');
 
             $_category_name = do_lang('CONFIG_CATEGORY_' . $category, null, null, null, null, false);
             if ($_category_name === null) {
@@ -305,80 +305,80 @@ class Module_admin_config
 
             $count = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($option_count)));
 
-            $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+            $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
                 '_GUID' => '6ba2b09432d06e7502c71e7aac2d3527',
                 'COUNT' => $count,
                 'NAME' => $category_name,
                 'TITLE' => '',
                 'DESCRIPTION' => $description,
                 'URL' => $url,
-            )));
+            ]));
         }
 
-        $categories_tpl->attach(do_template('COMCODE_SUBTITLE', array(
+        $categories_tpl->attach(do_template('COMCODE_SUBTITLE', [
             '_GUID' => '7fde99ae81367fb7405e94b6731a7d9x',
             'TITLE' => do_lang('DEEPER_CONFIGURATION'),
             'LEVEL' => '2',
-        )));
+        ]));
 
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '6fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'base'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'base'], '_SELF'),
             'NAME' => do_lang_tempcode('BASE_CONFIGURATION'),
             'DESCRIPTION' => do_lang_tempcode('DOC_BASE_CONFIGURATION'),
-        )));
+        ]));
 
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '7fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'xml_fields'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'xml_fields'], '_SELF'),
             'NAME' => do_lang_tempcode('FIELD_FILTERS'),
             'DESCRIPTION' => do_lang_tempcode('DOC_FIELD_FILTERS'),
-        )));
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        ]));
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '8fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'xml_breadcrumbs'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'xml_breadcrumbs'], '_SELF'),
             'NAME' => do_lang_tempcode('BREADCRUMB_OVERRIDES'),
             'DESCRIPTION' => do_lang_tempcode('DOC_BREADCRUMB_OVERRIDES'),
-        )));
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        ]));
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '9fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'upgrader'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'upgrader'], '_SELF'),
             'NAME' => do_lang_tempcode('UPGRADER_UPGRADER_TITLE'),
             'DESCRIPTION' => do_lang_tempcode('UPGRADER_UPGRADER_INTRO'),
-        )));
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        ]));
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '0fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'backend'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'backend'], '_SELF'),
             'NAME' => do_lang_tempcode('_FEEDS'),
             'DESCRIPTION' => comcode_to_tempcode(do_lang('OPML_INDEX_DESCRIPTION')),
-        )));
-        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+        ]));
+        $categories_tpl->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
             '_GUID' => '1fde99ae81367fb7405e94b6731a7d9a',
             'COUNT' => null,
             'TITLE' => '',
-            'URL' => build_url(array('page' => '_SELF', 'type' => 'code_editor'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => 'code_editor'], '_SELF'),
             'NAME' => do_lang_tempcode('CODE_EDITOR'),
             'DESCRIPTION' => do_lang_tempcode('DOC_CODE_EDITOR'),
-        )));
+        ]));
 
         // Wrapper
-        return do_template('INDEX_SCREEN_FANCIER_SCREEN', array(
+        return do_template('INDEX_SCREEN_FANCIER_SCREEN', [
             '_GUID' => 'c8fdb2b481625d58b0b228c897fda72f',
             'TITLE' => $this->title,
             'PRE' => paragraph(do_lang_tempcode('CHOOSE_A_CONFIG_CATEGORY')),
             'CONTENT' => $categories_tpl,
             'POST' => '',
-        ));
+        ]);
     }
 
     /**
@@ -392,12 +392,12 @@ class Module_admin_config
 
         // Load up some basic details
         $category = $this->category;
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'set', 'id' => $category, 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'set', 'id' => $category, 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))], '_SELF');
         $category_description = do_lang_tempcode('CONFIG_CATEGORY_DESCRIPTION__' . $category);
 
         // Find all options in category
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        $options = array();
+        $options = [];
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
@@ -419,7 +419,7 @@ class Module_admin_config
         $post_max_size = (ini_get('post_max_size') == '0') ? do_lang('NA') : clean_file_size(php_return_bytes(ini_get('post_max_size')));
 
         // Sort the groups
-        $all_known_groups = array();
+        $all_known_groups = [];
         foreach (array_keys($options) as $group) {
             $_group = do_lang($group);
 
@@ -448,8 +448,8 @@ class Module_admin_config
         }
 
         // Render option groups
-        $groups_arr = array();
-        $_groups = array();
+        $groups_arr = [];
+        $_groups = [];
         foreach ($all_known_groups as $group_codename) {
             if (!isset($options[$group_codename])) {
                 continue;
@@ -483,14 +483,14 @@ class Module_admin_config
             } else {
                 $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group_codename, escape_html($post_max_size), escape_html($upload_max_filesize));
             }
-            $groups_arr[] = array('GROUP_DESCRIPTION' => $group_description, 'GROUP_NAME' => $group_codename, 'GROUP' => $out, 'GROUP_TITLE' => $group_title);
+            $groups_arr[] = ['GROUP_DESCRIPTION' => $group_description, 'GROUP_NAME' => $group_codename, 'GROUP' => $out, 'GROUP_TITLE' => $group_title];
             $_groups[$group_codename] = $group_title;
         }
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
         // Render
-        return do_template('CONFIG_CATEGORY_SCREEN', array(
+        return do_template('CONFIG_CATEGORY_SCREEN', [
             '_GUID' => 'd01b28b71c38bbb52b6aaf877c7f7b0e',
             'CATEGORY_DESCRIPTION' => $category_description,
             '_GROUPS' => $_groups,
@@ -501,7 +501,7 @@ class Module_admin_config
             'GROUPS' => $groups_arr,
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
-        ));
+        ]);
     }
 
     /**
@@ -526,7 +526,7 @@ class Module_admin_config
 
         // Find all options in category
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        $options = array();
+        $options = [];
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if ($category == $details['category']) {
@@ -570,7 +570,7 @@ class Module_admin_config
         // Show it worked / Refresh
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($redirect == '') {
-            $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF'); // , 'type' => 'category', 'id' => $category
+            $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF'); // , 'type' => 'category', 'id' => $category
         } else {
             $url = make_string_tempcode($redirect);
         }
@@ -584,7 +584,7 @@ class Module_admin_config
      */
     public function base()
     {
-        $keep = symbol_tempcode('KEEP', array('1'));
+        $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/config_editor.php' . $keep->evaluate();
         return redirect_screen($this->title, $url);
     }
@@ -596,7 +596,7 @@ class Module_admin_config
      */
     public function upgrader()
     {
-        $keep = symbol_tempcode('KEEP', array('1'));
+        $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/upgrader.php' . $keep->evaluate();
         return redirect_screen($this->title, $url);
     }
@@ -608,7 +608,7 @@ class Module_admin_config
      */
     public function backend()
     {
-        $keep = symbol_tempcode('KEEP', array('1'));
+        $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/backend.php' . $keep->evaluate();
         return redirect_screen($this->title, $url);
     }
@@ -620,7 +620,7 @@ class Module_admin_config
      */
     public function code_editor()
     {
-        $keep = symbol_tempcode('KEEP', array('1'));
+        $keep = symbol_tempcode('KEEP', ['1']);
         $url = get_base_url() . '/code_editor.php' . $keep->evaluate();
         return redirect_screen($this->title, $url);
     }
@@ -632,14 +632,14 @@ class Module_admin_config
      */
     public function xml_fields()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_xml_fields'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_xml_fields'], '_SELF');
 
-        return do_template('XML_CONFIG_SCREEN', array(
+        return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => 'cc21f921ecbdbdf83e1e28d2b3f75a3a',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM),
-        ));
+        ]);
     }
 
     /**
@@ -666,14 +666,14 @@ class Module_admin_config
      */
     public function xml_breadcrumbs()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_xml_breadcrumbs'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_xml_breadcrumbs'], '_SELF');
 
-        return do_template('XML_CONFIG_SCREEN', array(
+        return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => '456f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
-        ));
+        ]);
     }
 
     /**

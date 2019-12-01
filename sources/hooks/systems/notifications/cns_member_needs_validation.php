@@ -32,11 +32,11 @@ class Hook_notification_cns_member_needs_validation extends Hook_notification__S
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_member_needs_validation'] = array(do_lang('VALIDATION'), do_lang('cns:NOTIFICATION_TYPE_cns_member_needs_validation'));
+        $list = [];
+        $list['cns_member_needs_validation'] = [do_lang('VALIDATION'), do_lang('cns:NOTIFICATION_TYPE_cns_member_needs_validation')];
         return $list;
     }
 }

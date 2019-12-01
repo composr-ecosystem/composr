@@ -30,7 +30,7 @@ class Hook_config_ecom_price_honour_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ECOM_PRICE_HONOUR_TIME',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_ecom_price_honour_time
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

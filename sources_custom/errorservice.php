@@ -44,7 +44,7 @@ function get_problem_match_nearest($error_message)
     require_code('files_spreadsheets_read');
 
     // Find matches. Stored in a spreadsheet file.
-    $matches = array();
+    $matches = [];
     $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/compo.sr/errorservice.csv');
     while (($row = $sheet_reader->read_row()) !== false) {
         $message = $row['Message'];

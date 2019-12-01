@@ -31,7 +31,7 @@ class Hook_preview_setupwizard_blocks
     public function applies()
     {
         $applies = (addon_installed('setupwizard')) && (get_page_name() == 'admin_setupwizard') && (get_param_string('type', '') == 'step6');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -52,16 +52,16 @@ class Hook_preview_setupwizard_blocks
             $installprofileblocks = $object->default_blocks();
             $block_options = $object->block_options();
         } else {
-            $installprofileblocks = array();
-            $block_options = array();
+            $installprofileblocks = [];
+            $block_options = [];
         }
 
         $page_structure = _get_zone_pages($installprofileblocks, $block_options, $collapse_zones, $installprofile);
 
         $zone_structure = array_pop($page_structure);
 
-        $preview = do_template('SETUPWIZARD_BLOCK_PREVIEW', array('_GUID' => '77c2952691ead0a834a18fccfb6319d9', 'LEFT' => $zone_structure['left'], 'RIGHT' => $zone_structure['right'], 'START' => $zone_structure['start']));
+        $preview = do_template('SETUPWIZARD_BLOCK_PREVIEW', ['_GUID' => '77c2952691ead0a834a18fccfb6319d9', 'LEFT' => $zone_structure['left'], 'RIGHT' => $zone_structure['right'], 'START' => $zone_structure['start']]);
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

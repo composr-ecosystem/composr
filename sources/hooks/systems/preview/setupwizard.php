@@ -31,7 +31,7 @@ class Hook_preview_setupwizard
     public function applies()
     {
         $applies = (addon_installed('setupwizard')) && (get_page_name() == 'admin_setupwizard') && (get_param_string('type', '') == 'step8');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -48,6 +48,6 @@ class Hook_preview_setupwizard
 
         $preview = request_page($GLOBALS['SITE_DB']->query_select_value('zones', 'zone_default_page'), true, '');
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

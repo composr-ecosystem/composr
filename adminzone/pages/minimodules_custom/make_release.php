@@ -74,15 +74,15 @@ function phase_0()
 
     $previous_version = null;
     $previous_tag = shell_exec('git describe --tags');
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(.*)-\w+-\w+$#', $previous_tag, $matches) != 0) {
         $previous_version = $matches[1];
     }
     if ($previous_version !== null) {
         $changes = "The following changes have been made since version " . $previous_version . "...\n";
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
-        $discovered_tracker_issues = array();
-        $__changes = array();
+        $discovered_tracker_issues = [];
+        $__changes = [];
         foreach (explode("\n", $_changes) as $change) {
             $parts = explode(' ', $change, 2);
             if (count($parts) == 2) {
@@ -103,7 +103,7 @@ function phase_0()
 
         $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version)));
+        $_result = http_download_file($api_url, null, true, false, 'Composr', ['parameters' => [$_discovered_tracker_issues, $on_disk_version]]);
         $tracker_issue_titles = json_decode($_result, true);
         foreach ($tracker_issue_titles as $key => $summary) {
             if (strpos($summary, '[General]') === false) { // Only ones in the main Composr project
@@ -132,7 +132,7 @@ function phase_0()
         $tracker_url .= '&product_version=' . urlencode($on_disk_version_previous);
     }
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, ['type' => '1']));
 
     echo '
     <p>Here are some things you should do if you have not already:</p>
@@ -142,7 +142,7 @@ function phase_0()
     </ul>';
 
 
-    $proceed_icon = do_template('ICON', array('_GUID' => '114667b8c304d0363000bdb3b0869471', 'NAME' => 'buttons/proceed'));
+    $proceed_icon = do_template('ICON', ['_GUID' => '114667b8c304d0363000bdb3b0869471', 'NAME' => 'buttons/proceed']);
     echo '
     <form method="post" action="' . escape_html($post_url) . '">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
@@ -194,7 +194,7 @@ function phase_1_pre()
     echo '
     <p>As this is a substantial new release make sure you have done the following (mostly testing):</p>
     <ul>
-        <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(array('page' => 'plug_guid'), 'adminzone'))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
+        <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'plug_guid'], 'adminzone'))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
     ';
     echo '
         <li><a href="https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0" title="Re-sync third-party code (this link will open in a new window)" target="_blank">Re-sync third-party code</a> as appropriate</li>
@@ -208,7 +208,7 @@ function phase_1_pre()
     </ul>
     ';
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '1')));
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, ['type' => '1']));
 
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
@@ -259,9 +259,9 @@ function phase_1()
         echo make_installers(get_param_integer('keep_skip_file_grab', 0) == 1);
     }
 
-    $post_url = static_evaluate_tempcode(get_self_url(false, false, array('type' => '2')));
+    $post_url = static_evaluate_tempcode(get_self_url(false, false, ['type' => '2']));
 
-    $proceed_icon = do_template('ICON', array('_GUID' => '11cce82f514c6707e2ad35926b81c6c6', 'NAME' => 'buttons/proceed'));
+    $proceed_icon = do_template('ICON', ['_GUID' => '11cce82f514c6707e2ad35926b81c6c6', 'NAME' => 'buttons/proceed']);
     echo '
         <form action="' . escape_html($post_url) . '" method="post">
             ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
@@ -349,7 +349,7 @@ function phase_2()
 
     echo '
         <li><strong>Addons</strong>:<ul>
-            <li>Generate the new addon set (<a target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(array('page' => 'build_addons'), 'adminzone'))) . '">build_addons minimodule</a>)</li>
+            <li>Generate the new addon set (<a target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'build_addons'], 'adminzone'))) . '">build_addons minimodule</a>)</li>
     ';
     if ($is_substantial && !$is_bleeding_edge) {
         echo '

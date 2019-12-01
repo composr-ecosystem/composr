@@ -31,7 +31,7 @@ class Hook_checklist_unvalidated
     public function run()
     {
         if (!addon_installed('unvalidated')) {
-            return array();
+            return [];
         }
 
         // Validate/delete submissions
@@ -44,17 +44,17 @@ class Hook_checklist_unvalidated
         }
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $url = build_url(array('page' => 'admin_unvalidated'), 'adminzone');
+        $url = build_url(['page' => 'admin_unvalidated'], 'adminzone');
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '48f2bc149dca356c8b6bd87092f70d3c',
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_VALIDATE', escape_html_tempcode($url)),
             'INFO' => do_lang_tempcode('UNVALIDATED_ENTRIES', escape_html(integer_format($num_unvalidated_1)), escape_html(integer_format($num_unvalidated_2))),
-        ));
+        ]);
 
-        return array(array($tpl, null, $num_unvalidated_1, null));
+        return [[$tpl, null, $num_unvalidated_1, null]];
     }
 
     /**
@@ -74,7 +74,7 @@ class Hook_checklist_unvalidated
                 continue;
             }
             $db = array_key_exists('db', $info) ? $info['db'] : $GLOBALS['SITE_DB'];
-            $amount = $db->query_select_value($info['db_table'], 'COUNT(*)', array($info['db_validated'] => 0));
+            $amount = $db->query_select_value($info['db_table'], 'COUNT(*)', [$info['db_validated'] => 0]);
             if (($info === null) || ((array_key_exists('is_minor', $info)) && ($info['is_minor']))) {
                 $sum2 += $amount;
             } else {
@@ -82,6 +82,6 @@ class Hook_checklist_unvalidated
             }
         }
 
-        return array($sum, $sum2);
+        return [$sum, $sum2];
     }
 }

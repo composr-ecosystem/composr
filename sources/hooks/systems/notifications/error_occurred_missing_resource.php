@@ -43,8 +43,8 @@ class Hook_notification_error_occurred_missing_resource extends Hook_notificatio
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['error_occurred_missing_resource'] = array(do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_resource'));
+        $list = [];
+        $list['error_occurred_missing_resource'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_resource')];
         return $list;
     }
 }

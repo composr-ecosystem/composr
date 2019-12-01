@@ -30,7 +30,7 @@ class Hook_config_mail_queue_debug
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAIL_QUEUE_DEBUG',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_mail_queue_debug
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

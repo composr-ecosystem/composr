@@ -31,7 +31,7 @@ These are special functions used by the installer and upgrader.
  */
 function get_chmod_array($lang, $runtime = false)
 {
-    $extra_files = array();
+    $extra_files = [];
 
     if (function_exists('find_all_hooks')) {
         $hooks = find_all_hooks('systems', 'addon_registry');
@@ -47,7 +47,7 @@ function get_chmod_array($lang, $runtime = false)
             if (!file_exists($path)) {
                 $path = get_file_base() . '/sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
             }
-            $matches = array();
+            $matches = [];
             if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', cms_file_get_contents_safe($path, FILE_READ_LOCK), $matches) != 0) {
                 $extra_files = array_merge($extra_files, cms_eval($matches[1], $path));
             }
@@ -55,7 +55,7 @@ function get_chmod_array($lang, $runtime = false)
     }
 
     if ($runtime) {
-        $extra_files = array_merge($extra_files, array(
+        $extra_files = array_merge($extra_files, [
             'adminzone/pages/comcode_custom/*/*.txt',
             'adminzone/pages/html_custom/*/*.htm',
             'cms/pages/comcode_custom/*/*.txt',
@@ -102,12 +102,12 @@ function get_chmod_array($lang, $runtime = false)
             'uploads/repimages/*',
             'uploads/watermarks/*',
             'uploads/website_specific/*',
-        ));
+        ]);
     }
 
     return array_merge(
         $extra_files,
-        array(
+        [
             'adminzone/pages/comcode_custom/' . $lang,
             'adminzone/pages/html_custom/' . $lang,
             'caches/guest_pages',
@@ -180,6 +180,6 @@ function get_chmod_array($lang, $runtime = false)
             'uploads/watermarks',
             'uploads/website_specific',
             '_config.php',
-        )
+        ]
     );
 }

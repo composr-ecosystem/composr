@@ -33,7 +33,7 @@ require_all_lang();
 $langs = find_all_langs();
 echo '<p>Show completeness for a language:</p><ul>';
 foreach (array_keys($langs) as $lang) {
-    echo '<li><a href="' . escape_html(get_self_url(true, false, array('lang' => $lang))) . '">' . escape_html($lang) . '</a></li>';
+    echo '<li><a href="' . escape_html(get_self_url(true, false, ['lang' => $lang])) . '">' . escape_html($lang) . '</a></li>';
 }
 echo '</ul>';
 

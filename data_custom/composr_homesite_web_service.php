@@ -66,7 +66,7 @@ header('Content-type: text/plain; charset=' . get_charset());
 
 $call = get_param_string('call');
 
-$parameters = isset($_POST['parameters']) ? $_POST['parameters'] : array();
+$parameters = isset($_POST['parameters']) ? $_POST['parameters'] : [];
 
 $password_given = post_param_string('password', null, INPUT_FILTER_NONE);
 if ($password_given === null) {

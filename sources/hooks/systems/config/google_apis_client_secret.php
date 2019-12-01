@@ -30,7 +30,7 @@ class Hook_config_google_apis_client_secret
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_APIS_CLIENT_SECRET',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -44,7 +44,7 @@ class Hook_config_google_apis_client_secret
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

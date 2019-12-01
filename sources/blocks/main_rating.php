@@ -30,14 +30,14 @@ class Block_main_rating
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'page', 'title', 'display_tpl');
+        $info['parameters'] = ['param', 'page', 'title', 'display_tpl'];
         return $info;
     }
 

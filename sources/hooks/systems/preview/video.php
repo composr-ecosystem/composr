@@ -31,7 +31,7 @@ class Hook_preview_video
     public function applies()
     {
         $applies = (addon_installed('galleries')) && (get_page_name() == 'cms_galleries') && ((get_param_string('type', '') == 'add_other') || (get_param_string('type', '') == '_edit_other'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -62,6 +62,6 @@ class Hook_preview_video
 
         $preview = show_gallery_video_media($url, $thumb_url, $width, $height, $length, get_member());
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

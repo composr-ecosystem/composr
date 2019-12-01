@@ -41,7 +41,7 @@ class geocoding_test_set extends cms_test_case
         if (!$has_geolocation_data) {
             require_code('tasks');
             require_lang('stats');
-            call_user_func_array__long_task(do_lang('INSTALL_GEOLOCATION_DATA'), get_screen_title('INSTALL_GEOLOCATION_DATA'), 'install_geolocation_data', array(), false, true);
+            call_user_func_array__long_task(do_lang('INSTALL_GEOLOCATION_DATA'), get_screen_title('INSTALL_GEOLOCATION_DATA'), 'install_geolocation_data', [], false, true);
         }
 
         require_code('locations');
@@ -57,7 +57,7 @@ class geocoding_test_set extends cms_test_case
 
         require_code('locations_geocoding');
 
-        foreach (array('google', 'bing', 'mapquest') as $service) {
+        foreach (['google', 'bing', 'mapquest'] as $service) {
             $error_msg = new Tempcode();
             $result = geocode('Berlin, DE', $error_msg, $service);
             $this->assertTrue(($result !== null) && ($result[0] > 52.0) && ($result[0] < 53.0) && ($result[1] > 13.0) && ($result[1] < 14.0), 'Wrong coordinate on ' . $service);
@@ -75,7 +75,7 @@ class geocoding_test_set extends cms_test_case
 
         require_code('locations_geocoding');
 
-        foreach (array('google', 'bing', 'mapquest') as $service) {
+        foreach (['google', 'bing', 'mapquest'] as $service) {
             $error_msg = new Tempcode();
             $address = reverse_geocode(52.516667, 13.388889, $error_msg, $service);
             if (($this->debug) || ($address === null))  {

@@ -22,8 +22,8 @@ class privacy_hooks_test_set extends cms_test_case
     {
         require_code('privacy');
 
-        $all_tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table')));
-        $found_tables = array();
+        $all_tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']));
+        $found_tables = [];
 
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook => $hook_ob) {
@@ -86,11 +86,11 @@ class privacy_hooks_test_set extends cms_test_case
         }
 
         foreach ($all_tables as $table) {
-            $all_fields = collapse_2d_complexity('m_name', 'm_type', $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table), 'ORDER BY m_name'));
-            $relevant_fields_member_id = array();
-            $relevant_fields_ip_address = array();
-            $relevant_fields_email = array();
-            $relevant_fields_time = array();
+            $all_fields = collapse_2d_complexity('m_name', 'm_type', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table], 'ORDER BY m_name'));
+            $relevant_fields_member_id = [];
+            $relevant_fields_ip_address = [];
+            $relevant_fields_email = [];
+            $relevant_fields_time = [];
             foreach ($all_fields as $name => $type) {
                 if (preg_match('#^[\*\?]*(MEMBER)$#', $type) != 0) {
                     $relevant_fields_member_id[$name] = $type;
@@ -116,7 +116,7 @@ class privacy_hooks_test_set extends cms_test_case
             if (isset($found_tables[$table])) {
                 $this->assertTrue($found_tables[$table]['timestamp_field'] === null || isset($all_fields[$found_tables[$table]['timestamp_field']]), 'Could not find ' . $found_tables[$table]['timestamp_field'] . ' field in ' . $table);
 
-                $exceptions = array(
+                $exceptions = [
                     'banned_ip',
                     'f_forums',
                     'f_group_member_timeouts',
@@ -127,7 +127,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'newsletter_periodic',
                     'revisions',
                     'w_members',
-                );
+                ];
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue($found_tables[$table]['timestamp_field'] !== null || empty($relevant_fields_time), 'Could have set a timestamp field for ' . $table);
                 }
@@ -136,10 +136,10 @@ class privacy_hooks_test_set extends cms_test_case
 
                 $this->assertTrue(array_keys($relevant_fields_ip_address) == $found_tables[$table]['ip_address_fields'], 'IP address field mismatch for: ' . $table . ' (' . serialize($relevant_fields_ip_address) . ')');
 
-                $exceptions = array(
+                $exceptions = [
                     'f_forums',
                     'f_members',
-                );
+                ];
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue(array_keys($relevant_fields_email) == $found_tables[$table]['email_fields'], 'E-mail field mismatch for: ' . $table . ' (' . serialize($relevant_fields_email) . ')');
                 }
@@ -157,9 +157,9 @@ class privacy_hooks_test_set extends cms_test_case
                     $this->assertTrue(isset($all_fields[$name]), 'Could not find ' . $name . ' field in ' . $table);
                 }
             } else {
-                $exceptions = array(
+                $exceptions = [
                     'news_rss_cloud',
-                );
+                ];
                 if (!in_array($table, $exceptions)) {
                     $this->assertTrue($total_fields == 0, 'Should be defined in a privacy hook: ' . $table);
                 }

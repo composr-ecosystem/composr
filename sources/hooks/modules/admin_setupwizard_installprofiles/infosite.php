@@ -30,9 +30,9 @@ class Hook_admin_setupwizard_installprofiles_infosite
      */
     public function info()
     {
-        return array(
+        return [
             'title' => do_lang('INFOSITE'),
-        );
+        ];
     }
 
     /**
@@ -42,9 +42,9 @@ class Hook_admin_setupwizard_installprofiles_infosite
      */
     public function get_addon_list()
     {
-        return array(
-            array('news', 'newsletter', 'syndication_blocks', 'quizzes', 'recommend', 'polls'),
-            array());
+        return [
+            ['news', 'newsletter', 'syndication_blocks', 'quizzes', 'recommend', 'polls'],
+            []];
     }
 
     /**
@@ -54,7 +54,7 @@ class Hook_admin_setupwizard_installprofiles_infosite
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '0',
             'have_default_banners_advertising' => '0',
@@ -69,7 +69,7 @@ class Hook_admin_setupwizard_installprofiles_infosite
             'show_content_tagging_inline' => '1',
             'show_screen_actions' => '1',
             'rules' => 'balanced',
-        );
+        ];
     }
 
     /**
@@ -79,20 +79,20 @@ class Hook_admin_setupwizard_installprofiles_infosite
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_news',
                 'main_rss',
                 'main_quotes',
-            ),
-            'YES_CELL' => array(),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'YES_CELL' => [],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'main_newsletter_signup',
                 'side_calendar',
                 'main_poll',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -102,14 +102,14 @@ class Hook_admin_setupwizard_installprofiles_infosite
      */
     public function block_options()
     {
-        return array(
-            'side_calendar' => array(
+        return [
+            'side_calendar' => [
                 'type' => 'listing',
-            ),
-            'main_rss' => array(
+            ],
+            'main_rss' => [
                 'param' => 'http://feeds.reuters.com/reuters/topNews',
-            ),
-        );
+            ],
+        ];
     }
 
     /**

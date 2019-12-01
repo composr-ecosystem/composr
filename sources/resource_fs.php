@@ -150,7 +150,7 @@ function get_resource_fs_record($resource_type, $resource_id)
     $resource_fs_data = $resource_fs_ob->resource_load($resource_type, basename($resource_fs_path), dirname($resource_fs_path));
 
     $json = json_encode($resource_fs_data, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0);
-    return array($json, $resource_fs_path);
+    return [$json, $resource_fs_path];
 }
 
 /**
@@ -192,7 +192,7 @@ ACTUAL FILESYSTEM INTERACTION IS DONE VIA A RESOURCE-FS OBJECT (fetch that via t
  */
 function generate_resource_fs_moniker($resource_type, $resource_id, $label = null, $new_guid = null, $definitely_new = false)
 {
-    static $cache = array();
+    static $cache = [];
     if ($new_guid === null) {
         if (isset($cache[$resource_type][$resource_id])) {
             return $cache[$resource_type][$resource_id];
@@ -209,19 +209,19 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
     if ($label === null) {
         list($label) = content_get_details($resource_type, $resource_id, true);
         if ($label === null) {
-            return array(null, null, null);
+            return [null, null, null];
         }
     }
 
     $label = cms_mb_substr($label, 0, 255);
 
-    $lookup = $definitely_new ? array() : $GLOBALS['SITE_DB']->query_select('alternative_ids', array('resource_moniker', 'resource_guid', 'resource_label'), array('resource_type' => $resource_type, 'resource_id' => $resource_id), '', 1);
+    $lookup = $definitely_new ? [] : $GLOBALS['SITE_DB']->query_select('alternative_ids', ['resource_moniker', 'resource_guid', 'resource_label'], ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
     if (array_key_exists(0, $lookup)) {
         $no_exists_check_for = $lookup[0]['resource_moniker'];
         $guid = ($new_guid === null) ? $lookup[0]['resource_guid'] : $new_guid;
 
         if (($new_guid === null) && ($lookup[0]['resource_label'] == $label)) {
-            $ret = array($no_exists_check_for, $guid, $lookup[0]['resource_label']);
+            $ret = [$no_exists_check_for, $guid, $lookup[0]['resource_label']];
             //$cache[$resource_type][$resource_id] = $ret;
             return $ret;
         }
@@ -248,7 +248,7 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
             }
         }
 
-        $where = array('resource_resource_fs_hook' => $resource_fs_hook, 'resource_moniker' => $moniker);
+        $where = ['resource_resource_fs_hook' => $resource_fs_hook, 'resource_moniker' => $moniker];
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', $where);
         $ok = ($test === null) && ($moniker != '_folder'/*reserved*/);
         if (!$ok) { // Oh dear, will pass to next iteration, but trying a new moniker
@@ -258,19 +258,19 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
     } while (!$ok);
 
     if (($moniker !== $no_exists_check_for) || ($new_guid !== null)) {
-        $GLOBALS['SITE_DB']->query_delete('alternative_ids', array('resource_type' => $resource_type, 'resource_id' => $resource_id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('alternative_ids', ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
 
-        $GLOBALS['SITE_DB']->query_insert('alternative_ids', array(
+        $GLOBALS['SITE_DB']->query_insert('alternative_ids', [
             'resource_type' => $resource_type,
             'resource_id' => $resource_id,
             'resource_moniker' => $moniker,
             'resource_label' => $label,
             'resource_guid' => $guid,
             'resource_resource_fs_hook' => $resource_fs_hook,
-        ));
+        ]);
     }
 
-    $ret = array($moniker, $guid, $label);
+    $ret = [$moniker, $guid, $label];
     //$cache[$resource_type][$resource_id] = $ret;
     return $ret;
 }
@@ -283,7 +283,7 @@ function generate_resource_fs_moniker($resource_type, $resource_id, $label = nul
  */
 function expunge_resource_fs_moniker($resource_type, $resource_id)
 {
-    $GLOBALS['SITE_DB']->query_delete('alternative_ids', array('resource_type' => $resource_type, 'resource_id' => $resource_id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('alternative_ids', ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
 }
 
 /**
@@ -368,10 +368,10 @@ function find_id_via_moniker($resource_type, $resource_moniker)
         return $cache[$resource_type][$resource_moniker];
     }*/
 
-    $where = array(
+    $where = [
         'resource_type' => $resource_type,
         'resource_moniker' => $resource_moniker,
-    );
+    ];
     $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', $where);
 
     //$cache[$resource_type][$resource_moniker] = $ret;
@@ -400,10 +400,10 @@ function find_id_via_label($resource_type, $_resource_label, $subpath = null)
         fatal_exit('Cannot load resource-fs object for ' . $resource_type);
     }
 
-    $ids = $GLOBALS['SITE_DB']->query_select('alternative_ids', array('resource_id'), array(
+    $ids = $GLOBALS['SITE_DB']->query_select('alternative_ids', ['resource_id'], [
         'resource_type' => $resource_type,
         'resource_label' => $resource_label,
-    ));
+    ]);
     $resource_ids = collapse_1d_complexity('resource_id', $ids);
     foreach ($resource_ids as $resource_id) {
         if (_check_id_match($commandr_fs_ob, $resource_type, $resource_id, $subpath)) {
@@ -468,9 +468,9 @@ function find_id_via_guid($resource_guid)
         return $cache[$resource_guid];
     }*/
 
-    $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', array(
+    $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', [
         'resource_guid' => $resource_guid,
-    ));
+    ]);
     //$cache[$resource_guid] = $ret;
     return $ret;
 }
@@ -525,7 +525,7 @@ TABLE LEVEL
  * @param  array $where_map Extra WHERE constraints
  * @return string JSON data
  */
-function table_to_json($table, $fields_to_skip = array(), $where_map = array())
+function table_to_json($table, $fields_to_skip = [], $where_map = [])
 {
     return json_encode(table_to_portable_rows($table, $fields_to_skip, $where_map), defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0);
 }
@@ -539,13 +539,13 @@ function table_to_json($table, $fields_to_skip = array(), $where_map = array())
  * @param  ?object $db Database connector to look up from (null: work out from table name)
  * @return array Portable rows
  */
-function table_to_portable_rows($table, $fields_to_skip = array(), $where_map = array(), $db = null)
+function table_to_portable_rows($table, $fields_to_skip = [], $where_map = [], $db = null)
 {
     if ($db === null) {
         $db = get_db_for($table);
     }
 
-    $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table)));
+    $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]));
 
     $key_field = null;
     if ($table == 'wordfilter') {
@@ -570,7 +570,7 @@ function table_to_portable_rows($table, $fields_to_skip = array(), $where_map = 
         }
     }
 
-    $rows = $db->query_select($table, array('*'), $where_map, ($key_field === null) ? '' : ('ORDER BY ' . $key_field));
+    $rows = $db->query_select($table, ['*'], $where_map, ($key_field === null) ? '' : ('ORDER BY ' . $key_field));
 
     $relation_map = get_relation_map_for_table($table);
 
@@ -619,10 +619,10 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
         $db = get_db_for($table);
     }
 
-    $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table)));
+    $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]));
 
-    $lang_fields = array();
-    $upload_fields = array();
+    $lang_fields = [];
+    $upload_fields = [];
     foreach ($db_fields as $db_field_name => $db_field_type) {
         $db_field_type = trim($db_field_type, '*?');
 
@@ -639,7 +639,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
             $delete_where = $extra_field_data;
         }
         elseif ($replace_mode == TABLE_REPLACE_MODE_SEVERE) {
-            $delete_where = array();
+            $delete_where = [];
         }
 
         if (!empty($lang_fields) || !empty($upload_fields)) {
@@ -663,7 +663,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
         $db->query_delete($table, $delete_where);
     } else {
         // For a poor-mans REPLACE INTO (which is a MySQL extension)
-        $keys = array();
+        $keys = [];
         foreach ($db_fields as $db_field) {
             if (substr($db_field['m_type'], 0, 1) == '*') {
                 $keys[$db_field['m_name']] = true;
@@ -756,11 +756,11 @@ function table_row_to_portable_row($row, $db_fields, $relation_map, $db = null)
             $row[$db_field_name] = remap_urlpath_as_portable($row[$db_field_name]);
         }
 
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == array('f_topics', 'id'))) {
+        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
             $row[$db_field_name] = remap_resource_id_as_portable('topic', $row[$db_field_name]);
         }
 
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == array('f_posts', 'id'))) {
+        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
             $row[$db_field_name] = remap_resource_id_as_portable('post', $row[$db_field_name]);
         }
 
@@ -819,12 +819,12 @@ function table_row_from_portable_row($row, $db_fields, $relation_map, $db = null
             $row[$db_field_name] = remap_portable_as_urlpath($row[$db_field_name]);
         }
 
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == array('f_topics', 'id'))) {
+        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
             $row[$db_field_name] = remap_portable_as_resource_id('topic', $row[$db_field_name]);
             $to_int = true;
         }
 
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == array('f_posts', 'id'))) {
+        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
             $row[$db_field_name] = remap_portable_as_resource_id('post', $row[$db_field_name]);
             $to_int = true;
         }
@@ -907,7 +907,7 @@ function remap_urlpath_as_portable($urlpath)
         return $urlpath;
     }
 
-    return array($urlpath, base64_encode(cms_file_get_contents_safe($path, FILE_READ_LOCK)));
+    return [$urlpath, base64_encode(cms_file_get_contents_safe($path, FILE_READ_LOCK))];
 }
 
 /**
@@ -1023,13 +1023,13 @@ function remap_resource_id_as_portable($resource_type, $resource_id)
         $subpath = '';
     }
 
-    return array(
+    return [
         'guid' => $guid,
         'label' => $label,
         'subpath' => $subpath,
         //'moniker' => $moniker,   Given more effectively with label
         'id' => $resource_id, // Not used, but useful to have anyway for debugging/manual-reflection
-    );
+    ];
 }
 
 /**
@@ -1057,10 +1057,10 @@ function remap_portable_as_resource_id($resource_type, $portable_data)
     $subpath = array_key_exists('subpath', $portable_data) ? $portable_data['subpath'] : '';
     $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
     if ($resource_fs_ob === null) { // Maybe a 'group' (e.g.) and not running on Conversr
-        $resource_id = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', array(
+        $resource_id = $GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_id', [
             'resource_type' => $resource_type,
             'resource_label' => $portable_data['label'],
-        ));
+        ]);
     } else {
         $resource_id = $resource_fs_ob->convert_label_to_id($portable_data['label'], $subpath, $resource_type, false, array_key_exists('guid', $portable_data) ? $portable_data['guid'] : null);
     }
@@ -1080,13 +1080,13 @@ function remap_trans_as_portable($db_row, $field, $db)
 {
     if (!multi_lang_content()) {
         if (isset($db_row[$field . '__source_user'])) {
-            return array($db_row[$field], $db_row[$field . '__source_user']);
+            return [$db_row[$field], $db_row[$field . '__source_user']];
         } else {
             return $db_row[$field];
         }
     }
 
-    return table_to_portable_rows('translate', array('id', 'text_parsed'), array('id' => $db_row[$field]), $db);
+    return table_to_portable_rows('translate', ['id', 'text_parsed'], ['id' => $db_row[$field]], $db);
 }
 
 /**
@@ -1101,9 +1101,9 @@ function remap_portable_as_trans($portable_data, $field, $db)
 {
     if (!multi_lang_content()) {
         if (is_array($portable_data)) {
-            return array($field => $portable_data[0], $field . '__source_user' => $portable_data[1]);
+            return [$field => $portable_data[0], $field . '__source_user' => $portable_data[1]];
         } else {
-            return array($field => $portable_data);
+            return [$field => $portable_data];
         }
     }
 
@@ -1111,9 +1111,9 @@ function remap_portable_as_trans($portable_data, $field, $db)
     $id = $db->query_select_value('translate', 'MAX(id)');
     $id = ($id === null) ? null : ($id + 1);
 
-    table_from_portable_rows('translate', $portable_data, array('id' => $id, 'text_parsed' => ''), TABLE_REPLACE_MODE_NONE, $db);
+    table_from_portable_rows('translate', $portable_data, ['id' => $id, 'text_parsed' => ''], TABLE_REPLACE_MODE_NONE, $db);
 
     $db->query('UNLOCK TABLES', null, 0, true); // Suppress errors in case access denied
 
-    return array($field => $id);
+    return [$field => $id];
 }

@@ -22,13 +22,13 @@ class privilege_existence_test_set extends cms_test_case
     {
         require_code('files2');
 
-        $matches = array();
-        $done_privileges = array();
-        $done_pages = array();
+        $matches = [];
+        $done_privileges = [];
+        $done_pages = [];
 
-        $privileges = array_flip(collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', array('the_name'))));
+        $privileges = array_flip(collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name'])));
 
-        $pages = array();
+        $pages = [];
         $zones = find_all_zones(true);
         foreach ($zones as $zone) {
             $pages += find_all_pages_wrap($zone);
@@ -81,12 +81,12 @@ class privilege_existence_test_set extends cms_test_case
                     }
 
                     if (get_forum_type() != 'cns') {
-                        if (in_array($page, array(
+                        if (in_array($page, [
                             'topicview',
                             'forumview',
                             'topics',
                             'vforums',
-                        ))) {
+                        ])) {
                             continue;
                         }
                     }
@@ -105,12 +105,12 @@ class privilege_existence_test_set extends cms_test_case
                     }
 
                     if (get_forum_type() != 'cns') {
-                        if (in_array($page, array(
+                        if (in_array($page, [
                             'topicview',
                             'forumview',
                             'topics',
                             'vforums',
-                        ))) {
+                        ])) {
                             continue;
                         }
                     }

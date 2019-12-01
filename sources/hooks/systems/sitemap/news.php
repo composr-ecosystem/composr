@@ -70,22 +70,22 @@ class Hook_sitemap_news extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_HIGH,
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_news', 'type' => '_edit', 'id' => $content_id), get_module_zone('cms_news')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_news', 'type' => '_edit', 'id' => $content_id], get_module_zone('cms_news')),
+        ] + $partial_struct;
 
         if (($meta_gather & SITEMAP_GATHER_CATEGORIES) != 0) {
-            $categories = array();
+            $categories = [];
 
-            $categories[] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $row['news_category'])));
+            $categories[] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $row['news_category']]));
 
             $table = 'news_category_entries e JOIN ' . get_table_prefix() . 'news_categories c ON c.id=e.news_entry_category';
-            $_categories = $GLOBALS['SITE_DB']->query_select($table, array('nc_title'), array('e.news_entry' => intval($content_id)));
+            $_categories = $GLOBALS['SITE_DB']->query_select($table, ['nc_title'], ['e.news_entry' => intval($content_id)]);
             foreach ($_categories as $_category) {
                 $categories[] = get_translated_text($_category['nc_title']);
             }

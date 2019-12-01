@@ -31,7 +31,7 @@ function init__google_appengine()
     if (substr($uri, 0, 1) == '/') {
         $uri = substr($uri, 1);
     }
-    $matches = array();
+    $matches = [];
 
     // RULES START
     if (preg_match('#^([^=]*)pages/(modules|modules_custom)/([^/]*)\.php$#', $uri, $matches) != 0) {
@@ -191,7 +191,7 @@ function _roll_gae_redirect($matches, $to)
             $_SERVER['REQUEST_URI'] .= '&' . $qs;
         }
     }
-    $arr = array();
+    $arr = [];
     parse_str($qs, $arr);
     $_GET += $arr;
 }
@@ -247,13 +247,13 @@ function gae_debugger()
  */
 function gae_optimistic_cache($enabled)
 {
-    static $gs_options_enabled = array('gs' => array(
+    static $gs_options_enabled = ['gs' => [
         'enable_optimistic_cache' => true,
         'read_cache_expiry_seconds' => 180,
-    ));
-    static $gs_options_disabled = array('gs' => array(
+    ]];
+    static $gs_options_disabled = ['gs' => [
         'enable_optimistic_cache' => false,
         'read_cache_expiry_seconds' => 3600,
-    ));
+    ]];
     stream_context_set_default($enabled ? $gs_options_enabled : $gs_options_disabled);
 }

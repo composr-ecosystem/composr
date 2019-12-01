@@ -90,7 +90,7 @@ class Hook_media_rendering_code
         if (url_is_local($url)) {
             $url = get_custom_base_url() . '/' . $url;
         }
-        $file_contents = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/*reasonable limit*/));
+        $file_contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/*reasonable limit*/]);
 
         require_code('files');
         require_code('comcode_renderer');
@@ -103,12 +103,12 @@ class Hook_media_rendering_code
         }
         list($_embed, $title) = do_code_box($extension, make_string_tempcode($file_contents));
 
-        return do_template('COMCODE_CODE', array(
+        return do_template('COMCODE_CODE', [
             '_GUID' => 'b76f3383d31ad823f50124d59db6a8c3',
             'STYLE' => '',
             'TYPE' => $extension,
             'CONTENT' => $_embed,
             'TITLE' => $title,
-        ));
+        ]);
     }
 }

@@ -34,16 +34,16 @@ class Hook_commandr_command_set_comment_forum
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('set_comment_forum', array('h'), array(true, true, true)), '', '');
+            return ['', do_command_help('set_comment_forum', ['h'], [true, true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'set_comment_forum'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'set_comment_forum')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'set_comment_forum'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'set_comment_forum')];
             }
             if (!array_key_exists(2, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '3', 'set_comment_forum'));
+                return ['', '', '', do_lang('MISSING_PARAM', '3', 'set_comment_forum')];
             }
 
             list($feedback_code, $category_id, $forum_id) = $parameters;
@@ -53,7 +53,7 @@ class Hook_commandr_command_set_comment_forum
 
             $result = do_lang('SUCCESS');
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

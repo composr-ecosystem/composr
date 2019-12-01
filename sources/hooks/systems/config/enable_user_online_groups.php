@@ -30,7 +30,7 @@ class Hook_config_enable_user_online_groups
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_USER_ONLINE_GROUPS',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_enable_user_online_groups
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

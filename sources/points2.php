@@ -49,13 +49,13 @@ function system_gift_transfer($reason, $amount, $member_id, $include_in_log = tr
     }
 
     if ($include_in_log) {
-        $map = array(
+        $map = [
             'date_and_time' => time(),
             'amount' => $amount,
             'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
             'gift_to' => $member_id,
             'anonymous' => 1,
-        );
+        ];
         $map += insert_lang_comcode('reason', $reason, 4);
         $GLOBALS['SITE_DB']->query_insert('gifts', $map);
     }
@@ -95,13 +95,13 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
     require_lang('points');
     require_code('points');
 
-    $map = array(
+    $map = [
         'date_and_time' => time(),
         'amount' => $amount,
         'gift_from' => $sender_id,
         'gift_to' => $recipient_id,
         'anonymous' => $anonymous ? 1 : 0,
-    );
+    ];
     $map += insert_lang_comcode('reason', $reason, 4);
     $GLOBALS['SITE_DB']->query_insert('gifts', $map);
 
@@ -123,17 +123,17 @@ function give_points($amount, $recipient_id, $sender_id, $reason, $anonymous = f
 
     $yes = $GLOBALS['FORUM_DRIVER']->get_member_email_allowed($recipient_id);
     if (($yes) && ($send_email)) {
-        $_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $recipient_id), get_module_zone('points'), array(), false, false, true);
+        $_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $recipient_id], get_module_zone('points'), [], false, false, true);
         $url = $_url->evaluate();
         require_code('notifications');
         if ($anonymous) {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR_ANON', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), array(comcode_escape($reason), comcode_escape($url)), get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, array($recipient_id), A_FROM_SYSTEM_UNPRIVILEGED);
+            $message_raw = do_notification_lang('GIVEN_POINTS_FOR_ANON', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url)], get_lang($recipient_id));
+            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], A_FROM_SYSTEM_UNPRIVILEGED);
         } else {
-            $message_raw = do_notification_lang('GIVEN_POINTS_FOR', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), array(comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)), get_lang($recipient_id));
-            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, array($recipient_id), $sender_id, array('use_real_from' => true));
+            $message_raw = do_notification_lang('GIVEN_POINTS_FOR', comcode_escape(get_site_name()), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_lang($recipient_id));
+            dispatch_notification('received_points', null, do_lang('YOU_GIVEN_POINTS', integer_format($amount), null, null, get_lang($recipient_id)), $message_raw, [$recipient_id], $sender_id, ['use_real_from' => true]);
         }
-        $message_raw = do_notification_lang('MEMBER_GIVEN_POINTS_FOR', comcode_escape($their_displayname), comcode_escape(integer_format($amount)), array(comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)), get_site_default_lang());
+        $message_raw = do_notification_lang('MEMBER_GIVEN_POINTS_FOR', comcode_escape($their_displayname), comcode_escape(integer_format($amount)), [comcode_escape($reason), comcode_escape($url), comcode_escape($your_displayname), comcode_escape($your_username), comcode_escape($their_username)], get_site_default_lang());
         dispatch_notification('receive_points_staff', null, do_lang('MEMBER_GIVEN_POINTS', integer_format($amount), null, null, get_site_default_lang()), $message_raw, null, $sender_id);
     }
 
@@ -203,11 +203,11 @@ function add_to_charge_log($member_id, $amount, $reason, $time = null)
     if ($time === null) {
         $time = time();
     }
-    $map = array(
+    $map = [
         'member_id' => $member_id,
         'amount' => $amount,
         'date_and_time' => $time,
-    );
+    ];
     $map += insert_lang_comcode('reason', $reason, 4);
     $GLOBALS['SITE_DB']->query_insert('chargelog', $map);
 }
@@ -219,7 +219,7 @@ function add_to_charge_log($member_id, $amount, $reason, $time = null)
  */
 function reverse_point_gift_transaction($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('gifts', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -228,7 +228,7 @@ function reverse_point_gift_transaction($id)
     $sender_id = $myrow['gift_from'];
     $recipient_id = $myrow['gift_to'];
 
-    $GLOBALS['SITE_DB']->query_delete('gifts', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('gifts', ['id' => $id], '', 1);
     if (!is_guest($sender_id)) {
         $_sender_gift_points_used = point_info($sender_id);
         $sender_gift_points_used = array_key_exists('gift_points_used', $_sender_gift_points_used) ? $_sender_gift_points_used['gift_points_used'] : 0;

@@ -26,7 +26,7 @@ class Hook_addon_registry_sugarcrm
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_sugarcrm
      */
     public function get_copyright_attribution()
     {
-        return array('Asa Kusuma');
+        return ['Asa Kusuma'];
     }
 
     /**
@@ -125,7 +125,7 @@ CRM software supported:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -135,15 +135,15 @@ CRM software supported:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP curl extension',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'securitylogging',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -163,7 +163,7 @@ CRM software supported:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/sugarcrm.php',
             'sources_custom/hooks/systems/privacy/sugarcrm.php',
             'sources_custom/hooks/systems/health_checks/sugarcrm.php',
@@ -206,7 +206,7 @@ CRM software supported:
             'sources_custom/user_metadata_display.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_contact_metadata.php',
             'sources_custom/hooks/systems/cron/sugarcrm_sync_lead_metadata.php',
-        );
+        ];
     }
 }
 

@@ -29,7 +29,7 @@ class Hook_comcode_self_destruct
             return null;
         }
 
-        return array(
+        return [
             'tag_title' => 'Self-destruct',
             'tag_description' => 'The contents will not appear in notifications, and, for private topic and support ticket posts, will self-destruct after 30 days.',
             'tag_example' => '[self_destruct]Text to self-destruct[/self_destruct]',
@@ -39,6 +39,6 @@ class Hook_comcode_self_destruct
             'tag_block_tag' => 1,
             'tag_textual_tag' => 1,
             'tag_dangerous_tag' => 0,
-        );
+        ];
     }
 }

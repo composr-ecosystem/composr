@@ -20,7 +20,7 @@ class addon_dependency_naming_test_set extends cms_test_case
 {
     public function testAddonDependencyNaming()
     {
-        $special_dep_codes = array(
+        $special_dep_codes = [
             'MySQL',
             'System scheduler',
             //'CNS', We want people to write conversr
@@ -30,7 +30,7 @@ class addon_dependency_naming_test_set extends cms_test_case
             'PHP sessions extension',
             'PHP xml extension',
             'PHP zip extension',
-        );
+        ];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($addons as $addon_name => $ob) {

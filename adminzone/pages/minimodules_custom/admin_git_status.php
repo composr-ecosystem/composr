@@ -103,7 +103,7 @@ function git_status__browse($include_ignored = null)
         $remote_changes = array_reverse($remote_changes);
     }
 
-    $local_files = array();
+    $local_files = [];
     foreach ($local_changes as $path => $details) {
         $filename = basename($path);
         $directory = dirname($path);
@@ -111,7 +111,7 @@ function git_status__browse($include_ignored = null)
             $directory = '';
         }
 
-        $local_files[] = array(
+        $local_files[] = [
             'PATH_HASH' => md5($path),
             'PATH' => $path,
             'FILENAME' => $filename,
@@ -122,10 +122,10 @@ function git_status__browse($include_ignored = null)
             '_MTIME' => strval($details['mtime']),
             'GIT_STATUS' => git_status_to_str($details['git_status']),
             '_GIT_STATUS' => strval($details['git_status']),
-        );
+        ];
     }
 
-    $remote_files = array();
+    $remote_files = [];
     foreach ($remote_changes as $path => $details) {
         $filename = basename($path);
         $directory = dirname($path);
@@ -133,7 +133,7 @@ function git_status__browse($include_ignored = null)
             $directory = '';
         }
 
-        $remote_files[] = array(
+        $remote_files[] = [
             'PATH_HASH' => md5($path),
             'PATH' => $path,
             'FILENAME' => $filename,
@@ -145,10 +145,10 @@ function git_status__browse($include_ignored = null)
             'GIT_STATUS' => git_status_to_str($details['git_status']),
             '_GIT_STATUS' => strval($details['git_status']),
             'EXISTS_LOCALLY' => is_file(get_git_file_base() . '/' . $path),
-        );
+        ];
     }
 
-    $tpl = do_template('GIT_STATUS_SCREEN', array(
+    $tpl = do_template('GIT_STATUS_SCREEN', [
         '_GUID' => 'e9908ded88ba2fc0c75945449fc49b99',
         'TITLE' => $title,
         'BRANCH' => $branch,
@@ -163,7 +163,7 @@ function git_status__browse($include_ignored = null)
         'HAS_MAX_REMOTE_FILES' => (count($remote_files) == 50),
         'INCLUDE_IGNORED' => $include_ignored,
         'SORT' => $sort,
-    ));
+    ]);
     $tpl->evaluate_echo();
 }
 
@@ -274,17 +274,17 @@ function _git_status__diff($diff)
         $diff_nice = nl2br(escape_html($diff));
     }
 
-    $tpl = do_template('GIT_STATUS_DIFF_SCREEN', array(
+    $tpl = do_template('GIT_STATUS_DIFF_SCREEN', [
         '_GUID' => '1ed30738a878cd637c6273c6bd817948',
         'TITLE' => $title,
         'DIFF' => $diff_nice,
-    ));
+    ]);
     $tpl->evaluate_echo();
 }
 
 function git_status__paths($stub)
 {
-    $paths = array();
+    $paths = [];
     foreach (array_keys($_POST) as $key) {
         if (substr($key, 0, strlen($stub)) == $stub) {
             $paths[] = post_param_string($key);

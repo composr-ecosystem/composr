@@ -30,7 +30,7 @@ class Hook_config_simplified_attachments_ui
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SIMPLIFIED_ATTACHMENTS_UI',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_simplified_attachments_ui
             'public' => true,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

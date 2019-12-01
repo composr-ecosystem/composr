@@ -52,12 +52,12 @@ class sitemap_test_set extends cms_test_case
     protected function flatten_sitemap($sitemap)
     {
         if ($sitemap['page_link'] == 'forum:' || $sitemap['page_link'] == 'buildr:') {
-            return array();
+            return [];
         }
 
         $children = isset($sitemap['children']) ? $sitemap['children'] : null;
         unset($sitemap['children']);
-        $ret = array($sitemap['page_link'] => $sitemap);
+        $ret = [$sitemap['page_link'] => $sitemap];
 
         if ($children !== null) {
             foreach ($children as $c) {
@@ -93,7 +93,7 @@ class sitemap_test_set extends cms_test_case
             return;
         }
 
-        $applicable_page_groupings = array(
+        $applicable_page_groupings = [
             'audit',
             'security',
             'structure',
@@ -102,7 +102,7 @@ class sitemap_test_set extends cms_test_case
             'tools',
             'cms',
             '',
-        );
+        ];
 
         require_code('site');
 
@@ -146,7 +146,7 @@ class sitemap_test_set extends cms_test_case
 
         foreach ($this->flattened as $k => $c) {
             if (preg_match('#^\w*:(\w*(:\w*)?)?$#', $k) != 0) {
-                if (in_array($k, array( // Exceptions
+                if (in_array($k, [ // Exceptions
                     'site:popup_blockers',
                     'site:userguide_chatcode',
                     'site:userguide_comcode',
@@ -156,7 +156,7 @@ class sitemap_test_set extends cms_test_case
                     ':userguide_comcode',
                     ':top_sites',
                     ':recommend_help',
-                ))) {
+                ])) {
                     continue;
                 }
 
@@ -166,7 +166,7 @@ class sitemap_test_set extends cms_test_case
                     continue;
                 }
 
-                if ((strpos($test[0], '_CUSTOM') === false) && (!in_array($k, array('adminzone:admin_config:base', ':keymap')))) {
+                if ((strpos($test[0], '_CUSTOM') === false) && (!in_array($k, ['adminzone:admin_config:base', ':keymap']))) {
                     $this->assertTrue($c['extra_meta']['image'] != '', 'Missing icon for: ' . $k);
                 }
             }
@@ -190,7 +190,7 @@ class sitemap_test_set extends cms_test_case
             return;
         }
 
-        $props = array(
+        $props = [
             'title',
             'content_type',
             'content_id',
@@ -203,8 +203,8 @@ class sitemap_test_set extends cms_test_case
             'has_possible_children',
             'sitemap_priority',
             'sitemap_refreshfreq',
-        );
-        $props_meta = array(
+        ];
+        $props_meta = [
             'description',
             'image',
             'add_time',
@@ -217,7 +217,7 @@ class sitemap_test_set extends cms_test_case
             'categories',
             'validated',
             'db_row',
-        );
+        ];
 
         foreach ($this->flattened as $k => $c) {
             foreach ($props as $prop) {

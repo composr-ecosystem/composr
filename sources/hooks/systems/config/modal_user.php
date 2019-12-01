@@ -30,7 +30,7 @@ class Hook_config_modal_user
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MODAL_USER',
             'type' => 'username',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_modal_user
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

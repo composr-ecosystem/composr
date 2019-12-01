@@ -26,7 +26,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,9 +130,9 @@ class Hook_addon_registry_usergroup_field_match
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/usergroup_field_match.php',
             'sources_custom/hooks/systems/cns_implicit_usergroups/usergroup_field_match.php',
-        );
+        ];
     }
 }

@@ -31,11 +31,11 @@ class Hook_admin_import_types_wiki
     public function run()
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'wiki' => 'WIKI',
-        );
+        ];
     }
 }

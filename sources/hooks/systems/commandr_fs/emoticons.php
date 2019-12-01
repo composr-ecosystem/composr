@@ -47,8 +47,8 @@ class Hook_commandr_fs_emoticons extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('f_emoticons', array('e_code'), array('e_code' => $label));
-        $ret = array();
+        $_ret = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['e_code'], ['e_code' => $label]);
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = $r['e_code'];
         }
@@ -105,19 +105,19 @@ class Hook_commandr_fs_emoticons extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_emoticons', array('*'), array('e_code' => $resource_id), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['*'], ['e_code' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['e_code'],
             'theme_img_code' => $row['e_theme_img_code'],
             'relevance_level' => $row['e_relevance_level'],
             'use_topics' => $row['e_use_topics'],
             'is_special' => $row['e_is_special'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

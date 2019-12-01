@@ -80,7 +80,7 @@ class Hook_translation_google_translate
             return null;
         }
 
-        return array($_from, $_to);
+        return [$_from, $_to];
     }
 
     /**
@@ -103,11 +103,11 @@ class Hook_translation_google_translate
         list($_from, $_to) = $context_metadata;
 
         $url = 'https://translation.googleapis.com/language/translate/v2';
-        $request = array(
+        $request = [
             'q' => $text,
             'source' => $_from,
             'target' => $_to,
-        );
+        ];
         switch ($context) {
             case TRANS_TEXT_CONTEXT_autodetect:
                 break;
@@ -199,7 +199,7 @@ class Hook_translation_google_translate
 
         require_code('http');
         $errormsg = null;
-        $result = unserialize(cache_and_carry(array($this, '_google_translate_api_request'), array($url, null, &$errormsg)));
+        $result = unserialize(cache_and_carry([$this, '_google_translate_api_request'], [$url, null, &$errormsg]));
 
         if (!isset($result['data']['languages'])) {
             return null;
@@ -237,7 +237,7 @@ class Hook_translation_google_translate
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
         }
 
-        $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'post_params' => ($_request === null) ? null : array($_request), 'timeout' => 0.5, 'raw_post' => ($request !== null), 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json'));
+        $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'post_params' => ($_request === null) ? null : [$_request], 'timeout' => 0.5, 'raw_post' => ($request !== null), 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json']);
 
         $result = @json_decode($_result, true);
         if (($result === false) || (array_key_exists('error', $result))) {

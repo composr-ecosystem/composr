@@ -31,7 +31,7 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,13 +61,13 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_intl',
             'tut_intl_users',
             'tut_intl_content',
             'tut_intl_code_philosophy',
             'tut_intl_maintenance',
-        );
+        ];
     }
 
     /**
@@ -77,11 +77,11 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -101,7 +101,7 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/style/language/language.svg',
             'themes/default/images/icons/menu/adminzone/style/language/language_content.svg',
             'themes/default/images/icons/menu/adminzone/style/language/criticise_language.svg',
@@ -136,7 +136,7 @@ class Hook_addon_registry_core_language_editing
             'sources/hooks/systems/symbols/PROVIDE_WITH_TRANSLATION.php',
             'themes/default/images/google_translate.svg',
             'sources/hooks/systems/translation/.htaccess',
-        );
+        ];
     }
 
     /**
@@ -146,7 +146,7 @@ class Hook_addon_registry_core_language_editing
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/TRANSLATE_LANGUAGE_CRITICISM.tpl' => 'administrative__translate_language_criticise_screen',
             'templates/TRANSLATE_LANGUAGE_CRITICISE_FILE.tpl' => 'administrative__translate_language_criticise_screen',
             'templates/TRANSLATE_LANGUAGE_CRITICISE_SCREEN.tpl' => 'administrative__translate_language_criticise_screen',
@@ -155,7 +155,7 @@ class Hook_addon_registry_core_language_editing
             'templates/TRANSLATE_SCREEN_CONTENT_SCREEN.tpl' => 'administrative__translate_screen_content_screen',
             'templates/TRANSLATE_LINE.tpl' => 'administrative__translate_screen',
             'templates/TRANSLATE_SCREEN.tpl' => 'administrative__translate_screen',
-        );
+        ];
     }
 
     /**
@@ -170,24 +170,24 @@ class Hook_addon_registry_core_language_editing
         $file = new Tempcode();
         $files = '';
         foreach (placeholder_array() as $value) {
-            $crit = do_lorem_template('TRANSLATE_LANGUAGE_CRITICISM', array(
+            $crit = do_lorem_template('TRANSLATE_LANGUAGE_CRITICISM', [
                 'CRITICISM' => lorem_sentence(),
-            ));
+            ]);
             $file->attach($crit);
         }
-        $file_result = do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', array(
+        $file_result = do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', [
             'COMPLAINTS' => $file,
             'FILENAME' => do_lang_tempcode('NA_EM'),
-        ));
+        ]);
 
         $files .= $file_result->evaluate();
 
-        return array(
-            lorem_globalise(do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FILES' => $files,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -202,24 +202,24 @@ class Hook_addon_registry_core_language_editing
         require_lang('lang');
         $lines = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
-            $actions = do_lorem_template('TRANSLATE_ACTION', array(
+            $actions = do_lorem_template('TRANSLATE_ACTION', [
                 'LANG_FROM' => fallback_lang(),
                 'LANG_TO' => fallback_lang(),
                 'NAME' => 'trans_' . strval($key),
                 'OLD' => $value,
-            ));
-            $lines->attach(do_lorem_template('TRANSLATE_LINE_CONTENT', array(
+            ]);
+            $lines->attach(do_lorem_template('TRANSLATE_LINE_CONTENT', [
                 'ID' => strval($key),
                 'NAME' => 'trans_' . strval($key),
                 'OLD' => $value,
                 'CURRENT' => $value,
                 'ACTIONS' => $actions,
                 'PRIORITY' => lorem_word(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN_CONTENT_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
                 'LANG_NICE_NAME' => lorem_word(),
                 'LANG_NICE_ORIGINAL_NAME' => lorem_word(),
                 'TOO_MANY' => lorem_phrase(),
@@ -232,8 +232,8 @@ class Hook_addon_registry_core_language_editing
                 'URL' => placeholder_url(),
                 'MAX' => placeholder_number(),
                 'PAGINATION' => placeholder_pagination(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -248,25 +248,25 @@ class Hook_addon_registry_core_language_editing
         require_lang('lang');
         $lines = '';
         foreach (placeholder_array() as $i => $value) {
-            $temp = do_lorem_template('TRANSLATE_LINE', array(
+            $temp = do_lorem_template('TRANSLATE_LINE', [
                 'DESCRIPTION' => lorem_sentence(),
                 'NAME' => lorem_word() . strval($i),
                 'OLD' => str_replace('\n', "\n", $value),
                 'CURRENT' => $value,
                 'ACTIONS' => lorem_phrase(),
-            ));
+            ]);
             $lines .= $temp->evaluate();
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TRANSLATE_SCREEN', [
                 'PAGE' => lorem_phrase(),
                 'TRANSLATION_CREDIT' => '',
                 'LANG' => fallback_lang(),
                 'LINES' => $lines,
                 'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -31,7 +31,7 @@ class Hook_addon_registry_galleries
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_galleries
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_galleries',
             'tut_adv_galleries',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_galleries
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_galleries
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/galleries.php',
             'themes/default/images/icons/menu/rich_content/galleries.svg',
             'themes/default/images/icons/menu/cms/galleries/add_one_image.svg',
@@ -274,7 +274,7 @@ class Hook_addon_registry_galleries
             'data/images/homepage_hero_slider/thumbs/bastei_bridge.png',
             'data/images/homepage_hero_slider/thumbs/rustic.png',
             'data/images/homepage_hero_slider/thumbs/waterfall.png',
-        );
+        ];
     }
 
     /**
@@ -284,7 +284,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_IMAGE_FADER.tpl' => 'block_main_image_fader',
             'templates/GALLERY_IMPORT_SCREEN.tpl' => 'administrative__gallery_import_screen',
             'templates/GALLERY_POPULAR.tpl' => 'gallery_popular',
@@ -318,7 +318,7 @@ class Hook_addon_registry_galleries
             'templates/GALLERY_SLIDESHOW_CAROUSEL_ENTRY.tpl' => 'gallery_slideshow_screen',
             'templates/GALLERY_SLIDESHOW_SCREEN.tpl' => 'gallery_slideshow_screen',
 
-        );
+        ];
     }
 
     /**
@@ -330,7 +330,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_image_box()
     {
-        $tab_content = do_lorem_template('GALLERY_IMAGE_BOX', array(
+        $tab_content = do_lorem_template('GALLERY_IMAGE_BOX', [
             'TITLE' => lorem_phrase(),
             'THUMB' => placeholder_image(),
             'BREADCRUMBS' => lorem_phrase(),
@@ -345,10 +345,10 @@ class Hook_addon_registry_galleries
             'DESCRIPTION' => lorem_paragraph(),
             'THUMB_URL' => placeholder_image_url(),
             'GIVE_CONTEXT' => true,
-        ));
-        return array(
+        ]);
+        return [
             lorem_globalise($tab_content, null, '', true),
-        );
+        ];
     }
 
     /**
@@ -360,7 +360,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_video_box()
     {
-        $tab_content = do_lorem_template('GALLERY_VIDEO_BOX', array(
+        $tab_content = do_lorem_template('GALLERY_VIDEO_BOX', [
             'TITLE' => lorem_phrase(),
             'THUMB' => placeholder_image(),
             'BREADCRUMBS' => lorem_phrase(),
@@ -378,10 +378,10 @@ class Hook_addon_registry_galleries
             'VIDEO_HEIGHT' => placeholder_number(),
             'VIDEO_LENGTH' => placeholder_number(),
             'GIVE_CONTEXT' => true,
-        ));
-        return array(
+        ]);
+        return [
             lorem_globalise($tab_content, null, '', true),
-        );
+        ];
     }
 
     /**
@@ -393,7 +393,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__cns_member_profile_galleries()
     {
-        $galleries = do_lorem_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', array(
+        $galleries = do_lorem_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             'BLOCK_ID' => lorem_word(),
 
             'GALLERIES' => lorem_paragraph_html(),
@@ -407,18 +407,18 @@ class Hook_addon_registry_galleries
             'MAX' => '10',
             'START_PARAM' => 'x_start',
             'MAX_PARAM' => 'x_max',
-        ));
+        ]);
 
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_GALLERIES', array(
+        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_GALLERIES', [
             'MEMBER_ID' => placeholder_id(),
             'GALLERIES' => $galleries,
             'ADD_GALLERY_URL' => placeholder_url(),
             'ADD_IMAGE_URL' => placeholder_url(),
             'ADD_VIDEO_URL' => placeholder_url(),
-        ));
-        return array(
+        ]);
+        return [
             lorem_globalise($tab_content, null, '', true),
-        );
+        ];
     }
 
     /**
@@ -430,8 +430,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__block_main_image_fader()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_IMAGE_FADER', [
                 'BLOCK_ID' => lorem_word(),
                 'GALLERY_URL' => placeholder_url(),
                 'FIRST_URL' => placeholder_image_url(),
@@ -440,13 +440,13 @@ class Hook_addon_registry_galleries
                 'FIRST_URL_FULL' => placeholder_image_url(),
                 'PREVIOUS_URL_FULL' => placeholder_image_url(),
                 'NEXT_URL_FULL' => placeholder_image_url(),
-                'TITLES' => array(),
-                'IMAGES' => array(),
-                'IMAGES_FULL' => array(),
-                'HTML' => array(),
+                'TITLES' => [],
+                'IMAGES' => [],
+                'IMAGES_FULL' => [],
+                'HTML' => [],
                 'MILL' => '3000',
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -465,22 +465,22 @@ class Hook_addon_registry_galleries
         // Need to create the form fields (instead of using placeholder_form()) because javascript is using a field called 'files' (list type).
         $fields = new Tempcode();
         $orphaned_content = new Tempcode();
-        $orphaned_content->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array(
+        $orphaned_content->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', [
             'SELECTED' => false,
             'DISABLED' => false,
             'CLASS' => '',
             'NAME' => 'test',
             'TEXT' => 'test',
-        )));
-        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', array(
+        ]));
+        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', [
             'TABINDEX' => placeholder_id(),
             'REQUIRED' => '-required',
             'NAME' => 'files',
             'CONTENT' => $orphaned_content,
             'INLINE_LIST' => true,
             'SIZE' => '9',
-        ));
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array(
+        ]);
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => false,
             'NAME' => 'files',
@@ -489,9 +489,9 @@ class Hook_addon_registry_galleries
             'DESCRIPTION_SIDE' => '',
             'INPUT' => $input,
             'COMCODE' => new Tempcode(),
-        )));
+        ]));
 
-        $form = do_lorem_template('FORM', array(
+        $form = do_lorem_template('FORM', [
             'TABINDEX' => placeholder_number(),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'admin/import',
@@ -500,15 +500,15 @@ class Hook_addon_registry_galleries
             'TEXT' => lorem_phrase(),
             'HIDDEN' => '',
             'BATCH_IMPORT_ARCHIVE_CONTENTS' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FORM2' => placeholder_form(),
                 'FORM' => $form,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -520,12 +520,12 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_popular()
     {
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_POPULAR', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_POPULAR', [
                 'CHILDREN' => lorem_sentence_html(),
                 'CAT' => 'root',
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -537,8 +537,8 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_image()
     {
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_IMAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_IMAGE', [
                 'TITLE' => lorem_phrase(),
                 'VIEW_URL' => placeholder_url(),
                 'THUMB' => placeholder_image(),
@@ -555,8 +555,8 @@ class Hook_addon_registry_galleries
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
                 'COMMENT_COUNT' => true,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -571,7 +571,7 @@ class Hook_addon_registry_galleries
         // Create the 'GALLERY_ENTRY_WRAP' template
         $entries = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $map = array(
+            $map = [
                 'MEDIA_TYPE' => 'image',
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -588,14 +588,14 @@ class Hook_addon_registry_galleries
                 'VIEWS' => placeholder_id(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
-            );
+            ];
             $entry = do_lorem_template('GALLERY_IMAGE', $map);
-            $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', array('ENTRY' => $entry) + $map));
+            $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
         }
 
         // Create 'BLOCK_MAIN_GALLERY_EMBED' with 'GALLERY_ENTRY_WRAP' as sub-template
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_EMBED', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_EMBED', [
                 'BLOCK_ID' => lorem_word(),
                 'TITLE' => lorem_phrase(),
                 'CAT' => placeholder_id(),
@@ -610,8 +610,8 @@ class Hook_addon_registry_galleries
                 'MAX' => '10',
                 'START_PARAM' => 'x_start',
                 'MAX_PARAM' => 'x_max',
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -627,20 +627,20 @@ class Hook_addon_registry_galleries
         foreach (placeholder_array() as $k => $v) {
             $out = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_DEPTH', array('TITLE' => lorem_word(), 'URL' => placeholder_url())));
+                $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_DEPTH', ['TITLE' => lorem_word(), 'URL' => placeholder_url()]));
             }
-            $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE', array('TITLE' => lorem_word(), 'URL' => placeholder_url())));
+            $out->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE', ['TITLE' => lorem_word(), 'URL' => placeholder_url()]));
 
-            $content->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', array('ID' => placeholder_random_id(), 'CAPTION' => lorem_phrase(), 'CONTENTS' => $out)));
+            $content->attach(do_lorem_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', ['ID' => placeholder_random_id(), 'CAPTION' => lorem_phrase(), 'CONTENTS' => $out]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_GALLERIES', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_GALLERIES', [
                 'BLOCK_ID' => lorem_word(),
                 'DEPTH' => true,
                 'CONTENT' => $content,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**placeholder_date_raw()
@@ -652,13 +652,13 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_video_info()
     {
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_VIDEO_INFO', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_VIDEO_INFO', [
                 'HEIGHT' => placeholder_number(),
                 'WIDTH' => placeholder_number(),
                 'LENGTH' => placeholder_number(),
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -670,12 +670,12 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_entry_list_line()
     {
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_ENTRY_LIST_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_ENTRY_LIST_LINE', [
                 'BREADCRUMBS' => lorem_phrase(),
                 'URL' => placeholder_url(),
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -687,7 +687,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_carousel_mode_video()
     {
-        $video = do_lorem_template('GALLERY_CAROUSEL_MODE_VIDEO', array(
+        $video = do_lorem_template('GALLERY_CAROUSEL_MODE_VIDEO', [
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
@@ -706,17 +706,17 @@ class Hook_addon_registry_galleries
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ));
-        $tags = do_lorem_template('TAGS', array(
+        ]);
+        $tags = do_lorem_template('TAGS', [
             'TAG' => lorem_word(),
             'TAGS' => placeholder_array(),
             'LINK_FULLSCOPE' => lorem_word(),
             'TYPE' => null,
-        ));
+        ]);
 
         $entries = new Tempcode();
         foreach (placeholder_array(10) as $k => $v) {
-            $entries->attach(do_lorem_template('GALLERY_CAROUSEL_ENTRY', array(
+            $entries->attach(do_lorem_template('GALLERY_CAROUSEL_ENTRY', [
                 'DESCRIPTION' => lorem_paragraph_html(),
                 '_TITLE' => lorem_title(),
                 'ID' => strval($k),
@@ -731,10 +731,10 @@ class Hook_addon_registry_galleries
                 'TYPE' => lorem_word(),
                 '_EDIT_URL' => placeholder_url(),
                 'CAT' => placeholder_id(),
-            )));
+            ]));
         }
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -754,10 +754,10 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
                 'VIEW_URL' => placeholder_url(),
                 'FULL_URL' => placeholder_url(),
@@ -796,8 +796,8 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => placeholder_number(),
                 'OWNER' => null,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -809,7 +809,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_carousel_mode_image()
     {
-        $image = do_lorem_template('GALLERY_CAROUSEL_MODE_IMAGE', array(
+        $image = do_lorem_template('GALLERY_CAROUSEL_MODE_IMAGE', [
             'MAIN' => lorem_phrase(),
             '_TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
@@ -827,17 +827,17 @@ class Hook_addon_registry_galleries
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        ));
-        $tags = do_lorem_template('TAGS', array(
+        ]);
+        $tags = do_lorem_template('TAGS', [
             'TAG' => lorem_word(),
             'TAGS' => placeholder_array(),
             'LINK_FULLSCOPE' => lorem_word(),
             'TYPE' => null,
-        ));
+        ]);
 
         $entries = new Tempcode();
         foreach (placeholder_array(10) as $k => $v) {
-            $entries->attach(do_lorem_template('GALLERY_CAROUSEL_ENTRY', array(
+            $entries->attach(do_lorem_template('GALLERY_CAROUSEL_ENTRY', [
                 'DESCRIPTION' => lorem_paragraph_html(),
                 '_TITLE' => lorem_title(),
                 'ID' => strval($k),
@@ -852,10 +852,10 @@ class Hook_addon_registry_galleries
                 'TYPE' => lorem_word(),
                 '_EDIT_URL' => placeholder_url(),
                 'CAT' => placeholder_id(),
-            )));
+            ]));
         }
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -875,10 +875,10 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_CAROUSEL_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
                 'VIEW_URL' => placeholder_url(),
                 'FULL_URL' => placeholder_url(),
@@ -914,8 +914,8 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => placeholder_number(),
                 'OWNER' => null,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -927,15 +927,15 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_grid_mode_screen()
     {
-        $tags = do_lorem_template('TAGS', array(
+        $tags = do_lorem_template('TAGS', [
             'LINK_FULLSCOPE' => lorem_word(),
             'TAG' => lorem_word(),
             'TAGS' => placeholder_array(),
             'TYPE' => null,
-        ));
+        ]);
 
         $entry = new Tempcode();
-        $map = array(
+        $map = [
             'MEDIA_TYPE' => 'image',
             'TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph(),
@@ -953,17 +953,17 @@ class Hook_addon_registry_galleries
             'VIEWS' => placeholder_number(),
             '_EDIT_URL' => placeholder_url(),
             'COMMENT_COUNT' => true,
-        );
+        ];
         $entry = do_lorem_template('GALLERY_IMAGE', $map);
         $entries = new Tempcode();
-        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', array('ENTRY' => $entry) + $map));
+        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
 
-        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', array(
+        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
-        ));
-        $map = array(
+        ]);
+        $map = [
             'MEDIA_TYPE' => 'video',
             'TITLE' => lorem_phrase(),
             'VIDEO_DETAILS' => $video_details,
@@ -981,11 +981,11 @@ class Hook_addon_registry_galleries
             'THUMB_URL' => placeholder_url(),
             'CAT' => lorem_word(),
             'COMMENT_COUNT' => true,
-        );
+        ];
         $entry = do_lorem_template('GALLERY_VIDEO', $map);
-        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', array('ENTRY' => $entry) + $map));
+        $entries->attach(do_lorem_template('GALLERY_ENTRY_WRAP', ['ENTRY' => $entry] + $map));
 
-        $children = do_lorem_template('GALLERY_BOX', array(
+        $children = do_lorem_template('GALLERY_BOX', [
             'GIVE_CONTEXT' => false,
             'THUMB' => '',
             'NUM_VIDEOS' => lorem_word(),
@@ -1000,9 +1000,9 @@ class Hook_addon_registry_galleries
             'PIC' => placeholder_image_url(),
             'TITLE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph(),
-        ));
+        ]);
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -1022,10 +1022,10 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_GRID_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
                 'TAGS' => $tags,
                 'CAT' => lorem_word(),
@@ -1042,8 +1042,8 @@ class Hook_addon_registry_galleries
                 'MAY_DOWNLOAD' => lorem_phrase(),
                 'ENTRIES' => $entries,
                 'SORTING' => lorem_phrase(),
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1055,7 +1055,7 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_entry_screen()
     {
-        $nav = do_lorem_template('GALLERY_NAV', array(
+        $nav = do_lorem_template('GALLERY_NAV', [
             'BACK_URL' => placeholder_url(),
             'NEXT_URL' => placeholder_url(),
             'BACK_THUMB' => placeholder_image(),
@@ -1070,9 +1070,9 @@ class Hook_addon_registry_galleries
             'PREVIOUS_URL' => placeholder_url(),
             'MORE_URL' => placeholder_url(),
             'CATEGORY_NAME' => lorem_word(),
-        ));
+        ]);
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -1092,12 +1092,12 @@ class Hook_addon_registry_galleries
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
         $video = lorem_sentence_html();
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_ENTRY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_ENTRY_SCREEN', [
                 'CAT' => placeholder_id(),
                 'MEDIA_TYPE' => 'video',
                 'ID' => placeholder_id(),
@@ -1128,8 +1128,8 @@ class Hook_addon_registry_galleries
                 'DESCRIPTION' => lorem_phrase(),
                 'VIDEO' => $video,
                 'WARNING_DETAILS' => '',
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1141,19 +1141,19 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__block_main_hero_slider()
     {
-        $items = array(
-            array(
+        $items = [
+            [
                 'BACKGROUND_ID' => placeholder_id(),
                 'BACKGROUND_TYPE' => lorem_word(),
                 'BACKGROUND_URL' => placeholder_url(),
                 'BACKGROUND_THUMB_URL' => placeholder_image_url(),
                 'CONTENT_HTML' => lorem_chunk_html(),
                 'EDIT_URL' => placeholder_url(),
-            ),
-        );
+            ],
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_HERO_SLIDER', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_HERO_SLIDER', [
                 'BLOCK_ID' => placeholder_id(),
                 'EFFECT' => 'slide',
                 'FULLSCREEN' => '1',
@@ -1162,8 +1162,8 @@ class Hook_addon_registry_galleries
                 'INTERVAL' => '0',
                 'ITEMS' => $items,
                 'HAS_MULTIPLE_ITEMS' => (count($items) > 1) ? '1' : '0',
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1178,7 +1178,7 @@ class Hook_addon_registry_galleries
         $entries = new Tempcode();
 
         foreach (placeholder_array() as $k => $v) {
-            $map = array(
+            $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -1196,20 +1196,20 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
-            );
+            ];
 
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_IMAGE', $map));
         }
 
 
-        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', array(
+        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
-        ));
+        ]);
 
         foreach (placeholder_array() as $k => $v) {
-            $map = array(
+            $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -1228,13 +1228,13 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
-            );
+            ];
 
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_VIDEO', $map));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
                 'BLOCK_ID' => placeholder_id(),
                 'BLOCK_PARAMS' => '',
                 'SLIDESHOW_URL' => null,
@@ -1248,8 +1248,8 @@ class Hook_addon_registry_galleries
                 'START_PARAM' => placeholder_id() . '_start',
                 'MAX_PARAM' => placeholder_id() . '_max',
                 'EXTRA_GET_PARAMS' => null,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1264,7 +1264,7 @@ class Hook_addon_registry_galleries
         $entries = new Tempcode();
 
         foreach (placeholder_array() as $k => $v) {
-            $map = array(
+            $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -1282,19 +1282,19 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
-            );
+            ];
 
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_IMAGE', $map));
         }
 
-        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', array(
+        $video_details = do_lorem_template('GALLERY_VIDEO_INFO', [
             'HEIGHT' => placeholder_number(),
             'WIDTH' => placeholder_number(),
             'LENGTH' => placeholder_number(),
-        ));
+        ]);
 
         foreach (placeholder_array() as $k => $v) {
-            $map = array(
+            $map = [
                 'RATING_DETAILS' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -1313,12 +1313,12 @@ class Hook_addon_registry_galleries
                 'EDIT_DATE_RAW' => placeholder_date(),
                 '_EDIT_URL' => placeholder_url(),
                 'COMMENT_COUNT' => true,
-            );
+            ];
 
             $entries->attach(do_lorem_template('GALLERY_MOSAIC_VIDEO', $map));
         }
 
-        $block = do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', array(
+        $block = do_lorem_template('BLOCK_MAIN_GALLERY_MOSAIC', [
             'BLOCK_ID' => placeholder_id(),
             'BLOCK_PARAMS' => '',
             'SLIDESHOW_URL' => null,
@@ -1332,10 +1332,10 @@ class Hook_addon_registry_galleries
             'START_PARAM' => placeholder_id() . '_start',
             'MAX_PARAM' => placeholder_id() . '_max',
             'EXTRA_GET_PARAMS' => null,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_MOSAIC_MODE_SCREEN', [
                 '_TITLE' => lorem_phrase(),
                 'MEMBER_ID' => '',
                 'TAGS' => '',
@@ -1356,8 +1356,8 @@ class Hook_addon_registry_galleries
                 'ACCEPT_VIDEOS' => true,
                 'VIEWS' => strval(123),
                 'OWNER' => null,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1371,7 +1371,7 @@ class Hook_addon_registry_galleries
     {
         $carousel_entries = new Tempcode();
 
-        $carousel_entries->attach(do_template('GALLERY_SLIDESHOW_CAROUSEL_ENTRY', array(
+        $carousel_entries->attach(do_template('GALLERY_SLIDESHOW_CAROUSEL_ENTRY', [
             'INDEX' => strval(0),
             'DESCRIPTION' => lorem_sentence(),
             '_TITLE' => lorem_phrase(),
@@ -1388,10 +1388,10 @@ class Hook_addon_registry_galleries
             'VIEW_URL_2' => placeholder_url(),
             '_EDIT_URL' => placeholder_url(),
             'CAT' => 'root',
-        )));
+        ]));
 
-        return array(
-            lorem_globalise(do_lorem_template('GALLERY_SLIDESHOW_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GALLERY_SLIDESHOW_SCREEN', [
                 'SLIDESHOW_ID' => placeholder_random_id(),
                 'TOTAL_ITEMS' => '1',
                 'CURRENT_INDEX' => '0',
@@ -1400,8 +1400,8 @@ class Hook_addon_registry_galleries
                 'CURRENT_TYPE' => 'image',
                 'CURRENT_COMMENT_DETAILS' => '',
                 'CAROUSEL_ENTRIES' => $carousel_entries,
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -1411,17 +1411,17 @@ class Hook_addon_registry_galleries
     {
         require_code('galleries2');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('images', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('images', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_image($record['id']);
         }
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('videos', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('videos', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_video($record['id']);
         }
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('galleries', array('name'), array($GLOBALS['SITE_DB']->translate_field_ref('fullname') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('galleries', ['name'], [$GLOBALS['SITE_DB']->translate_field_ref('fullname') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_gallery($record['name']);
         }
@@ -1434,12 +1434,12 @@ class Hook_addon_registry_galleries
     {
         require_code('galleries2');
 
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => 'lorem_1')) === null) {
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'lorem_1']) === null) {
             add_gallery('lorem_1', lorem_phrase(), lorem_chunk(), '', 'root', 1, 1, 0);
             require_code('permissions2');
             set_global_category_access('gallery', 'lorem_1');
         }
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => 'lorem_2')) === null) {
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'lorem_2']) === null) {
             add_gallery('lorem_2', lorem_phrase(), lorem_chunk(), '', 'root', 1, 1, 1, GALLERY_LAYOUT_MODE_CAROUSEL);
             require_code('permissions2');
             set_global_category_access('gallery', 'lorem_2');

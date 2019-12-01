@@ -57,9 +57,9 @@ class Hook_task_export_ecom_transactions
         $rows = $GLOBALS['SITE_DB']->query($query);
         remove_duplicate_rows($rows);
 
-        $tax_categories = array();
+        $tax_categories = [];
         foreach ($rows as $_transaction) {
-            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? array() : json_decode($_transaction['t_tax_derivation'], true);
+            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? [] : json_decode($_transaction['t_tax_derivation'], true);
             foreach (array_keys($tax_derivation) as $tax_category) {
                 $tax_categories[$tax_category] = true;
             }
@@ -85,7 +85,7 @@ class Hook_task_export_ecom_transactions
                 $item_name = $_transaction['t_type_code'];
             }
 
-            $transaction = array();
+            $transaction = [];
 
             $transaction[do_lang('TRANSACTION')] = $_transaction['t_id'];
 
@@ -100,7 +100,7 @@ class Hook_task_export_ecom_transactions
             $transaction[do_lang('AMOUNT')] = float_format($_transaction['t_amount']);
 
             $transaction[do_lang(get_option('tax_system')) . ' (' . do_lang('COUNT_TOTAL') . ')'] = float_format($_transaction['t_tax']);
-            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? array() : json_decode($_transaction['t_tax_derivation'], true);
+            $tax_derivation = ($_transaction['t_tax_derivation'] == '') ? [] : json_decode($_transaction['t_tax_derivation'], true);
             foreach ($tax_categories as $tax_category) {
                 $transaction[do_lang(get_option('tax_system')) . ' (' . $tax_category . ')'] = float_format(isset($tax_derivation[$tax_category]) ? $tax_derivation[$tax_category] : 0.00);
             }
@@ -129,7 +129,7 @@ class Hook_task_export_ecom_transactions
             $transaction[do_lang('MEMBER')] = $username;
 
             // Put address together
-            $address = array();
+            $address = [];
             if ($_transaction['a_firstname'] . $_transaction['a_lastname'] != '') {
                 $address[] = trim($_transaction['a_firstname'] . ' ' . $_transaction['a_lastname']);
             }
@@ -164,13 +164,13 @@ class Hook_task_export_ecom_transactions
         }
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 }

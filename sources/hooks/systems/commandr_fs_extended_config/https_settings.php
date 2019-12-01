@@ -70,6 +70,6 @@ class Hook_commandr_fs_extended_config__https_settings
      */
     public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
     {
-        return table_from_json('https_pages', $contents, array(), TABLE_REPLACE_MODE_SEVERE);
+        return table_from_json('https_pages', $contents, [], TABLE_REPLACE_MODE_SEVERE);
     }
 }

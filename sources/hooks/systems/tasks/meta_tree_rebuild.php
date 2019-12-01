@@ -32,7 +32,7 @@ class Hook_task_meta_tree_rebuild
     {
         require_code('themes_meta_tree');
         $meta_tree_builder = new Meta_tree_builder();
-        $meta_tree_builder->refresh(null, null, array($this, 'log'));
+        $meta_tree_builder->refresh(null, null, [$this, 'log']);
 
         return null;
     }

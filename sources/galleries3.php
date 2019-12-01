@@ -43,17 +43,17 @@ function download_gallery_script()
         access_denied('CATEGORY_ACCESS');
     }
 
-    check_privilege('may_download_gallery', array('galleries', $cat));
+    check_privilege('may_download_gallery', ['galleries', $cat]);
     if ((strpos($cat, "\n") !== false) || (strpos($cat, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }
 
-    $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', array('cat' => $cat, 'validated' => 1));
+    $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $cat, 'validated' => 1]);
 
     require_lang('galleries');
 
     require_code('tasks');
-    $ret = call_user_func_array__long_task(do_lang('DOWNLOAD_GALLERY_CONTENTS'), get_screen_title('DOWNLOAD_GALLERY_CONTENTS'), 'download_gallery', array($cat), false, $num_videos == 0);
+    $ret = call_user_func_array__long_task(do_lang('DOWNLOAD_GALLERY_CONTENTS'), get_screen_title('DOWNLOAD_GALLERY_CONTENTS'), 'download_gallery', [$cat], false, $num_videos == 0);
 
     $echo = globalise($ret, null, '', true);
     $echo->evaluate_echo(null);
@@ -82,7 +82,7 @@ function show_gallery_video_script()
         check_privacy('video', strval($id));
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('videos', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('videos', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', escape_html('video')));
     }

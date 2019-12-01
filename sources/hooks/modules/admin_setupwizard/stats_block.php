@@ -31,9 +31,9 @@ class Hook_sw_stats_block
     public function get_blocks()
     {
         if (!addon_installed('stats_block')) {
-            return array();
+            return [];
         }
 
-        return array(array(), array('side_stats' => array('PANEL_LEFT', 'PANEL_RIGHT')));
+        return [[], ['side_stats' => ['PANEL_LEFT', 'PANEL_RIGHT']]];
     }
 }

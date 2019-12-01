@@ -20,12 +20,12 @@ class js_strict_mode_test_set extends cms_test_case
 {
     public function testInStrictMode()
     {
-        $templates = array();
+        $templates = [];
         $path = get_file_base() . '/themes/default/javascript';
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (strtolower(substr($file, -3)) == '.js') {
-                if (in_array($file, array(
+                if (in_array($file, [
                     'ATTACHMENT_UI_DEFAULTS.js',
                     'button_realtime_rain.js',
                     'jquery.js',
@@ -36,7 +36,7 @@ class js_strict_mode_test_set extends cms_test_case
                     'WYSIWYG_SETTINGS.js',
                     'xsl_mopup.js',
                     'POLYFILL_WEB_ANIMATIONS.js',
-                ))) {
+                ])) {
                     continue;
                 }
 

@@ -25,7 +25,7 @@ class Block_main_activities_state
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Warburton';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -33,7 +33,7 @@ class Block_main_activities_state
         $info['version'] = 1;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
-        $info['parameters'] = array('param');
+        $info['parameters'] = ['param'];
         return $info;
     }
 
@@ -61,10 +61,10 @@ class Block_main_activities_state
 
         $title = array_key_exists('param', $map) ? $map['param'] : do_lang('STATUS_UPDATE');
 
-        return do_template('BLOCK_MAIN_ACTIVITIES_STATE', array(
+        return do_template('BLOCK_MAIN_ACTIVITIES_STATE', [
             '_GUID' => 'ad41b611db430c58189aa28e96a2712e',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
-        ));
+        ]);
     }
 }

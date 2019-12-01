@@ -35,9 +35,9 @@ class Hook_admin_setupwizard_installprofiles_shopping
         }
 
         require_lang('shopping');
-        return array(
+        return [
             'title' => do_lang('ONLINE_STORE'),
-        );
+        ];
     }
 
     /**
@@ -47,9 +47,9 @@ class Hook_admin_setupwizard_installprofiles_shopping
      */
     public function get_addon_list()
     {
-        return array(
-            array('ecommerce', 'shopping', 'ssl', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'),
-            array());
+        return [
+            ['ecommerce', 'shopping', 'ssl', 'quizzes', 'random_quotes', 'recommend', 'polls', 'tickets', 'news', 'newsletter'],
+            []];
     }
 
     /**
@@ -59,7 +59,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '0',
             'have_default_banners_advertising' => '0',
@@ -75,7 +75,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
             'show_content_tagging_inline' => '1',
             'show_screen_actions' => '1',
             'rules' => 'corporate',
-        );
+        ];
     }
 
     /**
@@ -85,18 +85,18 @@ class Hook_admin_setupwizard_installprofiles_shopping
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_greeting',
                 'main_news',
                 'main_quotes',
-            ),
-            'YES_CELL' => array(),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'YES_CELL' => [],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'main_newsletter_signup',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_admin_setupwizard_installprofiles_shopping
      */
     public function block_options()
     {
-        return array();
+        return [];
     }
 
     /**

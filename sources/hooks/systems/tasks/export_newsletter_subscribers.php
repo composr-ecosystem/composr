@@ -41,9 +41,9 @@ class Hook_task_export_newsletter_subscribers
 
         require_code('newsletter');
 
-        $send_details = array(
+        $send_details = [
             $key => true,
-        );
+        ];
 
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
@@ -53,7 +53,7 @@ class Hook_task_export_newsletter_subscribers
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 
-        $sheet_writer->write_row(array(
+        $sheet_writer->write_row([
             do_lang('EMAIL_ADDRESS'),
             do_lang('FORENAME'),
             do_lang('SURNAME'),
@@ -64,14 +64,14 @@ class Hook_task_export_newsletter_subscribers
             do_lang('SALT'),
             do_lang('CONFIRM_CODE'),
             do_lang('JOIN_DATE'),
-        ));
+        ]);
 
         $max = 100;
         $max_rows = null;
         $start = 0;
         $count = 0;
         do {
-            $_subscribers = newsletter_who_send_to($send_details, $lang, $start, $max, array(), false);
+            $_subscribers = newsletter_who_send_to($send_details, $lang, $start, $max, [], false);
             if ($count == 0) {
                 list($subscribers, $totals) = $_subscribers;
                 $max_rows = array_sum($totals);
@@ -82,7 +82,7 @@ class Hook_task_export_newsletter_subscribers
             foreach ($subscribers as $email_address => $subscriber_map) {
                 task_log($this, 'Processing subscriber row', $count, $max_rows);
 
-                $sheet_writer->write_row(array(
+                $sheet_writer->write_row([
                     $email_address,
                     $subscriber_map['forename'],
                     $subscriber_map['surname'],
@@ -93,7 +93,7 @@ class Hook_task_export_newsletter_subscribers
                     $subscriber_map['salt'],
                     $subscriber_map['code_confirm'],
                     ($subscriber_map['join_time'] === null) ? '' : date('Y-m-d h:i:s', $subscriber_map['join_time']),
-                ));
+                ]);
 
                 $count++;
             }
@@ -103,13 +103,13 @@ class Hook_task_export_newsletter_subscribers
 
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 }

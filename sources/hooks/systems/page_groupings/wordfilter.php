@@ -33,11 +33,11 @@ class Hook_page_groupings_wordfilter
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('wordfilter')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('security', 'menu/adminzone/security/wordfilter', array('admin_wordfilter', array('type' => 'browse'), get_module_zone('admin_wordfilter')), do_lang_tempcode('wordfilter:WORDFILTER'), 'wordfilter:DOC_WORDFILTER'),
-        );
+        return [
+            ['security', 'menu/adminzone/security/wordfilter', ['admin_wordfilter', ['type' => 'browse'], get_module_zone('admin_wordfilter')], do_lang_tempcode('wordfilter:WORDFILTER'), 'wordfilter:DOC_WORDFILTER'],
+        ];
     }
 }

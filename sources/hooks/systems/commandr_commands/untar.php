@@ -38,16 +38,16 @@ class Hook_commandr_command_untar
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('untar', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('untar', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'untar'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'untar')];
             }
 
             $path = $parameters[0];
 
             if (!is_file(get_custom_file_base() . '/' . $path)) {
-                return array('', '', '', do_lang('MISSING_RESOURCE'));
+                return ['', '', '', do_lang('MISSING_RESOURCE')];
             }
 
             disable_php_memory_limit();
@@ -58,7 +58,7 @@ class Hook_commandr_command_untar
             tar_extract_to_folder($myfile, '');
             tar_close($myfile);
 
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

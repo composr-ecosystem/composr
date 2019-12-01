@@ -59,7 +59,7 @@ function calculate_latest_leader_board($retrieve = true)
     // FUDGE #2737
     $limit_hack = max(300, $limit); // We'll query more top posters than we'll display, so that we workaround the issue that our initial efficient querying by top post count is not the same as querying by top point count (we'll hope that they align close enough for nobody to notice!)
     $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters($limit_hack);
-    $points = array();
+    $points = [];
 
     foreach ($all_members as $member) {
         $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
@@ -76,7 +76,7 @@ function calculate_latest_leader_board($retrieve = true)
 
     arsort($points);
 
-    $rows = array();
+    $rows = [];
 
     $i = 0;
     $time = time();
@@ -94,7 +94,7 @@ function calculate_latest_leader_board($retrieve = true)
             break;
         }
 
-        $row = array('lb_member' => $id, 'lb_points' => $num_points, 'date_and_time' => $time);
+        $row = ['lb_member' => $id, 'lb_points' => $num_points, 'date_and_time' => $time];
         $GLOBALS['SITE_DB']->query_insert('leader_board', $row, false, true); // Allow failure due to race conditions
 
         $i++;

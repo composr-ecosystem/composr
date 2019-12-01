@@ -34,10 +34,10 @@ class Hook_commandr_command_ban_ip
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('ban_ip', array('h', 'u'), array(true)), '', '');
+            return ['', do_command_help('ban_ip', ['h', 'u'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'ban_ip'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_ip')];
             }
 
             require_code('submit');
@@ -46,7 +46,7 @@ class Hook_commandr_command_ban_ip
             } else {
                 wrap_add_ip_ban($parameters[0], array_key_exists(1, $parameters) ? $parameters[1] : '');
             }
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

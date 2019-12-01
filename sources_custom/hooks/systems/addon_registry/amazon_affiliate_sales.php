@@ -26,7 +26,7 @@ class Hook_addon_registry_amazon_affiliate_sales
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_amazon_affiliate_sales
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -102,7 +102,7 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,11 +112,11 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,11 +136,11 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/amazon_affiliate_sales.php',
             'lang_custom/EN/amazon.ini',
             'sources_custom/blocks/side_amazon_affiliate_sales.php',
             'themes/default/templates_custom/BLOCK_SIDE_AMAZON_AFFILIATE_SALES.tpl',
-        );
+        ];
     }
 }

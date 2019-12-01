@@ -60,7 +60,7 @@ function generate_recursive_map_table($metadata)
     $l_username = do_lang('USERNAME', null, null, null, get_site_default_lang());
     $l_profile = do_lang('cns:PROFILE', null, null, null, get_site_default_lang());
 
-    $fields = array();
+    $fields = [];
 
     foreach ($metadata as $key => $val) {
         if (is_array($val)) {
@@ -129,11 +129,11 @@ function generate_recursive_map_table($metadata)
         $_fields->attach(map_table_field($_key, $_val, is_object($_val)));
     }
 
-    return do_template('MAP_TABLE', array(
+    return do_template('MAP_TABLE', [
         '_GUID' => '3b39f42defa9836043e31c914f39fde2',
         'FIELDS' => $_fields,
-        'WIDTHS' => array('200'),
-    ));
+        'WIDTHS' => ['200'],
+    ]);
 }
 
 function generate_secure_user_metadata_display_url($member_id)

@@ -25,7 +25,7 @@
  */
 function find_broken_filedump_links()
 {
-    $paths_broken = array();
+    $paths_broken = [];
 
     require_code('files2');
     $all_files = get_directory_contents(get_custom_file_base() . '/uploads/filedump', '', IGNORE_ACCESS_CONTROLLERS, true);
@@ -66,14 +66,14 @@ function update_filedump_links($from, $to)
     $from = str_replace('%2F', '/', rawurlencode($from));
     $to = str_replace('%2F', '/', rawurlencode($to));
 
-    $patterns = array(
+    $patterns = [
         '#"uploads/filedump(' . preg_quote($from, '#') . ')"#' => '"uploads/filedump' . $to . '"',
         '#\]uploads/filedump(' . preg_quote($from, '#') . ')\[#' => ']uploads/filedump' . $to . '[',
         '#\]url_uploads/filedump(' . preg_quote($from, '#') . ')\[#' => ']url_uploads/filedump' . $to . '[',
         '#"' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($from, '#') . ')"#' => '"' . get_custom_base_url() . '/uploads/filedump' . $to . '"',
         '#\]' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($from, '#') . ')\[#' => ']' . get_custom_base_url() . '/uploads/filedump' . $to . '[',
         '#\]url_' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($from, '#') . ')\[#' => ']url_' . get_custom_base_url() . '/uploads/filedump' . $to . '[',
-    );
+    ];
 
     foreach ($current as $details) {
         foreach ($details['references'] as $ref) {
@@ -108,7 +108,7 @@ function update_filedump_links($from, $to)
  */
 function find_filedump_links($focus = '')
 {
-    $paths_used = array();
+    $paths_used = [];
 
     $_focus = str_replace('%2F', '/', rawurlencode($focus));
 
@@ -120,7 +120,7 @@ function find_filedump_links($focus = '')
                 $query = 'SELECT r.* FROM ' . get_table_prefix() . $table . ' r WHERE 1=1';
                 $_field_name = $GLOBALS['SITE_DB']->translate_field_ref($field_name);
                 if ($GLOBALS['SITE_DB']->has_full_text()) { // For efficiency, pre-filter via full-text search
-                    $index_name = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_name', array('i_table' => $table, 'i_fields' => $field_name), ' AND i_name LIKE \'' . db_encode_like('#%') . '\'');
+                    $index_name = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_name', ['i_table' => $table, 'i_fields' => $field_name], ' AND i_name LIKE \'' . db_encode_like('#%') . '\'');
                     if ($index_name !== null) {
                         $query .= ' AND ' . preg_replace('#\?#', $_field_name, $GLOBALS['SITE_DB']->full_text_assemble('filedump', false));
                     }
@@ -131,9 +131,9 @@ function find_filedump_links($focus = '')
                     $query .= ' AND ' . $_field_name . ' LIKE \'' . db_encode_like('%uploads/filedump' . $_focus . '%') . '\'';
                 }
                 $db = get_db_for($table);
-                $results = $db->query($query, null, 0, false, false, array($field_name => $field_type));
+                $results = $db->query($query, null, 0, false, false, [$field_name => $field_type]);
                 foreach ($results as $r) {
-                    extract_filedump_links(get_translated_text($r[$field_name]), array($r, $field_name), $focus, $paths_used);
+                    extract_filedump_links(get_translated_text($r[$field_name]), [$r, $field_name], $focus, $paths_used);
                 }
             }
         }
@@ -174,27 +174,27 @@ function extract_filedump_links($comcode, $identifier, $focus, &$paths_used)
     $_focus = str_replace('%2F', '/', rawurlencode($focus));
 
     if ($focus == '') {
-        $patterns = array(
+        $patterns = [
             '#"uploads/filedump(/[^"]+)"#',
             '#\]uploads/filedump(/[^\[\]]+)\[#',
             '#\]url_uploads/filedump(/[^\[\]]+)\[#',
             '#"' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(/[^"]+)"#',
             '#\]' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(/[^\[\]]+)\[#',
             '#\]url_' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(/[^\[\]]+)\[#',
-        );
+        ];
     } else {
-        $patterns = array(
+        $patterns = [
             '#"uploads/filedump(' . preg_quote($_focus, '#') . ')"#',
             '#\]uploads/filedump(' . preg_quote($_focus, '#') . ')\[#',
             '#\]url_uploads/filedump(' . preg_quote($_focus, '#') . ')\[#',
             '#"' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($_focus, '#') . ')"#',
             '#\]' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($_focus, '#') . ')\[#',
             '#\]url_' . preg_quote(get_custom_base_url(), '#') . '/uploads/filedump(' . preg_quote($_focus, '#') . ')\[#',
-        );
+        ];
     }
 
     foreach ($patterns as $pattern) {
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all($pattern, $comcode, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $decoded = urldecode(html_entity_decode($matches[1][$i], ENT_QUOTES)); // This is imperfect (raw naming that coincidentally matches entity encoding will break), but good enough
@@ -206,10 +206,10 @@ function extract_filedump_links($comcode, $identifier, $focus, &$paths_used)
             $path = get_custom_file_base() . '/uploads/filedump' . $decoded;
 
             if (!isset($paths_used[$decoded])) {
-                $paths_used[$decoded] = array(
+                $paths_used[$decoded] = [
                     'exists' => is_file($path),
-                    'references' => array(),
-                );
+                    'references' => [],
+                ];
             }
 
             if (!in_array($identifier, $paths_used[$decoded]['references'])) {
@@ -279,7 +279,7 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
     $full = get_custom_file_base() . '/uploads/filedump' . $subpath . $filename;
 
     // Conflict?
-    $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', array('name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));
+    $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
     if ((!$check_permissions) || (($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
         @unlink($full);
     }
@@ -303,23 +303,23 @@ function add_filedump_file($subpath, &$filename, $tmp_path, $description = '', $
     sync_file($full);
 
     // Add description
-    $description_l = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', array('name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));
+    $description_l = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
     if ($description_l !== null) {
         delete_lang($description_l);
-        $GLOBALS['SITE_DB']->query_delete('filedump', array('name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('filedump', ['name' => cms_mb_substr($filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)], '', 1);
     }
-    $map = array(
+    $map = [
         'name' => cms_mb_substr($filename, 0, 80),
         'subpath' => cms_mb_substr($subpath, 0, 80),
         'the_member' => get_member(),
-    );
+    ];
     $map += insert_lang('the_description', $description, 3);
     $GLOBALS['SITE_DB']->query_insert('filedump', $map);
 
     // Logging etc
     require_code('notifications');
     $subject = do_lang('FILEDUMP_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $filename, $subpath);
-    $mail = do_notification_lang('FILEDUMP_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($filename), array(comcode_escape($subpath), comcode_escape($description)));
+    $mail = do_notification_lang('FILEDUMP_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($filename), [comcode_escape($subpath), comcode_escape($description)]);
     dispatch_notification('filedump', $subpath, $subject, $mail);
     log_it('FILEDUMP_UPLOAD', $filename, $subpath);
     require_code('users2');

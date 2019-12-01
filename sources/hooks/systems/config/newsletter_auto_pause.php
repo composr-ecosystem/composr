@@ -30,7 +30,7 @@ class Hook_config_newsletter_auto_pause
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NEWSLETTER_AUTO_PAUSE',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_newsletter_auto_pause
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

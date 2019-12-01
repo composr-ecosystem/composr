@@ -37,7 +37,7 @@ class shopping_order_management_test_set extends cms_test_case
 
         $txn_id = 'ddfsfdsdfsdfs';
 
-        $this->order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', array(
+        $this->order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', [
             'member_id' => get_member(),
             'session_id' => get_session_id(),
             'add_date' => time(),
@@ -56,10 +56,10 @@ class shopping_order_management_test_set extends cms_test_case
             'notes' => '',
             'txn_id' => $txn_id,
             'purchase_through' => 'cart',
-        ), true);
+        ], true);
 
-        $GLOBALS['SITE_DB']->query_delete('ecom_transactions', array('id' => $txn_id), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('ecom_transactions', array(
+        $GLOBALS['SITE_DB']->query_delete('ecom_transactions', ['id' => $txn_id], '', 1);
+        $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
             'id' => $txn_id,
             't_type_code' => 'cart_orders',
             't_purchase_id' => strval($this->order_id),
@@ -78,9 +78,9 @@ class shopping_order_management_test_set extends cms_test_case
             't_invoicing_breakdown' => '',
             't_member_id' => get_member(),
             't_session_id' => get_session_id(),
-        ));
+        ]);
 
-        $this->access_mapping = array(db_get_first_id() => 4);
+        $this->access_mapping = [db_get_first_id() => 4];
 
         require_code('adminzone/pages/modules/admin_ecommerce.php');
         $this->admin_ecom = new Module_admin_ecommerce();
@@ -122,7 +122,7 @@ class shopping_order_management_test_set extends cms_test_case
 
     public function testOrderDispatch()
     {
-        $order_id = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'MAX(id)', array('order_status' => 'ORDER_STATUS_payment_received'));
+        $order_id = $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'MAX(id)', ['order_status' => 'ORDER_STATUS_payment_received']);
         if ($order_id !== null) {
             $_GET['id'] = $order_id;
             $this->admin_shopping->dispatch();
@@ -163,7 +163,7 @@ class shopping_order_management_test_set extends cms_test_case
 
     public function tearDown()
     {
-        $GLOBALS['SITE_DB']->query_delete('shopping_orders', array('id' => $this->order_id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $this->order_id], '', 1);
 
         parent::tearDown();
     }

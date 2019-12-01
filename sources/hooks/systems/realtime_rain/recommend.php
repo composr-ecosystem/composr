@@ -33,10 +33,10 @@ class Hook_realtime_rain_recommend
     public function run($from, $to)
     {
         if (!addon_installed('recommend')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if ((has_actual_page_access(get_member(), 'admin_cns_members')) && (get_forum_type() == 'cns')) {
             require_lang('recommend');
@@ -47,9 +47,9 @@ class Hook_realtime_rain_recommend
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
 
-                $invited_member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $row['i_email_address']));
+                $invited_member = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $row['i_email_address']]);
 
-                $drops[] = rain_get_special_icons(null, $timestamp) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'recommend',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => ($invited_member === null) ? '' : strval($invited_member),
@@ -58,7 +58,7 @@ class Hook_realtime_rain_recommend
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points')),
+                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')),
                     'IS_POSITIVE' => true,
                     'IS_NEGATIVE' => false,
 
@@ -66,7 +66,7 @@ class Hook_realtime_rain_recommend
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => ($invited_member === null) ? '' : ('member_' . strval($invited_member)),
                     'GROUP_ID' => null,
-                );
+                ];
             }
         }
 

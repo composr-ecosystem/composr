@@ -30,7 +30,7 @@ class Hook_config_use_joindate
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_JOINDATE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_use_joindate
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

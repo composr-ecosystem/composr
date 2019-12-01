@@ -30,7 +30,7 @@ class Hook_config_activity_show_stats_count_page_views_this_week
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAGE_VIEWS_THIS_WEEK',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_activity_show_stats_count_page_views_this_week
             'public' => false,
 
             'addon' => 'stats_block',
-        );
+        ];
     }
 
     /**

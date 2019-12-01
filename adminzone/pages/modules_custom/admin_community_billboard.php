@@ -36,7 +36,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -64,7 +64,7 @@ class Module_admin_community_billboard extends Standard_crud_module
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('community_billboard', array(
+            $GLOBALS['SITE_DB']->create_table('community_billboard', [
                 'id' => '*AUTO',
                 'member_id' => 'MEMBER',
                 'the_message' => 'SHORT_TRANS__COMCODE',
@@ -73,9 +73,9 @@ class Module_admin_community_billboard extends Standard_crud_module
                 'activation_time' => '?TIME',
                 'active_now' => 'BINARY',
                 'notes' => 'LONG_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_index('community_billboard', 'find_active_billboard_msg', array('active_now'));
+            $GLOBALS['SITE_DB']->create_index('community_billboard', 'find_active_billboard_msg', ['active_now']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
@@ -150,10 +150,10 @@ class Module_admin_community_billboard extends Standard_crud_module
         return do_next_manager(
             get_screen_title('COMMUNITY_BILLBOARD'),
             comcode_lang_string('DOC_COMMUNITY_BILLBOARD'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_COMMUNITY_BILLBOARD')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_COMMUNITY_BILLBOARD')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_COMMUNITY_BILLBOARD')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_COMMUNITY_BILLBOARD')],
+            ],
             do_lang('COMMUNITY_BILLBOARD')
         );
     }
@@ -173,9 +173,9 @@ class Module_admin_community_billboard extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('COMMUNITY_BILLBOARD_MANAGE', 'menu/adminzone/audit/community_billboard'),
-        );
+        return [
+            'browse' => ['COMMUNITY_BILLBOARD_MANAGE', 'menu/adminzone/audit/community_billboard'],
+        ];
     }
 
     /**
@@ -193,40 +193,40 @@ class Module_admin_community_billboard extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'the_message' => do_lang_tempcode('MESSAGE'),
             'days' => do_lang_tempcode('DAYS_ORDERED'),
             'order_time' => do_lang_tempcode('ORDER_DATE'),
             'member_id' => do_lang_tempcode('metadata:OWNER'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('MESSAGE'),
             do_lang_tempcode('DAYS_ORDERED'),
             do_lang_tempcode('ORDER_DATE'),
             do_lang_tempcode('_UP_FOR'),
             do_lang_tempcode('metadata:OWNER'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['member_id']));
 
             $activation_time = $row['activation_time'];
             $days = ($activation_time === null) ? '' : float_format(floatval(time() - $activation_time) / 60.0 / 60.0 / 24.0, 3);
 
-            $result_entries->attach(results_entry(array(protect_from_escaping(get_translated_tempcode('community_billboard', $row, 'the_message')), integer_format($row['days']), get_timezoned_date_time($row['order_time']), ($row['active_now'] == 1) ? $days : do_lang_tempcode('NA_EM'), $username, protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])))), true));
+            $result_entries->attach(results_entry([protect_from_escaping(get_translated_tempcode('community_billboard', $row, 'the_message')), integer_format($row['days']), get_timezoned_date_time($row['order_time']), ($row['active_now'] == 1) ? $days : do_lang_tempcode('NA_EM'), $username, protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -248,7 +248,7 @@ class Module_admin_community_billboard extends Standard_crud_module
         }
         $fields->attach(form_input_tick(do_lang_tempcode('IMMEDIATE_USE'), do_lang_tempcode(($message == '') ? 'DESCRIPTION_IMMEDIATE_USE_ADD' : 'DESCRIPTION_IMMEDIATE_USE'), 'validated', $validated == 1));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -259,7 +259,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', array('*'), array('id' => intval($id)));
+        $rows = $GLOBALS['SITE_DB']->query_select('community_billboard', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -270,15 +270,15 @@ class Module_admin_community_billboard extends Standard_crud_module
 
         $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['member_id']);
 
-        $text = do_template('COMMUNITY_BILLBOARD_DETAILS', array(
+        $text = do_template('COMMUNITY_BILLBOARD_DETAILS', [
             '_GUID' => 'dcc7a8b027d450a3c17c79b23b39cd87',
             'USERNAME' => $username,
             'DAYS_ORDERED' => integer_format($myrow['days']),
             'DATE_RAW' => strval($date_raw),
             'DATE' => $date,
-        ));
+        ]);
 
-        return array($fields, $hidden, new Tempcode(), $text);
+        return [$fields, $hidden, new Tempcode(), $text];
     }
 
     /**

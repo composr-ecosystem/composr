@@ -20,10 +20,10 @@ class csrf_tags_test_set extends cms_test_case
 {
     public function testTemplates()
     {
-        $dirs = array(
+        $dirs = [
             get_file_base() . '/themes/default/templates',
             get_file_base() . '/themes/default/templates_custom',
-        );
+        ];
         foreach ($dirs as $dir) {
             $dh = opendir($dir);
             while (($file = readdir($dh)) !== false) {
@@ -50,11 +50,11 @@ class csrf_tags_test_set extends cms_test_case
                         continue;
                     }
 
-                    if (in_array($file, array(
+                    if (in_array($file, [
                         'INSTALLER_STEP_1.tpl',
                         'INSTALLER_STEP_2.tpl',
                         'INSTALLER_STEP_3.tpl',
-                    ))) {
+                    ])) {
                         continue;
                     }
                     if (preg_match('#^ECOM_.*_VIA_.*#', $file) != 0) {

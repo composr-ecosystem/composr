@@ -30,14 +30,14 @@ class Block_main_members
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array(
+        $info['parameters'] = [
             'display_mode',
             'must_have_avatar',
             'must_have_photo',
@@ -55,7 +55,7 @@ class Block_main_members
             'per_row',
             'include_non_confirmed',
             'guid',
-        );
+        ];
         return $info;
     }
 
@@ -66,7 +66,7 @@ class Block_main_members
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         (strpos(serialize($_GET), 'filter_') !== false)
         ?
@@ -106,7 +106,7 @@ PHP;
     public function run($map)
     {
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => 'lnxrdzazqbcnmcg8ubo3y915wcef6t13', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => 'lnxrdzazqbcnmcg8ubo3y915wcef6t13', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_code('cns_members');
@@ -156,7 +156,7 @@ PHP;
             $_filters_row_b = 0;
             foreach ($cpfs as $cpf) {
                 $cf_name = get_translated_text($cpf['cf_name']);
-                if (in_array($cpf['cf_type'], array('float', 'integer', 'list', 'long_text', 'long_trans', 'short_text', 'short_text_multi', 'short_trans', 'short_trans_multi'))) {
+                if (in_array($cpf['cf_type'], ['float', 'integer', 'list', 'long_text', 'long_trans', 'short_text', 'short_text_multi', 'short_trans', 'short_trans_multi'])) {
                     $filter_term = str_replace(',', '\,', $cf_name) . '=' . str_replace(',', '\,', $cf_name);
                     if ($_filters_row_a < 6) {
                         if ($filters_row_a != '') {
@@ -174,7 +174,7 @@ PHP;
                 }
             }
         }
-        foreach (array($filters_row_a, $filters_row_b) as $filters_row) {
+        foreach ([$filters_row_a, $filters_row_b] as $filters_row) {
             foreach (array_keys(block_params_str_to_arr($filters_row)) as $filter_term) {
                 if ($filter_term != '') {
                     if ($filter_term == 'usergroup') {
@@ -212,7 +212,7 @@ PHP;
                 if (is_numeric($_usergroup)) {
                     $group_id = intval($_usergroup);
                 } else {
-                    $group_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $_usergroup));
+                    $group_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $_usergroup]);
                     if ($group_id === null) {
                         return paragraph(do_lang_tempcode('MISSING_RESOURCE', 'group'), '3e6642ua0bf7q3qcmlt322rpnik8nlhh', 'nothing-here');
                     }
@@ -284,14 +284,14 @@ PHP;
 
         inform_non_canonical_parameter($block_id . '_sort');
         $sort = get_param_string($block_id . '_sort', array_key_exists('sort', $map) ? $map['sort'] : 'm_join_time DESC');
-        $sortables = array(
+        $sortables = [
             'm_username' => do_lang_tempcode('USERNAME'),
             'm_cache_num_posts' => do_lang_tempcode('COUNT_POSTS'),
             'm_join_time' => do_lang_tempcode('JOIN_DATE'),
             'm_last_visit_time' => do_lang_tempcode('LAST_VISIT_TIME'),
             'm_profile_views' => do_lang_tempcode('PROFILE_VIEWS'),
             'random' => do_lang_tempcode('RANDOM'),
-        );
+        ];
         if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
             $sortables['m_total_sessions'] = do_lang_tempcode('LOGIN_FREQUENCY');
         }
@@ -357,28 +357,28 @@ PHP;
         }*/
 
         $cnt = 0;
-        $member_boxes = array();
+        $member_boxes = [];
         foreach ($rows as $row) {
             $member_id = $row['id'];
-            $box = render_member_box($member_id, true, $show_avatar, array(), false);
+            $box = render_member_box($member_id, true, $show_avatar, [], false);
 
             if ($display_mode == 'media') {
                 $gallery_sql = 'SELECT name,fullname FROM ' . get_table_prefix() . 'galleries WHERE';
                 $gallery_sql .= ' name LIKE \'' . db_encode_like('member\_' . strval($member_id) . '\_' . $parent_gallery) . '\'';
                 $galleries = $GLOBALS['SITE_DB']->query($gallery_sql);
                 foreach ($galleries as $gallery) {
-                    $num_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', array('cat' => $gallery['name'], 'validated' => 1));
-                    $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', array('cat' => $gallery['name'], 'validated' => 1));
+                    $num_images = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $gallery['name'], 'validated' => 1]);
+                    $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $gallery['name'], 'validated' => 1]);
                     if (($num_images > 0) || ($num_videos > 0)) {
                         if ($cnt >= $start) {
-                            $member_boxes[] = array(
+                            $member_boxes[] = [
                                 'I' => strval($cnt - $start + 1),
                                 'BREAK' => ($per_row !== null) && (($cnt - $start + 1) % $per_row == 0),
                                 'BOX' => $box,
                                 'MEMBER_ID' => strval($member_id),
                                 'GALLERY_NAME' => $gallery['name'],
                                 'GALLERY_TITLE' => get_translated_text($gallery['fullname']),
-                            );
+                            ];
                         }
 
                         $cnt++;
@@ -388,14 +388,14 @@ PHP;
                     }
                 }
             } else {
-                $member_boxes[$member_id] = array(
+                $member_boxes[$member_id] = [
                     'I' => strval($cnt + 1),
                     'BREAK' => ($per_row !== null) && (($cnt + 1) % $per_row == 0),
                     'BOX' => $box,
                     'MEMBER_ID' => strval($member_id),
                     'GALLERY_NAME' => '',
                     'GALLERY_TITLE' => '',
-                );
+                ];
 
                 $cnt++;
                 if ($cnt == $max) {
@@ -409,7 +409,7 @@ PHP;
         if (($display_mode == 'listing') && (!empty($rows))) {
             $results_entries = new Tempcode();
 
-            $_header_row = array();
+            $_header_row = [];
             $_header_row[] = (get_option('display_name_generator') == '') ? do_lang_tempcode('USERNAME') : do_lang_tempcode('NAME');
             $_header_row[] = do_lang_tempcode('PRIMARY_GROUP');
             if (addon_installed('points')) {
@@ -427,9 +427,9 @@ PHP;
             $header_row = results_header_row($_header_row, $sortables, $block_id . '_sort', $sortable . ' ' . $sort_order);
             require_code('cns_members2');
             foreach ($rows as $row) {
-                $_entry = array();
+                $_entry = [];
 
-                $_entry[] = do_template('CNS_MEMBER_DIRECTORY_USERNAME', array(
+                $_entry[] = do_template('CNS_MEMBER_DIRECTORY_USERNAME', [
                     '_GUID' => '868074cc21dcdf4427e93ce78e8f5637',
                     'ID' => strval($row['id']),
                     'USERNAME' => $row['m_username'],
@@ -439,7 +439,7 @@ PHP;
                     'VALIDATED' => ($row['m_validated'] == 1),
                     'CONFIRMED' => ($row['m_validated_email_confirm_code'] == ''),
                     'BOX' => $member_boxes[$row['id']]['BOX'],
-                ));
+                ]);
 
                 $member_primary_group = cns_get_member_primary_group($row['id']);
                 $primary_group = cns_get_group_link($member_primary_group);
@@ -482,18 +482,18 @@ PHP;
         }
 
         $_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, false, false);
-        $usergroups = array();
+        $usergroups = [];
         require_code('cns_groups2');
         foreach ($_usergroups as $group_id => $group) {
             $num = cns_get_group_members_raw_count($group_id, true);
-            $usergroups[$group_id] = array('USERGROUP' => $group, 'NUM' => strval($num));
+            $usergroups[$group_id] = ['USERGROUP' => $group, 'NUM' => strval($num)];
         }
 
         $symbols = null;
         if (get_option('allow_alpha_search') == '1') {
             $alpha_query = $GLOBALS['FORUM_DB']->query('SELECT m_username FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE id<>' . strval(db_get_first_id()) . ' ORDER BY m_username ASC');
-            $symbols = array(array('START' => '0', 'SYMBOL' => do_lang('ALL')), array('START' => '0', 'SYMBOL' => '#'));
-            foreach (array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z') as $s) {
+            $symbols = [['START' => '0', 'SYMBOL' => do_lang('ALL')], ['START' => '0', 'SYMBOL' => '#']];
+            foreach (['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'] as $s) {
                 foreach ($alpha_query as $i => $q) {
                     if (strtolower(substr($q['m_username'], 0, 1)) == $s) {
                         break;
@@ -502,7 +502,7 @@ PHP;
                 if (substr(strtolower($q['m_username']), 0, 1) != $s) {
                     $i = intval($symbols[count($symbols) - 1]['START']);
                 }
-                $symbols[] = array('START' => strval(intval($max * floor(floatval($i) / floatval($max)))), 'SYMBOL' => $s);
+                $symbols[] = ['START' => strval(intval($max * floor(floatval($i) / floatval($max)))), 'SYMBOL' => $s];
             }
         }
 
@@ -516,7 +516,7 @@ PHP;
 
         $tpl = ($display_mode == 'listing') ? 'BLOCK_MAIN_MEMBERS' : 'BLOCK_MAIN_MEMBERS_COMPLEX';
 
-        return do_template($tpl, array(
+        return do_template($tpl, [
             '_GUID' => $guid,
             'BLOCK_ID' => $block_id,
             'START' => strval($start),
@@ -536,6 +536,6 @@ PHP;
             'HAS_ACTIVE_FILTER' => $has_active_filter,
             'INCLUDE_FORM' => $include_form,
             'SORT' => $sorting,
-        ));
+        ]);
     }
 }

@@ -26,7 +26,7 @@ class Hook_addon_registry_composr_mobile_sdk
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_composr_mobile_sdk
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'ApnsPHP developers',
-        );
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      */
     public function get_applicable_tutorials()
     {
-        return array('tut_mobile_sdk');
+        return ['tut_mobile_sdk'];
     }
 
     /**
@@ -110,13 +110,13 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -145,13 +145,13 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
     {
         if ($upgrade_from === null) {
             // Table for holding the IDs of devices signed up for notifications
-            $GLOBALS['SITE_DB']->create_table('device_token_details', array(
+            $GLOBALS['SITE_DB']->create_table('device_token_details', [
                 'id' => '*AUTO',
                 'token_type' => 'ID_TEXT', // ios|android
                 'device_token' => 'SHORT_TEXT',
                 'member_id' => 'MEMBER',
-            ));
-            $GLOBALS['SITE_DB']->create_index('device_token_details', 'member_id', array('member_id'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('device_token_details', 'member_id', ['member_id']);
         }
     }
 
@@ -162,7 +162,7 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/composr_mobile_sdk.php',
 
             'data_custom/modules/composr_mobile_sdk/index.html',
@@ -220,6 +220,6 @@ The documentation for this addon is covered in a [url="' . get_brand_base_url() 
             'sources_custom/hooks/systems/config/android_icon_name.php',
             'sources_custom/hooks/systems/tasks/android_notification.php',
             'sources_custom/hooks/systems/config/notification_codes_for_mobile.php',
-        );
+        ];
     }
 }

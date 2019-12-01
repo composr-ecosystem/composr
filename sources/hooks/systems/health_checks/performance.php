@@ -48,7 +48,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         $this->process_checks_section('testSetup', 'Setup', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testBotFlood', 'Heavy bot activity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -114,14 +114,14 @@ class Hook_health_check_performance extends Hook_Health_Check
                 break;
         }
 
-        $opts = array(
-            'ssl' => array(
+        $opts = [
+            'ssl' => [
                 'verify_peer' => false,
                 'verify_peer_name' => false,
                 'SNI_enabled' => true,
                 'ciphers' => 'TLSv1',
-            ),
-        );
+            ],
+        ];
         stream_context_set_default($opts);
 
         return $url;
@@ -169,7 +169,7 @@ class Hook_health_check_performance extends Hook_Health_Check
 
             if (strtolower($key) == strtolower('Set-Cookie')) {
                 if (is_string($vals)) {
-                    $vals = array($vals);
+                    $vals = [$vals];
                 }
 
                 foreach ($vals as $val) {
@@ -223,17 +223,17 @@ class Hook_health_check_performance extends Hook_Health_Check
             usleep(1000000);
         }
 
-        $urls = array(
+        $urls = [
             'page' => $this->get_page_url(),
             'css' => get_base_url() . '/themes/default/templates_cached/EN/' . $css_basename,
             'js' => get_base_url() . '/themes/default/templates_cached/EN/' . $javascript_basename,
             'png' => get_base_url() . '/themes/default/images/no_image.png',
-        );
+        ];
 
         foreach ($urls as $type => $url) {
             $url = $this->firewallify_url($url);
 
-            stream_context_set_default(array('http' => array('header' => 'Accept-Encoding: gzip')));
+            stream_context_set_default(['http' => ['header' => 'Accept-Encoding: gzip']]);
             $headers = @get_headers($url, 1);
             if ($headers === false) {
                 $this->stateCheckSkipped('Could not find headers for URL [url="' . $url . '"]' . $url . '[/url]');
@@ -248,7 +248,7 @@ class Hook_health_check_performance extends Hook_Health_Check
                 }
 
                 if (is_string($vals)) {
-                    $vals = array($vals);
+                    $vals = [$vals];
                 }
 
                 switch (strtolower($key)) {
@@ -323,7 +323,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             $url = page_link_to_url($page_link);
 
             $time_before = microtime(true);
-            $data = http_get_contents($url, array('trigger_error' => false));
+            $data = http_get_contents($url, ['trigger_error' => false]);
             $time_after = microtime(true);
 
             $time = ($time_after - $time_before);
@@ -332,7 +332,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         }
 
         if (addon_installed('stats')) {
-            $results = $GLOBALS['SITE_DB']->query_select('stats', array('the_page', 'AVG(milliseconds) AS milliseconds'), array(), 'GROUP BY the_page');
+            $results = $GLOBALS['SITE_DB']->query_select('stats', ['the_page', 'AVG(milliseconds) AS milliseconds'], [], 'GROUP BY the_page');
             foreach ($results as $result) {
                 $time = floatval($result['milliseconds']) / 1000.0;
                 $this->assertTrue($time < $threshold, 'Slow page generation speed for [tt]' . $result['the_page'] . '[/tt] page @ ' . float_format($time) . ' seconds)');
@@ -380,12 +380,12 @@ class Hook_health_check_performance extends Hook_Health_Check
             return;
         }
 
-        $options = array(
+        $options = [
             'is_on_template_cache',
             'is_on_lang_cache',
             'is_on_comcode_page_cache',
             'is_on_block_cache',
-        );
+        ];
         foreach ($options as $option) {
             $this->assertTrue(get_option($option) == '1', 'Cache option should be enabled, ' . $option);
         }
@@ -450,7 +450,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         $query .= ' GROUP BY ip HAVING COUNT(*)>=' . strval($threshold) . ' ORDER BY cnt DESC';
         $rows = $GLOBALS['SITE_DB']->query($query);
         foreach ($rows as $row) {
-            $browsers = collapse_1d_complexity('browser', $GLOBALS['SITE_DB']->query_select('stats', array('DISTINCT browser'), array('ip' => $row['ip']), 'ORDER BY browser'));
+            $browsers = collapse_1d_complexity('browser', $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT browser'], ['ip' => $row['ip']], 'ORDER BY browser'));
             $this->assertTrue(false, 'Likely bot at ' . $row['ip'] . ' did ' . integer_format($row['cnt']) . ' requests within the last 24 hours. User agents: &ldquo;' . implode('&rdquo;, &ldquo;', $browsers) . '&rdquo;');
         }
 
@@ -461,7 +461,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         $query .= ' GROUP BY browser HAVING COUNT(*)>=' . strval($threshold) . ' ORDER BY cnt DESC';
         $rows = $GLOBALS['SITE_DB']->query($query);
         foreach ($rows as $row) {
-            $ip_addresses = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query_select('stats', array('DISTINCT ip'), array('browser' => $row['browser']), 'ORDER BY ip'));
+            $ip_addresses = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT ip'], ['browser' => $row['browser']], 'ORDER BY ip'));
             $this->assertTrue(false, 'Likely bot &quot;' . $row['browser'] . '&quot; did ' . integer_format($row['cnt']) . ' requests within the last 24 hours. IP addresses: ' . implode(', ', $ip_addresses));
         }
     }

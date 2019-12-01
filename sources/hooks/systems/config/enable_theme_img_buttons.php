@@ -30,7 +30,7 @@ class Hook_config_enable_theme_img_buttons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_THEME_IMG_BUTTONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_enable_theme_img_buttons
             'public' => true,
 
             'addon' => 'core_themeing',
-        );
+        ];
     }
 
     /**

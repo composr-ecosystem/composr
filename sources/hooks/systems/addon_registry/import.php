@@ -31,7 +31,7 @@ class Hook_addon_registry_import
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_import
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_importer',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_import
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_import
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/css/importing.css',
             'sources/hooks/modules/admin_import/html_site.php',
             'sources/hooks/modules/admin_import/index.html',
@@ -129,7 +129,7 @@ class Hook_addon_registry_import
             'sources/import.php',
             'sources/hooks/systems/commandr_commands/continue_import.php',
             'sources/hooks/systems/actionlog/import.php',
-        );
+        ];
     }
 
     /**
@@ -139,13 +139,13 @@ class Hook_addon_registry_import
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/IMPORT_ACTION_LINE.tpl' => 'administrative__import_action_screen',
             'templates/IMPORT_ACTION_SCREEN.tpl' => 'administrative__import_action_screen',
             'templates/IMPORT_MESSAGE.tpl' => 'administrative__import_action_screen',
             'text/IMPORT_MKPORTAL_FCOMCODEPAGE.txt' => 'administrative__import_mkportal_fcomcodepage',
             'text/IMPORT_PHPNUKE_FCOMCODEPAGE.txt' => 'administrative__import_phpnuke_fcomcodepage',
-        );
+        ];
     }
 
     /**
@@ -157,19 +157,19 @@ class Hook_addon_registry_import
      */
     public function tpl_preview__administrative__import_action_screen()
     {
-        $extra = do_lorem_template('IMPORT_MESSAGE', array(
+        $extra = do_lorem_template('IMPORT_MESSAGE', [
             'MESSAGE' => lorem_phrase(),
-        ));
-        $import_list = do_lorem_template('IMPORT_ACTION_LINE', array(
+        ]);
+        $import_list = do_lorem_template('IMPORT_ACTION_LINE', [
             'CHECKED' => false,
             'DISABLED' => true,
             'NAME' => lorem_word(),
             'TEXT' => lorem_phrase(),
             'ADVANCED_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('IMPORT_ACTION_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('IMPORT_ACTION_SCREEN', [
                 'EXTRA' => $extra,
                 'MESSAGE' => lorem_phrase(),
                 'TITLE' => lorem_title(),
@@ -178,8 +178,8 @@ class Hook_addon_registry_import
                 'IMPORTER' => lorem_phrase(),
                 'IMPORT_LIST' => $import_list,
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -191,16 +191,16 @@ class Hook_addon_registry_import
      */
     public function tpl_preview__administrative__import_mkportal_fcomcodepage()
     {
-        return array(
-            lorem_globalise(do_lorem_template('IMPORT_MKPORTAL_FCOMCODEPAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('IMPORT_MKPORTAL_FCOMCODEPAGE', [
                 'TITLE' => lorem_phrase(),
                 'SUBTITLE' => lorem_phrase(),
                 'PAGE_HEADER' => lorem_phrase(),
                 'TEXT' => lorem_sentence_html(),
                 'PAGE_FOOTER' => lorem_phrase(),
                 'SIGNATURE' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -212,15 +212,15 @@ class Hook_addon_registry_import
      */
     public function tpl_preview__administrative__import_phpnuke_fcomcodepage()
     {
-        return array(
-            lorem_globalise(do_lorem_template('IMPORT_PHPNUKE_FCOMCODEPAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('IMPORT_PHPNUKE_FCOMCODEPAGE', [
                 'TITLE' => lorem_phrase(),
                 'SUBTITLE' => lorem_phrase(),
                 'PAGE_HEADER' => lorem_phrase(),
                 'TEXT' => lorem_sentence_html(),
                 'PAGE_FOOTER' => lorem_phrase(),
                 'SIGNATURE' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 }

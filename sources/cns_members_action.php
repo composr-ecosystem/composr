@@ -122,7 +122,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = array(), $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $photo_thumb_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = 0, $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
+function cns_make_member($username, $password, $email_address = '', $primary_group = null, $secondary_groups = null, $dob_day = null, $dob_month = null, $dob_year = null, $custom_fields = [], $timezone = null, $language = null, $theme = '', $title = '', $photo_url = '', $photo_thumb_url = '', $avatar_url = null, $signature = '', $preview_posts = null, $reveal_age = 0, $views_signatures = 1, $auto_monitor_contrib_content = null, $smart_topic_notification = null, $mailing_list_style = null, $auto_mark_read = 1, $sound_enabled = null, $allow_emails = 1, $allow_emails_from_staff = 1, $highlighted_name = 0, $pt_allow = '*', $pt_rules_text = '', $validated = 1, $validated_email_confirm_code = '', $on_probation_until = null, $is_perm_banned = 0, $check_correctness = true, $ip_address = null, $password_compatibility_scheme = null, $salt = '', $join_time = null, $last_visit_time = null, $last_submit_time = null, $profile_views = 0, $total_sessions = 0, $id = null)
 {
     require_code('form_templates');
     require_code('cns_members');
@@ -174,13 +174,13 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
                 require_code('themes2');
                 $codes = get_all_image_ids_type('cns_default_avatars/default_set', false, $GLOBALS['FORUM_DB']);
                 shuffle($codes);
-                $results = array();
+                $results = [];
                 foreach ($codes as $code) {
                     if ($code == 'system') {
                         continue;
                     }
 
-                    $count = @intval($GLOBALS['FORUM_DB']->query_select_value('f_members', 'SUM(m_cache_num_posts)', array('m_avatar_url' => find_theme_image($code, false, true))));
+                    $count = @intval($GLOBALS['FORUM_DB']->query_select_value('f_members', 'SUM(m_cache_num_posts)', ['m_avatar_url' => find_theme_image($code, false, true)]));
                     $results[$code] = $count;
                 }
                 @asort($results); // @'d as type checker fails for some odd reason
@@ -189,7 +189,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
             }
 
             if ($avatar_url === null) {
-                $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => 'cns_default_avatars/default', 'url' => '')); // In case failure cached, gets very confusing
+                $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'cns_default_avatars/default', 'url' => '']); // In case failure cached, gets very confusing
                 $avatar_url = find_theme_image('cns_default_avatars/default', true, true);
                 if ($avatar_url === null) {
                     $avatar_url = '';
@@ -222,7 +222,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     }
 
     if ($check_correctness) {
-        if (!in_array($password_compatibility_scheme, array('ldap', 'httpauth'))) {
+        if (!in_array($password_compatibility_scheme, ['ldap', 'httpauth'])) {
             require_code('cns_members_action2');
             cns_check_name_valid($username, null, ($password_compatibility_scheme == '') ? $password : null, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
         }
@@ -234,7 +234,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
         }
 
         if ((get_option('one_per_email_address') != '0') && ($email_address != '')) {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $email_address));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $email_address]);
             if ($test !== null) {
                 warn_exit(do_lang_tempcode('_EMAIL_ADDRESS_IN_USE'));
             }
@@ -256,7 +256,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     }
 
     // Supplement custom field values given with defaults, and check constraints
-    $all_fields = list_to_map('id', cns_get_all_custom_fields_match(array_merge(array($primary_group), $secondary_groups)));
+    $all_fields = list_to_map('id', cns_get_all_custom_fields_match(array_merge([$primary_group], $secondary_groups)));
     require_code('fields');
     foreach ($all_fields as $field) {
         $field_id = $field['id'];
@@ -271,7 +271,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'm_username' => $username,
         'm_pass_hash_salted' => $password_salted,
         'm_password_compat_scheme' => $password_compatibility_scheme,
@@ -314,7 +314,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
         'm_cache_num_posts' => 0,
         'm_cache_warnings' => 0,
         'm_max_email_attach_size_mb' => 5,
-    );
+    ];
     $map += insert_lang_comcode('m_signature', $signature, 4, $GLOBALS['FORUM_DB']);
     $map += insert_lang_comcode('m_pt_rules_text', $pt_rules_text, 4, $GLOBALS['FORUM_DB']);
     if ($id !== null) {
@@ -325,7 +325,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     if ($check_correctness) {
         // If it was an invite/recommendation, award the referrer
         if ((addon_installed('recommend')) && ($email_address != '')) {
-            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', array('i_email_address' => $email_address), 'ORDER BY i_time');
+            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time');
             if ($inviter !== null) {
                 if (addon_installed('points')) {
                     require_code('points2');
@@ -344,7 +344,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     $value = null;
 
     // Store custom fields
-    $row = array();
+    $row = [];
     $all_fields_types = collapse_2d_complexity('id', 'cf_type', $all_fields);
     foreach ($custom_fields as $field_num => $value) {
         if (!array_key_exists($field_num, $all_fields_types)) {
@@ -355,7 +355,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     }
 
     // Set custom field row
-    $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type', 'cf_default', 'cf_required'));
+    $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_default', 'cf_required']);
     foreach ($all_fields_regardless as $field) {
         $ob = get_fields_hook($field['cf_type']);
         list(, $default, $storage_type) = $ob->get_field_value_row_bits($field, $field['cf_required'] == 1, $field['cf_default'], $GLOBALS['FORUM_DB']);
@@ -382,7 +382,7 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
             }
         }
     }
-    $GLOBALS['FORUM_DB']->query_insert('f_member_custom_fields', array('mf_member_id' => $member_id) + $row);
+    $GLOBALS['FORUM_DB']->query_insert('f_member_custom_fields', ['mf_member_id' => $member_id] + $row);
 
     require_code('locations_cpfs');
     autofill_geo_cpfs($member_id);
@@ -391,20 +391,20 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
 
     foreach ($secondary_groups as $g) {
         if ($g != $primary_group) {
-            $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $member_id, 'gm_group_id' => $g), '', 1);
-            $GLOBALS['FORUM_DB']->query_insert('f_group_members', array(
+            $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id, 'gm_group_id' => $g], '', 1);
+            $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                 'gm_group_id' => $g,
                 'gm_member_id' => $member_id,
                 'gm_validated' => 1,
-            ));
+            ]);
         }
     }
 
-    $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
+    $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
         'member_id' => $member_id,
         'usergroup_id' => $primary_group,
         'join_time' => time()
-    ));
+    ]);
 
     if ($check_correctness) {
         if (function_exists('delete_cache_entry')) {
@@ -430,9 +430,9 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
     // Copy notification defaults
     if (!$GLOBALS['IN_MINIKERNEL_VERSION']) {
         push_db_scope_check(false);
-        $notification_settings = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', array('*'), array('l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => ''));
+        $notification_settings = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['*'], ['l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => '']);
         foreach ($notification_settings as $notification_setting) {
-            $GLOBALS['FORUM_DB']->query_insert('notifications_enabled', array('l_member_id' => $member_id) + $notification_settings);
+            $GLOBALS['FORUM_DB']->query_insert('notifications_enabled', ['l_member_id' => $member_id] + $notification_settings);
         }
         push_db_scope_check(true);
     }
@@ -463,356 +463,356 @@ function cns_make_member($username, $password, $email_address = '', $primary_gro
  */
 function _cns_predefined_custom_field_details()
 {
-    return array(
-        'sn_twitter' => array(
+    return [
+        'sn_twitter' => [
             'type' => 'codename',
             'icon' => 'icons/links/twitter',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://twitter.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'im_skype' => array(
+        ],
+        'im_skype' => [
             'type' => 'codename',
             'icon' => 'icons/links/skype',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="skype:{RAW*}?call">{NAME*}</a>',
-        ),
-        'im_jabber' => array(
+        ],
+        'im_jabber' => [
             'type' => 'codename',
             'icon' => 'icons/links/jabber',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="xmpp:{RAW*}">{NAME*}</a>',
-        ),
-        'im_discord' => array(
+        ],
+        'im_discord' => [
             'type' => 'codename',
             'icon' => 'icons/links/discord',
             'section' => 'contact',
             'tempcode' => '{NAME*}: {RAW*}',
-        ),
-        'github' => array(
+        ],
+        'github' => [
             'type' => 'codename',
             'icon' => 'icons/links/github',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://github.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'gitlab' => array(
+        ],
+        'gitlab' => [
             'type' => 'codename',
             'icon' => 'icons/links/gitlab',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://gitlab.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_instagram' => array(
+        ],
+        'sn_instagram' => [
             'type' => 'codename',
             'icon' => 'icons/links/instagram',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.instagram.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_tiktok' => array(
+        ],
+        'sn_tiktok' => [
             'type' => 'codename',
             'icon' => 'icons/links/tiktok',
             'section' => '',
             'tempcode' => '{NAME*}: {RAW*}',
-        ),
-        'sn_minds' => array(
+        ],
+        'sn_minds' => [
             'type' => 'codename',
             'icon' => 'icons/links/minds',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.minds.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_pinterest' => array(
+        ],
+        'sn_pinterest' => [
             'type' => 'codename',
             'icon' => 'icons/links/pinterest',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.pinterest.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_snapchat' => array(
+        ],
+        'sn_snapchat' => [
             'type' => 'codename',
             'icon' => 'icons/links/snapchat',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://snapchat.com/add/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'soundcloud' => array(
+        ],
+        'soundcloud' => [
             'type' => 'codename',
             'icon' => 'icons/links/soundcloud',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://soundcloud.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'im_telegram' => array(
+        ],
+        'im_telegram' => [
             'type' => 'codename',
             'icon' => 'icons/links/telegram',
             'section' => 'contact',
             'tempcode' => '{NAME*}: {RAW*}',
-        ),
-        'sn_tumblr' => array(
+        ],
+        'sn_tumblr' => [
             'type' => 'codename',
             'icon' => 'icons/links/tumblr',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://{RAW*}.tumblr.com" rel="me">{NAME*}</a>',
-        ),
-        'sn_twitch' => array(
+        ],
+        'sn_twitch' => [
             'type' => 'codename',
             'icon' => 'icons/links/twitch',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://www.twitch.tv/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'im_whatsapp' => array(
+        ],
+        'im_whatsapp' => [
             'type' => 'codename',
             'icon' => 'icons/links/whatsapp',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="whatsapp://send?phone={RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_sina_weibo' => array(
+        ],
+        'sn_sina_weibo' => [
             'type' => 'codename',
             'icon' => 'icons/links/sina_weibo',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://weibo.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_tencent_weibo' => array(
+        ],
+        'sn_tencent_weibo' => [
             'type' => 'codename',
             'icon' => 'icons/links/tencent_weibo',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://t.qq.com/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'im_wechat' => array(
+        ],
+        'im_wechat' => [
             'type' => 'codename',
             'icon' => 'icons/links/wechat',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://weixin.qq.com/r/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'playstation_network' => array(
+        ],
+        'playstation_network' => [
             'type' => 'codename',
             'icon' => 'icons/links/playstation_network',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://secure.eu.playstation.com/psn/{RAW*}/" rel="me">{NAME*}</a>',
-        ),
-        'xbox_live' => array(
+        ],
+        'xbox_live' => [
             'type' => 'codename',
             'icon' => 'icons/links/xbox_live',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://live.xbox.com/en-US/Profile?gamertag={RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'steam' => array(
+        ],
+        'steam' => [
             'type' => 'codename',
             'icon' => 'icons/links/steam',
             'section' => '',
             'tempcode' => '{NAME*}: {RAW*}',
-        ),
-        'sn_steemit' => array(
+        ],
+        'sn_steemit' => [
             'type' => 'codename',
             'icon' => 'icons/links/steemit',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://steemit.com/@{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'utopian' => array(
+        ],
+        'utopian' => [
             'type' => 'codename',
             'icon' => 'icons/links/utopian',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://steemit.com/@{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'dtube' => array(
+        ],
+        'dtube' => [
             'type' => 'codename',
             'icon' => 'icons/links/dtube',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="https://d.tube/c/{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'im_line' => array(
+        ],
+        'im_line' => [
             'type' => 'codename',
             'icon' => 'icons/links/line',
             'section' => 'contact',
             'tempcode' => '{NAME*}: {RAW*}',
-        ),
-        'im_viber' => array(
+        ],
+        'im_viber' => [
             'type' => 'codename',
             'icon' => 'icons/links/viber',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="viber://add?number={RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_facebook' => array(
+        ],
+        'sn_facebook' => [
             'type' => 'url',
             'icon' => 'icons/links/facebook',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'amazon' => array(
+        ],
+        'amazon' => [
             'type' => 'url',
             'icon' => 'icons/links/amazon',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'bandcamp' => array(
+        ],
+        'bandcamp' => [
             'type' => 'url',
             'icon' => 'icons/links/bandcamp',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'dailymotion' => array(
+        ],
+        'dailymotion' => [
             'type' => 'url',
             'icon' => 'icons/links/dailymotion',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'dropbox' => array(
+        ],
+        'dropbox' => [
             'type' => 'url',
             'icon' => 'icons/links/dropbox',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'flattr' => array(
+        ],
+        'flattr' => [
             'type' => 'url',
             'icon' => 'icons/links/flattr',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'hacker_news' => array(
+        ],
+        'hacker_news' => [
             'type' => 'url',
             'icon' => 'icons/links/hacker_news',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_linkedin' => array(
+        ],
+        'sn_linkedin' => [
             'type' => 'url',
             'icon' => 'icons/links/linkedin',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'patreon' => array(
+        ],
+        'patreon' => [
             'type' => 'url',
             'icon' => 'icons/links/patreon',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'quora' => array(
+        ],
+        'quora' => [
             'type' => 'url',
             'icon' => 'icons/links/quora',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_reddit' => array(
+        ],
+        'sn_reddit' => [
             'type' => 'url',
             'icon' => 'icons/links/reddit',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'slashdot' => array(
+        ],
+        'slashdot' => [
             'type' => 'url',
             'icon' => 'icons/links/slashdot',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'spotify' => array(
+        ],
+        'spotify' => [
             'type' => 'url',
             'icon' => 'icons/links/spotify',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'stack_exchange' => array(
+        ],
+        'stack_exchange' => [
             'type' => 'url',
             'icon' => 'icons/links/stack_exchange',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'stack_overflow' => array(
+        ],
+        'stack_overflow' => [
             'type' => 'url',
             'icon' => 'icons/links/stack_overflow',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'vimeo' => array(
+        ],
+        'vimeo' => [
             'type' => 'url',
             'icon' => 'icons/links/vimeo',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'youtube' => array(
+        ],
+        'youtube' => [
             'type' => 'url',
             'icon' => 'icons/links/youtube',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_vk' => array(
+        ],
+        'sn_vk' => [
             'type' => 'url',
             'icon' => 'icons/links/vk',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_baidu_tieba' => array(
+        ],
+        'sn_baidu_tieba' => [
             'type' => 'url',
             'icon' => 'icons/links/baidu_tieba',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_qzone' => array(
+        ],
+        'sn_qzone' => [
             'type' => 'url',
             'icon' => 'icons/links/qzone',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'bitcoin' => array(
+        ],
+        'bitcoin' => [
             'type' => 'url',
             'icon' => 'icons/links/bitcoin',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'website' => array(
+        ],
+        'website' => [
             'type' => 'url',
             'icon' => 'icons/menu/home',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'gender' => array(
+        ],
+        'gender' => [
             'type' => 'short_text',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-        'location' => array(
+        ],
+        'location' => [
             'type' => 'short_text',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-        'occupation' => array(
+        ],
+        'occupation' => [
             'type' => 'short_text',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-        'paypal' => array(
+        ],
+        'paypal' => [
             'type' => 'email',
             'icon' => 'icons/links/paypal',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{RAW*}" rel="me">{NAME*}</a>',
-        ),
-        'sn_mastodon' => array(
+        ],
+        'sn_mastodon' => [
             'type' => 'email',
             'icon' => 'icons/links/mastodon',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{$PREG_REPLACE*,(.*)@(.*),https://$2/@$1,{RAW}}" rel="me">{NAME*}</a>',
-        ),
-        'sn_diaspora' => array(
+        ],
+        'sn_diaspora' => [
             'type' => 'email',
             'icon' => 'icons/links/diaspora',
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="{$PREG_REPLACE*,(.*)@(.*),https://$2/@$1,{RAW}}" rel="me">{NAME*}</a>',
-        ),
-        'about' => array(
+        ],
+        'about' => [
             'type' => 'long_trans',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-        'staff_notes' => array(
+        ],
+        'staff_notes' => [
             'type' => 'long_trans',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-        'interests' => array(
+        ],
+        'interests' => [
             'type' => 'long_trans',
             'icon' => '',
             'section' => '',
             'tempcode' => '',
-        ),
-    );
+        ],
+    ];
 }
 
 /**
@@ -877,7 +877,7 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
 
     require_code('fields');
     $ob = get_fields_hook($type);
-    list(, $_default, $storage_type) = $ob->get_field_value_row_bits(array('id' => null, 'cf_type' => $type, 'cf_default' => $__default), false, $__default);
+    list(, $_default, $storage_type) = $ob->get_field_value_row_bits(['id' => null, 'cf_type' => $type, 'cf_default' => $__default], false, $__default);
     $_type = ($encrypted == 1) ? 'LONG_TEXT' : 'SHORT_TEXT';
     switch ($storage_type) {
         case 'short_trans':
@@ -926,7 +926,7 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
             break;
     }
 
-    return array($_type, $index, $default);
+    return [$_type, $index, $default];
 }
 
 /**
@@ -975,7 +975,7 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
     }
 
     if ($no_name_dupe) {
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $name));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $name]);
         if ($test !== null) {
             pop_db_scope_check();
             return $test;
@@ -991,7 +991,7 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
         }
     }
 
-    $map = array(
+    $map = [
         'cf_locked' => $locked,
         'cf_default' => $default,
         'cf_public_view' => $public_view,
@@ -1011,7 +1011,7 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
         'cf_tempcode' => $tempcode,
         'cf_autofill_type' => $autofill_type,
         'cf_autofill_hint' => $autofill_hint,
-    );
+    ];
 
     // LEGACY
     $_version_database = get_value('ocf_version');
@@ -1029,7 +1029,7 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
         $map += insert_lang('cf_name', $name, 2, $GLOBALS['FORUM_DB']);
     }
     $map += insert_lang('cf_description', $description, 2, $GLOBALS['FORUM_DB']);
-    $id = $GLOBALS['FORUM_DB']->query_insert('f_custom_fields', $map + array('cf_encrypted' => $encrypted), true);
+    $id = $GLOBALS['FORUM_DB']->query_insert('f_custom_fields', $map + ['cf_encrypted' => $encrypted], true);
 
     list($_type, $index, $_default) = get_cpf_storage_for($type, $encrypted, $default);
 
@@ -1066,17 +1066,17 @@ function cns_make_custom_field($name, $locked = 0, $description = '', $default =
  */
 function build_cpf_indices($id, $index, $type, $_type)
 {
-    $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', array('i_table' => 'f_member_custom_fields'));
+    $indices_count = $GLOBALS['FORUM_DB']->query_select_value('db_meta_indices', 'COUNT(*)', ['i_table' => 'f_member_custom_fields']);
     if ($indices_count < 60) { // Could be 64 but trying to be careful here...
         if ($index) {
             if ($_type != 'LONG_TEXT') {
-                $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+                $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
             }
             if (strpos($_type, '_TEXT') !== false) {
-                $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+                $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', '#mcf_ft_' . strval($id), ['field_' . strval($id)], 'mf_member_id');
             }
         } elseif ((strpos($type, 'trans') !== false) || ($type == 'posting_field')) { // for efficient joins
-            $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), array('field_' . strval($id)), 'mf_member_id');
+            $GLOBALS['FORUM_DB']->create_index('f_member_custom_fields', 'mcf' . strval($id), ['field_' . strval($id)], 'mf_member_id');
         }
     }
 }

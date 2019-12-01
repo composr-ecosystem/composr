@@ -30,7 +30,7 @@ class Hook_config_gallery_rep_image
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_REP_IMAGE',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_rep_image
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

@@ -32,13 +32,13 @@ class Hook_members_quiz
     public function run($member_id)
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
-        $modules = array();
+        $modules = [];
 
         if (has_actual_page_access(get_member(), 'admin_quiz', get_page_zone('admin_quiz'))) {
-            $modules[] = array('audit', do_lang_tempcode('QUIZ_RESULTS'), build_url(array('page' => 'admin_quiz', 'type' => '_quiz_results', 'member_id' => $member_id), get_module_zone('admin_quiz')), 'menu/cms/quiz/quiz_results');
+            $modules[] = ['audit', do_lang_tempcode('QUIZ_RESULTS'), build_url(['page' => 'admin_quiz', 'type' => '_quiz_results', 'member_id' => $member_id], get_module_zone('admin_quiz')), 'menu/cms/quiz/quiz_results'];
         }
 
         return $modules;
@@ -53,11 +53,11 @@ class Hook_members_quiz
     public function get_sections($member_id)
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
         if (($member_id != get_member()) && (!has_privilege(get_member(), 'view_others_quiz_results'))) {
-            return array();
+            return [];
         }
 
         require_css('quizzes');
@@ -66,22 +66,22 @@ class Hook_members_quiz
 
         // Sorting
         $order = get_param_string('sort_quiz_results', 'q_time DESC', INPUT_FILTER_GET_COMPLEX);
-        $_selectors = array(
+        $_selectors = [
             'q_name ASC' => 'ALPHABETICAL_FORWARD',
             'q_name DESC' => 'ALPHABETICAL_BACKWARD',
             'q_time ASC' => 'OLDEST_RESULTS_FIRST',
             'q_time DESC' => 'NEWEST_RESULTS_FIRST',
-        );
+        ];
         if (!array_key_exists($order, $_selectors)) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         $selectors = new Tempcode();
         foreach ($_selectors as $selector_value => $selector_name) {
             $selected = ($order == $selector_value);
-            $selectors->attach(do_template('PAGINATION_SORTER', array('_GUID' => '87b66fd533e5b2b185b00ed97c1d4c6b', 'SELECTED' => $selected, 'NAME' => do_lang_tempcode($selector_name), 'VALUE' => $selector_value)));
+            $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => '87b66fd533e5b2b185b00ed97c1d4c6b', 'SELECTED' => $selected, 'NAME' => do_lang_tempcode($selector_name), 'VALUE' => $selector_value]));
         }
-        $sort_url = get_self_url(false, false, array('sort_quiz_results' => null));
-        $sorting = do_template('PAGINATION_SORT', array('_GUID' => '80b6bfaaf33fe0f455d57e9d940abf96', 'SORT' => 'sort_quiz_results', 'URL' => $sort_url, 'SELECTORS' => $selectors));
+        $sort_url = get_self_url(false, false, ['sort_quiz_results' => null]);
+        $sorting = do_template('PAGINATION_SORT', ['_GUID' => '80b6bfaaf33fe0f455d57e9d940abf96', 'SORT' => 'sort_quiz_results', 'URL' => $sort_url, 'SELECTORS' => $selectors]);
 
         if ($order == 'q_name ASC' || $order == 'q_name DESC') {
             $order = str_replace('q_name', $GLOBALS['SITE_DB']->translate_field_ref('q_name'), $order);
@@ -89,16 +89,16 @@ class Hook_members_quiz
 
         $entries = $GLOBALS['SITE_DB']->query_select(
             'quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz',
-            array('e.id AS e_id', 'e.q_time', 'q.*'),
-            array('q_member' => $member_id, 'q_type' => 'TEST', 'q_validated' => 1),
+            ['e.id AS e_id', 'e.q_time', 'q.*'],
+            ['q_member' => $member_id, 'q_type' => 'TEST', 'q_validated' => 1],
             'ORDER BY ' . $order,
             null,
             0,
             false,
-            array('q_name' => 'SHORT_TRANS')
+            ['q_name' => 'SHORT_TRANS']
         );
         //$_has_points = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'SUM(q_points_for_passing)', array('q_type' => 'TEST', 'q_validated' => 1)); $has_points = (@intval($_has_points) > 0);
-        $categories = array();
+        $categories = [];
         foreach ($entries as $entry) {
             list(
                 $marks,
@@ -133,8 +133,8 @@ class Hook_members_quiz
             }
 
             if (!isset($categories[$category_title])) {
-                $categories[$category_title] = array(
-                    'QUIZZES' => array(),
+                $categories[$category_title] = [
+                    'QUIZZES' => [],
                     'RUNNING_MARKS' => 0.0,
                     'RUNNING_OUT_OF' => 0,
                     'RUNNING_PERCENTAGE' => 0.0,
@@ -144,18 +144,18 @@ class Hook_members_quiz
                     'RUNNING_MARKS__CREDIT' => 0.0,
                     'RUNNING_OUT_OF__CREDIT' => 0,
                     'RUNNING_PERCENTAGE__CREDIT' => 0.0,
-                );
+                ];
             }
             /*if (!$has_points)
             {
                     $entry['q_points_for_passing']=$out_of;
             }*/
-            $just_entry_row = db_map_restrict(array('id' => $entry['e_id']) + $entry, array('id', 'q_start_text'));
-            $categories[$category_title]['QUIZZES'][$entry['id']] = array(
+            $just_entry_row = db_map_restrict(['id' => $entry['e_id']] + $entry, ['id', 'q_start_text']);
+            $categories[$category_title]['QUIZZES'][$entry['id']] = [
                 'QUIZ_NAME' => $quiz_name,
                 'QUIZ_START_TEXT' => get_translated_tempcode('quizzes', $just_entry_row, 'q_start_text'),
                 'QUIZ_ID' => strval($entry['id']),
-                'QUIZ_URL' => build_url(array('page' => 'quiz', 'type' => 'do', 'id' => $entry['id']), get_module_zone('quiz')),
+                'QUIZ_URL' => build_url(['page' => 'quiz', 'type' => 'do', 'id' => $entry['id']], get_module_zone('quiz')),
                 'ENTRY_ID' => strval($entry['e_id']),
                 'ENTRY_DATE' => get_timezoned_date($entry['q_time']),
                 '_ENTRY_DATE' => strval($entry['q_time']),
@@ -164,7 +164,7 @@ class Hook_members_quiz
                 'PERCENTAGE_RANGE' => $percentage_range,
                 'PASSED' => $passed,
                 'POINTS' => strval($entry['q_points_for_passing']),
-            );
+            ];
             $categories[$category_title]['RUNNING_MARKS'] += $marks;
             $categories[$category_title]['RUNNING_OUT_OF'] += $out_of - $potential_extra_marks; /*manually marking discounted to limit us to certainties*/
             $adjusted_out_of = $out_of - $potential_extra_marks;
@@ -189,15 +189,15 @@ class Hook_members_quiz
 
         $delete_url = new Tempcode();
         if (has_actual_page_access(get_member(), 'admin_quiz')) {
-            $delete_url = build_url(array('page' => 'admin_quiz', 'type' => 'delete_quiz_results'), get_module_zone('admin_quiz'));
+            $delete_url = build_url(['page' => 'admin_quiz', 'type' => 'delete_quiz_results'], get_module_zone('admin_quiz'));
         }
 
-        return array(do_template('MEMBER_QUIZ_ENTRIES', array(
+        return [do_template('MEMBER_QUIZ_ENTRIES', [
             '_GUID' => '3143daff524b1e8e8de090d445e20b28',
             'CATEGORIES' => $categories,
             'MEMBER_ID' => strval($member_id),
             'SORTING' => $sorting,
             'DELETE_URL' => $delete_url,
-        )));
+        ])];
     }
 }

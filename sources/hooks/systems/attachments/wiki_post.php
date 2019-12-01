@@ -40,7 +40,7 @@ class Hook_attachments_wiki_post
             return false;
         }
 
-        $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_posts', 'page_id', array('id' => intval($id)));
+        $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_posts', 'page_id', ['id' => intval($id)]);
         if ($cat_id === null) {
             return false;
         }

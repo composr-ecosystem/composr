@@ -30,7 +30,7 @@
 function render_profile_tabset($title, $member_id_of, $member_id_viewing = null, $username = null)
 {
     // Force-disable CSP as CKEditor (used in tabs) doesn't yet support CSP
-    load_csp(array('csp_enabled' => '0')); // TODO: Remove once CKEditor supports CSP (#651)
+    load_csp(['csp_enabled' => '0']); // TODO: Remove once CKEditor supports CSP (#651)
 
     if ($member_id_viewing === null) {
         $member_id_viewing = get_member();
@@ -40,13 +40,13 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, false, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
     }
 
-    $tabs = array();
+    $tabs = [];
 
     $only_tab = get_param_string('only_tab', null);
 
     $hooks = find_all_hooks('systems', 'profiles_tabs');
     if (isset($hooks['edit'])) { // Editing must go first, so changes reflect in the renders of the tabs
-        $hooks = array('edit' => $hooks['edit']) + $hooks;
+        $hooks = ['edit' => $hooks['edit']] + $hooks;
     }
     foreach (array_keys($hooks) as $hook) {
         if (($only_tab === null) || (preg_match('#(^|,)' . preg_quote($hook, '#') . '(,|$)#', $only_tab) != 0)) {
@@ -60,7 +60,7 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
 
     if ($only_tab !== null) {
         $_unsorted = $tabs;
-        $tabs = array();
+        $tabs = [];
         foreach (explode(',', $only_tab) as $tab) {
             if (isset($_unsorted[$tab])) {
                 $tabs[$tab] = $_unsorted[$tab];
@@ -71,7 +71,7 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
     }
 
     // AJAX should load up any scripts embedding in tabs without an issue, but some browsers or optimisers (e.g. Cloudflare) may have issues - so we'll load stuff here
-    $scripts = array(
+    $scripts = [
         'ajax_people_lists',
         'checking',
         'editing',
@@ -84,12 +84,12 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
         'jquery_ui',
         'widget_color',
         'widget_date',
-    );
+    ];
     foreach ($scripts as $script) {
         require_javascript($script);
     }
 
-    $_tabs = array();
+    $_tabs = [];
     $i = 0;
     foreach ($tabs as $hook => $tab) {
         if ($only_tab === $hook) {
@@ -100,7 +100,7 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
             //$tab[1]->handle_symbol_preprocessing();
             $tab[1] = $tab[1]->evaluate(); // So that SETs run early, thus things can be moved outside tabs
         }
-        $_tabs[] = array('TAB_TITLE' => $tab[0], 'TAB_CODE' => $hook, 'TAB_ICON' => $tab[3], 'TAB_CONTENT' => $tab[1], 'TAB_FIRST' => $i == 0, 'TAB_LAST' => $i + 1 == count($tabs));
+        $_tabs[] = ['TAB_TITLE' => $tab[0], 'TAB_CODE' => $hook, 'TAB_ICON' => $tab[3], 'TAB_CONTENT' => $tab[1], 'TAB_FIRST' => $i == 0, 'TAB_LAST' => $i + 1 == count($tabs)];
         $i++;
     }
 
@@ -108,5 +108,5 @@ function render_profile_tabset($title, $member_id_of, $member_id_viewing = null,
         log_it('VIEW_PROFILE', strval($member_id_of), $username);
     }
 
-    return do_template('CNS_MEMBER_PROFILE_SCREEN', array('_GUID' => '2f33348714723492105c4717974c8f4c', 'TITLE' => $title, 'TABS' => $_tabs, 'MEMBER_ID' => strval($member_id_of)));
+    return do_template('CNS_MEMBER_PROFILE_SCREEN', ['_GUID' => '2f33348714723492105c4717974c8f4c', 'TITLE' => $title, 'TABS' => $_tabs, 'MEMBER_ID' => strval($member_id_of)]);
 }

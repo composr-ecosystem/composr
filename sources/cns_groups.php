@@ -26,10 +26,10 @@
 function init__cns_groups()
 {
     global $USER_GROUPS_CACHED;
-    $USER_GROUPS_CACHED = array();
+    $USER_GROUPS_CACHED = [];
 
     global $GROUP_MEMBERS_CACHE;
-    $GROUP_MEMBERS_CACHE = array();
+    $GROUP_MEMBERS_CACHE = [];
 }
 
 /**
@@ -49,7 +49,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
 
     require_lang('cns');
 
-    $url = build_url(array('page' => 'groups', 'type' => 'view', 'id' => $row['id']), get_module_zone('groups'));
+    $url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups'));
 
     $_title = cns_get_group_name($row['id']);
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('USERGROUP'), $_title) : $_title;
@@ -60,7 +60,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
     $num_members = cns_get_group_members_raw_count($row['id']);
     $entry_details = do_lang_tempcode('GROUP_NUM_MEMBERS', escape_html(integer_format($num_members)));
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'efeac1c8465974edd27bb0d805c4fbe0',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -71,7 +71,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
         'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'name',
         'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:admin_cns_groups:__edit:' . strval($row['id'])),
         'RESOURCE_TYPE' => 'group',
-    ));
+    ]);
 }
 
 /**
@@ -84,7 +84,7 @@ function render_group_box($row, $zone = '_SEARCH', $give_context = true, $guid =
 function cns_create_selection_list_usergroups($it = null, $allow_guest_group = true)
 {
     $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-    $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name'), ($group_count > 200) ? array('g_is_private_club' => 0) : array(), 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+    $_m = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ($group_count > 200) ? ['g_is_private_club' => 0] : [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
     $entries = new Tempcode();
     foreach ($_m as $m) {
         if (!$allow_guest_group && $m['id'] == db_get_first_id()) {
@@ -106,7 +106,7 @@ function get_first_default_group()
 {
     $default_groups = cns_get_all_default_groups(true);
     if (empty($default_groups)) {
-        $default_groups = array(db_get_first_id() + 8);
+        $default_groups = [db_get_first_id() + 8];
     }
     return array_pop($default_groups);
 }
@@ -124,22 +124,22 @@ function cns_get_all_default_groups($include_primary = false, $include_all_confi
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    static $all_default_groups_cache = array();
+    static $all_default_groups_cache = [];
     if (array_key_exists($include_primary ? 1 : 0, $all_default_groups_cache)) {
         return $all_default_groups_cache[$include_primary ? 1 : 0];
     }
 
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name'), array('g_is_default' => 1, 'g_is_presented_at_install' => 0), 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_default' => 1, 'g_is_presented_at_install' => 0], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
     $groups = collapse_1d_complexity('id', $rows);
 
     if ($include_primary) {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name'), array('g_is_presented_at_install' => 1), 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
         if (($include_all_configured_default_groups) || (count($rows) == 1) || (get_option('show_first_join_page') == '0')) { // If just 1 then we won't have presented a choice on the join form, so should inject that 1 as the default group as it is implied
             $groups = array_merge($groups, collapse_1d_complexity('id', $rows));
         }
 
         if (empty($rows)) {
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array('id' => db_get_first_id() + 8));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', ['id' => db_get_first_id() + 8]);
             if ($test !== null) {
                 $groups[] = db_get_first_id() + 8;
             }
@@ -162,7 +162,7 @@ function cns_ensure_groups_cached($groups, $tolerant = false)
 
     if ($groups === '*') {
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), ($group_count > 200) ? array('g_is_private_club' => 0) : array());
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ($group_count > 200) ? ['g_is_private_club' => 0] : []);
         foreach ($rows as $row) {
             $row['g__name'] = get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']);
             $row['g__title'] = get_translated_text($row['g_title'], $GLOBALS['FORUM_DB']);
@@ -194,7 +194,7 @@ function cns_ensure_groups_cached($groups, $tolerant = false)
     if ($expected_load_count == 0) {
         return;
     }
-    $extra_groups = $GLOBALS['FORUM_DB']->query('SELECT g.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $groups_to_load, null, 0, false, true, array('g_name' => 'SHORT_TRANS', 'g_title' => 'SHORT_TRANS'));
+    $extra_groups = $GLOBALS['FORUM_DB']->query('SELECT g.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g WHERE ' . $groups_to_load, null, 0, false, true, ['g_name' => 'SHORT_TRANS', 'g_title' => 'SHORT_TRANS']);
 
     if (!$tolerant) {
         if (count($extra_groups) < $expected_load_count) {
@@ -225,7 +225,7 @@ function cns_ensure_groups_cached($groups, $tolerant = false)
  */
 function cns_get_group_link($id, $hide_hidden = true)
 {
-    $_row = $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), array('id' => $id), '', 1);
+    $_row = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $_row)) {
         return make_string_tempcode(do_lang('UNKNOWN'));
     }
@@ -244,7 +244,7 @@ function cns_get_group_link($id, $hide_hidden = true)
         return make_string_tempcode(escape_html($name));
     }
 
-    return hyperlink(build_url(array('page' => 'groups', 'type' => 'view', 'id' => $row['id']), get_module_zone('groups')), $name, false, true);
+    return hyperlink(build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups')), $name, false, true);
 }
 
 /**
@@ -273,7 +273,7 @@ function cns_get_group_name($group, $hide_hidden = true)
  */
 function cns_get_group_property($group, $property, $hide_hidden = true)
 {
-    cns_ensure_groups_cached(array($group), true);
+    cns_ensure_groups_cached([$group], true);
     global $USER_GROUPS_CACHED;
 
     if (!array_key_exists($group, $USER_GROUPS_CACHED)) { // DB corruption
@@ -323,7 +323,7 @@ function cns_get_member_best_group_property($member_id, $property)
  */
 function cns_get_best_group_property($groups, $property)
 {
-    $big_is_better = array('gift_points_per_day', 'gift_points_base', 'enquire_on_new_ips', 'is_super_admin', 'is_super_moderator', 'max_daily_upload_mb', 'max_attachments_per_post', 'max_avatar_width', 'max_avatar_height', 'max_post_length_comcode', 'max_sig_length_comcode');
+    $big_is_better = ['gift_points_per_day', 'gift_points_base', 'enquire_on_new_ips', 'is_super_admin', 'is_super_moderator', 'max_daily_upload_mb', 'max_attachments_per_post', 'max_avatar_width', 'max_avatar_height', 'max_post_length_comcode', 'max_sig_length_comcode'];
     //$small_and_perfectly_formed = array('flood_control_submit_secs', 'flood_control_access_secs'); Not needed by elimination, but nice to have here as a note
 
     $go_super_size = in_array($property, $big_is_better);
@@ -358,7 +358,7 @@ function get_probation_group()
     static $probation_group_cache = null;
     if ($probation_group_cache === null) {
         $probation_group = get_option('probation_usergroup');
-        $probation_group_cache = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $probation_group));
+        $probation_group_cache = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $probation_group]);
         if ($probation_group_cache === null) {
             $probation_group_cache = false;
         }
@@ -378,7 +378,7 @@ function get_probation_group()
 function cns_get_members_groups($member_id = null, $skip_secret = false, $handle_probation = true, $include_implicit = true)
 {
     if (is_guest($member_id)) {
-        $ret = array();
+        $ret = [];
         $ret[db_get_first_id()] = true;
         return $ret;
     }
@@ -402,7 +402,7 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
                     }
                 }
 
-                return array($probation_group => true);
+                return [$probation_group => true];
             }
         }
     }
@@ -418,7 +418,7 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
         return $GROUP_MEMBERS_CACHE[$member_id][$skip_secret][$handle_probation][$include_implicit];
     }
 
-    $groups = array();
+    $groups = [];
 
     // Now implicit usergroup hooks
     if ($include_implicit) {
@@ -452,7 +452,7 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
             $groups[$group_id] = true;
         }
 
-        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', array('gm_group_id', 'g_hidden'), array('gm_member_id' => $member_id, 'gm_validated' => 1), 'ORDER BY g.g_order');
+        $_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=m.gm_group_id', ['gm_group_id', 'g_hidden'], ['gm_member_id' => $member_id, 'gm_validated' => 1], 'ORDER BY g.g_order');
         foreach ($_groups as $group) {
             $groups[$group['gm_group_id']] = true;
         }
@@ -474,14 +474,14 @@ function cns_get_members_groups($member_id = null, $skip_secret = false, $handle
         $GROUP_MEMBERS_CACHE[$member_id][true][$handle_probation][$include_implicit] = $groups;
 
         // Mirror to f_group_members table, so direct queries will also get it (we need to do listings of group members, for instance)
-        $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $member_id));
+        $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id]);
         foreach (array_keys($groups) as $group_id) {
-            $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $member_id, 'gm_group_id' => $group_id), '', 1);
-            $GLOBALS['FORUM_DB']->query_insert('f_group_members', array(
+            $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $member_id, 'gm_group_id' => $group_id], '', 1);
+            $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                 'gm_group_id' => $group_id,
                 'gm_member_id' => $member_id,
                 'gm_validated' => 1,
-            ));
+            ]);
         }
     }
 

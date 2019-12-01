@@ -31,11 +31,11 @@ class Hook_checklist_blog
     public function run()
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
         if (get_option('blog_update_time') == '' || get_option('blog_update_time') == '0') {
-            return array();
+            return [];
         }
 
         require_lang('news');
@@ -43,7 +43,7 @@ class Hook_checklist_blog
         $admin_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups());
         $staff = $GLOBALS['FORUM_DRIVER']->member_group_query(array_keys($admin_groups), 100);
         if (count($staff) >= 100) {
-            return array();
+            return [];
         }
         $or_list = '';
         foreach (array_keys($staff) as $staff_id) {
@@ -53,7 +53,7 @@ class Hook_checklist_blog
             $or_list .= 'c.nc_owner=' . strval($staff_id);
         }
         if ($or_list == '') {
-            return array();
+            return [];
         }
 
         $query = 'SELECT MAX(date_and_time) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news n JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_categories c ON n.news_category=c.id WHERE validated=1 AND (' . $or_list . ')';
@@ -72,16 +72,16 @@ class Hook_checklist_blog
         require_code('config2');
         $config_url = config_option_url('blog_update_time');
 
-        $url = build_url(array('page' => 'cms_blogs', 'type' => 'add'), get_module_zone('cms_blogs'));
+        $url = build_url(['page' => 'cms_blogs', 'type' => 'add'], get_module_zone('cms_blogs'));
         list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'a75d4a165aa5e16ad3aa06d2e0bab5db',
             'CONFIG_URL' => $config_url,
             'URL' => $url,
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('BLOG'),
             'INFO' => $info,
-        ));
-        return array(array($tpl, $seconds_due_in, null, 'blog_update_time'));
+        ]);
+        return [[$tpl, $seconds_due_in, null, 'blog_update_time']];
     }
 }

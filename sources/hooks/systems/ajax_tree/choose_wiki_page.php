@@ -36,7 +36,7 @@ class Hook_ajax_tree_choose_wiki_page
         require_code('wiki');
         require_lang('wiki');
 
-        $wiki_seen = array();
+        $wiki_seen = [];
         $tree = get_wiki_page_tree($wiki_seen, ($id === null) ? null : intval($id), null, null, false, false, ($id === null) ? 0 : 1);
 
         $levels_to_expand = array_key_exists('levels_to_expand', $options) ? ($options['levels_to_expand']) : intval(get_value('levels_to_expand__' . substr(get_class($this), 5), null, true));
@@ -49,7 +49,7 @@ class Hook_ajax_tree_choose_wiki_page
         $out .= '<options>' . xmlentities(json_encode($options)) . '</options>';
 
         if (!has_actual_page_access(null, 'wiki')) {
-            $tree = array();
+            $tree = [];
         }
 
         foreach ($tree as $t) {
@@ -72,7 +72,7 @@ class Hook_ajax_tree_choose_wiki_page
         }
 
         if ($id === null) {
-            $orphans = $GLOBALS['SITE_DB']->query('SELECT p.id,p.title FROM ' . get_table_prefix() . 'wiki_pages p WHERE NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'wiki_children WHERE child_id=p.id) ORDER BY add_date DESC', 50/*reasonable limit*/, 0, false, false, array('title' => 'SHORT_TRANS'));
+            $orphans = $GLOBALS['SITE_DB']->query('SELECT p.id,p.title FROM ' . get_table_prefix() . 'wiki_pages p WHERE NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'wiki_children WHERE child_id=p.id) ORDER BY add_date DESC', 50/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS']);
             foreach ($orphans as $i => $orphan) {
                 $orphans[$i]['_title'] = get_translated_text($orphan['title']);
             }
@@ -93,7 +93,7 @@ class Hook_ajax_tree_choose_wiki_page
 
                 $_id = strval($orphan['id']);
                 $title = $orphan['_title'];
-                $has_children = ($GLOBALS['SITE_DB']->query_select_value('wiki_children', 'COUNT(*)', array('parent_id' => $orphan['id'])) != 0);
+                $has_children = ($GLOBALS['SITE_DB']->query_select_value('wiki_children', 'COUNT(*)', ['parent_id' => $orphan['id']]) != 0);
                 $selectable = true;
 
                 $tag = 'category'; // category

@@ -30,7 +30,7 @@ class Hook_config_bing_geocoding_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BING_GEOCODE_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -45,7 +45,7 @@ class Hook_config_bing_geocoding_api_key
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'geocoding_bing',
-        );
+        ];
     }
 
     /**

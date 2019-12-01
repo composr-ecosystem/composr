@@ -43,7 +43,7 @@ class Hook_fields_float
             $special = get_param_string('option_' . strval($field['id']), '');
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -84,7 +84,7 @@ class Hook_fields_float
                 $default = '0';
             }
         }
-        return array('float_unescaped', $default, 'float');
+        return ['float_unescaped', $default, 'float'];
     }
 
     /**
@@ -187,7 +187,7 @@ class Hook_fields_float
                     $longitude = '0';
                 }
 
-                $input = do_template('FORM_SCREEN_INPUT_MAP_POSITION', array('_GUID' => '86d69d152d7bfd125e6216c9ac936cfd', 'REQUIRED' => $required, 'NAME' => $input_name, 'LATITUDE' => $latitude, 'LONGITUDE' => $longitude));
+                $input = do_template('FORM_SCREEN_INPUT_MAP_POSITION', ['_GUID' => '86d69d152d7bfd125e6216c9ac936cfd', 'REQUIRED' => $required, 'NAME' => $input_name, 'LATITUDE' => $latitude, 'LONGITUDE' => $longitude]);
                 $lang_string = 'MAP_POSITION_FIELD_field_' . strval($field['id']);
                 $test = do_lang($lang_string, null, null, null, null, false);
                 if ($test === null) {

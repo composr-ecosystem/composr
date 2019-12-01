@@ -43,7 +43,7 @@ class addon_screenshots_test_set extends cms_test_case
                 }
 
                 $exists = false;
-                foreach (array('png', 'gif', 'jpg', 'jpeg') as $ext) {
+                foreach (['png', 'gif', 'jpg', 'jpeg'] as $ext) {
                     if (is_file(get_file_base() . '/data_custom/images/addon_screenshots/' . $hook . '.' . $ext)) {
                         $exists = true;
                     }
@@ -51,9 +51,9 @@ class addon_screenshots_test_set extends cms_test_case
 
                 if ($ob->get_category() != 'Development') {
                     // These are defined as exceptions where we won't enforce our screenshot rule
-                    if (in_array($hook, array(
+                    if (in_array($hook, [
                         'enhanced_spreadsheets',
-                    ))) {
+                    ])) {
                         continue;
                     }
 

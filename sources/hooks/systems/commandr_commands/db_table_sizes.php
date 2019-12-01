@@ -34,7 +34,7 @@ class Hook_commandr_command_db_table_sizes
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('db_table_sizes', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('db_table_sizes', ['h'], [true, true]), '', ''];
         } else {
             require_code('files');
 
@@ -86,7 +86,7 @@ class Hook_commandr_command_db_table_sizes
                     if (array_key_exists(get_table_prefix() . $p, $sizes)) {
                         $num_rows = $db->query_select_value($p, 'COUNT(*)');
                         if ($num_rows > 0) {
-                            $row = $db->query_select($p, array('*'), array(), '', 1, mt_rand(0, $num_rows - 1));
+                            $row = $db->query_select($p, ['*'], [], '', 1, mt_rand(0, $num_rows - 1));
                             $out .= '<table class="results-table"><tbody>';
                             $val = null;
                             foreach ($row[0] as $key => $val) {
@@ -107,7 +107,7 @@ class Hook_commandr_command_db_table_sizes
 
             $out .= '</div></div></div>';
 
-            return array('', $out, '', '');
+            return ['', $out, '', ''];
         }
     }
 }

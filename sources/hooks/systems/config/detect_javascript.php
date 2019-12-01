@@ -30,7 +30,7 @@ class Hook_config_detect_javascript
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DETECT_JAVASCRIPT',
             'type' => 'tick',
             'category' => 'SITE',
@@ -42,7 +42,7 @@ class Hook_config_detect_javascript
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

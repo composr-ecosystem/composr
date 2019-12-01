@@ -31,7 +31,7 @@ class Hook_addon_registry_core_fields
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_fields
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_catalogues',
             'tut_fields',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_fields
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_fields
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'lang/EN/fields.ini',
             'sources/fields.php',
             'sources/hooks/systems/addon_registry/core_fields.php',
@@ -152,7 +152,7 @@ class Hook_addon_registry_core_fields
             'themes/default/templates/CATALOGUE_DEFAULT_FIELD_PICTURE.tpl',
             'sources/hooks/systems/symbols/CATALOGUE_ENTRY_FOR.php',
             'site/catalogue_file.php',
-        );
+        ];
     }
 
     /**
@@ -162,10 +162,10 @@ class Hook_addon_registry_core_fields
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CATALOGUE_DEFAULT_FIELD_MULTILIST.tpl' => 'catalogue_multilist',
             'templates/CATALOGUE_DEFAULT_FIELD_PICTURE.tpl' => 'catalogue_picture',
-        );
+        ];
     }
 
     /**
@@ -177,23 +177,23 @@ class Hook_addon_registry_core_fields
      */
     public function tpl_preview__catalogue_multilist()
     {
-        return array(
-            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_MULTILIST', array(
+        return [
+            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_MULTILIST', [
                 'SHOW_UNSET_VALUES' => false,
-                'ALL' => array(
-                    array(
+                'ALL' => [
+                    [
                         'HAS' => true,
                         'OPTION' => lorem_phrase() . 'a',
-                    ),
-                    array(
+                    ],
+                    [
                         'HAS' => false,
                         'OPTION' => lorem_phrase() . 'b',
-                    ),
-                ),
-                'FLAT' => array(lorem_phrase() . 'a', lorem_phrase() . 'b'),
+                    ],
+                ],
+                'FLAT' => [lorem_phrase() . 'a', lorem_phrase() . 'b'],
                 'FIELD_ID' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -205,14 +205,14 @@ class Hook_addon_registry_core_fields
      */
     public function tpl_preview__catalogue_picture()
     {
-        return array(
-            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_PICTURE', array(
+        return [
+            lorem_globalise(do_lorem_template('CATALOGUE_DEFAULT_FIELD_PICTURE', [
                 'URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_image_url(),
                 'I' => '0',
                 'WIDTH' => '',
                 'HEIGHT' => '',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

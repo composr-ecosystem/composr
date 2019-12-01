@@ -30,11 +30,11 @@
 function _find_text_file_path($codename, $lang)
 {
     if ($lang === null) {
-        $langs = array('');
+        $langs = [''];
     } elseif ($lang != '') {
-        $langs = array($lang);
+        $langs = [$lang];
     } else {
-        $langs = array(user_lang());
+        $langs = [user_lang()];
         if (get_site_default_lang() != user_lang()) {
             $langs[] = get_site_default_lang();
         }

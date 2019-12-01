@@ -41,7 +41,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
         if ($default !== null) {
             $url .= '&default=' . urlencode($default);
         }
-        $contents = http_get_contents($url, array('convert_to_internal_encoding' => true));
+        $contents = http_get_contents($url, ['convert_to_internal_encoding' => true]);
         $contents = preg_replace('#^\s*<' . '\?xml version="1.0" encoding="[^"]*"\?' . '><request>#', '', $contents);
         $contents = preg_replace('#</request>#', '', $contents);
         $contents = preg_replace('#<category [^>]*has_children="false"[^>]*>[^>]*</category>#', '', $contents);
@@ -75,11 +75,11 @@ class Hook_ajax_tree_choose_composr_homesite_addon
     {
         $file = $this->get_file($id, $it);
 
-        $it_exp = ($it === null) ? array() : explode(',', $it);
+        $it_exp = ($it === null) ? [] : explode(',', $it);
 
         $list = new Tempcode();
 
-        $matches = array();
+        $matches = [];
 
         $num_matches = preg_match_all('#<entry id="(\d+)"[^<>]* title="([^"]+)"#', $file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {

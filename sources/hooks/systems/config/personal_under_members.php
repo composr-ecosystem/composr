@@ -30,7 +30,7 @@ class Hook_config_personal_under_members
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PERSONAL_UNDER_MEMBERS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_personal_under_members
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

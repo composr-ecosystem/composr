@@ -32,7 +32,7 @@ function get_latest_version_dotted()
 {
     static $version = null; // null means unset (uncached)
     if ($version === null) {
-        $_version = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'name', array($GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.'));
+        $_version = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'name', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.']);
         if ($_version === null) {
             $version = '0.0'; // unknown
         } else {
@@ -74,13 +74,13 @@ function get_release_tree()
 {
     require_code('version2');
 
-    $versions = array();
+    $versions = [];
 
     global $DOWNLOAD_ROWS;
     load_version_download_rows();
 
     foreach ($DOWNLOAD_ROWS as $download_row) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^Composr Version (.*) \(.*manual\)$#', $download_row['nice_title'], $matches) != 0) {
             $version_dotted = get_version_dotted__from_anything($matches[1]);
             list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
@@ -90,7 +90,7 @@ function get_release_tree()
 
     uksort($versions, 'version_compare');
 
-    $_versions = array();
+    $_versions = [];
     foreach ($versions as $long_dotted_number_with_qualifier => $download_row) {
         $_versions[preg_replace('#\.0$#', '', $long_dotted_number_with_qualifier)] = $download_row;
     }
@@ -101,7 +101,7 @@ function get_release_tree()
 function is_release_discontinued($version)
 {
     // LEGACY: update as required
-    $discontinued = array('1', '2', '2.1', '2.5', '2.6', '3', '3.1', '3.2', '4', '5', '6', '7');
+    $discontinued = ['1', '2', '2.1', '2.5', '2.6', '3', '3.1', '3.2', '4', '5', '6', '7'];
     return (preg_match('#^(' . implode('|', array_map('preg_quote', $discontinued)) . ')($|\.)#', $version) != 0);
 }
 
@@ -130,21 +130,21 @@ function load_version_download_rows()
     if (!isset($DOWNLOAD_ROWS)) {
         if (get_param_integer('test_mode', 0) == 1) {
             // Test data
-            $DOWNLOAD_ROWS = array(
-                array('id' => 20, 'nice_title' => 'Composr Version 13 (manual)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/a.zip'),
-                array('id' => 30, 'nice_title' => 'Composr Version 13.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/b.zip'),
-                array('id' => 35, 'nice_title' => 'Composr Version 13.1.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/c.zip'),
-                array('id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (manual)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/d.zip'),
-                array('id' => 50, 'nice_title' => 'Composr Version 13.2 (manual)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/e.zip'),
-                array('id' => 60, 'nice_title' => 'Composr Version 14 (manual)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/f.zip'),
+            $DOWNLOAD_ROWS = [
+                ['id' => 20, 'nice_title' => 'Composr Version 13 (manual)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/a.zip'],
+                ['id' => 30, 'nice_title' => 'Composr Version 13.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/b.zip'],
+                ['id' => 35, 'nice_title' => 'Composr Version 13.1.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/c.zip'],
+                ['id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (manual)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/d.zip'],
+                ['id' => 50, 'nice_title' => 'Composr Version 13.2 (manual)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/e.zip'],
+                ['id' => 60, 'nice_title' => 'Composr Version 14 (manual)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/f.zip'],
 
-                array('id' => 20, 'nice_title' => 'Composr Version 13 (quick)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => '[Test message] This is 3. Yo peeps. 3.1 is the biz.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/a.zip'),
-                array('id' => 30, 'nice_title' => 'Composr Version 13.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.1.1 is out dudes.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/b.zip'),
-                array('id' => 35, 'nice_title' => 'Composr Version 13.1.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.2 is out dudes.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/c.zip'),
-                array('id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (quick)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => '[Test message] This is 3.2 beta1. 3.2 beta2 is out.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/d.zip'),
-                array('id' => 50, 'nice_title' => 'Composr Version 13.2 (quick)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => '[Test message] This is 3.2. 4 is out.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/e.zip'),
-                array('id' => 60, 'nice_title' => 'Composr Version 14 (quick)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => '[Test message] This is the 4 and you can find bug reports somewhere.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/f.zip'),
-            );
+                ['id' => 20, 'nice_title' => 'Composr Version 13 (quick)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => '[Test message] This is 3. Yo peeps. 3.1 is the biz.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/a.zip'],
+                ['id' => 30, 'nice_title' => 'Composr Version 13.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.1.1 is out dudes.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/b.zip'],
+                ['id' => 35, 'nice_title' => 'Composr Version 13.1.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.2 is out dudes.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/c.zip'],
+                ['id' => 40, 'nice_title' => 'Composr Version 13.2 beta1 (quick)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => '[Test message] This is 3.2 beta1. 3.2 beta2 is out.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/d.zip'],
+                ['id' => 50, 'nice_title' => 'Composr Version 13.2 (quick)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => '[Test message] This is 3.2. 4 is out.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/e.zip'],
+                ['id' => 60, 'nice_title' => 'Composr Version 14 (quick)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => '[Test message] This is the 4 and you can find bug reports somewhere.', 'url' => 'uploads/website_specific/compo.sr/upgrades/sample_data/f.zip'],
+            ];
         } else {
             // Live data
             $sql = 'SELECT d.* FROM ' . get_table_prefix() . 'download_downloads d';
@@ -152,7 +152,7 @@ function load_version_download_rows()
                 $sql .= ' FORCE INDEX (recent_downloads)';
             }
             $sql .= ' WHERE validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version %') . '\' ORDER BY add_date';
-            $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, array('name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE'));
+            $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
             foreach ($DOWNLOAD_ROWS as $i => $row) {
                 $DOWNLOAD_ROWS[$i]['nice_title'] = get_translated_text($row['name']);
                 $DOWNLOAD_ROWS[$i]['nice_description'] = get_translated_text($row['the_description']);
@@ -184,17 +184,17 @@ function load_version_news_rows()
     if (!isset($NEWS_ROWS)) {
         if (get_param_integer('test_mode', 0) == 1) {
             // Test data
-            $NEWS_ROWS = array(
-                array('id' => 2, 'nice_title' => 'Composr 13 released', 'add_date' => time() - 60 * 60 * 8),
-                array('id' => 3, 'nice_title' => '13.1 released', 'add_date' => time() - 60 * 60 * 5),
-                array('id' => 4, 'nice_title' => '13.1.1 released', 'add_date' => time() - 60 * 60 * 5),
-                array('id' => 5, 'nice_title' => 'Composr 13.2 beta1 released', 'add_date' => time() - 60 * 60 * 4),
-                array('id' => 6, 'nice_title' => 'Composr 13.2 released', 'add_date' => time() - 60 * 60 * 3),
-                array('id' => 7, 'nice_title' => 'Composr 14 released', 'add_date' => time() - 60 * 60 * 1),
-            );
+            $NEWS_ROWS = [
+                ['id' => 2, 'nice_title' => 'Composr 13 released', 'add_date' => time() - 60 * 60 * 8],
+                ['id' => 3, 'nice_title' => '13.1 released', 'add_date' => time() - 60 * 60 * 5],
+                ['id' => 4, 'nice_title' => '13.1.1 released', 'add_date' => time() - 60 * 60 * 5],
+                ['id' => 5, 'nice_title' => 'Composr 13.2 beta1 released', 'add_date' => time() - 60 * 60 * 4],
+                ['id' => 6, 'nice_title' => 'Composr 13.2 released', 'add_date' => time() - 60 * 60 * 3],
+                ['id' => 7, 'nice_title' => 'Composr 14 released', 'add_date' => time() - 60 * 60 * 1],
+            ];
         } else {
             // Live data
-            $NEWS_ROWS = $GLOBALS['SITE_DB']->query_select('news', array('*', 'date_and_time AS add_date'), array('validated' => 1), 'ORDER BY add_date');
+            $NEWS_ROWS = $GLOBALS['SITE_DB']->query_select('news', ['*', 'date_and_time AS add_date'], ['validated' => 1], 'ORDER BY add_date');
             foreach ($NEWS_ROWS as $i => $row) {
                 $NEWS_ROWS[$i]['nice_title'] = get_translated_text($row['title']);
             }
@@ -207,9 +207,9 @@ function get_composr_branches()
     require_code('version2');
 
     $_branches = shell_exec('git branch');
-    $branches = array();
+    $branches = [];
     foreach (explode("\n", $_branches) as $_branch) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^\s*\*?\s*(master|v[\d\.]+)$#', $_branch, $matches) != 0) {
             $git_branch = $matches[1];
 
@@ -222,12 +222,12 @@ function get_composr_branches()
             if ((is_array($results)) && (count($results) == 3)) {
                 list($version_number, $status, $eol) = $results;
 
-                $branches[str_pad(float_to_raw_string($version_number), 10, '0', STR_PAD_LEFT)] = array(
+                $branches[str_pad(float_to_raw_string($version_number), 10, '0', STR_PAD_LEFT)] = [
                     'git_branch' => $git_branch,
                     'branch' => get_version_branch($version_number),
                     'status' => $status,
                     'eol' => $eol,
-                );
+                ];
             }
         }
     }
@@ -272,7 +272,7 @@ function recursive_unzip($zip_path, $unzip_path)
 
 function server__public__get_tracker_issue_titles($ids, $version = null)
 {
-    $_ids = ($ids == '') ? array() : array_map('intval', explode(',', $ids)); // Security to prevent SQL injection
+    $_ids = ($ids == '') ? [] : array_map('intval', explode(',', $ids)); // Security to prevent SQL injection
     require_code('mantis');
     $issue_titles = get_tracker_issue_titles($_ids, $version);
     echo json_encode($issue_titles);
@@ -314,7 +314,7 @@ function server__create_forum_post($_replying_to_post, $post_reply_title, $post_
     $replying_to_post = intval($_replying_to_post);
     $post_important = intval($_post_important);
 
-    $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $replying_to_post));
+    $topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $replying_to_post]);
 
     require_code('cns_posts_action');
     require_code('mantis'); // Defines LEAD_DEVELOPER_MEMBER_ID
@@ -374,7 +374,7 @@ function demonstratr_add_site($codename, $name, $email_address, $password, $desc
     }
 
     // Check named site available
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sites', 's_server', array('s_codename' => $codename));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sites', 's_server', ['s_codename' => $codename]);
     if ($test !== null) {
         // Did it fail adding before? It's useful to not have to fiddle around manually cleaning up when debugging
         $definitely_failed = false;//(strpos(cms_file_get_contents_safe(special_demonstratr_dir() . '/rcpthosts'), "\n" . $codename . '.composr.info' . "\n") === false);
@@ -384,13 +384,13 @@ function demonstratr_add_site($codename, $name, $email_address, $password, $desc
             $test = null;
         }
     }
-    if (($test !== null) || (in_array($codename, array('ssh', 'ftp', 'ns1', 'ns2', 'ns3', 'ns4', 'private', 'staff', 'webmail', 'imap', 'smtp', 'mail', 'ns', 'com', 'net', 'www', 'sites', 'chris', 'test', 'example', 'ocproducts', 'composr', 'cms'))) || (strpos($codename, 'demonstratr') !== false)) {
+    if (($test !== null) || (in_array($codename, ['ssh', 'ftp', 'ns1', 'ns2', 'ns3', 'ns4', 'private', 'staff', 'webmail', 'imap', 'smtp', 'mail', 'ns', 'com', 'net', 'www', 'sites', 'chris', 'test', 'example', 'ocproducts', 'composr', 'cms'])) || (strpos($codename, 'demonstratr') !== false)) {
         warn_exit(do_lang_tempcode('CMS_NOT_AVAILABLE'));
     }
 
     $server = choose_available_server();
 
-    $GLOBALS['SITE_DB']->query_insert('sites', array(
+    $GLOBALS['SITE_DB']->query_insert('sites', [
         's_codename' => $codename,
         's_name' => $name,
         's_description' => $description,
@@ -404,16 +404,16 @@ function demonstratr_add_site($codename, $name, $email_address, $password, $desc
         's_show_in_directory' => $show_in_directory,
         's_sponsored_in_category' => 0,
         's_sent_expire_message' => 0,
-    ));
+    ]);
 
     demonstratr_add_site_raw($server, $codename, $email_address, $password);
 
     // Aliases
-    $GLOBALS['SITE_DB']->query_insert('sites_email', array(
+    $GLOBALS['SITE_DB']->query_insert('sites_email', [
         's_codename' => $codename,
         's_email_from' => 'staff',
         's_email_to' => $email_address,
-    ), false, true);
+    ], false, true);
     reset_aliases();
 
     // _config.php
@@ -424,7 +424,7 @@ function demonstratr_add_site($codename, $name, $email_address, $password, $desc
     require_code('mail');
     $subject = do_lang('CMS_EMAIL_SUBJECT');
     $message = do_lang('CMS_EMAIL_BODY', comcode_escape($codename)/*e-mail is not secure,comcode_escape($password)*/);
-    dispatch_mail($subject, $message, array($email_address));
+    dispatch_mail($subject, $message, [$email_address]);
 }
 
 function demonstratr_add_site_raw($server, $codename, $email_address, $password)
@@ -463,7 +463,7 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
     if ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
         attach_message('Running import command... ' . $cmd, 'inform');
     }
-    $output = array();
+    $output = [];
     $return_var = 0;
     $last_line = exec($cmd, $output, $return_var);
     if ($return_var != 0) {
@@ -472,12 +472,12 @@ function demonstratr_add_site_raw($server, $codename, $email_address, $password)
 
     // Set some default config
     $db_conn = new DatabaseConnector('demonstratr_site_' . $codename, 'localhost'/*$server*/, $user, $SITE_INFO['mysql_demonstratr_password'], 'cms_');
-    $db_conn->query_update('config', array('c_value' => $email_address), array('c_name' => 'staff_address'), '', 1);
+    $db_conn->query_update('config', ['c_value' => $email_address], ['c_name' => 'staff_address'], '', 1);
     require_code('crypt');
     $salt = get_secure_random_string();
     $password_salted = ratchet_hash($password, $salt);
     push_db_scope_check(false);
-    $db_conn->query_update('f_members', array('m_email_address' => $email_address, 'm_pass_hash_salted' => $password_salted, 'm_pass_salt' => $salt, 'm_password_compat_scheme' => ''), array('m_username' => 'admin'), '', 1);
+    $db_conn->query_update('f_members', ['m_email_address' => $email_address, 'm_pass_hash_salted' => $password_salted, 'm_pass_salt' => $salt, 'm_password_compat_scheme' => ''], ['m_username' => 'admin'], '', 1);
     pop_db_scope_check();
 
     // Create default file structure
@@ -526,7 +526,7 @@ function special_demonstratr_dir()
  */
 function get_site_categories()
 {
-    $cats = array('Entertainment', 'Computers', 'Sport', 'Art', 'Music', 'Television/Movies', 'Businesses', 'Other', 'Informative/Factual', 'Political', 'Humour', 'Geographical/Regional', 'Games', 'Personal/Family', 'Hobbies', 'Culture/Community', 'Religious', 'Health');
+    $cats = ['Entertainment', 'Computers', 'Sport', 'Art', 'Music', 'Television/Movies', 'Businesses', 'Other', 'Informative/Factual', 'Political', 'Humour', 'Geographical/Regional', 'Games', 'Personal/Family', 'Hobbies', 'Culture/Community', 'Religious', 'Health'];
     cms_mb_sort($cats, SORT_NATURAL | SORT_FLAG_CASE);
     return $cats;
 }
@@ -571,11 +571,11 @@ function create_selection_list_servers($server)
 function find_all_servers()
 {
     if (!file_exists(special_demonstratr_dir() . '/servers')) {
-        return array('');
+        return [''];
     }
 
     $d = opendir(special_demonstratr_dir() . '/servers');
-    $servers = array();
+    $servers = [];
     while (($e = readdir($d)) !== false) {
         if ($e[0] != '.') { //if (substr_count($e,'.')==4)
             $servers[] = $e;
@@ -652,7 +652,7 @@ if (\$_SERVER['HTTP_HOST'] == 'composr.info') {
         exit('Must run an individual demo site');
 }
 ";
-    $rows = $GLOBALS['SITE_DB']->query_select('sites', array('s_codename', 's_domain_name'), array('s_server' => $server));
+    $rows = $GLOBALS['SITE_DB']->query_select('sites', ['s_codename', 's_domain_name'], ['s_server' => $server]);
     foreach ($rows as $row) {
         if ($row['s_domain_name'] != '') {
             $contents .= "
@@ -789,7 +789,7 @@ function do_backup_script()
     require_lang('composr_homesite');
 
     $id = get_param_string('id');
-    $sites = $GLOBALS['SITE_DB']->query_select('sites', array('s_member_id', 's_server'), array('s_codename' => $id), '', 1);
+    $sites = $GLOBALS['SITE_DB']->query_select('sites', ['s_member_id', 's_server'], ['s_codename' => $id], '', 1);
     if (!array_key_exists(0, $sites)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -807,7 +807,7 @@ function do_backup_script()
     $tmp_path = cms_tempnam();
     $user = substr(md5('demonstratr_site_' . $id), 0, 16);
     shell_exec('mysqldump -h' . /*$server*/'localhost' . ' -u' . $user . ' -p' . $SITE_INFO['mysql_demonstratr_password'] . ' demonstratr_site_' . $id . ' --skip-opt > ' . $tmp_path);
-    $file_array[] = array('full_path' => $tmp_path, 'name' => 'database.sql', 'time' => time());
+    $file_array[] = ['full_path' => $tmp_path, 'name' => 'database.sql', 'time' => time()];
     $tmp_path2 = cms_tempnam();
     create_zip_file($tmp_path2, $file_array);
     unlink($tmp_path);
@@ -857,13 +857,13 @@ function demonstratr_delete_old_sites()
     $sites = $GLOBALS['SITE_DB']->query('SELECT s_codename FROM ' . get_table_prefix() . 'sites WHERE s_add_time<' . strval(time() - 60 * 60 * 24 * 20) . ' AND ' . db_string_not_equal_to('s_codename', 'shareddemo') . ' AND s_sent_expire_message=0');
     foreach ($sites as $site) {
         $subject = do_lang('CMS_EMAIL_EXPIRE_SUBJECT', $site['s_codename']);
-        $message = do_lang('CMS_EMAIL_EXPIRE_BODY', comcode_escape($site['s_codename']), get_brand_page_url(array('page' => 'free_tickets'), 'site'));
-        $email_address = $GLOBALS['SITE_DB']->query_select_value_if_there('sites_email', 's_email_to', array('s_codename' => $site['s_codename'], 's_email_from' => 'staff'));
+        $message = do_lang('CMS_EMAIL_EXPIRE_BODY', comcode_escape($site['s_codename']), get_brand_page_url(['page' => 'free_tickets'], 'site'));
+        $email_address = $GLOBALS['SITE_DB']->query_select_value_if_there('sites_email', 's_email_to', ['s_codename' => $site['s_codename'], 's_email_from' => 'staff']);
         if ($email_address !== null) {
-            dispatch_mail($subject, $message, array($email_address));
+            dispatch_mail($subject, $message, [$email_address]);
         }
 
-        $GLOBALS['SITE_DB']->query_update('sites', array('s_sent_expire_message' => 1), array('s_codename' => $site['s_codename']), '', 1);
+        $GLOBALS['SITE_DB']->query_update('sites', ['s_sent_expire_message' => 1], ['s_codename' => $site['s_codename']], '', 1);
     }
 }
 
@@ -885,11 +885,11 @@ function demonstratr_delete_site($server, $codename, $bulk = false)
     $master_conn->query('REVOKE ALL ON `demonstratr_site_' . $codename . '`.* FROM \'' . $user . '\'', null, 0, true); // Suppress errors in case access denied
     //$master_conn->query('DROP USER \'demonstratr_site_' . $codename . '\'');
 
-    $GLOBALS['SITE_DB']->query_delete('sites_deletion_codes', array('s_codename' => $codename), '', 1);
-    $GLOBALS['SITE_DB']->query_update('sites_email', array('s_codename' => $codename . '__expired_' . strval(mt_rand(0, mt_getrandmax()))), array('s_codename' => $codename), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('sites_deletion_codes', ['s_codename' => $codename], '', 1);
+    $GLOBALS['SITE_DB']->query_update('sites_email', ['s_codename' => $codename . '__expired_' . strval(mt_rand(0, mt_getrandmax()))], ['s_codename' => $codename], '', 1);
 
     // Directory entry
-    $GLOBALS['SITE_DB']->query_delete('sites', array('s_codename' => $codename), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('sites', ['s_codename' => $codename], '', 1);
 
     // Files
     if ($codename != '') {

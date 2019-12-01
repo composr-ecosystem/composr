@@ -53,21 +53,21 @@ class Hook_symbol_BETA_CSS_PROPERTY
 
         if (!empty($param[0])) {
             // No prefixing needed for these
-            $is_supported = array(
-                '-o-' => array(
-                ),
-                '-webkit-' => array(
-                ),
-                '-ms-' => array(
-                ),
-                '-moz-' => array(
-                ),
-            );
+            $is_supported = [
+                '-o-' => [
+                ],
+                '-webkit-' => [
+                ],
+                '-ms-' => [
+                ],
+                '-moz-' => [
+                ],
+            ];
 
             $value = '';
-            $matches = array();
+            $matches = [];
 
-            $vendors = array('', '-o-', '-webkit-', '-ms-', '-moz-');
+            $vendors = ['', '-o-', '-webkit-', '-ms-', '-moz-'];
             foreach ($vendors as $prefix) {
                 // Skip over some
                 if ((strpos($param[0], ':') !== false) && (isset($is_supported[$prefix][substr($param[0], 0, strpos($param[0], ':'))]))) {

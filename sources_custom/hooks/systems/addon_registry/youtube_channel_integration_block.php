@@ -19,7 +19,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -59,7 +59,7 @@ class Hook_addon_registry_youtube_channel_integration_block
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ You must first configure Google/YouTube API access:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ You must first configure Google/YouTube API access:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ You must first configure Google/YouTube API access:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/youtube_channel_integration_block.php',
             'lang_custom/EN/youtube_channel.ini',
             'sources_custom/blocks/youtube_channel.php',
@@ -142,7 +142,7 @@ You must first configure Google/YouTube API access:
             'themes/default/templates_custom/BLOCK_YOUTUBE_CHANNEL.tpl',
             'themes/default/templates_custom/BLOCK_YOUTUBE_CHANNEL_VIDEO.tpl',
             'sources_custom/hooks/systems/config/youtube_channel_block_update_time.php',
-        );
+        ];
     }
 
     /**

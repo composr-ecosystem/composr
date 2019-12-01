@@ -60,12 +60,12 @@ class CMS_RSS
 
         $url = str_replace('{$FIND_SCRIPT,backend}', find_script('backend'), $url);
 
-        $this->namespace_stack = array();
-        $this->tag_stack = array();
-        $this->attribute_stack = array();
+        $this->namespace_stack = [];
+        $this->tag_stack = [];
+        $this->attribute_stack = [];
 
-        $this->gleamed_feed = array();
-        $this->gleamed_items = array();
+        $this->gleamed_feed = [];
+        $this->gleamed_items = [];
 
         $this->feed_url = $url;
 
@@ -85,7 +85,7 @@ class CMS_RSS
             $charset = '';
             $http_message = '';
         } else {
-            $http_response = cms_http_request($url, array('trigger_error' => false));
+            $http_response = cms_http_request($url, ['trigger_error' => false]);
             $data = $http_response->data;
             $charset = $http_response->charset;
             $http_message = $http_response->message;
@@ -96,7 +96,7 @@ class CMS_RSS
         } else {
             // Try and detect feed charset
             $exp = '#<\?xml\s+version\s*=\s*["\'][\d\.]+["\']\s*(encoding\s*=\s*["\']([^"\'<>]+)["\'])?\s*(standalone\s*=\s*["\']([^"\'<>]+)["\'])?\s*\?' . '>#';
-            $matches = array();
+            $matches = [];
             if ((preg_match($exp, $data, $matches) != 0) && (array_key_exists(2, $matches))) {
                 $charset = $matches[2];
                 if (strtolower($charset) == 'windows-1252') {
@@ -104,13 +104,13 @@ class CMS_RSS
                 }
             }
             // Weed out if isn't supported
-            if (($charset === null) || (!in_array(strtoupper($charset), array('ISO-8859-1', 'US-ASCII', 'UTF-8')))) {
+            if (($charset === null) || (!in_array(strtoupper($charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8']))) {
                 $charset = 'utf-8';
             }
 
             // Our internal charset
             $target_charset = get_charset();
-            if (!in_array(strtoupper($target_charset), array('ISO-8859-1', 'US-ASCII', 'UTF-8'))) {
+            if (!in_array(strtoupper($target_charset), ['ISO-8859-1', 'US-ASCII', 'UTF-8'])) {
                 $target_charset = 'utf-8';
             }
 
@@ -173,7 +173,7 @@ class CMS_RSS
             }
             @xml_parser_free($xml_parser);
 
-            $new_items = array();
+            $new_items = [];
             foreach ($this->gleamed_items as $i) {
                 if ((!isset($i['bogus'])) || (!$i['bogus'])) {
                     $new_items[] = $i;
@@ -257,10 +257,10 @@ class CMS_RSS
         }
 
         if ((($this->type == 'RSS') && ($name == 'ITEM')) || (($this->type == 'ATOM') && (($name == 'HTTP://PURL.ORG/ATOM/NS#:ENTRY') || ($name == 'HTTP://WWW.W3.ORG/2005/ATOM:ENTRY')))) {
-            $this->gleamed_items[] = array('_extra' => array());
+            $this->gleamed_items[] = ['_extra' => []];
             if (($this->type == 'RSS') && ($name == 'ITEM')) {
                 if (array_key_exists('ABOUT', $attributes)) { // rdf namespace, but we don't realistically need to check this
-                    $this->gleamed_items[] = array('full_url' => $attributes['ABOUT']);
+                    $this->gleamed_items[] = ['full_url' => $attributes['ABOUT']];
                 }
             }
         }
@@ -315,7 +315,7 @@ class CMS_RSS
                         $current_item = &$this->gleamed_items[count($this->gleamed_items) - 1];
 
                         if (!array_key_exists('comments', $current_item)) {
-                            $current_item['comments'] = array(array());
+                            $current_item['comments'] = [[]];
                         }
 
                         $current_item['comments'][count($current_item['comments']) - 1][preg_replace('#^HTTP://WORDPRESS.ORG/EXPORT/1.2/:#', '', $last_tag)] = $data;
@@ -383,7 +383,7 @@ class CMS_RSS
                                 }
                                 break;
                             case 'CLOUD':
-                                $cloud = array();
+                                $cloud = [];
                                 $cloud['domain'] = $attributes['DOMAIN'];
                                 $cloud['port'] = $attributes['PORT'];
                                 $cloud['path'] = $attributes['PATH'];
@@ -395,9 +395,9 @@ class CMS_RSS
 
                             default:
                                 if (!array_key_exists($last_tag, $this->gleamed_feed)) {
-                                    $this->gleamed_feed[$last_tag] = array();
+                                    $this->gleamed_feed[$last_tag] = [];
                                 }
-                                $this->gleamed_feed[$last_tag][] = $attributes + array('_' => $data);
+                                $this->gleamed_feed[$last_tag][] = $attributes + ['_' => $data];
                                 break;
                         }
                         break;
@@ -452,7 +452,7 @@ class CMS_RSS
                                 }
                                 break;
                             case 'HTTP://WORDPRESS.ORG/EXPORT/1.2/:COMMENT':
-                                $current_item['comments'][] = array();
+                                $current_item['comments'][] = [];
                                 break;
 
                             // yahoo namespace
@@ -519,7 +519,7 @@ class CMS_RSS
                             case 'CATEGORY':
                                 if (array_key_exists('category', $current_item)) {
                                     if (!array_key_exists('extra_categories', $current_item)) {
-                                        $current_item['extra_categories'] = array();
+                                        $current_item['extra_categories'] = [];
                                     }
                                     $current_item['extra_categories'][] = $data;
                                 } else {
@@ -540,9 +540,9 @@ class CMS_RSS
 
                             default:
                                 if (!array_key_exists($last_tag, $current_item)) {
-                                    $current_item[$last_tag] = array();
+                                    $current_item[$last_tag] = [];
                                 }
-                                $current_item[$last_tag][] = $attributes + array('_' => $data);
+                                $current_item[$last_tag][] = $attributes + ['_' => $data];
                                 $current_item['extra'][$last_tag] = $data;
                                 break;
                         }
@@ -654,9 +654,9 @@ class CMS_RSS
                                 break;
                             default:
                                 if (!array_key_exists($last_tag, $this->gleamed_feed)) {
-                                    $this->gleamed_feed[$last_tag] = array();
+                                    $this->gleamed_feed[$last_tag] = [];
                                 }
-                                $this->gleamed_feed[$last_tag][] = $attributes + array('_' => $data);
+                                $this->gleamed_feed[$last_tag][] = $attributes + ['_' => $data];
                                 break;
                         }
                         break;
@@ -729,7 +729,7 @@ class CMS_RSS
                                     if (($data != '') && (strpos($data, '#') === false)) {
                                         if (array_key_exists('category', $current_item)) {
                                             if (!array_key_exists('extra_categories', $current_item)) {
-                                                $current_item['extra_categories'] = array();
+                                                $current_item['extra_categories'] = [];
                                             }
                                             $current_item['extra_categories'][] = $data;
                                         } else {
@@ -744,9 +744,9 @@ class CMS_RSS
 
                             default:
                                 if (!array_key_exists($last_tag, $current_item)) {
-                                    $current_item[$last_tag] = array();
+                                    $current_item[$last_tag] = [];
                                 }
-                                $current_item[$last_tag][] = $attributes + array('_' => $data);
+                                $current_item[$last_tag][] = $attributes + ['_' => $data];
                                 $current_item['extra'][$last_tag] = $data;
                                 break;
                         }
@@ -765,8 +765,8 @@ class CMS_RSS
  */
 function cleanup_date($date)
 {
-    $remap_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
-    $matches = array();
+    $remap_month = ['Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12];
+    $matches = [];
     if (preg_match('#(\d*) (' . implode('|', array_keys($remap_month)) . ') (\d\d\d\d) (\d*):(\d\d):(\d\d) (GMT|UTC)?([+-]?\w*)#', $date, $matches) != 0) {
         $hour = intval($matches[4]);
         $minute = intval($matches[5]);
@@ -787,7 +787,7 @@ function cleanup_date($date)
         }
 
         $timestamp -= $their_dif * 60 * 60;
-        return array(get_timezoned_date_time($timestamp), $timestamp);
+        return [get_timezoned_date_time($timestamp), $timestamp];
     }
     if (preg_match('#(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)Z#', $date, $matches) != 0) {
         $hour = intval($matches[4]);
@@ -798,7 +798,7 @@ function cleanup_date($date)
         $year = intval($matches[1]);
 
         $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
-        return array(get_timezoned_date_time($timestamp), $timestamp);
+        return [get_timezoned_date_time($timestamp), $timestamp];
     }
     if (preg_match('#(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)([\+\-]\d\d):(\d\d)#', $date, $matches) != 0) {
         $hour = intval($matches[4]);
@@ -810,21 +810,21 @@ function cleanup_date($date)
 
         $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
         $timestamp += intval($matches[7]) * 60 * 60 + intval($matches[8]) * 60;
-        return array(get_timezoned_date_time($timestamp), $timestamp);
+        return [get_timezoned_date_time($timestamp), $timestamp];
     }
     if (preg_match('#(\d+?) (\D\D\D) (\d\d\d\d) (\d\d):(\d\d):(\d\d) ([\+\-]\d\d)(\d\d)#', $date, $matches) != 0) {
         $hour = intval($matches[4]);
         $minute = intval($matches[5]);
         $second = intval($matches[6]);
         $month = intval($matches[2]);
-        $month_remap = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
+        $month_remap = ['Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12];
         $month = $month_remap[$month];
         $day = intval($matches[1]);
         $year = intval($matches[3]);
 
         $timestamp = gmmktime($hour, $minute, $second, $month, $day, $year);
         $timestamp -= intval($matches[7]) * 60 * 60 + intval($matches[8]) * 60;
-        return array(get_timezoned_date_time($timestamp), $timestamp);
+        return [get_timezoned_date_time($timestamp), $timestamp];
     }
-    return array($date);
+    return [$date];
 }

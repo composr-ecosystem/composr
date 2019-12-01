@@ -122,7 +122,7 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
     $temp_show_edit_links = $SHOW_EDIT_LINKS;
     $KEEP_MARKERS = false;
     $SHOW_EDIT_LINKS = false;
-    $tpl_params = array();
+    $tpl_params = [];
     require_code('tempcode');
     $js = do_template($j, $tpl_params, null, false, null, '.js', 'javascript', $theme);
     $KEEP_MARKERS = $temp_keep_markers;
@@ -233,7 +233,7 @@ function _css_cms_include($matches)
         }
     }
     if (!is_file($full_path)) {
-        return array(false, '');
+        return [false, ''];
     }
     return _css_compile($CSS_COMPILE_ACTIVE_THEME, $theme, $c, $full_path);
 }
@@ -302,9 +302,9 @@ function _css_compile($active_theme, $theme, $c, $full_path, $minify = true)
     $KEEP_MARKERS = $keep_markers;
     $SHOW_EDIT_LINKS = $show_edit_links;
     if ($num_msgs_after > $num_msgs_before) { // Was an error (e.g. missing theme image), so don't cache so that the error will be visible on refresh and hence debugged
-        return array(false, $out);
+        return [false, $out];
     }
-    return array(true, $out);
+    return [true, $out];
 }
 
 /**
@@ -361,11 +361,11 @@ function js_minify($js)
  */
 function css_minify($v)
 {
-    $search = array('/\/\*[\d\D]*?\*\/|\t+/', '/\s+/');
-    $replace = array('', ' ');
+    $search = ['/\/\*[\d\D]*?\*\/|\t+/', '/\s+/'];
+    $replace = ['', ' '];
     $v = preg_replace($search, $replace, $v);
-    $search = array('/\\;\s/', '/\s+\{\\s+/', '/\\:\s+\\#/', '/,\s+/i', '/\\:\s+\\\'/i', '/\\:\s+([0-9]+|[A-F]+)/i');
-    $replace = array(';', '{', ':#', ',', ':\'', ':$1');
+    $search = ['/\\;\s/', '/\s+\{\\s+/', '/\\:\s+\\#/', '/,\s+/i', '/\\:\s+\\\'/i', '/\\:\s+([0-9]+|[A-F]+)/i'];
+    $replace = [';', '{', ':#', ',', ':\'', ':$1'];
     $v = preg_replace($search, $replace, $v);
     $v = str_replace("\n", '', $v);
     return trim($v);

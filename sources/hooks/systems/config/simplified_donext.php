@@ -30,7 +30,7 @@ class Hook_config_simplified_donext
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SIMPLIFIED_DONEXT',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_simplified_donext
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

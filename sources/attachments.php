@@ -38,7 +38,7 @@ Viewing attachments (but not direct rendering - that is in media_rendering.php).
  * @param  boolean $semiparse_mode Whether to parse so as to create something that would fit inside a semihtml tag. It means we generate HTML, with Comcode written into it where the tag could never be reverse-converted (e.g. a block).
  * @return Tempcode The Tempcode for the attachment
  */
-function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source_member, $as_admin, $db, $highlight_bits = array(), $on_behalf_of_member = null, $semiparse_mode = false)
+function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source_member, $as_admin, $db, $highlight_bits = [], $on_behalf_of_member = null, $semiparse_mode = false)
 {
     require_code('comcode_renderer');
     require_code('media_renderer');
@@ -76,9 +76,9 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
         $url->attach(find_script('attachment') . '?id=' . urlencode(strval($attachment_row['id'])));
         if ($db->is_forum_db()) {
             $url->attach('&forum_db=1');
-            $attributes['num_downloads'] = symbol_tempcode('ATTACHMENT_DOWNLOADS', array(strval($attachment_row['id']), '1'));
+            $attributes['num_downloads'] = symbol_tempcode('ATTACHMENT_DOWNLOADS', [strval($attachment_row['id']), '1']);
         } else {
-            $attributes['num_downloads'] = symbol_tempcode('ATTACHMENT_DOWNLOADS', array(strval($attachment_row['id']), '0'));
+            $attributes['num_downloads'] = symbol_tempcode('ATTACHMENT_DOWNLOADS', [strval($attachment_row['id']), '0']);
         }
 
         if ($is_bin) {
@@ -109,7 +109,7 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
     $ret = render_media_url(
         $url,
         $url_safe,
-        $attributes + array('context' => 'attachment'),
+        $attributes + ['context' => 'attachment'],
         $as_admin,
         $source_member,
         MEDIA_TYPE_ALL,
@@ -118,7 +118,7 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
         $attachment_row['a_original_filename']
     );
     if ($ret === null) {
-        $ret = do_template('WARNING_BOX', array('_GUID' => '1e8a6c605fb61b9b5067a9d627506654', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')));
+        $ret = do_template('WARNING_BOX', ['_GUID' => '1e8a6c605fb61b9b5067a9d627506654', 'WARNING' => do_lang_tempcode('comcode:INVALID_ATTACHMENT')]);
     }
     return $ret;
 }
@@ -141,7 +141,7 @@ function has_attachment_access($member_id, $id, $db = null)
         return true;
     }
 
-    $refs = $db->query_select('attachment_refs', array('r_referer_type', 'r_referer_id'), array('a_id' => $id));
+    $refs = $db->query_select('attachment_refs', ['r_referer_type', 'r_referer_id'], ['a_id' => $id]);
 
     foreach ($refs as $ref) {
         $type = $ref['r_referer_type'];
@@ -174,7 +174,7 @@ function attachments_script()
 
     $id = get_param_integer('id', 0);
     $db = $GLOBALS[(get_param_integer('forum_db', 0) == 1) ? 'FORUM_DB' : 'SITE_DB'];
-    $has_no_restricts = ($db->query_select_value_if_there('attachment_refs', 'id', array('r_referer_type' => 'null', 'a_id' => $id)) !== null);
+    $has_no_restricts = ($db->query_select_value_if_there('attachment_refs', 'id', ['r_referer_type' => 'null', 'a_id' => $id]) !== null);
 
     if (!$has_no_restricts) {
         global $SITE_INFO;
@@ -188,7 +188,7 @@ function attachments_script()
     require_lang('comcode');
 
     // Lookup
-    $rows = $db->query_select('attachments', array('*'), array('id' => $id), 'ORDER BY a_add_time DESC');
+    $rows = $db->query_select('attachments', ['*'], ['id' => $id], 'ORDER BY a_add_time DESC');
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('ATTACHMENT')));
     }
@@ -341,12 +341,12 @@ function attachment_popup_script()
 
     $db = (get_page_name() == 'topics') ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
 
-    $members = array();
+    $members = [];
     if (!is_guest()) {
         $members[get_member()] = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
     }
     if (has_privilege(get_member(), 'reuse_others_attachments')) {
-        $_members = $db->query_select('attachments', array('DISTINCT a_member_id'));
+        $_members = $db->query_select('attachments', ['DISTINCT a_member_id']);
         foreach ($_members as $_member) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($_member['a_member_id'], false, USERNAME_DEFAULT_NULL);
             if ($username !== null) {
@@ -369,8 +369,8 @@ function attachment_popup_script()
     $field_name = filter_naughty_harsh(get_param_string('field_name', 'post'));
     $post_url = get_self_url();
 
-    $rows = $db->query_select('attachments', array('*'), array('a_member_id' => $member_now));
-    $attachments = array();
+    $rows = $db->query_select('attachments', ['*'], ['a_member_id' => $member_now]);
+    $attachments = [];
     foreach ($rows as $myrow) {
         $may_delete = (get_member() == $myrow['a_member_id']) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()));
 
@@ -381,20 +381,20 @@ function attachment_popup_script()
         }
 
         $myrow['description'] = $myrow['a_description'];
-        $tpl = render_attachment('attachment', array(), $myrow, uniqid('', true), get_member(), false, $db, array(), get_member());
-        $attachments[] = array(
+        $tpl = render_attachment('attachment', [], $myrow, uniqid('', true), get_member(), false, $db, [], get_member());
+        $attachments[] = [
             'FIELD_NAME' => $field_name,
             'TPL' => $tpl,
             'DESCRIPTION' => $myrow['a_description'],
             'ID' => strval($myrow['id']),
             'MAY_DELETE' => $may_delete,
             'DELETE_URL' => $post_url,
-        );
+        ];
     }
 
-    $content = do_template('ATTACHMENTS_BROWSER', array('_GUID' => '7773aad46fb0bfe563a142030beb1a36', 'LIST' => $list, 'ATTACHMENTS' => $attachments, 'URL' => $post_url));
+    $content = do_template('ATTACHMENTS_BROWSER', ['_GUID' => '7773aad46fb0bfe563a142030beb1a36', 'LIST' => $list, 'ATTACHMENTS' => $attachments, 'URL' => $post_url]);
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '954617cc747b5cece4cc406d8c110150', 'TITLE' => do_lang_tempcode('ATTACHMENT_POPUP'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '954617cc747b5cece4cc406d8c110150', 'TITLE' => do_lang_tempcode('ATTACHMENT_POPUP'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }

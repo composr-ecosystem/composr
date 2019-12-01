@@ -43,10 +43,10 @@ function load_html_page($string, $file_base = null, &$out = null)
 
     // Post-processing
     if (stripos($html, '<html') !== false) {
-        $matches = array();
+        $matches = [];
 
         // Fix links to anything in same dir, by assuming eithera Composr page in same zone -- or uploads/website_specific, or next to html files, or in root
-        $link_attributes = array('src', 'href', 'action', 'data', 'codebase', 'background');
+        $link_attributes = ['src', 'href', 'action', 'data', 'codebase', 'background'];
         foreach ($link_attributes as $attribute) {
             $num_matches = preg_match_all('#<[^<>]* ' . $attribute . '="([^&"]+\.[^&"\.]+)"[^<>]*>#mis', $html, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -66,10 +66,10 @@ function load_html_page($string, $file_base = null, &$out = null)
                 }
 
                 if (substr($old_url, -4) == '.htm') {
-                    $_new_url = build_url(array('page' => basename(substr($old_url, 0, strlen($old_url) - 4))), $zone);
+                    $_new_url = build_url(['page' => basename(substr($old_url, 0, strlen($old_url) - 4))], $zone);
                     $new_url = $_new_url->evaluate();
                 } elseif (substr($old_url, -5) == '.html') {
-                    $_new_url = build_url(array('page' => basename(substr($old_url, 0, strlen($old_url) - 5))), $zone);
+                    $_new_url = build_url(['page' => basename(substr($old_url, 0, strlen($old_url) - 5))], $zone);
                     $new_url = $_new_url->evaluate();
                 } else {
                     $new_url = $old_url;
@@ -98,7 +98,7 @@ function load_html_page($string, $file_base = null, &$out = null)
         if (preg_match('#<\s*head[^<>]*>(.*)<\s*/\s*head\s*>#mis', $html, $matches) != 0) {
             $head = $matches[1];
 
-            $head_patterns = array('#<\s*script.*<\s*/\s*script\s*>#misU', '#<\s*link[^<>]*>#misU', '#<\s*style.*<\s*/\s*style\s*>#misU');
+            $head_patterns = ['#<\s*script.*<\s*/\s*script\s*>#misU', '#<\s*link[^<>]*>#misU', '#<\s*style.*<\s*/\s*style\s*>#misU'];
             foreach ($head_patterns as $pattern) {
                 $num_matches = preg_match_all($pattern, $head, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {

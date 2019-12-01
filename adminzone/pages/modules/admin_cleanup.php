@@ -30,7 +30,7 @@ class Module_admin_cleanup
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,9 +51,9 @@ class Module_admin_cleanup
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('CLEANUP_TOOLS', 'menu/adminzone/tools/cleanup'),
-        );
+        return [
+            'browse' => ['CLEANUP_TOOLS', 'menu/adminzone/tools/cleanup'],
+        ];
     }
 
     public $title;
@@ -74,7 +74,7 @@ class Module_admin_cleanup
         set_helper_panel_tutorial('tut_website_health');
 
         if ($type == 'rebuild') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('CLEANUP_TOOLS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('CLEANUP_TOOLS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -112,11 +112,11 @@ class Module_admin_cleanup
      */
     public function choose_cache_type()
     {
-        $url = build_url(array('page' => '_SELF', 'type' => 'rebuild'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'rebuild'], '_SELF');
 
-        $checkbox_ids = array();
-        $_fields_cache = array();
-        $_fields_optimise = array();
+        $checkbox_ids = [];
+        $_fields_cache = [];
+        $_fields_optimise = [];
         $fields_cache_expand = true;
         $fields_optimise_expand = false;
         $hooks = find_all_hook_obs('systems', 'cleanup', 'Hook_cleanup_');
@@ -155,23 +155,23 @@ class Module_admin_cleanup
 
         $fields = new Tempcode();
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '3ddb387dba8c42ac4ef7b85621052e11',
             'SECTION_HIDDEN' =>  !$fields_cache_expand,
             'TITLE' => do_lang_tempcode('CLEANUP_PAGE_EXP_CACHES'),
             'HELP' => do_lang_tempcode('CLEANUP_PAGE_CACHES', escape_html(implode(', ', $checkbox_ids))),
-        )));
+        ]));
         $fields->attach($fields_cache);
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '4a9d6e722f246887160c444a062a9d00',
             'SECTION_HIDDEN' =>  !$fields_optimise_expand,
             'TITLE' => do_lang_tempcode('CLEANUP_PAGE_EXP_OPTIMISERS'),
             'HELP' => do_lang_tempcode('CLEANUP_PAGE_OPTIMISERS', escape_html(find_script('upgrader'))),
-        )));
+        ]));
         $fields->attach($fields_optimise);
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '85bfdf171484604594a157aa8983f920',
             'SKIP_WEBSTANDARDS' => true,
             'TEXT' => '',
@@ -181,7 +181,7 @@ class Module_admin_cleanup
             'TITLE' => $this->title,
             'FIELDS' => $fields,
             'URL' => $url,
-        ));
+        ]);
     }
 
     /**
@@ -207,7 +207,7 @@ class Module_admin_cleanup
             $hooks['cns_members'] = 'sources_custom';
         }
 
-        $todo = array();
+        $todo = [];
         foreach (array_keys($hooks) as $hook) {
             if (post_param_integer('cleanup_' . $hook, 0) == 1) {
                 $todo[] = $hook;
@@ -218,6 +218,6 @@ class Module_admin_cleanup
 
         log_it('CLEANUP_TOOLS', implode(', ', $todo));
 
-        return do_template('CLEANUP_COMPLETED_SCREEN', array('_GUID' => '598510a9ad9f01f3c0806319b32b5033', 'TITLE' => $this->title, 'MESSAGES' => $messages));
+        return do_template('CLEANUP_COMPLETED_SCREEN', ['_GUID' => '598510a9ad9f01f3c0806319b32b5033', 'TITLE' => $this->title, 'MESSAGES' => $messages]);
     }
 }

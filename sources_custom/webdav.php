@@ -25,7 +25,7 @@ use Sabre\DAV;
 function init__webdav()
 {
     global $COMMANDR_FS_LISTING_CACHE;
-    $COMMANDR_FS_LISTING_CACHE = array();
+    $COMMANDR_FS_LISTING_CACHE = [];
 
     global $WEBDAV_LOG_FILE;
     $WEBDAV_LOG_FILE = null;

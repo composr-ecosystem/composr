@@ -32,10 +32,10 @@ class Hook_members_chat
     public function run($member_id)
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $modules = array();
+        $modules = [];
         if (has_actual_page_access(get_member(), 'chat', get_page_zone('chat'))) {
             if ((!is_guest()) && ($member_id != get_member())) {
                 require_lang('chat');
@@ -43,18 +43,18 @@ class Hook_members_chat
                 require_code('users2');
                 if (!$GLOBALS['FORUM_DRIVER']->is_staff($member_id)) {
                     if (!member_blocked($member_id)) {
-                        $modules[] = array('contact', do_lang_tempcode('EXPLAINED_BLOCK_MEMBER'), build_url(array('page' => 'chat', 'type' => 'blocking_add', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('chat')), 'menu/social/chat/member_blocking');
+                        $modules[] = ['contact', do_lang_tempcode('EXPLAINED_BLOCK_MEMBER'), build_url(['page' => 'chat', 'type' => 'blocking_add', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('chat')), 'menu/social/chat/member_blocking'];
                         if (has_privilege(get_member(), 'start_im')) {
-                            $modules[] = array('contact', do_lang_tempcode('START_IM'), build_url(array('page' => 'chat', 'type' => 'browse', 'enter_im' => $member_id), get_module_zone('chat')), 'menu/social/chat/chat');
+                            $modules[] = ['contact', do_lang_tempcode('START_IM'), build_url(['page' => 'chat', 'type' => 'browse', 'enter_im' => $member_id], get_module_zone('chat')), 'menu/social/chat/chat'];
                         }
                     } else {
-                        $modules[] = array('contact', do_lang_tempcode('EXPLAINED_UNBLOCK_MEMBER'), build_url(array('page' => 'chat', 'type' => 'blocking_remove', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('chat')), 'menu/social/chat/member_blocking');
+                        $modules[] = ['contact', do_lang_tempcode('EXPLAINED_UNBLOCK_MEMBER'), build_url(['page' => 'chat', 'type' => 'blocking_remove', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('chat')), 'menu/social/chat/member_blocking'];
                     }
                 }
                 if (!member_befriended($member_id)) {
-                    $modules[] = array('contact', do_lang_tempcode('MAKE_FRIEND'), build_url(array('page' => 'chat', 'type' => 'friend_add', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('chat')), 'menu/social/friends');
+                    $modules[] = ['contact', do_lang_tempcode('MAKE_FRIEND'), build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('chat')), 'menu/social/friends'];
                 } else {
-                    $modules[] = array('contact', do_lang_tempcode('DUMP_FRIEND'), build_url(array('page' => 'chat', 'type' => 'friend_remove', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('chat')), 'menu/social/friends');
+                    $modules[] = ['contact', do_lang_tempcode('DUMP_FRIEND'), build_url(['page' => 'chat', 'type' => 'friend_remove', 'member_id' => $member_id, 'redirect' => protect_url_parameter(SELF_REDIRECT)], get_module_zone('chat')), 'menu/social/friends'];
                 }
             }
         }

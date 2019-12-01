@@ -90,6 +90,6 @@ class Hook_profiles_tabs_edit_profile
 
         $text = '';
 
-        return array($title, $fields, $text, '', $order, $hidden, 'tabs/member_account/edit/profile');
+        return [$title, $fields, $text, '', $order, $hidden, 'tabs/member_account/edit/profile'];
     }
 }

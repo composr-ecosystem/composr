@@ -25,14 +25,14 @@ class Block_main_facebook_page
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('page_name', 'width', 'height', 'show_cover_photo', 'show_fans', 'show_posts');
+        $info['parameters'] = ['page_name', 'width', 'height', 'show_cover_photo', 'show_fans', 'show_posts'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_facebook_page
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             empty($map['page_name']) ? get_site_name() : $map['page_name'],
@@ -74,10 +74,10 @@ PHP;
         }
 
         if (!function_exists('curl_init')) {
-            return do_template('RED_ALERT', array('_GUID' => 'gyh8q02fa42oidxizj593su3fs6qc9zm', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')));
+            return do_template('RED_ALERT', ['_GUID' => 'gyh8q02fa42oidxizj593su3fs6qc9zm', 'TEXT' => do_lang_tempcode('NO_CURL_ON_SERVER')]);
         }
         if (!function_exists('session_status')) {
-            return do_template('RED_ALERT', array('_GUID' => '1srcvdkreexgjcjhfhywyu9hntjjwh1l', 'TEXT' => 'PHP session extension missing'));
+            return do_template('RED_ALERT', ['_GUID' => '1srcvdkreexgjcjhfhywyu9hntjjwh1l', 'TEXT' => 'PHP session extension missing']);
         }
 
         require_lang('facebook');
@@ -87,7 +87,7 @@ PHP;
 
         $appid = get_option('facebook_appid');
         if ($appid == '') {
-            return do_template('RED_ALERT', array('_GUID' => 'ty2jeraub73e8bu0bo57m01s4hxby4h1', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')));
+            return do_template('RED_ALERT', ['_GUID' => 'ty2jeraub73e8bu0bo57m01s4hxby4h1', 'TEXT' => do_lang_tempcode('API_NOT_CONFIGURED', 'Facebook')]);
         }
 
         $page_name = empty($map['page_name']) ? get_site_name() : $map['page_name'];
@@ -97,7 +97,7 @@ PHP;
         $show_fans = array_key_exists('show_fans', $map) ? $map['show_fans'] : '0';
         $show_posts = array_key_exists('show_posts', $map) ? $map['show_posts'] : '0';
 
-        return do_template('BLOCK_MAIN_FACEBOOK_PAGE', array(
+        return do_template('BLOCK_MAIN_FACEBOOK_PAGE', [
             '_GUID' => '5f4dc97379346496d8b8152a56a9ec84',
             'BLOCK_ID' => $block_id,
             'PAGE_NAME' => $page_name,
@@ -106,6 +106,6 @@ PHP;
             'SHOW_COVER_PHOTO' => ($show_cover_photo == '1'),
             'SHOW_FANS' => ($show_fans == '1'),
             'SHOW_POSTS' => ($show_posts == '1'),
-        ));
+        ]);
     }
 }

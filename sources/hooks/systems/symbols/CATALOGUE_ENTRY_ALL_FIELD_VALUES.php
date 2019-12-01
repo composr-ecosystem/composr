@@ -41,7 +41,7 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
 
             global $CATALOGUE_MAPPER_SYMBOL_CACHE;
             if (!isset($CATALOGUE_MAPPER_SYMBOL_CACHE)) {
-                $CATALOGUE_MAPPER_SYMBOL_CACHE = array();
+                $CATALOGUE_MAPPER_SYMBOL_CACHE = [];
             }
             if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id])) {
                 $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id];
@@ -50,22 +50,22 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
                     $value = $map['FIELDS']->evaluate();
                 } else {
                     $tpl_set = $map['CATALOGUE'];
-                    $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + array('GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+                    $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + ['GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
                     $value = $_value->evaluate();
                 }
             } else {
-                $entry = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => $entry_id), '', 1);
+                $entry = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => $entry_id], '', 1);
                 if (isset($entry[0])) {
                     require_code('catalogues');
                     $catalogue_name = $entry[0]['c_name'];
                     $catalogue = load_catalogue_row($catalogue_name, true);
                     if ($catalogue !== null) {
                         $tpl_set = $catalogue_name;
-                        $map = get_catalogue_entry_map($entry[0], array('c_display_type' => C_DT_FIELDMAPS) + $catalogue, 'PAGE', $tpl_set);
+                        $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, 'PAGE', $tpl_set);
                         if (!empty($param[1])) {
                             $value = $map['FIELDS']->evaluate();
                         } else {
-                            $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + array('GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+                            $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + ['GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
                             $value = $_value->evaluate();
                         }
 

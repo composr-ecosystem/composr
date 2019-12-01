@@ -59,24 +59,24 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
             case 'comcode_page':
                 if (strpos($label, ':') !== false) {
                     list($zone, $page) = explode(':', $label, 2);
-                    $where = array('the_zone' => $zone, 'the_page' => $page);
+                    $where = ['the_zone' => $zone, 'the_page' => $page];
                 } else { // comcode_page is the only Resource-fs hook where a codename-based-label going in may not go out. Fortunately a missing ':' fully implies that we can/should do a partial search, as no missing colon will be there for a label that ended up in-direct-use.
                     $page = $label;
-                    $where = array('the_page' => $page);
+                    $where = ['the_page' => $page];
                 }
 
-                $_ret = $GLOBALS['SITE_DB']->query_select('comcode_pages p JOIN ' . get_table_prefix() . 'zones z ON p.the_zone=z.zone_name', array('the_zone', 'the_page'), $where);
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('comcode_pages p JOIN ' . get_table_prefix() . 'zones z ON p.the_zone=z.zone_name', ['the_zone', 'the_page'], $where);
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = $r['the_zone'] . ':' . $r['the_page'];
                 }
                 return $ret;
 
             case 'zone':
-                $ret = $GLOBALS['SITE_DB']->query_select('zones', array('zone_name'), array('zone_name' => $label));
+                $ret = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name'], ['zone_name' => $label]);
                 return collapse_1d_complexity('zone_name', $ret);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -129,10 +129,10 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         $zone = actual_add_zone($zone, $human_title, $default_page, $header_text, $theme, $require_session, true);
 
         if (isset($properties['group_access'])) {
-            table_from_portable_rows('group_zone_access', $properties['group_access'], array('zone_name' => $zone), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('group_zone_access', $properties['group_access'], ['zone_name' => $zone], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
         if (isset($properties['member_access'])) {
-            table_from_portable_rows('member_zone_access', $properties['member_access'], array('zone_name' => $zone), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('member_zone_access', $properties['member_access'], ['zone_name' => $zone], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->folder_resource_type, $zone, $filename, $label, $properties);
@@ -151,22 +151,22 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('zones', ['*'], ['zone_name' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['zone_name'],
             'human_title' => $row['zone_title'],
             'default_page' => $row['zone_default_page'],
             'header_text' => $row['zone_header_text'],
             'theme' => $row['zone_theme'],
             'require_session' => $row['zone_require_session'],
-            'group_access' => table_to_portable_rows('group_zone_access', /*skip*/array(), array('zone_name' => $resource_id)),
-            'member_access' => table_to_portable_rows('member_zone_access', /*skip*/array(), array('zone_name' => $resource_id)),
-        );
+            'group_access' => table_to_portable_rows('group_zone_access', /*skip*/[], ['zone_name' => $resource_id]),
+            'member_access' => table_to_portable_rows('member_zone_access', /*skip*/[], ['zone_name' => $resource_id]),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -206,10 +206,10 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         $zone = actual_edit_zone($resource_id, $human_title, $default_page, $header_text, $theme, $require_session, $zone, true, true);
 
         if (isset($properties['group_access'])) {
-            table_from_portable_rows('group_zone_access', $properties['group_access'], array('zone_name' => $zone), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('group_zone_access', $properties['group_access'], ['zone_name' => $zone], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
         if (isset($properties['member_access'])) {
-            table_from_portable_rows('member_zone_access', $properties['member_access'], array('zone_name' => $zone), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('member_zone_access', $properties['member_access'], ['zone_name' => $zone], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->folder_resource_type, $resource_id, $filename, $label, $properties);
@@ -320,13 +320,13 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         $page = $resource_id;
         $page = preg_replace('#^.*:#', '', $page); // ID also contains zone, so strip that
 
-        $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('*'), array('the_zone' => $zone, 'the_page' => $page), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['*'], ['the_zone' => $zone, 'the_page' => $page], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $text = array();
+        $text = [];
         require_code('site');
         foreach (array_keys(find_all_langs()) as $lang) {
             $result = _request_page($row['the_page'], $row['the_zone'], 'comcode_custom', $lang, false);
@@ -342,7 +342,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('comcode_page', $row['the_zone'] . ':' . $row['the_page']);
 
-        $properties = array(
+        $properties = [
             'label' => $row['the_zone'] . ':' . $row['the_page'],
             'text' => $text,
             'parent_page' => $row['p_parent_page'],
@@ -354,7 +354,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['p_submitter']),
             'add_date' => remap_time_as_portable($row['p_add_date']),
             'edit_date' => remap_time_as_portable($row['p_edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

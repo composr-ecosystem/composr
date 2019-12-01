@@ -24,14 +24,14 @@ class lang_string_special_validity_test_set extends cms_test_case
 
         $langs = find_all_langs();
 
-        $regexp_pairs = array(
-            array('TICKET_SIMPLE_SUBJECT_regexp', array('TICKET_SIMPLE_SUBJECT_reply', 'x', 'x', 'x')),
-            array('TICKET_SIMPLE_MAIL_reply_regexp', array('TICKET_SIMPLE_MAIL_reply', 'x', 'x', 'x')),
-            array('MAILING_LIST_SIMPLE_SUBJECT_new_regexp', array('MAILING_LIST_SIMPLE_SUBJECT_new', 'x', 'x', 'x')),
-            array('MAILING_LIST_SIMPLE_SUBJECT_reply_regexp', array('MAILING_LIST_SIMPLE_SUBJECT_reply', 'x', 'x', 'x')),
-            array('MAILING_LIST_SIMPLE_MAIL_regexp', array('MAILING_LIST_SIMPLE_MAIL_new', 'x', 'x', 'x')),
-            array('MAILING_LIST_SIMPLE_MAIL_regexp', array('MAILING_LIST_SIMPLE_MAIL_reply', 'x', 'x', 'x')),
-        );
+        $regexp_pairs = [
+            ['TICKET_SIMPLE_SUBJECT_regexp', ['TICKET_SIMPLE_SUBJECT_reply', 'x', 'x', 'x']],
+            ['TICKET_SIMPLE_MAIL_reply_regexp', ['TICKET_SIMPLE_MAIL_reply', 'x', 'x', 'x']],
+            ['MAILING_LIST_SIMPLE_SUBJECT_new_regexp', ['MAILING_LIST_SIMPLE_SUBJECT_new', 'x', 'x', 'x']],
+            ['MAILING_LIST_SIMPLE_SUBJECT_reply_regexp', ['MAILING_LIST_SIMPLE_SUBJECT_reply', 'x', 'x', 'x']],
+            ['MAILING_LIST_SIMPLE_MAIL_regexp', ['MAILING_LIST_SIMPLE_MAIL_new', 'x', 'x', 'x']],
+            ['MAILING_LIST_SIMPLE_MAIL_regexp', ['MAILING_LIST_SIMPLE_MAIL_reply', 'x', 'x', 'x']],
+        ];
         foreach (array_keys($langs) as $lang) {
             foreach ($regexp_pairs as $_parts) {
                 list($_regexp, $_str) = $_parts;
@@ -42,7 +42,7 @@ class lang_string_special_validity_test_set extends cms_test_case
                 }
                 if (is_array($_str)) {
                     $_str[] = $lang;
-                    $str = call_user_func_array(array($this, 'do_lang'), $_str);
+                    $str = call_user_func_array([$this, 'do_lang'], $_str);
                 } else {
                     $str = $this->do_lang($_str, null, null, null, $lang);
                 }
@@ -53,15 +53,15 @@ class lang_string_special_validity_test_set extends cms_test_case
             }
         }
 
-        $substring_pairs = array(
-            array('BLOCK_IND_EITHER', array('BLOCK_PARAM_cache', null, null, null)),
-            array('BLOCK_IND_HOOKTYPE', array('BLOCK_main_custom_gfx_PARAM_param', null, null, null)),
+        $substring_pairs = [
+            ['BLOCK_IND_EITHER', ['BLOCK_PARAM_cache', null, null, null]],
+            ['BLOCK_IND_HOOKTYPE', ['BLOCK_main_custom_gfx_PARAM_param', null, null, null]],
             //array('BLOCK_IND_DEFAULT', 'default: test'),
-            array('BLOCK_IND_SUPPORTS_COMCODE', 'COMCODE_TAG_indent_EMBED'),
-            array('BLOCK_IND_ADVANCED', 'COMCODE_TAG_box_PARAM_options'),
-            array('BLOCK_IND_WHETHER', 'COMCODE_TAG_codebox_PARAM_numbers'),
-            array('SPACER_POST_MATCHER', 'SPACER_POST'),
-        );
+            ['BLOCK_IND_SUPPORTS_COMCODE', 'COMCODE_TAG_indent_EMBED'],
+            ['BLOCK_IND_ADVANCED', 'COMCODE_TAG_box_PARAM_options'],
+            ['BLOCK_IND_WHETHER', 'COMCODE_TAG_codebox_PARAM_numbers'],
+            ['SPACER_POST_MATCHER', 'SPACER_POST'],
+        ];
         foreach (array_keys($langs) as $lang) {
             foreach ($substring_pairs as $_parts) {
                 list($_substring, $_str) = $_parts;
@@ -72,7 +72,7 @@ class lang_string_special_validity_test_set extends cms_test_case
                 }
                 if (is_array($_str)) {
                     $_str[] = $lang;
-                    $str = call_user_func_array(array($this, 'do_lang'), $_str);
+                    $str = call_user_func_array([$this, 'do_lang'], $_str);
                 } else {
                     $str = $this->do_lang($_str, null, null, null, $lang);
                 }
@@ -83,7 +83,7 @@ class lang_string_special_validity_test_set extends cms_test_case
             }
         }
 
-        $short_strings = array(
+        $short_strings = [
             'JANUARY_SHORT',
             'FEBRUARY_SHORT',
             'MARCH_SHORT',
@@ -103,7 +103,7 @@ class lang_string_special_validity_test_set extends cms_test_case
             'FRIDAY_SHORT',
             'SATURDAY_SHORT',
             'SUNDAY_SHORT',
-        );
+        ];
         foreach (array_keys($langs) as $lang) {
             foreach ($short_strings as $_str) {
                 $str = $this->do_lang($_str, null, null, null, $lang);

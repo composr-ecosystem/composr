@@ -39,9 +39,9 @@ class Hook_block_ui_renderers_newsletters
             return null;
         }
 
-        if (($parameter == 'param') && (in_array($block, array('main_newsletter_signup')))) { // newsletter list
+        if (($parameter == 'param') && (in_array($block, ['main_newsletter_signup']))) { // newsletter list
             $list = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', ['id', 'title']);
             foreach ($rows as $newsletter) {
                 $list->attach(form_input_list_entry(strval($newsletter['id']), $has_default && strval($newsletter['id']) == $default, get_translated_text($newsletter['title'])));
             }

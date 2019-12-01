@@ -26,7 +26,7 @@ class Hook_addon_registry_confluence
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_confluence
      */
     public function get_copyright_attribution()
     {
-        return array('Asa Kusuma');
+        return ['Asa Kusuma'];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_confluence
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_confluence
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_confluence
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/confluence.php',
             'data_custom/confluence_proxy.php',
             'lang_custom/EN/confluence.ini',
@@ -154,6 +154,6 @@ class Hook_addon_registry_confluence
             'data_custom/webfonts/adgs-icons.woff',
             'data_custom/webfonts/index.html',
             'sources_custom/hooks/modules/search/confluence.php',
-        );
+        ];
     }
 }

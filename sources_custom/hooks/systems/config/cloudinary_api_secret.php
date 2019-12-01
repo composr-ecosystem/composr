@@ -25,7 +25,7 @@ class Hook_config_cloudinary_api_secret
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLOUDINARY_API_SECRET',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_cloudinary_api_secret
             'public' => false,
 
             'addon' => 'cloudinary',
-        );
+        ];
     }
 
     /**

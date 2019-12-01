@@ -30,7 +30,7 @@ class Hook_config_primary_paypal_email
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRIMARY_PAYPAL_EMAIL',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_primary_paypal_email
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_dload_search_index
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DLOAD_SEARCH_INDEX',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_dload_search_index
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

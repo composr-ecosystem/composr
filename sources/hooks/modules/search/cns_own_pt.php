@@ -60,26 +60,26 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('PRIVATE_TOPICS');
         $info['default'] = (get_option('search_cns_own_pt') == '1');
-        $info['special_on'] = array();
-        $info['special_off'] = array('starter' => do_lang_tempcode('POST_SEARCH_STARTER'));
+        $info['special_on'] = [];
+        $info['special_off'] = ['starter' => do_lang_tempcode('POST_SEARCH_STARTER')];
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('topicview'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('topicview'),
                 'page_name' => 'topicview',
-            ),
-            array(
+            ],
+            [
                 'type' => 'non_guests',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -110,7 +110,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
     public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
     {
         if (get_member() == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
-            return array();
+            return [];
         }
 
         require_code('cns_forums');
@@ -135,7 +135,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         $where_clause .= 't_forum_id IS NULL AND (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ')';
         $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -151,9 +151,9 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
         }
 
         // Calculate and perform query
-        $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id', array('!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'), $where_clause, $content_where, $remapped_orderer, 'r.*', array('r.p_title'));
+        $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id', ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*', ['r.p_title']);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

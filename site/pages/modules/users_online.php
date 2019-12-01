@@ -30,7 +30,7 @@ class Module_users_online
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_users_online
             return null;
         }
 
-        return array(
-            '!' => array('USERS_ONLINE', 'menu/social/users_online'),
-        );
+        return [
+            '!' => ['USERS_ONLINE', 'menu/social/users_online'],
+        ];
     }
 
     public $title;
@@ -103,7 +103,7 @@ class Module_users_online
             warn_exit(do_lang_tempcode('TOO_MANY_USERS_ONLINE'));
         }
 
-        $rows = array();
+        $rows = [];
         sort_maps_by($members, 'last_activity');
         $members = array_reverse($members);
         foreach ($members as $row) {
@@ -117,7 +117,7 @@ class Module_users_online
             } elseif (($location == '') && ($row['the_page'] == '')) {
                 $at_url = new Tempcode();
             } else {
-                $map = array('page' => $row['the_page']);
+                $map = ['page' => $row['the_page']];
                 if ($row['the_type'] != '') {
                     $map['type'] = $row['the_type'];
                 }
@@ -130,7 +130,7 @@ class Module_users_online
             if (substr($ip, -1) == '*') { // sessions IPs are not full so try and resolve to full
                 if (is_guest($member_id)) {
                     if (addon_installed('stats')) {
-                        $test = ($row['the_session'] == '') ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', array('session_id' => $row['the_session']));
+                        $test = ($row['the_session'] == '') ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', ['session_id' => $row['the_session']]);
                         if (!empty($test)) {
                             $ip = $test;
                         } else {
@@ -151,14 +151,14 @@ class Module_users_online
             $link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id);
 
             if ($ip != '') { // System scheduler?
-                $rows[] = array('IP' => $ip, 'AT_URL' => $at_url, 'LOCATION' => $location, 'MEMBER' => $link, 'TIME' => integer_format(intval((time() - $last_activity) / 60)));
+                $rows[] = ['IP' => $ip, 'AT_URL' => $at_url, 'LOCATION' => $location, 'MEMBER' => $link, 'TIME' => integer_format(intval((time() - $last_activity) / 60))];
             }
         }
 
-        if ($rows === array()) {
+        if ($rows === []) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        return do_template('CNS_USERS_ONLINE_SCREEN', array('_GUID' => '2f63e2926c5a4690d905f97661afe6cc', 'TITLE' => $this->title, 'ROWS' => $rows));
+        return do_template('CNS_USERS_ONLINE_SCREEN', ['_GUID' => '2f63e2926c5a4690d905f97661afe6cc', 'TITLE' => $this->title, 'ROWS' => $rows]);
     }
 }

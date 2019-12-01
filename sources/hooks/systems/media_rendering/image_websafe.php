@@ -134,11 +134,11 @@ class Hook_media_rendering_image_websafe
             $url_direct_filesystem = get_custom_base_url() . '/' . $url_direct_filesystem;
         }
 
-        return do_template('MEDIA_IMAGE_WEBSAFE', array(
+        return do_template('MEDIA_IMAGE_WEBSAFE', [
             '_GUID' => '4dbc2c00dd049f9951c27d198065a4c2',
             'URL_SAFE' => $_url_safe,
             'URL_DIRECT_FILESYSTEM' => $url_direct_filesystem,
             'HOOK' => 'image_websafe'
-        ) + _create_media_template_parameters($url, $attributes, $as_admin, $source_member, true, $url_direct_filesystem));
+        ] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member, true, $url_direct_filesystem));
     }
 }

@@ -68,7 +68,7 @@ function comcode_convert_script()
 
         require_javascript('core_rich_media');
 
-        $out2 = globalise(do_template('FORM_SCREEN', array(
+        $out2 = globalise(do_template('FORM_SCREEN', [
             '_GUID' => 'dd82970fa1196132e07049871c51aab7',
             'TITLE' => $title,
             'SUBMIT_NAME' => do_lang_tempcode('VIEW'),
@@ -77,8 +77,8 @@ function comcode_convert_script()
             'HIDDEN' => $hidden,
             'URL' => find_script('comcode_convert', true),
             'FIELDS' => $fields,
-            'JS_FUNCTION_CALLS' => array('comcodeToolsComcodeConvertScript'),
-        )), null, '', true, true);
+            'JS_FUNCTION_CALLS' => ['comcodeToolsComcodeConvertScript'],
+        ]), null, '', true, true);
 
         $out2->evaluate_echo();
 
@@ -197,7 +197,7 @@ function reindent_code($text, $is_comcode)
         $text = str_replace('[/html]', '', $text);
     }
 
-    $html_tags_to_indent = array(
+    $html_tags_to_indent = [
         'div',
         'p',
         'table',
@@ -223,8 +223,8 @@ function reindent_code($text, $is_comcode)
         'header',
         'footer',
         'video',
-    );
-    $comcode_tags_to_indent = array(
+    ];
+    $comcode_tags_to_indent = [
         'surround',
         'box',
         'center',
@@ -239,7 +239,7 @@ function reindent_code($text, $is_comcode)
         'code',
         'hide',
         'quote',
-    );
+    ];
     $regexp = '#';
     foreach ($html_tags_to_indent as $tag) {
         if ($regexp != '#') {

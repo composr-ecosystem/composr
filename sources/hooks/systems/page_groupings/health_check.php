@@ -33,11 +33,11 @@ class Hook_page_groupings_health_check
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('health_check')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'menu/adminzone/tools/health_check', array('admin_health_check', array(), get_module_zone('admin_health_check')), do_lang_tempcode('health_check:HEALTH_CHECK'), 'health_check:DOC_HEALTH_CHECK'),
-        );
+        return [
+            ['tools', 'menu/adminzone/tools/health_check', ['admin_health_check', [], get_module_zone('admin_health_check')], do_lang_tempcode('health_check:HEALTH_CHECK'), 'health_check:DOC_HEALTH_CHECK'],
+        ];
     }
 }

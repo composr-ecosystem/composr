@@ -30,14 +30,14 @@ class Block_main_member_bar
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -55,7 +55,7 @@ class Block_main_member_bar
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => '22lg0bjjoy2j1jl25n4t1sh9xsgzj8no', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => '22lg0bjjoy2j1jl25n4t1sh9xsgzj8no', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_css('cns');
@@ -69,7 +69,7 @@ class Block_main_member_bar
         if (!is_guest($member_id)) { // Logged in user
             require_code('cns_general');
 
-            $member_info = cns_read_in_member_profile($member_id, array('avatar', 'username', 'num_points_advance', 'points', 'posts', 'primary_group_name', 'last_visit_date', 'new_topics', 'new_posts'));
+            $member_info = cns_read_in_member_profile($member_id, ['avatar', 'username', 'num_points_advance', 'points', 'posts', 'primary_group_name', 'last_visit_date', 'new_topics', 'new_posts']);
 
             $profile_url = $GLOBALS['CNS_DRIVER']->member_profile_url($member_id, true);
 
@@ -81,14 +81,14 @@ class Block_main_member_bar
 
             // Any unread PT-PPs?
             $pt_extra = ($num_unread_pps == 0) ? new Tempcode() : do_lang_tempcode('NUM_UNREAD', escape_html(integer_format($num_unread_pps)));
-            $private_topic_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), true, false, false, 'tab--pts');
+            $private_topic_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], true, false, false, 'tab--pts');
 
-            $bar = do_template('CNS_MEMBER_BAR', array(
+            $bar = do_template('CNS_MEMBER_BAR', [
                 '_GUID' => 's3kdsadf0p3wsjlcfksdj',
                 'AVATAR_URL' => isset($member_info['avatar']) ? $member_info['avatar'] : '',
                 'PROFILE_URL' => $profile_url,
                 'USERNAME' => $member_info['username'],
-                'LOGOUT_URL' => build_url(array('page' => 'login', 'type' => 'logout'), get_module_zone('login')),
+                'LOGOUT_URL' => build_url(['page' => 'login', 'type' => 'logout'], get_module_zone('login')),
                 'NUM_POINTS_ADVANCE' => isset($member_info['num_points_advance']) ? integer_format($member_info['num_points_advance']) : null,
                 'NUM_POINTS' => isset($member_info['points']) ? integer_format($member_info['points']) : '',
                 'NUM_POSTS' => integer_format($member_info['posts']),
@@ -96,12 +96,12 @@ class Block_main_member_bar
                 'LAST_VISIT_DATE_RAW' => strval($member_info['last_visit_time']),
                 'LAST_VISIT_DATE' => $member_info['last_visit_date'],
                 'PRIVATE_TOPIC_URL' => $private_topic_url,
-                'NEW_POSTS_URL' => build_url(array('page' => 'vforums', 'type' => 'browse'), get_module_zone('vforums')),
-                'UNREAD_TOPICS_URL' => build_url(array('page' => 'vforums', 'type' => 'unread'), get_module_zone('vforums')),
-                'RECENTLY_READ_URL' => build_url(array('page' => 'vforums', 'type' => 'recently_read'), get_module_zone('vforums')),
-                'INLINE_PERSONAL_POSTS_URL' => build_url(array('page' => 'topicview'), get_module_zone('topicview')),
-                'UNANSWERED_TOPICS_URL' => build_url(array('page' => 'vforums', 'type' => 'unanswered'), get_module_zone('vforums')),
-                'INVOLVED_TOPICS_URL' => build_url(array('page' => 'vforums', 'type' => 'involved'), get_module_zone('vforums')),
+                'NEW_POSTS_URL' => build_url(['page' => 'vforums', 'type' => 'browse'], get_module_zone('vforums')),
+                'UNREAD_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'unread'], get_module_zone('vforums')),
+                'RECENTLY_READ_URL' => build_url(['page' => 'vforums', 'type' => 'recently_read'], get_module_zone('vforums')),
+                'INLINE_PERSONAL_POSTS_URL' => build_url(['page' => 'topicview'], get_module_zone('topicview')),
+                'UNANSWERED_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'unanswered'], get_module_zone('vforums')),
+                'INVOLVED_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'involved'], get_module_zone('vforums')),
                 'PT_EXTRA' => $pt_extra,
                 'NUM_UNREAD_PTS' => strval($num_unread_pps),
                 'NEW_TOPICS' => integer_format($member_info['new_topics']),
@@ -110,23 +110,23 @@ class Block_main_member_bar
                 'LINKS' => $links,
                 'LINKS_ECOMMERCE' => $links_ecommerce,
                 'DETAILS' => $details,
-            ));
+            ]);
         } else { // Guest
             list($full_url, $login_url, $join_url) = get_login_url();
-            $bar = do_template('CNS_GUEST_BAR', array(
+            $bar = do_template('CNS_GUEST_BAR', [
                 '_GUID' => '3b613deec9d4786f5b53dbd52af00d3c',
                 'LOGIN_URL' => $login_url,
                 'JOIN_URL' => $join_url,
                 'FULL_LOGIN_URL' => $full_url,
-                'NEW_POSTS_URL' => build_url(array('page' => 'vforums', 'type' => 'browse'), get_module_zone('vforums')),
-                'UNANSWERED_TOPICS_URL' => build_url(array('page' => 'vforums', 'type' => 'unanswered'), get_module_zone('vforums')),
-            ));
+                'NEW_POSTS_URL' => build_url(['page' => 'vforums', 'type' => 'browse'], get_module_zone('vforums')),
+                'UNANSWERED_TOPICS_URL' => build_url(['page' => 'vforums', 'type' => 'unanswered'], get_module_zone('vforums')),
+            ]);
         }
 
-        return do_template('BLOCK_MAIN_MEMBER_BAR', array(
+        return do_template('BLOCK_MAIN_MEMBER_BAR', [
             '_GUID' => '0ef12f7b17b7b40dca473db519e58a52',
             'BLOCK_ID' => $block_id,
             'BAR' => $bar,
-        ));
+        ]);
     }
 }

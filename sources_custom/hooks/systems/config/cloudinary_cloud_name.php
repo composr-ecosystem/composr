@@ -25,7 +25,7 @@ class Hook_config_cloudinary_cloud_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLOUDINARY_CLOUD_NAME',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_cloudinary_cloud_name
             'public' => false,
 
             'addon' => 'cloudinary',
-        );
+        ];
     }
 
     /**

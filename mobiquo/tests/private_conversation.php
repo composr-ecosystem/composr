@@ -22,13 +22,13 @@ function new_conversation_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
-            array('%admin'),
+        [
+            ['%admin'],
             '%subject',
             '%body',
-            array(),
+            [],
             '',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -42,13 +42,13 @@ function reply_conversation_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '2',
             '%test_text_body',
             '%test subject',
-            array(''),
+            [''],
             '',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -62,11 +62,11 @@ function invite_participant_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
-            array('%test'),
+        [
+            ['%test'],
             '2',
             '%invite_reason',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -80,10 +80,10 @@ function get_conversations_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             0,
             9,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -97,12 +97,12 @@ function get_conversation_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '2',
             0,
             5,
             true,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -116,10 +116,10 @@ function get_quote_conversation_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '2',
             '2',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -133,10 +133,10 @@ function delete_conversation_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '2',
             2,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -150,9 +150,9 @@ function mark_conversation_unread_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '5',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -166,7 +166,7 @@ function mark_conversation_read_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array()
+        []
     );
     print_mobiquo_result($result);
 }

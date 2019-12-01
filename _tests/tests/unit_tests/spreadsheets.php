@@ -25,52 +25,52 @@ class spreadsheets_test_set extends cms_test_case
         require_code('files_spreadsheets_read');
         require_code('files_spreadsheets_write');
 
-        $this->files = array(
+        $this->files = [
             'test.csv',
             'test-scsv.txt',
             'test-tsv.txt',
-        );
+        ];
         if (addon_installed('enhanced_spreadsheets')) {
-            $this->files = array_merge($this->files, array(
+            $this->files = array_merge($this->files, [
                 'test.ods',
                 'test.xlsx',
-            ));
+            ]);
         }
 
-        $this->expected = array();
+        $this->expected = [];
 
-        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_RAW] = array(
-            array('A', 'B', 'C'),
-            array('A1', 'B1', 'C1'),
-            array('A2', 'B2', 'C2'),
-            array('', '', 'C3'),
-            array('A4', '', ''),
-        );
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_RAW] = [
+            ['A', 'B', 'C'],
+            ['A1', 'B1', 'C1'],
+            ['A2', 'B2', 'C2'],
+            ['', '', 'C3'],
+            ['A4', '', ''],
+        ];
 
-        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS] = array(
-            array('A1', 'B1', 'C1'),
-            array('A2', 'B2', 'C2'),
-            array('', '', 'C3'),
-            array('A4', '', ''),
-        );
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS] = [
+            ['A1', 'B1', 'C1'],
+            ['A2', 'B2', 'C2'],
+            ['', '', 'C3'],
+            ['A4', '', ''],
+        ];
 
-        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_NAMED_FIELDS] = array(
-            array('A' => 'A1', 'B' => 'B1', 'C' => 'C1'),
-            array('A' => 'A2', 'B' => 'B2', 'C' => 'C2'),
-            array('A' => '', 'B' => '', 'C' => 'C3'),
-            array('A' => 'A4', 'B' => '', 'C' => ''),
-        );
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_NAMED_FIELDS] = [
+            ['A' => 'A1', 'B' => 'B1', 'C' => 'C1'],
+            ['A' => 'A2', 'B' => 'B2', 'C' => 'C2'],
+            ['A' => '', 'B' => '', 'C' => 'C3'],
+            ['A' => 'A4', 'B' => '', 'C' => ''],
+        ];
     }
 
     public function testRead()
     {
-        $exts = array();
+        $exts = [];
         foreach ($this->files as $file) {
             foreach ($this->expected as $algorithm => $expected) {
                 $this->assertTrue(is_spreadsheet_readable($file));
 
                 $sheet_reader = spreadsheet_open_read(get_file_base() . '/_tests/assets/spreadsheets/' . $file, $file, $algorithm);
-                $rows = array();
+                $rows = [];
                 while (($row = $sheet_reader->read_row()) !== false) {
                     $rows[] = $row;
                 }
@@ -117,7 +117,7 @@ class spreadsheets_test_set extends cms_test_case
 
                 // Read back in and compare
                 $sheet_reader = spreadsheet_open_read($path, $file, $algorithm);
-                $rows = array();
+                $rows = [];
                 while (($row = $sheet_reader->read_row()) !== false) {
                     $rows[] = $row;
                 }

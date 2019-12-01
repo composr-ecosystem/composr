@@ -77,7 +77,7 @@ class calendar_events_test_set extends cms_test_case
 
         // Given an event shifted to a different recurrence, ensure the dates do shift correctly...
 
-        $event = array(
+        $event = [
             'e_start_day' => 8,
             'e_start_month' => 10,
             'e_start_year' => 2012,
@@ -94,14 +94,14 @@ class calendar_events_test_set extends cms_test_case
             'e_do_timezone_conv' => 1,
             'e_recurrence' => 'monthly',
             'e_recurrences' => null,
-        );
+        ];
         $event = adjust_event_dates_for_a_recurrence('2012-11-9', $event, 'Europe/London');
         $this->assertTrue($event['e_start_month'] == 11);
         $this->assertTrue($event['e_end_month'] == 11);
 
         // And now check timezones are respected for a negative timezone case viewed from the same timezone it was added in...
 
-        $event = array(
+        $event = [
             'e_start_day' => 30, // 29th local time
             'e_start_month' => 7,
             'e_start_year' => 2015,
@@ -118,13 +118,13 @@ class calendar_events_test_set extends cms_test_case
             'e_do_timezone_conv' => 1,
             'e_recurrence' => '',
             'e_recurrences' => null,
-        );
+        ];
         $event = adjust_event_dates_for_a_recurrence('2015-07-29', $event, 'America/Guyana');
         $this->assertTrue($event['e_start_day'] == 30);
 
         // More complex case...
 
-        $event = array(
+        $event = [
             'e_start_day' => 1, // 1st Tuesday of November 2012 = 6th
             'e_start_month' => 11,
             'e_start_year' => 2012,
@@ -141,7 +141,7 @@ class calendar_events_test_set extends cms_test_case
             'e_do_timezone_conv' => 1,
             'e_recurrence' => 'monthly',
             'e_recurrences' => null,
-        );
+        ];
         $event = adjust_event_dates_for_a_recurrence('2012-12-4', $event, 'Europe/London'); // 1st Tuesday of December 2012
         $this->assertTrue($event['e_start_day'] == 4); // 1st Tuesday of December = 4th
         $this->assertTrue($event['e_start_month'] == 12);
@@ -168,7 +168,7 @@ class calendar_events_test_set extends cms_test_case
             return;
         }
 
-        foreach (array('0', '1') as $ssw) {
+        foreach (['0', '1'] as $ssw) {
             require_code('config2');
             set_option('ssw', $ssw);
 
@@ -196,7 +196,7 @@ class calendar_events_test_set extends cms_test_case
             return;
         }
 
-        $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         // The dates (2012/1/1, 2012/1/8, and 2012/1/9) found from looking at an actual calendar
 
@@ -617,7 +617,7 @@ class calendar_events_test_set extends cms_test_case
         }
 
         $this->event_id = add_calendar_event(8, 'none', null, 0, 'test_event', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, null, 1, null, 1, 1, 1, 1, '', null, 0, null, null, null);
-        $this->assertTrue('test_event' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', array('id' => $this->event_id))));
+        $this->assertTrue('test_event' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', ['id' => $this->event_id])));
     }
 
     public function testEditCalendarEvent()
@@ -627,7 +627,7 @@ class calendar_events_test_set extends cms_test_case
         }
 
         edit_calendar_event($this->event_id, 8, 'none', null, 0, 'test_event1', '', 3, 2010, 1, 10, 'day_of_month', 10, 15, null, null, null, 'day_of_month', null, null, get_users_timezone(), 1, null, '', '', 1, 1, 1, 1, '');
-        $this->assertTrue('test_event1' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', array('id' => $this->event_id))));
+        $this->assertTrue('test_event1' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', ['id' => $this->event_id])));
     }
 
     public function testDeleteCalendarEvent()
@@ -645,9 +645,9 @@ class calendar_events_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue(normalise_time_array(array(-10, 1, 1, 2, 2017), 'Europe/London') == array(50, 0, 1, 2, 2017)); // Roll-backward via time
+        $this->assertTrue(normalise_time_array([-10, 1, 1, 2, 2017], 'Europe/London') == [50, 0, 1, 2, 2017]); // Roll-backward via time
 
-        $this->assertTrue(normalise_time_array(array(null, null, 13, 1, 2017), 'Europe/London') == array(null, null, 1, 1, 2018)); // Roll-forward, no time
+        $this->assertTrue(normalise_time_array([null, null, 13, 1, 2017], 'Europe/London') == [null, null, 1, 1, 2018]); // Roll-forward, no time
     }
 }
 

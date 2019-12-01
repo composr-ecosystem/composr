@@ -30,7 +30,7 @@ class Module_admin_lang
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,18 +51,18 @@ class Module_admin_lang
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        $ret = array(
-            'browse' => array('TRANSLATE_CODE', 'menu/adminzone/style/language/language'),
-        );
+        $ret = [
+            'browse' => ['TRANSLATE_CODE', 'menu/adminzone/style/language/language'],
+        ];
         if (!$be_deferential) {
-            $ret += array(
-                'criticise' => array('CRITICISE_LANGUAGE_PACK', 'menu/adminzone/style/language/criticise_language'),
-            );
+            $ret += [
+                'criticise' => ['CRITICISE_LANGUAGE_PACK', 'menu/adminzone/style/language/criticise_language'],
+            ];
 
             if ((multi_lang()) && (multi_lang_content())) {
-                $ret += array(
-                    'content' => array('TRANSLATE_CONTENT', 'menu/adminzone/style/language/language_content'),
-                );
+                $ret += [
+                    'content' => ['TRANSLATE_CONTENT', 'menu/adminzone/style/language/language_content'],
+                ];
             }
         }
         return $ret;
@@ -128,16 +128,16 @@ class Module_admin_lang
             } else {
                 $search = get_param_string('search', '', INPUT_FILTER_GET_COMPLEX);
                 if ($search != '') {
-                    breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE'))));
+                    breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                     breadcrumb_set_self(do_lang_tempcode('RESULTS'));
 
                     $this->title = get_screen_title('TRANSLATE_CODE');
                 } else {
-                    breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE'))));
+                    breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('TRANSLATE_CODE')]]);
                     breadcrumb_set_self(do_lang_tempcode('FILE'));
 
                     $lang_file = get_param_string('lang_file');
-                    $this->title = get_screen_title('_TRANSLATE_CODE', true, array(escape_html($lang_file), escape_html(lookup_language_full_name($lang))));
+                    $this->title = get_screen_title('_TRANSLATE_CODE', true, [escape_html($lang_file), escape_html(lookup_language_full_name($lang))]);
                 }
             }
         }
@@ -238,9 +238,9 @@ class Module_admin_lang
             $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
         }
 
-        $post_url = get_self_url(false, false, array(), false, true);
+        $post_url = get_self_url(false, false, [], false, true);
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'ee6bdea3661cb4736173cac818a769e5',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -251,7 +251,7 @@ class Module_admin_lang
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => $text,
-        ));
+        ]);
     }
 
     /**
@@ -264,9 +264,9 @@ class Module_admin_lang
     public function find_lang_matches($old, $lang)
     {
         // Search for pretranslated content
-        $potentials = $GLOBALS['SITE_DB']->query_select('translate', array('id'), array('text_original' => $old, 'language' => get_site_default_lang()));
+        $potentials = $GLOBALS['SITE_DB']->query_select('translate', ['id'], ['text_original' => $old, 'language' => get_site_default_lang()]);
         foreach ($potentials as $potential) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'text_original', array('id' => $potential['id'], 'language' => $lang));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'text_original', ['id' => $potential['id'], 'language' => $lang]);
             if ($test !== null) {
                 return $test;
             }
@@ -302,7 +302,7 @@ class Module_admin_lang
 
         $files = '';
 
-        $missing = array();
+        $missing = [];
 
         if (fallback_lang() == $lang) {
             warn_exit(do_lang_tempcode('CANNOT_CRITICISE_BASE_LANG'));
@@ -345,28 +345,28 @@ class Module_admin_lang
                         }
 
                         if ($num_is != $num) {
-                            $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', array(
+                            $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', [
                                 '_GUID' => '424388712f07bde0a04d89b0f349a0de',
                                 'CRITICISM' => do_lang_tempcode('CRITICISM_PARAMETER_COUNT_MISMATCH', escape_html($key), escape_html($val)),
-                            ));
+                            ]);
                             $file->attach($crit);
                         }
 
                         unset($criticise_map[$key]);
                     } elseif (trim($val) != '') {
-                        $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', array(
+                        $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', [
                             '_GUID' => '1c06d1d7c26ed73787eef6bfd912f57a',
                             'CRITICISM' => do_lang_tempcode('CRITICISM_MISSING_STRING', escape_html($key), escape_html($val)),
-                        ));
+                        ]);
                         $file->attach($crit);
                     }
                 }
 
                 foreach ($criticise_map as $key => $val) {
-                    $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', array(
+                    $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', [
                         '_GUID' => '550018f24c0f677c50cd1bba96f24cc8',
                         'CRITICISM' => do_lang_tempcode('CRITICISM_EXTRA_STRING', escape_html($key)),
-                    ));
+                    ]);
                     $file->attach($crit);
                 }
             } else {
@@ -374,21 +374,21 @@ class Module_admin_lang
             }
 
             if (!$file->is_empty()) {
-                $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', array('_GUID' => '925ae4a8dc34fed864c3072734a9abe5', 'COMPLAINTS' => $file, 'FILENAME' => $file_base));
+                $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', ['_GUID' => '925ae4a8dc34fed864c3072734a9abe5', 'COMPLAINTS' => $file, 'FILENAME' => $file_base]);
                 $files .= $file_result->evaluate();/*Conserve memory*/
             }
         }
 
         if (!empty($missing)) {
             foreach ($missing as $missed) {
-                $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', array('_GUID' => 'c19b1e83b5119495b52baf942e829336', 'CRITICISM' => do_lang_tempcode('CRITICISM_MISSING_FILE', escape_html($missed))));
+                $crit = do_template('TRANSLATE_LANGUAGE_CRITICISM', ['_GUID' => 'c19b1e83b5119495b52baf942e829336', 'CRITICISM' => do_lang_tempcode('CRITICISM_MISSING_FILE', escape_html($missed))]);
                 $file->attach($crit);
             }
-            $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', array('_GUID' => '4ffab9265ea8c5a5e99a7b9fb23d15e1', 'COMPLAINTS' => $file, 'FILENAME' => do_lang_tempcode('NA_EM')));
+            $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', ['_GUID' => '4ffab9265ea8c5a5e99a7b9fb23d15e1', 'COMPLAINTS' => $file, 'FILENAME' => do_lang_tempcode('NA_EM')]);
             $files .= $file_result->evaluate();/*Conserve memory*/
         }
 
-        return do_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', array('_GUID' => '62d6f40ca69609a8fd33704a8a38fb6f', 'TITLE' => $this->title, 'FILES' => $files));
+        return do_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', ['_GUID' => '62d6f40ca69609a8fd33704a8a38fb6f', 'TITLE' => $this->title, 'FILES' => $files]);
     }
 
     /**
@@ -449,12 +449,12 @@ class Module_admin_lang
         $actions = make_string_tempcode('&nbsp;');
         $last_level = null;
         $too_many = (count($to_translate) == $max);
-        $ids_to_lookup = array();
+        $ids_to_lookup = [];
         foreach ($to_translate as $it) {
             $ids_to_lookup[] = $it['id'];
         }
         $names = find_lang_content_names($ids_to_lookup);
-        $_to_translate = array();
+        $_to_translate = [];
         foreach ($to_translate as $i => $it) {
             if ($it['importance_level'] == 0) {
                 continue; // Corrupt data
@@ -478,18 +478,18 @@ class Module_admin_lang
             $name = $names[$id];
 
             if ($translation_credit != '') {
-                $actions = do_template('TRANSLATE_ACTION', array(
+                $actions = do_template('TRANSLATE_ACTION', [
                     '_GUID' => 'f625cf15c9db5e5af30fc772a7f0d5ff',
                     'LANG_FROM' => $it['language'],
                     'LANG_TO' => $lang,
                     'NAME' => 'trans-' . strval($id),
                     'OLD' => $old,
-                ));
+                ]);
             }
 
             check_suhosin_request_quantity(2, strlen('trans_' . $name));
 
-            $line = do_template('TRANSLATE_LINE_CONTENT', array(
+            $line = do_template('TRANSLATE_LINE_CONTENT', [
                 '_GUID' => '87a0f5298ce9532839f3206cd0e06051',
                 'NAME' => $name,
                 'ID' => strval($id),
@@ -499,19 +499,19 @@ class Module_admin_lang
                 'TRANSLATION_CREDIT' => $translation_credit,
                 'PRIORITY' => $priority,
                 'LAST' => !isset($to_translate[$i + 1]),
-            ));
+            ]);
             $lines .= $line->evaluate(); /*XHTMLXHTML*/
 
             $last_level = $it['importance_level'];
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_content', 'lang' => $lang, 'start' => $start), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_content', 'lang' => $lang, 'start' => $start], '_SELF');
 
         $_GET['lang'] = $lang;
         require_code('templates_pagination');
         $pagination = pagination(do_lang('TRANSLATE_CONTENT'), $start, 'start', $max, 'max', $total, true);
 
-        return do_template('TRANSLATE_SCREEN_CONTENT_SCREEN', array(
+        return do_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
             '_GUID' => 'af732c5e595816db1c6f025c4b8fa6a2',
             'MAX' => integer_format($max),
             'TOTAL' => integer_format($total - $max),
@@ -525,7 +525,7 @@ class Module_admin_lang
             'TITLE' => $this->title,
             'URL' => $url,
             'PAGINATION' => $pagination,
-        ));
+        ]);
     }
 
     /**
@@ -551,10 +551,10 @@ class Module_admin_lang
             $lang_id = intval(substr($key, strlen('trans_')));
 
             if ($val != '') {
-                $GLOBALS['SITE_DB']->query_delete('translate', array('language' => $lang, 'id' => $lang_id), '', 1);
-                $importance_level = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'importance_level', array('id' => $lang_id));
+                $GLOBALS['SITE_DB']->query_delete('translate', ['language' => $lang, 'id' => $lang_id], '', 1);
+                $importance_level = $GLOBALS['SITE_DB']->query_select_value_if_there('translate', 'importance_level', ['id' => $lang_id]);
                 if ($importance_level !== null) {
-                    $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $lang_id, 'source_user' => get_member(), 'language' => $lang, 'importance_level' => $importance_level, 'text_original' => $val, 'text_parsed' => '', 'broken' => 0));
+                    $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $lang_id, 'source_user' => get_member(), 'language' => $lang, 'importance_level' => $importance_level, 'text_original' => $val, 'text_parsed' => '', 'broken' => 0]);
                 }
             }
         }
@@ -572,7 +572,7 @@ class Module_admin_lang
         // Show it worked / Refresh
         $url = post_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => '_SELF', 'type' => 'content', 'lang' => $lang, 'start' => get_param_integer('start', null)), '_SELF');
+            $_url = build_url(['page' => '_SELF', 'type' => 'content', 'lang' => $lang, 'start' => get_param_integer('start', null)], '_SELF');
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -603,11 +603,11 @@ class Module_admin_lang
                 'CHOOSE_EDIT_LIST_LANG_FILE',
                 escape_html(get_site_default_lang()),
                 escape_html(lookup_language_full_name(get_site_default_lang())),
-                array(
+                [
                     get_base_url() . '/code_editor.php',
                     escape_html(user_lang()),
                     escape_html(lookup_language_full_name(user_lang())),
-                )
+                ]
             );
             return $this->choose_lang($this->title, true, true, $choose_message);
         }
@@ -631,11 +631,11 @@ class Module_admin_lang
             if ($fields->is_empty()) {
                 inform_exit(do_lang_tempcode('NO_ENTRIES'));
             }
-            $post_url = build_url(array('page' => '_SELF', 'type' => '_code2'), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => '_code2'], '_SELF');
             $hidden = new Tempcode();
             $hidden->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(SELF_REDIRECT))));
             $hidden->attach(form_input_hidden('lang', $lang));
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => '2d7356fd2c4497ceb19450e65331c9c5',
                 'TITLE' => $this->title,
                 'HIDDEN' => $hidden,
@@ -644,7 +644,7 @@ class Module_admin_lang
                 'TEXT' => '',
                 'SUBMIT_ICON' => 'buttons/save',
                 'SUBMIT_NAME' => do_lang('TRANSLATE_CODE'),
-            ));
+            ]);
         }
         $lang_file = get_param_string('lang_file');
         if (!file_exists($map_b)) {
@@ -660,7 +660,7 @@ class Module_admin_lang
 
             // Work out what paths need to be writable...
 
-            $writable_paths = array('lang_custom', 'lang_custom/' . $lang);
+            $writable_paths = ['lang_custom', 'lang_custom/' . $lang];
 
             $cached_dir = get_custom_file_base() . '/caches/lang/' . $lang;
             if (!file_exists($cached_dir)) {
@@ -757,29 +757,29 @@ class Module_admin_lang
             }
 
             if ($translation_credit != '') {
-                $actions = do_template('TRANSLATE_ACTION', array(
+                $actions = do_template('TRANSLATE_ACTION', [
                     '_GUID' => '9e9a68cb2c1a1e23a901b84c9af2280b',
                     'LANG_FROM' => get_site_default_lang(),
                     'LANG_TO' => $lang,
                     'NAME' => 'trans-' . $name,
                     'OLD' => $_current,
-                ));
+                ]);
             }
 
-            $temp = do_template('TRANSLATE_LINE', array(
+            $temp = do_template('TRANSLATE_LINE', [
                 '_GUID' => '9cb331f5852ee043e6ad30b45aedc43b',
                 'DESCRIPTION' => $description,
                 'NAME' => $name,
                 'OLD' => str_replace('\n', "\n", $old),
                 'CURRENT' => $_current,
                 'ACTIONS' => $actions,
-            ));
+            ]);
             $lines .= $temp->evaluate();
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_code', 'lang_file' => $lang_file, 'lang' => $lang), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_code', 'lang_file' => $lang_file, 'lang' => $lang], '_SELF');
 
-        return do_template('TRANSLATE_SCREEN', array(
+        return do_template('TRANSLATE_SCREEN', [
             '_GUID' => 'b3429f8bd0b4eb79c33709ca43e3207c',
             'PAGE' => $lang_file,
             'TRANSLATION_CREDIT' => $translation_credit,
@@ -787,7 +787,7 @@ class Module_admin_lang
             'LINES' => $lines,
             'TITLE' => $this->title,
             'URL' => $url,
-        ));
+        ]);
     }
 
     /**
@@ -856,7 +856,7 @@ class Module_admin_lang
         persistent_cache_delete('LANGS_LIST');
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 

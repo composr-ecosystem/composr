@@ -43,8 +43,8 @@ class Hook_notification_error_occurred_cron extends Hook_notification__Staff
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['error_occurred_cron'] = array(do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_cron'));
+        $list = [];
+        $list['error_occurred_cron'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_cron')];
         return $list;
     }
 }

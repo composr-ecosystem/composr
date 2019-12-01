@@ -30,7 +30,7 @@ class Hook_config_supports_wide
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUPPORTS_WIDE',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_supports_wide
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

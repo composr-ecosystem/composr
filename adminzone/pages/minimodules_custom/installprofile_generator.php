@@ -24,21 +24,21 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Generate install profile';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '7888f341677b280b3f0e8290ce9c7268', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '7888f341677b280b3f0e8290ce9c7268', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 require_code('addons2');
 
 function find_blocks_in_page($page)
 {
-    $blocks = array();
+    $blocks = [];
     $page_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt';
     if (!is_file($page_path)) {
         $page_path = get_custom_file_base() . '/pages/comcode/' . get_site_default_lang() . '/' . $page . '.txt';
     }
     if (is_file($page_path)) {
         $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\[block.*\](.*)\[/block\]#U', $page_contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $full_tag = $matches[0][$i];
@@ -140,7 +140,7 @@ foreach (array_keys($hooks) as $hook) {
     if (!file_exists($path)) {
         $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';
     }
-    $_hook_bits = extract_module_functions($path, array('get_current_settings'));
+    $_hook_bits = extract_module_functions($path, ['get_current_settings']);
     if ($_hook_bits[0] !== null) {
         if (is_array($_hook_bits[0])) {
             $settings = call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]);
@@ -230,11 +230,11 @@ $profile .= <<<END
     {
 
 END;
-$config_options = $GLOBALS['SITE_DB']->query_select('config', array('*'));
+$config_options = $GLOBALS['SITE_DB']->query_select('config', ['*']);
 require_code('config2');
 foreach ($config_options as $option) {
     $name = $option['c_name'];
-    if (in_array($name, array('site_name', 'description', 'site_scope', 'copyright', 'staff_address', 'keywords', 'google_analytics', 'fixed_width', 'site_closed', 'closed', 'stats_store_time', 'show_content_tagging', 'show_content_tagging_inline', 'show_screen_actions', 'single_public_zone'))) {
+    if (in_array($name, ['site_name', 'description', 'site_scope', 'copyright', 'staff_address', 'keywords', 'google_analytics', 'fixed_width', 'site_closed', 'closed', 'stats_store_time', 'show_content_tagging', 'show_content_tagging_inline', 'show_screen_actions', 'single_public_zone'])) {
         continue; // These are set separately
     }
     $value = get_option($name);

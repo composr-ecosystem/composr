@@ -33,15 +33,15 @@ class Hook_page_groupings_banners
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('banners')) {
-            return array();
+            return [];
         }
 
         require_lang('banners');
 
-        return array(
-            array('cms', 'menu/cms/banners', array('cms_banners', array('type' => 'browse'), get_module_zone('cms_banners')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)')))))), 'banners:DOC_BANNERS'),
-            array('audit', 'menu/cms/banners', array('admin_banners', array('type' => 'browse'), get_module_zone('admin_banners')), do_lang_tempcode('banners:BANNER_STATISTICS'), 'banners:DOC_BANNERS'),
-            array('site_meta', 'menu/cms/banners', array('banners', array('type' => 'browse'), get_module_zone('banners')), do_lang_tempcode('banners:BANNERS')),
-        );
+        return [
+            ['cms', 'menu/cms/banners', ['cms_banners', ['type' => 'browse'], get_module_zone('cms_banners')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('banners:BANNERS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)')))))), 'banners:DOC_BANNERS'],
+            ['audit', 'menu/cms/banners', ['admin_banners', ['type' => 'browse'], get_module_zone('admin_banners')], do_lang_tempcode('banners:BANNER_STATISTICS'), 'banners:DOC_BANNERS'],
+            ['site_meta', 'menu/cms/banners', ['banners', ['type' => 'browse'], get_module_zone('banners')], do_lang_tempcode('banners:BANNERS')],
+        ];
     }
 }

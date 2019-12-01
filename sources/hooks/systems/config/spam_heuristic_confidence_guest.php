@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_confidence_guest
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_CONFIDENCE_GUEST',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_confidence_guest
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

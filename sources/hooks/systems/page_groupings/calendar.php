@@ -33,12 +33,12 @@ class Hook_page_groupings_calendar
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'menu/rich_content/calendar', array('cms_calendar', array('type' => 'browse'), get_module_zone('cms_calendar')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('calendar:CALENDAR'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)')))))), 'calendar:DOC_CALENDAR'),
-            array('social', 'menu/rich_content/calendar', array('calendar', array(), get_module_zone('calendar')), do_lang_tempcode('calendar:CALENDAR')),
-        );
+        return [
+            ['cms', 'menu/rich_content/calendar', ['cms_calendar', ['type' => 'browse'], get_module_zone('cms_calendar')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('calendar:CALENDAR'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'COUNT(*)')))))), 'calendar:DOC_CALENDAR'],
+            ['social', 'menu/rich_content/calendar', ['calendar', [], get_module_zone('calendar')], do_lang_tempcode('calendar:CALENDAR')],
+        ];
     }
 }

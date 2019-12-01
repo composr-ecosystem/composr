@@ -44,15 +44,15 @@ class Hook_notification_cns_choose_photo extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_member_photos')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_choose_photo'] = array(do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_choose_photo'));
+        $list = [];
+        $list['cns_choose_photo'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_choose_photo')];
         return $list;
     }
 }

@@ -28,11 +28,11 @@ class Hook_page_groupings_community_billboard
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('community_billboard')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/adminzone/audit/community_billboard', array('admin_community_billboard', array('type' => 'browse'), get_module_zone('admin_community_billboard')), do_lang_tempcode('community_billboard:COMMUNITY_BILLBOARD'), 'community_billboard:DOC_COMMUNITY_BILLBOARD'),
-        );
+        return [
+            ['audit', 'menu/adminzone/audit/community_billboard', ['admin_community_billboard', ['type' => 'browse'], get_module_zone('admin_community_billboard')], do_lang_tempcode('community_billboard:COMMUNITY_BILLBOARD'), 'community_billboard:DOC_COMMUNITY_BILLBOARD'],
+        ];
     }
 }

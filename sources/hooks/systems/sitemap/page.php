@@ -32,7 +32,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]+)(:browse)?$#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -69,7 +69,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
             return null;
         }
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*)(.*$)#', $page_link, $matches);
         $page = $matches[2];
         $extra = $matches[3];
@@ -86,15 +86,15 @@ class Hook_sitemap_page extends Hook_sitemap_base
         $path = end($details);
         $row = $this->_load_row_from_page_groupings($row, $zone, $page);
 
-        $struct = array(
+        $struct = [
             'title' => make_string_tempcode(escape_html(titleify($page))),
             'content_type' => 'page',
             'content_id' => $zone . ':' . $page,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => null,
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $path) : null,
@@ -107,20 +107,20 @@ class Hook_sitemap_page extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => (($meta_gather & SITEMAP_GATHER_DB_ROW) != 0) ? $row : null,
-            ),
-            'permissions' => array(
-                array(
+            ],
+            'permissions' => [
+                [
                     'type' => 'zone',
                     'zone_name' => $zone,
                     'is_owned_at_this_level' => false,
-                ),
-                array(
+                ],
+                [
                     'type' => 'page',
                     'zone_name' => $zone,
                     'page_name' => $page,
                     'is_owned_at_this_level' => true,
-                ),
-            ),
+                ],
+            ],
             'children' => null,
             'has_possible_children' => false,
 
@@ -129,13 +129,13 @@ class Hook_sitemap_page extends Hook_sitemap_base
             'sitemap_refreshfreq' => ($zone_default_page == $page) ? 'daily' : 'weekly',
 
             'privilege_page' => null,
-        );
+        ];
 
         switch ($details[0]) {
             case 'HTML':
             case 'HTML_CUSTOM':
                 $page_contents = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
-                $matches = array();
+                $matches = [];
                 if (preg_match('#<title[^>]*>#', $page_contents, $matches) != 0) {
                     $start = strpos($page_contents, $matches[0]) + strlen($matches[0]);
                     $end = strpos($page_contents, '</title>', $start);
@@ -162,7 +162,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                 if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
                     $struct['title'] = make_string_tempcode(do_lang('MODULE') . ': ' . $page);
 
-                    $matches = array();
+                    $matches = [];
                     $normal_path = str_replace('_custom', '', $path); // We want to find normal package, not package of an override
                     if (!is_file($normal_path)) {
                         $normal_path = $path;
@@ -176,7 +176,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                         if (file_exists($path_addon)) {
                             require_lang('zones');
                             require_code('zones2');
-                            $functions = extract_module_functions($path_addon, array('get_description'));
+                            $functions = extract_module_functions($path_addon, ['get_description']);
                             $description = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $path_addon);
                             $description = do_lang('FROM_ADDON', $package, $description);
                             $struct['description'] = comcode_to_tempcode($description);
@@ -216,7 +216,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
 
         $call_struct = true;
 
-        $children = array();
+        $children = [];
 
         $has_entry_points = true;
 
@@ -229,12 +229,12 @@ class Hook_sitemap_page extends Hook_sitemap_base
                 $use_page_groupings = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0);
                 $use_page_groupings_be_deferential = (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) && (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS) == 0);
 
-                $functions = extract_module_functions(get_file_base() . '/' . $path, array('get_entry_points', 'get_wrapper_icon'), array(
+                $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
                     $check_perms, // $check_perms
                     $this->get_member($options), // $member_id
                     $use_page_groupings, // $support_crosslinks
                     $use_page_groupings_be_deferential // $be_deferential
-                ));
+                ]);
 
                 $has_entry_points = false;
 
@@ -376,7 +376,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
 
                         $virtual_child_nodes = $ob->get_virtual_nodes($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options & ~SITEMAP_GEN_USE_PAGE_GROUPINGS_SUPPRESS, $zone, $meta_gather, true);
                         if ($virtual_child_nodes === null) {
-                            $virtual_child_nodes = array();
+                            $virtual_child_nodes = [];
                         }
                         foreach ($virtual_child_nodes as $child_node) {
                             if ((count($virtual_child_nodes) == 1) && (preg_match('#^' . preg_quote($page_link, '#') . ':browse(:[^:=]*$|$)#', $child_node['page_link']) != 0) && (!$require_permission_support) && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) && (empty($child_node['extra_meta']['is_a_category_tree_root']))) {
@@ -402,7 +402,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                 }
             }
 
-            if ($children == array()) {
+            if ($children == []) {
                 if (($struct['page_link'] == '') && (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0)) {
                     return null; // There's no reason for this Sitemap node
                 }
@@ -419,7 +419,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                 foreach ($children as $child_struct) {
                     call_user_func($callback, $child_struct);
                 }
-                $children = array();
+                $children = [];
             }
             $struct['children'] = array_values($children);
 

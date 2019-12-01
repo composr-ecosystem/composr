@@ -41,15 +41,15 @@ class Hook_task_cns_members_recache
         // Members
         $start = 0;
         do {
-            $members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id'), array(), '', 500, $start);
+            $members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], '', 500, $start);
             foreach ($members as $i => $member) {
                 task_log($this, 'Recaching member', $start + $i, $num_members);
 
                 cns_force_update_member_post_count($member['id']);
 
                 if ($num_warnings_total > 0) {
-                    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', array('w_member_id' => $member['id'], 'w_is_warning' => 1));
-                    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_cache_warnings' => $num_warnings), array('id' => $member['id']), '', 1);
+                    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_member_id' => $member['id'], 'w_is_warning' => 1]);
+                    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => $num_warnings], ['id' => $member['id']], '', 1);
                 }
             }
             $start += 500;

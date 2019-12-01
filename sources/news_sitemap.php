@@ -57,12 +57,12 @@ function build_news_sitemap()
 
     $start = 0;
     do {
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC', $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC', $max, $start);
 
         foreach ($rows as $row) {
-            $url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), $zone, array(), false, false, true);
+            $url = build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], $zone, [], false, false, true);
 
-            $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', array('id' => $row['news_category'])) !== null);
+            $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $row['news_category']]) !== null);
 
             $has_guest_category_access = has_category_access($guest_id, 'news', strval($row['news_category']));
             $has_member_category_access = true;
@@ -92,16 +92,16 @@ function build_news_sitemap()
                             ');
                 }
             }
-            $genres = array();
+            $genres = [];
             if ($is_blog) {
                 $genres[] = 'Blog';
             }
-            $_categories = array_merge(array($row['news_category']), collapse_1d_complexity('news_entry_category', $GLOBALS['SITE_DB']->query_select('news_category_entries', array('news_entry_category'), array('news_entry' => $row['id']))));
-            $categories = array();
+            $_categories = array_merge([$row['news_category']], collapse_1d_complexity('news_entry_category', $GLOBALS['SITE_DB']->query_select('news_category_entries', ['news_entry_category'], ['news_entry' => $row['id']])));
+            $categories = [];
             foreach ($_categories as $category) {
-                $categories[] = str_replace(' ', '', get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $category))));
+                $categories[] = str_replace(' ', '', get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $category])));
             }
-            foreach (array('PressRelease', 'Satire', 'OpEd', 'Opinion', 'UserGenerated') as $category) {
+            foreach (['PressRelease', 'Satire', 'OpEd', 'Opinion', 'UserGenerated'] as $category) {
                 if (in_array($category, $categories)) {
                     $genres[] = $category;
                 }

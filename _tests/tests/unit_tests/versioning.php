@@ -27,7 +27,7 @@ class versioning_test_set extends cms_test_case
 
     public function testGetDotted()
     {
-        $tests = array(
+        $tests = [
             '3 alpha 1' => '3.alpha1',
             '3.1 alpha 1' => '3.1.alpha1',
             '3.1.0 alpha 1' => '3.1.alpha1',
@@ -52,7 +52,7 @@ class versioning_test_set extends cms_test_case
             '3.1' => '3.1',
             '3.1.0' => '3.1',
             '3.1.1' => '3.1.1',
-        );
+        ];
         foreach ($tests as $from => $to) {
             $got = get_version_dotted__from_anything($from);
             $this->assertTrue($got == $to, 'Failed on ' . $from);

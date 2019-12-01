@@ -26,7 +26,7 @@ class Hook_addon_registry_calculatr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_calculatr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -99,7 +99,7 @@ This is coded as a "mini block", and serves as a good example of how you can use
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,11 +109,11 @@ This is coded as a "mini block", and serves as a good example of how you can use
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -133,10 +133,10 @@ This is coded as a "mini block", and serves as a good example of how you can use
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/calculatr.php',
             'sources_custom/miniblocks/main_calculator.php',
             'themes/default/javascript_custom/calculatr.js',
-        );
+        ];
     }
 }

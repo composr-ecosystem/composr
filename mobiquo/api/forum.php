@@ -28,8 +28,8 @@ function get_config_func($raw_params)
 
     require_code('database_search');
 
-    $banners_disabled = array();
-    $_banners_disabled = $GLOBALS['SITE_DB']->query_select('group_privileges', array('group_id'), array('the_page' => '', 'privilege' => 'banner_free'));
+    $banners_disabled = [];
+    $_banners_disabled = $GLOBALS['SITE_DB']->query_select('group_privileges', ['group_id'], ['the_page' => '', 'privilege' => 'banner_free']);
     foreach ($_banners_disabled as $b) {
         $banners_disabled[] = strval($b['group_id']);
     }
@@ -56,7 +56,7 @@ function get_config_func($raw_params)
 
     require_code('database_search');
 
-    $_config = array(
+    $_config = [
         'api_level' => '4',
         'is_open' => strval(1 - intval(get_option('site_closed'))),
         'offline' => strval(intval(get_option('site_closed'))),
@@ -118,7 +118,7 @@ function get_config_func($raw_params)
         'sso_signin' => '1',
         'sso_register' => '1',
         'native_register' => '1',
-        'reg_url' => static_evaluate_tempcode(build_url(array('page' => 'join'), '', array(), false, false, true)),
+        'reg_url' => static_evaluate_tempcode(build_url(['page' => 'join'], '', [], false, false, true)),
         'ignore_user' => addon_installed('chat') ? '1' : '0',
         'advanced_merge' => '1',
         'advanced_move' => '1',
@@ -145,7 +145,7 @@ function get_config_func($raw_params)
 
         'push' => '1',
         'push_type' => 'pm,sub,quote,newtopic,tag',
-    );
+    ];
 
     $is_server_call = false;
     $headers = apache_request_headers();
@@ -159,17 +159,17 @@ function get_config_func($raw_params)
     }
 
     if ($is_server_call) {
-        $_config += array(
+        $_config += [
             'sys_version' => float_to_raw_string(cms_version_number()),
             'version' => 'cms' . float_to_raw_string(cms_version_number()),
-        );
+        ];
     } else {
-        $_config += array(
+        $_config += [
             'version' => 'cms',
-        );
+        ];
     }
 
-    $config = array();
+    $config = [];
     foreach ($_config as $config_setting => $config_value) {
         switch ($config_setting) {
             case 'is_open':
@@ -243,21 +243,21 @@ function get_participated_forum_func($raw_params)
     $forum_object = new CMSForumRead();
 
     list($total_forums_num, $_forums) = $forum_object->get_participated_forums();
-    $forums = array();
+    $forums = [];
     foreach ($_forums as $pf) {
-        $forums[] = mobiquo_val(array(
+        $forums[] = mobiquo_val([
             'forum_id' => mobiquo_val(strval($pf['forum_id']), 'string'),
             'forum_name' => mobiquo_val($pf['forum_name'], 'base64'),
             'logo_url' => mobiquo_val('', 'string'),
             'is_protected' => mobiquo_val(false, 'boolean'),
             'new_post' => mobiquo_val($pf['new_post'], 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_forums_num' => mobiquo_val($total_forums_num, 'int'),
         'forums' => mobiquo_val($forums, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -316,11 +316,11 @@ function get_id_by_url_func($raw_params)
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'forum_id' => mobiquo_val(strval($arr['forum_id']), 'string'),
         'topic_id' => mobiquo_val(strval($arr['topic_id']), 'string'),
         'post_id' => mobiquo_val(strval($arr['post_id']), 'string'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -340,14 +340,14 @@ function get_board_stat_func($raw_params)
     $board_stats_object = new CMSBoardStats();
     $board_stats_result = $board_stats_object->get_board_stat();
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_threads' => mobiquo_val($board_stats_result['total_threads'], 'int'),
         'total_posts' => mobiquo_val($board_stats_result['total_posts'], 'int'),
         'total_members' => mobiquo_val($board_stats_result['total_members'], 'int'),
         'active_members' => mobiquo_val($board_stats_result['active_members'], 'int'),
         'guest_online' => mobiquo_val($board_stats_result['guest_online'], 'int'),
         'total_online' => mobiquo_val($board_stats_result['total_online'], 'int'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -364,7 +364,7 @@ function get_forum_status_func($raw_params)
 
     require_once(COMMON_CLASS_PATH_READ . '/forum_read.php');
 
-    $forum_ids = array();
+    $forum_ids = [];
     foreach ($params[0] as $_forum_id) {
         $forum_ids[] = intval($_forum_id);
     }
@@ -372,20 +372,20 @@ function get_forum_status_func($raw_params)
     $forum_object = new CMSForumRead();
     $_forums = $forum_object->get_forum_status($forum_ids);
 
-    $forums = array();
+    $forums = [];
     foreach ($_forums as $key => $val) {
-        $forums[] = mobiquo_val(array(
+        $forums[] = mobiquo_val([
             'forum_id' => mobiquo_val(strval($val['forum_id']), 'string'),
             'forum_name' => mobiquo_val($val['forum_name'], 'base64'),
             'logo_url' => mobiquo_val('', 'string'),
             'is_protected' => mobiquo_val(false, 'boolean'),
             'new_post' => mobiquo_val($val['new_post'], 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'forums' => mobiquo_val($forums, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -405,20 +405,20 @@ function get_smilies_func($raw_params)
     $forum_object = new CMSForumRead();
     $_smiley_categories = $forum_object->get_smilies();
 
-    $smiley_categories = array();
+    $smiley_categories = [];
     foreach ($_smiley_categories as $smiley_category => $_smilies) {
-        $smilies = array();
+        $smilies = [];
         foreach ($_smilies as $smiley) {
-            $smilies[] = mobiquo_val(array(
+            $smilies[] = mobiquo_val([
                 'code' => mobiquo_val($smiley['code'], 'base64'),
                 'url' => mobiquo_val($smiley['url'], 'string'),
-            ), 'struct');
+            ], 'struct');
         }
         $smiley_categories[$smiley_category] = mobiquo_val($smilies, 'array');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'list' => mobiquo_val($smiley_categories, 'struct'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }

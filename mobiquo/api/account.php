@@ -36,8 +36,8 @@ function sign_in_func($raw_params)
     $password = isset($params[4]) ? $params[4] : null;
 
     $account_read_object = new CMSAccountRead();
-    $custom_fields = array();
-    $_custom_fields = isset($params[5]) ? $params[5] : array();
+    $custom_fields = [];
+    $_custom_fields = isset($params[5]) ? $params[5] : [];
     $_custom_register_fields = $account_read_object->get_custom_register_fields();
     foreach ($_custom_register_fields as $_custom_register_field) {
         if (isset($_custom_fields[$_custom_register_field['name']])) {
@@ -50,9 +50,9 @@ function sign_in_func($raw_params)
 
     // Error
     if ($results['member_id'] === null) {
-        $arr = array(
+        $arr = [
             'status' => mobiquo_val($results['status'], 'string'),
-        );
+        ];
         if (!empty($results['result_text'])) {
             $arr['result_text'] = mobiquo_val($results['result_text'], 'base64');
         }
@@ -64,13 +64,13 @@ function sign_in_func($raw_params)
 
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_user_details($results['member_id']);
-    $user_group = array();
+    $user_group = [];
     foreach ($user_details['usergroup_id'] as $ugroup) {
-        $user_group[] = mobiquo_val(array(
+        $user_group[] = mobiquo_val([
             'usergroup_id' => mobiquo_val($ugroup, 'string'),
-        ), 'struct');
+        ], 'struct');
     }
-    $arr = array(
+    $arr = [
         'result' => mobiquo_val(true, 'boolean'),
         'status' => mobiquo_val($results['status'], 'string'),
         'register' => mobiquo_val($results['register'], 'boolean'),
@@ -95,11 +95,11 @@ function sign_in_func($raw_params)
         'max_png_size' => mobiquo_val($user_details['max_png_size'], 'int'),
         'max_jpg_size' => mobiquo_val($user_details['max_jpg_size'], 'int'),
         'post_countdown' => mobiquo_val($user_details['post_countdown'], 'int'),
-    );
+    ];
     if (isset($user_details['display_text'])) {
-        $arr += array(
+        $arr += [
             'display_text' => mobiquo_val($user_details['display_text'], 'base64'),
-        );
+        ];
     }
     if (isset($results['preview_topic_id'])) {
         $arr['preview_topic_id'] = mobiquo_val(strval($results['preview_topic_id']), 'string');
@@ -131,10 +131,10 @@ function forget_password_func($raw_params)
     $account_object = new CMSAccountWrite();
     $results = $account_object->forget_password($username, $token, $code);
 
-    $arr = array(
+    $arr = [
         'result' => mobiquo_val($results['result'], 'boolean'),
         'verified' => mobiquo_val($results['verified'], 'boolean'),
-    );
+    ];
     if (!empty($results['result_text'])) {
         $arr['result_text'] = mobiquo_val($results['result_text'], 'base64');
     }
@@ -208,11 +208,11 @@ function register_func($raw_params)
     //$custom_fields = isset($params[5]) ? $params[5] : array();    Register is old endpoint, doesn't support custom fields
 
     $account_object = new CMSAccountWrite();
-    $results = $account_object->register($username, $password, $email, $token, $code, array());
+    $results = $account_object->register($username, $password, $email, $token, $code, []);
 
-    $arr = array(
+    $arr = [
         'result' => mobiquo_val(true, 'boolean'),
-    );
+    ];
     if ($results['preview_topic_id'] !== null) {
         $arr['preview_topic_id'] = mobiquo_val(strval($results['preview_topic_id']), 'string');
     }
@@ -245,29 +245,29 @@ function prefetch_account_func($raw_params)
     $member_exists = $member !== null;
 
     $_custom_register_fields = $account_object->get_custom_register_fields();
-    $custom_register_fields = array();
+    $custom_register_fields = [];
     foreach ($_custom_register_fields as $_custom_register_field) {
-        $custom_register_fields[] = mobiquo_val(array(
+        $custom_register_fields[] = mobiquo_val([
             'name' => mobiquo_val($_custom_register_field['name'], 'base64'),
             'description' => mobiquo_val($_custom_register_field['description'], 'base64'),
             'key' => mobiquo_val($_custom_register_field['key'], 'string'),
             'default' => mobiquo_val($_custom_register_field['default'], 'string'),
             'type' => mobiquo_val($_custom_register_field['type'], 'string'),
             'options' => mobiquo_val($_custom_register_field['options'], 'string'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $arr = array(
+    $arr = [
         'result' => mobiquo_val($member_exists, 'boolean'),
         'custom_register_fields' => mobiquo_val($custom_register_fields, 'array'),
-    );
+    ];
     if ($member_exists) {
-        $arr += array(
+        $arr += [
             'user_id' => mobiquo_val($member['user_id'], 'string'),
             'login_name' => mobiquo_val($member['login_name'], 'base64'),
             'display_name' => mobiquo_val($member['display_name'], 'base64'),
             'avatar' => mobiquo_val($member['avatar_url'], 'string'),
-        );
+        ];
     }
 
     $response = mobiquo_val($arr, 'struct');
@@ -310,7 +310,7 @@ function sync_user_func($raw_params)
         warn_exit('Could not verify connection');
     }
 
-    $users = array();
+    $users = [];
     if (get_option('tapatalk_enable_sync_user') == '1') {
         require_once(COMMON_CLASS_PATH_READ . '/account_read.php');
 
@@ -318,10 +318,10 @@ function sync_user_func($raw_params)
         $users = $account_object->sync_members($start, $max);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'new_encrypt' => mobiquo_val(true, 'boolean'),
         'users' => mobiquo_val($users, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }

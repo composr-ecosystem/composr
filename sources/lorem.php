@@ -30,7 +30,7 @@ function init__lorem()
     $LOREM_AVOID_GLOBALISE = false;
 
     global $KNOWN_TEMPLATE_PARAMETERS;
-    $KNOWN_TEMPLATE_PARAMETERS = array();
+    $KNOWN_TEMPLATE_PARAMETERS = [];
 }
 
 /**
@@ -260,7 +260,7 @@ function placeholder_form_with_field($field_name)
     require_code('form_templates');
     $hidden = form_input_hidden($field_name, '0');
 
-    $form = do_lorem_template('FORM', array('TABINDEX' => placeholder_number(), 'HIDDEN' => $hidden, 'TEXT' => $text, 'FIELDS' => placeholder_fields(), 'URL' => placeholder_url(), 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => 'proceed'));
+    $form = do_lorem_template('FORM', ['TABINDEX' => placeholder_number(), 'HIDDEN' => $hidden, 'TEXT' => $text, 'FIELDS' => placeholder_fields(), 'URL' => placeholder_url(), 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => 'proceed']);
 
     return $form;
 }
@@ -370,7 +370,7 @@ function placeholder_options()
  */
 function placeholder_array($num_elements = 3)
 {
-    $array = array();
+    $array = [];
     for ($i = 1; $i <= $num_elements; $i++) {
         $array[] = 'test' . strval($i);
     }
@@ -501,9 +501,9 @@ function placeholder_blank()
 function placeholder_breadcrumbs()
 {
     $out = new Tempcode();
-    $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', array('URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase())));
-    $out->attach(do_lorem_template('BREADCRUMB_SEPARATOR', array()));
-    $out->attach(do_lorem_template('BREADCRUMB_LONE_WRAP', array('LABEL' => lorem_phrase())));
+    $out->attach(do_lorem_template('BREADCRUMB_LINK_WRAP', ['URL' => placeholder_url(), 'TOOLTIP' => '', 'LABEL' => lorem_phrase()]));
+    $out->attach(do_lorem_template('BREADCRUMB_SEPARATOR', []));
+    $out->attach(do_lorem_template('BREADCRUMB_LONE_WRAP', ['LABEL' => lorem_phrase()]));
     return $out;
 }
 
@@ -520,7 +520,7 @@ function placeholder_breadcrumbs()
  * @set templates css javascript xml text
  * @return Tempcode The Tempcode for this template
  */
-function do_lorem_template($codename, $parameters = array(), $lang = null, $light_error = false, $fallback = null, $suffix = '.tpl', $directory = 'templates')
+function do_lorem_template($codename, $parameters = [], $lang = null, $light_error = false, $fallback = null, $suffix = '.tpl', $directory = 'templates')
 {
     global $KNOWN_TEMPLATE_PARAMETERS;
     $KNOWN_TEMPLATE_PARAMETERS[$codename] = array_keys($parameters);
@@ -551,9 +551,9 @@ function lorem_globalise($middle, $message = null, $type = '', $include_header_a
     }
 
     $out = new Tempcode();
-    $out->attach(do_lorem_template('GLOBAL_HTML_WRAP', array(
+    $out->attach(do_lorem_template('GLOBAL_HTML_WRAP', [
         'MIDDLE' => $middle,
-    )));
+    ]));
 
     $out->handle_symbol_preprocessing();
 
@@ -567,7 +567,7 @@ function lorem_globalise($middle, $message = null, $type = '', $include_header_a
  */
 function placeholder_emoticons()
 {
-    $emoticons = array();
+    $emoticons = [];
     $emoticons[':constipated:'][] = 'EMOTICON_IMG_CODE_THEMED';
     $emoticons[':constipated:'][] = 'cns_emoticons/constipated';
     $emoticons[':constipated:'][] = ':constipated:';
@@ -607,7 +607,7 @@ function placeholder_emoticon_chooser()
     $em = new Tempcode();
     foreach (placeholder_emoticons() as $emo) {
         $code = $emo[2];
-        $em->attach(do_lorem_template('EMOTICON_CLICK_CODE', array('_GUID' => '93968e9ff0308fff92d1d45e433557e2', 'FIELD_NAME' => 'post', 'CODE' => $code, 'IMAGE' => apply_emoticons($code))));
+        $em->attach(do_lorem_template('EMOTICON_CLICK_CODE', ['_GUID' => '93968e9ff0308fff92d1d45e433557e2', 'FIELD_NAME' => 'post', 'CODE' => $code, 'IMAGE' => apply_emoticons($code)]));
     }
     return $em;
 }
@@ -661,73 +661,73 @@ function placeholder_pagination()
 {
     $selectors = new Tempcode();
     foreach (placeholder_array() as $k => $v) {
-        $selectors->attach(do_lorem_template('PAGINATION_PER_PAGE_OPTION', array(
+        $selectors->attach(do_lorem_template('PAGINATION_PER_PAGE_OPTION', [
             'SELECTED' => true,
             'VALUE' => strval($k),
             'NAME' => $v,
-        )));
+        ]));
     }
-    $per_page = do_lorem_template('PAGINATION_PER_PAGE', array(
+    $per_page = do_lorem_template('PAGINATION_PER_PAGE', [
         'HIDDEN' => '',
         'URL' => placeholder_url(),
         'MAX_NAME' => 'max',
         'SELECTORS' => $selectors,
-    ));
+    ]);
 
     $parts = new Tempcode();
     foreach (placeholder_array() as $k => $v) {
         $j = $k + 1;
         if ($k == 0) {
-            $parts->attach(do_lorem_template('PAGINATION_PAGE_NUMBER', array(
+            $parts->attach(do_lorem_template('PAGINATION_PAGE_NUMBER', [
                 'P' => strval($j),
-            )));
+            ]));
         } else {
-            $parts->attach(do_lorem_template('PAGINATION_PAGE_NUMBER_LINK', array(
+            $parts->attach(do_lorem_template('PAGINATION_PAGE_NUMBER_LINK', [
                 'P' => strval($j),
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
-            )));
+            ]));
         }
     }
-    $first = do_lorem_template('PAGINATION_CONTINUE_FIRST', array(
+    $first = do_lorem_template('PAGINATION_CONTINUE_FIRST', [
         'TITLE' => lorem_phrase(),
         'P' => placeholder_number(),
         'FIRST_URL' => placeholder_url(),
-    ));
-    $previous = do_lorem_template('PAGINATION_PREVIOUS_LINK', array(
+    ]);
+    $previous = do_lorem_template('PAGINATION_PREVIOUS_LINK', [
         'TITLE' => lorem_phrase(),
         'P' => placeholder_date_raw(),
         'URL' => placeholder_url(),
-    ));
-    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS', array(
+    ]);
+    $previous->attach(do_lorem_template('PAGINATION_PREVIOUS', [
         'TITLE' => lorem_phrase(),
         'P' => placeholder_date_raw(),
-    )));
-    $next = do_lorem_template('PAGINATION_NEXT_LINK', array(
+    ]));
+    $next = do_lorem_template('PAGINATION_NEXT_LINK', [
         'REL' => null,
         'TITLE' => lorem_phrase(),
         'NUM_PAGES' => placeholder_number(),
         'P' => placeholder_number(),
         'URL' => placeholder_url(),
-    ));
-    $next->attach(do_lorem_template('PAGINATION_NEXT', array(
+    ]);
+    $next->attach(do_lorem_template('PAGINATION_NEXT', [
         'TITLE' => lorem_phrase(),
         'P' => placeholder_date_raw(),
-    )));
-    $continues = do_lorem_template('PAGINATION_CONTINUE', array());
-    $last = do_lorem_template('PAGINATION_CONTINUE_LAST', array(
+    ]));
+    $continues = do_lorem_template('PAGINATION_CONTINUE', []);
+    $last = do_lorem_template('PAGINATION_CONTINUE_LAST', [
         'TITLE' => lorem_phrase(),
         'P' => placeholder_number(),
         'LAST_URL' => placeholder_url(),
-    ));
-    $pages_list = do_lorem_template('PAGINATION_LIST_PAGES', array(
+    ]);
+    $pages_list = do_lorem_template('PAGINATION_LIST_PAGES', [
         'URL' => placeholder_url(),
         'HIDDEN' => '',
         'START_NAME' => 'start',
         'LIST' => placeholder_options(),
-    ));
+    ]);
 
-    return do_lorem_template('PAGINATION_WRAP', array(
+    return do_lorem_template('PAGINATION_WRAP', [
         'TEXT_ID' => placeholder_random_id(),
         'PER_PAGE' => $per_page,
         'PREVIOUS' => $previous,
@@ -742,7 +742,7 @@ function placeholder_pagination()
         'MAX' => placeholder_number(),
         'MAX_ROWS' => placeholder_number(),
         'NUM_PAGES' => placeholder_number(),
-    ));
+    ]);
 }
 
 /**
@@ -753,7 +753,7 @@ function placeholder_pagination()
 function find_comcodes()
 {
     $zones = find_all_zones();
-    $files = array();
+    $files = [];
     foreach ($zones as $zone) {
         $z = ($zone == '') ? 'pages' : $zone;
         $files[$z] = find_all_pages($zone, 'comcode/' . fallback_lang(), 'txt');
@@ -769,7 +769,7 @@ function find_comcodes()
 function find_html()
 {
     $zones = find_all_zones();
-    $files = array();
+    $files = [];
     foreach ($zones as $zone) {
         $z = ($zone == '') ? 'pages' : $zone;
         $files[$z] = find_all_pages($zone, 'html/' . fallback_lang(), 'htm');
@@ -784,7 +784,7 @@ function find_html()
  */
 function find_all_previews__by_template()
 {
-    $all_previews = array();
+    $all_previews = [];
 
     $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
     ksort($hooks);
@@ -793,7 +793,7 @@ function find_all_previews__by_template()
             $previews = $ob->tpl_previews();
 
             foreach ($previews as $tpl => $function) {
-                $all_previews[$tpl] = array($hook, 'tpl_preview__' . $function);
+                $all_previews[$tpl] = [$hook, 'tpl_preview__' . $function];
             }
         }
     }
@@ -808,7 +808,7 @@ function find_all_previews__by_template()
  */
 function find_all_previews__by_screen()
 {
-    $all_previews = array();
+    $all_previews = [];
 
     $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
     foreach ($hooks as $hook => $ob) {
@@ -816,7 +816,7 @@ function find_all_previews__by_screen()
             $previews = $ob->tpl_previews();
             foreach ($previews as $tpl => $function) {
                 if (!array_key_exists('tpl_preview__' . $function, $all_previews)) {
-                    $all_previews['tpl_preview__' . $function] = array();
+                    $all_previews['tpl_preview__' . $function] = [];
                 }
                 $all_previews['tpl_preview__' . $function][] = $tpl;
             }
@@ -882,7 +882,7 @@ function render_screen_preview($template, $hook, $function)
     }
 
     // Render preview
-    $previews = call_user_func(array($ob, $function));
+    $previews = call_user_func([$ob, $function]);
 
     if ($text) {
         $previews[0] = with_whitespace($previews[0]);
@@ -903,7 +903,7 @@ function render_screen_preview($template, $hook, $function)
  */
 function get_text_templates()
 {
-    $text_templates = array(
+    $text_templates = [
         'templates/JS_BLOCK.tpl',
         'templates/CSS_NEED.tpl',
         'templates/CSS_NEED_FULL.tpl',
@@ -929,7 +929,7 @@ function get_text_templates()
         'templates/MENU_BRANCH_zone.tpl',
         'templates/MENU_SPACER_zone.tpl',
         'templates/MENU_zone.tpl',
-    );
+    ];
     return $text_templates;
 }
 

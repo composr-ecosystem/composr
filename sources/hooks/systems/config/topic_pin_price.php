@@ -30,7 +30,7 @@ class Hook_config_topic_pin_price
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRICE_topic_pin_price',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_topic_pin_price
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

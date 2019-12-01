@@ -80,14 +80,14 @@ function external_db_user_from_session()
 
     // Look for existing session. The particular system we are integrating has a ASP.net cookie session, and the ASP.net session contains the database session ID (yes, over-complex)
     cms_ini_set('allow_url_open', '1');
-    $opts = array(
-        'http' => array(
+    $opts = [
+        'http' => [
             'method' => "GET",
             'header' =>
                 "Accept-language: en\r\n" .
                 "Cookie: ASP.NET_SessionId=" . $cookie . "\r\n",
-        )
-    );
+        ]
+    ];
     $context = stream_context_create($opts);
     $url = 'https://' . $_SERVER['HTTP_HOST'] . '/DumpSession.aspx'; // Call a script we made in ASP.net, grabbing the DB session ID
     $session_id = file_get_contents($url, false, $context);
@@ -118,14 +118,14 @@ function external_db_user_sync($member_id, $record)
     }
     $new = ratchet_hash($record[$password_field], $salt);
 
-    $update_map = array(
+    $update_map = [
         'm_email_address' => $record[$email_address_field],
         'm_validated_email_confirm_code' => '',
         'm_password_compat_scheme' => '',
         'm_password_change_code' => '',
         'm_pass_hash_salted' => $new,
         'm_pass_salt' => $salt,
-    );
+    ];
 
     $username = $record[$username_field];
     if ($username != '') {
@@ -137,7 +137,7 @@ function external_db_user_sync($member_id, $record)
     //      This code has been originally written with the intent of providing a stepping stone, so we are not all that concerned about synching stuff back
     //      You could of course edit the other system to re-sync with Composr upon login
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, array('id' => $member_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
 }
 
 /**

@@ -44,11 +44,11 @@ class Hook_cron_downloads_followup_email
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Send download follow-up e-mails',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT member_id) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_logging WHERE member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval($last_run)) : 0,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**
@@ -123,9 +123,9 @@ class Hook_cron_downloads_followup_email
             $downloads = $GLOBALS['SITE_DB']->query($query);
             foreach ($downloads as $download) {
                 // Do a query to get download names and generate links
-                $the_download = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('id' => $download['id']), '', 1);
+                $the_download = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => $download['id']], '', 1);
                 $root = get_param_integer('root', db_get_first_id(), true);
-                $map = array('page' => 'downloads', 'type' => 'entry', 'id' => $download['id'], 'root' => ($root == db_get_first_id()) ? null : $root);
+                $map = ['page' => 'downloads', 'type' => 'entry', 'id' => $download['id'], 'root' => ($root == db_get_first_id()) ? null : $root];
                 $the_download_url = static_evaluate_tempcode(build_url($map, $zone));
                 $name = get_translated_text($the_download[0]['name']);
 
@@ -136,7 +136,7 @@ class Hook_cron_downloads_followup_email
                     echo 'downloads_followup_email: download name / download filename / download url = ' . $name . ' / ' . $the_download[0]['original_filename'] . ' / ' . $the_download_url . "\n";
                 }
 
-                $download_list->attach(do_template($download_list_template, array('DOWNLOAD_NAME' => $name, 'DOWNLOAD_FILENAME' => $the_download[0]['original_filename'], 'DOWNLOAD_URL' => $the_download_url)));
+                $download_list->attach(do_template($download_list_template, ['DOWNLOAD_NAME' => $name, 'DOWNLOAD_FILENAME' => $the_download[0]['original_filename'], 'DOWNLOAD_URL' => $the_download_url]));
                 $count++;
             }
             $s = ''; // Can be used to pluralise the word download in the subject line in the language .ini file if we have more than one download (better than using download(s))
@@ -145,7 +145,7 @@ class Hook_cron_downloads_followup_email
             }
             $subject_line = do_lang('SUBJECT_DOWNLOADS_FOLLOWUP_EMAIL', get_site_name(), $username, $s, $lang, false);
             // Pass download count, download list, and member ID to template.
-            $message = static_evaluate_tempcode(do_notification_template($mail_template, array('MEMBER_ID' => strval($member_id), 'DOWNLOAD_LIST' => $download_list, 'DOWNLOAD_COUNT' => strval($count))));
+            $message = static_evaluate_tempcode(do_notification_template($mail_template, ['MEMBER_ID' => strval($member_id), 'DOWNLOAD_LIST' => $download_list, 'DOWNLOAD_COUNT' => strval($count)]));
 
             if ($debug) {
                 echo 'downloads_followup_email: sending notification (if user allows download followup notifications) to ID #' . strval($member_id) . ' (' . $username . ')' . "\n";
@@ -156,7 +156,7 @@ class Hook_cron_downloads_followup_email
 
             // Send actual notification
             require_code('notifications');
-            dispatch_notification('downloads_followup_email', '', $subject_line, $message, array($member_id), A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('downloads_followup_email', '', $subject_line, $message, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
         }
     }
 }

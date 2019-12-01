@@ -33,7 +33,7 @@ class CMSPostRead
 
         foreach ($post_ids as $post_id) {
             $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-            $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+            $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
 
             if (!isset($post_details[0])) {
                 continue;
@@ -55,7 +55,7 @@ class CMSPostRead
             $quote_content .= '[quote="' . addslashes($poster) . '"]' . get_translated_text($post_details[0]['p_post'], $GLOBALS['FORUM_DB']) . "[/quote]\n";
         }
 
-        return array($quote_title, $quote_content);
+        return [$quote_title, $quote_content];
     }
 
     /**
@@ -69,7 +69,7 @@ class CMSPostRead
         cms_verify_parameters_phpdoc();
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+        $post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
 
         if (!isset($post_details[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
@@ -82,7 +82,7 @@ class CMSPostRead
 
         $edit_reason = '';
         if (has_actual_page_access(get_member(), 'admin_actionlog')) {
-            $_edit_reason = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_moderator_logs', 'l_reason', array('l_the_type' => 'EDIT_POST', 'l_param_a' => strval($post_id)));
+            $_edit_reason = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_moderator_logs', 'l_reason', ['l_the_type' => 'EDIT_POST', 'l_param_a' => strval($post_id)]);
             if ($_edit_reason !== null) {
                 $edit_reason = $_edit_reason;
             }
@@ -90,14 +90,14 @@ class CMSPostRead
 
         $content = strip_attachments_from_comcode(get_translated_text($post['p_post'], $GLOBALS['FORUM_DB']));
 
-        return array(
+        return [
             'post_id' => $post_id,
             'post_title' => $post['p_title'],
             'post_username' => $GLOBALS['FORUM_DRIVER']->get_username($post['p_poster']),
             'post_content' => $content,
             'edit_reason' => $edit_reason,
             'attachments' => get_post_attachments($post_id),
-        );
+        ];
     }
 
     /**

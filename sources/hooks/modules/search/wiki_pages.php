@@ -52,22 +52,22 @@ class Hook_search_wiki_pages extends FieldsSearchHook
 
         require_lang('wiki');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('WIKI_PAGES');
         $info['default'] = (get_option('search_wiki_pages') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_wiki_page');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('wiki'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('wiki'),
                 'page_name' => 'wiki',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -123,19 +123,19 @@ class Hook_search_wiki_pages extends FieldsSearchHook
 
         // Calculate our where clause (search)
         if ($author != '') {
-            return array();
+            return [];
         }
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
         $table = 'wiki_pages r';
-        $trans_fields = array('r.title' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['r.title' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_wiki_page', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('wiki_page', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'wiki_page', 'id');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -158,7 +158,7 @@ class Hook_search_wiki_pages extends FieldsSearchHook
     public function render($row)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
         push_lax_comcode(true);
         $summary = get_translated_text($row['the_description']);
         $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);

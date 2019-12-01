@@ -33,7 +33,7 @@ class Hook_startup_composr_homesite__for_outdated_version
         if (get_param_integer('keep_old_docs_test', 0) == 1 && $GLOBALS['DEV_MODE']) {
             $zone_name = 'docs9';
         }
-        $matches = array();
+        $matches = [];
         if (preg_match('#^docs(\d+)$#', $zone_name, $matches) != 0) {
             $docs_viewed_for_number = intval($matches[1]);
 
@@ -57,7 +57,7 @@ class Hook_startup_composr_homesite__for_outdated_version
                 $cat_id = $id;
             }
             if ($type == 'entry') {
-                $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', array('id' => $id));
+                $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', ['id' => $id]);
             }
             if ($cat_id !== null) {
                 require_code('composr_homesite');
@@ -67,7 +67,7 @@ class Hook_startup_composr_homesite__for_outdated_version
                 $addons_viewed_for_number = null;
 
                 while (($cat_id !== null) && ($latest_number !== null)) {
-                    $cat_details = $GLOBALS['SITE_DB']->query_select('download_categories', array('category', 'parent_id'), array('id' => $cat_id), '', 1);
+                    $cat_details = $GLOBALS['SITE_DB']->query_select('download_categories', ['category', 'parent_id'], ['id' => $cat_id], '', 1);
                     if (array_key_exists(0, $cat_details)) {
                         $cat_detail = $cat_details[0];
                         $cat = get_translated_text($cat_detail['category']);
@@ -80,7 +80,7 @@ class Hook_startup_composr_homesite__for_outdated_version
                             break;
                         }
 
-                        if ((preg_match('#^Version ([\d\.]+)$#', $cat, $matches) != 0) && (get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'category', array('id' => $cat_detail['parent_id']))) == 'Addons')) {
+                        if ((preg_match('#^Version ([\d\.]+)$#', $cat, $matches) != 0) && (get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'category', ['id' => $cat_detail['parent_id']])) == 'Addons')) {
                             $addons_viewed_for_dotted = get_version_dotted__from_anything($matches[1]);
                             list(, , , , $_addons_viewed_for_number) = get_version_components__from_dotted($addons_viewed_for_dotted);
                             $addons_viewed_for_number = intval($_addons_viewed_for_number);

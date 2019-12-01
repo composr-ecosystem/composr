@@ -26,8 +26,8 @@ class Hook_notification_booking_customer extends Hook_Notification
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['booking_customer'] = array(do_lang('booking:BOOKINGS'), do_lang('NOTIFICATION_TYPE_booking_customer'));
+        $list = [];
+        $list['booking_customer'] = [do_lang('booking:BOOKINGS'), do_lang('NOTIFICATION_TYPE_booking_customer')];
         return $list;
     }
 
@@ -45,7 +45,7 @@ class Hook_notification_booking_customer extends Hook_Notification
     public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
     {
         if (!addon_installed('booking')) {
-            return array();
+            return [];
         }
 
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);

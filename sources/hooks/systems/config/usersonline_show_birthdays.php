@@ -30,7 +30,7 @@ class Hook_config_usersonline_show_birthdays
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BIRTHDAYS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_usersonline_show_birthdays
             'public' => false,
 
             'addon' => 'users_online_block',
-        );
+        ];
     }
 
     /**

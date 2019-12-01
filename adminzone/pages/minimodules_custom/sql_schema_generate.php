@@ -30,7 +30,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Generate database schema';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '18339e23769bc683a20928549c8c8e11', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '18339e23769bc683a20928549c8c8e11', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 $filename = 'composr-erd.sql';

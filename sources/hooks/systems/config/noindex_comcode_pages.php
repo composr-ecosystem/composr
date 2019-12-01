@@ -30,7 +30,7 @@ class Hook_config_noindex_comcode_pages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOINDEX_COMCODE_PAGES',
             'type' => 'text',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_noindex_comcode_pages
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -34,13 +34,13 @@ class Hook_commandr_command_continue_import
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('import')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         require_lang('import');
 
         if ((array_key_exists('h', $options)) || (!array_key_exists(0, $parameters)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('continue_import', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('continue_import', ['h'], [true, true]), '', ''];
         } else {
             require_code('import');
 
@@ -50,9 +50,9 @@ class Hook_commandr_command_continue_import
 
             $where = null;
             if (array_key_exists(1, $parameters)) {
-                $where = array('imp_session' => $parameters[1]);
+                $where = ['imp_session' => $parameters[1]];
             }
-            $session = $GLOBALS['SITE_DB']->query_select('import_session', array('*'), $where, '', 2);
+            $session = $GLOBALS['SITE_DB']->query_select('import_session', ['*'], $where, '', 2);
             if (!array_key_exists(0, $session)) {
                 warn_exit(do_lang_tempcode('MISSING_IMPORT_SESSION'));
             }
@@ -82,19 +82,19 @@ class Hook_commandr_command_continue_import
                 require_code('forum/cns');
                 $GLOBALS['CNS_DRIVER'] = new Forum_driver_cns();
                 $GLOBALS['CNS_DRIVER']->db = $GLOBALS['SITE_DB'];
-                $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED = array();
+                $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED = [];
             }
 
             $info = $object->info();
             $_import_list = $info['import'];
             foreach ($_import_list as $import) {
-                if ($GLOBALS['SITE_DB']->query_select_value_if_there('import_parts_done', 'imp_session', array('imp_id' => $import, 'imp_session' => get_session_id())) === null) {
+                if ($GLOBALS['SITE_DB']->query_select_value_if_there('import_parts_done', 'imp_session', ['imp_id' => $import, 'imp_session' => get_session_id()]) === null) {
                     $function_name = 'import_' . $import;
                     cns_over_local();
-                    $func_output = call_user_func_array(array($object, $function_name), array($import_source, $db_table_prefix, $old_base_dir));
+                    $func_output = call_user_func_array([$object, $function_name], [$import_source, $db_table_prefix, $old_base_dir]);
                     cns_over_msn();
 
-                    $GLOBALS['SITE_DB']->query_insert('import_parts_done', array('imp_id' => $import, 'imp_session' => get_session_id()));
+                    $GLOBALS['SITE_DB']->query_insert('import_parts_done', ['imp_id' => $import, 'imp_session' => get_session_id()]);
                 }
             }
 
@@ -103,6 +103,6 @@ class Hook_commandr_command_continue_import
             set_database_index_maintenance(true);
         }
 
-        return array('', '', do_lang('SUCCESS'), '');
+        return ['', '', do_lang('SUCCESS'), ''];
     }
 }

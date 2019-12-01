@@ -31,16 +31,16 @@ function blocking_add($blocker, $blocked, $time = null)
         $time = time();
     }
 
-    $GLOBALS['SITE_DB']->query_delete('chat_blocking', array(
+    $GLOBALS['SITE_DB']->query_delete('chat_blocking', [
         'member_blocker' => $blocker,
         'member_blocked' => $blocked,
-    ), '', 1); // Just in case page refreshed
+    ], '', 1); // Just in case page refreshed
 
-    $GLOBALS['SITE_DB']->query_insert('chat_blocking', array(
+    $GLOBALS['SITE_DB']->query_insert('chat_blocking', [
         'member_blocker' => $blocker,
         'member_blocked' => $blocked,
         'date_and_time' => $time,
-    ));
+    ]);
 
     log_it('BLOCK_MEMBER', strval($blocker), strval($blocked));
 }
@@ -53,10 +53,10 @@ function blocking_add($blocker, $blocked, $time = null)
  */
 function blocking_remove($blocker, $blocked)
 {
-    $GLOBALS['SITE_DB']->query_delete('chat_blocking', array(
+    $GLOBALS['SITE_DB']->query_delete('chat_blocking', [
         'member_blocker' => $blocker,
         'member_blocked' => $blocked,
-    ), '', 1); // Just in case page refreshed
+    ], '', 1); // Just in case page refreshed
 
     log_it('UNBLOCK_MEMBER', strval($blocker), strval($blocked));
 }
@@ -74,16 +74,16 @@ function friend_add($likes, $liked, $time = null)
         $time = time();
     }
 
-    $GLOBALS['SITE_DB']->query_delete('chat_friends', array(
+    $GLOBALS['SITE_DB']->query_delete('chat_friends', [
         'member_likes' => $likes,
         'member_liked' => $liked,
-    ), '', 1); // Just in case page refreshed
+    ], '', 1); // Just in case page refreshed
 
-    $GLOBALS['SITE_DB']->query_insert('chat_friends', array(
+    $GLOBALS['SITE_DB']->query_insert('chat_friends', [
         'member_likes' => $likes,
         'member_liked' => $liked,
         'date_and_time' => $time,
-    ));
+    ]);
 
     // Send a notification
     require_code('chat');
@@ -96,9 +96,9 @@ function friend_add($likes, $liked, $time = null)
         $to_displayname = $GLOBALS['FORUM_DRIVER']->get_username($liked, true);
         $from_displayname = $GLOBALS['FORUM_DRIVER']->get_username($likes, true);
         $subject_line = do_lang('YOURE_MY_FRIEND_SUBJECT', $from_username, get_site_name(), null, get_lang($liked));
-        $befriend_url = build_url(array('page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes), get_module_zone('chat'), array(), false, false, true);
-        $message_raw = do_notification_lang('YOURE_MY_FRIEND_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), array($befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)), get_lang($liked));
-        dispatch_notification('new_friend', null, $subject_line, $message_raw, array($liked), $likes);
+        $befriend_url = build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $likes], get_module_zone('chat'), [], false, false, true);
+        $message_raw = do_notification_lang('YOURE_MY_FRIEND_BODY', comcode_escape($to_username), comcode_escape(get_site_name()), [$befriend_url->evaluate(), comcode_escape($from_username), comcode_escape($to_displayname), comcode_escape($from_displayname)], get_lang($liked));
+        dispatch_notification('new_friend', null, $subject_line, $message_raw, [$liked], $likes);
 
         // Log the action
         log_it('MAKE_FRIEND', strval($likes), strval($liked));
@@ -118,10 +118,10 @@ function friend_add($likes, $liked, $time = null)
  */
 function friend_remove($likes, $liked)
 {
-    $GLOBALS['SITE_DB']->query_delete('chat_friends', array(
+    $GLOBALS['SITE_DB']->query_delete('chat_friends', [
         'member_likes' => $likes,
         'member_liked' => $liked,
-    ), '', 1); // Just in case page refreshed
+    ], '', 1); // Just in case page refreshed
 
     log_it('DUMP_FRIEND', strval($likes), strval($liked));
 
@@ -158,8 +158,8 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
         $fields->attach(form_input_list(do_lang_tempcode('CHATROOM_LANG'), do_lang_tempcode('DESCRIPTION_CHATROOM_LANG'), 'room_lang', create_selection_list_langs()));
     }
     require_lang('permissions');
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '4381fe8487426cc3ae8afa090c2d4a44', 'SECTION_HIDDEN' => $allow2 == '' && $allow2_groups == '' && !$is_made_by_me, 'TITLE' => do_lang_tempcode($is_made_by_me ? 'PERMISSIONS' : 'LOWLEVEL_PERMISSIONS'))));
-    $fields->attach(form_input_username_multi(do_lang_tempcode('ALLOW_LIST'), do_lang_tempcode('DESCRIPTION_ALLOW_LIST'), 'allow_list', array_map(array($GLOBALS['FORUM_DRIVER'], 'get_username'), ($allow2 == '') ? array() : array_map('intval', explode(',', $allow2))), 0, true));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '4381fe8487426cc3ae8afa090c2d4a44', 'SECTION_HIDDEN' => $allow2 == '' && $allow2_groups == '' && !$is_made_by_me, 'TITLE' => do_lang_tempcode($is_made_by_me ? 'PERMISSIONS' : 'LOWLEVEL_PERMISSIONS')]));
+    $fields->attach(form_input_username_multi(do_lang_tempcode('ALLOW_LIST'), do_lang_tempcode('DESCRIPTION_ALLOW_LIST'), 'allow_list', array_map([$GLOBALS['FORUM_DRIVER'], 'get_username'], ($allow2 == '') ? [] : array_map('intval', explode(',', $allow2))), 0, true));
     if ((!$is_made_by_me) || (get_option('group_private_chatrooms') == '1')) {
         $usergroup_list = new Tempcode();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
@@ -185,14 +185,14 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
                         $val = do_lang('GROUP_MEMBERS', $val, integer_format($num_members));
                     }
                 }
-                $usergroup_list->attach(form_input_list_entry(strval($key), ($allow2_groups == '*') || (!empty(array_intersect(array($key), ($allow2_groups == '') ? array() : explode(',', $allow2_groups)))), $val));
+                $usergroup_list->attach(form_input_list_entry(strval($key), ($allow2_groups == '*') || (!empty(array_intersect([$key], ($allow2_groups == '') ? [] : explode(',', $allow2_groups)))), $val));
             }
         }
 
         $fields->attach(form_input_multi_list(do_lang_tempcode('ALLOW_LIST_GROUPS'), do_lang_tempcode($is_made_by_me ? 'DESCRIPTION_ALLOW_LIST_GROUPS_SIMPLE' : 'DESCRIPTION_ALLOW_LIST_GROUPS'), 'allow_list_groups', $usergroup_list));
     }
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '605aae34cbc2c168c8e77a62ab9b8a47', 'SECTION_HIDDEN' => $disallow2 == '' && $disallow2_groups == '', 'TITLE' => do_lang_tempcode('ADVANCED'))));
-    $fields->attach(form_input_username_multi(do_lang_tempcode('DISALLOW_LIST'), do_lang_tempcode('DESCRIPTION_DISALLOW_LIST'), 'disallow_list', array_map(array($GLOBALS['FORUM_DRIVER'], 'get_username'), ($disallow2 == '') ? array() : array_map('intval', explode(',', $disallow2))), 0, true));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '605aae34cbc2c168c8e77a62ab9b8a47', 'SECTION_HIDDEN' => $disallow2 == '' && $disallow2_groups == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
+    $fields->attach(form_input_username_multi(do_lang_tempcode('DISALLOW_LIST'), do_lang_tempcode('DESCRIPTION_DISALLOW_LIST'), 'disallow_list', array_map([$GLOBALS['FORUM_DRIVER'], 'get_username'], ($disallow2 == '') ? [] : array_map('intval', explode(',', $disallow2))), 0, true));
     if ((!$is_made_by_me) || (get_option('group_private_chatrooms') == '1')) {
         $usergroup_list = new Tempcode();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
@@ -218,7 +218,7 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
                         $val = do_lang('GROUP_MEMBERS', $val, integer_format($num_members));
                     }
                 }
-                $usergroup_list->attach(form_input_list_entry(strval($key), ($disallow2_groups == '*') || (!empty(array_intersect(array($key), ($disallow2_groups == '') ? array() : explode(',', $disallow2_groups)))), $val));
+                $usergroup_list->attach(form_input_list_entry(strval($key), ($disallow2_groups == '*') || (!empty(array_intersect([$key], ($disallow2_groups == '') ? [] : explode(',', $disallow2_groups)))), $val));
             }
         }
 
@@ -233,7 +233,7 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
         $fields->attach(content_review_get_fields('chat', ($id === null) ? null : strval($id)));
     }
 
-    return array($fields, new Tempcode());
+    return [$fields, new Tempcode()];
 }
 
 /**
@@ -300,7 +300,7 @@ function read_in_chat_perm_fields()
     }
     $disallow2_groups = array_key_exists('disallow_list_groups', $_POST) ? implode(',', $_POST['disallow_list_groups']) : '';
 
-    return array($allow2, $allow2_groups, $disallow2, $disallow2_groups);
+    return [$allow2, $allow2_groups, $disallow2, $disallow2_groups];
 }
 
 /**
@@ -322,7 +322,7 @@ function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups
     require_code('global4');
     prevent_double_submit('ADD_CHATROOM', null, $room_name);
 
-    $map = array(
+    $map = [
         'is_im' => $is_im,
         'room_name' => $room_name,
         'room_owner' => $room_owner,
@@ -331,7 +331,7 @@ function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups
         'disallow_list' => $disallow2,
         'disallow_list_groups' => $disallow2_groups,
         'room_language' => $room_language,
-    );
+    ];
     $map += insert_lang('c_welcome', $welcome, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('chat_rooms', $map, true);
 
@@ -369,14 +369,14 @@ function add_chatroom($welcome, $room_name, $room_owner, $allow2, $allow2_groups
  */
 function edit_chatroom($id, $welcome, $room_name, $room_owner, $allow2, $allow2_groups, $disallow2, $disallow2_groups, $room_language)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('c_welcome', 'room_name', 'is_im'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['c_welcome', 'room_name', 'is_im'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
     }
 
     $c_welcome = $rows[0]['c_welcome'];
 
-    $map = array(
+    $map = [
         'room_name' => $room_name,
         'room_owner' => $room_owner,
         'allow_list' => $allow2,
@@ -384,9 +384,9 @@ function edit_chatroom($id, $welcome, $room_name, $room_owner, $allow2, $allow2_
         'disallow_list' => $disallow2,
         'disallow_list_groups' => $disallow2_groups,
         'room_language' => $room_language,
-    );
+    ];
     $map += lang_remap('c_welcome', $c_welcome, $welcome);
-    $GLOBALS['SITE_DB']->query_update('chat_rooms', $map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('chat_rooms', $map, ['id' => $id], '', 1);
 
     delete_cache_entry('side_shoutbox');
 
@@ -411,16 +411,16 @@ function edit_chatroom($id, $welcome, $room_name, $room_owner, $allow2, $allow2_
  */
 function delete_chatroom($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('c_welcome', 'room_name', 'is_im'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['c_welcome', 'room_name', 'is_im'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
     }
 
     delete_lang($rows[0]['c_welcome']);
 
-    $GLOBALS['SITE_DB']->query_delete('chat_rooms', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('chat_rooms', ['id' => $id], '', 1);
 
-    delete_chat_messages(array('room_id' => $id));
+    delete_chat_messages(['room_id' => $id]);
 
     delete_cache_entry('side_shoutbox');
 
@@ -432,7 +432,7 @@ function delete_chatroom($id)
         log_it('DELETE_CHATROOM', strval($id), $rows[0]['room_name']);
     }
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'chat', 'm_resource_type' => 'room', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'chat', 'm_resource_type' => 'room', 'm_resource_id' => strval($id)]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -459,12 +459,12 @@ function delete_chat_messages($where)
     do {
         send_http_output_ping();
 
-        $messages = $GLOBALS['SITE_DB']->query_select('chat_messages', array('id', 'the_message'), $where, '', 400);
+        $messages = $GLOBALS['SITE_DB']->query_select('chat_messages', ['id', 'the_message'], $where, '', 400);
         foreach ($messages as $message) {
             delete_lang($message['the_message']);
-            $GLOBALS['SITE_DB']->query_delete('chat_messages', array('id' => $message['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('chat_messages', ['id' => $message['id']], '', 1);
         }
-    } while ($messages != array());
+    } while ($messages != []);
     cms_set_time_limit($old_limit);
 }
 
@@ -477,13 +477,13 @@ function delete_all_chatrooms()
     do {
         send_http_output_ping();
 
-        $c_welcomes = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('id', 'c_welcome'), array('is_im' => 0), '', 400);
+        $c_welcomes = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['id', 'c_welcome'], ['is_im' => 0], '', 400);
         foreach ($c_welcomes as $c_welcome) {
             delete_lang($c_welcome['c_welcome']);
-            $GLOBALS['SITE_DB']->query_delete('chat_rooms', array('id' => $c_welcome['id']));
-            delete_chat_messages(array('room_id' => $c_welcome['id']));
+            $GLOBALS['SITE_DB']->query_delete('chat_rooms', ['id' => $c_welcome['id']]);
+            delete_chat_messages(['room_id' => $c_welcome['id']]);
         }
-    } while ($c_welcomes != array());
+    } while ($c_welcomes != []);
     cms_set_time_limit($old_limit);
 
     delete_cache_entry('side_shoutbox');
@@ -501,13 +501,13 @@ function chatroom_ban_to($member_id, $id)
 {
     log_it('CHAT_BAN', strval($id), strval($member_id));
 
-    $disallow_list = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'disallow_list', array('id' => $id));
+    $disallow_list = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'disallow_list', ['id' => $id]);
     if ($disallow_list == '') {
         $disallow_list = strval($member_id);
     } else {
         $disallow_list .= ',' . strval($member_id);
     }
-    $GLOBALS['SITE_DB']->query_update('chat_rooms', array('disallow_list' => $disallow_list), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('chat_rooms', ['disallow_list' => $disallow_list], ['id' => $id], '', 1);
 }
 
 /**
@@ -520,9 +520,9 @@ function chatroom_unban_to($member_id, $id)
 {
     log_it('CHAT_UNBAN', strval($id), strval($member_id));
 
-    $disallow_list = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'disallow_list', array('id' => $id));
+    $disallow_list = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'disallow_list', ['id' => $id]);
     $_disallow_list = explode(',', $disallow_list);
-    $_disallow_list2 = array();
+    $_disallow_list2 = [];
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
     foreach ($_disallow_list as $dis) {
         if (((strval($member_id) != $dis)) && ($dis != $username)) {
@@ -530,7 +530,7 @@ function chatroom_unban_to($member_id, $id)
         }
     }
     $disallow_list = implode(',', $_disallow_list2);
-    $GLOBALS['SITE_DB']->query_update('chat_rooms', array('disallow_list' => $disallow_list), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('chat_rooms', ['disallow_list' => $disallow_list], ['id' => $id], '', 1);
 }
 
 /**
@@ -540,7 +540,7 @@ function chatroom_unban_to($member_id, $id)
  */
 function delete_chatroom_messages($id)
 {
-    delete_chat_messages(array('room_id' => $id));
+    delete_chat_messages(['room_id' => $id]);
 
     log_it('DELETE_ALL_MESSAGES', strval($id));
 

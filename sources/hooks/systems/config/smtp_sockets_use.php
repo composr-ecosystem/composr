@@ -30,7 +30,7 @@ class Hook_config_smtp_sockets_use
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLED',
             'type' => 'tick',
             'category' => 'SERVER',
@@ -43,7 +43,7 @@ class Hook_config_smtp_sockets_use
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

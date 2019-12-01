@@ -30,7 +30,7 @@ class Hook_config_separate_blogs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SEPARATE_BLOGS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_separate_blogs
             'public' => true,
 
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_sms_username
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERNAME',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -46,7 +46,7 @@ class Hook_config_sms_username
             'addon' => 'sms',
 
             'maintenance_code' => 'sms',
-        );
+        ];
     }
 
     /**

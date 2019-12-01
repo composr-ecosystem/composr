@@ -30,7 +30,7 @@ class Hook_config_homepage_slider_gallery
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY',
             'type' => 'line',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_homepage_slider_gallery
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

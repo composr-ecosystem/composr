@@ -31,9 +31,9 @@ class Hook_sw_random_quotes
     public function get_blocks()
     {
         if (!addon_installed('random_quotes')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_quotes' => array('YES', 'NO')), array());
+        return [['main_quotes' => ['YES', 'NO']], []];
     }
 }

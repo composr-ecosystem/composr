@@ -41,22 +41,22 @@ function tasks_script()
     $id = get_param_integer('id');
     $secure_ref = get_param_string('secure_ref', '');
 
-    $where = array(
+    $where = [
         'id' => $id,
         't_locked' => 0,
-    );
+    ];
     if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
         $where['t_secure_ref'] = $secure_ref;
     }
-    $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', array('*'), $where, '', 1);
+    $task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, '', 1);
     if (!array_key_exists(0, $task_rows)) {
         return; // Missing / locked / secure_ref error
     }
-    $GLOBALS['SITE_DB']->query_update('task_queue', array(
+    $GLOBALS['SITE_DB']->query_update('task_queue', [
         't_locked' => 1,
-    ), array(
+    ], [
         'id' => $id,
-    ), '', 1);
+    ], '', 1);
     $task_row = $task_rows[0];
 
     execute_task_background($task_row);
@@ -86,9 +86,9 @@ function execute_task_background($task_row)
     $hook = $task_row['t_hook'];
     $args = @unserialize($task_row['t_args']);
     if ($args === false) {
-        $GLOBALS['SITE_DB']->query_delete('task_queue', array(
+        $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
-        ), '', 1);
+        ], '', 1);
 
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
@@ -96,14 +96,14 @@ function execute_task_background($task_row)
     $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
     task_log_open();
     task_log(null, 'Starting task ' . $hook);
-    $result = call_user_func_array(array($ob, 'run'), $args);
+    $result = call_user_func_array([$ob, 'run'], $args);
     task_log(null, 'Finished task ' . $hook);
     task_log_close();
 
     set_mass_import_mode(false);
 
     if ($task_row['t_send_notification'] == 1) {
-        $attachments = array();
+        $attachments = [];
 
         require_code('notifications');
 
@@ -152,7 +152,7 @@ function execute_task_background($task_row)
             }
         }
 
-        dispatch_notification('task_completed', null, $subject, $message, array($requester), A_FROM_SYSTEM_PRIVILEGED, array('priority' => 2, 'attachments' => $attachments, 'send_immediately' => true));
+        dispatch_notification('task_completed', null, $subject, $message, [$requester], A_FROM_SYSTEM_PRIVILEGED, ['priority' => 2, 'attachments' => $attachments, 'send_immediately' => true]);
     }
 
     if (is_array($result)) {
@@ -164,15 +164,15 @@ function execute_task_background($task_row)
     }
 
     if ($result === false) {
-        $GLOBALS['SITE_DB']->query_update('task_queue', array(
+        $GLOBALS['SITE_DB']->query_update('task_queue', [
             't_locked' => 0,
-        ), array(
+        ], [
             'id' => $task_row['id'],
-        ), '', 1);
+        ], '', 1);
     } else {
-        $GLOBALS['SITE_DB']->query_delete('task_queue', array(
+        $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
-        ), '', 1);
+        ], '', 1);
     }
 
     $RUNNING_TASK = false;
@@ -192,7 +192,7 @@ function execute_task_background($task_row)
  * @param  boolean $send_notification Whether to send a notification of the task having come out of the queue
  * @return Tempcode UI (function may not return if the task is immediate and doesn't have a text/html result)
  */
-function call_user_func_array__long_task($plain_title, $title, $hook, $args = array(), $run_at_end_of_script = false, $force_immediate = false, $send_notification = true)
+function call_user_func_array__long_task($plain_title, $title, $hook, $args = [], $run_at_end_of_script = false, $force_immediate = false, $send_notification = true)
 {
     if (
         (get_param_integer('keep_debug_tasks', 0) == 1) ||
@@ -224,10 +224,10 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
         task_log_open();
         task_log(null, 'Starting task ' . $hook);
-        $result = call_user_func_array(array($ob, 'run'), $args);
+        $result = call_user_func_array([$ob, 'run'], $args);
         set_mass_import_mode(false);
         if ($result === false) {
-            $result = array(null, do_lang_tempcode('INTERNAL_ERROR'));
+            $result = [null, do_lang_tempcode('INTERNAL_ERROR')];
         }
         task_log(null, 'Finished task ' . $hook);
         task_log_close();
@@ -239,10 +239,10 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
             return inform_screen($title, do_lang_tempcode('SUCCESS'));
         }
         if (!isset($result[2])) {
-            $result[2] = array();
+            $result[2] = [];
         }
         if (!isset($result[3])) {
-            $result[3] = array();
+            $result[3] = [];
         }
         list($mime_type, $content_result, $headers, $ini_set) = $result;
 
@@ -277,11 +277,11 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
             if ($title === null) {
                 return is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result);
             }
-            return do_template('FULL_MESSAGE_SCREEN', array(
+            return do_template('FULL_MESSAGE_SCREEN', [
                 '_GUID' => '20e67ceb86e3bbd1e889c6ca116d7a77',
                 'TITLE' => $title,
                 'TEXT' => is_object($content_result) ? protect_from_escaping($content_result) : make_string_tempcode($content_result),
-            ));
+            ]);
         }
 
         // Some downloaded result
@@ -309,7 +309,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
     require_code('crypt');
     $secure_ref = get_secure_random_string();
 
-    $id = $GLOBALS['SITE_DB']->query_insert('task_queue', array(
+    $id = $GLOBALS['SITE_DB']->query_insert('task_queue', [
         't_title' => $plain_title,
         't_hook' => $hook,
         't_args' => serialize($args),
@@ -317,12 +317,12 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
         't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
         't_send_notification' => $send_notification ? 1 : 0,
         't_locked' => 0,
-    ), true);
+    ], true);
 
     if (GOOGLE_APPENGINE) {
         require_once('google/appengine/api/taskqueue/PushTask.php');
 
-        $task = new \google\appengine\api\taskqueue\PushTask('/data/tasks.php', array('id' => strval($id), 'secure_ref' => $secure_ref), array('name' => $hook . '_' . $secure_ref));
+        $task = new \google\appengine\api\taskqueue\PushTask('/data/tasks.php', ['id' => strval($id), 'secure_ref' => $secure_ref], ['name' => $hook . '_' . $secure_ref]);
         $task_name = $task->add();
     }
 

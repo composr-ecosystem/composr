@@ -192,12 +192,12 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
             if ($is_root) {
                 $overridable_privileges = _get_overridable_privileges_for_privilege_page(null);
             } else {
-                $overridable_privileges = array();
+                $overridable_privileges = [];
             }
         } else {
             $overridable_privileges = _get_overridable_privileges_for_privilege_page($node['privilege_page']);
             if ($type != 'page') {
-                $_overridable_privileges = array();
+                $_overridable_privileges = [];
                 foreach ($overridable_privileges as $override => $_cat_support) {
                     if (is_array($_cat_support)) {
                         $cat_support = $_cat_support[0];
@@ -234,7 +234,7 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
                 }
             }
         }
-        if (!empty(array_diff(array_keys($overridable_privileges), array('submit_highrange_content', 'submit_midrange_content', 'submit_lowrange_content')))) {
+        if (!empty(array_diff(array_keys($overridable_privileges), ['submit_highrange_content', 'submit_midrange_content', 'submit_lowrange_content']))) {
             $privilege_perms .= ' inherits_something="1"';
         }
 
@@ -304,17 +304,17 @@ function _get_view_access_for_node($admin_groups, $groups, $node)
     switch ($node['content_type']) {
         case 'root':
         case 'zone':
-            $where = array('zone_name' => $id);
-            $access = $GLOBALS['SITE_DB']->query_select('group_zone_access', array('group_id'), $where);
+            $where = ['zone_name' => $id];
+            $access = $GLOBALS['SITE_DB']->query_select('group_zone_access', ['group_id'], $where);
             $access = array_flip(collapse_1d_complexity('group_id', $access));
             break;
 
         case 'page':
         case 'comcode_page':
-            $where = array('zone_name' => $node['permissions'][1]['zone_name'], 'page_name' => $node['permissions'][1]['page_name']);
-            $negative_access = $GLOBALS['SITE_DB']->query_select('group_page_access', array('group_id'), $where);
+            $where = ['zone_name' => $node['permissions'][1]['zone_name'], 'page_name' => $node['permissions'][1]['page_name']];
+            $negative_access = $GLOBALS['SITE_DB']->query_select('group_page_access', ['group_id'], $where);
             $negative_access = array_flip(collapse_1d_complexity('group_id', $negative_access));
-            $access = array();
+            $access = [];
             foreach (array_keys($groups) as $group_id) {
                 if (!isset($negative_access[$group_id])) {
                     $access[$group_id] = true;
@@ -327,8 +327,8 @@ function _get_view_access_for_node($admin_groups, $groups, $node)
                 if (isset($p['permission_module'])) {
                     $db = $GLOBALS[((($p['permission_module'] == 'forums') || ($p['permission_module'] == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-                    $where = array('module_the_name' => $p['permission_module'], 'category_name' => $id);
-                    $access = $db->query_select('group_category_access', array('group_id'), $where);
+                    $where = ['module_the_name' => $p['permission_module'], 'category_name' => $id];
+                    $access = $db->query_select('group_category_access', ['group_id'], $where);
                     $access = array_flip(collapse_1d_complexity('group_id', $access));
                 }
             }
@@ -369,13 +369,13 @@ function _get_privileges_for_node($admin_groups, $groups, $node)
                     }
                     $or_list .= db_string_equal_to('privilege', $privilege);
                 }
-                $_privilege_access = $GLOBALS['SITE_DB']->query_select('group_privileges', array('*'), array('module_the_name' => '', 'the_page' => ''), ' AND (' . $or_list . ')');
+                $_privilege_access = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['module_the_name' => '', 'the_page' => ''], ' AND (' . $or_list . ')');
                 $privilege_access = _organise_loaded_privileges($admin_groups, $groups, $_privilege_access);
             }
             break;
 
         case 'page':
-            $_privilege_access = $GLOBALS['SITE_DB']->query_select('group_privileges', array('*'), array('the_page' => $node['privilege_page'], 'category_name' => ''));
+            $_privilege_access = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['the_page' => $node['privilege_page'], 'category_name' => '']);
             $privilege_access = _organise_loaded_privileges($admin_groups, $groups, $_privilege_access);
             break;
 
@@ -383,7 +383,7 @@ function _get_privileges_for_node($admin_groups, $groups, $node)
             foreach ($node['permissions'] as $p) {
                 if (isset($p['permission_module'])) {
                     $db = $GLOBALS[((($p['permission_module'] == 'forums') || ($p['permission_module'] == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
-                    $_privilege_access = $db->query_select('group_privileges', array('*'), array('module_the_name' => $p['permission_module'], 'category_name' => $id));
+                    $_privilege_access = $db->query_select('group_privileges', ['*'], ['module_the_name' => $p['permission_module'], 'category_name' => $id]);
                     $privilege_access = _organise_loaded_privileges($admin_groups, $groups, $_privilege_access);
                 }
             }
@@ -405,9 +405,9 @@ function _get_privileges_for_node($admin_groups, $groups, $node)
  */
 function _organise_loaded_privileges($admin_groups, $groups, $_privilege_access)
 {
-    $privilege_access = array();
+    $privilege_access = [];
     foreach (array_keys($groups) as $group_id) {
-        $privilege_access[$group_id] = array();
+        $privilege_access[$group_id] = [];
     }
     foreach ($_privilege_access as $a) {
         $privilege_access[$a['group_id']][$a['privilege']] = $a['the_value'];
@@ -426,7 +426,7 @@ function _organise_loaded_privileges($admin_groups, $groups, $_privilege_access)
 function _get_overridable_privileges_for_privilege_page($privilege_page)
 {
     if ($privilege_page === null) { // For root
-        return array(
+        return [
             'submit_cat_highrange_content' => 0,
             'edit_cat_highrange_content' => 0,
             'edit_own_cat_highrange_content' => 0,
@@ -460,14 +460,14 @@ function _get_overridable_privileges_for_privilege_page($privilege_page)
             'edit_lowrange_content' => 1,
             'delete_own_lowrange_content' => 1,
             'delete_lowrange_content' => 1,
-        );
+        ];
     }
 
     $zone = get_module_zone($privilege_page, 'modules', null, 'php', true, false);
-    $_overridables = extract_module_functions_page($zone, $privilege_page, array('get_privilege_overrides'));
+    $_overridables = extract_module_functions_page($zone, $privilege_page, ['get_privilege_overrides']);
     $overridable_privileges = is_array($_overridables[0]) ? call_user_func_array($_overridables[0][0], $_overridables[0][1]) : cms_eval($_overridables[0], $zone . ':' . $privilege_page);
     if (!is_array($overridable_privileges)) {
-        $overridable_privileges = array();
+        $overridable_privileges = [];
     }
     return $overridable_privileges;
 }
@@ -486,7 +486,7 @@ function sitemap_script_saving()
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
 
     // Build a map of every page link we are setting permissions for
-    $map = array();
+    $map = [];
     foreach (array_merge($_GET, $_POST) as $i => $page_link) {
         if (substr($i, 0, 4) == 'map_') {
             $map[intval(substr($i, 4))] = $page_link;
@@ -501,7 +501,7 @@ function sitemap_script_saving()
         $is_root = (($page_link == ((get_option('single_public_zone') == '0') ? ':' : '')));
 
         // Decode page link
-        $matches = array();
+        $matches = [];
         $type = '';
         if (preg_match('#^([^:]*):([^:]+):.+$#', $page_link, $matches) != 0) {
             $type = 'cat';
@@ -527,9 +527,9 @@ function sitemap_script_saving()
                         // View access
                         $view = post_param_integer(strval($i) . 'g_view_' . strval($group), -1);
                         if ($view != -1) { // -1 means unchanged
-                            $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('zone_name' => $zone, 'group_id' => $group));
+                            $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone, 'group_id' => $group]);
                             if ($view == 1) {
-                                $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => $zone, 'group_id' => $group));
+                                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => $zone, 'group_id' => $group]);
                             }
 
                             $changed_view_access = true;
@@ -540,9 +540,9 @@ function sitemap_script_saving()
                             foreach (array_keys($overridable_privileges) as $override) { // For all privileges supported here (some will be passed that aren't - so we can't work back from GET params)
                                 $val = post_param_integer(strval($i) . 'group_privileges_' . $override . '_' . strval($group), -2);
                                 if ($val != -2) {
-                                    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('privilege' => $override, 'group_id' => $group, 'the_page' => '', 'module_the_name' => '', 'category_name' => ''));
+                                    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['privilege' => $override, 'group_id' => $group, 'the_page' => '', 'module_the_name' => '', 'category_name' => '']);
                                     if ($val != -1) {
-                                        $GLOBALS['SITE_DB']->query_insert('group_privileges', array('privilege' => $override, 'group_id' => $group, 'module_the_name' => '', 'category_name' => '', 'the_page' => '', 'the_value' => $val));
+                                        $GLOBALS['SITE_DB']->query_insert('group_privileges', ['privilege' => $override, 'group_id' => $group, 'module_the_name' => '', 'category_name' => '', 'the_page' => '', 'the_value' => $val]);
                                     }
 
                                     $changed_privileges = true;
@@ -564,7 +564,7 @@ function sitemap_script_saving()
                 } else {
                     $privilege_page = $page;
                 }
-                $overridable_privileges = ($node['content_type'] == 'comcode_page') ? array() : _get_overridable_privileges_for_privilege_page($privilege_page);
+                $overridable_privileges = ($node['content_type'] == 'comcode_page') ? [] : _get_overridable_privileges_for_privilege_page($privilege_page);
 
                 // Insertion
                 foreach ($groups as $group => $group_name) { // For all usergroups
@@ -572,9 +572,9 @@ function sitemap_script_saving()
                         // View access
                         $view = post_param_integer(strval($i) . 'g_view_' . strval($group), -1);
                         if ($view != -1) { // -1 means unchanged
-                            $GLOBALS['SITE_DB']->query_delete('group_page_access', array('zone_name' => $zone, 'page_name' => $page, 'group_id' => $group));
+                            $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone, 'page_name' => $page, 'group_id' => $group]);
                             if ($view == 0) { // Pages have access by row non-presence, for good reason
-                                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('zone_name' => $zone, 'page_name' => $page, 'group_id' => $group));
+                                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['zone_name' => $zone, 'page_name' => $page, 'group_id' => $group]);
                             }
 
                             $changed_view_access = true;
@@ -584,9 +584,9 @@ function sitemap_script_saving()
                         foreach (array_keys($overridable_privileges) as $override) { // For all privileges supported here (some will be passed that aren't - so we can't work back from GET params)
                             $val = post_param_integer(strval($i) . 'group_privileges_' . $override . '_' . strval($group), -2);
                             if ($val != -2) {
-                                $GLOBALS['SITE_DB']->query_delete('group_privileges', array('privilege' => $override, 'group_id' => $group, 'the_page' => $privilege_page));
+                                $GLOBALS['SITE_DB']->query_delete('group_privileges', ['privilege' => $override, 'group_id' => $group, 'the_page' => $privilege_page]);
                                 if ($val != -1) {
-                                    $GLOBALS['SITE_DB']->query_insert('group_privileges', array('privilege' => $override, 'group_id' => $group, 'module_the_name' => '', 'category_name' => '', 'the_page' => $privilege_page, 'the_value' => $val));
+                                    $GLOBALS['SITE_DB']->query_insert('group_privileges', ['privilege' => $override, 'group_id' => $group, 'module_the_name' => '', 'category_name' => '', 'the_page' => $privilege_page, 'the_value' => $val]);
                                 }
 
                                 $changed_privileges = true;
@@ -629,9 +629,9 @@ function sitemap_script_saving()
                         if ($view != -1) { // -1 means unchanged
                             $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-                            $db->query_delete('group_category_access', array('module_the_name' => $module, 'category_name' => $category, 'group_id' => $group));
+                            $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group]);
                             if ($view == 1) {
-                                $db->query_insert('group_category_access', array('module_the_name' => $module, 'category_name' => $category, 'group_id' => $group));
+                                $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group]);
                             }
 
                             $changed_view_access = true;
@@ -650,9 +650,9 @@ function sitemap_script_saving()
                             if ($val != -2) {
                                 $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-                                $db->query_delete('group_privileges', array('privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => ''));
+                                $db->query_delete('group_privileges', ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '']);
                                 if ($val != -1) {
-                                    $new_settings = array('privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $val);
+                                    $new_settings = ['privilege' => $override, 'group_id' => $group, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $val];
                                     $db->query_insert('group_privileges', $new_settings);
                                 }
 

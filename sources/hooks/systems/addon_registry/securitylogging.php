@@ -31,7 +31,7 @@ class Hook_addon_registry_securitylogging
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_securitylogging
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_security',
             'tut_trace',
-        );
+        ];
     }
 
     /**
@@ -74,12 +74,12 @@ class Hook_addon_registry_securitylogging
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_securitylogging'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_securitylogging'],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_securitylogging
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/securitylogging.php',
             'themes/default/images/icons/menu/adminzone/audit/security_log.svg',
             'themes/default/images/icons/menu/adminzone/tools/users/investigate_user.svg',
@@ -124,7 +124,7 @@ class Hook_addon_registry_securitylogging
             'sources/hooks/systems/commandr_fs_extended_config/ip_unbannable.php',
             'themes/default/javascript/securitylogging.js',
             'sources/hooks/systems/actionlog/securitylogging.php',
-        );
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class Hook_addon_registry_securitylogging
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/SECURITY_SCREEN.tpl' => 'administrative__security_screen',
             'templates/SECURITY_ALERT_SCREEN.tpl' => 'administrative__security_alert_screen',
             'text/HACK_ATTEMPT_MAIL.txt' => 'administrative__hack_attempt_mail',
@@ -142,7 +142,7 @@ class Hook_addon_registry_securitylogging
             'templates/LOOKUP_IP_LIST_ENTRY.tpl' => 'administrative__lookup_screen',
             'templates/LOOKUP_IP_LIST_GROUP.tpl' => 'administrative__lookup_screen',
             'templates/LOOKUP_SCREEN.tpl' => 'administrative__lookup_screen',
-        );
+        ];
     }
 
     /**
@@ -154,8 +154,8 @@ class Hook_addon_registry_securitylogging
      */
     public function tpl_preview__ip_ban_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('IP_BAN_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('IP_BAN_SCREEN', [
                 'PING_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
                 'TITLE' => lorem_title(),
@@ -163,8 +163,8 @@ class Hook_addon_registry_securitylogging
                 'UNBANNABLE' => placeholder_ip(),
                 'LOCKED_BANS' => placeholder_ip(),
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -176,8 +176,8 @@ class Hook_addon_registry_securitylogging
      */
     public function tpl_preview__administrative__hack_attempt_mail()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('HACK_ATTEMPT_MAIL', [
                 'STACK_TRACE' => lorem_phrase(),
                 'USER_AGENT' => lorem_phrase(),
                 'REFERER' => lorem_phrase(),
@@ -190,8 +190,8 @@ class Hook_addon_registry_securitylogging
                 'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
                 'POST' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -203,16 +203,16 @@ class Hook_addon_registry_securitylogging
      */
     public function tpl_preview__administrative__security_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SECURITY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SECURITY_SCREEN', [
                 'TITLE' => lorem_title(),
                 'FAILED_LOGINS' => placeholder_table(),
                 'NUM_FAILED_LOGINS' => placeholder_number(),
                 'ALERTS' => lorem_phrase(),
                 'NUM_ALERTS' => placeholder_number(),
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -224,8 +224,8 @@ class Hook_addon_registry_securitylogging
      */
     public function tpl_preview__administrative__security_alert_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SECURITY_ALERT_SCREEN', [
                 'TITLE' => lorem_title(),
                 'USER_AGENT' => lorem_phrase(),
                 'REFERER' => lorem_phrase(),
@@ -236,8 +236,8 @@ class Hook_addon_registry_securitylogging
                 'POST' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'PERCENTAGE_SCORE' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -251,23 +251,23 @@ class Hook_addon_registry_securitylogging
     {
         $inner_ip_list = new Tempcode();
         foreach (placeholder_array() as $value) {
-            $inner_ip_list->attach(do_lorem_template('LOOKUP_IP_LIST_ENTRY', array(
+            $inner_ip_list->attach(do_lorem_template('LOOKUP_IP_LIST_ENTRY', [
                 'LOOKUP_URL' => placeholder_url(),
                 'DATE' => placeholder_date(),
                 '_DATE' => placeholder_date(),
                 'IP' => placeholder_ip(),
                 'BANNED' => do_lang_tempcode('YES'),
-            )));
+            ]));
         }
 
-        $group = do_lorem_template('LOOKUP_IP_LIST_GROUP', array(
+        $group = do_lorem_template('LOOKUP_IP_LIST_GROUP', [
             'BANNED' => do_lang_tempcode('YES'),
             'MASK' => placeholder_ip(),
             'GROUP' => $inner_ip_list,
             'OPEN_DEFAULT' => true,
-        ));
-        return array(
-            lorem_globalise(do_lorem_template('LOOKUP_SCREEN', array(
+        ]);
+        return [
+            lorem_globalise(do_lorem_template('LOOKUP_SCREEN', [
                 'TITLE' => lorem_title(),
                 'ALERTS' => lorem_phrase(),
                 'STATS' => lorem_phrase(),
@@ -283,7 +283,7 @@ class Hook_addon_registry_securitylogging
                 'POINTS_URL' => placeholder_url(),
                 'PROFILE_URL' => placeholder_url(),
                 'ACTIONLOG_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

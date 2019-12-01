@@ -36,7 +36,7 @@ class Hook_profiles_tabs_warnings
             return false;
         }
 
-        return (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'assume_any_member'))) && ($GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', array('w_member_id' => $member_id_of, 'w_is_warning' => 1)) > 0);
+        return (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'assume_any_member'))) && ($GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_member_id' => $member_id_of, 'w_is_warning' => 1]) > 0);
     }
 
     /**
@@ -55,14 +55,14 @@ class Hook_profiles_tabs_warnings
         $order = 80;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/social/warnings');
+            return [$title, null, $order, 'menu/social/warnings'];
         }
 
         require_lang('cns');
         require_css('cns');
 
         $warnings = new Tempcode();
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', array('*'), array('w_member_id' => $member_id_of, 'w_is_warning' => 1), 'ORDER BY w_time');
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id_of, 'w_is_warning' => 1], 'ORDER BY w_time');
         foreach ($rows as $row) {
             $warning_by = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['w_by']);
             $date = get_timezoned_date_time($row['w_time']);
@@ -75,12 +75,12 @@ class Hook_profiles_tabs_warnings
             if (strlen($row['w_explanation']) > 30) {
                 $row['w_explanation'] = substr($row['w_explanation'], 0, 27) . '...';
             }
-            $explanation = hyperlink(build_url(array('page' => 'warnings', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))), get_module_zone('warnings')), $row['w_explanation'], false, true, $row['w_explanation_orig']);
-            $warnings->attach(paragraph(do_lang_tempcode('MEMBER_WARNING', $explanation, $warning_by, array(make_string_tempcode(escape_html($date)))), 'treyerhy34y'));
+            $explanation = hyperlink(build_url(['page' => 'warnings', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))], get_module_zone('warnings')), $row['w_explanation'], false, true, $row['w_explanation_orig']);
+            $warnings->attach(paragraph(do_lang_tempcode('MEMBER_WARNING', $explanation, $warning_by, [make_string_tempcode(escape_html($date))]), 'treyerhy34y'));
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', array('_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $warnings));
+        $content = do_template('CNS_MEMBER_PROFILE_WARNINGS', ['_GUID' => 'fea98858f6bf89f1d9dc3ec995785a39', 'MEMBER_ID' => strval($member_id_of), 'WARNINGS' => $warnings]);
 
-        return array($title, $content, $order, 'menu/social/warnings');
+        return [$title, $content, $order, 'menu/social/warnings'];
     }
 }

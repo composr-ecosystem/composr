@@ -30,7 +30,7 @@ class Hook_config_homepage_slider_fullscreen
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FULLSCREEN',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_homepage_slider_fullscreen
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

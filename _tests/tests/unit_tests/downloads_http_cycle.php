@@ -32,8 +32,8 @@ class downloads_http_cycle_test_set extends cms_test_case
         require_code('uploads');
         require_code('csrf_filter');
 
-        $url = build_url(array('page' => 'cms_downloads', 'type' => '_add', 'keep_fatalistic' => 1), 'cms');
-        $post_params = array(
+        $url = build_url(['page' => 'cms_downloads', 'type' => '_add', 'keep_fatalistic' => 1], 'cms');
+        $post_params = [
             'download_name' => 'Test' . uniqid('', true),
             'csrf_token' => generate_csrf_token(),
             'category_id' => strval(db_get_first_id()),
@@ -42,11 +42,11 @@ class downloads_http_cycle_test_set extends cms_test_case
             'additional_details' => '',
             'url_redirect' => '',
             'validated' => '1',
-        );
-        $files = array(
+        ];
+        $files = [
             'file__upload' => get_file_base() . '/data/images/donate.png',
-        );
-        $data = http_get_contents($url->evaluate(), array('ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => array(get_session_cookie() => $this->session_id), 'files' => $files, 'timeout' => 100.0));
+        ];
+        $data = http_get_contents($url->evaluate(), ['ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => [get_session_cookie() => $this->session_id], 'files' => $files, 'timeout' => 100.0]);
         if ($this->debug) {
             @var_dump($data);
             exit();
@@ -63,7 +63,7 @@ class downloads_http_cycle_test_set extends cms_test_case
             return;
         }
         $url = find_script('dload') . '?id=' . strval($max_download_id);
-        $result = cms_http_request($url, array('cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = cms_http_request($url, ['cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result->data == cms_file_get_contents_safe(get_file_base() . '/data/images/donate.png', FILE_READ_LOCK));
         $this->assertTrue($result->download_mime_type == 'application/octet-stream', 'Wrong mime type, ' . $result->download_mime_type);
         $this->assertTrue($result->filename == 'donate.png', 'Wrong filename, ' . $result->filename);

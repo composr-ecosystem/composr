@@ -25,7 +25,7 @@ class Hook_config_enable_notifications_instant_ios
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATIONS_INSTANT_IOS',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_enable_notifications_instant_ios
             'public' => false,
 
             'addon' => 'composr_mobile_sdk',
-        );
+        ];
     }
 
     /**

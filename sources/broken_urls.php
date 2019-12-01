@@ -34,7 +34,7 @@ class BrokenURLScanner
      */
     public function enumerate_url_fields($live_base_urls, $maximum_api_results)
     {
-        $urls = array();
+        $urls = [];
 
         push_db_scope_check(false);
 
@@ -45,14 +45,14 @@ class BrokenURLScanner
             if (array_key_exists($field['m_table'], $skip_hooks)) {
                 continue;
             }
-            if (in_array($field['m_table'], array('hackattack', 'url_title_cache', 'theme_images', 'incoming_uploads'))) {
+            if (in_array($field['m_table'], ['hackattack', 'url_title_cache', 'theme_images', 'incoming_uploads'])) {
                 continue;
             }
 
             $sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
             $key_fields = $GLOBALS['SITE_DB']->query($sql);
 
-            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], array('*'));
+            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], ['*']);
             foreach ($ofs as $of) {
                 $url = $of[$field['m_name']];
 
@@ -73,13 +73,13 @@ class BrokenURLScanner
 
                 $edit_url = $this->find_table_content_edit_url($table_name, $id, $key_fields);
 
-                $urls[] = array(
+                $urls[] = [
                     'url' => $url,
                     'table_name' => $table_name,
                     'field_name' => $field_name,
                     'identifier' => array_key_exists('id', $of) ? strval($of['id']) : (array_key_exists('name', $of) ? $of['name'] : do_lang('UNKNOWN')),
                     'edit_url' => $edit_url,
-                );
+                ];
             }
         }
 
@@ -97,7 +97,7 @@ class BrokenURLScanner
      */
     public function enumerate_comcode_fields($live_base_urls, $maximum_api_results)
     {
-        $urls = array();
+        $urls = [];
 
         /*
         For testing...
@@ -121,20 +121,20 @@ class BrokenURLScanner
         $sql = 'SELECT m_table,m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%LONG\_TRANS\_\_COMCODE%') . '\'';
         $possible_comcode_fields = $GLOBALS['SITE_DB']->query($sql);
         foreach ($possible_comcode_fields as $field) {
-            if (in_array($field['m_table'], array('seo_meta', 'cached_comcode_pages'))) {
+            if (in_array($field['m_table'], ['seo_meta', 'cached_comcode_pages'])) {
                 continue;
             }
 
             $sql = 'SELECT m_name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_type LIKE \'*%\' AND ' . db_string_equal_to('m_table', $field['m_table']);
             $key_fields = $GLOBALS['SITE_DB']->query($sql);
 
-            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], array('*'));
+            $ofs = $GLOBALS['SITE_DB']->query_select($field['m_table'], ['*']);
             foreach ($ofs as $of) {
                 if (strpos($of[$field['m_name']], '/') === false) {
                     continue; // Doesn't appear to contain any URLs
                 }
 
-                $COMCODE_URLS = array();
+                $COMCODE_URLS = [];
 
                 get_translated_tempcode($field['m_table'], $of, $field['m_name']);
 
@@ -165,13 +165,13 @@ class BrokenURLScanner
                             $id .= '/' . strval($of[$field['m_name']]);
                         }
 
-                        $urls[] = array(
+                        $urls[] = [
                             'url' => $url,
                             'table_name' => $table_name,
                             'field_name' => $field_name,
                             'identifier' => $id,
                             'edit_url' => $edit_url,
-                        );
+                        ];
                     }
                 }
             }
@@ -222,10 +222,10 @@ class BrokenURLScanner
      */
     public function enumerate_catalogue_fields($live_base_urls, $maximum_api_results)
     {
-        $urls = array();
+        $urls = [];
 
         if (addon_installed('catalogues')) {
-            $catalogue_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id'), array('cf_type' => 'url'));
+            $catalogue_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['cf_type' => 'url']);
             $or_list = '';
             foreach ($catalogue_fields as $field) {
                 if ($or_list != '') {
@@ -243,13 +243,13 @@ class BrokenURLScanner
                         continue;
                     }
 
-                    $urls[] = array(
+                    $urls[] = [
                         'url' => $url,
                         'table_name' => 'catalogue_efv_short',
                         'field_name' => 'cv_value',
                         'identifier' => strval($value['id']),
-                        'edit_url' => build_url(array('page' => 'cms_catalogues', 'type' => '_edit_entry', 'id' => $value['ce_id']), get_module_zone('cms_catalogues')),
-                    );
+                        'edit_url' => build_url(['page' => 'cms_catalogues', 'type' => '_edit_entry', 'id' => $value['ce_id']], get_module_zone('cms_catalogues')),
+                    ];
                 }
             }
         }
@@ -266,7 +266,7 @@ class BrokenURLScanner
      */
     public function enumerate_comcode_pages($live_base_urls, $maximum_api_results)
     {
-        $urls = array();
+        $urls = [];
 
         global $COMCODE_URLS;
 
@@ -274,11 +274,11 @@ class BrokenURLScanner
 
         $zones = find_all_zones();
         foreach ($zones as $zone) {
-            $pages = array();
+            $pages = [];
             $pages += find_all_pages($zone, 'comcode_custom/' . get_site_default_lang(), 'txt', false, null, FIND_ALL_PAGES__ALL);
             $pages += find_all_pages($zone, 'comcode/' . get_site_default_lang(), 'txt', false, null, FIND_ALL_PAGES__ALL);
             foreach ($pages as $page => $type) {
-                $COMCODE_URLS = array();
+                $COMCODE_URLS = [];
 
                 $file_path = zone_black_magic_filterer(((strpos($type, '_custom') !== false) ? get_custom_file_base() : get_file_base()) . '/' . $zone . '/pages/' . $type . '/' . $page . '.txt');
                 $comcode = cms_file_get_contents_safe($file_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
@@ -289,7 +289,7 @@ class BrokenURLScanner
 
                 $eval = @static_evaluate_tempcode(comcode_to_tempcode($comcode, null, true));
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\shref="([^"]+)"#', $eval, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $url = html_entity_decode($matches[1][$i], ENT_QUOTES);
@@ -302,13 +302,13 @@ class BrokenURLScanner
                             continue;
                         }
 
-                        $urls[] = array(
+                        $urls[] = [
                             'url' => $url,
                             'table_name' => null,
                             'field_name' => null,
                             'identifier' => $zone . ':' . $page,
-                            'edit_url' => build_url(array('page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $page), get_module_zone('cms_comcode_pages')),
-                        );
+                            'edit_url' => build_url(['page' => 'cms_comcode_pages', 'type' => '_edit', 'page_link' => $zone . ':' . $page], get_module_zone('cms_comcode_pages')),
+                        ];
                     }
                 }
             }
@@ -328,7 +328,7 @@ class BrokenURLScanner
      */
     public function enumerate_moz_backlinks($live_base_urls, $maximum_api_results)
     {
-        $domains = array();
+        $domains = [];
         foreach ($live_base_urls as $live_base_url) {
             $domain = @parse_url($live_base_url, PHP_URL_HOST);
             if (!empty($domain)) {
@@ -337,7 +337,7 @@ class BrokenURLScanner
         }
         $domains = array_unique($domains);
 
-        $urls = array();
+        $urls = [];
 
         foreach ($domains as $domain) {
             $expires = time() + 300;
@@ -361,17 +361,17 @@ class BrokenURLScanner
                 $api_url .= '&Expires=' . strval($expires);
                 $api_url .= '&Signature=' . urlencode($url_safe_signature);
 
-                $_result = http_get_contents($api_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+                $_result = http_get_contents($api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
                 if ($_result !== null) {
                     $result = json_decode($_result, true);
                     foreach ($result as $_url) {
-                        $urls[] = array(
+                        $urls[] = [
                             'url' => 'http://' . $_url['luuu'],
                             'table_name' => null,
                             'field_name' => null,
                             'identifier' => parse_url('http://' . $_url['uu'], PHP_URL_HOST),
                             'edit_url' => 'http://' . $_url['uu'],
-                        );
+                        ];
                     }
 
                     if ((count($result) == 50) && ($maximum_api_results > count($urls))) {
@@ -480,13 +480,13 @@ class BrokenURLScanner
      */
     protected function _enumerate_google_broken_backlinks($live_base_urls, $category)
     {
-        $urls = array();
+        $urls = [];
 
         foreach ($live_base_urls as $live_base_url) {
             $api_url = 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode($live_base_url) . '/urlCrawlErrorsSamples?category=' . urlencode($category) . '&platform=web';
             $api_url .= '&access_token=' . urlencode(refresh_oauth2_token('google_search_console'));
 
-            $_result = http_get_contents($api_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $_result = http_get_contents($api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($_result !== null) {
                 $result = json_decode($_result, true);
                 if (!isset($result['urlCrawlErrorSample'])) {
@@ -502,13 +502,13 @@ class BrokenURLScanner
                         continue;
                     }
 
-                    $urls[] = array(
+                    $urls[] = [
                         'url' => $live_base_url . ((substr($live_base_url, -1) == '/') ? '' : '/') . $_url['pageUrl'],
                         'table_name' => null,
                         'field_name' => null,
                         'identifier' => parse_url($_url['urlDetails']['linkedFromUrls'][0], PHP_URL_HOST),
                         'edit_url' => $_url['urlDetails']['linkedFromUrls'][0],
-                    );
+                    ];
                 }
             }
         }
@@ -533,12 +533,12 @@ class BrokenURLScanner
 
         $url = qualify_url($url, get_base_url());
 
-        $test = cms_http_request($url, array('byte_limit' => 0, 'trigger_error' => false));
+        $test = cms_http_request($url, ['byte_limit' => 0, 'trigger_error' => false]);
         if (($test === null) && ($test->message == '403')) {
-            $test = cms_http_request($url, array('byte_limit' => 1, 'trigger_error' => false)); // Try without HEAD, sometimes it's not liked
+            $test = cms_http_request($url, ['byte_limit' => 1, 'trigger_error' => false]); // Try without HEAD, sometimes it's not liked
         }
 
-        if (($test === null) || (in_array($test->message, array('404', 'could not connect to host')))) {
+        if (($test === null) || (in_array($test->message, ['404', 'could not connect to host']))) {
             return false;
         }
 
@@ -546,12 +546,12 @@ class BrokenURLScanner
 
         static $undesirable_redirects = null;
         if ($undesirable_redirects === null) {
-            $undesirable_redirects = array(
+            $undesirable_redirects = [
                 get_base_url(),
                 get_base_url() . '/',
-                static_evaluate_tempcode(build_url(array('page' => ''), '', array(), false, false, true)),
-                static_evaluate_tempcode(build_url(array('page' => ''), '', array(), false, true, true)),
-            );
+                static_evaluate_tempcode(build_url(['page' => ''], '', [], false, false, true)),
+                static_evaluate_tempcode(build_url(['page' => ''], '', [], false, true, true)),
+            ];
         }
 
         if ((in_array($test->download_url, $undesirable_redirects)) && (!in_array($url, $undesirable_redirects))) {

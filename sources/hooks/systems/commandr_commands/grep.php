@@ -38,13 +38,13 @@ class Hook_commandr_command_grep
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('grep', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('grep', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'grep'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'grep')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'grep'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'grep')];
             }
             $_parameters = $commandr_fs->_pwd_to_array($parameters[1]);
 
@@ -63,10 +63,10 @@ class Hook_commandr_command_grep
                         }
                     }
 
-                    return array('', '', $output, '');
+                    return ['', '', $output, ''];
                 }
 
-                return array('', '', '', do_lang('NOT_A_FILE', '2'));
+                return ['', '', '', do_lang('NOT_A_FILE', '2')];
             }
 
             $_lines = unixify_line_format($commandr_fs->read_file($_parameters));
@@ -80,7 +80,7 @@ class Hook_commandr_command_grep
                 $output .= $value . "\n";
             }
 
-            return array('', '', $output, '');
+            return ['', '', $output, ''];
         }
     }
 }

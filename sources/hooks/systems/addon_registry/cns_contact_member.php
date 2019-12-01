@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_contact_member
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_contact_member
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_correspondence',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_contact_member
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,11 +97,11 @@ class Hook_addon_registry_cns_contact_member
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/links/contact_member.svg',
             'themes/default/images/icons_monochrome/links/contact_member.svg',
             'site/pages/modules/contact_member.php',
             'sources/hooks/systems/addon_registry/cns_contact_member.php',
-        );
+        ];
     }
 }

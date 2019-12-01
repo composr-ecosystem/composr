@@ -30,7 +30,7 @@ class Hook_config_gallery_feedback_fields
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_FEEDBACK_FIELDS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_feedback_fields
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

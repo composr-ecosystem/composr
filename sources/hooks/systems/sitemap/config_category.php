@@ -32,7 +32,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):admin_config(:browse|$)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = 'admin_config';
@@ -66,7 +66,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array('_config_category', $valid_node_types))) {
             return $nodes;
@@ -79,7 +79,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
         $page = $this->_make_zone_concrete($zone, $page_link);
 
         // Find all categories
-        $categories = array();
+        $categories = [];
         $hook_obs = find_all_hook_obs('systems', 'config_categories', 'Hook_config_categories_');
         foreach ($hook_obs as $hook => $hook_ob) {
             if ($hook_ob->is_enabled()) {
@@ -123,7 +123,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
      */
     public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
     {
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
         $category = $matches[4];
@@ -135,15 +135,15 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
 
         $_category_name = do_lang_tempcode('CONFIG_CATEGORY_' . $category);
 
-        $struct = array(
+        $struct = [
             'title' => $_category_name,
             'content_type' => '_config_category',
             'content_id' => null,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/menu/adminzone/setup/config/config') : null,
                 'add_time' => null,
@@ -156,8 +156,8 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(),
+            ],
+            'permissions' => [],
             'has_possible_children' => false,
             'children' => null,
 
@@ -166,7 +166,7 @@ class Hook_sitemap_config_category extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'yearly',
 
             'privilege_page' => null,
-        );
+        ];
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

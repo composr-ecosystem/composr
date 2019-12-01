@@ -30,7 +30,7 @@ class Hook_config_complex_uploader
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMPLEX_UPLOADER',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -42,7 +42,7 @@ class Hook_config_complex_uploader
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

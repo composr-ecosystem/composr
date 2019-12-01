@@ -25,7 +25,7 @@ class Hook_config_twitter_api_secret
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TWITTER_API_SECRET',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_twitter_api_secret
             'public' => false,
 
             'addon' => 'twitter_support',
-        );
+        ];
     }
 
     /**

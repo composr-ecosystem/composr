@@ -30,7 +30,7 @@ class Hook_config_general_safety_listing_limit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GENERAL_SAFETY_LISTING_LIMIT',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_general_safety_listing_limit
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

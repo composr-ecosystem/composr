@@ -30,7 +30,7 @@ class Hook_config_hot_topic_definition
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HOT_TOPIC_DEFINITION',
             'type' => 'integer',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_hot_topic_definition
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

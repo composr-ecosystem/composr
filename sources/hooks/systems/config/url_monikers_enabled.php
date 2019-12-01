@@ -30,7 +30,7 @@ class Hook_config_url_monikers_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'URL_MONIKERS_ENABLED',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_url_monikers_enabled
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

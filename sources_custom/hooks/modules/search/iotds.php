@@ -46,22 +46,22 @@ class Hook_search_iotds extends FieldsSearchHook
 
         require_lang('iotds');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('IOTD_ARCHIVE');
         $info['default'] = (get_option('search_iotds') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_iotd');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('iotds'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('iotds'),
                 'page_name' => 'iotds',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -123,21 +123,21 @@ class Hook_search_iotds extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
         $table = 'iotd r';
-        $trans_fields = array('' => '', 'r.caption' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['' => '', 'r.caption' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_iotd', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

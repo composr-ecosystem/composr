@@ -43,106 +43,106 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
             $payment_gateway_label = do_lang_tempcode('NA_EM');
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-                (get_option('shipping_shippo_api_live') == '') ? null : array(
+            'general' => [
+                (get_option('shipping_shippo_api_live') == '') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_shippo'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_shippo'),
-                ),
-                (get_option('taxcloud_api_key') == '') ? null : array(
+                ],
+                (get_option('taxcloud_api_key') == '') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_taxcloud'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_taxcloud'),
-                ),
-                ($payment_gateway == '') ? null : array(
+                ],
+                ($payment_gateway == '') ? null : [
                     'heading' => do_lang('INFORMATION_TRANSFER_ECOMMERCE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_payments', $payment_gateway_label, escape_html(get_site_name())),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_payments', $payment_gateway_label, escape_html(get_site_name())),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-                'ecom_sales' => array(
+            'database_records' => [
+                'ecom_sales' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'ecom_subscriptions' => array(
+                ],
+                'ecom_subscriptions' => [
                     'timestamp_field' => 's_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('s_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['s_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => db_string_not_equal_to('s_state', 'active'),
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'ecom_invoices' => array(
+                ],
+                'ecom_invoices' => [
                     'timestamp_field' => 'i_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('i_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['i_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => db_string_equal_to('i_state', 'paid') . ' OR ' . db_string_equal_to('i_state', 'delivered'),
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'ecom_transactions' => array(
+                ],
+                'ecom_transactions' => [
                     'timestamp_field' => 't_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('t_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['t_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'ecom_trans_expecting' => array(
+                ],
+                'ecom_trans_expecting' => [
                     'timestamp_field' => 'e_time',
                     'retention_days' => 31,
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('e_member_id'),
-                    'ip_address_fields' => array('e_ip_address'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['e_member_id'],
+                    'ip_address_fields' => ['e_ip_address'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'ecom_trans_addresses' => array(
+                ],
+                'ecom_trans_addresses' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave, // Handled with shopping_order, can't query by date
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('a_email'),
-                    'additional_anonymise_fields' => array('a_firstname', 'a_lastname', 'a_street_address', 'a_city', 'a_state', 'a_post_code', 'a_country', 'a_phone'),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['a_email'],
+                    'additional_anonymise_fields' => ['a_firstname', 'a_lastname', 'a_street_address', 'a_city', 'a_state', 'a_post_code', 'a_country', 'a_phone'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -159,13 +159,13 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
         switch ($table_name) {
             case 'ecom_sales':
                 require_code('ecommerce');
-                $type_code = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 't_type_code', array('id' => $row['txn_id']));
+                $type_code = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 't_type_code', ['id' => $row['txn_id']]);
                 if ($type_code !== null) {
                     list($product_info) = find_product_details($type_code);
                     if ($product_info !== null) {
-                        $ret += array(
+                        $ret += [
                             'txn_type_code__dereferenced' => $product_info['item_name'],
-                        );
+                        ];
                     }
                 }
                 break;
@@ -174,9 +174,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 require_code('ecommerce');
                 list($product_info) = find_product_details($row['s_type_code']);
                 if ($product_info !== null) {
-                    $ret += array(
+                    $ret += [
                         's_type_code__dereferenced' => $product_info['item_name'],
-                    );
+                    ];
                 }
                 break;
 
@@ -184,9 +184,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 require_code('ecommerce');
                 list($product_info) = find_product_details($row['i_type_code']);
                 if ($product_info !== null) {
-                    $ret += array(
+                    $ret += [
                         'i_type_code__dereferenced' => $product_info['item_name'],
-                    );
+                    ];
                 }
                 break;
 
@@ -194,9 +194,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 require_code('ecommerce');
                 list($product_info) = find_product_details($row['t_type_code']);
                 if ($product_info !== null) {
-                    $ret += array(
+                    $ret += [
                         't_type_code__dereferenced' => $product_info['item_name'],
-                    );
+                    ];
                 }
                 break;
 
@@ -204,9 +204,9 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
                 require_code('ecommerce');
                 list($product_info) = find_product_details($row['e_type_code']);
                 if ($product_info !== null) {
-                    $ret += array(
+                    $ret += [
                         'e_type_code__dereferenced' => $product_info['item_name'],
-                    );
+                    ];
                 }
                 break;
         }
@@ -224,8 +224,8 @@ class Hook_privacy_ecommerce extends Hook_privacy_base
     {
         switch ($table_name) {
             case 'ecom_transactions':
-                $GLOBALS['SITE_DB']->query_delete('ecom_trans_addresses', array('a_txn_id' => $row['id']));
-                $GLOBALS['SITE_DB']->query_delete('ecom_transactions', array('id' => $row['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_trans_addresses', ['a_txn_id' => $row['id']]);
+                $GLOBALS['SITE_DB']->query_delete('ecom_transactions', ['id' => $row['id']], '', 1);
                 break;
 
             default:

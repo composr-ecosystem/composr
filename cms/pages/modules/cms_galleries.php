@@ -60,36 +60,36 @@ class Module_cms_galleries extends Standard_crud_module
             $member_id = get_member();
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_GALLERIES', 'menu/rich_content/galleries'),
-        );
+        $ret = [
+            'browse' => ['MANAGE_GALLERIES', 'menu/rich_content/galleries'],
+        ];
 
         if (has_privilege($member_id, 'submit_midrange_content', 'cms_galleries')) {
-            $ret += array(
-                'add' => array('ADD_IMAGE', 'menu/cms/galleries/add_one_image'),
-            );
+            $ret += [
+                'add' => ['ADD_IMAGE', 'menu/cms/galleries/add_one_image'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_midrange_content', 'cms_galleries')) {
-            $ret += array(
-                'edit' => array('EDIT_IMAGE', 'menu/cms/galleries/edit_one_image'),
-            );
+            $ret += [
+                'edit' => ['EDIT_IMAGE', 'menu/cms/galleries/edit_one_image'],
+            ];
         }
 
         if (has_privilege($member_id, 'submit_midrange_content', 'cms_galleries')) {
-            $ret += array(
-                'add_other' => array('ADD_VIDEO', (get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/add_one_multimedia' : 'menu/cms/galleries/add_one_video'),
-            );
+            $ret += [
+                'add_other' => ['ADD_VIDEO', (get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/add_one_multimedia' : 'menu/cms/galleries/add_one_video'],
+            ];
         }
 
         if (has_privilege($member_id, 'edit_midrange_content', 'cms_galleries')) {
-            $ret += array(
-                'edit_other' => array('EDIT_VIDEO', (get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video'),
-            );
+            $ret += [
+                'edit_other' => ['EDIT_VIDEO', (get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video'],
+            ];
         }
 
         if (has_privilege($member_id, 'mass_import', 'cms_galleries')) {
-            $ret['import'] = array('GALLERY_IMPORT', 'admin/import');
+            $ret['import'] = ['GALLERY_IMPORT', 'admin/import'];
         }
 
         $this->cat_crud_module = class_exists('Mx_cms_galleries_cat') ? new Mx_cms_galleries_cat() : new Module_cms_galleries_cat();
@@ -113,23 +113,23 @@ class Module_cms_galleries extends Standard_crud_module
     public function get_privilege_overrides()
     {
         require_lang('galleries');
-        return array(
+        return [
             'view_private_content' => 0,
             'mass_import' => 0,
-            'have_personal_category' => array(0, 'HAVE_PERSONAL_GALLERIES'),
-            'submit_cat_midrange_content' => array(0, 'ADD_GALLERY'),
-            'edit_own_cat_midrange_content' => array(0, 'EDIT_OWN_GALLERY'),
-            'edit_cat_midrange_content' => array(0, 'EDIT_GALLERY'),
-            'delete_own_cat_midrange_content' => array(0, 'DELETE_OWN_GALLERY'),
-            'delete_cat_midrange_content' => array(0, 'DELETE_GALLERY'),
+            'have_personal_category' => [0, 'HAVE_PERSONAL_GALLERIES'],
+            'submit_cat_midrange_content' => [0, 'ADD_GALLERY'],
+            'edit_own_cat_midrange_content' => [0, 'EDIT_OWN_GALLERY'],
+            'edit_cat_midrange_content' => [0, 'EDIT_GALLERY'],
+            'delete_own_cat_midrange_content' => [0, 'DELETE_OWN_GALLERY'],
+            'delete_cat_midrange_content' => [0, 'DELETE_GALLERY'],
             'may_download_gallery' => 1,
-            'submit_midrange_content' => array(1, 'ADD_MEDIA'),
-            'bypass_validation_midrange_content' => array(1, 'BYPASS_VALIDATION_MEDIA'),
-            'edit_own_midrange_content' => array(1, 'EDIT_OWN_MEDIA'),
-            'edit_midrange_content' => array(1, 'EDIT_MEDIA'),
-            'delete_own_midrange_content' => array(1, 'DELETE_OWN_MEDIA'),
-            'delete_midrange_content' => array(1, 'DELETE_MEDIA'),
-        );
+            'submit_midrange_content' => [1, 'ADD_MEDIA'],
+            'bypass_validation_midrange_content' => [1, 'BYPASS_VALIDATION_MEDIA'],
+            'edit_own_midrange_content' => [1, 'EDIT_OWN_MEDIA'],
+            'edit_midrange_content' => [1, 'EDIT_MEDIA'],
+            'delete_own_midrange_content' => [1, 'DELETE_OWN_MEDIA'],
+            'delete_midrange_content' => [1, 'DELETE_MEDIA'],
+        ];
     }
 
     public $title;
@@ -163,30 +163,30 @@ class Module_cms_galleries extends Standard_crud_module
         if ($type == 'import') {
             inform_non_canonical_parameter('member_id');
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')]]);
         }
 
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')], ['_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')]]);
             breadcrumb_set_self(do_lang_tempcode('UPLOAD'));
         }
 
         if ($type == '__import') {
             $cat = get_param_string('cat');
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')], ['_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')], ['_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if (($type == 'orphaned') || ($type == 'orphan_add') || ($type == 'orphan_delete')) {
             $cat = post_param_string('ss_cat');
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')), array('_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')), array('_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_GALLERIES')], ['_SELF:_SELF:import', do_lang_tempcode('GALLERY_IMPORT')], ['_SELF:_SELF:_import:name=' . $cat, do_lang_tempcode('DETAILS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'add') {
             if (has_privilege(get_member(), 'mass_import', 'cms_galleries')) {
                 $cat = get_param_string('cat', null);
-                $mass_url = build_url(array('page' => '_SELF', 'type' => 'import', 'cat' => $cat), '_SELF');
+                $mass_url = build_url(['page' => '_SELF', 'type' => 'import', 'cat' => $cat], '_SELF');
                 attach_message(do_lang_tempcode('CAN_MASS_UPLOAD', escape_html($mass_url->evaluate())), 'inform', true);
             }
         }
@@ -282,23 +282,23 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function browse()
     {
-        $allow_images = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', array('accept_images' => 1)) > 0);
-        $allow_videos = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', array('accept_videos' => 1)) > 0);
+        $allow_images = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_images' => 1]) > 0);
+        $allow_videos = ($GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_videos' => 1]) > 0);
 
         require_code('templates_donext');
         require_code('fields');
         return do_next_manager(
             get_screen_title('MANAGE_GALLERIES'),
             comcode_lang_string('DOC_GALLERIES'),
-            array_merge(array(
-                has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? array('admin/add_one_category', array('_SELF', array('type' => 'add_category'), '_SELF'), do_lang('ADD_GALLERY')) : null,
-                has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? array('admin/edit_one_category', array('_SELF', array('type' => 'edit_category'), '_SELF'), do_lang('EDIT_GALLERY')) : null,
-                has_privilege(get_member(), 'mass_import', 'cms_galleries') ? array('admin/import', array('_SELF', array('type' => 'import'), '_SELF'), do_lang('GALLERY_IMPORT'), 'DOC_GALLERY_IMPORT') : null,
-                (!$allow_images) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? array('menu/cms/galleries/add_one_image', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_IMAGE')) : null),
-                (!$allow_images) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array('menu/cms/galleries/edit_one_image', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_IMAGE')) : null),
-                (!$allow_videos) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? array((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/add_one_multimedia' : 'menu/cms/galleries/add_one_video', array('_SELF', array('type' => 'add_other'), '_SELF'), do_lang('ADD_VIDEO')) : null),
-                (!$allow_videos) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video', array('_SELF', array('type' => 'edit_other'), '_SELF'), do_lang('EDIT_VIDEO')) : null),
-            ), manage_custom_fields_donext_link('image'), manage_custom_fields_donext_link('video'), manage_custom_fields_donext_link('gallery')),
+            array_merge([
+                has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? ['admin/add_one_category', ['_SELF', ['type' => 'add_category'], '_SELF'], do_lang('ADD_GALLERY')] : null,
+                has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? ['admin/edit_one_category', ['_SELF', ['type' => 'edit_category'], '_SELF'], do_lang('EDIT_GALLERY')] : null,
+                has_privilege(get_member(), 'mass_import', 'cms_galleries') ? ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('GALLERY_IMPORT'), 'DOC_GALLERY_IMPORT'] : null,
+                (!$allow_images) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? ['menu/cms/galleries/add_one_image', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_IMAGE')] : null),
+                (!$allow_images) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? ['menu/cms/galleries/edit_one_image', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_IMAGE')] : null),
+                (!$allow_videos) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_galleries') ? [(get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/add_one_multimedia' : 'menu/cms/galleries/add_one_video', ['_SELF', ['type' => 'add_other'], '_SELF'], do_lang('ADD_VIDEO')] : null),
+                (!$allow_videos) ? null : (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? [(get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video', ['_SELF', ['type' => 'edit_other'], '_SELF'], do_lang('EDIT_VIDEO')] : null),
+            ], manage_custom_fields_donext_link('image'), manage_custom_fields_donext_link('video'), manage_custom_fields_donext_link('gallery')),
             do_lang('MANAGE_GALLERIES')
         );
     }
@@ -320,15 +320,15 @@ class Module_cms_galleries extends Standard_crud_module
 
         $cat = get_param_string('cat', '');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => '_import'], '_SELF', [], false, true);
 
         $fields = new Tempcode();
 
-        $fields->attach(form_input_tree_list(do_lang_tempcode('GALLERY'), '', 'name', null, 'choose_gallery', array('must_accept_something' => true, 'purity' => false, 'addable_filter' => true, 'filter' => $condition, 'member_id' => $member_id), true, $cat));
+        $fields->attach(form_input_tree_list(do_lang_tempcode('GALLERY'), '', 'name', null, 'choose_gallery', ['must_accept_something' => true, 'purity' => false, 'addable_filter' => true, 'filter' => $condition, 'member_id' => $member_id], true, $cat));
 
         $submit_name = do_lang_tempcode('GALLERY_IMPORT');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '5213edb75c8d534c121b587c555a3b9a',
             'TITLE' => $this->title,
             'SKIP_WEBSTANDARDS' => true,
@@ -339,7 +339,7 @@ class Module_cms_galleries extends Standard_crud_module
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -353,7 +353,7 @@ class Module_cms_galleries extends Standard_crud_module
         check_privilege('mass_import'/*Not currently scoped to categories, array('galleries', $cat)*/);
 
         if (substr($cat, 0, 7) != 'member_') {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $cat));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $cat]);
             if ($test === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
             }
@@ -362,7 +362,7 @@ class Module_cms_galleries extends Standard_crud_module
         require_lang('trackbacks');
 
         // To choose to batch import from multiple attached files
-        $post_url = build_url(array('page' => '_SELF', 'type' => '__import', 'cat' => $cat, 'uploading' => 1, 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '__import', 'cat' => $cat, 'uploading' => 1, 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))], '_SELF');
         $fields = new Tempcode();
         $fields->attach(form_input_upload_multi(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_ARCHIVE_MEDIA', escape_html(str_replace(',', ', ', get_option('valid_images') . ',' . get_allowed_video_file_types()))), 'file', true, null, null, true, str_replace(' ', '', get_option('valid_images'))));
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_GALLERY_IMPORT_TITLE'), 'set_title', '', get_option('gallery_media_title_required') == '2'));
@@ -391,7 +391,7 @@ class Module_cms_galleries extends Standard_crud_module
         }
         // Show form
         $hidden->attach(form_input_hidden('test', '1'));
-        $form = do_template('FORM', array(
+        $form = do_template('FORM', [
             '_GUID' => '05de2bc134ed0b1ab703ac8bfbfabce4',
             'TABINDEX' => strval(get_form_field_tabindex()),
             'FIELDS' => $fields,
@@ -400,13 +400,13 @@ class Module_cms_galleries extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => $hidden,
-        ));
+        ]);
 
         // Orphaned upload form
         // To choose to batch import what already exists in gallery directory, but is orphaned
         $orphaned_content = new Tempcode();
         if ((has_actual_page_access(get_member(), 'admin_cleanup')) && ($GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)') + $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)') < 4000)) {
-            $there = array();
+            $there = [];
             $_dir = opendir(get_custom_file_base() . '/uploads/galleries/');
             while (false !== ($file = readdir($_dir))) {
                 if ((!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) && (!is_dir(get_custom_file_base() . '/uploads/galleries/' . $file)) && ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous'))))) {
@@ -425,8 +425,8 @@ class Module_cms_galleries extends Standard_crud_module
             }
             if (!empty($there)) {
                 cms_mb_asort($there, SORT_FLAG_CASE | SORT_NATURAL);
-                $test1 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('images', array('url')));
-                $test2 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('videos', array('url')));
+                $test1 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('images', ['url']));
+                $test2 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('videos', ['url']));
                 arsort($there);
                 $temp_keys = array_keys($there);
                 $last_time = $there[$temp_keys[0]];
@@ -440,7 +440,7 @@ class Module_cms_galleries extends Standard_crud_module
                     }
                 }
             }
-            $add_url = build_url(array('page' => '_SELF', 'type' => 'orphaned'), '_SELF');
+            $add_url = build_url(['page' => '_SELF', 'type' => 'orphaned'], '_SELF');
             if (!$orphaned_content->is_empty()) {
                 $fields_2 = new Tempcode();
                 $hidden_2 = new Tempcode();
@@ -448,7 +448,7 @@ class Module_cms_galleries extends Standard_crud_module
                 $hidden_2->attach(form_input_hidden('ss_cat', $cat));
                 $fields_2->attach(form_input_multi_list(do_lang_tempcode('ENTRIES'), '', 'ss_files', $orphaned_content));
                 if ($this->has_at_least_one_watermark($cat)) {
-                    $fields_2->attach(form_input_various_ticks(array(array(do_lang_tempcode('WATERMARK'), 'ss_watermark', true, '')), '', null, do_lang_tempcode('OPTIONS')));
+                    $fields_2->attach(form_input_various_ticks([[do_lang_tempcode('WATERMARK'), 'ss_watermark', true, '']], '', null, do_lang_tempcode('OPTIONS')));
                 }
                 $radios = new Tempcode();
                 $radios->attach(form_input_radio_entry('type', 'orphan_add', true, do_lang_tempcode('ADD_GALLERY_SELECTION')));
@@ -458,7 +458,7 @@ class Module_cms_galleries extends Standard_crud_module
                 require_code('feedback2');
                 $fields_2->attach(feedback_fields($this->content_type, true, true, true, false, '', null, false, true, true, 'ss_'));
 
-                $form2 = do_template('FORM', array(
+                $form2 = do_template('FORM', [
                     '_GUID' => '79c9fd4f29197460f08443bf2ffdf8b2',
                     'SECONDARY_FORM' => true,
                     'TABINDEX' => strval(get_form_field_tabindex()),
@@ -468,7 +468,7 @@ class Module_cms_galleries extends Standard_crud_module
                     'URL' => $add_url,
                     'TEXT' => '',
                     'HIDDEN' => $hidden_2,
-                ));
+                ]);
             } else {
                 $form2 = new Tempcode();
             }
@@ -476,7 +476,7 @@ class Module_cms_galleries extends Standard_crud_module
             $form2 = new Tempcode();
         }
 
-        return do_template('GALLERY_IMPORT_SCREEN', array('_GUID' => '607c819ff751268294e5e590a0d41533', 'TITLE' => $this->title, 'FORM2' => $form2, 'FORM' => $form));
+        return do_template('GALLERY_IMPORT_SCREEN', ['_GUID' => '607c819ff751268294e5e590a0d41533', 'TITLE' => $this->title, 'FORM2' => $form2, 'FORM' => $form]);
     }
 
     /**
@@ -501,7 +501,7 @@ class Module_cms_galleries extends Standard_crud_module
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
 
-        $media_imported = array();
+        $media_imported = [];
 
         foreach ($_FILES as $attach_name => $__file) {
             $file = $__file['name'];
@@ -568,8 +568,8 @@ class Module_cms_galleries extends Standard_crud_module
                 } else {
                     $media_title = do_lang('MEDIA_FILE_IN_SET', $set_title, integer_format($i + 1), integer_format(count($media_imported)));
                 }
-                $lang_value = $GLOBALS['SITE_DB']->query_select_value($media_type . 's', 'title', array('id' => $media_id));
-                $GLOBALS['SITE_DB']->query_update($media_type . 's', lang_remap('title', $lang_value, $media_title), array('id' => $media_id), '', 1);
+                $lang_value = $GLOBALS['SITE_DB']->query_select_value($media_type . 's', 'title', ['id' => $media_id]);
+                $GLOBALS['SITE_DB']->query_update($media_type . 's', lang_remap('title', $lang_value, $media_title), ['id' => $media_id], '', 1);
             }
         }
 
@@ -617,7 +617,7 @@ class Module_cms_galleries extends Standard_crud_module
                         if ($length === null) {
                             $length = 0;
                         }
-                        $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : array();
+                        $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
                         $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('ss_allow_rating', 0), post_param_integer('ss_allow_reviews', post_param_integer('ss_allow_comments', 0)), post_param_integer('ss_allow_trackbacks', 0), '', $length, $width, $height);
                         store_exif('video', strval($id), $exif);
 
@@ -646,7 +646,7 @@ class Module_cms_galleries extends Standard_crud_module
                         handle_images_cleanup_pipeline(get_custom_file_base() . '/' . rawurldecode($url), null, IMG_RECOMPRESS_LOSSLESS, $maximum_dimension, $watermarks);
                     }
 
-                    $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : array();
+                    $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
                     $id = add_image($exif['UserComment'], $cat, '', $url, $thumb_url, 1, post_param_integer('ss_allow_rating', 0), post_param_integer('ss_allow_reviews', post_param_integer('ss_allow_comments', 0)), post_param_integer('ss_allow_trackbacks', 0), '');
                     store_exif('image', strval($id), $exif);
 
@@ -697,7 +697,7 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => '_import', 'name' => $cat), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_import', 'name' => $cat], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -734,7 +734,7 @@ class Module_cms_galleries extends Standard_crud_module
                 if ($length === null) {
                     $length = 0;
                 }
-                $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : array();
+                $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
                 $id = add_video($exif['UserComment'], $cat, '', $url, '', 1, post_param_integer('allow_rating', 0), post_param_integer('allow_reviews', post_param_integer('allow_comments', 0)), post_param_integer('allow_trackbacks', 0), post_param_string('notes', ''), $length, $width, $height, null, $time);
                 store_exif('video', strval($id), $exif);
                 if (addon_installed('content_privacy')) {
@@ -756,13 +756,13 @@ class Module_cms_galleries extends Standard_crud_module
                     }
                 }
 
-                return array('video', $id);
+                return ['video', $id];
             }
         } else {
             $thumb_path = get_custom_file_base() . '/' . rawurldecode($thumb_url);
             $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true);
 
-            $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : array();
+            $exif = url_is_local($url) ? get_exif_data(get_custom_file_base() . '/' . rawurldecode($url), $file) : [];
 
             // Images cleanup pipeline
             $maximum_dimension = intval(get_option('maximum_image_size'));
@@ -793,7 +793,7 @@ class Module_cms_galleries extends Standard_crud_module
                 }
             }
 
-            return array('image', $id);
+            return ['image', $id];
         }
 
         return null;
@@ -823,7 +823,7 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => '_import', 'name' => $cat), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_import', 'name' => $cat], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -837,7 +837,7 @@ class Module_cms_galleries extends Standard_crud_module
     public function check_images_allowed($cat, $tolerate_non_exist = false)
     {
         // Check this cat allows images
-        $gallery = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_videos', 'accept_images', 'is_member_synched'), array('name' => $cat), '', 1);
+        $gallery = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_videos', 'accept_images', 'is_member_synched'], ['name' => $cat], '', 1);
         $owner = get_member_id_from_gallery_name($cat);
         if (!array_key_exists(0, $gallery)) {
             if ($tolerate_non_exist) {
@@ -855,7 +855,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         if ((!has_privilege(get_member(), 'no_personal_gallery_limit')) && ($owner == get_member())) {
             $limit = has_privilege(get_member(), 'high_personal_gallery_limit') ? intval(get_option('max_personal_gallery_images_high')) : intval(get_option('max_personal_gallery_images_low'));
-            $count_already = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', array('cat' => $cat));
+            $count_already = $GLOBALS['SITE_DB']->query_select_value('images', 'COUNT(*)', ['cat' => $cat]);
             if ($count_already >= $limit) {
                 warn_exit(do_lang_tempcode('TOO_MANY_GALLERY_IMAGES'));
             }
@@ -877,12 +877,12 @@ class Module_cms_galleries extends Standard_crud_module
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'image'));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'images'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'galleries'), get_module_zone('galleries'));
+        $search_url = build_url(['page' => 'search', 'id' => 'images'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'galleries'], get_module_zone('galleries'));
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_galleries') ? null : get_member();
-        $tree = form_input_tree_list(do_lang_tempcode('IMAGE'), do_lang_tempcode('DESCRIPTION_IMAGE'), 'id', null, 'choose_image', array('filter' => 'only_conventional_galleries', 'only_owned' => $only_owned, 'editable_filter' => true), true, null, false, null, $this->supports_mass_delete);
-        return array($tree, $search_url, $archive_url);
+        $tree = form_input_tree_list(do_lang_tempcode('IMAGE'), do_lang_tempcode('DESCRIPTION_IMAGE'), 'id', null, 'choose_image', ['filter' => 'only_conventional_galleries', 'only_owned' => $only_owned, 'editable_filter' => true], true, null, false, null, $this->supports_mass_delete);
+        return [$tree, $search_url, $archive_url];
     }
 
     /**
@@ -902,18 +902,18 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = array())
+    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
-        $num_galleries = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', array('accept_images' => 1));
+        $num_galleries = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_images' => 1]);
 
         $adding = ($id === null);
 
         if ($adding) {
             $cat = get_param_string('cat', '');
             if ($cat != '') {
-                if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'is_member_synched', array('name' => $cat)) === 1) {
+                if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'is_member_synched', ['name' => $cat]) === 1) {
                     $cat = 'member_' . strval(get_member()) . '_' . $cat;
                 }
             }
@@ -925,7 +925,7 @@ class Module_cms_galleries extends Standard_crud_module
         if (strpos($cat, '?') !== false) {
             $cat = str_replace('?', strval(get_member()), $cat);
         }
-        $filters = array('must_accept_images' => true, 'addable_filter' => true);
+        $filters = ['must_accept_images' => true, 'addable_filter' => true];
         if (substr($cat, 0, 9) != 'download_') {
             $filters['filter'] = 'only_conventional_galleries';
         }
@@ -939,7 +939,7 @@ class Module_cms_galleries extends Standard_crud_module
                 $gallery_title = '';
             }
         } else {
-            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', array('accept_images' => 1)) == 0) {
+            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', ['accept_images' => 1]) == 0) {
                 $cat = 'root'; // Only option!
             }
         }
@@ -949,11 +949,11 @@ class Module_cms_galleries extends Standard_crud_module
                 $filters['filter'] = $root_cat;
                 $root_cat = '';
             }
-            if (empty($root_cat) && $GLOBALS['SITE_DB']->query_select_value('galleries', 'accept_images', array('name' => 'root')) == 0) {
+            if (empty($root_cat) && $GLOBALS['SITE_DB']->query_select_value('galleries', 'accept_images', ['name' => 'root']) == 0) {
                 $root_cat = 'root'; // Don't show 'root' itself
             }
-            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', array('accept_images' => 1)) == 0) {
-                $cat = $GLOBALS['SITE_DB']->query_select_value('galleries', 'name', array('accept_images' => 1));
+            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', ['accept_images' => 1]) == 0) {
+                $cat = $GLOBALS['SITE_DB']->query_select_value('galleries', 'name', ['accept_images' => 1]);
                 $hidden->attach(form_input_hidden('cat', $cat));
             } else {
                 $fields->attach(form_input_tree_list(do_lang_tempcode('GALLERY'), do_lang_tempcode('DESCRIPTION_GALLERY'), 'cat', $root_cat, 'choose_gallery', $filters, true, $cat, false, null, false, $gallery_title));
@@ -980,9 +980,9 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         $do_watermark = ($this->has_at_least_one_watermark($cat)) && (function_exists('imagetypes'));
-        $do_rep_image = ((get_option('gallery_rep_image') == '1') && (($cat == '') || (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', array('galleries', $cat)))));
+        $do_rep_image = ((get_option('gallery_rep_image') == '1') && (($cat == '') || (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat]))));
         if (($do_watermark) || ($do_rep_image)) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '971e7db21c3b9d2c8cfbd6a910711514', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '971e7db21c3b9d2c8cfbd6a910711514', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
             if ($do_watermark) {
                 $fields->attach(form_input_tick(do_lang_tempcode('WATERMARK'), do_lang_tempcode('DESCRIPTION_WATERMARK'), 'watermark', true)); // Only applies to new uploads, so can't be watermarked twice
             }
@@ -1008,7 +1008,7 @@ class Module_cms_galleries extends Standard_crud_module
             $hidden->attach(form_input_hidden('allow_trackbacks', strval($allow_trackbacks)));
             $feedback_fields = new Tempcode();
         }
-        $fields->attach(metadata_get_fields('image', ($id === null) ? null : strval($id), false, array(), ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
+        $fields->attach(metadata_get_fields('image', ($id === null) ? null : strval($id), false, [], ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
         $fields->attach($seo_fields);
         $fields->attach($feedback_fields);
 
@@ -1025,7 +1025,7 @@ class Module_cms_galleries extends Standard_crud_module
             $fields->attach(content_review_get_fields('image', ($id === null) ? null : strval($id)));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -1036,11 +1036,11 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('images', array('submitter', 'add_date'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('images', ['submitter', 'add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['submitter'], $rows[0]['add_date']);
+        return [$rows[0]['submitter'], $rows[0]['add_date']];
     }
 
     /**
@@ -1051,7 +1051,7 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function get_cat($id)
     {
-        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array('id' => intval($id)));
+        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($id)]);
         if ($temp === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'image'));
         }
@@ -1068,7 +1068,7 @@ class Module_cms_galleries extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('images', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'image'));
         }
@@ -1079,7 +1079,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $delete_fields = null;
         if (get_option('cleanup_files') == '0') {
-            if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', array('galleries', $cat))) {
+            if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat])) {
                 if (has_actual_page_access(get_member(), 'admin_cleanup')) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
                     $radios->attach(form_input_radio_entry('delete', '1', false, do_lang_tempcode('DELETE_PARTIAL')));
@@ -1093,7 +1093,7 @@ class Module_cms_galleries extends Standard_crud_module
             }
         }
 
-        $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'image', 'content_id' => strval($id))));
+        $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'image', 'content_id' => strval($id)]));
 
         $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $myrow['url'], $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
 
@@ -1147,7 +1147,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('image', null);
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : array();
+        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
         $id = add_image($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
@@ -1174,8 +1174,8 @@ class Module_cms_galleries extends Standard_crud_module
             }
         }
 
-        if ((has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', array('galleries', $cat))) && (post_param_integer('rep_image', 0) == 1)) {
-            $GLOBALS['SITE_DB']->query_update('galleries', array('rep_image' => $thumb_url), array('name' => $cat), '', 1);
+        if ((has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat])) && (post_param_integer('rep_image', 0) == 1)) {
+            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $thumb_url], ['name' => $cat], '', 1);
         }
 
         if (addon_installed('content_reviews')) {
@@ -1243,8 +1243,8 @@ class Module_cms_galleries extends Standard_crud_module
             save_privacy_form_fields('image', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('images', 'validated', array('id' => $id)) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('images', 'submitter', array('id' => $id));
+        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('images', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('images', 'submitter', ['id' => $id]);
 
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
@@ -1262,12 +1262,12 @@ class Module_cms_galleries extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('image', strval($id));
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : array();
+        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
         edit_image($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
-        if ((!fractional_edit()) && (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', array('galleries', $cat))) && (post_param_integer('rep_image', 0) == 1)) {
-            $GLOBALS['SITE_DB']->query_update('galleries', array('rep_image' => $thumb_url), array('name' => $cat), '', 1);
+        if ((!fractional_edit()) && (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat])) && (post_param_integer('rep_image', 0) == 1)) {
+            $GLOBALS['SITE_DB']->query_update('galleries', ['rep_image' => $thumb_url], ['name' => $cat], '', 1);
         }
 
         if (addon_installed('content_reviews')) {
@@ -1373,7 +1373,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
     public function check_videos_allowed($cat, $tolerate_non_exist = false)
     {
         // Check this cat allows images
-        $gallery = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_videos', 'accept_images', 'is_member_synched'), array('name' => $cat), '', 1);
+        $gallery = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_videos', 'accept_images', 'is_member_synched'], ['name' => $cat], '', 1);
         $owner = get_member_id_from_gallery_name($cat);
         if (!array_key_exists(0, $gallery)) {
             if ($tolerate_non_exist) {
@@ -1391,7 +1391,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         if ((!has_privilege(get_member(), 'no_personal_gallery_limit')) && ($owner == get_member())) {
             $limit = has_privilege(get_member(), 'high_personal_gallery_limit') ? intval(get_option('max_personal_gallery_videos_high')) : intval(get_option('max_personal_gallery_videos_low'));
-            $count_already = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', array('cat' => $cat));
+            $count_already = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $cat]);
             if ($count_already >= $limit) {
                 warn_exit(do_lang_tempcode('TOO_MANY_GALLERY_VIDEOS'));
             }
@@ -1420,7 +1420,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             } else {
                 $url = post_param_string('video__url', '', INPUT_FILTER_URL_GENERAL);
                 if ($url == '') {
-                    return array(null, null, null);
+                    return [null, null, null];
                 }
 
                 $_video_width = null;
@@ -1433,7 +1433,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
                 require_code('hooks/systems/media_rendering/oembed');
                 $oembed_ob = object_factory('Hook_media_rendering_oembed');
                 if ($oembed_ob->recognises_mime_type($meta_details['t_mime_type'], $meta_details) || $oembed_ob->recognises_url($url)) {
-                    $oembed = $oembed_ob->get_oembed_data_result($url, array('width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')));
+                    $oembed = $oembed_ob->get_oembed_data_result($url, ['width' => get_option('video_width_setting'), 'height' => get_option('video_height_setting')]);
                     if (isset($oembed['width'])) {
                         $_video_width = intval($oembed['width']);
                     }
@@ -1452,7 +1452,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
                     if ($url != '') {
                         $temp_path = cms_tempnam();
                         $write_to_file = fopen($temp_path, 'wb');
-                        $download_test = cms_http_request($url, array('byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file));
+                        $download_test = cms_http_request($url, ['byte_limit' => 1024 * 50, 'trigger_error' => false, 'write_to_file' => $write_to_file]);
                         rewind($write_to_file);
                         fclose($write_to_file);
                     }
@@ -1460,7 +1460,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
                         $filename = ($download_test->filename === null) ? basename(urldecode($url)) : $download_test->filename;
                         list($_video_width, $_video_height, $_video_length) = get_video_details($temp_path, $filename);
                     } else {
-                        list($_video_width, $_video_height, $_video_length) = array(null, null, null);
+                        list($_video_width, $_video_height, $_video_length) = [null, null, null];
                     }
 
                     if ($temp_path != '') {
@@ -1487,7 +1487,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             }
         }
 
-        return array($video_width, $video_height, $video_length);
+        return [$video_width, $video_height, $video_length];
     }
 
     /**
@@ -1501,12 +1501,12 @@ class Module_cms_galleries_alt extends Standard_crud_module
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'video'));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'videos'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'galleries'), get_module_zone('galleries'));
+        $search_url = build_url(['page' => 'search', 'id' => 'videos'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'galleries'], get_module_zone('galleries'));
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_galleries') ? null : get_member();
-        $tree = form_input_tree_list(do_lang_tempcode('VIDEO'), '', 'id', null, 'choose_video', array('only_owned' => $only_owned, 'editable_filter' => true), true, null, false, null, $this->supports_mass_delete);
-        return array($tree, $search_url, $archive_url);
+        $tree = form_input_tree_list(do_lang_tempcode('VIDEO'), '', 'id', null, 'choose_video', ['only_owned' => $only_owned, 'editable_filter' => true], true, null, false, null, $this->supports_mass_delete);
+        return [$tree, $search_url, $archive_url];
     }
 
     /**
@@ -1529,18 +1529,18 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
      */
-    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $regions = array())
+    public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $regions = [])
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
         $no_thumb_needed = (get_option('ffmpeg_path') != '') || (class_exists('ffmpeg_movie'));
 
-        $num_galleries = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', array('accept_videos' => 1));
+        $num_galleries = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['accept_videos' => 1]);
 
         if ($cat == '') {
             $cat = get_param_string('cat', '');
             if ($cat != '') {
-                if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'is_member_synched', array('name' => $cat)) === 1) {
+                if ($GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'is_member_synched', ['name' => $cat]) === 1) {
                     $cat = 'member_' . strval(get_member()) . '_' . $cat;
                 }
             }
@@ -1552,7 +1552,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         if (strpos($cat, '?') !== false) {
             $cat = str_replace('?', strval(get_member()), $cat);
         }
-        $filters = array('filter' => 'only_conventional_galleries', 'must_accept_videos' => true, 'addable_filter' => true);
+        $filters = ['filter' => 'only_conventional_galleries', 'must_accept_videos' => true, 'addable_filter' => true];
 
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, get_option('gallery_media_title_required') != '0'));
 
@@ -1563,7 +1563,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
                 $gallery_title = '';
             }
         } else {
-            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', array('accept_videos' => 1)) == 0) {
+            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', ['accept_videos' => 1]) == 0) {
                 $cat = 'root'; // Only option!
             }
         }
@@ -1573,11 +1573,11 @@ class Module_cms_galleries_alt extends Standard_crud_module
                 $filters['filter'] = $root_cat;
                 $root_cat = '';
             }
-            if (empty($root_cat) && $GLOBALS['SITE_DB']->query_select_value('galleries', 'accept_videos', array('name' => 'root')) == 0) {
+            if (empty($root_cat) && $GLOBALS['SITE_DB']->query_select_value('galleries', 'accept_videos', ['name' => 'root']) == 0) {
                 $root_cat = 'root'; // Don't show 'root' itself
             }
-            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', array('accept_videos' => 1)) == 0) {
-                $cat = $GLOBALS['SITE_DB']->query_select_value('galleries', 'name', array('accept_videos' => 1));
+            if ($num_galleries == 1 && $GLOBALS['SITE_DB']->query_select_value('galleries', 'is_member_synched', ['accept_videos' => 1]) == 0) {
+                $cat = $GLOBALS['SITE_DB']->query_select_value('galleries', 'name', ['accept_videos' => 1]);
                 $hidden->attach(form_input_hidden('cat', $cat));
             } else {
                 $fields->attach(form_input_tree_list(do_lang_tempcode('GALLERY'), do_lang_tempcode('DESCRIPTION_GALLERY'), 'cat', $root_cat, 'choose_gallery', $filters, true, $cat, false, null, false, $gallery_title));
@@ -1608,7 +1608,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         if ($no_thumb_needed) {
             $fields->attach($description_field);
             $fields->attach($validated_field);
-            $temp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '9843d9412a6659d06b4667c2fa0f0e45', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => true));
+            $temp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9843d9412a6659d06b4667c2fa0f0e45', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => true]);
             $fields->attach($temp);
         }
 
@@ -1641,7 +1641,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $hidden->attach(form_input_hidden('allow_trackbacks', strval($allow_trackbacks)));
             $feedback_fields = new Tempcode();
         }
-        $fields->attach(metadata_get_fields('video', ($id === null) ? null : strval($id), false, array(), ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
+        $fields->attach(metadata_get_fields('video', ($id === null) ? null : strval($id), false, [], ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
         $fields->attach($seo_fields);
         $fields->attach($feedback_fields);
 
@@ -1658,7 +1658,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             $fields->attach(content_review_get_fields('video', ($id === null) ? null : strval($id)));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -1669,11 +1669,11 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('videos', array('submitter', 'add_date'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('videos', ['submitter', 'add_date'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['submitter'], $rows[0]['add_date']);
+        return [$rows[0]['submitter'], $rows[0]['add_date']];
     }
 
     /**
@@ -1684,7 +1684,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function get_cat($id)
     {
-        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', array('id' => intval($id)));
+        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($id)]);
         if ($temp === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'video'));
         }
@@ -1701,7 +1701,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('videos', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('videos', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'video'));
         }
@@ -1713,7 +1713,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $delete_fields = null;
         if (get_option('cleanup_files') == '0') {
-            if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', array('galleries', $cat))) {
+            if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_galleries', ['galleries', $cat])) {
                 if (has_actual_page_access(get_member(), 'admin_cleanup')) {
                     $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
                     $radios->attach(form_input_radio_entry('delete', '1', false, do_lang_tempcode('DELETE_PARTIAL')));
@@ -1727,7 +1727,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             }
         }
 
-        $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'video', 'content_id' => strval($id))));
+        $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'video', 'content_id' => strval($id)]));
 
         $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $url, $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['video_length'], $myrow['video_width'], $myrow['video_height'], $regions);
 
@@ -1791,7 +1791,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('video', null);
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : array();
+        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
         $id = add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
@@ -1858,7 +1858,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
             }
 
             if ($thumb_url == '') {
-                $rows = $GLOBALS['SITE_DB']->query_select('videos', array('url', 'thumb_url'), array('id' => $id), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('videos', ['url', 'thumb_url'], ['id' => $id], '', 1);
                 $thumb_url = $rows[0]['thumb_url'];
             }
             if (($url == '') || ($thumb_url == '')) {
@@ -1876,7 +1876,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         if (!fractional_edit()) {
             list($video_width, $video_height, $video_length) = $this->get_special_video_info();
         } else {
-            list($video_width, $video_height, $video_length) = array(INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL);
+            list($video_width, $video_height, $video_length) = [INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL, INTEGER_MAGIC_NULL];
         }
         if ($video_width === null) {
             $video_width = intval(get_option('default_video_width'));
@@ -1896,8 +1896,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
             save_privacy_form_fields('video', strval($id), $privacy_level, $additional_access);
         }
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'validated', array('id' => $id)) === 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('videos', 'submitter', array('id' => $id));
+        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'validated', ['id' => $id]) === 0)) { // Just became validated, syndicate as just added
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('videos', 'submitter', ['id' => $id]);
 
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'galleries')) && (has_category_access(get_modal_user(), 'galleries', $cat))) {
@@ -1915,7 +1915,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('video', strval($id));
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : array();
+        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
 
         edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
@@ -1979,7 +1979,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
     protected $table = 'galleries';
     protected $is_chained_with_parent_browse = true;
 
-    public $js_function_calls = array('moduleCmsGalleriesCat');
+    public $js_function_calls = ['moduleCmsGalleriesCat'];
 
     /**
      * Standard crud_module tree-list function.
@@ -1991,11 +1991,11 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $purity = true;
         $_member_id = null;
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'galleries'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'galleries'), get_module_zone('galleries'));
+        $search_url = build_url(['page' => 'search', 'id' => 'galleries'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'galleries'], get_module_zone('galleries'));
 
-        $tree = form_input_tree_list(do_lang_tempcode('GALLERY'), '', 'id', null, 'choose_gallery', array('purity' => $purity, 'member_id' => $_member_id, 'editable_filter' => true), true);
-        return array($tree, $search_url, $archive_url);
+        $tree = form_input_tree_list(do_lang_tempcode('GALLERY'), '', 'id', null, 'choose_gallery', ['purity' => $purity, 'member_id' => $_member_id, 'editable_filter' => true], true);
+        return [$tree, $search_url, $archive_url];
     }
 
     /**
@@ -2029,7 +2029,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $hidden = new Tempcode();
 
         if ($layout_mode === null) {
-            $layout_mode = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'layout_mode', array(), 'GROUP BY layout_mode ORDER BY COUNT(layout_mode) DESC');  // Determine default based on what is 'the norm' currently.
+            $layout_mode = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'layout_mode', [], 'GROUP BY layout_mode ORDER BY COUNT(layout_mode) DESC');  // Determine default based on what is 'the norm' currently.
 
             if ($layout_mode === null) {
                 // No galleries exist
@@ -2056,18 +2056,18 @@ class Module_cms_galleries_cat extends Standard_crud_module
             if ((get_option('manual_gallery_parent') == '1') || ($parent_id == '')) {
                 $parent_gallery_title = '';
                 if ($parent_id != '') {
-                    $_parent_gallery_title = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', array('name' => $parent_id));
+                    $_parent_gallery_title = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $parent_id]);
                     if ($_parent_gallery_title !== null) {
                         $parent_gallery_title = get_translated_text($_parent_gallery_title);
                     }
                 }
-                $fields->attach(form_input_tree_list(do_lang_tempcode('PARENT'), do_lang_tempcode('DESCRIPTION_PARENT', 'gallery'), 'parent_id', null, 'choose_gallery', array('filter' => 'only_conventional_galleries', 'addable_filter' => true/*FUDGE: A little naughty, but it encodes roughly what we want and doesn't hurt staff; we have separate enable/disable images/videos settings in galleries, so permissions for adding entries can reasonably be a base requirement for permissions for adding categories*/, 'purity' => true), true, $parent_id, false, null, false, $parent_gallery_title));
+                $fields->attach(form_input_tree_list(do_lang_tempcode('PARENT'), do_lang_tempcode('DESCRIPTION_PARENT', 'gallery'), 'parent_id', null, 'choose_gallery', ['filter' => 'only_conventional_galleries', 'addable_filter' => true/*FUDGE: A little naughty, but it encodes roughly what we want and doesn't hurt staff; we have separate enable/disable images/videos settings in galleries, so permissions for adding entries can reasonably be a base requirement for permissions for adding categories*/, 'purity' => true], true, $parent_id, false, null, false, $parent_gallery_title));
             } else {
                 $hidden->attach(form_input_hidden('parent_id', $parent_id));
             }
         }
         if ((get_option('manual_gallery_media_types') == '1') || ($accept_images == 0) || ($accept_videos == 0)) {
-            $fields->attach(form_input_various_ticks(array(array(do_lang_tempcode('ACCEPT_IMAGES'), 'accept_images', $accept_images == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_IMAGES')), array(do_lang_tempcode('ACCEPT_VIDEOS'), 'accept_videos', $accept_videos == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_VIDEOS'))), new Tempcode(), null, do_lang_tempcode('ACCEPTED_MEDIA_TYPES')));
+            $fields->attach(form_input_various_ticks([[do_lang_tempcode('ACCEPT_IMAGES'), 'accept_images', $accept_images == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_IMAGES')], [do_lang_tempcode('ACCEPT_VIDEOS'), 'accept_videos', $accept_videos == 1, do_lang_tempcode('DESCRIPTION_ACCEPT_VIDEOS')]], new Tempcode(), null, do_lang_tempcode('ACCEPTED_MEDIA_TYPES')));
         } else {
             $hidden->attach(form_input_hidden('accept_images', '1'));
             $hidden->attach(form_input_hidden('accept_videos', '1'));
@@ -2088,7 +2088,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $request_rep_image = (get_option('gallery_rep_image') == '1') || ($rep_image != '');
         $request_member_synced = (get_option('gallery_member_synced') == '1') || ($is_member_synched == 1) || ($name == 'root');
         if ($request_rep_image || $request_member_synced) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '94d1f77eb9fdca010cb9d1eac5d19b9b', 'SECTION_HIDDEN' => ($rep_image == '') && ($is_member_synched == 0), 'TITLE' => do_lang_tempcode('ADVANCED')]));
             if ($request_rep_image) {
                 $fields->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_REPRESENTATIVE_IMAGE_GALLERY'), $hidden, 'image', null, false, $rep_image));
             }
@@ -2098,7 +2098,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         }
 
         if (get_option('gallery_watermarks') == '1') {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '555320228b5a1ff1effb8a1bf9c15d8e', 'SECTION_HIDDEN' => ($watermark_top_left === null) && ($watermark_top_right === null) && ($watermark_bottom_left === null) && ($watermark_bottom_right === null), 'TITLE' => do_lang_tempcode('WATERMARKING'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '555320228b5a1ff1effb8a1bf9c15d8e', 'SECTION_HIDDEN' => ($watermark_top_left === null) && ($watermark_top_right === null) && ($watermark_bottom_left === null) && ($watermark_bottom_right === null), 'TITLE' => do_lang_tempcode('WATERMARKING')]));
             $fields->attach(form_input_upload(do_lang_tempcode('_WATERMARK', do_lang_tempcode('TOP_LEFT')), do_lang_tempcode('_DESCRIPTION_WATERMARK', do_lang_tempcode('TOP_LEFT')), 'watermark_top_left', false, $watermark_top_left, null, true, get_allowed_image_file_types()));
             $fields->attach(form_input_upload(do_lang_tempcode('_WATERMARK', do_lang_tempcode('TOP_RIGHT')), do_lang_tempcode('_DESCRIPTION_WATERMARK', do_lang_tempcode('TOP_RIGHT')), 'watermark_top_right', false, $watermark_top_right, null, true, get_allowed_image_file_types()));
             $fields->attach(form_input_upload(do_lang_tempcode('_WATERMARK', do_lang_tempcode('BOTTOM_LEFT')), do_lang_tempcode('_DESCRIPTION_WATERMARK', do_lang_tempcode('BOTTOM_LEFT')), 'watermark_bottom_left', false, $watermark_bottom_left, null, true, get_allowed_image_file_types()));
@@ -2129,7 +2129,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $hidden->attach(form_input_hidden('allow_comments', strval($allow_comments)));
             $feedback_fields = new Tempcode();
         }
-        $fields->attach(metadata_get_fields('gallery', ($name == '') ? null : $name, false, array(), ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
+        $fields->attach(metadata_get_fields('gallery', ($name == '') ? null : $name, false, [], ($seo_fields->is_empty() && $feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
         $fields->attach($seo_fields);
         $fields->attach($feedback_fields);
 
@@ -2137,7 +2137,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
             $fields->attach(content_review_get_fields('gallery', ($name == '') ? null : $name));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -2148,11 +2148,11 @@ class Module_cms_galleries_cat extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('add_date', 'g_owner'), array('name' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['add_date', 'g_owner'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(get_member_id_from_gallery_name($id), null);
+            return [get_member_id_from_gallery_name($id), null];
         }
-        return array(get_member_id_from_gallery_name($id, $rows[0]), $rows[0]['add_date']);
+        return [get_member_id_from_gallery_name($id, $rows[0]), $rows[0]['add_date']];
     }
 
     /**
@@ -2163,7 +2163,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('name' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'gallery'));
         }
@@ -2270,7 +2270,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
-        $metadata = actual_metadata_get_fields('gallery', $id, array(), $name);
+        $metadata = actual_metadata_get_fields('gallery', $id, [], $name);
 
         edit_gallery(
             $id,
@@ -2362,7 +2362,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      */
     public function _do_next_manager($title, $description, $cat = null, $id = null, $video = false)
     {
-        $extra = array();
+        $extra = [];
         if ($cat !== null) {
             $hooks = find_all_hook_obs('modules', 'galleries_users', 'Hook_gu_');
             foreach ($hooks as $object) {
@@ -2376,27 +2376,27 @@ class Module_cms_galleries_cat extends Standard_crud_module
             return do_next_manager(
                 $title,
                 $description,
-                array(),
+                [],
                 null,
                 /* TYPED-ORDERED LIST OF 'LINKS' */
                 null, // Add one
                 null, // Edit this
                 null, // Edit one
                 null, // View this
-                array('galleries', array('type' => 'browse'), get_module_zone('galleries'), do_lang_tempcode('GALLERIES')), // View archive
-                has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? array('_SELF', array('type' => 'add_category'), '_SELF', do_lang('ADD_GALLERY')) : null, // Add one category
-                has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? array('_SELF', array('type' => 'edit_category'), '_SELF', do_lang('EDIT_GALLERY')) : null, // Edit one category
-                ($cat === null) ? null : array('_SELF', array('type' => '_edit_category', 'id' => $cat), '_SELF', do_lang_tempcode('EDIT_THIS_GALLERY')), // Edit this category
-                ($cat === null) ? null : array('galleries', array('type' => 'browse', 'id' => $cat), get_module_zone('galleries'), do_lang_tempcode('VIEW_THIS_GALLERY')), // View this category
+                ['galleries', ['type' => 'browse'], get_module_zone('galleries'), do_lang_tempcode('GALLERIES')], // View archive
+                has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? ['_SELF', ['type' => 'add_category'], '_SELF', do_lang('ADD_GALLERY')] : null, // Add one category
+                has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? ['_SELF', ['type' => 'edit_category'], '_SELF', do_lang('EDIT_GALLERY')] : null, // Edit one category
+                ($cat === null) ? null : ['_SELF', ['type' => '_edit_category', 'id' => $cat], '_SELF', do_lang_tempcode('EDIT_THIS_GALLERY')], // Edit this category
+                ($cat === null) ? null : ['galleries', ['type' => 'browse', 'id' => $cat], get_module_zone('galleries'), do_lang_tempcode('VIEW_THIS_GALLERY')], // View this category
                 /* SPECIALLY TYPED 'LINKS' */
-                array_merge($extra, array(
-                    array('menu/cms/galleries/add_one_image', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_IMAGE')),
-                    array('menu/cms/galleries/add_one_video', array('_SELF', array('type' => 'add_other'), '_SELF'), do_lang('ADD_VIDEO')),
-                    has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array('menu/cms/galleries/edit_one_image', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_IMAGE')) : null,
-                    has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video', array('_SELF', array('type' => 'edit_other'), '_SELF'), do_lang('EDIT_VIDEO')) : null,
-                )),
-                array(),
-                array(),
+                array_merge($extra, [
+                    ['menu/cms/galleries/add_one_image', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_IMAGE')],
+                    ['menu/cms/galleries/add_one_video', ['_SELF', ['type' => 'add_other'], '_SELF'], do_lang('ADD_VIDEO')],
+                    has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? ['menu/cms/galleries/edit_one_image', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_IMAGE')] : null,
+                    has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? [(get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video', ['_SELF', ['type' => 'edit_other'], '_SELF'], do_lang('EDIT_VIDEO')] : null,
+                ]),
+                [],
+                [],
                 null,
                 null,
                 null,
@@ -2409,7 +2409,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $support_videos = false;
         $support_images = false;
         if ($cat !== null) {
-            $cat_row = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_images', 'accept_videos', 'is_member_synched'), array('name' => $cat), '', 1);
+            $cat_row = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'is_member_synched'], ['name' => $cat], '', 1);
             if ((array_key_exists(0, $cat_row)) && ($cat_row[0]['is_member_synched'] == 0)) {
                 if ($cat_row[0]['accept_videos'] == 1) {
                     $support_videos = true;
@@ -2423,28 +2423,28 @@ class Module_cms_galleries_cat extends Standard_crud_module
         return do_next_manager(
             $title,
             $description,
-            array(),
+            [],
             null,
             /* TYPED-ORDERED LIST OF 'LINKS' */
             null, // Add one
-            (($id === null) || (!has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries', array('galleries', $cat)))) ? null : array('_SELF', array('type' => $video ? '_edit_other' : '_edit', 'id' => $id), '_SELF', do_lang_tempcode($video ? 'EDIT_THIS_VIDEO' : 'EDIT_THIS_IMAGE')), // Edit this
+            (($id === null) || (!has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries', ['galleries', $cat]))) ? null : ['_SELF', ['type' => $video ? '_edit_other' : '_edit', 'id' => $id], '_SELF', do_lang_tempcode($video ? 'EDIT_THIS_VIDEO' : 'EDIT_THIS_IMAGE')], // Edit this
             null, // Edit one
-            ($id === null) ? null : array('galleries', array('type' => $video ? 'video' : 'image', 'id' => $id, 'wide' => 1), get_module_zone('galleries')), // View this
-            array('galleries', array('type' => 'browse'), get_module_zone('galleries'), do_lang_tempcode('GALLERIES')), // View archive
-            has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? array('_SELF', array('type' => 'add_category'), '_SELF', do_lang('ADD_GALLERY')) : null, // Add one category
-            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? array('_SELF', array('type' => 'edit_category'), '_SELF', do_lang('EDIT_GALLERY')) : null, // Edit one category
-            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? array('_SELF', array('type' => '_edit_category', 'id' => $cat), '_SELF', do_lang_tempcode('EDIT_THIS_GALLERY')) : null, // Edit this category
-            array('galleries', array('type' => 'browse', 'id' => $cat), get_module_zone('galleries'), do_lang_tempcode('VIEW_THIS_GALLERY')), // View this category
+            ($id === null) ? null : ['galleries', ['type' => $video ? 'video' : 'image', 'id' => $id, 'wide' => 1], get_module_zone('galleries')], // View this
+            ['galleries', ['type' => 'browse'], get_module_zone('galleries'), do_lang_tempcode('GALLERIES')], // View archive
+            has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_galleries') ? ['_SELF', ['type' => 'add_category'], '_SELF', do_lang('ADD_GALLERY')] : null, // Add one category
+            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? ['_SELF', ['type' => 'edit_category'], '_SELF', do_lang('EDIT_GALLERY')] : null, // Edit one category
+            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_galleries') ? ['_SELF', ['type' => '_edit_category', 'id' => $cat], '_SELF', do_lang_tempcode('EDIT_THIS_GALLERY')] : null, // Edit this category
+            ['galleries', ['type' => 'browse', 'id' => $cat], get_module_zone('galleries'), do_lang_tempcode('VIEW_THIS_GALLERY')], // View this category
             /* SPECIALLY TYPED 'LINKS' */
-            array_merge($extra, array(
-                array($video ? 'menu/cms/galleries/add_one_video' : 'menu/cms/galleries/add_one_image', array('_SELF', array('type' => $video ? 'add_other' : 'add', 'cat' => ((!$video && !$support_images) || ($video && !$support_videos) || ($cat === null)) ? null : $cat), '_SELF'), do_lang($video ? 'ADD_VIDEO' : 'ADD_IMAGE')),
-                array($video ? 'menu/cms/galleries/add_one_image' : 'menu/cms/galleries/add_one_video', array('_SELF', array('type' => $video ? 'add' : 'add_other', 'cat' => (($video && !$support_images) || (!$video && !$support_videos) || ($cat === null)) ? null : $cat), '_SELF'), do_lang($video ? 'ADD_IMAGE' : 'ADD_VIDEO')),
-                (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array($video ? ((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video') : 'menu/cms/galleries/edit_one_image', array('_SELF', array('type' => $video ? 'edit_other' : 'edit'), '_SELF'), do_lang($video ? 'EDIT_VIDEO' : 'EDIT_IMAGE')) : null), // Edit one
-                (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? array($video ? 'menu/cms/galleries/edit_one_image' : ((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video'), array('_SELF', array('type' => $video ? 'edit' : 'edit_other'), '_SELF'), do_lang($video ? 'EDIT_IMAGE' : 'EDIT_VIDEO')) : null), // Edit one
-                has_privilege(get_member(), 'mass_import', 'cms_galleries') ? array('admin/import', array('_SELF', array('type' => '_import', 'name' => $cat), '_SELF'), do_lang('GALLERY_IMPORT')) : null,
-            )),
-            array(),
-            array(),
+            array_merge($extra, [
+                [$video ? 'menu/cms/galleries/add_one_video' : 'menu/cms/galleries/add_one_image', ['_SELF', ['type' => $video ? 'add_other' : 'add', 'cat' => ((!$video && !$support_images) || ($video && !$support_videos) || ($cat === null)) ? null : $cat], '_SELF'], do_lang($video ? 'ADD_VIDEO' : 'ADD_IMAGE')],
+                [$video ? 'menu/cms/galleries/add_one_image' : 'menu/cms/galleries/add_one_video', ['_SELF', ['type' => $video ? 'add' : 'add_other', 'cat' => (($video && !$support_images) || (!$video && !$support_videos) || ($cat === null)) ? null : $cat], '_SELF'], do_lang($video ? 'ADD_IMAGE' : 'ADD_VIDEO')],
+                (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? [$video ? ((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video') : 'menu/cms/galleries/edit_one_image', ['_SELF', ['type' => $video ? 'edit_other' : 'edit'], '_SELF'], do_lang($video ? 'EDIT_VIDEO' : 'EDIT_IMAGE')] : null), // Edit one
+                (has_privilege(get_member(), 'edit_own_midrange_content', 'cms_galleries') ? [$video ? 'menu/cms/galleries/edit_one_image' : ((get_option('allow_audio_videos') == '2') ? 'menu/cms/galleries/edit_one_multimedia' : 'menu/cms/galleries/edit_one_video'), ['_SELF', ['type' => $video ? 'edit' : 'edit_other'], '_SELF'], do_lang($video ? 'EDIT_IMAGE' : 'EDIT_VIDEO')] : null), // Edit one
+                has_privilege(get_member(), 'mass_import', 'cms_galleries') ? ['admin/import', ['_SELF', ['type' => '_import', 'name' => $cat], '_SELF'], do_lang('GALLERY_IMPORT')] : null,
+            ]),
+            [],
+            [],
             null,
             null,
             null,

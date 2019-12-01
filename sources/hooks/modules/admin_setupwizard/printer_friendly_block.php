@@ -31,9 +31,9 @@ class Hook_sw_printer_friendly_block
     public function get_blocks()
     {
         if (!addon_installed('printer_friendly_block')) {
-            return array();
+            return [];
         }
 
-        return array(array(), array('side_printer_friendly' => array('PANEL_NONE', 'PANEL_NONE')));
+        return [[], ['side_printer_friendly' => ['PANEL_NONE', 'PANEL_NONE']]];
     }
 }

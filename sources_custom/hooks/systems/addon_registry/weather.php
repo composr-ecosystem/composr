@@ -26,7 +26,7 @@ class Hook_addon_registry_weather
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_weather
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,11 +108,11 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/weather.php',
             'sources_custom/hooks/systems/notifications/error_occurred_weather.php',
             'themes/default/templates_custom/BLOCK_SIDE_WEATHER.tpl',
@@ -143,7 +143,7 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
             'sources_custom/hooks/systems/weather/.htaccess',
             'sources_custom/hooks/systems/weather/index.html',
             'sources_custom/weather.php',
-        );
+        ];
     }
 
     /**
@@ -161,11 +161,11 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
      */
     public function install($upgrade_from = null)
     {
-        $GLOBALS['SITE_DB']->create_table('cached_weather_codes', array(
+        $GLOBALS['SITE_DB']->create_table('cached_weather_codes', [
             'id' => '*AUTO',
             'w_string' => 'SHORT_TEXT',
             'w_code' => 'INTEGER',
-        ));
+        ]);
     }
 
 }

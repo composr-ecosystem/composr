@@ -33,12 +33,12 @@ class Hook_page_groupings_downloads
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'menu/rich_content/downloads', array('cms_downloads', array('type' => 'browse'), get_module_zone('cms_downloads')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('downloads:SECTION_DOWNLOADS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)')))))), 'downloads:DOC_DOWNLOADS'),
-            array('rich_content', 'menu/rich_content/downloads', array('downloads', array(), get_module_zone('downloads')), do_lang_tempcode('downloads:SECTION_DOWNLOADS')),
-        );
+        return [
+            ['cms', 'menu/rich_content/downloads', ['cms_downloads', ['type' => 'browse'], get_module_zone('cms_downloads')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('downloads:SECTION_DOWNLOADS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)')))))), 'downloads:DOC_DOWNLOADS'],
+            ['rich_content', 'menu/rich_content/downloads', ['downloads', [], get_module_zone('downloads')], do_lang_tempcode('downloads:SECTION_DOWNLOADS')],
+        ];
     }
 }

@@ -45,7 +45,7 @@ class Hook_notification_wiki extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
         require_code('wiki');
@@ -55,13 +55,13 @@ class Hook_notification_wiki extends Hook_Notification
             return parent::create_category_tree($notification_code, $id); // Too many, so just allow removing UI
         }
 
-        static $wiki_seen = array();
+        static $wiki_seen = [];
         if ($id === null) {
-            $wiki_seen = array();
+            $wiki_seen = [];
         }
         $page_links = get_wiki_page_tree($wiki_seen, ($id === null) ? null : intval($id), null, null, false, false, ($id === null) ? 0 : 1);
 
-        $filtered = array();
+        $filtered = [];
         foreach ($page_links as $p) {
             if (strval($p['id']) !== $id) {
                 $filtered[] = $p;
@@ -92,11 +92,11 @@ class Hook_notification_wiki extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['wiki'] = array(do_lang('CONTENT'), do_lang('wiki:NOTIFICATION_TYPE_wiki'));
+        $list = [];
+        $list['wiki'] = [do_lang('CONTENT'), do_lang('wiki:NOTIFICATION_TYPE_wiki')];
         return $list;
     }
 

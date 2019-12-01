@@ -38,7 +38,7 @@ class Hook_symbol_SYMBOL_DATA_AS_JSON
 
         $lang = user_lang();
 
-        $value = array(
+        $value = [
             'PAGE'              => ecv_PAGE($lang, [], []),
             'ZONE'              => ecv_ZONE($lang, [], []),
             'MEMBER'            => ecv_MEMBER($lang, [], []),
@@ -60,7 +60,7 @@ class Hook_symbol_SYMBOL_DATA_AS_JSON
             'IS_A_COOKIE_LOGIN' => ecv_IS_A_COOKIE_LOGIN($lang, [], []),
             'CSP_NONCE'         => ecv_CSP_NONCE($lang, [], []),
             'RUNNING_SCRIPT'    => current_script(),
-        );
+        ];
 
         require_code('urls');
 

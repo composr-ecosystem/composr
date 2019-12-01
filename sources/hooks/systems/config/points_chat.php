@@ -30,7 +30,7 @@ class Hook_config_points_chat
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHATTING',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_chat
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

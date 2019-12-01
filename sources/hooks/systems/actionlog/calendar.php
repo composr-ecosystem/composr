@@ -31,77 +31,77 @@ class Hook_actionlog_calendar extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
         require_lang('calendar');
 
-        return array(
-            'ADD_EVENT_TYPE' => array(
+        return [
+            'ADD_EVENT_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'calendar_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CALENDAR' => '_SEARCH:calendar',
                     'EDIT_THIS_EVENT_TYPE' => '_SEARCH:cms_calendar:_edit_category:{ID}',
                     'ADD_EVENT_TYPE' => '_SEARCH:cms_calendar:add_category',
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={ID}',
-                ),
-            ),
-            'EDIT_EVENT_TYPE' => array(
+                ],
+            ],
+            'EDIT_EVENT_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'calendar_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CALENDAR' => '_SEARCH:calendar',
                     'EDIT_THIS_EVENT_TYPE' => '_SEARCH:cms_calendar:_edit_category:{ID}',
                     'ADD_EVENT_TYPE' => '_SEARCH:cms_calendar:add_category',
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={ID}',
-                ),
-            ),
-            'DELETE_EVENT_TYPE' => array(
+                ],
+            ],
+            'DELETE_EVENT_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'calendar_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_EVENT_TYPE' => '_SEARCH:cms_calendar:add_category',
-                ),
-            ),
-            'ADD_CALENDAR_EVENT' => array(
+                ],
+            ],
+            'ADD_CALENDAR_EVENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'event',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:calendar:view:{ID}',
                     'EDIT_THIS_CALENDAR_EVENT' => '_SEARCH:cms_calendar:_edit:{ID}',
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={TYPE,OPTIONAL}',
-                ),
-            ),
-            'EDIT_CALENDAR_EVENT' => array(
+                ],
+            ],
+            'EDIT_CALENDAR_EVENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'event',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:calendar:view:{ID}',
                     'EDIT_THIS_CALENDAR_EVENT' => '_SEARCH:cms_calendar:_edit:{ID}',
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add:e_type={TYPE,OPTIONAL}',
-                ),
-            ),
-            'DELETE_CALENDAR_EVENT' => array(
+                ],
+            ],
+            'DELETE_CALENDAR_EVENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'event',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CALENDAR_EVENT' => '_SEARCH:cms_calendar:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -117,11 +117,11 @@ class Hook_actionlog_calendar extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_CALENDAR_EVENT':
             case 'EDIT_CALENDAR_EVENT':
-                $type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', array('id' => intval($identifier)));
+                $type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'e_type', ['id' => intval($identifier)]);
                 if ($type_id !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'TYPE' => strval($type_id),
-                    );
+                    ];
                 }
                 break;
         }

@@ -30,7 +30,7 @@ class Hook_config_is_on_coppa
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COPPA_ENABLED',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_is_on_coppa
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

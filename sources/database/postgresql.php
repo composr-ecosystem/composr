@@ -29,7 +29,7 @@
  */
 class Database_Static_postgresql extends DatabaseDriver
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
 
     /**
      * Get the default user for making db connections (used by the installer as a default).
@@ -42,7 +42,7 @@ class Database_Static_postgresql extends DatabaseDriver
             //$_ret = posix_getpwuid(posix_getuid()); $ret = $_ret['name'];
             //$ret = posix_getlogin();
             $ret = get_current_user();
-            if (!in_array($ret, array('apache', 'nobody', 'www', '_www'))) {
+            if (!in_array($ret, ['apache', 'nobody', 'www', '_www'])) {
                 return $ret;
             }
         }
@@ -190,18 +190,18 @@ class Database_Static_postgresql extends DatabaseDriver
     protected function get_query_rows($results, $query, $start)
     {
         $num_fields = pg_num_fields($results);
-        $types = array();
-        $names = array();
+        $types = [];
+        $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
             $types[$x - 1] = pg_field_type($results, $x - 1);
             $names[$x - 1] = strtolower(pg_field_name($results, $x - 1));
         }
 
-        $out = array();
+        $out = [];
         $i = 0;
         while (($row = pg_fetch_row($results)) !== false) {
             $j = 0;
-            $newrow = array();
+            $newrow = [];
             foreach ($row as $v) {
                 $name = $names[$j];
                 $type = $types[$j];
@@ -237,7 +237,7 @@ class Database_Static_postgresql extends DatabaseDriver
      */
     public function get_type_remap($for_alter = false)
     {
-        $type_remap = array(
+        $type_remap = [
             'AUTO' => 'serial',
             'AUTO_LINK' => 'integer',
             'INTEGER' => 'integer',
@@ -259,7 +259,7 @@ class Database_Static_postgresql extends DatabaseDriver
             'IP' => 'varchar(40)',
             'LANGUAGE_NAME' => 'varchar(5)',
             'URLPATH' => 'varchar(255)',
-        );
+        ];
         return $type_remap;
     }
 
@@ -307,7 +307,7 @@ class Database_Static_postgresql extends DatabaseDriver
         }
 
         $query = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
-        return array($query);
+        return [$query];
     }
 
     /**
@@ -350,7 +350,7 @@ class Database_Static_postgresql extends DatabaseDriver
                 $aggregation .= '\'' . $this->db_escape_string($_field) . '\'';
             }
 
-            return array('CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . ' USING gin(to_tsvector(\'pg_catalog.' . $postgres_fulltext_language . '\', ' . $aggregation . '))');
+            return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . ' USING gin(to_tsvector(\'pg_catalog.' . $postgres_fulltext_language . '\', ' . $aggregation . '))'];
         }
 
         $_fields = preg_replace('#\(\d+\)#', '', $_fields);
@@ -367,11 +367,11 @@ class Database_Static_postgresql extends DatabaseDriver
 
             if (strpos($field_type, 'LONG') !== false) {
                 // We can't support this in PostgreSQL, too much data will give an error when inserting into the index
-                return array();
+                return [];
             }
         }
 
-        return array('CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')');
+        return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')'];
     }
 
     /**
@@ -519,6 +519,6 @@ class Database_Static_postgresql extends DatabaseDriver
      */
     public function close_connections()
     {
-        $this->cache_db = array();
+        $this->cache_db = [];
     }
 }

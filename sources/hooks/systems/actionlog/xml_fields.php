@@ -31,21 +31,21 @@ class Hook_actionlog_xml_fields extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('xml_fields')) {
-            return array();
+            return [];
         }
 
         require_lang('config');
 
-        return array(
-            'FIELD_FILTERS' => array(
+        return [
+            'FIELD_FILTERS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FIELD_FILTERS' => '_SEARCH:admin_config:xml_fields',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

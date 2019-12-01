@@ -47,7 +47,7 @@ function init__media_renderer()
      * @global boolean $MEDIA_MODE
      */
     global $MEDIA_MODE;
-    $MEDIA_MODE = array(0);
+    $MEDIA_MODE = [0];
 }
 
 /**
@@ -108,9 +108,9 @@ function find_media_renderers($url, $attributes, $as_admin, $source_member, $acc
         }
     }
 
-    $hooks = ($limit_to === null) ? array_keys(find_all_hooks('systems', 'media_rendering')) : array($limit_to);
+    $hooks = ($limit_to === null) ? array_keys(find_all_hooks('systems', 'media_rendering')) : [$limit_to];
 
-    $obs = array();
+    $obs = [];
     foreach ($hooks as $hook) {
         if (($limit_to !== null) && ($limit_to != $hook)) {
             continue;
@@ -121,11 +121,11 @@ function find_media_renderers($url, $attributes, $as_admin, $source_member, $acc
     }
 
     if (($as_admin) && ($limit_to !== null)) { // Don't check mime-types etc if admin and forced type
-        return array($limit_to);
+        return [$limit_to];
     }
 
-    $found = array();
-    $matches = array();
+    $found = [];
+    $matches = [];
     if ((strpos($url, '/') === false) || (url_is_local($url))) { // Just a local file
         // Unfortunately, just not reliable enough to use always (e.g. http://commons.wikimedia.org/wiki/File:Valmiki_Ramayana.jpg)
         //if (preg_match('#\.(\w+)$#', preg_replace('#\#.*#', '', $url)/*trim off hash component*/, $matches)!=0) {
@@ -234,7 +234,7 @@ function render_media_url($url, $url_safe, $attributes, $as_admin = false, $sour
     $ret = $ob->render($url, $url_safe, $attributes, $as_admin, $source_member, $url_to_scan_against);
 
     if (array_key_exists('float', $attributes)) {
-        $ret = do_template('FLOATER', array('_GUID' => '26410f89305c16ae9cb17dd02a4a7999', 'FLOAT' => $attributes['float'], 'CONTENT' => $ret));
+        $ret = do_template('FLOATER', ['_GUID' => '26410f89305c16ae9cb17dd02a4a7999', 'FLOAT' => $attributes['float'], 'CONTENT' => $ret]);
     }
 
     return $ret;
@@ -377,7 +377,7 @@ function _create_media_template_parameters($url, $attributes, $as_admin = false,
     }
 
     // Put together template parameters
-    return array(
+    return [
         'URL' => $url,
         'REMOTE_ID' => array_key_exists('remote_id', $attributes) ? $attributes['remote_id'] : '',
         'THUMB_URL' => $attributes['thumb_url'],
@@ -398,7 +398,7 @@ function _create_media_template_parameters($url, $attributes, $as_admin = false,
         'WYSIWYG_EDITABLE' => $wysiwyg_editable,
         'NUM_DOWNLOADS' => array_key_exists('num_downloads', $attributes) ? $attributes['num_downloads'] : null,
         'DESCRIPTION' => comcode_to_tempcode($attributes['description'], $source_member, $as_admin),
-    );
+    ];
 }
 
 /**

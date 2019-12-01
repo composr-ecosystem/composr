@@ -43,7 +43,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
         $this->process_checks_section('testWWWRedirection', 'www redirection', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testHTTPSRedirection', 'HTTPS redirection', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
         }
 
         $url = get_base_url() . '/testing-for-404.html';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true));
+        $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
         $this->assertTrue(($data === null) || (strpos($data, '<link') !== false) || (strpos($data, '<a ') !== false), '[tt]404[/tt] status page is too basic looking, probably not helpful, suggest to display a sitemap');
     }
 
@@ -117,7 +117,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             }
             $wrong_url = str_replace('://' . $domain, '://' . $wrong_domain, $url);
 
-            $http_result = cms_http_request($wrong_url, array('trigger_error' => false));
+            $http_result = cms_http_request($wrong_url, ['trigger_error' => false]);
             $redirected = ($http_result->download_url != $wrong_url);
             $this->assertTrue($redirected, 'Domain [tt]' . $wrong_domain . '[/tt] is not redirecting to [tt]' . $domain . '[/tt]');
 
@@ -125,7 +125,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
                 $ok = ($http_result->download_url == $url);
                 $this->assertTrue($ok, 'Domain [tt]' . $wrong_domain . '[/tt] is not redirecting to deep URLs of [tt]' . $domain . '[/tt]');
 
-                $http_result = cms_http_request($wrong_url, array('trigger_error' => false));
+                $http_result = cms_http_request($wrong_url, ['trigger_error' => false]);
                 $ok = ($http_result->message == '301');
                 $this->assertTrue($ok, 'Domain [tt]' . $wrong_domain . '[/tt] is not redirecting to [tt]' . $domain . '[/tt] with a [tt]301[/tt] code ([tt]' . $http_result->message . '[/tt] code used)');
             }
@@ -169,7 +169,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
         $url = $this->get_page_url(':privacy');
         $wrong_url = str_replace($protocol . '://', $wrong_protocol . '://', $url);
 
-        $http_result = cms_http_request($wrong_url, array('trigger_error' => false));
+        $http_result = cms_http_request($wrong_url, ['trigger_error' => false]);
         $redirected = ($http_result->download_url != $wrong_url);
         $this->assertTrue($redirected, 'Protocol [tt]' . $wrong_protocol . '[/tt] is not redirecting to [tt]' . $protocol . '[/tt] protocol');
 
@@ -177,7 +177,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             $ok = ($http_result->download_url == $url);
             $this->assertTrue($ok, 'Protocol [tt]' . $wrong_protocol . '[/tt] is not redirecting to deep URLs of [tt]' . $protocol . '[/tt] protocol');
 
-            http_get_contents($wrong_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'no_redirect' => true));
+            http_get_contents($wrong_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'no_redirect' => true]);
             $ok = ($http_result->message == '301');
             $this->assertTrue($ok, 'Protocol [tt]' . $wrong_protocol . '[/tt] is not redirecting to [tt]' . $protocol . '[/tt] protocol with a [tt]301[/tt] code ([tt]' . $http_result->message . '[/tt] code used)');
         }

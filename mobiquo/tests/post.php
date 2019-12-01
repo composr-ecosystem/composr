@@ -22,10 +22,10 @@ function report_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '4',
             '%problem description',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -39,12 +39,12 @@ function reply_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '6',
             '4',
             '%test subject',
             '%test body',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -58,9 +58,9 @@ function get_quote_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -74,9 +74,9 @@ function get_raw_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -90,11 +90,11 @@ function save_raw_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
             '%TestPostTitle',
             '%TestPostContent',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -108,12 +108,12 @@ function get_thread_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
             0,
             20,
             true,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -127,11 +127,11 @@ function get_thread_by_unread_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
             1,
             true,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -145,11 +145,11 @@ function get_thread_by_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
             20,
             true,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }

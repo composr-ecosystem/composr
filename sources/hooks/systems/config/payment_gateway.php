@@ -30,7 +30,7 @@ class Hook_config_payment_gateway
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAYMENT_GATEWAY',
             'type' => 'special',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_payment_gateway
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

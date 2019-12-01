@@ -31,22 +31,22 @@ class Hook_checklist_newsletter_paused
     public function run()
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
-        $url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'), get_module_zone('admin_config'), array(), false, false, false, 'group_NEWSLETTER');
+        $url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'FEATURE'], get_module_zone('admin_config'), [], false, false, false, 'group_NEWSLETTER');
         $task = do_lang_tempcode('newsletter:NAG_UNPAUSE_NEWSLETTER', escape_html_tempcode($url));
 
         $status = (get_option('newsletter_paused') == '1' && $GLOBALS['SITE_DB']->query_select_value('newsletter_drip_send', 'COUNT(*)') > 0) ? 0 : 1;
 
         if ($status == 0) {
-            return array(); // Don't bloat things up
+            return []; // Don't bloat things up
         }
 
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array('_GUID' => 'd0ab18b027fc4b8af2cea6b55ceb2f9b', 'URL' => '', 'STATUS' => $_status, 'TASK' => $task));
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', ['_GUID' => 'd0ab18b027fc4b8af2cea6b55ceb2f9b', 'URL' => '', 'STATUS' => $_status, 'TASK' => $task]);
 
-        return array(array($tpl, ($status == 0) ? -1 : 0, 1, null));
+        return [[$tpl, ($status == 0) ? -1 : 0, 1, null]];
     }
 }

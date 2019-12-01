@@ -30,7 +30,7 @@ class Hook_config_enable_staff_notes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_STAFF_NOTES',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_staff_notes
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

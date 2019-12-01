@@ -58,7 +58,7 @@ function notification_script()
  */
 function notification_mark_all_read_script()
 {
-    $GLOBALS['SITE_DB']->query_update('digestives_tin', array('d_read' => 1), array('d_read' => 0, 'd_to_member_id' => get_member()));
+    $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['d_read' => 0, 'd_to_member_id' => get_member()]);
 
     delete_cache_entry('_get_notifications', null, get_member());
 }
@@ -104,7 +104,7 @@ function notification_poller_script()
     // Notifications
 
     if (is_guest()) {
-        $rows = array();
+        $rows = [];
     } else {
         $query = 'SELECT * FROM ' . get_table_prefix() . 'digestives_tin WHERE d_to_member_id=' . strval(get_member());
         $query .= ' AND d_date_and_time>=' . strval($time_barrier);
@@ -180,22 +180,22 @@ function notification_poller_script()
 function get_web_notifications($max = null, $start = 0)
 {
     if (is_guest()) {
-        return array(new Tempcode(), 0);
+        return [new Tempcode(), 0];
     }
 
     if ($start == 0) {
-        $test = get_cache_entry('_get_notifications', serialize(array($max)), CACHE_AGAINST_MEMBER, 10000);
+        $test = get_cache_entry('_get_notifications', serialize([$max]), CACHE_AGAINST_MEMBER, 10000);
         if ($test !== null) {
             return $test;
         }
     }
 
-    $where = array(
+    $where = [
         'd_to_member_id' => get_member(),
         'd_frequency' => A_WEB_NOTIFICATION,
-    );
+    ];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('*'), $where, 'ORDER BY d_date_and_time DESC', $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['*'], $where, 'ORDER BY d_date_and_time DESC', $max, $start);
     $out = new Tempcode();
     foreach ($rows as $row) {
         $member_id = $row['d_from_member_id'];
@@ -220,7 +220,7 @@ function get_web_notifications($max = null, $start = 0)
                 break;
         }
 
-        $rendered = do_template('NOTIFICATION_WEB', array(
+        $rendered = do_template('NOTIFICATION_WEB', [
             '_GUID' => '314db5380aecd610c7ad2a013743f614',
             'ID' => strval($row['id']),
             'SUBJECT' => $row['d_subject'],
@@ -236,17 +236,17 @@ function get_web_notifications($max = null, $start = 0)
             'NOTIFICATION_CODE' => $row['d_notification_code'],
             'CODE_CATEGORY' => $row['d_code_category'],
             'HAS_READ' => ($row['d_read'] == 1),
-        ));
+        ]);
         $out->attach($rendered);
     }
 
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where + array('d_read' => 0));
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)', $where + ['d_read' => 0]);
 
-    $ret = array($out, $max_rows);
+    $ret = [$out, $max_rows];
 
     if ($start == 0) {
         require_code('caches2');
-        set_cache_entry('_get_notifications', 60 * 24, serialize(array($max)), $ret);
+        set_cache_entry('_get_notifications', 60 * 24, serialize([$max]), $ret);
     }
 
     return $ret;
@@ -267,7 +267,7 @@ function web_notification_to_xml($row)
 
     $_message = get_translated_tempcode('digestives_tin', $row, 'd_message');
 
-    $rendered = do_template('NOTIFICATION_WEB_DESKTOP', array(
+    $rendered = do_template('NOTIFICATION_WEB_DESKTOP', [
         '_GUID' => '1641fa5c5b62421ae535680859e89636',
         'ID' => strval($row['id']),
         'SUBJECT' => $row['d_subject'],
@@ -281,7 +281,7 @@ function web_notification_to_xml($row)
         'DATE' => get_timezoned_date_time($row['d_date_and_time']),
         'NOTIFICATION_CODE' => $row['d_notification_code'],
         'CODE_CATEGORY' => $row['d_code_category'],
-    ));
+    ]);
 
     $sound = ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_sound_enabled') == 1);
 
@@ -315,19 +315,19 @@ function web_notification_to_xml($row)
 function get_pts($max = null, $start = 0)
 {
     if (get_forum_type() != 'cns') {
-        return array(new Tempcode(), 0);
+        return [new Tempcode(), 0];
     }
 
     if (is_guest()) {
-        return array(new Tempcode(), 0);
+        return [new Tempcode(), 0];
     }
 
     if (!addon_installed('cns_forum')) {
-        return array(new Tempcode(), 0);
+        return [new Tempcode(), 0];
     }
 
     if ($start == 0) {
-        $test = get_cache_entry('_get_pts', serialize(array($max)), CACHE_AGAINST_MEMBER, 10000);
+        $test = get_cache_entry('_get_pts', serialize([$max]), CACHE_AGAINST_MEMBER, 10000);
         if ($test !== null) {
             return $test;
         }
@@ -341,7 +341,7 @@ function get_pts($max = null, $start = 0)
 
     $out = new Tempcode();
     foreach ($rows as $i => $topic) {
-        $topic_url = build_url(array('page' => 'topicview', 'id' => $topic['t_id']), get_module_zone('topicview'));
+        $topic_url = build_url(['page' => 'topicview', 'id' => $topic['t_id']], get_module_zone('topicview'));
         $title = $topic['t_cache_first_title'];
         $date = get_timezoned_date_time($topic['t_cache_last_time']);
         $num_posts = $topic['t_cache_num_posts'];
@@ -372,7 +372,7 @@ function get_pts($max = null, $start = 0)
 
         $is_unread = ($topic['t_cache_last_time'] > time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) && (($topic['l_time'] === null) || ($topic['l_time'] < $topic['p_time']));
 
-        $out->attach(do_template('CNS_PRIVATE_TOPIC_LINK', array(
+        $out->attach(do_template('CNS_PRIVATE_TOPIC_LINK', [
             '_GUID' => '6a36e785b05d10f53e7ee76acdfb9f80',
             'TOPIC_URL' => $topic_url,
             'TITLE' => $title,
@@ -392,18 +392,18 @@ function get_pts($max = null, $start = 0)
             'TO_POSTER_ID' => strval($to_poster_id),
             'NUM_POSTS' => integer_format($num_posts),
             'HAS_READ' => !$is_unread,
-        )));
+        ]));
 
         if ($i === $max) {
             break;
         }
     }
 
-    $ret = array($out, $max_rows);
+    $ret = [$out, $max_rows];
 
     if ($start == 0) {
         require_code('caches2');
-        set_cache_entry('_get_pts', 60 * 24, serialize(array($max)), $ret);
+        set_cache_entry('_get_pts', 60 * 24, serialize([$max]), $ret);
     }
 
     return $ret;
@@ -422,10 +422,10 @@ function pt_to_xml($row)
     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
     $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
 
-    $just_post_row = db_map_restrict($row, array('id', 'p_post'), array('id' => 'p_id'));
+    $just_post_row = db_map_restrict($row, ['id', 'p_post'], ['id' => 'p_id']);
     $_message = get_translated_tempcode('f_posts', $just_post_row, 'p_post', $GLOBALS['FORUM_DB']);
 
-    $rendered = do_template('NOTIFICATION_PT_DESKTOP', array(
+    $rendered = do_template('NOTIFICATION_PT_DESKTOP', [
         '_GUID' => '624df70cf0cbb796c5d5ce1d18ae39f7',
         'ID' => strval($row['p_id']),
         'SUBJECT' => $row['t_cache_first_title'],
@@ -436,7 +436,7 @@ function pt_to_xml($row)
         'FROM_AVATAR_URL' => $avatar_url,
         '_TIME' => strval($row['p_time']),
         'DATE' => get_timezoned_date_time($row['p_time']),
-    ));
+    ]);
 
     return '
         <pt

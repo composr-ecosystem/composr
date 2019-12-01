@@ -25,14 +25,14 @@ class Block_main_ebay
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Babu';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('seller', 'query', 'max_entries', 'image_size', 'domain');
+        $info['parameters'] = ['seller', 'query', 'max_entries', 'image_size', 'domain'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_ebay
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             empty($map['title']) ? do_lang('BLOCK_EBAY_TITLE') : $map['title'],
@@ -88,7 +88,7 @@ PHP;
         $seller = $map['seller'];
         $query = empty($map['query']) ? '' : preg_replace('#\s#', '+', $map['query']); // e.g. Gadgets
 
-        return do_template('BLOCK_MAIN_EBAY', array(
+        return do_template('BLOCK_MAIN_EBAY', [
             '_GUID' => 'ffda4477bf08164f80dd45ef2985dfe9',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
@@ -97,6 +97,6 @@ PHP;
             'DOMAIN' => strval($domain),
             'SELLER' => $seller,
             'QUERY' => $query,
-        ));
+        ]);
     }
 }

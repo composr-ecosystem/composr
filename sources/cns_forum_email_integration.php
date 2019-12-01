@@ -49,7 +49,7 @@ class ForumEmailIntegration extends EmailIntegration
         $this->forum_id = $forum_id;
 
         if ($forum_row === null) {
-            $forum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('id' => $forum_id), '', 1);
+            $forum_rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['*'], ['id' => $forum_id], '', 1);
             if (!array_key_exists(0, $forum_rows)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'forum'));
             }
@@ -78,9 +78,9 @@ class ForumEmailIntegration extends EmailIntegration
     {
         $this->set_forum($forum_id);
 
-        $extended_subject = do_lang('MAILING_LIST_SIMPLE_SUBJECT_' . ($is_starter ? 'new' : 'reply'), $topic_title, get_site_name(), array($from_displayname), get_lang($to_member_id));
+        $extended_subject = do_lang('MAILING_LIST_SIMPLE_SUBJECT_' . ($is_starter ? 'new' : 'reply'), $topic_title, get_site_name(), [$from_displayname], get_lang($to_member_id));
 
-        $extended_message = do_lang('MAILING_LIST_SIMPLE_MAIL_' . ($is_starter ? 'new' : 'reply'), $topic_title, $post, array($post_url, get_site_name(), $from_displayname), get_lang($to_member_id));
+        $extended_message = do_lang('MAILING_LIST_SIMPLE_MAIL_' . ($is_starter ? 'new' : 'reply'), $topic_title, $post, [$post_url, get_site_name(), $from_displayname], get_lang($to_member_id));
 
         $reply_email = $this->forum_row['f_mail_email_address'];
 
@@ -94,7 +94,7 @@ class ForumEmailIntegration extends EmailIntegration
      */
     protected function get_sender_email()
     {
-        foreach (array('website_email', null, 'staff_address') as $address) {
+        foreach (['website_email', null, 'staff_address'] as $address) {
             if (($address === null) && ($this->forum_row['f_mail_email_address'] != '')) {
                 return $this->forum_row['f_mail_email_address'];
             }
@@ -115,7 +115,7 @@ class ForumEmailIntegration extends EmailIntegration
      */
     protected function get_system_email()
     {
-        foreach (array(null, 'staff_address', 'website_email') as $address) {
+        foreach ([null, 'staff_address', 'website_email'] as $address) {
             if (($address === null) && ($this->forum_row['f_mail_email_address'] != '')) {
                 return $this->forum_row['f_mail_email_address'];
             }
@@ -238,12 +238,12 @@ class ForumEmailIntegration extends EmailIntegration
         $attachment_errors = $this->save_attachments($attachments, $member_id, $member_id_comcode, $body);
 
         // Mark that this was e-mailed in
-        $body = static_evaluate_tempcode(do_template('CNS_POST_FROM_MAILING_LIST', array(
+        $body = static_evaluate_tempcode(do_template('CNS_POST_FROM_MAILING_LIST', [
             '_GUID' => 'd820ec9cf3cb22a4f307a948b7206818',
             'UNCONFIRMED_MEMBER_NOTICE' => ($this->forum_row['f_mail_unconfirmed_notice'] == 1) && (!is_guest($member_id)),
             'POST' => $body,
             'USERNAME' => $username,
-        ), null, false, null, '.txt', 'text'));
+        ], null, false, null, '.txt', 'text'));
 
         $title = $subject;
         $possible_reply = /*false*/true; // Better to just let anything be a possible reply, more user-friendly
@@ -263,13 +263,13 @@ class ForumEmailIntegration extends EmailIntegration
         // Try and match to a topic
         $topic_id = null;
         if ($possible_reply) {
-            $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', array('t_cache_first_title' => $title, 't_forum_id' => $this->forum_id), 'ORDER BY t_cache_last_time DESC');
+            $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', ['t_cache_first_title' => $title, 't_forum_id' => $this->forum_id], 'ORDER BY t_cache_last_time DESC');
         }
         $is_starter = ($topic_id === null);
 
         if ($is_starter) {
             require_code('cns_topics_action');
-            $topic_validated = has_privilege($member_id, 'bypass_validation_midrange_content', 'topics', array('forums', $this->forum_id));
+            $topic_validated = has_privilege($member_id, 'bypass_validation_midrange_content', 'topics', ['forums', $this->forum_id]);
             $topic_id = cns_make_topic($this->forum_id, '', '', $topic_validated ? 1 : 0, 1, 0, 0, null, null, false);
 
             $this->log_message('Created topic #' . strval($topic_id));
@@ -282,7 +282,7 @@ class ForumEmailIntegration extends EmailIntegration
         }
 
         require_code('cns_posts_action');
-        $post_validated = has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics', array('forums', $this->forum_id));
+        $post_validated = has_privilege($member_id, 'bypass_validation_lowrange_content', 'topics', ['forums', $this->forum_id]);
         $post_id = cns_make_post($topic_id, $title, $body, 0, $is_starter, $post_validated ? 1 : 0, 0, $poster_name_if_guest, null, null, $member_id, null, null, null, false, true, $this->forum_id, true, $title, null, false, true);
 
         require_code('users2');
@@ -312,7 +312,7 @@ class ForumEmailIntegration extends EmailIntegration
     {
         switch ($format) {
             case self::STRIP_SUBJECT:
-                $strings = array();
+                $strings = [];
                 foreach (array_keys(find_all_langs()) as $lang) {
                     $strings[] = do_lang('MAILING_LIST_SIMPLE_SUBJECT_new_regexp', null, null, null, $lang);
                     $strings[] = do_lang('MAILING_LIST_SIMPLE_SUBJECT_reply_regexp', null, null, null, $lang);
@@ -323,7 +323,7 @@ class ForumEmailIntegration extends EmailIntegration
                 break;
 
             case self::STRIP_HTML:
-                $strings = array();
+                $strings = [];
                 foreach (array_keys(find_all_langs()) as $lang) {
                     $strings[] = do_lang('MAILING_LIST_SIMPLE_MAIL_regexp', null, null, null, $lang);
                 }
@@ -336,7 +336,7 @@ class ForumEmailIntegration extends EmailIntegration
                 break;
 
             case self::STRIP_TEXT:
-                $strings = array();
+                $strings = [];
                 foreach (array_keys(find_all_langs()) as $lang) {
                     $strings[] = do_lang('MAILING_LIST_SIMPLE_MAIL_regexp', null, null, null, $lang);
                 }
@@ -365,8 +365,8 @@ class ForumEmailIntegration extends EmailIntegration
             $body = $this->email_comcode_from_html($_body_html, $GLOBALS['FORUM_DRIVER']->get_guest_id());
         }
 
-        $extended_subject = do_lang('MAILING_LIST_CANNOT_BIND_SUBJECT', $subject, $email, array(get_site_name()), get_site_default_lang());
-        $extended_message = do_lang('MAILING_LIST_CANNOT_BIND_MAIL', strip_comcode($body), $email, array($subject, get_site_name()), get_site_default_lang());
+        $extended_subject = do_lang('MAILING_LIST_CANNOT_BIND_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
+        $extended_message = do_lang('MAILING_LIST_CANNOT_BIND_MAIL', strip_comcode($body), $email, [$subject, get_site_name()], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }
@@ -392,8 +392,8 @@ class ForumEmailIntegration extends EmailIntegration
             $body = $this->email_comcode_from_html($_body_html, $member_id);
         }
 
-        $extended_subject = do_lang('MAILING_LIST_ACCESS_DENIED_SUBJECT', $subject, $email, array(get_site_name(), $forum_name, $username), get_site_default_lang());
-        $extended_message = do_lang('MAILING_LIST_ACCESS_DENIED_MAIL', strip_comcode($body), $email, array($subject, get_site_name(), $forum_name, $username), get_site_default_lang());
+        $extended_subject = do_lang('MAILING_LIST_ACCESS_DENIED_SUBJECT', $subject, $email, [get_site_name(), $forum_name, $username], get_site_default_lang());
+        $extended_message = do_lang('MAILING_LIST_ACCESS_DENIED_MAIL', strip_comcode($body), $email, [$subject, get_site_name(), $forum_name, $username], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }

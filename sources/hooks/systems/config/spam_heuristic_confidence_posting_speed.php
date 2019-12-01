@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_confidence_posting_speed
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_CONFIDENCE_POSTING_SPEED',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_confidence_posting_speed
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

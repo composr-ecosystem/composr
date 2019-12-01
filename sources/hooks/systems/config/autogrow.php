@@ -30,7 +30,7 @@ class Hook_config_autogrow
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AUTOGROW',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_autogrow
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -44,13 +44,13 @@ function init__abstract_file_manager()
  *
  * @param  array $writable_paths A list of file or directory paths to check first for writability. Only works for suEXEC-style. Advisable because we don't want to fail in the middle of something. May be glob style, or end in '/*' for recursion.
 */
-function force_have_afm_details($writable_paths = array())
+function force_have_afm_details($writable_paths = [])
 {
-    $no_ftp_conditions = array(
+    $no_ftp_conditions = [
         is_suexec_like(), // No need for FTP
         get_file_base() != get_custom_file_base(), // Shared installs are assumed to have the necessary AFM permissions where needed
         (!function_exists('ftp_ssl_connect')) && (!function_exists('ftp_connect')), // FTP not available
-    );
+    ];
     foreach ($no_ftp_conditions as $no_ftp_condition) {
         if ($no_ftp_condition) {
             foreach (array_unique($writable_paths) as $path) {
@@ -59,11 +59,11 @@ function force_have_afm_details($writable_paths = array())
                 if (substr($full_path, -2) == '/*') {
                     require_code('files2');
                     $_full_path = substr($full_path, 0, strlen($full_path) - 2);
-                    $all_full_paths = array_merge(array($_full_path), get_directory_contents($_full_path, $_full_path));
+                    $all_full_paths = array_merge([$_full_path], get_directory_contents($_full_path, $_full_path));
                 } elseif (preg_match('#\.\w+$#', $path) != 0) {
                     $all_full_paths = glob($full_path);
                 } else {
-                    $all_full_paths = array($full_path);
+                    $all_full_paths = [$full_path];
                 }
 
                 foreach ($all_full_paths as $_full_path) {
@@ -129,9 +129,9 @@ function get_afm_form()
     $hidden = build_keep_post_fields();
     $hidden->attach(form_input_hidden('got_ftp_details', '1'));
 
-    $middle = do_template('FORM_SCREEN', array(
+    $middle = do_template('FORM_SCREEN', [
         '_GUID' => 'c47a31fca47a7b22eeef3a6269cc2407',
-        'JS_FUNCTION_CALLS' => array('abstractFileManagerGetAfmForm'),
+        'JS_FUNCTION_CALLS' => ['abstractFileManagerGetAfmForm'],
         'SKIP_WEBSTANDARDS' => true,
         'HIDDEN' => $hidden,
         'SUBMIT_ICON' => 'buttons/proceed',
@@ -140,7 +140,7 @@ function get_afm_form()
         'FIELDS' => $fields,
         'URL' => $post_url,
         'TEXT' => paragraph(do_lang_tempcode('TEXT_ABSTRACT_FILE_MANAGEMENT')),
-    ));
+    ]);
     $echo = globalise($middle, null, '', true);
     $echo->evaluate_echo();
     exit();
@@ -228,13 +228,13 @@ function get_afm_form_fields()
         }
     }
 
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '671ec3d1ffd376766450b36d718f1c60', 'TITLE' => do_lang_tempcode('SETTINGS'))));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '671ec3d1ffd376766450b36d718f1c60', 'TITLE' => do_lang_tempcode('SETTINGS')]));
     $fields->attach(form_input_tick(do_lang_tempcode('NEED_FTP'), do_lang_tempcode('DESCRIPTION_NEED_FTP'), 'uses_ftp', $uses_ftp));
     $fields->attach(form_input_line(do_lang_tempcode('FTP_DOMAIN'), '', 'ftp_domain', $ftp_domain, false));
     $fields->attach(form_input_line(do_lang_tempcode('FTP_DIRECTORY'), do_lang_tempcode('FTP_FOLDER'), 'ftp_directory', $ftp_directory, false));
     $fields->attach(form_input_line(do_lang_tempcode('FTP_USERNAME'), '', 'ftp_username', $ftp_username, false));
     $fields->attach(form_input_password(do_lang_tempcode('FTP_PASSWORD'), '', 'ftp_password', false));
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '7b2ed7bd1b2869a02e3b3bf40b3f99cd', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '7b2ed7bd1b2869a02e3b3bf40b3f99cd', 'TITLE' => do_lang_tempcode('ACTIONS')]));
     $fields->attach(form_input_tick(do_lang_tempcode('REMEMBER_PASSWORD'), do_lang_tempcode('DESCRIPTION_REMEMBER_PASSWORD'), 'remember_password', false));
 
     return $fields;
@@ -329,9 +329,9 @@ function _ftp_info($light_fail = false)
         }
         $files = @ftp_nlist($conn, '.');
         if ($files === false) { // :(. Weird bug on some systems
-            $files = array();
+            $files = [];
             if (@ftp_rename($conn, '_config.php', '_config.php')) {
-                $files = array('_config.php');
+                $files = ['_config.php'];
             }
         }
         if (!in_array('_config.php', $files)) {
@@ -524,7 +524,7 @@ function afm_make_directory($basic_path, $world_access, $recursive = false)
  */
 function _get_dir_tree($base, $at = '')
 {
-    $out = array(array('dir', $at));
+    $out = [['dir', $at]];
     $stub = get_custom_file_base() . '/' . $base . '/' . $at;
     $dh = @opendir($stub);
     if ($dh !== false) {
@@ -534,7 +534,7 @@ function _get_dir_tree($base, $at = '')
                 if (is_dir($stub2)) {
                     $out = array_merge($out, _get_dir_tree($base, $at . (($at != '') ? '/' : '') . $file));
                 } else {
-                    $out[] = array('file', $at . (($at != '') ? '/' : '') . $file);
+                    $out[] = ['file', $at . (($at != '') ? '/' : '') . $file];
                 }
             }
         }
@@ -553,7 +553,7 @@ function _get_dir_tree($base, $at = '')
  */
 function afm_delete_directory($basic_path, $recursive = false)
 {
-    $paths = $recursive ? array_reverse(_get_dir_tree($basic_path)) : array(array('dir', ''));
+    $paths = $recursive ? array_reverse(_get_dir_tree($basic_path)) : [['dir', '']];
 
     $conn = _ftp_info();
 

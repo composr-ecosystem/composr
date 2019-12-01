@@ -30,14 +30,14 @@ class Block_bottom_rss
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'max_entries');
+        $info['parameters'] = ['param', 'max_entries'];
         return $info;
     }
 
@@ -48,8 +48,8 @@ class Block_bottom_rss
      */
     public function caching_environment()
     {
-        $info = array();
-        $info['cache_on'] = array('block_bottom_rss__cache_on');
+        $info = [];
+        $info['cache_on'] = ['block_bottom_rss__cache_on'];
         $info['ttl'] = intval(get_option('rss_update_time'));
         return $info;
     }
@@ -68,7 +68,7 @@ class Block_bottom_rss
         }
 
         if (!addon_installed('news')) {
-            return do_template('RED_ALERT', array('_GUID' => 'v8iz3vqc9lpgf554antlpja9ewhunyvm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))));
+            return do_template('RED_ALERT', ['_GUID' => 'v8iz3vqc9lpgf554antlpja9ewhunyvm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
         }
 
         $block_id = get_block_id($map);
@@ -78,14 +78,14 @@ class Block_bottom_rss
         require_code('rss');
         $rss = new CMS_RSS($url);
         if ($rss->error !== null) {
-            return do_template('WARNING_BOX', array('_GUID' => '7ae6a91db7c7ac7d607b9e29ddafc344', 'WARNING' => $rss->error));
+            return do_template('WARNING_BOX', ['_GUID' => '7ae6a91db7c7ac7d607b9e29ddafc344', 'WARNING' => $rss->error]);
         }
 
         global $NEWS_CATS_CACHE;
-        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
         $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
 
-        $_postdetailss = array();
+        $_postdetailss = [];
 
         // Now for the actual stream contents
         $max = array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10;
@@ -108,14 +108,14 @@ class Block_bottom_rss
             $_title = array_key_exists('title', $item) ? $item['title'] : do_lang('UNKNOWN');
             $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_time_tempcode($item['clean_add_date']) : (array_key_exists('add_date', $item) ? make_string_tempcode($item['add_date']) : new Tempcode());
 
-            $_postdetailss[] = array('DATE' => $date, 'FULL_URL' => $full_url, 'NEWS_TITLE' => $_title);
+            $_postdetailss[] = ['DATE' => $date, 'FULL_URL' => $full_url, 'NEWS_TITLE' => $_title];
         }
 
-        return do_template('BLOCK_BOTTOM_NEWS', array(
+        return do_template('BLOCK_BOTTOM_NEWS', [
             '_GUID' => '0fc123199c4d4b7af5a26706271b1f4f',
             'BLOCK_ID' => $block_id,
             'POSTS' => $_postdetailss,
-        ));
+        ]);
     }
 }
 
@@ -127,5 +127,5 @@ class Block_bottom_rss
  */
 function block_bottom_rss__cache_on($map)
 {
-    return array(array_key_exists('param', $map) ? $map['param'] : '', array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10);
+    return [array_key_exists('param', $map) ? $map['param'] : '', array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10];
 }

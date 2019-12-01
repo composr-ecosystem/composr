@@ -30,7 +30,7 @@ class Hook_config_catalogue_entries_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CATALOGUE_ENTRIES_PER_PAGE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_catalogue_entries_per_page
             'public' => false,
 
             'addon' => 'catalogues',
-        );
+        ];
     }
 
     /**

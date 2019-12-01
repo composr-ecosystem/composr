@@ -47,7 +47,7 @@ class Hook_commandr_fs_custom_comcode_tags extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $ret = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_tag'), array('tag_tag' => $label));
+        $ret = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_tag'], ['tag_tag' => $label]);
         return collapse_1d_complexity('tag_tag', $ret);
     }
 
@@ -115,13 +115,13 @@ class Hook_commandr_fs_custom_comcode_tags extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('*'), array('tag_tag' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['*'], ['tag_tag' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['tag_tag'],
             'title' => get_translated_text($row['tag_title']),
             'description' => get_translated_text($row['tag_description']),
@@ -132,7 +132,7 @@ class Hook_commandr_fs_custom_comcode_tags extends Resource_fs_base
             'dangerous_tag' => $row['tag_dangerous_tag'],
             'block_tag' => $row['tag_block_tag'],
             'textual_tag' => $row['tag_textual_tag'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

@@ -33,11 +33,11 @@ class Hook_page_groupings_ssl
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('ssl')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('security', 'menu/adminzone/security/ssl', array('admin_ssl', array('type' => 'browse'), get_module_zone('admin_ssl')), do_lang_tempcode('ssl:SSL_CONFIGURATION'), 'ssl:DOC_SSL'),
-        );
+        return [
+            ['security', 'menu/adminzone/security/ssl', ['admin_ssl', ['type' => 'browse'], get_module_zone('admin_ssl')], do_lang_tempcode('ssl:SSL_CONFIGURATION'), 'ssl:DOC_SSL'],
+        ];
     }
 }

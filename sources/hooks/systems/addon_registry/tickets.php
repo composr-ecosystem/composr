@@ -31,7 +31,7 @@ class Hook_addon_registry_tickets
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_tickets
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_feedback',
             'tut_support_desk',
             'tut_staff',
-        );
+        ];
     }
 
     /**
@@ -75,11 +75,11 @@ class Hook_addon_registry_tickets
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_tickets
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/tickets.php',
             'themes/default/images/icons/menu/site_meta/tickets.svg',
             'themes/default/images/icons/buttons/add_ticket.svg',
@@ -161,7 +161,7 @@ class Hook_addon_registry_tickets
             'sources/blocks/main_contact_us.php',
             'themes/default/javascript/tickets.js',
             'sources/hooks/systems/actionlog/tickets.php',
-        );
+        ];
     }
 
     /**
@@ -171,7 +171,7 @@ class Hook_addon_registry_tickets
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/SUPPORT_TICKET_LINK.tpl' => 'support_tickets_screen',
             'templates/SUPPORT_TICKETS_SCREEN.tpl' => 'support_tickets_screen',
             'templates/SUPPORT_TICKET_SCREEN.tpl' => 'support_ticket_screen',
@@ -180,7 +180,7 @@ class Hook_addon_registry_tickets
             'text/CNS_REPORTED_POST_FCOMCODE.txt' => 'cns_reported_post_fcomcode',
             'text/REPORTED_CONTENT_FCOMCODE.txt' => 'reported_content_fcomcode',
             'templates/BLOCK_MAIN_CONTACT_US.tpl' => 'block_main_contact_us',
-        );
+        ];
     }
 
     /**
@@ -194,7 +194,7 @@ class Hook_addon_registry_tickets
     {
         $links = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $links->attach(do_lorem_template('SUPPORT_TICKET_LINK', array(
+            $links->attach(do_lorem_template('SUPPORT_TICKET_LINK', [
                 'NUM_POSTS' => placeholder_number(),
                 'CLOSED' => lorem_phrase(),
                 'URL' => placeholder_url(),
@@ -213,12 +213,12 @@ class Hook_addon_registry_tickets
                 'LAST_DATE' => placeholder_date(),
                 'LAST_DATE_RAW' => placeholder_date_raw(),
                 'ID' => placeholder_id(),
-                'ASSIGNED' => array(),
-            )));
+                'ASSIGNED' => [],
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'MESSAGE' => lorem_phrase(),
                 'LINKS' => $links,
@@ -228,8 +228,8 @@ class Hook_addon_registry_tickets
                 'ADD_TICKET_URL' => placeholder_url(),
                 'TYPES' => placeholder_array(),
                 'LEAD_TIME' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -245,7 +245,7 @@ class Hook_addon_registry_tickets
 
         $comments = new Tempcode();
 
-        $comment_form = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_form = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -264,11 +264,11 @@ class Hook_addon_registry_tickets
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => '',
-        ));
+        ]);
 
         $other_tickets = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $other_tickets->attach(do_lorem_template('SUPPORT_TICKET_LINK', array(
+            $other_tickets->attach(do_lorem_template('SUPPORT_TICKET_LINK', [
                 'NUM_POSTS' => placeholder_number(),
                 'CLOSED' => lorem_phrase(),
                 'URL' => placeholder_url(),
@@ -289,20 +289,20 @@ class Hook_addon_registry_tickets
                 'LAST_DATE_RAW' => placeholder_date_raw(),
                 'UNCLOSED' => lorem_word(),
                 'ID' => placeholder_id(),
-                'ASSIGNED' => array(),
-            )));
+                'ASSIGNED' => [],
+            ]));
         }
 
-        $whos_read = array();
-        $whos_read[] = array(
+        $whos_read = [];
+        $whos_read[] = [
             'USERNAME' => lorem_word(),
             'MEMBER_ID' => placeholder_id(),
             'MEMBER_URL' => placeholder_url(),
             'DATE' => lorem_word(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('SUPPORT_TICKET_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SUPPORT_TICKET_SCREEN', [
                 'ID' => placeholder_id(),
                 'TOGGLE_TICKET_CLOSED_URL' => placeholder_url(),
                 'CLOSED' => lorem_phrase(),
@@ -324,11 +324,11 @@ class Hook_addon_registry_tickets
                 'ADD_TICKET_URL' => placeholder_url(),
                 'OTHER_TICKETS' => $other_tickets,
                 'SET_TICKET_EXTRA_ACCESS_URL' => placeholder_url(),
-                'ASSIGNED' => array(),
+                'ASSIGNED' => [],
                 'EXTRA_DETAILS' => lorem_phrase(),
                 'WHOS_READ' => $whos_read,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -340,14 +340,14 @@ class Hook_addon_registry_tickets
      */
     public function tpl_preview__support_tickets_search_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SEARCH_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SUPPORT_TICKETS_SEARCH_SCREEN', [
                 'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
                 'POST_FIELDS' => '',
                 'RESULTS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -359,13 +359,13 @@ class Hook_addon_registry_tickets
      */
     public function tpl_preview__support_ticket_type_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SUPPORT_TICKET_TYPE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SUPPORT_TICKET_TYPE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TPL' => placeholder_form(),
                 'ADD_FORM' => placeholder_form(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -379,16 +379,16 @@ class Hook_addon_registry_tickets
     {
         require_lang('cns');
         require_css('cns');
-        return array(
-            lorem_globalise(do_lorem_template('CNS_REPORTED_POST_FCOMCODE', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_REPORTED_POST_FCOMCODE', [
                 'POST_ID' => placeholder_id(),
                 'POST_MEMBER_ID' => placeholder_id(),
                 'POST_MEMBER' => lorem_phrase(),
                 'TOPIC_TITLE' => lorem_phrase(),
                 'POST' => lorem_phrase(),
                 'REPORT_POST' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -400,8 +400,8 @@ class Hook_addon_registry_tickets
      */
     public function tpl_preview__reported_content_fcomcode()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REPORTED_CONTENT_FCOMCODE', array(
+        return [
+            lorem_globalise(do_lorem_template('REPORTED_CONTENT_FCOMCODE', [
                 'CONTENT_URL' => placeholder_url(),
                 'CONTENT_TYPE' => lorem_word(),
                 'CONTENT_ID' => placeholder_id(),
@@ -411,8 +411,8 @@ class Hook_addon_registry_tickets
                 'CONTENT_TITLE' => lorem_phrase(),
                 'CONTENT_RENDERED' => lorem_paragraph_html(),
                 'REPORT_POST' => lorem_paragraph(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -426,7 +426,7 @@ class Hook_addon_registry_tickets
     {
         require_javascript('posting');
 
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -445,15 +445,15 @@ class Hook_addon_registry_tickets
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_US', [
                 'BLOCK_ID' => lorem_word(),
                 'COMMENT_DETAILS' => $comment_details,
                 'TYPE' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -465,7 +465,7 @@ class Hook_addon_registry_tickets
         require_code('tickets2');
         require_lang('tickets');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('ticket_types', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('ticket_types', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_ticket_type($record['id']);
         }

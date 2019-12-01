@@ -72,7 +72,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
         if (!isset($CODE_OVERRIDES)) {
             $CODE_OVERRIDES = persistent_cache_get('CODE_OVERRIDES');
             if ($CODE_OVERRIDES === null) {
-                $CODE_OVERRIDES = array();
+                $CODE_OVERRIDES = [];
             }
         }
         if (isset($CODE_OVERRIDES[$codename])) {
@@ -122,8 +122,8 @@ function require_code($codename, $light_exit = false, $has_custom = null)
 
             if (strpos($custom, '/*FORCE_ORIGINAL_LOAD_FIRST*/') === false/*e.g. Cannot do code rewrite for a module override that includes an Mx, because the extends needs the parent class already defined - in such cases we put this comment in the code*/) {
                 // We need to identify the new functions and classes. Ideally we'd use get_defined_functions and get_declared_classes, and do a diff before/after - but this does a massive amount of memory access
-                $function_matches = array();
-                $possible_new_functions = array();
+                $function_matches = [];
+                $possible_new_functions = [];
                 $num_function_matches = preg_match_all('#\sfunction\s+(\w+)\(#', $custom, $function_matches);
                 for ($i = 0; $i < $num_function_matches; $i++) {
                     $possible_new_function = $function_matches[1][$i];
@@ -131,8 +131,8 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                         $possible_new_functions[] = $possible_new_function;
                     }
                 }
-                $class_matches = array();
-                $possible_new_classes = array();
+                $class_matches = [];
+                $possible_new_classes = [];
                 $num_class_matches = preg_match_all('#\sclass\s+(\w+)#', $custom, $class_matches);
                 for ($i = 0; $i < $num_class_matches; $i++) {
                     $possible_new_class = $class_matches[1][$i];
@@ -144,7 +144,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 call_included_code($path_custom, $codename, $light_exit); // Include our custom
 
                 $has_upper_case_function_name = false;
-                $functions_diff = array();
+                $functions_diff = [];
                 foreach ($possible_new_functions as $possible_new_function) {
                     if (function_exists($possible_new_function)) {
                         $functions_diff[] = $possible_new_function;
@@ -157,7 +157,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                         }
                     }
                 }
-                $classes_diff = array();
+                $classes_diff = [];
                 foreach ($possible_new_classes as $possible_new_class) {
                     if (class_exists($possible_new_class)) {
                         $classes_diff[] = $possible_new_class;
@@ -195,7 +195,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 // See if we can get away with loading init function early. If we can we do a special version of it that supports fancy code modification. Our override isn't allowed to call the non-overridden init function as it won't have been loaded up by PHP in time. Instead though we will call it ourselves if it still exists (hasn't been removed by our own init function) because it likely serves a different purpose to our code-modification init function and copy&paste coding is bad.
                 $doing_code_modifier_init = function_exists($init_func);
                 if ($doing_code_modifier_init) {
-                    $test = call_user_func_array($init_func, array($orig));
+                    $test = call_user_func_array($init_func, [$orig]);
                     if (is_string($test)) {
                         $orig = $test;
                     }
@@ -272,7 +272,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
             }
         }
 
-        $init_func = 'init__' . str_replace(array('/', '.php'), array('__', ''), $codename);
+        $init_func = 'init__' . str_replace(['/', '.php'], ['__', ''], $codename);
         if (function_exists($init_func)) {
             call_user_func($init_func);
         }
@@ -311,7 +311,7 @@ function require_code_no_override($codename)
  */
 function clean_php_file_for_eval($c, $path = null)
 {
-    $reps = array();
+    $reps = [];
     $reps['?' . '>'] = '';
     $reps['<' . '?php'] = '';
     if ($path !== null) {
@@ -529,12 +529,12 @@ function object_factory($class, $failure_ok = false)
  */
 function php_function_allowed($function)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$function])) {
         return $cache[$function];
     }
 
-    if (!in_array($function, /*These are actually language constructs rather than functions*/array('eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',))) {
+    if (!in_array($function, /*These are actually language constructs rather than functions*/['eval', 'exit', 'include', 'include_once', 'isset', 'require', 'require_once', 'unset', 'empty', 'print',])) {
         if (!function_exists($function)) {
             $cache[$function] = false;
             return false;
@@ -657,7 +657,7 @@ function filter_naughty_harsh($in, $preg = false)
 function fixup_bad_php_env_vars_pre()
 {
     // Variables may be defined in $_ENV on some servers
-    $understood = array(
+    $understood = [
         'DOCUMENT_ROOT',
         'HTTP_ACCEPT',
         'HTTP_ACCEPT_CHARSET',
@@ -691,7 +691,7 @@ function fixup_bad_php_env_vars_pre()
         'REDIRECT_REMOTE_USER',
         'PHP_AUTH_USER',
         'PHP_AUTH_PW',
-    );
+    ];
     foreach ($understood as $key) {
         if (!isset($_SERVER[$key])) {
             if (isset($_ENV[$key])) {
@@ -795,7 +795,7 @@ global $REQUIRED_CODE, $REQUIRING_CODE, $CURRENT_SHARE_USER, $PURE_POST, $IN_MIN
  *
  * @global array $REQUIRED_CODE
  */
-$REQUIRED_CODE = array();
+$REQUIRED_CODE = [];
 $REQUIRING_CODE = false;
 /** If running on a shared-install, this is the identifying name of the site that is being called up.
  *
@@ -833,7 +833,7 @@ global $SITE_INFO;
  *
  * @global array $SITE_INFO
  */
-$SITE_INFO = array();
+$SITE_INFO = [];
 @include($FILE_BASE . '/_config.php');
 if (empty($SITE_INFO)) {
     // LEGACY
@@ -841,7 +841,7 @@ if (empty($SITE_INFO)) {
         @copy($FILE_BASE . '/info.php', $FILE_BASE . '/_config.php');
         if (is_file($FILE_BASE . '/_config.php')) {
             $new_config_file = file_get_contents($FILE_BASE . '/_config.php');
-            $new_config_file = str_replace(array('ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password'), array('cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'master_password'), $new_config_file);
+            $new_config_file = str_replace(['ocf_table_prefix', 'use_mem_cache', 'ocp_member_id', 'ocp_member_hash', 'ocf', 'admin_password'], ['cns_table_prefix', 'use_persistent_cache', 'cms_member_id', 'cms_member_hash', 'cns', 'master_password'], $new_config_file);
             $new_config_file = str_replace(']=\'', '] = \'', $new_config_file); // Clean up formatting to new convention
             file_put_contents($FILE_BASE . '/_config.php', $new_config_file, LOCK_EX);
         } else {
@@ -897,7 +897,7 @@ if ($rate_limiting) {
 
         if (!(((!empty($_SERVER['SERVER_ADDR'])) && ($ip == $_SERVER['SERVER_ADDR'])) || ((!empty($_SERVER['LOCAL_ADDR'])) && ($ip == $_SERVER['LOCAL_ADDR'])))) {
             global $RATE_LIMITING_DATA;
-            $RATE_LIMITING_DATA = array();
+            $RATE_LIMITING_DATA = [];
 
             // Read in state
             $rate_limiter_path = dirname(__DIR__) . '/data_custom/rate_limiter.php';
@@ -910,7 +910,7 @@ if ($rate_limiting) {
             }
 
             // Filter to just times within our window
-            $pertinent = array();
+            $pertinent = [];
             $rate_limit_time_window = empty($SITE_INFO['rate_limit_time_window']) ? 10 : intval($SITE_INFO['rate_limit_time_window']);
             if (isset($RATE_LIMITING_DATA[$ip])) {
                 foreach ($RATE_LIMITING_DATA[$ip] as $i => $old_time) {

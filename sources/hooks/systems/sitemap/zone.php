@@ -64,11 +64,11 @@ class Hook_sitemap_zone extends Hook_sitemap_base
      */
     public function extract_child_page_link_permission_pair($page_link)
     {
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):$#', $page_link, $matches);
         $zone = $matches[1];
 
-        return array($zone, 'zone_page');
+        return [$zone, 'zone_page'];
     }
 
     /**
@@ -93,7 +93,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
             return null;
         }
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):#', $page_link, $matches);
         $zone = $matches[1]; // overrides $zone which we must replace
 
@@ -104,11 +104,11 @@ class Hook_sitemap_zone extends Hook_sitemap_base
         }
 
         if (!isset($row)) {
-            $rows = $GLOBALS['SITE_DB']->query_select('zones', array('zone_title', 'zone_default_page'), array('zone_name' => $zone), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('zones', ['zone_title', 'zone_default_page'], ['zone_name' => $zone], '', 1);
             if (!isset($rows[0])) {
                 return null;
             }
-            $row = array($zone, get_translated_text($rows[0]['zone_title']), $rows[0]['zone_default_page']);
+            $row = [$zone, get_translated_text($rows[0]['zone_title']), $rows[0]['zone_default_page']];
         }
         $title = $row[1];
         $zone_default_page = $row[2];
@@ -141,15 +141,15 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                 break;
         }
 
-        $struct = array(
+        $struct = [
             'title' => make_string_tempcode($title),
             'content_type' => 'zone',
             'content_id' => $zone,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0 && file_exists($path)) ? filectime($path) : null,
@@ -162,14 +162,14 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => (($meta_gather & SITEMAP_GATHER_DB_ROW) != 0) ? $row : null,
-            ),
-            'permissions' => array(
-                array(
+            ],
+            'permissions' => [
+                [
                     'type' => 'zone',
                     'zone_name' => $zone,
                     'is_owned_at_this_level' => true,
-                ),
-            ),
+                ],
+            ],
             'children' => null,
             'has_possible_children' => true,
 
@@ -179,8 +179,8 @@ class Hook_sitemap_zone extends Hook_sitemap_base
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'admin_zones', 'type' => '_edit', 'id' => $zone), get_module_zone('admin_zones')),
-        );
+            'edit_url' => build_url(['page' => 'admin_zones', 'type' => '_edit', 'id' => $zone], get_module_zone('admin_zones')),
+        ];
 
         if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
             $struct['title'] = make_string_tempcode(do_lang('zones:ZONE') . ': ' . $title);
@@ -189,8 +189,8 @@ class Hook_sitemap_zone extends Hook_sitemap_base
         $comcode_page_sitemap_ob = $this->_get_sitemap_object('comcode_page');
         $page_sitemap_ob = $this->_get_sitemap_object('page');
 
-        $children = array();
-        $children_orphaned = array();
+        $children = [];
+        $children_orphaned = [];
 
         // Get more details from default page? (which isn't linked as a child)
         $page_details = _request_page($zone_default_page, $zone);
@@ -205,9 +205,9 @@ class Hook_sitemap_zone extends Hook_sitemap_base
 
             if ($child_node !== null) {
                 //$struct['title']=$child_node['title'];
-                foreach (array('description', 'image', 'submitter', 'views', 'meta_keywords', 'meta_description', 'validated') as $key) {
+                foreach (['description', 'image', 'submitter', 'views', 'meta_keywords', 'meta_description', 'validated'] as $key) {
                     if ($child_node['extra_meta'][$key] !== null) {
-                        if (($struct['extra_meta'][$key] === null) || (!in_array($key, array('image')))) {
+                        if (($struct['extra_meta'][$key] === null) || (!in_array($key, ['image']))) {
                             $struct['extra_meta'][$key] = $child_node['extra_meta'][$key];
                         }
                     }
@@ -229,39 +229,39 @@ class Hook_sitemap_zone extends Hook_sitemap_base
         }
 
         // What page groupings may apply in what zones? (in display order)
-        $applicable_page_groupings = array();
+        $applicable_page_groupings = [];
         if (($options & SITEMAP_GEN_USE_PAGE_GROUPINGS) != 0) {
             switch ($zone) {
                 case 'adminzone':
-                    $applicable_page_groupings = array(
+                    $applicable_page_groupings = [
                         'audit',
                         'security',
                         'structure',
                         'style',
                         'setup',
                         'tools',
-                    );
+                    ];
                     break;
 
                 case '':
                     if (get_option('single_public_zone') == '0') {
-                        $applicable_page_groupings = array();
+                        $applicable_page_groupings = [];
                         break;
                     } // else flow on...
 
                 case 'site':
-                    $applicable_page_groupings = array(
+                    $applicable_page_groupings = [
                         'pages',
                         'rich_content',
                         'social',
                         'site_meta',
-                    );
+                    ];
                     break;
 
                 case 'cms':
-                    $applicable_page_groupings = array(
+                    $applicable_page_groupings = [
                         'cms',
-                    );
+                    ];
                     break;
             }
         }
@@ -276,11 +276,11 @@ class Hook_sitemap_zone extends Hook_sitemap_base
             }
 
             // Locate all page groupings and pages in them
-            $page_groupings = array();
+            $page_groupings = [];
             foreach ($applicable_page_groupings as $page_grouping) {
-                $page_groupings[$page_grouping] = array();
+                $page_groupings[$page_grouping] = [];
             }
-            $pages_found = array();
+            $pages_found = [];
             $links = get_page_grouping_links();
             foreach ($links as $link) {
                 list($page_grouping) = $link;
@@ -301,9 +301,9 @@ class Hook_sitemap_zone extends Hook_sitemap_base
 
             // Any left-behind pages?
             // NB: Code largely repeated in page_grouping.php
-            $orphaned_pages = array(); // Will be merged into pages/tools/cms groups if they exist, otherwise will go into this level
-            foreach ((($zone == 'site') && (($options & SITEMAP_GEN_COLLAPSE_ZONES) != 0)) ? array('site', '') : array($zone) as $_zone) {
-                $pages = $no_self_pages ? array() : find_all_pages_wrap($_zone, false, /*$consider_redirects=*/true, /*$show_method = */0, /*$page_type = */($zone != $_zone) ? 'comcode' : null);
+            $orphaned_pages = []; // Will be merged into pages/tools/cms groups if they exist, otherwise will go into this level
+            foreach ((($zone == 'site') && (($options & SITEMAP_GEN_COLLAPSE_ZONES) != 0)) ? ['site', ''] : [$zone] as $_zone) {
+                $pages = $no_self_pages ? [] : find_all_pages_wrap($_zone, false, /*$consider_redirects=*/true, /*$show_method = */0, /*$page_type = */($zone != $_zone) ? 'comcode' : null);
                 foreach ($pages as $page => $page_type) {
                     if (is_integer($page)) {
                         $page = strval($page);
@@ -339,10 +339,10 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                     } else {
                         $child_page_link = 'adminzone:admin:' . $page_grouping; // We don't actually link to this, unless it's one of the ones held in the Admin Zone
                     }
-                    $row = array(); // We may put extra nodes in here, beyond what the page_group knows
+                    $row = []; // We may put extra nodes in here, beyond what the page_group knows
                     if ($page_grouping == 'pages' || $page_grouping == 'tools' || $page_grouping == 'cms') {
                         $row = $orphaned_pages;
-                        $orphaned_pages = array();
+                        $orphaned_pages = [];
                     }
 
                     if ((empty($page_grouping_pages)) && (empty($row))) {
@@ -400,7 +400,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                             if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
                                 list(, $redir_zone, $redir_page) = explode(':', $page_type);
                                 require_code('xml');
-                                $struct['title'] = make_string_tempcode(strip_html(str_replace(array('<kbd>', '</kbd>'), array('"', '"'), do_lang('zones:REDIRECT_PAGE_TO', xmlentities($redir_zone), xmlentities($redir_page)))) . ': ' . (is_string($page) ? $page : strval($page)));
+                                $struct['title'] = make_string_tempcode(strip_html(str_replace(['<kbd>', '</kbd>'], ['"', '"'], do_lang('zones:REDIRECT_PAGE_TO', xmlentities($redir_zone), xmlentities($redir_page)))) . ': ' . (is_string($page) ? $page : strval($page)));
                             }
                         }
 
@@ -418,7 +418,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                 $page_sitemap_ob = $this->_get_sitemap_object('page');
 
                 foreach ($page_groupings as $links) { // Will only be 1 loop iteration, but this finds us that one easily
-                    $child_links = array();
+                    $child_links = [];
 
                     foreach ($links as $link) {
                         $title = $link[3];
@@ -445,7 +445,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                             $child_description = (is_object($link[4])) ? $link[4] : comcode_lang_string($link[4]);
                         }
 
-                        $child_links[] = array($title, $child_page_link, $icon, null/*unknown/irrelevant $page_type*/, $child_description);
+                        $child_links[] = [$title, $child_page_link, $icon, null/*unknown/irrelevant $page_type*/, $child_description];
                     }
 
                     foreach ($orphaned_pages as $page => $page_type) {
@@ -461,7 +461,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
 
                         $child_page_link = $_zone . ':' . $page;
 
-                        $child_links[] = array(titleify($page), $child_page_link, null, $page_type, null);
+                        $child_links[] = [titleify($page), $child_page_link, null, $page_type, null];
                     }
 
                     // Render children, in title order
@@ -472,7 +472,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                         $child_page_link = $child_link[1];
                         $page_type = $child_link[3];
 
-                        $child_row = ($icon === null) ? null/*we know nothing of relevance*/ : array($title, $icon, $description);
+                        $child_row = ($icon === null) ? null/*we know nothing of relevance*/ : [$title, $icon, $description];
 
                         if (($page_type !== null) && (strpos($page_type, 'comcode') !== false)) {
                             if (($valid_node_types !== null) && (!in_array('comcode_page', $valid_node_types))) {

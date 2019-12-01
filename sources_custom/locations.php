@@ -23,7 +23,7 @@ Note that regions are an amorphous concept. They should not be used for strict a
  * @param  array $regions The currently selected regions
  * @return Tempcode The list of regions
  */
-function create_region_selection_list($regions = array())
+function create_region_selection_list($regions = [])
 {
     if (!addon_installed('world_regions')) {
         return non_overridden__create_region_selection_list($regions);

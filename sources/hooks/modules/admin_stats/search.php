@@ -36,10 +36,10 @@ class Hook_admin_stats_search
 
         require_lang('search');
 
-        return array(
-            array('search' => array('SEARCH_STATISTICS', 'menu/adminzone/audit/statistics/search'),),
-            array('menu/adminzone/audit/statistics/search', array('_SELF', array('type' => 'search'), '_SELF'), do_lang('SEARCH_STATISTICS'), 'DESCRIPTION_SEARCH_STATISTICS'),
-        );
+        return [
+            ['search' => ['SEARCH_STATISTICS', 'menu/adminzone/audit/statistics/search'],],
+            ['menu/adminzone/audit/statistics/search', ['_SELF', ['type' => 'search'], '_SELF'], do_lang('SEARCH_STATISTICS'), 'DESCRIPTION_SEARCH_STATISTICS'],
+        ];
     }
 
     /**
@@ -69,11 +69,11 @@ class Hook_admin_stats_search
             $time_end = time();
         }
 
-        $title = get_screen_title('SEARCH_STATISTICS_RANGE', true, array(escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))));
+        $title = get_screen_title('SEARCH_STATISTICS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 20);
-        $sortables = array('s_primary' => do_lang_tempcode('SEARCH_STATISTICS'));
+        $sortables = ['s_primary' => do_lang_tempcode('SEARCH_STATISTICS')];
         $test = explode(' ', get_param_string('sort', 's_primary DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -88,7 +88,7 @@ class Hook_admin_stats_search
             return warn_screen($title, do_lang_tempcode('NO_DATA'));
         }
 
-        $keywords = array();
+        $keywords = [];
         $total = 0;
         foreach ($rows as $value) {
             $keywords[$value['s_primary']] = $value['cnt'];
@@ -102,11 +102,11 @@ class Hook_admin_stats_search
         }
 
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('KEYWORD'), do_lang_tempcode('COUNT_VIEWS')), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('KEYWORD'), do_lang_tempcode('COUNT_VIEWS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
         $degrees = 360.0 / floatval($total);
         $done_total = 0;
-        $data = array();
+        $data = [];
         $i = 0;
 
         foreach ($keywords as $keyword => $views) {
@@ -121,7 +121,7 @@ class Hook_admin_stats_search
             } else {
                 $link = protect_from_escaping(escape_html($keyword));
             }
-            $result_entries->attach(results_entry(array($link, integer_format($views)), true));
+            $result_entries->attach(results_entry([$link, integer_format($views)], true));
 
             $data[$keyword] = $keywords[$keyword] * $degrees;
             $done_total += $data[$keyword];
@@ -129,21 +129,21 @@ class Hook_admin_stats_search
         }
         if (360.0 - $done_total > 0.0) {
             $data[do_lang('OTHER')] = 360.0 - $done_total;
-            $result_entries->attach(results_entry(array(do_lang('OTHER'), integer_format(intval(round((360.0 - $done_total) / $degrees)))), true));
+            $result_entries->attach(results_entry([do_lang('OTHER'), integer_format(intval(round((360.0 - $done_total) / $degrees)))], true));
         }
         $list = results_table(do_lang_tempcode('SEARCH_STATISTICS'), $start, 'start', $max, 'max', count($keywords), $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
 
         $output = create_pie_chart($data);
         $ob->save_graph('Global-Search', $output);
 
-        $graph = do_template('STATS_GRAPH', array(
+        $graph = do_template('STATS_GRAPH', [
             '_GUID' => '980eb41a9c3f73edc67c842dd8573fcc',
             'GRAPH' => $ob->get_stats_url('Global-Search'),
             'TITLE' => do_lang_tempcode('SEARCH_STATISTICS'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_SEARCH_STATISTICS'),
-        ));
+        ]);
 
-        $tpl = do_template('STATS_SCREEN', array('_GUID' => '727a59e061727c4a1e24345cecb769aa', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list));
+        $tpl = do_template('STATS_SCREEN', ['_GUID' => '727a59e061727c4a1e24345cecb769aa', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

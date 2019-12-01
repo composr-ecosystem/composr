@@ -89,7 +89,7 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
         $GLOBALS['SITE_DB']->query('CREATE DATABASE cms_backup_test', null, 0, true); // Suppress errors in case already exists
 
         for ($i = 0; $i < 2; $i++) {
-            $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => array(), 'timeout' => 1000.0));
+            $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [], 'timeout' => 1000.0]);
             $success = (strpos($test->data, do_lang('backups:BACKUP_RESTORE_SUCCESS')) !== false);
             $message = 'Failed to run restorer script on iteration ' . strval($i + 1) . ' [' . $test->data . ']; to debug manually run exports/backups/test/restore.php?time_limit=1000';
             if (strpos(get_db_type(), 'odbc') !== false) {

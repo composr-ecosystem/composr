@@ -30,7 +30,7 @@ class Hook_config_proxy
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PROXY',
             'type' => 'line',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_proxy
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

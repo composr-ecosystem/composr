@@ -26,7 +26,7 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,12 +130,12 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/content_read_tracking.php',
             'sources_custom/hooks/systems/privacy/content_read_tracking.php',
             'sources_custom/hooks/systems/symbols/MARK_READ.php',
             'sources_custom/hooks/systems/symbols/HAS_READ.php',
-        );
+        ];
     }
 
     /**
@@ -154,14 +154,14 @@ class Hook_addon_registry_content_read_tracking
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('content_read', array(
+            $GLOBALS['SITE_DB']->create_table('content_read', [
                 'r_content_type' => '*ID_TEXT',
                 'r_content_id' => '*ID_TEXT',
                 'r_member_id' => '*MEMBER',
                 'r_time' => 'TIME',
-            ));
-            $GLOBALS['SITE_DB']->create_index('content_read', 'content_read', array('r_content_type', 'r_content_id'));
-            $GLOBALS['SITE_DB']->create_index('content_read', 'content_read_cleanup', array('r_time'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('content_read', 'content_read', ['r_content_type', 'r_content_id']);
+            $GLOBALS['SITE_DB']->create_index('content_read', 'content_read_cleanup', ['r_time']);
         }
     }
 }

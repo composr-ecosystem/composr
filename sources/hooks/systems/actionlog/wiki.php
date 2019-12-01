@@ -31,97 +31,97 @@ class Hook_actionlog_wiki extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
         require_lang('wiki');
 
-        return array(
-            'WIKI_ADD_PAGE' => array(
+        return [
+            'WIKI_ADD_PAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_page',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{ID}',
-                ),
-            ),
-            'WIKI_EDIT_PAGE' => array(
+                ],
+            ],
+            'WIKI_EDIT_PAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_page',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{ID}',
-                ),
-            ),
-            'WIKI_DELETE_PAGE' => array(
+                ],
+            ],
+            'WIKI_DELETE_PAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_page',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'WIKI_HOME' => '_SEARCH:wiki',
-                ),
-            ),
-            'WIKI_EDIT_TREE' => array(
+                ],
+            ],
+            'WIKI_EDIT_TREE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_page',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{ID}',
-                ),
-            ),
-            'WIKI_MAKE_POST' => array(
+                ],
+            ],
+            'WIKI_MAKE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{1}',
                     'WIKI_EDIT_POST' => '_SEARCH:wiki:post:post_id={ID}',
-                ),
-            ),
-            'WIKI_EDIT_POST' => array(
+                ],
+            ],
+            'WIKI_EDIT_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{1}',
                     'WIKI_EDIT_POST' => '_SEARCH:wiki:post:post_id={ID}',
-                ),
-            ),
-            'WIKI_DELETE_POST' => array(
+                ],
+            ],
+            'WIKI_DELETE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{1}',
-                ),
-            ),
-            'MERGE_WIKI_POSTS' => array(
+                ],
+            ],
+            'MERGE_WIKI_POSTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_page',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{ID}',
-                ),
-            ),
-            'WIKI_MOVE_POST' => array(
+                ],
+            ],
+            'WIKI_MOVE_POST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'wiki_post',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     '_WIKI_PAGE' => '_SEARCH:wiki:browse:{1}',
                     'WIKI_EDIT_POST' => '_SEARCH:wiki:post:post_id={ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ class Hook_actionlog_wiki extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'WIKI_MAKE_POST':
             case 'WIKI_DELETE_POST':
-                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', array('id' => intval($actionlog_row['param_b'])));
+                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => intval($actionlog_row['param_b'])]);
                 if ($_page_title === null) {
                     $page_title = '#' . $actionlog_row['param_b'];
                 } else {
@@ -148,7 +148,7 @@ class Hook_actionlog_wiki extends Hook_actionlog
                 return $written_context;
 
             case 'WIKI_EDIT_POST':
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_posts', 'member_id', array('id' => intval($actionlog_row['param_a'])));
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_posts', 'member_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($member_id !== null) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                     if ($username === null) {
@@ -158,7 +158,7 @@ class Hook_actionlog_wiki extends Hook_actionlog
                     $username = do_lang('UNKNOWN');
                 }
 
-                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', array('id' => intval($actionlog_row['param_b'])));
+                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => intval($actionlog_row['param_b'])]);
                 if ($_page_title === null) {
                     $page_title = '#' . $actionlog_row['param_b'];
                 } else {
@@ -170,7 +170,7 @@ class Hook_actionlog_wiki extends Hook_actionlog
                 return $written_context;
 
             case 'WIKI_MOVE_POST':
-                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', array('id' => intval($actionlog_row['param_b'])));
+                $_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => intval($actionlog_row['param_b'])]);
                 if ($_page_title === null) {
                     $page_title = '#' . $actionlog_row['param_a'];
                 } else {

@@ -47,8 +47,8 @@ class Hook_commandr_fs_cpfs extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id'), array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id'], [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -138,13 +138,13 @@ class Hook_commandr_fs_cpfs extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['cf_name'],
             'description' => $row['cf_description'],
             'locked' => $row['cf_locked'],
@@ -160,7 +160,7 @@ class Hook_commandr_fs_cpfs extends Resource_fs_base
             'only_group' => $row['cf_only_group'],
             'show_on_join_form' => $row['cf_show_on_join_form'],
             'options' => $row['cf_options'],
-        );
+        ];
 
         require_code('encryption');
         if (is_encryption_enabled()) {

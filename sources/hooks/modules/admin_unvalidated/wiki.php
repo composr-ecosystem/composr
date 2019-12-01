@@ -36,7 +36,7 @@ class Hook_unvalidated_wiki
 
         require_lang('wiki');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'wiki_posts';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

@@ -25,7 +25,7 @@ class Hook_config_cloudinary_transfer_directories
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLOUDINARY_TRANSFER_DIRECTORIES',
             'type' => 'text',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_cloudinary_transfer_directories
             'public' => false,
 
             'addon' => 'cloudinary',
-        );
+        ];
     }
 
     /**

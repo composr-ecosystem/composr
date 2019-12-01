@@ -35,11 +35,11 @@ class Hook_cron_group_points
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Assign points for usergroup membership',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24 * 27, // Only once within a month
-        );
+        ];
     }
 
     /**
@@ -69,7 +69,7 @@ class Hook_cron_group_points
                 if ($points['p_points_per_month'] != 0) {
                     $start = 0;
                     do {
-                        $members = $GLOBALS['FORUM_DRIVER']->member_group_query(array($group_id), 100, $start);
+                        $members = $GLOBALS['FORUM_DRIVER']->member_group_query([$group_id], 100, $start);
                         foreach ($members as $member_row) {
                             $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member_row);
                             system_gift_transfer('Being in the ' . $group_name . ' usergroup', $points['p_points_per_month'], $member_id);

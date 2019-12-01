@@ -52,21 +52,21 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
 
         require_lang('catalogues');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('CATALOGUE_CATEGORIES');
         $info['default'] = (get_option('search_catalogue_categories') == '1');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('calendar'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('calendar'),
                 'page_name' => 'calendar',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -112,7 +112,7 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
 
         // Calculate our where clause (search)
         if ($author != '') {
-            return array();
+            return [];
         }
         $this->_handle_date_check($cutoff, 'cc_add_date', $where_clause);
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
@@ -126,12 +126,12 @@ class Hook_search_catalogue_categories extends FieldsSearchHook
 
         // Calculate and perform query
         if ($g_or == '') {
-            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r', array('r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'), $where_clause, $content_where, $remapped_orderer, 'r.*');
+            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r', ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*');
         } else {
-            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r' . ((get_value('disable_cat_cat_perms') === '1') ? '' : (' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')', array('r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'), $where_clause, $content_where, $remapped_orderer, 'r.*');
+            $rows = get_search_rows('catalogue_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, 'catalogue_categories r' . ((get_value('disable_cat_cat_perms') === '1') ? '' : (' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access z ON (' . db_string_equal_to('z.module_the_name', 'catalogues_category') . ' AND z.category_name=r.id AND ' . str_replace('group_id', 'z.group_id', $g_or) . ')')) . ' JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_category_access p ON (' . db_string_equal_to('p.module_the_name', 'catalogues_catalogue') . ' AND p.category_name=r.c_name AND ' . str_replace('group_id', 'p.group_id', $g_or) . ')', ['r.cc_title' => 'SHORT_TRANS', 'r.cc_description' => 'LONG_TRANS__COMCODE'], $where_clause, $content_where, $remapped_orderer, 'r.*');
         }
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

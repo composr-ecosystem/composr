@@ -35,7 +35,7 @@ class Module_admin_redirects
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -63,16 +63,16 @@ class Module_admin_redirects
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('redirects', array(
+            $GLOBALS['SITE_DB']->create_table('redirects', [
                 'r_from_page' => '*ID_TEXT',
                 'r_from_zone' => '*ID_TEXT',
                 'r_to_page' => 'ID_TEXT',
                 'r_to_zone' => 'ID_TEXT',
                 'r_is_transparent' => 'BINARY',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->query_insert('redirects', array('r_from_page' => 'rules', 'r_from_zone' => 'site', 'r_to_page' => 'rules', 'r_to_zone' => '', 'r_is_transparent' => 1));
-            $GLOBALS['SITE_DB']->query_insert('redirects', array('r_from_page' => 'rules', 'r_from_zone' => 'forum', 'r_to_page' => 'rules', 'r_to_zone' => '', 'r_is_transparent' => 1));
+            $GLOBALS['SITE_DB']->query_insert('redirects', ['r_from_page' => 'rules', 'r_from_zone' => 'site', 'r_to_page' => 'rules', 'r_to_zone' => '', 'r_is_transparent' => 1]);
+            $GLOBALS['SITE_DB']->query_insert('redirects', ['r_from_page' => 'rules', 'r_from_zone' => 'forum', 'r_to_page' => 'rules', 'r_to_zone' => '', 'r_is_transparent' => 1]);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
@@ -86,7 +86,7 @@ class Module_admin_redirects
                 }
 
                 if (!file_exists(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/comcode/' . fallback_lang() . '/panel_top.txt')) {
-                    $GLOBALS['SITE_DB']->query_insert('redirects', array('r_from_page' => 'panel_top', 'r_from_zone' => $zone, 'r_to_page' => 'panel_top', 'r_to_zone' => '', 'r_is_transparent' => 1));
+                    $GLOBALS['SITE_DB']->query_insert('redirects', ['r_from_page' => 'panel_top', 'r_from_zone' => $zone, 'r_to_page' => 'panel_top', 'r_to_zone' => '', 'r_is_transparent' => 1]);
                 }
             }
         }
@@ -102,7 +102,7 @@ class Module_admin_redirects
                 }
 
                 if (!file_exists(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/comcode/' . fallback_lang() . '/panel_bottom.txt')) {
-                    $GLOBALS['SITE_DB']->query_insert('redirects', array('r_from_page' => 'panel_bottom', 'r_from_zone' => $zone, 'r_to_page' => 'panel_bottom', 'r_to_zone' => '', 'r_is_transparent' => 1), false, true); // errors suppressed in case already there
+                    $GLOBALS['SITE_DB']->query_insert('redirects', ['r_from_page' => 'panel_bottom', 'r_from_zone' => $zone, 'r_to_page' => 'panel_bottom', 'r_to_zone' => '', 'r_is_transparent' => 1], false, true); // errors suppressed in case already there
                 }
             }
         }
@@ -123,11 +123,11 @@ class Module_admin_redirects
             return null;
         }
 
-        return array(
-            'browse' => array('REDIRECTS', 'menu/adminzone/structure/redirects'),
-            'page' => array('PAGE_REDIRECTS', 'content_types/page'),
-            'url' => array('URL_REDIRECTS', 'buttons/redirect'),
-        );
+        return [
+            'browse' => ['REDIRECTS', 'menu/adminzone/structure/redirects'],
+            'page' => ['PAGE_REDIRECTS', 'content_types/page'],
+            'url' => ['URL_REDIRECTS', 'buttons/redirect'],
+        ];
     }
 
     public $title;
@@ -158,7 +158,7 @@ class Module_admin_redirects
         }
 
         if (($type == 'page') || ($type == '_page')) {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('REDIRECTS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('REDIRECTS')]]);
 
             $this->title = get_screen_title('PAGE_REDIRECTS');
 
@@ -166,7 +166,7 @@ class Module_admin_redirects
         }
 
         if (($type == 'url') || ($type == '_url')) {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('REDIRECTS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('REDIRECTS')]]);
 
             $this->title = get_screen_title('URL_REDIRECTS');
 
@@ -215,10 +215,10 @@ class Module_admin_redirects
     {
         require_code('templates_donext');
         return do_next_manager(get_screen_title('REDIRECTS'), comcode_lang_string('DOC_REDIRECTS'),
-            array(
-                array('content_types/page', array('_SELF', array('type' => 'page'), '_SELF'), do_lang('PAGE_REDIRECTS')),
-                array('buttons/redirect', array('_SELF', array('type' => 'url'), '_SELF'), do_lang('URL_REDIRECTS')),
-            ),
+            [
+                ['content_types/page', ['_SELF', ['type' => 'page'], '_SELF'], do_lang('PAGE_REDIRECTS')],
+                ['buttons/redirect', ['_SELF', ['type' => 'url'], '_SELF'], do_lang('URL_REDIRECTS')],
+            ],
             do_lang('REDIRECTS')
         );
     }
@@ -230,9 +230,9 @@ class Module_admin_redirects
      */
     public function page()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_page'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_page'], '_SELF');
         $existing = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('redirects', array('*'));
+        $rows = $GLOBALS['SITE_DB']->query_select('redirects', ['*']);
         $num_zones = $GLOBALS['SITE_DB']->query_select_value('zones', 'COUNT(*)');
         require_code('zones3');
         foreach ($rows as $i => $row) {
@@ -243,7 +243,7 @@ class Module_admin_redirects
                 $from_zones->attach(form_input_list_entry('*', $row['r_from_zone'] == '*', do_lang_tempcode('_ALL')));
             }
             $to_zones = ($num_zones > 50) ? new Tempcode() : create_selection_list_zones($row['r_to_zone']);
-            $existing->attach(do_template('PAGE_REDIRECT_ROW', array(
+            $existing->attach(do_template('PAGE_REDIRECT_ROW', [
                 '_GUID' => 'fd1ea392a98e588bb1f553464d315ef0',
                 'I' => strval($i),
                 'FROM_ZONE' => $row['r_from_zone'],
@@ -253,11 +253,11 @@ class Module_admin_redirects
                 'FROM_PAGE' => $row['r_from_page'],
                 'TO_PAGE' => $row['r_to_page'],
                 'IS_TRANSPARENT' => $row['r_is_transparent'] == 1,
-            )));
+            ]));
         }
         $default = explode(':', get_param_string('page_link', '*:'), 2);
         if (count($default) == 1) {
-            $default = array('', $default[0]);
+            $default = ['', $default[0]];
         }
         if ($num_zones > 50) {
             $to_zones = new Tempcode();
@@ -270,7 +270,7 @@ class Module_admin_redirects
             $from_zones->attach($zones);
             $from_zones->attach(form_input_list_entry('*', $default[0] == '*', do_lang_tempcode('_ALL')));
         }
-        $new = do_template('PAGE_REDIRECT_ROW', array(
+        $new = do_template('PAGE_REDIRECT_ROW', [
             '_GUID' => 'cbf0eb4f745a6bf7b10e1f7d6d95d10f',
             'I' => 'new',
             'FROM_ZONE' => '',
@@ -280,7 +280,7 @@ class Module_admin_redirects
             'FROM_PAGE' => $default[1],
             'TO_PAGE' => '',
             'IS_TRANSPARENT' => false,
-        ));
+        ]);
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
@@ -289,7 +289,7 @@ class Module_admin_redirects
             $notes = '';
         }
 
-        return do_template('PAGE_REDIRECT_SCREEN', array(
+        return do_template('PAGE_REDIRECT_SCREEN', [
             '_GUID' => '2a9add73f6dd0b8288c0c84fc7242763',
             'NOTES' => $notes,
             'PING_URL' => $ping_url,
@@ -298,7 +298,7 @@ class Module_admin_redirects
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -308,7 +308,7 @@ class Module_admin_redirects
      */
     public function _page()
     {
-        $found = array();
+        $found = [];
         foreach ($_POST as $key => $val) {
             if (!is_string($val)) {
                 continue;
@@ -333,13 +333,13 @@ class Module_admin_redirects
             }
 
             if ($val != '') {
-                $GLOBALS['SITE_DB']->query_insert('redirects', array(
+                $GLOBALS['SITE_DB']->query_insert('redirects', [
                     'r_from_page' => post_param_string('from_page_' . $i),
                     'r_from_zone' => post_param_string('from_zone_' . $i),
                     'r_to_page' => post_param_string('to_page_' . $i),
                     'r_to_zone' => post_param_string('to_zone_' . $i),
                     'r_is_transparent' => post_param_integer('is_transparent_' . $i, 0),
-                ), false, true); // Avoid problem when same key entered twice
+                ], false, true); // Avoid problem when same key entered twice
             }
         }
 
@@ -355,7 +355,7 @@ class Module_admin_redirects
         }
 
         // Redirect them back to editing screen
-        $url = build_url(array('page' => '_SELF', 'type' => 'page'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'page'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_SAVE'));
     }
 
@@ -383,7 +383,7 @@ class Module_admin_redirects
 
         $ref_point_end = $ref_point + strlen(Module_admin_redirects::URL_REDIRECT_HTACCESS_REF_LINE);
 
-        return array($ref_point_end, $c);
+        return [$ref_point_end, $c];
     }
 
     /**
@@ -405,11 +405,11 @@ class Module_admin_redirects
 
         $c = substr($c, $ref_point_end);
         $c_lines = explode("\n", $c);
-        $redirects = array();
+        $redirects = [];
         $query_string = '';
         $note = '';
         foreach ($c_lines as $c_line) {
-            $matches = array();
+            $matches = [];
             if (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_COMMENT_LINE, $c_line, $matches) != 0) {
                 $note = $matches[1];
             } elseif (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_REDIRECT_LINE, $c_line, $matches) != 0) {
@@ -417,7 +417,7 @@ class Module_admin_redirects
                 $to = $matches[2];
                 //$case_insensitive = ($matches[3] != ''); Not used
                 //$query_string_append = ($matches[4] != ''); Not used
-                $redirects[] = array($from, $to, $note, $query_string);
+                $redirects[] = [$from, $to, $note, $query_string];
                 $note = '';
                 $query_string = '';
             } elseif (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_QUERY_STRING_LINE, $c_line, $matches) != 0) {
@@ -429,7 +429,7 @@ class Module_admin_redirects
 
         // Editing UI...
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_url'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_url'], '_SELF');
         $existing = new Tempcode();
         require_code('zones3');
         foreach ($redirects as $i => $row) {
@@ -471,28 +471,28 @@ class Module_admin_redirects
                 $to = get_base_url() . $path . (($path == '') ? '/' : '') . $to;
             }
 
-            $existing->attach(do_template('URL_REDIRECT_ROW', array(
+            $existing->attach(do_template('URL_REDIRECT_ROW', [
                 '_GUID' => 'fd4354115895533a465f99680edc64ad',
                 'I' => strval($i),
                 'FROM' => $from,
                 'TO' => $to,
                 'NOTE' => $note,
                 'TYPE' => $type,
-            )));
+            ]));
         }
-        $new = do_template('URL_REDIRECT_ROW', array(
+        $new = do_template('URL_REDIRECT_ROW', [
             '_GUID' => '1930de7a52cade24a50ea80b8b97cee2',
             'I' => 'new',
             'FROM' => '',
             'TO' => '',
             'NOTE' => '',
             'TYPE' => 'full',
-        ));
+        ]);
 
         require_code('form_templates');
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
-        return do_template('URL_REDIRECT_SCREEN', array(
+        return do_template('URL_REDIRECT_SCREEN', [
             '_GUID' => '6529031253fcc3aceb66e38d79905cd4',
             'PING_URL' => $ping_url,
             'WARNING_DETAILS' => $warning_details,
@@ -500,7 +500,7 @@ class Module_admin_redirects
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -511,7 +511,7 @@ class Module_admin_redirects
      */
     protected function preg_unquote($in)
     {
-        $reps = array(
+        $reps = [
             '\\.'  => '.',
             '\\\\' => '\\',
             '\\+'  => '+',
@@ -532,7 +532,7 @@ class Module_admin_redirects
             '\\|'  => '|',
             '\\:'  => ':',
             '\\-'  => '-',
-        );
+        ];
         return strtr($in, $reps);
     }
 
@@ -547,7 +547,7 @@ class Module_admin_redirects
 
         // Read in new input...
 
-        $found = array();
+        $found = [];
         foreach ($_POST as $key => $val) {
             if (!is_string($val)) {
                 continue;
@@ -565,7 +565,7 @@ class Module_admin_redirects
                 $note = trim(str_replace("\n", ' ', $note));
 
                 if (($from != '') && ($to != '')) {
-                    $found[$i] = array($from, $to, $type, $note);
+                    $found[$i] = [$from, $to, $type, $note];
                 }
             }
         }
@@ -575,10 +575,10 @@ class Module_admin_redirects
         $c_beginning = substr($c, 0, $ref_point_end);
         $c = substr($c, $ref_point_end);
         $c_lines = explode("\n", $c);
-        $redirects = array();
+        $redirects = [];
         $len_passed = 0;
         foreach ($c_lines as $c_line) {
-            $matches = array();
+            $matches = [];
             if (
                 (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_COMMENT_LINE, $c_line, $matches) != 0) ||
                 (preg_match(Module_admin_redirects::URL_REDIRECT_HTACCESS_REDIRECT_LINE, $c_line, $matches) != 0) ||
@@ -665,7 +665,7 @@ class Module_admin_redirects
         log_it('SET_URL_REDIRECTS');
 
         // Redirect them back to editing screen
-        $url = build_url(array('page' => '_SELF', 'type' => 'url'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'url'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_SAVE'));
     }
 }

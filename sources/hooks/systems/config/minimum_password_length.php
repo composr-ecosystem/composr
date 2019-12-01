@@ -30,7 +30,7 @@ class Hook_config_minimum_password_length
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINIMUM_PASSWORD_LENGTH',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_minimum_password_length
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

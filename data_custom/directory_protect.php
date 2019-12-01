@@ -71,12 +71,12 @@ if (!is_file($_full)) {
 $size = filesize($_full);
 
 // Check permissions
-$search = array('"' . $file . '"', "'" . $file . "'", '"/' . $file . '"', "'/" . $file . "'", '"' . get_custom_base_url() . '/' . $file . '"', "'" . get_custom_base_url() . '/' . $file . "'");
+$search = ['"' . $file . '"', "'" . $file . "'", '"/' . $file . '"', "'/" . $file . "'", '"' . get_custom_base_url() . '/' . $file . '"', "'" . get_custom_base_url() . '/' . $file . "'"];
 $okay = false;
 $zones = find_all_zones();
 foreach ($zones as $zone) {
     $lang = get_site_default_lang();
-    foreach (array(array('comcode_custom/' . $lang, 'txt'), array('html_custom/' . $lang, 'htm')) as $_scope) {
+    foreach ([['comcode_custom/' . $lang, 'txt'], ['html_custom/' . $lang, 'htm']] as $_scope) {
         list($page_type, $ext) = $_scope;
         $pages = array_keys(find_all_pages($zone, $page_type, $ext));
         foreach ($pages as $page) {

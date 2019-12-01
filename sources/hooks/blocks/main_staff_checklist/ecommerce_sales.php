@@ -31,25 +31,25 @@ class Hook_checklist_ecommerce_sales
     public function run()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $num_products = $GLOBALS['SITE_DB']->query_select_value('ecom_prods_custom', 'COUNT(*)', array('c_enabled' => 1));
+        $num_products = $GLOBALS['SITE_DB']->query_select_value('ecom_prods_custom', 'COUNT(*)', ['c_enabled' => 1]);
         if ($num_products == 0) {
-            return array();
+            return [];
         }
 
         require_lang('ecommerce');
 
         $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_NA');
-        $url = build_url(array('page' => 'admin_ecommerce_logs', 'type' => 'sales'), get_module_zone('admin_ecommerce_logs'));
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $url = build_url(['page' => 'admin_ecommerce_logs', 'type' => 'sales'], get_module_zone('admin_ecommerce_logs'));
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'f9ec73adbee71411a915004d9d052cfd',
             'URL' => '',
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('NAG_ECOM_PRODUCT_SETUP', escape_html_tempcode($url)),
             'INFO' => '',
-        ));
-        return array(array($tpl, null, null, null));
+        ]);
+        return [[$tpl, null, null, null]];
     }
 }

@@ -65,7 +65,7 @@ class Hook_fields_picture
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -89,9 +89,9 @@ class Hook_fields_picture
                 $img_url = get_custom_base_url() . '/' . $img_url;
             }
 
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'image' => $img_url,
-            ));
+            ]);
         }
     }
 
@@ -151,9 +151,9 @@ class Hook_fields_picture
             $download_url .= $keep->evaluate();
 
             if ((($table === 'catalogue_efv_short') || ($table === 'catalogue_efv_long')) && ($id !== null)) {
-                $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => $id));
+                $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => $id]);
                 if (substr($c_name, 0, 1) != '_') { // Doesn't work on custom fields (this is documented)
-                    $cc_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', array('id' => $id));
+                    $cc_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', ['id' => $id]);
                     if (!has_category_access(get_member(), 'catalogues_catalogue', $c_name)) {
                         $download_url = '';
                     }
@@ -172,14 +172,14 @@ class Hook_fields_picture
         $width = option_value_from_field_array($field, 'width', '');
         $height = option_value_from_field_array($field, 'height', '');
 
-        return do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', array(
+        return do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', [
             'I' => ($only_fields === null) ? '-1' : strval($i),
             'CATALOGUE' => $field['c_name'],
             'URL' => $download_url,
             'THUMB_URL' => $img_thumb_url,
             'WIDTH' => $width,
             'HEIGHT' => $height,
-        ), null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');
+        ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');
     }
 
     // ======================
@@ -206,7 +206,7 @@ class Hook_fields_picture
         $hidden = new Tempcode();
         handle_max_file_size($hidden, 'image');
 
-        return array($ffield, $hidden);
+        return [$ffield, $hidden];
     }
 
     /**

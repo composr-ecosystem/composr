@@ -37,7 +37,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -73,7 +73,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -147,15 +147,15 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
 
         $title = make_string_tempcode($mapping['title']);
 
-        $struct = array(
+        $struct = [
             'title' => $title,
             'content_type' => null,
             'content_id' => null,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => null,
                 'add_time' => null,
@@ -168,27 +168,27 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(
-                array(
+            ],
+            'permissions' => [
+                [
                     'type' => 'zone',
                     'zone_name' => $zone,
                     'is_owned_at_this_level' => false,
-                ),
-                array(
+                ],
+                [
                     'type' => 'page',
                     'zone_name' => $zone,
                     'page_name' => $page,
                     'is_owned_at_this_level' => false,
-                ),
-            ),
+                ],
+            ],
             'has_possible_children' => true,
             'children' => null,
 
             // These are likely to be changed in individual hooks
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'weekly',
-        );
+        ];
 
         if ($callback !== null) {
             call_user_func($callback, $struct);
@@ -197,7 +197,7 @@ class Hook_sitemap_confluence extends Hook_sitemap_content
         // Children...
 
         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-            $struct['children'] = array();
+            $struct['children'] = [];
             foreach ($mapping['children'] as $child_id) {
                 $_mapping = $mappings[$child_id];
                 $child_page_link = $zone . ':' . $page . ':' . urlencode($_mapping['slug']);

@@ -32,8 +32,8 @@ push_query_limiting(false);
 require_code('images');
 
 // Find default images
-$default_images = array();
-foreach (array(get_file_base() . '/themes/default/images', get_file_base() . '/themes/default/images_custom', get_file_base() . '/themes/default/images/EN') as $dir) {
+$default_images = [];
+foreach ([get_file_base() . '/themes/default/images', get_file_base() . '/themes/default/images_custom', get_file_base() . '/themes/default/images/EN'] as $dir) {
     $dh = opendir($dir);
     while (($f = readdir($dh)) !== false) {
         if (is_image($f, IMAGE_CRITERIA_NONE)) {
@@ -57,17 +57,17 @@ foreach (array_keys($themes) as $theme) {
         set_global_category_access('theme', $theme);
 
         echo '<li>';
-        echo '<a href="' . static_evaluate_tempcode(build_url(array('page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme), '')) . '">' . escape_html($theme) . '</a><br />
+        echo '<a href="' . static_evaluate_tempcode(build_url(['page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme], '')) . '">' . escape_html($theme) . '</a><br />
             <span class="associated-details">(Other useful views:
-                <a href="' . static_evaluate_tempcode(build_url(array('page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme, 'keep_theme_seed' => '664422', 'keep_theme_algorithm' => 'hsv', 'keep_theme_source' => $theme), '')) . '">with brown seed</a> /
-                <a href="' . static_evaluate_tempcode(build_url(array('page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme, 'keep_su' => 'Guest'), '')) . '">as Guest</a> /
-                <a href="' . static_evaluate_tempcode(build_url(array('page' => 'cms_news', 'type' => 'add', 'keep_theme_test' => '1', 'keep_theme' => $theme), 'cms')) . '">Add News Form</a> /
-                <a href="' . static_evaluate_tempcode(build_url(array('page' => 'news', 'keep_theme_test' => '1', 'type' => 'view', 'id' => 1, 'keep_theme' => $theme), 'site')) . '">News screen</a> /
-                <a href="' . static_evaluate_tempcode(build_url(array('page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme), 'forum')) . '">forumview</a>)
+                <a href="' . static_evaluate_tempcode(build_url(['page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme, 'keep_theme_seed' => '664422', 'keep_theme_algorithm' => 'hsv', 'keep_theme_source' => $theme], '')) . '">with brown seed</a> /
+                <a href="' . static_evaluate_tempcode(build_url(['page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme, 'keep_su' => 'Guest'], '')) . '">as Guest</a> /
+                <a href="' . static_evaluate_tempcode(build_url(['page' => 'cms_news', 'type' => 'add', 'keep_theme_test' => '1', 'keep_theme' => $theme], 'cms')) . '">Add News Form</a> /
+                <a href="' . static_evaluate_tempcode(build_url(['page' => 'news', 'keep_theme_test' => '1', 'type' => 'view', 'id' => 1, 'keep_theme' => $theme], 'site')) . '">News screen</a> /
+                <a href="' . static_evaluate_tempcode(build_url(['page' => '', 'keep_theme_test' => '1', 'keep_theme' => $theme], 'forum')) . '">forumview</a>)
             </span>';
 
         // Find unreferenced images
-        $images = array();
+        $images = [];
         $theme_images = get_directory_contents(get_custom_file_base() . '/themes/' . $theme . '/images_custom');
         foreach ($theme_images as $f) {
             if (is_image($f, IMAGE_CRITERIA_NONE)) {
@@ -79,10 +79,10 @@ foreach (array_keys($themes) as $theme) {
             }
         }
         $images_copy = $images + $default_images;
-        $missing_images = array();
-        $selectors = array();
+        $missing_images = [];
+        $selectors = [];
         $non_css_contents = '';
-        foreach (array(
+        foreach ([
             get_file_base() . '/themes/default/css_custom' => false,
             get_file_base() . '/themes/default/templates_custom' => false,
             get_file_base() . '/themes/default/css' => false,
@@ -91,7 +91,7 @@ foreach (array_keys($themes) as $theme) {
             get_file_base() . '/themes/' . $theme . '/templates_custom' => true,
             get_file_base() . '/site/pages/comcode_custom/EN' => true,
             get_file_base() . '/pages/comcode_custom/EN' => true,
-        ) as $dir => $do_checks) {
+        ] as $dir => $do_checks) {
             $dh = @opendir($dir);
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
@@ -121,10 +121,10 @@ foreach (array_keys($themes) as $theme) {
                             }
 
                             // Test selectors
-                            $matches = array();
+                            $matches = [];
                             $num_matches = preg_match_all('#^\s*[^@\s].*[^%\s]\s*\{$#m', $contents, $matches); // @ is media rules, % is keyframe rules. Neither wanted.
                             for ($i = 0; $i < $num_matches; $i++) {
-                                $matches2 = array();
+                                $matches2 = [];
                                 $num_matches2 = preg_match_all('#[\w\-]+#', preg_replace('#"[^"]*"#', '', preg_replace('#[:@][\w\-]+#', '', $matches[0][$i])), $matches2);
                                 for ($j = 0; $j < $num_matches2; $j++) {
                                     $selectors[$matches2[0][$j]] = true;
@@ -133,7 +133,7 @@ foreach (array_keys($themes) as $theme) {
                         }
 
                         // Find missing images
-                        $matches = array();
+                        $matches = [];
                         $num_matches = preg_match_all('#\{\$IMG.?,([^{}]+)\}#', $contents, $matches);
                         for ($i = 0; $i < $num_matches; $i++) {
                             if ((!isset($images_copy[$matches[1][$i]])) && (strpos($matches[1][$i], '/') === false/*we assume subdir images are fine, as non-default ones won't usually be in subdirs and we have not written recursive search code*/)) {

@@ -34,7 +34,7 @@ class Hook_commandr_fs_home
     public function listing($meta_dir, $meta_root_node, &$commandr_fs)
     {
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
         $path = get_custom_file_base() . '/uploads/filedump';
@@ -44,17 +44,17 @@ class Hook_commandr_fs_home
 
         require_code('files');
 
-        $listing = array();
+        $listing = [];
         if (is_dir($path)) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (!should_ignore_file($file, IGNORE_ACCESS_CONTROLLERS)) {
-                    $listing[] = array(
+                    $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
                         is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
                         filemtime($path . '/' . $file),
-                    );
+                    ];
                 }
             }
             closedir($dh);

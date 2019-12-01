@@ -32,19 +32,19 @@ class Hook_fields_reference_multi
     public function get_field_types($filter = null)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         if (($filter !== null) && (substr($filter, 0, 3) != 'cx_')) {
-            return array(); // To avoid a wasteful query
+            return []; // To avoid a wasteful query
         }
 
         require_lang('fields');
         static $cats = null;
         if ($cats === null) {
-            $cats = $GLOBALS['SITE_DB']->query_select('catalogues', array('c_name', 'c_title'));
+            $cats = $GLOBALS['SITE_DB']->query_select('catalogues', ['c_name', 'c_title']);
         }
-        $ret = array();
+        $ret = [];
         foreach ($cats as $cat) {
             $ret['cx_' . $cat['c_name']] = do_lang_tempcode('FIELD_TYPE_reference_multi_x', get_translated_text($cat['c_title']));
         }
@@ -93,7 +93,7 @@ class Hook_fields_reference_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -116,12 +116,12 @@ class Hook_fields_reference_multi
         require_code('content');
 
         $evs = explode("\n", str_replace(',', "\n", $ev));
-        $out = array();
+        $out = [];
         foreach ($evs as $ev) {
             list($title) = content_get_details('catalogue_entry', $ev);
 
-            $url = build_url(array('page' => 'catalogues', 'type' => 'entry', 'id' => $ev), get_module_zone('catalogues'));
-            $out[] = array($title, $url);
+            $url = build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $ev], get_module_zone('catalogues'));
+            $out[] = [$title, $url];
         }
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
@@ -164,7 +164,7 @@ class Hook_fields_reference_multi
         $_list->attach($list);
         return form_input_list($_cf_name, $_cf_description, 'field_' . strval($field['id']), $_list, null, false, $field['cf_required'] == 1);
         */
-        $options = array();
+        $options = [];
         if (($field['cf_type'] != 'reference_multi') && (substr($field['cf_type'], 0, 3) == 'cx_')) {
             $options['catalogue_name'] = substr($field['cf_type'], 3);
         }

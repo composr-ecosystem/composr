@@ -34,7 +34,7 @@ function download_gateway_script()
     require_code('downloads');
 
     $id = get_param_integer('id');
-    $result = $GLOBALS['SITE_DB']->query_select('download_downloads', array('name', 'url_redirect'), array('id' => $id), '', 1);
+    $result = $GLOBALS['SITE_DB']->query_select('download_downloads', ['name', 'url_redirect'], ['id' => $id], '', 1);
     if (!isset($result[0])) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
     }
@@ -51,7 +51,7 @@ function download_gateway_script()
         if (!empty($attributes)) {
             $url .= '&' . http_build_query($attributes);
         }
-        $keep = symbol_tempcode('KEEP', array('0', '1'));
+        $keep = symbol_tempcode('KEEP', ['0', '1']);
         $url .= $keep->evaluate();
     }
 
@@ -59,8 +59,8 @@ function download_gateway_script()
 
     if ($url != '') {
         require_lang('downloads');
-        $title = get_screen_title('DOWNLOAD_GATEWAY', true, array(escape_html($name)));
-        $tpl = do_template('DOWNLOAD_GATEWAY_SCREEN', array('_GUID' => 'ed996e64c34d2c26e43712ffd62c5236', 'TITLE' => $title, 'NAME' => $name, 'ID' => strval($id), 'DOWNLOAD_URL' => $download_url, 'URL' => $url));
+        $title = get_screen_title('DOWNLOAD_GATEWAY', true, [escape_html($name)]);
+        $tpl = do_template('DOWNLOAD_GATEWAY_SCREEN', ['_GUID' => 'ed996e64c34d2c26e43712ffd62c5236', 'TITLE' => $title, 'NAME' => $name, 'ID' => strval($id), 'DOWNLOAD_URL' => $download_url, 'URL' => $url]);
         $tpl_wrapped = globalise($tpl, null, '', true, true);
         $tpl_wrapped->evaluate_echo();
     } else {
@@ -98,7 +98,7 @@ function dload_script()
     $id = get_param_integer('id', 0);
 
     // Lookup
-    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
     }
@@ -113,7 +113,7 @@ function dload_script()
 
         access_denied('CATEGORY_ACCESS');
     }
-    $may_download = has_privilege(get_member(), 'download', 'downloads', array(strval($myrow['category_id'])));
+    $may_download = has_privilege(get_member(), 'download', 'downloads', [strval($myrow['category_id'])]);
     if (!$may_download) {
         access_denied('PRIVILEGE', 'download');
     }
@@ -123,7 +123,7 @@ function dload_script()
     }
 
     // Cost?
-    $got_before = $GLOBALS['SITE_DB']->query_select_value_if_there('download_logging', 'member_id', array('member_id' => get_member(), 'id' => $id));
+    $got_before = $GLOBALS['SITE_DB']->query_select_value_if_there('download_logging', 'member_id', ['member_id' => get_member(), 'id' => $id]);
     if (addon_installed('points')) {
         if ($myrow['download_cost'] > 0) {
             require_code('points2');
@@ -324,12 +324,12 @@ function add_download_category($category, $parent_id, $description, $notes = '',
         $add_time = time();
     }
 
-    $map = array(
+    $map = [
         'rep_image' => $rep_image,
         'add_date' => $add_time,
         'notes' => $notes,
         'parent_id' => $parent_id,
-    );
+    ];
     $map += insert_lang('category', $category, 2);
     $map += insert_lang_comcode('the_description', $description, 2);
     if ($id !== null) {
@@ -337,7 +337,7 @@ function add_download_category($category, $parent_id, $description, $notes = '',
     }
     $id = $GLOBALS['SITE_DB']->query_insert('download_categories', $map, true);
 
-    reorganise_uploads__download_categories(array('id' => $id));
+    reorganise_uploads__download_categories(['id' => $id]);
 
     log_it('ADD_DOWNLOAD_CATEGORY', strval($id), $category);
 
@@ -348,7 +348,7 @@ function add_download_category($category, $parent_id, $description, $notes = '',
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('downloads_category', strval($id), array($category, $description), $description);
+        seo_meta_set_for_implicit('downloads_category', strval($id), [$category, $description], $description);
     } else {
         seo_meta_set_for_explicit('downloads_category', strval($id), $meta_keywords, $meta_description);
     }
@@ -388,7 +388,7 @@ function edit_download_category($category_id, $category, $parent_id, $descriptio
         if ($category_id == $under_category_id) {
             warn_exit(do_lang_tempcode('OWN_PARENT_ERROR', 'download_category'));
         }
-        $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'parent_id', array('id' => $under_category_id));
+        $_under_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'parent_id', ['id' => $under_category_id]);
         if ($under_category_id === $_under_category_id) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -398,17 +398,17 @@ function edit_download_category($category_id, $category, $parent_id, $descriptio
     require_code('urls2');
     suggest_new_idmoniker_for('downloads', 'browse', strval($category_id), '', $category);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('category', 'the_description'), array('id' => $category_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['category', 'the_description'], ['id' => $category_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_category'));
     }
     $_category = $rows[0]['category'];
     $_description = $rows[0]['the_description'];
 
-    $update_map = array(
+    $update_map = [
         'notes' => $notes,
         'parent_id' => $parent_id,
-    );
+    ];
     $update_map += lang_remap('category', $_category, $category);
     $update_map += lang_remap_comcode('the_description', $_description, $description);
     if ($rep_image !== null) {
@@ -419,12 +419,12 @@ function edit_download_category($category_id, $category, $parent_id, $descriptio
     if ($add_time !== null) {
         $update_map['add_date'] = $add_time;
     }
-    $GLOBALS['SITE_DB']->query_update('download_categories', $update_map, array('id' => $category_id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('download_categories', $update_map, ['id' => $category_id], '', 1);
 
     require_code('content2');
     seo_meta_set_for_explicit('downloads_category', strval($category_id), $meta_keywords, $meta_description);
 
-    reorganise_uploads__download_categories(array('id' => $category_id));
+    reorganise_uploads__download_categories(['id' => $category_id]);
 
     log_it('EDIT_DOWNLOAD_CATEGORY', strval($category_id), $category);
 
@@ -450,7 +450,7 @@ function delete_download_category($category_id)
         warn_exit(do_lang_tempcode('NO_DELETE_ROOT', 'download_category'));
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('category', 'the_description', 'parent_id'), array('id' => $category_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['category', 'the_description', 'parent_id'], ['id' => $category_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_category'));
     }
@@ -464,9 +464,9 @@ function delete_download_category($category_id)
         update_catalogue_content_ref('download_category', strval($category_id), '');
     }
 
-    $GLOBALS['SITE_DB']->query_delete('download_categories', array('id' => $category_id), '', 1);
-    $GLOBALS['SITE_DB']->query_update('download_downloads', array('category_id' => $rows[0]['parent_id']), array('category_id' => $category_id));
-    $GLOBALS['SITE_DB']->query_update('download_categories', array('parent_id' => $rows[0]['parent_id']), array('parent_id' => $category_id));
+    $GLOBALS['SITE_DB']->query_delete('download_categories', ['id' => $category_id], '', 1);
+    $GLOBALS['SITE_DB']->query_update('download_downloads', ['category_id' => $rows[0]['parent_id']], ['category_id' => $category_id]);
+    $GLOBALS['SITE_DB']->query_update('download_categories', ['parent_id' => $rows[0]['parent_id']], ['parent_id' => $category_id]);
 
     delete_lang($category);
     delete_lang($description);
@@ -474,12 +474,12 @@ function delete_download_category($category_id)
     require_code('content2');
     seo_meta_erase_storage('downloads_category', strval($category_id));
 
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'downloads', 'category_name' => strval($category_id)));
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('module_the_name' => 'downloads', 'category_name' => strval($category_id)));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'downloads', 'category_name' => strval($category_id)]);
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'downloads', 'category_name' => strval($category_id)]);
 
-    $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', array('p_module' => 'downloads', 'p_category' => strval($category_id)));
+    $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', ['p_module' => 'downloads', 'p_category' => strval($category_id)]);
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'downloads', 'm_resource_type' => 'browse', 'm_resource_id' => strval($category_id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'downloads', 'm_resource_type' => 'browse', 'm_resource_id' => strval($category_id)]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/repimages');
@@ -577,7 +577,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                     break;
             }
 
-            $data = http_get_contents($url, array('trigger_error' => false, 'byte_limit' => 3 * 1024 * 1024)); // 3MB is enough
+            $data = http_get_contents($url, ['trigger_error' => false, 'byte_limit' => 3 * 1024 * 1024]); // 3MB is enough
             if ($data === null) {
                 return '';
             }
@@ -756,7 +756,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             break;
         case 'htm':
         case 'html':
-            $head_patterns = array('#<\s*script.*<\s*/\s*script\s*>#misU', '#<\s*link[^<>]*>#misU', '#<\s*style.*<\s*/\s*style\s*>#misU');
+            $head_patterns = ['#<\s*script.*<\s*/\s*script\s*>#misU', '#<\s*link[^<>]*>#misU', '#<\s*style.*<\s*/\s*style\s*>#misU'];
             foreach ($head_patterns as $pattern) {
                 $data = preg_replace($pattern, '', $data);
             }
@@ -896,7 +896,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
         if (url_is_local($url)) {
             $file_size = @filesize(get_custom_file_base() . '/' . rawurldecode($url)) or $file_size = null;
         } else {
-            $http_result = cms_http_request($url, array('trigger_error' => false, 'byte_limit' => 0));
+            $http_result = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
             $file_size = $http_result->download_size;
         }
     }
@@ -909,7 +909,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
         $validated = 1;
     }
 
-    $map = array(
+    $map = [
         'download_data_mash' => '',
         'download_licence' => $licence,
         'rep_image' => '',
@@ -933,7 +933,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
         'validated' => $validated,
         'add_date' => $add_date,
         'file_size' => $file_size,
-    );
+    ];
     $map += insert_lang('name', $name, 2);
     $map += insert_lang_comcode('the_description', $description, 3);
     $map += insert_lang_comcode('additional_details', $additional_details, 3);
@@ -947,18 +947,18 @@ function add_download($category_id, $name, $url, $description, $author, $additio
 
     require_code('tasks');
     require_lang('downloads');
-    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, array(), null, array(), false), 'index_download', array($id, $url, $original_filename), false, false, false);
+    call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, [], null, [], false), 'index_download', [$id, $url, $original_filename], false, false, false);
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('downloads_download', strval($id), array($name, $description, $additional_details), $description);
+        seo_meta_set_for_implicit('downloads_download', strval($id), [$name, $description, $additional_details], $description);
     } else {
         seo_meta_set_for_explicit('downloads_download', strval($id), $meta_keywords, $meta_description);
     }
 
     // Make its gallery
     if ((addon_installed('galleries')) && (!running_script('stress_test_loader'))) {
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => 'download_' . strval($id)));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => 'download_' . strval($id)]);
         if ($test === null) {
             require_lang('downloads');
             require_code('galleries2');
@@ -979,18 +979,18 @@ function add_download($category_id, $name, $url, $description, $author, $additio
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('downloads');
         require_code('notifications');
         $subject = do_lang('DOWNLOAD_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $name);
-        $self_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $id), get_module_zone('downloads'), array(), false, false, true);
-        $mail = do_notification_lang('DOWNLOAD_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($name), array(comcode_escape($self_url->evaluate())));
+        $self_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $id], get_module_zone('downloads'), [], false, false, true);
+        $mail = do_notification_lang('DOWNLOAD_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($name), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('download', strval($category_id), $subject, $mail, $privacy_limits);
     }
 
-    reorganise_uploads__downloads(array('id' => $id));
+    reorganise_uploads__downloads(['id' => $id]);
 
     log_it('ADD_DOWNLOAD', strval($id), $name);
 
@@ -1021,28 +1021,28 @@ function add_download($category_id, $name, $url, $description, $author, $additio
 function set_download_gallery_permissions($id, $submitter = null)
 {
     if ($submitter === null) {
-        $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', array('id' => $id));
+        $submitter = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'submitter', ['id' => $id]);
     }
 
     $download_gallery_root = get_option('download_gallery_root');
 
     // Copy through requisite permissions
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)));
-    $perms = $GLOBALS['SITE_DB']->query_select('group_category_access', array('*'), array('module_the_name' => 'galleries', 'category_name' => $download_gallery_root));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
+    $perms = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root]);
     foreach ($perms as $perm) {
         $perm['category_name'] = 'download_' . strval($id);
         $GLOBALS['SITE_DB']->query_insert('group_category_access', $perm);
     }
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)));
-    $perms = $GLOBALS['SITE_DB']->query_select('group_privileges', array('*'), array('module_the_name' => 'galleries', 'category_name' => $download_gallery_root));
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
+    $perms = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['module_the_name' => 'galleries', 'category_name' => $download_gallery_root]);
     foreach ($perms as $perm) {
         $perm['category_name'] = 'download_' . strval($id);
         $GLOBALS['SITE_DB']->query_insert('group_privileges', $perm);
     }
     // If they were able to submit the download, they should be able to submit extra images
-    $GLOBALS['SITE_DB']->query_delete('member_privileges', array('module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)));
-    foreach (array('submit_midrange_content') as $privilege) {
-        $GLOBALS['SITE_DB']->query_insert('member_privileges', array('active_until' => null, 'member_id' => $submitter, 'privilege' => $privilege, 'the_page' => '', 'module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id), 'the_value' => 1));
+    $GLOBALS['SITE_DB']->query_delete('member_privileges', ['module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id)]);
+    foreach (['submit_midrange_content'] as $privilege) {
+        $GLOBALS['SITE_DB']->query_insert('member_privileges', ['active_until' => null, 'member_id' => $submitter, 'privilege' => $privilege, 'the_page' => '', 'module_the_name' => 'galleries', 'category_name' => 'download_' . strval($id), 'the_value' => 1]);
     }
 }
 
@@ -1084,7 +1084,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('name', 'the_description', 'additional_details', 'category_id'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['name', 'the_description', 'additional_details', 'category_id'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
     }
@@ -1103,7 +1103,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
                     $file_size = 0;
                 }
             } else {
-                $http_result = cms_http_request($url, array('trigger_error' => false, 'byte_limit' => 0));
+                $http_result = cms_http_request($url, ['trigger_error' => false, 'byte_limit' => 0]);
                 $file_size = $http_result->download_size;
             }
         }
@@ -1122,7 +1122,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
     if (!fractional_edit()) {
         require_code('tasks');
         require_lang('downloads');
-        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, array(), null, array(), false), 'index_download', array($id, $url, $original_filename), false, false, false);
+        call_user_func_array__long_task(do_lang('INDEX_DOWNLOAD'), get_screen_title('INDEX_DOWNLOAD', true, [], null, [], false), 'index_download', [$id, $url, $original_filename], false, false, false);
     }
 
     if (!addon_installed('unvalidated')) {
@@ -1135,7 +1135,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         send_content_validated_notification('download', strval($id));
     }
 
-    $update_map = array(
+    $update_map = [
         'download_licence' => $licence,
         'original_filename' => $original_filename,
         'download_submitter_gets_points' => $submitter_gets_points,
@@ -1153,7 +1153,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         'url_redirect' => $url_redirect,
         'default_pic' => $default_pic,
         'out_mode_id' => $out_mode_id,
-    );
+    ];
     $update_map += lang_remap('name', $myrow['name'], $name);
     $update_map += lang_remap_comcode('the_description', $myrow['the_description'], $description);
     $update_map += lang_remap_comcode('additional_details', $myrow['additional_details'], $additional_details);
@@ -1172,26 +1172,26 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         $update_map['num_downloads'] = $num_downloads;
     }
 
-    $GLOBALS['SITE_DB']->query_update('download_downloads', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('download_downloads', $update_map, ['id' => $id], '', 1);
 
-    $self_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $id), get_module_zone('downloads'), array(), false, false, true);
+    $self_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $id], get_module_zone('downloads'), [], false, false, true);
 
     if ($just_validated) {
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = [];
         }
 
         require_lang('downloads');
         require_code('notifications');
         $subject = do_lang('DOWNLOAD_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $name);
-        $mail = do_notification_lang('DOWNLOAD_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($name), array(comcode_escape($self_url->evaluate())));
+        $mail = do_notification_lang('DOWNLOAD_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($name), [comcode_escape($self_url->evaluate())]);
         dispatch_notification('download', strval($category_id), $subject, $mail, $privacy_limits);
     }
 
-    reorganise_uploads__downloads(array('id' => $id));
+    reorganise_uploads__downloads(['id' => $id]);
 
     log_it('EDIT_DOWNLOAD', strval($id), get_translated_text($myrow['name']));
 
@@ -1204,7 +1204,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         // Change its gallery
         require_code('galleries2');
         $download_gallery_root = get_option('download_gallery_root');
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => 'download_' . strval($id)));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => 'download_' . strval($id)]);
         if ($test !== null) {
             edit_gallery('download_' . strval($id), 'download_' . strval($id), do_lang('GALLERY_FOR_DOWNLOAD', $name), '', '', $download_gallery_root);
         }
@@ -1237,7 +1237,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
  */
 function delete_download($id, $leave = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('name', 'the_description', 'additional_details'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['name', 'the_description', 'additional_details'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
     }
@@ -1260,26 +1260,26 @@ function delete_download($id, $leave = false)
     }
 
     // Delete from database
-    $GLOBALS['SITE_DB']->query_delete('download_downloads', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('download_logging', array('id' => $id));
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'downloads', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'downloads', 'trackback_for_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('download_downloads', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('download_logging', ['id' => $id]);
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'downloads', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'downloads', 'trackback_for_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'downloads_' . strval($id));
 
-    $GLOBALS['SITE_DB']->query_update('download_downloads', array('out_mode_id' => null), array('out_mode_id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('download_downloads', ['out_mode_id' => null], ['out_mode_id' => $id], '', 1);
 
     if (addon_installed('galleries')) {
         // Delete gallery
         $name = 'download_' . strval($id);
         require_code('galleries2');
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => 'download_' . strval($id)));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => 'download_' . strval($id)]);
         if ($test !== null) {
             delete_gallery($name);
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'downloads', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'downloads', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/downloads');
@@ -1307,7 +1307,7 @@ function add_download_licence($title, $text)
     require_code('global4');
     prevent_double_submit('ADD_DOWNLOAD_LICENCE', null, $title);
 
-    $id = $GLOBALS['SITE_DB']->query_insert('download_licences', array('l_title' => $title, 'l_text' => $text), true);
+    $id = $GLOBALS['SITE_DB']->query_insert('download_licences', ['l_title' => $title, 'l_text' => $text], true);
 
     log_it('ADD_DOWNLOAD_LICENCE', strval($id), $title);
 
@@ -1328,12 +1328,12 @@ function add_download_licence($title, $text)
  */
 function edit_download_licence($id, $title, $text)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('download_licences', array('l_title'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_licences', ['l_title'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_licence'));
     }
 
-    $GLOBALS['SITE_DB']->query_update('download_licences', array('l_title' => $title, 'l_text' => $text), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('download_licences', ['l_title' => $title, 'l_text' => $text], ['id' => $id], '', 1);
 
     log_it('EDIT_DOWNLOAD_LICENCE', strval($id), $title);
 
@@ -1350,15 +1350,15 @@ function edit_download_licence($id, $title, $text)
  */
 function delete_download_licence($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('download_licences', array('l_title'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('download_licences', ['l_title'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_licence'));
     }
     $myrow = $rows[0];
 
-    $GLOBALS['SITE_DB']->query_delete('download_licences', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('download_licences', ['id' => $id], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('download_downloads', array('download_licence' => null), array('download_licence' => $id));
+    $GLOBALS['SITE_DB']->query_update('download_downloads', ['download_licence' => null], ['download_licence' => $id]);
 
     log_it('DELETE_DOWNLOAD_LICENCE', strval($id), $myrow['l_title']);
 
@@ -1379,7 +1379,7 @@ function log_download($id, $size, $got_before)
 {
     // Log
     if (!$got_before) {
-        $GLOBALS['SITE_DB']->query_insert('download_logging', array('id' => $id, 'member_id' => get_member(), 'ip' => get_ip_address(), 'date_and_time' => time()), false, true); // Suppress errors in case of race condition
+        $GLOBALS['SITE_DB']->query_insert('download_logging', ['id' => $id, 'member_id' => get_member(), 'ip' => get_ip_address(), 'date_and_time' => time()], false, true); // Suppress errors in case of race condition
     }
 
     // Update download count
@@ -1398,7 +1398,7 @@ function log_download($id, $size, $got_before)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__download_categories($where = array(), $tolerate_errors = false)
+function reorganise_uploads__download_categories($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('download_category', 'uploads/repimages', 'rep_image', $where, null, true, $tolerate_errors);
@@ -1410,7 +1410,7 @@ function reorganise_uploads__download_categories($where = array(), $tolerate_err
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__downloads($where = array(), $tolerate_errors = false)
+function reorganise_uploads__downloads($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('download', 'uploads/downloads', 'url', $where, null, false, $tolerate_errors);

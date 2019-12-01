@@ -34,14 +34,14 @@ class Hook_commandr_command_passwd
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('passwd', array('h', 'u'), array(true)), '', '');
+            return ['', do_command_help('passwd', ['h', 'u'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'passwd'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'passwd')];
             }
 
             if (get_forum_type() != 'cns') {
-                return array('', '', '', do_lang('NO_CNS'));
+                return ['', '', '', do_lang('NO_CNS')];
             }
 
             require_code('cns_members_action');
@@ -55,11 +55,11 @@ class Hook_commandr_command_passwd
                 $member_id = get_member();
             }
 
-            $update = array();
+            $update = [];
             $update['m_password_change_code'] = '';
             $salt = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_salt');
             if ($salt === null) {
-                return array('', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u']));
+                return ['', '', '', do_lang('_MEMBER_NO_EXIST', array_key_exists('username', $options) ? $options['username'] : $options['u'])];
             }
 
             if (get_value('disable_password_hashing') === '1') {
@@ -72,8 +72,8 @@ class Hook_commandr_command_passwd
                 $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $salt);
             }
 
-            $GLOBALS['FORUM_DB']->query_update('f_members', $update, array('id' => $member_id), '', 1);
-            return array('', '', do_lang('SUCCESS'), '');
+            $GLOBALS['FORUM_DB']->query_update('f_members', $update, ['id' => $member_id], '', 1);
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

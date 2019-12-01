@@ -52,7 +52,7 @@ function _search_graph_color_pool($i, $color_pool)
 function graph_scatter_diagram($datapoints, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = false, $color = null, $width = null, $height = null)
 {
     if ($color === null) {
-        $color_pool = array();
+        $color_pool = [];
         _generate_graph_color_pool($color_pool);
         $color = $color_pool[0];
     }
@@ -61,16 +61,16 @@ function graph_scatter_diagram($datapoints, $x_axis_label = '', $y_axis_label = 
 
     _normalise_graph_dims($width, $height);
 
-    $_datapoints = array();
+    $_datapoints = [];
     foreach ($datapoints as $p) {
-        $_datapoints[] = array(
+        $_datapoints[] = [
             'X' => @strval($p['x']),
             'Y' => @strval($p['y']),
             'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
-        );
+        ];
     }
 
-    return do_template('GRAPH_SCATTER_DIAGRAM', array(
+    return do_template('GRAPH_SCATTER_DIAGRAM', [
         '_GUID' => 'a3fc255270253893b7550f18f9f94fca',
         'ID' => $id,
         'WIDTH' => $width,
@@ -80,11 +80,11 @@ function graph_scatter_diagram($datapoints, $x_axis_label = '', $y_axis_label = 
         'DATAPOINTS' => $_datapoints,
         'COLOR' => $color,
         'BEGIN_AT_ZERO' => $begin_at_zero,
-    ));
+    ]);
 }
 
 // Multiple measures across one even dimension (x) and one uneven dimension (y)
-function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = array(), $width = null, $height = null)
+function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
 {
     _generate_graph_color_pool($color_pool);
 
@@ -104,35 +104,35 @@ function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_ax
         $x_labels = range(0, count($datasets[0]['datapoints']));
     }
 
-    $_datasets = array();
+    $_datasets = [];
     foreach ($datasets as $i => $dataset) {
         if (count($dataset['datapoints']) != count($x_labels)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $datapoints = array();
+        $datapoints = [];
         foreach ($dataset['datapoints'] as $p) {
             if (is_array($p)) {
-                $datapoints[] = array(
+                $datapoints[] = [
                     'VALUE' => @strval($p['value']),
                     'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
-                );
+                ];
             } else {
-                $datapoints[] = array(
+                $datapoints[] = [
                     'VALUE' => @strval($p),
                     'TOOLTIP' => '',
-                );
+                ];
             }
         }
 
-        $_datasets[] = array(
+        $_datasets[] = [
             'LABEL' => $dataset['label'],
             'COLOR' => isset($dataset['color']) ? $dataset['color'] : _search_graph_color_pool($i, $color_pool),
             'DATAPOINTS' => $datapoints,
-        );
+        ];
     }
 
-    return do_template('GRAPH_LINE_CHART', array(
+    return do_template('GRAPH_LINE_CHART', [
         '_GUID' => '4a45757f02c5356c6b87a1c8d6366d49',
         'ID' => $id,
         'WIDTH' => $width,
@@ -143,11 +143,11 @@ function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_ax
         'DATASETS' => $_datasets,
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
-    ));
+    ]);
 }
 
 // 1 measure across one small even dimension (different segments) and one uneven dimension (angle) [unlabelled dimensions]
-function graph_pie_chart($datapoints, $show_data_labels = true, $color_pool = array(), $width = null, $height = null)
+function graph_pie_chart($datapoints, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
 {
     _generate_graph_color_pool($color_pool);
 
@@ -160,38 +160,38 @@ function graph_pie_chart($datapoints, $show_data_labels = true, $color_pool = ar
     _normalise_graph_dims($width, $height);
 
     $i = 0;
-    $_datapoints = array();
+    $_datapoints = [];
     foreach ($datapoints as $x => $p) {
         if (is_array($p)) {
-            $_datapoints[] = array(
+            $_datapoints[] = [
                 'LABEL' => $p['label'],
                 'VALUE' => @strval($p['value']),
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
-            );
+            ];
         } else {
-            $_datapoints[] = array(
+            $_datapoints[] = [
                 'LABEL' => @strval($x),
                 'VALUE' => @strval($p),
                 'TOOLTIP' => '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
-            );
+            ];
         }
         $i++;
     }
 
-    return do_template('GRAPH_PIE_CHART', array(
+    return do_template('GRAPH_PIE_CHART', [
         '_GUID' => '24a351a8cc04f0777b2016ab2ede35cc',
         'ID' => $id,
         'WIDTH' => $width,
         'HEIGHT' => $height,
         'DATAPOINTS' => $_datapoints,
         'SHOW_DATA_LABELS' => $show_data_labels,
-    ));
+    ]);
 }
 
 // 1 measure across one large even dimension (x) and one uneven dimension (y)
-function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = array(), $width = null, $height = null)
+function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $begin_at_zero = true, $show_data_labels = true, $color_pool = [], $width = null, $height = null)
 {
     _generate_graph_color_pool($color_pool);
 
@@ -204,27 +204,27 @@ function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $b
     _normalise_graph_dims($width, $height);
 
     $i = 0;
-    $_datapoints = array();
+    $_datapoints = [];
     foreach ($datapoints as $x => $p) {
         if (is_array($p)) {
-            $_datapoints[] = array(
+            $_datapoints[] = [
                 'LABEL' => $p['label'],
                 'VALUE' => @strval($p['value']),
                 'TOOLTIP' => array_key_exists('tooltip', $p) ? $p['tooltip'] : '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
-            );
+            ];
         } else {
-            $_datapoints[] = array(
+            $_datapoints[] = [
                 'LABEL' => @strval($x),
                 'VALUE' => @strval($p),
                 'TOOLTIP' => '',
                 'COLOR' => _search_graph_color_pool($i, $color_pool),
-            );
+            ];
         }
         $i++;
     }
 
-    return do_template('GRAPH_BAR_CHART', array(
+    return do_template('GRAPH_BAR_CHART', [
         '_GUID' => '173df546b9bcb31ca064910e1952e484',
         'ID' => $id,
         'WIDTH' => $width,
@@ -234,5 +234,5 @@ function graph_bar_chart($datapoints, $x_axis_label = '', $y_axis_label = '', $b
         'DATAPOINTS' => $_datapoints,
         'BEGIN_AT_ZERO' => $begin_at_zero,
         'SHOW_DATA_LABELS' => $show_data_labels,
-    ));
+    ]);
 }

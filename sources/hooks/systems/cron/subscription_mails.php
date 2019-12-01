@@ -40,11 +40,11 @@ class Hook_cron_subscription_mails
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Send subscription e-mails',
             'num_queued' => null, // Too time-consuming to calculate
             'minutes_between_runs' => 30,
-        );
+        ];
     }
 
     /**
@@ -55,15 +55,15 @@ class Hook_cron_subscription_mails
     public function run($last_run)
     {
         require_code('ecommerce_subscriptions');
-        $_subscribers_1 = collapse_1d_complexity('s_member_id', $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', array('DISTINCT s_member_id')));
-        $_subscribers_2 = collapse_1d_complexity('member_id', $GLOBALS['FORUM_DB']->query_select('f_group_member_timeouts', array('DISTINCT member_id')));
+        $_subscribers_1 = collapse_1d_complexity('s_member_id', $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['DISTINCT s_member_id']));
+        $_subscribers_2 = collapse_1d_complexity('member_id', $GLOBALS['FORUM_DB']->query_select('f_group_member_timeouts', ['DISTINCT member_id']));
         $_subscribers = array_merge($_subscribers_1, $_subscribers_2);
-        $subscribers = array();
+        $subscribers = [];
         foreach ($_subscribers as $subscriber) {
             $subscribers[$subscriber] = find_member_subscriptions($subscriber, true);
         }
 
-        $mails = $GLOBALS['FORUM_DB']->query_select('f_usergroup_sub_mails m JOIN ' . get_table_prefix() . 'f_usergroup_subs s ON s.id=m.m_usergroup_sub_id', array('m.*'));
+        $mails = $GLOBALS['FORUM_DB']->query_select('f_usergroup_sub_mails m JOIN ' . get_table_prefix() . 'f_usergroup_subs s ON s.id=m.m_usergroup_sub_id', ['m.*']);
         foreach ($mails as $mail) {
             $offset = $mail['m_ref_point_offset'] * 60 * 60; // Convert from hours to seconds
             foreach ($subscribers as $subscriber => $subs) {
@@ -91,7 +91,7 @@ class Hook_cron_subscription_mails
                     // Send notification
                     if ($send) {
                         require_code('notifications');
-                        dispatch_notification('paid_subscription_messages', null, get_translated_text($mail['m_subject']), get_translated_text($mail['m_body']), array($subscriber));
+                        dispatch_notification('paid_subscription_messages', null, get_translated_text($mail['m_subject']), get_translated_text($mail['m_body']), [$subscriber]);
                     }
                 }
             }

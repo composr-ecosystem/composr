@@ -48,13 +48,13 @@ class Hook_task_import_ftp_downloads
         // Firstly, parse the server URL, to make sure it is fine
         $parsed_url = @parse_url(normalise_idn_url($server_url));
         if ($parsed_url === false) {
-            return array(null, do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($server_url)));
+            return [null, do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($server_url))];
         }
         if (!array_key_exists('scheme', $parsed_url)) {
-            return array(null, do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($server_url)));
+            return [null, do_lang_tempcode('HTTP_DOWNLOAD_BAD_URL', escape_html($server_url))];
         }
         if ($parsed_url['scheme'] != 'ftp') {
-            return array(null, do_lang_tempcode('URL_BEGIN_FTP'));
+            return [null, do_lang_tempcode('URL_BEGIN_FTP')];
         }
         if (substr($server_url, strlen($server_url) - 1, 1) != '/') {
             $server_url .= '/';
@@ -66,31 +66,31 @@ class Hook_task_import_ftp_downloads
         require_lang('installer');
         $conn_id = @ftp_connect(array_key_exists('host', $parsed_url) ? $parsed_url['host'] : get_base_url_hostname(), array_key_exists('port', $parsed_url) ? $parsed_url['port'] : 21);
         if ($conn_id === false) {
-            return array(null, do_lang_tempcode('HTTP_DOWNLOAD_NO_SERVER', escape_html($server_url))); // Yes it's FTP not HTTP, but language string is ok
+            return [null, do_lang_tempcode('HTTP_DOWNLOAD_NO_SERVER', escape_html($server_url))]; // Yes it's FTP not HTTP, but language string is ok
         }
         if ((array_key_exists('user', $parsed_url)) && (array_key_exists('pass', $parsed_url))) {
             $login_result = @ftp_login($conn_id, $parsed_url['user'], $parsed_url['pass']);
             if ($login_result === false) {
-                return array(null, do_lang_tempcode('NO_FTP_LOGIN', cms_error_get_last()));
+                return [null, do_lang_tempcode('NO_FTP_LOGIN', cms_error_get_last())];
             }
         } else {
             $login_result = @ftp_login($conn_id, 'anonymous', get_option('staff_address'));
             if ($login_result === false) {
-                return array(null, do_lang_tempcode('NO_FTP_LOGIN', cms_error_get_last()));
+                return [null, do_lang_tempcode('NO_FTP_LOGIN', cms_error_get_last())];
             }
         }
 
         // Check connection
         if (!$login_result) {
-            return array(null, do_lang_tempcode('FTP_ERROR'));
+            return [null, do_lang_tempcode('FTP_ERROR')];
         }
 
         // Failsafe check
         if ((@ftp_nlist($conn_id, $directory . '/dev') !== false) && (@ftp_nlist($conn_id, $directory . '/etc') !== false) && (@ftp_nlist($conn_id, $directory . '/sbin') !== false)) {
-            return array(null, do_lang_tempcode('POINTS_TO_ROOT_SCARY', escape_html($directory)));
+            return [null, do_lang_tempcode('POINTS_TO_ROOT_SCARY', escape_html($directory))];
         }
         if ((@ftp_nlist($conn_id, $directory . '/Program files') !== false) && ((@ftp_nlist($conn_id, $directory . '/Users') !== false) || (@ftp_nlist($conn_id, $directory . '/Documents and settings') !== false)) && (@ftp_nlist($conn_id, $directory . '/Windows') !== false)) {
-            return array(null, do_lang_tempcode('POINTS_TO_ROOT_SCARY', escape_html($directory)));
+            return [null, do_lang_tempcode('POINTS_TO_ROOT_SCARY', escape_html($directory))];
         }
 
         // Actually start the scanning
@@ -99,7 +99,7 @@ class Hook_task_import_ftp_downloads
         ftp_close($conn_id);
 
         $ret = do_lang_tempcode('SUCCESS_ADDED_DOWNLOADS', escape_html(integer_format($num_added)));
-        return array('text/html', $ret);
+        return ['text/html', $ret];
     }
 
     /**
@@ -133,7 +133,7 @@ class Hook_task_import_ftp_downloads
                 $full_url = $url . $entry . '/';
                 if ($make_subfolders) {
                     // Do we need to make new category, or is it already existent?
-                    $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => $dest_cat, $GLOBALS['SITE_DB']->translate_field_ref('category') => $entry));
+                    $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $dest_cat, $GLOBALS['SITE_DB']->translate_field_ref('category') => $entry]);
                     if ($category_id === null) {
                         // Add the directory
                         $category_id = add_download_category(titleify($entry), $dest_cat, '', '', '');
@@ -149,7 +149,7 @@ class Hook_task_import_ftp_downloads
                 $full_url = $url . $entry;
 
                 // Test to see if the file is already in our database
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', array('url' => $full_url));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $full_url]);
                 if ($test === null) {
                     // It is a file, so add it
                     add_download($dest_cat, titleify($entry), $full_url, '', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), '', null, 1, 1, 1, 1, '', $entry, ftp_size($conn_id, $entry), 0, 0);

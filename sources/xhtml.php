@@ -26,7 +26,7 @@
  */
 function hide_the_evidence($html)
 {
-    return do_template('POOR_XHTML_WRAPPER', array('_GUID' => '4304e51390cd4c4dd5761b6af9682205', 'CONTENT' => $html));
+    return do_template('POOR_XHTML_WRAPPER', ['_GUID' => '4304e51390cd4c4dd5761b6af9682205', 'CONTENT' => $html]);
 }
 
 /**
@@ -57,7 +57,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
     $POS = 0;
     $OUT = $html;
     $LEN = strlen($html);
-    $TAG_STACK = array();
+    $TAG_STACK = [];
     $WELL_FORMED_ONLY = true;
     $LINENO = 0;
     $LINESTART = 0;
@@ -211,7 +211,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
     }
 
     // Remove some empty tags that shouldn't be empty (e.g. table)
-    $may_not_be_empty = array(
+    $may_not_be_empty = [
         /*'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'blockquote', 'pre',*/
         'br', 'hr',/*'fieldset', 'address', 'noscript',*/
         'table', 'tbody',
@@ -224,7 +224,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
         'param', 'input', 'select', 'object', 'caption', 'label',/* 'b', 'i', 'small', 'big',*/
         'base', 'body', 'col', 'colgroup', 'map',
         'optgroup', 'legend', 'area', 'form',
-    );
+    ];
     foreach ($may_not_be_empty as $t) {
         if (stripos($new, '<' . $t) !== false) {
             $new = preg_replace('#<' . $t . '(\s[^>]*)?' . '>\s*</' . $t . '>#', '', $new);
@@ -249,7 +249,7 @@ function xhtmlise_html($html, $definitely_want = false, $snippet = false)
  */
 function extract_html_body($html)
 {
-    $matches = array();
+    $matches = [];
     if (preg_match('#<body[^>]*>(.*)</body>#', $html, $matches) != 0) {
         return $matches[1];
     }
@@ -277,15 +277,15 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
         $from = strlen(strip_tags($html)) + $from; // Not perfectly accurate using strip_tags as it's a different algorithm - but close enough, considering all our XHTML is well formed anyway
     }
 
-    $tag_stack = array(); // A stack of simple tags (opening only, just the names), that we can search
-    $unbreakable_tag_stack = array(); // Booleans specifying whether the current tag must finished
+    $tag_stack = []; // A stack of simple tags (opening only, just the names), that we can search
+    $unbreakable_tag_stack = []; // Booleans specifying whether the current tag must finished
     $current_tag = '';
     $in_tag = false;
     $in_entity = false;
     $in_tag_type = '';
     $real_from = 0;
     $_html_buildup = '';
-    $html_buildup = array(); // A stack of HTML tags we need from before we start our portion, to move us into the right tag context. None tags are thrown out.
+    $html_buildup = []; // A stack of HTML tags we need from before we start our portion, to move us into the right tag context. None tags are thrown out.
 
     $has_xhtml_substr_no_break_somewhere = (strpos($html, 'xhtml-substr-no-break') !== false); // Optimisation so as to run faster in most cases (only run extended check when needed)
 
@@ -331,7 +331,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
                         }
                         if (($current_tag != 'br') && ($current_tag != 'img') && ($current_tag != 'hr')) { // A little sanity checking, for HTML used as XHTML
                             $tag_stack[] = $current_tag;
-                            $matches = array();
+                            $matches = [];
                             $unbreakable_tag_stack[] = (($current_tag == 'figure') || ($current_tag == 'div') && ($has_xhtml_substr_no_break_somewhere) && (preg_match('#\sclass="[^"<>]*xhtml-substr-no-break[^"<>]*"[^<>]*$#', substr($html, 0, $i)) != 0));
                         }
                     }
@@ -371,7 +371,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
                     if (($in_tag_type == 'CLOSE') && (@$html_buildup[count($html_buildup) - 1][0] == $current_tag)) {
                         array_pop($html_buildup);
                     } elseif ($in_tag_type != 'SELF_CLOSE') {
-                        $html_buildup[] = array($current_tag, $_html_buildup);
+                        $html_buildup[] = [$current_tag, $_html_buildup];
                     }
                 }
             }
@@ -395,7 +395,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
                 $in_tag = true;
 
                 // The regexp just checks for img tag match and grabs the src into $matches[1]
-                $matches = array();
+                $matches = [];
                 if (isset($html[$i + 1]) && strtolower($html[$i + 1]) == 'i'/*Optimisation before we bother looking harder*/ && preg_match('#<img[^<>]+src="([^"]+)"#iA', $html, $matches, 0, $i) != 0) {
                     require_code('images');
                     $test = cms_getimagesize_url(html_entity_decode($matches[1], ENT_QUOTES), true); // Safe way to grab image dimensions
@@ -473,7 +473,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
             }
 
             if (($real_from == 0) && ($from != 0)) { // We never found text start even after exceeding length so we'll have to rewind and just start from the XHTML start
-                $html_buildup = array();
+                $html_buildup = [];
             }
 
             $new_html = '';
@@ -488,7 +488,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
             } else {
                 $end_ellipses = '';
             }
-            $no_text_inside = array('tr', 'thead', 'colgroup', 'table', 'ul', 'ol', 'dl', 'dir', 'menu', 'applet', 'param', 'embed', 'object', 'legend', 'select', 'tfoot', 'ruby',);
+            $no_text_inside = ['tr', 'thead', 'colgroup', 'table', 'ul', 'ol', 'dl', 'dir', 'menu', 'applet', 'param', 'embed', 'object', 'legend', 'select', 'tfoot', 'ruby',];
 
             if (in_array(array_peek($tag_stack), $no_text_inside)) {
                 $new_html = rtrim($new_html) . $start_ellipses;
@@ -526,18 +526,18 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
             $new_html = preg_replace('#<script.*</script>#Us', '', $new_html); // ... and also script/CDATA stuff, due to problems in XHTML/HTML incompatibility bypass techniques that use character data (which we skip)
 
             // Remove some empty tags that shouldn't be empty (e.g. td)
-            $may_not_be_empty = array('h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'blockquote', 'pre', 'br', 'hr', 'fieldset', 'address', 'noscript', 'table', 'tbody',
+            $may_not_be_empty = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'blockquote', 'pre', 'br', 'hr', 'fieldset', 'address', 'noscript', 'table', 'tbody',
                                       'tfoot', 'thead', 'tr', 'dd', 'dt', 'dl', 'li', 'ol', 'ul', 'rbc', 'rtc', 'rb', 'rt', 'rp', 'span', 'abbr',
                                       'acronym', 'cite', 'code', 'dfn', 'em', 'strong', 'kbd', 'q', 'samp', 'var', 'sub', 'sup', 'tt', 'del', 'ruby', 'bdo',
                                       'img', 'ins', 'param', 'input', 'select', 'object', 'caption', 'label', 'b', 'i', 'small', 'big', 'base', 'body', 'col', 'colgroup', 'map',
                                       'optgroup', 'legend', 'area', 'form',
-            );
+            ];
             foreach ($may_not_be_empty as $t) {
                 $new_html = preg_replace('#<' . $t . '>\s*</' . $t . '>#', '', $new_html);
             }
 
             if ($ellipses) {
-                $new_html = str_replace(array('</p>' . $entity, '</div>' . $entity), array($entity . '</p>', $entity . '</div>'), $new_html);
+                $new_html = str_replace(['</p>' . $entity, '</div>' . $entity], [$entity . '</p>', $entity . '</div>'], $new_html);
             }
 
             return $new_html;
@@ -561,10 +561,10 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
 function _smart_grammar_says_futile($naive_end_pos, $grammar_completeness_tolerance, $real_offset, $html, $desired_length)
 {
     // See if we're starting a paragraph
-    $look_out = array(
+    $look_out = [
         'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'blockquote', 'pre', 'br', 'hr', 'fieldset', 'iframe', 'table',
         'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'dd', 'dt', 'dl', 'li', 'ol', 'ul',
-    );
+    ];
     $starting = false;
     foreach ($look_out as $l) {
         if (substr($html, $real_offset, strlen($l) + 1) == '<' . $l) {
@@ -618,11 +618,11 @@ function _smart_grammar_says_continue($naive_end_pos, $grammar_completeness_tole
     // NOTE: This algorithm isn't perfect. Grammar is exceptionally complex and it does not do a parse as such.
 
     // Work out "paragraph" end (paragraph end determined by next block/table tag, our block/table tag ending, or the end of $html)
-    $look_out = array(
+    $look_out = [
         // We will assume there are no HTML tags that start with these, like dtango. There aren't, and if there are, it's very unlikely to cause a problem. We will also assume it's valid XHTML- no upper case tags.
         'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'blockquote', 'pre', 'br', 'hr', 'fieldset', 'iframe', 'table',
         'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'dd', 'dt', 'dl', 'li', 'ol', 'ul',
-    );
+    ];
     $best_pos = null;
     foreach ($look_out as $l) {
         $pos = strpos($html, '<' . $l, $real_offset);
@@ -648,7 +648,7 @@ function _smart_grammar_says_continue($naive_end_pos, $grammar_completeness_tole
     }
 
     // See if we just finished our sentence (sentence end determined by next full stop followed by tab/nl/cr, or full stop followed by space followed by capital letter or another space, or question mark, or exclamation mark, or the end of $html)
-    $look_out = array('.  ', '. A', '. B', '. C', '. D', '. E', '. F', '. G', '. H', '. I', '. J', '. K', '. L', '. M', '. N', '. O', '. P', '. Q', '. R', '. S', '. T', '. U', '. V', '. W', '. X', '. Y', '. Z', '.' . "\n", '.' . "\r", ".\t", '?', '!');
+    $look_out = ['.  ', '. A', '. B', '. C', '. D', '. E', '. F', '. G', '. H', '. I', '. J', '. K', '. L', '. M', '. N', '. O', '. P', '. Q', '. R', '. S', '. T', '. U', '. V', '. W', '. X', '. Y', '. Z', '.' . "\n", '.' . "\r", ".\t", '?', '!'];
     foreach ($look_out as $l) {
         if (substr($html, $real_offset - strlen($l), strlen($l)) == $l) {
             return false;
@@ -675,7 +675,7 @@ function _smart_grammar_says_continue($naive_end_pos, $grammar_completeness_tole
 
     if (!$testing_ahead) {
         // Try at least to finish word (imperfect as e.g. "1.2" is a word but could be broken within)
-        if (!@in_array($html[$real_offset + 1], array(false, null, '.', ' ', "\t", "\n", "\r"))) {
+        if (!@in_array($html[$real_offset + 1], [false, null, '.', ' ', "\t", "\n", "\r"])) {
             return true;
         }
     }

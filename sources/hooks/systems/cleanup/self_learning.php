@@ -36,7 +36,7 @@ class Hook_cleanup_self_learning
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('SELF_LEARNING_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_SELF_LEARNING_CACHE');
         $info['type'] = 'cache';

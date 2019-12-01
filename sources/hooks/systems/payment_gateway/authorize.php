@@ -41,9 +41,9 @@ class Hook_payment_gateway_authorize
      */
     public function get_config()
     {
-        return array(
+        return [
             'supports_remote_memo' => false,
-        );
+        ];
     }
 
     /**
@@ -75,7 +75,7 @@ class Hook_payment_gateway_authorize
             $payment_gateway_callback_password_bits[1] = $payment_gateway_callback_password_bits[0];
         }
         $md5_hash_value = ecommerce_test_mode() ? trim($payment_gateway_callback_password_bits[1]) : trim($payment_gateway_callback_password_bits[0]);
-        return array($api_login, $api_transaction_key, $md5_hash_value);
+        return [$api_login, $api_transaction_key, $md5_hash_value];
     }
 
     /**
@@ -137,7 +137,7 @@ class Hook_payment_gateway_authorize
      */
     public function get_logos()
     {
-        return do_template('ECOM_LOGOS_AUTHORIZE', array('_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => get_option('payment_gateway_vpn_username')));
+        return do_template('ECOM_LOGOS_AUTHORIZE', ['_GUID' => '5b3254b330b3b1719d66d2b754c7a8c8', 'CUSTOMER_ID' => get_option('payment_gateway_vpn_username')]);
     }
 
     /**
@@ -147,7 +147,7 @@ class Hook_payment_gateway_authorize
      */
     public function get_payment_processor_links()
     {
-        return do_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', array('_GUID' => '563254b330b3b1719d66d2b754c7a8c8'));
+        return do_template('ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE', ['_GUID' => '563254b330b3b1719d66d2b754c7a8c8']);
     }
 
     /**
@@ -187,7 +187,7 @@ class Hook_payment_gateway_authorize
         $sequence = get_secure_random_number();
         $fingerprint = $this->_get_finger_print($login_id, $transaction_key, $price + $tax + $shipping_cost, $sequence, $timestamp, $currency);
 
-        return do_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', array(
+        return do_template('ECOM_TRANSACTION_BUTTON_VIA_AUTHORIZE', [
             '_GUID' => 'a21d1d60969eea89a3d77037375221e6',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -206,7 +206,7 @@ class Hook_payment_gateway_authorize
             'IS_TEST' => ecommerce_test_mode(),
             'CUST_ID' => strval(get_member()),
             'CURRENCY' => $currency,
-        ));
+        ]);
     }
 
     /**
@@ -237,7 +237,7 @@ class Hook_payment_gateway_authorize
         $sequence = get_secure_random_number();
         $fingerprint = $this->_get_finger_print($login_id, $transaction_key, $price + $tax, $sequence, $timestamp, $currency);
 
-        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', array(
+        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_AUTHORIZE', [
             '_GUID' => '8c8b9ce1f60323e118da1bef416adff3',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -257,7 +257,7 @@ class Hook_payment_gateway_authorize
             'CURRENCY' => $currency,
             'LENGTH' => strval($length),
             'LENGTH_UNITS' => $length_units,
-        ));
+        ]);
     }
 
     /**
@@ -267,7 +267,7 @@ class Hook_payment_gateway_authorize
      */
     protected function _build_member_address()
     {
-        $member_address = array();
+        $member_address = [];
 
         $shipping_email = '';
         $shipping_phone = '';
@@ -314,7 +314,7 @@ class Hook_payment_gateway_authorize
             $country = $shipping_country;
         }
 
-        $member_address = array();
+        $member_address = [];
         $member_address['x_first_name'] = $shipping_firstname;
         $member_address['x_last_name'] = $shipping_lastname;
         $member_address['x_address'] = $street_address;
@@ -336,8 +336,8 @@ class Hook_payment_gateway_authorize
      */
     public function make_cancel_button($purchase_id)
     {
-        $cancel_url = build_url(array('page' => 'subscriptions', 'type' => 'cancel', 'id' => $purchase_id), get_module_zone('subscriptions'));
-        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', array('_GUID' => '191d7449161eb5c4f6129cf89e5e8e7e', 'CANCEL_URL' => $cancel_url, 'PURCHASE_ID' => $purchase_id));
+        $cancel_url = build_url(['page' => 'subscriptions', 'type' => 'cancel', 'id' => $purchase_id], get_module_zone('subscriptions'));
+        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_AUTHORIZE', ['_GUID' => '191d7449161eb5c4f6129cf89e5e8e7e', 'CANCEL_URL' => $cancel_url, 'PURCHASE_ID' => $purchase_id]);
     }
 
     /**
@@ -349,7 +349,7 @@ class Hook_payment_gateway_authorize
     public function handle_ipn_transaction($silent_fail)
     {
         $trans_expecting_id = preg_replace('# .*$#', '', post_param_string('x_description'));
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
                 return null;
@@ -398,7 +398,7 @@ class Hook_payment_gateway_authorize
 
         $tax = null;
 
-        return array($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id);
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**
@@ -410,7 +410,7 @@ class Hook_payment_gateway_authorize
      */
     public function store_shipping_address($trans_expecting_id, $txn_id)
     {
-        $shipping_address = array(
+        $shipping_address = [
             'a_firstname' => trim(post_param_string('x_ship_to_first_name', '') . ', ' . post_param_string('x_ship_to_company', ''), ' ,'),
             'a_lastname' => post_param_string('x_ship_to_last_name', ''),
             'a_street_address' => post_param_string('x_ship_to_address', ''),
@@ -421,7 +421,7 @@ class Hook_payment_gateway_authorize
             'a_country' => post_param_string('x_ship_to_country', ''),
             'a_email' => post_param_string('x_email', ''),
             'a_phone' => post_param_string('x_phone', ''),
-        );
+        ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);
     }
 
@@ -433,13 +433,13 @@ class Hook_payment_gateway_authorize
      */
     public function auto_cancel($subscription_id)
     {
-        $temp = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 's_auto_fund_key', array('id' => $subscription_id));
+        $temp = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 's_auto_fund_key', ['id' => $subscription_id]);
         $data = unserialize($temp);
         $authorize_subscription_id = $data['id'];
 
         $this->_set_cancellation_api_parameters($authorize_subscription_id);
 
-        $response = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0));
+        $response = http_get_contents($this->url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0]);
 
         if ($response !== null) {
             list($result_code, $code, $text, $subscription_id) = $this->_parse_arb_return($response);
@@ -515,7 +515,7 @@ class Hook_payment_gateway_authorize
      */
     public function do_local_transaction($trans_expecting_id, $cardholder_name, $card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $amount, $currency, $billing_street_address, $billing_city, $billing_county, $billing_state, $billing_post_code, $billing_country, $shipping_firstname = '', $shipping_lastname = '', $shipping_street_address = '', $shipping_city = '', $shipping_county = '', $shipping_state = '', $shipping_post_code = '', $shipping_country = '', $shipping_email = '', $shipping_phone = '', $length = null, $length_units = null)
     {
-        $result = array(false, null, null, null); // Default until re-set
+        $result = [false, null, null, null]; // Default until re-set
 
         $cardholder_name_parts = explode(' ', $cardholder_name);
         if (count($cardholder_name_parts) > 1) {
@@ -531,7 +531,7 @@ class Hook_payment_gateway_authorize
 
             $this->_set_aim_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
-            $response_data = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0));
+            $response_data = http_get_contents($this->url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0]);
 
             if ($response_data !== null) {
                 $response_result = explode($this->api_parameters['x_delim_char'], $response_data);
@@ -561,7 +561,7 @@ class Hook_payment_gateway_authorize
                 $success = ($response_result[0] == 1);
                 $message_raw = ($success) ? $response_result[6] : $response_result[2];
                 $message = $success ? do_lang_tempcode('ACCEPTED_MESSAGE', do_lang('SUCCESS')) : do_lang_tempcode('DECLINED_MESSAGE', escape_html($response_result[3]));
-                $result = array($success, $message, $message_raw, $trans_expecting_id);
+                $result = [$success, $message, $message_raw, $trans_expecting_id];
             }
         } else {
             // Subscription...
@@ -585,7 +585,7 @@ class Hook_payment_gateway_authorize
 
             $this->_set_arb_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $start_date, $length, $length_units, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
-            $response_data = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 30.0));
+            $response_data = http_get_contents($this->url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 30.0]);
 
             if ($response_data !== null) {
                 list($result_code, $code, $text, $authorizedotnet_subscription_id) = $this->_parse_arb_return($response_data);
@@ -594,7 +594,7 @@ class Hook_payment_gateway_authorize
                 $message = $success ? do_lang_tempcode('ACCEPTED_MESSAGE', do_lang('SUCCESS')) : do_lang_tempcode('DECLINED_MESSAGE', escape_html($text));
                 $message_raw = $code;
 
-                $result = array($success, $message, $message_raw, $trans_expecting_id);
+                $result = [$success, $message, $message_raw, $trans_expecting_id];
             }
         }
 
@@ -634,7 +634,7 @@ class Hook_payment_gateway_authorize
     {
         // http://www.authorize.net/content/dam/authorize/documents/AIM_guide.pdf
 
-        $this->api_parameters = array();
+        $this->api_parameters = [];
 
         list($login_id, $transaction_key) = $this->_get_access_details();
 
@@ -855,7 +855,7 @@ class Hook_payment_gateway_authorize
        $text = $this->_substring_between($response, '<text>', '</text>'); // in <message>
        $subscription_id = $this->_substring_between($response,  '<subscriptionId>', '</subscriptionId>');
 
-       return array(strtoupper($result_code), $code, $text, $subscription_id);
+       return [strtoupper($result_code), $code, $text, $subscription_id];
     }
 
     /**

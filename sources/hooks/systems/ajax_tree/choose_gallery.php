@@ -58,7 +58,7 @@ class Hook_ajax_tree_choose_gallery
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'galleries')) {
-            $tree = $compound_list ? array(array(), '') : array();
+            $tree = $compound_list ? [[], ''] : [];
         }
 
         if ($compound_list) {
@@ -115,7 +115,7 @@ class Hook_ajax_tree_choose_gallery
             $cat = $default;
             while (!cms_empty_safe($cat)) {
                 $out .= '<expand>' . $cat . '</expand>';
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $cat));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $cat]);
             }
         }
 

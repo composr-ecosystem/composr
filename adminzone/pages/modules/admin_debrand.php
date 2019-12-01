@@ -30,7 +30,7 @@ class Module_admin_debrand
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_debrand
             return null;
         }
 
-        return array(
-            'browse' => array('SUPER_DEBRAND', 'menu/adminzone/style/debrand'),
-        );
+        return [
+            'browse' => ['SUPER_DEBRAND', 'menu/adminzone/style/debrand'],
+        ];
     }
 
     public $title;
@@ -163,10 +163,10 @@ class Module_admin_debrand
             $fields->attach(form_input_upload(do_lang_tempcode('SYSTEM_AVATAR'), do_lang_tempcode('DESCRIPTION_SYSTEM_AVATAR'), 'system_avatar', false, find_theme_image('cns_default_avatars/system'), null, true, get_allowed_image_file_types()));
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'actual'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'fd47f191ac51f7754eb17e3233f53bcc',
             'HIDDEN' => '',
             'TITLE' => $this->title,
@@ -175,7 +175,7 @@ class Module_admin_debrand
             'TEXT' => do_lang_tempcode('WARNING_SUPER_DEBRAND_MAJOR_CHANGES'),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -192,9 +192,9 @@ class Module_admin_debrand
 
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
             require_code('abstract_file_manager');
-            force_have_afm_details(array(
+            force_have_afm_details([
                 $critical_errors_path,
-            ));
+            ]);
         }
 
         set_value('rebrand_name', post_param_string('rebrand_name'));
@@ -237,16 +237,16 @@ class Module_admin_debrand
 
         if (post_param_integer('churchy', 0) == 1) {
             $db = get_db_for('f_emoticons');
-            $db->query_delete('f_emoticons', array('e_code' => ':devil:'), '', 1);
+            $db->query_delete('f_emoticons', ['e_code' => ':devil:'], '', 1);
         }
 
         // Make sure some stuff is disabled for non-admin staff
         $staff_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
-        $disallowed_pages = array('admin_setupwizard', 'admin_addons', 'admin_backup', 'admin_errorlog', 'admin_import', 'admin_commandr', 'admin_phpinfo', 'admin_debrand');
+        $disallowed_pages = ['admin_setupwizard', 'admin_addons', 'admin_backup', 'admin_errorlog', 'admin_import', 'admin_commandr', 'admin_phpinfo', 'admin_debrand'];
         foreach (array_keys($staff_groups) as $id) {
             foreach ($disallowed_pages as $page) {
-                $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id), '', 1); // in case already exists
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id));
+                $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id], '', 1); // in case already exists
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $page, 'zone_name' => 'adminzone', 'group_id' => $id]);
             }
         }
 
@@ -260,12 +260,12 @@ class Module_admin_debrand
 
             $test = find_theme_image('logo/adminzone-logo', true);
             if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $main_logo_url), array('id' => 'logo/adminzone-logo', 'theme' => $theme), '', 1);
+                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/adminzone-logo', 'theme' => $theme], '', 1);
             }
 
             $test = find_theme_image('logo/cms-logo', true);
             if ($test != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $main_logo_url), array('id' => 'logo/cms-logo', 'theme' => $theme), '', 1);
+                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $main_logo_url], ['id' => 'logo/cms-logo', 'theme' => $theme], '', 1);
             }
         }
 
@@ -273,16 +273,16 @@ class Module_admin_debrand
         require_code('uploads');
         $urls = get_url('', 'favicon', 'themes/default/images_custom');
         if ($urls[0] != '') {
-            $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $urls[0]), array('id' => 'favicon'));
+            $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $urls[0]], ['id' => 'favicon']);
         }
         $urls = get_url('', 'webclipicon', 'themes/default/images_custom');
         if ($urls[0] != '') {
-            $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $urls[0]), array('id' => 'webclipicon'));
+            $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $urls[0]], ['id' => 'webclipicon']);
         }
         if (addon_installed('cns_avatars')) {
             $urls = get_url('', 'system_avatar', 'themes/default/images_custom');
             if ($urls[0] != '') {
-                $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $urls[0]), array('id' => 'cns_default_avatars/system'));
+                $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $urls[0]], ['id' => 'cns_default_avatars/system']);
             }
         }
 
@@ -291,10 +291,10 @@ class Module_admin_debrand
         // Decache
         require_code('caches3');
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_CONFIG);
-        erase_cached_templates(false, array('GLOBAL_HTML_WRAP'));
+        erase_cached_templates(false, ['GLOBAL_HTML_WRAP']);
 
         // Redirect them back to editing screen
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

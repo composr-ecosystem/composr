@@ -30,7 +30,7 @@ class Hook_config_lax_comcode
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_LAX_COMCODE',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -43,7 +43,7 @@ class Hook_config_lax_comcode
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

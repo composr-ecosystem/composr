@@ -39,11 +39,11 @@ class Hook_cron_insults
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Bantr',
             'num_queued' => null,
             'minutes_between_runs' => 24 * 60,
-        );
+        ];
     }
 
     /**
@@ -74,7 +74,7 @@ class Hook_cron_insults
             $get_insult = '';
             if (is_file(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt')) {
                 $insults = cms_file_safe(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt');
-                $insults_array = array();
+                $insults_array = [];
                 foreach ($insults as $insult) {
                     $x = explode('=', $insult);
                     $insults_array[] = $x[0];
@@ -94,9 +94,9 @@ class Hook_cron_insults
                 $username1 = $GLOBALS['FORUM_DRIVER']->get_username($selected_member1);
                 $username2 = $GLOBALS['FORUM_DRIVER']->get_username($selected_member2);
 
-                $insult_pt_topic_post = do_lang('INSULT_EXPLANATION', get_site_name(), $get_insult, array(integer_format($insult_points), $displayname2, $displayname1, $username2, $username1));
+                $insult_pt_topic_post = do_lang('INSULT_EXPLANATION', get_site_name(), $get_insult, [integer_format($insult_points), $displayname2, $displayname1, $username2, $username1]);
 
-                $subject = do_lang('INSULT_PT_TOPIC', $displayname2, $displayname1, array($username2, $username1));
+                $subject = do_lang('INSULT_PT_TOPIC', $displayname2, $displayname1, [$username2, $username1]);
 
                 require_code('cns_topics_action');
                 $topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, $selected_member2, $selected_member1, true, 0, null, '');

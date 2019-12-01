@@ -32,13 +32,13 @@ class Hook_notification_catalogue_view_reports extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        $list = array();
+        $list = [];
         $catalogues = $GLOBALS['SITE_DB']->query('SELECT c_name,c_title FROM ' . get_table_prefix() . 'catalogues WHERE c_name NOT LIKE \'\_%\' AND ' . db_string_not_equal_to('c_send_view_reports', 'never'));
         foreach ($catalogues as $catalogue) {
-            $list['catalogue_view_reports__' . $catalogue['c_name']] = array(do_lang('GENERAL'), do_lang('catalogues:NOTIFICATION_TYPE_catalogue_view_reports', get_translated_text($catalogue['c_title'])));
+            $list['catalogue_view_reports__' . $catalogue['c_name']] = [do_lang('GENERAL'), do_lang('catalogues:NOTIFICATION_TYPE_catalogue_view_reports', get_translated_text($catalogue['c_title']))];
         }
         return $list;
     }

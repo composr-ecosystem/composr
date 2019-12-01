@@ -18,7 +18,7 @@
  */
 class Hook_upon_query_user_export
 {
-    public $member_rows_old = array();
+    public $member_rows_old = [];
 
     public function run_pre($ob, $query, $max, $start, $fail_ok, $get_insert_id)
     {
@@ -48,7 +48,7 @@ class Hook_upon_query_user_export
 
         $prefix = preg_quote($GLOBALS['FORUM_DB']->get_table_prefix(), '#');
 
-        $matches = array();
+        $matches = [];
         if (
             (preg_match('#^UPDATE ' . $prefix . 'f_members .*WHERE \(?id=(\d+)\)?#', $query, $matches) != 0) ||
             (preg_match('#^UPDATE ' . $prefix . 'f_member_custom_fields .*WHERE \(?mf_member_id=(\d+)\)?#', $query, $matches) != 0)
@@ -60,7 +60,7 @@ class Hook_upon_query_user_export
             return;
         }
 
-        $matches = array();
+        $matches = [];
         if (
         (preg_match('#^DELETE FROM ' . $prefix . 'f_members .*WHERE id=(\d+)#', $query, $matches) != 0)
         ) {
@@ -98,7 +98,7 @@ class Hook_upon_query_user_export
 
         $prefix = preg_quote($GLOBALS['FORUM_DB']->get_table_prefix(), '#');
 
-        $matches = array();
+        $matches = [];
         if (
             (preg_match('#^UPDATE ' . $prefix . 'f_members .*WHERE \(?id=(\d+)\)?#', $query, $matches) != 0) ||
             (preg_match('#^UPDATE ' . $prefix . 'f_member_custom_fields .*WHERE \(?mf_member_id=(\d+)\)?#', $query, $matches) != 0)
@@ -123,7 +123,7 @@ class Hook_upon_query_user_export
             return;
         }*/
 
-        $matches = array();
+        $matches = [];
         if (
         (preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0)
         ) {

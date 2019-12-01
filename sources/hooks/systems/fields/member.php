@@ -53,7 +53,7 @@ class Hook_fields_member
             $_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($param);
             if ($_member === null) {
                 attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($param)), 'warn');
-                return array(array(), array(), '', '', '');
+                return [[], [], '', '', ''];
             }
             $param = strval($_member);
         }
@@ -79,7 +79,7 @@ class Hook_fields_member
                 $default = strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
         }
-        return array('integer_unescaped', $default, 'integer');
+        return ['integer_unescaped', $default, 'integer'];
     }
 
     /**

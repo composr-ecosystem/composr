@@ -45,7 +45,7 @@ class Hook_notification_download extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
         require_code('downloads');
@@ -56,7 +56,7 @@ class Hook_notification_download extends Hook_Notification
         }
 
         $page_links = get_downloads_tree(null, ($id === null) ? null : intval($id), null, null, null, ($id === null) ? 0 : 1);
-        $filtered = array();
+        $filtered = [];
         foreach ($page_links as $p) {
             if (strval($p['id']) !== $id) {
                 $filtered[] = $p;
@@ -86,11 +86,11 @@ class Hook_notification_download extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['download'] = array(do_lang('CONTENT'), do_lang('downloads:NOTIFICATION_TYPE_download'));
+        $list = [];
+        $list['download'] = [do_lang('CONTENT'), do_lang('downloads:NOTIFICATION_TYPE_download')];
         return $list;
     }
 

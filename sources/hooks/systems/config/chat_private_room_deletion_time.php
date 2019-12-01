@@ -30,7 +30,7 @@ class Hook_config_chat_private_room_deletion_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRIVATE_CHATROOM_DELETION_TIME',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_private_room_deletion_time
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

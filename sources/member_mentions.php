@@ -48,7 +48,7 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
     require_lang('comcode');
 
     $mentions = array_unique($MEMBER_MENTIONS_IN_COMCODE);
-    $MEMBER_MENTIONS_IN_COMCODE = array(); // Reset
+    $MEMBER_MENTIONS_IN_COMCODE = []; // Reset
     foreach ($mentions as $member_id) {
         if (!may_view_content_behind($member_id, $content_type, $content_id)) {
             continue;
@@ -66,7 +66,7 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
 
         // Special case. Would prefer not to hard-code, but important for usability
         if (($content_type == 'post') && ($content_title == '') && (get_forum_type() == 'cns')) {
-            $content_title = do_lang('POST_IN', $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', array('id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => intval($content_id))))));
+            $content_title = do_lang('POST_IN', $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => intval($content_id)])]));
         }
 
         $rendered = '';
@@ -79,9 +79,9 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
             }
         }
 
-        $subject = do_lang('NOTIFICATION_MEMBER_MENTION_SUBJECT', $poster_username, strtolower($content_type_title), array($content_title, $content_url_email_safe->evaluate(), $content_type_title, $poster_displayname));
-        $message = do_notification_lang('NOTIFICATION_MEMBER_MENTION_BODY', comcode_escape($poster_username), comcode_escape(strtolower($content_type_title)), array(comcode_escape($content_title), $content_url_email_safe->evaluate(), comcode_escape($content_type_title), comcode_escape($poster_displayname), $rendered));
+        $subject = do_lang('NOTIFICATION_MEMBER_MENTION_SUBJECT', $poster_username, strtolower($content_type_title), [$content_title, $content_url_email_safe->evaluate(), $content_type_title, $poster_displayname]);
+        $message = do_notification_lang('NOTIFICATION_MEMBER_MENTION_BODY', comcode_escape($poster_username), comcode_escape(strtolower($content_type_title)), [comcode_escape($content_title), $content_url_email_safe->evaluate(), comcode_escape($content_type_title), comcode_escape($poster_displayname), $rendered]);
 
-        dispatch_notification('member_mention', '', $subject, $message, array($member_id), get_member());
+        dispatch_notification('member_mention', '', $subject, $message, [$member_id], get_member());
     }
 }

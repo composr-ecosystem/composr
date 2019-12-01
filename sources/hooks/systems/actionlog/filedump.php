@@ -31,63 +31,63 @@ class Hook_actionlog_filedump extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
         require_lang('filedump');
 
-        return array(
-            'FILEDUMP_CREATE_FOLDER' => array(
+        return [
+            'FILEDUMP_CREATE_FOLDER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FOLDER' => '_SEARCH:filedump:place={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
-                ),
-            ),
-            'FILEDUMP_DELETE_FOLDER' => array(
+                ],
+            ],
+            'FILEDUMP_DELETE_FOLDER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FOLDER' => '_SEARCH:filedump:place={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
-                ),
-            ),
-            'FILEDUMP_UPLOAD' => array(
+                ],
+            ],
+            'FILEDUMP_UPLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FOLDER' => '_SEARCH:filedump:place={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
-                ),
-            ),
-            'FILEDUMP_MOVE' => array(
+                ],
+            ],
+            'FILEDUMP_MOVE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FOLDER' => '_SEARCH:filedump:place={DIR}',
                     '_FILEDUMP' => '_SEARCH:filedump',
-                ),
-            ),
-            'FILEDUMP_DELETE_FILE' => array(
+                ],
+            ],
+            'FILEDUMP_DELETE_FILE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'FOLDER' => '_SEARCH:filedump:place={1}',
                     '_FILEDUMP' => '_SEARCH:filedump',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -131,9 +131,9 @@ class Hook_actionlog_filedump extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'FILEDUMP_MOVE':
                 $path = trim($actionlog_row['param_b'], '/');
-                $bindings += array(
+                $bindings += [
                     'DIR' => (strpos($path, '/') !== false) ? dirname($path) : '',
-                );
+                ];
                 break;
         }
     }

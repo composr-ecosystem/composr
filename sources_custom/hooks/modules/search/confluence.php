@@ -43,21 +43,21 @@ class Hook_search_confluence extends FieldsSearchHook
 
         require_lang('confluence');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('CONFLUENCE_DOCUMENTATION');
         $info['default'] = true;
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_page_zone('docs'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_page_zone('docs'),
                 'page_name' => 'docs',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -70,7 +70,7 @@ class Hook_search_confluence extends FieldsSearchHook
      */
     public function get_tree($_selected)
     {
-        $selected = ($_selected == '' || $_selected == '!') ? array() : array(intval($_selected));
+        $selected = ($_selected == '' || $_selected == '!') ? [] : [intval($_selected)];
 
         require_code('confluence');
 
@@ -177,7 +177,7 @@ class Hook_search_confluence extends FieldsSearchHook
 
         $rows = confluence_query('search?cql=' . urlencode($cql_query)/* We can't put on a limit as we need to be able to count results . '&limit=' . strval($limit_to + $start)*/);
 
-        $out = array();
+        $out = [];
         foreach ($rows['results'] as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -200,13 +200,13 @@ class Hook_search_confluence extends FieldsSearchHook
     public function render($myrow)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
 
         $text_summary_h = nl2br(escape_html(preg_replace('#\n+#', "\n", str_replace('@', '', $myrow['excerpt']))));
         $text_summary = generate_text_summary($text_summary_h, $highlight_bits);
 
-        $url = build_url(array('page' => 'docs', 'type' => $myrow['content']['id']), '_SEARCH');
+        $url = build_url(['page' => 'docs', 'type' => $myrow['content']['id']], '_SEARCH');
         $breadcrumbs = confluence_breadcrumbs($myrow['content']['id']);
-        return do_template('SIMPLE_PREVIEW_BOX', array('TITLE' => 'Documentation: ' . $myrow['title'], 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url));
+        return do_template('SIMPLE_PREVIEW_BOX', ['TITLE' => 'Documentation: ' . $myrow['title'], 'BREADCRUMBS' => ($breadcrumbs === null) ? null : breadcrumb_segments_to_tempcode($breadcrumbs), 'SUMMARY' => $text_summary, 'URL' => $url]);
     }
 }

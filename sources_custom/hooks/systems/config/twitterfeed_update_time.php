@@ -18,7 +18,7 @@ class Hook_config_twitterfeed_update_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TWITTER_FEED_UPDATE_TIME',
             'type' => 'integer',
             'category' => 'COMPOSR_APIS',
@@ -30,7 +30,7 @@ class Hook_config_twitterfeed_update_time
             'public' => false,
 
             'addon' => 'twitter_feed_integration_block',
-        );
+        ];
     }
 
     /**

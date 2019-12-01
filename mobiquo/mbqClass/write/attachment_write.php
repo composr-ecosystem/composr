@@ -61,7 +61,7 @@ class CMSAttachmentWrite
             $filesize = $_FILES[$filekey_orig]['size'];
         }
 
-        $attachment_id = $GLOBALS['FORUM_DB']->query_insert('attachments', array(
+        $attachment_id = $GLOBALS['FORUM_DB']->query_insert('attachments', [
             'a_member_id' => $member_id,
             'a_file_size' => $filesize,
             'a_url' => $urls[0],
@@ -70,12 +70,12 @@ class CMSAttachmentWrite
             'a_num_downloads' => 0,
             'a_description' => '',
             'a_add_time' => time(),
-        ), true);
+        ], true);
 
-        return array(
+        return [
             'attachment_id' => $attachment_id,
             'filters_size' => $filesize,
-        );
+        ];
     }
 
     /**
@@ -123,9 +123,9 @@ class CMSAttachmentWrite
         require_code('cns_members_action2');
         cns_member_choose_avatar($urls[0], $member_id);
 
-        return array(
+        return [
             'filters_size' => $filesize,
-        );
+        ];
     }
 
     /**
@@ -146,7 +146,7 @@ class CMSAttachmentWrite
         $type = 'cns_post';
 
         if ($post_id === null) {
-            $_post_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('attachment_refs', 'r_referer_id', array('r_referer_type' => $type, 'a_id' => $attachment_id));
+            $_post_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('attachment_refs', 'r_referer_id', ['r_referer_type' => $type, 'a_id' => $attachment_id]);
             if ($_post_id !== null) {
                 $post_id = intval($_post_id);
             }
@@ -160,29 +160,29 @@ class CMSAttachmentWrite
             }
         }
 
-        $_post_comcode = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_post', array('id' => $post_id));
+        $_post_comcode = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_post', ['id' => $post_id]);
         if ($_post_comcode === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
         $post_comcode = get_translated_text($_post_comcode, $GLOBALS['FORUM_DB']);
         $post_comcode = preg_replace('#\n*\[attachment(_safe)?( [^\[\]]*)?\]' . strval($attachment_id) . '\[/attachment(_safe)?\]#U', '', $post_comcode);
-        $GLOBALS['FORUM_DB']->query_update('f_posts', lang_remap_comcode('p_post', $_post_comcode, $post_comcode, $GLOBALS['FORUM_DB']), array('id' => $post_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_posts', lang_remap_comcode('p_post', $_post_comcode, $post_comcode, $GLOBALS['FORUM_DB']), ['id' => $post_id], '', 1);
 
         require_code('attachments3');
 
-        $_attachment_info = $GLOBALS['FORUM_DB']->query_select('attachments', array('a_url', 'a_thumb_url', 'a_member_id'), array('id' => $attachment_id), '', 1);
+        $_attachment_info = $GLOBALS['FORUM_DB']->query_select('attachments', ['a_url', 'a_thumb_url', 'a_member_id'], ['id' => $attachment_id], '', 1);
         if (!array_key_exists(0, $_attachment_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', do_lang_tempcode('_ATTACHMENT')));
         }
 
-        $ref_where = array('a_id' => $attachment_id, 'r_referer_type' => $type);
+        $ref_where = ['a_id' => $attachment_id, 'r_referer_type' => $type];
         if ($post_id !== null) {
             $ref_where['r_referer_id'] = strval($post_id);
         }
         $GLOBALS['FORUM_DB']->query_delete('attachment_refs', $ref_where);
 
         // Was that the last reference to this attachment? (if so -- delete attachment)
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('attachment_refs', 'id', array('a_id' => $attachment_id));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('attachment_refs', 'id', ['a_id' => $attachment_id]);
         if ($test === null) {
             _delete_attachment($attachment_id, $GLOBALS['FORUM_DB']);
         }

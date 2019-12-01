@@ -30,7 +30,7 @@ class Module_filedump
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -52,7 +52,7 @@ class Module_filedump
         delete_privilege('upload_filedump');
         delete_privilege('upload_anything_filedump');
 
-        $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => 'filedump'));
+        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'filedump']);
 
         //require_code('files');
         //deldir_contents(get_custom_file_base() . '/uploads/filedump', true);
@@ -67,13 +67,13 @@ class Module_filedump
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('filedump', array(
+            $GLOBALS['SITE_DB']->create_table('filedump', [
                 'id' => '*AUTO',
                 'name' => 'ID_TEXT',
                 'subpath' => 'SHORT_TEXT',
                 'the_description' => 'SHORT_TRANS',
                 'the_member' => 'MEMBER',
-            ));
+            ]);
 
             add_privilege('FILEDUMP', 'upload_anything_filedump', false);
             add_privilege('FILEDUMP', 'upload_filedump', true);
@@ -81,16 +81,16 @@ class Module_filedump
 
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
             foreach (array_keys($usergroups) as $id) {
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'filedump', 'zone_name' => 'cms', 'group_id' => $id)); // Don't want to let anyone do filedump stuff just because we let them manage content
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'filedump', 'zone_name' => 'cms', 'group_id' => $id]); // Don't want to let anyone do filedump stuff just because we let them manage content
             }
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
             if (addon_installed('redirects_editor')) {
-                $GLOBALS['SITE_DB']->query_delete('redirects', array('r_from_page' => 'filedump', 'r_from_zone' => 'collaboration', 'r_to_page' => 'filedump', 'r_to_zone' => 'cms', 'r_is_transparent' => 1));
+                $GLOBALS['SITE_DB']->query_delete('redirects', ['r_from_page' => 'filedump', 'r_from_zone' => 'collaboration', 'r_to_page' => 'filedump', 'r_to_zone' => 'cms', 'r_is_transparent' => 1]);
             }
 
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('p_section' => 'FILEDUMP'), array('p_section' => 'FILE_DUMP'));
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'FILEDUMP'], ['p_section' => 'FILE_DUMP']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
@@ -118,13 +118,13 @@ class Module_filedump
             $member_id = get_member();
         }
 
-        $ret = array(
-            'browse' => array('FILEDUMP', 'menu/cms/filedump'),
-        );
+        $ret = [
+            'browse' => ['FILEDUMP', 'menu/cms/filedump'],
+        ];
         if ($GLOBALS['FORUM_DRIVER']->is_super_admin($member_id)) {
-            $ret += array(
-                'broken' => array('FIND_BROKEN_FILEDUMP_LINKS', 'menu/adminzone/tools/cleanup'),
-            );
+            $ret += [
+                'broken' => ['FIND_BROKEN_FILEDUMP_LINKS', 'menu/adminzone/tools/cleanup'],
+            ];
         }
         return $ret;
     }
@@ -159,20 +159,20 @@ class Module_filedump
             // Show breadcrumbs
             $dirs = explode('/', substr($subpath, 0, strlen($subpath) - 1));
             $pre = '';
-            $breadcrumbs = array();
+            $breadcrumbs = [];
             foreach ($dirs as $i => $d) {
                 if ($i == 0) {
                     $d = do_lang('FILEDUMP');
                 }
 
                 if (array_key_exists($i + 1, $dirs)) {
-                    $breadcrumbs_page_link = build_page_link(array('page' => '_SELF', 'subpath' => $pre . $dirs[$i] . '/'), '_SELF');
-                    $breadcrumbs[] = array($breadcrumbs_page_link, $d);
+                    $breadcrumbs_page_link = build_page_link(['page' => '_SELF', 'subpath' => $pre . $dirs[$i] . '/'], '_SELF');
+                    $breadcrumbs[] = [$breadcrumbs_page_link, $d];
                 }
                 $pre .= $dirs[$i] . '/';
             }
-            if ($breadcrumbs !== array()) {
-                $breadcrumbs[] = array('', $d);
+            if ($breadcrumbs !== []) {
+                $breadcrumbs[] = ['', $d];
                 breadcrumb_set_parents($breadcrumbs);
             } else {
                 breadcrumb_set_self(($i == 1) ? do_lang_tempcode('FILEDUMP') : protect_from_escaping(escape_html($d)));
@@ -213,7 +213,7 @@ class Module_filedump
                     break;
             }
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('FILEDUMP'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('FILEDUMP')]]);
 
             if ((post_param_integer('confirmed', 0) != 1) && ($action != 'edit'/*edit too trivial/specific to need a confirm*/)) {
                 breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
@@ -315,9 +315,9 @@ class Module_filedump
         }
 
         // Find all files in the filedump directory
-        $db_rows = array();
-        $directories = array();
-        $files = array();
+        $db_rows = [];
+        $directories = [];
+        $files = [];
         $dir_contents = get_directory_contents(get_custom_file_base() . '/uploads/filedump' . $subpath, trim($subpath, '/'), IGNORE_ACCESS_CONTROLLERS, $recurse == 1);
         foreach ($dir_contents as $filename) {
             $_subpath = dirname($filename);
@@ -334,7 +334,7 @@ class Module_filedump
                 }
 
                 if (!isset($db_rows[$_subpath])) {
-                    $db_rows[$_subpath] = list_to_map('name', $GLOBALS['SITE_DB']->query_select('filedump', array('*'), array('subpath' => cms_mb_substr($_subpath, 0, 80))));
+                    $db_rows[$_subpath] = list_to_map('name', $GLOBALS['SITE_DB']->query_select('filedump', ['*'], ['subpath' => cms_mb_substr($_subpath, 0, 80)]));
                 }
 
                 $is_directory = !is_file($_full);
@@ -361,7 +361,7 @@ class Module_filedump
                     $timestamp = filemtime($_full);
                 }
 
-                $file_map = array(
+                $file_map = [
                     'filename' => $is_directory ? ($filename . '/') : $filename,
                     'subpath' => $_subpath,
                     '_description' => $_description,
@@ -369,7 +369,7 @@ class Module_filedump
                     '_time' => $timestamp,
                     'submitter' => isset($db_row) ? $db_row['the_member'] : null,
                     'is_directory' => $is_directory,
-                );
+                ];
                 if ($is_directory) {
                     $directories[] = $file_map;
                 } else {
@@ -404,11 +404,11 @@ class Module_filedump
         $max = get_param_integer('max', 50);
         $files = array_slice($files, $start, $max);
 
-        $thumbnails = array();
+        $thumbnails = [];
 
         if (!empty($files)) { // If there are some files
             require_code('templates_columned_table');
-            $header_row = columned_table_header_row(array(
+            $header_row = columned_table_header_row([
                 do_lang_tempcode('FILENAME'),
                 do_lang_tempcode('DESCRIPTION'),
                 do_lang_tempcode('menus:LINK'),
@@ -416,7 +416,7 @@ class Module_filedump
                 do_lang_tempcode('DATE_TIME'),
                 do_lang_tempcode('ACTIONS'),
                 do_lang_tempcode('CHOOSE'),
-            ));
+            ]);
 
             $url = mixed();
 
@@ -449,7 +449,7 @@ class Module_filedump
                     }
                 }
 
-                $file += array(
+                $file += [
                     'description' => $description,
                     'description_2' => $description_2,
                     'width' => $width,
@@ -457,10 +457,10 @@ class Module_filedump
                     'size' => clean_file_size($file['_size']),
                     'date' => ($file['_time'] === null) ? null : get_timezoned_date($file['_time']),
                     'choosable' => $choosable,
-                );
+                ];
 
                 if ($file['is_directory']) { // Directory
-                    $url = build_url(array('page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse), '_SELF');
+                    $url = build_url(['page' => '_SELF', 'subpath' => $_subpath . $filename, 'sort' => $sort, 'type_filter' => $type_filter, 'search' => $search, 'recurse' => $recurse], '_SELF');
 
                     $is_image = false;
 
@@ -478,23 +478,23 @@ class Module_filedump
                         $image_url = find_theme_image('no_image');
                     }
 
-                    $embed_url = build_url(array('page' => '_SELF', 'type' => 'embed', 'subpath' => $_subpath, 'file' => $filename), '_SELF');
+                    $embed_url = build_url(['page' => '_SELF', 'type' => 'embed', 'subpath' => $_subpath, 'file' => $filename], '_SELF');
                 }
 
                 $choose_action = new Tempcode();
                 if ($file['choosable']) {
-                    $choose_action->attach(do_template('COLUMNED_TABLE_ROW_CELL_TICK', array(
+                    $choose_action->attach(do_template('COLUMNED_TABLE_ROW_CELL_TICK', [
                         '_GUID' => 'd5085d4d602d24f7df25bcaf24db0d79',
                         'LABEL' => do_lang_tempcode('CHOOSE'),
                         'NAME' => 'select_' . strval($i),
                         'VALUE' => rtrim($filename, '/'),
                         'HIDDEN' => form_input_hidden('subpath_file_' . strval($i), $_subpath),
-                    )));
+                    ]));
                 }
 
                 // Thumbnail
                 $thumbnail = do_image_thumb($image_url, $file['description_2'], false, false, null, null, true);
-                $thumbnails[] = array(
+                $thumbnails[] = [
                     'FILENAME' => $filename,
                     'SUBPATH' => $_subpath,
                     'THUMBNAIL' => $thumbnail,
@@ -511,27 +511,27 @@ class Module_filedump
                     'CHOOSABLE' => $file['choosable'],
                     'ACTIONS' => $choose_action,
                     'EMBED_URL' => $embed_url,
-                );
+                ];
 
                 // Editable filename
-                $filename_field = do_template('COLUMNED_TABLE_ROW_CELL_LINE', array(
+                $filename_field = do_template('COLUMNED_TABLE_ROW_CELL_LINE', [
                     '_GUID' => 'bce082b134f751615785189bf1cedbe2',
                     'LABEL' => do_lang_tempcode('FILENAME'),
                     'NAME' => 'filename_value_' . strval($i),
                     'VALUE' => rtrim($filename, '/'),
                     'HIDDEN_NAME' => 'filename_file_' . strval($i),
                     'HIDDEN_VALUE' => rtrim($filename, '/'),
-                ));
+                ]);
 
                 // Editable description
-                $description_field = do_template('COLUMNED_TABLE_ROW_CELL_LINE', array(
+                $description_field = do_template('COLUMNED_TABLE_ROW_CELL_LINE', [
                     '_GUID' => '22ef464010277ceedb72f8f38f897af6',
                     'LABEL' => do_lang_tempcode('DESCRIPTION'),
                     'NAME' => 'description_value_' . strval($i),
                     'VALUE' => $file['description'],
                     'HIDDEN_NAME' => 'description_file_' . strval($i),
                     'HIDDEN_VALUE' => rtrim($filename, '/'),
-                ));
+                ]);
 
                 // Size
                 if ($file['width'] !== null) {
@@ -552,7 +552,7 @@ class Module_filedump
                 }
 
                 // Listing row
-                $rows->attach(columned_table_row(array(
+                $rows->attach(columned_table_row([
                     $filename_field,
                     $description_field,
                     $size,
@@ -560,10 +560,10 @@ class Module_filedump
                     ($file['date'] === null) ? do_lang_tempcode('NA') : make_string_tempcode(escape_html($file['date'])),
                     ($embed_url === null) ? ($file['is_directory'] ? do_lang_tempcode('IS_DIRECTORY') : new Tempcode()) : hyperlink($embed_url, do_lang_tempcode('_FILEDUMP_EMBED'), false, false),
                     $choose_action,
-                ), false));
+                ], false));
             }
 
-            $listing = do_template('COLUMNED_TABLE', array('_GUID' => '1c0a91d47c5fc8a7c2b35c7d9b36132f', 'HEADER_ROW' => $header_row, 'ROWS' => $rows));
+            $listing = do_template('COLUMNED_TABLE', ['_GUID' => '1c0a91d47c5fc8a7c2b35c7d9b36132f', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
         } else {
             $listing = new Tempcode();
         }
@@ -582,7 +582,7 @@ class Module_filedump
                 }
             }
         }
-        $filtered_directories_misses = array();
+        $filtered_directories_misses = [];
         foreach ($filtered_directories as $i => $directory) {
             if (!$this->_folder_search('/' . $directory . (($directory == '') ? '' : '/'), '', $search, $type_filter, false)) {
                 unset($filtered_directories[$i]);
@@ -592,7 +592,7 @@ class Module_filedump
 
         // Do a form so people can upload their own stuff
         if (has_privilege(get_member(), 'upload_filedump')) {
-            $post_url = build_url(array('page' => '_SELF', 'type' => 'add', 'uploading' => 1), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => 'add', 'uploading' => 1], '_SELF');
 
             $submit_name = do_lang_tempcode('FILEDUMP_UPLOAD');
 
@@ -619,7 +619,7 @@ class Module_filedump
             $hidden = new Tempcode();
             handle_max_file_size($hidden);
 
-            $upload_form = do_template('FORM', array(
+            $upload_form = do_template('FORM', [
                 '_GUID' => '70279f3714ec90a5b3defec04a357b11',
                 'TABINDEX' => strval(get_form_field_tabindex()),
                 'SKIP_REQUIRED' => true,
@@ -629,14 +629,14 @@ class Module_filedump
                 'SUBMIT_NAME' => $submit_name,
                 'SUBMIT_ICON' => 'admin/add',
                 'URL' => $post_url,
-            ));
+            ]);
         } else {
             $upload_form = new Tempcode();
         }
 
         // Do a form so people can make folders
         if (has_privilege(get_member(), 'upload_filedump')) {
-            $post_url = build_url(array('page' => '_SELF', 'type' => 'add_category'), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => 'add_category'], '_SELF');
 
             $submit_name = do_lang_tempcode('FILEDUMP_CREATE_FOLDER');
 
@@ -646,7 +646,7 @@ class Module_filedump
 
             $hidden = form_input_hidden('subpath', $subpath);
 
-            $create_folder_form = do_template('FORM', array(
+            $create_folder_form = do_template('FORM', [
                 '_GUID' => '043f9b595d3699b7d8cd7f2284cdaf98',
                 'TABINDEX' => strval(get_form_field_tabindex()),
                 'SKIP_REQUIRED' => true,
@@ -657,18 +657,18 @@ class Module_filedump
                 'SUBMIT_NAME' => $submit_name,
                 'SUBMIT_ICON' => 'admin/add_one_category',
                 'URL' => $post_url,
-            ));
+            ]);
         } else {
             $create_folder_form = new Tempcode();
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'mass', 'redirect' => protect_url_parameter(SELF_REDIRECT)), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'mass', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
 
         require_code('templates_pagination');
         $pagination_listing = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, 5, null, 'tab--listing');
         $pagination_thumbnails = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, 5, null, 'tab--thumbnails');
 
-        return do_template('FILEDUMP_SCREEN', array(
+        return do_template('FILEDUMP_SCREEN', [
             '_GUID' => '3f49a8277a11f543eff6488622949c84',
             'TITLE' => $this->title,
             'SUBPATH' => $subpath,
@@ -687,7 +687,7 @@ class Module_filedump
             'FILTERED_DIRECTORIES' => $filtered_directories,
             'FILTERED_DIRECTORIES_MISSES' => $filtered_directories_misses,
             'SOMETHING_EDITABLE' => $something_editable,
-        ));
+        ]);
     }
 
     /**
@@ -713,7 +713,7 @@ class Module_filedump
             }
         }
 
-        $db_rows = list_to_map('name', $GLOBALS['SITE_DB']->query_select('filedump', array('*'), array('subpath' => cms_mb_substr($subpath, 0, 80))));
+        $db_rows = list_to_map('name', $GLOBALS['SITE_DB']->query_select('filedump', ['*'], ['subpath' => cms_mb_substr($subpath, 0, 80)]));
 
         $handle = opendir(get_custom_file_base() . '/uploads/filedump' . $subpath);
         while (false !== ($filename = readdir($handle))) {
@@ -862,7 +862,7 @@ class Module_filedump
             $rendered = comcode_to_tempcode($generated);
         }
 
-        $_description = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', array('name' => cms_mb_substr($file, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));
+        $_description = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', ['name' => cms_mb_substr($file, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
         if ($_description === null) {
             $description = post_param_string('description', '');
         } else {
@@ -941,7 +941,7 @@ class Module_filedump
         }
         $fields->attach(form_input_line_comcode(do_lang_tempcode('COMCODE_TAG_attachment_PARAM_thumb_url_TITLE'), $_description, 'thumb_url', post_param_string('thumb_url', null, INPUT_FILTER_URL_GENERAL), false));
 
-        $form = do_template('FORM', array(
+        $form = do_template('FORM', [
             '_GUID' => 'b1502bd870aded49d27d7478806d53ed',
             'FIELDS' => $fields,
             'HIDDEN' => '',
@@ -950,7 +950,7 @@ class Module_filedump
             'SUBMIT_NAME' => do_lang_tempcode('GENERATE_COMCODE'),
             'SUBMIT_ICON' => 'buttons/proceed',
             'TARGET' => '_self',
-        ));
+        ]);
 
         $image_sizes = null;
         if (is_image($file, IMAGE_CRITERIA_GD_READ | IMAGE_CRITERIA_WEBSAFE, true)) {
@@ -958,7 +958,7 @@ class Module_filedump
             if (($size !== false) && ($size[0] !== null) && ($size[1] !== null)) {
                 $ratio = floatval($size[1]) / floatval($size[0]);
 
-                $_image_sizes = array();
+                $_image_sizes = [];
                 if (intval(get_option('thumb_width')) < $size[0]) {
                     $_image_sizes[intval(get_option('thumb_width'))] = 'FILEDUMP_IMAGE_URLS_SMALL';
                 }
@@ -967,22 +967,22 @@ class Module_filedump
                 }
                 $_image_sizes[$size[0]] = 'FILEDUMP_IMAGE_URLS_LARGE';
 
-                $image_sizes = array();
+                $image_sizes = [];
                 foreach ($_image_sizes as $width => $lng_str) {
                     $size_url = make_string_tempcode($url);
                     if (is_image($file, IMAGE_CRITERIA_RASTER)) {
                         if ($width != $size[0]) {
-                            $size_url = symbol_tempcode('THUMBNAIL', array($url, strval($width)));
+                            $size_url = symbol_tempcode('THUMBNAIL', [$url, strval($width)]);
                         }
                     }
 
                     $height = intval(floatval($width) * $ratio);
-                    $image_sizes[] = array(
+                    $image_sizes[] = [
                         'LABEL' => do_lang_tempcode($lng_str, escape_html(strval($width)), escape_html(strval($height))),
                         'SIZE_URL' => $size_url,
                         'SIZE_WIDTH' => strval($width),
                         'SIZE_HEIGHT' => strval($height),
-                    );
+                    ];
                 }
             }
         }
@@ -994,7 +994,7 @@ class Module_filedump
             $existing_count = 0;
         }
 
-        return do_template('FILEDUMP_EMBED_SCREEN', array(
+        return do_template('FILEDUMP_EMBED_SCREEN', [
             '_GUID' => 'f82e0225f9b94fd96c5f61eac9c56e3d',
             'TITLE' => $this->title,
             'FORM' => $form,
@@ -1003,7 +1003,7 @@ class Module_filedump
             'URL' => $url,
             'IMAGE_SIZES' => $image_sizes,
             'EXISTING_COUNT' => strval($existing_count),
-        ));
+        ]);
     }
 
     /**
@@ -1017,7 +1017,7 @@ class Module_filedump
         switch ($action) {
             case 'zip':
                 require_code('zip');
-                $file_array = array();
+                $file_array = [];
                 break;
 
             case 'edit':
@@ -1036,14 +1036,14 @@ class Module_filedump
 
         $files_str = '';
         if ($action != 'edit') {
-            $files = array();
+            $files = [];
             foreach (array_keys($_POST) as $key) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^select_(\d+)$#', $key, $matches) != 0) {
                     $subpath = post_param_string('subpath_file_' . $matches[1]);
 
                     $file = post_param_string($key);
-                    $files[] = array($file, $subpath);
+                    $files[] = [$file, $subpath];
 
                     if ($files_str != '') {
                         $files_str .= ', ';
@@ -1052,15 +1052,15 @@ class Module_filedump
                 }
             }
         } else {
-            $files = array();
-            $descriptions = array();
+            $files = [];
+            $descriptions = [];
             foreach (array_keys($_POST) as $key) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^description_file_(\d+)$#', $key, $matches) != 0) {
                     $subpath = post_param_string('subpath_file_' . $matches[1]);
 
                     $file = post_param_string('description_file_' . $matches[1]);
-                    $files[] = array($file, $subpath);
+                    $files[] = [$file, $subpath];
 
                     if ($files_str != '') {
                         $files_str .= ', ';
@@ -1073,14 +1073,14 @@ class Module_filedump
             }
 
             foreach (array_keys($_POST) as $key) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^filename_file_(\d+)$#', $key, $matches) != 0) {
                     $subpath = post_param_string('subpath_file_' . $matches[1]);
 
                     $old_filename = post_param_string('filename_file_' . $matches[1]);
                     $new_filename = post_param_string('filename_value_' . $matches[1]);
                     if (($new_filename != '') && ($old_filename != $new_filename)) {
-                        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', array('name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));
+                        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', ['name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
                         if ((($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
                             $old_filepath = get_custom_file_base() . '/uploads/filedump' . $subpath . $old_filename;
                             $new_filepath = get_custom_file_base() . '/uploads/filedump' . $subpath . $new_filename;
@@ -1090,7 +1090,7 @@ class Module_filedump
                             }
                             rename($old_filepath, $new_filepath);
                             sync_file_move($old_filepath, $new_filepath);
-                            $GLOBALS['SITE_DB']->query_update('filedump', array('name' => cms_mb_substr($new_filename, 0, 80)), array('name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)), '', 1);
+                            $GLOBALS['SITE_DB']->query_update('filedump', ['name' => cms_mb_substr($new_filename, 0, 80)], ['name' => cms_mb_substr($old_filename, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)], '', 1);
 
                             foreach ($files as $i => $_file) {
                                 if ($_file[1] . $_file[0] == $subpath . $old_filename) {
@@ -1133,14 +1133,14 @@ class Module_filedump
             $hidden = build_keep_post_fields();
             $hidden->attach(form_input_hidden('confirmed', '1'));
 
-            return do_template('CONFIRM_SCREEN', array('_GUID' => '19503cf5dc795b9c85d26702b79e3202', 'TITLE' => $this->title, 'FIELDS' => $hidden, 'PREVIEW' => $text, 'URL' => $url));
+            return do_template('CONFIRM_SCREEN', ['_GUID' => '19503cf5dc795b9c85d26702b79e3202', 'TITLE' => $this->title, 'FIELDS' => $hidden, 'PREVIEW' => $text, 'URL' => $url]);
         }
 
         // Perform action(s)
         foreach ($files as $_file) {
             list($file, $subpath) = $_file;
 
-            $where = array('name' => cms_mb_substr($file, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80));
+            $where = ['name' => cms_mb_substr($file, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)];
 
             $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_member', $where);
             if ((($owner !== null) && ($owner == get_member())) || (has_privilege(get_member(), 'delete_anything_filedump'))) {
@@ -1152,18 +1152,18 @@ class Module_filedump
                         if ($is_directory) {
                             require_code('files2');
                             foreach (get_directory_contents($path) as $d_path) {
-                                $file_array[] = array(
+                                $file_array[] = [
                                     'time' => filemtime($path . '/' . $d_path),
                                     'full_path' => $path . '/' . $d_path,
                                     'name' => ltrim($subpath . $file, '/') . '/' . $d_path,
-                                );
+                                ];
                             }
                         } else {
-                            $file_array[] = array(
+                            $file_array[] = [
                                 'time' => filemtime($path),
                                 'full_path' => $path,
                                 'name' => ltrim($subpath . $file, '/'),
-                            );
+                            ];
                         }
                         break;
 
@@ -1174,11 +1174,11 @@ class Module_filedump
                             $map = lang_remap('the_description', $test, $description);
                             $GLOBALS['SITE_DB']->query_update('filedump', $map, $where);
                         } else {
-                            $map = array(
+                            $map = [
                                 'name' => cms_mb_substr($file, 0, 80),
                                 'subpath' => cms_mb_substr($subpath, 0, 80),
                                 'the_member' => get_member(),
-                            );
+                            ];
                             $map += insert_lang('the_description', $description, 3);
                             $GLOBALS['SITE_DB']->query_insert('filedump', $map);
                         }
@@ -1214,7 +1214,7 @@ class Module_filedump
                         @rename($path, $path_target) or intelligent_write_error($path);
                         sync_file_move($path, $path_target);
 
-                        $test = $GLOBALS['SITE_DB']->query_update('filedump', array('subpath' => cms_mb_substr($target, 0, 80)), $where, '', 1);
+                        $test = $GLOBALS['SITE_DB']->query_update('filedump', ['subpath' => cms_mb_substr($target, 0, 80)], $where, '', 1);
 
                         update_filedump_links($subpath . $file, $target . $file);
 
@@ -1268,20 +1268,20 @@ class Module_filedump
         $full_path = get_custom_file_base() . '/uploads/filedump' . $subpath . $name;
         cms_file_put_contents_safe($full_path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-        $redirect_url = build_url(array('page' => '_SELF', 'type' => 'browse', 'subpath' => $subpath), '_SELF');
+        $redirect_url = build_url(['page' => '_SELF', 'type' => 'browse', 'subpath' => $subpath], '_SELF');
 
         // Add description
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', array('name' => cms_mb_substr($name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', ['name' => cms_mb_substr($name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)]);
         if ($test !== null) {
             delete_lang($test);
-            $GLOBALS['SITE_DB']->query_delete('filedump', array('name' => cms_mb_substr($name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('filedump', ['name' => cms_mb_substr($name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)], '', 1);
         }
         $description = post_param_string('description', '');
-        $map = array(
+        $map = [
             'name' => cms_mb_substr($name, 0, 80),
             'subpath' => cms_mb_substr($subpath, 0, 80),
             'the_member' => get_member(),
-        );
+        ];
         $map += insert_lang('the_description', $description, 3);
         $GLOBALS['SITE_DB']->query_insert('filedump', $map);
 
@@ -1302,7 +1302,7 @@ class Module_filedump
         require_code('uploads');
         is_plupload(true);
 
-        $new_files = array();
+        $new_files = [];
 
         foreach ($_FILES as $file) {
             $error_msg = check_filedump_uploaded($file);
@@ -1327,7 +1327,7 @@ class Module_filedump
         }
 
         // Done
-        $url_map = array('page' => '_SELF', 'subpath' => $subpath);
+        $url_map = ['page' => '_SELF', 'subpath' => $subpath];
         if (count($new_files) == 1) {
             $url_map['filename'] = $new_files[0];
         }
@@ -1371,9 +1371,9 @@ class Module_filedump
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_broken'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_broken'], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '1b13a7aaf187f10a077df5b2b79098c7',
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -1382,7 +1382,7 @@ class Module_filedump
             'TEXT' => '',
             'SUBMIT_NAME' => do_lang_tempcode('FIX_BROKEN_FILEDUMP_LINKS'),
             'SUBMIT_ICON' => 'menu/adminzone/tools/cleanup',
-        ));
+        ]);
     }
 
     /**
@@ -1397,7 +1397,7 @@ class Module_filedump
         }
 
         foreach (array_keys($_POST) as $key) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^to_(\d+)$#', $key, $matches) != 0) {
                 $from = post_param_string('from_' . $matches[1]);
                 $to = post_param_string('to_' . $matches[1]);

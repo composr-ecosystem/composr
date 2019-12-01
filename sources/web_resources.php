@@ -26,7 +26,7 @@
 function init__web_resources()
 {
     global $EARLY_SCRIPT_ORDER;
-    $EARLY_SCRIPT_ORDER = array('jquery');
+    $EARLY_SCRIPT_ORDER = ['jquery'];
 }
 
 /**
@@ -120,7 +120,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
         if ($j == 'global') {
             $js_source_stem = get_file_base() . '/themes/default/javascript/';
             $js_source_stub = '.js';
-            $deps = array(
+            $deps = [
                 $js_source_stem . 'UTIL' . $js_source_stub,
                 $js_source_stem . 'DOM' . $js_source_stub,
                 $js_source_stem . 'CMS' . $js_source_stub,
@@ -129,7 +129,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
                 $js_source_stem . 'CMS_TEMPLATES' . $js_source_stub,
                 $js_source_stem . 'CMS_VIEWS' . $js_source_stub,
                 $js_source_stem . 'CMS_BEHAVIORS' . $js_source_stub,
-            );
+            ];
             $SITE_INFO['dependency__' . $full_path] = implode(',', $deps);
         }
     }
@@ -185,7 +185,7 @@ function javascript_tempcode()
     // Fix order, so our main JavaScript, and jQuery, runs first
     if (isset($JAVASCRIPTS['global'])) {
         $arr_backup = $JAVASCRIPTS;
-        $JAVASCRIPTS = array();
+        $JAVASCRIPTS = [];
 
         foreach ($EARLY_SCRIPT_ORDER as $important_script) {
             if (isset($arr_backup[$important_script])) {
@@ -244,7 +244,7 @@ function _javascript_tempcode($j, &$js, $_minify = null, $_https = null, $_mobil
             if (!$minify) {
                 $url .= '&keep_minify=0';
             }
-            $js->attach(do_template('JAVASCRIPT_NEED_FULL', array('_GUID' => 'a2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => $url, 'CODE' => $j)));
+            $js->attach(do_template('JAVASCRIPT_NEED_FULL', ['_GUID' => 'a2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => $url, 'CODE' => $j]));
         } else {
             if (!$minify) {
                 $j .= '_non_minified';
@@ -259,7 +259,7 @@ function _javascript_tempcode($j, &$js, $_minify = null, $_https = null, $_mobil
             $support_smart_decaching = support_smart_decaching();
             $sup = ($support_smart_decaching && $temp != '' && !$GLOBALS['RECORD_TEMPLATES_USED']) ? strval(filemtime($temp)) : null; // Tweaks caching so that upgrades work without needing emptying browser cache; only runs if smart decaching is on because otherwise we won't have the mtime and don't want to introduce an extra filesystem hit
 
-            $js->attach(do_template('JAVASCRIPT_NEED', array('_GUID' => 'b5886d9dfc4d528b7e1b0cd6f0eb1670', 'CODE' => $j, 'SUP' => $sup)));
+            $js->attach(do_template('JAVASCRIPT_NEED', ['_GUID' => 'b5886d9dfc4d528b7e1b0cd6f0eb1670', 'CODE' => $j, 'SUP' => $sup]));
         }
     }
 }
@@ -421,7 +421,7 @@ function css_tempcode($inline = false, $only_global = false, $context = null, $t
     $css = new Tempcode();
     $css_need_inline = new Tempcode();
     if ($only_global) {
-        $css_to_do = array('global' => true, 'no_cache' => true);
+        $css_to_do = ['global' => true, 'no_cache' => true];
         if (isset($CSSS['email'])) {
             $css_to_do['email'] = true;
         }
@@ -462,19 +462,19 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
 
     if ($seed != '') {
         $keep = symbol_tempcode('KEEP');
-        $css->attach(do_template('CSS_NEED_FULL', array('_GUID' => 'f2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => find_script('themewizard') . '?type=css&show=' . urlencode($c) . '.css' . $keep->evaluate()), user_lang(), false, null, '.tpl', 'templates', $theme));
+        $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => 'f2d7f0303a08b9aa9e92f8b0208ee9a7', 'URL' => find_script('themewizard') . '?type=css&show=' . urlencode($c) . '.css' . $keep->evaluate()], user_lang(), false, null, '.tpl', 'templates', $theme));
     } elseif (($c == 'no_cache') || ($inline)) {
         if ($context !== null) {
             require_code('mail');
             $__css = filter_css($c, $theme, $context);
         } else {
-            $_css = do_template($c, array(), user_lang(), false, null, '.css', 'css', $theme);
+            $_css = do_template($c, [], user_lang(), false, null, '.css', 'css', $theme);
             $__css = $_css->evaluate();
             $__css = str_replace('} ', '}' . "\n", preg_replace('#\s+#', ' ', $__css));
         }
 
         if (trim($__css) != '') {
-            $css_need_inline->attach(do_template('CSS_NEED_INLINE', array('_GUID' => 'f5b225e080c633ffa033ec5af5aec866', 'CODE' => $__css), user_lang(), false, null, '.tpl', 'templates', $theme));
+            $css_need_inline->attach(do_template('CSS_NEED_INLINE', ['_GUID' => 'f5b225e080c633ffa033ec5af5aec866', 'CODE' => $__css], user_lang(), false, null, '.tpl', 'templates', $theme));
         }
     } else {
         $temp = $do_enforce ? css_enforce($c, $theme, (!running_script('sheet')) && ($context === null) && ($_minify === null) && ($_https === null) && ($_mobile === null)) : '';
@@ -498,7 +498,7 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
                 $c .= '_non_minified';
                 $url .= '&keep_minify=0';
             }
-            $css->attach(do_template('CSS_NEED_FULL', array('_GUID' => 'g2d7f0303a08b9aa9e92f8b0208ee9a7', 'CODE' => $c, 'URL' => $url), user_lang(), false, null, '.tpl', 'templates', $theme));
+            $css->attach(do_template('CSS_NEED_FULL', ['_GUID' => 'g2d7f0303a08b9aa9e92f8b0208ee9a7', 'CODE' => $c, 'URL' => $url], user_lang(), false, null, '.tpl', 'templates', $theme));
         } else {
             if (!$minify) {
                 $c .= '_non_minified';
@@ -512,7 +512,7 @@ function _css_tempcode($c, &$css, &$css_need_inline, $inline = false, $context =
             if (($temp != '') || (!$do_enforce)) {
                 $support_smart_decaching = support_smart_decaching();
                 $sup = ($support_smart_decaching && $temp != '') ? strval(filemtime($temp)) : null; // Tweaks caching so that upgrades work without needing emptying browser cache; only runs if smart decaching is on because otherwise we won't have the mtime and don't want to introduce an extra filesystem hit
-                $css->attach(do_template('CSS_NEED', array('_GUID' => 'ed35fac857214000f69a1551cd483096', 'CODE' => $c, 'SUP' => $sup), user_lang(), false, null, '.tpl', 'templates', $theme));
+                $css->attach(do_template('CSS_NEED', ['_GUID' => 'ed35fac857214000f69a1551cd483096', 'CODE' => $c, 'SUP' => $sup], user_lang(), false, null, '.tpl', 'templates', $theme));
             }
         }
     }
@@ -579,7 +579,7 @@ function _get_web_resources_env($_seed = null, $_minify = null, $_https = null, 
         $mobile = $mobile_cached;
     }
 
-    return array($minify, $https, $mobile, $seed);
+    return [$minify, $https, $mobile, $seed];
 }
 
 /**

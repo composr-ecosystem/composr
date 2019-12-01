@@ -40,7 +40,7 @@ function init__lookup()
 function lookup_member_page($member, &$name, &$id, &$ip)
 {
     if (!addon_installed('stats')) {
-        return array();
+        return [];
     }
 
     require_code('type_sanitisation');
@@ -50,7 +50,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         // From member ID
         $name = $GLOBALS['FORUM_DRIVER']->get_username(intval($member), false, USERNAME_DEFAULT_NULL);
         if ($name === null) {
-            return array();
+            return [];
         }
         $id = intval($member);
         $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($id);
@@ -62,7 +62,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         $id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($member);
         $name = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_NULL);
         if ($id === null) {
-            return array();
+            return [];
         }
         $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($id);
         if ($ip === null) {
@@ -76,7 +76,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
             $ip = '127.0.0.1';
         }
         if (empty($ids)) {
-            return array();
+            return [];
         } else {
             $id = $ids[0]['id'];
         }
@@ -98,7 +98,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         $id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member);
         $name = $member;
         if ($id === null) {
-            return array();
+            return [];
         }
         $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($id);
         if ($ip === null) {
@@ -106,7 +106,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         }
     }
 
-    return $GLOBALS['SITE_DB']->query_select('stats', array('ip', 'MAX(date_and_time) AS date_and_time'), array('member_id' => $id), 'GROUP BY ip ORDER BY date_and_time DESC');
+    return $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'MAX(date_and_time) AS date_and_time'], ['member_id' => $id], 'GROUP BY ip ORDER BY date_and_time DESC');
 }
 
 /**
@@ -127,7 +127,7 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
         return new Tempcode();
     }
 
-    $sortables = array('date_and_time' => do_lang_tempcode('DATE'), 'the_page' => do_lang_tempcode('PAGE'));
+    $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'the_page' => do_lang_tempcode('PAGE')];
     if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
@@ -146,7 +146,7 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
 
     $out = new Tempcode();
     require_code('templates_results_table');
-    $header_row = results_header_row(array(do_lang_tempcode('PAGE'), do_lang_tempcode('DATE'), do_lang_tempcode('PARAMETERS'), do_lang_tempcode('USER_AGENT'), do_lang_tempcode('USER_OS')), $sortables, 'sort', $sortable . ' ' . $sort_order);
+    $header_row = results_header_row([do_lang_tempcode('PAGE'), do_lang_tempcode('DATE'), do_lang_tempcode('PARAMETERS'), do_lang_tempcode('USER_AGENT'), do_lang_tempcode('USER_OS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
     foreach ($rows as $myrow) {
         $date = get_timezoned_date_time($myrow['date_and_time']);
         $page = $myrow['the_page'];
@@ -163,12 +163,12 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
             if (substr($data, -3) == ', ' . "\n") {
                 $data = substr($data, 0, strlen($data) - 3);
             }
-            $parameters = symbol_truncator(array($data, 35, '1'), 'left');
+            $parameters = symbol_truncator([$data, 35, '1'], 'left');
         } else {
             $parameters = escape_html('?');
         }
 
-        $out->attach(results_entry(array(escape_html($page_converted), escape_html($date), $parameters, escape_html($myrow['browser']), escape_html($myrow['operating_system'])), false));
+        $out->attach(results_entry([escape_html($page_converted), escape_html($date), $parameters, escape_html($myrow['browser']), escape_html($myrow['operating_system'])], false));
     }
     return results_table(do_lang_tempcode('RESULTS'), $start, 'start', $max, 'max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'sort');
 }
@@ -179,14 +179,14 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
  * @param  array $where WHERE constraints
  * @return array A pair: The results table, The number
  */
-function find_security_alerts($where = array())
+function find_security_alerts($where = [])
 {
     require_lang('security');
 
     $start = get_param_integer('alert_start', 0);
     $max = get_param_integer('alert_max', 50);
 
-    $sortables = array('date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS'));
+    $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'ip' => do_lang_tempcode('IP_ADDRESS')];
     $test = explode(' ', get_param_string('alert_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
     if (count($test) == 1) {
         $test[1] = 'DESC';
@@ -196,46 +196,46 @@ function find_security_alerts($where = array())
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
 
-    $_fields = array(do_lang_tempcode('FROM'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('RISK'), do_lang_tempcode('IP_ADDRESS'), do_lang_tempcode('REASON'), new Tempcode());
+    $_fields = [do_lang_tempcode('FROM'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('RISK'), do_lang_tempcode('IP_ADDRESS'), do_lang_tempcode('REASON'), new Tempcode()];
     $header_row = results_header_row($_fields, $sortables, 'alert_sort', $sortable . ' ' . $sort_order);
 
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)', $where);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', array('*'), $where, 'AND percentage_score>=80 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND percentage_score>=80 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
     $result_entries = new Tempcode();
     foreach ($rows as $row) {
         $date = get_timezoned_date_time($row['date_and_time']);
 
-        $lookup_url = build_url(array('page' => 'admin_lookup', 'param' => $row['ip']), '_SELF');
+        $lookup_url = build_url(['page' => 'admin_lookup', 'param' => $row['ip']], '_SELF');
 
-        $member_url = build_url(array('page' => 'admin_lookup', 'param' => $row['member_id']), '_SELF');
+        $member_url = build_url(['page' => 'admin_lookup', 'param' => $row['member_id']], '_SELF');
 
-        $full_url = build_url(array('page' => 'admin_security', 'type' => 'view', 'id' => $row['id']), '_SELF');
+        $full_url = build_url(['page' => 'admin_security', 'type' => 'view', 'id' => $row['id']], '_SELF');
 
         $reason = do_lang($row['reason'], $row['reason_param_a'], $row['reason_param_b'], null, null, false);
         if ($reason === null) {
             $reason = $row['reason'];
         }
-        $reason = symbol_truncator(array($reason, '50', '1'), 'left');
+        $reason = symbol_truncator([$reason, '50', '1'], 'left');
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id']);
 
-        $_row = array(
+        $_row = [
             hyperlink($member_url, $username, false, true),
             hyperlink($full_url, $date, false, true),
             integer_format($row['percentage_score']),
             hyperlink($lookup_url, $row['ip'], false, true),
             $reason
-        );
+        ];
 
-        $deletion_tick = do_template('RESULTS_TABLE_TICK', array('_GUID' => '9d310a90afa8bd1817452e476385bc57', 'ID' => strval($row['id'])));
+        $deletion_tick = do_template('RESULTS_TABLE_TICK', ['_GUID' => '9d310a90afa8bd1817452e476385bc57', 'ID' => strval($row['id'])]);
         $_row[] = $deletion_tick;
 
         $result_entries->attach(results_entry($_row, false));
     }
 
-    return array(results_table(do_lang_tempcode('SECURITY_ALERTS'), $start, 'alert_start', $max, 'alert_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'alert_sort'), count($rows));
+    return [results_table(do_lang_tempcode('SECURITY_ALERTS'), $start, 'alert_start', $max, 'alert_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'alert_sort'), count($rows)];
 }
 
 /**
@@ -287,9 +287,9 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
     require_lang('lookup');
 
-    $data = array();
+    $data = [];
 
-    $member_data = array();
+    $member_data = [];
     $member_data[do_lang('USERNAME', null, null, null, get_site_default_lang())] = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
     if (!is_guest($member_id)) {
         $member_data[do_lang('MEMBER_ID', null, null, null, get_site_default_lang())] = '#' . strval($member_id);
@@ -301,19 +301,19 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
     //$data['Session ID'] = get_session_id();   Don't want to pass this out too freely, not useful anyway
 
-    $location_data = array();
+    $location_data = [];
     $got_geo_lookup = false;
     if (get_option('ipstack_api_key') != '') {
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode($ip) . '?access_key=' . urlencode(get_option('ipstack_api_key'));
-        $_json = http_get_contents($ip_stack_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+        $_json = http_get_contents($ip_stack_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         $json = @json_decode($_json, true);
         if (is_array($json)) {
-            $useful_fields = array(
+            $useful_fields = [
                 'ip' => 'IP address',
                 'country_name' => 'Country',
                 'city' => 'City',
                 'zip' => 'Postal code',
-            );
+            ];
             foreach ($useful_fields as $desired_key => $lang_str) {
                 if (!empty($json[$desired_key])) {
                     $location_data[$lang_str] = $json[$desired_key];
@@ -378,7 +378,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     $l_os = do_lang('USER_OS', null, null, null, get_site_default_lang());
 
     if ($current_user) {
-        $ua_data = array();
+        $ua_data = [];
         $ua_data[$l_browser] = get_browser_string();
         $ua_data[$l_os] = get_os_string();
         $data[$l_browser] = $ua_data;
@@ -389,7 +389,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     }
 
     if (addon_installed('stats')) {
-        $history = array();
+        $history = [];
 
         $select = 'a.the_page,a.s_get,a.date_and_time,a.title,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system';
 
@@ -414,7 +414,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
         $pages = $GLOBALS['SITE_DB']->query($sql . ' ORDER BY date_and_time DESC', 50);
         if (count($pages) == 50) { // We have more than 50, so we'll place in the bottom 50 too
             $pages2 = $GLOBALS['SITE_DB']->query($sql . ' ORDER BY date_and_time ASC', 50);
-            $pages = array_merge($pages, array(null), array_reverse($pages2));
+            $pages = array_merge($pages, [null], array_reverse($pages2));
         }
 
         $l_date_time = do_lang('DATE_TIME', null, null, null, get_site_default_lang());
@@ -429,7 +429,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
         foreach ($pages as $myrow) {
             if ($myrow === null) {
-                $history[] = array('_' => do_lang('TOO_MANY_PAGES_LOGGED', null, null, null, get_site_default_lang()));
+                $history[] = ['_' => do_lang('TOO_MANY_PAGES_LOGGED', null, null, null, get_site_default_lang())];
                 continue;
             }
 
@@ -440,13 +440,13 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
                 continue;
             }
 
-            $h = array();
+            $h = [];
 
             $h[$l_date_time] = get_timezoned_date(tz_time($myrow['date_and_time'], get_server_timezone()), false);
 
             $page_link = convert_page_string_to_page_link($myrow['the_page']);
             list($zone, $attributes) = page_link_decode($page_link);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#<param>(\w+)=(.*)</param>#Us', $myrow['s_get'], $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 if ($matches[1][$i] != 'page') {
@@ -477,7 +477,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
                 $h[$l_referer] = $myrow['referer'];
             }
 
-            $ua_data = array();
+            $ua_data = [];
             $ua_data[$l_browser] = $myrow['browser'];
             $ua_data[$l_os] = $myrow['operating_system'];
             $this_browser = preg_replace('#\d#', '', $myrow['browser'] . ' ' . $myrow['operating_system']);

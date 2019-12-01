@@ -65,7 +65,7 @@ class Hook_fields_video
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -131,7 +131,7 @@ class Hook_fields_video
 
         $as_admin = has_privilege($submitter, 'comcode_dangerous');
 
-        $attributes = array(
+        $attributes = [
             'thumb_url' => $thumb_url,
             'width' => strval($width),
             'height' => strval($height),
@@ -139,7 +139,7 @@ class Hook_fields_video
             'mime_type' => get_mime_type(get_file_extension($download_url), $as_admin), // will not render as dangerous stuff (svg's etc), unless admin
             'context' => 'field_hook',
             'filename' => basename($basic_url),
-        );
+        ];
 
         $media_type = MEDIA_TYPE_VIDEO | MEDIA_TYPE_OTHER | MEDIA_TYPE_AUDIO;
 
@@ -183,7 +183,7 @@ class Hook_fields_video
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
 
-        return array($ffield, $hidden);
+        return [$ffield, $hidden];
     }
 
     /**

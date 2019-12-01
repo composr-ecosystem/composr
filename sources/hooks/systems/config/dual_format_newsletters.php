@@ -30,7 +30,7 @@ class Hook_config_dual_format_newsletters
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DUAL_FORMAT_NEWSLETTERS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_dual_format_newsletters
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

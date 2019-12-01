@@ -30,14 +30,14 @@ class Block_main_multi_content
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array(
+        $info['parameters'] = [
             'filter',
             'param',
             'select',
@@ -60,7 +60,7 @@ class Block_main_multi_content
             'guid',
             'as_guest',
             'check',
-        );
+        ];
         return $info;
     }
 
@@ -71,7 +71,7 @@ class Block_main_multi_content
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         (preg_match('#<\w+>#', (array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
         ?
@@ -126,13 +126,13 @@ PHP;
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('feature_lifetime_monitor', array(
+        $GLOBALS['SITE_DB']->create_table('feature_lifetime_monitor', [
             'content_id' => '*ID_TEXT',
             'block_cache_id' => '*ID_TEXT',
             'run_period' => 'INTEGER',
             'running_now' => 'BINARY',
             'last_update' => 'TIME',
-        ));
+        ]);
     }
 
     /**
@@ -169,26 +169,26 @@ PHP;
         $select = isset($map['select']) ? $map['select'] : '';
         $select_b = isset($map['select_b']) ? $map['select_b'] : '';
         if ($select_b == '*') {
-            return do_template('RED_ALERT', array('_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR'))); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
+            return do_template('RED_ALERT', ['_GUID' => 'nktad4b52ustiuhzvqzin9htz4g26vow', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR')]); // Indicates some kind of referencing error, probably caused by Tempcode pre-processing - skip execution
         }
         $filter = isset($map['filter']) ? $map['filter'] : '';
         $zone = isset($map['zone']) ? $map['zone'] : '_SEARCH';
         $title = isset($map['title']) ? $map['title'] : '';
         $days = empty($map['days']) ? null : intval($map['days']);
         $lifetime = empty($map['lifetime']) ? null : intval($map['lifetime']);
-        $pinned = empty($map['pinned']) ? array() : explode(',', $map['pinned']);
+        $pinned = empty($map['pinned']) ? [] : explode(',', $map['pinned']);
         $give_context = (isset($map['give_context']) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (isset($map['include_breadcrumbs']) ? $map['include_breadcrumbs'] : '0') == '1';
 
         if ((!file_exists(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type, true) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type, true) . '.php'))) {
-            return do_template('RED_ALERT', array('_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))));
+            return do_template('RED_ALERT', ['_GUID' => 'tbt2956j6oneq4j22bap5rbftytfigyg', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
         }
 
         require_code('content');
         $object = get_content_object($content_type);
         $info = $object->info($zone, true, ($select_b == '') ? null : $select_b);
         if ($info === null) {
-            return do_template('RED_ALERT', array('_GUID' => 'tfvwtgk7hc76qnc54y4t8ckdwf2my0d7', 'TEXT' => do_lang_tempcode('IMPOSSIBLE_TYPE_USED')));
+            return do_template('RED_ALERT', ['_GUID' => 'tfvwtgk7hc76qnc54y4t8ckdwf2my0d7', 'TEXT' => do_lang_tempcode('IMPOSSIBLE_TYPE_USED')]);
         }
 
         $submit_url = $info['add_url'];
@@ -360,7 +360,7 @@ PHP;
         }
 
         global $TABLE_LANG_FIELDS_CACHE;
-        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : array();
+        $lang_fields = isset($TABLE_LANG_FIELDS_CACHE[$info['table']]) ? $TABLE_LANG_FIELDS_CACHE[$info['table']] : [];
         foreach ($lang_fields as $lang_field => $lang_field_type) {
             unset($lang_fields[$lang_field]);
             $lang_fields['r.' . $lang_field] = $lang_field_type;
@@ -375,7 +375,7 @@ PHP;
                 $max_rows = $info['db']->query_value_if_there('SELECT COUNT(*)' . $extra_select_sql . ' ' . $query, false, true);
             }
             if ($max_rows == 0) {
-                $rows = array();
+                $rows = [];
             } else {
                 if (($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby()) && (is_string($info['id_field']))) { // Must be after COUNT(*) happens
                     $query .= ' GROUP BY r.' . $info['id_field'];
@@ -386,23 +386,23 @@ PHP;
                     case 'fixed_random':
                     case 'fixed_random ASC':
                         $clause = db_cast('r.' . $first_id_field, 'INT');
-                        $clause = '(' . db_function('MOD', array($clause, date('d'))) . ')';
+                        $clause = '(' . db_function('MOD', [$clause, date('d')]) . ')';
                         $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ',' . $clause . ' AS fixed_random ' . $query . ' ORDER BY fixed_random', $max + $start, 0, false, true, $lang_fields);
                         break;
                     case 'recent_contents':
                     case 'recent_contents ASC':
                     case 'recent_contents DESC':
                         $hooks = find_all_hooks('systems', 'content_meta_aware');
-                        $sort_combos = array();
+                        $sort_combos = [];
                         foreach (array_keys($hooks) as $hook) {
                             $other_ob = get_content_object($hook);
                             $other_info = $other_ob->info();
                             if (($hook != $content_type) && ($other_info['parent_category_meta_aware_type'] !== null) && ($other_info['parent_category_meta_aware_type'] == $content_type) && (is_string($other_info['parent_category_field'])) && ($other_info['add_time_field'] !== null)) {
-                                $sort_combos[] = array($other_info['table'], $other_info['add_time_field'], $other_info['parent_category_field']);
+                                $sort_combos[] = [$other_info['table'], $other_info['add_time_field'], $other_info['parent_category_field']];
                             }
                         }
-                        if ($sort_combos != array()) {
-                            $_order_by = array();
+                        if ($sort_combos != []) {
+                            $_order_by = [];
                             foreach ($sort_combos as $i => $sort_combo) {
                                 list($other_table, $other_add_time_field, $other_category_field) = $sort_combo;
                                 if ($sort == 'recent_contents DESC') {
@@ -413,7 +413,7 @@ PHP;
                                 $__order_by_a .= $other_add_time_field . ') FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . $other_table . ' x WHERE r.' . $first_id_field . '=x.' . $other_category_field;
                                 $__order_by_a .= ')';
                                 $__order_by_b = (($sort == 'recent_contents DESC') ? '0' : strval(PHP_INT_MAX)/*so empty galleries go to end of order*/);
-                                $_order_by[] = db_function('COALESCE', array($__order_by_a, $__order_by_b));
+                                $_order_by[] = db_function('COALESCE', [$__order_by_a, $__order_by_b]);
                             }
                             if (count($sort_combos) == 1) {
                                 $order_by = $_order_by[0];
@@ -500,15 +500,15 @@ PHP;
             }
         } else {
             $max_rows = 0;
-            $rows = array();
+            $rows = [];
         }
 
-        $pinned_order = array();
+        $pinned_order = [];
 
         require_code('content');
 
         // Add in requested pinned awards
-        if (($pinned != array()) && (addon_installed('awards'))) {
+        if (($pinned != []) && (addon_installed('awards'))) {
             $where = '';
             foreach ($pinned as $p) {
                 if (trim($p) == '') {
@@ -520,7 +520,7 @@ PHP;
                 $where .= 'a_type_id=' . strval(intval($p));
             }
             if ($where == '') {
-                $awarded_content_ids = array();
+                $awarded_content_ids = [];
             } else {
                 $award_sql = 'SELECT a.a_type_id,a.content_id FROM ' . get_table_prefix() . 'award_archive a JOIN (SELECT MAX(date_and_time) AS max_date,a_type_id FROM ' . get_table_prefix() . 'award_archive WHERE ' . $where . ' GROUP BY a_type_id) b ON b.a_type_id=a.a_type_id AND a.date_and_time=b.max_date WHERE ' . str_replace('a_type_id', 'a.a_type_id', $where);
                 $awarded_content_ids = collapse_2d_complexity('a_type_id', 'content_id', $GLOBALS['SITE_DB']->query($award_sql, null, 0, false, true));
@@ -543,9 +543,9 @@ PHP;
         if (!empty($pinned_order)) { // Re-sort with pinned awards if appropriate
             if (!empty($rows)) {
                 $old_rows = $rows;
-                $rows = array();
+                $rows = [];
                 $total_count = count($old_rows) + count($pinned_order);
-                $used_ids = array();
+                $used_ids = [];
 
                 // Carry on as it should be
                 for ($t_count = 0; $t_count < $total_count; $t_count++) {
@@ -584,7 +584,7 @@ PHP;
 
         // Sort out run periods
         if ($lifetime !== null) {
-            $lifetime_monitor = list_to_map('content_id', $GLOBALS['SITE_DB']->query_select('feature_lifetime_monitor', array('content_id', 'run_period', 'last_update'), array('block_cache_id' => $block_cache_id, 'running_now' => 1)));
+            $lifetime_monitor = list_to_map('content_id', $GLOBALS['SITE_DB']->query_select('feature_lifetime_monitor', ['content_id', 'run_period', 'last_update'], ['block_cache_id' => $block_cache_id, 'running_now' => 1]));
         }
 
         // Move towards render...
@@ -596,10 +596,10 @@ PHP;
         }
         $view_url = array_key_exists('view_url', $info) ? $info['view_url'] : new Tempcode();
 
-        $done_already = array(); // We need to keep track, in case those pulled up via awards would also come up naturally
+        $done_already = []; // We need to keep track, in case those pulled up via awards would also come up naturally
 
-        $rendered_content = array();
-        $content_data = array();
+        $rendered_content = [];
+        $content_data = [];
         $rows_skipped = 0;
         foreach ($rows as $row) {
             if (count($done_already) == $start + $max) {
@@ -625,24 +625,24 @@ PHP;
             if ($lifetime !== null) {
                 if (!array_key_exists($content_id, $lifetime_monitor)) {
                     // Test to see if it is actually there in the past - we only loaded the "running now" ones for performance reasons. Any new ones coming will trigger extra queries to see if they've been used before, as a trade-off to loading potentially 10's of thousands of rows.
-                    $lifetime_monitor += list_to_map('content_id', $GLOBALS['SITE_DB']->query_select('feature_lifetime_monitor', array('content_id', 'run_period', 'last_update'), array('block_cache_id' => $block_cache_id, 'content_id' => $content_id)));
+                    $lifetime_monitor += list_to_map('content_id', $GLOBALS['SITE_DB']->query_select('feature_lifetime_monitor', ['content_id', 'run_period', 'last_update'], ['block_cache_id' => $block_cache_id, 'content_id' => $content_id]));
                 }
 
                 if (array_key_exists($content_id, $lifetime_monitor)) {
-                    $GLOBALS['SITE_DB']->query_update('feature_lifetime_monitor', array(
+                    $GLOBALS['SITE_DB']->query_update('feature_lifetime_monitor', [
                         'run_period' => $lifetime_monitor[$content_id]['run_period'] + (time() - $lifetime_monitor[$content_id]['last_update']),
                         'running_now' => 1,
                         'last_update' => time(),
-                    ), array('content_id' => $content_id, 'block_cache_id' => $block_cache_id));
+                    ], ['content_id' => $content_id, 'block_cache_id' => $block_cache_id]);
                     unset($lifetime_monitor[$content_id]);
                 } else {
-                    $GLOBALS['SITE_DB']->query_insert('feature_lifetime_monitor', array(
+                    $GLOBALS['SITE_DB']->query_insert('feature_lifetime_monitor', [
                         'content_id' => $content_id,
                         'block_cache_id' => $block_cache_id,
                         'run_period' => 0,
                         'running_now' => 1,
                         'last_update' => time(),
-                    ));
+                    ]);
                 }
             }
 
@@ -652,7 +652,7 @@ PHP;
             // Try and get a better submit URL
             $submit_url = str_replace('%21', $content_id, $submit_url);
 
-            $content_data[] = array('URL' => str_replace('%21', $content_id, $view_url->evaluate()));
+            $content_data[] = ['URL' => str_replace('%21', $content_id, $view_url->evaluate())];
         }
 
         // Sort out run periods of stuff gone
@@ -662,11 +662,11 @@ PHP;
                     $content_id = strval($content_id);
                 }
 
-                $GLOBALS['SITE_DB']->query_update('feature_lifetime_monitor', array(
+                $GLOBALS['SITE_DB']->query_update('feature_lifetime_monitor', [
                     'run_period' => $lifetime_monitor[$content_id]['run_period'] + (time() - $lifetime_monitor[$content_id]['last_update']),
                     'running_now' => 0,
                     'last_update' => time(),
-                ), array('content_id' => $content_id, 'block_cache_id' => $block_cache_id));
+                ], ['content_id' => $content_id, 'block_cache_id' => $block_cache_id]);
             }
         }
 
@@ -689,10 +689,10 @@ PHP;
             $pagination = pagination(do_lang_tempcode($info['content_type_label']), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows - $rows_skipped);
         }
 
-        return do_template('BLOCK_MAIN_MULTI_CONTENT', array(
+        return do_template('BLOCK_MAIN_MULTI_CONTENT', [
             '_GUID' => ($guid != '') ? $guid : '9035934bc9b25f57eb8d23bf100b5796',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'TYPE' => do_lang_tempcode($info['content_type_label']),
             'TITLE' => $title,
             'CONTENT' => $rendered_content,
@@ -708,7 +708,7 @@ PHP;
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
-        ));
+        ]);
     }
 
     /**

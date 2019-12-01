@@ -69,7 +69,7 @@ class Hook_geocoding_mapquest
         $sw_latitude = null;
         $sw_longitude = null;
 
-        return array($latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_geocoding_mapquest
         }
 
         $location = '';
-        foreach (array($street_address, $city, $county, $state, $postal_code, $country) as $component) {
+        foreach ([$street_address, $city, $county, $state, $postal_code, $country] as $component) {
             if ($component !== null) {
                 if ($location != '') {
                     $location .= ', ';
@@ -144,7 +144,7 @@ class Hook_geocoding_mapquest
         $sw_latitude = null;
         $sw_longitude = null;
 
-        return array($location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -168,7 +168,7 @@ class Hook_geocoding_mapquest
         $url .= '&outFormat=json';
         $url .= '&key=' . urlencode(get_option('mapquest_geocoding_api_key'));
 
-        $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false));
+        $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false]);
 
         if (empty($_result)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

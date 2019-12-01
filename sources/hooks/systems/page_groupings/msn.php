@@ -33,16 +33,16 @@ class Hook_page_groupings_msn
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('msn')) {
-            return array();
+            return [];
         }
 
         $zone = get_page_zone('netlink', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('structure', 'menu/adminzone/structure/multi_site_network', array('netlink', array(), $zone), do_lang_tempcode('menus:PARTNER_SITES'), 'menus:DOC_NETLINK_1'),
-        );
+        return [
+            ['structure', 'menu/adminzone/structure/multi_site_network', ['netlink', [], $zone], do_lang_tempcode('menus:PARTNER_SITES'), 'menus:DOC_NETLINK_1'],
+        ];
     }
 }

@@ -27,7 +27,7 @@
  */
 function _get_available_notification_types($member_id_of = null)
 {
-    $__notification_types = array(
+    $__notification_types = [
         A_INSTANT_EMAIL => 'INSTANT_EMAIL',
         A_INSTANT_PT => 'INSTANT_PT',
         A_INSTANT_SMS => 'INSTANT_SMS',
@@ -35,8 +35,8 @@ function _get_available_notification_types($member_id_of = null)
         A_WEEKLY_EMAIL_DIGEST => 'WEEKLY_EMAIL_DIGEST',
         A_MONTHLY_EMAIL_DIGEST => 'MONTHLY_EMAIL_DIGEST',
         A_WEB_NOTIFICATION => 'WEB_NOTIFICATION',
-    );
-    $_notification_types = array();
+    ];
+    $_notification_types = [];
     foreach ($__notification_types as $possible => $ntype) {
         if (_notification_setting_available($possible, $member_id_of)) {
             $_notification_types[$possible] = $ntype;
@@ -78,11 +78,11 @@ function notifications_ui($member_id_of)
         return new Tempcode();
     }
 
-    $lockdown = collapse_2d_complexity('l_notification_code', 'l_setting', $GLOBALS['SITE_DB']->query_select('notification_lockdown', array('*')));
+    $lockdown = collapse_2d_complexity('l_notification_code', 'l_setting', $GLOBALS['SITE_DB']->query_select('notification_lockdown', ['*']));
 
     $has_interesting_post_fields = has_interesting_post_fields();
 
-    $notification_sections = array();
+    $notification_sections = [];
     $hooks = find_all_hooks('systems', 'notifications');
     foreach (array_keys($hooks) as $hook) {
         if (array_key_exists($hook, $lockdown)) {
@@ -114,7 +114,7 @@ function notifications_ui($member_id_of)
                     $is_there_test = $GLOBALS['SITE_DB']->query($if_there_query);
                 }
 
-                $notification_types = array();
+                $notification_types = [];
                 foreach ($_notification_types as $possible => $ntype) {
                     $available = (($possible & $allowed_setting) != 0);
 
@@ -133,7 +133,7 @@ function notifications_ui($member_id_of)
                         }
                     }
 
-                    $notification_types[] = array(
+                    $notification_types[] = [
                         'NTYPE' => $ntype,
                         'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
                         'CHECKED' => ($checked == 1),
@@ -141,21 +141,21 @@ function notifications_ui($member_id_of)
                         'AVAILABLE' => $available,
                         'SCOPE' => $notification_code,
                         'TYPE_HAS_CHILDREN_SET' => $type_has_children_set,
-                    );
+                    ];
                 }
 
                 if (!isset($notification_sections[$notification_details[0]])) {
-                    $notification_sections[$notification_details[0]] = array(
+                    $notification_sections[$notification_details[0]] = [
                         'NOTIFICATION_SECTION' => $notification_details[0],
-                        'NOTIFICATION_CODES' => array(),
-                    );
+                        'NOTIFICATION_CODES' => [],
+                    ];
                 }
-                $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = array(
+                $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = [
                     'NOTIFICATION_CODE' => $notification_code,
                     'NOTIFICATION_LABEL' => $notification_details[1],
                     'NOTIFICATION_TYPES' => $notification_types,
                     'SUPPORTS_CATEGORIES' => $supports_categories,
-                );
+                ];
             }
         }
     }
@@ -187,13 +187,13 @@ function notifications_ui($member_id_of)
 
     // Main UI...
 
-    $notification_types_titles = array();
+    $notification_types_titles = [];
     foreach ($_notification_types as $possible => $ntype) {
-        $notification_types_titles[] = array(
+        $notification_types_titles[] = [
             'NTYPE' => $ntype,
             'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
             'RAW' => strval($possible),
-        );
+        ];
     }
 
     require_code('themes2');
@@ -222,7 +222,7 @@ function notifications_ui($member_id_of)
     $custom_fields = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id_of);
     $smart_topic_notification_content = (array_key_exists('smart_topic_notification', $custom_fields)) && ($custom_fields['smart_topic_notification'] == '1');
 
-    return do_template('NOTIFICATIONS_MANAGE', array(
+    return do_template('NOTIFICATIONS_MANAGE', [
         '_GUID' => '838165ca739c45c2dcf994bed6fefe3e',
         'COLOR' => $color,
         'INTRO' => do_lang_tempcode('NOTIFICATIONS_INTRO'),
@@ -234,7 +234,7 @@ function notifications_ui($member_id_of)
         'MAILING_LIST_STYLE_DESCRIPTION' => $mlsn_description,
         'MEMBER_ID' => strval($member_id_of),
         'ADVANCED_COLUMN' => true,
-    ));
+    ]);
 }
 
 /**
@@ -253,9 +253,9 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
     require_javascript('core_notifications');
     require_all_lang();
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', array(
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notification_lockdown', 'l_setting', [
         'l_notification_code' => substr($notification_code, 0, 80),
-    ));
+    ]);
     if ($test !== null) {
         warn_exit(do_lang_tempcode('NOTIFICATION_CODE_LOCKED_DOWN'));
     }
@@ -266,7 +266,7 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
     }
     $info_details = $ob->list_handled_codes();
 
-    $title = get_screen_title('NOTIFICATION_MANAGEMENT_FOR', true, array(escape_html($info_details[$notification_code][1])));
+    $title = get_screen_title('NOTIFICATION_MANAGEMENT_FOR', true, [escape_html($info_details[$notification_code][1])]);
 
     if (is_guest()) {
         access_denied('NOT_AS_GUEST');
@@ -289,7 +289,7 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
             enable_notifications($notification_code, null, null, A_NA); // Make it clear we've overridden the general value by doing this
 
             foreach (array_keys($_POST) as $key) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^notification_' . preg_quote($notification_code) . '_category_(.*)#', $key, $matches) != 0) {
                     $notification_category = $matches[1];
 
@@ -345,28 +345,28 @@ function notifications_ui_advanced($notification_code, $enable_message = null, $
         $tree = _notifications_build_category_tree($_notification_types, $notification_code, $ob, null, 0, null, $done_get_change);
     }
 
-    $notification_types_titles = array();
+    $notification_types_titles = [];
     foreach ($_notification_types as $possible => $ntype) {
-        $notification_types_titles[] = array(
+        $notification_types_titles[] = [
             'NTYPE' => $ntype,
             'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
             'RAW' => strval($possible),
-        );
+        ];
     }
 
     require_code('themes2');
     $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
 
-    return do_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', array(
+    return do_template('NOTIFICATIONS_MANAGE_ADVANCED_SCREEN', [
         '_GUID' => '21337e54cc87d82269bec89e70690543',
         'TITLE' => $title,
         '_TITLE' => $info_details[$notification_code][1],
         'COLOR' => $color,
-        'ACTION_URL' => get_self_url(false, false, array('id' => null)),
+        'ACTION_URL' => get_self_url(false, false, ['id' => null]),
         'NOTIFICATION_TYPES_TITLES' => $notification_types_titles,
         'TREE' => $tree,
         'NOTIFICATION_CODE' => $notification_code,
-    ));
+    ]);
 }
 
 /**
@@ -389,7 +389,7 @@ function _notifications_build_category_tree($_notification_types, $notification_
 
     $allowed_setting = $ob->allowed_settings($notification_code);
 
-    $notification_categories = array();
+    $notification_categories = [];
     foreach ($_notification_categories as $c) {
         $notification_category = (is_integer($c['id']) ? strval($c['id']) : $c['id']);
 
@@ -424,7 +424,7 @@ function _notifications_build_category_tree($_notification_types, $notification_
             $force_change_children_to_children = $force_change_children_to;
         }
 
-        $notification_types = array();
+        $notification_types = [];
         foreach ($_notification_types as $possible => $ntype) {
             $available = (($possible & $allowed_setting) != 0);
 
@@ -434,14 +434,14 @@ function _notifications_build_category_tree($_notification_types, $notification_
                 $checked = (($possible & $current_setting) != 0) ? 1 : 0;
             }
 
-            $notification_types[] = array(
+            $notification_types[] = [
                 'NTYPE' => $ntype,
                 'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
                 'CHECKED' => ($checked == 1),
                 'RAW' => strval($possible),
                 'AVAILABLE' => $available,
                 'SCOPE' => $notification_category,
-            );
+            ];
         }
 
         if ((!array_key_exists('num_children', $c)) && (array_key_exists('child_count', $c))) {
@@ -455,7 +455,7 @@ function _notifications_build_category_tree($_notification_types, $notification_
             $children = _notifications_build_category_tree($_notification_types, $notification_code, $ob, $notification_category, $depth + 1, $force_change_children_to_children, $done_get_change);
         }
 
-        $notification_categories[] = array(
+        $notification_categories[] = [
             'NUM_CHILDREN' => strval(array_key_exists('num_children', $c) ? $c['num_children'] : 0),
             'DEPTH' => strval($depth),
             'NOTIFICATION_CATEGORY' => $notification_category,
@@ -463,14 +463,14 @@ function _notifications_build_category_tree($_notification_types, $notification_
             'CATEGORY_TITLE' => $c['title'],
             'CHECKED' => notifications_enabled($notification_code, $notification_category),
             'CHILDREN' => $children,
-        );
+        ];
     }
 
-    $tree = do_template('NOTIFICATIONS_TREE', array(
+    $tree = do_template('NOTIFICATIONS_TREE', [
         '_GUID' => 'a370837b5ffb3d80989a34ad2a71b6c1',
         'NOTIFICATION_CODE' => $notification_code,
         'NOTIFICATION_CATEGORIES' => $notification_categories,
-    ));
+    ]);
 
     return $tree;
 }
@@ -489,15 +489,15 @@ function copy_notifications_to_new_child($notification_code, $id, $child_id)
     // Copy notifications over to new children
     $_start = 0;
     do {
-        $notifications_to = $db->query_select('notifications_enabled', array('l_member_id', 'l_setting'), array('l_notification_code' => substr($notification_code, 0, 80), 'l_code_category' => $id), '', 100, $_start);
+        $notifications_to = $db->query_select('notifications_enabled', ['l_member_id', 'l_setting'], ['l_notification_code' => substr($notification_code, 0, 80), 'l_code_category' => $id], '', 100, $_start);
 
         foreach ($notifications_to as $notification_to) {
-            $db->query_insert('notifications_enabled', array(
+            $db->query_insert('notifications_enabled', [
                 'l_member_id' => $notification_to['l_member_id'],
                 'l_notification_code' => substr($notification_code, 0, 80),
                 'l_code_category' => $child_id,
                 'l_setting' => $notification_to['l_setting'],
-            ));
+            ]);
         }
 
         $_start += 100;

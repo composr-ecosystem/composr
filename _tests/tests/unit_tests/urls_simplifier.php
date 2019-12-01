@@ -42,7 +42,7 @@ class urls_simplifier_test_set extends cms_test_case
 
     public function testProceedAsExpected()
     {
-        $tests = array(
+        $tests = [
             // encoded -> decoded
             'http://example.com/foo.jpg' => 'http://example.com/foo.jpg', // No changes desirable
             'http://example.com:8080/foo.jpg' => 'http://example.com:8080/foo.jpg', // No changes desirable
@@ -50,7 +50,7 @@ class urls_simplifier_test_set extends cms_test_case
             'http://example.com/foo%27s.jpg' => 'http://example.com/foo\'s.jpg', // We can decode "'"
             'http://example.com/foo.jpg#blah' => 'http://example.com/foo.jpg#blah', // We cannot decode "#"
             'http://example.com/foo%25.jpg' => 'http://example.com/foo%25.jpg', // We cannot decode percentages
-        );
+        ];
 
         foreach ($tests as $from => $expected) {
             $got = $this->ob->decode($from);
@@ -78,10 +78,10 @@ class urls_simplifier_test_set extends cms_test_case
     public function testPunycode()
     {
         if ((function_exists('idn_to_utf8')) && (get_charset() == 'utf-8')) {
-            $tests = array(
+            $tests = [
                 'http://xn--mnchen-3ya' => 'http://münchen',
                 'http://xn--mnchen-3ya:8080' => 'http://münchen:8080',
-            );
+            ];
 
             foreach ($tests as $from => $expected) {
                 $got = $this->ob->decode($from);

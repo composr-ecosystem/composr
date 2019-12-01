@@ -34,14 +34,14 @@ class Hook_commandr_command_call
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('call', array('h'), array(true)), '', '');
+            return ['', do_command_help('call', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'call'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'call')];
             }
 
             $url = page_link_to_url($parameters[0]);
-            return array('window.open(\'' . addslashes($url) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), '');
+            return ['window.open(\'' . addslashes($url) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), ''];
         }
     }
 }

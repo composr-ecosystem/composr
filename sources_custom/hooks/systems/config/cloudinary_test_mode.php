@@ -25,7 +25,7 @@ class Hook_config_cloudinary_test_mode
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLOUDINARY_TEST_MODE',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_cloudinary_test_mode
             'public' => false,
 
             'addon' => 'cloudinary',
-        );
+        ];
     }
 
     /**

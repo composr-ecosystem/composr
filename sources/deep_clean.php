@@ -34,7 +34,7 @@ function deep_clean($d, $heading = '')
     if ($is_html) {
         // Wrapper divs
         while (cms_preg_match_safe('#^\s*<div[^<>]*>#i', $d) != 0 && cms_preg_match_safe('#</div>\s*$#i', $d) != 0) {
-            $matches = array();
+            $matches = [];
             $count = preg_match_all('#</?div[^<>]*>#i', $d, $matches);
             $nesting_tally = 0;
             for ($i = 0; $i < $count; $i++) {
@@ -97,16 +97,16 @@ function deep_clean($d, $heading = '')
 
     if ($is_html) {
         // All paragraphs/divs/etc with certain CSS properties
-        $matches = array();
+        $matches = [];
         $count = preg_match_all('#<(p|div|blockquote|ul|ol)( [^<>]*)?' . '>#i', $d, $matches);
         if ($count > 2) {
-            $css_properties = array('line-height', 'font-size', 'margin', 'padding', 'font-family', 'background-color', 'vertical-align', 'outline', 'border');
+            $css_properties = ['line-height', 'font-size', 'margin', 'padding', 'font-family', 'background-color', 'vertical-align', 'outline', 'border'];
             foreach ($css_properties as $property) {
-                $versions = array();
+                $versions = [];
                 $non_matches = 0;
                 $regexp = '#([;"]\s*)(' . preg_quote($property, '#') . ':[^;]*)([;"])#';
                 for ($i = 0; $i < $count; $i++) {
-                    $matches2 = array();
+                    $matches2 = [];
                     if (preg_match($regexp, $matches[0][$i], $matches2) != 0) {
                         if (!isset($versions[$matches2[2]])) {
                             $versions[$matches2[2]] = 0;
@@ -162,7 +162,7 @@ function column_cleanup(&$text)
     $temp_text = html_entity_decode($temp_text, ENT_QUOTES);
     $lines = explode('<br />', $temp_text);
     if (count($lines) > 5) { // Statistically significant
-        $lengths = array();
+        $lengths = [];
         foreach ($lines as $line) {
             $lengths[] = strlen($line);
         }
@@ -174,7 +174,7 @@ function column_cleanup(&$text)
             }
             $sd = floatval($dist) / floatval(count($lines));
             if ($sd < 0.6 * floatval($mean_length)) { // Standard deviation within 60%
-                $sentence_ends = array('!', '?', '.', '>');
+                $sentence_ends = ['!', '?', '.', '>'];
 
                 $lines = explode('<br />', $text);
                 $text = '';

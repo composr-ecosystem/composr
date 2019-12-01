@@ -26,7 +26,7 @@ class Hook_addon_registry_geshi
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_geshi
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'The Authors of GeSHi',
-        );
+        ];
     }
 
     /**
@@ -103,7 +103,7 @@ Based off of [url="https://github.com/GeSHi/geshi-1.0"]GeSHI 1.0[/url]. GeSHI 1.
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -113,11 +113,11 @@ Based off of [url="https://github.com/GeSHi/geshi-1.0"]GeSHI 1.0[/url]. GeSHI 1.
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ Based off of [url="https://github.com/GeSHi/geshi-1.0"]GeSHI 1.0[/url]. GeSHI 1.
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/geshi.php',
             'sources_custom/geshi/.htaccess',
             'sources_custom/geshi/index.html',
@@ -383,6 +383,6 @@ Based off of [url="https://github.com/GeSHi/geshi-1.0"]GeSHI 1.0[/url]. GeSHI 1.
             'sources_custom/geshi/xbasic.php',
             'sources_custom/geshi/yaml.php',
             'sources_custom/geshi/zxbasic.php',
-        );
+        ];
     }
 }

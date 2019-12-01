@@ -41,7 +41,7 @@ function init__webstandards_js_parse()
 {
     // In precedence order. Note REFERENCE==BW_AND (it gets converted, for clarity). Ditto QUESTION==TERNARY_IF
     global $JS_OPS;
-    $JS_OPS = array('QUESTION', 'TERNARY_IF', 'BOOLEAN_OR', 'BOOLEAN_AND', 'BW_OR', 'BW_XOR', 'OBJECT_OPERATOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ZSR', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'INSTANCEOF', 'IN');
+    $JS_OPS = ['QUESTION', 'TERNARY_IF', 'BOOLEAN_OR', 'BOOLEAN_AND', 'BW_OR', 'BW_XOR', 'OBJECT_OPERATOR', 'BW_AND', 'IS_EQUAL', 'IS_NOT_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_SMALLER', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_GREATER_OR_EQUAL', 'SL', 'SR', 'ZSR', 'ADD', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'REMAINDER', 'INSTANCEOF', 'IN'];
 }
 
 /**
@@ -70,9 +70,9 @@ function _webstandards_js_parse_js()
     // Choice{"FUNCTION" "IDENTIFIER "PARENTHESIS_OPEN" comma_parameters "PARENTHESIS_CLOSE" command | command}*
 
     $next = parser_peek();
-    $program = array();
-    $program['functions'] = array();
-    $program['main'] = array();
+    $program = [];
+    $program['functions'] = [];
+    $program['main'] = [];
     while ($next !== null) {
         switch ($next) {
             case 'FUNCTION':
@@ -121,11 +121,11 @@ function _webstandards_js_parse_command()
 
     if (parser_peek() == 'COMMAND_TERMINATE') {
         parser_next();
-        return array(array('CONTINUE', array('SOLO', array('LITERAL', array('NUMBER', 1)), $GLOBALS['JS_PARSE_POSITION']), $GLOBALS['JS_PARSE_POSITION']));
+        return [['CONTINUE', ['SOLO', ['LITERAL', ['NUMBER', 1]], $GLOBALS['JS_PARSE_POSITION']], $GLOBALS['JS_PARSE_POSITION']]];
     }
 
     $next = parser_peek();
-    $command = array();
+    $command = [];
     switch ($next) {
         case 'CURLY_OPEN':
             parser_next();
@@ -185,7 +185,7 @@ function _webstandards_js_parse_command_actual()
             if ($t === null) {
                 return null;
             }
-            $command = array('VAR', $t, $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['VAR', $t, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'DELETE':
@@ -194,11 +194,11 @@ function _webstandards_js_parse_command_actual()
             if ($variable === null) {
                 return null;
             }
-            $command = array('DELETE', $variable, $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['DELETE', $variable, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'FUNCTION':
-            $command = array('INNER_FUNCTION', _webstandards_js_parse_function_dec(), $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['INNER_FUNCTION', _webstandards_js_parse_function_dec(), $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'IF':
@@ -225,9 +225,9 @@ function _webstandards_js_parse_command_actual()
                 if ($if_rest === null) {
                     return null;
                 }
-                $command = array('IF_ELSE', $expression, $command, $if_rest, $c_pos);
+                $command = ['IF_ELSE', $expression, $command, $if_rest, $c_pos];
             } else {
-                $command = array('IF', $expression, $command, $c_pos);
+                $command = ['IF', $expression, $command, $c_pos];
             }
             break;
 
@@ -238,7 +238,7 @@ function _webstandards_js_parse_command_actual()
             if ($command === null) {
                 return null;
             }
-            $command = array('TRY', $command, $c_pos);
+            $command = ['TRY', $command, $c_pos];
             break;
 
         case 'WITH':
@@ -258,7 +258,7 @@ function _webstandards_js_parse_command_actual()
             if ($command === null) {
                 return null;
             }
-            $command = array('WITH', $var, $command, $c_pos);
+            $command = ['WITH', $var, $command, $c_pos];
             break;
 
         case 'CATCH':
@@ -278,7 +278,7 @@ function _webstandards_js_parse_command_actual()
             if ($command === null) {
                 return null;
             }
-            $command = array('CATCH', $target, $command, $c_pos);
+            $command = ['CATCH', $target, $command, $c_pos];
             break;
 
         case 'FINALLY':
@@ -288,7 +288,7 @@ function _webstandards_js_parse_command_actual()
             if ($command === null) {
                 return null;
             }
-            $command = array('FINALLY', $command, $c_pos);
+            $command = ['FINALLY', $command, $c_pos];
             break;
 
         case 'SWITCH':
@@ -308,7 +308,7 @@ function _webstandards_js_parse_command_actual()
             if (parser_expect('CURLY_CLOSE') === null) {
                 return null;
             }
-            $command = array('SWITCH', $expression, $cases, $c_pos);
+            $command = ['SWITCH', $expression, $cases, $c_pos];
             break;
 
         case 'FOR':
@@ -344,7 +344,7 @@ function _webstandards_js_parse_command_actual()
                 if ($loop_command === null) {
                     return null;
                 }
-                $command = array('FOREACH_list', $expression, $variable, $loop_command, $c_pos);
+                $command = ['FOREACH_list', $expression, $variable, $loop_command, $c_pos];
             } else {
                 $next_2 = parser_peek();
                 if ($next_2 == 'COMMAND_TERMINATE') {
@@ -386,7 +386,7 @@ function _webstandards_js_parse_command_actual()
                         return null;
                     }
                 }
-                $command = array('FOR', $init_commands, $control_expression, $control_commands, $loop_command, $c_pos);
+                $command = ['FOR', $init_commands, $control_expression, $control_commands, $loop_command, $c_pos];
             }
             break;
 
@@ -410,7 +410,7 @@ function _webstandards_js_parse_command_actual()
             if (parser_expect('PARENTHESIS_CLOSE') === null) {
                 return null;
             }
-            $command = array('DO', $control_expression, $loop_command, $c_pos);
+            $command = ['DO', $control_expression, $loop_command, $c_pos];
             break;
 
         case 'WHILE':
@@ -430,7 +430,7 @@ function _webstandards_js_parse_command_actual()
             if ($loop_command === null) {
                 return null;
             }
-            $command = array('WHILE', $control_expression, $loop_command, $c_pos);
+            $command = ['WHILE', $control_expression, $loop_command, $c_pos];
             break;
 
         case 'RETURN':
@@ -438,7 +438,7 @@ function _webstandards_js_parse_command_actual()
             $next_2 = parser_peek();
             switch ($next_2) {
                 case 'COMMAND_TERMINATE':
-                    $command = array('RETURN', array('SOLO', array('LITERAL', array('Null')), $GLOBALS['JS_PARSE_POSITION']), $GLOBALS['JS_PARSE_POSITION']);
+                    $command = ['RETURN', ['SOLO', ['LITERAL', ['Null']], $GLOBALS['JS_PARSE_POSITION']], $GLOBALS['JS_PARSE_POSITION']];
                     break;
 
                 default:
@@ -446,7 +446,7 @@ function _webstandards_js_parse_command_actual()
                     if ($expression === null) {
                         return null;
                     }
-                    $command = array('RETURN', $expression, $GLOBALS['JS_PARSE_POSITION']);
+                    $command = ['RETURN', $expression, $GLOBALS['JS_PARSE_POSITION']];
             }
             break;
 
@@ -456,17 +456,17 @@ function _webstandards_js_parse_command_actual()
             if ($expression === null) {
                 return null;
             }
-            $command = array('THROW', $expression, $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['THROW', $expression, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'CONTINUE':
             parser_next();
-            $command = array('CONTINUE', array('SOLO', array('LITERAL', array('NUMBER', 1)), $GLOBALS['JS_PARSE_POSITION']), $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['CONTINUE', ['SOLO', ['LITERAL', ['NUMBER', 1]], $GLOBALS['JS_PARSE_POSITION']], $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'BREAK':
             parser_next();
-            $command = array('BREAK', array('SOLO', array('LITERAL', array('NUMBER', 1)), $GLOBALS['JS_PARSE_POSITION']), $GLOBALS['JS_PARSE_POSITION']);
+            $command = ['BREAK', ['SOLO', ['LITERAL', ['NUMBER', 1]], $GLOBALS['JS_PARSE_POSITION']], $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         default:
@@ -514,7 +514,7 @@ function _webstandards_js_parse_cases()
     // Choice{"CASE" expression "COLON" command* | "DEFAULT" "COLON" command*}*
 
     $next = parser_peek();
-    $cases = array();
+    $cases = [];
     while (($next == 'CASE') || ($next == 'DEFAULT')) {
         switch ($next) {
             case 'CASE':
@@ -527,7 +527,7 @@ function _webstandards_js_parse_cases()
                     return null;
                 }
                 $next_2 = parser_peek();
-                $commands = array();
+                $commands = [];
                 while (($next_2 != 'CURLY_CLOSE') && ($next_2 != 'CASE') && ($next_2 != 'DEFAULT')) {
                     $command = _webstandards_js_parse_command();
                     if ($command === null) {
@@ -536,7 +536,7 @@ function _webstandards_js_parse_cases()
                     $commands = array_merge($commands, $command);
                     $next_2 = parser_peek();
                 }
-                $cases[] = array($expression, $commands);
+                $cases[] = [$expression, $commands];
                 break;
 
             case 'DEFAULT':
@@ -545,7 +545,7 @@ function _webstandards_js_parse_cases()
                     return null;
                 }
                 $next_2 = parser_peek();
-                $commands = array();
+                $commands = [];
                 while (($next_2 != 'CURLY_CLOSE') && ($next_2 != 'CASE')) {
                     $command = _webstandards_js_parse_command();
                     if ($command === null) {
@@ -554,7 +554,7 @@ function _webstandards_js_parse_cases()
                     $commands += $command;
                     $next_2 = parser_peek();
                 }
-                $cases[] = array(null, $commands);
+                $cases[] = [null, $commands];
                 break;
 
             default:
@@ -577,7 +577,7 @@ function _webstandards_js_parse_cases()
  */
 function _webstandards_js_parse_function_dec($anonymous = false)
 {
-    $function = array();
+    $function = [];
     $function['offset'] = $GLOBALS['JS_PARSE_POSITION'];
     if (parser_expect('FUNCTION') === null) {
         return null;
@@ -622,7 +622,7 @@ function _webstandards_js_parse_expression()
     if ($expression === null) {
         return null;
     }
-    $op_list = array($expression);
+    $op_list = [$expression];
 
     $next = parser_peek();
     while (in_array($next, $JS_OPS)) {
@@ -640,7 +640,7 @@ function _webstandards_js_parse_expression()
                 return null;
             }
             $op_list[] = 'TERNARY_IF';
-            $op_list[] = array($expression_2, $expression_3);
+            $op_list[] = [$expression_2, $expression_3];
         } else {
             $expression_2 = _webstandards_js_parse_expression_inner();
             if ($expression_2 === null) {
@@ -670,7 +670,7 @@ function precedence_sort($op_list)
 
     if (count($op_list) == 2) {
         $_e_pos = $op_list[0][count($op_list[0]) - 1];
-        $new = array($op_list[1], $op_list[0], $op_list[2], $_e_pos);
+        $new = [$op_list[1], $op_list[0], $op_list[2], $_e_pos];
         return $new;
     }
 
@@ -683,7 +683,7 @@ function precedence_sort($op_list)
             }
             if ($op == $op_try) {
                 $left = array_slice($op_list, 0, $JS_PARSE_POSITION);
-                $right = array();
+                $right = [];
                 foreach ($op_list as $i => $bit) {
                     if ($i > $JS_PARSE_POSITION) {
                         $right[] = $bit;
@@ -692,7 +692,7 @@ function precedence_sort($op_list)
                 $_e_pos = $left[count($left) - 1][count($left[count($left) - 1]) - 1];
                 $_left = precedence_sort($left);
                 $_right = precedence_sort($right);
-                return array($op, $_left, $_right, $_e_pos);
+                return [$op, $_left, $_right, $_e_pos];
             }
         }
     }
@@ -700,7 +700,7 @@ function precedence_sort($op_list)
     // Should never get here
     echo '!';
     print_r($op_list);
-    return array();
+    return [];
 }
 
 /**
@@ -721,7 +721,7 @@ function _webstandards_js_parse_expression_inner()
         $next = parser_peek();
     }
 
-    if (in_array($next, array('number_literal', 'string_literal', 'true', 'false', 'null', 'undefined', 'NaN', 'Infinity'))) { // little trick
+    if (in_array($next, ['number_literal', 'string_literal', 'true', 'false', 'null', 'undefined', 'NaN', 'Infinity'])) { // little trick
         $next = '*literal';
     }
     switch ($next) {
@@ -731,7 +731,7 @@ function _webstandards_js_parse_expression_inner()
             if ($variable === null) {
                 return null;
             }
-            $expression = array('PRE_DEC', $variable, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['PRE_DEC', $variable, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'INC':
@@ -740,7 +740,7 @@ function _webstandards_js_parse_expression_inner()
             if ($variable === null) {
                 return null;
             }
-            $expression = array('PRE_INC', $variable, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['PRE_INC', $variable, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'BOOLEAN_NOT':
@@ -749,7 +749,7 @@ function _webstandards_js_parse_expression_inner()
             if ($_expression === null) {
                 return null;
             }
-            $expression = array('BOOLEAN_NOT', $_expression, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['BOOLEAN_NOT', $_expression, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'BW_NOT':
@@ -758,7 +758,7 @@ function _webstandards_js_parse_expression_inner()
             if ($_expression === null) {
                 return null;
             }
-            $expression = array('BW_NOT', $_expression, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['BW_NOT', $_expression, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'TYPEOF':
@@ -767,7 +767,7 @@ function _webstandards_js_parse_expression_inner()
             if ($_expression === null) {
                 return null;
             }
-            $expression = array('TYPEOF', $_expression, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['TYPEOF', $_expression, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'ADD': // When used like a cast
@@ -785,7 +785,7 @@ function _webstandards_js_parse_expression_inner()
             if ($_expression === null) {
                 return null;
             }
-            $expression = array('NEGATE', $_expression, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['NEGATE', $_expression, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case '*literal':
@@ -793,7 +793,7 @@ function _webstandards_js_parse_expression_inner()
             if ($literal === null) {
                 return null;
             }
-            $expression = array('LITERAL', $literal, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['LITERAL', $literal, $GLOBALS['JS_PARSE_POSITION']];
 
             $test = parser_peek();
             if ($test == 'IN') {
@@ -804,7 +804,7 @@ function _webstandards_js_parse_expression_inner()
 
         case 'CATCH': // May be a promises 'catch' method
             parser_next();
-            $expression = array('VARIABLE', 'catch', array(), $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['VARIABLE', 'catch', [], $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'IDENTIFIER':
@@ -820,7 +820,7 @@ function _webstandards_js_parse_expression_inner()
             if ($function === null) {
                 return null;
             }
-            $expression = array('NEW_OBJECT_FUNCTION', $function, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['NEW_OBJECT_FUNCTION', $function, $GLOBALS['JS_PARSE_POSITION']];
 
             $test = parser_peek();
             if ($test == 'PARENTHESIS_OPEN') {
@@ -833,7 +833,7 @@ function _webstandards_js_parse_expression_inner()
                 if (parser_expect('PARENTHESIS_CLOSE') === null) {
                     return null;
                 }
-                $expression = array('CALL', array('VARIABLE', '_', array(), $GLOBALS['JS_PARSE_POSITION']), $parameters, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['CALL', ['VARIABLE', '_', [], $GLOBALS['JS_PARSE_POSITION']], $parameters, $GLOBALS['JS_PARSE_POSITION']];
             }
 
             break;
@@ -855,9 +855,9 @@ function _webstandards_js_parse_expression_inner()
                 if (parser_expect('PARENTHESIS_CLOSE') === null) {
                     return null;
                 }
-                $expression = array('NEW_OBJECT', $identifier[1], $expressions, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['NEW_OBJECT', $identifier[1], $expressions, $GLOBALS['JS_PARSE_POSITION']];
             } else {
-                $expression = array('NEW_OBJECT', $identifier[1], array(), $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['NEW_OBJECT', $identifier[1], [], $GLOBALS['JS_PARSE_POSITION']];
             }
             break;
 
@@ -867,13 +867,13 @@ function _webstandards_js_parse_expression_inner()
             if ($expressions === null) {
                 return null;
             }
-            $expression = array('NEW_OBJECT', 'Array', $expressions, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['NEW_OBJECT', 'Array', $expressions, $GLOBALS['JS_PARSE_POSITION']];
             if (parser_expect('EXTRACT_CLOSE') === null) {
                 return null;
             }
             if (parser_peek() == 'EXTRACT_OPEN') {
                 $extra = _webstandards_js_parse_variable_actual();
-                $expression = array('VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']];
             }
             break;
 
@@ -883,13 +883,13 @@ function _webstandards_js_parse_expression_inner()
             if ($expressions === null) {
                 return null;
             }
-            $expression = array('NEW_OBJECT', '!Object', $expressions, $GLOBALS['JS_PARSE_POSITION']); // This is a hack. There could be no general-purpose expressions constructor for an object. The member names aren't even stored. But as it's dynamic, we couldn't check this anyway. So we just store a new "unknown" object and check the expressions as isolated (which shoving them in a constructor function will do).
+            $expression = ['NEW_OBJECT', '!Object', $expressions, $GLOBALS['JS_PARSE_POSITION']]; // This is a hack. There could be no general-purpose expressions constructor for an object. The member names aren't even stored. But as it's dynamic, we couldn't check this anyway. So we just store a new "unknown" object and check the expressions as isolated (which shoving them in a constructor function will do).
             if (parser_expect('CURLY_CLOSE') === null) {
                 return null;
             }
             if ((parser_peek() == 'EXTRACT_OPEN') || (parser_peek() == 'OBJECT_OPERATOR')) {
                 $extra = _webstandards_js_parse_variable_actual();
-                $expression = array('VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']];
             }
             break;
 
@@ -911,7 +911,7 @@ function _webstandards_js_parse_expression_inner()
                 if ($_expression === null) {
                     return null;
                 }
-                $expression = array('ASSIGNMENT', 'EQUAL', $target, $_expression, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['ASSIGNMENT', 'EQUAL', $target, $_expression, $GLOBALS['JS_PARSE_POSITION']];
                 if (parser_expect('PARENTHESIS_CLOSE') === null) {
                     return null;
                 }
@@ -926,9 +926,9 @@ function _webstandards_js_parse_expression_inner()
                 $test = parser_peek();
                 if (($test == 'EXTRACT_OPEN') || ($test == 'OBJECT_OPERATOR')) {
                     $extra = _webstandards_js_parse_variable_actual();
-                    $expression = array('VARIABLE', $_expression, $extra, $GLOBALS['JS_PARSE_POSITION']);
+                    $expression = ['VARIABLE', $_expression, $extra, $GLOBALS['JS_PARSE_POSITION']];
                 } elseif ($test == 'PARENTHESIS_OPEN') {
-                    $variable = array('VARIABLE', $_expression, array(), $GLOBALS['JS_PARSE_POSITION']);
+                    $variable = ['VARIABLE', $_expression, [], $GLOBALS['JS_PARSE_POSITION']];
                     parser_next();
                     $parameters = _webstandards_js_parse_comma_expressions();
                     if ($parameters === null) {
@@ -937,9 +937,9 @@ function _webstandards_js_parse_expression_inner()
                     if (parser_expect('PARENTHESIS_CLOSE') === null) {
                         return null;
                     }
-                    $expression = array('CALL', $variable, $parameters, $GLOBALS['JS_PARSE_POSITION']);
+                    $expression = ['CALL', $variable, $parameters, $GLOBALS['JS_PARSE_POSITION']];
                 } else {
-                    $expression = array('PARENTHESISED', $_expression, $GLOBALS['JS_PARSE_POSITION']);
+                    $expression = ['PARENTHESISED', $_expression, $GLOBALS['JS_PARSE_POSITION']];
                 }
             }
             break;
@@ -964,12 +964,12 @@ function _webstandards_js_parse_identify_chain($variable)
     switch ($next_2) {
         case 'DEC':
             parser_next();
-            $expression = array('DEC', $variable, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['DEC', $variable, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'INC':
             parser_next();
-            $expression = array('INC', $variable, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['INC', $variable, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'PARENTHESIS_OPEN': // Is it an inline direct function call, or possibly a longer chain
@@ -981,20 +981,20 @@ function _webstandards_js_parse_identify_chain($variable)
             if (parser_expect('PARENTHESIS_CLOSE') === null) {
                 return null;
             }
-            $expression = array('CALL', $variable, $parameters, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['CALL', $variable, $parameters, $GLOBALS['JS_PARSE_POSITION']];
             //log_special('functions', $next[1] . '/' . count($parameters)); Useful for debugging
 
             // Now, it is possible we are actually part of a larger variable
             $next_2 = parser_peek();
             if ($next_2 == 'EXTRACT_OPEN') { // If this is a "." then we will handle that as an operator
                 $extra = _webstandards_js_parse_variable_actual();
-                $expression = array('VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['VARIABLE', $expression, $extra, $GLOBALS['JS_PARSE_POSITION']];
             }
 
             // Extension?
             $next_2 = parser_peek();
-            if (in_array($next_2, array('PARENTHESIS_OPEN', 'DEC', 'INC', 'IN', 'INSTANCEOF', 'EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'))) {
-                return _webstandards_js_parse_identify_chain(array('VARIABLE', $expression, array(), $GLOBALS['JS_PARSE_POSITION']));
+            if (in_array($next_2, ['PARENTHESIS_OPEN', 'DEC', 'INC', 'IN', 'INSTANCEOF', 'EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'])) {
+                return _webstandards_js_parse_identify_chain(['VARIABLE', $expression, [], $GLOBALS['JS_PARSE_POSITION']]);
             }
             break;
 
@@ -1004,7 +1004,7 @@ function _webstandards_js_parse_identify_chain($variable)
             if ($identifier === null) {
                 return null;
             }
-            $expression = array('IN', $variable, $identifier, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['IN', $variable, $identifier, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'INSTANCEOF':
@@ -1013,11 +1013,11 @@ function _webstandards_js_parse_identify_chain($variable)
             if ($identifier === null) {
                 return null;
             }
-            $expression = array('INSTANCEOF', $variable, $identifier, $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['INSTANCEOF', $variable, $identifier, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         default:
-            if (in_array($next_2, array('EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'))) {
+            if (in_array($next_2, ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'])) {
                 $assignment = _webstandards_js_parse_assignment_operator();
                 if ($assignment === null) {
                     return null;
@@ -1026,7 +1026,7 @@ function _webstandards_js_parse_identify_chain($variable)
                 if ($_expression === null) {
                     return null;
                 }
-                $expression = array('ASSIGNMENT', $assignment, $variable, $_expression, $GLOBALS['JS_PARSE_POSITION']);
+                $expression = ['ASSIGNMENT', $assignment, $variable, $_expression, $GLOBALS['JS_PARSE_POSITION']];
             } else {
                 $expression = $variable;
             }
@@ -1055,7 +1055,7 @@ function _webstandards_js_parse_variable()
         return null;
     }
 
-    return array('VARIABLE', $variable[1], $variable_actual, $GLOBALS['JS_PARSE_POSITION']);
+    return ['VARIABLE', $variable[1], $variable_actual, $GLOBALS['JS_PARSE_POSITION']];
 }
 
 /**
@@ -1072,15 +1072,15 @@ function _webstandards_js_parse_variable_actual()
             parser_next();
             $next_2 = parser_peek(true);
             if ($next_2[0] != 'IDENTIFIER') {
-                $next_2 = array('IDENTIFIER', strtolower($next_2[0]));
+                $next_2 = ['IDENTIFIER', strtolower($next_2[0])];
                 parser_next();
             } else {
                 if (parser_expect('IDENTIFIER') === null) {
                     return null;
                 }
             }
-            $dereference = array('VARIABLE', $next_2[1], array(), $GLOBALS['JS_PARSE_POSITION']);
-            $tunnel = array();
+            $dereference = ['VARIABLE', $next_2[1], [], $GLOBALS['JS_PARSE_POSITION']];
+            $tunnel = [];
             $next_3 = parser_peek();
             $next_4 = parser_peek_dist(1);
             if ((($next_3 == 'EXTRACT_OPEN') && ($next_4 != 'EXTRACT_CLOSE')) || ($next_3 == 'CURLY_OPEN') || ($next_3 == 'OBJECT_OPERATOR')) {
@@ -1090,7 +1090,7 @@ function _webstandards_js_parse_variable_actual()
                 }
             }
 
-            $variable = array('OBJECT_OPERATOR', $dereference, $tunnel, $GLOBALS['JS_PARSE_POSITION']);
+            $variable = ['OBJECT_OPERATOR', $dereference, $tunnel, $GLOBALS['JS_PARSE_POSITION']];
 
             if ($next_3 == 'PARENTHESIS_OPEN') { // Function call actually
                 $variable = _webstandards_js_parse_identify_chain($variable);
@@ -1101,7 +1101,7 @@ function _webstandards_js_parse_variable_actual()
         case 'EXTRACT_OPEN':
             $next_t = parser_peek_dist(1);
             if ($next_t == 'EXTRACT_CLOSE') {
-                $variable = array();
+                $variable = [];
                 break;
             }
             parser_next();
@@ -1113,7 +1113,7 @@ function _webstandards_js_parse_variable_actual()
             if (parser_expect('EXTRACT_CLOSE') === null) {
                 return null;
             }
-            $tunnel = array();
+            $tunnel = [];
             $next_3 = parser_peek();
             $next_4 = parser_peek_dist(1);
             if ((($next_3 == 'EXTRACT_OPEN') && ($next_4 != 'EXTRACT_CLOSE')) || ($next_3 == 'OBJECT_OPERATOR')) {
@@ -1122,11 +1122,11 @@ function _webstandards_js_parse_variable_actual()
                     return null;
                 }
             }
-            $variable = array('ARRAY_AT', $expression, $tunnel, $GLOBALS['JS_PARSE_POSITION']);
+            $variable = ['ARRAY_AT', $expression, $tunnel, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         default:
-            $variable = array();
+            $variable = [];
             break;
     }
 
@@ -1144,7 +1144,7 @@ function _webstandards_js_parse_assignment_operator()
     // Choice{"EQUAL" | "CONCAT_EQUAL" | "DIV_EQUAL" | "MUL_EQUAL" | "SUBTRACT_EQUAL" | "PLUS_EQUAL" | "SL_EQUAL" | "SR_EQUAL" | "ZSR_EQUAL" | "BW_AND_EQUAL" | "BW_OR_EQUAL"}
 
     $next = parser_next();
-    if (!in_array($next, array('EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'))) {
+    if (!in_array($next, ['EQUAL', 'CONCAT_EQUAL', 'DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'PLUS_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'])) {
         webstandards_js_parser_error('Expected assignment operator but got ' . $next);
         return null;
     }
@@ -1169,47 +1169,47 @@ function _webstandards_js_parse_literal()
             if ($_literal === null) {
                 return null;
             }
-            $literal = array('NEGATE', $_literal, $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['NEGATE', $_literal, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'number_literal':
             $_literal = parser_next(true);
-            $literal = array('Number', $_literal[1], $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Number', $_literal[1], $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'string_literal':
             $_literal = parser_next(true);
-            $literal = array('String', $_literal[1], $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['String', $_literal[1], $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'true':
             parser_next();
-            $literal = array('Boolean', true, $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Boolean', true, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'false':
             parser_next();
-            $literal = array('Boolean', false, $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Boolean', false, $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'null':
             parser_next();
-            $literal = array('Null', $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Null', $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'undefined':
             parser_next();
-            $literal = array('Undefined', $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Undefined', $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'NaN':
             parser_next();
-            $literal = array('Number', $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Number', $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         case 'Infinity':
             parser_next();
-            $literal = array('Number', $GLOBALS['JS_PARSE_POSITION']);
+            $literal = ['Number', $GLOBALS['JS_PARSE_POSITION']];
             break;
 
         default:
@@ -1231,18 +1231,18 @@ function _webstandards_js_parse_comma_expressions($allow_blanks = false, $closer
 {
     // Choice{expression "COMMA" comma_expressions | expression}
 
-    $expressions = array();
+    $expressions = [];
 
     $next = parser_peek();
     if ($next == $closer) {
-        return array();
+        return [];
     }
 
     $next_2 = '';
     do {
         $next_2 = parser_peek();
         if (($next_2 == 'COMMA') || ($next_2 == $closer)) {
-            $expression = array('LITERAL', array('Undefined', $GLOBALS['JS_PARSE_POSITION']), $GLOBALS['JS_PARSE_POSITION']);
+            $expression = ['LITERAL', ['Undefined', $GLOBALS['JS_PARSE_POSITION']], $GLOBALS['JS_PARSE_POSITION']];
         } else {
             $expression = _webstandards_js_parse_expression();
             if ($expression === null) {
@@ -1272,7 +1272,7 @@ function _webstandards_js_parse_comma_variables($allow_blanks = false, $closer =
 {
     // Choice{"variable" "COMMA" comma_variables | "variable"}
 
-    $variables = array();
+    $variables = [];
 
     $next = parser_peek();
     if (($next == $closer)) {
@@ -1285,9 +1285,9 @@ function _webstandards_js_parse_comma_variables($allow_blanks = false, $closer =
         while (($allow_blanks) && (($next_2 == 'COMMA') || ($next_2 == $closer))) {
             if ($next_2 == 'COMMA') { // ,,
                 parser_next();
-                $variables[] = array('VARIABLE', '_', array());
+                $variables[] = ['VARIABLE', '_', []];
             } elseif ($next_2 == $closer) { // ,,
-                $variables[] = array('VARIABLE', '_', array());
+                $variables[] = ['VARIABLE', '_', []];
                 return $variables;
             }
 
@@ -1322,7 +1322,7 @@ function _webstandards_js_parse_comma_parameters($allow_expressions = true, $clo
 {
     // Choice{parameter | parameter "COMMA" comma_parameters}?
 
-    $parameters = array();
+    $parameters = [];
 
     $next = parser_peek();
     if ($next == $closer) {
@@ -1361,7 +1361,7 @@ function _webstandards_js_parse_comma_commands($closer = 'COMMAND_TERMINATE')
 {
     // Choice{parameter | parameter "COMMA" comma_commands}?
 
-    $commands = array();
+    $commands = [];
 
     $next = parser_peek();
     if ($next == $closer) {
@@ -1399,9 +1399,9 @@ function _webstandards_js_parse_parameter($allow_expressions = true, $separator 
 
     $next = parser_next(true);
     if ($next[0] == 'undefined') {
-        $parameter = array('CALL_BY_VALUE', $next[0], null, $GLOBALS['JS_PARSE_POSITION']);
+        $parameter = ['CALL_BY_VALUE', $next[0], null, $GLOBALS['JS_PARSE_POSITION']];
     } elseif (($next[0] == 'IDENTIFIER') || ((substr($next[0], -8) == '_literal') && ($separator == 'COLON'))) {
-        $parameter = array('CALL_BY_VALUE', $next[1], null, $GLOBALS['JS_PARSE_POSITION']);
+        $parameter = ['CALL_BY_VALUE', $next[1], null, $GLOBALS['JS_PARSE_POSITION']];
         if ($allow_expressions) {
             $next_2 = parser_peek();
             if ($next_2 == $separator) {

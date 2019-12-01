@@ -30,14 +30,14 @@ class Block_menu
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('title', 'type', 'param', 'tray_status', 'silent_failure', 'javascript_highlighting');
+        $info['parameters'] = ['title', 'type', 'param', 'tray_status', 'silent_failure', 'javascript_highlighting'];
         return $info;
     }
 
@@ -49,8 +49,8 @@ class Block_menu
     public function caching_environment()
     {
         /* Ideally we would not cache as we would need to cache for all screens due to context sensitive link display (either you're here or match key filtering). However in most cases that only happens per page, so we will cache per page -- and people can turn off caching via the standard block parameter for that if needed.*/
-        $info = array();
-        $info['cache_on'] = array('block_menu__cache_on');
+        $info = [];
+        $info['cache_on'] = ['block_menu__cache_on'];
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24 * 140);
         return $info;
@@ -108,7 +108,7 @@ class Block_menu
         }
 
         if ($title != '') {
-            $content = do_template('BLOCK_MENU', array(
+            $content = do_template('BLOCK_MENU', [
                 '_GUID' => 'ae46aa37a9c5a526f43b26a391164436',
                 'BLOCK_ID' => $block_id,
                 'CONTENT' => $content,
@@ -117,7 +117,7 @@ class Block_menu
                 'TRAY_STATUS' => $tray_status,
                 'TITLE' => comcode_to_tempcode($map['title'], null, true),
                 'JAVASCRIPT_HIGHLIGHTING' => $javascript_highlighting,
-            ));
+            ]);
         }
 
         return $content;
@@ -150,7 +150,7 @@ function block_menu__cache_on($map)
 
     $javascript_highlighting = ((isset($map['javascript_highlighting']) ? $map['javascript_highlighting'] : '1') == '1');
 
-    $ret = array(
+    $ret = [
         has_keep_parameters(),
         $show_edit_link,
         $menu,
@@ -158,18 +158,18 @@ function block_menu__cache_on($map)
         isset($map['title']) ? $map['title'] : '',
         ((isset($map['silent_failure']) ? $map['silent_failure'] : '0') == '1'),
         isset($map['tray_status']) ? $map['tray_status'] : '',
-    );
+    ];
 
     if (!$javascript_highlighting) {
         $page = get_page_name();
         $url_type = get_param_string('type', 'browse');
 
-        $ret = array_merge($ret, array(
+        $ret = array_merge($ret, [
             get_zone_name(),
             $page,
             $url_type,
             ($page == 'catalogues' && $url_type == 'index') ? get_param_string('id', '') : '', // Catalogues need a little extra work to distinguish them
-        ));
+        ]);
     }
 
     return $ret;

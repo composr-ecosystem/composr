@@ -36,14 +36,14 @@ class Hook_ecommerce_highlight_name
     {
         $price_points = get_option('highlight_name_price_points');
 
-        $products = array(
-            'HIGHLIGHT_NAME' => automatic_discount_calculation(array(
+        $products = [
+            'HIGHLIGHT_NAME' => automatic_discount_calculation([
                 'item_name' => do_lang('NAME_HIGHLIGHTING'),
                 'item_description' => do_lang_tempcode('NAME_HIGHLIGHTING_DESCRIPTION'),
                 'item_image_url' => find_theme_image('icons/menu/social/members'),
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => (get_option('highlight_name_price') == '') ? null : floatval(get_option('highlight_name_price')),
                 'currency' => get_option('currency'),
@@ -58,8 +58,8 @@ class Hook_ecommerce_highlight_name
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            )),
-        );
+            ]),
+        ];
         return $products;
     }
 
@@ -101,7 +101,7 @@ class Hook_ecommerce_highlight_name
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -120,9 +120,9 @@ class Hook_ecommerce_highlight_name
 
         $member_id = intval($purchase_id);
 
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_highlighted_name' => 1), array('id' => $member_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_highlighted_name' => 1], ['id' => $member_id], '', 1);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']]);
 
         return true;
     }

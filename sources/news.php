@@ -64,19 +64,19 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
     require_lang('news');
     require_css('news');
 
-    $just_news_row = db_map_restrict($row, array('id', 'title', 'news', 'news_article'));
+    $just_news_row = db_map_restrict($row, ['id', 'title', 'news', 'news_article']);
 
-    $url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), $zone);
+    $url = build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], $zone);
 
     $title = get_translated_tempcode('news', $just_news_row, 'title');
     $title_plain = get_translated_text($row['title']);
 
     global $NEWS_CATS_CACHE;
     if (!isset($NEWS_CATS_CACHE)) {
-        $NEWS_CATS_CACHE = array();
+        $NEWS_CATS_CACHE = [];
     }
     if (!array_key_exists($row['news_category'], $NEWS_CATS_CACHE)) {
-        $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('id' => $row['news_category']), '', 1);
+        $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $row['news_category']], '', 1);
         if (array_key_exists(0, $_news_cats)) {
             $NEWS_CATS_CACHE[$row['news_category']] = $_news_cats[0];
         }
@@ -110,12 +110,12 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
         $truncate = false;
     }
 
-    $author_url = addon_installed('authors') ? build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $row['author']), get_module_zone('authors')) : new Tempcode();
+    $author_url = addon_installed('authors') ? build_url(['page' => 'authors', 'type' => 'browse', 'id' => $row['author']], get_module_zone('authors')) : new Tempcode();
     $author = $row['author'];
 
-    $seo_bits = (get_value('disable_tags') === '1') ? array('', '') : seo_meta_get_for('news', strval($row['id']));
+    $seo_bits = (get_value('disable_tags') === '1') ? ['', ''] : seo_meta_get_for('news', strval($row['id']));
 
-    $map = array(
+    $map = [
         '_GUID' => ($guid != '') ? $guid : 'jd89f893jlkj9832gr3uyg2u',
         'GIVE_CONTEXT' => $give_context,
         'TAGS' => (get_theme_option('show_content_tagging_inline') == '1') ? get_loaded_tags('news', explode(',', $seo_bits[0])) : null,
@@ -135,7 +135,7 @@ function render_news_box($row, $zone = '_SEARCH', $give_context = true, $brief =
         'FULL_URL' => $url,
         'NEWS_TITLE' => $title,
         'NEWS_TITLE_PLAIN' => $title_plain,
-    );
+    ];
 
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($row['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';
@@ -164,7 +164,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
     require_lang('news');
 
     // URL
-    $map = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $row['id']);
+    $map = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $row['id']];
     if ($attach_to_url_filter) {
         if (get_param_string('type', 'browse') == 'cat_select') {
             $map['blog'] = '0';
@@ -181,8 +181,8 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('NEWS_CATEGORY'), $_title) : $_title;
 
     // Metadata
-    $num_entries = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)', array('validated' => 1, 'news_category' => $row['id']));
-    $num_entries += $GLOBALS['SITE_DB']->query_select_value('news n JOIN ' . get_table_prefix() . 'news_category_entries c ON c.news_entry=n.id', 'COUNT(*)', array('validated' => 1, 'news_entry_category' => $row['id']));
+    $num_entries = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)', ['validated' => 1, 'news_category' => $row['id']]);
+    $num_entries += $GLOBALS['SITE_DB']->query_select_value('news n JOIN ' . get_table_prefix() . 'news_category_entries c ON c.news_entry=n.id', 'COUNT(*)', ['validated' => 1, 'news_entry_category' => $row['id']]);
     $entry_details = do_lang_tempcode('CATEGORY_SUBORDINATE_2', escape_html(integer_format($num_entries)));
 
     // Image
@@ -202,7 +202,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
     }
 
     // Render
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : '49e9c7022f9171fdff02d84ee968bb52',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -216,7 +216,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
         'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'title',
         'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:cms_news:__edit_category:' . strval($row['id'])),
         'RESOURCE_TYPE' => 'news_category',
-    ));
+    ]);
 }
 
 /**
@@ -234,7 +234,7 @@ function render_news_category_box($row, $zone = '_SEARCH', $give_context = true,
 function create_selection_list_news_categories($it = null, $show_all_personal_categories = false, $addable_filter = false, $only_existing = false, $only_blogs = null, $prefer_not_blog_selected = false, $updated_since = null)
 {
     if (!is_array($it)) {
-        $it = array($it);
+        $it = [$it];
     }
 
     if ($only_blogs === true) {
@@ -258,7 +258,7 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
         $where .= ' AND EXISTS(SELECT * FROM ' . get_table_prefix() . 'news n LEFT JOIN ' . get_table_prefix() . 'news_category_entries ON news_entry=id' . $extra_join . ' WHERE validated=1 AND date_and_time>' . strval($updated_since) . $extra_where . ')';
     }
 
-    static $query_cache = array();
+    static $query_cache = [];
     if (isset($query_cache[$where])) {
         list($count, $_cats) = $query_cache[$where];
     } else {
@@ -266,7 +266,7 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
         if ($count > 500) { // Uh oh, loads, need to limit things more
             $where .= ' AND (nc_owner IS NULL OR nc_owner=' . strval(get_member()) . ')';
         }
-        $_cats = $GLOBALS['SITE_DB']->query('SELECT *,c.id as n_id FROM ' . get_table_prefix() . 'news_categories c ' . $where . ' ORDER BY c.id', null, 0, false, true, array('nc_title' => 'SHORT_TRANS'));
+        $_cats = $GLOBALS['SITE_DB']->query('SELECT *,c.id as n_id FROM ' . get_table_prefix() . 'news_categories c ' . $where . ' ORDER BY c.id', null, 0, false, true, ['nc_title' => 'SHORT_TRANS']);
 
         foreach ($_cats as $i => $cat) {
             $_cats[$i]['nice_title'] = get_translated_text($cat['nc_title']);
@@ -275,12 +275,12 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
 
         // Sort
         $title_ordered_cats = $_cats;
-        $_cats = array();
+        $_cats = [];
         foreach ($title_ordered_cats as $cat) {
             $_cats[] = $cat;
         }
 
-        $query_cache[$where] = array($count, $_cats);
+        $query_cache[$where] = [$count, $_cats];
     }
 
     $categories_non_blogs = new Tempcode();
@@ -299,7 +299,7 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
         }
         if ($addable_filter) {
             if ($cat['nc_owner'] !== get_member()) {
-                if (!has_submit_permission('high', get_member(), get_ip_address(), 'cms_news', array('news', $cat['id']))) {
+                if (!has_submit_permission('high', get_member(), get_ip_address(), 'cms_news', ['news', $cat['id']])) {
                     continue;
                 }
             } else {
@@ -310,7 +310,7 @@ function create_selection_list_news_categories($it = null, $show_all_personal_ca
         }
 
         if ($cat['nc_owner'] === null) {
-            $li = form_input_list_entry(strval($cat['n_id']), ($it != array(null)) && in_array($cat['n_id'], $it), $cat['nice_title'] . ' (#' . strval($cat['n_id']) . ')');
+            $li = form_input_list_entry(strval($cat['n_id']), ($it != [null]) && in_array($cat['n_id'], $it), $cat['nice_title'] . ' (#' . strval($cat['n_id']) . ')');
             $categories_non_blogs->attach($li);
         } else {
             if (((($cat['nc_owner'] !== null) && ($may_blog)) || (($cat['nc_owner'] == get_member()) && (!is_guest()))) || ($show_all_personal_categories)) {
@@ -362,7 +362,7 @@ function create_selection_list_news($it, $only_owned = null, $editable_filter = 
         if (!has_category_access(get_member(), 'news', strval($myrow['news_category']))) {
             continue;
         }
-        if (($editable_filter) && (!has_edit_permission($only_in_blog ? 'mid' : 'high', get_member(), $myrow['submitter'], $only_in_blog ? 'cms_blogs' : 'cms_news', array('news', $myrow['news_category'])))) {
+        if (($editable_filter) && (!has_edit_permission($only_in_blog ? 'mid' : 'high', get_member(), $myrow['submitter'], $only_in_blog ? 'cms_blogs' : 'cms_news', ['news', $myrow['news_category']]))) {
             continue;
         }
 

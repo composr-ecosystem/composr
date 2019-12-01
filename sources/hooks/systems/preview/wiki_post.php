@@ -31,7 +31,7 @@ class Hook_preview_wiki_post
     public function applies()
     {
         $applies = (addon_installed('wiki')) && (get_page_name() == 'wiki');
-        return array($applies, 'wiki_post', false);
+        return [$applies, 'wiki_post', false];
     }
 
     /**
@@ -51,6 +51,6 @@ class Hook_preview_wiki_post
         $post_comcode = $post_bits['comcode'];
         $post_html = $post_bits['tempcode'];
 
-        return array($post_html, $post_comcode);
+        return [$post_html, $post_comcode];
     }
 }

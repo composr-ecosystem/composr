@@ -39,7 +39,7 @@ class Hook_whatsnew_calendar
 
         require_code('calendar');
         $cats = create_selection_list_event_types(null, $updated_since);
-        return array($cats, do_lang('CALENDAR'));
+        return [$cats, do_lang('CALENDAR')];
     }
 
     /**
@@ -53,7 +53,7 @@ class Hook_whatsnew_calendar
     public function run($cutoff_time, $lang, $filter)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
         require_lang('calendar');
@@ -79,21 +79,21 @@ class Hook_whatsnew_calendar
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_events e ' . $extra_join . ' WHERE e_add_date>' . strval($cutoff_time) . ' AND e_member_calendar IS NULL AND (' . $or_list . ')' . $extra_where . ' ORDER BY e_add_date DESC', $max);
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
 
         foreach ($rows as $row) {
             $id = $row['id'];
-            $_url = build_url(array('page' => 'calendar', 'type' => 'view', 'id' => $row['id']), get_module_zone('calendar'), array(), false, false, true);
+            $_url = build_url(['page' => 'calendar', 'type' => 'view', 'id' => $row['id']], get_module_zone('calendar'), [], false, false, true);
             $url = $_url->evaluate();
             $name = get_translated_text($row['e_title'], null, $lang);
             $description = get_translated_text($row['e_content'], null, $lang);
             $member_id = (is_guest($row['e_submitter'])) ? null : strval($row['e_submitter']);
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => '654cafa75ec9f9b8e0e0fb666f28fb37', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'event', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '654cafa75ec9f9b8e0e0fb666f28fb37', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'event', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
-        return array($new, do_lang('CALENDAR', '', '', '', $lang));
+        return [$new, do_lang('CALENDAR', '', '', '', $lang)];
     }
 }

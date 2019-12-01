@@ -30,7 +30,7 @@ class Hook_cleanup_http
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('HTTP_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_HTTP_CACHE');
         $info['type'] = 'cache';
@@ -49,7 +49,7 @@ class Hook_cleanup_http
         $dh = @opendir($full);
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
-                if (!in_array($file, array('index.html', '.htaccess'))) {
+                if (!in_array($file, ['index.html', '.htaccess'])) {
                     @unlink($full . '/' . $file);
                 }
             }

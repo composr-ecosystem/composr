@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_newsletter_subscriber
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'newsletter:NEWSLETTER_SUBSCRIBER',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_newsletter_subscriber
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => 'IMPORT_NEWSLETTER_SUBSCRIBERS',
-        );
+        ];
     }
 }

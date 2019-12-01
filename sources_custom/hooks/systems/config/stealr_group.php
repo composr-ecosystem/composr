@@ -25,7 +25,7 @@ class Hook_config_stealr_group
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STEALR_GROUP',
             'type' => 'usergroup_not_guest',
             'category' => 'ECOMMERCE',
@@ -37,7 +37,7 @@ class Hook_config_stealr_group
             'public' => false,
 
             'addon' => 'stealr',
-        );
+        ];
     }
 
     /**

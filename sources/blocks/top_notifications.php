@@ -30,14 +30,14 @@ class Block_top_notifications
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('max');
+        $info['parameters'] = ['max'];
         return $info;
     }
 
@@ -63,7 +63,7 @@ class Block_top_notifications
 
         list($pts, $num_unread_pts) = get_pts($max);
 
-        return do_template('BLOCK_TOP_NOTIFICATIONS', array(
+        return do_template('BLOCK_TOP_NOTIFICATIONS', [
             '_GUID' => '3fa04eb827741561440dbf1a65988b33',
             'BLOCK_ID' => $block_id,
 
@@ -74,6 +74,6 @@ class Block_top_notifications
             'PTS' => $pts,
 
             'MAX' => strval($max),
-        ));
+        ]);
     }
 }

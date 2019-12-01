@@ -30,7 +30,7 @@ class Hook_config_days_to_keep__cron_log
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DAYS_TO_KEEP__CRON_LOG',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_days_to_keep__cron_log
             'public' => false,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

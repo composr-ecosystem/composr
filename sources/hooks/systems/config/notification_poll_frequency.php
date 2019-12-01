@@ -30,7 +30,7 @@ class Hook_config_notification_poll_frequency
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATION_POLL_FREQUENCY',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_notification_poll_frequency
             'public' => true,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

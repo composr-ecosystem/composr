@@ -30,7 +30,7 @@ class Hook_config_ldap_bind_password
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_bind_password
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

@@ -51,7 +51,7 @@ function get_git_file_base()
 function find_branch()
 {
     $lines = git_exec('status');
-    $matches = array();
+    $matches = [];
     if ((array_key_exists(0, $lines)) && (preg_match('#On branch (\w+)$#', $lines[0], $matches) != 0)) {
         return $matches[1];
     }
@@ -61,7 +61,7 @@ function find_branch()
 function num_unsynched_local_commits()
 {
     $lines = git_exec('status');
-    $matches = array();
+    $matches = [];
     if (preg_match('# ahead of \'[^\']*\' by (\d+) commit#', implode("\n", $lines), $matches) != 0) {
         return intval($matches[1]);
     }
@@ -73,7 +73,7 @@ function num_unsynched_remote_commits()
     git_exec('fetch');
 
     $lines = git_exec('status');
-    $matches = array();
+    $matches = [];
     if (preg_match('# behind \'[^\']*\' by (\d+) commit#', implode("\n", $lines), $matches) != 0) {
         return intval($matches[1]);
     }
@@ -82,12 +82,12 @@ function num_unsynched_remote_commits()
 
 function get_local_changes($include_metadata = false, $include_ignored = false)
 {
-    $changes = array();
+    $changes = [];
 
     $lines = git_exec('status --short' . ($include_ignored ? ' --ignored' : ''));
 
     foreach ($lines as $line) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^\s*([!\?MADRC])+( .* ->)? (.*)$#', $line, $matches) != 0) {
             switch ($matches[1]) {
                 case '!':
@@ -128,11 +128,11 @@ function get_local_changes($include_metadata = false, $include_ignored = false)
                 $mtime = null;
             }
 
-            $changes[$path] = array(
+            $changes[$path] = [
                 'file_size' => $file_size,
                 'mtime' => $mtime,
                 'git_status' => $git_status,
-            );
+            ];
         }
     }
 
@@ -153,16 +153,16 @@ function git_revert($path)
 function get_remote_changes($include_metadata = false)
 {
     if (num_unsynched_remote_commits() == 0) {
-        return array();
+        return [];
     }
 
-    $changes = array();
+    $changes = [];
 
     $branch = find_branch();
     $lines = git_exec('diff HEAD..origin/' . $branch . '  --name-status --no-renames');
 
     foreach ($lines as $line) {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([AMD])\s+(.*)$#', $line, $matches) != 0) {
             switch ($matches[1]) {
                 case 'A':
@@ -191,11 +191,11 @@ function get_remote_changes($include_metadata = false)
                 $mtime = null;
             }
 
-            $changes[$path] = array(
+            $changes[$path] = [
                 'file_size' => $file_size,
                 'mtime' => $mtime,
                 'git_status' => $git_status,
-            );
+            ];
 
             if (count($changes) == 50) {
                 break; // For performance
@@ -232,7 +232,7 @@ function get_remote_diff($path)
 
 function git_exec($cmd)
 {
-    static $cache = array();
+    static $cache = [];
     if (array_key_exists($cmd, $cache)) {
         return $cache[$cmd];
     }

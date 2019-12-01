@@ -30,7 +30,7 @@ class Hook_config_forum_in_portal
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORUM_IN_PORTAL',
             'type' => 'tick',
             'category' => 'SITE',
@@ -45,7 +45,7 @@ class Hook_config_forum_in_portal
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'forum_in_portal',
-        );
+        ];
     }
 
     /**

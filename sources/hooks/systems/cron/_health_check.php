@@ -36,11 +36,11 @@ class Hook_cron__health_check
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Health Check',
             'num_queued' => null,
             'minutes_between_runs' => intval(get_option('hc_cron_regularity')),
-        );
+        ];
     }
 
     /**
@@ -56,7 +56,7 @@ class Hook_cron__health_check
 
         $cron_notify_regardless = get_option('hc_cron_notify_regardless');
 
-        $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? array() : explode(',', get_option('hc_cron_sections_to_run'));
+        $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? [] : explode(',', get_option('hc_cron_sections_to_run'));
         $passes = ($cron_notify_regardless == '1');
         $skips = ($cron_notify_regardless == '1');
         $manual_checks = false;
@@ -65,12 +65,12 @@ class Hook_cron__health_check
         $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks, false, null);
 
         if ((!empty($categories)) || ($cron_notify_regardless == '1')) {
-            $results = do_template('HEALTH_CHECK_RESULTS', array('_GUID' => 'b7bbb671bacc1a5eee03a71c3f1a1eac', 'CATEGORIES' => $categories));
+            $results = do_template('HEALTH_CHECK_RESULTS', ['_GUID' => 'b7bbb671bacc1a5eee03a71c3f1a1eac', 'CATEGORIES' => $categories]);
 
             require_code('notifications');
             $subject = do_lang('HEALTH_CHECK_SUBJECT_' . ($has_fails ? 'fail' : 'misc'));
             $message = do_lang('HEALTH_CHECK_BODY', $results->evaluate());
-            dispatch_notification('health_check', $has_fails ? '1' : '0', $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED, array('priority' => $has_fails ? 1 : 4));
+            dispatch_notification('health_check', $has_fails ? '1' : '0', $subject, $message, null, A_FROM_SYSTEM_PRIVILEGED, ['priority' => $has_fails ? 1 : 4]);
         }
     }
 }

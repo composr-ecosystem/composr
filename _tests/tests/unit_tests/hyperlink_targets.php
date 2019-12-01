@@ -21,12 +21,12 @@ class hyperlink_targets_test_set extends cms_test_case
     public function testHyperlinkTargets()
     {
         require_code('files2');
-        $dirs = array(
+        $dirs = [
             'themes/default/templates',
             'themes/default/templates_custom',
             'lang/' . fallback_lang(),
             'lang_custom/' . fallback_lang(),
-        );
+        ];
         foreach ($dirs as $path) {
             $files = get_directory_contents(get_file_base() . '/' . $path, get_file_base() . '/' . $path, IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
             foreach ($files as $_path) {

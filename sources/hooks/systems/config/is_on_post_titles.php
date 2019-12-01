@@ -30,7 +30,7 @@ class Hook_config_is_on_post_titles
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_POST_TITLES',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_post_titles
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

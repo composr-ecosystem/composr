@@ -31,7 +31,7 @@ class Hook_addon_registry_themewizard
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_themewizard
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_themes',
             'tut_designer_themes',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_themewizard
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_themewizard
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/style/themes/logowizard.svg',
             'themes/default/images/icons/menu/adminzone/style/themes/themewizard.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/style/themes/logowizard.svg',
@@ -162,7 +162,7 @@ class Hook_addon_registry_themewizard
             'themes/default/images/logo/default_backgrounds/banner9.png',
             'themes/default/images/logo/default_backgrounds/banner10.png',
             'themes/default/javascript/themewizard.js',
-        );
+        ];
     }
 
     /**
@@ -172,11 +172,11 @@ class Hook_addon_registry_themewizard
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/THEMEWIZARD_2_PREVIEW.tpl' => 'administrative__themewizard_2_preview',
             'templates/THEMEWIZARD_2_SCREEN.tpl' => 'administrative__themewizard_2_screen',
             'templates/LOGOWIZARD_2.tpl' => 'administrative__logowizard_2',
-        );
+        ];
     }
 
     /**
@@ -192,9 +192,9 @@ class Hook_addon_registry_themewizard
 
         $content = do_lorem_template('THEMEWIZARD_2_PREVIEW');
 
-        return array(
+        return [
             lorem_globalise($content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -208,8 +208,8 @@ class Hook_addon_registry_themewizard
     {
         require_lang('themes');
 
-        return array(
-            lorem_globalise(do_lorem_template('THEMEWIZARD_2_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('THEMEWIZARD_2_SCREEN', [
                 'SOURCE_THEME' => 'default',
                 'ALGORITHM' => 'equations',
                 'RED' => placeholder_id(),
@@ -222,8 +222,8 @@ class Hook_addon_registry_themewizard
                 'TITLE' => lorem_title(),
                 'CHANGE_URL' => placeholder_url(),
                 'STAGE3_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -239,22 +239,22 @@ class Hook_addon_registry_themewizard
 
         require_code('fonts');
 
-        $preview = do_lorem_template('LOGOWIZARD_2', array(
+        $preview = do_lorem_template('LOGOWIZARD_2', [
             'NAME' => lorem_phrase(),
             'LOGO_THEME_IMAGE' => 'logo/default_logos/1',
             'BACKGROUND_THEME_IMAGE' => 'logo/default_backgrounds/1',
             'THEME' => lorem_phrase(),
             'FONT' => find_default_font(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('CONFIRM_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CONFIRM_SCREEN', [
                 'URL' => placeholder_url(),
                 'BACK_URL' => placeholder_url(),
                 'PREVIEW' => $preview,
                 'FIELDS' => '',
                 'TITLE' => lorem_title(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

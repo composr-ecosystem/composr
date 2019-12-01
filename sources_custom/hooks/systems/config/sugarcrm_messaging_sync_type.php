@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_messaging_sync_type
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_MESSAGING_SYNC_TYPE',
             'type' => 'list',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_messaging_sync_type
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

@@ -44,8 +44,8 @@ class comments_test_set extends cms_test_case
             return;
         }
 
-        if ('test_event' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', array('id' => $this->event_id)))) {
-            $map = array(
+        if ('test_event' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('calendar_events', 'e_title', ['id' => $this->event_id]))) {
+            $map = [
                 'p_title' => 'test_comment1',
                 'p_ip_address' => '127.0.0.1',
                 'p_time' => time(),
@@ -60,7 +60,7 @@ class comments_test_set extends cms_test_case
                 'p_intended_solely_for' => null,
                 'p_skip_sig' => 0,
                 'p_parent_id' => null,
-            );
+            ];
             $map += insert_lang_comcode('p_post', 'test_comment_desc_1', 4, $GLOBALS['FORUM_DB']);
             $this->post_id = $GLOBALS['FORUM_DB']->query_insert('f_posts', $map, true);
         }
@@ -78,7 +78,7 @@ class comments_test_set extends cms_test_case
         }
 
         delete_calendar_event($this->event_id);
-        $GLOBALS['FORUM_DB']->query_delete('f_posts', array('id' => $this->post_id));
+        $GLOBALS['FORUM_DB']->query_delete('f_posts', ['id' => $this->post_id]);
 
         parent::tearDown();
     }

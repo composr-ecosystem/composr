@@ -54,12 +54,12 @@ echo '</ul>';
 
 function find_existing()
 {
-    $out = array();
+    $out = [];
     $d = opendir(get_file_base() . '/themes/default/css');
     while (($e = readdir($d)) !== false) {
         if (substr($e, -4) == '.css') {
             $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-            $matches = array();
+            $matches = [];
             $found = preg_match_all('#\.([a-z][a-z_\d]*)[ ,:]#', $contents, $matches);
             for ($i = 0; $i < $found; $i++) {
                 if ($matches[1][$i] != 'txt') {
@@ -74,12 +74,12 @@ function find_existing()
 
 function find_used()
 {
-    $out = array();
+    $out = [];
     $d = opendir(get_file_base() . '/themes/default/templates');
     while (($e = readdir($d)) !== false) {
         if (substr($e, -4) == '.tpl') {
             $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/templates/' . $e, FILE_READ_LOCK);
-            $matches = array();
+            $matches = [];
             $found = preg_match_all('#class="([\w ]+)"#', $contents, $matches);
             for ($i = 0; $i < $found; $i++) {
                 $out = array_merge($out, explode(' ', $matches[1][$i]));

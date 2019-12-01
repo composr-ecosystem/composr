@@ -44,7 +44,7 @@ class Hook_ajax_tree_choose_image
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'galleries')) {
-            $tree = array();
+            $tree = [];
         }
 
         $out = '';
@@ -55,7 +55,7 @@ class Hook_ajax_tree_choose_image
             $_id = $t['id'];
 
             if (($t['child_count'] == 0) || (strpos($_id, 'member_') !== false)) {
-                if (($editable_filter) && ((can_submit_to_gallery($_id) === false) || (!has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', array('galleries', $_id))))) {
+                if (($editable_filter) && ((can_submit_to_gallery($_id) === false) || (!has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', ['galleries', $_id])))) {
                     continue; // A bit of a fudge (assumes if you cannot add to a gallery, you cannot edit its contents), but stops noise in the edit list
                 }
             }
@@ -85,10 +85,10 @@ class Hook_ajax_tree_choose_image
 
         // Mark parent cats for pre-expansion
         if (!cms_empty_safe($default)) {
-            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array('id' => intval($default)));
+            $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($default)]);
             while (!cms_empty_safe($cat)) {
                 $out .= '<expand>' . $cat . '</expand>';
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $cat));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $cat]);
             }
         }
 

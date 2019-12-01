@@ -25,7 +25,7 @@ class Hook_config_search_iotds
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_SEARCH_IOTDS',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -37,7 +37,7 @@ class Hook_config_search_iotds
             'public' => false,
 
             'addon' => 'iotds',
-        );
+        ];
     }
 
     /**

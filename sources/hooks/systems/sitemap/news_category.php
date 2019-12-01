@@ -27,8 +27,8 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
     protected $screen_type = 'browse';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('news');
-    protected $entry_sitetree_hook = array('news');
+    protected $entry_content_type = ['news'];
+    protected $entry_sitetree_hook = ['news'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -60,10 +60,10 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -80,7 +80,7 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array(), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 if (strpos($page_link, ':blog=0') !== false) {
@@ -135,20 +135,20 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
 
         $partial_struct['page_link'] = $page_link;
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
 
         $this->_make_zone_concrete($zone, $page_link);
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_HIGH,
             'sitemap_refreshfreq' => 'daily',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_news', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_news')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_news', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_news')),
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;
@@ -175,14 +175,14 @@ class Hook_sitemap_news_category extends Hook_sitemap_content
 
                 $skip_children = false;
                 if ($child_cutoff !== null) {
-                    $count = $GLOBALS['SITE_DB']->query_select_value('news_category_entries', 'COUNT(*)', array('news_entry_category' => intval($content_id)));
+                    $count = $GLOBALS['SITE_DB']->query_select_value('news_category_entries', 'COUNT(*)', ['news_entry_category' => intval($content_id)]);
                     if ($count > $child_cutoff) {
                         $skip_children = true;
                     }
                 }
 
                 if (!$skip_children) {
-                    $child_rows = $GLOBALS['SITE_DB']->query_select('news_category_entries', array('news_entry'), array('news_entry_category' => intval($content_id)));
+                    $child_rows = $GLOBALS['SITE_DB']->query_select('news_category_entries', ['news_entry'], ['news_entry_category' => intval($content_id)]);
                     foreach ($child_rows as $child_row) {
                         $child_page_link = $zone . ':' . $page . ':view:' . strval($child_row['news_entry']);
                         $child_node = $child_hook_ob->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather);

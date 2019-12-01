@@ -40,11 +40,11 @@ class Hook_ecommerce_catalogue_items
 
         require_lang('shopping');
 
-        return array(
+        return [
             'category_name' => do_lang('CATALOGUE_ITEM'),
             'category_description' => do_lang_tempcode('CATALOGUE_ITEM_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/menu/rich_content/catalogues/products'),
-        );
+        ];
     }
 
     /**
@@ -59,21 +59,21 @@ class Hook_ecommerce_catalogue_items
     public function get_products($search = null)
     {
         if ($search === null) {
-            $cnt = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', 'COUNT(*)', array('c_ecommerce' => 1));
+            $cnt = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', 'COUNT(*)', ['c_ecommerce' => 1]);
             if ($cnt > 50) {
-                return array(); // Too many to list
+                return []; // Too many to list
             }
         }
 
         require_code('catalogues');
         require_code('shopping');
 
-        $products = array();
+        $products = [];
 
-        $where = array('c_ecommerce' => 1);
+        $where = ['c_ecommerce' => 1];
         if ($search !== null) {
             if (!is_numeric($search)) {
-                return array();
+                return [];
             }
             $where['id'] = intval($search);
         }
@@ -82,7 +82,7 @@ class Hook_ecommerce_catalogue_items
 
         $start = 0;
         do {
-            $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', array('t1.id', 't1.c_name'), $where, '', 500, $start);
+            $entry_rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries t1 LEFT JOIN ' . get_table_prefix() . 'catalogues t2 ON t1.c_name=t2.c_name', ['t1.id', 't1.c_name'], $where, '', 500, $start);
             foreach ($entry_rows as $entry_row) {
                 $fields_map = find_shopping_catalogue_fields($entry_row['c_name']);
                 $shopping_catalogue__product_title = $fields_map['product_title'];
@@ -150,13 +150,13 @@ class Hook_ecommerce_catalogue_items
                 }
 
                 // For catalogue items we make the numeric product ID the raw ID for the eCommerce item. This is unique to catalogue items (necessarily so, to avoid conflicts), and we do it for convenience
-                $products[strval($entry_row['id'])/*We use numeric indices for shopping catalogue items*/] = array(
+                $products[strval($entry_row['id'])/*We use numeric indices for shopping catalogue items*/] = [
                     'item_name' => $product_title,
                     'item_description' => ($field_rows[$shopping_catalogue__description]['effective_value']->is_empty()) ? new Tempcode() : $field_rows[$shopping_catalogue__description]['effective_value'],
                     'item_image_url' => $image_url,
 
                     'type' => PRODUCT_CATALOGUE,
-                    'type_special_details' => array('sku' => $sku, 'call_actualiser_from_cart' => false),
+                    'type_special_details' => ['sku' => $sku, 'call_actualiser_from_cart' => false],
 
                     'price' => $price,
                     'currency' => get_option('currency'),
@@ -171,7 +171,7 @@ class Hook_ecommerce_catalogue_items
                     'product_width' => $product_width,
                     'product_height' => $product_height,
                     'needs_shipping_address' => true,
-                );
+                ];
             }
             $start += 500;
         } while (count($entry_rows) == 500);
@@ -200,7 +200,7 @@ class Hook_ecommerce_catalogue_items
             return ECOMMERCE_PRODUCT_DISABLED; // Don't list within purchasing module, we only want it as a part of a cart order. Otherwise we can't actually track who bought it. We do allow purchase of single product orders.
         }
 
-        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => intval($type_code)), '', 1);
+        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => intval($type_code)], '', 1);
         if (!array_key_exists(0, $res)) {
             return ECOMMERCE_PRODUCT_MISSING;
         }
@@ -258,7 +258,7 @@ class Hook_ecommerce_catalogue_items
 
         require_code('catalogues');
 
-        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => intval($type_code)));
+        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => intval($type_code)]);
         if (!array_key_exists(0, $res)) {
             return 0;
         }
@@ -304,9 +304,9 @@ class Hook_ecommerce_catalogue_items
 
             // Items in own cart (not locked, but tied to this purchase)
             if ($consider_own_cart_contents) {
-                $where = array(
+                $where = [
                     'type_code' => $type_code,
-                );
+                ];
                 if (is_guest($member_id)) {
                     $where['session_id'] = get_session_id();
                 } else {
@@ -335,16 +335,16 @@ class Hook_ecommerce_catalogue_items
         require_code('catalogues');
         require_lang('catalogues');
 
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => intval($type_code)));
+        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', ['id' => intval($type_code)]);
 
-        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array('c_name' => $catalogue_name), '', 1);
+        $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], ['c_name' => $catalogue_name], '', 1);
         if (!array_key_exists(0, $catalogues)) {
             warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html($catalogue_name)));
         }
 
         $catalogue = $catalogues[0];
 
-        $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => intval($type_code)), '', 1);
+        $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => intval($type_code)], '', 1);
 
         if (!array_key_exists(0, $entries)) {
             return warn_screen(get_screen_title('CATALOGUES'), do_lang_tempcode('MISSING_RESOURCE', 'catalogue_entry'));
@@ -372,25 +372,25 @@ class Hook_ecommerce_catalogue_items
 
         require_lang('shopping');
 
-        $cart_url = build_url(array('page' => 'shopping', 'type' => 'browse'), '_SELF');
+        $cart_url = build_url(['page' => 'shopping', 'type' => 'browse'], '_SELF');
 
         $available_quantity = $this->get_available_quantity(strval($id));
         $out_of_stock = ($available_quantity !== null) && ($available_quantity <= 0);
 
-        $action_url = build_url(array('page' => 'shopping', 'type' => 'add_item'), '_SELF');
+        $action_url = build_url(['page' => 'shopping', 'type' => 'add_item'], '_SELF');
 
         // Single purchase, by-passing cart
         $next_purchase_step = get_next_purchase_step($this, strval($id), 'browse');
-        $purchase_action_url = build_url(array('page' => 'purchase', 'type' => $next_purchase_step, 'type_code' => strval($id), 'id' => $id), '_SELF');
+        $purchase_action_url = build_url(['page' => 'purchase', 'type' => $next_purchase_step, 'type_code' => strval($id), 'id' => $id], '_SELF');
 
-        $map['CART_BUTTONS'] = do_template('ECOM_SHOPPING_CART_BUTTONS', array(
+        $map['CART_BUTTONS'] = do_template('ECOM_SHOPPING_CART_BUTTONS', [
             '_GUID' => 'd4491c6e221b1f06375a6427da062bac',
             'OUT_OF_STOCK' => $out_of_stock,
             'ACTION_URL' => $action_url,
             'TYPE_CODE' => strval($id),
             'PURCHASE_ACTION_URL' => $purchase_action_url,
             'CART_URL' => $cart_url,
-        ));
+        ]);
     }
 
     /**
@@ -405,7 +405,7 @@ class Hook_ecommerce_catalogue_items
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -424,7 +424,7 @@ class Hook_ecommerce_catalogue_items
 
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $details['tax_code'], $details['price'], $shipping_cost);
 
-        $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', array(
+        $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', [
             'member_id' => get_member(),
             'session_id' => get_session_id(),
             'add_date' => time(),
@@ -443,9 +443,9 @@ class Hook_ecommerce_catalogue_items
             'notes' => '',
             'purchase_through' => 'purchase_module',
             'txn_id' => '',
-        ), true);
+        ], true);
 
-        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', array(
+        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', [
             'p_type_code' => $type_code,
             'p_purchase_id' => '',
             'p_name' => $details['item_name'],
@@ -456,9 +456,9 @@ class Hook_ecommerce_catalogue_items
             'p_tax' => $tax,
             'p_order_id' => $order_id,
             'p_dispatch_status' => 'ORDER_STATUS_awaiting_payment',
-        ));
+        ]);
 
-        return array(strval($order_id), null);
+        return [strval($order_id), null];
     }
 
     /**
@@ -481,24 +481,24 @@ class Hook_ecommerce_catalogue_items
         $order_id = intval($purchase_id);
 
         if ($details['STATUS'] == 'Completed') {
-            $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', array('id' => $order_id));
-            $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']));
+            $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', ['id' => $order_id]);
+            $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']]);
         }
 
-        $old_status = $GLOBALS['SITE_DB']->query_select_value('shopping_order_details', 'p_dispatch_status', array('p_order_id' => $order_id));
+        $old_status = $GLOBALS['SITE_DB']->query_select_value('shopping_order_details', 'p_dispatch_status', ['p_order_id' => $order_id]);
 
         if ($old_status != $details['ORDER_STATUS']) {
-            $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => $details['ORDER_STATUS']), array('p_order_id' => $order_id));
+            $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => $details['ORDER_STATUS']], ['p_order_id' => $order_id]);
 
-            $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => $details['ORDER_STATUS'], 'txn_id' => $details['TXN_ID']), array('id' => $order_id));
+            $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => $details['ORDER_STATUS'], 'txn_id' => $details['TXN_ID']], ['id' => $order_id]);
 
             // Copy in memo from transaction, as customer notes
-            $old_memo = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', array('id' => $order_id));
+            $old_memo = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', ['id' => $order_id]);
             if ($old_memo == '') {
-                $memo = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 't_memo', array('id' => $details['TXN_ID']));
+                $memo = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 't_memo', ['id' => $details['TXN_ID']]);
                 if ($memo != '') {
                     $memo = do_lang('CUSTOMER_NOTES') . "\n" . $memo;
-                    $GLOBALS['SITE_DB']->query_update('shopping_orders', array('notes' => $memo), array('id' => $order_id), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('shopping_orders', ['notes' => $memo], ['id' => $order_id], '', 1);
                 }
             }
 
@@ -520,7 +520,7 @@ class Hook_ecommerce_catalogue_items
     {
         require_code('catalogues');
 
-        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('c_name', 'cc_id'), array('id' => $entry_id), '', 1);
+        $res = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['c_name', 'cc_id'], ['id' => $entry_id], '', 1);
         if (!array_key_exists(0, $res)) {
             return;
         }
@@ -587,7 +587,7 @@ class Hook_ecommerce_catalogue_items
         }
 
         if (array_key_exists($shopping_catalogue__stock_level, $field_rows)) {
-            $GLOBALS['SITE_DB']->query_update('catalogue_efv_integer', array('cv_value' => intval($stock_after_dispatch)), array('cf_id' => $stock_field_id, 'ce_id' => $entry_id));
+            $GLOBALS['SITE_DB']->query_update('catalogue_efv_integer', ['cv_value' => intval($stock_after_dispatch)], ['cf_id' => $stock_field_id, 'ce_id' => $entry_id]);
         }
     }
 
@@ -604,7 +604,7 @@ class Hook_ecommerce_catalogue_items
         require_code('notifications');
 
         $subject = do_lang('STOCK_LEVEL_MAIL_SUBJECT', get_site_name(), $product_title, null, get_site_default_lang());
-        $message = do_notification_lang('STOCK_MAINTENANCE_WARN_MAIL', comcode_escape(get_site_name()), comcode_escape($product_title), array($product_details_url->evaluate()), get_site_default_lang());
+        $message = do_notification_lang('STOCK_MAINTENANCE_WARN_MAIL', comcode_escape(get_site_name()), comcode_escape($product_title), [$product_details_url->evaluate()], get_site_default_lang());
 
         dispatch_notification('low_stock', null, $subject, $message, null, null, A_FROM_SYSTEM_PRIVILEGED);
     }
@@ -619,7 +619,7 @@ class Hook_ecommerce_catalogue_items
     public function member_for($type_code, $purchase_id)
     {
         $order_id = intval($purchase_id);
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'member_id', array('id' => $order_id));
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'member_id', ['id' => $order_id]);
     }
 
     /**

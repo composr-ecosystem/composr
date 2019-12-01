@@ -36,7 +36,7 @@ class Hook_content_meta_aware_event
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'calendar:EVENT',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_event
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_EVENT',
-        );
+        ];
     }
 
     /**

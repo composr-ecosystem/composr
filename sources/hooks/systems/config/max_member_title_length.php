@@ -30,7 +30,7 @@ class Hook_config_max_member_title_length
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_MEMBER_TITLE_LENGTH',
             'type' => 'integer',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_max_member_title_length
             'public' => false,
 
             'addon' => 'cns_member_titles',
-        );
+        ];
     }
 
     /**

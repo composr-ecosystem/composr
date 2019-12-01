@@ -30,7 +30,7 @@ class Hook_config_business_county
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BUSINESS_COUNTY',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_business_county
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

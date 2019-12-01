@@ -30,7 +30,7 @@ class Hook_config_main_forum_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAIN_FORUM_NAME',
             'type' => 'forum',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_main_forum_name
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

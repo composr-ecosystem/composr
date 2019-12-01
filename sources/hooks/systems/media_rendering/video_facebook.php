@@ -91,7 +91,7 @@ class Hook_media_rendering_video_facebook extends Media_renderer_with_fallback
         if ($this->recognises_url($src_url)) {
             $id = null;
 
-            $matches = array();
+            $matches = [];
             if (preg_match('#^https?://www\.facebook\.com/video/video\.php\?v=(\d+)#', $src_url, $matches) != 0) {
                 $id = $matches[1];
             } elseif (preg_match('#^https?://www\.facebook\.com/video\.php\?v=(\d+)#', $src_url, $matches) != 0) {
@@ -128,7 +128,7 @@ class Hook_media_rendering_video_facebook extends Media_renderer_with_fallback
             $url = $url->evaluate();
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^https?://www\.facebook\.com/video/video\.php\?v=(\w+)#', $url, $matches) != 0) {
             $attributes['remote_id'] = $matches[1];
         }
@@ -142,6 +142,6 @@ class Hook_media_rendering_video_facebook extends Media_renderer_with_fallback
             $attributes['remote_id'] = $matches[1];
         }
 
-        return do_template('MEDIA_VIDEO_FACEBOOK', array('_GUID' => 'f9ba7e3b94d421791233cf3a34508ed7', 'HOOK' => 'video_facebook') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_VIDEO_FACEBOOK', ['_GUID' => 'f9ba7e3b94d421791233cf3a34508ed7', 'HOOK' => 'video_facebook'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

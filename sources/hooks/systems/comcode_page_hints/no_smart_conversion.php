@@ -39,10 +39,10 @@ class Hook_comcode_page_hints_no_smart_conversion
         }
 
         require_lang('comcode');
-        return array(
+        return [
             'label' => do_lang_tempcode('PAGE_HINT_SMART_CONVERSION_LABEL'),
             'description' => do_lang_tempcode('PAGE_HINT_SMART_CONVERSION_DESCRIPTION'),
             'inverted' => true,
-        );
+        ];
     }
 }

@@ -53,7 +53,7 @@ function form_to_email_entry_script()
         require_code('site2');
         $tpl = redirect_screen($title, $redirect);
     } else {
-        $tpl = do_template('INFORM_SCREEN', array('_GUID' => 'e577a4df79eefd9064c14240cc99e947', 'TITLE' => $title, 'TEXT' => $text));
+        $tpl = do_template('INFORM_SCREEN', ['_GUID' => 'e577a4df79eefd9064c14240cc99e947', 'TITLE' => $title, 'TEXT' => $text]);
     }
 
     $echo = globalise($tpl, null, '', true);
@@ -75,7 +75,7 @@ function form_to_email_entry_script()
 function form_to_email($subject = null, $subject_prefix = '', $subject_suffix = '', $body_prefix = '', $body_suffix = '', $fields = null, $to_email = null, $is_via_post = true)
 {
     // Data
-    $details = _form_to_email(array(), $subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $fields, $to_email, $is_via_post);
+    $details = _form_to_email([], $subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $fields, $to_email, $is_via_post);
     list($subject, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts) = $details;
 
     // Check CAPTCHA
@@ -102,12 +102,12 @@ function form_to_email($subject = null, $subject_prefix = '', $subject_suffix = 
 
     // Send e-mail
     if (!$block_email) {
-        dispatch_mail($subject, $body, ($to_email === null) ? null : array($to_email), $to_name, $from_email, $from_name, array('attachments' => $attachments));
+        dispatch_mail($subject, $body, ($to_email === null) ? null : [$to_email], $to_name, $from_email, $from_name, ['attachments' => $attachments]);
     }
 
     // Send standard confirmation e-mail to current user
     if (($from_email != '') && (get_option('message_received_emails') == '1') && (post_param_integer('_no_confirm_email', 0) != 1)) {
-        dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), array($from_email), $from_name, '', '', array('as' => get_member()));
+        dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), [$from_email], $from_name, '', '', ['as' => get_member()]);
     }
 }
 
@@ -127,7 +127,7 @@ function form_to_email($subject = null, $subject_prefix = '', $subject_suffix = 
  *
  * @ignore
  */
-function _form_to_email($extra_boring_fields = array(), $subject = null, $subject_prefix = '', $subject_suffix = '', $body_prefix = '', $body_suffix = '', $fields = null, $to_email = null, $is_via_post = true)
+function _form_to_email($extra_boring_fields = [], $subject = null, $subject_prefix = '', $subject_suffix = '', $body_prefix = '', $body_suffix = '', $fields = null, $to_email = null, $is_via_post = true)
 {
     // Find subject...
 
@@ -138,9 +138,9 @@ function _form_to_email($extra_boring_fields = array(), $subject = null, $subjec
     // Decide fields...
 
     if ($fields === null) {
-        $fields = array();
+        $fields = [];
         foreach (array_keys($_POST) as $key) {
-            if ((is_control_field($key, true, false, $extra_boring_fields)) && (/*Actually best to just explicitly let it show*/!in_array($key, array('name', 'email')))) {
+            if ((is_control_field($key, true, false, $extra_boring_fields)) && (/*Actually best to just explicitly let it show*/!in_array($key, ['name', 'email']))) {
                 continue;
             }
 
@@ -164,7 +164,7 @@ function _form_to_email($extra_boring_fields = array(), $subject = null, $subjec
     // Find body...
 
     $body = '';
-    $body_parts = array();
+    $body_parts = [];
 
     if ($body_prefix != '') {
         $body .= $body_prefix . "\n\n------------\n\n";
@@ -225,7 +225,7 @@ function _form_to_email($extra_boring_fields = array(), $subject = null, $subjec
 
     // Find attachments...
 
-    $attachments = array();
+    $attachments = [];
     require_code('uploads');
     is_plupload(true);
     foreach ($_FILES as $file) {
@@ -244,7 +244,7 @@ function _form_to_email($extra_boring_fields = array(), $subject = null, $subjec
 
     // ---
 
-    return array($subject_prefix . $subject . $subject_suffix, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts);
+    return [$subject_prefix . $subject . $subject_suffix, $body, $to_email, $to_name, $from_email, $from_name, $attachments, $body_parts];
 }
 
 /**
@@ -274,7 +274,7 @@ function _append_form_to_email(&$body, $is_tick, $field_name, $field_title, $fie
 
     $cleaned_field_val = $field_val;
 
-    if ($is_tick && in_array($field_val, array('', '0', '1'))) {
+    if ($is_tick && in_array($field_val, ['', '0', '1'])) {
         $cleaned_field_val = ($field_val == '1') ? do_lang('YES') : do_lang('NO');
     } else {
         if ($field_val == '') {

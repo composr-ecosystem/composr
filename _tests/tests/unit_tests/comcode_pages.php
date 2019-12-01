@@ -32,9 +32,9 @@ class comcode_pages_test_set extends cms_test_case
         set_throw_errors(true);
 
         if ($this->only === null) {
-            $files = get_directory_contents(get_file_base(), '', 0, true, true, array('txt'));
+            $files = get_directory_contents(get_file_base(), '', 0, true, true, ['txt']);
         } else {
-            $files = array('docs/pages/comcode_custom/EN/' . $this->only . '.txt');
+            $files = ['docs/pages/comcode_custom/EN/' . $this->only . '.txt'];
         }
 
         foreach ($files as $file) {
@@ -65,7 +65,7 @@ class comcode_pages_test_set extends cms_test_case
             return;
         }
 
-        $pages = array(
+        $pages = [
             '[title]Test[/title]' => 'Test',
             '[title="1"]Test[/title]' => 'Test',
             '[title param="1"]Test[/title]' => 'Test',
@@ -88,7 +88,7 @@ class comcode_pages_test_set extends cms_test_case
 
             '[html][title]Foo &amp; Bar[/title][/html]' => 'Foo & Bar',
             '[semihtml][title]Foo &amp; Bar[/title][/semihtml]' => 'Foo & Bar',
-        );
+        ];
 
         $path = cms_tempnam();
 

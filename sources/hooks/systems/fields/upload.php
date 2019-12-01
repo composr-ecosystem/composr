@@ -65,7 +65,7 @@ class Hook_fields_upload
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -144,7 +144,7 @@ class Hook_fields_upload
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
 
-        return array($ffield, $hidden);
+        return [$ffield, $hidden];
     }
 
     /**

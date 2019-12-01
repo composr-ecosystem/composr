@@ -51,11 +51,11 @@ class Hook_profiles_tabs_filedump
         $order = 70;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/cms/filedump');
+            return [$title, null, $order, 'menu/cms/filedump'];
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_FILEDUMP', array('_GUID' => '87c683590a6e2d435d877cec1c97baba', 'MEMBER_ID' => strval($member_id_of)));
+        $content = do_template('CNS_MEMBER_PROFILE_FILEDUMP', ['_GUID' => '87c683590a6e2d435d877cec1c97baba', 'MEMBER_ID' => strval($member_id_of)]);
 
-        return array($title, $content, $order, 'menu/cms/filedump');
+        return [$title, $content, $order, 'menu/cms/filedump'];
     }
 }

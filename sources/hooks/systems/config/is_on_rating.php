@@ -30,7 +30,7 @@ class Hook_config_is_on_rating
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'RATING',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_is_on_rating
             'required' => true,
             'public' => false,
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

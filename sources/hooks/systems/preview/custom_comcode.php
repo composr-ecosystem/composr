@@ -31,7 +31,7 @@ class Hook_preview_custom_comcode
     public function applies()
     {
         $applies = (addon_installed('custom_comcode')) && (get_page_name() == 'admin_custom_comcode');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -60,17 +60,17 @@ class Hook_preview_custom_comcode
             }
             $parameters .= $val;
         }
-        $_parameters = ($parameters == '') ? array() : explode(',', $parameters);
+        $_parameters = ($parameters == '') ? [] : explode(',', $parameters);
 
         $example = post_param_string('example');
 
         $content = do_lang_tempcode('EXAMPLE');
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#\](.*)\[#', $example, $matches) != 0) {
             $content = make_string_tempcode($matches[1]);
         }
-        $binding = array('CONTENT' => $content);
+        $binding = ['CONTENT' => $content];
         foreach ($_parameters as $parameter) {
             $parameter = trim($parameter);
             $parts = explode('=', $parameter);
@@ -90,6 +90,6 @@ class Hook_preview_custom_comcode
         $temp_tpl = template_to_tempcode($replace);
         $temp_tpl = $temp_tpl->bind($binding, '(custom comcode: ' . $tag . ')');
 
-        return array($temp_tpl, null);
+        return [$temp_tpl, null];
     }
 }

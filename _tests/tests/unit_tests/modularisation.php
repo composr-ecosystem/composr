@@ -31,7 +31,7 @@ class modularisation_test_set extends cms_test_case
     {
         // Read in all addons, while checking for any double referencing within a single hook...
 
-        $addon_data = array();
+        $addon_data = [];
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $hook => $ob) {
             $files = $ob->get_file_list();
@@ -46,7 +46,7 @@ class modularisation_test_set extends cms_test_case
 
         // Check for double referencing across addons, and that double referencing IS correctly done for icons...
 
-        $seen = array();
+        $seen = [];
         foreach ($addon_data as $addon_name => $d) {
             if ($addon_name == 'all_icons') {
                 continue;
@@ -59,7 +59,7 @@ class modularisation_test_set extends cms_test_case
                 if (preg_match('#^themes/default/images/(icons|icons_monochrome)/#', $path) != 0) {
                     $this->assertTrue(in_array($path, $addon_data['all_icons']), 'All icons must be in all_icons addon: ' . $path);
 
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^themes/default/images/icons/(.*)$#', $path, $matches) != 0) {
                         $this->assertTrue(in_array('themes/default/images/icons_monochrome/' . $matches[1], $d), 'Missing icons_monochrome equivalent to: ' . $path);
                     } else {
@@ -98,7 +98,7 @@ class modularisation_test_set extends cms_test_case
         // Check declared packages in files against the addon they're supposed to be within, and for files not including in any addon...
 
         require_code('files2');
-        $unput_files = array(); // A map of non-existent packages to a list in them
+        $unput_files = []; // A map of non-existent packages to a list in them
         $ignore = IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_FLOATING | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_REVISION_FILES;
         //$ignore = IGNORE_FLOATING | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_UNSHIPPED_VOLATILE; Uncomment for more careful testing
         $files = get_directory_contents(get_file_base(), '', $ignore);
@@ -116,7 +116,7 @@ class modularisation_test_set extends cms_test_case
                             $check_package = $this->should_check_package($data, $path);
 
                             if ($check_package) {
-                                $matches = array();
+                                $matches = [];
                                 $m_count = preg_match_all('#@package\s+(\w+)#', $data, $matches);
                                 $problem = ($m_count != 0) && ($matches[1][0] != $addon_name) && (@$matches[1][1] != $addon_name/*FUDGE: should ideally do a loop, but we'll assume max of 2 packages for now*/);
                                 $this->assertTrue(!$problem, '@package wrong for <a href="txmt://open?url=file://' . htmlentities(get_file_base() . '/' . $_path) . '">' . htmlentities($path) . '</a> (should be ' . $addon_name . ')');
@@ -139,7 +139,7 @@ class modularisation_test_set extends cms_test_case
                 $check_package = $this->should_check_package($data, $path);
 
                 if ($check_package) {
-                    $matches = array();
+                    $matches = [];
                     $m_count = preg_match('#@package\s+(\w+)#', $data, $matches);
                     if ($m_count != 0) {
                         $unput_files[$matches[1]][] = $path;

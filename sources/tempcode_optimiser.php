@@ -43,11 +43,11 @@ function optimise_tempcode(&$ob)
         for ($i = 1; $i < $cnt; $i++) {
             array_splice($ob->seq_parts[0], count($ob->seq_parts[0]), 0, $ob->seq_parts[$i]);
         }
-        $ob->seq_parts = array($ob->seq_parts[0]);
+        $ob->seq_parts = [$ob->seq_parts[0]];
     }
 
     // Remove unused bindings (we don't do inclusion tests individual seq_parts, as the binding sets are often shared via references)
-    $found = array();
+    $found = [];
     foreach ($ob->seq_parts as &$seq_part_group) {
         foreach ($seq_part_group as &$seq_part) {
             $code = $ob->code_to_preexecute[$seq_part[0]];

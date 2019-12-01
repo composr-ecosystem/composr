@@ -30,7 +30,7 @@ class Hook_config_google_translate_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_TRANSLATE_ENABLED',
             'type' => 'tick',
             'category' => 'SITE',
@@ -46,7 +46,7 @@ class Hook_config_google_translate_enabled
             'addon' => 'core_language_editing',
 
             'maintenance_code' => 'google_translate',
-        );
+        ];
     }
 
     /**

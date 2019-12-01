@@ -30,7 +30,7 @@ class Hook_config_smtp_sockets_port
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PORT',
             'type' => 'integer',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_smtp_sockets_port
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

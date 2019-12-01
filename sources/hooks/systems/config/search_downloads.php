@@ -30,7 +30,7 @@ class Hook_config_search_downloads
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_SEARCH_DOWNLOADS',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_downloads
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

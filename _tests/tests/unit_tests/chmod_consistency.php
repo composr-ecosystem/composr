@@ -25,8 +25,8 @@ class chmod_consistency_test_set extends cms_test_case
 {
     public function testConsistency()
     {
-        $places = array(
-            array(
+        $places = [
+            [
                 'fixperms.bat',
                 true, // Windows-slashes
                 true, // Wildcard-support
@@ -34,9 +34,9 @@ class chmod_consistency_test_set extends cms_test_case
 
                 'icacls ',
                 ' /grant %user%:(M)',
-            ),
+            ],
 
-            array(
+            [
                 'fixperms.sh',
                 false, // Windows-slashes
                 true, // Wildcard-support
@@ -44,9 +44,9 @@ class chmod_consistency_test_set extends cms_test_case
 
                 ' ',
                 ' ',
-            ),
+            ],
 
-            array(
+            [
                 'docs/pages/comcode_custom/EN/tut_install_permissions.txt',
                 false, // Windows-slashes
                 true, // Wildcard-support
@@ -54,9 +54,9 @@ class chmod_consistency_test_set extends cms_test_case
 
                 '[tt]',
                 '[/tt]',
-            ),
+            ],
 
-            array(
+            [
                 'parameters.xml',
                 false, // Windows-slashes
                 false, // Wildcard-support
@@ -64,9 +64,9 @@ class chmod_consistency_test_set extends cms_test_case
 
                 '" description="Sets the ACL on the right file" defaultValue="{Application Path}/',
                 '" tags="Hidden">',
-            ),
+            ],
 
-            array(
+            [
                 'parameters.xml',
                 false, // Windows-slashes
                 false, // Wildcard-support
@@ -74,9 +74,9 @@ class chmod_consistency_test_set extends cms_test_case
 
                 '<parameterEntry type="ProviderPath" scope="setAcl" match="composr/',
                 '" />',
-            ),
+            ],
 
-            array(
+            [
                 'manifest.xml',
                 false, // Windows-slashes
                 false, // Wildcard-support
@@ -89,9 +89,9 @@ class chmod_consistency_test_set extends cms_test_case
                 // Files
                 '<setAcl path="composr/',
                 '" setAclResourceType="File" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />',
-            ),
+            ],
 
-            array(
+            [
                 'aps/APP-META.xml',
                 false, // Windows-slashes
                 false, // Wildcard-support
@@ -99,11 +99,11 @@ class chmod_consistency_test_set extends cms_test_case
 
                 '<mapping url="',
                 '">',
-            ),
-        );
+            ],
+        ];
 
-        $place_files = array();
-        $place_files_stripped = array();
+        $place_files = [];
+        $place_files_stripped = [];
         foreach ($places as $place_parts) {
             list($place) = $place_parts;
             $place_path = get_file_base() . '/' . $place;
@@ -117,8 +117,8 @@ class chmod_consistency_test_set extends cms_test_case
                 // Special checks
                 switch ($place) {
                     case 'parameters.xml':
-                        $matches = array();
-                        $found = array();
+                        $matches = [];
+                        $found = [];
                         $num_matches = preg_match_all('#SetAclParameter(\d+)#', cms_file_get_contents_safe($place_path, FILE_READ_LOCK | FILE_READ_BOM), $matches);
                         for ($i = 0; $i < $num_matches; $i++) {
                             $x = $matches[1][$i];
@@ -200,10 +200,10 @@ class chmod_consistency_test_set extends cms_test_case
                                     if ($i != 0) {
                                         $search_regexp .= preg_quote($slash, '#');
                                     }
-                                    $possibilities_for_term = array(
+                                    $possibilities_for_term = [
                                         '\*',
                                         preg_quote($__item, '#'),
-                                    );
+                                    ];
                                     if (($place == 'fixperms.bat') && ($__item == '*')) {
                                         if ($i != count($path_components) - 1) {
                                             $possibilities_for_term[] = '.*'; // For fixperms.bat we cannot have wildcards as path components
@@ -233,10 +233,10 @@ class chmod_consistency_test_set extends cms_test_case
         foreach ($places as $place_parts) {
             if (count($place_parts) == 6) {
                 list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre, $post) = $place_parts;
-                $yoyo = array(array($pre, $post));
+                $yoyo = [[$pre, $post]];
             } else {
                 list($place, $windows_slashes, $wildcard_support, $runtime_too, $pre_dir, $post_dir, $pre_file, $post_file) = $place_parts;
-                $yoyo = array(array($pre_dir, $post_dir), array($pre_file, $post_file));
+                $yoyo = [[$pre_dir, $post_dir], [$pre_file, $post_file]];
             }
 
             foreach ($yoyo as $bits) {
@@ -245,7 +245,7 @@ class chmod_consistency_test_set extends cms_test_case
                 $place_path = get_file_base() . '/' . $place;
                 if (file_exists($place_path)) {
                     $c = $place_files_stripped[$place_path];
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#' . preg_quote($_pre, '#') . '(\w+[/\\\\][\w/\\\\]+)' . preg_quote($_post, '#') . '#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $this->assertTrue(false, 'Unexpected remaining path in ' . $place . ': ' . $matches[1][$i]);

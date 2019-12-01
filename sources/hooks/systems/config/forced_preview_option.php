@@ -30,7 +30,7 @@ class Hook_config_forced_preview_option
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORCED_PREVIEW_OPTION',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_forced_preview_option
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

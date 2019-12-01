@@ -57,18 +57,18 @@ class Hook_commandr_fs_menus extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'menu_item':
-                $_ret = $GLOBALS['SITE_DB']->query_select('menu_items', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('i_caption') => $label));
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('menu_items', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('i_caption') => $label]);
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'menu':
-                $ret = $GLOBALS['SITE_DB']->query_select('menu_items', array('DISTINCT i_menu'), array('i_menu' => $label));
+                $ret = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], ['i_menu' => $label]);
                 return collapse_1d_complexity('i_menu', $ret);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -102,7 +102,7 @@ class Hook_commandr_fs_menus extends Resource_fs_base
         require_code('menus2');
 
         $menu = $this->_create_name_from_label($label);
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', array('i_menu' => $menu));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', ['i_menu' => $menu]);
         if ($test !== null) {
             $menu .= '_' . uniqid('', false); // uniqify
         }
@@ -144,9 +144,9 @@ class Hook_commandr_fs_menus extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $properties = array(
+        $properties = [
             'label' => $resource_id,
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -165,7 +165,7 @@ class Hook_commandr_fs_menus extends Resource_fs_base
 
         $menu = $this->_create_name_from_label($label);
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', array('i_menu' => $menu));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', ['i_menu' => $menu]);
         if ($test === null) {
             return false;
         }
@@ -252,13 +252,13 @@ class Hook_commandr_fs_menus extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('menu_items', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['i_caption']),
             'order' => $row['i_order'],
             'parent' => $row['i_parent'],
@@ -270,7 +270,7 @@ class Hook_commandr_fs_menus extends Resource_fs_base
             'page_only' => $row['i_page_only'],
             'theme_img_code' => $row['i_theme_img_code'],
             'include_sitemap' => $row['i_include_sitemap'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

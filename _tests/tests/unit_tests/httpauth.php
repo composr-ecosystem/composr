@@ -25,16 +25,16 @@ class httpauth_test_set extends cms_test_case
             return;
         }
 
-        $pwd = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_pass_hash_salted', array('m_username' => 'admin'));
+        $pwd = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_pass_hash_salted', ['m_username' => 'admin']);
         if ($pwd !== '') {
             return; // Test only works with blank admin password
         }
 
-        $url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'));
+        $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'));
 
         set_option('httpauth_is_enabled', '1');
 
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => array('admin', '')));
+        $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'auth' => ['admin', '']]);
 
         set_option('httpauth_is_enabled', '0');
 

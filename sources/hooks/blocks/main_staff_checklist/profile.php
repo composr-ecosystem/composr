@@ -31,7 +31,7 @@ class Hook_checklist_profile
     public function run()
     {
         if (get_forum_type() == 'none') {
-            return array();
+            return [];
         }
 
         $admins = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups());
@@ -45,13 +45,13 @@ class Hook_checklist_profile
 
         $url = $GLOBALS['FORUM_DRIVER']->member_home_url(get_member(), true);
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '276b29a1dac30addf9459fd960a260cd',
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_SETUP_PROFILE', escape_html_tempcode($url)),
-        ));
+        ]);
 
-        return array(array($tpl, null, $todo, null));
+        return [[$tpl, null, $todo, null]];
     }
 }

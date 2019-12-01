@@ -30,14 +30,14 @@ class Block_main_emoticon_codes
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('num_columns');
+        $info['parameters'] = ['num_columns'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_emoticon_codes
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('num_columns', $map) ? intval($map['num_columns']) : 5,
@@ -77,22 +77,22 @@ PHP;
         global $EMOTICON_LEVELS;
 
         $_emoticons = $GLOBALS['FORUM_DRIVER']->find_emoticons(get_member());
-        $emoticons = array();
+        $emoticons = [];
 
         foreach ($_emoticons as $code => $imgcode) {
             if (($EMOTICON_LEVELS === null) || ($EMOTICON_LEVELS[$code] < 3)) { // If within a displayable level
-                $emoticons[] = array(
+                $emoticons[] = [
                     'CODE' => $code,
                     'TPL' => do_emoticon($imgcode),
-                );
+                ];
             }
         }
 
-        return do_template('BLOCK_MAIN_EMOTICON_CODES', array(
+        return do_template('BLOCK_MAIN_EMOTICON_CODES', [
             '_GUID' => '56c12281d7e3662b13a7ad7d9958a65c',
             'BLOCK_ID' => $block_id,
             'EMOTICONS' => $emoticons,
             'NUM_COLUMNS' => strval($num_columns),
-        ));
+        ]);
     }
 }

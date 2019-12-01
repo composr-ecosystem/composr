@@ -22,7 +22,7 @@ function get_subscribed_forum_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array()
+        []
     );
     print_mobiquo_result($result);
 }
@@ -36,10 +36,10 @@ function subscribe_forum_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
             0,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -53,9 +53,9 @@ function unsubscribe_forum_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'ALL',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -71,10 +71,10 @@ function get_subscribed_topic_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             0,
             5,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -88,10 +88,10 @@ function subscribe_topic_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '14',
             0,
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -105,9 +105,9 @@ function unsubscribe_topic_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             'ALL',
-        )
+        ]
     );
     print_mobiquo_result($result);
 }
@@ -121,7 +121,7 @@ function user_subscription_test()
 {
     $result = mobiquo_post_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array('code' => '123', 'uid' => 2),
+        ['code' => '123', 'uid' => 2],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);

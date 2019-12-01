@@ -13,7 +13,7 @@
  * @package    meta_toolkit
  */
 
-function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = array(), $do_index_test = true, $db_type = null)
+function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null)
 {
     // Most Composr MySQL drivers auto-create the DB if missing, if root, but mysql_pdo does not because of how the connection works
     if ((get_db_site_user() == 'root') && (strpos(get_db_type(), 'mysql') !== false)) {
@@ -27,7 +27,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     if ($success && $do_index_test) {
         $url = get_base_url() . '/index.php?keep_no_query_limit=1';
-        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/));
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/]);
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 
@@ -64,7 +64,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         $password_forums = $password;
     }
 
-    $settings = $extra_settings + array(
+    $settings = $extra_settings + [
         'max' => '1000',
         'default_lang' => fallback_lang(),
         'email' => 'E-mail address',
@@ -102,77 +102,77 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'multi_lang_content' => '0',
         'self_learning_cache' => '0',
         'confirm' => '1',
-    );
+    ];
 
-    $stages = array(
-        array(
-            array(),
-            array(),
-        ),
+    $stages = [
+        [
+            [],
+            [],
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '2',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '3',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '4',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '5',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '6',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '7',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '8',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '9',
-            ),
+            ],
             $settings,
-        ),
+        ],
 
-        array(
-            array(
+        [
+            [
                 'step' => '10',
-            ),
+            ],
             $settings,
-        ),
-    );
+        ],
+    ];
 
     foreach ($stages as $stage) {
         list($get, $post) = $stage;
@@ -180,7 +180,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 240.0/*If XML DB may be VERY slow*/));
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 240.0/*If XML DB may be VERY slow*/]);
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 

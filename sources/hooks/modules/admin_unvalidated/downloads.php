@@ -36,7 +36,7 @@ class Hook_unvalidated_downloads
 
         require_lang('downloads');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'download_downloads';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

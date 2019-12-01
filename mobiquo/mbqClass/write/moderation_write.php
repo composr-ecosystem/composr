@@ -130,11 +130,11 @@ class CMSModerationWrite
         }
 
         require_code('cns_posts_action3');
-        $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+        $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
         if ($topic_id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
-        cns_delete_posts_topic($topic_id, array($post_id), $reason); // NB: Checks perms implicitly
+        cns_delete_posts_topic($topic_id, [$post_id], $reason); // NB: Checks perms implicitly
         return true;
     }
 
@@ -154,8 +154,8 @@ class CMSModerationWrite
         }
 
         require_code('cns_topics_action2');
-        $from_forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', array('id' => $topic_id));
-        cns_move_topics($from_forum_id, $to_forum_id, array($topic_id)); // NB: Checks perms implicitly
+        $from_forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
+        cns_move_topics($from_forum_id, $to_forum_id, [$topic_id]); // NB: Checks perms implicitly
         return true;
     }
 
@@ -197,12 +197,12 @@ class CMSModerationWrite
         }
 
         // Group the posts up by topic
-        $topics = array();
+        $topics = [];
         foreach ($posts as $post_id) {
-            $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+            $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
             if ($topic_id !== null) {
                 if (!isset($topics[$topic_id])) {
-                    $topics[$topic_id] = array();
+                    $topics[$topic_id] = [];
                 }
                 $topics[$topic_id][] = $post_id;
             }
@@ -214,7 +214,7 @@ class CMSModerationWrite
             cns_move_posts($from_topic_id, $to_topic_id, $post_ids, do_lang('REASON_TAPATALK_MOVING_POSTS'), $forum_id, true, $new_topic_title); // NB: Checks perms implicitly
 
             if ($to_topic_id === null) {
-                $to_topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', array('id' => $post_ids[0]));
+                $to_topic_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_topic_id', ['id' => $post_ids[0]]);
             }
         }
 
@@ -239,7 +239,7 @@ class CMSModerationWrite
             access_denied('I_ERROR');
         }
 
-        $post_ids = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', array('id', 'p.id AS post_id'), array('p_topic_id' => $from_topic_id)));
+        $post_ids = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', ['id', 'p.id AS post_id'], ['p_topic_id' => $from_topic_id]));
         if (empty($post_ids)) {
             warn_exit(do_lang_tempcode('CANNOT_MERGE_EMPTY_TOPIC'));
         }
@@ -264,7 +264,7 @@ class CMSModerationWrite
             return false;
         }
 
-        $target_posts = $GLOBALS['FORUM_DB']->query_select('f_posts p', array('*', 'p.id AS post_id'), array('p.id' => $target_post_id), '', 1);
+        $target_posts = $GLOBALS['FORUM_DB']->query_select('f_posts p', ['*', 'p.id AS post_id'], ['p.id' => $target_post_id], '', 1);
         if (!isset($target_posts[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
@@ -272,14 +272,14 @@ class CMSModerationWrite
 
         // We will put all posts into an array that is sortable, then merge those
 
-        $post = array();
+        $post = [];
 
         $key = str_pad(strval($target_post['p_time']), 15, '0', STR_PAD_LEFT) . '_' . strval($target_post['post_id']);
         $post[$key] = get_translated_text($target_post['p_post'], $GLOBALS['FORUM_DB']);
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $sql = 'SELECT *,id AS post_id FROM ' . $table_prefix . 'f_posts WHERE p_intended_solely_for IS NULL AND id IN (' . implode(',', array_map('strval', $source_post_ids)) . ')';
-        $source_posts = ($source_post_ids == array()) ? array() : $GLOBALS['FORUM_DB']->query($sql);
+        $source_posts = ($source_post_ids == []) ? [] : $GLOBALS['FORUM_DB']->query($sql);
         foreach ($source_posts as $source_post) {
             $key = str_pad(strval($source_post['p_time']), 15, '0', STR_PAD_LEFT) . '_' . strval($source_post['post_id']);
             $post[$key] = get_translated_text($source_post['p_post'], $GLOBALS['FORUM_DB']);
@@ -292,7 +292,7 @@ class CMSModerationWrite
         $GLOBALS['FORUM_DB']->query_update(
             'f_posts',
             lang_remap_comcode('p_post', $target_post['p_post'], $merged_post, $GLOBALS['FORUM_DB']),
-            array('id' => $target_post_id),
+            ['id' => $target_post_id],
             '',
             1
         );
@@ -345,8 +345,8 @@ class CMSModerationWrite
             return false;
         }
 
-        $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_cache_forum_id', array('id' => $post_id));
-        $title = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', array('id' => $post_id));
+        $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_cache_forum_id', ['id' => $post_id]);
+        $title = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['id' => $post_id]);
 
         if (!cns_may_moderate_forum($forum_id)) {
             access_denied('I_ERROR');
@@ -356,12 +356,12 @@ class CMSModerationWrite
 
         if ($approve) {
             require_code('cns_topics_action2');
-            $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_validated' => 1), array('id' => $post_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_validated' => 1], ['id' => $post_id], '', 1);
 
             cns_mod_log_it('VALIDATE_POST', strval($post_id), $title);
         } else {
             require_code('cns_topics_action2');
-            $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_validated' => 0), array('id' => $post_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_validated' => 0], ['id' => $post_id], '', 1);
 
             cns_mod_log_it('UNVALIDATE_POST', strval($post_id), $title);
         }
@@ -400,15 +400,15 @@ class CMSModerationWrite
 
         if (($delete_all_posts) && (!has_delete_permission('low', get_member(), $user_id, 'topics'))) {
             require_code('cns_posts_action3');
-            $posts = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', array('p.id AS post_id'), array('p_poster' => $user_id), ' AND p_cache_forum_id IS NOT NULL'));
+            $posts = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_posts p', ['p.id AS post_id'], ['p_poster' => $user_id], ' AND p_cache_forum_id IS NOT NULL'));
 
             // Group the posts up by topic
-            $topics = array();
+            $topics = [];
             foreach ($posts as $post_id) {
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
                 if ($topic_id !== null) {
                     if (!isset($topics[$topic_id])) {
-                        $topics[$topic_id] = array();
+                        $topics[$topic_id] = [];
                     }
                     $topics[$topic_id][] = $post_id;
                 }
@@ -424,7 +424,7 @@ class CMSModerationWrite
             require_code('cns_members_action2');
             cns_ban_member($user_id);
         } else {
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_on_probation_until' => $expires), array('id' => $user_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $expires], ['id' => $user_id], '', 1);
 
             require_code('cns_general_action2');
             cns_mod_log_it('START_PROBATION', strval($user_id), $username, $reason);
@@ -464,7 +464,7 @@ class CMSModerationWrite
 
         $on_probation_until = $GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_on_probation_until');
         if ($on_probation_until !== null) {
-            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_on_probation_until' => null), array('id' => $user_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => null], ['id' => $user_id], '', 1);
 
             require_code('cns_general_action2');
             cns_mod_log_it('STOP_PROBATION', strval($user_id), $username);

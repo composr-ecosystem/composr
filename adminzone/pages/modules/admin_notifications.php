@@ -30,7 +30,7 @@ class Module_admin_notifications
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,11 +51,11 @@ class Module_admin_notifications
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('NOTIFICATIONS', 'menu/adminzone/setup/notifications'),
-            'default' => array('NOTIFICATIONS_DEFAULT', 'buttons/notifications_enable'),
-            'lockdown' => array('NOTIFICATIONS_LOCKDOWN', 'menu/adminzone/setup/notifications'),
-        );
+        return [
+            'browse' => ['NOTIFICATIONS', 'menu/adminzone/setup/notifications'],
+            'default' => ['NOTIFICATIONS_DEFAULT', 'buttons/notifications_enable'],
+            'lockdown' => ['NOTIFICATIONS_LOCKDOWN', 'menu/adminzone/setup/notifications'],
+        ];
     }
 
     /**
@@ -74,10 +74,10 @@ class Module_admin_notifications
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('notification_lockdown', array(
+        $GLOBALS['SITE_DB']->create_table('notification_lockdown', [
             'l_notification_code' => '*ID_TEXT',
             'l_setting' => 'INTEGER',
-        ));
+        ]);
     }
 
     public $title;
@@ -100,13 +100,13 @@ class Module_admin_notifications
         if ($type == 'default') {
             $this->title = get_screen_title('NOTIFICATIONS_DEFAULT');
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('NOTIFICATIONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('NOTIFICATIONS')]]);
         }
 
         if ($type == 'lockdown') {
             $this->title = get_screen_title('NOTIFICATIONS_LOCKDOWN');
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('NOTIFICATIONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('NOTIFICATIONS')]]);
         }
 
         return null;
@@ -148,10 +148,10 @@ class Module_admin_notifications
         return do_next_manager(
             $this->title,
             comcode_lang_string('DOC_NOTIFICATIONS'),
-            array(
-                array('buttons/notifications_enable', array('_SELF', array('type' => 'default'), '_SELF'), do_lang('NOTIFICATIONS_DEFAULT')),
-                array('menu/adminzone/setup/notifications', array('_SELF', array('type' => 'lockdown'), '_SELF'), do_lang('NOTIFICATIONS_LOCKDOWN')),
-            ),
+            [
+                ['buttons/notifications_enable', ['_SELF', ['type' => 'default'], '_SELF'], do_lang('NOTIFICATIONS_DEFAULT')],
+                ['menu/adminzone/setup/notifications', ['_SELF', ['type' => 'lockdown'], '_SELF'], do_lang('NOTIFICATIONS_LOCKDOWN')],
+            ],
             do_lang('NOTIFICATIONS')
         );
     }
@@ -172,20 +172,20 @@ class Module_admin_notifications
         if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
             $intro = do_lang_tempcode('NOTIFICATIONS_DEFINE_LOCKDOWN');
 
-            $_notification_types = array(
+            $_notification_types = [
                 A__CHOICE => '_CHOICE',
                 A__STATISTICAL => '_STATISTICAL',
-            );
+            ];
 
-            $_saved_settings = $GLOBALS['SITE_DB']->query_select('notification_lockdown', array('*'));
+            $_saved_settings = $GLOBALS['SITE_DB']->query_select('notification_lockdown', ['*']);
         } else { // NOTIFICATIONS_DEFAULT
             $intro = do_lang_tempcode('NOTIFICATIONS_DEFINE_DEFAULT');
 
-            $_notification_types = array(
+            $_notification_types = [
                 A__INBUILT_DEFAULT => '_INBUILT_DEFAULT',
-            );
+            ];
 
-            $_saved_settings = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('*'), array('l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => ''));
+            $_saved_settings = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['*'], ['l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => '']);
         }
 
         $_notification_types = $_notification_types + _get_available_notification_types();
@@ -194,7 +194,7 @@ class Module_admin_notifications
 
         $current_setting = null;
 
-        $notification_sections = array();
+        $notification_sections = [];
         $hooks = find_all_hook_obs('systems', 'notifications', 'Hook_notification_');
         foreach ($hooks as $hook => $ob) {
             if ((substr($hook, 0, 4) == 'cns_') && (get_forum_type() != 'cns')) {
@@ -206,7 +206,7 @@ class Module_admin_notifications
 
                 $current_setting = array_key_exists($notification_code, $saved_settings) ? $saved_settings[$notification_code] : null;
 
-                $notification_types = array();
+                $notification_types = [];
                 $save_query = false;
                 foreach ($_notification_types as $possible => $ntype) {
                     $save_query = ($save_query) || (post_param_integer('notification_' . $notification_code . '_' . $ntype, 0) == 1);
@@ -246,29 +246,29 @@ class Module_admin_notifications
 
                     $_checked = post_param_integer('notification_' . $notification_code . '_' . $ntype, (($_SERVER['REQUEST_METHOD'] != 'POST') && $checked) ? 1 : 0);
 
-                    $notification_types[] = array(
+                    $notification_types[] = [
                         'NTYPE' => $ntype,
                         'LABEL' => $tick_label,
                         'CHECKED' => ($_checked == 1),
                         'RAW' => strval($possible),
                         'AVAILABLE' => $available,
                         'SCOPE' => $notification_code,
-                    );
+                    ];
                 }
 
                 if (!isset($notification_sections[$notification_details[0]])) {
-                    $notification_sections[$notification_details[0]] = array(
+                    $notification_sections[$notification_details[0]] = [
                         'NOTIFICATION_SECTION' => $notification_details[0],
-                        'NOTIFICATION_CODES' => array(),
-                    );
+                        'NOTIFICATION_CODES' => [],
+                    ];
                 }
-                $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = array(
+                $notification_sections[$notification_details[0]]['NOTIFICATION_CODES'][] = [
                     'NOTIFICATION_CODE' => $notification_code,
                     'NOTIFICATION_LABEL' => $notification_details[1],
                     'NOTIFICATION_TYPES' => $notification_types,
                     'SUPPORTS_CATEGORIES' => false,
                     'PRIVILEGED' => !$ob->member_could_potentially_enable($ntype, $GLOBALS['FORUM_DRIVER']->get_guest_id()),
-                );
+                ];
             }
         }
 
@@ -277,7 +277,7 @@ class Module_admin_notifications
             if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
                 $GLOBALS['SITE_DB']->query_delete('notification_lockdown');
             } else { // NOTIFICATIONS_DEFAULT
-                $GLOBALS['SITE_DB']->query_delete('notifications_enabled', array('l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => ''));
+                $GLOBALS['SITE_DB']->query_delete('notifications_enabled', ['l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(), 'l_code_category' => '']);
             }
 
             foreach ($notification_sections as $notification_section) {
@@ -292,17 +292,17 @@ class Module_admin_notifications
 
                     if (($new_setting != A__CHOICE) && ($new_setting != A__INBUILT_DEFAULT)) {
                         if ($mode == self::NOTIFICATIONS_LOCKDOWN) {
-                            $GLOBALS['SITE_DB']->query_insert('notification_lockdown', array(
+                            $GLOBALS['SITE_DB']->query_insert('notification_lockdown', [
                                 'l_notification_code' => substr($notification_code['NOTIFICATION_CODE'], 0, 80),
                                 'l_setting' => $new_setting,
-                            ));
+                            ]);
                         } else { // NOTIFICATIONS_DEFAULT
-                            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', array(
+                            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
                                 'l_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
                                 'l_notification_code' => substr($notification_code['NOTIFICATION_CODE'], 0, 80),
                                 'l_code_category' => '',
                                 'l_setting' => $new_setting,
-                            ));
+                            ]);
                         }
                     }
                 }
@@ -326,16 +326,16 @@ class Module_admin_notifications
         require_code('themes2');
         $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
 
-        $notification_types_titles = array();
+        $notification_types_titles = [];
         foreach ($_notification_types as $possible => $ntype) {
-            $notification_types_titles[] = array(
+            $notification_types_titles[] = [
                 'NTYPE' => $ntype,
                 'LABEL' => do_lang_tempcode('ENABLE_NOTIFICATIONS_' . $ntype),
                 'RAW' => strval($possible),
-            );
+            ];
         }
 
-        $interface = do_template('NOTIFICATIONS_MANAGE', array(
+        $interface = do_template('NOTIFICATIONS_MANAGE', [
             '_GUID' => '55dc192d339b570b060d61039c43b96d',
             'INTRO' => $intro,
             'SHOW_PRIVILEGES' => true,
@@ -343,13 +343,13 @@ class Module_admin_notifications
             'NOTIFICATION_TYPES_TITLES' => $notification_types_titles,
             'NOTIFICATION_SECTIONS' => $notification_sections,
             'ADVANCED_COLUMN' => false,
-        ));
+        ]);
 
-        return do_template('NOTIFICATIONS_MANAGE_SCREEN', array(
+        return do_template('NOTIFICATIONS_MANAGE_SCREEN', [
             '_GUID' => '4f6af291a40c519377879555e24c2c81',
             'TITLE' => $this->title,
             'INTERFACE' => $interface,
             'ACTION_URL' => get_self_url(),
-        ));
+        ]);
     }
 }

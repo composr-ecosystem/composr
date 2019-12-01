@@ -30,7 +30,7 @@ class Hook_config_wysiwyg
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'comcode:ENABLE_WYSIWYG',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -42,7 +42,7 @@ class Hook_config_wysiwyg
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

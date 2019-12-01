@@ -32,7 +32,7 @@ class Hook_snippet_invite_missing
     {
         $val = get_param_string('name');
 
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_email_address', array('i_email_address' => $val, 'i_taken' => 0));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_email_address', ['i_email_address' => $val, 'i_taken' => 0]);
         if ($test !== null) {
             return new Tempcode(); // All ok
         }
@@ -41,7 +41,7 @@ class Hook_snippet_invite_missing
 
         require_lang('cns');
 
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_email_address', array('i_email_address' => $val));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_email_address', ['i_email_address' => $val]);
         if ($test !== null) {
             return make_string_tempcode(strip_html(do_lang('INVITE_ALREADY_JOINED')));
         }

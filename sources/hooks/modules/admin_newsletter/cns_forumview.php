@@ -37,7 +37,7 @@ class Hook_whatsnew_cns_forumview
 
         require_code('cns_forums2');
         $cats = create_selection_list_forum_tree(null, null, null, false, null, $updated_since);
-        return array($cats, do_lang('SECTION_FORUMS'));
+        return [$cats, do_lang('SECTION_FORUMS')];
     }
 
     /**
@@ -51,11 +51,11 @@ class Hook_whatsnew_cns_forumview
     public function run($cutoff_time, $lang, $filter)
     {
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         $max = intval(get_option('max_newsletter_whatsnew'));
@@ -66,21 +66,21 @@ class Hook_whatsnew_cns_forumview
         $or_list = selectcode_to_sqlfragment($filter, 't_forum_id');
         $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_last_time>' . strval($cutoff_time) . ' AND t_validated=1 AND t_pt_to IS NULL AND t_pt_from IS NULL AND (' . $or_list . ') ORDER BY t_cache_last_time DESC', $max);
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
         foreach ($rows as $row) {
             if (has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'forums', strval($row['t_forum_id']))) {
                 $id = $row['id'];
-                $_url = build_url(array('page' => 'topicview', 'type' => 'browse', 'id' => $row['id']), get_module_zone('topicview'), array(), false, false, true);
+                $_url = build_url(['page' => 'topicview', 'type' => 'browse', 'id' => $row['id']], get_module_zone('topicview'), [], false, false, true);
                 $url = $_url->evaluate();
                 $name = $row['t_cache_first_title'];
                 $member_id = (is_guest($row['t_cache_first_member_id'])) ? null : strval($row['t_cache_first_member_id']);
-                $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => '14a328f973ac44eb54aa9b31e5a4ae34', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'CONTENT_TYPE' => 'topic', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+                $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '14a328f973ac44eb54aa9b31e5a4ae34', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'CONTENT_TYPE' => 'topic', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
                 handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
             }
         }
 
-        return array($new, do_lang('SECTION_FORUMS', '', '', '', $lang));
+        return [$new, do_lang('SECTION_FORUMS', '', '', '', $lang)];
     }
 }

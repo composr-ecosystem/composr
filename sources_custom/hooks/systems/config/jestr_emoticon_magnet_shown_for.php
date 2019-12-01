@@ -25,7 +25,7 @@ class Hook_config_jestr_emoticon_magnet_shown_for
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JESTER_EMOTICON_MAGNET_SHOWN_FOR',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_jestr_emoticon_magnet_shown_for
             'public' => false,
 
             'addon' => 'jestr',
-        );
+        ];
     }
 
     /**

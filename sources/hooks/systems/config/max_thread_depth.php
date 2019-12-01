@@ -30,7 +30,7 @@ class Hook_config_max_thread_depth
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_THREAD_DEPTH',
             'type' => 'integer',
             'category' => 'USER_INTERACTION',
@@ -44,7 +44,7 @@ class Hook_config_max_thread_depth
             'public' => false,
 
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

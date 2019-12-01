@@ -30,7 +30,7 @@ class Hook_config_search_results_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SEARCH_RESULTS_PER_PAGE',
             'type' => 'integer',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_results_per_page
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

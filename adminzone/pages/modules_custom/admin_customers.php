@@ -25,7 +25,7 @@ class Module_admin_customers
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -105,7 +105,7 @@ class Module_admin_customers
         require_code('mantis');
         $cur_id = get_credits_profile_field_id('cms_currency');
         if ($cur_id !== null) {
-            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_owner_view' => 1, 'cf_owner_set' => 1), array('id' => $cur_id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_owner_view' => 1, 'cf_owner_set' => 1], ['id' => $cur_id], '', 1);
         }
         cns_make_custom_field('cms_support_credits', 1, '', '', 0, 1, 0, 0, 'integer', 0, 0, 0, null, '', 0, '', 0, 0, '', '', '', true);
         cns_make_custom_field('cms_ftp_host', 0, do_lang('ENCRYPTED_TO_WEBSITE'), '', 0, 1, 1, 1, 'short_text', 0, 0, 0, null, '', 0, '', 0, 0, '', '', '', true);
@@ -116,23 +116,23 @@ class Module_admin_customers
 
         // Credit logging...
 
-        $GLOBALS['SITE_DB']->create_table('credit_purchases', array(
+        $GLOBALS['SITE_DB']->create_table('credit_purchases', [
             'purchase_id' => '*AUTO',
             'member_id' => 'MEMBER',
             'num_credits' => 'INTEGER',
             'date_and_time' => 'TIME',
             'purchase_validated' => 'BINARY',
             'is_manual' => 'BINARY',
-        ));
+        ]);
 
-        $GLOBALS['SITE_DB']->create_table('credit_charge_log', array(
+        $GLOBALS['SITE_DB']->create_table('credit_charge_log', [
             'id' => '*AUTO',
             'member_id' => 'MEMBER',
             'charging_member_id' => 'MEMBER',
             'num_credits' => 'INTEGER',
             'date_and_time' => 'TIME',
             'reason' => 'SHORT_TEXT',
-        ));
+        ]);
 
         // Tracker...
 
@@ -603,12 +603,12 @@ class Module_admin_customers
         }
 
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        return array(
-            'browse' => array('CHARGE_CUSTOMER', 'admin/tool'),
-        );
+        return [
+            'browse' => ['CHARGE_CUSTOMER', 'admin/tool'],
+        ];
     }
 
     public $title;
@@ -691,7 +691,7 @@ class Module_admin_customers
         require_code('form_templates');
         require_code('mantis');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_charge'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_charge'], '_SELF');
         $submit_name = do_lang_tempcode('CHARGE');
 
         $username = get_param_string('username', null);
@@ -732,26 +732,26 @@ class Module_admin_customers
 
         require_code('templates_columned_table');
         $rows = new Tempcode();
-        $logs = $GLOBALS['SITE_DB']->query_select('credit_charge_log', array('charging_member_id', 'num_credits', 'date_and_time', 'reason'), array('member_id' => $member_id), 'ORDER BY date_and_time DESC', 10);
+        $logs = $GLOBALS['SITE_DB']->query_select('credit_charge_log', ['charging_member_id', 'num_credits', 'date_and_time', 'reason'], ['member_id' => $member_id], 'ORDER BY date_and_time DESC', 10);
         foreach ($logs as $log) {
             $charging_username = $GLOBALS['FORUM_DRIVER']->get_username($log['charging_member_id'], false, USERNAME_DEFAULT_DELETED);
             $_num_credits = integer_format($log['num_credits']);
             $date = get_timezoned_date_time($log['date_and_time']);
             $reason = $log['reason'];
-            $rows->attach(columned_table_row(array($charging_username, $_num_credits, $date, $reason), true));
+            $rows->attach(columned_table_row([$charging_username, $_num_credits, $date, $reason], true));
         }
         if (!$rows->is_empty()) {
-            $_header_row = array(
+            $_header_row = [
                 do_lang_tempcode('USERNAME'),
                 do_lang_tempcode('AMOUNT'),
                 do_lang_tempcode('DATE_TIME'),
                 do_lang_tempcode('REASON'),
-            );
+            ];
             $header_row = columned_table_header_row($_header_row);
-            $text->attach(do_template('COLUMNED_TABLE', array('_GUID' => '032e4dcb1d4224ed6633679154b6d827', 'HEADER_ROW' => $header_row, 'ROWS' => $rows)));
+            $text->attach(do_template('COLUMNED_TABLE', ['_GUID' => '032e4dcb1d4224ed6633679154b6d827', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]));
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'f91185ee725f47ffa652d5fef8d85c0b',
             'TITLE' => $this->title,
             'HIDDEN' => '',
@@ -760,7 +760,7 @@ class Module_admin_customers
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -796,18 +796,18 @@ class Module_admin_customers
 
         cns_set_custom_field($member_id, $cpf_id, strval($new_amount));
 
-        $GLOBALS['SITE_DB']->query_insert('credit_charge_log', array(
+        $GLOBALS['SITE_DB']->query_insert('credit_charge_log', [
             'member_id' => $member_id,
             'charging_member_id' => get_member(),
             'num_credits' => $amount,
             'date_and_time' => time(),
             'reason' => post_param_string('reason', ''),
-        ));
+        ]);
 
         log_it('CHARGE_CUSTOMER', strval($member_id), strval($amount));
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse', 'username' => $username), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse', 'username' => $username], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -38,11 +38,11 @@ class Hook_cron_git_autopull
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Git autopulling',
             'num_queued' => null,
             'minutes_between_runs' => 1,
-        );
+        ];
     }
 
     /**

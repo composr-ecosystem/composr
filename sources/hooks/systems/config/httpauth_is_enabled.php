@@ -30,7 +30,7 @@ class Hook_config_httpauth_is_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HTTPAUTH_IS_ENABLED',
             'type' => 'tick',
             'category' => 'USERS',
@@ -45,7 +45,7 @@ class Hook_config_httpauth_is_enabled
             'addon' => 'core_cns',
 
             'maintenance_code' => 'httpauth',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_is_on_pop3_buy
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_PURCHASE',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_is_on_pop3_buy
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

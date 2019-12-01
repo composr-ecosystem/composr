@@ -50,7 +50,7 @@ class Hook_rss_galleries
         require_lang('galleries');
 
         $content = new Tempcode();
-        $_galleries = array();
+        $_galleries = [];
         if ($GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'galleries WHERE ' . $filters_1, false, true) < 3000) {
             $_galleries = $GLOBALS['SITE_DB']->query('SELECT fullname,name FROM ' . get_table_prefix() . 'galleries WHERE ' . $filters_1, null, 0, false, true);
             foreach ($_galleries as $i => $_gallery) {
@@ -81,7 +81,7 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('image', 'r.id');
         }
-        $rows2 = browser_matches('itunes') ? array() : $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC', $max);
+        $rows2 = browser_matches('itunes') ? [] : $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC', $max);
 
         $rows = array_merge($rows1, $rows2);
         foreach ($rows as $row) {
@@ -97,13 +97,13 @@ class Hook_rss_galleries
                 } else {
                     $news_title = xmlentities(do_lang('THIS_WITH_SIMPLE', (($row['type'] == 'video') ? do_lang('VIDEO') : do_lang('IMAGE')), $id));
                 }
-                $just_row = db_map_restrict($row, array('id', 'the_description'));
+                $just_row = db_map_restrict($row, ['id', 'the_description']);
                 $_summary = get_translated_tempcode($row['type'] . 's', $just_row, 'the_description');
                 $summary = xmlentities($_summary->evaluate());
                 $news = '';
 
                 if (!array_key_exists($row['cat'], $galleries)) {
-                    $_fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', array('name' => $row['cat']));
+                    $_fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $row['cat']]);
                     if ($_fullname === null) {
                         continue;
                     }
@@ -112,10 +112,10 @@ class Hook_rss_galleries
                 $category = $galleries[$row['cat']];
                 $category_raw = $row['cat'];
 
-                $view_url = build_url(array('page' => 'galleries', 'type' => $row['type'], 'id' => $row['id']), get_module_zone('galleries'), array(), false, false, true);
+                $view_url = build_url(['page' => 'galleries', 'type' => $row['type'], 'id' => $row['id']], get_module_zone('galleries'), [], false, false, true);
 
                 if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '65dc0cec8c75f565c58c95fa1667aa1e', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '65dc0cec8c75f565c58c95fa1667aa1e', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
@@ -137,7 +137,7 @@ class Hook_rss_galleries
                 $meta = seo_meta_get_for($row['type'], $id);
                 $keywords = trim($meta[0], ', ');
 
-                $content->attach(do_template($prefix . 'ENTRY', array(
+                $content->attach(do_template($prefix . 'ENTRY', [
                     'ENCLOSURE_URL' => $enclosure_url,
                     'ENCLOSURE_LENGTH' => $enclosure_length,
                     'ENCLOSURE_TYPE' => $enclosure_type,
@@ -155,11 +155,11 @@ class Hook_rss_galleries
                     'DATE' => $news_date,
                     'DURATION' => array_key_exists('video_length', $row) ? (strval(intval(floor(floatval($row['video_length'])) / 60.0)) . ':' . strval($row['video_length'] % 60)) : null,
                     'KEYWORDS' => $keywords,
-                ), null, false, null, '.xml', 'xml'));
+                ], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('galleries');
-        return array($content, do_lang('GALLERIES'));
+        return [$content, do_lang('GALLERIES')];
     }
 }

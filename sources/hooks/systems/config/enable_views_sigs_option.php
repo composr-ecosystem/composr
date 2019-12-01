@@ -30,7 +30,7 @@ class Hook_config_enable_views_sigs_option
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_VIEWS_SIGS_OPTION',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_enable_views_sigs_option
             'public' => false,
 
             'addon' => 'cns_signatures',
-        );
+        ];
     }
 
     /**

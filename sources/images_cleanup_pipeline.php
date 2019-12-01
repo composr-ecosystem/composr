@@ -327,10 +327,10 @@ function adjust_pic_orientation($image, $exif)
                 }
             }
 
-            return array($image, true);
+            return [$image, true];
         }
     }
-    return array($image, false);
+    return [$image, false];
 }
 
 /**
@@ -346,7 +346,7 @@ function adjust_pic_size($image, $maximum_dimension)
     $height = imagesy($image);
 
     if (($width < $maximum_dimension) && ($height < $maximum_dimension)) {
-        return array($image, false);
+        return [$image, false];
     }
 
     if ($width > $height) {
@@ -372,7 +372,7 @@ function adjust_pic_size($image, $maximum_dimension)
     imagedestroy($image);
     $image = $dest;
 
-    return array($image, true);
+    return [$image, true];
 }
 
 /**
@@ -385,7 +385,7 @@ function adjust_pic_size($image, $maximum_dimension)
 function add_pic_watermarking($image, $watermarks)
 {
     if (!addon_installed('galleries')) {
-        return array($image, false);
+        return [$image, false];
     }
 
     require_code('galleries2');
@@ -411,7 +411,7 @@ function add_pic_watermarking($image, $watermarks)
         $made_change = true;
     }
 
-    return array($image, $made_change);
+    return [$image, $made_change];
 }
 
 /**
@@ -434,7 +434,7 @@ function copy_exif_data($src_path, $dest_path, $reorientated = false)
         return false;
     }
 
-    $image_info = array();
+    $image_info = [];
     @getimagesize($src_path, $image_info);
 
     // Prepare EXIF data bytes from source file
@@ -618,7 +618,7 @@ function png_compress($path, $lossy = false)
     }
 
     // Check we don't have too many colours for 8-bit
-    $colours = array();
+    $colours = [];
     for ($y = 0; $y < $height; $y++) {
         for ($x = 0; $x < $width; $x++) {
             $at = imagecolorat($img, $x, $y);

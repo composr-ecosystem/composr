@@ -30,7 +30,7 @@ class Hook_config_password_reset_process
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD_RESET_PROCESS',
             'type' => 'list',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_password_reset_process
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

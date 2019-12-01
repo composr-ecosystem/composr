@@ -57,26 +57,26 @@ class Hook_notification_actionlog extends Hook_notification__Staff
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('actionlog')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
         require_all_lang();
 
-        $types = $GLOBALS['SITE_DB']->query_select('actionlogs', array('DISTINCT the_type'));
+        $types = $GLOBALS['SITE_DB']->query_select('actionlogs', ['DISTINCT the_type']);
         if (get_forum_type() == 'cns') {
-            $types = array_merge($types, $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', array('DISTINCT l_the_type AS the_type')));
+            $types = array_merge($types, $GLOBALS['FORUM_DB']->query_select('f_moderator_logs', ['DISTINCT l_the_type AS the_type']));
         }
         foreach ($types as $type) {
             $lang = do_lang($type['the_type'], null, null, null, null, false);
             if ($lang === null) {
                 continue;
             }
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $type['the_type'],
                 'title' => $lang,
-            );
+            ];
         }
         sort_maps_by($page_links, 'title', false, true);
 
@@ -92,11 +92,11 @@ class Hook_notification_actionlog extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('actionlog')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['actionlog'] = array(do_lang('STAFF'), do_lang('actionlog:NOTIFICATION_TYPE_actionlog'));
+        $list = [];
+        $list['actionlog'] = [do_lang('STAFF'), do_lang('actionlog:NOTIFICATION_TYPE_actionlog')];
         return $list;
     }
 }

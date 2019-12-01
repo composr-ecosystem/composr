@@ -31,7 +31,7 @@ class Hook_preview_news
     public function applies()
     {
         $applies = (addon_installed('news')) && ((get_page_name() == 'cms_news') || (get_page_name() == 'cms_blogs')) && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
-        return array($applies, 'news', false);
+        return [$applies, 'news', false];
     }
 
     /**
@@ -49,12 +49,12 @@ class Hook_preview_news
         $post_html = $post_bits['tempcode'];
 
         if ($post_comcode != '') {
-            return array($post_html, $post_comcode); // Just preview the main article if there is one
+            return [$post_html, $post_comcode]; // Just preview the main article if there is one
         }
 
         // Otherwise we'll lay out all the Comcode fields in a boring way...
 
-        $map_table_map = array();
+        $map_table_map = [];
         $map_table_map[post_param_string('label_for__title')] = escape_html(post_param_string('title'));
         $map_table_map[post_param_string('label_for__post')] = $post_html;
         $map_table_map[post_param_string('label_for__news')] = comcode_to_tempcode(post_param_string('news', ''));
@@ -64,8 +64,8 @@ class Hook_preview_news
         foreach ($map_table_map as $key => $val) {
             $map_table_fields->attach(map_table_field($key, $val, true));
         }
-        $output = do_template('MAP_TABLE', array('_GUID' => '780aeedc08a960750fa4634e26db56d5', 'FIELDS' => $map_table_fields));
+        $output = do_template('MAP_TABLE', ['_GUID' => '780aeedc08a960750fa4634e26db56d5', 'FIELDS' => $map_table_fields]);
 
-        return array($output, $post_comcode);
+        return [$output, $post_comcode];
     }
 }

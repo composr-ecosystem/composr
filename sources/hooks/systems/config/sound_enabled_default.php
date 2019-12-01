@@ -30,7 +30,7 @@ class Hook_config_sound_enabled_default
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SOUND_ENABLED',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_sound_enabled_default
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

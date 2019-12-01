@@ -30,7 +30,7 @@ class Hook_config_sticky_header
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STICKY_HEADER',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_sticky_header
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

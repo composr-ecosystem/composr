@@ -20,7 +20,7 @@ class _oembed_test_set extends cms_test_case
 {
     public function testOEmbedManualPatternsConfigOption()
     {
-        $map = array(
+        $map = [
             'https://www.youtube.com/watch?v=GwbvoH6oh8s' => 'http://www.youtube.com/oembed',
             'https://vimeo.com/channels/staffpicks/247068452' => 'http://vimeo.com/api/oembed.{format}',
             'http://www.dailymotion.com/video/x6fdn40' => 'http://www.dailymotion.com/services/oembed',
@@ -38,11 +38,11 @@ class _oembed_test_set extends cms_test_case
             'https://www.scribd.com/document/372625296/PHP-docx' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
             'https://en.wikipedia.org/wiki/Windows_8' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
             'https://xkcd.com/1843/' => 'http://api.embed.ly/1/oembed?key=23e24bbf92db4442bacdf98f2c40b8fb',
-        );
+        ];
 
         foreach ($map as $url => $oembed_endpoint) {
             $_url = str_replace('{format}', 'json', $oembed_endpoint) . ((strpos($oembed_endpoint, '?') === false) ? '?' : '&') . 'url=' . urlencode($url);
-            $c = http_get_contents($_url, array('timeout' => 20.0));
+            $c = http_get_contents($_url, ['timeout' => 20.0]);
             $this->assertTrue(is_array(json_decode($c, true)), 'Failed on ' . str_replace('%', '%%', $_url));
             if (php_function_allowed('usleep')) {
                 usleep(2000000);

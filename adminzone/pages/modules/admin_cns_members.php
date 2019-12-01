@@ -30,7 +30,7 @@ class Module_admin_cns_members
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -59,33 +59,33 @@ class Module_admin_cns_members
             $member_id = get_member();
         }
 
-        $ret = array(
-            'browse' => array('MEMBERS', 'menu/social/members'),
-            'step1' => array('ADD_MEMBER', 'menu/adminzone/tools/users/member_add'),
-        );
+        $ret = [
+            'browse' => ['MEMBERS', 'menu/social/members'],
+            'step1' => ['ADD_MEMBER', 'menu/adminzone/tools/users/member_add'],
+        ];
 
         if (has_privilege(get_member(), 'mass_import')) {
-            $ret['delurk'] = array('DELETE_LURKERS', 'menu/adminzone/tools/users/delete_lurkers');
-            $ret['import_spreadsheet'] = array('IMPORT_MEMBERS', 'admin/import_spreadsheet');
+            $ret['delurk'] = ['DELETE_LURKERS', 'menu/adminzone/tools/users/delete_lurkers'];
+            $ret['import_spreadsheet'] = ['IMPORT_MEMBERS', 'admin/import_spreadsheet'];
         }
 
-        $ret['export_spreadsheet'] = array('EXPORT_MEMBERS', 'admin/export_spreadsheet');
+        $ret['export_spreadsheet'] = ['EXPORT_MEMBERS', 'admin/export_spreadsheet'];
 
         if ($support_crosslinks) {
             if (has_privilege($member_id, 'member_maintenance')) {
-                $ret['_SEARCH:members:browse'] = array('MEMBER_DIRECTORY', 'menu/adminzone/tools/users/member_edit');
+                $ret['_SEARCH:members:browse'] = ['MEMBER_DIRECTORY', 'menu/adminzone/tools/users/member_edit'];
             }
-            $ret['_SEARCH:admin_cns_merge_members:browse'] = array('MERGE_MEMBERS', 'menu/adminzone/tools/users/merge_members');
+            $ret['_SEARCH:admin_cns_merge_members:browse'] = ['MERGE_MEMBERS', 'menu/adminzone/tools/users/merge_members'];
             if (addon_installed('cns_cpfs')) {
-                $ret['_SEARCH:admin_cns_customprofilefields:browse'] = array('CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields');
+                $ret['_SEARCH:admin_cns_customprofilefields:browse'] = ['CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'];
             }
             if (addon_installed('welcome_emails')) {
-                $ret['_SEARCH:admin_cns_welcome_emails:browse'] = array('WELCOME_EMAILS', 'menu/adminzone/setup/welcome_emails');
+                $ret['_SEARCH:admin_cns_welcome_emails:browse'] = ['WELCOME_EMAILS', 'menu/adminzone/setup/welcome_emails'];
             }
             if (addon_installed('securitylogging')) {
-                $ret['_SEARCH:admin_lookup:browse'] = array('INVESTIGATE_USER', 'menu/adminzone/tools/users/investigate_user');
+                $ret['_SEARCH:admin_lookup:browse'] = ['INVESTIGATE_USER', 'menu/adminzone/tools/users/investigate_user'];
             }
-            $ret['_SEARCH:admin_privacy:browse'] = array('PRIVACY', 'menu/pages/privacy_policy');
+            $ret['_SEARCH:admin_privacy:browse'] = ['PRIVACY', 'menu/pages/privacy_policy'];
             /*
             We'll link these from elsewhere instead
             if (addon_installed('ecommerce')) {
@@ -94,7 +94,7 @@ class Module_admin_cns_members
             $ret['_SEARCH:admin_cns_groups:browse'] = array('USERGROUPS', 'menu/social/groups');
             */
             if (addon_installed('cns_warnings')) {
-                $ret['_SEARCH:warnings:edit'] = array('WARNINGS', 'menu/social/warnings');
+                $ret['_SEARCH:warnings:edit'] = ['WARNINGS', 'menu/social/warnings'];
             }
         }
 
@@ -126,43 +126,43 @@ class Module_admin_cns_members
         if ($type == 'step1') {
             set_helper_panel_tutorial('tut_members');
 
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
             breadcrumb_set_self(do_lang_tempcode('ADD_MEMBER'));
         }
 
         if ($type == 'step2') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:step1', do_lang_tempcode('ADD_MEMBER'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:step1', do_lang_tempcode('ADD_MEMBER')]]);
             breadcrumb_set_self(do_lang_tempcode('DETAILS'));
         }
 
         if ($type == 'delurk') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
         }
 
         if ($type == '_delurk') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:delurk', do_lang_tempcode('DELETE_LURKERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SEARCH:admin_cns_members:delurk', do_lang_tempcode('DELETE_LURKERS')]]);
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
         }
 
         if ($type == '__delurk') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:delurk', do_lang_tempcode('DELETE_LURKERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SEARCH:admin_cns_members:delurk', do_lang_tempcode('DELETE_LURKERS')]]);
         }
 
         if ($type == 'import_spreadsheet') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
         }
 
         if ($type == '_import_spreadsheet') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:import_spreadsheet', do_lang_tempcode('IMPORT_MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SEARCH:admin_cns_members:import_spreadsheet', do_lang_tempcode('IMPORT_MEMBERS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'export_spreadsheet') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
         }
 
         if ($type == '_export_spreadsheet') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:export_spreadsheet', do_lang_tempcode('EXPORT_MEMBERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SEARCH:admin_cns_members:export_spreadsheet', do_lang_tempcode('EXPORT_MEMBERS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -257,22 +257,22 @@ class Module_admin_cns_members
         return do_next_manager(
             get_screen_title('MEMBERS'),
             comcode_lang_string('DOC_MEMBERS'),
-            array(
-                array('menu/adminzone/tools/users/member_add', array('admin_cns_members', array('type' => 'step1'), get_module_zone('admin_cns_members')), do_lang_tempcode('ADD_MEMBER'), 'DOC_ADD_MEMBER'),
-                (!has_privilege(get_member(), 'member_maintenance')) ? null : array('menu/adminzone/tools/users/member_edit', array('members', array('type' => 'browse'), get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')), do_lang_tempcode('EDIT_MEMBER'), 'DOC_EDIT_MEMBER'),
-                array('menu/adminzone/tools/users/merge_members', array('admin_cns_merge_members', array('type' => 'browse'), get_module_zone('admin_cns_merge_members')), do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'),
-                (!has_privilege(get_member(), 'mass_import')) ? null : array('menu/adminzone/tools/users/delete_lurkers', array('admin_cns_members', array('type' => 'delurk'), get_module_zone('admin_cns_members')), do_lang_tempcode('DELETE_LURKERS'), 'DOC_DELETE_LURKERS'),
-                (!has_privilege(get_member(), 'mass_import')) ? null : array('admin/import_spreadsheet', array('admin_cns_members', array('type' => 'import_spreadsheet'), get_module_zone('admin_cns_members')), do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'),
-                array('admin/export_spreadsheet', array('admin_cns_members', array('type' => 'export_spreadsheet'), get_module_zone('admin_cns_members')), do_lang_tempcode('EXPORT_MEMBERS'), 'DOC_EXPORT_MEMBERS'),
-                addon_installed('cns_cpfs') ? array('menu/adminzone/tools/users/custom_profile_fields', array('admin_cns_customprofilefields', array('type' => 'browse'), get_module_zone('admin_cns_customprofilefields')), do_lang_tempcode('CUSTOM_PROFILE_FIELDS'), 'DOC_CUSTOM_PROFILE_FIELDS') : null,
-                addon_installed('welcome_emails') ? array('menu/adminzone/setup/welcome_emails', array('admin_cns_welcome_emails', array('type' => 'browse'), get_module_zone('admin_cns_welcome_emails')), do_lang_tempcode('WELCOME_EMAILS'), 'DOC_WELCOME_EMAILS') : null,
-                addon_installed('securitylogging') ? array('menu/adminzone/tools/users/investigate_user', array('admin_lookup', array(), get_module_zone('admin_lookup')), do_lang_tempcode('INVESTIGATE_USER'), 'DOC_INVESTIGATE_USER') : null,
-                addon_installed('cns_warnings') ? array('menu/social/warnings', array('warnings', array('type' => 'edit'), get_module_zone('warnings')), do_lang_tempcode('WARNINGS')) : null,
-                array('menu/adminzone/security/usergroups_temp', array('admin_group_member_timeouts', array('type' => 'browse'), get_module_zone('admin_group_member_timeouts')), do_lang_tempcode('GROUP_MEMBER_TIMEOUTS'), 'DOC_GROUP_MEMBER_TIMEOUTS'),
-                addon_installed('ecommerce') ? array('menu/adminzone/audit/ecommerce/ecommerce', array('admin_ecommerce', array('type' => 'browse'), get_module_zone('admin_ecommerce')), do_lang_tempcode('CUSTOM_PRODUCT_USERGROUP'), 'DOC_ECOMMERCE') : null,
-                array('menu/social/groups', array('admin_cns_groups', array('type' => 'browse'), get_module_zone('admin_cns_groups'), do_lang_tempcode('SWITCH_SECTION_WARNING')), do_lang_tempcode('USERGROUPS'), 'DOC_GROUPS'),
-                array('menu/pages/privacy_policy', array('admin_privacy', array('type' => 'browse'), get_module_zone('admin_privacy'), do_lang_tempcode('SWITCH_SECTION_WARNING')), do_lang_tempcode('PRIVACY'), 'DOC_GDPR'),
-            ), do_lang('MEMBERS')
+            [
+                ['menu/adminzone/tools/users/member_add', ['admin_cns_members', ['type' => 'step1'], get_module_zone('admin_cns_members')], do_lang_tempcode('ADD_MEMBER'), 'DOC_ADD_MEMBER'],
+                (!has_privilege(get_member(), 'member_maintenance')) ? null : ['menu/adminzone/tools/users/member_edit', ['members', ['type' => 'browse'], get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')], do_lang_tempcode('EDIT_MEMBER'), 'DOC_EDIT_MEMBER'],
+                ['menu/adminzone/tools/users/merge_members', ['admin_cns_merge_members', ['type' => 'browse'], get_module_zone('admin_cns_merge_members')], do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'],
+                (!has_privilege(get_member(), 'mass_import')) ? null : ['menu/adminzone/tools/users/delete_lurkers', ['admin_cns_members', ['type' => 'delurk'], get_module_zone('admin_cns_members')], do_lang_tempcode('DELETE_LURKERS'), 'DOC_DELETE_LURKERS'],
+                (!has_privilege(get_member(), 'mass_import')) ? null : ['admin/import_spreadsheet', ['admin_cns_members', ['type' => 'import_spreadsheet'], get_module_zone('admin_cns_members')], do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'],
+                ['admin/export_spreadsheet', ['admin_cns_members', ['type' => 'export_spreadsheet'], get_module_zone('admin_cns_members')], do_lang_tempcode('EXPORT_MEMBERS'), 'DOC_EXPORT_MEMBERS'],
+                addon_installed('cns_cpfs') ? ['menu/adminzone/tools/users/custom_profile_fields', ['admin_cns_customprofilefields', ['type' => 'browse'], get_module_zone('admin_cns_customprofilefields')], do_lang_tempcode('CUSTOM_PROFILE_FIELDS'), 'DOC_CUSTOM_PROFILE_FIELDS'] : null,
+                addon_installed('welcome_emails') ? ['menu/adminzone/setup/welcome_emails', ['admin_cns_welcome_emails', ['type' => 'browse'], get_module_zone('admin_cns_welcome_emails')], do_lang_tempcode('WELCOME_EMAILS'), 'DOC_WELCOME_EMAILS'] : null,
+                addon_installed('securitylogging') ? ['menu/adminzone/tools/users/investigate_user', ['admin_lookup', [], get_module_zone('admin_lookup')], do_lang_tempcode('INVESTIGATE_USER'), 'DOC_INVESTIGATE_USER'] : null,
+                addon_installed('cns_warnings') ? ['menu/social/warnings', ['warnings', ['type' => 'edit'], get_module_zone('warnings')], do_lang_tempcode('WARNINGS')] : null,
+                ['menu/adminzone/security/usergroups_temp', ['admin_group_member_timeouts', ['type' => 'browse'], get_module_zone('admin_group_member_timeouts')], do_lang_tempcode('GROUP_MEMBER_TIMEOUTS'), 'DOC_GROUP_MEMBER_TIMEOUTS'],
+                addon_installed('ecommerce') ? ['menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce', ['type' => 'browse'], get_module_zone('admin_ecommerce')], do_lang_tempcode('CUSTOM_PRODUCT_USERGROUP'), 'DOC_ECOMMERCE'] : null,
+                ['menu/social/groups', ['admin_cns_groups', ['type' => 'browse'], get_module_zone('admin_cns_groups'), do_lang_tempcode('SWITCH_SECTION_WARNING')], do_lang_tempcode('USERGROUPS'), 'DOC_GROUPS'],
+                ['menu/pages/privacy_policy', ['admin_privacy', ['type' => 'browse'], get_module_zone('admin_privacy'), do_lang_tempcode('SWITCH_SECTION_WARNING')], do_lang_tempcode('PRIVACY'), 'DOC_GDPR'],
+            ], do_lang('MEMBERS')
         );
     }
 
@@ -287,14 +287,14 @@ class Module_admin_cns_members
         list($fields, $hidden) = cns_get_member_fields(false);
         url_default_parameters__disable();
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '101063c817a45c10bca5c384e1f32bf1', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('OPTIONS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '101063c817a45c10bca5c384e1f32bf1', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('OPTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('FORCE_TEMPORARY_PASSWORD'), do_lang_tempcode('DESCRIPTION_FORCE_TEMPORARY_PASSWORD'), 'temporary_password', false));
 
         $text = do_lang_tempcode('_ENTER_PROFILE_DETAILS');
 
         $submit_name = do_lang_tempcode('ADD');
-        $url = build_url(array('page' => '_SELF', 'type' => 'step2'), '_SELF');
-        return do_template('FORM_SCREEN', array(
+        $url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF');
+        return do_template('FORM_SCREEN', [
             '_GUID' => '3724dec184e27bb1bfebc5712e8faec2',
             'HIDDEN' => $hidden,
             'TITLE' => $this->title,
@@ -303,7 +303,7 @@ class Module_admin_cns_members
             'SUBMIT_ICON' => 'menu/site_meta/user_actions/join',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $url,
-        ));
+        ]);
     }
 
     /**
@@ -321,7 +321,7 @@ class Module_admin_cns_members
 
         $primary_group = (has_privilege(get_member(), 'assume_any_member')) ? post_param_integer('primary_group') : null;
         if (!array_key_exists('secondary_groups', $_POST)) {
-            $_POST['secondary_groups'] = array();
+            $_POST['secondary_groups'] = [];
         }
 
         require_code('temporal2');
@@ -373,10 +373,10 @@ class Module_admin_cns_members
         $validated = post_param_integer('validated', 0);
 
         // Secondary groups
-        $secondary_groups = array();
+        $secondary_groups = [];
         if (array_key_exists('secondary_groups', $_POST)) {
             $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-            $groups = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), ($group_count > 200) ? array('g_is_private_club' => 0) : array()));
+            $groups = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ($group_count > 200) ? ['g_is_private_club' => 0] : []));
             foreach ($_POST['secondary_groups'] as $group_id) {
                 $group = $groups[intval($group_id)];
 
@@ -441,33 +441,33 @@ class Module_admin_cns_members
 
         log_it('ADD_MEMBER', strval($id), $username);
 
-        $special_links = array();
+        $special_links = [];
 
         if (addon_installed('galleries')) {
             require_lang('galleries');
-            $special_links[] = array('menu/rich_content/galleries', array('cms_galleries', array('type' => 'import', 'member_id' => $id), get_module_zone('cms_galleries')), do_lang('ADD_GALLERY'));
+            $special_links[] = ['menu/rich_content/galleries', ['cms_galleries', ['type' => 'import', 'member_id' => $id], get_module_zone('cms_galleries')], do_lang('ADD_GALLERY')];
         }
 
         require_code('templates_donext');
         return do_next_manager(
             $this->title,
             do_lang_tempcode('SUCCESS'),
-            array(),
+            [],
             null,
             /* TYPED-ORDERED LIST OF 'LINKS' */
-            array('_SELF', array('type' => 'step1'), '_SELF'), // Add one
+            ['_SELF', ['type' => 'step1'], '_SELF'], // Add one
             null, // Edit this
             null, // Edit one
-            array('members', array('type' => 'view', 'id' => $id), get_module_zone('members')), // View this
-            array('members', array('type' => 'browse'), get_module_zone('members'), do_lang_tempcode('MEMBERS')), // View archive
+            ['members', ['type' => 'view', 'id' => $id], get_module_zone('members')], // View this
+            ['members', ['type' => 'browse'], get_module_zone('members'), do_lang_tempcode('MEMBERS')], // View archive
             null, // Add one category
             null, // Edit one category
             null, // Edit this category
             null, // View this category
             /* SPECIALLY TYPED 'LINKS' */
             $special_links,
-            array(),
-            array(),
+            [],
+            [],
             null,
             null,
             do_lang_tempcode('MEMBERS'),
@@ -529,10 +529,10 @@ class Module_admin_cns_members
             $non_confirmed = ($_non_confirmed == '1');
         }
         if ($_usergroups === null) {
-            $usergroups = array();
+            $usergroups = [];
         } else {
             $temp = explode(',', $_usergroups);
-            $usergroups = array();
+            $usergroups = [];
             foreach ($temp as $t) {
                 $usergroups[] = intval($t);
             }
@@ -551,7 +551,7 @@ class Module_admin_cns_members
         $fields->attach(form_input_tick(do_lang_tempcode('DELURK_NON_CONFIRMED'), do_lang_tempcode('DELURK_NON_CONFIRMED_DESCRIPTION'), 'non_confirmed', $non_confirmed));
         $groups = new Tempcode();
         $group_count = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name'), ($group_count > 200) ? array('g_is_private_club' => 0) : array());
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name'], ($group_count > 200) ? ['g_is_private_club' => 0] : []);
         foreach ($rows as $row) {
             if ($row['id'] != db_get_first_id()) {
                 $groups->attach(form_input_list_entry(strval($row['id']), in_array($row['id'], $usergroups), get_translated_text($row['g_name'], $GLOBALS['FORUM_DB'])));
@@ -562,10 +562,10 @@ class Module_admin_cns_members
         url_default_parameters__disable();
 
         $submit_name = do_lang_tempcode('PROCEED');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_delurk'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_delurk'], '_SELF');
         $text = do_lang_tempcode('CHOOSE_DELURK_CRITERIA');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'f911fc5be2865bdd065abf7c636530d4',
             'TITLE' => $this->title,
             'HIDDEN' => $hidden,
@@ -574,7 +574,7 @@ class Module_admin_cns_members
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -604,7 +604,7 @@ class Module_admin_cns_members
                 $sql .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
             }
             $rows = $GLOBALS['FORUM_DB']->query($sql, 500, $start);
-            $out = array();
+            $out = [];
             if (addon_installed('points')) {
                 require_code('points');
             }
@@ -620,7 +620,7 @@ class Module_admin_cns_members
                         continue 2;
                     }
                 }
-                $num_actions = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(*)', array('member_id' => $row['id']));
+                $num_actions = $GLOBALS['SITE_DB']->query_select_value('actionlogs', 'COUNT(*)', ['member_id' => $row['id']]);
                 if ($num_actions > $max_logged_actions) {
                     continue;
                 }
@@ -657,7 +657,7 @@ class Module_admin_cns_members
         $min_days_since_login = post_param_integer('min_days_since_login');
         $min_days_since_join = post_param_integer('min_days_since_join');
         $non_confirmed = (post_param_integer('non_confirmed', 0) == 1);
-        $usergroups = array();
+        $usergroups = [];
         if (array_key_exists('usergroups', $_POST)) {
             foreach ($_POST['usergroups'] as $g_id) {
                 $usergroups[] = intval($g_id);
@@ -678,18 +678,18 @@ class Module_admin_cns_members
             inform_exit(do_lang_tempcode('NO_LURKERS_FOUND'));
         }
 
-        $_lurkers = array();
+        $_lurkers = [];
         foreach ($lurkers as $id => $username) {
             if (is_guest($id)) {
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
 
-            $_lurkers[] = array('ID' => strval($id), 'USERNAME' => $username, 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($id, true));
+            $_lurkers[] = ['ID' => strval($id), 'USERNAME' => $username, 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($id, true)];
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '__delurk'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '__delurk'], '_SELF');
 
-        return do_template('CNS_DELURK_CONFIRM', array('_GUID' => '52870b8546653782e354533602531970', 'TITLE' => $this->title, 'LURKERS' => $_lurkers, 'URL' => $url));
+        return do_template('CNS_DELURK_CONFIRM', ['_GUID' => '52870b8546653782e354533602531970', 'TITLE' => $this->title, 'LURKERS' => $_lurkers, 'URL' => $url]);
     }
 
     /**
@@ -725,7 +725,7 @@ class Module_admin_cns_members
         $hidden = new Tempcode();
         $fields = new Tempcode();
 
-        $js_function_calls = array();
+        $js_function_calls = [];
 
         // Option to filter by whether members allow e-mails
         $fields->attach(form_input_tick(do_lang_tempcode('FILTER_BY_ALLOW'), do_lang_tempcode('DESCRIPTION_FILTER_BY_ALLOW'), 'filter_by_allow', get_param_integer('filter_by_allow', 0) == 1));
@@ -751,17 +751,17 @@ class Module_admin_cns_members
         $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('SELECT_USERGROUPS_TO_FILTER'), 'usergroups', $groups, null, 10, false));
 
         // File name
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '16d396d2357684d2dbfebefbd20776a3', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('FILENAME'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '16d396d2357684d2dbfebefbd20776a3', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('FILENAME')]));
         $filename = strtolower(do_lang('MEMBERS')) . '-' . date('Y-m-d');
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), '', 'filename', $filename, true));
 
         // ...
 
         $submit_name = do_lang_tempcode('EXPORT_MEMBERS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_export_spreadsheet'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_export_spreadsheet'], '_SELF');
         $text = '';
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '24cae29bc329a307a94c8b3f1e087708',
             'TITLE' => $this->title,
             'HIDDEN' => $hidden,
@@ -772,7 +772,7 @@ class Module_admin_cns_members
             'SUBMIT_NAME' => $submit_name,
             'TARGET' => '_blank',
             'JS_FUNCTION_CALLS' => $js_function_calls,
-        ));
+        ]);
     }
 
     /**
@@ -783,14 +783,14 @@ class Module_admin_cns_members
     public function _export_spreadsheet()
     {
         $filter_by_allow = post_param_integer('filter_by_allow', 0);
-        $fields_to_use = isset($_POST['fields_to_use']) ? $_POST['fields_to_use'] : array();
-        $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : array();
+        $fields_to_use = isset($_POST['fields_to_use']) ? $_POST['fields_to_use'] : [];
+        $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : [];
         $order_by = post_param_string('order_by');
 
         log_it('EXPORT_MEMBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_MEMBERS'), $this->title, 'export_members', array($filter_by_allow == 1, $fields_to_use, $usergroups, $order_by));
+        return call_user_func_array__long_task(do_lang('EXPORT_MEMBERS'), $this->title, 'export_members', [$filter_by_allow == 1, $fields_to_use, $usergroups, $order_by]);
     }
 
     /**
@@ -812,10 +812,10 @@ class Module_admin_cns_members
         $fields->attach(form_input_tick(do_lang_tempcode('FORCE_TEMPORARY_PASSWORD'), do_lang_tempcode('DESCRIPTION_FORCE_TEMPORARY_PASSWORD'), 'temporary_password', false));
 
         $submit_name = do_lang_tempcode('IMPORT_MEMBERS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import_spreadsheet'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_import_spreadsheet'], '_SELF');
         $text = '';
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '9196652a093d7f3a0e5dd0922f74cc51',
             'TITLE' => $this->title,
             'HIDDEN' => $hidden,
@@ -824,7 +824,7 @@ class Module_admin_cns_members
             'TEXT' => $text,
             'SUBMIT_ICON' => 'admin/import_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -853,6 +853,6 @@ class Module_admin_cns_members
         log_it('IMPORT_MEMBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', array($default_password, $use_temporary_passwords, $target_path));
+        return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path]);
     }
 }

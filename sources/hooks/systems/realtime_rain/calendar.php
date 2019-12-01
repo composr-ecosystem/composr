@@ -33,10 +33,10 @@ class Hook_realtime_rain_calendar
     public function run($from, $to)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'calendar')) {
             require_code('calendar');
@@ -51,7 +51,7 @@ class Hook_realtime_rain_calendar
                     continue;
                 }
 
-                $drops[] = rain_get_special_icons(null, $timestamp) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'calendar',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -60,7 +60,7 @@ class Hook_realtime_rain_calendar
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'calendar', 'type' => 'event', 'id' => $row[1]['id']), get_module_zone('calendar')),
+                    'URL' => build_url(['page' => 'calendar', 'type' => 'event', 'id' => $row[1]['id']], get_module_zone('calendar')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -68,7 +68,7 @@ class Hook_realtime_rain_calendar
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'event_' . strval($row[1]['id']),
-                );
+                ];
             }
         }
 

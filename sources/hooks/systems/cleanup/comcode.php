@@ -36,7 +36,7 @@ class Hook_cleanup_comcode
             }
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('COMCODE_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_COMCODE_CACHE');
         $info['type'] = 'cache';

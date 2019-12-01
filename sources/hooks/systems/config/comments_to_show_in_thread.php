@@ -30,7 +30,7 @@ class Hook_config_comments_to_show_in_thread
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMMENTS_TO_SHOW_IN_THREAD',
             'type' => 'integer',
             'category' => 'USER_INTERACTION',
@@ -44,7 +44,7 @@ class Hook_config_comments_to_show_in_thread
             'public' => false,
 
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

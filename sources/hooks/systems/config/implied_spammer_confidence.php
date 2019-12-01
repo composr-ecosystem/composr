@@ -30,7 +30,7 @@ class Hook_config_implied_spammer_confidence
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IMPLIED_SPAMMER_CONFIDENCE',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_implied_spammer_confidence
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

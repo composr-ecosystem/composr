@@ -36,17 +36,17 @@ function get_nested_spreadsheet_structure()
 
         $_custom_fields = cns_get_all_custom_fields_match(cns_get_all_default_groups(true));
     } else {
-        $_custom_fields = array();
+        $_custom_fields = [];
     }
 
-    static $spreadsheet_structure = array();
-    if ($spreadsheet_structure !== array()) {
+    static $spreadsheet_structure = [];
+    if ($spreadsheet_structure !== []) {
         return $spreadsheet_structure;
     }
 
     require_code('files_spreadsheets_read');
 
-    $spreadsheet_files = array();
+    $spreadsheet_files = [];
     if (file_exists(get_custom_file_base() . '/private_data')) {
         $dh = @opendir(get_custom_file_base() . '/private_data');
         if ($dh !== false) {
@@ -61,9 +61,9 @@ function get_nested_spreadsheet_structure()
 
                 if ($header_row !== false) {
                     // Initialise data for this forthcoming $spreadsheet_files entry
-                    $spreadsheet_file = array();
-                    $spreadsheet_file['headings'] = array();    // Unordered headings                               ?=>heading
-                    $spreadsheet_file['data'] = array();        // Array of rows                                    ?=>array(cols,col2,col3,...)
+                    $spreadsheet_file = [];
+                    $spreadsheet_file['headings'] = [];    // Unordered headings                               ?=>heading
+                    $spreadsheet_file['data'] = [];        // Array of rows                                    ?=>array(cols,col2,col3,...)
 
                     // Fill out 'headings'
                     $spreadsheet_file['headings'] = $header_row;
@@ -71,7 +71,7 @@ function get_nested_spreadsheet_structure()
                     // Fill out 'data' and 'lists'
                     $vl_temp = $sheet_reader->read_row();
                     while ($vl_temp !== false) { // If there's nothing past the headings this loop never executes
-                        $new_entry = array();
+                        $new_entry = [];
                         foreach ($header_row as $j => $heading) {
                             $new_entry[$heading] = $vl_temp[$j];
                         }
@@ -94,7 +94,7 @@ function get_nested_spreadsheet_structure()
     }
     $spreadsheet_structure['spreadsheet_files'] = $spreadsheet_files;
 
-    $cpf_fields = array();
+    $cpf_fields = [];
     foreach ($_custom_fields as $cf => $custom_field) {
         if (($custom_field['cf_type'] == 'list') || ($custom_field['cf_type'] == 'list_multi')) {
             $_value = explode('|', $custom_field['cf_default']); // $_value will come up as file|heading(optional)|order(optional)
@@ -153,15 +153,15 @@ function get_nested_spreadsheet_structure()
                     }
                 }
 
-                $cpf_fields[$spreadsheet_heading] = array(
+                $cpf_fields[$spreadsheet_heading] = [
                     'id' => $custom_field['id'],
                     'label' => get_translated_text($custom_field['cf_name'], $GLOBALS['FORUM_DB']),
-                    'possible_fields' => array('field_' . strval($custom_field['id']), $spreadsheet_heading), // Form field names that this CPF may appear as (may not all be real CPFs)
+                    'possible_fields' => ['field_' . strval($custom_field['id']), $spreadsheet_heading], // Form field names that this CPF may appear as (may not all be real CPFs)
                     'spreadsheet_filename' => $spreadsheet_filename,
                     'spreadsheet_heading' => $spreadsheet_heading,
                     'spreadsheet_parent_filename' => $spreadsheet_parent_filename,
                     'spreadsheet_parent_heading' => $spreadsheet_parent_heading,
-                );
+                ];
             }
         }
     }
@@ -181,7 +181,7 @@ function get_nested_spreadsheet_structure()
  */
 function get_spreadsheet_data_values($spreadsheet_file, $known_field_key = null, $known_field_value = null, $desired_field = null)
 {
-    $map = array();
+    $map = [];
     if (($known_field_key !== null) && ($known_field_value !== null)) {
         $map[$known_field_key] = $known_field_value;
     }
@@ -198,7 +198,7 @@ function get_spreadsheet_data_values($spreadsheet_file, $known_field_key = null,
  */
 function get_spreadsheet_data_values__and($spreadsheet_file, $map, $desired_field = null)
 {
-    $results = array();
+    $results = [];
     $spreadsheet_structure = get_nested_spreadsheet_structure();
     foreach ($spreadsheet_structure['spreadsheet_files'][$spreadsheet_file]['data'] as $row) {
         $okay = true;
@@ -226,7 +226,7 @@ function get_members_spreadsheet_data_values($member_id)
     require_code('cns_members');
     $member_row = cns_get_custom_field_mappings($member_id);
 
-    $out = array();
+    $out = [];
 
     $spreadsheet_structure = get_nested_spreadsheet_structure();
     foreach ($spreadsheet_structure['cpf_fields'] as $cpf_field) {

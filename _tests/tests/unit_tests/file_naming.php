@@ -22,7 +22,7 @@ class file_naming_test_set extends cms_test_case
     {
         require_code('files2');
 
-        $ignore_stubs = array(
+        $ignore_stubs = [
             '.user.ini',
             'themes/default/javascript/jsdoc-conf.json',
             'aps/',
@@ -79,11 +79,11 @@ class file_naming_test_set extends cms_test_case
             '_tests/assets/spreadsheets/test-tsv.txt',
             '_tests/assets/spreadsheets/test-scsv.txt',
             'data_custom/pdf_viewer/',
-        );
+        ];
 
-        $ignore_substrings = array(
+        $ignore_substrings = [
             '/-logo.png',
-        );
+        ];
 
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_REVISION_FILES | IGNORE_EDITFROM_FILES | IGNORE_CUSTOM_THEMES | IGNORE_UPLOADS | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS);
         foreach ($files as $path) {

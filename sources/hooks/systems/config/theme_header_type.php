@@ -30,7 +30,7 @@ class Hook_config_theme_header_type
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'THEME_HEADER_TYPE',
             'type' => 'list',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_theme_header_type
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

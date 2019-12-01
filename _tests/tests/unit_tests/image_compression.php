@@ -32,7 +32,7 @@ class image_compression_test_set extends cms_test_case
                 continue;
             }
 
-            foreach (array('images', 'images_custom') as $dir) {
+            foreach (['images', 'images_custom'] as $dir) {
                 $base = get_file_base() . '/themes/' . $theme . '/' . $dir;
                 require_code('files2');
                 $files = get_directory_contents($base, '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);

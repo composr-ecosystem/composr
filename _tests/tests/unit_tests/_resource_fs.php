@@ -42,7 +42,7 @@ class _resource_fs_test_set extends cms_test_case
         require_code('failure');
 
         if ($this->paths === null) {
-            $this->paths = array();
+            $this->paths = [];
         }
 
         static $done_once = false;
@@ -52,7 +52,7 @@ class _resource_fs_test_set extends cms_test_case
             $done_once = true;
         }
 
-        $this->resource_fs_obs = array();
+        $this->resource_fs_obs = [];
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
             if (($this->only !== null) && ($commandr_fs_hook != $this->only)) {
@@ -95,10 +95,10 @@ class _resource_fs_test_set extends cms_test_case
                 }
                 set_throw_errors(false);
 
-                $result = $ob->folder_add('test-a', $path, array());
+                $result = $ob->folder_add('test-a', $path, []);
                 $this->assertTrue($result !== false, 'Failed to folder_add ' . $commandr_fs_hook);
                 $path = $ob->folder_convert_id_to_filename($folder_resource_type_1, $result);
-                $result = $ob->folder_add('test-b', $path, array());
+                $result = $ob->folder_add('test-b', $path, []);
                 if ($result !== false) {
                     $folder_resource_type_2 = is_array($ob->folder_resource_type) ? $ob->folder_resource_type[1] : $ob->folder_resource_type;
                     $path .= '/' . $ob->folder_convert_id_to_filename($folder_resource_type_2, $result);
@@ -114,7 +114,7 @@ class _resource_fs_test_set extends cms_test_case
             }
             set_throw_errors(false);
 
-            $result = $ob->file_add('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, array());
+            $result = $ob->file_add('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, []);
             destrictify();
             $this->assertTrue($result !== false, 'Failed to file_add ' . $commandr_fs_hook . ' (' . $path . ')');
             $this->paths[$commandr_fs_hook] = $path;
@@ -128,18 +128,18 @@ class _resource_fs_test_set extends cms_test_case
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
             $count_folders = 0;
             if ($ob->folder_resource_type !== null) {
-                foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : array($ob->folder_resource_type) as $resource_type) {
+                foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
                     $count_folders += $ob->get_resources_count($resource_type);
-                    $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == array()); // Search for a unique random ID should find nothing
+                    $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == []); // Search for a unique random ID should find nothing
                 }
             }
             $count_files = 0;
-            foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : array($ob->file_resource_type) as $resource_type) {
+            foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : [$ob->file_resource_type] as $resource_type) {
                 $count_files += $ob->get_resources_count($resource_type);
-                $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == array()); // Search for a unique random ID should find nothing
+                $this->assertTrue($ob->find_resource_by_label($resource_type, str_replace('.', '_', uniqid('', true))) == []); // Search for a unique random ID should find nothing
             }
 
-            $listing = $this->_recursive_listing($ob, array(), array('var', $commandr_fs_hook), $commandr_fs);
+            $listing = $this->_recursive_listing($ob, [], ['var', $commandr_fs_hook], $commandr_fs);
 
             $count = $count_folders + $count_files;
 
@@ -160,7 +160,7 @@ class _resource_fs_test_set extends cms_test_case
         $listing = $ob->listing($meta_dir, $meta_root_node, $commandr_fs);
         foreach ($listing as $f) {
             if ($f[1] == COMMANDR_FS_DIR) {
-                $sub_listing = $this->_recursive_listing($ob, array_merge($meta_dir, array($f[0])), $meta_root_node, $commandr_fs);
+                $sub_listing = $this->_recursive_listing($ob, array_merge($meta_dir, [$f[0]]), $meta_root_node, $commandr_fs);
                 foreach ($sub_listing as $s_f) {
                     $suffix = '.' . RESOURCE_FS_DEFAULT_EXTENSION;
                     if (($s_f[0] != '_folder' . $suffix) && (($s_f[1] == COMMANDR_FS_DIR) || (substr($s_f[0], -strlen($suffix)) == $suffix))) {
@@ -207,15 +207,15 @@ class _resource_fs_test_set extends cms_test_case
     {
         foreach ($this->resource_fs_obs as $commandr_fs_hook => $ob) {
             if ($ob->folder_resource_type !== null) {
-                $results = array();
-                foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : array($ob->folder_resource_type) as $resource_type) {
+                $results = [];
+                foreach (is_array($ob->folder_resource_type) ? $ob->folder_resource_type : [$ob->folder_resource_type] as $resource_type) {
                     $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-a'));
                     $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-b'));
                 }
                 $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (folder) ' . $commandr_fs_hook);
             }
-            $results = array();
-            foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : array($ob->file_resource_type) as $resource_type) {
+            $results = [];
+            foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : [$ob->file_resource_type] as $resource_type) {
                 $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test_content'));
             }
             $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
@@ -259,7 +259,7 @@ class _resource_fs_test_set extends cms_test_case
                 }
             }
 
-            $result = $ob->file_edit('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, array('label' => 'test_content'));
+            $result = $ob->file_edit('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path, ['label' => 'test_content']);
             $this->assertTrue($result !== false, 'Failed to file_edit ' . $commandr_fs_hook . ' (' . $path . ')');
         }
     }

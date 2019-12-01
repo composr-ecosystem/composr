@@ -36,7 +36,7 @@ class Hook_content_meta_aware_download
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'downloads:DOWNLOAD_NOUN',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_download
             'support_spam_heuristics' => 'the_description',
 
             'actionlog_regexp' => '\w+_DOWNLOAD',
-        );
+        ];
     }
 
     /**

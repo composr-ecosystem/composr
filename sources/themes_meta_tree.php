@@ -64,9 +64,9 @@ function _record_templates_used()
     sort($templates_used);
 
     foreach ($templates_used as $i => $rel_a) {
-        $has_currently = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_b'), array(
+        $has_currently = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_b'], [
             'rel_a' => $rel_a,
-        )));
+        ]));
         sort($has_currently);
         $has_currently_flipped = array_flip($has_currently);
 
@@ -76,10 +76,10 @@ function _record_templates_used()
         if ($has_currently != $templates_used_copy) {
             foreach ($templates_used_copy as $rel_b) {
                 if (!isset($has_currently_flipped[$rel_b])) {
-                    $insert_map = array(
+                    $insert_map = [
                         'rel_a' => $rel_a,
                         'rel_b' => $rel_b,
-                    );
+                    ];
                     $GLOBALS['SITE_DB']->query_insert('theme_template_relations', $insert_map, false, true); // errors suppressed in case of race condition
                 }
             }
@@ -117,24 +117,24 @@ function record_template_tree_used($out)
         $page_link .= ':' . $type;
     }
 
-    $current_json_tree = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_screen_tree', 'json_tree', array(
+    $current_json_tree = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_screen_tree', 'json_tree', [
         'page_link' => $page_link,
-    ));
+    ]);
 
     $new_json_tree = json_encode($tree);
 
     if ($current_json_tree !== $new_json_tree) {
         if ($current_json_tree !== null) {
-            $GLOBALS['SITE_DB']->query_delete('theme_screen_tree', array(
+            $GLOBALS['SITE_DB']->query_delete('theme_screen_tree', [
                 'page_link' => $page_link,
-            ), '', 1);
+            ], '', 1);
         }
 
         if ($tree !== null) {
-            $GLOBALS['SITE_DB']->query_insert('theme_screen_tree', array(
+            $GLOBALS['SITE_DB']->query_insert('theme_screen_tree', [
                 'page_link' => $page_link,
                 'json_tree' => $new_json_tree,
-            ));
+            ]);
 
             $meta_tree_builder = new Meta_tree_builder();
             $meta_tree_builder->refresh('screens', $page_link);
@@ -150,7 +150,7 @@ function record_template_tree_used($out)
  */
 function convert_template_tree_metadata_to_screen_tree($metadata)
 {
-    if (!in_array($metadata['type'], array(TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE, TEMPLATE_TREE_NODE__PANEL, TEMPLATE_TREE_NODE__PAGE))) {
+    if (!in_array($metadata['type'], [TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE, TEMPLATE_TREE_NODE__PANEL, TEMPLATE_TREE_NODE__PAGE])) {
         if (empty($metadata['children'])) {
             return null;
         }
@@ -167,22 +167,22 @@ function convert_template_tree_metadata_to_screen_tree($metadata)
             $guid_used = $_child['identifier'];
         }
     }
-    $instance_calls = array();
+    $instance_calls = [];
     if ($parameter_as !== null || $guid_used !== null) {
-        $instance_calls[] = array(
+        $instance_calls[] = [
             'parameter_as' => $parameter_as,
             'guid_used' => $guid_used,
-        ); // More will be added to array when equivalent child nodes are merged together
+        ]; // More will be added to array when equivalent child nodes are merged together
     }
 
     // Basic settings
-    $tree = array(
+    $tree = [
         'type' => '_other',
         'subdir' => '',
         'name' => '_container',
         'instance_calls' => $instance_calls,
-        'children' => array(),
-    );
+        'children' => [],
+    ];
 
     // Accurate settings
     switch ($metadata['type']) {
@@ -200,18 +200,18 @@ function convert_template_tree_metadata_to_screen_tree($metadata)
     }
 
     // Children
-    $children = array();
+    $children = [];
     foreach ($metadata['children'] as $_child) {
         $child = convert_template_tree_metadata_to_screen_tree($_child);
         if ($child !== null) {
             if ($child['type'] == '_other') { // We don't actually want these '_other' nodes, so we'll skip to the node's children
                 $to_merge = $child['children'];
             } else {
-                $to_merge = array($child);
+                $to_merge = [$child];
             }
 
             foreach ($to_merge as $__child) {
-                $sz = serialize(array($__child['type'], $__child['subdir'], $__child['name']));
+                $sz = serialize([$__child['type'], $__child['subdir'], $__child['name']]);
                 if (isset($children[$sz])) {
                     $children[$sz]['instance_calls'] = array_unique(array_merge($children[$sz]['instance_calls'], $__child['instance_calls']));
                 } else {
@@ -233,7 +233,7 @@ function convert_template_tree_metadata_to_screen_tree($metadata)
  * @param  mixed $children Child nodes (array) or Tempcode node to get children from (Tempcode)
  * @return array Metadata structure
  */
-function create_template_tree_metadata($type = 0, $identifier = '', $children = array())
+function create_template_tree_metadata($type = 0, $identifier = '', $children = [])
 {
     if (is_object($identifier)) {
         $identifier = $identifier->evaluate();
@@ -243,17 +243,17 @@ function create_template_tree_metadata($type = 0, $identifier = '', $children = 
         if (isset($children->metadata)) {
             $children->handle_symbol_preprocessing();
 
-            $children = array($children->metadata);
+            $children = [$children->metadata];
         } else {
-            $children = array();
+            $children = [];
         }
     }
 
-    return array(
+    return [
         'type' => $type,
         'identifier' => $identifier,
         'children' => $children,
-    );
+    ];
 }
 
 /**
@@ -290,26 +290,26 @@ function find_template_tree_nice($metadata, &$collected_templates)
             }
 
             // Find edit URL
-            $edit_url_map = array(
+            $edit_url_map = [
                 'page' => 'admin_themes',
                 'type' => 'edit_templates',
                 'f0file' => $file,
                 'f0guid' => $guid,
-                'live_preview_url' => protect_url_parameter(get_self_url(true, false, array('special_page_type' => null))),
+                'live_preview_url' => protect_url_parameter(get_self_url(true, false, ['special_page_type' => null])),
                 'theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
-            );
+            ];
             $edit_url = build_url($edit_url_map, 'adminzone');
 
             // Render
             static $template_tree_item_count = 0;
-            $source = do_template('TEMPLATE_TREE_ITEM', array(
+            $source = do_template('TEMPLATE_TREE_ITEM', [
                 '_GUID' => 'be8eb00699631677d459b0f7c5ba60c8',
                 'FILE' => $file,
                 'EDIT_URL' => $edit_url,
                 'CODENAME' => $codename,
                 'GUID' => $guid,
                 'ID' => strval($template_tree_item_count),
-            ));
+            ]);
             $out = $source->evaluate();
             $template_tree_item_count++;
 
@@ -375,7 +375,7 @@ function find_template_tree_nice($metadata, &$collected_templates)
     // Now for the children...
 
     // Reduce down unnecessary children under here
-    $_children = array();
+    $_children = [];
     foreach ($children as $child) {
         if (
             (!empty($child['children']))
@@ -388,23 +388,23 @@ function find_template_tree_nice($metadata, &$collected_templates)
     $children = $_children;
 
     // Render
-    $child_items = array();
+    $child_items = [];
     foreach ($children as $child) {
         $child_rendered = find_template_tree_nice($child, $collected_templates);
         if ($child_rendered != '') {
-            $_middle = do_template('TEMPLATE_TREE_ITEM_WRAP', array('_GUID' => '59f003e298db3b621132649d2e315f9d', 'CONTENT' => $child_rendered));
+            $_middle = do_template('TEMPLATE_TREE_ITEM_WRAP', ['_GUID' => '59f003e298db3b621132649d2e315f9d', 'CONTENT' => $child_rendered]);
             $child_items[$_middle->evaluate()] = true;
         }
     }
-    if (($child_items == array()) && ($metadata['type'] != TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE)) {
+    if (($child_items == []) && ($metadata['type'] != TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE)) {
         return '';
     }
-    if ($child_items != array()) {
+    if ($child_items != []) {
         $_child_items = '';
         foreach (array_keys($child_items) as $_child_item) {
             $_child_items .= str_replace('__id__', strval(mt_rand(0, mt_getrandmax())), $_child_item);
         }
-        $_out = do_template('TEMPLATE_TREE_NODE', array('_GUID' => 'ff937cbe28f1988af9fc7861ef01ffee', 'ITEMS' => $_child_items));
+        $_out = do_template('TEMPLATE_TREE_NODE', ['_GUID' => 'ff937cbe28f1988af9fc7861ef01ffee', 'ITEMS' => $_child_items]);
         $out .= $_out->evaluate();
     }
 
@@ -484,7 +484,7 @@ class Meta_tree_builder
         }
 
         if ($filter_level_a === null) {
-            $meta_dirs_to_build = array(
+            $meta_dirs_to_build = [
                 'screens',
 
                 'templates',
@@ -498,15 +498,15 @@ class Meta_tree_builder
                 'javascript-related',
                 'xml-related',
                 'text-related',
-            );
+            ];
         } else {
-            $meta_dirs_to_build = array(
+            $meta_dirs_to_build = [
                 $filter_level_a,
-            );
+            ];
         }
         foreach ($meta_dirs_to_build as $i => $meta_dir_to_build) {
             if ($callback !== null) {
-                call_user_func_array($callback, array('Creating meta directory ' . $meta_dir_to_build, $i, count($meta_dirs_to_build)));
+                call_user_func_array($callback, ['Creating meta directory ' . $meta_dir_to_build, $i, count($meta_dirs_to_build)]);
             }
 
             $_path = $meta_dir . '/' . $meta_dir_to_build;
@@ -550,19 +550,19 @@ class Meta_tree_builder
     protected function put_in_screens($path, $theme, $filter_level_b = null, $callback = null)
     {
         if ($filter_level_b === null) {
-            $where = array();
+            $where = [];
         } else {
-            $where = array('page_link' => $filter_level_b);
+            $where = ['page_link' => $filter_level_b];
         }
 
-        $screens = $GLOBALS['SITE_DB']->query_select('theme_screen_tree', array('page_link', 'json_tree'), $where);
+        $screens = $GLOBALS['SITE_DB']->query_select('theme_screen_tree', ['page_link', 'json_tree'], $where);
         foreach ($screens as $iteration => $screen) {
             $page_link = $screen['page_link'];
             $page_link_parts = explode(':', $page_link);
             $tree = json_decode($screen['json_tree'], true);
 
             if ($callback !== null) {
-                call_user_func_array($callback, array(' Processing screen ' . $page_link, $iteration, count($screens)));
+                call_user_func_array($callback, [' Processing screen ' . $page_link, $iteration, count($screens)]);
             }
 
             $zone = $page_link_parts[0];
@@ -650,7 +650,7 @@ class Meta_tree_builder
         // Create _instance_calls.txt
         $instance_calls = '';
         foreach ($node['instance_calls'] as $instance_call) {
-            $instance_call_parts = array();
+            $instance_call_parts = [];
             if ($instance_call['parameter_as'] !== null) {
                 $instance_call_parts[] = '{' . $instance_call['parameter_as'] . '}';
             }
@@ -696,7 +696,7 @@ class Meta_tree_builder
         $addons = $this->addons;
         foreach ($addons as $iteration => $addon_name) {
             if ($callback !== null) {
-                call_user_func_array($callback, array(' Processing addon ' . $addon_name, $iteration, count($addons)));
+                call_user_func_array($callback, [' Processing addon ' . $addon_name, $iteration, count($addons)]);
             }
 
             $files = $this->find_theme_files_from_addon($addon_name, $subdir, $theme);
@@ -720,13 +720,13 @@ class Meta_tree_builder
             }
 
             foreach ($files as $file) {
-                $places_for_referencing = array(
+                $places_for_referencing = [
                     $_path . '/' . $file['filename'],
                     $_all_path . '/' . $file['filename'],
-                );
+                ];
 
                 if ($relationships_mode) {
-                    $_relationships = $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_b'), array('rel_a' => $file['mini_path']));
+                    $_relationships = $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_b'], ['rel_a' => $file['mini_path']]);
                     $relationships = collapse_1d_complexity('rel_b', $_relationships);
 
                     if (!empty($relationships)) {
@@ -771,12 +771,12 @@ class Meta_tree_builder
      */
     protected function find_theme_files_from_addon($addon_name, $subdir, $theme)
     {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$addon_name][$subdir])) {
             return $cache[$addon_name][$subdir];
         }
 
-        $files = array();
+        $files = [];
 
         require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name, true));
         $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name, true));
@@ -792,11 +792,11 @@ class Meta_tree_builder
 
                     $mini_path = substr($file_path, strlen('themes/default/'));
 
-                    $files[$mini_path] = array(
+                    $files[$mini_path] = [
                         'full_path' => $template_path,
                         'mini_path' => $mini_path,
                         'filename' => $file,
-                    );
+                    ];
                 }
             }
         }

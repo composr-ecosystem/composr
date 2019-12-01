@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,12 +97,12 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/tabs/member_account/edit/title.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/title.svg',
             'sources/hooks/systems/addon_registry/cns_member_titles.php',
             'sources/hooks/systems/profiles_tabs_edit/title.php',
             'sources/hooks/systems/config/max_member_title_length.php',
-        );
+        ];
     }
 }

@@ -23,20 +23,20 @@ class Tempcode_test_set extends cms_test_case
     public function testTempcode()
     {
         $nonempty = paragraph('ignore');
-        $tpl = do_template('tempcode_test', array(
+        $tpl = do_template('tempcode_test', [
             '_GUID' => '1f31d5279dd6a15a9fdba9296e1b7597',
             'EMPTY1' => '',
             'EMPTY2' => new Tempcode(),
             'NONEMPTY' => $nonempty,
             'PASSED' => 'This is a passed parameter',
-            'SIMPLE_ARRAY' => array('1', '2', '3'),
-            'ARRAY' => array(
-                array('A' => 'A1', 'B' => 'B1', 'C' => 'C1'),
-                array('A' => 'A2', 'B' => 'B2', 'C' => 'C2'),
-                array('A' => 'A3', 'B' => 'B3', 'C' => 'C3'),
-                array('A' => 'A4', 'B' => 'B4', 'C' => 'C4'),
-            ),
-        ), null, false, null, '.txt', 'text');
+            'SIMPLE_ARRAY' => ['1', '2', '3'],
+            'ARRAY' => [
+                ['A' => 'A1', 'B' => 'B1', 'C' => 'C1'],
+                ['A' => 'A2', 'B' => 'B2', 'C' => 'C2'],
+                ['A' => 'A3', 'B' => 'B3', 'C' => 'C3'],
+                ['A' => 'A4', 'B' => 'B4', 'C' => 'C4'],
+            ],
+        ], null, false, null, '.txt', 'text');
         $got = $tpl->evaluate();
 
         $expected = '<h1>Tempcode tests</h1>

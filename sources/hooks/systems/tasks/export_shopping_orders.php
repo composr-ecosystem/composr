@@ -64,7 +64,7 @@ class Hook_task_export_shopping_orders
         foreach ($rows as $i => $_order) {
             task_log($this, 'Processing shopping order row', $i, count($rows));
 
-            $order = array();
+            $order = [];
 
             $order[do_lang('ORDER_NUMBER')] = strval($_order['o_id']);
 
@@ -83,7 +83,7 @@ class Hook_task_export_shopping_orders
             $order[do_lang('ORDERED_BY')] = $GLOBALS['FORUM_DRIVER']->get_username($_order['member_id']);
 
             // Put address together
-            $address = array();
+            $address = [];
             if ($_order['a_firstname'] . $_order['a_lastname'] != '') {
                 $address[] = trim($_order['a_firstname'] . ' ' . $_order['a_lastname']);
             }
@@ -118,13 +118,13 @@ class Hook_task_export_shopping_orders
         }
         $sheet_writer->close();
 
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
+        return [$sheet_writer->get_mime_type(), [$filename, $outfile_path], $headers, $ini_set];
     }
 }

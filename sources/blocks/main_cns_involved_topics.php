@@ -34,14 +34,14 @@ class Block_main_cns_involved_topics
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('member_id', 'max', 'start', 'check');
+        $info['parameters'] = ['member_id', 'max', 'start', 'check'];
         return $info;
     }
 
@@ -59,7 +59,7 @@ class Block_main_cns_involved_topics
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => '3wdm0cx063l7qs0mtk5qhq1kwczp8q5e', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => '3wdm0cx063l7qs0mtk5qhq1kwczp8q5e', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         $block_id = get_block_id($map);
@@ -135,11 +135,11 @@ class Block_main_cns_involved_topics
             $query .= $extra_join_sql;
             $query .= ' WHERE ' . $where . $where_sup;
             if (multi_lang_content()) {
-                $topic_rows = $GLOBALS['FORUM_DB']->query($query, null, 0, false, true, array('t_cache_first_post' => 'LONG_TRANS__COMCODE'));
+                $topic_rows = $GLOBALS['FORUM_DB']->query($query, null, 0, false, true, ['t_cache_first_post' => 'LONG_TRANS__COMCODE']);
             } else {
                 $topic_rows = $GLOBALS['FORUM_DB']->query($query, null, 0, false, true);
             }
-            $topic_rows_map = array();
+            $topic_rows_map = [];
             foreach ($topic_rows as $topic_row) {
                 $topic_rows_map[$topic_row['id']] = $topic_row;
             }
@@ -150,14 +150,14 @@ class Block_main_cns_involved_topics
                 }
             }
             if (!$topics->is_empty()) {
-                $action_url = build_url(array('page' => 'topics'), get_module_zone('topics'), array(), false, true);
+                $action_url = build_url(['page' => 'topics'], get_module_zone('topics'), [], false, true);
 
                 $forum_name = do_lang_tempcode('TOPICS_PARTICIPATED_IN', escape_html(integer_format($start + 1)) . '-' . integer_format($start + $max));
                 $marker = '';
                 $breadcrumbs = new Tempcode();
                 require_code('templates_pagination');
                 $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null);
-                $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', array(
+                $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', [
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
                     'SORT' => '',
                     'MAX' => '15',
@@ -171,14 +171,14 @@ class Block_main_cns_involved_topics
                     'TOPICS' => $topics,
                     'PAGINATION' => $pagination,
                     'MODERATOR_ACTIONS' => $moderator_actions,
-                ));
+                ]);
             }
         }
 
-        return do_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', array(
+        return do_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', [
             '_GUID' => '3f1025f5d3391d43afbdfa292721aa09',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'TOPICS' => $topics,
 
             'START' => strval($start),
@@ -186,6 +186,6 @@ class Block_main_cns_involved_topics
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
-        ));
+        ]);
     }
 }

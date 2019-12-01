@@ -47,8 +47,8 @@ class Hook_commandr_fs_post_templates extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('f_post_templates', array('id'), array('t_title' => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['id'], ['t_title' => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -113,18 +113,18 @@ class Hook_commandr_fs_post_templates extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_post_templates', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['t_title'],
             'text' => $row['t_text'],
             'forum_multi_code' => $row['t_forum_multi_code'],
             'use_default_forums' => $row['t_use_default_forums'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

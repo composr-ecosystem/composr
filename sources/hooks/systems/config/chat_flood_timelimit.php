@@ -30,7 +30,7 @@ class Hook_config_chat_flood_timelimit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FLOOD_TIMELIMIT',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_flood_timelimit
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

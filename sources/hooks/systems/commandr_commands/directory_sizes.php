@@ -34,9 +34,9 @@ class Hook_commandr_command_directory_sizes
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('directory_sizes', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('directory_sizes', ['h'], [true, true]), '', ''];
         } else {
-            $sizes = array();
+            $sizes = [];
             require_code('files2');
             $dirs = get_directory_contents(get_custom_file_base(), '', IGNORE_ACCESS_CONTROLLERS, true, false);
             foreach ($dirs as $dir) {
@@ -53,7 +53,7 @@ class Hook_commandr_command_directory_sizes
             }
             $out .= '</table>';
 
-            return array('', $out, '', '');
+            return ['', $out, '', ''];
         }
     }
 }

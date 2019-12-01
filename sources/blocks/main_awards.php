@@ -30,14 +30,14 @@ class Block_main_awards
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'zone', 'give_context', 'include_breadcrumbs', 'guid');
+        $info['parameters'] = ['param', 'zone', 'give_context', 'include_breadcrumbs', 'guid'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_awards
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         ((count($_POST) != 0) || (get_param_integer('keep_rating_test', 0) == 1))
         ?
@@ -92,7 +92,7 @@ PHP;
         $give_context = (array_key_exists('give_context', $map) ? $map['give_context'] : '0') == '1';
         $include_breadcrumbs = (array_key_exists('include_breadcrumbs', $map) ? $map['include_breadcrumbs'] : '0') == '1';
 
-        $_award_type_row = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('id' => $award), '', 1);
+        $_award_type_row = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => $award], '', 1);
         if (!array_key_exists(0, $_award_type_row)) {
             return do_lang_tempcode('MISSING_RESOURCE', 'award_type');
         }
@@ -101,7 +101,7 @@ PHP;
         $award_description = get_translated_text($award_type_row['a_description']);
 
         if ((!file_exists(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . filter_naughty_harsh($award_type_row['a_content_type']) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . filter_naughty_harsh($award_type_row['a_content_type']) . '.php'))) {
-            return do_template('RED_ALERT', array('_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', $award_type_row['a_content_type'])));
+            return do_template('RED_ALERT', ['_GUID' => '2ynzlkmrjkdpo76e5htq9t8bwl2q6jia', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', $award_type_row['a_content_type'])]);
         }
 
         require_code('content');
@@ -133,7 +133,7 @@ PHP;
         do {
             $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'award_archive WHERE a_type_id=' . strval($award) . ' ' . $sup . ' ORDER BY date_and_time DESC', 1, 0, false, true);
             if (!array_key_exists(0, $rows)) {
-                return do_template('BLOCK_NO_ENTRIES', array(
+                return do_template('BLOCK_NO_ENTRIES', [
                     '_GUID' => ($guid != '') ? $guid : 'f32b50770fd6581c4a2c839a1ed25801',
                     'BLOCK_ID' => $block_id,
                     'HIGH' => false,
@@ -141,7 +141,7 @@ PHP;
                     'MESSAGE' => do_lang_tempcode('NO_AWARD'),
                     'ADD_NAME' => content_language_string($award_type_row['a_content_type'], 'ADD'),
                     'SUBMIT_URL' => str_replace('=!', '__ignore=1', $submit_url),
-                ));
+                ]);
             }
             $myrow = $rows[0];
 
@@ -151,7 +151,7 @@ PHP;
             $sup = ' AND date_and_time<' . strval($myrow['date_and_time']);
         } while ($award_content_row === null);
 
-        $archive_url = build_url(array('page' => 'awards', 'type' => 'award', 'id' => $award), get_module_zone('awards'));
+        $archive_url = build_url(['page' => 'awards', 'type' => 'award', 'id' => $award], get_module_zone('awards'));
 
         $rendered_content = $object->run($award_content_row, $zone, $give_context, $include_breadcrumbs, null, false, $guid);
 
@@ -165,7 +165,7 @@ PHP;
             $awardee_profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($myrow['member_id'], true);
         }
 
-        return do_template('BLOCK_MAIN_AWARDS', array(
+        return do_template('BLOCK_MAIN_AWARDS', [
             '_GUID' => ($guid != '') ? $guid : '99f092e35db0c17f407f40ed55c42cfd',
             'BLOCK_ID' => $block_id,
             'TITLE' => $award_title,
@@ -179,6 +179,6 @@ PHP;
             'CONTENT' => $rendered_content,
             'SUBMIT_URL' => $submit_url,
             'ARCHIVE_URL' => $archive_url,
-        ));
+        ]);
     }
 }

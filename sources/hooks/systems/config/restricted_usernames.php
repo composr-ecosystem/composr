@@ -30,7 +30,7 @@ class Hook_config_restricted_usernames
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'RESTRICTED_USERNAMES',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_restricted_usernames
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

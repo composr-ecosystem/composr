@@ -30,13 +30,13 @@ class Hook_fields_short_text
      */
     public function get_field_types()
     {
-        $ret = array(
+        $ret = [
             'short_text' => do_lang_tempcode('FIELD_TYPE_short_text'),
-        );
+        ];
 
-        $ret += array(
+        $ret += [
             'tel' => do_lang_tempcode('FIELD_TYPE_tel'),
-        );
+        ];
 
         return $ret;
     }
@@ -83,7 +83,7 @@ class Hook_fields_short_text
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_text', $default, 'short');
+        return ['short_text', $default, 'short'];
     }
 
     /**

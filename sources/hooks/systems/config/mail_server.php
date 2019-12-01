@@ -30,7 +30,7 @@ class Hook_config_mail_server
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAIL_SERVER',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_mail_server
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

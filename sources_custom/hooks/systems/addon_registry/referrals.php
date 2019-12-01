@@ -26,7 +26,7 @@ class Hook_addon_registry_referrals
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_referrals
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Icon by Titan Creations',
-        );
+        ];
     }
 
     /**
@@ -106,7 +106,7 @@ Allows people to specify who referred them when they join your site or other con
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -116,14 +116,14 @@ Allows people to specify who referred them when they join your site or other con
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -143,7 +143,7 @@ Allows people to specify who referred them when they join your site or other con
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/referrals.php',
             'sources_custom/hooks/systems/privacy/referrals.php',
             'sources_custom/hooks/systems/notifications/referral.php',
@@ -163,7 +163,7 @@ Allows people to specify who referred them when they join your site or other con
             'sources_custom/hooks/systems/referrals/.htaccess',
             'sources_custom/hooks/systems/referrals/index.html',
             'sources_custom/hooks/systems/actionlog/referrals.php',
-        );
+        ];
     }
 
     /**
@@ -183,14 +183,14 @@ Allows people to specify who referred them when they join your site or other con
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('referrer_override', array(
+            $GLOBALS['SITE_DB']->create_table('referrer_override', [
                 'o_referrer' => '*MEMBER',
                 'o_scheme_name' => '*ID_TEXT',
                 'o_referrals_dif' => 'INTEGER',
                 'o_is_qualified' => '?BINARY',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('referees_qualified_for', array(
+            $GLOBALS['SITE_DB']->create_table('referees_qualified_for', [
                 'id' => '*AUTO',
                 'q_referee' => 'MEMBER',
                 'q_referrer' => 'MEMBER',
@@ -198,13 +198,13 @@ Allows people to specify who referred them when they join your site or other con
                 'q_email_address' => 'SHORT_TEXT',
                 'q_time' => 'TIME',
                 'q_action' => 'ID_TEXT',
-            ));
+            ]);
 
             if (get_forum_type() == 'cns') {
                 // Populate from current invites
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_invites', array('i_email_address', 'i_time', 'i_inviter'), array('i_taken' => 1));
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_invites', ['i_email_address', 'i_time', 'i_inviter'], ['i_taken' => 1]);
                 foreach ($rows as $row) {
-                    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $row['i_email_address']));
+                    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $row['i_email_address']]);
                     if ($member_id !== null) {
                         require_code('files');
 
@@ -215,14 +215,14 @@ Allows people to specify who referred them when they join your site or other con
                         $ini_file = cms_parse_ini_file_safe($path, true);
 
                         foreach (array_keys($ini_file) as $scheme_name) {
-                            $GLOBALS['SITE_DB']->query_insert('referees_qualified_for', array(
+                            $GLOBALS['SITE_DB']->query_insert('referees_qualified_for', [
                                 'q_referee' => $member_id,
                                 'q_referrer' => $row['i_inviter'],
                                 'q_scheme_name' => $scheme_name,
                                 'q_email_address' => $row['i_email_address'],
                                 'q_time' => $row['i_time'],
                                 'q_action' => '',
-                            ));
+                            ]);
                         }
                     }
                 }

@@ -71,13 +71,13 @@ class Module_cms_blogs extends Standard_crud_module
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_BLOGS', 'menu/cms/blog'),
-        );
+        $ret = [
+            'browse' => ['MANAGE_BLOGS', 'menu/cms/blog'],
+        ];
         $ret += parent::get_entry_points();
-        $ret += array(
-            'import_wordpress' => array('IMPORT_WORDPRESS', 'admin/import'),
-        );
+        $ret += [
+            'import_wordpress' => ['IMPORT_WORDPRESS', 'admin/import'],
+        ];
         return $ret;
     }
 
@@ -119,7 +119,7 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         if ($type == '_import_wordpress') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MANAGE_BLOGS')), array('_SELF:_SELF:import_wordpress', do_lang_tempcode('IMPORT_WORDPRESS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_BLOGS')], ['_SELF:_SELF:import_wordpress', do_lang_tempcode('IMPORT_WORDPRESS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -168,11 +168,11 @@ class Module_cms_blogs extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_BLOGS'),
             comcode_lang_string('DOC_BLOGS'),
-            array(
-                has_privilege(get_member(), 'submit_midrange_content', 'cms_news') ? array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_NEWS_BLOG')) : null,
-                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_NEWS_BLOG')) : null,
-                has_privilege(get_member(), 'mass_import', 'cms_news') ? array('admin/import', array('_SELF', array('type' => 'import_wordpress'), '_SELF'), do_lang('IMPORT_WORDPRESS')) : null,
-            ),
+            [
+                has_privilege(get_member(), 'submit_midrange_content', 'cms_news') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_NEWS_BLOG')] : null,
+                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_NEWS_BLOG')] : null,
+                has_privilege(get_member(), 'mass_import', 'cms_news') ? ['admin/import', ['_SELF', ['type' => 'import_wordpress'], '_SELF'], do_lang('IMPORT_WORDPRESS')] : null,
+            ],
             do_lang('MANAGE_BLOGS')
         );
     }
@@ -192,11 +192,11 @@ class Module_cms_blogs extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'title' => do_lang_tempcode('TITLE'),
             'date_and_time' => do_lang_tempcode('ADDED'),
             'news_views' => do_lang_tempcode('COUNT_VIEWS'),
-        );
+        ];
         if (addon_installed('unvalidated')) {
             $sortables['validated'] = do_lang_tempcode('VALIDATED');
         }
@@ -204,12 +204,12 @@ class Module_cms_blogs extends Standard_crud_module
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $fh = array();
+        $fh = [];
         $fh[] = do_lang_tempcode('TITLE');
         $fh[] = do_lang_tempcode('ADDED');
         $fh[] = do_lang_tempcode('COUNT_VIEWS');
         if (addon_installed('unvalidated')) {
-            $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', array('_GUID' => '204d1050402b48e5c2c9539763a3fe50', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT'))));
+            $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '204d1050402b48e5c2c9539763a3fe50', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $fh[] = do_lang_tempcode('ACTIONS');
         $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
@@ -217,15 +217,15 @@ class Module_cms_blogs extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : array('submitter' => $only_owned), false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : ['submitter' => $only_owned], false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
         if (empty($rows)) {
             return null;
         }
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $fr = array();
-            $fr[] = protect_from_escaping(hyperlink(build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), get_module_zone('news')), get_translated_text($row['title']), false, true));
+            $fr = [];
+            $fr[] = protect_from_escaping(hyperlink(build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], get_module_zone('news')), get_translated_text($row['title']), false, true));
             $fr[] = get_timezoned_date_time($row['date_and_time']);
             $fr[] = integer_format($row['news_views']);
             if (addon_installed('unvalidated')) {
@@ -236,10 +236,10 @@ class Module_cms_blogs extends Standard_crud_module
             $result_entries->attach(results_entry($fr, true));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'news'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'news'), get_module_zone('news'));
+        $search_url = build_url(['page' => 'search', 'id' => 'news'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'news'], get_module_zone('news'));
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
     }
 
     /**
@@ -285,10 +285,10 @@ class Module_cms_blogs extends Standard_crud_module
                 $param_cat = get_param_string('cat', '');
                 if ($param_cat == '') {
                     $main_news_category = null;
-                    $news_category = array();
+                    $news_category = [];
                 } elseif (strpos($param_cat, ',') === false) {
                     $main_news_category = intval($param_cat);
-                    $news_category = array();
+                    $news_category = [];
                 } else {
                     require_code('selectcode');
                     $_param_cat = explode(',', $param_cat);
@@ -303,7 +303,7 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         $cats1 = create_selection_list_news_categories($main_news_category, false, true, false, true);
-        $cats2 = create_selection_list_news_categories((($news_category === null) || (empty($news_category))) ? array(get_param_integer('cat', null)) : $news_category, false, true, true, false);
+        $cats2 = create_selection_list_news_categories((($news_category === null) || (empty($news_category))) ? [get_param_integer('cat', null)] : $news_category, false, true, true, false);
 
         $fields = new Tempcode();
         $fields2 = new Tempcode();
@@ -326,7 +326,7 @@ class Module_cms_blogs extends Standard_crud_module
         if (addon_installed('authors')) {
             $hidden->attach(form_input_hidden('author', $author));
         }
-        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'cff27a28d4d01f8e0255ee645ea210b3', 'SECTION_HIDDEN' => $image == '' && ($title == ''/*=new entry and selected news cats was from URL*/ || ($news_category === null) || $news_category == array()), 'TITLE' => do_lang_tempcode('ADVANCED'))));
+        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'cff27a28d4d01f8e0255ee645ea210b3', 'SECTION_HIDDEN' => $image == '' && ($title == ''/*=new entry and selected news cats was from URL*/ || ($news_category === null) || $news_category == []), 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields2->attach(form_input_text_comcode(do_lang_tempcode('BLOG_NEWS_SUMMARY'), do_lang_tempcode('DESCRIPTION_NEWS_SUMMARY'), 'news', $news, false));
         if (get_option('enable_secondary_news') == '1') {
             $fields2->attach(form_input_list(do_lang_tempcode('MAIN_CATEGORY'), do_lang_tempcode('DESCRIPTION_MAIN_CATEGORY'), 'main_news_category', $cats1));
@@ -350,7 +350,7 @@ class Module_cms_blogs extends Standard_crud_module
         require_code('activities');
         $fields2->attach(get_syndication_option_fields('news'));
 
-        return array($fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())/*XHTMLXHTML*/);
+        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate())/*XHTMLXHTML*/];
     }
 
     /**
@@ -361,11 +361,11 @@ class Module_cms_blogs extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('submitter', 'date_and_time'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['submitter', 'date_and_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array($rows[0]['submitter'], $rows[0]['date_and_time']);
+        return [$rows[0]['submitter'], $rows[0]['date_and_time']];
     }
 
     /**
@@ -376,7 +376,7 @@ class Module_cms_blogs extends Standard_crud_module
      */
     public function get_cat($id)
     {
-        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', array('id' => intval($id)));
+        $temp = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($id)]);
         if ($temp === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news'));
         }
@@ -395,7 +395,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         require_lang('zones');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news'));
         }
@@ -403,8 +403,8 @@ class Module_cms_blogs extends Standard_crud_module
 
         $cat = $myrow['news_category'];
 
-        $categories = array();
-        $category_query = $GLOBALS['SITE_DB']->query_select('news_category_entries', array('news_entry_category'), array('news_entry' => $id));
+        $categories = [];
+        $category_query = $GLOBALS['SITE_DB']->query_select('news_category_entries', ['news_entry_category'], ['news_entry' => $id]);
 
         foreach ($category_query as $value) {
             $categories[] = $value['news_entry_category'];
@@ -414,8 +414,8 @@ class Module_cms_blogs extends Standard_crud_module
 
         if (addon_installed('calendar')) {
             $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',array(\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1),array(\'id\'=>' . strval($id) . '),\'\',1);';
-            $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', array('e_start_day', 'e_start_month', 'e_start_year', 'e_start_hour', 'e_start_minute'), array($GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code), '', 1);
-            $scheduled = array_key_exists(0, $past_event) ? array($past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']) : null;
+            $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', ['e_start_day', 'e_start_month', 'e_start_year', 'e_start_hour', 'e_start_minute'], [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code], '', 1);
+            $scheduled = array_key_exists(0, $past_event) ? [$past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']] : null;
             if (($scheduled !== null) && (mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time())) {
                 $scheduled = null;
             }
@@ -450,7 +450,7 @@ class Module_cms_blogs extends Standard_crud_module
             $main_news_category = null;
         }
 
-        $news_category = array();
+        $news_category = [];
         if (array_key_exists('news_category', $_POST)) {
             foreach ($_POST['news_category'] as $val) {
                 $news_category[] = ($val == 'personal') ? null : intval($val);
@@ -470,9 +470,9 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         if ($main_news_category !== null) {
-            $owner = $GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', array('id' => intval($main_news_category)));
+            $owner = $GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => intval($main_news_category)]);
             if (($owner !== null) && ($owner != get_member())) {
-                check_privilege('can_submit_to_others_categories', array('news', $main_news_category), null, 'cms_news');
+                check_privilege('can_submit_to_others_categories', ['news', $main_news_category], null, 'cms_news');
             }
         }
 
@@ -485,7 +485,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         set_url_moniker('news', strval($id));
 
-        $main_news_category = $GLOBALS['SITE_DB']->query_select_value('news', 'news_category', array('id' => $id));
+        $main_news_category = $GLOBALS['SITE_DB']->query_select_value('news', 'news_category', ['id' => $id]);
         $this->donext_type = $main_news_category;
 
         if (($validated == 1) || (!addon_installed('unvalidated'))) {
@@ -531,7 +531,7 @@ class Module_cms_blogs extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $news_category = array();
+        $news_category = [];
         if (array_key_exists('news_category', $_POST)) {
             foreach ($_POST['news_category'] as $val) {
                 $news_category[] = intval($val);
@@ -547,9 +547,9 @@ class Module_cms_blogs extends Standard_crud_module
 
         $url = STRING_MAGIC_NULL;
 
-        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', array('id' => $main_news_category)); // if_there in case somehow category setting corrupted
+        $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', ['id' => $main_news_category]); // if_there in case somehow category setting corrupted
         if (($owner !== null) && ($owner != get_member())) {
-            check_privilege('can_submit_to_others_categories', array('news', $main_news_category), null, 'cms_news');
+            check_privilege('can_submit_to_others_categories', ['news', $main_news_category], null, 'cms_news');
         }
 
         $schedule = post_param_date('schedule');
@@ -557,7 +557,7 @@ class Module_cms_blogs extends Standard_crud_module
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             require_code('calendar2');
             $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',array(\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1),array(\'id\'=>' . strval($id) . '),\'\',1);';
-            $past_event = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code));
+            $past_event = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code]);
             require_code('calendar');
             if ($past_event !== null) {
                 delete_calendar_event($past_event);
@@ -578,10 +578,10 @@ class Module_cms_blogs extends Standard_crud_module
 
         $title = post_param_string('title', STRING_MAGIC_NULL);
 
-        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', array('id' => intval($id))) == 0)) { // Just became validated, syndicate as just added
+        if (($validated == 1) && ($GLOBALS['SITE_DB']->query_select_value('news', 'validated', ['id' => intval($id)]) == 0)) { // Just became validated, syndicate as just added
             $is_blog = true;
 
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('news', 'submitter', array('id' => $id));
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('news', 'submitter', ['id' => $id]);
             $activity_title = ($is_blog ? 'news:ACTIVITY_ADD_NEWS_BLOG' : 'news:ACTIVITY_ADD_NEWS');
             $activity_title_validate = ($is_blog ? 'news:ACTIVITY_VALIDATE_NEWS_BLOG' : 'news:ACTIVITY_VALIDATE_NEWS');
 
@@ -593,7 +593,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('news', strval($id));
 
-        edit_news(intval($id), $title, post_param_string('news', STRING_MAGIC_NULL), post_param_string('author', STRING_MAGIC_NULL), $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $url, $metadata['add_time'], $metadata['edit_time'], $metadata['views'], $metadata['submitter'], array(), true);
+        edit_news(intval($id), $title, post_param_string('news', STRING_MAGIC_NULL), post_param_string('author', STRING_MAGIC_NULL), $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $url, $metadata['add_time'], $metadata['edit_time'], $metadata['views'], $metadata['submitter'], [], true);
     }
 
     /**
@@ -625,21 +625,21 @@ class Module_cms_blogs extends Standard_crud_module
         return do_next_manager(
             $this->title,
             $description,
-            array(),
+            [],
             null,
             /* TYPED-ORDERED LIST OF 'LINKS' */
-            array('_SELF', array('type' => 'add', 'cat' => $cat), '_SELF'), // Add one
-            (($id === null) || (!has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news', array('news', $cat)))) ? null : array('_SELF', array('type' => '_edit', 'id' => $id), '_SELF'), // Edit this
-            has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news') ? array('_SELF', array('type' => 'edit'), '_SELF') : null, // Edit one
-            ($id === null) ? null : array('news', array('type' => 'view', 'id' => $id, 'blog' => 1), get_module_zone('news')), // View this
-            array('news', array('type' => 'browse', 'blog' => 1), get_module_zone('news')), // View archive
-            has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => 'add_category'), '_SELF') : null, // Add one category
-            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => 'edit_category'), '_SELF') : null, // Edit one category
-            ($cat === null) ? null : (has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => '_edit_category', 'id' => $cat), '_SELF') : null), // Edit this category
+            ['_SELF', ['type' => 'add', 'cat' => $cat], '_SELF'], // Add one
+            (($id === null) || (!has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news', ['news', $cat]))) ? null : ['_SELF', ['type' => '_edit', 'id' => $id], '_SELF'], // Edit this
+            has_privilege(get_member(), 'edit_own_midrange_content', 'cms_news') ? ['_SELF', ['type' => 'edit'], '_SELF'] : null, // Edit one
+            ($id === null) ? null : ['news', ['type' => 'view', 'id' => $id, 'blog' => 1], get_module_zone('news')], // View this
+            ['news', ['type' => 'browse', 'blog' => 1], get_module_zone('news')], // View archive
+            has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_news') ? ['cms_news', ['type' => 'add_category'], '_SELF'] : null, // Add one category
+            has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? ['cms_news', ['type' => 'edit_category'], '_SELF'] : null, // Edit one category
+            ($cat === null) ? null : (has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? ['cms_news', ['type' => '_edit_category', 'id' => $cat], '_SELF'] : null), // Edit this category
             null, // View this category
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
             null,
             null,
             null,
@@ -669,9 +669,9 @@ class Module_cms_blogs extends Standard_crud_module
 
         $hidden = form_input_hidden('lang', $lang);
 
-        $xml_post_url = build_url(array('page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'xml'), '_SELF');
+        $xml_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'xml'], '_SELF');
 
-        $xml_upload_form = do_template('FORM', array(
+        $xml_upload_form = do_template('FORM', [
             '_GUID' => 'bdcc111acf379bab6f163f2e86d20e03',
             'TABINDEX' => strval(get_form_field_tabindex()),
             'TEXT' => '',
@@ -680,7 +680,7 @@ class Module_cms_blogs extends Standard_crud_module
             'SUBMIT_ICON' => 'admin/import',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $xml_post_url,
-        ));
+        ]);
 
         /* Database method */
 
@@ -692,7 +692,7 @@ class Module_cms_blogs extends Standard_crud_module
         $fields->attach(form_input_line(do_lang_tempcode('WORDPRESS_DB_USERNAME'), do_lang_tempcode('DESCRIPTION_WORDPRESS_DB_USERNAME'), 'wp_db_user', 'root', false));
         $fields->attach(form_input_password(do_lang_tempcode('WORDPRESS_DB_PASSWORD'), do_lang_tempcode('DESCRIPTION_WORDPRESS_DB_PASSWORD'), 'wp_db_password', false));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '27350b4f39d4634a405131716a1f152c', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '27350b4f39d4634a405131716a1f152c', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
         $fields->attach(form_input_tick(do_lang_tempcode('IMPORT_WORDPRESS_USERS'), do_lang_tempcode('DESCRIPTION_IMPORT_WORDPRESS_USER'), 'wp_import_wordpress_users', true));
         $fields->attach(form_input_tick(do_lang_tempcode('IMPORT_BLOG_COMMENTS'), do_lang_tempcode('DESCRIPTION_IMPORT_BLOG_COMMENTS'), 'wp_import_blog_comments', true));
@@ -711,9 +711,9 @@ class Module_cms_blogs extends Standard_crud_module
         $hidden->attach(form_input_hidden('lang', $lang));
         handle_max_file_size($hidden);
 
-        $db_post_url = build_url(array('page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'db'), '_SELF');
+        $db_post_url = build_url(['page' => '_SELF', 'type' => '_import_wordpress', 'method' => 'db'], '_SELF');
 
-        $db_import_form = do_template('FORM', array(
+        $db_import_form = do_template('FORM', [
             '_GUID' => 'df2b4285f538bf94055c75fb8b61be6e',
             'TABINDEX' => strval(get_form_field_tabindex()),
             'TEXT' => '',
@@ -722,11 +722,11 @@ class Module_cms_blogs extends Standard_crud_module
             'SUBMIT_ICON' => 'admin/import',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $db_post_url,
-        ));
+        ]);
 
         /* Render */
 
-        return do_template('NEWS_WORDPRESS_IMPORT_SCREEN', array('_GUID' => 'b9dcdd8211c65f3d2acd16e759d451a5', 'TITLE' => $this->title, 'XML_UPLOAD_FORM' => $xml_upload_form, 'DB_IMPORT_FORM' => $db_import_form));
+        return do_template('NEWS_WORDPRESS_IMPORT_SCREEN', ['_GUID' => 'b9dcdd8211c65f3d2acd16e759d451a5', 'TITLE' => $this->title, 'XML_UPLOAD_FORM' => $xml_upload_form, 'DB_IMPORT_FORM' => $db_import_form]);
     }
 
     /**
@@ -779,7 +779,7 @@ class Module_cms_blogs extends Standard_crud_module
             log_it('IMPORT_NEWS');
 
             require_code('tasks');
-            $ret = call_user_func_array__long_task(do_lang('IMPORT_WORDPRESS'), $this->title, 'import_rss', array($is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $rss));
+            $ret = call_user_func_array__long_task(do_lang('IMPORT_WORDPRESS'), $this->title, 'import_rss', [$is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $rss]);
 
             return $ret;
         } elseif (get_param_string('method') == 'db') { // Importing directly from wordpress DB
@@ -805,7 +805,7 @@ class Module_cms_blogs extends Standard_crud_module
             log_it('IMPORT_NEWS');
 
             require_code('tasks');
-            return call_user_func_array__long_task(do_lang('IMPORT_WORDPRESS'), $this->title, 'import_wordpress', array($is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $import_wordpress_users));
+            return call_user_func_array__long_task(do_lang('IMPORT_WORDPRESS'), $this->title, 'import_wordpress', [$is_validated, $download_images, $to_own_account, $import_blog_comments, $import_to_blog, $import_wordpress_users]);
         }
 
         return new Tempcode(); // Should not get here

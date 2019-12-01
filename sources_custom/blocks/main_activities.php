@@ -25,7 +25,7 @@ class Block_main_activities
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Warburton';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -33,7 +33,7 @@ class Block_main_activities
         $info['version'] = 2;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
-        $info['parameters'] = array('max', 'start', 'param', 'member', 'mode', 'grow', 'refresh_time');
+        $info['parameters'] = ['max', 'start', 'param', 'member', 'mode', 'grow', 'refresh_time'];
         return $info;
     }
 
@@ -56,7 +56,7 @@ class Block_main_activities
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('activities', array(
+            $GLOBALS['SITE_DB']->create_table('activities', [
                 'id' => '*AUTO',
                 'a_member_id' => '*MEMBER',
                 'a_also_involving' => '?MEMBER',
@@ -70,12 +70,12 @@ class Block_main_activities
                 'a_time' => 'TIME',
                 'a_addon' => 'ID_TEXT',
                 'a_is_public' => 'BINARY',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_index('activities', 'a_member_id', array('a_member_id'));
-            $GLOBALS['SITE_DB']->create_index('activities', 'a_also_involving', array('a_also_involving'));
-            $GLOBALS['SITE_DB']->create_index('activities', 'a_time', array('a_time'));
-            $GLOBALS['SITE_DB']->create_index('activities', 'a_filtered_ordered', array('a_member_id', 'a_time'));
+            $GLOBALS['SITE_DB']->create_index('activities', 'a_member_id', ['a_member_id']);
+            $GLOBALS['SITE_DB']->create_index('activities', 'a_also_involving', ['a_also_involving']);
+            $GLOBALS['SITE_DB']->create_index('activities', 'a_time', ['a_time']);
+            $GLOBALS['SITE_DB']->create_index('activities', 'a_filtered_ordered', ['a_member_id', 'a_time']);
 
             require_code('activities_submission');
             log_newest_activity(0, 1000, true);
@@ -144,7 +144,7 @@ PHP;
             $member_ids = array_map('intval', explode(',', $map['member']));
         } else {
             // No specific member. Use ourselves.
-            $member_ids = array(get_member());
+            $member_ids = [get_member()];
         }
 
         require_lang('activities');
@@ -159,7 +159,7 @@ PHP;
 
         $can_remove_others = has_zone_access($viewing_member, 'adminzone');
 
-        $content = array();
+        $content = [];
 
         $block_id = get_block_id($map);
 
@@ -183,7 +183,7 @@ PHP;
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_member_id']);
 
-                $content[] = array(
+                $content[] = [
                     'IS_PUBLIC' => $is_public,
                     'LANG_STRING' => $lang_string,
                     'ADDON' => $row['a_addon'],
@@ -196,16 +196,16 @@ PHP;
                     'TIMESTAMP' => strval($timestamp),
                     'LIID' => strval($row['id']),
                     'ALLOW_REMOVE' => (($row['a_member_id'] == $viewing_member) || $can_remove_others),
-                );
+                ];
             }
         } else {
             $pagination = new Tempcode();
         }
 
-        return do_template('BLOCK_MAIN_ACTIVITIES', array(
+        return do_template('BLOCK_MAIN_ACTIVITIES', [
             '_GUID' => 'b4de219116e1b8107553ee588717e2c9',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'MODE' => $mode,
             'MEMBER_IDS' => implode(',', array_map('strval', $member_ids)),
             'CONTENT' => $content,
@@ -218,6 +218,6 @@ PHP;
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
-        ));
+        ]);
     }
 }

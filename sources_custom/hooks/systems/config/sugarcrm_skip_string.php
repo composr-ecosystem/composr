@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_skip_string
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_SKIP_STRING',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -39,7 +39,7 @@ class Hook_config_sugarcrm_skip_string
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

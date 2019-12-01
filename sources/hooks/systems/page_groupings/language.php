@@ -37,7 +37,7 @@ class Hook_page_groupings_language
         require_code('files');
 
         $_dir = opendir(get_file_base() . '/lang/');
-        $_langs = array();
+        $_langs = [];
         while (false !== ($file = readdir($_dir))) {
             if ($file == fallback_lang()) {
                 continue;
@@ -78,10 +78,10 @@ class Hook_page_groupings_language
             }
         }
 
-        return array(
-            array('style', 'menu/adminzone/style/language/language', array('admin_lang', array('type' => 'browse'), get_module_zone('admin_lang')), do_lang_tempcode('lang:TRANSLATE_CODE'), 'lang:DOC_TRANSLATE'),
-            multi_lang() ? array('style', 'menu/adminzone/style/language/language_content', array('admin_lang', array('type' => 'content'), get_module_zone('admin_lang')), do_lang_tempcode('lang:TRANSLATE_CONTENT'), 'lang:DOC_TRANSLATE_CONTENT') : null,
-            (!$has_langs) ? null : array('style', 'menu/adminzone/style/language/criticise_language', array('admin_lang', array('type' => 'criticise'), get_module_zone('admin_lang')), do_lang_tempcode('lang:CRITICISE_LANGUAGE_PACK'), 'lang:DOC_CRITICISE_LANGUAGE_PACK'),
-        );
+        return [
+            ['style', 'menu/adminzone/style/language/language', ['admin_lang', ['type' => 'browse'], get_module_zone('admin_lang')], do_lang_tempcode('lang:TRANSLATE_CODE'), 'lang:DOC_TRANSLATE'],
+            multi_lang() ? ['style', 'menu/adminzone/style/language/language_content', ['admin_lang', ['type' => 'content'], get_module_zone('admin_lang')], do_lang_tempcode('lang:TRANSLATE_CONTENT'), 'lang:DOC_TRANSLATE_CONTENT'] : null,
+            (!$has_langs) ? null : ['style', 'menu/adminzone/style/language/criticise_language', ['admin_lang', ['type' => 'criticise'], get_module_zone('admin_lang')], do_lang_tempcode('lang:CRITICISE_LANGUAGE_PACK'), 'lang:DOC_CRITICISE_LANGUAGE_PACK'],
+        ];
     }
 }

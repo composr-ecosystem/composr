@@ -48,7 +48,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_top_posters($limit)
     {
-        return array(array(1));
+        return [[1]];
     }
 
     /**
@@ -126,12 +126,12 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function install_specifics()
     {
-        $c = array();
+        $c = [];
         $c['name'] = 'admin_username';
         $c['default'] = 'admin';
         $c['description'] = do_lang('DESCRIPTION_ADMIN_USERNAME');
         $c['title'] = do_lang('ADMIN_USERNAME');
-        return array($c);
+        return [$c];
     }
 
     /**
@@ -143,7 +143,7 @@ class Forum_driver_none extends Forum_driver_base
     public function install_test_load_from($path)
     {
         global $PROBED_FORUM_CONFIG;
-        $PROBED_FORUM_CONFIG = array();
+        $PROBED_FORUM_CONFIG = [];
         $PROBED_FORUM_CONFIG['sql_database'] = 'cms';
         $PROBED_FORUM_CONFIG['sql_user'] = $GLOBALS['DB_STATIC_OBJECT']->default_user();
         $PROBED_FORUM_CONFIG['sql_pass'] = $GLOBALS['DB_STATIC_OBJECT']->default_password();
@@ -157,7 +157,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function install_get_path_search_list()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -170,13 +170,13 @@ class Forum_driver_none extends Forum_driver_base
     {
         require_code('comcode_compiler');
         push_db_scope_check(false);
-        $emoticons = $GLOBALS['SITE_DB']->query_select('f_emoticons', array('*'), array('e_relevance_level' => 0), 'ORDER BY e_code');
+        $emoticons = $GLOBALS['SITE_DB']->query_select('f_emoticons', ['*'], ['e_relevance_level' => 0], 'ORDER BY e_code');
         pop_db_scope_check();
         $em = new Tempcode();
         foreach ($emoticons as $emo) {
             $code = $emo['e_code'];
 
-            $em->attach(do_template('EMOTICON_CLICK_CODE', array('_GUID' => '0b51492b6e170db4466be74fdf312260', 'FIELD_NAME' => $field_name, 'CODE' => $code, 'IMAGE' => apply_emoticons($code))));
+            $em->attach(do_template('EMOTICON_CLICK_CODE', ['_GUID' => '0b51492b6e170db4466be74fdf312260', 'FIELD_NAME' => $field_name, 'CODE' => $code, 'IMAGE' => apply_emoticons($code)]));
         }
 
         return $em;
@@ -201,20 +201,20 @@ class Forum_driver_none extends Forum_driver_base
     {
         global $IN_MINIKERNEL_VERSION;
         if ($IN_MINIKERNEL_VERSION) {
-            return array();
+            return [];
         }
 
         global $EMOTICON_LEVELS;
         if ($this->EMOTICON_CACHE !== null) {
             return $this->EMOTICON_CACHE;
         }
-        $this->EMOTICON_CACHE = array();
-        $EMOTICON_LEVELS = array();
+        $this->EMOTICON_CACHE = [];
+        $EMOTICON_LEVELS = [];
         push_db_scope_check(false);
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_emoticons WHERE e_relevance_level<4');
         pop_db_scope_check();
         foreach ($rows as $myrow) {
-            $this->EMOTICON_CACHE[$myrow['e_code']] = array('EMOTICON_IMG_CODE_THEMED', $myrow['e_theme_img_code'], $myrow['e_code']);
+            $this->EMOTICON_CACHE[$myrow['e_code']] = ['EMOTICON_IMG_CODE_THEMED', $myrow['e_theme_img_code'], $myrow['e_code']];
             $EMOTICON_LEVELS[$myrow['e_code']] = $myrow['e_relevance_level'];
         }
         uksort($this->EMOTICON_CACHE, '_strlen_sort');
@@ -251,7 +251,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_custom_fields($member)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -263,7 +263,7 @@ class Forum_driver_none extends Forum_driver_base
     public function get_mrow($name)
     {
         if ($name == $this->get_admin_username()) {
-            return array(1);
+            return [1];
         }
         return null;
     }
@@ -276,7 +276,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_member_row($member)
     {
-        return array(0);
+        return [0];
     }
 
     /**
@@ -396,10 +396,10 @@ class Forum_driver_none extends Forum_driver_base
         }
 
         if ($id == 1) {
-            $url = build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $this->get_admin_username()), get_module_zone('authors'), array(), false, false, true);
+            $url = build_url(['page' => 'authors', 'type' => 'browse', 'id' => $this->get_admin_username()], get_module_zone('authors'), [], false, false, true);
             return $url->evaluate();
         }
-        $url = build_url(array('page' => 'authors', 'type' => 'browse', 'id' => do_lang('GUEST')), get_module_zone('authors'), array(), false, false, true);
+        $url = build_url(['page' => 'authors', 'type' => 'browse', 'id' => do_lang('GUEST')], get_module_zone('authors'), [], false, false, true);
         return $url->evaluate();
     }
 
@@ -492,7 +492,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function make_post_forum_topic($forum_name, $topic_identifier, $member_id, $post_title, $_post, $content_title, $topic_identifier_encapsulation_prefix, $content_url = null, $time = null, $ip = null, $validated = null, $topic_validated = 1, $skip_post_checks = false, $poster_name_if_guest = '', $parent_id = null, $staff_only = false)
     {
-        return array(null, false);
+        return [null, false];
     }
 
     /**
@@ -515,7 +515,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function topic_url($id, $forum)
     {
-        $url = build_url(array('page' => 'news', 'id' => $id), get_module_zone('news'), array(), false, false, true);
+        $url = build_url(['page' => 'news', 'id' => $id], get_module_zone('news'), [], false, false, true);
         return $url->evaluate();
     }
 
@@ -528,7 +528,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function post_url($id, $forum)
     {
-        $url = build_url(array('page' => 'news', 'id' => $id), get_module_zone('news'), array(), false, false, true);
+        $url = build_url(['page' => 'news', 'id' => $id], get_module_zone('news'), [], false, false, true);
         return $url->evaluate();
     }
 
@@ -570,10 +570,10 @@ class Forum_driver_none extends Forum_driver_base
     public function member_group_query($groups, $max = null, $start = 0)
     {
         if (in_array(1, $groups)) {
-            return array(array(1));
+            return [[1]];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -611,7 +611,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function probe_ip($ip)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -678,7 +678,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function get_matching_members($pattern, $limit = null)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -837,7 +837,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     protected function _get_super_admin_groups()
     {
-        return array(1);
+        return [1];
     }
 
     /**
@@ -848,7 +848,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     protected function _get_moderator_groups()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -858,7 +858,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     protected function _get_usergroup_list()
     {
-        return array(0 => do_lang('GUESTS'), 1 => do_lang('ADMINISTRATORS'));
+        return [0 => do_lang('GUESTS'), 1 => do_lang('ADMINISTRATORS')];
     }
 
     /**
@@ -870,9 +870,9 @@ class Forum_driver_none extends Forum_driver_base
     protected function _get_members_groups($member)
     {
         if ($member == 1) {
-            return array(db_get_first_id() + 1);
+            return [db_get_first_id() + 1];
         }
-        return array(0);
+        return [0];
     }
 
     /**
@@ -889,7 +889,7 @@ class Forum_driver_none extends Forum_driver_base
      */
     public function forum_authorise_login($username, $user_id, $password_hashed, $password_raw, $cookie_login = false)
     {
-        $out = array();
+        $out = [];
         $out['id'] = null;
 
         if (($username != $this->get_admin_username()) && ($user_id != 1)) { // All hands to lifeboats

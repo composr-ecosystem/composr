@@ -30,21 +30,21 @@ class Hook_ecommerce_custom
      */
     public function config()
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', array('*'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('c_title'));
-        $out = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('c_title'));
+        $out = [];
         foreach ($rows as $i => $row) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
             $fields->attach($this->_get_fields('_' . strval($i), get_translated_text($row['c_title']), get_translated_text($row['c_description']), $row['c_enabled'], $row['c_price'], $row['c_tax_code'], $row['c_shipping_cost'], $row['c_price_points'], $row['c_one_per_member'], get_translated_text($row['c_mail_subject']), get_translated_text($row['c_mail_body'])));
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '01362c21b40d7905b76ee6134198a128', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '01362c21b40d7905b76ee6134198a128', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete_custom_' . strval($i), false));
             $hidden->attach(form_input_hidden('custom_' . strval($i), strval($row['id'])));
-            $out[] = array($fields, $hidden, do_lang_tempcode('_EDIT_CUSTOM_PRODUCT', escape_html(get_translated_text($row['c_title']))));
+            $out[] = [$fields, $hidden, do_lang_tempcode('_EDIT_CUSTOM_PRODUCT', escape_html(get_translated_text($row['c_title'])))];
         }
 
-        return array(
-            array($out, do_lang_tempcode('ADD_NEW_CUSTOM_PRODUCT'), $this->_get_fields(), do_lang_tempcode('CUSTOM_PRODUCT_DESCRIPTION')),
-        );
+        return [
+            [$out, do_lang_tempcode('ADD_NEW_CUSTOM_PRODUCT'), $this->_get_fields(), do_lang_tempcode('CUSTOM_PRODUCT_DESCRIPTION')],
+        ];
     }
 
     /**
@@ -79,7 +79,7 @@ class Hook_ecommerce_custom
         $fields->attach(form_input_tick(do_lang_tempcode('ONE_PER_MEMBER'), do_lang_tempcode('DESCRIPTION_ONE_PER_MEMBER'), 'custom_one_per_member' . $name_suffix, $one_per_member == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), '', 'custom_enabled' . $name_suffix, $enabled == 1));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '6e4f9d4f6fc7ba05336681c5311bc42f', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PURCHASE_MAIL'), 'HELP' => do_lang_tempcode('DESCRIPTION_PURCHASE_MAIL'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6e4f9d4f6fc7ba05336681c5311bc42f', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PURCHASE_MAIL'), 'HELP' => do_lang_tempcode('DESCRIPTION_PURCHASE_MAIL')]));
         $fields->attach(form_input_line(do_lang_tempcode('PURCHASE_MAIL_SUBJECT'), '', 'custom_mail_subject' . $name_suffix, $mail_subject, false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('PURCHASE_MAIL_BODY'), '', 'custom_mail_body' . $name_suffix, $mail_body, false));
 
@@ -92,7 +92,7 @@ class Hook_ecommerce_custom
     public function save_config()
     {
         $i = 0;
-        $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', array('*')));
+        $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*']));
         while (array_key_exists('custom_' . strval($i), $_POST)) {
             $id = post_param_integer('custom_' . strval($i));
             $title = post_param_string('custom_title_' . strval($i));
@@ -124,21 +124,21 @@ class Hook_ecommerce_custom
                 delete_lang($_description);
                 delete_lang($_mail_subject);
                 delete_lang($_mail_body);
-                $GLOBALS['SITE_DB']->query_delete('ecom_prods_custom', array('id' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_prods_custom', ['id' => $id], '', 1);
             } else {
-                $map = array(
+                $map = [
                     'c_enabled' => $enabled,
                     'c_price' => $price,
                     'c_tax_code' => $tax_code,
                     'c_shipping_cost' => $shipping_cost,
                     'c_price_points' => $price_points,
                     'c_one_per_member' => $one_per_member,
-                );
+                ];
                 $map += lang_remap('c_title', $_title, $title);
                 $map += lang_remap_comcode('c_description', $_description, $description);
                 $map += lang_remap('c_mail_subject', $_mail_subject, $mail_subject);
                 $map += lang_remap('c_mail_body', $_mail_body, $mail_body);
-                $GLOBALS['SITE_DB']->query_update('ecom_prods_custom', $map, array('id' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_update('ecom_prods_custom', $map, ['id' => $id], '', 1);
             }
             $i++;
         }
@@ -161,14 +161,14 @@ class Hook_ecommerce_custom
             $mail_subject = post_param_string('custom_mail_subject');
             $mail_body = post_param_string('custom_mail_body');
 
-            $map = array(
+            $map = [
                 'c_enabled' => $enabled,
                 'c_price' => $price,
                 'c_tax_code' => $tax_code,
                 'c_shipping_cost' => $shipping_cost,
                 'c_price_points' => $price_points,
                 'c_one_per_member' => $one_per_member,
-            );
+            ];
             $map += insert_lang('c_title', $title, 2);
             $map += insert_lang_comcode('c_description', $description, 2);
             $map += insert_lang('c_mail_subject', $mail_subject, 2);
@@ -190,9 +190,9 @@ class Hook_ecommerce_custom
      */
     public function get_products($search = null)
     {
-        $products = array();
+        $products = [];
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', array('*'), array('c_enabled' => 1));
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*'], ['c_enabled' => 1]);
 
         foreach ($rows as $i => $row) {
             $rows[$i]['_title'] = get_translated_text($row['c_title']);
@@ -200,7 +200,7 @@ class Hook_ecommerce_custom
         sort_maps_by($rows, '_title', false, true);
 
         foreach ($rows as $i => $row) {
-            $just_row = db_map_restrict($row, array('id', 'c_description'));
+            $just_row = db_map_restrict($row, ['id', 'c_description']);
             $description = get_translated_tempcode('ecom_prods_custom', $just_row, 'c_description');
             if (strpos($description->evaluate(), '<img') === false) {
                 $image_url = find_theme_image('icons/spare/' . strval(($i % 8) + 1));
@@ -210,13 +210,13 @@ class Hook_ecommerce_custom
 
             $shipping_cost = floatval($row['c_shipping_cost']);
 
-            $products['CUSTOM_' . strval($row['id'])] = automatic_discount_calculation(array(
+            $products['CUSTOM_' . strval($row['id'])] = automatic_discount_calculation([
                 'item_name' => $row['_title'],
                 'item_description' => $description,
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => $row['c_price'],
                 'currency' => get_option('currency'),
@@ -231,7 +231,7 @@ class Hook_ecommerce_custom
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => ($shipping_cost != 0.00),
-            ));
+            ]);
         }
 
         return $products;
@@ -253,7 +253,7 @@ class Hook_ecommerce_custom
         }
 
         $custom_product_id = intval(preg_replace('#^CUSTOM_#', '', $type_code));
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', array('*'), array('id' => $custom_product_id, 'c_enabled' => 1));
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*'], ['id' => $custom_product_id, 'c_enabled' => 1]);
         if (!array_key_exists(0, $rows)) {
             return ECOMMERCE_PRODUCT_MISSING;
         }
@@ -261,7 +261,7 @@ class Hook_ecommerce_custom
 
         if ($row['c_one_per_member'] == 1) {
             // Test to see if it's been purchased
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'id', array('details2' => strval($rows[0]['id']), 'member_id' => $member_id, 't_type_code' => $type_code));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'id', ['details2' => strval($rows[0]['id']), 'member_id' => $member_id, 't_type_code' => $type_code]);
             if ($test !== null) {
                 return ECOMMERCE_PRODUCT_ALREADY_HAS;
             }
@@ -282,7 +282,7 @@ class Hook_ecommerce_custom
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -303,7 +303,7 @@ class Hook_ecommerce_custom
 
         $member_id = intval($purchase_id);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', array('*'), array('id' => $custom_product_id, 'c_enabled' => 1), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_custom', ['*'], ['id' => $custom_product_id, 'c_enabled' => 1], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -311,14 +311,14 @@ class Hook_ecommerce_custom
 
         $c_title = get_translated_text($row['c_title']);
 
-        $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $c_title, 'details2' => strval($row['id']), 'txn_id' => $details['TXN_ID']), true);
+        $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $c_title, 'details2' => strval($row['id']), 'txn_id' => $details['TXN_ID']], true);
 
         // Notification to staff
         require_code('notifications');
         $subject = do_lang('MAIL_REQUEST_CUSTOM', comcode_escape($c_title), null, null, get_site_default_lang());
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
         $body = do_notification_lang('MAIL_REQUEST_CUSTOM_BODY', comcode_escape($c_title), $username, null, get_site_default_lang());
-        dispatch_notification('ecom_product_request_custom', 'custom' . strval($custom_product_id) . '_' . strval($sale_id), $subject, $body, null, null, array('create_ticket' => true, 'use_real_from' => true));
+        dispatch_notification('ecom_product_request_custom', 'custom' . strval($custom_product_id) . '_' . strval($sale_id), $subject, $body, null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
         // E-mail member (we don't do a notification as we want to know for sure it will be received; plus avoid bloat in the notification UI)
         require_code('mail');
@@ -327,7 +327,7 @@ class Hook_ecommerce_custom
             $message_raw = get_translated_text($row['c_mail_body']);
             $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
-            dispatch_mail($subject_line, $message_raw, array($email), $to_name, '', '', array('as_admin' => true));
+            dispatch_mail($subject_line, $message_raw, [$email], $to_name, '', '', ['as_admin' => true]);
         }
 
         return false;

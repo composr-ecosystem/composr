@@ -31,9 +31,9 @@ class Hook_admin_themewizard_calendar
     public function run()
     {
         if (!addon_installed('calendar')) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        return array(array('calendar/priority*',), array());
+        return [['calendar/priority*',], []];
     }
 }

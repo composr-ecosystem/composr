@@ -28,22 +28,22 @@ class template_xss_test_set extends cms_test_case
 
     public function testHTMLCDataBreakout() // See http://css.dzone.com/articles/xss-still-tricky
     {
-        $templates = array();
+        $templates = [];
 
-        $paths = array(
+        $paths = [
             get_file_base() . '/themes/default/templates',
             get_file_base() . '/themes/default/templates_custom',
-        );
+        ];
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             if ($theme == '_unnamed_') {
                 continue;
             }
 
-            $paths = array_merge($paths, array(
+            $paths = array_merge($paths, [
                 get_file_base() . '/themes/' . $theme . '/templates',
                 get_file_base() . '/themes/' . $theme . '/templates_custom',
-            ));
+            ]);
         }
 
         foreach ($paths as $path) {
@@ -57,15 +57,15 @@ class template_xss_test_set extends cms_test_case
                         $c = $this->strip_down_template($c);
 
                         // Search
-                        $matches = array();
+                        $matches = [];
                         $num_matches = preg_match_all('#\{([A-Z]\w*)([*=;\#~^\'&.@+-]*)\}#U', $c, $matches);
-                        $params_found = array();
+                        $params_found = [];
                         for ($i = 0; $i < $num_matches; $i++) {
                             $match = $matches[0][$i];
                             $params_found[$match] = $matches;
                         }
                         foreach ($params_found as $match => $matches) {
-                            $matches2 = array();
+                            $matches2 = [];
                             if (preg_match('#<script[^<>]*>(?:(?!</script>).)*(?<!\\\\)' . preg_quote($match, '#') . '(?:(?!</script>)).*</script>#Us', $c, $matches2) != 0) {
                                 $this->assertTrue(false, 'Unsafe embedded parameter within JavaScript block, needing "/" escaper (' . $match . ') in ' . $file);
 
@@ -87,7 +87,7 @@ class template_xss_test_set extends cms_test_case
     {
         // Strip parameters inside symbols, language strings and Tempcode portions
         do {
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match('#\{[\$\!\+]#', $c, $matches, PREG_OFFSET_CAPTURE);
             if ($num_matches != 0) {
                 $posa = $matches[0][1];
@@ -113,22 +113,22 @@ class template_xss_test_set extends cms_test_case
 
     public function testHTMLAttributeBreakout()
     {
-        $templates = array();
+        $templates = [];
 
-        $paths = array(
+        $paths = [
             get_file_base() . '/themes/default/templates',
             get_file_base() . '/themes/default/templates_custom',
-        );
+        ];
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             if ($theme == '_unnamed_') {
                 continue;
             }
 
-            $paths = array_merge($paths, array(
+            $paths = array_merge($paths, [
                 get_file_base() . '/themes/' . $theme . '/templates',
                 get_file_base() . '/themes/' . $theme . '/templates_custom',
-            ));
+            ]);
         }
 
         foreach ($paths as $path) {
@@ -142,7 +142,7 @@ class template_xss_test_set extends cms_test_case
                         $c = $this->strip_down_template($c);
 
                         // Search
-                        $matches = array();
+                        $matches = [];
                         $num_matches = preg_match_all('#\s\w+="[^"]*\{(\w+)[^\|\w\'=%"`\{\}\*]\}#Us', $c, $matches);
                         for ($i = 0; $i < $num_matches; $i++) {
                             $match = $matches[1][$i];

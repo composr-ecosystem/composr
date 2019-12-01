@@ -26,7 +26,7 @@ class Hook_addon_registry_external_db_login
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_external_db_login
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_external_db_login
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,13 +106,13 @@ class Hook_addon_registry_external_db_login
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ class Hook_addon_registry_external_db_login
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/external_db_login.php',
             'sources_custom/hooks/systems/login_providers/external_db.php',
             'sources_custom/hooks/systems/login_providers_direct_auth/external_db.php',
@@ -141,6 +141,6 @@ class Hook_addon_registry_external_db_login
             'pages/modules_custom/join.php',
             'pages/modules_custom/lost_password.php',
             'pages/modules_custom/login.php',
-        );
+        ];
     }
 }

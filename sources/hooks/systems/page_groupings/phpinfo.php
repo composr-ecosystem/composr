@@ -33,11 +33,11 @@ class Hook_page_groupings_phpinfo
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('phpinfo')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'menu/adminzone/tools/phpinfo', array('admin_phpinfo', array(), get_module_zone('admin_phpinfo')), do_lang_tempcode('menus:PHPINFO'), 'menus:DOC_PHPINFO'),
-        );
+        return [
+            ['tools', 'menu/adminzone/tools/phpinfo', ['admin_phpinfo', [], get_module_zone('admin_phpinfo')], do_lang_tempcode('menus:PHPINFO'), 'menus:DOC_PHPINFO'],
+        ];
     }
 }

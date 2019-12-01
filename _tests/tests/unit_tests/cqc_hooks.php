@@ -21,7 +21,7 @@ class cqc_hooks_test_set extends cms_test_case
     public function testHooks()
     {
         cms_disable_time_limit();
-        $result = http_get_contents(get_base_url() . '/_tests/codechecker/code_quality.php?subdir=sources/hooks&api=1', array('convert_to_internal_encoding' => true, 'timeout' => 10000.0));
+        $result = http_get_contents(get_base_url() . '/_tests/codechecker/code_quality.php?subdir=sources/hooks&api=1', ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         foreach (explode('<br />', $result) as $line) {
             $this->assertTrue($this->should_filter_cqc_line($line), $line);
         }

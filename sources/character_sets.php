@@ -41,7 +41,7 @@ function transliterate_string($str)
             }
         } else {
             // German has inbuilt transliteration
-            $str = str_replace(array(hex2bin('c3a4'), hex2bin('c3b6'), hex2bin('c3bc'), hex2bin('c39f')), array('ae', 'oe', 'ue', 'ss'), $str);
+            $str = str_replace([hex2bin('c3a4'), hex2bin('c3b6'), hex2bin('c3bc'), hex2bin('c39f')], ['ae', 'oe', 'ue', 'ss'], $str);
         }
     }
     return $str;
@@ -71,7 +71,7 @@ function _convert_request_data_encodings($known_utf8 = false)
 
     $input_charset = $known_utf8 ? 'utf-8' : get_charset();
 
-    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered(serialize($_GET) . serialize($_POST))) && (in_array(strtoupper($internal_charset), array('ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP')))) {
+    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered(serialize($_GET) . serialize($_POST))) && (in_array(strtoupper($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) {
         // Inbuilt PHP option, but only supports certain character sets.
         // Preferred as it will sub entities where there's no equivalent character.
 
@@ -328,7 +328,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
 
     convert_request_data_encodings(); // In case it hasn't run yet. We need $VALID_ENCODING to be set.
 
-    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered($data)) && (in_array(strtoupper($internal_charset), array('ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP')))) { // Preferred as it will use sub entities where there's no equivalent character
+    if ((strtolower($input_charset) == 'utf-8') && /*test method works...*/(_will_be_successfully_unicode_neutered($data)) && (in_array(strtoupper($internal_charset), ['ISO-8859-1', 'ISO-8859-15', 'KOI8-R', 'BIG5', 'GB2312', 'BIG5-HKSCS', 'SHIFT_JIS', 'EUC-JP']))) { // Preferred as it will use sub entities where there's no equivalent character
         // Inbuilt PHP option, but only supports certain character sets.
         // Preferred as it will sub entities where there's no equivalent character.
 
@@ -372,7 +372,7 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         // mbstring option
 
         if (function_exists('mb_list_encodings')) {
-            static $good_encodings = array();
+            static $good_encodings = [];
             if (!isset($good_encodings[$input_charset])) {
                 $good_encodings[$input_charset] = (in_array(strtolower($input_charset), array_map('strtolower', mb_list_encodings())));
             }
@@ -458,7 +458,7 @@ function entity_utf8_decode($data, $internal_charset)
     $data = $test;
 
     // We'd rather have text-code than entities
-    $shortcuts = array('(EUR-)' => '&euro;', '{f.}' => '&fnof;', '-|-' => '&dagger;', '=|=' => '&Dagger;', '{%o}' => '&permil;', '{~S}' => '&Scaron;', '{~Z}' => '&#x17D;', '(TM)' => '&trade;', '{~s}' => '&scaron;', '{~z}' => '&#x17E;', '{.Y.}' => '&Yuml;', '(c)' => '&copy;', '(r)' => '&reg;', '---' => '&mdash;', '--' => '&ndash;', '...' => '&hellip;', '==>' => '&rarr;', '<==' => '&larr;');
+    $shortcuts = ['(EUR-)' => '&euro;', '{f.}' => '&fnof;', '-|-' => '&dagger;', '=|=' => '&Dagger;', '{%o}' => '&permil;', '{~S}' => '&Scaron;', '{~Z}' => '&#x17D;', '(TM)' => '&trade;', '{~s}' => '&scaron;', '{~z}' => '&#x17E;', '{.Y.}' => '&Yuml;', '(c)' => '&copy;', '(r)' => '&reg;', '---' => '&mdash;', '--' => '&ndash;', '...' => '&hellip;', '==>' => '&rarr;', '<==' => '&larr;'];
     foreach ($shortcuts as $to => $from) {
         $data = str_replace($from, $to, $data);
     }

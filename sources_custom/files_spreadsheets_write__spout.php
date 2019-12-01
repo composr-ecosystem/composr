@@ -78,7 +78,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
 
         require_code('character_sets');
 
-        $_row = array();
+        $_row = [];
         foreach ($row as $column => $val) {
             $_row[] = convert_to_internal_encoding(@strval($val), get_charset(), 'utf-8');
         }

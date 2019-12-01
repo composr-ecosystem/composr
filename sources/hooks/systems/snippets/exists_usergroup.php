@@ -32,7 +32,7 @@ class Hook_snippet_exists_usergroup
     {
         $val = get_param_string('name');
 
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $val));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $val]);
         if ($test === null) {
             return new Tempcode();
         }

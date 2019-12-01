@@ -78,7 +78,7 @@ function cns_make_topic($forum_id, $description = '', $emoticon = '', $validated
     }
 
     if (($validated === null) || (($check_perms) && ($validated == 1))) {
-        if (($forum_id !== null) && (!has_privilege(get_member(), 'bypass_validation_midrange_content', 'topics', array('forums', $forum_id)))) {
+        if (($forum_id !== null) && (!has_privilege(get_member(), 'bypass_validation_midrange_content', 'topics', ['forums', $forum_id]))) {
             $validated = 0;
         } else {
             $validated = 1;
@@ -88,7 +88,7 @@ function cns_make_topic($forum_id, $description = '', $emoticon = '', $validated
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         't_pinned' => $pinned,
         't_cascading' => $cascading,
         't_forum_id' => $forum_id,
@@ -114,7 +114,7 @@ function cns_make_topic($forum_id, $description = '', $emoticon = '', $validated
         't_cache_num_posts' => 0,
         't_pt_from_category' => '',
         't_pt_to_category' => '',
-    );
+    ];
     if (multi_lang_content()) {
         $map['t_cache_first_post'] = null;
     } else {

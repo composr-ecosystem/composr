@@ -34,31 +34,31 @@ class Hook_privacy_filedump extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'filedump' => array(
+            'database_records' => [
+                'filedump' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('the_member'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['the_member'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -71,12 +71,12 @@ class Hook_privacy_filedump extends Hook_privacy_base
     {
         switch ($table_name) {
             case 'filedump':
-                $rows = $GLOBALS['SITE_DB']->query_select('filedump', array('*'), array('id' => $row['id']), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('filedump', ['*'], ['id' => $row['id']], '', 1);
                 if (array_key_exists(0, $rows)) {
                     $path = get_custom_file_base() . '/uploads/filedump' . $row['subpath'] . $row['name'];
                     @unlink($path);
                     sync_file($path);
-                    $GLOBALS['SITE_DB']->query_delete('filedump', array('id' => $row['id']));
+                    $GLOBALS['SITE_DB']->query_delete('filedump', ['id' => $row['id']]);
                 }
                 break;
 

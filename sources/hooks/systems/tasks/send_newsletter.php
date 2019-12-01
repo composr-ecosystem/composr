@@ -74,7 +74,7 @@ class Hook_task_send_newsletter
             }
         }
 
-        $already_queued = collapse_2d_complexity('d_to_email', 'tmp', $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', array('d_to_email', '1 AS tmp'), array('d_message_id' => $message_id)));
+        $already_queued = collapse_2d_complexity('d_to_email', 'tmp', $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['d_to_email', '1 AS tmp'], ['d_message_id' => $message_id]));
 
         $max = 300;
         $max_rows = null;
@@ -89,13 +89,13 @@ class Hook_task_send_newsletter
                 list($subscribers) = $_subscribers;
             }
 
-            $insert_maps = array( // We will do very efficient mass-inserts (making index maintenance and disk access much more efficient)
-                'd_inject_time' => array(),
-                'd_message_id' => array(),
-                'd_message_binding' => array(),
-                'd_to_email' => array(),
-                'd_to_name' => array(),
-            );
+            $insert_maps = [ // We will do very efficient mass-inserts (making index maintenance and disk access much more efficient)
+                'd_inject_time' => [],
+                'd_message_id' => [],
+                'd_message_binding' => [],
+                'd_to_email' => [],
+                'd_to_name' => [],
+            ];
 
             // Send to all
             foreach ($subscribers as $email_address => $subscriber_map) {
@@ -107,13 +107,13 @@ class Hook_task_send_newsletter
 
                 if ($using_drip_queue) {
                     if (!isset($already_queued[$email_address])) {
-                        $insert_map = array(
+                        $insert_map = [
                             'd_inject_time' => time(),
                             'd_message_id' => $message_id,
                             'd_message_binding' => json_encode($subscriber_map),
                             'd_to_email' => $email_address,
                             'd_to_name' => $subscriber_map['name'],
-                        );
+                        ];
                         foreach ($insert_map as $key => $val) {
                             $insert_maps[$key][] = $val;
                         }
@@ -136,11 +136,11 @@ class Hook_task_send_newsletter
                     dispatch_mail(
                         $subject,
                         $newsletter_message_substituted,
-                        array($email_address),
-                        array($subscriber_map['name']),
+                        [$email_address],
+                        [$subscriber_map['name']],
                         $from_email,
                         $from_name,
-                        array(
+                        [
                             'priority' => $priority,
                             'no_cc' => true,
                             'as_admin' => true,
@@ -157,7 +157,7 @@ class Hook_task_send_newsletter
                             'allow_ext_images' => (get_option('newsletter_allow_ext_images') == '1'),
                             'website_email' => get_option('newsletter_website_email'),
                             'is_bulk' => true,
-                        )
+                        ]
                     );
                 }
 
@@ -175,18 +175,18 @@ class Hook_task_send_newsletter
         } while (array_key_exists(0, $subscribers));
 
         if ($count == 0) {
-            return array('text/html', do_lang_tempcode('NEWSLETTER_NO_TARGET'));
+            return ['text/html', do_lang_tempcode('NEWSLETTER_NO_TARGET')];
         }
 
         if ($auto_pause) {
             require_code('notifications');
             $subject = do_lang('NEWSLETTER_PAUSED_SUBJECT');
-            $newsletter_manage_url = build_url(array('page' => 'admin_newsletter'), get_module_zone('admin_newsletter'), array(), false, false, true);
+            $newsletter_manage_url = build_url(['page' => 'admin_newsletter'], get_module_zone('admin_newsletter'), [], false, false, true);
             $message = do_lang('NEWSLETTER_PAUSED_BODY', escape_html($newsletter_manage_url->evaluate()));
-            dispatch_notification('newsletter_paused', 'newsletter_' . strval(time()), $subject, $message, null, null, array('priority' => 4, 'create_ticket' => true));
+            dispatch_notification('newsletter_paused', 'newsletter_' . strval(time()), $subject, $message, null, null, ['priority' => 4, 'create_ticket' => true]);
         }
 
-        $newsletter_manage_url = build_url(array('page' => 'admin_newsletter'), get_module_zone('admin_newsletter'));
-        return array('text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_QUEUE' : 'SENDING_NEWSLETTER', escape_html($newsletter_manage_url)));
+        $newsletter_manage_url = build_url(['page' => 'admin_newsletter'], get_module_zone('admin_newsletter'));
+        return ['text/html', do_lang_tempcode($auto_pause ? 'SENDING_NEWSLETTER_TO_QUEUE' : 'SENDING_NEWSLETTER', escape_html($newsletter_manage_url))];
     }
 }

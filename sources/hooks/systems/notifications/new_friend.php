@@ -32,11 +32,11 @@ class Hook_notification_new_friend extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['new_friend'] = array(do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_new_friend'));
+        $list = [];
+        $list['new_friend'] = [do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_new_friend')];
         return $list;
     }
 

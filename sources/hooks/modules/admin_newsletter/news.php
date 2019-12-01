@@ -39,7 +39,7 @@ class Hook_whatsnew_news
 
         require_code('news');
         $cats = create_selection_list_news_categories(null, false, false, true, null, false, $updated_since);
-        return array($cats, do_lang('NEWS'));
+        return [$cats, do_lang('NEWS')];
     }
 
     /**
@@ -54,7 +54,7 @@ class Hook_whatsnew_news
     public function run($cutoff_time, $lang, $filter, $in_full = 1)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
         require_lang('news');
@@ -82,13 +82,13 @@ class Hook_whatsnew_news
         $rows = $GLOBALS['SITE_DB']->query('SELECT title,news,news_article,id,date_and_time,submitter,news_image FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . get_table_prefix() . 'news_category_entries ON news_entry=id' . $extra_join . ' WHERE validated=1 AND date_and_time>' . strval($cutoff_time) . ' AND ((' . $or_list . ') OR (' . $or_list_2 . '))' . $extra_where . ' ORDER BY date_and_time DESC', $max);
 
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
 
         $rows = remove_duplicate_rows($rows, 'id');
         foreach ($rows as $row) {
             $id = $row['id'];
-            $_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), get_module_zone('news'), array(), false, false, true);
+            $_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], get_module_zone('news'), [], false, false, true);
             $url = $_url->evaluate();
             $name = get_translated_text($row['title'], null, $lang);
             $description = get_translated_text($row[($in_full == 1) ? 'news_article' : 'news'], null, $lang);
@@ -104,11 +104,11 @@ class Hook_whatsnew_news
             } else {
                 $thumbnail = null;
             }
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => '4eaf5ec00db1f0b89cef5120c2486521', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'news', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4eaf5ec00db1f0b89cef5120c2486521', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'news', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
-        return array($new, do_lang('NEWS', '', '', '', $lang));
+        return [$new, do_lang('NEWS', '', '', '', $lang)];
     }
 }

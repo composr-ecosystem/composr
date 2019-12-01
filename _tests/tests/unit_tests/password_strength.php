@@ -25,7 +25,7 @@ class password_strength_test_set extends cms_test_case
         $username = 'theusername';
         $email_address = 'bob@example.com';
 
-        $expects = array(
+        $expects = [
             '' => 1,
             'theusername' => 1,
             'useruseruseruseruseruseruseruseruseruser' => 1,
@@ -37,7 +37,7 @@ class password_strength_test_set extends cms_test_case
             'AbC123DeF' => 8,
             'AbC123De#' => 9,
             'Aa1#$acthfegrehde' => 10,
-        );
+        ];
 
         require_code('spelling');
         $spell_checker = _find_spell_checker();

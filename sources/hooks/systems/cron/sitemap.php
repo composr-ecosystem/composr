@@ -39,11 +39,11 @@ class Hook_cron_sitemap
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Update XML Sitemap',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 24, // Every day. Contrast to the news sitemap which is built and pinged instantly, so content needing instant promotion should go via news
-        );
+        ];
     }
 
     /**
@@ -56,6 +56,6 @@ class Hook_cron_sitemap
         require_lang('menus'); // Contains GENERATE_SITEMAP string
 
         require_code('tasks');
-        call_user_func_array__long_task(do_lang('GENERATE_SITEMAP'), get_screen_title('GENERATE_SITEMAP'), 'sitemap', array(), false, true, false);
+        call_user_func_array__long_task(do_lang('GENERATE_SITEMAP'), get_screen_title('GENERATE_SITEMAP'), 'sitemap', [], false, true, false);
     }
 }

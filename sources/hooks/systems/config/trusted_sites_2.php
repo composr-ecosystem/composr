@@ -30,7 +30,7 @@ class Hook_config_trusted_sites_2
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TRUSTED_SITES_2',
             'type' => 'text',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_trusted_sites_2
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

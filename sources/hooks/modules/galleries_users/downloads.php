@@ -32,16 +32,16 @@ class Hook_gu_downloads
     public function new_donext_icons($cat)
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
         if (substr($cat, 0, 9) != 'download_') {
-            return array();
+            return [];
         }
 
         $id = intval(substr($cat, 9));
-        return array(
-            array('menu/rich_content/downloads', array('downloads', array('type' => 'entry', 'id' => $id), get_module_zone('downloads')), do_lang('VIEW')),
-        );
+        return [
+            ['menu/rich_content/downloads', ['downloads', ['type' => 'entry', 'id' => $id], get_module_zone('downloads')], do_lang('VIEW')],
+        ];
     }
 }

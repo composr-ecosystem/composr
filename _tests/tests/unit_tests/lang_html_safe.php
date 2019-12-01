@@ -41,7 +41,7 @@ class lang_html_safe_test_set extends cms_test_case
         $FIND_NO_GO_HTML_SPOTS = (@$_GET['find_html_no_go'] == '1');
 
         // Pre-Processing...
-        $LANGUAGE_STRINGS = array();
+        $LANGUAGE_STRINGS = [];
         if (($dh = opendir(get_file_base() . '/lang/EN')) !== false) {
             while (($FILE = readdir($dh)) !== false) {
                 if ($FILE[0] != '.') {
@@ -59,24 +59,24 @@ class lang_html_safe_test_set extends cms_test_case
         }
 
         // Processing for plain-usages...
-        $LANGUAGE_CURRENT = array();
-        $forms = array(
+        $LANGUAGE_CURRENT = [];
+        $forms = [
             '#do_lang\(\'(.+?)\'(,|\))#ims',
             '#do_lang\(\\\\\'(.+?)\\\\\'(,|\))#ims',
             '#log_it\(\'(.+?)\'(\,|\))#ims',
-        );
+        ];
         foreach ($forms as $php) {
             $this->do_dir(get_file_base(), '', $php, 'php');
         }
         $LANGUAGE_LITERAL = $LANGUAGE_CURRENT;
 
         // Processing for HTML-usages...
-        $LANGUAGE_CURRENT = array();
-        $forms = array(
+        $LANGUAGE_CURRENT = [];
+        $forms = [
             '#do_lang_tempcode\(\'(.+?)\'(,|\))#ims',
             '#do_lang_tempcode\(\\\\\'(.+?)\\\\\'(,|\))#ims',
             '#get_page_title\(\'(.+?)\'(\,|\))#ims',
-        );
+        ];
         foreach ($forms as $php) {
             $this->do_dir(get_file_base(), '', $php, 'php');
         }
@@ -86,7 +86,7 @@ class lang_html_safe_test_set extends cms_test_case
 
         // Apparent conflicts between usage as HTML and plain text...
 
-        $whitelist = array(
+        $whitelist = [
             // Checked are ok manually already
             'PERMISSION_CELL',
             '_MISSING_RESOURCE',
@@ -115,7 +115,7 @@ class lang_html_safe_test_set extends cms_test_case
             'ALT_FIELD',
             'NO_SUCH_THEME_IMAGE',
             'MISSING_ADDON',
-        );
+        ];
 
         $result = array_keys(array_intersect_key($LANGUAGE_LITERAL, $LANGUAGE_HTML));
         $cnt = 0;
@@ -161,7 +161,7 @@ class lang_html_safe_test_set extends cms_test_case
     protected function do_file($exp)
     {
         global $FILE2;
-        preg_replace_callback($exp, array($this, 'find_php_use_match'), cms_file_get_contents_safe($FILE2));
+        preg_replace_callback($exp, [$this, 'find_php_use_match'], cms_file_get_contents_safe($FILE2));
     }
 
     protected function find_php_use_match($matches)
@@ -171,7 +171,7 @@ class lang_html_safe_test_set extends cms_test_case
             return;
         }
         if (!isset($LANGUAGE_CURRENT[$matches[1]])) {
-            $LANGUAGE_CURRENT[$matches[1]] = array();
+            $LANGUAGE_CURRENT[$matches[1]] = [];
         }
         $LANGUAGE_CURRENT[$matches[1]][] = $FILE2;
     }

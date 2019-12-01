@@ -63,20 +63,20 @@ function init__webstandards()
     $WEBSTANDARDS_CSP = false;
 
     global $EXTRA_CHECK;
-    $EXTRA_CHECK = array();
+    $EXTRA_CHECK = [];
 
     global $VALIDATED_ALREADY;
-    $VALIDATED_ALREADY = array();
+    $VALIDATED_ALREADY = [];
 
     global $NO_XHTML_LINK_FOLLOW;
     $NO_XHTML_LINK_FOLLOW = false;
 
     global $CSS_TAG_RANGES, $CSS_VALUE_RANGES;
-    $CSS_TAG_RANGES = array();
-    $CSS_VALUE_RANGES = array();
+    $CSS_TAG_RANGES = [];
+    $CSS_VALUE_RANGES = [];
 
     global $ENTITIES;
-    $ENTITIES = array(
+    $ENTITIES = [
         'quot' => true, 'amp' => true, 'lt' => true, 'gt' => true, 'nbsp' => true, 'iexcl' => true, 'cent' => true,
         'pound' => true, 'curren' => true, 'yen' => true, 'brvbar' => true, 'sect' => true, 'uml' => true,
         'copy' => true, 'ordf' => true, 'laquo' => true, 'not' => true, 'shy' => true, 'reg' => true, 'macr' => true,
@@ -121,7 +121,7 @@ function init__webstandards()
         'ndash' => true, 'mdash' => true, 'lsquo' => true, 'rsquo' => true, 'sbquo' => true,
         'ldquo' => true, 'rdquo' => true, 'bdquo' => true, 'dagger' => true, 'Dagger' => true, 'permil' => true,
         'lsaquo' => true, 'rsaquo' => true, 'euro' => true,
-    );
+    ];
 
     $enforce_id = '[a-zA-Z][\w\-\:\.]*';
     $enforce_name = '[\w\-\:\.]+(\[\])?';
@@ -153,7 +153,7 @@ function init__webstandards()
     $enforce_potential_4d_length_auto = $enforce_auto_or_length . '( ' . $enforce_auto_or_length . '( ' . $enforce_auto_or_length . '( ' . $enforce_auto_or_length . ')?)?)?';
 
     $enforce_color = '(currentColor|darkgrey|slategrey|black|silver|gray|white|maroon|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua|orange|red|(\#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])|(\#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]))'; // orange and red aren't 'official' -- but kind of handy ;). In reality, the colour codes were never properly defined, and these two are obvious names for obviously needed ones-- they'll be supported
-    $color_types = array(
+    $color_types = [
         '(rgb\(' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?\))',
         '(rgba\(' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?,\s*[01]?(\.\d+)?\))',
         '(hsl\(' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?,\s*' . $enforce_inumber . '%?\))',
@@ -161,7 +161,7 @@ function init__webstandards()
         '(\#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])',
         $enforce_color,
         '(ActiveBorder|ActiveCaption|AppWorkspace|Background|Buttonface|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
-    );
+    ];
     $enforce_css_color = '(' . implode('|', $color_types) . ')';
     $enforce_transparent_or_color = '(transparent|' . $enforce_css_color . ')';
 
@@ -204,7 +204,7 @@ function init__webstandards()
     // Useful reference: https://www.w3schools.com/cssref/css3_browsersupport.asp
 
     global $CSS_PROPERTIES;
-    $CSS_PROPERTIES = array(
+    $CSS_PROPERTIES = [
         'background' => '((' . $enforce_transparent_or_color . '|' . $enforce_functional_url_or_none . '|' . $enforce_background_repeat . '|' . $enforce_attachment . '|' . $enforce_background_position . ')( |$))+', // We don't want gradients on here, use background-image, for easier compatibility
         'background-attachment' => $enforce_attachment,
         'background-clip' => '(border-box|padding-box|content-box)',
@@ -399,10 +399,10 @@ function init__webstandards()
 
         /* SVG embedded in website CSS */
         'fill' => $enforce_css_color,
-    );
+    ];
 
     global $CSS_PSEUDO_CLASSES;
-    $CSS_PSEUDO_CLASSES = array(
+    $CSS_PSEUDO_CLASSES = [
         /* LEGACY */
         ':-moz-selection',
         ':-moz-focus-inner',
@@ -445,23 +445,23 @@ function init__webstandards()
         'only-child',
         'required',
         'visited',
-    );
+    ];
 
     global $CSS_AT_BLOCK_RULES;
-    $CSS_AT_BLOCK_RULES = array(
+    $CSS_AT_BLOCK_RULES = [
         'font-face',
         'keyframes',
         'media',
-    );
+    ];
 
     global $CSS_AT_RULES;
-    $CSS_AT_RULES = array(
+    $CSS_AT_RULES = [
         'import',
         'namespace',
-    );
+    ];
 
     global $POSSIBLY_EMPTY_TAGS;
-    $POSSIBLY_EMPTY_TAGS = array(
+    $POSSIBLY_EMPTY_TAGS = [
         'a' => true, // When it's an anchor only - we will detect this with custom code
         'div' => true,
         'span' => true,
@@ -473,10 +473,10 @@ function init__webstandards()
         'noscript' => true,
         'li' => true,
         'embed' => true,
-    );
+    ];
 
     global $MUST_SELFCLOSE_TAGS;
-    $MUST_SELFCLOSE_TAGS = array(
+    $MUST_SELFCLOSE_TAGS = [
         'img' => true,
         'hr' => true,
         'br' => true,
@@ -490,113 +490,113 @@ function init__webstandards()
         'source' => true,
         'nobr' => true,
         'use' => true, // Used by SVG icons
-     );
+     ];
 
     // B's may not appear under A
     global $PROHIBITIONS;
-    $PROHIBITIONS = array(
-        'a' => array('a'),
-        'button' => array('input', 'select', 'textarea', 'label', 'button', 'form', 'fieldset', 'iframe'),
-        'p' => array('p', 'table', 'div', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'hr'),
-        'form' => array('form'),
-        'th' => array('h1', 'h2', 'h3', 'h4', 'h5', 'h6'),
-        'em' => array('em'),
-        'abbr' => array('abbr'),
-        'strong' => array('strong'),
-        'label' => array('label', 'div'));
+    $PROHIBITIONS = [
+        'a' => ['a'],
+        'button' => ['input', 'select', 'textarea', 'label', 'button', 'form', 'fieldset', 'iframe'],
+        'p' => ['p', 'table', 'div', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'hr'],
+        'form' => ['form'],
+        'th' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        'em' => ['em'],
+        'abbr' => ['abbr'],
+        'strong' => ['strong'],
+        'label' => ['label', 'div']];
 
     // Only B's can be under A
     global $ONLY_CHILDREN;
-    $ONLY_CHILDREN = array(
-        'ruby' => array('rbc', 'rtc', 'rp'),
-        'tr' => array('td', 'th'),
-        'thead' => array('tr'),
-        'tbody' => array('tr'),
-        'tfoot' => array('tr'),
-        'table' => array('tbody', 'thead', 'tfoot', 'colgroup', 'col', 'caption'),
-        'colgroup' => array('col'),
-        'select' => array('option', 'optgroup'),
-        'legend' => array('ins', 'del'),
+    $ONLY_CHILDREN = [
+        'ruby' => ['rbc', 'rtc', 'rp'],
+        'tr' => ['td', 'th'],
+        'thead' => ['tr'],
+        'tbody' => ['tr'],
+        'tfoot' => ['tr'],
+        'table' => ['tbody', 'thead', 'tfoot', 'colgroup', 'col', 'caption'],
+        'colgroup' => ['col'],
+        'select' => ['option', 'optgroup'],
+        'legend' => ['ins', 'del'],
         //'map' => array('area'), Apparently no such rule (see w3.org)
-        'html' => array('head', 'body'),
-        'embed' => array('noembed'),
-        'applet' => array('param'),
-        'head' => array('meta', 'base', 'basefont', 'script', 'link', 'noscript', 'map', 'title', 'style'),
-        'ul' => array('li'),
-        'ol' => array('li'),
-        'menu' => array('li'),
-        'dl' => array('li', 'dt', 'dd'),
-        'dir' => array('li'),
-        'hr' => array(),
-        'img' => array(),
-        'input' => array(),
-        'br' => array(),
-        'meta' => array(),
-        'base' => array(),
-        'title' => array(),
-        'textarea' => array(),
-        'style' => array(),
-        'pre' => array(),
-        'script' => array(),
-        'param' => array(),
+        'html' => ['head', 'body'],
+        'embed' => ['noembed'],
+        'applet' => ['param'],
+        'head' => ['meta', 'base', 'basefont', 'script', 'link', 'noscript', 'map', 'title', 'style'],
+        'ul' => ['li'],
+        'ol' => ['li'],
+        'menu' => ['li'],
+        'dl' => ['li', 'dt', 'dd'],
+        'dir' => ['li'],
+        'hr' => [],
+        'img' => [],
+        'input' => [],
+        'br' => [],
+        'meta' => [],
+        'base' => [],
+        'title' => [],
+        'textarea' => [],
+        'style' => [],
+        'pre' => [],
+        'script' => [],
+        'param' => [],
         /*'option' => array(),*/
-        'area' => array(),
-        'link' => array('link'),
-        'basefont' => array(),
-        'col' => array(),
-    );
-    $ONLY_CHILDREN += array(
-        'details' => array('summary'),
-        'datalist' => array('option'),
-    );
+        'area' => [],
+        'link' => ['link'],
+        'basefont' => [],
+        'col' => [],
+    ];
+    $ONLY_CHILDREN += [
+        'details' => ['summary'],
+        'datalist' => ['option'],
+    ];
 
     // A can only occur underneath B's
     global $ONLY_PARENT;
-    $ONLY_PARENT = array(
-        'rb' => array('rbc'),
-        'rt' => array('rtc'),
-        'rbc' => array('ruby'),
-        'rtc' => array('ruby'),
-        'rp' => array('ruby'),
-        'area' => array('map'),
-        'base' => array('head'),
-        'body' => array('html'),
-        'head' => array('html'),
-        'param' => array('script', 'object'),
+    $ONLY_PARENT = [
+        'rb' => ['rbc'],
+        'rt' => ['rtc'],
+        'rbc' => ['ruby'],
+        'rtc' => ['ruby'],
+        'rp' => ['ruby'],
+        'area' => ['map'],
+        'base' => ['head'],
+        'body' => ['html'],
+        'head' => ['html'],
+        'param' => ['script', 'object'],
         //'link' => array('head', 'link'),  Composr will dynamically optimise things to tend towards correctness, so can't enable this rule
         //'style' => array('head'), "
-        'li' => array('ul', 'ol', 'dd', 'menu', 'dt', 'dl', 'dir'),
-        'tbody' => array('table'),
-        'tfoot' => array('table'),
-        'thead' => array('table'),
-        'th' => array('tr'),
-        'td' => array('tr'),
-        'tr' => array('table', 'thead', 'tbody', 'tfoot'),
-        'title' => array('head'),
-        'caption' => array('table'),
-        'col' => array('colgroup', 'table'),
-        'colgroup' => array('table'),
-        'option' => array('select', 'optgroup', 'datalist'),
-        'noembed' => array('embed'),
-    );
-    $ONLY_PARENT += array(
-        'figcaption' => array('figure'),
-        'summary' => array('details'),
-        'track' => array('audio', 'video'),
-    );
+        'li' => ['ul', 'ol', 'dd', 'menu', 'dt', 'dl', 'dir'],
+        'tbody' => ['table'],
+        'tfoot' => ['table'],
+        'thead' => ['table'],
+        'th' => ['tr'],
+        'td' => ['tr'],
+        'tr' => ['table', 'thead', 'tbody', 'tfoot'],
+        'title' => ['head'],
+        'caption' => ['table'],
+        'col' => ['colgroup', 'table'],
+        'colgroup' => ['table'],
+        'option' => ['select', 'optgroup', 'datalist'],
+        'noembed' => ['embed'],
+    ];
+    $ONLY_PARENT += [
+        'figcaption' => ['figure'],
+        'summary' => ['details'],
+        'track' => ['audio', 'video'],
+    ];
 
     global $REQUIRE_ANCESTOR;
-    $REQUIRE_ANCESTOR = array(
+    $REQUIRE_ANCESTOR = [
         //'textarea' => 'form',
         //'input' => 'form',
         //'button' => 'form',
         'option' => 'form',
         'optgroup' => 'form',
         'select' => 'form',
-    );
+    ];
 
     global $TEXT_NO_BLOCK;
-    $TEXT_NO_BLOCK = array(
+    $TEXT_NO_BLOCK = [
         'table' => true,
         'tr' => true,
         'tfoot' => true,
@@ -610,13 +610,13 @@ function init__webstandards()
         'map' => true,
         'body' => true,
         'form' => true,
-    );
-    $TEXT_NO_BLOCK += array(
+    ];
+    $TEXT_NO_BLOCK += [
         'menu' => true,
-    );
+    ];
 
     global $TAGS_BLOCK;
-    $TAGS_BLOCK = array(
+    $TAGS_BLOCK = [
         'div' => true,
         'h1' => true,
         'h2' => true,
@@ -653,8 +653,8 @@ function init__webstandards()
         'rb' => true,
         'rt' => true,
         'rp' => true,
-    );
-    $TAGS_BLOCK += array(
+    ];
+    $TAGS_BLOCK += [
         'video' => true,
         'picture' => true,
         'details' => true,
@@ -668,10 +668,10 @@ function init__webstandards()
         'audio' => true,
         'aside' => true,
         'article' => true,
-    );
+    ];
 
     global $TAGS_INLINE;
-    $TAGS_INLINE = array(
+    $TAGS_INLINE = [
         'span' => true,
         'br' => true,
         'abbr' => true,
@@ -703,9 +703,9 @@ function init__webstandards()
         'object' => true,
         'caption' => true,
         'label' => true,
-    );
+    ];
 
-    $TAGS_INLINE += array(
+    $TAGS_INLINE += [
         'wbr' => true,
         'time' => true,
         'progress' => true,
@@ -716,10 +716,10 @@ function init__webstandards()
         'datalist' => true,
         'command' => true,
         'track' => true,
-    );
+    ];
 
     global $TAGS_NORMAL;
-    $TAGS_NORMAL = array(
+    $TAGS_NORMAL = [
         'base' => true,
         'body' => true,
         'col' => true,
@@ -740,20 +740,20 @@ function init__webstandards()
 
         // I'd call this 'block', but XHTML-strict other checkers would disagree - probably xhtml-strict doesn't consider 'programmatic' elements to be inline/block
         'form' => true,
-    );
+    ];
 
-    $TAGS_NORMAL += array(
+    $TAGS_NORMAL += [
         'source' => true,
-    );
+    ];
 
     global $TAGS_BLOCK_DEPRECATED;
-    $TAGS_BLOCK_DEPRECATED = array(
+    $TAGS_BLOCK_DEPRECATED = [
         'dir' => true,
         'menu' => true,
-    );
+    ];
 
     global $TAGS_INLINE_DEPRECATED;
-    $TAGS_INLINE_DEPRECATED = array(
+    $TAGS_INLINE_DEPRECATED = [
         // Would be removed in XHTML strict and deprecated in transitional
         'center' => true,
         'applet' => true,
@@ -761,18 +761,18 @@ function init__webstandards()
         's' => true,
         'strike' => true,
         'u' => true,
-    );
+    ];
 
     global $TAGS_NORMAL_DEPRECATED;
-    $TAGS_NORMAL_DEPRECATED = array(
+    $TAGS_NORMAL_DEPRECATED = [
         'basefont' => true,
-    );
+    ];
 
     // Autofill spec: https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
 
     $autofill_contact_info_type_regex = '((home|work|mobile|fax|pager) )?';
 
-    $autofill_field_names = array(
+    $autofill_field_names = [
         'name',
         'honorific-prefix',
         'given-name',
@@ -828,12 +828,12 @@ function init__webstandards()
         $autofill_contact_info_type_regex . 'tel-extension',
         $autofill_contact_info_type_regex . 'email',
         $autofill_contact_info_type_regex . 'impp',
-    );
+    ];
 
     $autocomplete_regex = '(on|off|autocomplete-disabled|((section-[\w\-]+ )?(shipping |billing )?(' . implode('|', $autofill_field_names) . ')))'; // ("autocomplete-disabled" is an invalid value we use to disable autofill)
 
     global $TAG_ATTRIBUTES;
-    $TAG_ATTRIBUTES = array(
+    $TAG_ATTRIBUTES = [
         '*.class' => $enforce_class,
         '*.contenteditable' => '(true|false)',
         '*.contextmenu' => $enforce_id,
@@ -1194,27 +1194,27 @@ function init__webstandards()
         // These are needed in IE, so we will have to browser sniff and output if IE being used, but not check them as okay
         //'iframe.scrolling' => '(yes|no|auto)',
         //'iframe.frameborder' => '(1|0)',
-    );
+    ];
 
     global $TAG_ATTRIBUTES_REQUIRED;
-    $TAG_ATTRIBUTES_REQUIRED = array(
-        'base' => array('href'), // XHTML-strict
-        'meta' => array('content'),
-        'style' => array(/*'type'*/),
-        'script' => array(/*'type'*/),
-        'bdo' => array('dir'),
-        'basefont' => array('size'),
+    $TAG_ATTRIBUTES_REQUIRED = [
+        'base' => ['href'], // XHTML-strict
+        'meta' => ['content'],
+        'style' => [/*'type'*/],
+        'script' => [/*'type'*/],
+        'bdo' => ['dir'],
+        'basefont' => ['size'],
         //'param' => array('name'), Not needed in XHTML strict
-        'iframe' => array('src', 'title'),
-        'img' => array('src', 'alt'),
-        'label' => array('for'),
-        'map' => array('id'),
-        'area' => array('alt'),
-        'form' => array('action', 'title'),
-        'textarea' => array('cols', 'rows'),
+        'iframe' => ['src', 'title'],
+        'img' => ['src', 'alt'],
+        'label' => ['for'],
+        'map' => ['id'],
+        'area' => ['alt'],
+        'form' => ['action', 'title'],
+        'textarea' => ['cols', 'rows'],
         //'input' => array('value'), // accessibility, checked somewhere else
-        'optgroup' => array('label'),
-    );
+        'optgroup' => ['label'],
+    ];
 
     if (!defined('IN_XML_TAG')) {
         define('IN_XML_TAG', -3);
@@ -1281,9 +1281,9 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     $WEBSTANDARDS_CSP = $webstandards_csp;
 
     global $IDS_SO_FAR;
-    $IDS_SO_FAR = array();
+    $IDS_SO_FAR = [];
 
-    $content_start_stack = array();
+    $content_start_stack = [];
 
     global $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $LAST_TAG_ATTRIBUTES, $FOUND_DOCTYPE, $FOUND_DESCRIPTION, $FOUND_KEYWORDS, $FOUND_CONTENTTYPE, $THE_DOCTYPE, $TAGS_DEPRECATE_ALLOW, $URL_BASE, $PARENT_TAG, $TABS_SEEN, $KEYS_SEEN, $ANCHORS_SEEN, $ATT_STACK, $TAG_STACK, $POS, $LINENO, $LINESTART, $OUT, $T_POS, $PROHIBITIONS, $ONLY_PARENT, $ONLY_CHILDREN, $REQUIRE_ANCESTOR, $LEN, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $POSSIBLY_EMPTY_TAGS, $MUST_SELFCLOSE_TAGS, $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
     global $TAG_RANGES, $VALUE_RANGES, $LAST_A_TAG, $A_LINKS, $XHTML_FORM_ENCODING;
@@ -1297,48 +1297,48 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     $BLOCK_CONSTRAIN = false;
     $LINENO = 0;
     $LINESTART = 0;
-    $HYPERLINK_URLS = array();
-    $EMBED_URLS = array();
-    $AREA_LINKS = array();
+    $HYPERLINK_URLS = [];
+    $EMBED_URLS = [];
+    $AREA_LINKS = [];
     $LAST_HEADING = 0;
     $FOUND_DOCTYPE = false;
     $FOUND_CONTENTTYPE = false;
     $FOUND_KEYWORDS = false;
     $FOUND_DESCRIPTION = false;
-    $CRAWLED_URLS = array();
+    $CRAWLED_URLS = [];
     $PARENT_TAG = '';
     $XHTML_FORM_ENCODING = '';
     $UNDER_XMLNS = false;
-    $KEYS_SEEN = array();
-    $TABS_SEEN = array();
-    $TAG_RANGES = array();
-    $VALUE_RANGES = array();
+    $KEYS_SEEN = [];
+    $TABS_SEEN = [];
+    $TAG_RANGES = [];
+    $VALUE_RANGES = [];
     $LAST_A_TAG = null;
-    $ANCHORS_SEEN = array();
-    $FOR_LABEL_IDS = array();
-    $FOR_LABEL_IDS_2 = array();
-    $INPUT_TAG_IDS = array();
-    $TAG_STACK = array();
-    $ATT_STACK = array();
+    $ANCHORS_SEEN = [];
+    $FOR_LABEL_IDS = [];
+    $FOR_LABEL_IDS_2 = [];
+    $INPUT_TAG_IDS = [];
+    $TAG_STACK = [];
+    $ATT_STACK = [];
     $ANCESTOR_BLOCK = 0;
     $ANCESTOR_INLINE = 0;
     $POS = 0;
     $OUT = $out;
     unset($out);
     $LEN = strlen($OUT);
-    $level_ranges = array();
+    $level_ranges = [];
     $stack_size = 0;
-    $to_find = array('html' => true, 'head' => true, 'title' => true/*, 'meta' => true*/);
-    $only_one_of_stack = array();
-    $only_one_of_template = array('title' => 1, 'head' => 1, 'body' => 1, 'base' => 1, 'thead' => 1, 'tfoot' => 1);
+    $to_find = ['html' => true, 'head' => true, 'title' => true/*, 'meta' => true*/];
+    $only_one_of_stack = [];
+    $only_one_of_template = ['title' => 1, 'head' => 1, 'body' => 1, 'base' => 1, 'thead' => 1, 'tfoot' => 1];
     $only_one_of = $only_one_of_template;
-    $A_LINKS = array();
+    $A_LINKS = [];
     $previous = '';
     if (!isset($GLOBALS['MAIL_MODE'])) {
         $GLOBALS['MAIL_MODE'] = false;
     }
 
-    $errors = array();
+    $errors = [];
 
     $bad_root = false;
 
@@ -1350,7 +1350,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                     $errors[] = _xhtml_error($error[0], array_key_exists(1, $error) ? $error[1] : '', array_key_exists(2, $error) ? $error[2] : '', array_key_exists(3, $error) ? $error[3] : '', array_key_exists('raw', $error) ? $error['raw'] : false, array_key_exists('pos', $error) ? $error['pos'] : 0);
                 }
                 if ($token[0] === null) {
-                    return array('level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors);
+                    return ['level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors];
                 }
             }
             $token = $token[0];
@@ -1380,7 +1380,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                 $only_one_of[$basis_token]--;
             }
 
-            $level_ranges[] = array($stack_size, $T_POS, $POS);
+            $level_ranges[] = [$stack_size, $T_POS, $POS];
             if (isset($to_find[$basis_token])) {
                 unset($to_find[$basis_token]);
             }
@@ -1458,7 +1458,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                 }
 
                 $previous = array_pop($TAG_STACK);
-                $PARENT_TAG = ($TAG_STACK == array()) ? '' : $TAG_STACK[count($TAG_STACK) - 1];
+                $PARENT_TAG = ($TAG_STACK == []) ? '' : $TAG_STACK[count($TAG_STACK) - 1];
                 $start_pos = array_pop($content_start_stack);
                 array_pop($ATT_STACK);
                 $only_one_of = array_pop($only_one_of_stack);
@@ -1491,7 +1491,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
                     }
                 }
                 $stack_size--;
-                $level_ranges[] = array($stack_size, $T_POS, $POS);
+                $level_ranges[] = [$stack_size, $T_POS, $POS];
             } while ($basis_token != $previous);
         }
 
@@ -1503,7 +1503,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
         if ($XML_CONSTRAIN) {
             $errors[] = _xhtml_error('XML_NO_CLOSE', array_pop($TAG_STACK));
         }
-        return array('level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors);
+        return ['level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors];
     }
 
     if (!$well_formed_only) {
@@ -1543,7 +1543,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     // Main spelling
     if (!empty($GLOBALS['SPELLING'])) {
         $stripped = $OUT;
-        $matches = array();
+        $matches = [];
         if (stripos($stripped, '<style') !== false) {
             $num_matches = preg_match_all('#<style.*</style>#Umis', $stripped, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -1559,7 +1559,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
         $stripped = @html_entity_decode(strip_tags($stripped), ENT_QUOTES);
         require_code('webstandards2');
         $new_errors = check_spelling($stripped);
-        $misspellings = array();
+        $misspellings = [];
         global $POS, $LINENO, $LINESTART;
         foreach ($new_errors as $error) {
             if (array_key_exists($error[1], $misspellings)) {
@@ -1579,7 +1579,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
         cms_set_time_limit($old_limit);
     }
 
-    return array('level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors);
+    return ['level_ranges' => $level_ranges, 'tag_ranges' => $TAG_RANGES, 'value_ranges' => $VALUE_RANGES, 'errors' => $errors];
 }
 
 /**
@@ -1599,7 +1599,7 @@ function _xhtml_error($error, $param_a = '', $param_b = '', $param_c = '', $raw 
 {
     global $POS, $OUT, $LINENO, $LINESTART;
     $lineno = ($rel_pos == 0) ? 0 : substr_count(substr($OUT, $POS, $rel_pos), "\n");
-    $out = array();
+    $out = [];
     $out['line'] = $LINENO + 1 + $lineno;
     if ($rel_pos == 0) {
         $out['pos'] = $POS - $LINESTART;
@@ -1644,17 +1644,17 @@ function test_entity($offset = 0)
 
     $lump = substr($OUT, $POS + $offset, 8);
 
-    $errors = array();
+    $errors = [];
 
     $pos = strpos($lump, ';');
     if ($pos === false) {
-        $errors[] = array('XHTML_BAD_ENTITY');
+        $errors[] = ['XHTML_BAD_ENTITY'];
     } else {
         $lump = substr($lump, 0, $pos);
         if (!(($lump[0] == '#') && ((is_numeric(substr($lump, 1))) || (($lump[1] == 'x') && (is_hex(substr($lump, 2))))))) { // It's ok if this is a numeric code, so no need to check further
             // Check against list
             if (!isset($ENTITIES[$lump])) {
-                $errors[] = array('XHTML_BAD_ENTITY');
+                $errors[] = ['XHTML_BAD_ENTITY'];
             }
         }
     }
@@ -1738,13 +1738,13 @@ function _get_next_tag()
     $doc_type = '';
     $INBETWEEN_TEXT = '';
 
-    $attribute_map = array();
+    $attribute_map = [];
 
-    $errors = array();
+    $errors = [];
 
     $special_chars = null;
     if ($special_chars === null) {
-        $special_chars = array('=' => true, '"' => true, '&' => true, '/' => true, '<' => true, '>' => true, ' ' => true, "\n" => true, "\r" => true);
+        $special_chars = ['=' => true, '"' => true, '&' => true, '/' => true, '<' => true, '>' => true, ' ' => true, "\n" => true, "\r" => true];
     }
 
     while ($POS < $LEN) {
@@ -1797,7 +1797,7 @@ function _get_next_tag()
                 // Can't have loose text in form/body/etc
                 // 'x' is there for when called externally, checking on an x that has replaced, for example, a directive tag (which isn't actual text - so can't trip the error)
                 if (($in_no_mans_land != 'x') && (trim($in_no_mans_land) != '') && (isset($TEXT_NO_BLOCK[$PARENT_TAG])) && ($GLOBALS['BLOCK_CONSTRAIN'])) {
-                    $errors[] = array('XHTML_TEXT_NO_BLOCK', $PARENT_TAG);
+                    $errors[] = ['XHTML_TEXT_NO_BLOCK', $PARENT_TAG];
                 }
 
                 if (($next == '<') && (isset($OUT[$POS + 2])) && ($OUT[$POS] == '!')) {
@@ -1817,7 +1817,7 @@ function _get_next_tag()
                         $GLOBALS['MAIL_MODE'] = false;
                     }
                     if ($GLOBALS['MAIL_MODE']) {
-                        $errors[] = array('MAIL_PROLOG');
+                        $errors[] = ['MAIL_PROLOG'];
                     }
                     $status = IN_XML_TAG;
                 } elseif ($next == '<') {
@@ -1825,8 +1825,8 @@ function _get_next_tag()
                     $status = STARTING_TAG;
                 } else {
                     if ($next == '>') {
-                        $errors[] = array('XML_TAG_CLOSE_ANOMALY');
-                        return array(null, $errors);
+                        $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
+                        return [null, $errors];
                     }
                 }
                 break;
@@ -1844,18 +1844,18 @@ function _get_next_tag()
                     $more_to_come = (!isset($special_chars[$next])) && ($POS < $LEN);
                 }
                 if (($next == ' ') || ($next == "\n") || ($next == "\r")) {
-                    $TAG_RANGES[] = array($T_POS + 1, $POS - 1, $current_tag);
+                    $TAG_RANGES[] = [$T_POS + 1, $POS - 1, $current_tag];
                     $status = IN_TAG_BETWEEN_ATTRIBUTES;
                 } elseif ($next == '<') {
-                    $errors[] = array('XML_TAG_OPEN_ANOMALY', '1');
-                    return array(null, $errors);
+                    $errors[] = ['XML_TAG_OPEN_ANOMALY', '1'];
+                    return [null, $errors];
                 } elseif ($next == '>') {
                     if ($OUT[$POS - 2] == '/') {
-                        $TAG_RANGES[] = array($T_POS + 1, $POS - 1, $current_tag);
-                        return _check_tag($current_tag, array(), true, $close, $errors);
+                        $TAG_RANGES[] = [$T_POS + 1, $POS - 1, $current_tag];
+                        return _check_tag($current_tag, [], true, $close, $errors);
                     } else {
-                        $TAG_RANGES[] = array($T_POS + 1, $POS - 1, $current_tag);
-                        return _check_tag($current_tag, array(), false, $close, $errors);
+                        $TAG_RANGES[] = [$T_POS + 1, $POS - 1, $current_tag];
+                        return _check_tag($current_tag, [], false, $close, $errors);
                     }
                 } elseif ($next != '/') {
                     $current_tag .= $next;
@@ -1866,11 +1866,11 @@ function _get_next_tag()
                 if ($next == '/') {
                     $close = true;
                 } elseif ($next == '<') {
-                    $errors[] = array('XML_TAG_OPEN_ANOMALY', '2');
+                    $errors[] = ['XML_TAG_OPEN_ANOMALY', '2'];
                     $POS--;
                     $status = NO_MANS_LAND;
                 } elseif ($next == '>') {
-                    $errors[] = array('XML_TAG_CLOSE_ANOMALY', '3');
+                    $errors[] = ['XML_TAG_CLOSE_ANOMALY', '3'];
                     $status = NO_MANS_LAND;
                 } else {
                     $current_tag .= $next;
@@ -1887,11 +1887,11 @@ function _get_next_tag()
                 } elseif (($next == '<') && (isset($OUT[$POS + 3])) && ($OUT[$POS] == '!') && ($OUT[$POS + 1] == '-') && ($OUT[$POS + 2] == '-')) {
                     $status = IN_TAG_EMBEDDED_COMMENT;
                     if ($OUT[$POS + 3] == '-') {
-                        $errors[] = array('XHTML_WRONG_COMMENTING');
+                        $errors[] = ['XHTML_WRONG_COMMENTING'];
                     }
                 } elseif ($next == '<') {
-                    $errors[] = array('XML_TAG_OPEN_ANOMALY', '4');
-                    return array(null, $errors);
+                    $errors[] = ['XML_TAG_OPEN_ANOMALY', '4'];
+                    return [null, $errors];
                 } elseif (($next != ' ') && ($next != "\t") && ($next != '/') && ($next != "\n") && ($next != "\r")) {
                     $status = IN_TAG_ATTRIBUTE_NAME;
                     $current_attribute_name .= $next;
@@ -1918,13 +1918,13 @@ function _get_next_tag()
                     if ((function_exists('ctype_alnum')) && (ctype_alnum($current_attribute_name))) {
                     } else {
                         if ((preg_match('#^\w+$#', $current_attribute_name) == 0/*optimisation*/) && (!is_alphanumeric(preg_replace('#^([^:]+):#', '${1}', $current_attribute_name)))) {
-                            $errors[] = array('XML_TAG_BAD_ATTRIBUTE', $current_attribute_name);
+                            $errors[] = ['XML_TAG_BAD_ATTRIBUTE', $current_attribute_name];
                             $current_attribute_name = 'wrong' . strval($POS);
                         }
                     }
                     $status = IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif ($next == '<') {
-                    $errors[] = array('XML_TAG_OPEN_ANOMALY', '5');
+                    $errors[] = ['XML_TAG_OPEN_ANOMALY', '5'];
                     //return array(null, $errors);
                     // We have to assume we shouldn't REALLY have found a tag
                     $POS--;
@@ -1935,22 +1935,22 @@ function _get_next_tag()
                         require_code('type_sanitisation');
                     }
                     if (!is_alphanumeric(preg_replace('#^([^:]+):#', '${1}', $current_attribute_name))) {
-                        $errors[] = array('XML_TAG_BAD_ATTRIBUTE', $current_attribute_name);
+                        $errors[] = ['XML_TAG_BAD_ATTRIBUTE', $current_attribute_name];
                         $current_attribute_name = 'wrong' . strval($POS);
                     }
 
                     if ($GLOBALS['XML_CONSTRAIN']) {
-                        $errors[] = array('XML_TAG_CLOSE_ANOMALY');
+                        $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
                     }
                     // Things like nowrap, checked, etc
                     //return array(null, $errors);
 
                     if (isset($attribute_map[$current_attribute_name])) {
-                        $errors[] = array('XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag);
+                        $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_name;
                     $current_attribute_name = '';
-                    $VALUE_RANGES[] = array($POS - 1, $POS - 1);
+                    $VALUE_RANGES[] = [$POS - 1, $POS - 1];
                     return _check_tag($current_tag, $attribute_map, false, $close, $errors);
                 } elseif (($next != ' ') && ($next != "\t") && ($next != "\n") && ($next != "\r")) {
                     $current_attribute_name .= $next;
@@ -1959,7 +1959,7 @@ function _get_next_tag()
                         require_code('type_sanitisation');
                     }
                     if (!is_alphanumeric(preg_replace('#^([^:]+):#', '${1}', $current_attribute_name))) {
-                        $errors[] = array('XML_TAG_BAD_ATTRIBUTE', $current_attribute_name);
+                        $errors[] = ['XML_TAG_BAD_ATTRIBUTE', $current_attribute_name];
                         $current_attribute_name = 'wrong' . strval($POS);
                     }
                     $status = IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_LEFT;
@@ -1971,17 +1971,17 @@ function _get_next_tag()
                     $status = IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif (($next != ' ') && ($next != "\t") && ($next != "\n") && ($next != "\r")) {
                     if ($GLOBALS['XML_CONSTRAIN']) {
-                        $errors[] = array('XML_ATTRIBUTE_ERROR');
+                        $errors[] = ['XML_ATTRIBUTE_ERROR'];
                     }
                     //return array(null, $errors);  Actually  <blah nowrap ... /> could cause this
 
                     $status = IN_TAG_BETWEEN_ATTRIBUTES;
                     if (isset($attribute_map[$current_attribute_name])) {
-                        $errors[] = array('XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag);
+                        $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_name;
                     $current_attribute_name = $next;
-                    $VALUE_RANGES[] = array($POS - 1, $POS - 1);
+                    $VALUE_RANGES[] = [$POS - 1, $POS - 1];
                 }
                 break;
 
@@ -1994,13 +1994,13 @@ function _get_next_tag()
                     $status = IN_TAG_ATTRIBUTE_VALUE_LITTLE_QUOTES;
                 } elseif (($next != ' ') && ($next != "\t") && ($next != "\n") && ($next != "\r")) {
                     if ($next == '<') {
-                        $errors[] = array('XML_TAG_OPEN_ANOMALY', '6');
+                        $errors[] = ['XML_TAG_OPEN_ANOMALY', '6'];
                     } elseif ($next == '>') {
-                        $errors[] = array('XML_TAG_CLOSE_ANOMALY');
+                        $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
                     }
 
                     if ($GLOBALS['XML_CONSTRAIN']) {
-                        $errors[] = array('XML_ATTRIBUTE_ERROR');
+                        $errors[] = ['XML_ATTRIBUTE_ERROR'];
                     }
                     $POS--;
                     $v_pos = $POS;
@@ -2011,25 +2011,25 @@ function _get_next_tag()
             case IN_TAG_ATTRIBUTE_VALUE_NO_QUOTES:
                 if ($next == '>') {
                     if (isset($attribute_map[$current_attribute_name])) {
-                        $errors[] = array('XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag);
+                        $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                     $current_attribute_value = '';
                     $current_attribute_name = '';
-                    $VALUE_RANGES[] = array($v_pos, $POS - 1);
+                    $VALUE_RANGES[] = [$v_pos, $POS - 1];
                     return _check_tag($current_tag, $attribute_map, false, $close, $errors);
                 } elseif (($next == ' ') || ($next == "\t") || ($next == "\n") || ($next == "\r")) {
                     $status = IN_TAG_BETWEEN_ATTRIBUTES;
                     if (isset($attribute_map[$current_attribute_name])) {
-                        $errors[] = array('XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag);
+                        $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                     $current_attribute_value = '';
                     $current_attribute_name = '';
-                    $VALUE_RANGES[] = array($v_pos, $POS - 1);
+                    $VALUE_RANGES[] = [$v_pos, $POS - 1];
                 } else {
                     if ($next == '<') {
-                        $errors[] = array('XML_TAG_OPEN_ANOMALY', '7');
+                        $errors[] = ['XML_TAG_OPEN_ANOMALY', '7'];
                     }
 
                     $current_attribute_value .= $next;
@@ -2058,17 +2058,17 @@ function _get_next_tag()
                 if ($next == '"') {
                     $status = IN_TAG_BETWEEN_ATTRIBUTES;
                     if (isset($attribute_map[$current_attribute_name])) {
-                        $errors[] = array('XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag);
+                        $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                     $current_attribute_value = '';
                     $current_attribute_name = '';
-                    $VALUE_RANGES[] = array($v_pos, $POS - 1);
+                    $VALUE_RANGES[] = [$v_pos, $POS - 1];
                 } else {
                     if ($next == '<') {
-                        $errors[] = array('XML_TAG_OPEN_ANOMALY', '7');
+                        $errors[] = ['XML_TAG_OPEN_ANOMALY', '7'];
                     } elseif ($next == '>') {
-                        $errors[] = array('XML_TAG_CLOSE_ANOMALY');
+                        $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
                     }
 
                     $current_attribute_value .= $next;
@@ -2081,12 +2081,12 @@ function _get_next_tag()
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                     $current_attribute_value = '';
                     $current_attribute_name = '';
-                    $VALUE_RANGES[] = array($v_pos, $POS - 1);
+                    $VALUE_RANGES[] = [$v_pos, $POS - 1];
                 } else {
                     if ($next == '<') {
-                        $errors[] = array('XML_TAG_OPEN_ANOMALY', '7');
+                        $errors[] = ['XML_TAG_OPEN_ANOMALY', '7'];
                     } elseif ($next == '>') {
-                        $errors[] = array('XML_TAG_CLOSE_ANOMALY');
+                        $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
                     }
 
                     $current_attribute_value .= $next;
@@ -2106,10 +2106,10 @@ function _get_next_tag()
                         global $THE_DOCTYPE, $TAGS_DEPRECATE_ALLOW, $FOUND_DOCTYPE, $XML_CONSTRAIN, $BLOCK_CONSTRAIN;
 
                         $FOUND_DOCTYPE = true;
-                        $valid_doctypes = array(DOCTYPE_XHTML5);
+                        $valid_doctypes = [DOCTYPE_XHTML5];
                         $doc_type = preg_replace('#//EN"\s+"#', '//EN" "', $doc_type);
                         if (!in_array('<' . $doc_type, $valid_doctypes)) {
-                            $errors[] = array('XHTML_DOCTYPE');
+                            $errors[] = ['XHTML_DOCTYPE'];
                         } else {
                             $THE_DOCTYPE = '<' . $doc_type;
                             $TAGS_DEPRECATE_ALLOW = false;
@@ -2140,7 +2140,7 @@ function _get_next_tag()
                 $INBETWEEN_TEXT .= $next;
                 if (($next == '>') && ($OUT[$POS - 2] == '-') && ($OUT[$POS - 3] == '-')) {
                     if ($OUT[$POS - 4] == '-') {
-                        $errors[] = array('XHTML_WRONG_COMMENTING');
+                        $errors[] = ['XHTML_WRONG_COMMENTING'];
                     }
                     $status = NO_MANS_LAND;
                 }
@@ -2154,8 +2154,8 @@ function _get_next_tag()
         }
     }
     if ($status != NO_MANS_LAND) {
-        $errors[] = array('XML_BROKEN_END');
-        return array(null, $errors);
+        $errors[] = ['XML_BROKEN_END'];
+        return [null, $errors];
     }
     return null;
 }
@@ -2179,7 +2179,7 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
     $ltag = strtolower($tag);
     if ($ltag != $tag) {
         if ($XML_CONSTRAIN) {
-            $errors[] = array('XHTML_CASE_TAG', $tag);
+            $errors[] = ['XHTML_CASE_TAG', $tag];
         }
         $tag = $ltag;
     }
@@ -2200,9 +2200,9 @@ function _check_tag($tag, $attributes, $self_close, $close, $errors)
     }
 
     if ($WEBSTANDARDS_CHECKER_OFF > 0) {
-        $errors = array();
+        $errors = [];
     }
-    return array('<' . ($close ? '/' : '') . $tag . ($actual_self_close ? '/' : '') . '>', $errors);
+    return ['<' . ($close ? '/' : '') . $tag . ($actual_self_close ? '/' : '') . '>', $errors];
 }
 
 /**

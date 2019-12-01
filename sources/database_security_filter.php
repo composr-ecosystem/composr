@@ -30,7 +30,7 @@ This file provides some detection of possible security vulnerabilities at develo
 function init__database_security_filter()
 {
     global $DB_ESCAPE_STRING_LIST;
-    $DB_ESCAPE_STRING_LIST = array();
+    $DB_ESCAPE_STRING_LIST = [];
 }
 
 /**
@@ -45,11 +45,11 @@ function is_simple_query($query)
         return false;
     }
 
-    $complex_keywords = array('ORDER' => true, 'GROUP' => true, 'AS' => true, 'OR' => true, 'NOT' => true, 'LIKE' => true, 'IN' => true, 'BETWEEN' => true, 'UNION' => true, 'HAVING' => true);
-    $complex_operators = array('<', '>', '!', '+', '-', '/', '*');
+    $complex_keywords = ['ORDER' => true, 'GROUP' => true, 'AS' => true, 'OR' => true, 'NOT' => true, 'LIKE' => true, 'IN' => true, 'BETWEEN' => true, 'UNION' => true, 'HAVING' => true];
+    $complex_operators = ['<', '>', '!', '+', '-', '/', '*'];
     $query = _trim_quoted_substrings($query);
     $query_parts = explode(' ', $query);
-    if (in_array(strtolower(trim($query_parts[0])), array('select', 'update', 'delete'))) {
+    if (in_array(strtolower(trim($query_parts[0])), ['select', 'update', 'delete'])) {
         foreach ($query_parts as $part) {
             if (array_key_exists(strtoupper(trim($part)), $complex_keywords)) {
                 return false;
@@ -81,7 +81,7 @@ function has_escaped_dynamic_sql($query)
         return true;
     }
 
-    $query_call_strings = array('query(', 'query_value_if_there(');
+    $query_call_strings = ['query(', 'query_value_if_there('];
 
     $strings = _get_quoted_substrings($query);
     foreach ($strings as $str) {
@@ -104,7 +104,7 @@ function has_escaped_dynamic_sql($query)
                                 $ok = true;
                             } else {
                                 // Oh, maybe the string was somewhere escaped in the same file at least
-                                $_strings = array();
+                                $_strings = [];
                                 foreach ($file as $line) {
                                     $_strings = array_merge($_strings, _get_quoted_substrings($line, true));
                                 }
@@ -142,7 +142,7 @@ function has_escaped_dynamic_sql($query)
 function _get_quoted_substrings($string, $recurse = false)
 {
     $buffer = '';
-    $output = array();
+    $output = [];
     $found_start = false;
     $ignore = false;
     $len = strlen($string);
@@ -166,7 +166,7 @@ function _get_quoted_substrings($string, $recurse = false)
     }
     if ($recurse) {
         $_output = $output;
-        $output = array();
+        $output = [];
         foreach ($_output as $str) {
             $output[] = $str;
             $output = array_merge($output, _get_quoted_substrings(stripcslashes($str)));

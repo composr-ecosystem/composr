@@ -45,7 +45,7 @@ class CMSUserRead
 
         $ignored_uids = implode(',', array_map('strval', $this->get_ignored_user_ids($user_id)));
 
-        $arr = array(
+        $arr = [
             'user_id' => $user_id,
             'login_name' => $username,
             'username' => $username,
@@ -75,13 +75,13 @@ class CMSUserRead
             'post_countdown' => $this->get_posting_setting($user_id, 'post_countdown'), // time required between posts
 
             'ignored_uids' => $ignored_uids,
-        );
+        ];
 
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user_id, true);
         if ($display_text != $username) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
 
         return $arr;
@@ -141,7 +141,7 @@ class CMSUserRead
     {
         cms_verify_parameters_phpdoc();
 
-        $user_ids = array();
+        $user_ids = [];
 
         if (!is_guest()) {
             /* This really isn't as designed. Chat blocking != Forum blocking
@@ -175,10 +175,10 @@ class CMSUserRead
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        return array(
+        return [
             'inbox_unread_count' => get_num_unread_private_topics(TAPATALK_MESSAGE_BOX_INBOX),
             'subscribed_topic_unread_count' => get_num_unread_topics(null, true),
-        );
+        ];
     }
 
     /**
@@ -196,23 +196,23 @@ class CMSUserRead
         cms_verify_parameters_phpdoc();
 
         if ($id === null) {
-            $sessions = $GLOBALS['SITE_DB']->query_select('sessions', array('DISTINCT member_id'), array('session_invisible' => 0), ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
+            $sessions = $GLOBALS['SITE_DB']->query_select('sessions', ['DISTINCT member_id'], ['session_invisible' => 0], ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
 
-            $member_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(DISTINCT member_id)', array('session_invisible' => 0), ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
+            $member_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(DISTINCT member_id)', ['session_invisible' => 0], ' AND member_id>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
 
-            $list = array();
+            $list = [];
             foreach ($sessions as $session) {
                 $member_id = $session['member_id'];
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-                $list[] = array(
+                $list[] = [
                     'user_id' => $member_id,
                     'username' => $username,
-                );
+                ];
             }
 
-            $guest_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(*)', array('member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()));
+            $guest_count = $GLOBALS['SITE_DB']->query_select_value('sessions', 'COUNT(*)', ['member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
         } else {
             switch ($area) {
                 case 'forum':
@@ -222,37 +222,37 @@ class CMSUserRead
                     $cms_page = 'topicview';
                     break;
                 default: // Shouldn't happen according to spec, but spec may be extended
-                    return array(
+                    return [
                         'member_count' => 0,
                         'guest_count' => 0,
-                        'list' => array(),
-                    );
+                        'list' => [],
+                    ];
             }
 
-            $where = array('mt_page' => $cms_page, 'mt_id' => $id);
-            $members_viewing = $GLOBALS['FORUM_DB']->query_select('member_tracking', array('mt_member_id'), $where, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
+            $where = ['mt_page' => $cms_page, 'mt_id' => $id];
+            $members_viewing = $GLOBALS['FORUM_DB']->query_select('member_tracking', ['mt_member_id'], $where, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()), $max, $start);
             $member_count = $GLOBALS['FORUM_DB']->query_select_value('member_tracking', 'COUNT(*)', $where, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()));
 
-            $list = array();
+            $list = [];
             foreach ($members_viewing as $member_viewing) {
                 $member_id = $member_viewing['mt_member_id'];
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-                $list[] = array(
+                $list[] = [
                     'user_id' => $member_id,
                     'username' => $username,
-                );
+                ];
             }
 
-            $guest_count = $GLOBALS['FORUM_DB']->query_select_value('member_tracking', 'COUNT(*)', array('mt_page' => $cms_page, 'mt_id' => strval($id), 'mt_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()));
+            $guest_count = $GLOBALS['FORUM_DB']->query_select_value('member_tracking', 'COUNT(*)', ['mt_page' => $cms_page, 'mt_id' => strval($id), 'mt_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
         }
 
-        return array(
+        return [
             'member_count' => $member_count,
             'guest_count' => $guest_count,
             'list' => $list,
-        );
+        ];
     }
 
     /**
@@ -268,7 +268,7 @@ class CMSUserRead
         push_query_limiting(false);
 
         require_code('cns_general');
-        $need = array(
+        $need = [
             'username',
             'posts',
             'join_time',
@@ -292,10 +292,10 @@ class CMSUserRead
             'num_warnings',
             'signature_comcode',
             'custom_fields_list',
-        );
+        ];
         $member_info = cns_read_in_member_profile($user_id, $need);
 
-        $user_info = array(
+        $user_info = [
             'user_id' => $user_id,
             'username' => $member_info['username'],
             'post_count' => $member_info['posts'],
@@ -314,19 +314,19 @@ class CMSUserRead
             'icon_url' => isset($member_info['avatar']) ? $member_info['avatar'] : '',
             'can_ban' => can_ban_member($user_id),
             'is_ban' => $member_info['banned'],
-        );
+        ];
 
         if ($member_info['display_name'] != $member_info['username']) {
-            $user_info += array(
+            $user_info += [
                 'display_text' => mobiquo_val($member_info['display_name'], 'base64'),
-            );
+            ];
         }
 
         if (isset($member_info['current_action'])) {
             $user_info['current_action'] = $member_info['current_action'];
         }
 
-        $custom_fields_list = array();
+        $custom_fields_list = [];
 
         if (has_privilege(get_member(), 'view_profiles')) {
             $value = null;
@@ -413,9 +413,9 @@ class CMSUserRead
         }
 
         if ($i_follow) {
-            return $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', array('member_likes' => $user_id));
+            return $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['member_likes' => $user_id]);
         }
-        return $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', array('member_liked' => $user_id));
+        return $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['member_liked' => $user_id]);
     }
 
     /**
@@ -432,18 +432,18 @@ class CMSUserRead
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $table = 'f_topics t JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id';
 
-        $select = array('*', 't.id AS topic_id', 'f.id AS forum_id', 'p.id AS post_id');
+        $select = ['*', 't.id AS topic_id', 'f.id AS forum_id', 'p.id AS post_id'];
 
-        $where = array('t_cache_first_member_id' => $user_id);
+        $where = ['t_cache_first_member_id' => $user_id];
         if (addon_installed('unvalidated')) {
             $where['t_validated'] = 1;
         }
 
         $extra = ' AND t.t_forum_id IN (' . get_allowed_forum_sql() . ') ORDER BY t_cache_last_time DESC';
 
-        $_topics = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra, $max);
+        $_topics = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra, $max);
 
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
             $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic);
         }
@@ -465,18 +465,18 @@ class CMSUserRead
         $table = 'f_posts p' . $GLOBALS['FORUM_DB']->prefer_index('f_posts', 'posts_by_in_forum');
         $table .= ' JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id';
 
-        $select = array('*', 'p.id AS post_id', 'f.id AS forum_id', 't.id AS topic_id');
+        $select = ['*', 'p.id AS post_id', 'f.id AS forum_id', 't.id AS topic_id'];
 
-        $where = array('p_poster' => $user_id);
+        $where = ['p_poster' => $user_id];
         if (addon_installed('unvalidated')) {
             $where['p_validated'] = 1;
         }
 
         $extra = ' AND p.p_cache_forum_id IN (' . get_allowed_forum_sql() . ') ORDER BY p_time DESC,p.id DESC';
 
-        $_posts = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra, $max);
+        $_posts = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra, $max);
 
-        $posts = array();
+        $posts = [];
         foreach ($_posts as $post) {
             $posts[] = render_post_to_tapatalk($post['post_id'], false, $post, RENDER_POST_FORUM_DETAILS | RENDER_POST_TOPIC_DETAILS);
         }
@@ -495,16 +495,16 @@ class CMSUserRead
         cms_verify_parameters_phpdoc();
 
         if (is_guest()) {
-            return array(0, array());
+            return [0, []];
         }
 
         if (!addon_installed('chat')) {
-            return array(0, array());
+            return [0, []];
         }
 
-        $users = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => get_member()), 'ORDER BY date_and_time DESC', $max, $start);
-        $total = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', array('member_likes' => get_member()));
-        return array($total, $users);
+        $users = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()], 'ORDER BY date_and_time DESC', $max, $start);
+        $total = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['member_likes' => get_member()]);
+        return [$total, $users];
     }
 
     /**
@@ -528,7 +528,7 @@ class CMSUserRead
         $sql .= ' ORDER BY m_username';
         $users = $GLOBALS['FORUM_DB']->query('SELECT id,m_username ' . $sql, $max, $start);
         $total = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) ' . $sql);
-        return array($total, $users);
+        return [$total, $users];
     }
 
     /**
@@ -545,18 +545,18 @@ class CMSUserRead
 
         $tt_cipher = new TT_Cipher();
 
-        $users = array();
+        $users = [];
         foreach ($user_ids as $user_id) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($user_id);
 
-            $users[] = array(
+            $users[] = [
                 'user_id' => $user_id,
                 'display_name' => $username,
                 'enc_email' => base64_encode($tt_cipher->encrypt($GLOBALS['FORUM_DRIVER']->get_member_email_address($user_id), $api_key)),
                 'allow_email' => $GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_allow_emails') == 1,
                 'language' => $GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_language'),
                 'activated' => ($GLOBALS['FORUM_DRIVER']->get_member_row_field($user_id, 'm_validated_email_confirm_code') == ''),
-            );
+            ];
         }
         return $users;
     }

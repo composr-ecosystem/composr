@@ -31,11 +31,11 @@ class Hook_ecommerce_giftr
 
         require_lang('giftr');
 
-        return array(
+        return [
             'category_name' => do_lang('GIFTR_TITLE'),
             'category_description' => do_lang_tempcode('GIFTS_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/spare/gifts'),
-        );
+        ];
     }
 
     /**
@@ -51,9 +51,9 @@ class Hook_ecommerce_giftr
     {
         require_lang('giftr');
 
-        $products = array();
+        $products = [];
 
-        $map = array('enabled' => 1);
+        $map = ['enabled' => 1];
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('giftr', 'COUNT(*)', $map);
 
@@ -62,8 +62,8 @@ class Hook_ecommerce_giftr
         } else {
             $order_by = '';
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('giftr g', array('*', '(SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'members_gifts m WHERE m.gift_id=g.id) AS popularity'), $map, $order_by);
-        $gifts = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('giftr g', ['*', '(SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'members_gifts m WHERE m.gift_id=g.id) AS popularity'], $map, $order_by);
+        $gifts = [];
         foreach ($rows as $gift) {
             $image_url = $gift['image'];
             if ($image_url != '') {
@@ -72,13 +72,13 @@ class Hook_ecommerce_giftr
                 }
             }
 
-            $products['GIFTR_' . strval($gift['id'])] = array(
+            $products['GIFTR_' . strval($gift['id'])] = [
                 'item_name' => do_lang('_GIFT', $gift['name']),
                 'item_description' => do_lang_tempcode('GIFT_DESCRIPTION', escape_html($gift['category']), escape_html(integer_format($gift['popularity'])), escape_html($gift['name'])),
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -93,7 +93,7 @@ class Hook_ecommerce_giftr
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
         }
 
         return $products;
@@ -118,7 +118,7 @@ class Hook_ecommerce_giftr
         }
 
         $gift_id = intval(preg_replace('#^GIFTR_#', '', $type_code));
-        $rows = $GLOBALS['SITE_DB']->query_select('giftr', array('*'), array('id' => $gift_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('giftr', ['*'], ['id' => $gift_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return ECOMMERCE_PRODUCT_MISSING;
         }
@@ -142,7 +142,7 @@ class Hook_ecommerce_giftr
         $fields->attach(form_input_text(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_GIFT_MESSAGE'), 'gift_message', '', true));
         $fields->attach(form_input_tick(do_lang_tempcode('ANON'), do_lang_tempcode('DESCRIPTION_ANONYMOUS'), 'anonymous', false));
 
-        return array($fields, null, null);
+        return [$fields, null, null];
     }
 
     /**
@@ -160,13 +160,13 @@ class Hook_ecommerce_giftr
         $anonymous = post_param_integer('anonymous', 0);
 
         if ($to_member == '') {
-            return array('', null); // Default is blank
+            return ['', null]; // Default is blank
         }
 
-        $e_details = json_encode(array(get_member(), $to_member, $gift_message, $anonymous));
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', array('e_details' => $e_details, 'e_time' => time()), true));
+        $e_details = json_encode([get_member(), $to_member, $gift_message, $anonymous]);
+        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', ['e_details' => $e_details, 'e_time' => time()], true));
 
-        return array($purchase_id, null);
+        return [$purchase_id, null];
     }
 
     /**
@@ -187,22 +187,22 @@ class Hook_ecommerce_giftr
 
         $gift_id = intval(preg_replace('#^GIFTR_#', '', $type_code));
 
-        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
         list($from_member_id, $to_member, $gift_message, $anonymous) = json_decode($e_details);
 
-        $member_rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array('m_username' => $to_member), '', 1);
+        $member_rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_username' => $to_member], '', 1);
         if (array_key_exists(0, $member_rows)) {
             $member_row = $member_rows[0];
             $to_member_id = $member_row['id'];
 
-            $gift_rows = $GLOBALS['SITE_DB']->query_select('giftr', array('*'), array('id' => $gift_id), '', 1);
+            $gift_rows = $GLOBALS['SITE_DB']->query_select('giftr', ['*'], ['id' => $gift_id], '', 1);
             if (array_key_exists(0, $gift_rows)) {
                 $gift_row = $gift_rows[0];
                 $gift_name = $gift_row['name'];
                 $gift_image_url = get_custom_base_url() . '/' . $gift_row['image'];
-                $gift_row_id = $GLOBALS['SITE_DB']->query_insert('members_gifts', array('to_member_id' => $to_member_id, 'from_member_id' => $from_member_id, 'gift_id' => $gift_id, 'add_time' => time(), 'is_anonymous' => $anonymous, 'gift_message' => $gift_message), true);
+                $gift_row_id = $GLOBALS['SITE_DB']->query_insert('members_gifts', ['to_member_id' => $to_member_id, 'from_member_id' => $from_member_id, 'gift_id' => $gift_id, 'add_time' => time(), 'is_anonymous' => $anonymous, 'gift_message' => $gift_message], true);
 
-                $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $from_member_id, 'details' => $gift_name, 'details2' => $GLOBALS['FORUM_DRIVER']->get_username($to_member_id), 'txn_id' => $details['TXN_ID']));
+                $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $from_member_id, 'details' => $gift_name, 'details2' => $GLOBALS['FORUM_DRIVER']->get_username($to_member_id), 'txn_id' => $details['TXN_ID']]);
 
                 // Send notification to recipient
                 require_code('notifications');
@@ -213,13 +213,13 @@ class Hook_ecommerce_giftr
                     $sender_username = $GLOBALS['FORUM_DRIVER']->get_username($from_member_id);
                     $private_topic_url = $GLOBALS['FORUM_DRIVER']->member_pm_url($from_member_id);
 
-                    $body = do_notification_lang('GIFT_EXPLANATION_MAIL', comcode_escape($sender_displayname), comcode_escape($gift_name), array($sender_url, $gift_image_url, $gift_message, $private_topic_url, comcode_escape($sender_username)), get_lang($to_member_id));
+                    $body = do_notification_lang('GIFT_EXPLANATION_MAIL', comcode_escape($sender_displayname), comcode_escape($gift_name), [$sender_url, $gift_image_url, $gift_message, $private_topic_url, comcode_escape($sender_username)], get_lang($to_member_id));
 
-                    dispatch_notification('gift', null, $subject, $body, array($to_member_id), $from_member_id, array('use_real_from' => true));
+                    dispatch_notification('gift', null, $subject, $body, [$to_member_id], $from_member_id, ['use_real_from' => true]);
                 } else {
                     $body = do_notification_lang('GIFT_EXPLANATION_ANONYMOUS_MAIL', comcode_escape($gift_name), $gift_image_url, $gift_message, get_lang($to_member_id));
 
-                    dispatch_notification('gift', null, $subject, $body, array($to_member_id), A_FROM_SYSTEM_UNPRIVILEGED);
+                    dispatch_notification('gift', null, $subject, $body, [$to_member_id], A_FROM_SYSTEM_UNPRIVILEGED);
                 }
             } else {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
@@ -240,7 +240,7 @@ class Hook_ecommerce_giftr
      */
     public function member_for($type_code, $purchase_id)
     {
-        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
         list($from_member_id) = json_decode($e_details);
         return $from_member_id;
     }

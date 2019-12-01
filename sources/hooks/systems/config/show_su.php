@@ -30,7 +30,7 @@ class Hook_config_show_su
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SU',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_show_su
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

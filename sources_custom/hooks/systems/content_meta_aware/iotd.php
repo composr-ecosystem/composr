@@ -31,7 +31,7 @@ class Hook_content_meta_aware_iotd
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'iotds:IOTD',
@@ -108,7 +108,7 @@ class Hook_content_meta_aware_iotd
             'support_spam_heuristics' => 'caption',
 
             'actionlog_regexp' => '\w+_IOTD',
-        );
+        ];
     }
 
     /**

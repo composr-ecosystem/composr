@@ -25,7 +25,7 @@ class Module_admin_unvalidated
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -50,9 +50,9 @@ class Module_admin_unvalidated
             return null;
         }
 
-        return array(
-            '!' => array('UNVALIDATED_RESOURCES', 'menu/adminzone/audit/unvalidated'),
-        );
+        return [
+            '!' => ['UNVALIDATED_RESOURCES', 'menu/adminzone/audit/unvalidated'],
+        ];
     }
 
     public $title;
@@ -88,7 +88,7 @@ class Module_admin_unvalidated
      */
     public function run()
     {
-        $out = array();
+        $out = [];
         require_code('form_templates');
 
         $_hooks = find_all_hook_obs('modules', 'admin_unvalidated', 'Hook_unvalidated_');
@@ -100,7 +100,7 @@ class Module_admin_unvalidated
 
             $identifier_select = is_array($info['db_identifier']) ? implode(',', $info['db_identifier']) : $info['db_identifier'];
             $db = array_key_exists('db', $info) ? $info['db'] : $GLOBALS['SITE_DB'];
-            $rows = $db->query_select($info['db_table'], array($identifier_select . (array_key_exists('db_title', $info) ? (',' . $info['db_title']) : '')), array($info['db_validated'] => 0), '', intval(get_option('general_safety_listing_limit')));
+            $rows = $db->query_select($info['db_table'], [$identifier_select . (array_key_exists('db_title', $info) ? (',' . $info['db_title']) : '')], [$info['db_validated'] => 0], '', intval(get_option('general_safety_listing_limit')));
             if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
                 attach_message(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'), 'warn');
             }
@@ -134,15 +134,15 @@ class Module_admin_unvalidated
             if (!$content->is_empty()) {
                 if (addon_installed('workflows') && array_key_exists('uses_workflow', $info) && $info['uses_workflow']) {
                     // Content that uses a workflow is validated via its view screen
-                    $post_url = build_url(array('page' => $info['view_module'], 'type' => $info['view_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/), get_module_zone($info['view_module']), array(), false, true);
+                    $post_url = build_url(['page' => $info['view_module'], 'type' => $info['view_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/], get_module_zone($info['view_module']), [], false, true);
                 } else {
                     // Content which isn't in a workflow is validated via its edit screen
-                    $post_url = build_url(array('page' => $info['edit_module'], 'type' => $info['edit_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/), get_module_zone($info['edit_module']), array(), false, true);
+                    $post_url = build_url(['page' => $info['edit_module'], 'type' => $info['edit_type'], 'validated' => 1/*, 'redirect' => protect_url_parameter(SELF_REDIRECT)*/], get_module_zone($info['edit_module']), [], false, true);
                 }
                 $fields = form_input_list(do_lang_tempcode('CONTENT'), '', $info['edit_identifier'], $content, null, true);
 
                 // Could debate whether to include "'TARGET' => '_blank',". However it does redirect back, so it's a nice linear process like this. If it was new window it could be more efficient, but also would confuse people with a lot of new windows opening and not closing.
-                $content = do_template('FORM', array(
+                $content = do_template('FORM', [
                     '_GUID' => '0abb28f6b8543396c90c8c4395b7e7d4',
                     'SKIP_REQUIRED' => true,
                     'GET' => true,
@@ -152,10 +152,10 @@ class Module_admin_unvalidated
                     'FIELDS' => $fields,
                     'URL' => $post_url,
                     'TEXT' => '',
-                ));
+                ]);
             }
 
-            $out[$info['title']->evaluate()] = do_template('UNVALIDATED_SECTION', array('_GUID' => '044f99ca3c101f90b35fc4b64977b1c7', 'TITLE' => $info['title'], 'CONTENT' => $content));
+            $out[$info['title']->evaluate()] = do_template('UNVALIDATED_SECTION', ['_GUID' => '044f99ca3c101f90b35fc4b64977b1c7', 'TITLE' => $info['title'], 'CONTENT' => $content]);
         }
 
         cms_mb_ksort($out, SORT_NATURAL | SORT_FLAG_CASE);
@@ -165,11 +165,11 @@ class Module_admin_unvalidated
             $_out->attach($__out);
         }
 
-        return do_template('UNVALIDATED_SCREEN', array(
+        return do_template('UNVALIDATED_SCREEN', [
             '_GUID' => 'fd41829ff0848f23d1f428a840eeb72a',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('UNVALIDATED_PAGE_TEXT'),
             'SECTIONS' => $_out,
-        ));
+        ]);
     }
 }

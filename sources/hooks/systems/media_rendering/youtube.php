@@ -77,7 +77,7 @@ class Hook_media_rendering_youtube extends Media_renderer_with_fallback
      */
     public function get_video_thumbnail($src_url)
     {
-        $matches = array();
+        $matches = [];
         if ((preg_match('#^https?://(www|m)\.youtube\.com/watch\?v=([\w\-]+)#', $src_url, $matches) != 0) || (preg_match('#^http://(youtu\.be)/([\w\-]+)#', $src_url, $matches) != 0)) {
             return 'https://img.youtube.com/vi/' . rawurldecode($matches[2]) . '/0.jpg';
         }
@@ -106,6 +106,6 @@ class Hook_media_rendering_youtube extends Media_renderer_with_fallback
         }
         $attributes['remote_id'] = preg_replace('#^(https?://(www|m)\.youtube\.com/watch\?v=|https?://youtu\.be/)([\w\-]+)#', '${3}', $url);
         require_javascript('core_rich_media');
-        return do_template('MEDIA_YOUTUBE', array('_GUID' => 'f7c4c015b208e13bf0cd9326d9133175', 'HOOK' => 'youtube') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_YOUTUBE', ['_GUID' => 'f7c4c015b208e13bf0cd9326d9133175', 'HOOK' => 'youtube'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

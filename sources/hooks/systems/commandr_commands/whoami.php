@@ -34,11 +34,11 @@ class Hook_commandr_command_whoami
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('whoami', array('h'), array()), '', '');
+            return ['', do_command_help('whoami', ['h'], []), '', ''];
         } else {
             $member_id = get_member();
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-            return array('', '', $username . ' (#' . strval($member_id) . ')', '');
+            return ['', '', $username . ' (#' . strval($member_id) . ')', ''];
         }
     }
 }

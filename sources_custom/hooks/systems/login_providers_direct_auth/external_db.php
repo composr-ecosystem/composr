@@ -80,7 +80,7 @@ class Hook_login_providers_direct_auth_external_db
         $records = $db->query($query);
         if (isset($records[0])) {
             // Create new member
-            return array('id' => external_db_user_add($records[0]));
+            return ['id' => external_db_user_add($records[0])];
         }
 
         return null;

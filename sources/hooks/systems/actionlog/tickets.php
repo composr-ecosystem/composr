@@ -31,41 +31,41 @@ class Hook_actionlog_tickets extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
         require_lang('tickets');
 
-        return array(
-            'ADD_TICKET_TYPE' => array(
+        return [
+            'ADD_TICKET_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'ticket_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_TICKET_TYPE' => '_SEARCH:admin_tickets:edit:ticket_type_id={ID}',
                     'ADD_TICKET_TYPE' => '_SEARCH:admin_tickets',
-                ),
-            ),
-            'EDIT_TICKET_TYPE' => array(
+                ],
+            ],
+            'EDIT_TICKET_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'ticket_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_TICKET_TYPE' => '_SEARCH:admin_tickets:edit:ticket_type_id={ID}',
                     'ADD_TICKET_TYPE' => '_SEARCH:admin_tickets',
-                ),
-            ),
-            'DELETE_TICKET_TYPE' => array(
+                ],
+            ],
+            'DELETE_TICKET_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'ticket_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_TICKET_TYPE' => '_SEARCH:admin_tickets',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

@@ -32,15 +32,15 @@ class Hook_members_calendar
     public function run($member_id)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
         //if (!has_privilege(get_member(), 'assume_any_member')) return array();  Now will have separate permission filtering
         if (!has_actual_page_access(get_member(), 'calendar', get_module_zone('calendar'))) {
-            return array();
+            return [];
         }
 
         require_lang('calendar');
-        return array(array('content', do_lang_tempcode('CALENDAR'), build_url(array('page' => 'calendar', 'type' => 'browse', 'member_id' => $member_id, 'private' => 1), get_module_zone('calendar')), 'menu/rich_content/calendar'));
+        return [['content', do_lang_tempcode('CALENDAR'), build_url(['page' => 'calendar', 'type' => 'browse', 'member_id' => $member_id, 'private' => 1], get_module_zone('calendar')), 'menu/rich_content/calendar']];
     }
 }

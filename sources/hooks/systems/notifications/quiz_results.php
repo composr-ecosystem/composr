@@ -57,17 +57,17 @@ class Hook_notification_quiz_results extends Hook_notification__Staff
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
-        $types = $GLOBALS['SITE_DB']->query_select('quizzes', array('id', 'q_name'));
+        $types = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name']);
         foreach ($types as $type) {
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $type['id'],
                 'title' => get_translated_text($type['q_name']),
-            );
+            ];
         }
         sort_maps_by($page_links, 'title', false, true);
 
@@ -83,11 +83,11 @@ class Hook_notification_quiz_results extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['quiz_results'] = array(do_lang('GENERAL'), do_lang('quiz:NOTIFICATION_TYPE_quiz_results'));
+        $list = [];
+        $list['quiz_results'] = [do_lang('GENERAL'), do_lang('quiz:NOTIFICATION_TYPE_quiz_results')];
         return $list;
     }
 }

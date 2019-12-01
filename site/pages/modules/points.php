@@ -30,7 +30,7 @@ class Module_points
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -73,15 +73,15 @@ class Module_points
         if ($upgrade_from === null) {
             add_privilege('POINTS', 'use_points', true);
 
-            $GLOBALS['SITE_DB']->create_table('chargelog', array(
+            $GLOBALS['SITE_DB']->create_table('chargelog', [
                 'id' => '*AUTO',
                 'member_id' => 'MEMBER',
                 'amount' => 'INTEGER',
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'date_and_time' => 'TIME',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('gifts', array(
+            $GLOBALS['SITE_DB']->create_table('gifts', [
                 'id' => '*AUTO',
                 'date_and_time' => 'TIME',
                 'amount' => 'INTEGER',
@@ -89,9 +89,9 @@ class Module_points
                 'gift_to' => 'MEMBER',
                 'reason' => 'SHORT_TRANS__COMCODE',
                 'anonymous' => 'BINARY',
-            ));
-            $GLOBALS['SITE_DB']->create_index('gifts', 'giftsgiven', array('gift_from'));
-            $GLOBALS['SITE_DB']->create_index('gifts', 'giftsreceived', array('gift_to'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('gifts', 'giftsgiven', ['gift_from']);
+            $GLOBALS['SITE_DB']->create_index('gifts', 'giftsreceived', ['gift_to']);
 
             add_privilege('POINTS', 'trace_anonymous_gifts', false);
             add_privilege('POINTS', 'give_points_self', false);
@@ -116,7 +116,7 @@ class Module_points
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_index('chargelog', 'member_id', array('member_id'));
+            $GLOBALS['SITE_DB']->create_index('chargelog', 'member_id', ['member_id']);
         }
     }
 
@@ -136,13 +136,13 @@ class Module_points
         }
 
         if (get_forum_type() == 'cns' || get_forum_type() == 'none') {
-            return array();
+            return [];
         }
-        $ret = array(
-            'browse' => array('MEMBER_POINT_FIND', 'buttons/search'),
-        );
+        $ret = [
+            'browse' => ['MEMBER_POINT_FIND', 'buttons/search'],
+        ];
         if (!$check_perms || !is_guest($member_id)) {
-            $ret['member'] = array('POINTS', 'menu/social/points');
+            $ret['member'] = ['POINTS', 'menu/social/points'];
         }
         return $ret;
     }
@@ -174,13 +174,13 @@ class Module_points
             $this->member_id_of = db_get_first_id() + 1;
             set_feed_url('?mode=points&select=' . strval($this->member_id_of));
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')]]);
 
             $this->title = get_screen_title('MEMBER_POINT_FIND');
         }
 
         if ($type == '_search') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')]]);
 
             $this->title = get_screen_title('MEMBER_POINT_FIND');
 
@@ -190,7 +190,7 @@ class Module_points
         if ($type == 'give') {
             $member_id_of = get_param_integer('id');
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')), array('_SELF:_SELF:member:' . strval($member_id_of), do_lang_tempcode('_POINTS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true))))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MEMBER_POINT_FIND')], ['_SELF:_SELF:member:' . strval($member_id_of), do_lang_tempcode('_POINTS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)))]]);
 
             $this->title = get_screen_title('POINTS');
         }
@@ -200,7 +200,7 @@ class Module_points
             set_feed_url('?mode=points&select=' . strval($this->member_id_of));
 
             $username = $GLOBALS['FORUM_DRIVER']->get_username($this->member_id_of, true, USERNAME_DEFAULT_ERROR | USERNAME_GUEST_AS_DEFAULT);
-            $this->title = get_screen_title('_POINTS', true, array(escape_html($username)));
+            $this->title = get_screen_title('_POINTS', true, [escape_html($username)]);
         }
 
         return null;
@@ -246,7 +246,7 @@ class Module_points
      */
     public function points_search_form()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_search'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => '_search'], '_SELF', [], false, true);
         require_code('form_templates');
         if (!is_guest()) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -259,7 +259,7 @@ class Module_points
         $text->attach(paragraph(do_lang_tempcode('POINTS_SEARCH_FORM')));
         $text->attach(paragraph(do_lang_tempcode('WILDCARD')));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e5ab8d5d599093d1a550cb3b3e56d2bf',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -270,7 +270,7 @@ class Module_points
             'SUBMIT_ICON' => 'buttons/search',
             'SUBMIT_NAME' => $submit_name,
             'TEXT' => $text,
-        ));
+        ]);
     }
 
     /**
@@ -299,14 +299,14 @@ class Module_points
         foreach ($rows as $myrow) {
             $id = $GLOBALS['FORUM_DRIVER']->mrow_id($myrow);
             if (!is_guest($id)) {
-                $url = build_url(array('page' => '_SELF', 'type' => 'member', 'id' => $id), '_SELF');
+                $url = build_url(['page' => '_SELF', 'type' => 'member', 'id' => $id], '_SELF');
                 $username = $GLOBALS['FORUM_DRIVER']->mrow_username($myrow);
 
-                $results->attach(do_template('POINTS_SEARCH_RESULT', array('_GUID' => 'df240255b2981dcaee38e126622be388', 'URL' => $url, 'ID' => strval($id), 'USERNAME' => $username)));
+                $results->attach(do_template('POINTS_SEARCH_RESULT', ['_GUID' => 'df240255b2981dcaee38e126622be388', 'URL' => $url, 'ID' => strval($id), 'USERNAME' => $username]));
             }
         }
 
-        return do_template('POINTS_SEARCH_SCREEN', array('_GUID' => '659af8a012d459db09dad0325a75ac70', 'TITLE' => $this->title, 'RESULTS' => $results));
+        return do_template('POINTS_SEARCH_SCREEN', ['_GUID' => '659af8a012d459db09dad0325a75ac70', 'TITLE' => $this->title, 'RESULTS' => $results]);
     }
 
     /**
@@ -329,7 +329,7 @@ class Module_points
         require_code('points3');
         $content = points_profile($member_id_of, get_member());
 
-        return do_template('POINTS_SCREEN', array('_GUID' => '7fadfc2886ba063008f6333fb3f19e75', 'TITLE' => $this->title, 'CONTENT' => $content));
+        return do_template('POINTS_SCREEN', ['_GUID' => '7fadfc2886ba063008f6333fb3f19e75', 'TITLE' => $this->title, 'CONTENT' => $content]);
     }
 
     /**
@@ -407,7 +407,7 @@ class Module_points
 
         if ($worked) {
             // Show it worked / Refresh
-            $url = build_url(array('page' => '_SELF', 'type' => 'member', 'id' => $member_id_of), '_SELF');
+            $url = build_url(['page' => '_SELF', 'type' => 'member', 'id' => $member_id_of], '_SELF');
             return redirect_screen($this->title, $url, $message);
         }
         return warn_screen($this->title, $message);

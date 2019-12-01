@@ -45,18 +45,18 @@ class Hook_notification_news_entry extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
-        $types = $GLOBALS['SITE_DB']->query_select('news_categories', array('id', 'nc_title'));
+        $types = $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title']);
         foreach ($types as $type) {
             if (has_category_access(get_member(), 'news', strval($type['id']))) {
-                $page_links[] = array(
+                $page_links[] = [
                     'id' => $type['id'],
                     'title' => get_translated_text($type['nc_title']),
-                );
+                ];
             }
         }
         sort_maps_by($page_links, 'title', false, true);
@@ -85,11 +85,11 @@ class Hook_notification_news_entry extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['news_entry'] = array(do_lang('CONTENT'), do_lang('news:NOTIFICATION_TYPE_news_entry'));
+        $list = [];
+        $list['news_entry'] = [do_lang('CONTENT'), do_lang('news:NOTIFICATION_TYPE_news_entry')];
         return $list;
     }
 

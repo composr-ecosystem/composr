@@ -52,24 +52,24 @@ class Hook_search_news extends FieldsSearchHook
 
         require_lang('news');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('NEWS');
         $info['default'] = (get_option('search_news') == '1');
         $info['category'] = 'news_category';
         $info['integer_category'] = true;
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_news');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('news'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('news'),
                 'page_name' => 'news',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -82,7 +82,7 @@ class Hook_search_news extends FieldsSearchHook
      */
     public function get_tree($_selected)
     {
-        $selected = ($_selected == '' || $_selected == '!') ? array() : array(intval($_selected));
+        $selected = ($_selected == '' || $_selected == '!') ? [] : [intval($_selected)];
 
         require_code('news');
 
@@ -148,7 +148,7 @@ class Hook_search_news extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('submitter', $author_id, $author, 'author');
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -172,14 +172,14 @@ class Hook_search_news extends FieldsSearchHook
         }
 
         $table = 'news r';
-        $trans_fields = array('r.title' => 'SHORT_TRANS__COMCODE', 'r.news' => 'LONG_TRANS__COMCODE', 'r.news_article' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['r.title' => 'SHORT_TRANS__COMCODE', 'r.news' => 'LONG_TRANS__COMCODE', 'r.news_article' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_news', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('news', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . $privacy_join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'news', 'news_category');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -203,7 +203,7 @@ class Hook_search_news extends FieldsSearchHook
     {
         global $NEWS_CATS_CACHE;
         if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
             $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
         }
 

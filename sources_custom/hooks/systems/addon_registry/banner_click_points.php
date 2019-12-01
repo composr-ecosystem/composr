@@ -26,7 +26,7 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,14 +106,14 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'banners',
                 'points',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -133,9 +133,9 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/banner_click_points.php',
             'sources_custom/hooks/systems/upon_query/banner_click_points.php',
-        );
+        ];
     }
 }

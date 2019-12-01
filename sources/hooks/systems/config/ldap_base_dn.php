@@ -30,7 +30,7 @@ class Hook_config_ldap_base_dn
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_BASE_DN',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_base_dn
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

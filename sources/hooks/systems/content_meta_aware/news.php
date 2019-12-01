@@ -36,7 +36,7 @@ class Hook_content_meta_aware_news
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
             'content_type_label' => 'news:NEWS_ARTICLE',
             'content_type_universal_label' => 'News article',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_news
             'support_spam_heuristics' => 'post',
 
             'actionlog_regexp' => '\w+_NEWS',
-        );
+        ];
     }
 
     /**

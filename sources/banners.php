@@ -101,7 +101,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
 
         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_to=(views_to+1) WHERE ' . db_string_equal_to('name', $dest), 1);
 
-        $img_url = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'img_url', array('name' => $dest));
+        $img_url = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'img_url', ['name' => $dest]);
         if (empty($img_url)) {
             $img_url = find_theme_image('blank');
         }
@@ -119,11 +119,11 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
 
         // Has the banner been clicked before?
-        $test = $GLOBALS['SITE_DB']->query_select_value('banner_clicks', 'MAX(c_date_and_time)', array('c_ip_address' => get_ip_address(), 'c_banner_id' => $dest));
+        $test = $GLOBALS['SITE_DB']->query_select_value('banner_clicks', 'MAX(c_date_and_time)', ['c_ip_address' => get_ip_address(), 'c_banner_id' => $dest]);
         $unique = ($test === null) || ($test < time() - 60 * 60 * 24);
 
         // Find the information about the dest
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', array('site_url', 'hits_to', 'campaign_remaining'), array('name' => $dest));
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['site_url', 'hits_to', 'campaign_remaining'], ['name' => $dest]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'banner'));
         }
@@ -131,7 +131,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         $url = $myrow['site_url'];
         $page_link = url_to_page_link($url);
         if ($page_link != '') {
-            $keep = symbol_tempcode('KEEP', array((strpos($url, '?') === false) ? '1' : '0'));
+            $keep = symbol_tempcode('KEEP', [(strpos($url, '?') === false) ? '1' : '0']);
             $url .= $keep->evaluate();
         }
 
@@ -155,7 +155,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
 
         // Find the information about the source
         if (($source != '') && ($unique)) {
-            $rows = $GLOBALS['SITE_DB']->query_select('banners', array('hits_from', 'campaign_remaining'), array('name' => $source));
+            $rows = $GLOBALS['SITE_DB']->query_select('banners', ['hits_from', 'campaign_remaining'], ['name' => $source]);
             if (!array_key_exists(0, $rows)) {
                 set_http_status_code(404);
                 warn_exit(do_lang_tempcode('BANNER_MISSING_SOURCE'));
@@ -181,13 +181,13 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
 
         // Log the click
-        $GLOBALS['SITE_DB']->query_insert('banner_clicks', array(
+        $GLOBALS['SITE_DB']->query_insert('banner_clicks', [
             'c_date_and_time' => time(),
             'c_member_id' => get_member(),
             'c_ip_address' => get_ip_address(),
             'c_source' => $source,
             'c_banner_id' => $dest,
-        ));
+        ]);
 
         if ((strpos($url, "\n") !== false) || (strpos($url, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
@@ -219,7 +219,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
 
         // Run Query
-        $rows = $GLOBALS['SITE_DB']->query($myquery, 500/*reasonable limit - old ones should be turned off*/, 0, false, true, array('caption' => 'SHORT_TRANS__COMCODE'));
+        $rows = $GLOBALS['SITE_DB']->query($myquery, 500/*reasonable limit - old ones should be turned off*/, 0, false, true, ['caption' => 'SHORT_TRANS__COMCODE']);
 
         // Filter out what we don't have permission for
         if (get_option('use_banner_permissions') == '1') {
@@ -227,7 +227,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
             $groups = get_permission_where_clause_groups(get_member());
             if ($groups !== null) {
                 $perhaps = collapse_1d_complexity('category_name', $GLOBALS['SITE_DB']->query('SELECT DISTINCT category_name FROM ' . get_table_prefix() . 'group_category_access WHERE ' . db_string_equal_to('module_the_name', 'banners') . ' AND (' . $groups . ')', null, 0, false, true));
-                $new_rows = array();
+                $new_rows = [];
                 foreach ($rows as $row) {
                     if (in_array($row['name'], $perhaps)) {
                         $new_rows[] = $row;
@@ -248,8 +248,8 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
 
         // Remove ones already shown on this page-view
-        static $shown_already = array(); // NB: Holds shown ones for any banner types, not specifically the restraints we are working on here. This could be true if you have multiple banner spots: count($shown_already)>count($rows)
-        if ($shown_already !== array()) {
+        static $shown_already = []; // NB: Holds shown ones for any banner types, not specifically the restraints we are working on here. This could be true if you have multiple banner spots: count($shown_already)>count($rows)
+        if ($shown_already !== []) {
             if (!running_script('banner')) {
                 $old_rows = $rows;
                 foreach ($rows as $counter => $myrow) {
@@ -266,7 +266,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         // Count the total of all display_likelihood entries
         $tally = 0;
         $counter = 0;
-        $bound = array();
+        $bound = [];
         shuffle($rows); // Should not be needed, but mt_rand seems to not be very good when running from the website. Also does a re-index, which we require.
         while (array_key_exists($counter, $rows)) {
             $myrow = $rows[$counter];
@@ -281,15 +281,15 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         if ($tally == 0) {
             require_code('permissions');
             if ((has_actual_page_access(null, 'cms_banners')) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_banners'))) {
-                $add_banner_url = build_url(array('page' => 'cms_banners', 'type' => 'add', 'b_type' => $b_type), get_module_zone('cms_banners'));
+                $add_banner_url = build_url(['page' => 'cms_banners', 'type' => 'add', 'b_type' => $b_type], get_module_zone('cms_banners'));
             } else {
                 $add_banner_url = new Tempcode();
             }
-            $content = do_template('BANNERS_NONE', array('_GUID' => 'b786ec327365d1ef38134ce401db9dd2', 'ADD_BANNER_URL' => $add_banner_url));
+            $content = do_template('BANNERS_NONE', ['_GUID' => 'b786ec327365d1ef38134ce401db9dd2', 'ADD_BANNER_URL' => $add_banner_url]);
             if ($ret) {
                 return $content;
             }
-            $echo = do_template('BASIC_HTML_WRAP', array('_GUID' => '00c8549b88dac8a1291450eb5b681d80', 'TARGET' => '_top', 'TITLE' => do_lang_tempcode('BANNER'), 'CONTENT' => $content));
+            $echo = do_template('BASIC_HTML_WRAP', ['_GUID' => '00c8549b88dac8a1291450eb5b681d80', 'TARGET' => '_top', 'TITLE' => do_lang_tempcode('BANNER'), 'CONTENT' => $content]);
             $echo->evaluate_echo();
             return null;
         }
@@ -334,7 +334,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         if ($ret) {
             return $content;
         }
-        $echo = do_template('BASIC_HTML_WRAP', array('_GUID' => 'd23424ded86c850f4ae0006241407ff9', 'TITLE' => do_lang_tempcode('BANNER'), 'CONTENT' => $content, 'TARGET' => '_top'));
+        $echo = do_template('BASIC_HTML_WRAP', ['_GUID' => 'd23424ded86c850f4ae0006241407ff9', 'TITLE' => do_lang_tempcode('BANNER'), 'CONTENT' => $content, 'TARGET' => '_top']);
         $echo->evaluate_echo();
     }
 
@@ -370,24 +370,24 @@ function show_banner($name, $title_text, $caption, $direct_code, $img_url, $sour
                     $img_url = get_custom_base_url() . '/' . $img_url;
                 }
             }
-            static $banner_type_rows = array();
+            static $banner_type_rows = [];
             if (isset($banner_type_rows[$b_type])) {
                 $banner_type_row = $banner_type_rows[$b_type];
             } else {
-                $_banner_type_row = $GLOBALS['SITE_DB']->query_select('banner_types', array('t_image_width', 't_image_height'), array('id' => $b_type), '', 1);
+                $_banner_type_row = $GLOBALS['SITE_DB']->query_select('banner_types', ['t_image_width', 't_image_height'], ['id' => $b_type], '', 1);
                 if ($width === null) {
                     if (array_key_exists(0, $_banner_type_row)) {
                         $banner_type_row = $_banner_type_row[0];
                     } else {
-                        $banner_type_row = array('t_image_width' => 728, 't_image_height' => 90);
+                        $banner_type_row = ['t_image_width' => 728, 't_image_height' => 90];
                     }
                 } else {
-                    $banner_type_row = array('t_image_width' => $width, 't_image_height' => $height);
+                    $banner_type_row = ['t_image_width' => $width, 't_image_height' => $height];
                 }
                 $banner_type_rows[$b_type] = $banner_type_row;
             }
             $local = (url_is_local($url)) || (substr($url, 0, strlen(get_base_url())) == get_base_url());
-            $content = do_template('BANNER_IMAGE', array(
+            $content = do_template('BANNER_IMAGE', [
                 '_GUID' => '6aaf45b7bb7349393024c24458549e9e',
                 'LOCAL' => $local,
                 'URL' => $url,
@@ -398,28 +398,28 @@ function show_banner($name, $title_text, $caption, $direct_code, $img_url, $sour
                 'DEST' => $name,
                 'CAPTION' => $caption,
                 'IMG' => $img_url,
-            ));
+            ]);
         } else { // Iframe
             if (url_is_local($img_url)) {
                 $img_url = get_custom_base_url() . '/' . $img_url;
             }
-            $_banner_type_row = $GLOBALS['SITE_DB']->query_select('banner_types', array('t_image_width', 't_image_height'), array('id' => $b_type), '', 1);
+            $_banner_type_row = $GLOBALS['SITE_DB']->query_select('banner_types', ['t_image_width', 't_image_height'], ['id' => $b_type], '', 1);
             if ($width === null) {
                 if (array_key_exists(0, $_banner_type_row)) {
                     $banner_type_row = $_banner_type_row[0];
                 } else {
-                    $banner_type_row = array('t_image_width' => 728, 't_image_height' => 90);
+                    $banner_type_row = ['t_image_width' => 728, 't_image_height' => 90];
                 }
             } else {
-                $banner_type_row = array('t_image_width' => $width, 't_image_height' => $height);
+                $banner_type_row = ['t_image_width' => $width, 't_image_height' => $height];
             }
-            $content = do_template('BANNER_IFRAME', array(
+            $content = do_template('BANNER_IFRAME', [
                 '_GUID' => 'deeef9834bc308b5d07e025ab9c04c0e',
                 'B_TYPE' => $b_type,
                 'IMG' => $img_url,
                 'WIDTH' => strval($banner_type_row['t_image_width']),
                 'HEIGHT' => strval($banner_type_row['t_image_height']),
-            ));
+            ]);
         }
     } else { // Text/HTML/PHP
         if ($direct_code == '') { // Text
@@ -431,7 +431,7 @@ function show_banner($name, $title_text, $caption, $direct_code, $img_url, $sour
                     $filtered_url = substr($filtered_url, 0, strpos($filtered_url, '/'));
                 }
             }
-            $content = do_template('BANNER_TEXT', array(
+            $content = do_template('BANNER_TEXT', [
                 '_GUID' => '18ff8f7b14f5ca30cc19a2ad11ecdd62',
                 'B_TYPE' => $b_type,
                 'TITLE_TEXT' => $title_text,
@@ -440,12 +440,12 @@ function show_banner($name, $title_text, $caption, $direct_code, $img_url, $sour
                 'DEST' => $name,
                 'URL' => $url,
                 'FILTERED_URL' => $filtered_url,
-            ));
+            ]);
         } else { // HTML/PHP
             require_code('permissions');
             if (has_privilege($submitter, 'use_html_banner')) {
                 if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only allow PHP code if not a shared install
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#<\?(.*)\?' . '>#U', $direct_code, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         if (has_privilege($submitter, 'use_php_banner')) {

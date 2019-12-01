@@ -34,18 +34,18 @@ class Hook_commandr_command_users_online
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('users_online', array('h'), array()), '', '');
+            return ['', do_command_help('users_online', ['h'], []), '', ''];
         } else {
             $count = 0;
             require_code('users2');
             $members = get_users_online(true, null, $count);
             if ($members === null) {
-                return array('', '', do_lang('TOO_MANY_USERS_ONLINE'), '');
+                return ['', '', do_lang('TOO_MANY_USERS_ONLINE'), ''];
             }
             $out = new Tempcode();
             $guests = 0;
 
-            $valid_members = array();
+            $valid_members = [];
             foreach ($members as $member) {
                 if ((is_guest($member['member_id'])) || ($member['cache_username'] === null)) {
                     $guests++;
@@ -54,7 +54,7 @@ class Hook_commandr_command_users_online
                 }
             }
 
-            return array('', do_template('COMMANDR_USERS_ONLINE', array('_GUID' => 'fcf779ef175895d425b706e40fb3252a', 'MEMBERS' => $valid_members, 'GUESTS' => integer_format($guests))), '', '');
+            return ['', do_template('COMMANDR_USERS_ONLINE', ['_GUID' => 'fcf779ef175895d425b706e40fb3252a', 'MEMBERS' => $valid_members, 'GUESTS' => integer_format($guests)]), '', ''];
         }
     }
 }

@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_post_template
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'cns_post_templates:POST_TEMPLATE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_post_template
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_POST_TEMPLATE',
-        );
+        ];
     }
 }

@@ -26,12 +26,12 @@ function init__user_import()
     define('USER_IMPORT_TEMP_PATH', 'data_custom/modules/user_export/in.csv');
 
     global $USER_IMPORT_WANTED;
-    $USER_IMPORT_WANTED = array(
+    $USER_IMPORT_WANTED = [
         // LOCAL => REMOTE
         'id' => 'Composr member ID',
         'm_username' => 'Username',
         'm_email_address' => 'E-mail address',
-    );
+    ];
 }
 
 function do_user_import()
@@ -43,7 +43,7 @@ function do_user_import()
     if (!USER_IMPORT_TEST_MODE) {
         require_code('files');
         $infile = cms_fopen_text_write(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH);
-        $test = http_get_contents(USER_IMPORT_URL, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $infile));
+        $test = http_get_contents(USER_IMPORT_URL, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $infile]);
         fclose($infile);
         if ($test === null) {
             return;
@@ -68,7 +68,7 @@ function do_user_import()
         }
     }
 
-    $cpf_ids = array();
+    $cpf_ids = [];
     $fields_to_show = cns_get_all_custom_fields_match();
     foreach ($fields_to_show as $field_to_show) {
         $cpf_ids[$field_to_show['trans_name']] = $field_to_show['id'];
@@ -82,9 +82,9 @@ function do_user_import()
         }
         if ((substr(USER_IMPORT_MATCH_KEY, 0, 2) != 'm_') && (USER_IMPORT_MATCH_KEY != 'id')) {
             $cpf_id = $cpf_ids[USER_IMPORT_MATCH_KEY];
-            $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', 'mf_member_id', array('field_' . strval($cpf_id) => $remote_match_key_value));
+            $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_member_custom_fields', 'mf_member_id', ['field_' . strval($cpf_id) => $remote_match_key_value]);
         } else {
-            $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array(USER_IMPORT_MATCH_KEY => $remote_match_key_value));
+            $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', [USER_IMPORT_MATCH_KEY => $remote_match_key_value]);
         }
 
         // Find data
@@ -96,7 +96,7 @@ function do_user_import()
         $dob_day = isset($USER_IMPORT_WANTED['m_dob_day']) ? $row[$USER_IMPORT_WANTED['m_dob_day']] : null;
         $dob_month = isset($USER_IMPORT_WANTED['m_dob_month']) ? $row[$USER_IMPORT_WANTED['m_dob_month']] : null;
         $dob_year = isset($USER_IMPORT_WANTED['m_dob_year']) ? $row[$USER_IMPORT_WANTED['m_dob_year']] : null;
-        $custom_fields = array();
+        $custom_fields = [];
         foreach ($USER_IMPORT_WANTED as $local_key => $remote_index) {
             if ((substr($local_key, 0, 2) != 'm_') && ($local_key != 'id')) {
                 $custom_fields[$cpf_ids[$local_key]] = $row[$remote_index];

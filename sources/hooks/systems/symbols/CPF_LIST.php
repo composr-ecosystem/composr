@@ -37,7 +37,7 @@ class Hook_symbol_CPF_LIST
             $delimiter = (!empty($param[1])) ? $param[1] : ',';
             $include_label_syntax = isset($param[2]) ? ($param[2] === '1') : true;
 
-            static $cache = array();
+            static $cache = [];
             if (isset($cache[$param[0]])) {
                 return $cache[$param[0]];
             }
@@ -73,7 +73,7 @@ class Hook_symbol_CPF_LIST
             require_code('cns_members');
             $cpf_id = find_cpf_field_id($param[0]);
             if ($cpf_id !== null) {
-                $test = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('cf_default', 'cf_type'), array('id' => $cpf_id));
+                $test = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['cf_default', 'cf_type'], ['id' => $cpf_id]);
                 if (isset($test[0])) {
                     switch ($test[0]['cf_type']) {
                         case 'list':

@@ -30,7 +30,7 @@ class Hook_config_ticket_auto_assign
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TICKET_AUTO_ASSIGN',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_ticket_auto_assign
             'required' => true,
             'public' => false,
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

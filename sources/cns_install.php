@@ -45,7 +45,7 @@ The Conversr functions should always call up the attachment and language systems
 function init__cns_install()
 {
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
-    $CNS_TRUE_PERMISSIONS = array(
+    $CNS_TRUE_PERMISSIONS = [
         'run_multi_moderations',
         'use_pt',
         'edit_private_topic_posts',
@@ -56,8 +56,8 @@ function init__cns_install()
         'own_avatars',
         'double_post',
         'delete_account',
-    );
-    $CNS_FALSE_PERMISSIONS = array(
+    ];
+    $CNS_FALSE_PERMISSIONS = [
         'rename_self',
         'use_special_emoticons',
         'view_any_profile_field',
@@ -79,7 +79,7 @@ function init__cns_install()
         'see_hidden_groups',
         'pt_anyone',
         'delete_private_topic_posts',
-    );
+    ];
 }
 
 /**
@@ -96,7 +96,7 @@ function uninstall_cns()
         delete_privilege($permission);
     }
 
-    $GLOBALS['FORUM_DB']->query_delete('group_category_access', array('module_the_name' => 'forums'));
+    $GLOBALS['FORUM_DB']->query_delete('group_category_access', ['module_the_name' => 'forums']);
 
     delete_value('cns_newest_member_id');
     delete_value('cns_newest_member_username');
@@ -151,7 +151,7 @@ function uninstall_cns()
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_group_join_log');
     $GLOBALS['FORUM_DB']->drop_table_if_exists('f_password_history');
 
-    $GLOBALS['FORUM_DB']->query_delete('group_privileges', array('module_the_name' => 'forums'));
+    $GLOBALS['FORUM_DB']->query_delete('group_privileges', ['module_the_name' => 'forums']);
 
     delete_privilege('exceed_post_edit_time_limit');
     delete_privilege('exceed_post_delete_time_limit');
@@ -195,24 +195,24 @@ function install_cns($upgrade_from = null)
 
     // Upgrade code for making changes (<8 not supported) lots of LEGACY code below
     if (($upgrade_from === null) || ($upgrade_from < 10.0)) {
-        $GLOBALS['FORUM_DB']->create_table('f_group_join_log', array(
+        $GLOBALS['FORUM_DB']->create_table('f_group_join_log', [
             'id' => '*AUTO',
             'member_id' => 'MEMBER',
             'usergroup_id' => '?AUTO_LINK',
             'join_time' => 'TIME',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'member_id', array('member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'usergroup_id', array('usergroup_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'join_time', array('join_time'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'member_id', ['member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'usergroup_id', ['usergroup_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_join_log', 'join_time', ['join_time']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_password_history', array(
+        $GLOBALS['FORUM_DB']->create_table('f_password_history', [
             'id' => '*AUTO',
             'p_member_id' => 'MEMBER',
             'p_hash_salted' => 'SHORT_TEXT',
             'p_salt' => 'SHORT_TEXT',
             'p_time' => 'TIME',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_password_history', 'p_member_id', array('p_member_id'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_password_history', 'p_member_id', ['p_member_id']);
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
@@ -221,11 +221,11 @@ function install_cns($upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 'topic_order_2');
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 'topic_order_3');
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_forum', array('t_forum_id', 't_cascading', 't_pinned', 't_cache_last_time'));
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_forum', ['t_forum_id', 't_cascading', 't_pinned', 't_cache_last_time']);
 
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'date_time'), array('cf_type' => 'date'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'date'), array('cf_type' => 'just_date'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'time'), array('cf_type' => 'just_time'));
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date_time'], ['cf_type' => 'date']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date'], ['cf_type' => 'just_date']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'time'], ['cf_type' => 'just_time']);
 
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_allow_template_search', 'BINARY');
@@ -238,28 +238,28 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
 
         // Optionally provide autofill types for bundled CPFs (if any found)
-        $autofill_map = array(
-            'cms_currency' => array('transaction-currency'),
-            'cms_payment_cardholder_name' => array('cc-name'),
-            'cms_payment_card_type' => array('cc-type'),
-            'cms_payment_card_number' => array('cc-number'),
-            'cms_payment_card_expiry_date' => array('cc-exp'),
-            'cms_firstname' => array('given-name'),
-            'cms_lastname' => array('family-name'),
-            'cms_billing_street_address' => array('street-address', 'billing'),
-            'cms_billing_city' => array('address-level2', 'billing'),
-            'cms_billing_state' => array('address-level1', 'billing'),
-            'cms_billing_post_code' => array('postal-code', 'billing'),
-            'cms_billing_country' => array('country', 'billing'),
-            'cms_street_address' => array('street-address'),
-            'cms_city' => array('address-level2'),
-            'cms_state' => array('address-level1'),
-            'cms_post_code' => array('postal-code'),
-            'cms_country' => array('country'),
-        );
+        $autofill_map = [
+            'cms_currency' => ['transaction-currency'],
+            'cms_payment_cardholder_name' => ['cc-name'],
+            'cms_payment_card_type' => ['cc-type'],
+            'cms_payment_card_number' => ['cc-number'],
+            'cms_payment_card_expiry_date' => ['cc-exp'],
+            'cms_firstname' => ['given-name'],
+            'cms_lastname' => ['family-name'],
+            'cms_billing_street_address' => ['street-address', 'billing'],
+            'cms_billing_city' => ['address-level2', 'billing'],
+            'cms_billing_state' => ['address-level1', 'billing'],
+            'cms_billing_post_code' => ['postal-code', 'billing'],
+            'cms_billing_country' => ['country', 'billing'],
+            'cms_street_address' => ['street-address'],
+            'cms_city' => ['address-level2'],
+            'cms_state' => ['address-level1'],
+            'cms_post_code' => ['postal-code'],
+            'cms_country' => ['country'],
+        ];
 
         foreach ($autofill_map as $cf_name => $arr) {
-            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_autofill_type' => $arr[0], 'cf_autofill_hint' => isset($arr[1]) ? $arr[1] : ''), array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $cf_name));
+            $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_autofill_type' => $arr[0], 'cf_autofill_hint' => isset($arr[1]) ? $arr[1] : ''], [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $cf_name]);
         }
 
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
@@ -278,7 +278,7 @@ function install_cns($upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->rename_table('f_categories', 'f_forum_groupings');
         $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_category_id', '?AUTO_LINK', 'f_forum_grouping_id');
-        $privileges = array('moderate_personal_topic' => 'moderate_private_topic', 'edit_personal_topic_posts' => 'edit_private_topic_posts');
+        $privileges = ['moderate_personal_topic' => 'moderate_private_topic', 'edit_personal_topic_posts' => 'edit_private_topic_posts'];
         foreach ($privileges as $old => $new) {
             rename_privilege($old, $new);
         }
@@ -292,15 +292,15 @@ function install_cns($upgrade_from = null)
         $max = 500;
         $start = 0;
         do {
-            $members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_pass_hash_salted', 'm_pass_salt', 'm_last_submit_time', 'm_join_time'), array(), '', $max, $start);
+            $members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_pass_hash_salted', 'm_pass_salt', 'm_last_submit_time', 'm_join_time'], [], '', $max, $start);
             foreach ($members as $member) {
                 if ($member['id'] != $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                    $GLOBALS['FORUM_DB']->query_insert('f_password_history', array(
+                    $GLOBALS['FORUM_DB']->query_insert('f_password_history', [
                         'p_member_id' => $member['id'],
                         'p_hash_salted' => $member['m_pass_hash_salted'],
                         'p_salt' => $member['m_pass_salt'],
                         'p_time' => ($member['m_last_submit_time'] === null) ? $member['m_join_time'] : $member['m_last_submit_time'],
-                    ));
+                    ]);
                 }
             }
             $start += $max;
@@ -308,15 +308,15 @@ function install_cns($upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_options', 'SHORT_TEXT');
 
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'member'), array('cf_type' => 'user'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'member_multi'), array('cf_type' => 'user_multi'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'codename', 'cf_options' => 'default=RANDOM'), array('cf_type' => 'random'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'list_multi', 'cf_options' => 'widget=vertical_checkboxes,custom_values=yes'), array('cf_type' => 'combo_multi'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'list_multi'), array('cf_type' => 'multilist'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'list_multi', 'cf_options' => 'widget=horizontal_checkboxes'), array('cf_type' => 'tick_multi'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'list', 'cf_options' => 'widget=radio,custom_values=yes'), array('cf_type' => 'combo'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'list', 'cf_options' => 'widget=radio'), array('cf_type' => 'radiolist'));
-        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'integer', 'cf_options' => 'default=AUTO_INCREMENT'), array('cf_type' => 'auto_increment'));
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'member'], ['cf_type' => 'user']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'member_multi'], ['cf_type' => 'user_multi']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'codename', 'cf_options' => 'default=RANDOM'], ['cf_type' => 'random']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list_multi', 'cf_options' => 'widget=vertical_checkboxes,custom_values=yes'], ['cf_type' => 'combo_multi']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list_multi'], ['cf_type' => 'multilist']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list_multi', 'cf_options' => 'widget=horizontal_checkboxes'], ['cf_type' => 'tick_multi']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list', 'cf_options' => 'widget=radio,custom_values=yes'], ['cf_type' => 'combo']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'list', 'cf_options' => 'widget=radio'], ['cf_type' => 'radiolist']);
+        $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'integer', 'cf_options' => 'default=AUTO_INCREMENT'], ['cf_type' => 'auto_increment']);
 
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_allows_anonymous_posts', 'BINARY', intval(get_option('is_on_anonymous_posts')));
 
@@ -330,11 +330,11 @@ function install_cns($upgrade_from = null)
 
         // Directory moving
         require_code('upgrade_lib');
-        $fields = array(
+        $fields = [
             'm_photo_url' => 'uploads/ocf_photos',
             'm_photo_thumb_url' => 'uploads/ocf_photos_thumbs',
             'm_avatar_url' => 'uploads/ocf_avatars',
-        );
+        ];
         foreach ($fields as $field => $dir) {
             $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET ' . $field . '=REPLACE(' . $field . ',\'ocf_\',\'cns_\') WHERE ' . $field . ' LIKE \'%ocf\_%\'');
             move_folder_contents($dir, str_replace('ocf_', 'cns_', $dir));
@@ -347,21 +347,21 @@ function install_cns($upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_emoticon=REPLACE(t_emoticon,\'ocf_\',\'cns_\') WHERE t_emoticon LIKE \'%ocf\_%\'');
 
-        $GLOBALS['FORUM_DB']->change_primary_key('f_multi_moderations', array('id'));
+        $GLOBALS['FORUM_DB']->change_primary_key('f_multi_moderations', ['id']);
 
-        $GLOBALS['SITE_DB']->query_update('privilege_list', array('the_default' => 1), array('the_name' => 'double_post'));
-        $GLOBALS['SITE_DB']->query_update('privilege_list', array('the_default' => 1), array('the_name' => 'delete_account'));
+        $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'double_post']);
+        $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'delete_account']);
 
         add_privilege('FORUMS_AND_MEMBERS', 'delete_private_topic_posts', false, false);
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 'unread_forums');
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'unread_forums', array('t_forum_id', 't_cache_last_time'));
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'unread_forums', ['t_forum_id', 't_cache_last_time']);
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'posts_since');
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_since', array('p_time', 'p_cache_forum_id')); // p_cache_forum_id is used to not count PT posts
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_since', ['p_time', 'p_cache_forum_id']); // p_cache_forum_id is used to not count PT posts
 
         // Fix up legacy issues with CPFs that we can no longer tolerate
-        $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type'));
+        $fields = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type']);
         foreach ($fields as $field) {
             $type = $field['cf_type'];
             list($_type, $index) = get_cpf_storage_for($type);
@@ -401,34 +401,34 @@ function install_cns($upgrade_from = null)
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         add_privilege('FORUMS_AND_MEMBERS', 'appear_under_birthdays', true);
 
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_by', array('p_last_edit_by'));
-        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', array('i_inviter'));
-        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', array('pv_member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', array('m_last_visit_time'));
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_by', ['p_last_edit_by']);
+        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_inviter']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', ['pv_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', ['m_last_visit_time']);
     }
 
     // If we have the forum installed to this db already, leave
     if ($upgrade_from === null) {
-        $GLOBALS['FORUM_DB']->create_table('f_member_cpf_perms', array(
+        $GLOBALS['FORUM_DB']->create_table('f_member_cpf_perms', [
             'member_id' => '*MEMBER',
             'field_id' => '*AUTO_LINK',
             'guest_view' => 'BINARY',
             'member_view' => 'BINARY',
             'friend_view' => 'BINARY',
             'group_view' => 'SHORT_TEXT',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_emoticons', array(
+        $GLOBALS['FORUM_DB']->create_table('f_emoticons', [
             'e_code' => '*ID_TEXT',
             'e_theme_img_code' => 'SHORT_TEXT',
             'e_relevance_level' => 'INTEGER', // 0=core,1=supported,2=unsupported,3=poor,4=unused
             'e_use_topics' => 'BINARY', // Whether to use it to show a topics emotion
             'e_is_special' => 'BINARY',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_emoticons', 'relevantemoticons', array('e_relevance_level'));
-        $GLOBALS['FORUM_DB']->create_index('f_emoticons', 'topicemos', array('e_use_topics'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_emoticons', 'relevantemoticons', ['e_relevance_level']);
+        $GLOBALS['FORUM_DB']->create_index('f_emoticons', 'topicemos', ['e_use_topics']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_custom_fields', array(
+        $GLOBALS['FORUM_DB']->create_table('f_custom_fields', [
             'id' => '*AUTO',
             'cf_locked' => 'BINARY',  // Can't be deleted
             'cf_name' => 'SHORT_TRANS',
@@ -453,12 +453,12 @@ function install_cns($upgrade_from = null)
             'cf_tempcode' => 'LONG_TEXT',
             'cf_autofill_type' => 'ID_TEXT',
             'cf_autofill_hint' => 'ID_TEXT',
-        ));
+        ]);
 
         // These don't need to be filled in. We just use default from custom field if they aren't
-        $GLOBALS['FORUM_DB']->create_table('f_member_custom_fields', array(
+        $GLOBALS['FORUM_DB']->create_table('f_member_custom_fields', [
             'mf_member_id' => '*MEMBER',
-        ));
+        ]);
 
         cns_make_predefined_content_field('about');
         cns_make_predefined_content_field('interests');
@@ -468,24 +468,24 @@ function install_cns($upgrade_from = null)
             cns_make_predefined_content_field('location');
         }
 
-        $GLOBALS['FORUM_DB']->create_table('f_invites', array(
+        $GLOBALS['FORUM_DB']->create_table('f_invites', [
             'id' => '*AUTO',
             'i_inviter' => 'MEMBER',
             'i_email_address' => 'SHORT_TEXT',
             'i_time' => 'TIME',
             'i_taken' => 'BINARY',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_group_members', array(
+        $GLOBALS['FORUM_DB']->create_table('f_group_members', [
             'gm_group_id' => '*GROUP',
             'gm_member_id' => '*MEMBER',
             'gm_validated' => 'BINARY',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_validated', array('gm_validated'));
-        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_member_id', array('gm_member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_group_id', array('gm_group_id'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_validated', ['gm_validated']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_member_id', ['gm_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_group_members', 'gm_group_id', ['gm_group_id']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_members', array(
+        $GLOBALS['FORUM_DB']->create_table('f_members', [
             // Basic details
             'id' => '*AUTO',
             'm_username' => 'ID_TEXT',
@@ -546,20 +546,20 @@ function install_cns($upgrade_from = null)
 
             // No editing interface for the below, but may be edited in Commandr
             'm_max_email_attach_size_mb' => 'INTEGER',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_members', '#search_user', array('m_username'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'user_list', array('m_username'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'menail', array('m_email_address'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'external_auth_lookup', array('m_pass_hash_salted'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'sort_post_count', array('m_cache_num_posts'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'm_join_time', array('m_join_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'whos_validated', array('m_validated'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'birthdays', array('m_dob_day', 'm_dob_month'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'ftjoin_msig', array('m_signature'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'primary_group', array('m_primary_group'));
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'avatar_url', array('m_avatar_url')); // Used for uniform avatar randomisation
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_members', '#search_user', ['m_username']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'user_list', ['m_username']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'menail', ['m_email_address']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'external_auth_lookup', ['m_pass_hash_salted']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'sort_post_count', ['m_cache_num_posts']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'm_join_time', ['m_join_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'whos_validated', ['m_validated']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'birthdays', ['m_dob_day', 'm_dob_month']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'ftjoin_msig', ['m_signature']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'primary_group', ['m_primary_group']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'avatar_url', ['m_avatar_url']); // Used for uniform avatar randomisation
 
-        $no_use_topics = array(
+        $no_use_topics = [
             'party' => true,
             'christmas' => true,
             'offtopic' => true,
@@ -581,8 +581,8 @@ function install_cns($upgrade_from = null)
             'hug' => true,
             'tired' => true,
             'whew' => true,
-        );
-        $core_emoticons = array(
+        ];
+        $core_emoticons = [
             ':P' => 'cheeky',
             ":'(" => 'cry',
             ':dry:' => 'dry',
@@ -598,8 +598,8 @@ function install_cns($upgrade_from = null)
             ':|' => 'mellow',
             ':ninja:' => 'ph34r',
             ':o' => 'shocked',
-        );
-        $supported_emoticons = array(
+        ];
+        $supported_emoticons = [
             ':offtopic:' => 'offtopic', // Larger than normal, so don't put in core set
             ':rolleyes:' => 'rolleyes',
             ':D' => 'grin',
@@ -642,10 +642,10 @@ function install_cns($upgrade_from = null)
             ':hug:' => 'hug',
             ':tired:' => 'tired',
             ':whew:' => 'whew',
-        );
-        $unused_emoticons = array(
+        ];
+        $unused_emoticons = [
             ':christmas:' => 'christmas',
-        );
+        ];
         foreach ($core_emoticons as $a => $b) {
             cns_make_emoticon($a, 'cns_emoticons/' . $b, 0, array_key_exists($b, $no_use_topics) ? 0 : 1);
         }
@@ -656,7 +656,7 @@ function install_cns($upgrade_from = null)
             cns_make_emoticon($a, 'cns_emoticons/' . $b, 1, array_key_exists($b, $no_use_topics) ? 0 : 1);
         }
 
-        $GLOBALS['FORUM_DB']->create_table('f_groups', array(
+        $GLOBALS['FORUM_DB']->create_table('f_groups', [
             'id' => '*AUTO',
             'g_name' => 'SHORT_TRANS',
             'g_is_default' => 'BINARY',
@@ -684,16 +684,16 @@ function install_cns($upgrade_from = null)
             'g_rank_image_pri_only' => 'BINARY',
             'g_open_membership' => 'BINARY',
             'g_is_private_club' => 'BINARY',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'ftjoin_gname', array('g_name'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'ftjoin_gtitle', array('g_title'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_private_club', array('g_is_private_club'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_super_admin', array('g_is_super_admin'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_super_moderator', array('g_is_super_moderator'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_default', array('g_is_default'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'hidden', array('g_hidden'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_presented_at_install', array('g_is_presented_at_install'));
-        $GLOBALS['FORUM_DB']->create_index('f_groups', 'gorder', array('g_order', 'id'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'ftjoin_gname', ['g_name']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'ftjoin_gtitle', ['g_title']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_private_club', ['g_is_private_club']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_super_admin', ['g_is_super_admin']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_super_moderator', ['g_is_super_moderator']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_default', ['g_is_default']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'hidden', ['g_hidden']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'is_presented_at_install', ['g_is_presented_at_install']);
+        $GLOBALS['FORUM_DB']->create_index('f_groups', 'gorder', ['g_order', 'id']);
 
         // For the_zone_access table
         require_code('zones2');
@@ -714,16 +714,16 @@ function install_cns($upgrade_from = null)
         // Make probation
         $probation_group = cns_make_group(do_lang('PROBATION'), 0, 0, 0, do_lang('DESCRIPTION_PROBATION'), '', null, null, null, 0);
 
-        $GLOBALS['FORUM_DB']->create_table('f_forum_groupings', array(
+        $GLOBALS['FORUM_DB']->create_table('f_forum_groupings', [
             'id' => '*AUTO',
             'c_title' => 'SHORT_TEXT',
             'c_description' => 'LONG_TEXT',
             'c_expanded_by_default' => 'BINARY',
-        ));
+        ]);
         $forum_grouping_id = cns_make_forum_grouping(do_lang('DEFAULT_GROUPING_TITLE'), '');
         $forum_grouping_id_staff = cns_make_forum_grouping(do_lang('STAFF'), '');
 
-        $GLOBALS['FORUM_DB']->create_table('f_forums', array(
+        $GLOBALS['FORUM_DB']->create_table('f_forums', [
             'id' => '*AUTO',
             'f_name' => 'SHORT_TEXT',
             'f_description' => 'LONG_TRANS__COMCODE',
@@ -755,14 +755,14 @@ function install_cns($upgrade_from = null)
             'f_mail_password' => 'SHORT_TEXT',
             'f_mail_nonmatch_policy' => 'ID_TEXT',
             'f_mail_unconfirmed_notice' => 'BINARY',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_forums', 'cache_num_posts', array('f_cache_num_posts')); // Used to find active forums
-        $GLOBALS['FORUM_DB']->create_index('f_forums', 'subforum_parenting', array('f_parent_forum'));
-        $GLOBALS['FORUM_DB']->create_index('f_forums', 'findnamedforum', array('f_name'));
-        $GLOBALS['FORUM_DB']->create_index('f_forums', 'f_position', array('f_position'));
-        $typical_access = array($guest_group => 4, $administrator_group => 5, $super_moderator_group => 5, $probation_group => 2, $member_group_0 => 4, $member_group_1 => 4, $member_group_2 => 4, $member_group_3 => 4, $member_group_4 => 4);
-        $staff_post_access = array($guest_group => 1, $administrator_group => 5, $super_moderator_group => 5, $probation_group => 1, $member_group_0 => 1, $member_group_1 => 1, $member_group_2 => 1, $member_group_3 => 1, $member_group_4 => 1);
-        $staff_access = array($administrator_group => 5, $super_moderator_group => 5);
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'cache_num_posts', ['f_cache_num_posts']); // Used to find active forums
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'subforum_parenting', ['f_parent_forum']);
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'findnamedforum', ['f_name']);
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'f_position', ['f_position']);
+        $typical_access = [$guest_group => 4, $administrator_group => 5, $super_moderator_group => 5, $probation_group => 2, $member_group_0 => 4, $member_group_1 => 4, $member_group_2 => 4, $member_group_3 => 4, $member_group_4 => 4];
+        $staff_post_access = [$guest_group => 1, $administrator_group => 5, $super_moderator_group => 5, $probation_group => 1, $member_group_0 => 1, $member_group_1 => 1, $member_group_2 => 1, $member_group_3 => 1, $member_group_4 => 1];
+        $staff_access = [$administrator_group => 5, $super_moderator_group => 5];
         $root_forum = cns_make_forum(do_lang('ROOT_FORUM'), '', null, $staff_post_access, null);
         cns_make_forum(do_lang('DEFAULT_FORUM_TITLE'), '', $forum_grouping_id, $typical_access, $root_forum);
         $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
@@ -773,7 +773,7 @@ function install_cns($upgrade_from = null)
         }
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
-        $GLOBALS['FORUM_DB']->create_table('f_topics', array(
+        $GLOBALS['FORUM_DB']->create_table('f_topics', [
             'id' => '*AUTO',
             't_pinned' => 'BINARY',
             't_cascading' => 'BINARY', // Cascades to deeper forums, as an announcement
@@ -801,28 +801,28 @@ function install_cns($upgrade_from = null)
             't_cache_last_username' => 'ID_TEXT',
             't_cache_last_member_id' => '?MEMBER',
             't_cache_num_posts' => 'INTEGER',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_num_views', array('t_num_views'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to', array('t_pt_to'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from', array('t_pt_from'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_validated', array('t_validated'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'in_forum', array('t_forum_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_time', array('t_cache_last_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_time_2', array('t_cache_first_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', '#t_description', array('t_description'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'descriptionsearch', array('t_description'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'forumlayer', array('t_cache_first_title'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cascading', array('t_cascading'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cascading_or_forum', array('t_cascading', 't_forum_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order', array('t_cascading', 't_pinned', 't_cache_last_time')); // Ordering for forumview, is picked up over topic_order_3 for just the ordering bit (it seems)
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_forum', array('t_forum_id', 't_cascading', 't_pinned', 't_cache_last_time')); // Total index for forumview, including ordering
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'ownedtopics', array('t_cache_first_member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 'unread_forums', array('t_forum_id', 't_cache_last_time'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_num_views', ['t_num_views']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to', ['t_pt_to']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from', ['t_pt_from']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_validated', ['t_validated']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'in_forum', ['t_forum_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_time', ['t_cache_last_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_time_2', ['t_cache_first_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', '#t_description', ['t_description']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'descriptionsearch', ['t_description']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'forumlayer', ['t_cache_first_title']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cascading', ['t_cascading']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cascading_or_forum', ['t_cascading', 't_forum_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order', ['t_cascading', 't_pinned', 't_cache_last_time']); // Ordering for forumview, is picked up over topic_order_3 for just the ordering bit (it seems)
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'topic_order_forum', ['t_forum_id', 't_cascading', 't_pinned', 't_cache_last_time']); // Total index for forumview, including ordering
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'ownedtopics', ['t_cache_first_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 'unread_forums', ['t_forum_id', 't_cache_last_time']);
 
         // Welcome topic
         $topic_id = cns_make_topic($staff_forum_id, '', '', 1, 1, 0, 0, null, null, false);
 
-        $GLOBALS['FORUM_DB']->create_table('f_posts', array(
+        $GLOBALS['FORUM_DB']->create_table('f_posts', [
             'id' => '*AUTO',
             'p_title' => 'SHORT_TEXT',
             'p_post' => 'LONG_TRANS__COMCODE',
@@ -839,45 +839,45 @@ function install_cns($upgrade_from = null)
             'p_is_emphasised' => 'BINARY',
             'p_skip_sig' => 'BINARY',
             'p_parent_id' => '?AUTO_LINK',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'p_validated', array('p_validated'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'in_topic', array('p_topic_id', 'p_time', 'id'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'post_order_time', array('p_time', 'id'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_since', array('p_time', 'p_cache_forum_id')); // p_cache_forum_id is used to not count PT posts
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'p_last_edit_time', array('p_last_edit_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'find_pp', array('p_intended_solely_for'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'search_join', array('p_post'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'postsinforum', array('p_cache_forum_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'deletebyip', array('p_ip_address'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'p_validated', ['p_validated']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'in_topic', ['p_topic_id', 'p_time', 'id']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'post_order_time', ['p_time', 'id']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_since', ['p_time', 'p_cache_forum_id']); // p_cache_forum_id is used to not count PT posts
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'p_last_edit_time', ['p_last_edit_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'find_pp', ['p_intended_solely_for']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'search_join', ['p_post']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'postsinforum', ['p_cache_forum_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'deletebyip', ['p_ip_address']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_special_pt_access', array(
+        $GLOBALS['FORUM_DB']->create_table('f_special_pt_access', [
             's_member_id' => '*MEMBER',
             's_topic_id' => '*AUTO_LINK',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_saved_warnings', array(
+        $GLOBALS['FORUM_DB']->create_table('f_saved_warnings', [
             's_title' => '*SHORT_TEXT',
             's_explanation' => 'LONG_TEXT',
             's_message' => 'LONG_TEXT',
-        ), false, false, true);
+        ], false, false, true);
 
-        $GLOBALS['FORUM_DB']->create_table('f_forum_intro_ip', array(
+        $GLOBALS['FORUM_DB']->create_table('f_forum_intro_ip', [
             'i_forum_id' => '*AUTO_LINK',
             'i_ip' => '*IP',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_forum_intro_member', array(
+        $GLOBALS['FORUM_DB']->create_table('f_forum_intro_member', [
             'i_forum_id' => '*AUTO_LINK',
             'i_member_id' => '*MEMBER',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_post_templates', array(
+        $GLOBALS['FORUM_DB']->create_table('f_post_templates', [
             'id' => '*AUTO',
             't_title' => 'SHORT_TEXT',
             't_text' => 'LONG_TEXT',
             't_forum_multi_code' => 'SHORT_TEXT',
             't_use_default_forums' => 'BINARY',
-        ));
+        ]);
         if (addon_installed('cns_post_templates')) {
             require_lang('cns_post_templates');
             cns_make_post_template(do_lang('DEFAULT_POST_TEMPLATE_bug_title'), do_lang('DEFAULT_POST_TEMPLATE_bug_text'), '', 0);
@@ -885,9 +885,9 @@ function install_cns($upgrade_from = null)
             cns_make_post_template(do_lang('DEFAULT_POST_TEMPLATE_fault_title'), do_lang('DEFAULT_POST_TEMPLATE_fault_text'), '', 0);
         }
 
-        $GLOBALS['FORUM_DB']->create_index('f_posts', '#p_title', array('p_title'));
+        $GLOBALS['FORUM_DB']->create_index('f_posts', '#p_title', ['p_title']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_polls', array(
+        $GLOBALS['FORUM_DB']->create_table('f_polls', [
             'id' => '*AUTO',
             'po_question' => 'SHORT_TEXT',
             'po_cache_total_votes' => 'INTEGER',
@@ -896,24 +896,24 @@ function install_cns($upgrade_from = null)
             'po_minimum_selections' => 'INTEGER',
             'po_maximum_selections' => 'INTEGER',
             'po_requires_reply' => 'BINARY',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_poll_answers', array(
+        $GLOBALS['FORUM_DB']->create_table('f_poll_answers', [
             'id' => '*AUTO',
             'pa_poll_id' => 'AUTO_LINK',
             'pa_answer' => 'SHORT_TEXT',
             'pa_cache_num_votes' => 'INTEGER',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_poll_votes', array(
+        $GLOBALS['FORUM_DB']->create_table('f_poll_votes', [
             'id' => '*AUTO',
             'pv_poll_id' => 'AUTO_LINK',
             'pv_member_id' => 'MEMBER',
             'pv_answer_id' => 'AUTO_LINK', // -1 means "forfeited". We'd use null, but we aren't allowed null fragments in keys
             'pv_ip' => 'IP',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', array(
+        $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', [
             'id' => '*AUTO',
             'mm_name' => 'SHORT_TRANS',
             'mm_post_text' => 'LONG_TEXT',    // Comcode
@@ -922,10 +922,10 @@ function install_cns($upgrade_from = null)
             'mm_open_state' => '?BINARY',
             'mm_forum_multi_code' => 'SHORT_TEXT',
             'mm_title_suffix' => 'SHORT_TEXT',
-        ));
+        ]);
         cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
 
-        $GLOBALS['FORUM_DB']->create_table('f_warnings', array(
+        $GLOBALS['FORUM_DB']->create_table('f_warnings', [
             'id' => '*AUTO',
             'w_member_id' => 'MEMBER',
             'w_time' => 'TIME',
@@ -939,10 +939,10 @@ function install_cns($upgrade_from = null)
             'p_charged_points' => 'INTEGER',
             'p_banned_member' => 'BINARY',
             'p_changed_usergroup_from' => '?GROUP',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', array('w_member_id'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
 
-        $GLOBALS['FORUM_DB']->create_table('f_moderator_logs', array(
+        $GLOBALS['FORUM_DB']->create_table('f_moderator_logs', [
             'id' => '*AUTO',
             'l_the_type' => 'ID_TEXT', // Language string codename
             'l_param_a' => 'SHORT_TEXT',
@@ -950,14 +950,14 @@ function install_cns($upgrade_from = null)
             'l_date_and_time' => 'TIME',
             'l_reason' => 'LONG_TEXT',
             'l_by' => 'MEMBER',
-        ));
+        ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_member_known_login_ips', array(
+        $GLOBALS['FORUM_DB']->create_table('f_member_known_login_ips', [
             'i_member_id' => '*MEMBER',
             'i_ip' => '*IP',
             'i_val_code' => 'SHORT_TEXT',
             'i_time' => 'TIME',
-        ));
+        ]);
 
         // NB: post_param_string's will return default's if Conversr is being installed but not used yet (e.g. IPB forum driver chosen at installation)
         // Make guest
@@ -970,7 +970,7 @@ function install_cns($upgrade_from = null)
             null, // dob_day
             null, // dob_month
             null, // dob_year
-            array(), // custom_fields
+            [], // custom_fields
             null, // timezone
             '', // language
             '', // theme
@@ -1008,7 +1008,7 @@ function install_cns($upgrade_from = null)
             null, // dob_day
             null, // dob_month
             null, // dob_year
-            array(), // custom_fields
+            [], // custom_fields
             null, // timezone
             '', // language
             '', // theme
@@ -1046,7 +1046,7 @@ function install_cns($upgrade_from = null)
             null, // dob_day
             null, // dob_month
             null, // dob_year
-            array(), // custom_fields
+            [], // custom_fields
             null, // timezone
             '', // language
             '', // theme
@@ -1075,12 +1075,12 @@ function install_cns($upgrade_from = null)
             false // check_correctness
         );
 
-        $GLOBALS['FORUM_DB']->create_table('f_read_logs', array(
+        $GLOBALS['FORUM_DB']->create_table('f_read_logs', [
             'l_member_id' => '*MEMBER',
             'l_topic_id' => '*AUTO_LINK',
             'l_time' => 'TIME',
-        ));
-        $GLOBALS['FORUM_DB']->create_index('f_read_logs', 'erase_old_read_logs', array('l_time'));
+        ]);
+        $GLOBALS['FORUM_DB']->create_index('f_read_logs', 'erase_old_read_logs', ['l_time']);
 
         cns_make_post($topic_id, do_lang('DEFAULT_POST_TITLE'), do_lang('DEFAULT_POST_CONTENT'), 0, true, 1, 0, do_lang('SYSTEM'), '127.0.0.1', time(), $GLOBALS['CNS_DRIVER']->get_guest_id(), null, null, null, false, true);
 
@@ -1095,18 +1095,18 @@ function install_cns($upgrade_from = null)
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 10.0)) {
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time', array('m_dob_month', 'm_dob_day', 'm_last_visit_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by_in_forum', array('p_poster', 'p_cache_forum_id')); // Used for searching by member, filtered by forum access
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by_in_topic', array('p_poster', 'p_topic_id')); // Used to help on some joins / complex queries
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by', array('p_poster', 'p_time'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_num_posts', array('t_cache_num_posts'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'in_topic_change_order', array('p_topic_id', 'p_last_edit_time', 'p_time', 'id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_last_member_id', array('t_cache_last_member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_first_post_id', array('t_cache_first_post_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_last_post_id', array('t_cache_last_post_id'));
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time', ['m_dob_month', 'm_dob_day', 'm_last_visit_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by_in_forum', ['p_poster', 'p_cache_forum_id']); // Used for searching by member, filtered by forum access
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by_in_topic', ['p_poster', 'p_topic_id']); // Used to help on some joins / complex queries
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'posts_by', ['p_poster', 'p_time']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_num_posts', ['t_cache_num_posts']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'in_topic_change_order', ['p_topic_id', 'p_last_edit_time', 'p_time', 'id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_last_member_id', ['t_cache_last_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_first_post_id', ['t_cache_first_post_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_cache_last_post_id', ['t_cache_last_post_id']);
 
-        $GLOBALS['FORUM_DB']->create_index('f_groups', '#groups_search__combined', array('g_name', 'g_title'));
-        $GLOBALS['FORUM_DB']->create_index('f_posts', '#posts_search__combined', array('p_post', 'p_title'));
+        $GLOBALS['FORUM_DB']->create_index('f_groups', '#groups_search__combined', ['g_name', 'g_title']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', '#posts_search__combined', ['p_post', 'p_title']);
 
         // Has to be done after f_groups is added
         add_privilege('FORUMS_AND_MEMBERS', 'exceed_post_edit_time_limit', true);
@@ -1120,9 +1120,9 @@ function install_cns($upgrade_from = null)
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
-        $GLOBALS['FORUM_DB']->create_index('f_forums', 'club_search', array('f_description'));
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'club_search', ['f_description']);
 
-        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_member', array('s_member_id'));
-        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_topic', array('s_topic_id'));
+        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_member', ['s_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_topic', ['s_topic_id']);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_page_after_login
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAGE_AFTER_LOGIN',
             'type' => 'line',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_page_after_login
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

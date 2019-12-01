@@ -30,7 +30,7 @@ class Hook_config_hc_mail_wait_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_MAIL_WAIT_TIME',
             'type' => 'integer',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_mail_wait_time
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

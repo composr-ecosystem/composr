@@ -30,7 +30,7 @@ class Hook_config_editarea
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EDITAREA',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -42,7 +42,7 @@ class Hook_config_editarea
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

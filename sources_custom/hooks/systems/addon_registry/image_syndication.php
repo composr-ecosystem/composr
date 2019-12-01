@@ -26,7 +26,7 @@ class Hook_addon_registry_image_syndication
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_image_syndication
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Photobucket developers',
-        );
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_image_syndication
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,13 +108,13 @@ class Hook_addon_registry_image_syndication
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP curl extension',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class Hook_addon_registry_image_syndication
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/image_syndication.php',
             'sources_custom/photobucket/OAuth/Consumer.php',
             'sources_custom/photobucket/OAuth/Request.php',
@@ -191,6 +191,6 @@ class Hook_addon_registry_image_syndication
             'sources_custom/hooks/systems/config/photobucket_client_id.php',
             'sources_custom/hooks/systems/config/photobucket_client_secret.php',
             'lang_custom/EN/video_syndication_photobucket.ini',
-        );
+        ];
     }
 }

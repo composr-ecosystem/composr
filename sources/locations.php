@@ -26,8 +26,8 @@
 function init__locations()
 {
     global $COUNTRY_LIST;
-    $COUNTRY_LIST = array(
-        'Africa' => array(
+    $COUNTRY_LIST = [
+        'Africa' => [
             'DZ' => 'Algeria',
             'AO' => 'Angola',
             'BJ' => 'Benin',
@@ -85,8 +85,8 @@ function init__locations()
             'EH' => 'Western Sahara',
             'ZM' => 'Zambia',
             'ZW' => 'Zimbabwe',
-        ),
-        'North America' => array(
+        ],
+        'North America' => [
             'AG' => 'Antigua and Barbuda',
             'BS' => 'Bahamas',
             'BB' => 'Barbados',
@@ -126,8 +126,8 @@ function init__locations()
             'PM' => 'Saint Pierre and Miquelon',
             'TC' => 'Turks and Caicos Islands',
             'VI' => 'Virgin Islands of the United States',
-        ),
-        'South America' => array(
+        ],
+        'South America' => [
             'AR' => 'Argentina',
             'BO' => 'Bolivia',
             'BR' => 'Brazil',
@@ -142,8 +142,8 @@ function init__locations()
             'VE' => 'Venezuela',
             'FK' => 'Falkland Islands',
             'GF' => 'French Guiana',
-        ),
-        'Asia' => array(
+        ],
+        'Asia' => [
             'AF' => 'Afghanistan',
             'AM' => 'Armenia',
             'AZ' => 'Azerbaijan',
@@ -196,8 +196,8 @@ function init__locations()
             'UZ' => 'Uzbekistan',
             'VN' => 'Vietnam',
             'YE' => 'Yemen',
-        ),
-        'Europe' => array(
+        ],
+        'Europe' => [
             'AL' => 'Albania',
             'AD' => 'Andorra',
             'AT' => 'Austria',
@@ -255,8 +255,8 @@ function init__locations()
             'VA' => 'Vatican City',
             'AX' => (get_charset() == 'utf-8') ? (hex2bin('c385') . 'land Islands') : 'Aland Islands',
             'XK' => 'Kosovo', // Unofficial, http://geonames.wordpress.com/2010/03/08/xk-country-code-for-kosovo/. Currently not fully UN recognised, UN-controlled ex-part of Serbia
-        ),
-        'Oceania' => array(
+        ],
+        'Oceania' => [
             'AS' => 'American Samoa',
             'AQ' => 'Antarctica',
             'AU' => 'Australia',
@@ -291,11 +291,11 @@ function init__locations()
             'UM' => 'United States Minor Outlying Islands',
             'VU' => 'Vanuatu',
             'WF' => 'Wallis and Futuna',
-        ),
-    );
+        ],
+    ];
 
     global $USA_STATE_LIST;
-    $USA_STATE_LIST = array(
+    $USA_STATE_LIST = [
         'AL' => 'Alabama',
         'AK' => 'Alaska',
         'AS' => 'American Samoa',
@@ -355,7 +355,7 @@ function init__locations()
         'WV' => 'West Virginia',
         'WI' => 'Wisconsin',
         'WY' => 'Wyoming',
-    );
+    ];
 
     if (user_lang() != fallback_lang()) {
         require_lang('locations');
@@ -407,7 +407,7 @@ function find_continents()
 function find_countries()
 {
     global $COUNTRY_LIST;
-    $countries = array();
+    $countries = [];
     foreach ($COUNTRY_LIST as $continent => $_countries) {
         $countries += $_countries;
     }
@@ -423,7 +423,7 @@ function find_countries()
  */
 function find_continent($country)
 {
-    static $cache = array();
+    static $cache = [];
 
     if (isset($cache[$country])) {
         return $cache[$country];
@@ -448,7 +448,7 @@ function find_continent($country)
  */
 function find_iso_country_from_name($country)
 {
-    static $cache = array();
+    static $cache = [];
 
     if (isset($cache[$country])) {
         return $cache[$country];
@@ -474,7 +474,7 @@ function find_iso_country_from_name($country)
  */
 function find_country_name_from_iso($iso)
 {
-    static $cache = array();
+    static $cache = [];
 
     if (isset($cache[$iso])) {
         return $cache[$iso];
@@ -497,7 +497,7 @@ function find_country_name_from_iso($iso)
  * @param  array $selected_countries The currently selected countries
  * @return Tempcode The list of countries
  */
-function create_country_selection_list($selected_countries = array())
+function create_country_selection_list($selected_countries = [])
 {
     $continents_and_countries = find_continents_and_countries();
 
@@ -518,7 +518,7 @@ function create_country_selection_list($selected_countries = array())
  * @param  array $selected_regions The currently selected regions
  * @return Tempcode The list of regions
  */
-function create_region_selection_list($selected_regions = array())
+function create_region_selection_list($selected_regions = [])
 {
     return create_country_selection_list($selected_regions); // The standard implementation is for a region to just be a country
 }
@@ -529,7 +529,7 @@ function create_region_selection_list($selected_regions = array())
  * @param  array $selected_states The currently selected states
  * @return Tempcode The list of states
  */
-function create_usa_state_selection_list($selected_states = array())
+function create_usa_state_selection_list($selected_states = [])
 {
     $state_list = new Tempcode();
 
@@ -600,7 +600,7 @@ function get_country()
  */
 function geolocate_ip($ip = null)
 {
-    static $result = array();
+    static $result = [];
 
     if ($ip === null) {
         $ip = get_ip_address();
@@ -650,7 +650,7 @@ function geolocate_ip($ip = null)
  * @param  array $regions The currently selected regions
  * @return Tempcode The region inputter
  */
-function form_input_regions($regions = array())
+function form_input_regions($regions = [])
 {
     require_code('form_templates');
     $list_groups = create_region_selection_list($regions);

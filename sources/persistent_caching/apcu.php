@@ -37,7 +37,7 @@ class Persistent_caching_apcucache
         if ($this->objects_list === null) {
             $this->objects_list = apcu_fetch(get_file_base() . 'PERSISTENT_CACHE_OBJECTS');
             if ($this->objects_list === false) {
-                $this->objects_list = array();
+                $this->objects_list = [];
             }
         }
         return $this->objects_list;
@@ -79,7 +79,7 @@ class Persistent_caching_apcucache
             @apcu_store(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
         }
 
-        @apcu_store($key, array(time(), $data), $expire_secs);
+        @apcu_store($key, [time(), $data], $expire_secs);
     }
 
     /**
@@ -103,7 +103,7 @@ class Persistent_caching_apcucache
     public function flush()
     {
         // Update list of persistent-objects
-        $this->objects_list = array();
+        $this->objects_list = [];
         @apcu_store(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
 
         apcu_clear_cache('user');

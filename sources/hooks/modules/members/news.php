@@ -32,18 +32,18 @@ class Hook_members_news
     public function run($member_id)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        $nc_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', array('nc_owner' => $member_id));
+        $nc_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', ['nc_owner' => $member_id]);
         if ($nc_id !== null) {
             require_lang('news');
-            $modules = array();
+            $modules = [];
             if (has_actual_page_access(get_member(), 'news', get_page_zone('news'))) {
-                $modules[] = array('content', do_lang_tempcode('BLOG_NEWS_ARCHIVE'), build_url(array('page' => 'news', 'type' => 'browse', 'id' => $nc_id, 'blog' => 1), get_module_zone('news')), 'menu/cms/blog');
+                $modules[] = ['content', do_lang_tempcode('BLOG_NEWS_ARCHIVE'), build_url(['page' => 'news', 'type' => 'browse', 'id' => $nc_id, 'blog' => 1], get_module_zone('news')), 'menu/cms/blog'];
             }
             return $modules;
         }
-        return array();
+        return [];
     }
 }

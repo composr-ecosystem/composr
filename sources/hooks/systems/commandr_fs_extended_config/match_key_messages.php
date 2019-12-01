@@ -55,7 +55,7 @@ class Hook_commandr_fs_extended_config__match_key_messages
      */
     public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
     {
-        return table_to_json('match_key_messages', array('id'));
+        return table_to_json('match_key_messages', ['id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class Hook_commandr_fs_extended_config__match_key_messages
      */
     public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
     {
-        return table_from_json('match_key_messages', $contents, array(), TABLE_REPLACE_MODE_SEVERE);
+        return table_from_json('match_key_messages', $contents, [], TABLE_REPLACE_MODE_SEVERE);
     }
 }

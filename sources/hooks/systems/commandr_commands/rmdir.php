@@ -34,30 +34,30 @@ class Hook_commandr_command_rmdir
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('rmdir', array('h', 'f'), array(true)), '', '');
+            return ['', do_command_help('rmdir', ['h', 'f'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'rmdir'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'rmdir')];
             } else {
                 $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
             }
 
             if (!$commandr_fs->_is_dir($parameters[0])) {
-                return array('', '', '', do_lang('NOT_A_DIR', '1'));
+                return ['', '', '', do_lang('NOT_A_DIR', '1')];
             }
 
             if (!array_key_exists('f', $options)) {
                 $listing = $commandr_fs->listing($parameters[0]);
                 if ((!empty($listing[0])) || (!empty($listing[1]))) {
-                    return array('', '', '', do_lang('NOT_EMPTY_FORCE', '1'));
+                    return ['', '', '', do_lang('NOT_EMPTY_FORCE', '1')];
                 }
             }
 
             $success = $commandr_fs->remove_directory($parameters[0]);
             if ($success) {
-                return array('', '', do_lang('SUCCESS'), '');
+                return ['', '', do_lang('SUCCESS'), ''];
             } else {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
             }
         }
     }

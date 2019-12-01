@@ -32,7 +32,7 @@ class Hook_realtime_rain_cns
      */
     public function run($from, $to)
     {
-        $drops = array();
+        $drops = [];
         if (get_forum_type() == 'cns') {
             // Member's joining (f_members table)
             if (has_actual_page_access(get_member(), 'members')) {
@@ -46,7 +46,7 @@ class Hook_realtime_rain_cns
                         continue;
                     }
 
-                    $drops[] = rain_get_special_icons($row['m_ip_address'], $timestamp) + array(
+                    $drops[] = rain_get_special_icons($row['m_ip_address'], $timestamp) + [
                         'TYPE' => 'join',
                         'FROM_MEMBER_ID' => strval($member_id),
                         'TO_MEMBER_ID' => null,
@@ -63,7 +63,7 @@ class Hook_realtime_rain_cns
                         'FROM_ID' => 'member_' . strval($member_id),
                         'TO_ID' => null,
                         'GROUP_ID' => null,
-                    );
+                    ];
                 }
             }
 
@@ -87,7 +87,7 @@ class Hook_realtime_rain_cns
 
                     $ticker_text = strip_comcode(get_translated_text($row['p_post'], $GLOBALS['FORUM_DB']));
 
-                    $drops[] = rain_get_special_icons($row['p_ip_address'], $timestamp, null, $ticker_text) + array(
+                    $drops[] = rain_get_special_icons($row['p_ip_address'], $timestamp, null, $ticker_text) + [
                         'TYPE' => 'post',
                         'FROM_MEMBER_ID' => strval($member_id),
                         'TO_MEMBER_ID' => null,
@@ -104,7 +104,7 @@ class Hook_realtime_rain_cns
                         'FROM_ID' => 'member_' . strval($member_id),
                         'TO_ID' => null,
                         'GROUP_ID' => 'post_' . strval($row['id']),
-                    );
+                    ];
                 }
             }
         }

@@ -50,7 +50,7 @@ class Hook_profiles_tabs_about
         $order = 10;
 
         require_code('cns_general');
-        $need = array(
+        $need = [
             'custom_fields',
             'username',
             'photo',
@@ -79,7 +79,7 @@ class Hook_profiles_tabs_about
             'primary_group',
             'secondary_groups_named',
             'email_address',
-        );
+        ];
         $member_info = cns_read_in_member_profile($member_id_of, $need, true);
 
         cms_register_shutdown_function_safe(function() use ($member_info, $member_id_of) {
@@ -90,49 +90,49 @@ class Hook_profiles_tabs_about
         });
 
         // Things staff can do with this user
-        $modules = array();
+        $modules = [];
         if ((has_privilege($member_id_viewing, 'warn_members')) && (has_actual_page_access($member_id_viewing, 'warnings')) && (addon_installed('cns_warnings'))) {
             $redir_url = get_self_url(true);
-            $modules[] = array('audit', do_lang_tempcode('WARN_MEMBER'), build_url(array('page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($redir_url)), get_module_zone('warnings')), 'links/warning_add');
-            $modules[] = array('audit', do_lang_tempcode('WARN_MEMBER_AS_SPAMMER'), build_url(array('page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'spam' => 1, 'redirect' => $redir_url), get_module_zone('warnings')), 'buttons/report');
-            $modules[] = array('audit', do_lang_tempcode('PUNITIVE_HISTORY'), build_url(array('page' => 'warnings', 'type' => 'history', 'id' => $member_id_of), get_module_zone('warnings')), 'menu/social/warnings');
+            $modules[] = ['audit', do_lang_tempcode('WARN_MEMBER'), build_url(['page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($redir_url)], get_module_zone('warnings')), 'links/warning_add'];
+            $modules[] = ['audit', do_lang_tempcode('WARN_MEMBER_AS_SPAMMER'), build_url(['page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'spam' => 1, 'redirect' => $redir_url], get_module_zone('warnings')), 'buttons/report'];
+            $modules[] = ['audit', do_lang_tempcode('PUNITIVE_HISTORY'), build_url(['page' => 'warnings', 'type' => 'history', 'id' => $member_id_of], get_module_zone('warnings')), 'menu/social/warnings'];
         }
         if ((addon_installed('actionlog')) && (has_privilege($member_id_viewing, 'view_revisions')) && (has_actual_page_access($member_id_viewing, 'admin_revisions'))) {
-            $modules[] = (!addon_installed('cns_forum')) ? null : array('audit', do_lang_tempcode('actionlog:REVISIONS'), build_url(array('page' => 'admin_revisions', 'type' => 'browse', 'username' => $member_info['username']), get_module_zone('admin_revisions')), 'admin/revisions');
+            $modules[] = (!addon_installed('cns_forum')) ? null : ['audit', do_lang_tempcode('actionlog:REVISIONS'), build_url(['page' => 'admin_revisions', 'type' => 'browse', 'username' => $member_info['username']], get_module_zone('admin_revisions')), 'admin/revisions'];
         }
         if ((addon_installed('securitylogging')) && (has_actual_page_access($member_id_viewing, 'admin_lookup'))) {
             require_lang('lookup');
-            $modules[] = array('audit', do_lang_tempcode('INVESTIGATE_USER'), build_url(array('page' => 'admin_lookup', 'param' => $member_id_of), get_module_zone('admin_lookup')), 'menu/adminzone/tools/users/investigate_user');
+            $modules[] = ['audit', do_lang_tempcode('INVESTIGATE_USER'), build_url(['page' => 'admin_lookup', 'param' => $member_id_of], get_module_zone('admin_lookup')), 'menu/adminzone/tools/users/investigate_user'];
         }
         if ((addon_installed('securitylogging')) && (has_actual_page_access($member_id_viewing, 'admin_security'))) {
             require_lang('security');
-            $modules[] = array('audit', do_lang_tempcode('SECURITY_LOG'), build_url(array('page' => 'admin_security', 'member_id' => $member_id_of), get_module_zone('admin_security')), 'menu/adminzone/audit/security_log');
+            $modules[] = ['audit', do_lang_tempcode('SECURITY_LOG'), build_url(['page' => 'admin_security', 'member_id' => $member_id_of], get_module_zone('admin_security')), 'menu/adminzone/audit/security_log'];
         }
         if (addon_installed('actionlog')) {
             if (has_actual_page_access($member_id_viewing, 'admin_actionlog')) {
                 require_lang('actionlog');
-                $modules[] = array('audit', do_lang_tempcode('VIEW_ACTIONLOGS'), build_url(array('page' => 'admin_actionlog', 'type' => 'list', 'id' => $member_id_of), get_module_zone('admin_actionlog')), 'menu/adminzone/audit/actionlog');
+                $modules[] = ['audit', do_lang_tempcode('VIEW_ACTIONLOGS'), build_url(['page' => 'admin_actionlog', 'type' => 'list', 'id' => $member_id_of], get_module_zone('admin_actionlog')), 'menu/adminzone/audit/actionlog'];
             }
         }
         if ((has_privilege($member_id_viewing, 'assume_any_member')) && (get_member() != $member_id_of)) {
-            $modules[] = array('views', do_lang_tempcode('MASQUERADE_AS_MEMBER'), build_url(array('page' => '', 'keep_su' => $member_info['username']), ''), 'menu/site_meta/user_actions/login');
+            $modules[] = ['views', do_lang_tempcode('MASQUERADE_AS_MEMBER'), build_url(['page' => '', 'keep_su' => $member_info['username']], ''), 'menu/site_meta/user_actions/login'];
         }
         if ((has_actual_page_access($member_id_viewing, 'search')) && (addon_installed('search'))) {
-            $modules[] = array('content', do_lang_tempcode('SEARCH'), build_url(array('page' => 'search', 'type' => 'results', 'author' => $member_info['username']), get_module_zone('search')), 'buttons/search', 'search');
+            $modules[] = ['content', do_lang_tempcode('SEARCH'), build_url(['page' => 'search', 'type' => 'results', 'author' => $member_info['username']], get_module_zone('search')), 'buttons/search', 'search'];
         }
         if (addon_installed('authors')) {
             $author = $GLOBALS['SITE_DB']->query_value_if_there('SELECT author FROM ' . get_table_prefix() . 'authors WHERE (member_id=' . strval($member_id_of) . ') OR (member_id IS NULL AND ' . db_string_equal_to('author', $member_info['username']) . ')');
             if ((has_actual_page_access($member_id_viewing, 'authors')) && ($author !== null)) {
-                $modules[] = array('content', do_lang_tempcode('AUTHOR'), build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $author), get_module_zone('authors')), 'menu/rich_content/authors', 'me');
+                $modules[] = ['content', do_lang_tempcode('AUTHOR'), build_url(['page' => 'authors', 'type' => 'browse', 'id' => $author], get_module_zone('authors')), 'menu/rich_content/authors', 'me'];
             }
         }
         require_code('cns_members2');
         if ((!is_guest()) && (cns_may_whisper($member_id_of)) && (has_actual_page_access($member_id_viewing, 'topics')) && (cns_may_make_private_topic()) && ($member_id_viewing != $member_id_of)) {
-            $modules[] = (!addon_installed('cns_forum')) ? null : array('contact', do_lang_tempcode('ADD_PRIVATE_TOPIC'), build_url(array('page' => 'topics', 'type' => 'new_pt', 'id' => $member_id_of), get_module_zone('topics')), 'buttons/send', 'reply');
+            $modules[] = (!addon_installed('cns_forum')) ? null : ['contact', do_lang_tempcode('ADD_PRIVATE_TOPIC'), build_url(['page' => 'topics', 'type' => 'new_pt', 'id' => $member_id_of], get_module_zone('topics')), 'buttons/send', 'reply'];
         }
-        $extra_sections = array();
-        $extra_info_details = array();
-        $extra_tracking_details = array();
+        $extra_sections = [];
+        $extra_info_details = [];
+        $extra_tracking_details = [];
         $hooks = find_all_hook_obs('modules', 'members', 'Hook_members_');
         foreach ($hooks as $object) {
             if (method_exists($object, 'run')) {
@@ -155,12 +155,12 @@ class Hook_profiles_tabs_about
         if (addon_installed('cns_contact_member')) {
             if ((($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_allow_emails') == 1) || (get_option('member_email_receipt_configurability') == '0')) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_email_address') != '') && (!is_guest($member_id_of)) && (has_actual_page_access($member_id_viewing, 'contact_member')) && ($member_id_viewing != $member_id_of)) {
                 $redirect = get_self_url(true);
-                $modules[] = array('contact', do_lang_tempcode('_EMAIL_MEMBER'), build_url(array('page' => 'contact_member', 'redirect' => protect_url_parameter($redirect), 'id' => $member_id_of), get_module_zone('contact_member')), 'links/contact_member', 'reply nofollow');
+                $modules[] = ['contact', do_lang_tempcode('_EMAIL_MEMBER'), build_url(['page' => 'contact_member', 'redirect' => protect_url_parameter($redirect), 'id' => $member_id_of], get_module_zone('contact_member')), 'links/contact_member', 'reply nofollow'];
             }
         }
         require_lang('menus');
-        $sections = array('contact' => do_lang_tempcode('CONTACT'), 'profile' => do_lang_tempcode('EDIT_PROFILE'), 'views' => do_lang_tempcode('ACCOUNT'), 'audit' => do_lang_tempcode('AUDIT'), 'content' => do_lang_tempcode('CONTENT'));
-        $actions = array();
+        $sections = ['contact' => do_lang_tempcode('CONTACT'), 'profile' => do_lang_tempcode('EDIT_PROFILE'), 'views' => do_lang_tempcode('ACCOUNT'), 'audit' => do_lang_tempcode('AUDIT'), 'content' => do_lang_tempcode('CONTENT')];
+        $actions = [];
         sort_maps_by($modules, 1, false, true);
         foreach ($sections as $section_code => $section_title) {
             $links = new Tempcode();
@@ -178,14 +178,14 @@ class Hook_profiles_tabs_about
                 }
 
                 if ($section_code == $_section_code) {
-                    $links->attach(do_template('CNS_MEMBER_ACTION', array(
+                    $links->attach(do_template('CNS_MEMBER_ACTION', [
                         '_GUID' => '67b2a640a368c6f53f1b1fa10f922fd0',
                         'ID' => strval($member_id_of),
                         'URL' => $url,
                         'LANG' => $lang,
                         'REL' => $rel,
                         'ICON' => $icon,
-                    )));
+                    ]));
 
                     unset($modules[$mi]);
                 }
@@ -194,11 +194,11 @@ class Hook_profiles_tabs_about
         }
 
         // Custom fields
-        $custom_fields = array();
-        $custom_fields_sections = array();
+        $custom_fields = [];
+        $custom_fields_sections = [];
         require_code('encryption');
         $value = null;
-        $fields_map = array();
+        $fields_map = [];
         foreach ($member_info['custom_fields'] as $name => $_value) {
             $value = $_value['RAW'];
             $rendered_value = $_value['RENDERED'];
@@ -213,7 +213,7 @@ class Hook_profiles_tabs_about
             }
 
             if ((get_option('show_empty_cpfs') == '1') || (((!is_object($value)) && ($value != '')) || ((is_object($value)) && (!$value->is_empty())))) {
-                $custom_field = array(
+                $custom_field = [
                     'NAME_FULL' => $name,
                     'RAW' => $value,
                     'RENDERED' => $rendered_value,
@@ -224,12 +224,12 @@ class Hook_profiles_tabs_about
                     'FIELD_TYPE' => $_value['FIELD_TYPE'],
                     'EDITABILITY' => $_value['EDITABILITY'],
                     'EDIT_TYPE' => $_value['EDIT_TYPE'],
-                );
+                ];
 
                 if (strpos($name, ': ') !== false) {
                     $parts = explode(': ', $name, 2);
                     if (!isset($custom_fields_sections[$parts[0]])) {
-                        $custom_fields_sections[$parts[0]] = array('CUSTOM_FIELDS_SECTION' => array());
+                        $custom_fields_sections[$parts[0]] = ['CUSTOM_FIELDS_SECTION' => []];
                     }
 
                     $custom_field['NAME'] = $parts[1];
@@ -255,16 +255,16 @@ class Hook_profiles_tabs_about
         }
 
         // Look up member's clubs
-        $clubs = array();
+        $clubs = [];
         if (addon_installed('cns_clubs')) {
             $club_ids = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id_of, true);
-            $club_rows = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), array('g_is_private_club' => 1), '', 200));
+            $club_rows = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['g_is_private_club' => 1], '', 200));
             if (count($club_rows) == 200) {
                 $club_rows = null;
             }
             foreach ($club_ids as $club_id) {
                 if ($club_rows === null) {
-                    $club_rows = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), array('g_is_private_club' => 1, 'id' => $club_id), '', 200));
+                    $club_rows = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['g_is_private_club' => 1, 'id' => $club_id], '', 200));
                     if (!array_key_exists($club_id, $club_rows)) {
                         continue;
                     }
@@ -278,13 +278,13 @@ class Hook_profiles_tabs_about
                 }
 
                 $club_name = get_translated_text($club_row['g_name'], $GLOBALS['FORUM_DB']);
-                $club_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('f_description') => do_lang('FORUM_FOR_CLUB', $club_name)));
+                $club_forum = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('f_description') => do_lang('FORUM_FOR_CLUB', $club_name)]);
 
-                $clubs[] = array(
+                $clubs[] = [
                     'CLUB_NAME' => $club_name,
                     'CLUB_ID' => strval($club_row['id']),
                     'CLUB_FORUM' => ($club_forum === null) ? '' : strval($club_forum),
-                );
+                ];
             }
         }
 
@@ -294,7 +294,7 @@ class Hook_profiles_tabs_about
         $b = (isset($member_info['photo_thumb'])) ? intval(get_option('thumb_width')) : 0;
         $right_margin = (max($a, $b) == 0) ? 'auto' : (strval(max($a, $b) + 6) . 'px');
 
-        $content = do_template('CNS_MEMBER_PROFILE_ABOUT', array(
+        $content = do_template('CNS_MEMBER_PROFILE_ABOUT', [
             '_GUID' => 'fodfjdsfjsdljfdls',
             'MEMBER_ID' => strval($member_id_of),
             'USERNAME' => $member_info['username'],
@@ -345,8 +345,8 @@ class Hook_profiles_tabs_about
             'PRIMARY_GROUP_ID' => strval($member_info['primary_group']),
             'SECONDARY_GROUPS' => $member_info['secondary_groups_named'],
             'EMAIL_ADDRESS' => isset($member_info['email_address']) ? $member_info['email_address'] : '',
-        ) + $fields_map);
+        ] + $fields_map);
 
-        return array($title, $content, $order, 'menu/social/profile');
+        return [$title, $content, $order, 'menu/social/profile'];
     }
 }

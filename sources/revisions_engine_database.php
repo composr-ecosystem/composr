@@ -99,7 +99,7 @@ class RevisionEngineDatabase
         }
         list($original_data_resource_fs_record, $original_data_resource_fs_path) = $test;
 
-        $this->db->query_insert('revisions', array(
+        $this->db->query_insert('revisions', [
             'r_resource_type' => $resource_type,
             'r_resource_id' => $resource_id,
             'r_category_id' => $category_id,
@@ -111,7 +111,7 @@ class RevisionEngineDatabase
             'r_original_resource_fs_record' => $original_data_resource_fs_record,
             'r_actionlog_id' => $this->is_log_mod ? null : $log_id,
             'r_moderatorlog_id' => $this->is_log_mod ? $log_id : null,
-        ));
+        ]);
     }
 
     /**
@@ -121,7 +121,7 @@ class RevisionEngineDatabase
      */
     public function delete_revision($id)
     {
-        $GLOBALS['SITE_DB']->query_delete('revisions', array('id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('revisions', ['id' => $id], '', 1);
     }
 
     /**
@@ -140,11 +140,11 @@ class RevisionEngineDatabase
     public function find_revisions($resource_types = null, $resource_id = null, $category_id = null, $member_id = null, $revision_id = null, $max = 100, $start = 0, $limited_data = false)
     {
         if (!$this->enabled(true)) {
-            return array();
+            return [];
         }
 
         if (($resource_types !== null) && (empty($resource_types)) && ($revision_id === null)) {
-            return array();
+            return [];
         }
 
         $extra_where = '1=1';
@@ -271,7 +271,7 @@ class RevisionEngineDatabase
             return null;
         }
 
-        $map = array();
+        $map = [];
         if ($this->is_log_mod) {
             $map['r_moderatorlog_id'] = $log_id;
         } else {
@@ -302,7 +302,7 @@ class RevisionEngineDatabase
         $join_table = ($this->is_log_mod) ? 'f_moderator_logs' : 'actionlogs';
         $join_field = ($this->is_log_mod) ? 'r_moderatorlog_id' : 'r_actionlog_id';
         $time_field = ($this->is_log_mod) ? 'l_date_and_time' : 'date_and_time';
-        $test = $this->db->query_select_value_if_there('revisions r JOIN ' . $this->db->get_table_prefix() . $join_table . ' l ON l.id=r.' . $join_field, 'MAX(' . $time_field . ')', array('r_category_id' => $category_id));
+        $test = $this->db->query_select_value_if_there('revisions r JOIN ' . $this->db->get_table_prefix() . $join_table . ' l ON l.id=r.' . $join_field, 'MAX(' . $time_field . ')', ['r_category_id' => $category_id]);
         if ($test === null) {
             $test = 0;
         }
@@ -319,7 +319,7 @@ class RevisionEngineDatabase
      */
     public function recategorise_old_revisions($resource_type, $resource_id, $new_category_id)
     {
-        $GLOBALS['SITE_DB']->query_update('revisions', array('r_category_id' => $new_category_id), array('r_resource_type' => $resource_type, 'r_resource_id' => $resource_id));
+        $GLOBALS['SITE_DB']->query_update('revisions', ['r_category_id' => $new_category_id], ['r_resource_type' => $resource_type, 'r_resource_id' => $resource_id]);
     }
 
     /**
@@ -354,7 +354,7 @@ class RevisionEngineDatabase
         $start = get_param_integer('revisions_start', 0);
         $max = get_param_integer('revisions_max', 25);
 
-        $sortables = array('log_time' => do_lang_tempcode('DATE'));
+        $sortables = ['log_time' => do_lang_tempcode('DATE')];
         $test = explode(' ', get_param_string('revisions_sort', 'log_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -398,7 +398,7 @@ class RevisionEngineDatabase
         );
 
         $_resource_types = array_keys(find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware'));
-        $resource_types = array();
+        $resource_types = [];
         require_code('content');
         foreach ($_resource_types as $resource_type) {
             $cma_ob = get_content_object($resource_type);
@@ -410,13 +410,13 @@ class RevisionEngineDatabase
             }
         }
 
-        $tpl = do_template('REVISIONS_SCREEN', array(
+        $tpl = do_template('REVISIONS_SCREEN', [
             '_GUID' => '0dea1ed9d31a818cba60f56fc1c8f68f',
             'TITLE' => $title,
             'RESULTS' => $results,
             'INCLUDE_FILTER_FORM' => $include_filter_form,
             'RESOURCE_TYPES' => $resource_types,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -453,7 +453,7 @@ class RevisionEngineDatabase
         $start = get_param_integer('revisions_start', 0);
         $max = get_param_integer('revisions_max', 5);
 
-        $sortables = array('log_time' => do_lang_tempcode('DATE'));
+        $sortables = ['log_time' => do_lang_tempcode('DATE')];
         $test = explode(' ', get_param_string('revisions_sort', 'log_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -463,19 +463,19 @@ class RevisionEngineDatabase
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $max_rows = $this->total_revisions(array($resource_type), $resource_id);
+        $max_rows = $this->total_revisions([$resource_type], $resource_id);
 
-        $revisions = $this->find_revisions(array($resource_type), $resource_id, null, null, null, $max, $start);
+        $revisions = $this->find_revisions([$resource_type], $resource_id, null, null, null, $max, $start);
 
         $do_actionlog = has_actual_page_access(get_member(), 'admin_actionlog');
 
-        $_header_row = array(
+        $_header_row = [
             do_lang_tempcode('DATE_TIME'),
             do_lang_tempcode('MEMBER'),
             do_lang_tempcode('SIZE_CHANGE'),
             do_lang_tempcode('CHANGE_MICRO'),
             do_lang_tempcode('UNDO'),
-        );
+        ];
         if ($do_actionlog) {
             $_header_row[] = do_lang_tempcode('LOG');
         }
@@ -491,30 +491,30 @@ class RevisionEngineDatabase
 
             if (function_exists('diff_simple_2')) {
                 $rendered_diff = diff_simple_2($revision['r_original_text'], $more_recent_text);
-                $diff_icon = do_template('REVISIONS_DIFF_ICON', array('_GUID' => 'e7e8b28e58f1699ecc960ad7032e3730', 'RENDERED_DIFF' => $rendered_diff,
-                ));
+                $diff_icon = do_template('REVISIONS_DIFF_ICON', ['_GUID' => 'e7e8b28e58f1699ecc960ad7032e3730', 'RENDERED_DIFF' => $rendered_diff,
+                ]);
             } else {
                 $diff_icon = do_lang_tempcode('NA_EM');
             }
 
-            $undo_url = get_self_url(false, false, array('undo_revision' => $revision['id']));
+            $undo_url = get_self_url(false, false, ['undo_revision' => $revision['id']]);
             $undo_link = hyperlink($undo_url, do_lang_tempcode('UNDO'), false, false, $date);
 
             if ($revision['r_moderatorlog_id'] === null) {
-                $actionlog_url = build_url(array('page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_actionlog_id'], 'mode' => 'cms'), get_module_zone('admin_actionlog'));
+                $actionlog_url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_actionlog_id'], 'mode' => 'cms'], get_module_zone('admin_actionlog'));
                 $actionlog_link = hyperlink($actionlog_url, do_lang_tempcode('LOG'), false, false, strval($revision['r_actionlog_id']));
             } else {
-                $actionlog_url = build_url(array('page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_moderatorlog_id'], 'mode' => 'cns'), get_module_zone('admin_actionlog'));
+                $actionlog_url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_moderatorlog_id'], 'mode' => 'cns'], get_module_zone('admin_actionlog'));
                 $actionlog_link = hyperlink($actionlog_url, do_lang_tempcode('LOG'), false, false, strval($revision['r_moderatorlog_id']));
             }
 
-            $_revision = array(
+            $_revision = [
                 escape_html($date),
                 $member_link,
                 escape_html(clean_file_size($size_change)),
                 $diff_icon,
                 $undo_link,
-            );
+            ];
             if ($do_actionlog) {
                 $_revision[] = $actionlog_link;
             }
@@ -543,12 +543,12 @@ class RevisionEngineDatabase
             'revisions_sort'
         );
 
-        $revisions_tpl = do_template('REVISIONS_WRAP', array(
+        $revisions_tpl = do_template('REVISIONS_WRAP', [
             '_GUID' => '1fc38d9d7ec57af110759352446e533d',
             'RESULTS' => $results,
-        ));
+        ]);
 
-        $_text = $GLOBALS['SITE_DB']->query_select_value_if_there('revisions', 'r_original_text', array('id' => $undo_revision));
+        $_text = $GLOBALS['SITE_DB']->query_select_value_if_there('revisions', 'r_original_text', ['id' => $undo_revision]);
         if ($_text !== null) {
             $text = $_text;
             $revision_loaded = true;

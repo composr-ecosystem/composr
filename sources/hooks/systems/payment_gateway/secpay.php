@@ -37,9 +37,9 @@ class Hook_payment_gateway_secpay
      */
     public function get_config()
     {
-        return array(
+        return [
             'supports_remote_memo' => false,
-        );
+        ];
     }
 
     /**
@@ -62,7 +62,7 @@ class Hook_payment_gateway_secpay
     public function create_selection_list_card_types($it = null)
     {
         $list = new Tempcode();
-        $array = array('Visa', 'Master Card', 'Switch', 'UK Maestro', 'Maestro', 'Solo', 'Delta', 'American Express', 'Diners Card', 'JCB');
+        $array = ['Visa', 'Master Card', 'Switch', 'UK Maestro', 'Maestro', 'Solo', 'Delta', 'American Express', 'Diners Card', 'JCB'];
         foreach ($array as $x) {
             $list->attach(form_input_list_entry($x, $it == $x));
         }
@@ -121,7 +121,7 @@ class Hook_payment_gateway_secpay
         $form_url = $this->_get_remote_form_url();
         $digest = md5($trans_expecting_id . float_to_raw_string($price + $tax + $shipping_cost) . get_option('payment_gateway_password'));
 
-        return do_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', array(
+        return do_template('ECOM_TRANSACTION_BUTTON_VIA_SECPAY', [
             '_GUID' => 'e68e80cb637f8448ef62cd7d73927722',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -137,7 +137,7 @@ class Hook_payment_gateway_secpay
             'USERNAME' => $username,
             'FORM_URL' => $form_url,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -164,7 +164,7 @@ class Hook_payment_gateway_secpay
         $digest = md5($trans_expecting_id . float_to_raw_string($price + $tax) . get_option('payment_gateway_password'));
         list($length_units_2, $first_repeat) = $this->_translate_subscription_details($length, $length_units);
 
-        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', array(
+        return do_template('ECOM_SUBSCRIPTION_BUTTON_VIA_SECPAY', [
             '_GUID' => 'e5e6d6835ee6da1a6cf02ff8c2476aa6',
             'TYPE_CODE' => $type_code,
             'ITEM_NAME' => $item_name,
@@ -182,7 +182,7 @@ class Hook_payment_gateway_secpay
             'USERNAME' => $username,
             'FORM_URL' => $form_url,
             'MEMBER_ADDRESS' => $this->_build_member_address(),
-        ));
+        ]);
     }
 
     /**
@@ -219,7 +219,7 @@ class Hook_payment_gateway_secpay
         }
         $first_repeat = date('Ymd', time() + $single_length);
 
-        return array($length_units_2, $first_repeat);
+        return [$length_units_2, $first_repeat];
     }
 
     /**
@@ -229,7 +229,7 @@ class Hook_payment_gateway_secpay
      */
     protected function _build_member_address()
     {
-        $member_address = array();
+        $member_address = [];
 
         $shipping_email = '';
         $shipping_phone = '';
@@ -276,7 +276,7 @@ class Hook_payment_gateway_secpay
             $country = $shipping_country;
         }
 
-        $member_address = array();
+        $member_address = [];
         $member_address['ship_name'] = trim($shipping_firstname . ' ' . $shipping_lastname);
         list($street_address_1, $street_address_2) = split_street_address($street_address, 2);
         $member_address['ship_addr_1'] = $street_address_1;
@@ -299,8 +299,8 @@ class Hook_payment_gateway_secpay
      */
     public function make_cancel_button($purchase_id)
     {
-        $cancel_url = build_url(array('page' => 'subscriptions', 'type' => 'cancel', 'id' => $purchase_id), get_module_zone('subscriptions'));
-        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', array('_GUID' => 'bd02018c985e2345be71eed537b2f841', 'CANCEL_URL' => $cancel_url, 'PURCHASE_ID' => $purchase_id));
+        $cancel_url = build_url(['page' => 'subscriptions', 'type' => 'cancel', 'id' => $purchase_id], get_module_zone('subscriptions'));
+        return do_template('ECOM_SUBSCRIPTION_CANCEL_BUTTON_VIA_SECPAY', ['_GUID' => 'bd02018c985e2345be71eed537b2f841', 'CANCEL_URL' => $cancel_url, 'PURCHASE_ID' => $purchase_id]);
     }
 
     /**
@@ -322,7 +322,7 @@ class Hook_payment_gateway_secpay
 
         $trans_expecting_id = $txn_id;
 
-        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', array('*'), array('id' => $trans_expecting_id), '', 1);
+        $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {
             if ($silent_fail) {
                 return null;
@@ -430,16 +430,16 @@ class Hook_payment_gateway_secpay
 
         // We need to echo the output of our finish page to SecPay's IPN caller
         if ($success) {
-            $_url = build_url(array('page' => 'purchase', 'type' => 'finish', 'type_code' => $transaction_row['e_type_code']), get_module_zone('purchase'));
+            $_url = build_url(['page' => 'purchase', 'type' => 'finish', 'type_code' => $transaction_row['e_type_code']], get_module_zone('purchase'));
         } else {
-            $_url = build_url(array('page' => 'purchase', 'type' => 'finish', 'type_code' => $transaction_row['e_type_code'], 'cancel' => 1, 'message' => do_lang_tempcode('DECLINED_MESSAGE', $message)), get_module_zone('purchase'));
+            $_url = build_url(['page' => 'purchase', 'type' => 'finish', 'type_code' => $transaction_row['e_type_code'], 'cancel' => 1, 'message' => do_lang_tempcode('DECLINED_MESSAGE', $message)], get_module_zone('purchase'));
         }
         $url = $_url->evaluate();
-        echo http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+        echo http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
 
         $tax = null;
 
-        return array($trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id);
+        return [$trans_expecting_id, $txn_id, $type_code, $item_name, $purchase_id, $is_subscription, $status, $reason, $amount, $tax, $currency, $parent_txn_id, $pending_reason, $memo, $period, $member_id];
     }
 
     /**
@@ -452,14 +452,14 @@ class Hook_payment_gateway_secpay
     public function store_shipping_address($trans_expecting_id, $txn_id)
     {
         $_name = explode(' ', post_param_string('ship_name', ''));
-        $name = array();
+        $name = [];
         if (!empty($_name)) {
             $name[1] = $_name[count($_name) - 1];
             unset($_name[count($_name) - 1]);
         }
         $name[0] = implode(' ', $_name);
 
-        $shipping_address = array(
+        $shipping_address = [
             'a_firstname' => $name[0],
             'a_lastname' => trim($name[1] . ', ' . post_param_string('ship_company', ''), ' ,'),
             'a_street_address' => trim(post_param_string('ship_addr_1', '') . "\n" . post_param_string('ship_addr_2', '')),
@@ -470,7 +470,7 @@ class Hook_payment_gateway_secpay
             'a_country' => post_param_string('ship_country', ''),
             'a_email' => '',
             'a_phone' => post_param_string('ship_tel', ''),
-        );
+        ];
         return store_shipping_address($trans_expecting_id, $txn_id, $shipping_address);
     }
 
@@ -486,14 +486,14 @@ class Hook_payment_gateway_secpay
         $password = get_option('payment_gateway_password');
         $vpn_password = get_option('payment_gateway_vpn_password');
 
-        $txn_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 'id', array('t_purchase_id' => strval($subscription_id)));
+        $txn_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_transactions', 'id', ['t_purchase_id' => strval($subscription_id)]);
         if ($txn_id === null) {
             return false;
         }
         $txn_id = 'subscr_' . $txn_id;
 
         require_code('xmlrpc');
-        $result = xml_rpc('https://www.secpay.com:443/secxmlrpc/make_call', 'SECVPN.repeatCardFullAddr', array($username, $vpn_password, $txn_id, -1, $password, '', '', '', '', '', 'repeat_change=true,repeat=false'));
+        $result = xml_rpc('https://www.secpay.com:443/secxmlrpc/make_call', 'SECVPN.repeatCardFullAddr', [$username, $vpn_password, $txn_id, -1, $password, '', '', '', '', '', 'repeat_change=true,repeat=false']);
         $map = $this->_parse_result($result);
         $success = ((array_key_exists('code', $map)) && (($map['code'] == 'A') || ($map['code'] == 'P:P')));
 
@@ -551,7 +551,7 @@ class Hook_payment_gateway_secpay
             $options .= ',repeat=' . $first_repeat . '/' . $length_units_2 . '/0/' . float_to_raw_string($amount);
         }
 
-        $item_name = $GLOBALS['SITE_DB']->query_select_value('ecom_trans_expecting', 'e_item_name', array('id' => $trans_expecting_id));
+        $item_name = $GLOBALS['SITE_DB']->query_select_value('ecom_trans_expecting', 'e_item_name', ['id' => $trans_expecting_id]);
 
         $shipping_street_address_lines = explode("\n", $shipping_street_address, 2);
         $shipping_address = 'ship_name=' . $shipping_firstname . ' ' . $shipping_lastname . ',';
@@ -576,14 +576,14 @@ class Hook_payment_gateway_secpay
         if ($length !== null) {
             $trans_expecting_id = 'subscr_' . $trans_expecting_id;
         }
-        $result = xml_rpc('https://www.secpay.com:443/secxmlrpc/make_call', 'SECVPN.validateCardFull', array($username, $vpn_password, $trans_expecting_id, get_ip_address(), $cardholder_name, $card_number, float_to_raw_string($amount), $card_expiry_date, ($card_issue_number === null) ? '' : strval($card_issue_number), $card_start_date, $currency, '', '', $options, $item_name, $shipping_address, $billing_address));
+        $result = xml_rpc('https://www.secpay.com:443/secxmlrpc/make_call', 'SECVPN.validateCardFull', [$username, $vpn_password, $trans_expecting_id, get_ip_address(), $cardholder_name, $card_number, float_to_raw_string($amount), $card_expiry_date, ($card_issue_number === null) ? '' : strval($card_issue_number), $card_start_date, $currency, '', '', $options, $item_name, $shipping_address, $billing_address]);
         $map = $this->_parse_result($result);
 
         $success = ((array_key_exists('code', $map)) && (($map['code'] == 'A') || ($map['code'] == 'P:P')));
         $message_raw = array_key_exists('message', $map) ? $map['message'] : do_lang('INTERNAL_ERROR');
         $message = $success ? do_lang_tempcode('ACCEPTED_MESSAGE', escape_html($message_raw)) : do_lang_tempcode('DECLINED_MESSAGE', escape_html($message_raw));
 
-        return array($success, $message, $message_raw, $trans_expecting_id);
+        return [$success, $message, $message_raw, $trans_expecting_id];
     }
 
     /**
@@ -604,7 +604,7 @@ class Hook_payment_gateway_secpay
             $value = substr($value, 1);
         }
         $_map = explode('&', $value);
-        $map = array();
+        $map = [];
         foreach ($_map as $x) {
             $explode = explode('=', $x);
             if (count($explode) == 2) {

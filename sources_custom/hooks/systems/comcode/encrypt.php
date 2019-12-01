@@ -29,7 +29,7 @@ class Hook_comcode_encrypt
             return null;
         }
 
-        return array(
+        return [
             'tag_title' => 'Encrypt',
             'tag_description' => 'Store the contents of the tag as encrypted in the database.',
             'tag_example' => '[encrypt]Text to encrypt[/encrypt]',
@@ -39,6 +39,6 @@ class Hook_comcode_encrypt
             'tag_block_tag' => 1,
             'tag_textual_tag' => 1,
             'tag_dangerous_tag' => 0,
-        );
+        ];
     }
 }

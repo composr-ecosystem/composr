@@ -44,11 +44,11 @@ class Hook_notification_cns_username_changed_staff extends Hook_notification__St
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_username_changed_staff'] = array(do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_username_changed_staff'));
+        $list = [];
+        $list['cns_username_changed_staff'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_username_changed_staff')];
         return $list;
     }
 }

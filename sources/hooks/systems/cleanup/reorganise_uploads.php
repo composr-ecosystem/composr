@@ -34,7 +34,7 @@ class Hook_cleanup_reorganise_uploads
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('config:REORGANISE_UPLOADS');
         $info['description'] = do_lang_tempcode('DESCRIPTION_REORGANISE_UPLOADS');
         $info['type'] = 'optimise';

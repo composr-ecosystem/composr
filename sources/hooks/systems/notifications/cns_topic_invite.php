@@ -43,15 +43,15 @@ class Hook_notification_cns_topic_invite extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_topic_invite'] = array(do_lang('MESSAGES'), do_lang('cns:NOTIFICATION_TYPE_cns_topic_invite'));
+        $list = [];
+        $list['cns_topic_invite'] = [do_lang('MESSAGES'), do_lang('cns:NOTIFICATION_TYPE_cns_topic_invite')];
         return $list;
     }
 

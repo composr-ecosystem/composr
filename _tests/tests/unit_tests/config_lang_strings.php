@@ -23,7 +23,7 @@ class config_lang_strings_test_set extends cms_test_case
     public function testStrings()
     {
         $hooks = find_all_hooks('systems', 'config');
-        $options = array();
+        $options = [];
         foreach (array_keys($hooks) as $hook) {
             $path = get_file_base() . '/sources/hooks/systems/config/' . filter_naughty_harsh($hook) . '.php';
             if (!file_exists($path)) {

@@ -30,7 +30,7 @@ class Hook_config_gift_reward_amount
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GIFT_REWARD_AMOUNT',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -44,7 +44,7 @@ class Hook_config_gift_reward_amount
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

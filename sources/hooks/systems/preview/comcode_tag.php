@@ -31,7 +31,7 @@ class Hook_preview_comcode_tag
     public function applies()
     {
         $applies = (post_param_string('tag_contents', null) !== null) || (post_param_string('tag_contents__a', null) !== null) || (post_param_string('tag_contents__b', null) !== null) || (post_param_string('tag_contents_0', null) !== null);
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -46,6 +46,6 @@ class Hook_preview_comcode_tag
         $comcode = _get_preview_environment_comcode(post_param_string('tag'));
         $temp_tpl = comcode_to_tempcode($comcode);
 
-        return array($temp_tpl, null);
+        return [$temp_tpl, null];
     }
 }

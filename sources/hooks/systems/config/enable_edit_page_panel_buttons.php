@@ -30,7 +30,7 @@ class Hook_config_enable_edit_page_panel_buttons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_EDIT_PAGE_PANEL_BUTTONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_enable_edit_page_panel_buttons
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

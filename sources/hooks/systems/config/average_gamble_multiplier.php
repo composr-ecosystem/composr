@@ -30,7 +30,7 @@ class Hook_config_average_gamble_multiplier
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AVERAGE_GAMBLE_MULTIPLIER',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_average_gamble_multiplier
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

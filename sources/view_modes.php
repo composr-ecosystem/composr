@@ -74,24 +74,24 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
     }
 
     // FUDGE: Yuck. We have to after-the-fact make it wide (as we needed the template tree to be collected in full), and empty lots of internal caching to reset the state.
-    $GLOBALS['PANELS_CACHE'] = array();
+    $GLOBALS['PANELS_CACHE'] = [];
     $GLOBALS['IS_WIDE_HIGH_CACHE'] = 1;
     $GLOBALS['IS_WIDE_CACHE'] = 1;
-    $GLOBALS['TEMPCODE_SETGET'] = array();
-    $GLOBALS['LOADED_TPL_CACHE'] = array();
+    $GLOBALS['TEMPCODE_SETGET'] = [];
+    $GLOBALS['LOADED_TPL_CACHE'] = [];
     $GLOBALS['HELPER_PANEL_TEXT'] = null;
     $GLOBALS['HELPER_PANEL_TUTORIAL'] = null;
 
     // CSS
     if (substr($special_page_type, -4) == '.css') {
-        $url_map = array(
+        $url_map = [
             'page' => 'admin_themes',
             'type' => 'edit_templates',
-            'live_preview_url' => protect_url_parameter(get_self_url(true, false, array('special_page_type' => null))),
+            'live_preview_url' => protect_url_parameter(get_self_url(true, false, ['special_page_type' => null])),
             'theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
             'f0file' => 'css/' . $special_page_type,
             'keep_wide_high' => 1,
-        );
+        ];
         $url = build_url($url_map, get_module_zone('admin_themes'));
 
         require_code('site2');
@@ -100,7 +100,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
 
     // Sitemap Editor
     if ($special_page_type == 'sitemap') {
-        $url = build_url(array('page' => 'admin_sitemap', 'type' => 'browse', 'id' => get_zone_name() . ':' . get_page_name()), get_module_zone('admin_sitemap'));
+        $url = build_url(['page' => 'admin_sitemap', 'type' => 'browse', 'id' => get_zone_name() . ':' . get_page_name()], get_module_zone('admin_sitemap'));
 
         require_code('site2');
         redirect_exit($url->evaluate());
@@ -125,12 +125,12 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             if ($search !== null) {
                 list($theme, $type, $suffix) = $search;
                 $txtmte_url = 'txmt://open?url=file://' . get_file_base() . '/themes/' . $theme . '/' . $type . '/' . $name . $suffix;
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => 'c3d6bdf723918aae23541d91ebf09f0b',
                     'DISPLAY_STRING' => '(CSS)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . $suffix,
-                )));
+                ]));
             }
         }
 
@@ -140,42 +140,42 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
 
             if (file_exists($path_a)) {
                 $txtmte_url = 'txmt://open?url=file://' . $path_a;
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => '3d99e7c51959f12cb1a935d302e0fac2',
                     'DISPLAY_STRING' => '(PHP)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . (((strpos($name, '.php') === false) ? '.php' : '')),
-                )));
+                ]));
             }
             if (file_exists($path_b)) {
                 $txtmte_url = 'txmt://open?url=file://' . $path_b;
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => '6c9fbce894cc841776123781906ebd88',
                     'DISPLAY_STRING' => '(PHP)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . (((strpos($name, '.php') === false) ? '.php' : '')),
-                )));
+                ]));
             }
         }
 
         foreach (array_keys($LANGS_REQUESTED) as $name) {
             if (file_exists(get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $name . '.ini')) {
                 $txtmte_url = 'txmt://open?url=file://' . get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $name . '.ini';
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => 'f04c9d10f87f7a728b8a347992340ee4',
                     'DISPLAY_STRING' => '(Language)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . '.ini',
-                )));
+                ]));
             }
             if (file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $name . '.ini')) {
                 $txtmte_url = 'txmt://open?url=file://' . get_file_base() . '/lang/' . fallback_lang() . '/' . $name . '.ini';
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => 'b41dfcb41b4fea5a12c25e880f7bccfd',
                     'DISPLAY_STRING' => '(Language)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . '.ini',
-                )));
+                ]));
             }
         }
 
@@ -190,22 +190,22 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             if ($search !== null) {
                 list($theme, $type) = $search;
                 $txtmte_url = 'txmt://open?url=file://' . get_file_base() . '/themes/' . $theme . '/' . $type . '/' . basename($name);
-                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', array(
+                $file_links->attach(do_template('INDEX_SCREEN_ENTRY', [
                     '_GUID' => 'c2a5f66b9d6564b30c506afafd59b676',
                     'DISPLAY_STRING' => '(Templates)',
                     'URL' => $txtmte_url,
                     'NAME' => $name . $suffix,
-                )));
+                ]));
             }
         }
 
-        $middle_spt = do_template('INDEX_SCREEN', array(
+        $middle_spt = do_template('INDEX_SCREEN', [
             '_GUID' => '7722ab1c391c86adccde04dbc0ef7ba9',
             'TITLE' => $title,
             'CONTENT' => $file_links,
             'PRE' => do_lang_tempcode('TXMT_PROTOCOL_EXPLAIN'),
             'POST' => '',
-        ));
+        ]);
     }
 
     // Theme images mode
@@ -218,13 +218,13 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
         foreach (array_keys($RECORDED_THEME_IMAGES) as $theme_image_details) {
             list($id, $theme, $lang) = unserialize($theme_image_details);
 
-            $url_map = array(
+            $url_map = [
                 'page' => 'admin_themes',
                 'type' => 'edit_image',
                 'theme' => ($theme === null) ? $GLOBALS['FORUM_DRIVER']->get_theme() : $theme,
                 'lang' => $lang,
                 'id' => $id,
-            );
+            ];
             $url = build_url($url_map, 'adminzone');
 
             $image = find_theme_image($id, false, false, $theme, $lang);
@@ -232,7 +232,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
                 continue;
             }
 
-            $theme_images->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array(
+            $theme_images->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', [
                 '_GUID' => '65ea324fb12a488adae780915624a268',
                 'IMG' => $image,
                 'DESCRIPTION' => '',
@@ -240,16 +240,16 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
                 'NAME' => $id,
                 'TARGET' => '_blank',
                 'TITLE' => '',
-            )));
+            ]));
         }
 
-        $middle_spt = do_template('INDEX_SCREEN_FANCIER_SCREEN', array(
+        $middle_spt = do_template('INDEX_SCREEN_FANCIER_SCREEN', [
             '_GUID' => 'b16d40ad36f209b1a3559df6f1ebac55',
             'TITLE' => $title,
             'CONTENT' => $theme_images,
             'PRE' => do_lang_tempcode('CONTEXTUAL_EDITING_SCREEN'),
             'POST' => '',
-        ));
+        ]);
     }
 
     // Content translation mode
@@ -293,13 +293,13 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
                 $description = make_string_tempcode(escape_html($value_found));
                 $has_translation = (has_translation(get_site_default_lang(), user_lang())) && (user_lang() != get_site_default_lang());
                 if ($has_translation) {
-                    $actions = do_template('TRANSLATE_ACTION', array(
+                    $actions = do_template('TRANSLATE_ACTION', [
                         '_GUID' => '441cd96588b2a4f74e94003643262833',
                         'LANG_FROM' => get_site_default_lang(),
                         'LANG_TO' => user_lang(),
                         'NAME' => 'trans-' . strval($key),
                         'OLD' => $value_found,
-                    ));
+                    ]);
                 } else {
                     $actions = new Tempcode();
                 }
@@ -312,14 +312,14 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             inform_exit(do_lang_tempcode('NOTHING_TO_TRANSLATE'));
         }
 
-        $title = get_screen_title('__TRANSLATE_CONTENT', true, array(escape_html($lang_name)));
+        $title = get_screen_title('__TRANSLATE_CONTENT', true, [escape_html($lang_name)]);
 
-        $post_url = build_url(array('page' => 'admin_lang', 'type' => '_content', 'contextual' => 1), 'adminzone');
+        $post_url = build_url(['page' => 'admin_lang', 'type' => '_content', 'contextual' => 1], 'adminzone');
 
         $hidden = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(SELF_REDIRECT_RIP)));
         $hidden = form_input_hidden('lang', user_lang());
 
-        $middle_spt = do_template('FORM_SCREEN', array(
+        $middle_spt = do_template('FORM_SCREEN', [
             '_GUID' => '0d4dd16b023d0a7960f3eac85f54ddc4',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $title,
@@ -330,7 +330,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'MODSECURITY_WORKAROUND' => true,
-        ));
+        ]);
 
     } // Language mode
     elseif (substr($special_page_type, 0, 4) == 'lang') {
@@ -371,13 +371,13 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             if ($value_found !== null) {
                 $has_translation = (has_translation(get_site_default_lang(), user_lang())) && (user_lang() != get_site_default_lang());
                 if ($has_translation) {
-                    $actions = do_template('TRANSLATE_ACTION', array(
+                    $actions = do_template('TRANSLATE_ACTION', [
                         '_GUID' => '031eb918cb3bcaf4339130b46f8b1b8a',
                         'LANG_FROM' => get_site_default_lang(),
                         'LANG_TO' => user_lang(),
                         'NAME' => 'trans_' . $key,
                         'OLD' => str_replace('\n', "\n", $value_found),
-                    ));
+                    ]);
                 } else {
                     $actions = new Tempcode();
                 }
@@ -404,14 +404,14 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             }
         }
 
-        $title = get_screen_title('__TRANSLATE_CODE', true, array(escape_html($lang_name)));
+        $title = get_screen_title('__TRANSLATE_CODE', true, [escape_html($lang_name)]);
 
-        $post_url = build_url(array('page' => 'admin_lang', 'type' => '_code2'), 'adminzone');
+        $post_url = build_url(['page' => 'admin_lang', 'type' => '_code2'], 'adminzone');
 
         $hidden = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(SELF_REDIRECT_RIP)));
         $hidden = form_input_hidden('lang', user_lang());
 
-        $middle_spt = do_template('FORM_SCREEN', array(
+        $middle_spt = do_template('FORM_SCREEN', [
             '_GUID' => '47a2934eaec30ed5eea635d4c462cee0',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $title,
@@ -422,7 +422,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'MODSECURITY_WORKAROUND' => true,
-        ));
+        ]);
     }
 
     // Template mode?
@@ -436,36 +436,36 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
         if (!isset($out->metadata)) {
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
-        $collected_templates = array(
+        $collected_templates = [
             'templates/HTML_HEAD.tpl' => true, // FUDGE. Due to the Tempcode inlining optimisation, this might not be picked up on, but is an important template - so we'll force it into here
-        );
+        ];
         $_tree = find_template_tree_nice($out->metadata, $collected_templates);
 
-        $edit_url_map = array(
+        $edit_url_map = [
             'page' => 'admin_themes',
             'type' => 'edit_templates',
-            'live_preview_url' => protect_url_parameter(get_self_url(true, false, array('special_page_type' => null))),
+            'live_preview_url' => protect_url_parameter(get_self_url(true, false, ['special_page_type' => null])),
             'theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
-        );
+        ];
         $edit_url = build_url($edit_url_map, get_module_zone('admin_themes'));
 
-        $tree = do_template('TEMPLATE_TREE', array(
+        $tree = do_template('TEMPLATE_TREE', [
             '_GUID' => 'ff2a2233b8b4045ba4d8777595ef64c7',
             'HIDDEN' => '',
             'EDIT_URL' => $edit_url,
             'TREE' => $_tree,
-        ));
+        ]);
 
-        $middle_spt = do_template('TEMPLATE_TREE_SCREEN', array(
+        $middle_spt = do_template('TEMPLATE_TREE_SCREEN', [
             '_GUID' => 'ab859f67dcb635fcb4d1747d3c6a2c17',
             'TITLE' => get_screen_title('TEMPLATE_TREE'),
             'TREE' => $tree,
-        ));
+        ]);
 
         if ($special_page_type == 'templates') {
             // There's some templates we won't open in the editor...
 
-            $boring_templates = array(
+            $boring_templates = [
                 'templates/CSS_NEED_INLINE.tpl' => true,
                 'templates/CSS_NEED.tpl' => true,
                 'templates/JAVASCRIPT_NEED.tpl' => true,
@@ -473,7 +473,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
                 'templates/HYPERLINK.tpl' => true,
                 'templates/COMCODE_SURROUND.tpl' => true,
                 'templates/PARAGRAPH.tpl' => true,
-            );
+            ];
             $collected_templates = array_diff_key($collected_templates, $boring_templates);
             foreach ($collected_templates as $template => $_) {
                 if (substr($template, -3) == '.js') {
@@ -483,13 +483,13 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
 
             // We redirect straight into the template editor...
 
-            $url_map = array(
+            $url_map = [
                 'page' => 'admin_themes',
                 'type' => 'edit_templates',
-                'live_preview_url' => protect_url_parameter(get_self_url(true, false, array('special_page_type' => null))),
+                'live_preview_url' => protect_url_parameter(get_self_url(true, false, ['special_page_type' => null])),
                 'theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
                 'default_theme_files_location' => get_zone_name() . ':' . get_page_name(),
-            );
+            ];
             foreach (array_keys($collected_templates) as $i => $template_file) {
                 $url_map['f' . strval($i) . 'file'] = $template_file;
             }
@@ -519,23 +519,23 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
         }
         $QUERY_LIST = array_reverse($QUERY_LIST);
         foreach ($QUERY_LIST as $query) {
-            $queries->attach(do_template('QUERY_LOG', array(
+            $queries->attach(do_template('QUERY_LOG', [
                 '_GUID' => 'ab88e1e92609136229ad920c30647647',
                 'TIME' => float_format($query['time'], 3),
                 'ROWS' => ($query['rows'] === null) ? '' : integer_format($query['rows']),
                 'TEXT' => $query['text'],
-            )));
+            ]));
             $total_time += $query['time'];
         }
         $title = get_screen_title('VIEW_PAGE_QUERIES');
         $total = count($QUERY_LIST);
-        $middle_spt = do_template('QUERY_SCREEN', array(
+        $middle_spt = do_template('QUERY_SCREEN', [
             '_GUID' => '5f679c8f657b4e4ae94ae2d0ed4843fa',
             'TITLE' => $title,
             'TOTAL' => integer_format($total),
             'TOTAL_TIME' => float_format($total_time, 3),
             'QUERIES' => $queries,
-        ));
+        ]);
     }
 
     $echo = globalise($middle_spt, null, '', true);
@@ -558,7 +558,7 @@ function check_xhtml_webstandards($out, $display_regardless = false, $preview_mo
 {
     if ((!$display_regardless) && ($preview_mode == 0)) {
         $hash = md5($out);
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('webstandards_checked_once', 'hash', array('hash' => $hash));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('webstandards_checked_once', 'hash', ['hash' => $hash]);
         if ($test !== null) {
             return '';
         }
@@ -593,7 +593,7 @@ function check_xhtml_webstandards($out, $display_regardless = false, $preview_mo
     if ($show) {
         return display_webstandards_results($out, $error, $preview_mode != 0, $ret);
     } elseif ($preview_mode == 0) {
-        $GLOBALS['SITE_DB']->query_insert('webstandards_checked_once', array('hash' => $hash), false, true); // errors suppressed in case of race condition
+        $GLOBALS['SITE_DB']->query_insert('webstandards_checked_once', ['hash' => $hash], false, true); // errors suppressed in case of race condition
     }
     return '';
 }
@@ -632,31 +632,31 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
         if (get_param_integer('keep_markers', 0) == 1) {
             $messy_url = new Tempcode();
         } else {
-            $messy_url = build_url(array('page' => '_SELF', 'special_page_type' => 'code', 'keep_markers' => 1), '_SELF', array(), true);
+            $messy_url = build_url(['page' => '_SELF', 'special_page_type' => 'code', 'keep_markers' => 1], '_SELF', [], true);
         }
-        $ignore_url = build_url(array('page' => '_SELF', 'keep_webstandards_check' => 0), '_SELF', array(), true);
-        $ignore_url_2 = build_url(array('page' => '_SELF', 'webstandards_check' => 0), '_SELF', array(), true);
+        $ignore_url = build_url(['page' => '_SELF', 'keep_webstandards_check' => 0], '_SELF', [], true);
+        $ignore_url_2 = build_url(['page' => '_SELF', 'webstandards_check' => 0], '_SELF', [], true);
     } else {
         $messy_url = new Tempcode();
         $ignore_url = new Tempcode();
         $ignore_url_2 = new Tempcode();
     }
-    $error_lines = array();
+    $error_lines = [];
     $return_url = new Tempcode();
     if (!empty($error['errors'])) {
         $errorst = new Tempcode();
         foreach ($error['errors'] as $j => $_error) {
-            $errorst->attach(do_template('WEBSTANDARDS_ERROR', array(
+            $errorst->attach(do_template('WEBSTANDARDS_ERROR', [
                 '_GUID' => '2239470f4b9bd38fcb570689cecaedd2',
                 'I' => strval($j),
                 'LINE' => integer_format($_error['line']),
                 'POS' => integer_format($_error['pos']),
                 'ERROR' => $_error['error'],
-            )));
+            ]));
             $error_lines[$_error['line']] = 1;
         }
         $errors = $errorst->evaluate();
-        $echo = do_template('WEBSTANDARDS_ERROR_SCREEN', array(
+        $echo = do_template('WEBSTANDARDS_ERROR_SCREEN', [
             '_GUID' => 'db6c362632471e7c856380d32da91054',
             'MSG' => do_lang_tempcode('NEXT_ITEM_BACK'),
             'RETURN_URL' => $return_url,
@@ -666,18 +666,18 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
             'MESSY_URL' => $messy_url,
             'ERRORS' => $errorst,
             'RET' => $ret,
-        ));
+        ]);
         unset($errorst);
         $echo->evaluate_echo();
     } else {
-        $echo = do_template('WEBSTANDARDS_SCREEN', array(
+        $echo = do_template('WEBSTANDARDS_SCREEN', [
             '_GUID' => 'd8de848803287e4c592418d57450b7db',
             'MSG' => do_lang_tempcode('NEXT_ITEM_BACK'),
             'RETURN_URL' => $return_url,
             'TITLE' => get_screen_title('VIEWING_SOURCE'),
             'MESSY_URL' => $messy_url,
             'RET' => $ret,
-        ));
+        ]);
         $echo->evaluate_echo();
     }
 
@@ -730,7 +730,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
                 if (($previous == ' ') || ($previous == "\n") || ($previous == "\r")) {
                     $string->attach(str_pad('', $level * 3 * 6, '&nbsp;'));
                 }
-                $string->attach(do_template('WEBSTANDARDS_TAG_START', array('_GUID' => '3a4c99283d32006143fc688ce8f2cadc', 'COLOUR' => $colour)));
+                $string->attach(do_template('WEBSTANDARDS_TAG_START', ['_GUID' => '3a4c99283d32006143fc688ce8f2cadc', 'COLOUR' => $colour]));
                 $string->evaluate_echo();
             }
         }
@@ -761,7 +761,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
                 $escaped_code = do_template('WEBSTANDARDS_LINE_END');
                 $escaped_code->evaluate_echo();
             }
-            $matches = array();
+            $matches = [];
             if (preg_match('#\s*\n#A', $out, $matches, 0, $i + 1) != 0) {
                 // Do not show blank lines
                 ++$number;
@@ -771,13 +771,13 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
                 $markers = new Tempcode();
                 foreach ($error['errors'] as $j => $_error) {
                     if ($number == $_error['line']) {
-                        $markers->attach(do_template('WEBSTANDARDS_MARKER', array('_GUID' => '4b1898d5f1e0f56d18a47561659da3bb', 'I' => strval($j), 'ERROR' => $_error['error'])));
+                        $markers->attach(do_template('WEBSTANDARDS_MARKER', ['_GUID' => '4b1898d5f1e0f56d18a47561659da3bb', 'I' => strval($j), 'ERROR' => $_error['error']]));
                     }
                 }
-                $escaped_code = do_template('WEBSTANDARDS_LINE_ERROR', array('_GUID' => '2ffa5c26090d3d814206e3a9e46c7b4e', 'MARKERS' => $markers, 'NUMBER' => integer_format($number)));
+                $escaped_code = do_template('WEBSTANDARDS_LINE_ERROR', ['_GUID' => '2ffa5c26090d3d814206e3a9e46c7b4e', 'MARKERS' => $markers, 'NUMBER' => integer_format($number)]);
                 $escaped_code->evaluate_echo();
             } else {
-                $escaped_code = do_template('WEBSTANDARDS_LINE_START', array('_GUID' => '4994f4748c3cd0cbf4e9278ca0e9b1fc', 'NUMBER' => integer_format($number)));
+                $escaped_code = do_template('WEBSTANDARDS_LINE_START', ['_GUID' => '4994f4748c3cd0cbf4e9278ca0e9b1fc', 'NUMBER' => integer_format($number)]);
                 $escaped_code->evaluate_echo();
             }
             ++$number;
@@ -876,7 +876,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
         $escaped_code->evaluate_echo();
     }
 
-    $echo = do_template('WEBSTANDARDS_SCREEN_END', array('_GUID' => '739514a06ae65252293fc62b1c7cec40', 'RET' => $ret));
+    $echo = do_template('WEBSTANDARDS_SCREEN_END', ['_GUID' => '739514a06ae65252293fc62b1c7cec40', 'RET' => $ret]);
     $echo->evaluate_echo();
     if (!$ret) {
         $echo = globalise(make_string_tempcode(ob_get_contents()), null, '', true);
@@ -896,9 +896,9 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
 function attach_message_memory_usage(&$messages_bottom)
 {
     $memory_usage = memory_get_peak_usage();
-    $messages_bottom->attach(do_template('MESSAGE', array(
+    $messages_bottom->attach(do_template('MESSAGE', [
         '_GUID' => 'd605c0d111742a8cd2d4ef270a1e5fe1',
         'TYPE' => 'inform',
         'MESSAGE' => do_lang_tempcode('MEMORY_USAGE', escape_html(float_format(floatval($memory_usage) / 1024.0 / 1024.0, 2))),
-    )));
+    ]));
 }

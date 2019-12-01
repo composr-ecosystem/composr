@@ -31,7 +31,7 @@ class Hook_addon_registry_stats_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_stats_block
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_statistics',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_stats_block
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_stats_block
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/config/activity_show_stats_count_page_views_this_month.php',
             'sources/hooks/systems/config/activity_show_stats_count_page_views_this_week.php',
             'sources/hooks/systems/config/activity_show_stats_count_page_views_today.php',
@@ -125,7 +125,7 @@ class Hook_addon_registry_stats_block
             'sources_custom/hooks/blocks/side_stats/.htaccess',
             'sources/hooks/blocks/side_stats/index.html',
             'sources_custom/hooks/blocks/side_stats/index.html',
-        );
+        ];
     }
 
     /**
@@ -135,11 +135,11 @@ class Hook_addon_registry_stats_block
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_STATS_SUBLINE.tpl' => 'block_side_stats',
             'templates/BLOCK_SIDE_STATS_SECTION.tpl' => 'block_side_stats',
             'templates/BLOCK_SIDE_STATS.tpl' => 'block_side_stats',
-        );
+        ];
     }
 
     /**
@@ -154,21 +154,21 @@ class Hook_addon_registry_stats_block
         $full_tpl = new Tempcode();
         $bits = new Tempcode();
         foreach (placeholder_array() as $v) {
-            $bits->attach(do_lorem_template('BLOCK_SIDE_STATS_SUBLINE', array(
+            $bits->attach(do_lorem_template('BLOCK_SIDE_STATS_SUBLINE', [
                 'KEY' => lorem_phrase(),
                 'VALUE' => placeholder_number(),
-            )));
+            ]));
         }
-        $full_tpl->attach(do_lorem_template('BLOCK_SIDE_STATS_SECTION', array(
+        $full_tpl->attach(do_lorem_template('BLOCK_SIDE_STATS_SECTION', [
             'SECTION' => lorem_phrase(),
             'CONTENT' => $bits,
-        )));
+        ]));
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_STATS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_STATS', [
                 'BLOCK_ID' => lorem_word(),
                 'CONTENT' => $full_tpl,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

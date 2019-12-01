@@ -39,10 +39,10 @@ function content_lang_string_translation($lang_from, $lang_to, $content_lang_str
 
     // Checks...
 
-    $errors = array();
+    $errors = [];
 
     foreach (array_keys($content_lang_string_changes) as $from) {
-        $rows = $GLOBALS['SITE_DB']->query_select('translate', array('id'), array('language' => $lang_from, 'text_original' => $from));
+        $rows = $GLOBALS['SITE_DB']->query_select('translate', ['id'], ['language' => $lang_from, 'text_original' => $from]);
 
         if (empty($rows)) {
             $errors[] = 'No strings for \'' . $from . '\'';
@@ -66,13 +66,13 @@ function content_lang_string_translation($lang_from, $lang_to, $content_lang_str
             $to = $from;
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('translate', array('id', 'importance_level', 'source_user'), array('language' => $lang_from, 'text_original' => $from));
+        $rows = $GLOBALS['SITE_DB']->query_select('translate', ['id', 'importance_level', 'source_user'], ['language' => $lang_from, 'text_original' => $from]);
         foreach ($rows as $row) {
             // Delete any existing translation
-            $GLOBALS['SITE_DB']->query_delete('translate', array('language' => $lang_to, 'id' => $row['id']));
+            $GLOBALS['SITE_DB']->query_delete('translate', ['language' => $lang_to, 'id' => $row['id']]);
 
             // Insert new translation
-            $GLOBALS['SITE_DB']->query_insert('translate', array(
+            $GLOBALS['SITE_DB']->query_insert('translate', [
                 'id' => $row['id'],
                 'language' => $lang_to,
                 'importance_level' => $row['importance_level'],
@@ -80,7 +80,7 @@ function content_lang_string_translation($lang_from, $lang_to, $content_lang_str
                 'text_parsed' => '',
                 'broken' => 0,
                 'source_user' => $row['source_user'],
-            ));
+            ]);
         }
     }
 
@@ -104,7 +104,7 @@ function lang_string_translation($lang_from, $lang_to, $lang_string_changes, $te
 
     // Checks...
 
-    $errors = array();
+    $errors = [];
 
     require_code('lang_compile');
 
@@ -264,7 +264,7 @@ function get_lang_files($lang = null)
     }
 
     $_dir = @opendir(get_file_base() . '/lang/' . $lang);
-    $_lang_files = array();
+    $_lang_files = [];
     if ($_dir !== false) {
         while (false !== ($file = readdir($_dir))) {
             if (($file[0] != '.') && (substr($file, -4) == '.ini')/* && (!should_ignore_file(get_file_base().'/lang/'.$lang.'/'.$file,0,0))*/) {
@@ -313,10 +313,10 @@ function find_lang_content_names($ids)
         $query = 'SELECT m_name,m_table,m_type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta';
         $all_fields = $GLOBALS['SITE_DB']->query($query);
 
-        $langidfields = array();
+        $langidfields = [];
         foreach ($all_fields as $f) {
             if (strpos($f['m_type'], '_TRANS') !== false) {
-                $langidfields[] = array('m_name' => $f['m_name'], 'm_table' => $f['m_table'], 'key' => '');
+                $langidfields[] = ['m_name' => $f['m_name'], 'm_table' => $f['m_table'], 'key' => ''];
             }
         }
         foreach ($langidfields as $i => $l) {
@@ -328,7 +328,7 @@ function find_lang_content_names($ids)
         }
     }
 
-    $ret = array();
+    $ret = [];
 
     foreach ($langidfields as $field) {
         $db = get_db_for($field['m_table']);
@@ -366,7 +366,7 @@ function find_lang_content_names($ids)
                                 $ret[$id] = $field['m_table'] . ' \ ' . get_translated_text($test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
                             } else {
                                 if (strpos($info['title_field'], 'CALL:') !== false) {
-                                    $ret[$id] = call_user_func(trim(substr($info['title_field'], 5)), array('id' => $test[$id][$info['id_field']]), false);
+                                    $ret[$id] = call_user_func(trim(substr($info['title_field'], 5)), ['id' => $test[$id][$info['id_field']]], false);
                                 } else {
                                     $ret[$id] = $field['m_table'] . ' \ ' . (is_integer($test[$id][$info['title_field']]) ? strval($test[$id][$info['title_field']]) : $test[$id][$info['title_field']]) . ' \ ' . $field['m_name'];
                                 }

@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_forum_grouping
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'cns:FORUM_GROUPING',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_forum_grouping
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_FORUM_GROUPING',
-        );
+        ];
     }
 }

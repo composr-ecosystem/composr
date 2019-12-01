@@ -30,7 +30,7 @@ class Hook_config_privacy_postal_address
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ADDRESS',
             'type' => 'text',
             'category' => 'PRIVACY',
@@ -44,7 +44,7 @@ class Hook_config_privacy_postal_address
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

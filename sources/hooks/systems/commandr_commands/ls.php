@@ -34,7 +34,7 @@ class Hook_commandr_command_ls
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('ls', array('h'), array(true)), '', '');
+            return ['', do_command_help('ls', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
                 $dir = $commandr_fs->print_working_directory(true);
@@ -42,23 +42,23 @@ class Hook_commandr_command_ls
                 $dir = $commandr_fs->_pwd_to_array($parameters[0]);
 
                 if ((!$commandr_fs->_is_dir($dir)) && (strpos($parameters[0], '*') === false)) {
-                    return array('', '', '', do_lang('NOT_A_DIR', '1'));
+                    return ['', '', '', do_lang('NOT_A_DIR', '1')];
                 }
             }
 
             $listing = $commandr_fs->listing($dir);
 
-            return array(
+            return [
                 '',
-                do_template('COMMANDR_LS', array(
+                do_template('COMMANDR_LS', [
                     '_GUID' => '705c3382e34e3d73479521bb8d05902f',
                     'DIRECTORY' => $commandr_fs->pwd_to_string($dir),
                     'DIRECTORIES' => $commandr_fs->prepare_dir_contents_for_listing($listing[0]),
                     'FILES' => $commandr_fs->prepare_dir_contents_for_listing($listing[1]),
-                )),
+                ]),
                 '',
                 ''
-            );
+            ];
         }
     }
 }

@@ -37,7 +37,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
     protected $donext_entry_content_type = 'custom_comcode_tag';
     protected $donext_category_content_type = null;
 
-    public $js_function_calls = array('moduleAdminCustomComcode');
+    public $js_function_calls = ['moduleAdminCustomComcode'];
     /**
      * Find entry-points available within this module.
      *
@@ -53,9 +53,9 @@ class Module_admin_custom_comcode extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('CUSTOM_COMCODE', 'menu/adminzone/setup/custom_comcode'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['CUSTOM_COMCODE', 'menu/adminzone/setup/custom_comcode'],
+        ] + parent::get_entry_points();
     }
 
     /**
@@ -65,7 +65,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -93,7 +93,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('custom_comcode', array(
+            $GLOBALS['SITE_DB']->create_table('custom_comcode', [
                 'tag_tag' => '*ID_TEXT',
                 'tag_title' => 'SHORT_TRANS',
                 'tag_description' => 'SHORT_TRANS',
@@ -104,7 +104,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
                 'tag_dangerous_tag' => 'BINARY',
                 'tag_block_tag' => 'BINARY',
                 'tag_textual_tag' => 'BINARY'
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) {
@@ -174,10 +174,10 @@ class Module_admin_custom_comcode extends Standard_crud_module
         return do_next_manager(
             get_screen_title('CUSTOM_COMCODE'),
             comcode_lang_string('DOC_CUSTOM_COMCODE'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_CUSTOM_COMCODE_TAG')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_CUSTOM_COMCODE_TAG')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_CUSTOM_COMCODE_TAG')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CUSTOM_COMCODE_TAG')],
+            ],
             do_lang('CUSTOM_COMCODE')
         );
     }
@@ -197,16 +197,16 @@ class Module_admin_custom_comcode extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'tag_tag' => do_lang_tempcode('COMCODE_TAG'),
             'tag_title' => do_lang_tempcode('TITLE'),
             'tag_dangerous_tag' => do_lang_tempcode('DANGEROUS_TAG'),
             'tag_block_tag' => do_lang_tempcode('BLOCK_TAG'),
             'tag_textual_tag' => do_lang_tempcode('TEXTUAL_TAG'),
             'tag_enabled' => do_lang_tempcode('ENABLED'),
-        );
+        ];
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('COMCODE_TAG'),
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('DANGEROUS_TAG'),
@@ -214,7 +214,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
             do_lang_tempcode('TEXTUAL_TAG'),
             do_lang_tempcode('ENABLED'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
@@ -223,12 +223,12 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['tag_tag']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['tag_tag']], '_SELF');
 
-            $result_entries->attach(results_entry(array($row['tag_tag'], get_translated_text($row['tag_title']), ($row['tag_dangerous_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_block_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_textual_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . $row['tag_tag']))), true));
+            $result_entries->attach(results_entry([$row['tag_tag'], get_translated_text($row['tag_title']), ($row['tag_dangerous_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_block_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_textual_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . $row['tag_tag']))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -265,7 +265,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         $fields->attach(form_input_tick(do_lang_tempcode('TEXTUAL_TAG'), do_lang_tempcode('DESCRIPTION_TEXTUAL_TAG'), 'textual_tag', $textual_tag == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), '', 'enabled', $enabled == 1));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -276,7 +276,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('*'), array('tag_tag' => $id), '', 1);
+        $m = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['*'], ['tag_tag' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'custom_comcode_tag'));
         }
@@ -317,7 +317,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         $block_tag = post_param_integer('block_tag', 0);
         $textual_tag = post_param_integer('textual_tag', 0);
 
-        $this->check_parameters_all_there(($parameters == '') ? array() : explode(',', $parameters), $replace);
+        $this->check_parameters_all_there(($parameters == '') ? [] : explode(',', $parameters), $replace);
 
         add_custom_comcode_tag($tag, $title, $description, $replace, $example, $parameters, $enabled, $dangerous_tag, $block_tag, $textual_tag);
 
@@ -356,7 +356,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         $block_tag = post_param_integer('block_tag', 0);
         $textual_tag = post_param_integer('textual_tag', 0);
 
-        $this->check_parameters_all_there(($parameters == '') ? array() : explode(',', $parameters), $replace);
+        $this->check_parameters_all_there(($parameters == '') ? [] : explode(',', $parameters), $replace);
 
         edit_custom_comcode_tag($id, $tag, $title, $description, $replace, $example, $parameters, $enabled, $dangerous_tag, $block_tag, $textual_tag);
 
@@ -371,15 +371,15 @@ class Module_admin_custom_comcode extends Standard_crud_module
      */
     protected function check_parameters_all_there($_parameters, $replace)
     {
-        $parameters = array();
+        $parameters = [];
         foreach ($_parameters as $param) {
             $parameters[] = strtolower(preg_replace('#=.*$#', '', $param));
         }
         $parameters[] = 'content'; // implied
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\{(\w+)[^\w\}]*\}#', $replace, $matches);
-        $parameters_in_replace = array();
+        $parameters_in_replace = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $parameters_in_replace[] = strtolower($matches[1][$i]);
         }

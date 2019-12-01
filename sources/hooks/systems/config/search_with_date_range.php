@@ -30,7 +30,7 @@ class Hook_config_search_with_date_range
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SEARCH_WITH_DATE_RANGE',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_with_date_range
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

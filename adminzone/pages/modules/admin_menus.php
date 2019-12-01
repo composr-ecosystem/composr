@@ -30,7 +30,7 @@ class Module_admin_menus
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,9 +51,9 @@ class Module_admin_menus
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('MENU_MANAGEMENT', 'menu/adminzone/structure/menus'),
-        );
+        return [
+            'browse' => ['MENU_MANAGEMENT', 'menu/adminzone/structure/menus'],
+        ];
     }
 
     public $title;
@@ -83,18 +83,18 @@ class Module_admin_menus
         }
 
         if ($type == 'edit') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('MENU_MANAGEMENT'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MENU_MANAGEMENT')]]);
 
             $id = get_param_string('id', get_param_string('id_new', ''));
             if ($id == '') {
                 $this->title = get_screen_title('EDIT_MENU');
             } else {
-                $this->title = get_screen_title('_EDIT_MENU', true, array(escape_html($id)));
+                $this->title = get_screen_title('_EDIT_MENU', true, [escape_html($id)]);
             }
         }
 
         if ($type == '_edit') {
-            $this->title = get_screen_title('_EDIT_MENU', true, array(escape_html(get_param_string('id'))));
+            $this->title = get_screen_title('_EDIT_MENU', true, [escape_html(get_param_string('id'))]);
         }
 
         return null;
@@ -137,11 +137,11 @@ class Module_admin_menus
      */
     public function choose_menu_name()
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('menu_items', array('DISTINCT i_menu'), array(), 'ORDER BY i_menu');
+        $rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
         $rows = list_to_map('i_menu', $rows);
         $list = new Tempcode();
         foreach ($rows as $row) {
-            $item_count = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'COUNT(*)', array('i_menu' => $row['i_menu']));
+            $item_count = $GLOBALS['SITE_DB']->query_select_value('menu_items', 'COUNT(*)', ['i_menu' => $row['i_menu']]);
             $label = do_lang_tempcode('MENU_ITEM_COUNT', escape_html($row['i_menu']), escape_html(integer_format($item_count)));
             $list->attach(form_input_list_entry($row['i_menu'], count($rows) == 1, $label));
         }
@@ -165,15 +165,15 @@ class Module_admin_menus
         $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
 
         // Actualiser URL
-        $map = array('page' => '_SELF', 'type' => 'edit');
+        $map = ['page' => '_SELF', 'type' => 'edit'];
         if (get_param_string('redirect', '!', INPUT_FILTER_URL_INTERNAL) != '!') {
             $map['redirect'] = protect_url_parameter(get_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL));
         }
-        $post_url = build_url($map, '_SELF', array(), false, true);
+        $post_url = build_url($map, '_SELF', [], false, true);
 
         $submit_name = do_lang_tempcode('EDIT');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'f3c04ea3fb5e429210c5e33e5a2f2092',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -184,7 +184,7 @@ class Module_admin_menus
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -205,9 +205,9 @@ class Module_admin_menus
         // Option to copy to an editable menu
         if ($id == '') {
             $preview = do_lang_tempcode('COPY_TO_EDITABLE_MENU');
-            $confirm_url = build_url(array('page' => '_SELF', 'type' => 'edit', 'id' => 'main_menu', 'menu_type' => get_param_string('menu_type', null), 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))), '_SELF');
+            $confirm_url = build_url(['page' => '_SELF', 'type' => 'edit', 'id' => 'main_menu', 'menu_type' => get_param_string('menu_type', null), 'redirect' => protect_url_parameter(get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL))], '_SELF');
             require_code('templates_confirm_screen');
-            return confirm_screen($this->title, $preview, $confirm_url, null, array('copy_from' => get_option('header_menu_call_string'), 'switch_over' => 1));
+            return confirm_screen($this->title, $preview, $confirm_url, null, ['copy_from' => get_option('header_menu_call_string'), 'switch_over' => 1]);
         }
 
         require_code('type_sanitisation');
@@ -227,7 +227,7 @@ class Module_admin_menus
 
                 // Config option saves into templates
                 require_code('caches3');
-                erase_cached_templates(false, array('GLOBAL_HTML_WRAP'));
+                erase_cached_templates(false, ['GLOBAL_HTML_WRAP']);
             }
         }
 
@@ -235,14 +235,14 @@ class Module_admin_menus
 
         // This will be a templates for branches created dynamically
         $t_id = 'replace_me_with_random';
-        $branch = do_template('MENU_EDITOR_BRANCH', array(
+        $branch = do_template('MENU_EDITOR_BRANCH', [
             '_GUID' => '59d5c9bebecdac1440112ef8301d7c67',
             'CLICKABLE_SECTIONS' => $clickable_sections ? 'true' : 'false',
             'I' => $t_id,
             'CHILD_BRANCH_TEMPLATE' => '',
             'CHILD_BRANCHES' => '',
-        ));
-        $child_branch_template = do_template('MENU_EDITOR_BRANCH_WRAP', array(
+        ]);
+        $child_branch_template = do_template('MENU_EDITOR_BRANCH_WRAP', [
             '_GUID' => 'fb16265f553127b47dfdaf33a420136b',
             'DISPLAY' => $clickable_sections ? 'display: block' : 'display: none',
             'CLICKABLE_SECTIONS' => $clickable_sections,
@@ -259,27 +259,27 @@ class Module_admin_menus
             'THEME_IMG_CODE' => '',
             'I' => $t_id,
             'BRANCH' => $branch,
-        ));
+        ]);
 
         $order = 0;
-        $menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', array('*'), array('i_menu' => $id), 'ORDER BY i_parent,i_order');
+        $menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['i_menu' => $id], 'ORDER BY i_parent,i_order');
         $child_branches = $this->menu_branch($id, null, $order, $clickable_sections, $menu_items);
 
-        $root_branch = do_template('MENU_EDITOR_BRANCH', array(
+        $root_branch = do_template('MENU_EDITOR_BRANCH', [
             '_GUID' => '28009b66089c05744d2727ff4689e43e',
             'CLICKABLE_SECTIONS' => $clickable_sections ? 'true' : 'false',
             'CHILD_BRANCH_TEMPLATE' => $child_branch_template,
             'CHILD_BRANCHES' => $child_branches,
             'I' => '',
-        ));
+        ]);
 
-        $map = array('page' => '_SELF', 'type' => '_edit', 'id' => $id, 'menu_type' => get_param_string('menu_type', null));
+        $map = ['page' => '_SELF', 'type' => '_edit', 'id' => $id, 'menu_type' => get_param_string('menu_type', null)];
         if (get_param_string('redirect', '!', INPUT_FILTER_URL_INTERNAL) != '!') {
             $map['redirect'] = protect_url_parameter(get_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL));
         }
         $post_url = build_url($map, '_SELF');
 
-        $map = array('page' => '_SELF', 'type' => '_edit', 'id' => $id); // Actually same as edit URL, just we put this into an empty post form
+        $map = ['page' => '_SELF', 'type' => '_edit', 'id' => $id]; // Actually same as edit URL, just we put this into an empty post form
         if (get_param_string('redirect', '!', INPUT_FILTER_URL_INTERNAL) != '!') {
             $map['redirect'] = protect_url_parameter(get_param_string('redirect', false, INPUT_FILTER_URL_INTERNAL));
         }
@@ -287,10 +287,10 @@ class Module_admin_menus
 
         $fields_template = new Tempcode();
         $fields_template->attach(form_input_line(do_lang_tempcode('LINK'), do_lang_tempcode('MENU_ENTRY_URL'), 'url', '', false));
-        $options = array(
-            array(do_lang_tempcode('MENU_ENTRY_NEW_WINDOW'), 'new_window', false, new Tempcode()),
-            array(do_lang_tempcode('MENU_ENTRY_CHECK_PERMS'), 'check_perms', true, do_lang_tempcode('DESCRIPTION_MENU_ENTRY_CHECK_PERMS')),
-        );
+        $options = [
+            [do_lang_tempcode('MENU_ENTRY_NEW_WINDOW'), 'new_window', false, new Tempcode()],
+            [do_lang_tempcode('MENU_ENTRY_CHECK_PERMS'), 'check_perms', true, do_lang_tempcode('DESCRIPTION_MENU_ENTRY_CHECK_PERMS')],
+        ];
         $fields_template->attach(form_input_various_ticks($options, '', null, do_lang_tempcode('OPTIONS'), false));
         $list = new Tempcode();
         if (!$clickable_sections) {
@@ -300,7 +300,7 @@ class Module_admin_menus
         $list->attach(form_input_list_entry('branch_plus', false, do_lang_tempcode('EXPANDED_BRANCH')));
         $fields_template->attach(form_input_list(do_lang_tempcode('BRANCH_TYPE'), do_lang_tempcode('MENU_ENTRY_BRANCH'), 'branch_type', $list));
 
-        $fields_template->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '9d8636a88bfca7069d1fc0ff5a30c237', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+        $fields_template->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9d8636a88bfca7069d1fc0ff5a30c237', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields_template->attach(form_input_line(do_lang_tempcode('CAPTION_LONG'), do_lang_tempcode('MENU_ENTRY_CAPTION_LONG'), 'caption_long', '', false));
         $list = new Tempcode();
         $list->attach(form_input_list_entry('', false, do_lang_tempcode('NONE_EM')));
@@ -318,15 +318,15 @@ class Module_admin_menus
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
-        $all_menus = array();
-        $menu_rows = $GLOBALS['SITE_DB']->query_select('menu_items', array('DISTINCT i_menu'), array(), 'ORDER BY i_menu');
+        $all_menus = [];
+        $menu_rows = $GLOBALS['SITE_DB']->query_select('menu_items', ['DISTINCT i_menu'], [], 'ORDER BY i_menu');
         foreach ($menu_rows as $menu_row) {
             if ($menu_row['i_menu'] != $id) {
                 $all_menus[] = $menu_row['i_menu'];
             }
         }
 
-        return do_template('MENU_EDITOR_SCREEN', array(
+        return do_template('MENU_EDITOR_SCREEN', [
             '_GUID' => 'd2bc26eaea38f3d5b3221be903ff541e',
             'ALL_MENUS' => $all_menus,
             'MENU_NAME' => $id,
@@ -341,7 +341,7 @@ class Module_admin_menus
             'TITLE' => $this->title,
             'TOTAL_ITEMS' => strval(count($menu_items)),
             'MENU_TYPE' => get_param_string('menu_type', null),
-        ));
+        ]);
     }
 
     /**
@@ -385,13 +385,13 @@ class Module_admin_menus
 
                 $display = (($branch_type == 0) && (!$clickable_sections)) ? 'display: none' : '';
                 $_child_branches = $this->menu_branch($id, $menu_item['id'], $order, $clickable_sections, $menu_items);
-                $_branch = do_template('MENU_EDITOR_BRANCH', array(
+                $_branch = do_template('MENU_EDITOR_BRANCH', [
                     '_GUID' => '381f5600da214b84e300bcf668f66570',
                     'CLICKABLE_SECTIONS' => $clickable_sections ? 'true' : 'false',
                     'I' => strval($menu_item['id']),
                     'CHILD_BRANCHES' => $_child_branches->evaluate(),
-                ));
-                $_wrap = do_template('MENU_EDITOR_BRANCH_WRAP', array(
+                ]);
+                $_wrap = do_template('MENU_EDITOR_BRANCH_WRAP', [
                     '_GUID' => '1ace7da7a1d8a18f13305eec5069e4c5',
                     'DISPLAY' => $display,
                     'CLICKABLE_SECTIONS' => $clickable_sections,
@@ -408,7 +408,7 @@ class Module_admin_menus
                     'THEME_IMG_CODE' => $theme_img_code,
                     'I' => strval($menu_item['id']),
                     'BRANCH' => $_branch,
-                ));
+                ]);
                 $child_branches->attach($_wrap);
                 $order++;
             }
@@ -436,12 +436,12 @@ class Module_admin_menus
             // Go back to menu editor screen
             $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
             if ($url == '') {
-                $_url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+                $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
                 $url = $_url->evaluate();
             }
         } else {
             // Get content language strings currently used
-            $old_menu_bits = list_to_map('id', $GLOBALS['SITE_DB']->query_select('menu_items', array('id', 'i_caption', 'i_caption_long'), array('i_menu' => $menu_id)));
+            $old_menu_bits = list_to_map('id', $GLOBALS['SITE_DB']->query_select('menu_items', ['id', 'i_caption', 'i_caption_long'], ['i_menu' => $menu_id]));
 
             // Now, process everything on the root
             $ids = menu_items_being_saved();
@@ -457,7 +457,7 @@ class Module_admin_menus
 
             // Erase old stuff
             foreach ($old_menu_bits as $menu_item_id => $lang_code) {
-                $GLOBALS['SITE_DB']->query_delete('menu_items', array('id' => $menu_item_id));
+                $GLOBALS['SITE_DB']->query_delete('menu_items', ['id' => $menu_item_id]);
                 delete_lang($lang_code['i_caption']);
                 delete_lang($lang_code['i_caption_long']);
             }
@@ -467,13 +467,13 @@ class Module_admin_menus
             // Go back to editing the menu
             $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
             if ($url == '') {
-                $_url = build_url(array('page' => '_SELF', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => get_param_string('menu_type', null)), '_SELF');
+                $_url = build_url(['page' => '_SELF', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => get_param_string('menu_type', null)], '_SELF');
                 $url = $_url->evaluate();
             }
         }
 
         delete_cache_entry('menu');
-        persistent_cache_delete(array('MENU', $menu_id));
+        persistent_cache_delete(['MENU', $menu_id]);
 
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }

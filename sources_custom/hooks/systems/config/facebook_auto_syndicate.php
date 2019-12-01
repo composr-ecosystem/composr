@@ -25,7 +25,7 @@ class Hook_config_facebook_auto_syndicate
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_AUTO_SYNDICATE',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_auto_syndicate
             'required' => true,
             'public' => false,
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

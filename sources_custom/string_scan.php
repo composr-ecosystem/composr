@@ -20,8 +20,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     require_code('files');
     require_code('files2');
 
-    $source_files_admin = array();
-    $source_files_non_admin = array();
+    $source_files_admin = [];
+    $source_files_non_admin = [];
 
     if ($do_guessing) {
         $hooks = find_all_hooks('systems', 'addon_registry');
@@ -47,14 +47,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
                 }
             }
         }
-        $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/adminzone', 'adminzone', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, array('php')));
-        $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/cms', 'cms', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, array('php')));
-        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/site', 'site', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, array('php')));
-        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/pages', 'pages', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, array('php')));
-        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/forum', 'forum', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, array('php')));
+        $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/adminzone', 'adminzone', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
+        $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/cms', 'cms', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
+        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/site', 'site', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
+        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/pages', 'pages', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
+        $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/forum', 'forum', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
     }
 
-    $admin_files = array(
+    $admin_files = [
         'abstract_file_manager.ini',
         'actionlog.ini',
         'addons.ini',
@@ -83,9 +83,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'version.ini',
         'webstandards.ini',
         'import.ini',
-    );
+    ];
 
-    $admin_string_suffixes = array(
+    $admin_string_suffixes = [
         'MODULE_TRANS_NAME_admin_',
         'MODULE_TRANS_NAME_cms_',
         'ABSTRACTION_SYMBOL__',
@@ -111,7 +111,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         'CMD_',
         'BLOCK_',
         'FIELD_TYPE_',
-    );
+    ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
         DAYS_TO_KEEP__CRON_LOG
@@ -7925,14 +7925,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PREVIEWING_SPRITE
     ')));
 
-    $non_admin_files = array(
-    );
+    $non_admin_files = [
+    ];
 
-    $non_admin_string_suffixes = array(
+    $non_admin_string_suffixes = [
         'ACCESS_DENIED__',
         'ACTIVITY_',
         'NOTIFICATION_TYPE_',
-    );
+    ];
 
     $lang_strings_non_admin_initial = array_map('trim', explode("\n", trim('
         I_AGREE_RULES
@@ -11055,8 +11055,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ')));
 
     if ($GLOBALS['DEV_MODE']) {
-        $duplicates = array();
-        foreach (array($lang_strings_admin_initial, $lang_strings_non_admin_initial) as $arr) {
+        $duplicates = [];
+        foreach ([$lang_strings_admin_initial, $lang_strings_non_admin_initial] as $arr) {
             $test = array_count_values($arr);
             foreach ($test as $key => $cnt) {
                 if ($cnt > 1) {
@@ -11072,7 +11072,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     // Start with what we know
     $lang_strings_admin = array_diff($lang_strings_admin_initial, $lang_strings_non_admin_initial);
     $lang_strings_non_admin = array_diff($lang_strings_non_admin_initial, $lang_strings_admin_initial);
-    $lang_strings_unknown = array();
+    $lang_strings_unknown = [];
 
     // Also we can make assumptions for config string names if not already set
     if ($do_guessing) {
@@ -11104,9 +11104,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     $lang_strings_non_admin_likely = find_strings($source_files_non_admin);
 
     // Go through and make our determinations based on guessing
-    $all_strings = array();
-    $all_strings_in_lang = array();
-    $strings_files = array();
+    $all_strings = [];
+    $all_strings_in_lang = [];
+    $strings_files = [];
     $d = get_file_base() . '/lang/' . fallback_lang();
     $dh = opendir($d);
     while (($f = readdir($dh)) !== false) {
@@ -11172,16 +11172,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     $just_lang_strings_non_admin = array_diff($lang_strings_non_admin, $lang_strings_admin);
     $lang_strings_shared = array_intersect($lang_strings_non_admin, $lang_strings_admin);
 
-    return array($just_lang_strings_admin, $just_lang_strings_non_admin, $lang_strings_shared, $lang_strings_unknown, $all_strings_in_lang, $strings_files);
+    return [$just_lang_strings_admin, $just_lang_strings_non_admin, $lang_strings_shared, $lang_strings_unknown, $all_strings_in_lang, $strings_files];
 }
 
 function find_strings($from)
 {
-    $out = array();
+    $out = [];
 
     foreach ($from as $file) {
         $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-        $matches = array();
+        $matches = [];
 
         $num_matches = preg_match_all('#do_lang(_tempcode)?\(\'([^\']+)\'(?! \.)#', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {

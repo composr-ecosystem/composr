@@ -31,9 +31,9 @@ class Hook_sw_calendar
     public function get_blocks()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        return array(array(), array('side_calendar' => array('PANEL_NONE', 'PANEL_RIGHT')));
+        return [[], ['side_calendar' => ['PANEL_NONE', 'PANEL_RIGHT']]];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_max_moniker_length
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_MONIKER_LENGTH',
             'type' => 'integer',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_max_moniker_length
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

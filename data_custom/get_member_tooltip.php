@@ -58,7 +58,7 @@ header('Content-Type: text/xml; charset=' . get_charset());
 echo '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
 echo '<request><result>';
 echo '<![CDATA[';
-$box = render_member_box($member_id, false, true, array(), false);
+$box = render_member_box($member_id, false, true, [], false);
 $box->evaluate_echo();    // '' will be returned if member ID is invalid.
 echo ']]>';
 echo '</result></request>';

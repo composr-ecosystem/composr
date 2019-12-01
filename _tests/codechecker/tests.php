@@ -15,7 +15,7 @@
 
 function get_tests()
 {
-    $tests = array();
+    $tests = [];
 
     // This is a good lexer test
     $tests[0] = <<<EOF

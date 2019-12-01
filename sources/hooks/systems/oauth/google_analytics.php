@@ -30,21 +30,21 @@ class Hook_oauth_google_analytics
      */
     public function info()
     {
-        return array(
+        return [
             'label' => 'Google Analytics',
             'available' => (get_option('google_analytics') != ''),
             'protocol' => 'oauth2',
-            'options' => array(
+            'options' => [
                 'client_id' => 'google_apis_client_id',
                 'client_secret' => 'google_apis_client_secret',
                 'api_key' => 'google_apis_api_key',
-            ),
-            'saved_data' => array(
+            ],
+            'saved_data' => [
                 'refresh_token_key' => 'google_analytics_refresh_token',
-            ),
+            ],
             'refresh_token' => null,
             'endpoint' => 'https://accounts.google.com/o/oauth2',
             'scope' => 'https://www.googleapis.com/auth/analytics.readonly',
-        );
+        ];
     }
 }

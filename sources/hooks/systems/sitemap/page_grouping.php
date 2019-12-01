@@ -32,7 +32,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]*):([^:]*)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -69,7 +69,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
 
         require_lang('menus');
 
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
         $page_grouping = $matches[3];
 
@@ -78,7 +78,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
         $description = null;
 
         // Locate all pages in page groupings, and the icon for this page grouping
-        $pages_found = array();
+        $pages_found = [];
         $links = get_page_grouping_links();
         foreach ($links as $link) {
             list($_page_grouping) = $link;
@@ -89,7 +89,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                 }
             }
 
-            if (($_page_grouping == '') && (is_array($link[2])) && (($link[2][0] == 'cms') || ($link[2][0] == 'admin')) && ($link[2][1] == array('type' => $page_grouping))) {
+            if (($_page_grouping == '') && (is_array($link[2])) && (($link[2][0] == 'cms') || ($link[2][0] == 'admin')) && ($link[2][1] == ['type' => $page_grouping])) {
                 $icon = $link[1];
                 $lang_string = $link[3];
                 if (($meta_gather & SITEMAP_GATHER_DESCRIPTION) != 0) {
@@ -139,15 +139,15 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
         }
 
         // Our node
-        $struct = array(
+        $struct = [
             'title' => is_object($lang_string) ? $lang_string : do_lang_tempcode($lang_string),
             'content_type' => 'page_grouping',
             'content_id' => $page_grouping,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $deployed_page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => $description,
                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
                 'add_time' => null,
@@ -160,14 +160,14 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(
-                array(
+            ],
+            'permissions' => [
+                [
                     'type' => 'zone',
                     'zone_name' => $zone,
                     'is_owned_at_this_level' => false,
-                ),
-            ),
+                ],
+            ],
             'children' => null,
             'has_possible_children' => true,
 
@@ -176,7 +176,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'weekly',
 
             'privilege_page' => null,
-        );
+        ];
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;
@@ -188,7 +188,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
 
         // Categories done after node callback, to ensure sensible ordering
         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-            $children = array();
+            $children = [];
 
             $root_comcode_pages_validation = get_root_comcode_pages($zone, true);
             if (($zone == 'site') && (($options & SITEMAP_GEN_COLLAPSE_ZONES) != 0)) {
@@ -200,7 +200,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             $comcode_page_sitemap_ob = $this->_get_sitemap_object('comcode_page');
 
             // Directly defined in page grouping hook
-            $child_links = array();
+            $child_links = [];
             foreach ($links as $link) {
                 if ($link[0] == $page_grouping) {
                     $title = $link[3];
@@ -212,15 +212,15 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                     }
 
                     if (!is_array($link[2])) { // Plain URL
-                        $children[] = array(
+                        $children[] = [
                             'title' => $title,
                             'content_type' => 'url',
                             'content_id' => null,
-                            'modifiers' => array(),
+                            'modifiers' => [],
                             'only_on_page' => '',
                             'page_link' => null,
                             'url' => $link[2],
-                            'extra_meta' => array(
+                            'extra_meta' => [
                                 'description' => $child_description,
                                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
                                 'add_time' => null,
@@ -233,14 +233,14 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                                 'categories' => null,
                                 'validated' => null,
                                 'db_row' => null,
-                            ),
-                            'permissions' => array(),
+                            ],
+                            'permissions' => [],
                             'has_possible_children' => false,
 
                             // These are likely to be changed in individual hooks
                             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
                             'sitemap_refreshfreq' => 'weekly',
-                        );
+                        ];
                         continue;
                     }
 
@@ -276,7 +276,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                     }
                     $page_type = strtolower($details[0]);
 
-                    $child_links[] = array($title, $child_page_link, $icon, $page_type, $child_description);
+                    $child_links[] = [$title, $child_page_link, $icon, $page_type, $child_description];
                 }
             }
 
@@ -285,8 +285,8 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                 if ($orphaned_pages === null) {
                     // Any left-behind pages
                     // NB: Code largely repeated in zone.php
-                    $orphaned_pages = array();
-                    $zones_to_search = (($zone == 'site') && (($options & SITEMAP_GEN_COLLAPSE_ZONES) != 0)) ? array('site', '') : array($zone);
+                    $orphaned_pages = [];
+                    $zones_to_search = (($zone == 'site') && (($options & SITEMAP_GEN_COLLAPSE_ZONES) != 0)) ? ['site', ''] : [$zone];
                     foreach ($zones_to_search as $_zone) {
                         $pages = find_all_pages_wrap($_zone, false, /*$consider_redirects=*/true, /*$show_method = */0, /*$page_type = */($zone != $_zone) ? 'comcode' : null);
                         foreach ($pages as $page => $page_type) {
@@ -328,14 +328,14 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
 
                     $child_page_link = $_zone . ':' . $page;
 
-                    $child_links[] = array(titleify($page), $child_page_link, null, $page_type, null);
+                    $child_links[] = [titleify($page), $child_page_link, null, $page_type, null];
                 }
 
                 if (($zone == '') || ($zone == 'site')) {
                     $all_zones = find_all_zones(false, false, true);
                     $zone_sitemap_ob = $this->_get_sitemap_object('zone');
                     foreach ($all_zones as $zone) {
-                        if (!in_array($zone, array('', 'site', 'adminzone', 'cms', 'collaboration', 'forum'))) {
+                        if (!in_array($zone, ['', 'site', 'adminzone', 'cms', 'collaboration', 'forum'])) {
                             $child_node = $zone_sitemap_ob->get_node($zone . ':', $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather);
                             if ($child_node !== null) {
                                 $children[] = $child_node;
@@ -355,7 +355,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                 $child_page_link = $child_link[1];
                 $page_type = $child_link[3];
 
-                $child_row = ($icon === null) ? null/*we know nothing of relevance*/ : array($title, $icon, $description);
+                $child_row = ($icon === null) ? null/*we know nothing of relevance*/ : [$title, $icon, $description];
 
                 if (($valid_node_types !== null) && (!in_array('page', $valid_node_types))) {
                     continue;

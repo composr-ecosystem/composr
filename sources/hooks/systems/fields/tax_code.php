@@ -31,10 +31,10 @@ class Hook_fields_tax_code
     public function get_field_types()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        return array('tax_code' => do_lang_tempcode('FIELD_TYPE_tax_code'));
+        return ['tax_code' => do_lang_tempcode('FIELD_TYPE_tax_code')];
     }
 
     // ==============
@@ -78,7 +78,7 @@ class Hook_fields_tax_code
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -118,7 +118,7 @@ class Hook_fields_tax_code
         if (preg_match('#^TIC:#', $tax_code) != 0) {
             $current_tic = intval(substr($tax_code, 4));
             require_code('files2');
-            list($__tics) = cache_and_carry('cms_http_request', array('https://taxcloud.net/tic/?format=text', array('convert_to_internal_encoding' => true)));
+            list($__tics) = cache_and_carry('cms_http_request', ['https://taxcloud.net/tic/?format=text', ['convert_to_internal_encoding' => true]]);
             $_tics = explode("\n", $__tics);
             foreach ($_tics as $tic_line) {
                 if (strpos($tic_line, '=') !== false) {

@@ -30,7 +30,7 @@ class Hook_config_oembed_manual_patterns
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OEMBED_MANUAL_PATTERNS',
             'type' => 'text',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_oembed_manual_patterns
             'public' => false,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

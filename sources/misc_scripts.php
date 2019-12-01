@@ -190,12 +190,12 @@ function simple_tracker_script()
 {
     $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
 
-    $GLOBALS['SITE_DB']->query_insert('link_tracker', array(
+    $GLOBALS['SITE_DB']->query_insert('link_tracker', [
         'c_date_and_time' => time(),
         'c_member_id' => get_member(),
         'c_ip_address' => get_ip_address(),
         'c_url' => cms_mb_substr($url, 0, 255),
-    ));
+    ]);
 
     require_code('site2');
     redirect_exit($url);
@@ -216,7 +216,7 @@ function preview_script()
     list($output, $validation, $keyword_density, $spelling, $health_check, $has_device_preview_modes) = $result;
 
     if (get_param_integer('js_only', 0) == 0) {
-        $output = do_template('PREVIEW_SCRIPT', array(
+        $output = do_template('PREVIEW_SCRIPT', [
             '_GUID' => '97bd8909e8b9983a0bbf7ab68fab92f3',
             'OUTPUT' => $output->evaluate(),
             'WEBSTANDARDS' => $validation,
@@ -225,16 +225,16 @@ function preview_script()
             'HEALTH_CHECK' => $health_check,
             'HIDDEN' => build_keep_post_fields(),
             'HAS_DEVICE_PREVIEW_MODES' => $has_device_preview_modes,
-        ));
+        ]);
 
-        $tpl = do_template('STANDALONE_HTML_WRAP', array(
+        $tpl = do_template('STANDALONE_HTML_WRAP', [
             '_GUID' => '0a96e3b9be154e8b29bee5b1c1c7cc69',
             'TITLE' => do_lang_tempcode('PREVIEW'),
             'FRAME' => true,
             'TARGET' => '_top',
             'NOINDEX' => true,
             'CONTENT' => $output,
-        ));
+        ]);
     } else {
         $tpl = $output;
     }
@@ -301,7 +301,7 @@ function cron_bridge_script($caller)
     }
 
     // Load progression data
-    $cron_progression = list_to_map('c_hook', $GLOBALS['SITE_DB']->query_select('cron_progression', array('*')));
+    $cron_progression = list_to_map('c_hook', $GLOBALS['SITE_DB']->query_select('cron_progression', ['*']));
 
     // Logging of timings
     set_value('last_cron', strval(time()));
@@ -378,21 +378,21 @@ function cron_bridge_script($caller)
 
             // Update cron_progression table
             if (isset($cron_progression[$hook])) {
-                $GLOBALS['SITE_DB']->query_update('cron_progression', array(
+                $GLOBALS['SITE_DB']->query_update('cron_progression', [
                     'c_last_run' => time(),
                     'c_last_execution_secs' => $time_after - $time_before,
                     'c_last_error' => $last_error,
-                ), array(
+                ], [
                     'c_hook' => $hook,
-                ), '', 1);
+                ], '', 1);
             } else {
-                $GLOBALS['SITE_DB']->query_insert('cron_progression', array(
+                $GLOBALS['SITE_DB']->query_insert('cron_progression', [
                     'c_hook' => $hook,
                     'c_last_run' => time(),
                     'c_last_execution_secs' => $time_after - $time_before,
                     'c_last_error' => $last_error,
                     'c_enabled' => 1,
-                ));
+                ]);
             }
 
             // Unlock
@@ -457,7 +457,7 @@ function iframe_script()
     }
 
     // Check permissions
-    $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $zone), '', 1);
+    $zones = $GLOBALS['SITE_DB']->query_select('zones', ['*'], ['zone_name' => $zone], '', 1);
     if (!array_key_exists(0, $zones)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -496,14 +496,14 @@ function iframe_script()
     }
 
     // Normal output
-    $tpl = do_template('STANDALONE_HTML_WRAP', array(
+    $tpl = do_template('STANDALONE_HTML_WRAP', [
         '_GUID' => '04cf4ef7aac4201bb985327ec0e04c87',
         'OPENS_BELOW' => get_param_integer('opens_below', 0) == 1,
         'FRAME' => true,
         'NOINDEX' => true,
         'TARGET' => '_top',
         'CONTENT' => $output,
-    ));
+    ]);
     $tpl->handle_symbol_preprocessing();
     $tpl->evaluate_echo();
 
@@ -519,7 +519,7 @@ function iframe_script()
 function page_link_redirect_script()
 {
     $page_link = get_param_string('id');
-    $tpl = symbol_tempcode('PAGE_LINK', array($page_link));
+    $tpl = symbol_tempcode('PAGE_LINK', [$page_link]);
 
     $x = $tpl->evaluate();
 
@@ -552,8 +552,8 @@ function page_link_chooser_script()
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
     // Display
-    $content = do_template('PAGE_LINK_CHOOSER', array('_GUID' => '235d969528d7b81aeb17e042a17f5537', 'NAME' => 'tree_list', 'VALUE' => '', 'GET_TITLE_TOO' => true));
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '58768379196d6ad27d6298134e33fabd', 'TITLE' => do_lang_tempcode('CHOOSE'), 'CONTENT' => $content, 'POPUP' => true, 'NOINDEX' => true));
+    $content = do_template('PAGE_LINK_CHOOSER', ['_GUID' => '235d969528d7b81aeb17e042a17f5537', 'NAME' => 'tree_list', 'VALUE' => '', 'GET_TITLE_TOO' => true]);
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '58768379196d6ad27d6298134e33fabd', 'TITLE' => do_lang_tempcode('CHOOSE'), 'CONTENT' => $content, 'POPUP' => true, 'NOINDEX' => true]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }
@@ -598,34 +598,34 @@ function emoticons_script()
     }
 
     // Render UI
-    $rows = array();
-    $cells = array();
+    $rows = [];
+    $cells = [];
     foreach ($_rows as $i => $myrow) {
         if (($i % $cols == 0) && ($i != 0)) {
-            $rows[] = array('CELLS' => $cells);
-            $cells = array();
+            $rows[] = ['CELLS' => $cells];
+            $cells = [];
         }
 
         $code_esc = $myrow['e_code'];
-        $cells[] = array(
+        $cells[] = [
             '_GUID' => 'ddb838e6fa296df41299c8758db92f8d',
             'COLS' => strval($cols),
             'FIELD_NAME' => filter_naughty_harsh(get_param_string('field_name', 'post')),
             'CODE_ESC' => $code_esc,
             'THEME_IMG_CODE' => $myrow['e_theme_img_code'],
             'CODE' => $myrow['e_code'],
-        );
+        ];
     }
-    if ($cells !== array()) {
-        $rows[] = array('CELLS' => $cells);
+    if ($cells !== []) {
+        $rows[] = ['CELLS' => $cells];
     }
 
-    $content = do_template('CNS_EMOTICON_TABLE', array('_GUID' => 'fb8c4c51f57cd8334800ef12e60d2a8a', 'ROWS' => $rows));
+    $content = do_template('CNS_EMOTICON_TABLE', ['_GUID' => 'fb8c4c51f57cd8334800ef12e60d2a8a', 'ROWS' => $rows]);
 
     require_code('site');
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '8acac778b145bfe7b063317fbcae7fde', 'TITLE' => do_lang_tempcode('EMOTICONS_POPUP'), 'POPUP' => true, 'CONTENT' => $content));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '8acac778b145bfe7b063317fbcae7fde', 'TITLE' => do_lang_tempcode('EMOTICONS_POPUP'), 'POPUP' => true, 'CONTENT' => $content]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }
@@ -675,13 +675,13 @@ function question_ui_script()
     }
     $button_set = explode(',', get_param_string('button_set', false, INPUT_FILTER_GET_COMPLEX));
     $_image_set = get_param_string('image_set', false, INPUT_FILTER_GET_COMPLEX);
-    $image_set = ($_image_set == '') ? array() : explode(',', $_image_set);
-    $message = do_template('QUESTION_UI_BUTTONS', array('_GUID' => '0c5a1efcf065e4281670426c8fbb2769', 'TITLE' => $title, 'IMAGES' => $image_set, 'BUTTONS' => $button_set, 'MESSAGE' => $_message));
+    $image_set = ($_image_set == '') ? [] : explode(',', $_image_set);
+    $message = do_template('QUESTION_UI_BUTTONS', ['_GUID' => '0c5a1efcf065e4281670426c8fbb2769', 'TITLE' => $title, 'IMAGES' => $image_set, 'BUTTONS' => $button_set, 'MESSAGE' => $_message]);
 
     require_code('site');
     attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '8d72daa4c9f922656b190b643a6fe61d', 'TITLE' => escape_html($title), 'POPUP' => true, 'CONTENT' => $message));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '8d72daa4c9f922656b190b643a6fe61d', 'TITLE' => escape_html($title), 'POPUP' => true, 'CONTENT' => $message]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }
@@ -723,7 +723,7 @@ function external_url_proxy_script()
         // Work out appropriate content type (with restrictions)
         require_code('mime_types');
         $mime_types = array_flip(get_mime_types(false));
-        $matches = array();
+        $matches = [];
         foreach ($http_response_header as $header) {
             if (preg_match('#^Content-Type:\s*(.*)\s*#i', $header, $matches) != 0) {
                 $content_type = $matches[1];

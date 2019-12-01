@@ -24,7 +24,7 @@ if (!addon_installed__messaged('meta_toolkit', $error_msg)) {
 
 $title = get_screen_title('Generate an upgrade', false);
 
-$auto_probe = array();
+$auto_probe = [];
 $default_cutoff_days = intval(ceil((time() - filemtime(get_file_base() . '/sources/version.php')) / 60 / 60 / 24));
 if ($default_cutoff_days <= 1) {
     $default_cutoff_days = 100;
@@ -43,10 +43,10 @@ if ($type != 'go') {
 
 $addons = get_addon_structure();
 
-$manual_changes = array();
-$manual_changes['maybe_delete'] = array();
-$manual_changes['css_diff'] = array();
-$manual_changes['install_diff'] = array();
+$manual_changes = [];
+$manual_changes['maybe_delete'] = [];
+$manual_changes['css_diff'] = [];
+$manual_changes['install_diff'] = [];
 
 disable_php_memory_limit();
 
@@ -59,10 +59,10 @@ if ($type == 'auto_probe') {
     $path = $probe_dir . '/sources/hooks/systems/addon_registry';
     if (file_exists($path)) {
         // Via addon_registry hooks (bundled ones)
-        $files = array();
-        $files = array_merge($files, get_directory_contents($path, '', 0, false, true, array('php')));
+        $files = [];
+        $files = array_merge($files, get_directory_contents($path, '', 0, false, true, ['php']));
         if (file_exists(str_replace('/sources/', '/sources_custom/', $path))) {
-            $files = array_merge($files, get_directory_contents(str_replace('/sources/', '/sources_custom/', $path), '', 0, false, true, array('php')));
+            $files = array_merge($files, get_directory_contents(str_replace('/sources/', '/sources_custom/', $path), '', 0, false, true, ['php']));
         }
         foreach ($files as $file) {
             if (substr($file, -4) == '.php') {
@@ -75,7 +75,7 @@ if ($type == 'auto_probe') {
         $backup = $SITE_INFO;
         require_once($probe_dir . '/_config.php');
         $linked_db = new DatabaseConnector(get_db_site(), get_db_site_host(), get_db_site_user(), get_db_site_password(), get_table_prefix());
-        $auto_probe += collapse_1d_complexity('addon_name', $linked_db->query_select('addons', array('addon_name')));
+        $auto_probe += collapse_1d_complexity('addon_name', $linked_db->query_select('addons', ['addon_name']));
         $SITE_INFO = $backup;
 
         // Via filesystem (non-bundled ones)
@@ -121,20 +121,20 @@ if ($type == 'auto_probe') {
                                 }
 
                                 $override_file = str_replace(
-                                    array(
+                                    [
                                         'themes/default/templates/',
                                         'themes/default/javascript/',
                                         'themes/default/xml/',
                                         'themes/default/text/',
                                         'themes/default/css/',
-                                    ),
-                                    array(
+                                    ],
+                                    [
                                         'themes/' . $theme_file . '/templates_custom/',
                                         'themes/' . $theme_file . '/javascript_custom/',
                                         'themes/' . $theme_file . '/xml_custom/',
                                         'themes/' . $theme_file . '/text_custom/',
                                         'themes/' . $theme_file . '/css_custom/',
-                                    ),
+                                    ],
                                     $file
                                 ) . '.editfrom';
 
@@ -151,7 +151,7 @@ if ($type == 'auto_probe') {
                         }
 
                         if (substr($file, -4) == '.php') {
-                            $matches = array();
+                            $matches = [];
                             if (preg_match('#\n(\t*)function install(_cns)?\([^\n]*\)\n\\1\{\n(.*)\n\\1\}#sU', $old, $matches) != 0) {
                                 $old_install_code = $matches[3];
                                 $new_install_code = '';
@@ -175,11 +175,11 @@ if ($type == 'auto_probe') {
         echo '
             <h2>Advice</h2>
         ';
-        $advice_parts = array(
+        $advice_parts = [
             'maybe_delete' => 'The following files might need deleting',
             'css_diff' => 'The following CSS/tpl changes have happened (diff; may need applying to overridden templates)',
             'install_diff' => 'The following install code changes have happened (diff) &ndash; isolate to <kbd>data_custom/execute_temp.php</kbd> to make an ad hoc upgrader',
-        );
+        ];
         foreach ($advice_parts as $d => $message) {
             echo '
                     <p>
@@ -227,7 +227,7 @@ if ($type == 'go') {
 
     $probe_dir = post_param_string('probe_dir', '');
 
-    $done = array();
+    $done = [];
 
     foreach ($addons['non_bundled'] + $addons['bundled'] as $addon_name => $files) {
         if (post_param_integer('addon_' . $addon_name, 0) == 1) {
@@ -269,9 +269,9 @@ if ($type == 'go') {
     exit();
 }
 
-$proceed_icon = do_template('ICON', array('_GUID' => '1ca7b77e67c6ba866ca26b77edf36ed9', 'NAME' => 'buttons/proceed'));
+$proceed_icon = do_template('ICON', ['_GUID' => '1ca7b77e67c6ba866ca26b77edf36ed9', 'NAME' => 'buttons/proceed']);
 echo '
-    <form action="' . escape_html(static_evaluate_tempcode(build_url(array('page' => '_SELF', 'type' => 'auto_probe'), '_SELF'))) . '" method="post">
+    <form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'auto_probe'], '_SELF'))) . '" method="post">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
 
         <h2>Auto-probe upgrade settings, and give specialised advice</h2>
@@ -294,7 +294,7 @@ echo '
 ';
 
 echo '
-    <form action="' . escape_html(static_evaluate_tempcode(build_url(array('page' => '_SELF', 'type' => 'go'), '_SELF'))) . '" method="post">
+    <form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'go'], '_SELF'))) . '" method="post">
         ' . static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE')) . '
 
         <h2>Manually customise upgrade settings</h2>
@@ -326,7 +326,7 @@ foreach (array_merge(array_keys($addons['bundled']), array_keys($addons['non_bun
     ';
 }
 
-$proceed_icon = do_template('ICON', array('_GUID' => '0447204919c9b24e76101619f4d54441', 'NAME' => 'buttons/proceed'));
+$proceed_icon = do_template('ICON', ['_GUID' => '0447204919c9b24e76101619f4d54441', 'NAME' => 'buttons/proceed']);
 echo '
         <p class="proceed-button">
             <button class="btn btn-primary btn-scr buttons--proceed" type="submit">' . $proceed_icon->evaluate() . ' Generate</button>
@@ -336,7 +336,7 @@ echo '
 
 function get_addon_structure()
 {
-    $struct = array('bundled' => array(), 'non_bundled' => array());
+    $struct = ['bundled' => [], 'non_bundled' => []];
 
     $hooks = find_all_hooks('systems', 'addon_registry');
     foreach ($hooks as $hook => $place) {

@@ -32,19 +32,19 @@ class Hook_fields_reference
     public function get_field_types($filter = null)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         if (($filter !== null) && (substr($filter, 0, 3) != 'ck_')) {
-            return array(); // To avoid a wasteful query
+            return []; // To avoid a wasteful query
         }
 
         require_lang('fields');
         static $cats = null;
         if ($cats === null) {
-            $cats = $GLOBALS['SITE_DB']->query_select('catalogues', array('c_name', 'c_title'));
+            $cats = $GLOBALS['SITE_DB']->query_select('catalogues', ['c_name', 'c_title']);
         }
-        $ret = array();
+        $ret = [];
         foreach ($cats as $cat) {
             $ret['ck_' . $cat['c_name']] = do_lang_tempcode('FIELD_TYPE_reference_x', get_translated_text($cat['c_title']));
         }
@@ -93,7 +93,7 @@ class Hook_fields_reference
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -117,7 +117,7 @@ class Hook_fields_reference
 
         list($title) = content_get_details('catalogue_entry', $ev);
 
-        return hyperlink(build_url(array('page' => 'catalogues', 'type' => 'entry', 'id' => $ev), get_module_zone('catalogues')), $title, false, true);
+        return hyperlink(build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $ev], get_module_zone('catalogues')), $title, false, true);
     }
 
     // ======================
@@ -136,7 +136,7 @@ class Hook_fields_reference
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
-        $options = array();
+        $options = [];
         if (($field['cf_type'] != 'reference') && (substr($field['cf_type'], 0, 3) == 'ck_')) {
             $options['catalogue_name'] = substr($field['cf_type'], 3);
         }

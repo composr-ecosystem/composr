@@ -31,7 +31,7 @@ class Hook_addon_registry_forum_blocks
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_forum_blocks
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_featured',
-        );
+        ];
     }
 
     /**
@@ -73,13 +73,13 @@ class Hook_addon_registry_forum_blocks
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'news_shared',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_forum_blocks
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/templates/BLOCK_MAIN_FORUM_NEWS.tpl',
             'themes/default/templates/BLOCK_MAIN_FORUM_TOPICS.tpl',
             'themes/default/templates/BLOCK_SIDE_FORUM_NEWS.tpl',
@@ -109,7 +109,7 @@ class Hook_addon_registry_forum_blocks
             'sources/blocks/side_forum_news.php',
             'sources/hooks/systems/addon_registry/forum_blocks.php',
             'sources/hooks/modules/admin_setupwizard/forum_blocks.php',
-        );
+        ];
     }
 
     /**
@@ -119,11 +119,11 @@ class Hook_addon_registry_forum_blocks
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_FORUM_TOPICS.tpl' => 'block_main_forum_topics',
             'templates/BLOCK_SIDE_FORUM_NEWS.tpl' => 'block_side_forum_news',
             'templates/BLOCK_MAIN_FORUM_NEWS.tpl' => 'block_main_forum_news',
-        );
+        ];
     }
 
     /**
@@ -137,9 +137,9 @@ class Hook_addon_registry_forum_blocks
     {
         require_lang('cns');
 
-        $topics = array();
+        $topics = [];
         foreach (placeholder_array() as $k => $v) {
-            $topics[] = array(
+            $topics[] = [
                 'POST' => lorem_paragraph(),
                 'FORUM_ID' => null,
                 'FORUM_NAME' => lorem_word(),
@@ -150,18 +150,18 @@ class Hook_addon_registry_forum_blocks
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => null,
                 'NUM_POSTS' => placeholder_number(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_TOPICS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_TOPICS', [
                 'BLOCK_ID' => lorem_word(),
                 'TITLE' => lorem_word(),
                 'TOPICS' => $topics,
                 'FORUM_NAME' => lorem_word_html(),
                 'SUBMIT_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -176,9 +176,9 @@ class Hook_addon_registry_forum_blocks
         require_lang('news');
         require_lang('cns');
 
-        $news = array();
+        $news = [];
         foreach (placeholder_array() as $k => $v) {
-            $news[] = array(
+            $news[] = [
                 'REPLIES' => lorem_word(),
                 'FIRSTTIME' => lorem_word(),
                 'LASTTIME' => lorem_word(),
@@ -191,19 +191,19 @@ class Hook_addon_registry_forum_blocks
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE' => escape_html(lorem_word()),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_FORUM_NEWS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_FORUM_NEWS', [
                 'BLOCK_ID' => lorem_word(),
                 'FORUM_NAME' => lorem_word_html(),
                 'TITLE' => lorem_phrase(),
                 'NEWS' => $news,
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -219,7 +219,7 @@ class Hook_addon_registry_forum_blocks
 
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('NEWS_BOX', array(
+            $out->attach(do_lorem_template('NEWS_BOX', [
                 'TRUNCATE' => false,
                 'BLOG' => false,
                 'FIRSTTIME' => lorem_word(),
@@ -244,11 +244,11 @@ class Hook_addon_registry_forum_blocks
                 'AUTHOR_URL' => placeholder_url(),
                 'NEWS' => lorem_paragraph(),
                 'GIVE_CONTEXT' => false,
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_NEWS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_FORUM_NEWS', [
                 'BLOCK_ID' => lorem_word(),
                 'TITLE' => lorem_word(),
                 'FORUM_NAME' => lorem_word_html(),
@@ -258,7 +258,7 @@ class Hook_addon_registry_forum_blocks
                 'SUBMIT_URL' => placeholder_url(),
                 'RSS_URL' => placeholder_url(),
                 'ATOM_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -61,7 +61,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         $node = $this->get_node(':', $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather);
         if (($callback === null || $return_anyway) && ($node !== null)) {
@@ -89,15 +89,15 @@ class Hook_sitemap_root extends Hook_sitemap_base
      */
     public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
     {
-        $struct = array(
+        $struct = [
             'title' => do_lang_tempcode('ROOT'),
             'content_type' => 'root',
             'content_id' => null,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => '',
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => null,
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? website_creation_time() : null,
@@ -110,15 +110,15 @@ class Hook_sitemap_root extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(),
+            ],
+            'permissions' => [],
             'has_possible_children' => true,
-            'children' => array(),
+            'children' => [],
 
             // These are likely to be changed in individual hooks
             'sitemap_priority' => SITEMAP_IMPORTANCE_ULTRA,
             'sitemap_refreshfreq' => 'daily',
-        );
+        ];
 
         if (get_option('single_public_zone') == '0') {
             $struct['title'] = do_lang_tempcode('_WELCOME');
@@ -136,7 +136,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
                 require_code('hooks/systems/sitemap/zone');
                 $ob = object_factory('Hook_sitemap_zone');
                 $temp = $ob->get_node(':', $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, null, $return_anyway);
-                $struct['children'] = isset($temp['children']) ? $temp['children'] : array();
+                $struct['children'] = isset($temp['children']) ? $temp['children'] : [];
                 $struct['extra_meta'] = $temp['extra_meta'];
                 $struct['permissions'] = $temp['permissions'];
                 $struct['privilege_page'] = $temp['privilege_page'];
@@ -152,7 +152,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
             $zone_sitemap_ob = $this->_get_sitemap_object('zone');
 
-            $children = array();
+            $children = [];
 
             // Ones going first
             $first_zones = find_all_zones(false, true, false, 0, SITEMAP_MAX_ROWS_PER_LOOP);
@@ -167,7 +167,7 @@ class Hook_sitemap_root extends Hook_sitemap_base
                 }
             }
 
-            $last_ones = array();
+            $last_ones = [];
 
             // Middle ones
             $start = 0;

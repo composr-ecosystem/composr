@@ -36,7 +36,7 @@ class Hook_content_meta_aware_wiki_page
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'wiki:_WIKI_PAGE',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_wiki_page
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_WIKI_PAGE',
-        );
+        ];
     }
 
     /**

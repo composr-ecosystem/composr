@@ -65,15 +65,15 @@ function m_stick_topic_func($raw_params)
     }
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -101,15 +101,15 @@ function m_close_topic_func($raw_params)
     }
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -134,15 +134,15 @@ function m_delete_topic_func($raw_params)
     $result = $moderation_object->delete_topic($topic_id, $reason);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -167,15 +167,15 @@ function m_delete_post_func($raw_params)
     $result = $moderation_object->delete_post($post_id, $reason);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -226,15 +226,15 @@ function m_move_topic_func($raw_params)
     $result = $moderation_object->move_topic($topic_id, $forum_id);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -259,15 +259,15 @@ function m_rename_topic_func($raw_params)
     $result = $moderation_object->rename_topic($topic_id, $new_title);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -295,21 +295,21 @@ function m_move_post_func($raw_params)
 
     if ($result !== false) {
         if ($topic_id !== null) { // Moved to an existing topic
-            $response = mobiquo_val(array(
+            $response = mobiquo_val([
                 'result' => mobiquo_val(true, 'boolean'),
-            ), 'struct');
+            ], 'struct');
         } else { // Moved to a new topic
-            $response = mobiquo_val(array(
+            $response = mobiquo_val([
                 'result' => mobiquo_val(true, 'boolean'),
                 'topic_id' => mobiquo_val($result, 'string'),
-            ), 'struct');
+            ], 'struct');
         }
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -334,15 +334,15 @@ function m_merge_topic_func($raw_params)
     $result = $moderation_object->merge_topics($topic_a, $topic_b);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -368,15 +368,15 @@ function m_merge_post_func($raw_params)
     $result = $moderation_object->merge_posts($source_post_ids, $target_post_id);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -404,10 +404,10 @@ function m_get_moderate_topic_func($raw_params)
 
     list($total_topic_num, $topics) = $result;
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_topic_num' => mobiquo_val($total_topic_num, 'int'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -434,10 +434,10 @@ function m_get_moderate_post_func($raw_params)
 
     list($total_post_num, $posts) = $result;
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_post_num' => mobiquo_val($total_post_num, 'int'),
         'posts' => mobiquo_val($posts, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -461,15 +461,15 @@ function m_approve_topic_func($raw_params)
     $result = $moderation_object->approve_topic($topic_id, $approve);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -494,15 +494,15 @@ function m_approve_post_func($raw_params)
     $result = $moderation_object->approve_post($post_id, $approve);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -529,15 +529,15 @@ function m_ban_user_func($raw_params)
     $result = $moderation_object->ban_user($username, $delete_all_posts, $reason, $expires);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -561,15 +561,15 @@ function m_unban_user_func($raw_params)
     $result = $moderation_object->unban_user($user_id);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }
@@ -632,15 +632,15 @@ function m_mark_as_spam_func($raw_params)
     $result = $moderation_object->mark_as_spam($user_id);
 
     if ($result) {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(true, 'boolean'),
-        ), 'struct');
+        ], 'struct');
     } else {
-        $response = mobiquo_val(array(
+        $response = mobiquo_val([
             'result' => mobiquo_val(false, 'boolean'),
             'result_text' => mobiquo_val(do_lang('permissions:ACCESS_DENIED__NOT_AS_GUEST'), 'base64'),
             'is_login_mod' => mobiquo_val(is_guest(), 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
     return mobiquo_response($response);
 }

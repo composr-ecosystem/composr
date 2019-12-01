@@ -64,7 +64,7 @@ function cms_getimagesize_url($url, $only_if_local = false)
             return false;
         }
 
-        $http_result = cms_http_request($url, array('byte_limit' => 1024 * 1024 * 20/*reasonable limit*/, 'trigger_error' => false));
+        $http_result = cms_http_request($url, ['byte_limit' => 1024 * 1024 * 20/*reasonable limit*/, 'trigger_error' => false]);
 
         $ext = get_file_extension(($http_result->filename === null) ? $url : $http_result->filename, $http_result->download_mime_type);
         if ($ext == '') {
@@ -73,10 +73,10 @@ function cms_getimagesize_url($url, $only_if_local = false)
 
         $details = array_merge(
             cms_getimagesizefromstring($http_result->data, $ext),
-            array(
+            [
                 $http_result->download_size,
                 $ext
-            )
+            ]
         );
     }
 
@@ -101,12 +101,12 @@ function cms_getimagesize($path, $ext = null)
             return false;
         }
 
-        return array(
+        return [
             null,
             null,
             filesize($path),
             $ext
-        );
+        ];
     }
 
     if ($ext == 'gif') {
@@ -116,22 +116,22 @@ function cms_getimagesize($path, $ext = null)
         }
         return array_merge(
             cms_getimagesizefromstring($data, $ext),
-            array(
+            [
                 filesize($path),
                 $ext
-            )
+            ]
         );
     }
 
     if (function_exists('getimagesize')) {
         $details = @getimagesize($path);
         if ($details !== false) {
-            return array(
+            return [
                 max(1, $details[0]),
                 max(1, $details[1]),
                 filesize($path),
                 $ext
-            );
+            ];
         }
     }
 
@@ -157,7 +157,7 @@ function cms_getimagesizefromstring($data, $ext = null)
     }
 
     if (($ext !== null) && (is_image('unknown.' . $ext, IMAGE_CRITERIA_VECTOR, true))) {
-        return array(null, null);
+        return [null, null];
     }
 
     if ($ext === 'gif') { // Workaround problem with animated gifs
@@ -165,14 +165,14 @@ function cms_getimagesizefromstring($data, $ext = null)
         if ($header !== false) {
             $sx = $header['width'];
             $sy = $header['height'];
-            return array(max(1, $sx), max(1, $sy));
+            return [max(1, $sx), max(1, $sy)];
         }
     }
 
     if (function_exists('getimagesizefromstring')) {
         $details = @getimagesizefromstring($data);
         if ($details !== false) {
-            return array(max(1, $details[0]), max(1, $details[1]));
+            return [max(1, $details[0]), max(1, $details[1])];
         }
     } else {
         $img_res = cms_imagecreatefromstring($data, $ext);
@@ -182,7 +182,7 @@ function cms_getimagesizefromstring($data, $ext = null)
 
             imagedestroy($img_res);
 
-            return array(max(1, $sx), max(1, $sy));
+            return [max(1, $sx), max(1, $sy)];
         }
     }
 
@@ -205,7 +205,7 @@ function get_max_image_size($consider_php_limits = true)
         $c = 0;
     }
 
-    $possibilities = array();
+    $possibilities = [];
     if ($consider_php_limits) {
         if ($a != 0) {
             $possibilities[] = $a;
@@ -278,7 +278,7 @@ function do_image_thumb($url, $caption = '', $js_tooltip = false, $is_thumbnail_
         $url = get_custom_base_url() . '/' . $url;
     }
 
-    return do_template('IMG_THUMB', array('_GUID' => 'f1c130b7c3b2922fe273596563cb377c', 'JS_TOOLTIP' => $js_tooltip, 'CAPTION' => $caption, 'URL' => $url));
+    return do_template('IMG_THUMB', ['_GUID' => 'f1c130b7c3b2922fe273596563cb377c', 'JS_TOOLTIP' => $js_tooltip, 'CAPTION' => $caption, 'URL' => $url]);
 }
 
 /**
@@ -465,14 +465,14 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
 
     // Web-safe check
     if (($criteria & IMAGE_CRITERIA_WEBSAFE) != 0) {
-        if (!in_array($ext, array('jpeg', 'jpe', 'jpg', 'gif', 'png', 'bmp', 'svg', 'ico', 'cur'))) {
+        if (!in_array($ext, ['jpeg', 'jpe', 'jpg', 'gif', 'png', 'bmp', 'svg', 'ico', 'cur'])) {
             return false;
         }
     }
 
     // Open Graph check
     if (($criteria & IMAGE_CRITERIA_OPENGRAPH) != 0) {
-        if (!in_array($ext, array('jpeg', 'jpe', 'jpg', 'gif', 'png'))) {
+        if (!in_array($ext, ['jpeg', 'jpe', 'jpg', 'gif', 'png'])) {
             return false;
         }
     }
@@ -501,7 +501,7 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
 
     // Mime type consistency check
     if (($mime_too) && (looks_like_url($name))) {
-        $http_result = cms_http_request($name, array('trigger_error' => false, 'byte_limit' => 0));
+        $http_result = cms_http_request($name, ['trigger_error' => false, 'byte_limit' => 0]);
 
         if ($ext_mime_type != $http_result->download_mime_type) {
             return false;
@@ -540,7 +540,7 @@ function is_video($name, $as_admin, $must_be_true_video = false)
 
     require_code('media_renderer');
     $acceptable_media = $allow_audio ? (MEDIA_TYPE_VIDEO | MEDIA_TYPE_AUDIO | MEDIA_TYPE_OTHER /* but not images */) : MEDIA_TYPE_VIDEO;
-    $hooks = find_media_renderers($name, array(), $as_admin, null, $acceptable_media);
+    $hooks = find_media_renderers($name, [], $as_admin, null, $acceptable_media);
     return $hooks !== null;
 }
 
@@ -555,7 +555,7 @@ function is_audio($name, $as_admin)
 {
     require_code('media_renderer');
     $acceptable_media = MEDIA_TYPE_AUDIO;
-    $hooks = find_media_renderers($name, array(), $as_admin, null, $acceptable_media);
+    $hooks = find_media_renderers($name, [], $as_admin, null, $acceptable_media);
     return $hooks !== null;
 }
 
@@ -569,7 +569,7 @@ function is_audio($name, $as_admin)
 function is_media($name, $as_admin)
 {
     require_code('media_renderer');
-    $hooks = find_media_renderers($name, array(), $as_admin, null);
+    $hooks = find_media_renderers($name, [], $as_admin, null);
     return $hooks !== null;
 }
 

@@ -26,7 +26,7 @@ class Hook_addon_registry_comcode_html_whitelist
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_comcode_html_whitelist
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -102,7 +102,7 @@ You will still need to assign "Avoid broad input filtering security layer" privi
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,11 +112,11 @@ You will still need to assign "Avoid broad input filtering security layer" privi
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,12 +136,12 @@ You will still need to assign "Avoid broad input filtering security layer" privi
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/comcode_html_whitelist.php',
             'adminzone/pages/comcode_custom/EN/comcode_whitelist.txt',
             'sources_custom/hooks/systems/comcode_parsing/comcode_html_whitelist.php',
             'sources_custom/hooks/systems/page_groupings/comcode_whitelist.php',
             'text_custom/comcode_whitelist.txt',
-        );
+        ];
     }
 }

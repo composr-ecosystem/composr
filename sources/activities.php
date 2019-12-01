@@ -44,7 +44,7 @@ function syndicate_described_activity($a_language_string_code = '', $a_label_1 =
         if (get_param_integer('keep_debug_notifications', 0) == 1) {
             $ob->syndicate_described_activity($a_language_string_code, $a_label_1, $a_label_2, $a_label_3, $a_page_link_1, $a_page_link_2, $a_page_link_3, $a_addon, $a_is_public, $a_member_id, $sitewide_too, $a_also_involving);
         } else {
-            cms_register_shutdown_function_safe(array($ob, 'syndicate_described_activity'), $a_language_string_code, $a_label_1, $a_label_2, $a_label_3, $a_page_link_1, $a_page_link_2, $a_page_link_3, $a_addon, $a_is_public, $a_member_id, $sitewide_too, $a_also_involving);
+            cms_register_shutdown_function_safe([$ob, 'syndicate_described_activity'], $a_language_string_code, $a_label_1, $a_label_2, $a_label_3, $a_page_link_1, $a_page_link_2, $a_page_link_3, $a_addon, $a_is_public, $a_member_id, $sitewide_too, $a_also_involving);
         }
     }
 }

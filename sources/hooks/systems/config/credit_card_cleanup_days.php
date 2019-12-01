@@ -30,7 +30,7 @@ class Hook_config_credit_card_cleanup_days
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CREDIT_CARD_CLEANUP_DAYS',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_credit_card_cleanup_days
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

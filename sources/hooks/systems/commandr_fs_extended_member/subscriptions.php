@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__subscriptions
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('ecom_subscriptions', array('id'), array('s_member_id' => $member_id));
+        return table_to_portable_rows('ecom_subscriptions', ['id'], ['s_member_id' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__subscriptions
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('ecom_subscriptions', $data, array('s_member_id' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('ecom_subscriptions', $data, ['s_member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

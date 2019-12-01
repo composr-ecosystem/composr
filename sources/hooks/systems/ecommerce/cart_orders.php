@@ -48,13 +48,13 @@ class Hook_ecommerce_cart_orders
      */
     public function get_products($search = null)
     {
-        $products = array();
+        $products = [];
 
         require_lang('shopping');
 
         if ($search !== null) {
             if (preg_match('#^CART_ORDER_\d+$#', $search) == 0) {
-                return array();
+                return [];
             }
             $where = 'id=' . strval(intval(substr($search, strlen('CART_ORDER_'))));
         } else {
@@ -68,13 +68,13 @@ class Hook_ecommerce_cart_orders
         $orders = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY add_date DESC', 50, 0, false, true);
 
         foreach ($orders as $order) {
-            $products['CART_ORDER_' . strval($order['id'])] = array(
+            $products['CART_ORDER_' . strval($order['id'])] = [
                 'item_name' => do_lang('CART_ORDER', strval($order['id'])),
                 'item_description' => do_lang_tempcode('CART_ORDER_DESCRIPTION', escape_html(strval($order['id']))),
                 'item_image_url' => find_theme_image('icons/menu/rich_content/ecommerce/shopping_cart'),
 
                 'type' => PRODUCT_ORDERS,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => $order['total_price'],
                 'currency' => get_option('currency'),
@@ -93,7 +93,7 @@ class Hook_ecommerce_cart_orders
                 'product_width' => $order['total_product_width'],
                 'product_height' => $order['total_product_height'],
                 'needs_shipping_address' => true,
-            );
+            ];
         }
 
         return $products;
@@ -137,7 +137,7 @@ class Hook_ecommerce_cart_orders
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -150,7 +150,7 @@ class Hook_ecommerce_cart_orders
      */
     public function handle_needed_fields($type_code, $from_admin = false)
     {
-        return array('', null);
+        return ['', null];
     }
 
     /**
@@ -170,10 +170,10 @@ class Hook_ecommerce_cart_orders
 
         if ($details['STATUS'] == 'Completed') {
             // Insert sale
-            $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', array('id' => $order_id));
-            $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']));
+            $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', ['id' => $order_id]);
+            $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => '', 'txn_id' => $details['TXN_ID']]);
 
-            $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order_id), '', 1);
+            $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id], '', 1);
             foreach ($ordered_items as $ordered_item) {
                 list($sub_details, $sub_product_object) = find_product_details($ordered_item['p_type_code']);
 
@@ -194,20 +194,20 @@ class Hook_ecommerce_cart_orders
             }
         }
 
-        $old_status = $GLOBALS['SITE_DB']->query_select_value('shopping_order_details', 'p_dispatch_status', array('p_order_id' => $order_id));
+        $old_status = $GLOBALS['SITE_DB']->query_select_value('shopping_order_details', 'p_dispatch_status', ['p_order_id' => $order_id]);
 
         if ($old_status != $details['ORDER_STATUS']) {
-            $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => $details['ORDER_STATUS']), array('p_order_id' => $order_id));
+            $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => $details['ORDER_STATUS']], ['p_order_id' => $order_id]);
 
-            $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => $details['ORDER_STATUS'], 'txn_id' => $details['TXN_ID']), array('id' => $order_id));
+            $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => $details['ORDER_STATUS'], 'txn_id' => $details['TXN_ID']], ['id' => $order_id]);
 
             // Copy in memo from transaction, as customer notes
-            $old_memo = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', array('id' => $order_id));
+            $old_memo = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', ['id' => $order_id]);
             if ($old_memo == '') {
-                $memo = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 't_memo', array('id' => $details['TXN_ID']));
+                $memo = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions', 't_memo', ['id' => $details['TXN_ID']]);
                 if ($memo != '') {
                     $memo = do_lang('CUSTOMER_NOTES') . "\n" . $memo;
-                    $GLOBALS['SITE_DB']->query_update('shopping_orders', array('notes' => $memo), array('id' => $order_id), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('shopping_orders', ['notes' => $memo], ['id' => $order_id], '', 1);
                 }
             }
 
@@ -232,7 +232,7 @@ class Hook_ecommerce_cart_orders
             return null;
         }
         $order_id = intval($purchase_id);
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'member_id', array('id' => $order_id));
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('shopping_orders', 'member_id', ['id' => $order_id]);
     }
 
     /**
@@ -244,7 +244,7 @@ class Hook_ecommerce_cart_orders
      */
     public function get_product_dispatch_type($order_id)
     {
-        $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order_id));
+        $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id]);
         foreach ($ordered_items as $ordered_item) {
             list(, $product_object) = find_product_details($ordered_item['p_type_code']);
 

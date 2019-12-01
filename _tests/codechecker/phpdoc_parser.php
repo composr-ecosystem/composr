@@ -22,7 +22,7 @@ global $COMPOSR_PATH;
 require(__DIR__ . '/lib.php');
 
 if (isset($_SERVER['argv'])) {
-    $extra = array();
+    $extra = [];
     foreach ($_SERVER['argv'] as $index => $argv) {
         $argv = str_replace('\\\\', '\\', $argv);
         $_SERVER['argv'][$index] = $argv;
@@ -51,8 +51,8 @@ if (!$enable_custom) {
 
 ini_set('memory_limit', '-1');
 
-$classes = array();
-$global = array();
+$classes = [];
+$global = [];
 global $TO_USE;
 //$files = array($COMPOSR_PATH . '/sources/global2.php'); For debugging
 foreach ($files as $filename) {
@@ -73,7 +73,7 @@ foreach ($files as $filename) {
         if ($r['name'] == '__global') {
             if (($_filename != 'sources/global.php') && ($_filename != 'phpstub.php')) {
                 foreach (array_keys($r['functions']) as $f) {
-                    if ((isset($global[$f])) && (!in_array($f, array('do_lang', 'mixed', 'qualify_url', 'http_get_contents', 'get_forum_type', 'mailto_obfuscated', 'get_custom_file_base')))) {
+                    if ((isset($global[$f])) && (!in_array($f, ['do_lang', 'mixed', 'qualify_url', 'http_get_contents', 'get_forum_type', 'mailto_obfuscated', 'get_custom_file_base']))) {
                         echo 'DUPLICATE-FUNCTION ' . $f . ' (in ' . $filename . ')' . cnl();
                     }
                 }
@@ -93,7 +93,7 @@ foreach ($files as $filename) {
     //echo 'SIGNATURES-DONE ' . $_filename . cnl();
 }
 
-$classes['__global'] = array('functions' => $global);
+$classes['__global'] = ['functions' => $global];
 if (file_exists($COMPOSR_PATH . '/data_custom')) {
     $myfile = fopen($COMPOSR_PATH . '/data_custom/functions.bin', 'wb');
 } else {

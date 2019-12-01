@@ -30,7 +30,7 @@ class Module_admin_oauth
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -51,9 +51,9 @@ class Module_admin_oauth
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('_OAUTH_TITLE', 'menu/adminzone/setup/oauth'),
-        );
+        return [
+            'browse' => ['_OAUTH_TITLE', 'menu/adminzone/setup/oauth'],
+        ];
     }
 
     public $title;
@@ -80,8 +80,8 @@ class Module_admin_oauth
             $service_name = get_param_string('id');
             $service_info = get_oauth_service_info($service_name);
 
-            $this->title = get_screen_title('OAUTH_TITLE', true, array(escape_html($service_info['label'])));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_OAUTH_TITLE'))));
+            $this->title = get_screen_title('OAUTH_TITLE', true, [escape_html($service_info['label'])]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_OAUTH_TITLE')]]);
 
             breadcrumb_set_self(do_lang_tempcode('PROCEED'));
         }
@@ -90,8 +90,8 @@ class Module_admin_oauth
             $service_name = get_param_string('state');
             $service_info = get_oauth_service_info($service_name);
 
-            $this->title = get_screen_title('OAUTH_TITLE', true, array(escape_html($service_info['label'])));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_OAUTH_TITLE'))));
+            $this->title = get_screen_title('OAUTH_TITLE', true, [escape_html($service_info['label'])]);
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_OAUTH_TITLE')]]);
 
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
@@ -129,7 +129,7 @@ class Module_admin_oauth
      */
     public function browse()
     {
-        $services = array();
+        $services = [];
 
         $hooks = find_all_hook_obs('systems', 'oauth', 'Hook_oauth_');
         foreach ($hooks as $service_name => $ob) {
@@ -140,13 +140,13 @@ class Module_admin_oauth
             $info = $ob->get_details();
 
             $configured = (get_option($service_info['options']['client_id']) != '') && (get_option($service_info['options']['client_secret']) != '');
-            $config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => $info['category'], 'redirect' => get_self_url(true)), get_module_zone('admin_config'), array(), false, false, false, 'group_' . $info['group']);
+            $config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $info['category'], 'redirect' => get_self_url(true)], get_module_zone('admin_config'), [], false, false, false, 'group_' . $info['group']);
 
             if (($service_info['available']) && ($configured)) {
                 if (isset($service_info['connect_url'])) {
                     $connect_url = make_string_tempcode($service_info['connect_url']);
                 } else {
-                    $connect_url = build_url(array('page' => '_SELF', 'type' => 'start', 'id' => $service_name), '_SELF');
+                    $connect_url = build_url(['page' => '_SELF', 'type' => 'start', 'id' => $service_name], '_SELF');
                 }
             } else {
                 $connect_url = null;
@@ -154,7 +154,7 @@ class Module_admin_oauth
 
             $refresh_token = get_oauth_refresh_token($service_name);
 
-            $services[] = array(
+            $services[] = [
                 'LABEL' => $service_info['label'],
                 'PROTOCOL' => $service_info['protocol'],
                 'AVAILABLE' => $service_info['available'],
@@ -166,12 +166,12 @@ class Module_admin_oauth
                 'CLIENT_SECRET' => get_option($service_info['options']['client_secret']),
                 'API_KEY' => isset($service_info['options']['api_key']) ? get_option($service_info['options']['api_key']) : null,
                 'REFRESH_TOKEN' => $refresh_token,
-            );
+            ];
         }
 
         sort_maps_by($services, 'LABEL', false, true);
 
-        return do_template('OAUTH_SCREEN', array('_GUID' => '100541492cfe6713c022c60ff71cb478', 'TITLE' => $this->title, 'SERVICES' => $services));
+        return do_template('OAUTH_SCREEN', ['_GUID' => '100541492cfe6713c022c60ff71cb478', 'TITLE' => $this->title, 'SERVICES' => $services]);
     }
 
     /**
@@ -188,7 +188,7 @@ class Module_admin_oauth
 
         $endpoint = $service_info['endpoint'];
 
-        $redirect_url = build_url(array('page' => '_SELF', 'type' => 'finish'), '_SELF', array(), false, true, true);
+        $redirect_url = build_url(['page' => '_SELF', 'type' => 'finish'], '_SELF', [], false, true, true);
 
         $auth_url = $endpoint . '/auth?client_id=' . strval($client_id);
         $auth_url .= '&redirect_uri=' . urlencode($redirect_url->evaluate());
@@ -222,17 +222,17 @@ class Module_admin_oauth
 
         $endpoint = $service_info['endpoint'];
 
-        $redirect_url = build_url(array('page' => '_SELF', 'type' => 'finish'), '_SELF', array(), false, true, true);
+        $redirect_url = build_url(['page' => '_SELF', 'type' => 'finish'], '_SELF', [], false, true, true);
 
-        $post_params = array(
+        $post_params = [
             'code' => $code,
             'client_id' => $client_id,
             'client_secret' => $client_secret,
             'redirect_uri' => $redirect_url->evaluate(),
             'grant_type' => 'authorization_code',
-        );
+        ];
 
-        $result = http_get_contents($endpoint . '/token', array('convert_to_internal_encoding' => true, 'post_params' => $post_params));
+        $result = http_get_contents($endpoint . '/token', ['convert_to_internal_encoding' => true, 'post_params' => $post_params]);
         $parsed_result = json_decode($result, true);
         $refresh_token_key = $service_info['saved_data']['refresh_token_key'];
         set_value($refresh_token_key, $parsed_result['refresh_token'], true);

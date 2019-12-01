@@ -30,7 +30,7 @@ class Hook_config_news_summary_required
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NEWS_SUMMARY_REQUIRED',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_news_summary_required
             'required' => true,
             'public' => false,
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

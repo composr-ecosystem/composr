@@ -57,22 +57,22 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'event':
-                $_ret = $GLOBALS['SITE_DB']->query_select('calendar_events', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('e_title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('calendar_events', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('e_title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'calendar_type':
-                $_ret = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('t_title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('t_title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -136,17 +136,17 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['t_title'],
             'logo' => $row['t_logo'],
             'external_feed' => $row['t_external_feed'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -278,12 +278,12 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
         $edit_time = $this->_default_property_time_null($properties, 'edit_date');
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         $id = add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, $label, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $submitter, $views, $add_time, $edit_time, null, $meta_keywords, $meta_description, $regions);
 
         if (isset($properties['reminders'])) {
-            table_from_portable_rows('calendar_reminders', $properties['reminders'], array('e_id' => $id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('calendar_reminders', $properties['reminders'], ['e_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
@@ -302,7 +302,7 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -310,7 +310,7 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('events', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => $row['e_title'],
             'description' => $row['e_content'],
             'start_year' => $row['e_start_year'],
@@ -343,9 +343,9 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
             'member_calendar' => remap_resource_id_as_portable('member', $row['e_member_calendar']),
             'add_date' => remap_time_as_portable($row['e_add_date']),
             'edit_date' => remap_time_as_portable($row['e_edit_date']),
-            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'event', 'content_id' => strval($row['id'])))),
-            'reminders' => table_to_portable_rows('calendar_reminders', /*skip*/array('id'), array('e_id' => intval($resource_id))),
-        );
+            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'event', 'content_id' => strval($row['id'])])),
+            'reminders' => table_to_portable_rows('calendar_reminders', /*skip*/['id'], ['e_id' => intval($resource_id)]),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -424,12 +424,12 @@ class Hook_commandr_fs_calendar extends Resource_fs_base
         $edit_time = $this->_default_property_time($properties, 'edit_date');
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         edit_calendar_event(intval($resource_id), $type, $recurrence, $recurrences, $seg_recurrences, $label, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar, $meta_keywords, $meta_description, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $edit_time, $add_time, $views, $submitter, $regions, true);
 
         if (isset($properties['reminders'])) {
-            table_from_portable_rows('calendar_reminders', $properties['reminders'], array('e_id' => intval($resource_id)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('calendar_reminders', $properties['reminders'], ['e_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);

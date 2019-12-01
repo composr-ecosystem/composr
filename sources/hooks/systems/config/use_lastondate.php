@@ -30,7 +30,7 @@ class Hook_config_use_lastondate
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_LASTONDATE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_use_lastondate
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

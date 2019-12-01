@@ -99,7 +99,7 @@ class DecisionTree
                 }
             }
 
-            $required_properties = array('title');
+            $required_properties = ['title'];
             if (!empty($screen['questions'])) {
                 $required_properties[] = 'next'; // If has 'questions', must also have 'next'
             }
@@ -110,7 +110,7 @@ class DecisionTree
 
                 if (isset($screen['questions'])) {
                     foreach ($screen['questions'] as $question_name => $question) {
-                        $required_properties = array('label');
+                        $required_properties = ['label'];
                         foreach ($required_properties as $question_property) {
                             if (@cms_empty_safe($question[$question_property])) {
                                 fatal_exit($question_property . ' parameter required on each question');
@@ -178,17 +178,17 @@ class DecisionTree
             }
 
             if (!empty($_POST)) {
-                $post = build_keep_post_fields(array(), true);
-                $refresh = do_template('JS_REFRESH', array('_GUID' => '63cb29a82471b7ba7fd594eb92cc02c1', 'FORM_NAME' => 'redir-form'));
+                $post = build_keep_post_fields([], true);
+                $refresh = do_template('JS_REFRESH', ['_GUID' => '63cb29a82471b7ba7fd594eb92cc02c1', 'FORM_NAME' => 'redir-form']);
 
-                return do_template('REDIRECT_POST_METHOD_SCREEN', array(
+                return do_template('REDIRECT_POST_METHOD_SCREEN', [
                     '_GUID' => 'f9f374626d7acdb0699399f970b2196a',
                     'REFRESH' => $refresh,
                     'TITLE' => $title,
                     'TEXT' => do_lang_tempcode('_REDIRECTING'),
                     'URL' => $url,
                     'POST' => $post,
-                ));
+                ]);
             }
 
             return redirect_screen($title, $url);
@@ -206,7 +206,7 @@ class DecisionTree
      */
     protected function build_url($target_position)
     {
-        return build_url(array('page' => '_SELF', 'type' => $target_position), '_SELF', array(), true);
+        return build_url(['page' => '_SELF', 'type' => $target_position], '_SELF', [], true);
     }
 
     /**
@@ -223,10 +223,10 @@ class DecisionTree
 
         $text = comcode_to_tempcode(isset($details['text']) ? $details['text'] : '', null, true);
 
-        $js_function_calls = array();
+        $js_function_calls = [];
 
         // Screen messages
-        foreach (array('inform', 'notice', 'warn') as $notice_type) {
+        foreach (['inform', 'notice', 'warn'] as $notice_type) {
             if (isset($details[$notice_type])) {
                 foreach ($details[$notice_type] as $notice_details) {
                     if (is_array($notice_details)) { // Contextual, dynamic
@@ -240,7 +240,7 @@ class DecisionTree
 
                         $notice_title = do_lang('DYNAMIC_NOTICE_' . $notice_type);
 
-                        $js_function_calls[] = array('decisionTreeRender', $parameter, $value, $_notice->evaluate(), $notice_title);
+                        $js_function_calls[] = ['decisionTreeRender', $parameter, $value, $_notice->evaluate(), $notice_title];
                     } else { // Flat
                         $notice = $notice_details;
                         attach_message($notice, $notice_type);
@@ -257,7 +257,7 @@ class DecisionTree
 
         // What if no questions and no next? No form.
         if ((empty($details['questions'])) && (@cms_empty_safe($details['next']))) {
-            return inform_screen($title, protect_from_escaping($text), false, $back_url, build_keep_post_fields(array(), true));
+            return inform_screen($title, protect_from_escaping($text), false, $back_url, build_keep_post_fields([], true));
         }
 
         // Form...
@@ -284,7 +284,7 @@ class DecisionTree
                 }
 
                 if (($section !== null) && ($current_section !== $section)) {
-                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '103da055fbd879f2bfc023d83d64091d', 'TITLE' => $section)));
+                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '103da055fbd879f2bfc023d83d64091d', 'TITLE' => $section]));
                 }
                 $current_section = $section;
 
@@ -318,7 +318,7 @@ class DecisionTree
 
         $form_method = empty($details['form_method']) ? 'POST' : $details['form_method'];
 
-        $hidden->attach(build_keep_post_fields(array(), true));
+        $hidden->attach(build_keep_post_fields([], true));
 
         $next_tree_position = '_' . $tree_position; // Needs complex processing
         $next_url = $this->build_url($next_tree_position);
@@ -339,7 +339,7 @@ class DecisionTree
             }
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '3164d2c849259902d0e3dc8dce1ad110',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $title,
@@ -354,7 +354,7 @@ class DecisionTree
             'SUPPORT_AUTOSAVE' => false,
             'TARGET' => '_self',
             'JS_FUNCTION_CALLS' => $js_function_calls,
-        ));
+        ]);
     }
 
     /**
@@ -368,7 +368,7 @@ class DecisionTree
     protected function get_question_field_details($question_name, $question_details, $i)
     {
         $default = either_param_string($question_name, isset($question_details['default']) ? $question_details['default'] : '');
-        $default_list = isset($question_details['default_list']) ? $question_details['default_list'] : array($default);
+        $default_list = isset($question_details['default_list']) ? $question_details['default_list'] : [$default];
 
         $options = isset($question_details['options']) ? $question_details['options'] : null;
 
@@ -378,16 +378,16 @@ class DecisionTree
 
         $hook_ob = get_fields_hook($type);
 
-        $field = array(
+        $field = [
             'id' => $i,
             'cf_type' => $type,
             'cf_input_name' => $question_name,
             'cf_default' => implode('|', $default_list),
             'cf_required' => $required ? 1 : 0,
             'cf_options' => $options,
-        );
+        ];
 
-        return array($hook_ob, $field, $default);
+        return [$hook_ob, $field, $default];
     }
 
     /**
@@ -408,7 +408,7 @@ class DecisionTree
                     list($hook_ob, $field) = $this->get_question_field_details($question_name, $question_details, $i);
 
                     $backup = $_POST;
-                    $_POST = array();
+                    $_POST = [];
                     foreach ($backup as $key => $val) {
                         if (strpos($key, $question_name) !== false) {
                             $_POST[str_replace($question_name, 'field_' . strval($i), $key)] = $val;

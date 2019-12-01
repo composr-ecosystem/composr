@@ -30,7 +30,7 @@ class Hook_config_mailing_list_style_default
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAILING_LIST_STYLE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_mailing_list_style_default
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

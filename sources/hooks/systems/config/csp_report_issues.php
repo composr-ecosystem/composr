@@ -30,7 +30,7 @@ class Hook_config_csp_report_issues
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_REPORT_ISSUES',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_csp_report_issues
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -34,7 +34,7 @@ function jestr_filtering_wrap($in)
 {
     $orig = $in;
     $in = '<div>' . $in . '</div>';
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#(>)([^<>]+)(<)#Us', $in, $matches, PREG_SET_ORDER);
     $matches = array_reverse($matches);
     for ($i = 0; $i < $num_matches; $i++) {
@@ -102,7 +102,7 @@ function jestr_filtering($in)
 function jestr_leet_filter($in)
 {
     $in = str_replace(
-        array(
+        [
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
             'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
             'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
@@ -110,8 +110,8 @@ function jestr_leet_filter($in)
             'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
             'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
             'W', 'X', 'Y', 'Z',
-        ),
-        array(
+        ],
+        [
             '4', 'b', 'c', 'd', '3', 'f', '9', 'h',
             '1', 'j', 'k', 'l', 'm', 'n', '0', '',
             'q', 'r', '5', '7', 'u', 'v', 'w', 'x',
@@ -119,7 +119,7 @@ function jestr_leet_filter($in)
             '9', 'H', '1', 'J', 'K', 'L', 'M', 'N',
             '0', 'P', 'Q', 'R', '5', '7', 'U', 'V',
             'W', 'X', 'Y', '2',
-        ),
+        ],
         $in);
 
     return $in;
@@ -127,7 +127,7 @@ function jestr_leet_filter($in)
 
 function jestr_piglatin_filter($in)
 {
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#([^\w]|^)(\w\w\w\w+)([^\w]|$)#', $in, $matches);
 
     for ($i = 0; $i < $num_matches; $i++) {
@@ -185,7 +185,7 @@ function containsVowel($word)
 // For most pig latin variations, Y is considered a vowel.
 function isVowel($ch_letter)
 {
-    $letters = array('a', 'e', 'i', 'o', 'u', 'y');
+    $letters = ['a', 'e', 'i', 'o', 'u', 'y'];
 
     for ($i = 0; $i < 6; $i++) {
         if (strtolower($ch_letter) == $letters[$i]) {
@@ -199,7 +199,7 @@ function isVowel($ch_letter)
 function jestr_string_changes_filter($in)
 {
     $changes = explode("\n", get_option('jestr_string_changes'));
-    $remap = array();
+    $remap = [];
     foreach ($changes as $change) {
         $bits = explode('=', $change, 2);
         if (count($bits) == 2) {

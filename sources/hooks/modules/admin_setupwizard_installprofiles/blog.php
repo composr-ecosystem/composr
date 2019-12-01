@@ -35,9 +35,9 @@ class Hook_admin_setupwizard_installprofiles_blog
         }
 
         require_lang('news');
-        return array(
+        return [
             'title' => do_lang('BLOG'),
-        );
+        ];
     }
 
     /**
@@ -47,9 +47,9 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function get_addon_list()
     {
-        return array(
-            array('news', 'newsletter'),
-            array());
+        return [
+            ['news', 'newsletter'],
+            []];
     }
 
     /**
@@ -59,7 +59,7 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '1',
             'have_default_banners_advertising' => '1',
@@ -74,7 +74,7 @@ class Hook_admin_setupwizard_installprofiles_blog
             'show_content_tagging_inline' => '1',
             'show_screen_actions' => '1',
             'rules' => 'liberal',
-        );
+        ];
     }
 
     /**
@@ -84,20 +84,20 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_news',
-            ),
-            'YES_CELL' => array(),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'YES_CELL' => [],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'side_news_categories',
                 'side_news_archive',
                 'main_newsletter_signup',
                 'side_tag_cloud',
                 'main_poll',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -107,19 +107,19 @@ class Hook_admin_setupwizard_installprofiles_blog
      */
     public function block_options()
     {
-        return array(
-            'side_calendar' => array(
+        return [
+            'side_calendar' => [
                 'type' => 'listing',
-            ),
-            'main_news' => array(
+            ],
+            'main_news' => [
                 'blogs' => '1',
                 'show_in_full' => '1',
                 'param' => '0',
                 'fallback_full' => '13',
                 'fallback_archive' => '10',
                 'title' => '',
-            ),
-        );
+            ],
+        ];
     }
 
     /**

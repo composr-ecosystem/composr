@@ -30,14 +30,14 @@ class Block_side_forum_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'forum', 'date_key', 'title', 'check');
+        $info['parameters'] = ['param', 'forum', 'date_key', 'title', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_forum_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('title', $map) ? $map['title'] : '',
@@ -77,11 +77,11 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'b4w69dc3o41hpa6uypivb8ag6xkgrown', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'b4w69dc3o41hpa6uypivb8ag6xkgrown', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', array('_GUID' => 'zgjxqjszggspvsjqhu2rbj21p145laoe', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => 'zgjxqjszggspvsjqhu2rbj21p145laoe', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_css('news');
@@ -99,7 +99,7 @@ PHP;
         $archive_url = null;
         $submit_url = new Tempcode();
 
-        $forum_ids = array();
+        $forum_ids = [];
         if ((get_forum_type() == 'cns') && ((strpos($forum_name, ',') !== false) || (preg_match('#\d[-\*\+]#', $forum_name) != 0) || (is_numeric($forum_name)))) {
             require_code('selectcode');
             $forum_names = array_map('strval', selectcode_to_idlist_using_db($forum_name, 'id', 'f_forums', 'f_forums', 'f_parent_forum', 'f_parent_forum', 'id', true, true, $GLOBALS['FORUM_DB']));
@@ -107,7 +107,7 @@ PHP;
             $forum_names = explode(',', $forum_name);
         }
         if (($forum_name == do_lang('NEWS')) && (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name) === null)) {
-            $forum_names = array(do_lang('DEFAULT_FORUM_TITLE'));
+            $forum_names = [do_lang('DEFAULT_FORUM_TITLE')];
         }
         foreach ($forum_names as $forum_name) {
             $forum_name = trim($forum_name);
@@ -133,7 +133,7 @@ PHP;
                 if ($archive_url === null) {
                     $archive_url = $GLOBALS['FORUM_DRIVER']->forum_url($forum_id, true); // First forum will count as archive
                     if (get_forum_type() == 'cns') {
-                        $submit_url = build_url(array('page' => 'topics', 'type' => 'new_topic', 'id' => $forum_id), get_module_zone('topics'));
+                        $submit_url = build_url(['page' => 'topics', 'type' => 'new_topic', 'id' => $forum_id], get_module_zone('topics'));
                     }
                 }
             }
@@ -147,7 +147,7 @@ PHP;
         $max_rows = 0;
         $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', false, $date_key);
 
-        $news = array();
+        $news = [];
         if ($topics !== null) {
             sort_maps_by($topics, $date_key);
             $topics = array_reverse($topics, false);
@@ -157,7 +157,7 @@ PHP;
                 $title = $topic['title'];
                 $date = get_timezoned_date_tempcode($topic[$date_key]);
 
-                $news[] = array(
+                $news[] = [
                     'REPLIES' => strval($topic['num']),
                     'FIRSTTIME' => strval($topic['firsttime']),
                     'LASTTIME' => strval($topic['lasttime']),
@@ -170,11 +170,11 @@ PHP;
                     'DATE' => $date,
                     'FULL_URL' => $topic_url,
                     'NEWS_TITLE' => escape_html($title),
-                );
+                ];
             }
         }
 
-        return do_template('BLOCK_SIDE_FORUM_NEWS', array(
+        return do_template('BLOCK_SIDE_FORUM_NEWS', [
             '_GUID' => '174fa5ce0d35d9b49dca6347c66494a5',
             'BLOCK_ID' => $block_id,
             'FORUM_NAME' => array_key_exists('forum', $map) ? $map['forum'] : do_lang('NEWS'),
@@ -182,6 +182,6 @@ PHP;
             'NEWS' => $news,
             'SUBMIT_URL' => $submit_url,
             'ARCHIVE_URL' => ($archive_url === null) ? '' : $archive_url,
-        ));
+        ]);
     }
 }

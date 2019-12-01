@@ -30,7 +30,7 @@ class Hook_config_is_on_timezone_detection
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_TIMEZONE_DETECTION',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_is_on_timezone_detection
             'public' => true,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

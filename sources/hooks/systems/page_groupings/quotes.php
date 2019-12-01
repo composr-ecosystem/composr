@@ -33,16 +33,16 @@ class Hook_page_groupings_quotes
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('random_quotes')) {
-            return array();
+            return [];
         }
 
         $zone = get_page_zone('quotes', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('style', 'menu/adminzone/style/quotes', array('quotes', array(), $zone), do_lang_tempcode('quotes:QUOTES'), 'quotes:DOC_QUOTES'),
-        );
+        return [
+            ['style', 'menu/adminzone/style/quotes', ['quotes', [], $zone], do_lang_tempcode('quotes:QUOTES'), 'quotes:DOC_QUOTES'],
+        ];
     }
 }

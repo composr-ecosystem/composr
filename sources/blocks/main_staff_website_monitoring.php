@@ -32,14 +32,14 @@ class Block_main_staff_website_monitoring
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Jack Franklin';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         $info['update_require_upgrade'] = true;
         return $info;
     }
@@ -51,7 +51,7 @@ class Block_main_staff_website_monitoring
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         // No cache on POST as this is when we save text data
         $info['cache_on'] = <<<'PHP'
         (count($_POST) > 0)
@@ -82,16 +82,16 @@ PHP;
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if (($upgrade_from === null) || ($upgrade_from < 2)) {
-            $GLOBALS['SITE_DB']->create_table('staff_website_monitoring', array(
+            $GLOBALS['SITE_DB']->create_table('staff_website_monitoring', [
                 'id' => '*AUTO',
                 'site_url' => 'URLPATH',
                 'site_name' => 'SHORT_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->query_insert('staff_website_monitoring', array(
+            $GLOBALS['SITE_DB']->query_insert('staff_website_monitoring', [
                 'site_url' => get_base_url(),
                 'site_name' => get_site_name(),
-            ));
+            ]);
         }
     }
 
@@ -118,7 +118,7 @@ PHP;
                     $bits = explode('=', $q);
                     if (count($bits) >= 2) {
                         $last_bit = array_pop($bits);
-                        $bits = array(implode('=', $bits), $last_bit);
+                        $bits = [implode('=', $bits), $last_bit];
                         $link = $bits[0];
                         $site_name = $bits[1];
                     } else {
@@ -131,7 +131,7 @@ PHP;
                             $site_name = $link;
                         }
                     }
-                    $GLOBALS['SITE_DB']->query_insert('staff_website_monitoring', array('site_name' => $site_name, 'site_url' => fixup_protocolless_urls($link)));
+                    $GLOBALS['SITE_DB']->query_insert('staff_website_monitoring', ['site_name' => $site_name, 'site_url' => fixup_protocolless_urls($link)]);
                 }
             }
 
@@ -142,8 +142,8 @@ PHP;
 
         $rows = $GLOBALS['SITE_DB']->query_select('staff_website_monitoring');
 
-        $sites_being_watched = array();
-        $grid_data = array();
+        $sites_being_watched = [];
+        $grid_data = [];
         foreach ($rows as $r) {
             list($rank, $links) = get_alexa_rank(($r['site_url']));
 
@@ -156,16 +156,16 @@ PHP;
 
             $sites_being_watched[$r['site_url']] = $r['site_name'];
 
-            $grid_data[] = array(
+            $grid_data[] = [
                 'URL' => $r['site_url'],
                 'ALEXA_RANKING' => $rank,
                 'ALEXA_LINKS' => $links,
                 'SITE_NAME' => $r['site_name'],
-            );
+            ];
         }
 
         $map_comcode = get_block_ajax_submit_map($map);
-        return do_template('BLOCK_MAIN_STAFF_WEBSITE_MONITORING', array(
+        return do_template('BLOCK_MAIN_STAFF_WEBSITE_MONITORING', [
             '_GUID' => '0abf65878c508bf133836589a8cc45da',
             'BLOCK_ID' => $block_id,
             'URL' => get_self_url(),
@@ -173,6 +173,6 @@ PHP;
             'MAP' => $map_comcode,
             'SITES_BEING_WATCHED' => $sites_being_watched,
             'GRID_DATA' => $grid_data,
-        ));
+        ]);
     }
 }

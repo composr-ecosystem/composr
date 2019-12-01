@@ -26,7 +26,7 @@ class Hook_addon_registry_bankr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_bankr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_bankr
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,15 +106,15 @@ class Hook_addon_registry_bankr
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'System scheduler',
                 'points',
                 'ecommerce',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,14 +134,14 @@ class Hook_addon_registry_bankr
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/bankr.php',
             'sources_custom/hooks/systems/privacy/bankr.php',
             'sources_custom/hooks/systems/ecommerce/bank.php',
             'lang_custom/EN/bank.ini',
             'sources_custom/hooks/systems/cron/bank.php',
             'sources_custom/hooks/systems/config/bank_dividend.php',
-        );
+        ];
     }
 
     /**
@@ -160,13 +160,13 @@ class Hook_addon_registry_bankr
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('bank', array(
+            $GLOBALS['SITE_DB']->create_table('bank', [
                 'id' => '*AUTO',
                 'member_id' => 'MEMBER',
                 'amount' => 'INTEGER',
                 'dividend' => 'INTEGER',
                 'add_time' => '?TIME',
-            ));
+            ]);
         }
     }
 }

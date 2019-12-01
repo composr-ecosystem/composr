@@ -39,7 +39,7 @@ class Hook_cron_newsletter_periodic
         if ($calculate_num_queued) {
             $num_queued = 0;
 
-            $periodic_rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'));
+            $periodic_rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*']);
             foreach ($periodic_rows as $periodic_row) {
                 $last_sent = $this->newsletter_periodic_handle($periodic_row, true);
                 if ($last_sent !== null) {
@@ -50,11 +50,11 @@ class Hook_cron_newsletter_periodic
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send periodic newsletters',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**
@@ -68,11 +68,11 @@ class Hook_cron_newsletter_periodic
         // newsletter that should be sent out automatically.
 
         // Grab the details of this periodic newsletter
-        $periodic_rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'));
+        $periodic_rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*']);
         foreach ($periodic_rows as $periodic_row) {
             $last_sent = $this->newsletter_periodic_handle($periodic_row);
             if ($last_sent !== null) { // was sent, so update with new time
-                $GLOBALS['SITE_DB']->query_update('newsletter_periodic', array('np_last_sent' => $last_sent), array('id' => $periodic_row['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_update('newsletter_periodic', ['np_last_sent' => $last_sent], ['id' => $periodic_row['id']], '', 1);
                 break; // Limited to 1 because we use global variables to store what we're sending, so can only do one per request
             }
         }
@@ -115,7 +115,7 @@ class Hook_cron_newsletter_periodic
             }        // No, we're not
         } elseif ($periodic_row['np_frequency'] == 'weekly' || $periodic_row['np_frequency'] == 'biweekly') {
             // Find out what day of the week it is
-            $weekdays = array('Error', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $weekdays = ['Error', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             $send_day = $weekdays[$periodic_row['np_day']];
             $today = date('l');
 

@@ -77,16 +77,16 @@ class Hook_profiles_tabs_edit
         $only_tab = get_param_string('only_subtab', null);
 
         if (($leave_to_ajax_if_possible) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
-            return array($title, null, $order, 'buttons/settings');
+            return [$title, null, $order, 'buttons/settings'];
         }
 
         $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_modest); // Raise time limit, as can be slow
 
-        $tabs = array();
+        $tabs = [];
 
         $hooks = find_all_hooks('systems', 'profiles_tabs_edit');
         if (isset($hooks['settings'])) { // Editing must go first, so changes reflect in the renders of the tabs
-            $hooks = array('settings' => $hooks['settings']) + $hooks;
+            $hooks = ['settings' => $hooks['settings']] + $hooks;
         }
         foreach (array_keys($hooks) as $hook) {
             if (($only_tab === null) || (preg_match('#(^|,)' . preg_quote($hook, '#') . '(,|$)#', $only_tab) != 0)) {
@@ -119,13 +119,13 @@ class Hook_profiles_tabs_edit
         cms_set_time_limit($old_limit);
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'buttons/settings');
+            return [$title, null, $order, 'buttons/settings'];
         }
 
         sort_maps_by($tabs, 4, false, true);
         $tabs = array_values($tabs); // Reindex, needed for lastness check
 
-        $js_function_calls = array();
+        $js_function_calls = [];
 
         $hidden = new Tempcode();
 
@@ -137,7 +137,7 @@ class Hook_profiles_tabs_edit
             }
         }
 
-        $_tabs = array();
+        $_tabs = [];
         $tab_first = true;
         foreach ($tabs as $i => $tab) {
             if ($tab === null) {
@@ -164,7 +164,7 @@ class Hook_profiles_tabs_edit
                 $hidden->attach($tab[5]);
             }
 
-            $_tabs[] = array(
+            $_tabs[] = [
                 'TAB_TITLE' => $tab[0],
                 'TAB_CODE' => $tab[8],
                 'TAB_FIELDS' => $tab[1],
@@ -173,14 +173,14 @@ class Hook_profiles_tabs_edit
                 'TAB_FIRST' => $tab_first,
                 'TAB_LAST' => $tab_last,
                 'TAB_SINGLE_FIELD' => $single_field,
-            );
+            ];
 
             $tab_first = false;
         }
 
-        $url = build_url(array('page' => '_SELF'), '_SELF', array(), true, false, false/*,'tab--edit'  confusing, esp if was not on settings edit tab initially*/);
+        $url = build_url(['page' => '_SELF'], '_SELF', [], true, false, false/*,'tab--edit'  confusing, esp if was not on settings edit tab initially*/);
 
-        $content = do_template('CNS_MEMBER_PROFILE_EDIT', array(
+        $content = do_template('CNS_MEMBER_PROFILE_EDIT', [
             '_GUID' => '7a3e2cc210583fe4f3097af48b052351',
             'JS_FUNCTION_CALLS' => $js_function_calls,
             'HIDDEN' => $hidden,
@@ -189,8 +189,8 @@ class Hook_profiles_tabs_edit
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'SKIP_WEBSTANDARDS' => true,
             'TABS' => $_tabs,
-        ));
+        ]);
 
-        return array($title, $content, $order, 'buttons/settings');
+        return [$title, $content, $order, 'buttons/settings'];
     }
 }

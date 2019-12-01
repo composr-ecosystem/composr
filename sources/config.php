@@ -34,19 +34,19 @@ function init__config()
         if (multi_lang_content()) {
             load_config_options(); // Translation will be needed, so we won't put in the smart cache because we don't know the current language yet (chicken and egg)
         } else {
-            $CONFIG_OPTIONS_CACHE = array();
+            $CONFIG_OPTIONS_CACHE = [];
             if ($SMART_CACHE !== null) {
                 $_cache = $SMART_CACHE->get('CONFIG_OPTIONS');
                 if ($_cache !== null) {
                     foreach ($_cache as $c_key => $c_value) {
-                        $CONFIG_OPTIONS_CACHE[$c_key] = array('_cached_string_value' => $c_value, 'c_value' => $c_value);
+                        $CONFIG_OPTIONS_CACHE[$c_key] = ['_cached_string_value' => $c_value, 'c_value' => $c_value];
                     }
                 }
             }
         }
 
         if ($PERSISTENT_CACHE === null) {
-            $VALUE_OPTIONS_CACHE = array();
+            $VALUE_OPTIONS_CACHE = [];
             if ($SMART_CACHE !== null) {
                 $test = $SMART_CACHE->get('VALUE_OPTIONS');
                 if ($test !== null) {
@@ -67,8 +67,8 @@ function init__config()
             load_value_options();
         }
     } else {
-        $CONFIG_OPTIONS_CACHE = array();
-        $VALUE_OPTIONS_CACHE = array();
+        $CONFIG_OPTIONS_CACHE = [];
+        $VALUE_OPTIONS_CACHE = [];
     }
 
     global $GET_OPTION_LOOP;
@@ -121,18 +121,18 @@ function load_config_options()
     }
 
     if (multi_lang_content()) {
-        $select = array('c_name', 'c_value', 'c_value_trans', 'c_needs_dereference');
+        $select = ['c_name', 'c_value', 'c_value_trans', 'c_needs_dereference'];
     } else {
-        $select = array('c_name', 'c_value');
+        $select = ['c_name', 'c_value'];
     }
-    $temp = $GLOBALS['SITE_DB']->query_select('config', $select, array(), '', null, 0, true);
+    $temp = $GLOBALS['SITE_DB']->query_select('config', $select, [], '', null, 0, true);
 
     if ($temp === null) {
         if (running_script('install')) {
-            $temp = array();
+            $temp = [];
         } else {
             if ($GLOBALS['SITE_DB']->table_exists('config', true)) { // LEGACY: Has to use old naming from pre v10; also has to use $really, because of possibility of corrupt db_meta table
-                $temp = $GLOBALS['SITE_DB']->query_select('config', array('the_name AS c_name', 'config_value AS c_value', 'config_value AS c_value_trans', 'if(the_type=\'transline\' OR the_type=\'transtext\' OR the_type=\'comcodeline\' OR the_type=\'comcodetext\',1,0) AS c_needs_dereference'), array(), '', null, 0, true);
+                $temp = $GLOBALS['SITE_DB']->query_select('config', ['the_name AS c_name', 'config_value AS c_value', 'config_value AS c_value_trans', 'if(the_type=\'transline\' OR the_type=\'transtext\' OR the_type=\'comcodeline\' OR the_type=\'comcodetext\',1,0) AS c_needs_dereference'], [], '', null, 0, true);
                 if ($temp === null) {
                     critical_error('DATABASE_FAIL');
                 }
@@ -154,7 +154,7 @@ function load_value_options()
 
     $VALUE_OPTIONS_CACHE = persistent_cache_get('VALUES');
     if (!is_array($VALUE_OPTIONS_CACHE)) {
-        $_value_options = $GLOBALS['SITE_DB']->query_select('values', array('*'));
+        $_value_options = $GLOBALS['SITE_DB']->query_select('values', ['*']);
         $VALUE_OPTIONS_CACHE = list_to_map('the_name', $_value_options);
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
     }
@@ -180,7 +180,7 @@ function get_theme_option($name, $default = null, $theme = null, $missing_ok = f
     if ($theme != '') {
         $ini_path = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/theme.ini';
         if (is_file($ini_path)) {
-            static $map = array();
+            static $map = [];
             if (!isset($map[$theme])) {
                 require_code('files');
                 $map[$theme] = cms_parse_ini_file_fast($ini_path);
@@ -246,7 +246,7 @@ function get_theme_option($name, $default = null, $theme = null, $missing_ok = f
                 $default = '0';
                 break;
             case 'themewizard_images':
-                $_default = array(
+                $_default = [
                     'background_image',
                     'big_tabs/controller_button',
                     'big_tabs/controller_button_active',
@@ -302,7 +302,7 @@ function get_theme_option($name, $default = null, $theme = null, $missing_ok = f
                     'poll/*',
                     'quote_gradient',
                     'tab',
-                );
+                ];
                 $default = implode(',', $_default);
                 break;
             case 'themewizard_images_no_wild':
@@ -473,12 +473,12 @@ function get_option($name, $missing_ok = false)
 function get_value($name, $default = null, $elective_or_lengthy = false, $env_also = false)
 {
     if ($elective_or_lengthy) {
-        static $cache = array();
+        static $cache = [];
         if (!array_key_exists($name, $cache)) {
             if (!isset($GLOBALS['SITE_DB'])) {
                 return null;
             }
-            $cache[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', array('the_name' => $name), '', running_script('install') || running_script('upgrader'));
+            $cache[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
         }
         return $cache[$name];
     }
@@ -566,9 +566,9 @@ function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false
 {
     if ($elective_or_lengthy) {
         if ($value === null) {
-            $GLOBALS['SITE_DB']->query_delete('values_elective', array('the_name' => $name), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('values_elective', ['the_name' => $name], '', 1);
         } else {
-            $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', array('date_and_time' => time(), 'the_value' => $value), array('the_name' => $name));
+            $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
         }
         return $value;
     }
@@ -576,7 +576,7 @@ function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false
     global $VALUE_OPTIONS_CACHE;
     $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
     $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
-    $GLOBALS['SITE_DB']->query_insert_or_replace('values', array('date_and_time' => time(), 'the_value' => $value), array('the_name' => $name), true); // Errors suppressed in case DB write access broken
+    $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name], true); // Errors suppressed in case DB write access broken
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
     }
@@ -592,11 +592,11 @@ function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false
 function delete_value($name, $elective_or_lengthy = false)
 {
     if ($elective_or_lengthy) {
-        $GLOBALS['SITE_DB']->query_delete('values_elective', array('the_name' => $name), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('values_elective', ['the_name' => $name], '', 1);
         return;
     }
 
-    $GLOBALS['SITE_DB']->query_delete('values', array('the_name' => $name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $name], '', 1);
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('VALUES');
     }
@@ -611,7 +611,7 @@ function delete_value($name, $elective_or_lengthy = false)
  */
 function delete_values($values)
 {
-    if ($values === array()) {
+    if ($values === []) {
         return;
     }
     global $VALUE_OPTIONS_CACHE;

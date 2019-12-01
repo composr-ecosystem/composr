@@ -30,7 +30,7 @@ class Hook_config_notification_enable_private_topics
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATION_ENABLE_PRIVATE_TOPICS',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_notification_enable_private_topics
             'public' => false,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

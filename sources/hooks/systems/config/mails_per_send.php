@@ -30,7 +30,7 @@ class Hook_config_mails_per_send
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAILS_PER_SEND',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_mails_per_send
             'public' => false,
 
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

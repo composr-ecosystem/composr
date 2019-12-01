@@ -44,7 +44,7 @@
  * @param  boolean $interactive Whether to allow interactive sorting and filtering
  * @return Tempcode The results table
  */
-function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows, $header_row, $result_entries, $sortables = array(), $sortable = null, $sort_order = null, $sort_name = 'sort', $message = null, $widths = array(), $tpl_set = null, $max_page_links = 8, $guid = '1c8645bc2a3ff5bec2e003142185561f', $skip_sortables_form = false, $hash = null, $interactive = false)
+function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows, $header_row, $result_entries, $sortables = [], $sortable = null, $sort_order = null, $sort_name = 'sort', $message = null, $widths = [], $tpl_set = null, $max_page_links = 8, $guid = '1c8645bc2a3ff5bec2e003142185561f', $skip_sortables_form = false, $hash = null, $interactive = false)
 {
     require_code('templates_pagination');
 
@@ -68,7 +68,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
     }
 
     // Sorting
-    if ($sortables != array()) {
+    if ($sortables != []) {
         $sort = results_sorter($sortables, $sortable, $sort_order, $sort_name, $hash);
     } else {
         $sort = new Tempcode();
@@ -79,7 +79,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
 
     return do_template(
         ($tpl_set === null) ? 'RESULTS_TABLE' : ('RESULTS_' . $tpl_set . '_TABLE'),
-        array(
+        [
             '_GUID' => $guid,
             'TEXT_ID' => $text_id,
             'HEADER_ROW' => $header_row,
@@ -89,7 +89,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
             'PAGINATION' => $pagination,
             'WIDTHS' => $widths,
             'INTERACTIVE' => $interactive,
-        ),
+        ],
         null,
         false,
         'RESULTS_TABLE'
@@ -107,7 +107,7 @@ function results_table($text_id, $start, $start_name, $max, $max_name, $max_rows
  * @param  ?array $interactive_options Array of tuples matching the indices of $values, each pair being a boolean whether the value is searchable, boolean whether the value is filterable, and a sortable type supported by sortable_tables.js (or null) (null: no interactivity)
  * @return Tempcode The generated header row
  */
-function results_header_row($values, $sortables = array(), $order_param = 'sort', $current_ordering = '', $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', $interactive_options = null)
+function results_header_row($values, $sortables = [], $order_param = 'sort', $current_ordering = '', $guid = 'fbcaf8b021e3939bfce1dce9ff8ed63a', $interactive_options = null)
 {
     $cells = new Tempcode();
     $cnt = count($values);
@@ -142,7 +142,7 @@ function results_header_row($values, $sortables = array(), $order_param = 'sort'
             }
         }
 
-        $map = array(
+        $map = [
             '_GUID' => '80e9de91bb9e479766bc8568a790735c',
             'VALUE' => $value,
             'COLSPAN' => ($colspan === null) ? null : strval($colspan),
@@ -152,19 +152,19 @@ function results_header_row($values, $sortables = array(), $order_param = 'sort'
             'SEARCHABLE' => (($interactive_options !== null) && (array_key_exists($i, $interactive_options))) ? $interactive_options[$i][0] : false,
             'FILTERABLE' => (($interactive_options !== null) && (array_key_exists($i, $interactive_options))) ? $interactive_options[$i][1] : false,
             'SORTABLE_TYPE' => (($interactive_options !== null) && (array_key_exists($i, $interactive_options))) ? $interactive_options[$i][2] : null,
-        );
+        ];
 
         if ($found !== null) {
-            $sort_url_asc = get_self_url(false, false, array($order_param => $found . ' ASC'), true);
-            $sort_url_desc = get_self_url(false, false, array($order_param => $found . ' DESC'), true);
+            $sort_url_asc = get_self_url(false, false, [$order_param => $found . ' ASC'], true);
+            $sort_url_desc = get_self_url(false, false, [$order_param => $found . ' DESC'], true);
             $sort_asc_selected = ($current_ordering == $found . ' ASC');
             $sort_desc_selected = ($current_ordering == $found . ' DESC');
-            $map += array(
+            $map += [
                 'SORT_ASC_SELECTED' => $sort_asc_selected,
                 'SORT_DESC_SELECTED' => $sort_desc_selected,
                 'SORT_URL_DESC' => $sort_url_desc,
                 'SORT_URL_ASC' => $sort_url_asc,
-            );
+            ];
             $cells->attach(do_template('RESULTS_TABLE_FIELD_TITLE_SORTABLE', $map));
         } else {
             $cells->attach(do_template('RESULTS_TABLE_FIELD_TITLE', $map));
@@ -210,21 +210,21 @@ function results_entry($values, $auto_escape, $tpl_set = null, $guid = '9e340dd1
             $value = escape_html($value);
         }
         $results_table_field_tpl = ($tpl_set === null) ? 'RESULTS_TABLE_FIELD' : ('RESULTS_TABLE_' . $tpl_set . '_FIELD');
-        $cells->attach(do_template($results_table_field_tpl, array(
+        $cells->attach(do_template($results_table_field_tpl, [
             '_GUID' => $guid,
             'VALUE' => $value,
             'CLASS' => (is_string($class)) ? $class : '',
             'COLSPAN' => ($colspan === null) ? null : strval($colspan),
-        ), null, false, 'RESULTS_TABLE_FIELD'));
+        ], null, false, 'RESULTS_TABLE_FIELD'));
 
         $i++;
     }
 
     $results_table_tpl = ($tpl_set === null) ? 'RESULTS_TABLE_ENTRY' : ('RESULTS_TABLE_' . $tpl_set . '_ENTRY');
-    return do_template($results_table_tpl, array(
+    return do_template($results_table_tpl, [
         '_GUID' => $guid,
         'VALUES' => $cells,
-    ), null, false, 'RESULTS_TABLE_ENTRY');
+    ], null, false, 'RESULTS_TABLE_ENTRY');
 }
 
 /**
@@ -260,7 +260,7 @@ function results_sorter($sortables, $sortable = null, $sort_order = null, $sort_
 
             $selector_value = $_sortable . ' ASC';
             $selected = (($sortable . ' ' . $sort_order) == $selector_value);
-            $selectors->attach(do_template('PAGINATION_SORTER', array('_GUID' => '6a57bbaeed04743ba2cafa2d262a1c98', 'SELECTED' => $selected, 'NAME' => $text_ascending, 'VALUE' => $selector_value)));
+            $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => '6a57bbaeed04743ba2cafa2d262a1c98', 'SELECTED' => $selected, 'NAME' => $text_ascending, 'VALUE' => $selector_value]));
         }
 
         if ($limit_direction !== 'ASC') {
@@ -272,14 +272,14 @@ function results_sorter($sortables, $sortable = null, $sort_order = null, $sort_
 
             $selector_value = $_sortable . ' DESC';
             $selected = (($sortable . ' ' . $sort_order) == $selector_value);
-            $selectors->attach(do_template('PAGINATION_SORTER', array('_GUID' => 'bbf97817fa4f5e744a414b303a3d21fe', 'SELECTED' => $selected, 'NAME' => $text_descending, 'VALUE' => $selector_value)));
+            $selectors->attach(do_template('PAGINATION_SORTER', ['_GUID' => 'bbf97817fa4f5e744a414b303a3d21fe', 'SELECTED' => $selected, 'NAME' => $text_descending, 'VALUE' => $selector_value]));
         }
     }
-    $sort_url = get_self_url(false, false, array($sort_name => null));
+    $sort_url = get_self_url(false, false, [$sort_name => null]);
     if ($selectors->is_empty()) {
         $sort = new Tempcode();
     } else {
-        $sort = do_template('PAGINATION_SORT', array('_GUID' => '4afa1bae0f447b68e60192c515b13ca2', 'HASH' => $hash, 'SORT' => $sort_name, 'URL' => $sort_url, 'SELECTORS' => $selectors));
+        $sort = do_template('PAGINATION_SORT', ['_GUID' => '4afa1bae0f447b68e60192c515b13ca2', 'HASH' => $hash, 'SORT' => $sort_name, 'URL' => $sort_url, 'SELECTORS' => $selectors]);
     }
     $GLOBALS['INCREMENTAL_ID_GENERATOR']++;
     return $sort;

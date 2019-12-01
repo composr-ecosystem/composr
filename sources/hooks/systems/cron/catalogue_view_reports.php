@@ -41,10 +41,10 @@ class Hook_cron_catalogue_view_reports
         if ($calculate_num_queued) {
             $time_now = time();
 
-            $done_reports = array('daily' => false, 'weekly' => false, 'monthly' => false, 'quarterly' => false);
+            $done_reports = ['daily' => false, 'weekly' => false, 'monthly' => false, 'quarterly' => false];
 
             $catalogues = $GLOBALS['SITE_DB']->query('SELECT c_title,c_name,c_send_view_reports FROM ' . get_table_prefix() . 'catalogues WHERE ' . db_string_not_equal_to('c_send_view_reports', '') . ' AND ' . db_string_not_equal_to('c_send_view_reports', 'never'));
-            $this->doing = array();
+            $this->doing = [];
             foreach ($catalogues as $catalogue) {
                 switch ($catalogue['c_send_view_reports']) {
                     case 'daily':
@@ -82,11 +82,11 @@ class Hook_cron_catalogue_view_reports
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send catalogue entry view-reports',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 12,
-        );
+        ];
     }
 
     /**
@@ -109,28 +109,28 @@ class Hook_cron_catalogue_view_reports
             $start = 0;
             do {
                 // So, we find all the entries in their catalogue, and group them by submitters
-                $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('id', 'ce_submitter', 'ce_views', 'ce_views_prior'), array('c_name' => $catalogue['c_name']), 'ORDER BY ce_submitter', 2000, $start);
-                $members = array();
+                $entries = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['id', 'ce_submitter', 'ce_views', 'ce_views_prior'], ['c_name' => $catalogue['c_name']], 'ORDER BY ce_submitter', 2000, $start);
+                $members = [];
                 foreach ($entries as $entry) {
                     if (!array_key_exists($entry['ce_submitter'], $members)) {
-                        $members[$entry['ce_submitter']] = array();
+                        $members[$entry['ce_submitter']] = [];
                     }
 
                     $members[$entry['ce_submitter']][] = $entry;
                 }
                 $catalogue_title = get_translated_text($catalogue['c_title']);
                 $regularity = do_lang('VR_' . strtoupper($catalogue['c_send_view_reports']));
-                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue['c_name']), 'ORDER BY cf_order', 1);
+                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue['c_name']], 'ORDER BY cf_order', 1);
 
                 // And now we send out mails, and get ready for the next report
                 foreach ($members as $member_id => $member) {
                     // Work out the contents of the mail
                     $buildup = '';
                     foreach ($member as $entry) {
-                        $field_values = get_catalogue_entry_field_values($catalogue['c_name'], $entry, array(0), $fields);
+                        $field_values = get_catalogue_entry_field_values($catalogue['c_name'], $entry, [0], $fields);
                         $entry_title = $field_values[0]['effective_value'];
                         $views = $entry['ce_views'] - $entry['ce_views_prior'];
-                        $GLOBALS['SITE_DB']->query_update('catalogue_entries', array('ce_views_prior' => $entry['ce_views']), array('id' => $entry['id']), '', 1);
+                        $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['ce_views_prior' => $entry['ce_views']], ['id' => $entry['id']], '', 1);
                         $temp = do_lang($catalogue['c_name'] . '__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views), null, null, false);
                         if ($temp === null) {
                             $temp = do_lang('DEFAULT__CATALOGUE_VIEW_REPORT_LINE', comcode_escape(is_object($entry_title) ? $entry_title->evaluate() : $entry_title), integer_format($views));
@@ -139,7 +139,7 @@ class Hook_cron_catalogue_view_reports
                     }
                     $mail = do_notification_lang($catalogue['c_name'] . '__CATALOGUE_VIEW_REPORT', $buildup, comcode_escape($catalogue_title), $regularity, get_lang($member_id), false);
                     if ($mail === null) {
-                        $mail = do_notification_lang('DEFAULT__CATALOGUE_VIEW_REPORT', $buildup, comcode_escape($catalogue_title), array($regularity, get_site_name()), get_lang($member_id));
+                        $mail = do_notification_lang('DEFAULT__CATALOGUE_VIEW_REPORT', $buildup, comcode_escape($catalogue_title), [$regularity, get_site_name()], get_lang($member_id));
                     }
                     $subject_line = do_lang($catalogue['c_name'] . '__CATALOGUE_VIEW_REPORT_SUBJECT', $catalogue_title, get_site_name(), null, get_lang($member_id), false);
                     if ($subject_line === null) {
@@ -147,7 +147,7 @@ class Hook_cron_catalogue_view_reports
                     }
 
                     // Send actual notification
-                    dispatch_notification('catalogue_view_reports__' . $catalogue['c_name'], null, $subject_line, $mail, array($member_id), A_FROM_SYSTEM_PRIVILEGED);
+                    dispatch_notification('catalogue_view_reports__' . $catalogue['c_name'], null, $subject_line, $mail, [$member_id], A_FROM_SYSTEM_PRIVILEGED);
                 }
 
                 $start += 2000;

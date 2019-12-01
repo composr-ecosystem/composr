@@ -30,7 +30,7 @@ class Hook_config_anti_leech
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ANTI_LEECH',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_anti_leech
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

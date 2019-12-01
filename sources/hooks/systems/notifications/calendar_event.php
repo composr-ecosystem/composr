@@ -45,18 +45,18 @@ class Hook_notification_calendar_event extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
-        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id', 't_title'));
+        $types = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title']);
         foreach ($types as $type) {
             if ((has_category_access(get_member(), 'calendar', strval($type['id']))) && ($type['id'] != db_get_first_id())) {
-                $page_links[] = array(
+                $page_links[] = [
                     'id' => $type['id'],
                     'title' => get_translated_text($type['t_title']),
-                );
+                ];
             }
         }
         sort_maps_by($page_links, 'title', false, true);
@@ -85,11 +85,11 @@ class Hook_notification_calendar_event extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['calendar_event'] = array(do_lang('CONTENT'), do_lang('calendar:NOTIFICATION_TYPE_calendar_event'));
+        $list = [];
+        $list['calendar_event'] = [do_lang('CONTENT'), do_lang('calendar:NOTIFICATION_TYPE_calendar_event')];
         return $list;
     }
 

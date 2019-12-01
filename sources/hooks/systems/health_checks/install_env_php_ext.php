@@ -45,7 +45,7 @@ class Hook_health_check_install_env_php_ext extends Hook_Health_Check
         $this->process_checks_section('testXML', 'XML', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testUnzip', 'Unzip', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -84,7 +84,7 @@ class Hook_health_check_install_env_php_ext extends Hook_Health_Check
     protected function get_gd_version()
     {
         $info = gd_info();
-        $matches = array();
+        $matches = [];
         if (preg_match('#(\d(\.|))+#', $info['GD Version'], $matches) != 0) {
             $version = $matches[0];
         } else {

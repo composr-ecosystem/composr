@@ -39,9 +39,9 @@ class Hook_task_make_backup
         }
 
         require_code('backup');
-        $backup_result = make_backup($file, $b_type, $max_size, array($this, 'log'));
+        $backup_result = make_backup($file, $b_type, $max_size, [$this, 'log']);
 
-        return array('text/html', $backup_result);
+        return ['text/html', $backup_result];
     }
 
     /**

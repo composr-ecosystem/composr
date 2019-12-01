@@ -39,7 +39,7 @@ function database_repair_inbuilt()
         return $out;
     }
 
-    $tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+    $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
 
     $GLOBALS['SITE_DB']->ensure_connected();
     $connection = $GLOBALS['SITE_DB']->connection_write;
@@ -56,10 +56,10 @@ function database_repair_inbuilt()
         $result = $static_ob->query('CHECK TABLE ' . $table . ' FAST', $connection);
         $status_row = end($result);
         if ($status_row['Msg_type'] != 'status') {
-            $out->attach(paragraph(do_lang_tempcode('TABLE_ERROR', escape_html($table), escape_html($status_row['Msg_type']), array(escape_html($status_row['Msg_text']))), 'dfsdgdsgfgd'));
+            $out->attach(paragraph(do_lang_tempcode('TABLE_ERROR', escape_html($table), escape_html($status_row['Msg_type']), [escape_html($status_row['Msg_text'])]), 'dfsdgdsgfgd'));
             $result2 = $static_ob->query('REPAIR TABLE ' . $table, $connection);
             $status_row_2 = end($result2);
-            $out->attach(paragraph(do_lang_tempcode('TABLE_FIXED', escape_html($table), escape_html($status_row_2['Msg_type']), array(escape_html($status_row_2['Msg_text']))), 'dfsdfgdst4'));
+            $out->attach(paragraph(do_lang_tempcode('TABLE_FIXED', escape_html($table), escape_html($status_row_2['Msg_type']), [escape_html($status_row_2['Msg_text'])]), 'dfsdfgdst4'));
         }
     }
 
@@ -95,9 +95,9 @@ function database_repair_wrap()
  */
 class DatabaseRepair
 {
-    private $sql_fixup = array();
+    private $sql_fixup = [];
 
-    private $deleting_tables = array();
+    private $deleting_tables = [];
 
     /**
      * Look for database issues.
@@ -113,18 +113,18 @@ class DatabaseRepair
 
         push_db_scope_check(false);
 
-        $meta_tables = array();
-        $field_details = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'));
+        $meta_tables = [];
+        $field_details = $GLOBALS['SITE_DB']->query_select('db_meta', ['*']);
         foreach ($field_details as $field) {
             if (!isset($meta_tables[$field['m_table']])) {
-                $meta_tables[$field['m_table']] = array();
+                $meta_tables[$field['m_table']] = [];
             }
             $meta_tables[$field['m_table']][$field['m_name']] = $field['m_type'];
         }
 
         $_existent_tables = collapse_1d_complexity(null, $GLOBALS['SITE_DB']->query('SHOW TABLES'));
-        $existent_tables = array();
-        $existent_indices = array();
+        $existent_tables = [];
+        $existent_indices = [];
         foreach ($_existent_tables as $table_name) {
             if (substr($table_name, 0, strlen(get_table_prefix())) != get_table_prefix()) {
                 continue;
@@ -133,15 +133,15 @@ class DatabaseRepair
             $table_name = substr($table_name, strlen(get_table_prefix()));
 
             $column_details = $GLOBALS['SITE_DB']->query('SHOW COLUMNS FROM ' . get_table_prefix() . $table_name); // Field, Type, Null, Key, Default, Extra
-            $_existent_table = array();
+            $_existent_table = [];
             foreach ($column_details as $column) {
-                $_existent_table[$column['Field']] = array(
+                $_existent_table[$column['Field']] = [
                     'type' => $column['Type'],
                     'null_ok' => $column['Null'] == 'YES',
                     'is_primary' => in_array('PRI', array_map('trim', explode(',', $column['Key']))),
                     'default_value' => $column['Default'],
                     'is_auto_increment' => in_array('auto_increment', array_map('trim', explode(',', $column['Extra']))),
-                );
+                ];
             }
             $existent_tables[$table_name] = $_existent_table;
 
@@ -158,21 +158,21 @@ class DatabaseRepair
                 $universal_index_key = $table_name . '__' . ($is_full_text ? '#' : '') . $index_name;
 
                 if (!isset($existent_indices[$universal_index_key])) {
-                    $existent_indices[$universal_index_key] = array(
+                    $existent_indices[$universal_index_key] = [
                         'table' => $table_name,
                         'name' => $index_name,
-                        'fields' => array(),
+                        'fields' => [],
                         'is_full_text' => $is_full_text,
-                    );
+                    ];
                 }
 
                 $existent_indices[$universal_index_key]['fields'][] = preg_replace('#\([^\)]*\)#', '', $index['Column_name']);
             }
         }
 
-        $meta_indices = array();
-        $index_details = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('*'));
-        $indices = array();
+        $meta_indices = [];
+        $index_details = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['*']);
+        $indices = [];
         foreach ($index_details as $index) {
             $index_name = trim($index['i_name'], '#');
             $table_name = $index['i_table'];
@@ -184,7 +184,7 @@ class DatabaseRepair
 
             $db_types = '';
             foreach ($fields as $field) {
-                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $table_name, 'm_name' => $field));
+                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $field]);
                 if ($db_type !== null) {
                     if ($db_types != '') {
                         $db_types .= ',';
@@ -197,33 +197,33 @@ class DatabaseRepair
                 continue;
             }
 
-            $meta_indices[$universal_index_key] = array(
+            $meta_indices[$universal_index_key] = [
                 'table' => $table_name,
                 'name' => $index_name,
                 'fields' => $fields,
                 'is_full_text' => $is_full_text,
-            );
+            ];
         }
 
-        $existent_privileges = array();
-        $privilege_details = $GLOBALS['SITE_DB']->query_select('privilege_list', array('*'));
+        $existent_privileges = [];
+        $privilege_details = $GLOBALS['SITE_DB']->query_select('privilege_list', ['*']);
         foreach ($privilege_details as $privilege) {
-            $existent_privileges[$privilege['the_name']] = array(
+            $existent_privileges[$privilege['the_name']] = [
                 'section' => $privilege['p_section'],
                 'default' => $privilege['the_default'],
-            );
+            ];
         }
 
         $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
 
-        $expected_tables = array();
+        $expected_tables = [];
         foreach ($data['tables'] as $table_name => $table) {
             if (addon_installed($table['addon'])) {
                 $expected_tables[$table_name] = $table['fields'];
             }
         }
 
-        $expected_indices = array();
+        $expected_indices = [];
         foreach ($data['indices'] as $universal_index_key => $index) {
             if (addon_installed($index['addon'])) {
                 unset($index['addon']);
@@ -231,7 +231,7 @@ class DatabaseRepair
             }
         }
 
-        $expected_privileges = array();
+        $expected_privileges = [];
         foreach ($data['privileges'] as $privilege_name => $privilege) {
             if (addon_installed($privilege['addon'])) {
                 unset($privilege['addon']);
@@ -252,7 +252,7 @@ class DatabaseRepair
         pop_db_scope_check();
 
         $sql = implode("\n\n", $this->sql_fixup);
-        return array($phase, $sql);
+        return [$phase, $sql];
     }
 
     /**
@@ -273,8 +273,8 @@ class DatabaseRepair
         foreach ($meta_tables as $table_name => $table) {
             if (isset($existent_tables[$table_name])) {
                 // Fields missing from DB?
-                $meta_key_fields = array();
-                $existent_key_fields = array();
+                $meta_key_fields = [];
+                $existent_key_fields = [];
                 $needed = $meta_tables[$table_name];
                 if (!multi_lang_content()) {
                     foreach ($needed as $field_name => $field_type) {
@@ -325,7 +325,7 @@ class DatabaseRepair
 
                 // Fields alien in DB?
                 foreach ($existent_tables[$table_name] as $field_name => $field) {
-                    $matches = array();
+                    $matches = [];
                     if (
                         (!isset($meta_tables[$table_name][$field_name])) &&
                         (
@@ -383,7 +383,7 @@ class DatabaseRepair
             }
 
             if (!isset($meta_tables[$table_name])) {
-                $table_cleaned = array();
+                $table_cleaned = [];
                 foreach ($table as $field_name => $field) {
                     if (isset($expected_tables[$table_name]['fields'][$field_name])) {
                         $table_cleaned[$field_name] = $expected_tables[$table_name]['fields'][$field_name];
@@ -473,8 +473,8 @@ class DatabaseRepair
             if (isset($existent_tables[$table_name])) {
                 // Fields missing from DB?
                 $fields_added = 0;
-                $expected_key_fields = array();
-                $existent_key_fields = array();
+                $expected_key_fields = [];
+                $existent_key_fields = [];
                 $needed = $expected_tables[$table_name];
                 if (!multi_lang_content()) {
                     foreach ($needed as $field_name => $field_type) {
@@ -529,7 +529,7 @@ class DatabaseRepair
                     list($drop_key_query, $create_key_query) = $this->fix_table_inconsistent_in_db__bad_primary_key($table_name, $expected_key_fields, isset($meta_tables[$table_name][$field_name]), true);
                     $this->sql_fixup = array_merge(
                         array_slice($this->sql_fixup, 0, count($this->sql_fixup) - $fields_added),
-                        array($drop_key_query . ';'),
+                        [$drop_key_query . ';'],
                         array_slice($this->sql_fixup, count($this->sql_fixup) - $fields_added)
                     );
                     if ((!empty($expected_key_fields)) || ($existent_tables[$table_name][$expected_key_fields[0]] != '*AUTO')) {
@@ -540,7 +540,7 @@ class DatabaseRepair
 
                 // Fields alien in DB?
                 foreach ($existent_tables[$table_name] as $field_name => $existent_details) {
-                    $matches = array();
+                    $matches = [];
                     if (
                         (!isset($expected_tables[$table_name][$field_name])) &&
                         (
@@ -792,7 +792,7 @@ class DatabaseRepair
         if ((!multi_lang_content()) && (strpos($field_type, '__COMCODE') !== false)) {
             $type_remap = $GLOBALS['DB_STATIC_OBJECT']->get_type_remap();
 
-            foreach (array('text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER') as $sub_name => $sub_type) {
+            foreach (['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'] as $sub_name => $sub_type) {
                 $sub_name = $field_name . '__' . $sub_name;
                 $query = 'ALTER TABLE ' . get_table_prefix() . $table_name . ' ADD ' . $sub_name . ' ' . $type_remap[$sub_type];
                 if ($sub_name == 'text_parsed') {
@@ -821,7 +821,7 @@ class DatabaseRepair
             $this->add_fixup_query($query);
         }
 
-        $cols_to_delete = array($field_name);
+        $cols_to_delete = [$field_name];
 
         if (strpos($field_type, '_TRANS__COMCODE') !== false) {
             if (!multi_lang_content()) {
@@ -874,7 +874,7 @@ class DatabaseRepair
             $this->add_fixup_query($query);
 
             foreach ($key_fields as $key_field) {
-                $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', array('\'*\'', 'm_type')) . ' WHERE m_table=\'' . db_escape_string($table_name) . '\' AND m_name=\'' . db_escape_string($key_field) . '\'';
+                $query = 'UPDATE ' . get_table_prefix() . 'db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE m_table=\'' . db_escape_string($table_name) . '\' AND m_name=\'' . db_escape_string($key_field) . '\'';
                 $this->add_fixup_query($query);
             }
         }
@@ -886,7 +886,7 @@ class DatabaseRepair
         }
 
         if ($return_queries) {
-            return array($create_key_query);
+            return [$create_key_query];
         }
         return null;
     }
@@ -967,7 +967,7 @@ class DatabaseRepair
         $is_full_text = $index['is_full_text'];
         $_index_name = ($is_full_text ? '#' : '') . $index_name;
 
-        $fields = array();
+        $fields = [];
         foreach ($index['fields'] as $field_name) {
             $db_type = isset($meta_tables[$table_name][$field_name]) ? $meta_tables[$table_name][$field_name] : null;
             $fields[$field_name] = $db_type;

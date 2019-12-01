@@ -31,7 +31,7 @@ class Hook_addon_registry_awards
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_awards
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_featured',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_awards
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_awards
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/awards.php',
             'themes/default/images/icons/menu/adminzone/setup/awards.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/awards.svg',
@@ -119,7 +119,7 @@ class Hook_addon_registry_awards
             'sources/hooks/systems/commandr_fs/award_types.php',
             'sources/hooks/systems/config/awarded_items_per_page.php',
             'sources/hooks/systems/actionlog/awards.php',
-        );
+        ];
     }
 
     /**
@@ -129,10 +129,10 @@ class Hook_addon_registry_awards
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_AWARDS.tpl' => 'block_main_awards',
             'templates/AWARDED_CONTENT.tpl' => 'awarded_content',
-        );
+        ];
     }
 
     /**
@@ -144,8 +144,8 @@ class Hook_addon_registry_awards
      */
     public function tpl_preview__block_main_awards()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_AWARDS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_AWARDS', [
                 'BLOCK_ID' => lorem_word(),
                 'TITLE' => lorem_word(),
                 'TYPE' => lorem_word(),
@@ -158,8 +158,8 @@ class Hook_addon_registry_awards
                 'CONTENT' => lorem_phrase_html(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ARCHIVE_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -171,15 +171,15 @@ class Hook_addon_registry_awards
      */
     public function tpl_preview__awarded_content()
     {
-        return array(
-            lorem_globalise(do_lorem_template('AWARDED_CONTENT', array(
+        return [
+            lorem_globalise(do_lorem_template('AWARDED_CONTENT', [
                 'AWARDEE_PROFILE_URL' => placeholder_url(),
                 'AWARDEE' => lorem_phrase(),
                 'AWARDEE_USERNAME' => lorem_word(),
                 'RAW_AWARD_DATE' => placeholder_date_raw(),
                 'AWARD_DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

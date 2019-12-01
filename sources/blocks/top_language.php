@@ -30,14 +30,14 @@ class Block_top_language
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_top_language
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             either_param_string('lang', ''),
@@ -87,23 +87,23 @@ PHP;
         $langs = find_all_langs();
 
         foreach (array_keys($langs) as $lang) {
-            $langs[$lang] = array(
+            $langs[$lang] = [
                 'FULL_NAME' => lookup_language_full_name($lang),
                 'COUNTRY_FLAG' => strtolower($this->get_lang_country($lang)),
-            );
+            ];
         }
         sort_maps_by($langs, 'FULL_NAME');
 
         $current_lang = user_lang();
 
-        return do_template('BLOCK_TOP_LANGUAGE', array(
+        return do_template('BLOCK_TOP_LANGUAGE', [
             '_GUID' => '6dd7dd434722d7fd958773bd08e838c7',
             'BLOCK_ID' => $block_id,
             'LANGS' => $langs,
             'CURRENT_LANG_FULL_NAME' => lookup_language_full_name($current_lang),
             'CURRENT_LANG_COUNTRY_FLAG' => strtolower($this->get_lang_country($current_lang)),
             'CURRENT_LANG' => $current_lang,
-        ));
+        ]);
     }
 
     /**
@@ -119,7 +119,7 @@ PHP;
         //  It is biased towards languages which have many native speakers, and are used by people likely to be accessing a multi-language Composr website.
         static $langs_to_countries = null;
         if ($langs_to_countries === null) {
-            $langs_to_countries = array(
+            $langs_to_countries = [
                 'ZH' => 'CN',
                 'EN' => (get_option('yeehaw') == '1') ? 'US' : 'GB',
                 'AR' => 'SA',
@@ -147,7 +147,7 @@ PHP;
                 'BN' => 'IN',
                 'TE' => 'IN',
                 'MR' => 'IN',
-            );
+            ];
         }
 
         if (array_key_exists($lang_iso, $langs_to_countries)) {

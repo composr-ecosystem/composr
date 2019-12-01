@@ -30,7 +30,7 @@ class Hook_config_brute_force_threshold
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BRUTE_FORCE_THRESHOLD',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_brute_force_threshold
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_allow_alpha_search
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_ALPHA_SEARCH',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_allow_alpha_search
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

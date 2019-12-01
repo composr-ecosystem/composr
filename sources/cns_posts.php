@@ -26,7 +26,7 @@
 function init__cns_posts()
 {
     global $SIGNATURES_CACHE;
-    $SIGNATURES_CACHE = array();
+    $SIGNATURES_CACHE = [];
 }
 
 /**
@@ -45,7 +45,7 @@ function has_post_access($post_id, $member_id = null, $post_details = null)
 
     if ($post_details === null) {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $_post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', array('*', 't.id AS topic_id', 'p.id AS post_id'), array('p.id' => $post_id), '', 1);
+        $_post_details = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 't.id AS topic_id', 'p.id AS post_id'], ['p.id' => $post_id], '', 1);
         if (!isset($_post_details[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
@@ -97,7 +97,7 @@ function cns_may_post_in_topic($forum_id, $topic_id, $last_member_id = null, $cl
         return true; // A private topic
     }
 
-    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', array('forums', $forum_id, 'topics', $topic_id))) {
+    if (!has_privilege($member_id, 'submit_lowrange_content', 'topics', ['forums', $forum_id, 'topics', $topic_id])) {
         return false;
     }
     if ($last_member_id === null) {
@@ -138,7 +138,7 @@ function cns_may_edit_post_by($post_id, $post_time, $resource_owner, $forum_id, 
     $reason = null;
 
     if ($post_time === null) {
-        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', array('p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'), array('id' => $post_id), '', 1);
+        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'], ['id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
             $reason = do_lang('INTERNAL_ERROR');
             return false;
@@ -173,7 +173,7 @@ function cns_may_edit_post_by($post_id, $post_time, $resource_owner, $forum_id, 
     }
 
     if ($forum_id !== null || !has_privilege($member_id, 'moderate_private_topic')) {
-        if (!has_edit_permission('low', $member_id, $resource_owner, 'topics', array('forums', $forum_id))) {
+        if (!has_edit_permission('low', $member_id, $resource_owner, 'topics', ['forums', $forum_id])) {
             return false;
         }
     }
@@ -208,7 +208,7 @@ function cns_may_delete_post_by($post_id, $post_time = null, $resource_owner, $f
     $reason = null;
 
     if ($post_time === null) {
-        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', array('p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'), array('p.id' => $post_id), '', 1);
+        $posts = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.id=p.p_topic_id', ['p_time', 'p_poster', 'p_cache_forum_id', 't_is_open'], ['p.id' => $post_id], '', 1);
         if (!array_key_exists(0, $posts)) {
             $reason = do_lang('INTERNAL_ERROR');
             return false;
@@ -236,7 +236,7 @@ function cns_may_delete_post_by($post_id, $post_time = null, $resource_owner, $f
     }
 
     if ($forum_id !== null || !has_privilege($member_id, 'moderate_private_topic')) {
-        if (!has_delete_permission('low', $member_id, $resource_owner, 'topics', array('forums', $forum_id))) {
+        if (!has_delete_permission('low', $member_id, $resource_owner, 'topics', ['forums', $forum_id])) {
             return false;
         }
     }
@@ -268,12 +268,12 @@ function cns_display_spacer_post($linked_type, $linked_id)
         require_code('content');
         $cma_ob = get_content_object($linked_type);
         $cma_info = $cma_ob->info();
-        $linked_rows = $GLOBALS['SITE_DB']->query_select($cma_info['table'], array('*'), get_content_where_for_str_id($linked_id, $cma_info), '', 1);
+        $linked_rows = $GLOBALS['SITE_DB']->query_select($cma_info['table'], ['*'], get_content_where_for_str_id($linked_id, $cma_info), '', 1);
         if (array_key_exists(0, $linked_rows)) {
             $new_post = $cma_ob->run($linked_rows[0], '_SEARCH', true, true);
         }
         $new_description = do_lang('THIS_IS_COMMENT_TOPIC', get_site_name());
     }
 
-    return array($new_description, $new_post);
+    return [$new_description, $new_post];
 }

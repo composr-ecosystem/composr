@@ -30,7 +30,7 @@ class Hook_config_yeehaw
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AMERICAN_ENGLISH',
             'type' => 'tick',
             'category' => 'SITE',
@@ -45,7 +45,7 @@ class Hook_config_yeehaw
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'lang_us',
-        );
+        ];
     }
 
     /**

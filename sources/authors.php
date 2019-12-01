@@ -35,18 +35,18 @@ function render_author_box($row, $zone = '_SEARCH', $give_context = true, $guid 
 
     require_lang('authors');
 
-    $url = build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $row['author']), $zone);
+    $url = build_url(['page' => 'authors', 'type' => 'browse', 'id' => $row['author']], $zone);
 
     $title = $give_context ? do_lang('CONTENT_IS_OF_TYPE', do_lang('AUTHOR'), $row['author']) : $row['author'];
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'e597aef1818f5610402d6e5f478735a1',
         'ID' => $row['author'],
         'TITLE' => $title,
         'SUMMARY' => get_translated_tempcode('authors', $row, 'the_description'),
         'URL' => $url,
         'RESOURCE_TYPE' => 'author',
-    ));
+    ]);
 }
 
 /**
@@ -67,7 +67,7 @@ function authors_script()
     $max = get_param_integer('max', 300);
 
     $author_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%author') . '\'');
-    $rows = array();
+    $rows = [];
     foreach ($author_fields as $field) {
         if (($field['m_table'] != 'addons') && ($field['m_table'] != 'blocks') && ($field['m_table'] != 'modules')) {
             $rows_new = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $field['m_name'] . ' AS author FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . $field['m_table'] . ' WHERE ' . db_string_not_equal_to($field['m_name'], '') . ' ORDER BY ' . $field['m_name'], $max + $start);
@@ -83,14 +83,14 @@ function authors_script()
 
     $field_name = filter_naughty_harsh(get_param_string('field_name'));
 
-    $authors = array();
+    $authors = [];
     $i = 0;
     foreach ($rows as $author => $table) {
         if (($i >= $start) && ($i < $start + $max)) {
             if ($table == 'authors') {
-                $authors[] = array('_GUID' => 'cffa9926cebd3ec2920677266a3299ea', 'DEFINED' => true, 'FIELD_NAME' => $field_name, 'AUTHOR' => $author);
+                $authors[] = ['_GUID' => 'cffa9926cebd3ec2920677266a3299ea', 'DEFINED' => true, 'FIELD_NAME' => $field_name, 'AUTHOR' => $author];
             } else {
-                $authors[] = array('_GUID' => '6210be6d1eef4bc2bda7f49947301f97', 'DEFINED' => false, 'FIELD_NAME' => $field_name, 'AUTHOR' => $author);
+                $authors[] = ['_GUID' => '6210be6d1eef4bc2bda7f49947301f97', 'DEFINED' => false, 'FIELD_NAME' => $field_name, 'AUTHOR' => $author];
             }
         }
 
@@ -104,9 +104,9 @@ function authors_script()
         $next_url = null;
     }
 
-    $content = do_template('AUTHOR_POPUP', array('_GUID' => 'e18411d1bf24c6ed945b4d9064774884', 'AUTHORS' => $authors, 'NEXT_URL' => $next_url));
+    $content = do_template('AUTHOR_POPUP', ['_GUID' => 'e18411d1bf24c6ed945b4d9064774884', 'AUTHORS' => $authors, 'NEXT_URL' => $next_url]);
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => 'ab8d8c9d276530d82ddd84202aacf32f', 'TITLE' => do_lang_tempcode('CHOOSE_AUTHOR'), 'CONTENT' => $content, 'POPUP' => true, 'NOINDEX' => true));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'ab8d8c9d276530d82ddd84202aacf32f', 'TITLE' => do_lang_tempcode('CHOOSE_AUTHOR'), 'CONTENT' => $content, 'POPUP' => true, 'NOINDEX' => true]);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
 }
@@ -119,7 +119,7 @@ function authors_script()
  */
 function get_author_id_from_name($author)
 {
-    $handle = $GLOBALS['SITE_DB']->query_select_value_if_there('authors', 'member_id', array('author' => $author));
+    $handle = $GLOBALS['SITE_DB']->query_select_value_if_there('authors', 'member_id', ['author' => $author]);
     if ($handle === null) {
         $handle = $GLOBALS['FORUM_DRIVER']->get_member_from_username($author);
     }
@@ -141,7 +141,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
 {
     log_it('DEFINE_AUTHOR', $author, ($member_id === null) ? '' : strval($member_id));
 
-    $rows = $GLOBALS['SITE_DB']->query_select('authors', array('the_description', 'skills'), array('author' => $author), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('authors', ['the_description', 'skills'], ['author' => $author], '', 1);
     if (array_key_exists(0, $rows)) {
         $_description = $rows[0]['the_description'];
         $_skills = $rows[0]['skills'];
@@ -149,22 +149,22 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
         require_code('attachments2');
         require_code('attachments3');
 
-        $map = array(
+        $map = [
             'url' => $url,
             'member_id' => $member_id,
-        );
+        ];
         $map += lang_remap('skills', $_skills, $skills);
         $map += update_lang_comcode_attachments('the_description', $_description, $description, 'author', $author, null, $member_id);
 
-        $GLOBALS['SITE_DB']->query_update('authors', $map, array('author' => $author), '', 1);
+        $GLOBALS['SITE_DB']->query_update('authors', $map, ['author' => $author], '', 1);
     } else {
         require_code('attachments2');
 
-        $map = array(
+        $map = [
             'author' => $author,
             'url' => $url,
             'member_id' => $member_id,
-        );
+        ];
         $map += insert_lang_comcode_attachments('the_description', 3, $description, 'author', $author, null, false, $member_id);
         $map += insert_lang_comcode('skills', $skills, 3);
         $GLOBALS['SITE_DB']->query_insert('authors', $map);
@@ -180,7 +180,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('authors', $author, array($author, $description, $skills), $description);
+        seo_meta_set_for_implicit('authors', $author, [$author, $description, $skills], $description);
     } else {
         seo_meta_set_for_explicit('authors', $author, $meta_keywords, $meta_description);
     }
@@ -193,7 +193,7 @@ function add_author($author, $url, $member_id, $description, $skills, $meta_keyw
  */
 function delete_author($author)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('authors', array('the_description', 'skills'), array('author' => $author), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('authors', ['the_description', 'skills'], ['author' => $author], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'author'));
     }
@@ -204,7 +204,7 @@ function delete_author($author)
 
     delete_lang($rows[0]['skills']);
 
-    $GLOBALS['SITE_DB']->query_delete('authors', array('author' => $author), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('authors', ['author' => $author], '', 1);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('author', $author, '');
@@ -274,11 +274,11 @@ function merge_authors($from, $to)
     $author_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%author') . '\'');
     foreach ($author_fields as $field) {
         if ($field['m_table'] != 'authors') {
-            $GLOBALS['SITE_DB']->query_update($field['m_table'], array($field['m_name'] => $to), array($field['m_name'] => $from));
+            $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $to], [$field['m_name'] => $from]);
         }
     }
     if ($from != $to) {
-        $GLOBALS['SITE_DB']->query_delete('authors', array('author' => $from), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('authors', ['author' => $from], '', 1);
     }
 
     log_it('MERGE_AUTHORS', $from, $to);

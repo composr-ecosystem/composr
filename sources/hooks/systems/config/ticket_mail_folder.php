@@ -30,7 +30,7 @@ class Hook_config_ticket_mail_folder
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAIL_FOLDER',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_ticket_mail_folder
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

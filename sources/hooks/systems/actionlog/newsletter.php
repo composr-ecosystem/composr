@@ -31,86 +31,86 @@ class Hook_actionlog_newsletter extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
         require_lang('newsletter');
 
-        return array(
-            'ADD_NEWSLETTER' => array(
+        return [
+            'ADD_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_NEWSLETTER' => '_SEARCH:admin_newsletter:_edit:{ID}',
                     'ADD_NEWSLETTER' => '_SEARCH:admin_newsletter:add',
-                ),
-            ),
-            'EDIT_NEWSLETTER' => array(
+                ],
+            ],
+            'EDIT_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_NEWSLETTER' => '_SEARCH:admin_newsletter:_edit:{ID}',
                     'ADD_NEWSLETTER' => '_SEARCH:admin_newsletter:add',
-                ),
-            ),
-            'DELETE_NEWSLETTER' => array(
+                ],
+            ],
+            'DELETE_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_NEWSLETTER' => '_SEARCH:admin_newsletter:add',
-                ),
-            ),
-            'ADD_PERIODIC_NEWSLETTER' => array(
+                ],
+            ],
+            'ADD_PERIODIC_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'periodic_newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_PERIODIC_NEWSLETTER' => '_SEARCH:admin_newsletter:whatsnew',
-                ),
-            ),
-            'EDIT_PERIODIC_NEWSLETTER' => array(
+                ],
+            ],
+            'EDIT_PERIODIC_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'periodic_newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_PERIODIC_NEWSLETTER' => '_SEARCH:admin_newsletter:whatsnew',
-                ),
-            ),
-            'DELETE_PERIODIC_NEWSLETTER' => array(
+                ],
+            ],
+            'DELETE_PERIODIC_NEWSLETTER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'periodic_newsletter',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_PERIODIC_NEWSLETTER' => '_SEARCH:admin_newsletter:whatsnew',
-                ),
-            ),
-            'IMPORT_NEWSLETTER_SUBSCRIBERS' => array(
+                ],
+            ],
+            'IMPORT_NEWSLETTER_SUBSCRIBERS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_NEWSLETTER' => '_SEARCH:admin_newsletter',
-                ),
-            ),
-            'NEWSLETTER_SEND' => array(
+                ],
+            ],
+            'NEWSLETTER_SEND' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_NEWSLETTER' => '_SEARCH:admin_newsletter',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

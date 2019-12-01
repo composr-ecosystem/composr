@@ -39,7 +39,7 @@ class Hook_task_sitemap
             build_sitemap_cache_table();
         }
 
-        sitemap_xml_build(array($this, 'log'));
+        sitemap_xml_build([$this, 'log']);
 
         set_value('sitemap_building_in_progress', '0', true);
 

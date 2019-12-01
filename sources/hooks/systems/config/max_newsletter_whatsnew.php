@@ -30,7 +30,7 @@ class Hook_config_max_newsletter_whatsnew
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_NEWSLETTER_WHATSNEW',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_max_newsletter_whatsnew
             'public' => false,
 
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

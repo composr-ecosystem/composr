@@ -28,7 +28,7 @@ class _installer_xml_db_test_set extends cms_test_case
         global $SITE_INFO;
         require_code('install_headless');
         for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
-            $success = do_install_to($database, 'root', '', $table_prefix, false, 'cns', null, null, null, null, null, array(), true, 'xml');
+            $success = do_install_to($database, 'root', '', $table_prefix, false, 'cns', null, null, null, null, null, [], true, 'xml');
             $this->assertTrue($success);
 
             if (!$success) {

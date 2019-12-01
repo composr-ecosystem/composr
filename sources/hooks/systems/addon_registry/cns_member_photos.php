@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/tabs/member_account/edit/photo.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/photo.svg',
             'sources/hooks/systems/addon_registry/cns_member_photos.php',
@@ -108,7 +108,7 @@ class Hook_addon_registry_cns_member_photos
             'sources/hooks/systems/profiles_tabs_edit/photo.php',
             'sources/hooks/systems/notifications/cns_choose_photo.php',
             'themes/default/templates/CNS_EDIT_PHOTO_TAB.tpl',
-        );
+        ];
     }
 
     /**
@@ -118,9 +118,9 @@ class Hook_addon_registry_cns_member_photos
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_EDIT_PHOTO_TAB.tpl' => 'cns_edit_photo_tab',
-        );
+        ];
     }
 
     /**
@@ -135,13 +135,13 @@ class Hook_addon_registry_cns_member_photos
         require_lang('cns');
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_EDIT_PHOTO_TAB', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_EDIT_PHOTO_TAB', [
                 'USERNAME' => lorem_word(),
                 'PHOTO' => placeholder_image_url(),
                 'TEXT' => '',
                 'MEMBER_ID' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

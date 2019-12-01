@@ -30,7 +30,7 @@ class Hook_config_moniker_transliteration
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MONIKER_TRANSLITERATION',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_moniker_transliteration
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -31,9 +31,9 @@ class Hook_notification_member_mention extends Hook_Notification
      */
     public function list_handled_codes()
     {
-        $list = array();
+        $list = [];
         require_lang('comcode');
-        $list['member_mention'] = array(do_lang('MEMBERS'), do_lang('NOTIFICATION_TYPE_member_mention'));
+        $list['member_mention'] = [do_lang('MEMBERS'), do_lang('NOTIFICATION_TYPE_member_mention')];
         return $list;
     }
 }

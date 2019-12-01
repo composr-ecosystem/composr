@@ -26,14 +26,14 @@ class clean_reinstall_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $i => $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $files[$i] = $c;
         }
 
-        $privileges = $GLOBALS['SITE_DB']->query_select('privilege_list', array('the_name'));
+        $privileges = $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name']);
         foreach ($privileges as $privilege) {
             foreach ($files as $c) {
                 if (strpos($c, 'delete_privilege(\'' . $privilege['the_name'] . '\');') !== false) {
@@ -48,7 +48,7 @@ class clean_reinstall_test_set extends cms_test_case
             $this->assertTrue($is_listed, 'Could not find uninstall for privilege: ' . $privilege['the_name']);
         }
 
-        $tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+        $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($tables as $table) {
             foreach ($files as $c) {
                 if (strpos($c, 'drop_table_if_exists(\'' . $table['m_table'] . '\');') !== false) {

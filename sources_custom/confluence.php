@@ -48,10 +48,10 @@ function get_confluence_base_url()
 function get_local_confluence_url($type = null)
 {
     if ($type === null) {
-        $_url = build_url(array('page' => '_SELF'), '_SELF');
+        $_url = build_url(['page' => '_SELF'], '_SELF');
         $url = $_url->evaluate();
     } else {
-        $_url = build_url(array('page' => '_SELF', 'type' => 'xxxyyyzzz'), '_SELF');
+        $_url = build_url(['page' => '_SELF', 'type' => 'xxxyyyzzz'], '_SELF');
         $url = $_url->evaluate();
         $url = str_replace('xxxyyyzzz', $type, $url);
     }
@@ -68,17 +68,17 @@ function confluence_current_page_id()
         $id = intval($current_page);
         $content_type = 'page';
         $posting_day = '';
-        return array($content_type, $id, $posting_day);
+        return [$content_type, $id, $posting_day];
     }
 
     // Special case: Is a blog post
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(\d\d\d\d)/(\d\d)/(\d\d)/(.*)$#', $current_page, $matches) != 0) {
         $id = $matches[4];
         $content_type = 'blogpost';
         $posting_day = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
 
-        return array($content_type, $id, $posting_day);
+        return [$content_type, $id, $posting_day];
     }
 
     // Is a slug...
@@ -96,7 +96,7 @@ function confluence_current_page_id()
     $content_type = 'page';
     $posting_day = '';
 
-    return array($content_type, $id, $posting_day);
+    return [$content_type, $id, $posting_day];
 }
 
 function confluence_current_page()
@@ -144,7 +144,7 @@ function confluence_get_mappings()
         return $mappings;
     }
 
-    $mappings = array();
+    $mappings = [];
 
     global $CONFLUENCE_SPACE;
     $pages = confluence_query('content?spaceKey=' . $CONFLUENCE_SPACE . '&limit=1000000&expand=ancestors');
@@ -164,7 +164,7 @@ function confluence_get_mappings()
 
         $url = get_local_confluence_url($slug);
 
-        $mappings[$id] = array(
+        $mappings[$id] = [
             'id' => $id,
             'title' => $title,
 
@@ -173,8 +173,8 @@ function confluence_get_mappings()
 
             'parent_id' => $parent_id,
             '_parent_position' => $parent_position,
-            'children' => array(),
-        );
+            'children' => [],
+        ];
     }
 
     foreach ($mappings as $id => $mapping) {
@@ -232,7 +232,7 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
 
     $zone = get_page_zone('docs');
 
-    $map = array('page' => 'docs', 'type' => $page_id);
+    $map = ['page' => 'docs', 'type' => $page_id];
     $page_link = build_page_link($map, $zone);
 
     if (!array_key_exists($page_id, $mappings)) {
@@ -243,14 +243,14 @@ function confluence_breadcrumbs($page_id, $no_link_for_me_sir = true)
 
     if ($page_id == confluence_root_id()) {
         if ($no_link_for_me_sir) {
-            return array();
+            return [];
         }
-        return array(array($page_link, $title));
+        return [[$page_link, $title]];
     }
 
-    $segments = array();
+    $segments = [];
     if (!$no_link_for_me_sir) {
-        $segments[] = array($page_link, $title);
+        $segments[] = [$page_link, $title];
     }
 
     $below = confluence_breadcrumbs(intval($mappings[$page_id]['parent_id']), false);
@@ -272,10 +272,10 @@ function confluence_clean_page($html)
         global $CONFLUENCE_SPACE;
         $stub_stem_slug = get_confluence_base_url() . '/display/' . $CONFLUENCE_SPACE . '/';
         $stub_stem_raw = get_confluence_base_url() . '/pages/viewpage.action?pageId=';
-        $stub_stems = array(
+        $stub_stems = [
             $stub_stem_slug,
             $stub_stem_raw,
-        );
+        ];
         foreach ($stub_stems as $stub_stem) {
             if (substr($url, 0, strlen($stub_stem)) == $stub_stem) {
                 $localised_url = get_local_confluence_url(substr($url, strlen($stub_stem)));
@@ -294,13 +294,13 @@ function confluence_clean_page($html)
     $html = preg_replace('#<a\s[^<>]*>(Edit|Show More)</a>#Us', '', $html);
 
     // Remove HTML tags we should not have
-    $tags_to_remove = array(
+    $tags_to_remove = [
         'html' => false,
         'head' => false,
         'title' => true,
         'base' => true,
         'body' => false,
-    );
+    ];
     foreach ($tags_to_remove as $tag_to_remove => $strip_contents) {
         $html = preg_replace('#<' . $tag_to_remove . '(\s[^<>]*)?' . '>(.*)</' . $tag_to_remove . '>#Us', $strip_contents ? '' : '$2', $html);
         $html = preg_replace('#<' . $tag_to_remove . '(\s[^<>]*)?/>#Us', '', $html);
@@ -374,13 +374,13 @@ function confluence_call_url($url, $trigger_error = true, $text = false)
     if (($CONFLUENCE_USERNAME == '') || (substr($url, 0, strlen(get_confluence_base_url() . '/')) != get_confluence_base_url() . '/')) {
         $auth = null;
     } else {
-        $auth = array($CONFLUENCE_USERNAME, $CONFLUENCE_PASSWORD);
+        $auth = [$CONFLUENCE_USERNAME, $CONFLUENCE_PASSWORD];
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    $options = array('auth' => $auth, 'trigger_error' => $trigger_error);
+    $options = ['auth' => $auth, 'trigger_error' => $trigger_error];
     if ($text) {
         $options['convert_to_internal_encoding'] = true;
     }
-    return cache_and_carry('http_get_contents', array($url, $options), $CONFLUENCE_CACHE_TIME);
+    return cache_and_carry('http_get_contents', [$url, $options], $CONFLUENCE_CACHE_TIME);
 }

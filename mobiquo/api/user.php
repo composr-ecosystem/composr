@@ -37,11 +37,11 @@ function login_func($raw_params)
 
     if ($user_id === null) {
         if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($username) === null) {
-            $response = mobiquo_val(array(
+            $response = mobiquo_val([
                 'result' => mobiquo_val(true, 'boolean'),
                 'result_text' => mobiquo_val(do_lang('MEMBER_NO_EXIST'), 'base64'),
                 'status' => mobiquo_val('2', 'string'),
-            ), 'struct');
+            ], 'struct');
             return mobiquo_response($response);
         }
 
@@ -53,14 +53,14 @@ function login_func($raw_params)
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_user_details($user_id);
 
-    $usergroups = array();
+    $usergroups = [];
     foreach ($user_details['usergroup_id'] as $ugroup) {
-        $usergroups[] = mobiquo_val(array(
+        $usergroups[] = mobiquo_val([
             'usergroup_id' => mobiquo_val($ugroup, 'string'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $arr = array(
+    $arr = [
         'result' => mobiquo_val(true, 'boolean'),
         'user_id' => mobiquo_val(strval($user_details['user_id']), 'string'),
         'login_name' => mobiquo_val($user_details['login_name'], 'base64'),
@@ -86,12 +86,12 @@ function login_func($raw_params)
         'max_jpg_size' => mobiquo_val($user_details['max_jpg_size'], 'int'),
         'post_countdown' => mobiquo_val($user_details['post_countdown'], 'int'),
         'ignored_uids' => mobiquo_val($user_details['ignored_uids'], 'string'),
-    );
+    ];
 
     if (isset($user_details['display_text'])) {
-        $arr += array(
+        $arr += [
             'display_text' => mobiquo_val($user_details['display_text'], 'base64'),
-        );
+        ];
     }
 
     $response = mobiquo_val($arr, 'struct');
@@ -114,10 +114,10 @@ function get_inbox_stat_func($raw_params)
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_inbox_stats();
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'inbox_unread_count' => mobiquo_val($user_details['inbox_unread_count'], 'int'),
         'subscribed_topic_unread_count' => mobiquo_val($user_details['subscribed_topic_unread_count'], 'int'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -166,26 +166,26 @@ function get_online_users_func($raw_params)
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_online_users($start, $max, $id, $area);
 
-    $users = array();
+    $users = [];
     foreach ($user_details['list'] as $user) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val($user['user_id'], 'string'),
             'username' => mobiquo_val($user['username'], 'base64'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user['user_id'], true);
         if ($display_text != $user['username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $users[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'member_count' => mobiquo_val($user_details['member_count'], 'int'),
         'guest_count' => mobiquo_val($user_details['guest_count'], 'int'),
         'list' => $users,
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -215,7 +215,7 @@ function get_user_info_func($raw_params)
     $user_object = new CMSUserRead();
     $user_details = $user_object->get_user_info($user_id);
 
-    $arr = array(
+    $arr = [
         'user_id' => mobiquo_val($user_details['user_id'], 'string'),
         'user_name' => mobiquo_val($user_details['username'], 'base64'),
         'post_count' => mobiquo_val($user_details['post_count'], 'int'),
@@ -232,12 +232,12 @@ function get_user_info_func($raw_params)
         'icon_url' => mobiquo_val($user_details['icon_url'], 'string'),
         'can_ban' => mobiquo_val($user_details['can_ban'], 'boolean'),
         'is_ban' => mobiquo_val($user_details['is_ban'], 'boolean'),
-    );
+    ];
     $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user_details['user_id'], true);
     if ($display_text != $user_details['username']) {
-        $arr += array(
+        $arr += [
             'display_text' => mobiquo_val($display_text, 'base64'),
-        );
+        ];
     }
 
     if (isset($arr['current_action'])) {
@@ -245,16 +245,16 @@ function get_user_info_func($raw_params)
     }
 
     $user_details['custom_fields_list'];
-    $custom_fields_list = array();
+    $custom_fields_list = [];
     foreach ($user_details['custom_fields_list'] as $name => $value) {
-        $custom_fields_list[] = mobiquo_val(array(
+        $custom_fields_list[] = mobiquo_val([
             'name' => mobiquo_val($name, 'base64'),
             'value' => mobiquo_val($value, 'base64'),
-        ), 'struct');
+        ], 'struct');
     }
-    $arr += array(
+    $arr += [
         'custom_fields_list' => mobiquo_val($custom_fields_list, 'array'),
-    );
+    ];
 
     $response = mobiquo_val($arr, 'struct');
     return mobiquo_response($response);
@@ -291,7 +291,7 @@ function get_user_topic_func($raw_params)
     $user_object = new CMSUserRead();
     $user_results = $user_object->get_user_topics($user_id, $max);
 
-    $topics = array();
+    $topics = [];
     foreach ($user_results as $user_details) {
         $topics[] = $user_details;
     }
@@ -353,33 +353,33 @@ function get_recommended_user_func($raw_params)
     $user_object = new CMSUserRead();
     list($total, $_users) = $user_object->get_recommended_users($start, $max);
 
-    $users = array();
+    $users = [];
     foreach ($_users as $user) {
         $username = $GLOBALS['FORUM_DRIVER']->get_username($user['member_liked'], false, USERNAME_DEFAULT_NULL);
         if ($username === null) {
             continue;
         }
 
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($user['member_liked']), 'string'),
             'username' => mobiquo_val($username, 'base64'),
             'display_text' => mobiquo_val($GLOBALS['FORUM_DRIVER']->get_username($user['member_liked'], true), 'base64'),
             'icon_url' => mobiquo_val($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($user['member_liked']), 'string'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user['member_liked'], true);
         if ($display_text != $username) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $users[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total' => mobiquo_val($total, 'int'),
         'list' => mobiquo_val($users, 'array'),
         'type' => mobiquo_val('contact', 'string'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -402,26 +402,26 @@ function search_user_func($raw_params)
     $user_object = new CMSUserRead();
     list($total, $_users) = $user_object->get_search_users($keywords, $start, $max);
 
-    $users = array();
+    $users = [];
     foreach ($_users as $user) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($user['id']), 'string'),
             'username' => mobiquo_val($user['m_username'], 'base64'),
             'icon_url' => mobiquo_val($GLOBALS['FORUM_DRIVER']->get_member_avatar_url($user['id']), 'string'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user['id'], true);
         if ($display_text != $user['m_username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $users[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total' => mobiquo_val($total, 'int'),
         'list' => mobiquo_val($users, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -465,10 +465,10 @@ function update_signature_func($raw_params)
     $user_object = new CMSUserWrite();
     $signature = $user_object->update_signature($signature);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'signature' => mobiquo_val($signature, 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -501,21 +501,21 @@ function get_contact_func($raw_params)
     $user_object = new CMSUserRead();
     $_users = $user_object->get_contact($user_ids);
 
-    $users = array();
+    $users = [];
     foreach ($_users as $user) {
-        $users[] = mobiquo_val(array(
+        $users[] = mobiquo_val([
             'user_id' => mobiquo_val(strval($user['user_id']), 'string'),
             'display_name' => mobiquo_val($user['display_name'], 'base64'),
             'enc_email' => mobiquo_val($user['enc_email'], 'string'),
             'allow_email' => mobiquo_val($user['enc_email'], 'boolean'),
             'language' => mobiquo_val($user['enc_email'], 'string'),
             'activated' => mobiquo_val($user['enc_email'], 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'users' => mobiquo_val($users, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }

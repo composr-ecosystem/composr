@@ -25,7 +25,7 @@ class Hook_config_points_CHOOSE_IOTD
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHOOSE_IOTD',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -37,7 +37,7 @@ class Hook_config_points_CHOOSE_IOTD
             'public' => false,
 
             'addon' => 'iotds',
-        );
+        ];
     }
 
     /**

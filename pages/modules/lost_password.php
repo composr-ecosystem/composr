@@ -30,7 +30,7 @@ class Module_lost_password
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -67,7 +67,7 @@ class Module_lost_password
         }
 
         if ($type == 'step2') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('LOST_PASSWORD'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('LOST_PASSWORD')]]);
             breadcrumb_set_self(do_lang_tempcode('LOST_PASSWORD'));
 
             $this->title = get_screen_title('LOST_PASSWORD');
@@ -122,11 +122,11 @@ class Module_lost_password
         }
 
         if ($check_perms && is_guest($member_id)) {
-            return array(
-                'browse' => array('LOST_PASSWORD', 'menu/site_meta/user_actions/lost_password'),
-            );
+            return [
+                'browse' => ['LOST_PASSWORD', 'menu/site_meta/user_actions/lost_password'],
+            ];
         }
-        return array();
+        return [];
     }
 
     /**
@@ -156,9 +156,9 @@ class Module_lost_password
         $temporary_passwords = ($password_reset_process != 'emailed');
         $text = do_lang_tempcode('_PASSWORD_RESET_TEXT_' . $password_reset_process);
         $submit_name = do_lang_tempcode('PASSWORD_RESET_BUTTON');
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step2'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '080e516fef7c928dbb9fb85beb6e435a',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
@@ -168,7 +168,7 @@ class Module_lost_password
             'SUBMIT_ICON' => 'menu/site_meta/user_actions/lost_password',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -188,12 +188,12 @@ class Module_lost_password
         if ($password_reset_process == 'ultra') {
             // Input UI (as code will be typed immediately, there's no link in the e-mail for 'ultra' mode)
             $zone = get_module_zone('lost_password');
-            $_url = build_url(array('page' => 'lost_password', 'type' => 'step3', 'member' => $member_id), $zone);
+            $_url = build_url(['page' => 'lost_password', 'type' => 'step3', 'member' => $member_id], $zone);
             require_code('form_templates');
             $fields = new Tempcode();
             $fields->attach(form_input_line(do_lang_tempcode('CODE'), '', 'code', null, true));
             $submit_name = do_lang_tempcode('PROCEED');
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => '9f03d4abe0140559ec6eba2fa34fe3d6',
                 'TITLE' => $this->title,
                 'GET' => true,
@@ -204,7 +204,7 @@ class Module_lost_password
                 'TEXT' => do_lang_tempcode('ENTER_CODE_FROM_EMAIL'),
                 'SUBMIT_ICON' => 'menu/site_meta/user_actions/lost_password',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         }
 
         return inform_screen($this->title, do_lang_tempcode('RESET_CODE_MAILED', escape_html($email_address_masked), escape_html($email)));
@@ -226,18 +226,18 @@ class Module_lost_password
             $fields->attach(form_input_username(do_lang_tempcode('USERNAME'), '', 'username', null, true));
             $fields->attach(form_input_line(do_lang_tempcode('CODE'), '', 'code', null, true));
             $submit_name = do_lang_tempcode('PROCEED');
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => '6e4db5c6f3c75faa999251339533d22a',
                 'TITLE' => $this->title,
                 'GET' => true,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
-                'URL' => get_self_url(false, false, array(), false, true),
+                'URL' => get_self_url(false, false, [], false, true),
                 'FIELDS' => $fields,
                 'TEXT' => do_lang_tempcode('MISSING_CONFIRM_CODE'),
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         }
         $username = get_param_string('username', null);
         if ($username !== null) {
@@ -252,11 +252,11 @@ class Module_lost_password
         $correct_code = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code');
         if ($correct_code == '') {
             if (get_member() == $member_id) { // Already reset and already logged in
-                $redirect_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, false, 'tab--edit--settings');
+                $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
                 return redirect_screen($this->title, $redirect_url);
             }
 
-            $_reset_url = build_url(array('page' => '_SELF', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_BLANK)), '_SELF');
+            $_reset_url = build_url(['page' => '_SELF', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_BLANK)], '_SELF');
             $reset_url = $_reset_url->evaluate();
             warn_exit(do_lang_tempcode('PASSWORD_ALREADY_RESET', escape_html($reset_url), get_site_name()));
         }
@@ -267,7 +267,7 @@ class Module_lost_password
             }
         }
         if ($code != $correct_code) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'date_and_time', array('the_type' => 'LOST_PASSWORD', 'param_a' => strval($member_id), 'param_b' => $code));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'date_and_time', ['the_type' => 'LOST_PASSWORD', 'param_a' => strval($member_id), 'param_b' => $code]);
             if ($test !== null) {
                 warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE')); // Just an old code that has expired
             }
@@ -285,17 +285,17 @@ class Module_lost_password
 
         if (!$temporary_passwords) {
             // Send password in mail
-            $_login_url = build_url(array('page' => 'login', 'type' => 'browse', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)), get_module_zone('login'), array(), false, false, true);
+            $_login_url = build_url(['page' => 'login', 'type' => 'browse', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)], get_module_zone('login'), [], false, false, true);
             $login_url = $_login_url->evaluate();
-            $account_edit_url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), array(), false, false, true, 'tab--edit');
+            $account_edit_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, true, 'tab--edit');
             if (get_option('one_per_email_address') != '0') {
                 $lang_string = 'MAIL_NEW_PASSWORD_EMAIL_LOGIN';
             } else {
                 $lang_string = 'MAIL_NEW_PASSWORD';
             }
-            $message = do_lang($lang_string, comcode_escape($new_password), $login_url, array(comcode_escape(get_site_name()), comcode_escape($username), $account_edit_url->evaluate(), comcode_escape($email)));
+            $message = do_lang($lang_string, comcode_escape($new_password), $login_url, [comcode_escape(get_site_name()), comcode_escape($username), $account_edit_url->evaluate(), comcode_escape($email)]);
             require_code('mail');
-            dispatch_mail(do_lang('LOST_PASSWORD_FINAL'), $message, array($email), $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', array('require_recipient_valid_since' => $join_time));
+            dispatch_mail(do_lang('LOST_PASSWORD_FINAL'), $message, [$email], $GLOBALS['FORUM_DRIVER']->get_username($member_id, true), '', '', ['require_recipient_valid_since' => $join_time]);
         }
 
         if ((get_value('disable_password_hashing') === '1') && (!$temporary_passwords)) {
@@ -309,7 +309,7 @@ class Module_lost_password
         }
 
         unset($_GET['code']);
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_pass_hash_salted' => $new), array('id' => $member_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => '', 'm_password_compat_scheme' => $password_compatibility_scheme, 'm_password_change_code' => '', 'm_pass_hash_salted' => $new], ['id' => $member_id], '', 1);
 
         $password_change_days = get_option('password_change_days');
         if (intval($password_change_days) > 0) {
@@ -323,7 +323,7 @@ class Module_lost_password
             require_code('users_inactive_occasionals');
             create_session($member_id, 1);
 
-            $redirect_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, false, 'tab--edit--settings');
+            $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
             $GLOBALS['FORCE_META_REFRESH'] = true; // Some browsers can't set cookies and redirect at the same time
             return redirect_screen($this->title, $redirect_url, do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username)));

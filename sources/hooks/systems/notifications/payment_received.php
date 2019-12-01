@@ -32,11 +32,11 @@ class Hook_notification_payment_received extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['payment_received'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_payment_received'));
+        $list = [];
+        $list['payment_received'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_payment_received')];
         return $list;
     }
 

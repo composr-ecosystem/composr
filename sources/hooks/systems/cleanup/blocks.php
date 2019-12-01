@@ -30,7 +30,7 @@ class Hook_cleanup_blocks
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('BLOCK_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_BLOCKS_CACHE');
         $info['type'] = 'cache';

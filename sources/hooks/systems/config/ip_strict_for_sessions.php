@@ -30,7 +30,7 @@ class Hook_config_ip_strict_for_sessions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IP_STRICT_FOR_SESSIONS',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_ip_strict_for_sessions
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -43,8 +43,8 @@ class Hook_notification_error_occurred_missing_page extends Hook_notification__S
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['error_occurred_missing_page'] = array(do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_page'));
+        $list = [];
+        $list['error_occurred_missing_page'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_page')];
         return $list;
     }
 }

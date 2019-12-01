@@ -49,7 +49,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
         $this->process_checks_section('testOpenBasedir', 'open_basedir', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDeprecatedOptionsDisabled', 'Deprecated options in php.ini', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -112,7 +112,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
 
         // .user.ini should set this correctly, but let's be sure it's not been force-lowered
 
-        foreach (array('max_input_vars', 'suhosin.post.max_vars', 'suhosin.request.max_vars') as $setting) {
+        foreach (['max_input_vars', 'suhosin.post.max_vars', 'suhosin.request.max_vars'] as $setting) {
             if (@is_numeric(ini_get($setting))) {
                 $this_setting_value = intval(ini_get($setting));
                 $this->assertTrue($this_setting_value >= 1000, do_lang('__SUHOSIN_MAX_VARS_TOO_LOW', $setting));
@@ -140,7 +140,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
 
         $this->assertTrue(ini_get('suhosin.executor.disable_eval') !== '1', do_lang('DISABLED_FUNCTION', 'eval'));
 
-        $setting_minimums = array(
+        $setting_minimums = [
             'suhosin.cookie.max_vars' => 100,
             'suhosin.post.max_value_length' => 100000000,
             'suhosin.get.max_value_length' => 512,
@@ -154,19 +154,19 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             'suhosin.get.max_totalname_length' => 256,
             'suhosin.request.max_totalname_length' => 256,
             'suhosin.cookie.max_totalname_length' => 256,
-        );
+        ];
         foreach ($setting_minimums as $key => $min) {
             $val = ini_get($key);
             $this->assertTrue((empty($val)) || (intval($val) < $min), 'The ' . $key . ' Suhosin PHP setting should be raised (see [tt]recommended.htaccess[/tt])');
         }
 
-        $settings_off = array(
+        $settings_off = [
             'suhosin.cookie.encrypt',
             'suhosin.sql.union',
             'suhosin.sql.comment',
             'suhosin.sql.multiselect',
             'suhosin.upload.remove_binary',
-        );
+        ];
         foreach ($settings_off as $key) {
             $val = ini_get($key);
             $this->assertTrue(empty($val), 'The ' . $key . ' Suhosin PHP setting should be off (see [tt]recommended.htaccess[/tt])');
@@ -331,7 +331,7 @@ END;
 
         $this->assertTrue(ini_get('file_uploads') != '0', do_lang('NO_UPLOAD'));
 
-        foreach (array('post_max_size', 'upload_max_filesize') as $setting) {
+        foreach (['post_max_size', 'upload_max_filesize'] as $setting) {
             require_code('files');
             $bytes = php_return_bytes(ini_get($setting));
             $this->assertTrue(

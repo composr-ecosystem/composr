@@ -30,7 +30,7 @@ class Hook_config_quota_url
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'QUOTA_MAINTAIN_URL',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_quota_url
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__banned_from_submitting
      */
     public function read_property($member_id)
     {
-        return ($GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', array('the_member' => $member_id)) !== null);
+        return ($GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $member_id]) !== null);
     }
 
     /**
@@ -52,9 +52,9 @@ class Hook_commandr_fs_extended_member__banned_from_submitting
      */
     public function write_property($member_id, $data)
     {
-        $GLOBALS['SITE_DB']->query_delete('usersubmitban_member', array('the_member' => $member_id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('usersubmitban_member', ['the_member' => $member_id], '', 1);
         if ($data === true) {
-            $GLOBALS['SITE_DB']->query_insert('usersubmitban_member', array('the_member' => $member_id));
+            $GLOBALS['SITE_DB']->query_insert('usersubmitban_member', ['the_member' => $member_id]);
         }
     }
 }

@@ -27,7 +27,7 @@ class tutorials_broken_links_test_set extends cms_test_case
 
         $this->path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($this->path);
-        $this->pages = array();
+        $this->pages = [];
         while (($file = readdir($dh)) !== false) {
             if ($file[0] == '.') {
                 continue;
@@ -52,12 +52,12 @@ class tutorials_broken_links_test_set extends cms_test_case
     public function testLinksFromCode()
     {
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#(get_tutorial_url|set_helper_panel_tutorial)\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $tutorial = $matches[2][$i];
@@ -76,7 +76,7 @@ class tutorials_broken_links_test_set extends cms_test_case
         foreach (array_keys($this->pages) as $f) {
             $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\[page="(_SEARCH|_SELF|docs):([^"]+)"\]#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $page = preg_replace('/#.*$/', '', $matches[2][$i]);

@@ -30,7 +30,7 @@ class Hook_config_news_entries_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NEWS_ENTRIES_PER_PAGE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_news_entries_per_page
             'public' => false,
 
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

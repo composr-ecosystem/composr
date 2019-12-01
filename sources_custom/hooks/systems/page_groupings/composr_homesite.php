@@ -28,11 +28,11 @@ class Hook_page_groupings_composr_homesite
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('composr_homesite')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'admin/tool', array('admin_cmsusers', array(), get_module_zone('admin_cmsusers')), make_string_tempcode('compo.sr: Table of Composr users')),
-        );
+        return [
+            ['tools', 'admin/tool', ['admin_cmsusers', [], get_module_zone('admin_cmsusers')], make_string_tempcode('compo.sr: Table of Composr users')],
+        ];
     }
 }

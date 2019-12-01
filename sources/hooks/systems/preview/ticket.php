@@ -31,7 +31,7 @@ class Hook_preview_ticket
     public function applies()
     {
         $applies = (addon_installed('tickets')) && (get_page_name() == 'tickets');
-        return array($applies, 'cns_post', false, array('post'));
+        return [$applies, 'cns_post', false, ['post']];
     }
 
     /**
@@ -41,6 +41,6 @@ class Hook_preview_ticket
      */
     public function run()
     {
-        return array(null, null, false);
+        return [null, null, false];
     }
 }

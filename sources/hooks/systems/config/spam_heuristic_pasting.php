@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_pasting
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_PASTING',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_pasting
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

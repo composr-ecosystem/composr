@@ -73,9 +73,9 @@ function set_coordinates()
 
     $coords = explode('_', $_coords);
 
-    $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude'));
+    $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude']);
 
-    $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude'));
+    $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude']);
 
     // Are there latitude and longtitude Custom Profile Fields ?
     if (($longitude_cpf_id === null) || ($latitude_cpf_id === null)) {
@@ -87,8 +87,8 @@ function set_coordinates()
         return;
     }
 
-    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', array(
+    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [
         'field_' . strval($latitude_cpf_id) => $coords[0],
         'field_' . strval($longitude_cpf_id) => $coords[1],
-    ), array('mf_member_id' => $member_id));
+    ], ['mf_member_id' => $member_id]);
 }

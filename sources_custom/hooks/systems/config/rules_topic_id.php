@@ -25,7 +25,7 @@ class Hook_config_rules_topic_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_RULES_TOPIC_ID',
             'type' => 'integer',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_rules_topic_id
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

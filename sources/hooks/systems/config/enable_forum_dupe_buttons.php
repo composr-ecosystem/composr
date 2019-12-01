@@ -30,7 +30,7 @@ class Hook_config_enable_forum_dupe_buttons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_FORUM_DUPE_BUTTONS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_enable_forum_dupe_buttons
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

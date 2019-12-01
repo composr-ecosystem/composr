@@ -32,11 +32,11 @@ class Hook_notification_cns_group_join_request extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_group_join_request'] = array(do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request'));
+        $list = [];
+        $list['cns_group_join_request'] = [do_lang('USERGROUPS'), do_lang('cns:NOTIFICATION_TYPE_cns_group_join_request')];
         return $list;
     }
 

@@ -59,13 +59,13 @@ class lang_descriptions_test_set extends cms_test_case
         foreach (array_keys($this->lang_files) as $file) {
             $path_a = get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $file . '.ini';
             $path_b = get_file_base() . '/lang/' . fallback_lang() . '/' . $file . '.ini';
-            foreach (array($path_a, $path_b) as $path) {
+            foreach ([$path_a, $path_b] as $path) {
                 if (is_file($path)) {
                     $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#^\[(\w+)\]$#m', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
-                        $this->assertTrue(in_array($matches[1][$i], array('descriptions', 'strings', 'runtime_processing')), 'Unknown language section ' . $matches[1][$i] . ' in ' . $path);
+                        $this->assertTrue(in_array($matches[1][$i], ['descriptions', 'strings', 'runtime_processing']), 'Unknown language section ' . $matches[1][$i] . ' in ' . $path);
                     }
                 }
             }

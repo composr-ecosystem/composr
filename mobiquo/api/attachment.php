@@ -29,11 +29,11 @@ function upload_attach_func($raw_params)
     $account_object = new CMSAttachmentWrite();
     $results = $account_object->handle_upload_attach();
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'attachment_id' => mobiquo_val(strval($results['attachment_id']), 'string'),
         'filters_size' => mobiquo_val($results['filters_size'], 'int'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -51,10 +51,10 @@ function upload_avatar_func($raw_params)
     $account_object = new CMSAttachmentWrite();
     $results = $account_object->handle_upload_avatar();
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'filters_size' => mobiquo_val($results['filters_size'], 'int'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 

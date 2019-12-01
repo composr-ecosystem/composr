@@ -44,7 +44,7 @@ if ($theme === null) {
     $cnt = 0;
     foreach (array_keys($themes) as $theme) {
         if ($theme != 'default') {
-            echo '<li><a href="' . static_evaluate_tempcode(build_url(array('page' => 'fix_partial_themewizard_css', 'theme' => $theme), 'adminzone')) . '">' . escape_html($theme) . '</a></li>';
+            echo '<li><a href="' . static_evaluate_tempcode(build_url(['page' => 'fix_partial_themewizard_css', 'theme' => $theme], 'adminzone')) . '">' . escape_html($theme) . '</a></li>';
             $cnt++;
         }
     }
@@ -91,13 +91,13 @@ while (($sheet = readdir($dh)) !== false) {
         $before = $output;
 
         foreach ($canonical_theme_landscape as $peak) {
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\#[A-Fa-f0-9]{6}(.*)' . preg_quote($peak[2], '#') . '#', $output, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 if (strtolower($matches[0][$i]) == strtolower('#' . $peak[3] . $matches[1][$i] . $peak[2])) { // i.e. unaltered in our theme
                     foreach ($theme_landscape as $new_peak) { // Try and find the new-seeded solution to this particular equation
                         if ($new_peak[2] == $peak[2]) {
-                            $output = str_replace(array(strtoupper($matches[0][$i]), strtolower($matches[0][$i])), array('#' . $new_peak[3] . $matches[1][$i] . $new_peak[2], '#' . $new_peak[3] . $matches[1][$i] . $new_peak[2]), $output);
+                            $output = str_replace([strtoupper($matches[0][$i]), strtolower($matches[0][$i])], ['#' . $new_peak[3] . $matches[1][$i] . $new_peak[2], '#' . $new_peak[3] . $matches[1][$i] . $new_peak[2]], $output);
                             break;
                         }
                     }
@@ -130,7 +130,7 @@ if (function_exists('imagecolorallocatealpha')) {
     require_code('themes2');
     require_code('themes3');
     require_code('abstract_file_manager');
-    $full_img_set = array();
+    $full_img_set = [];
     foreach ($THEMEWIZARD_IMAGES as $expression) {
         if (substr($expression, -1) == '*') {
             $expression = substr($expression, 0, strlen($expression) - 2); // remove "/*"
@@ -141,7 +141,7 @@ if (function_exists('imagecolorallocatealpha')) {
         }
     }
 
-    $temp_all_ids = collapse_2d_complexity('id', 'url', $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), array('theme' => $theme)));
+    $temp_all_ids = collapse_2d_complexity('id', 'url', $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $theme]));
 
     foreach ($full_img_set as $image_code) {
         if (!in_array($image_code, $THEMEWIZARD_IMAGES_NO_WILD)) {

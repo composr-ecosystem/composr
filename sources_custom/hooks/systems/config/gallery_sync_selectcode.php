@@ -25,7 +25,7 @@ class Hook_config_gallery_sync_selectcode
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_SYNC_SELECTCODE',
             'type' => 'line',
             'category' => 'GALLERY',
@@ -38,7 +38,7 @@ class Hook_config_gallery_sync_selectcode
             'public' => false,
 
             'addon' => 'gallery_syndication',
-        );
+        ];
     }
 
     /**

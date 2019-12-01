@@ -30,7 +30,7 @@ class Hook_config_max_queued_mails_per_cron_cycle
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_QUEUED_MAILS_PER_CRON_CYCLE',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_max_queued_mails_per_cron_cycle
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

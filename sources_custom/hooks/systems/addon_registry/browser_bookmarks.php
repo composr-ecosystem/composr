@@ -26,7 +26,7 @@ class Hook_addon_registry_browser_bookmarks
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_browser_bookmarks
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -103,7 +103,7 @@ Ever wished it was quicker to navigate around your site? If you\'re anything lik
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -113,11 +113,11 @@ Ever wished it was quicker to navigate around your site? If you\'re anything lik
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -137,10 +137,10 @@ Ever wished it was quicker to navigate around your site? If you\'re anything lik
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/browser_bookmarks.php',
             'adminzone/pages/minimodules_custom/admin_generate_bookmarks.php',
             'sources_custom/hooks/systems/page_groupings/browser_bookmarks.php',
-        );
+        ];
     }
 }

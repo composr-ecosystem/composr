@@ -31,7 +31,7 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_featured',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/counting_blocks.php',
             'sources/blocks/main_count.php',
             'sources/blocks/main_countdown.php',
@@ -106,7 +106,7 @@ class Hook_addon_registry_counting_blocks
             'themes/default/templates/BLOCK_MAIN_COUNTDOWN.tpl',
             'themes/default/templates/BLOCK_MAIN_COUNT.tpl',
             'themes/default/javascript/counting_blocks.js',
-        );
+        ];
     }
 
     /**
@@ -116,10 +116,10 @@ class Hook_addon_registry_counting_blocks
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_COUNTDOWN.tpl' => 'main_countdown',
             'templates/BLOCK_MAIN_COUNT.tpl' => 'main_count',
-        );
+        ];
     }
 
     /**
@@ -131,8 +131,8 @@ class Hook_addon_registry_counting_blocks
      */
     public function tpl_preview__main_countdown()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNTDOWN', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNTDOWN', [
                 'BLOCK_ID' => lorem_word(),
                 'LANG' => placeholder_number(),
                 'POSITIVE' => true,
@@ -140,8 +140,8 @@ class Hook_addon_registry_counting_blocks
                 'MILLISECONDS_FOR_PRECISION' => placeholder_number(),
                 'DISTANCE_FOR_PRECISION' => placeholder_number(),
                 'TAILING' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -153,12 +153,12 @@ class Hook_addon_registry_counting_blocks
      */
     public function tpl_preview__main_count()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNT', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_COUNT', [
                 'BLOCK_ID' => lorem_word(),
                 'NAME' => lorem_word(),
                 'VALUE' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

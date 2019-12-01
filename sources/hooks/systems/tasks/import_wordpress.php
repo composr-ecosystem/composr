@@ -58,11 +58,11 @@ class Hook_task_import_wordpress
             $def_grp_id = get_first_default_group();
         }
 
-        $NEWS_CATS = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+        $NEWS_CATS = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
         $NEWS_CATS = list_to_map('id', $NEWS_CATS);
 
-        $imported_news = array();
-        $imported_pages = array();
+        $imported_news = [];
+        $imported_pages = [];
 
         if (addon_installed('import')) {
             require_code('import');
@@ -77,7 +77,7 @@ class Hook_task_import_wordpress
                 $submitter_id = get_member();
             } else {
                 if (get_forum_type() == 'cns') {
-                    $submitter_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $values['user_login']));
+                    $submitter_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $values['user_login']]);
 
                     if ($submitter_id === null) {
                         if ($import_wordpress_users) {
@@ -90,7 +90,7 @@ class Hook_task_import_wordpress
                                 null, // dob_day
                                 null, // dob_month
                                 null, // dob_year
-                                array(), // custom_fields
+                                [], // custom_fields
                                 null, // timezone
                                 '', // language
                                 '', // theme
@@ -177,7 +177,7 @@ class Hook_task_import_wordpress
 
                         // Work out categories
                         $owner_category_id = null;
-                        $cat_ids = array();
+                        $cat_ids = [];
                         if (array_key_exists('category', $post)) {
                             $i = 0;
                             foreach ($post['category'] as $category) {
@@ -196,7 +196,7 @@ class Hook_task_import_wordpress
                                     require_code('permissions2');
                                     set_global_category_access('news', $cat_id);
                                     // Need to reload now
-                                    $NEWS_CATS = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'));
+                                    $NEWS_CATS = $GLOBALS['SITE_DB']->query_select('news_categories', ['*']);
                                     $NEWS_CATS = list_to_map('id', $NEWS_CATS);
                                 }
                                 if (($i == 0) && ($import_to_blog == 0)) {
@@ -208,7 +208,7 @@ class Hook_task_import_wordpress
                             }
                         }
                         if ($owner_category_id === null) {
-                            $owner_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', array('nc_owner' => $submitter_id));
+                            $owner_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', ['nc_owner' => $submitter_id]);
                         }
 
                         // Content
@@ -249,18 +249,18 @@ class Hook_task_import_wordpress
 
                         // Needed for adding comments/trackbacks
                         $comment_identifier = 'news_' . strval($id);
-                        $content_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id), get_module_zone('news'), array(), false, false, true);
+                        $content_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id], get_module_zone('news'), [], false, false, true);
                         $content_title = $post['post_title'];
                         $trackback_for_type = 'news';
                         $trackback_id = $id;
 
                         // Track import IDs
-                        $imported_news[] = array(
+                        $imported_news[] = [
                             //'full_url' => '', We don't know this for a database import
                             'import_id' => $id,
                             'import__news' => $news,
                             'import__news_article' => $news_article,
-                        );
+                        ];
 
                         $topic_identifier = 'news_' . strval($id);
                     } elseif ($post['post_type'] == 'page') { // Page/articles
@@ -294,11 +294,11 @@ class Hook_task_import_wordpress
                         $topic_identifier = $file . '_main';
 
                         // Add to the database
-                        $GLOBALS['SITE_DB']->query_delete('comcode_pages', array(
+                        $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                             'the_zone' => $zone,
                             'the_page' => $file,
-                        ), '', 1);
-                        $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+                        ], '', 1);
+                        $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
                             'the_zone' => $zone,
                             'the_page' => $file,
                             'p_parent_page' => '',
@@ -308,12 +308,12 @@ class Hook_task_import_wordpress
                             'p_submitter' => $submitter_id,
                             'p_show_as_edit' => 0,
                             'p_order' => 0,
-                        ));
+                        ]);
 
                         // Save to disk
                         $success_status = cms_file_put_contents_safe($full_path, $_content, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                         if (!$success_status) {
-                            return array(null, do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($full_path)));
+                            return [null, do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($full_path))];
                         }
 
                         // Meta
@@ -327,27 +327,27 @@ class Hook_task_import_wordpress
                         if ($parent_page == 0) {
                             $parent_page = null;
                         }
-                        $imported_pages[] = array(
+                        $imported_pages[] = [
                             'contents' => $_content,
                             'zone' => $zone,
                             'page' => $file,
                             'path' => $full_path,
                             'parent_page' => $parent_page,
                             'id' => $post['post_id'],
-                        );
+                        ];
 
                         // Restricted access
                         if ($post['post_password'] != '') {
                             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
                             foreach (array_keys($usergroups) as $group_id) {
-                                $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $file, 'zone_name' => $zone, 'group_id' => $group_id), '', 1);
-                                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $file, 'zone_name' => $zone, 'group_id' => $group_id));
+                                $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $file, 'zone_name' => $zone, 'group_id' => $group_id], '', 1);
+                                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $file, 'zone_name' => $zone, 'group_id' => $group_id]);
                             }
                         }
 
                         // Needed for adding comments/trackbacks
                         $comment_identifier = $file . '_main';
-                        $content_url = build_url(array('page' => $file), $zone, array(), false, false, true);
+                        $content_url = build_url(['page' => $file], $zone, [], false, false, true);
                         $content_title = $post['post_title'];
                         $trackback_for_type = $file;
                         $trackback_id = 0;
@@ -356,10 +356,10 @@ class Hook_task_import_wordpress
                     // Add comments
                     if ($import_blog_comments == 1) {
                         if (array_key_exists('COMMENTS', $post)) {
-                            $comment_mapping = array();
+                            $comment_mapping = [];
                             foreach ($post['COMMENTS'] as $comment) {
                                 if (get_forum_type() == 'cns') {
-                                    $submitter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $comment['comment_author']));
+                                    $submitter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $comment['comment_author']]);
                                     if ($submitter === null) {
                                         $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id(); // If comment is made by a non-member, assign comment to guest account
                                     }
@@ -385,7 +385,7 @@ class Hook_task_import_wordpress
 
                                 $comment_type = $comment['comment_type'];
                                 if (($comment_type == 'trackback') || ($comment_type == 'pingback')) {
-                                    $GLOBALS['SITE_DB']->query_insert('trackbacks', array(
+                                    $GLOBALS['SITE_DB']->query_insert('trackbacks', [
                                         'trackback_for_type' => $trackback_for_type,
                                         'trackback_for_id' => strval($trackback_id),
                                         'trackback_ip' => $comment['author_ip'],
@@ -394,7 +394,7 @@ class Hook_task_import_wordpress
                                         'trackback_title' => '',
                                         'trackback_excerpt' => $comment_content,
                                         'trackback_name' => $comment['comment_author'],
-                                    ));
+                                    ]);
                                     continue;
                                 }
 
@@ -442,15 +442,15 @@ class Hook_task_import_wordpress
             $news = $item['import__news'];
             $news_article = $item['import__news_article'];
 
-            $news_rows = $GLOBALS['SITE_DB']->query_select('news', array('news', 'news_article'), array('id' => $item['import_id']), '', 1);
+            $news_rows = $GLOBALS['SITE_DB']->query_select('news', ['news', 'news_article'], ['id' => $item['import_id']], '', 1);
 
             _news_import_grab_images_and_fix_links($download_images == 1, $news, $imported_news);
             _news_import_grab_images_and_fix_links($download_images == 1, $news_article, $imported_news);
 
-            $map = array();
+            $map = [];
             $map += lang_remap_comcode('news', $news_rows[0]['news'], $news);
             $map += lang_remap_comcode('news_article', $news_rows[0]['news_article'], $news_article);
-            $GLOBALS['SITE_DB']->query_update('news', $map, array('id' => $item['import_id']), '', 1);
+            $GLOBALS['SITE_DB']->query_update('news', $map, ['id' => $item['import_id']], '', 1);
         }
         foreach ($imported_pages as $item) {
             $contents = $item['contents'];
@@ -466,7 +466,7 @@ class Hook_task_import_wordpress
                     }
                 }
                 if ($parent_page !== null) {
-                    $GLOBALS['SITE_DB']->query_update('comcode_pages', array('p_parent_page' => $parent_page), array('the_zone' => $zone, 'the_page' => $page), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_parent_page' => $parent_page], ['the_zone' => $zone, 'the_page' => $page], '', 1);
                 }
             }
         }
@@ -481,6 +481,6 @@ class Hook_task_import_wordpress
         delete_cache_entry('side_news_categories');
 
         $ret = do_lang_tempcode('IMPORT_WORDPRESS_DONE');
-        return array('text/html', $ret);
+        return ['text/html', $ret];
     }
 }

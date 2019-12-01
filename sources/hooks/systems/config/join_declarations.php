@@ -30,7 +30,7 @@ class Hook_config_join_declarations
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JOIN_DECLARATIONS',
             'type' => 'transtext',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_join_declarations
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

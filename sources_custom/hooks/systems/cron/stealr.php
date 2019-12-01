@@ -47,11 +47,11 @@ class Hook_cron_stealr
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Stealr',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 7 * 24,
-        );
+        ];
     }
 
     /**
@@ -77,11 +77,11 @@ class Hook_cron_stealr
         // Start determining the various cases
         if ($stealr_type == 'Members that are inactive, but has lots points') {
             $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(1000);
-            $points = array();
+            $points = [];
             foreach ($all_members as $member) {
                 $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
                 $signin_time = $member['m_last_visit_time'];
-                $points[$signin_time] = array('points' => available_points($id), 'id' => $id);
+                $points[$signin_time] = ['points' => available_points($id), 'id' => $id];
             }
 
             ksort($points);
@@ -122,8 +122,8 @@ class Hook_cron_stealr
                     $target_displayname = $GLOBALS['FORUM_DRIVER']->get_username($give_to_member, true);
                     $thief_username = $GLOBALS['FORUM_DRIVER']->get_username($member['id']);
                     $target_username = $GLOBALS['FORUM_DRIVER']->get_username($give_to_member);
-                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points), $thief_displayname, array($target_displayname, $thief_username, $target_username));
-                    $body = do_lang('STEALR_PT_TOPIC_POST', strval($stealr_points), $thief_displayname, array($target_displayname, $thief_username, $target_username));
+                    $subject = do_lang('STEALR_PT_TOPIC', strval($stealr_points), $thief_displayname, [$target_displayname, $thief_username, $target_username]);
+                    $body = do_lang('STEALR_PT_TOPIC_POST', strval($stealr_points), $thief_displayname, [$target_displayname, $thief_username, $target_username]);
 
                     require_code('cns_topics_action');
                     require_code('cns_posts_action');
@@ -138,7 +138,7 @@ class Hook_cron_stealr
             }
         } elseif ($stealr_type == 'Members that are rich') {
             $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters(100);
-            $points = array();
+            $points = [];
             foreach ($all_members as $member) {
                 $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
                 $points[$id] = available_points($id);
@@ -252,7 +252,7 @@ class Hook_cron_stealr
             $members_to_steal_ids = array_rand($members, $stealr_number);
 
             if ($stealr_number == 1) {
-                $members_to_steal_ids = array('0' => $members_to_steal_ids);
+                $members_to_steal_ids = ['0' => $members_to_steal_ids];
             }
 
             foreach ($members_to_steal_ids as $member_rand_key) {

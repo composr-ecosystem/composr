@@ -33,11 +33,11 @@ class Hook_page_groupings_filedump
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'menu/cms/filedump', array('filedump', array('type' => 'browse'), get_module_zone('filedump')), do_lang_tempcode('filedump:FILEDUMP'), 'filedump:DOC_FILEDUMP'),
-        );
+        return [
+            ['cms', 'menu/cms/filedump', ['filedump', ['type' => 'browse'], get_module_zone('filedump')], do_lang_tempcode('filedump:FILEDUMP'), 'filedump:DOC_FILEDUMP'],
+        ];
     }
 }

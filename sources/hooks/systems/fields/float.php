@@ -47,7 +47,7 @@ class Hook_fields_float
             $special = get_param_string('option_' . strval($field['id']), '');
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -87,7 +87,7 @@ class Hook_fields_float
                 $default = '0';
             }
         }
-        return array('float_unescaped', $default, 'float');
+        return ['float_unescaped', $default, 'float'];
     }
 
     /**

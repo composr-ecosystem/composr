@@ -31,30 +31,30 @@ class Hook_actionlog_redirects_editor extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('redirects_editor')) {
-            return array();
+            return [];
         }
 
         require_lang('redirects');
 
-        return array(
-            'SET_PAGE_REDIRECTS' => array(
+        return [
+            'SET_PAGE_REDIRECTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'PAGE_REDIRECTS' => '_SEARCH:admin_redirects:page',
-                ),
-            ),
-            'SET_URL_REDIRECTS' => array(
+                ],
+            ],
+            'SET_URL_REDIRECTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'PAGE_REDIRECTS' => '_SEARCH:admin_redirects:url',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

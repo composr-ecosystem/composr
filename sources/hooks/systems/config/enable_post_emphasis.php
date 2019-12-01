@@ -30,7 +30,7 @@ class Hook_config_enable_post_emphasis
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_POST_EMPHASIS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_enable_post_emphasis
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

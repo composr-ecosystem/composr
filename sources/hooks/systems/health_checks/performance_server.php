@@ -54,7 +54,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
         $this->process_checks_section('testHangingProcesses', 'Hanging processes', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testRAM', 'RAM', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -203,7 +203,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#(\d+)\s+(\d+)\s+(\d+)\s+\d+\.\d+\s+\d+\.\d+\s+\d+\.\d+\s*$#', $result[0], $matches) != 0) {
                         $cpu = floatval($matches[1]) + floatval($matches[2]);
                     }
@@ -214,7 +214,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^\s*(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)#', $result[0], $matches) != 0) {
                         $cpu = floatval($matches[1]) + floatval($matches[2]) + floatval($matches[3]);
                     }
@@ -225,7 +225,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     array_shift($result);
                     array_shift($result);
                     if (isset($result[0])) {
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#^%Cpu\(s\):\s*(\d+\.\d+) us,\s*(\d+\.\d+) sy,\s*(\d+\.\d+) ni#', $result[0], $matches) != 0) {
                             $cpu = floatval($matches[1]) + floatval($matches[2]) + floatval($matches[3]);
                         }
@@ -292,7 +292,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
                     $data = shell_exec('uptime');
 
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#load averages:\s*(\d+\.\d+)#', $data, $matches) != 0) {
                         $uptime = floatval($matches[1]);
                     }
@@ -401,7 +401,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^\s*(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)#', $result[0], $matches) != 0) {
                         $load = floatval($matches[4]);
                     }
@@ -412,7 +412,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     array_shift($result);
                     array_shift($result);
                     if (isset($result[0])) {
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#(\d+\.\d+) wa#', $result[0], $matches) != 0) {
                             $load = floatval($matches[1]);
                         }
@@ -474,7 +474,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $_result = shell_exec($ps_cmd);
             $result = explode("\n", $_result);
             foreach ($result as $r) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^(\d+)\s+(\d+(:(\d+))*)\s+(' . $commands_regexp . ')\s*$#', $r, $matches) != 0) {
                     $seconds = 0;
                     $time_parts = array_reverse(explode(':', $matches[2]));
@@ -542,7 +542,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
 
             $bytes_free = null;
 
-            $matches = array();
+            $matches = [];
 
             if (strpos(PHP_OS, 'Darwin') !== false) {
                 $data = shell_exec('vm_stat');

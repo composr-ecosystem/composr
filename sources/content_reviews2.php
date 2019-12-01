@@ -41,13 +41,13 @@ function content_review_get_fields($content_type, $content_id = null, $catalogue
     if (cron_installed()) {
         require_lang('content_reviews');
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => 'ca379bacb82c15c768d3c45f5ed9f207',
             'SECTION_HIDDEN' => true,
             'TITLE' => do_lang_tempcode('CONTENT_REVIEWS'),
-        )));
+        ]));
 
-        $content_review_rows = ($content_id === null) ? array() : $GLOBALS['SITE_DB']->query_select('content_reviews', array('review_freq', 'next_review_time', 'auto_action', 'display_review_status'), array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
+        $content_review_rows = ($content_id === null) ? [] : $GLOBALS['SITE_DB']->query_select('content_reviews', ['review_freq', 'next_review_time', 'auto_action', 'display_review_status'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
         if (array_key_exists(0, $content_review_rows)) {
             $review_freq = $content_review_rows[0]['review_freq'];
             $next_review_time = $content_review_rows[0]['next_review_time'];
@@ -55,7 +55,7 @@ function content_review_get_fields($content_type, $content_id = null, $catalogue
             $display_review_status = $content_review_rows[0]['display_review_status'];
         } else {
             if ($catalogue_name !== null) {
-                $review_freq = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_default_review_freq', array('c_name' => $catalogue_name));
+                $review_freq = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_default_review_freq', ['c_name' => $catalogue_name]);
                 if ($review_freq !== null) {
                     if ($review_freq <= 0) {
                         $review_freq = null;
@@ -129,7 +129,7 @@ function content_review_get_fields($content_type, $content_id = null, $catalogue
         // Specification of auto-action to perform
 
         $auto_action_list = new Tempcode();
-        $auto_actions = array();
+        $auto_actions = [];
         $auto_actions[] = 'leave';
         if ($content_info['validated_field'] !== null) {
             $auto_actions[] = 'unvalidate';
@@ -164,10 +164,10 @@ function content_review_set($content_type, $content_id, $old_content_id = null)
     }
 
     if ($old_content_id !== null) { // Do renaming operation
-        $GLOBALS['SITE_DB']->query_update('content_reviews', array('content_id' => $content_id), array(
+        $GLOBALS['SITE_DB']->query_update('content_reviews', ['content_id' => $content_id], [
             'content_type' => $content_type,
             'content_id' => $old_content_id,
-        ), '', 1);
+        ], '', 1);
     }
 
     if (!has_privilege(get_member(), 'set_content_review_settings')) {
@@ -215,10 +215,10 @@ function schedule_content_review($content_type, $content_id, $review_freq, $next
     }
 
     // Tidy up, if conflicting entry in database
-    $GLOBALS['SITE_DB']->query_delete('content_reviews', array(
+    $GLOBALS['SITE_DB']->query_delete('content_reviews', [
         'content_type' => $content_type,
         'content_id' => $content_id,
-    ), '', 1);
+    ], '', 1);
 
     // Work out review time
     if (($next_review_time === null) && ($review_freq === null)) {
@@ -230,7 +230,7 @@ function schedule_content_review($content_type, $content_id, $review_freq, $next
     }
 
     // Add to database
-    $GLOBALS['SITE_DB']->query_insert('content_reviews', array(
+    $GLOBALS['SITE_DB']->query_insert('content_reviews', [
         'content_type' => $content_type,
         'content_id' => $content_id,
         'review_freq' => $review_freq,
@@ -239,7 +239,7 @@ function schedule_content_review($content_type, $content_id, $review_freq, $next
         'review_notification_happened' => 0,
         'display_review_status' => $display_review_status,
         'last_reviewed_time' => time(),
-    ));
+    ]);
 
     delete_cache_entry('main_staff_checklist');
 }

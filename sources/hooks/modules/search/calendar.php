@@ -52,22 +52,22 @@ class Hook_search_calendar extends FieldsSearchHook
 
         require_lang('calendar');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('CALENDAR');
         $info['default'] = (get_option('search_calendar') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_event');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('calendar'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('calendar'),
                 'page_name' => 'calendar',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -141,7 +141,7 @@ class Hook_search_calendar extends FieldsSearchHook
         $where_clause .= ')';
         $sq = build_search_submitter_clauses('e_submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -154,14 +154,14 @@ class Hook_search_calendar extends FieldsSearchHook
         }
 
         $table = 'calendar_events r';
-        $trans_fields = array('r.e_title' => 'SHORT_TRANS', 'r.e_content' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['r.e_title' => 'SHORT_TRANS', 'r.e_content' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_event', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('event', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table . $privacy_join, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'calendar', 'e_type');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -184,7 +184,7 @@ class Hook_search_calendar extends FieldsSearchHook
     public function render($row)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
         push_lax_comcode(true);
         $summary = get_translated_text($row['e_content']);
         $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);

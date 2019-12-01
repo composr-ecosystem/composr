@@ -31,11 +31,11 @@ class Hook_ecommerce_classifieds
 
         require_lang('classifieds');
 
-        return array(
+        return [
             'category_name' => do_lang('CLASSIFIEDS'),
             'category_description' => do_lang_tempcode('CLASSIFIED_ADVERT_BUY_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/spare/classifieds'),
-        );
+        ];
     }
 
     /**
@@ -53,21 +53,21 @@ class Hook_ecommerce_classifieds
 
         $num_products_for_sale = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', 'COUNT(*)');
         if ($num_products_for_sale == 0) {
-            return array();
+            return [];
         }
 
-        $prices = $GLOBALS['SITE_DB']->query_select('ecom_classifieds_prices', array('*'), array(), 'ORDER BY c_price');
+        $prices = $GLOBALS['SITE_DB']->query_select('ecom_classifieds_prices', ['*'], [], 'ORDER BY c_price');
 
-        $products = array();
+        $products = [];
         foreach ($prices as $price) {
             if ($price['c_price'] != 0.0) {
-                $products['CLASSIFIEDS_ADVERT_' . strval($price['id'])] = automatic_discount_calculation(array(
+                $products['CLASSIFIEDS_ADVERT_' . strval($price['id'])] = automatic_discount_calculation([
                     'item_name' => do_lang('CLASSIFIED_ADVERT_BUY', get_translated_text($price['c_label'])),
                     'item_description' => new Tempcode(),
                     'item_image_url' => '',
 
                     'type' => PRODUCT_PURCHASE,
-                    'type_special_details' => array(),
+                    'type_special_details' => [],
 
                     'price' => $price['c_price'],
                     'currency' => get_option('currency'),
@@ -82,7 +82,7 @@ class Hook_ecommerce_classifieds
                     'product_width' => null,
                     'product_height' => null,
                     'needs_shipping_address' => false,
-                ));
+                ]);
             }
         }
 
@@ -117,7 +117,7 @@ class Hook_ecommerce_classifieds
             return ECOMMERCE_PRODUCT_DISABLED; // Can't do from the 'choose' screen, must be linked from classifieds module
         } else {
             $entry_id = intval($purchase_id);
-            $validated = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_validated', array('id' => $entry_id));
+            $validated = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_validated', ['id' => $entry_id]);
 
             if ($validated === null) {
                 return ECOMMERCE_PRODUCT_MISSING;
@@ -149,9 +149,9 @@ class Hook_ecommerce_classifieds
             $fields = new Tempcode();
 
             $list = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', array('e.*'), array(), 'GROUP BY e.id ORDER BY ce_add_date DESC');
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', ['e.*'], [], 'GROUP BY e.id ORDER BY ce_add_date DESC');
             foreach ($rows as $row) {
-                $data_map = get_catalogue_entry_map($row, null, 'CATEGORY', 'DEFAULT', null, null, array(0));
+                $data_map = get_catalogue_entry_map($row, null, 'CATEGORY', 'DEFAULT', null, null, [0]);
                 $ad_title = $data_map['FIELD_0'];
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['ce_submitter']);
@@ -162,7 +162,7 @@ class Hook_ecommerce_classifieds
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -176,27 +176,27 @@ class Hook_ecommerce_classifieds
     public function handle_needed_fields($type_code, $from_admin = false)
     {
         if (($from_admin) && (post_param_string('purchase_id', null) !== null)) {
-            return array(post_param_string('purchase_id'), null);
+            return [post_param_string('purchase_id'), null];
         }
 
         $entry_id = get_param_integer('id', null); // The catalogue entry being paid for
         if ($entry_id === null) {
             if ($from_admin) {
-                return array('', null); // Default is blank
+                return ['', null]; // Default is blank
             }
 
             warn_exit(do_lang_tempcode('MISSING_RESOURCE')); // Can't do from the 'choose' screen, must be linked from classifieds module
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^CLASSIFIEDS_ADVERT_(\d+)$#', $type_code, $matches) != 0) {
-            $entry_catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'c_name', array('id' => $entry_id));
+            $entry_catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'c_name', ['id' => $entry_id]);
             if ($entry_catalogue_name === null) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
 
             // Check this is a valid purchase for the product
-            $classified_price_catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_classifieds_prices', 'c_catalogue_name', array('id' => intval($matches[1])));
+            $classified_price_catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_classifieds_prices', 'c_catalogue_name', ['id' => intval($matches[1])]);
             if ($classified_price_catalogue_name != $entry_catalogue_name) {
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
@@ -204,7 +204,7 @@ class Hook_ecommerce_classifieds
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        return array(strval($entry_id), null);
+        return [strval($entry_id), null];
     }
 
     /**
@@ -225,23 +225,23 @@ class Hook_ecommerce_classifieds
 
         $entry_id = intval($purchase_id);
 
-        $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_submitter', array('id' => $entry_id));
+        $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_submitter', ['id' => $entry_id]);
 
-        $days = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_classifieds_prices', 'c_days', array('id' => $classified_type_id));
+        $days = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_classifieds_prices', 'c_days', ['id' => $classified_type_id]);
 
         // Make validated, bump up timer
-        $time = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_last_moved', array('id' => $entry_id));
+        $time = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_last_moved', ['id' => $entry_id]);
         if ($time !== null) {
             $time += $days * 60 * 60 * 24;
-            $GLOBALS['SITE_DB']->query_update('catalogue_entries', array('ce_validated' => 1, 'ce_last_moved' => $time), array('id' => $entry_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('catalogue_entries', ['ce_validated' => 1, 'ce_last_moved' => $time], ['id' => $entry_id], '', 1);
             delete_cache_entry('main_cc_embed');
             delete_cache_entry('main_recent_cc_entries');
             require_code('catalogues2');
-            $cc_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', array('id' => $entry_id));
+            $cc_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => $entry_id]);
             calculate_category_child_count_cache($cc_id);
         }
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => strval($entry_id), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $details['item_name'], 'details2' => strval($entry_id), 'txn_id' => $details['TXN_ID']]);
 
         return true;
     }
@@ -256,6 +256,6 @@ class Hook_ecommerce_classifieds
     public function member_for($type_code, $purchase_id)
     {
         $entry_id = intval($purchase_id);
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_submitter', array('id' => $entry_id));
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'ce_submitter', ['id' => $entry_id]);
     }
 }

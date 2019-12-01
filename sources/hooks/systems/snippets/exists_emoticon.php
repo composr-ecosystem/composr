@@ -32,7 +32,7 @@ class Hook_snippet_exists_emoticon
     {
         $val = get_param_string('name');
 
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', array('e_code' => $val));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $val]);
         if ($test === null) {
             return new Tempcode();
         }

@@ -39,7 +39,7 @@ class CMSPmRead
 
         $member_id = get_member();
 
-        $where = array('t_pt_to' => $member_id);
+        $where = ['t_pt_to' => $member_id];
         if (addon_installed('unvalidated')) {
             $where['t_validated'] = 1;
         }
@@ -47,7 +47,7 @@ class CMSPmRead
 
         $inbox_unread_total = get_num_unread_private_topics(TAPATALK_MESSAGE_BOX_INBOX);
 
-        $where = array('t_pt_from' => $member_id);
+        $where = ['t_pt_from' => $member_id];
         if (addon_installed('unvalidated')) {
             $where['t_validated'] = 1;
         }
@@ -55,12 +55,12 @@ class CMSPmRead
 
         $sent_unread_total = get_num_unread_private_topics(TAPATALK_MESSAGE_BOX_SENT);
 
-        return array(
+        return [
             'inbox_total' => $inbox_total,
             'inbox_unread_total' => $inbox_unread_total,
             'sent_total' => $sent_total,
             'sent_unread_total' => $sent_unread_total,
-        );
+        ];
     }
 
     /**
@@ -93,7 +93,7 @@ class CMSPmRead
 
         $member_id = get_member();
 
-        $msgs_to = array();
+        $msgs_to = [];
         $total_unread_count = 0;
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
@@ -114,15 +114,15 @@ class CMSPmRead
 
         $all_topics = $GLOBALS['FORUM_DB']->query($sql);
 
-        $posts = array();
+        $posts = [];
         foreach ($all_topics as $topic) {
-            $topic_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => $member_id, 'l_topic_id' => $topic['topic_id']));
+            $topic_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => $member_id, 'l_topic_id' => $topic['topic_id']]);
 
             $table = 'f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id';
 
-            $select = array('*', 'p.id AS post_id', 't.id AS topic_id');
+            $select = ['*', 'p.id AS post_id', 't.id AS topic_id'];
 
-            $where = array('p_topic_id' => $topic['topic_id']);
+            $where = ['p_topic_id' => $topic['topic_id']];
             if (addon_installed('unvalidated')) {
                 $where['p_validated'] = 1;
             }
@@ -141,10 +141,10 @@ class CMSPmRead
                 }
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($topic[$anti_lookup_key]);
-                $msgs_to[$topic[$anti_lookup_key]] = array(
+                $msgs_to[$topic[$anti_lookup_key]] = [
                     'user_id' => $topic[$anti_lookup_key],
                     'username' => $username,
-                );
+                ];
 
                 $msg_state = $this->get_message_state($post, $topic, $member_id, $i, $_posts, $topic_read_time);
                 if ($msg_state == self::UNREAD) {
@@ -160,7 +160,7 @@ class CMSPmRead
                     $msg_subject .= do_lang('PRIVATE_MESSAGE_REPLY', $post['t_cache_first_title']);
                 }
 
-                $posts[] = array(
+                $posts[] = [
                     'msg_id' => $post['post_id'],
                     'msg_state' => $msg_state,
                     'sent_date' => $post['p_time'],
@@ -170,16 +170,16 @@ class CMSPmRead
                     'msg_subject' => $msg_subject,
                     'short_content' => generate_shortened_post($post, $post['post_id'] == $topic['t_cache_first_post_id']),
                     'is_online' => member_is_online($post['p_poster']),
-                );
+                ];
             }
         }
 
-        return array(
+        return [
             'total_message_count' => count($posts),
             'total_unread_count' => $total_unread_count,
             'posts' => array_slice($posts, $start, $max),
             'msg_to' => array_values($msgs_to),
-        );
+        ];
     }
 
     /**
@@ -237,9 +237,9 @@ class CMSPmRead
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $table = 'f_posts p JOIN ' . $table_prefix . 'f_topics t ON p.p_topic_id=t.id';
 
-        $select = array('*', 'p.id AS post_id', 't.id AS topic_id');
+        $select = ['*', 'p.id AS post_id', 't.id AS topic_id'];
 
-        $where = array('p.id' => $message_id);
+        $where = ['p.id' => $message_id];
 
         $msg_details = $GLOBALS['FORUM_DB']->query_select($table, $select, $where, '', 1);
 
@@ -253,12 +253,12 @@ class CMSPmRead
             access_denied('I_ERROR');
         }
 
-        $msg_to = array();
+        $msg_to = [];
         $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_to']);
-        $msg_to[] = array(
+        $msg_to[] = [
             'user_id' => $post_row['t_pt_to'],
             'username' => $username,
-        );
+        ];
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($post_row['t_pt_from']);
 
@@ -270,7 +270,7 @@ class CMSPmRead
 
         $attachment_details = get_post_attachments($post_row['post_id'], null, true, $content);
 
-        return array(
+        return [
             'msg_from_id' => $post_row['t_pt_from'],
             'msg_from' => $username,
             'icon_url' => $icon_url,
@@ -279,7 +279,7 @@ class CMSPmRead
             'text_body' => $content,
             'msg_to' => $msg_to,
             'attachments' => $attachment_details,
-        );
+        ];
     }
 
     /**
@@ -305,6 +305,6 @@ class CMSPmRead
         $quote_title = do_lang('PRIVATE_MESSAGE_REPLY', $post_details['post_title']);
         $quote_content = '[quote="' . addslashes($post_details['post_username']) . '"]' . $post_details['post_content'] . "[/quote]\n";
 
-        return array($quote_title, $quote_content);
+        return [$quote_title, $quote_content];
     }
 }

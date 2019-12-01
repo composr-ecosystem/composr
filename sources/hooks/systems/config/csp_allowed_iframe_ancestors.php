@@ -30,7 +30,7 @@ class Hook_config_csp_allowed_iframe_ancestors
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_ALLOWED_IFRAME_ANCESTORS',
             'type' => 'text',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_csp_allowed_iframe_ancestors
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

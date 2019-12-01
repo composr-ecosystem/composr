@@ -40,7 +40,7 @@ class IOSPushNotifications
     {
         $push = $this->initialise_apns();
 
-        $token = $GLOBALS['SITE_DB']->query_select_value('device_token_details', 'device_token', array('member_id' => $to_member_id, 'token_type' => 'ios'));
+        $token = $GLOBALS['SITE_DB']->query_select_value('device_token_details', 'device_token', ['member_id' => $to_member_id, 'token_type' => 'ios']);
         $message_ob = new ApnsPHP_Message_Custom($token);
 
         $message_ob->setTitle($subject); // For Apple Watch, or possibly newer versions of iOS
@@ -52,7 +52,7 @@ class IOSPushNotifications
 
         $message_ob->setCustomIdentifier($notification_code . '_' . (($code_category === null) ? '' : $code_category) . '_' . strval(get_member()) . '_' . strval(time()));
 
-        $data = array();
+        $data = [];
         $data['notification_code'] = $notification_code;
         $data['code_category'] = ($code_category === null) ? '' : $code_category;
         $data['from_id'] = strval($from_member_id);
@@ -85,7 +85,7 @@ class IOSPushNotifications
 
         // Empty queue
         if (!$this->has_registered_shutdown) {
-            register_shutdown_function(array($this, 'flush_apns'));
+            register_shutdown_function([$this, 'flush_apns']);
             $this->has_registered_shutdown = true;
         }
     }
@@ -137,7 +137,7 @@ class IOSPushNotifications
         // Examine the error message container
         $error_queue = $push->getErrors();
         if (!empty($error_queue)) {
-            $all_errors = array();
+            $all_errors = [];
             foreach ($error_queue as $message_arr) {
                 foreach ($message_arr['ERRORS'] as $error) {
                     $all_errors[$error['statusMessage']] = true; // Put in as array keys, to de-duplicate

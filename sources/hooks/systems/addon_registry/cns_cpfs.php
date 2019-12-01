@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_cpfs
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_cpfs
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_adv_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_cpfs
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_cpfs
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/users/custom_profile_fields.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/users/custom_profile_fields.svg',
             'sources/hooks/systems/resource_meta_aware/cpf.php',
@@ -113,7 +113,7 @@ class Hook_addon_registry_cns_cpfs
             'sources/hooks/systems/commandr_fs_extended_member/cpf_perms.php',
             'themes/default/javascript/cns_cpfs.js',
             'sources/hooks/systems/actionlog/cns_cpfs.php',
-        );
+        ];
     }
 
     /**
@@ -123,10 +123,10 @@ class Hook_addon_registry_cns_cpfs
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_CPF_PERMISSIONS_TAB.tpl' => 'cns_cpf_permissions_tab',
             'templates/CNS_CPF_STATS_SCREEN.tpl' => 'administrative__cns_cpf_stats_screen',
-        );
+        ];
     }
 
     /**
@@ -138,11 +138,11 @@ class Hook_addon_registry_cns_cpfs
      */
     public function tpl_preview__cns_cpf_permissions_tab()
     {
-        return array(
-            lorem_globalise(do_lorem_template('CNS_CPF_PERMISSIONS_TAB', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_CPF_PERMISSIONS_TAB', [
                 'FIELDS' => placeholder_fields(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -154,19 +154,19 @@ class Hook_addon_registry_cns_cpfs
      */
     public function tpl_preview__administrative__cns_cpf_stats_screen()
     {
-        $lines = array();
+        $lines = [];
         foreach (placeholder_array() as $value) {
-            $lines[] = array(
+            $lines[] = [
                 'CNT' => placeholder_number(),
                 'VAL' => lorem_phrase(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_CPF_STATS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_CPF_STATS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'STATS' => $lines,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

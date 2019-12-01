@@ -30,7 +30,7 @@ class Hook_config_google_apis_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_APIS_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -44,7 +44,7 @@ class Hook_config_google_apis_api_key
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

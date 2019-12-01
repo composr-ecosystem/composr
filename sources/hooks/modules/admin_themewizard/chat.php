@@ -31,9 +31,9 @@ class Hook_admin_themewizard_chat
     public function run()
     {
         if (!addon_installed('chat')) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        return array(array('chatcode_editor/*',), array());
+        return [['chatcode_editor/*',], []];
     }
 }

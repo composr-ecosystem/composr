@@ -30,7 +30,7 @@ class Module_admin_group_member_timeouts
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_group_member_timeouts
             return null;
         }
 
-        return array(
-            'browse' => array('GROUP_MEMBER_TIMEOUTS', 'menu/adminzone/security/usergroups_temp'),
-        );
+        return [
+            'browse' => ['GROUP_MEMBER_TIMEOUTS', 'menu/adminzone/security/usergroups_temp'],
+        ];
     }
 
     public $title;
@@ -120,8 +120,8 @@ class Module_admin_group_member_timeouts
         if (get_forum_type() == 'cns') {
             $num_usergroups = $GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)');
             if (($num_usergroups > 50) && (addon_installed('ecommerce'))) {
-                $_usergroups = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs s JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=s.s_group_id', array('g.id', 'g.g_name'), array(), 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), 1);
-                $usergroups = array();
+                $_usergroups = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs s JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=s.s_group_id', ['g.id', 'g.g_name'], [], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'), 1);
+                $usergroups = [];
                 foreach ($_usergroups as $g) {
                     $usergroups[$g['id']] = get_translated_text($g['g_name'], $GLOBALS['FORUM_DB']);
                 }
@@ -135,31 +135,31 @@ class Module_admin_group_member_timeouts
 
         single_field__start();
 
-        $rows = $db->query_select('f_group_member_timeouts', array('member_id', 'group_id', 'timeout'), array(), '', $max, $start);
-        $timeouts = array();
+        $rows = $db->query_select('f_group_member_timeouts', ['member_id', 'group_id', 'timeout'], [], '', $max, $start);
+        $timeouts = [];
         foreach ($rows as $i => $row) {
             // Cleanup disassociated data
             if (!isset($usergroups[$row['group_id']])) {
-                $db->query_delete('f_group_member_timeouts', array('group_id' => $row['group_id']));
+                $db->query_delete('f_group_member_timeouts', ['group_id' => $row['group_id']]);
                 continue;
             }
 
-            $timeouts[] = array(
+            $timeouts[] = [
                 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($row['member_id']),
                 'MEMBER_ID' => strval($row['member_id']),
                 'GROUP_ID' => strval($row['group_id']),
                 'DATE_INPUT' => form_input_date(do_lang_tempcode('DATE'), new Tempcode(), 'gmt_time_' . strval($i), true, false, true, $row['timeout'], 10, null, null),
-            );
+            ];
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'save'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
 
         $pagination = pagination(do_lang('GROUP_MEMBER_TIMEOUTS'), $start, 'start', $max, 'max', $max_rows);
 
         require_code('form_templates');
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
-        $ret = do_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', array(
+        $ret = do_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', [
             '_GUID' => '83753cb500b04f741c0875f64dc6ad2f',
             'TITLE' => $this->title,
             'TIMEOUTS' => $timeouts,
@@ -169,7 +169,7 @@ class Module_admin_group_member_timeouts
             'PAGINATION' => $pagination,
             'PING_URL' => $ping_url,
             'WARNING_DETAILS' => $warning_details,
-        ));
+        ]);
 
         single_field__end();
 
@@ -187,7 +187,7 @@ class Module_admin_group_member_timeouts
 
         // Main edits
         foreach (array_keys($_POST) as $key) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^gmt_username_(\d+)$#', $key, $matches) != 0) {
                 $old_group_id = post_param_integer('gmt_old_group_id_' . $matches[1], null);
                 $group_id = post_param_integer('gmt_group_id_' . $matches[1], null);
@@ -218,7 +218,7 @@ class Module_admin_group_member_timeouts
 
         // Redirect
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
 
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
@@ -249,10 +249,10 @@ class Module_admin_group_member_timeouts
             if ($old_group_id !== null) {
                 $db = get_db_for('f_group_member_timeouts');
 
-                $db->query_delete('f_group_member_timeouts', array(
+                $db->query_delete('f_group_member_timeouts', [
                     'member_id' => $member_id,
                     'group_id' => $old_group_id,
-                ), '', 1);
+                ], '', 1);
             }
             set_member_group_timeout($member_id, $group_id, $time, $prefer_for_primary_group);
         }

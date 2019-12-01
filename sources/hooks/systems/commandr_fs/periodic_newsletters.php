@@ -47,8 +47,8 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('id'), array('np_subject' => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['id'], ['np_subject' => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -111,13 +111,13 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['np_subject'],
             'message' => $row['np_message'],
             'lang' => $row['np_lang'],
@@ -132,7 +132,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
             'in_full' => $row['np_in_full'],
             'template' => $row['np_template'],
             'last_sent' => remap_time_as_portable($row['np_last_sent']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

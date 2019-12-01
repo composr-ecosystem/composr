@@ -30,7 +30,7 @@ class Module_admin_backup
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_backup
             return null;
         }
 
-        return array(
-            'browse' => array('BACKUP', 'menu/adminzone/tools/bulk_content_actions/backups'),
-        );
+        return [
+            'browse' => ['BACKUP', 'menu/adminzone/tools/bulk_content_actions/backups'],
+        ];
     }
 
     /**
@@ -108,12 +108,12 @@ class Module_admin_backup
         set_helper_panel_text(comcode_lang_string('DOC_BACKUPS_2'));
 
         if ($type == 'make_backup') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('BACKUP'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BACKUP')]]);
             breadcrumb_set_self(do_lang_tempcode('START'));
         }
 
         if ($type == 'confirm_delete') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('BACKUP'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BACKUP')]]);
             breadcrumb_set_self(do_lang_tempcode('DELETE'));
         }
 
@@ -189,7 +189,7 @@ class Module_admin_backup
             );
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'make_backup'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'make_backup'], '_SELF');
 
         $max_size = intval(get_value('backup_max_size'));
         if ($max_size == 0) {
@@ -212,14 +212,14 @@ class Module_admin_backup
             }
         }
 
-        $js_function_calls = array();
+        $js_function_calls = [];
 
         if (addon_installed('calendar') && cron_installed()) {
             require_javascript('backup');
             $js_function_calls[] = 'adminBackupInterfaceCalendar';
         }
 
-        $form = do_template('FORM', array(
+        $form = do_template('FORM', [
                 '_GUID' => '64ae569b2cce398e89d1b4167f116193',
                 'HIDDEN' => '',
                 'JS_FUNCTION_CALLS' => $js_function_calls,
@@ -228,11 +228,11 @@ class Module_admin_backup
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => do_lang_tempcode('BACKUP'),
                 'URL' => $url,
-            ));
+            ]);
 
         $results = $this->get_results();
 
-        return do_template('BACKUP_LAUNCH_SCREEN', array('_GUID' => '26a82a0627632db79b35055598de5d23', 'TITLE' => $this->title, 'TEXT' => $text, 'RESULTS' => $results, 'FORM' => $form));
+        return do_template('BACKUP_LAUNCH_SCREEN', ['_GUID' => '26a82a0627632db79b35055598de5d23', 'TITLE' => $this->title, 'TEXT' => $text, 'RESULTS' => $results, 'FORM' => $form]);
     }
 
     /**
@@ -249,10 +249,10 @@ class Module_admin_backup
             make_missing_directory($path);
         }
         $handle = opendir($path);
-        $entries = array();
+        $entries = [];
         while (false !== ($file = readdir($handle))) {
             if ((!is_dir($path . $file)) && ((get_file_extension($file) == 'tar') || (get_file_extension($file) == 'txt') || (get_file_extension($file) == 'gz') || (get_file_extension($file) == '')) && (is_file($path . $file))) {
-                $entries[] = array('file' => $file, 'size' => filesize($path . $file), 'mtime' => filemtime($path . $file));
+                $entries[] = ['file' => $file, 'size' => filesize($path . $file), 'mtime' => filemtime($path . $file)];
             }
         }
         closedir($handle);
@@ -260,22 +260,22 @@ class Module_admin_backup
 
         if (!empty($entries)) {
             require_code('templates_columned_table');
-            $header_row = columned_table_header_row(array(do_lang_tempcode('FILENAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('SIZE'), do_lang_tempcode('DATE'), new Tempcode()));
+            $header_row = columned_table_header_row([do_lang_tempcode('FILENAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('SIZE'), do_lang_tempcode('DATE'), new Tempcode()]);
 
             $rows = new Tempcode();
             foreach ($entries as $entry) {
-                $delete_url = build_url(array('page' => '_SELF', 'type' => 'confirm_delete', 'file' => $entry['file']), '_SELF');
+                $delete_url = build_url(['page' => '_SELF', 'type' => 'confirm_delete', 'file' => $entry['file']], '_SELF');
                 $url = get_custom_base_url() . '/exports/backups/' . $entry['file'];
 
                 $actions = new Tempcode();
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '23a8b5d5d345d8fdecc74b01fe5a9042',
                     'NAME' => $entry['file'],
                     'URL' => $delete_url,
                     'ACTION_TITLE' => do_lang_tempcode('DELETE'),
                     'ICON' => 'admin/delete',
                     'GET' => true,
-                )));
+                ]));
 
                 $type = do_lang_tempcode('UNKNOWN');
                 switch (get_file_extension($entry['file'])) {
@@ -293,10 +293,10 @@ class Module_admin_backup
                         break;
                 }
 
-                $rows->attach(columned_table_row(array(hyperlink($url, $entry['file'], false, true), $type, escape_html(clean_file_size($entry['size'])), escape_html(get_timezoned_date_time($entry['mtime'])), $actions), true));
+                $rows->attach(columned_table_row([hyperlink($url, $entry['file'], false, true), $type, escape_html(clean_file_size($entry['size'])), escape_html(get_timezoned_date_time($entry['mtime'])), $actions], true));
             }
 
-            $files = do_template('COLUMNED_TABLE', array('_GUID' => '726070efa71843236e975d87d4a17dae', 'HEADER_ROW' => $header_row, 'ROWS' => $rows));
+            $files = do_template('COLUMNED_TABLE', ['_GUID' => '726070efa71843236e975d87d4a17dae', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
         } else {
             $files = new Tempcode();
         }
@@ -340,11 +340,11 @@ class Module_admin_backup
         }
 
         require_code('tasks');
-        $ret = call_user_func_array__long_task(do_lang('BACKUP'), $this->title, 'make_backup', array($file, $b_type, $max_size));
+        $ret = call_user_func_array__long_task(do_lang('BACKUP'), $this->title, 'make_backup', [$file, $b_type, $max_size]);
 
         log_it('BACKUP', $file, $b_type);
 
-        $url = build_url(array('page' => '_SELF'), '_SELF');
+        $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('BACKUP_INFO_1', escape_html($file . (function_exists('gzopen') ? '.tar.gz' : '.tar'))));
     }
 
@@ -358,11 +358,11 @@ class Module_admin_backup
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
 
         $preview = do_lang_tempcode('CONFIRM_DELETE', escape_html($file));
-        $url = build_url(array('page' => '_SELF', 'type' => 'delete'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'delete'], '_SELF');
 
         $fields = form_input_hidden('file', $file);
 
-        return do_template('CONFIRM_SCREEN', array('_GUID' => 'fa69bb63385525921c75954c03a3aa43', 'TITLE' => $this->title, 'PREVIEW' => $preview, 'URL' => $url, 'FIELDS' => $fields));
+        return do_template('CONFIRM_SCREEN', ['_GUID' => 'fa69bb63385525921c75954c03a3aa43', 'TITLE' => $this->title, 'PREVIEW' => $preview, 'URL' => $url, 'FIELDS' => $fields]);
     }
 
     /**
@@ -383,7 +383,7 @@ class Module_admin_backup
         log_it('DELETE_BACKUP', $file);
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

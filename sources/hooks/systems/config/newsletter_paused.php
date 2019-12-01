@@ -30,7 +30,7 @@ class Hook_config_newsletter_paused
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NEWSLETTER_PAUSED',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_newsletter_paused
             'required' => true,
             'public' => false,
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

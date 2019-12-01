@@ -55,10 +55,10 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('iotds')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -74,7 +74,7 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), $consider_validation ? array('used' => 1) : array(), 'ORDER BY date_and_time', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], $consider_validation ? ['used' => 1] : [], 'ORDER BY date_and_time', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $return_anyway);
@@ -117,12 +117,12 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_LOW,
             'sitemap_refreshfreq' => 'never',
 
             'privilege_page' => $this->get_privilege_page($page_link),
-        ) + $partial_struct;
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

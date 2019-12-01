@@ -30,7 +30,7 @@ class Hook_config_enable_spreadsheet_recommend
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_SPREADSHEET_RECOMMEND',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_spreadsheet_recommend
             'public' => false,
 
             'addon' => 'recommend',
-        );
+        ];
     }
 
     /**

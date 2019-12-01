@@ -25,7 +25,7 @@ class Hook_config_confluence_subdomain
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CONFLUENCE_SUBDOMAIN',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -39,7 +39,7 @@ class Hook_config_confluence_subdomain
             'public' => false,
 
             'addon' => 'confluence',
-        );
+        ];
     }
 
     /**

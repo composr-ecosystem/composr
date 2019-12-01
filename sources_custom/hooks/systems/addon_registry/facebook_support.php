@@ -26,7 +26,7 @@ class Hook_addon_registry_facebook_support
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,10 +66,10 @@ class Hook_addon_registry_facebook_support
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Icon by leslienayibe',
             'Class by Facebook Inc.',
-        );
+        ];
     }
 
     /**
@@ -115,7 +115,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
      */
     public function get_applicable_tutorials()
     {
-        return array('sup_facebook');
+        return ['sup_facebook'];
     }
 
     /**
@@ -125,16 +125,16 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP sessions extension',
                 'PHP curl extension',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'activity_feed',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -154,7 +154,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/facebook_support.php',
             'sources_custom/hooks/systems/startup/facebook.php',
             'sources_custom/facebook/index.html',
@@ -209,6 +209,6 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=HUZ_O
             'sources_custom/facebook/.htaccess',
             'sources_custom/facebook/jsonwrapper/.htaccess',
             'sources_custom/facebook/jsonwrapper/JSON/.htaccess',
-        );
+        ];
     }
 }

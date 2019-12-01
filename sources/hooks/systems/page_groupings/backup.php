@@ -33,11 +33,11 @@ class Hook_page_groupings_backup
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('backup')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'menu/adminzone/tools/bulk_content_actions/backups', array('admin_backup', array('type' => 'browse'), get_module_zone('admin_backup')), do_lang_tempcode('backups:BACKUPS'), 'backups:DOC_BACKUPS'),
-        );
+        return [
+            ['tools', 'menu/adminzone/tools/bulk_content_actions/backups', ['admin_backup', ['type' => 'browse'], get_module_zone('admin_backup')], do_lang_tempcode('backups:BACKUPS'), 'backups:DOC_BACKUPS'],
+        ];
     }
 }

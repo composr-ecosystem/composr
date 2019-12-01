@@ -25,7 +25,7 @@ class Hook_config_facebook_sync_email
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_SYNC_EMAIL',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_sync_email
             'required' => true,
             'public' => false,
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

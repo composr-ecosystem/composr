@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/tabs/member_account/edit/signature.svg',
             'themes/default/images/icons_monochrome/tabs/member_account/edit/signature.svg',
             'sources/hooks/systems/addon_registry/cns_signatures.php',
@@ -109,7 +109,7 @@ class Hook_addon_registry_cns_signatures
             'sources/hooks/systems/config/enable_skip_sig.php',
             'sources/hooks/systems/config/enable_views_sigs_option.php',
             'themes/default/javascript/cns_signatures.js',
-        );
+        ];
     }
 
     /**
@@ -119,9 +119,9 @@ class Hook_addon_registry_cns_signatures
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_EDIT_SIGNATURE_TAB.tpl' => 'cns_edit_signature_tab',
-        );
+        ];
     }
 
     /**
@@ -141,7 +141,7 @@ class Hook_addon_registry_cns_signatures
         require_css('cns');
 
         $buttons = new Tempcode();
-        $_buttons = array(
+        $_buttons = [
             'img',
             'thumb',
             'url',
@@ -153,44 +153,44 @@ class Hook_addon_registry_cns_signatures
             'block',
             'list',
             'html'
-        );
+        ];
         foreach ($_buttons as $button) {
-            $buttons->attach(do_lorem_template('COMCODE_EDITOR_BUTTON', array(
+            $buttons->attach(do_lorem_template('COMCODE_EDITOR_BUTTON', [
                 'DIVIDER' => true,
                 'FIELD_NAME' => lorem_word(),
                 'TITLE' => lorem_phrase(),
                 'B' => $button,
                 'IS_POSTING_FIELD' => false,
-            )));
+            ]));
         }
 
         $micro_buttons = new Tempcode();
-        $_micro_buttons = array(
-            array(
+        $_micro_buttons = [
+            [
                 't' => 'b',
-            ),
-            array(
+            ],
+            [
                 't' => 'i',
-            )
-        );
+            ]
+        ];
 
         foreach ($_micro_buttons as $button) {
-            $micro_buttons->attach(do_lorem_template('COMCODE_EDITOR_MICRO_BUTTON', array(
+            $micro_buttons->attach(do_lorem_template('COMCODE_EDITOR_MICRO_BUTTON', [
                 'FIELD_NAME' => lorem_word(),
                 'TITLE' => lorem_phrase(),
                 'B' => $button['t'],
                 'IS_POSTING_FIELD' => false,
-            )));
+            ]));
         }
 
-        $comcode_editor = do_lorem_template('COMCODE_EDITOR', array(
+        $comcode_editor = do_lorem_template('COMCODE_EDITOR', [
             'POSTING_FIELD' => lorem_word(),
             'BUTTONS' => $buttons,
             'MICRO_BUTTONS' => $micro_buttons,
             'IS_POSTING_FIELD' => false,
-        ));
+        ]);
 
-        $posting_form = do_lorem_template('POSTING_FORM', array(
+        $posting_form = do_lorem_template('POSTING_FORM', [
             'TABINDEX_PF' => placeholder_number() /*not called TABINDEX due to conflict with FORM_STANDARD_END*/,
             'PREVIEW' => true,
             'COMCODE_EDITOR' => $comcode_editor,
@@ -212,13 +212,13 @@ class Hook_addon_registry_cns_signatures
             'SPECIALISATION2' => new Tempcode(),
             'DESCRIPTION' => lorem_paragraph(),
             'REQUIRED' => true,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_EDIT_SIGNATURE_TAB', [
                 'SIZE' => placeholder_filesize(),
                 'SIGNATURE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

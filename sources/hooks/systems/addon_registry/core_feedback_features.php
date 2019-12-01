@@ -31,7 +31,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_feedback_features
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_feedback',
             'tut_adv_news',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_feedback_features
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/feedback/comment.svg',
             'themes/default/images/icons/feedback/comments_topic.svg',
             'themes/default/images/icons/feedback/rate.svg',
@@ -173,7 +173,7 @@ class Hook_addon_registry_core_feedback_features
             'data/form_to_email.php',
             'themes/default/javascript/core_feedback_features.js',
             'themes/default/templates/BLOCK_MAIN_CONTACT_SIMPLE.tpl',
-        );
+        ];
     }
 
     /**
@@ -183,7 +183,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/COMMENTS_DEFAULT_TEXT.tpl' => 'comments_default_text',
             'templates/TRACKBACK.tpl' => 'administrative__trackback_delete_screen',
             'templates/TRACKBACK_DELETE_SCREEN.tpl' => 'administrative__trackback_delete_screen',
@@ -207,7 +207,7 @@ class Hook_addon_registry_core_feedback_features
             'templates/POST.tpl' => 'comments_wrapper',
             'templates/POST_CHILD_LOAD_LINK.tpl' => 'comments_wrapper',
             'templates/BLOCK_MAIN_CONTACT_SIMPLE.tpl' => 'block_main_contact_simple',
-        );
+        ];
     }
 
     /**
@@ -219,9 +219,9 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__comments_default_text()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMMENTS_DEFAULT_TEXT', array()), null, '', true)
-        );
+        return [
+            lorem_globalise(do_lorem_template('COMMENTS_DEFAULT_TEXT', []), null, '', true)
+        ];
     }
 
     /**
@@ -235,7 +235,7 @@ class Hook_addon_registry_core_feedback_features
     {
         $trackbacks = new Tempcode();
         foreach (placeholder_array() as $k => $value) {
-            $trackbacks->attach(do_lorem_template('TRACKBACK', array(
+            $trackbacks->attach(do_lorem_template('TRACKBACK', [
                 'ID' => strval($k),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_number(),
@@ -243,16 +243,16 @@ class Hook_addon_registry_core_feedback_features
                 'TITLE' => lorem_word(),
                 'EXCERPT' => lorem_phrase(),
                 'NAME' => $value,
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('TRACKBACK_DELETE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('TRACKBACK_DELETE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TRACKBACKS' => $trackbacks,
                 'LOTS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -264,18 +264,18 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__trackback_xml_wrapper()
     {
-        $xml = do_lorem_template('TRACKBACK_XML', array(
+        $xml = do_lorem_template('TRACKBACK_XML', [
             'TITLE' => lorem_phrase(),
             'LINK' => placeholder_url(),
             'EXCERPT' => lorem_phrase(),
-        ), null, false, null, '.xml', 'xml');
-        $xml->attach(do_lorem_template('TRACKBACK_XML_NO_ERROR', array(), null, false, null, '.xml', 'xml'));
-        $xml->attach(do_lorem_template('TRACKBACK_XML_ERROR', array('TRACKBACK_ERROR' => lorem_phrase()), null, false, null, '.xml', 'xml'));
-        return array(
-            do_lorem_template('TRACKBACK_XML_WRAPPER', array(
+        ], null, false, null, '.xml', 'xml');
+        $xml->attach(do_lorem_template('TRACKBACK_XML_NO_ERROR', [], null, false, null, '.xml', 'xml'));
+        $xml->attach(do_lorem_template('TRACKBACK_XML_ERROR', ['TRACKBACK_ERROR' => lorem_phrase()], null, false, null, '.xml', 'xml'));
+        return [
+            do_lorem_template('TRACKBACK_XML_WRAPPER', [
                 'XML' => $xml,
-            ), null, false, null, '.xml', 'xml')
-        );
+            ], null, false, null, '.xml', 'xml')
+        ];
     }
 
     /**
@@ -293,7 +293,7 @@ class Hook_addon_registry_core_feedback_features
 
         require_css('forms');
 
-        $ret = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $ret = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -313,17 +313,17 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        $ret->attach(do_lorem_template('COMMENT_AJAX_HANDLER', array(
+        $ret->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
             'OPTIONS' => '',
             'IS_THREADED' => false,
             'HASH' => '',
-        )));
+        ]));
 
-        return array(
+        return [
             lorem_globalise($ret, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -335,15 +335,15 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__comments_wrapper()
     {
-        $review_titles = array();
-        $review_titles[] = array(
+        $review_titles = [];
+        $review_titles[] = [
             'REVIEW_TITLE' => lorem_phrase(),
             'REVIEW_RATING' => make_string_tempcode(float_format(10.0)),
-        );
+        ];
         $comments = new Tempcode();
         foreach (placeholder_array() as $i => $comment) {
-            $map = array(
-                'INDIVIDUAL_REVIEW_RATINGS' => array(),
+            $map = [
+                'INDIVIDUAL_REVIEW_RATINGS' => [],
                 'HIGHLIGHT' => ($i == 1),
                 'TITLE' => lorem_word(),
                 'TIME_RAW' => placeholder_number(),
@@ -358,9 +358,9 @@ class Hook_addon_registry_core_feedback_features
                 'IS_UNREAD' => false,
                 'POST_COMCODE' => lorem_phrase(),
                 'CHILDREN' => lorem_phrase(),
-                'OTHER_IDS' => array(
+                'OTHER_IDS' => [
                     placeholder_id(),
-                ),
+                ],
                 'RATING' => new Tempcode(),
                 'EMPHASIS' => new Tempcode(),
                 'BUTTONS' => new Tempcode(),
@@ -371,7 +371,7 @@ class Hook_addon_registry_core_feedback_features
                 'IS_SPACER_POST' => false,
                 'IS_THREADED' => false,
                 'NUM_TO_SHOW_LIMIT' => placeholder_number(),
-            );
+            ];
             $comments->attach(do_lorem_template('POST', $map));
             do_lorem_template('POST_CHILD_LOAD_LINK', $map); // INCLUDE'd in above, but test set needs to see it run direct
         }
@@ -382,7 +382,7 @@ class Hook_addon_registry_core_feedback_features
         } else {
             $use_captcha = false;
         }
-        $form = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $form = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -402,9 +402,9 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        $out = do_lorem_template('COMMENTS_WRAPPER', array(
+        $out = do_lorem_template('COMMENTS_WRAPPER', [
             'TYPE' => lorem_phrase(),
             'ID' => placeholder_id(),
             'REVIEW_RATING_CRITERIA' => $review_titles,
@@ -414,17 +414,17 @@ class Hook_addon_registry_core_feedback_features
             'SORT' => 'relevance',
             'TOTAL_POSTS' => placeholder_number(),
             'IS_THREADED' => false,
-        ));
+        ]);
 
-        $out->attach(do_lorem_template('COMMENT_AJAX_HANDLER', array(
+        $out->attach(do_lorem_template('COMMENT_AJAX_HANDLER', [
             'OPTIONS' => '',
             'IS_THREADED' => false,
             'HASH' => '',
-        )));
+        ]));
 
-        return array(
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -441,7 +441,7 @@ class Hook_addon_registry_core_feedback_features
         $content = new Tempcode();
 
         foreach ($trackbacks as $i => $value) {
-            $content->attach(do_lorem_template('TRACKBACK', array(
+            $content->attach(do_lorem_template('TRACKBACK', [
                 'ID' => placeholder_id() . strval($i),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
@@ -449,17 +449,17 @@ class Hook_addon_registry_core_feedback_features
                 'TITLE' => lorem_word(),
                 'EXCERPT' => '',
                 'NAME' => placeholder_id(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('TRACKBACK_WRAPPER', array(
+        return [
+            lorem_globalise(do_lorem_template('TRACKBACK_WRAPPER', [
                 'TRACKBACKS' => $content,
                 'TRACKBACK_PAGE' => lorem_word(),
                 'TRACKBACK_ID' => placeholder_id(),
                 'TRACKBACK_TITLE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -471,15 +471,15 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__trackback_xml_listing()
     {
-        $content = do_lorem_template('TRACKBACK_XML_LISTING', array(
+        $content = do_lorem_template('TRACKBACK_XML_LISTING', [
             'ITEMS' => lorem_phrase(),
             'LINK_PAGE' => lorem_word(),
             'LINK_ID' => placeholder_id(),
-        ), null, false, null, '.xml', 'xml');
+        ], null, false, null, '.xml', 'xml');
 
-        return array(
+        return [
             $content
-        );
+        ];
     }
 
     /**
@@ -491,14 +491,14 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating()
     {
-        $all_rating_criteria = array();
-        $all_rating_criteria[] = array(
+        $all_rating_criteria = [];
+        $all_rating_criteria[] = [
             'TITLE' => lorem_word(),
             'RATING' => make_string_tempcode('6'),
             'NUM_RATINGS' => placeholder_number(),
             'TYPE' => lorem_word(),
-        );
-        $rating_form = do_lorem_template('RATING_FORM', array(
+        ];
+        $rating_form = do_lorem_template('RATING_FORM', [
             'LIKES' => true,
             'CONTENT_TYPE' => 'downloads',
             'ID' => placeholder_id(),
@@ -511,10 +511,10 @@ class Hook_addon_registry_core_feedback_features
             'ERROR' => '',
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('RATING_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('RATING_BOX', [
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'LIKES' => true,
                 'CONTENT_TYPE' => 'downloads',
@@ -524,8 +524,8 @@ class Hook_addon_registry_core_feedback_features
                 'NUM_RATINGS' => '10',
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -537,16 +537,16 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating_inline_static()
     {
-        $all_rating_criteria = array();
+        $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
-            $all_rating_criteria[] = array(
+            $all_rating_criteria[] = [
                 'TITLE' => lorem_word(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
-            );
+            ];
         }
-        $rating_form = do_lorem_template('RATING_FORM', array(
+        $rating_form = do_lorem_template('RATING_FORM', [
             'CONTENT_TYPE' => lorem_word(),
             'ID' => placeholder_id(),
             'URL' => placeholder_url(),
@@ -558,9 +558,9 @@ class Hook_addon_registry_core_feedback_features
             'ERROR' => '',
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
-        ));
-        return array(
-            lorem_globalise(do_lorem_template('RATING_INLINE_STATIC', array(
+        ]);
+        return [
+            lorem_globalise(do_lorem_template('RATING_INLINE_STATIC', [
                 'CONTENT_TYPE' => lorem_word(),
                 'ID' => placeholder_id(),
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
@@ -570,8 +570,8 @@ class Hook_addon_registry_core_feedback_features
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
                 'LIKES' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -583,16 +583,16 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating_inline_dynamic()
     {
-        $all_rating_criteria = array();
+        $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
-            $all_rating_criteria[] = array(
+            $all_rating_criteria[] = [
                 'TITLE' => lorem_word(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
-            );
+            ];
         }
-        $rating_form = do_lorem_template('RATING_FORM', array(
+        $rating_form = do_lorem_template('RATING_FORM', [
             'CONTENT_TYPE' => lorem_word(),
             'ID' => placeholder_id(),
             'URL' => placeholder_url(),
@@ -604,9 +604,9 @@ class Hook_addon_registry_core_feedback_features
             'LIKES' => true,
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
-        ));
-        return array(
-            lorem_globalise(do_lorem_template('RATING_INLINE_DYNAMIC', array(
+        ]);
+        return [
+            lorem_globalise(do_lorem_template('RATING_INLINE_DYNAMIC', [
                 'CONTENT_TYPE' => lorem_word(),
                 'ID' => placeholder_id(),
                 'ALL_RATING_CRITERIA' => $all_rating_criteria,
@@ -616,8 +616,8 @@ class Hook_addon_registry_core_feedback_features
                 'RATING_FORM' => $rating_form,
                 'ERROR' => '',
                 'LIKES' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -629,16 +629,16 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__rating_display_shared()
     {
-        $all_rating_criteria = array();
+        $all_rating_criteria = [];
         foreach (placeholder_array() as $i => $v) {
-            $all_rating_criteria[] = array(
+            $all_rating_criteria[] = [
                 'TITLE' => lorem_word(),
                 'RATING' => '3',
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'TYPE' => lorem_word() . strval($i),
-            );
+            ];
         }
-        $rating_form = do_lorem_template('RATING_FORM', array(
+        $rating_form = do_lorem_template('RATING_FORM', [
             'CONTENT_TYPE' => lorem_word(),
             'ID' => placeholder_id(),
             'URL' => placeholder_url(),
@@ -650,9 +650,9 @@ class Hook_addon_registry_core_feedback_features
             'LIKES' => true,
             'CONTENT_URL' => placeholder_url(),
             'CONTENT_TITLE' => lorem_phrase(),
-        ));
-        return array(
-            lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', array(
+        ]);
+        return [
+            lorem_globalise(do_lorem_template('RATING_DISPLAY_SHARED', [
                 'CONTENT_TYPE' => lorem_word(),
                 'RATING' => '3',
                 'ID' => placeholder_id(),
@@ -664,8 +664,8 @@ class Hook_addon_registry_core_feedback_features
                 'TITLE' => lorem_phrase(),
                 'ERROR' => '',
                 'LIKES' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -677,25 +677,25 @@ class Hook_addon_registry_core_feedback_features
      */
     public function tpl_preview__ratings_show()
     {
-        $ratings = array();
-        $ratings[] = array(
+        $ratings = [];
+        $ratings[] = [
             'RATING_MEMBER' => placeholder_id(),
             'RATING_USERNAME' => lorem_word(),
             'RATING_IP' => lorem_word(),
             'RATING_TIME' => placeholder_date_raw(),
             'RATING_TIME_FORMATTED' => placeholder_date(),
             'RATING' => '2',
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('RATINGS_SHOW', array(
+        return [
+            lorem_globalise(do_lorem_template('RATINGS_SHOW', [
                 'RATINGS' => $ratings,
                 'HAS_MORE' => true,
                 'MAX' => '1',
                 'CNT' => '1',
                 'CNT_REMAINING' => '10',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -708,7 +708,7 @@ class Hook_addon_registry_core_feedback_features
     public function tpl_preview__block_main_contact_simple()
     {
         require_lang('cns');
-        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', [
             'TITLE' => lorem_phrase(),
             'JOIN_BITS' => lorem_phrase_html(),
             'USE_CAPTCHA' => false,
@@ -728,15 +728,15 @@ class Hook_addon_registry_core_feedback_features
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_SIMPLE', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_CONTACT_SIMPLE', [
                 'BLOCK_ID' => lorem_word(),
                 'EMAIL_OPTIONAL' => lorem_word_html(),
                 'COMMENT_DETAILS' => $comment_details,
                 'MESSAGE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

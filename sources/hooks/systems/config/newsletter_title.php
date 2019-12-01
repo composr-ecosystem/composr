@@ -30,7 +30,7 @@ class Hook_config_newsletter_title
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TITLE',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_newsletter_title
             'public' => false,
 
             'addon' => 'newsletter',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_captcha_on_feedback
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CAPTCHA_ON_FEEDBACK',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_captcha_on_feedback
             'required' => true,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

@@ -60,7 +60,7 @@ function rebuild_zone_files()
 {
     $zones = find_all_zones();
     foreach ($zones as $zone) {
-        if (!in_array($zone, array('', 'cms', 'adminzone', 'site', 'forum', 'collaboration'/*LEGACY*/))) {
+        if (!in_array($zone, ['', 'cms', 'adminzone', 'site', 'forum', 'collaboration'/*LEGACY*/])) {
             if (strpos(cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php', FILE_READ_LOCK), 'core') !== false) {
                 @cms_file_put_contents_safe(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_custom_file_base() . '/site/index.php', FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             }
@@ -101,7 +101,7 @@ function perform_search_replace($reps)
 {
     // Find directories to do replacements in...
 
-    $target_dirs = array();
+    $target_dirs = [];
 
     $langs = find_all_langs();
 

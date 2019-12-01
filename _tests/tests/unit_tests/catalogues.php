@@ -51,7 +51,7 @@ class catalogues_test_set extends cms_test_case
 
     public function testAddCatalogueActualiser()
     {
-        $_POST = array(
+        $_POST = [
             'new_field_0_visible' => '1',
             'new_field_0_required' => '1',
             'title' => 'Biodata',
@@ -412,7 +412,7 @@ class catalogues_test_set extends cms_test_case
             'require__new_field_9_put_in_search' => '0',
             'description__is_wysiwyg' => '1',
             'categories_sort_order' => 'recent ASC',
-        );
+        ];
 
         require_code('autosave');
         $_GET['type'] = '_add';

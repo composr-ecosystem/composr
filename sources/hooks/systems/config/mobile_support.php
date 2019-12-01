@@ -30,7 +30,7 @@ class Hook_config_mobile_support
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MOBILE_SUPPORT',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_mobile_support
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

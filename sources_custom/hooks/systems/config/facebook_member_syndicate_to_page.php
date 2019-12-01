@@ -25,7 +25,7 @@ class Hook_config_facebook_member_syndicate_to_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_MEMBER_SYNDICATE_TO_PAGE',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_member_syndicate_to_page
             'required' => true,
             'public' => false,
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

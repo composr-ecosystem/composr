@@ -53,7 +53,7 @@ function init__database_relations()
  */
 function get_table_purpose_flags()
 {
-    return array(
+    return [
         'addons' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC,
         'addons_dependencies' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,
         'addons_files' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA/*under addons*/,
@@ -261,7 +261,7 @@ function get_table_purpose_flags()
         'wordfilter' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'zones' => TABLE_PURPOSE__NORMAL,
         'ecom_sales_expecting' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__MISC_NO_MERGE/*too-site-tied*/,
-    );
+    ];
 }
 
 /**
@@ -293,7 +293,7 @@ function table_has_purpose_flag($table, $flag)
  */
 function get_table_descriptions()
 {
-    return array(
+    return [
         'actionlogs' => 'stores logs of actions performed on the website',
         'addons' => 'registry of installed addons, including the version that was installed (used for auto-upgrading)',
         'addons_dependencies' => 'files for installed addons (not all installed addons have addon_registry hooks, and not all installed addons have this table populated)',
@@ -352,7 +352,7 @@ function get_table_descriptions()
         'webstandards_checked_once' => 'this is used by the inbuilt XHTML checker to know what markup it has already checked, so it doesn\'t waste a lot of time re-checking the same stuff; it uses a hash-signature-check so it doesn\'t need to store all data in the table',
         'zones' => 'details of all zones on the website',
         'ecom_sales_expecting' => 'stores details of an in-progress purchase',
-    );
+    ];
 }
 
 /**
@@ -364,13 +364,13 @@ function get_table_descriptions()
 function get_relation_map_for_table($table)
 {
     $relation_map = get_relation_map();
-    $new_relation_map = array();
+    $new_relation_map = [];
     foreach ($relation_map as $from => $to) {
         if ($to !== null) {
             list($from_table, $from_field) = explode('.', $from, 2);
             if ($table == $from_table) {
                 list($to_table, $to_field) = explode('.', $to, 2);
-                $new_relation_map[$from_field] = array($to_table, $to_field);
+                $new_relation_map[$from_field] = [$to_table, $to_field];
             }
         }
     }
@@ -384,7 +384,7 @@ function get_relation_map_for_table($table)
  */
 function get_relation_map()
 {
-    return array(
+    return [
         'attachment_refs.a_id' => 'attachments.id',
         'attachment_refs.r_referer_id' => null,
         'award_archive.a_type_id' => 'award_types.id',
@@ -527,7 +527,7 @@ function get_relation_map()
         'shopping_order_details.p_type_code' => 'catalogue_entries.id',
         'ecom_transactions.t_parent_txn_id' => 'ecom_transactions.id',
         'ecom_transactions.t_session_id' => 'sessions.the_session',
-    );
+    ];
 }
 
 /**
@@ -538,16 +538,16 @@ function get_relation_map()
  */
 function find_all_tables($db)
 {
-    $fields = $db->query_select('db_meta', array('m_table', 'm_name', 'm_type'), array(), 'ORDER BY m_table');
-    $tables = array();
+    $fields = $db->query_select('db_meta', ['m_table', 'm_name', 'm_type'], [], 'ORDER BY m_table');
+    $tables = [];
     foreach ($fields as $field) {
         if (!isset($tables[$field['m_table']])) {
-            $tables[$field['m_table']] = array();
+            $tables[$field['m_table']] = [];
         }
         $tables[$field['m_table']][$field['m_name']] = $field['m_type'];
     }
-    $tables['db_meta'] = array('m_table' => '*ID_TEXT', 'm_name' => '*ID_TEXT', 'm_type' => 'ID_TEXT');
-    $tables['db_meta_indices'] = array('i_table' => '*ID_TEXT', 'i_name' => '*ID_TEXT', 'i_fields' => '*ID_TEXT');
+    $tables['db_meta'] = ['m_table' => '*ID_TEXT', 'm_name' => '*ID_TEXT', 'm_type' => 'ID_TEXT'];
+    $tables['db_meta_indices'] = ['i_table' => '*ID_TEXT', 'i_name' => '*ID_TEXT', 'i_fields' => '*ID_TEXT'];
 
     ksort($tables);
 
@@ -565,7 +565,7 @@ function find_all_tables($db)
  * @param  ?object $db Database connector to use (null: site database)
  * @param  ?string $intended_db_type Database driver to use (null: site database driver)
  */
-function get_sql_dump($out_file, $include_drops = false, $output_statuses = false, $skip = array(), $only = null, $db = null, $intended_db_type = null)
+function get_sql_dump($out_file, $include_drops = false, $output_statuses = false, $skip = [], $only = null, $db = null, $intended_db_type = null)
 {
     disable_php_memory_limit();
     cms_disable_time_limit();
@@ -639,10 +639,10 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
         // Data
         $start = 0;
         do {
-            $data = $db->query_select($table_name, array('*'), array(), '', 100, $start, false, array());
+            $data = $db->query_select($table_name, ['*'], [], '', 100, $start, false, []);
             foreach ($data as $map) {
                 $keys = '';
-                $all_values = array();
+                $all_values = [];
 
                 foreach ($map as $key => $value) {
                     if ($keys != '') {
@@ -650,7 +650,7 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
                     }
                     $keys .= $key;
 
-                    $_value = (!is_array($value)) ? array($value) : $value;
+                    $_value = (!is_array($value)) ? [$value] : $value;
 
                     $v = null;
                     foreach ($_value as $i => $v) {
@@ -694,7 +694,7 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
         }
 
         // Indexes
-        $indexes = $db->query_select('db_meta_indices', array('*'), array('i_table' => $table_name));
+        $indexes = $db->query_select('db_meta_indices', ['*'], ['i_table' => $table_name]);
         foreach ($indexes as $i => $index) {
             if ($i != 0) {
                 fwrite($out_file, "\n");
@@ -710,9 +710,9 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
                 $is_full_text = false;
             }
 
-            $fields = array();
+            $fields = [];
             foreach (explode(',', $index['i_fields']) as $field_name) {
-                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $table_name, 'm_name' => $field_name));
+                $db_type = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $table_name, 'm_name' => $field_name]);
                 $fields[$field_name] = $db_type;
             }
 

@@ -30,7 +30,7 @@ class Module_admin_banners
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_banners
             return null;
         }
 
-        return array(
-            'browse' => array('BANNER_STATISTICS', 'menu/cms/banners'),
-        );
+        return [
+            'browse' => ['BANNER_STATISTICS', 'menu/cms/banners'],
+        ];
     }
 
     public $title;
@@ -80,7 +80,7 @@ class Module_admin_banners
         require_code('banners');
 
         if ($type == 'browse') {
-            $also_url = build_url(array('page' => 'cms_banners'), get_module_zone('cms_banners'));
+            $also_url = build_url(['page' => 'cms_banners'], get_module_zone('cms_banners'));
             attach_message(do_lang_tempcode('menus:ALSO_SEE_ADMIN', escape_html($also_url->evaluate())), 'inform', true);
 
             $this->title = get_screen_title('BANNER_STATISTICS');
@@ -117,7 +117,7 @@ class Module_admin_banners
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = array('name' => do_lang_tempcode('NAME'), 'add_date' => do_lang_tempcode('DATE_TIME'));
+        $sortables = ['name' => do_lang_tempcode('NAME'), 'add_date' => do_lang_tempcode('DATE_TIME')];
         $test = explode(' ', get_param_string('sort', 'name ASC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -132,21 +132,21 @@ class Module_admin_banners
         $has_banner_network = ($_sum != 0);
 
         require_code('templates_results_table');
-        $_header_row = array(do_lang_tempcode('NAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('BANNER_TYPE'));
+        $_header_row = [do_lang_tempcode('NAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('BANNER_TYPE')];
         if ($has_banner_network) {
-            $_header_row = array_merge($_header_row, array(do_lang_tempcode('BANNER_HITS_FROM'), do_lang_tempcode('BANNER_VIEWS_FROM')));
+            $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_FROM'), do_lang_tempcode('BANNER_VIEWS_FROM')]);
         }
-        $_header_row = array_merge($_header_row, array(do_lang_tempcode('BANNER_HITS_TO'), do_lang_tempcode('BANNER_VIEWS_TO'), do_lang_tempcode('BANNER_CLICKTHROUGH'), do_lang_tempcode('DISPLAY_LIKELIHOOD'), do_lang_tempcode('SUBMITTER'), do_lang_tempcode('ADDED')));
+        $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_TO'), do_lang_tempcode('BANNER_VIEWS_TO'), do_lang_tempcode('BANNER_CLICKTHROUGH'), do_lang_tempcode('DISPLAY_LIKELIHOOD'), do_lang_tempcode('SUBMITTER'), do_lang_tempcode('ADDED')]);
         if (addon_installed('unvalidated')) {
-            $_header_row[] = protect_from_escaping(do_template('COMCODE_ABBR', array('_GUID' => '7a2ed997384b823b25dc3c70d4ff82d6', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT'))));
+            $_header_row[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '7a2ed997384b823b25dc3c70d4ff82d6', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
         }
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', array('*'), array(), '', $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], [], '', $max, $start);
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)');
         $result_entries = new Tempcode();
         foreach ($rows as $myrow) {
-            $name = hyperlink(build_url(array('page' => 'banners', 'type' => 'view', 'source' => $myrow['name']), get_module_zone('banners')), $myrow['name'], false, true);
+            $name = hyperlink(build_url(['page' => 'banners', 'type' => 'view', 'source' => $myrow['name']], get_module_zone('banners')), $myrow['name'], false, true);
 
             switch ($myrow['deployment_agreement']) {
                 case BANNER_PERMANENT:
@@ -187,11 +187,11 @@ class Module_admin_banners
                 $validated .= do_lang('BUT_EXPIRED');
             }
 
-            $result = array(escape_html($name), escape_html($type), escape_html($banner_type));
+            $result = [escape_html($name), escape_html($type), escape_html($banner_type)];
             if ($has_banner_network) {
-                $result = array_merge($result, array(escape_html($hits_from), escape_html($views_from)));
+                $result = array_merge($result, [escape_html($hits_from), escape_html($views_from)]);
             }
-            $result = array_merge($result, array(escape_html($hits_to), escape_html($views_to), escape_html($click_through), escape_html(strval($display_likelihood)), $username, escape_html($date)));
+            $result = array_merge($result, [escape_html($hits_to), escape_html($views_to), escape_html($click_through), escape_html(strval($display_likelihood)), $username, escape_html($date)]);
             if (addon_installed('unvalidated')) {
                 $result[] = escape_html($validated);
             }
@@ -201,7 +201,7 @@ class Module_admin_banners
 
         $table = results_table(do_lang_tempcode('BANNERS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $tpl = do_template('RESULTS_TABLE_SCREEN', array('_GUID' => 'c9270fd515e76918a37edf3f573c6da2', 'RESULTS_TABLE' => $table, 'TITLE' => $this->title));
+        $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => 'c9270fd515e76918a37edf3f573c6da2', 'RESULTS_TABLE' => $table, 'TITLE' => $this->title]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

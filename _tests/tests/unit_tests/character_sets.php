@@ -81,7 +81,7 @@ class character_sets_test_set extends cms_test_case
         $this->assertTrue($a == $c);
 
         // Test line array reading
-        $this->assertTrue(cms_file_safe($path_a) == array($a));
+        $this->assertTrue(cms_file_safe($path_a) == [$a]);
 
         // Test byte-by-byte reading
         $charset = null;
@@ -104,7 +104,7 @@ class character_sets_test_set extends cms_test_case
         unlink($tmp_path);
 
         // Test HTTP downloader
-        $_a = http_get_contents($url_a, array('convert_to_internal_encoding' => true));
+        $_a = http_get_contents($url_a, ['convert_to_internal_encoding' => true]);
         $this->assertTrue($a == $_a);
     }
 }

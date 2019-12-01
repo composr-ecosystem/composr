@@ -55,7 +55,7 @@ class Hook_commandr_fs_extended_config__staff_monitoring_sites
      */
     public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
     {
-        return table_to_json('staff_website_monitoring', array('id'));
+        return table_to_json('staff_website_monitoring', ['id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class Hook_commandr_fs_extended_config__staff_monitoring_sites
      */
     public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
     {
-        return table_from_json('staff_website_monitoring', $contents, array(), TABLE_REPLACE_MODE_SEVERE);
+        return table_from_json('staff_website_monitoring', $contents, [], TABLE_REPLACE_MODE_SEVERE);
     }
 }

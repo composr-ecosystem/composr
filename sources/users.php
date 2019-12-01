@@ -31,8 +31,8 @@ function init__users()
     global $USER_NAME_CACHE, $USERS_GROUPS_CACHE;
     global $SESSION_CONFIRMED_CACHE, $GETTING_MEMBER, $USER_THEME_CACHE, $EMOTICON_LEVELS;
     $EMOTICON_LEVELS = null;
-    $USER_NAME_CACHE = array();
-    $USERS_GROUPS_CACHE = array();
+    $USER_NAME_CACHE = [];
+    $USERS_GROUPS_CACHE = [];
     $MEMBER_CACHED = null;
     $SESSION_CONFIRMED_CACHE = false;
     $GETTING_MEMBER = false;
@@ -69,12 +69,12 @@ function init__users()
         } else {
             $where = db_string_equal_to('the_session', get_session_id()) . ' OR ' . db_string_equal_to('ip', get_ip_address(3));
         }
-        $SESSION_CACHE = array();
+        $SESSION_CACHE = [];
         if ((get_forum_type() == 'cns') && (!is_on_multi_site_network())) {
             push_db_scope_check(false);
             $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY the_session', null, 0, true, true); // Suppress errors in case table does not exist yet
             if ($_s === null) {
-                $_s = array();
+                $_s = [];
             }
             $SESSION_CACHE = list_to_map('the_session', $_s);
             pop_db_scope_check();
@@ -223,7 +223,7 @@ function get_member($quick_only = false)
 
             if (($member_id !== null) && ((time() - $member_row['last_activity']) > 10)) { // Performance optimisation. Pointless re-storing the last_activity if less than 3 seconds have passed!
                 if (!running_script('index')) { // For 'index' it happens in get_screen_title, as screen meta-information is used
-                    $GLOBALS['SITE_DB']->query_update('sessions', array('last_activity' => time()), array('the_session' => $session), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('sessions', ['last_activity' => time()], ['the_session' => $session], '', 1);
                 }
                 $SESSION_CACHE[$session]['last_activity'] = time();
                 if (get_option('session_prudence') == '0' && function_exists('persistent_cache_set')) {

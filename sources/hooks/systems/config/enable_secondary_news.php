@@ -30,7 +30,7 @@ class Hook_config_enable_secondary_news
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_SECONDARY_NEWS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_secondary_news
             'required' => true,
             'public' => false,
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

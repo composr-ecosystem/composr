@@ -42,7 +42,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method == 'PROPFIND') {
     $filename = basename($_SERVER['REQUEST_URI']);
-    $bad_files = array(
+    $bad_files = [
         '.ds_store',
         '.hidden',
         '.metadata_never_index',
@@ -57,16 +57,16 @@ if ($method == 'PROPFIND') {
         'desktop.ini',
         'autorun.inf',
         'srvsvc',
-    );
+    ];
     if (in_array(strtolower($filename), $bad_files)) {
         return;
     }
 }
 if ($method == 'GET' || $method == 'PROPFIND') {
     $filename = basename($_SERVER['REQUEST_URI']);
-    $bad_files = array(
+    $bad_files = [
         '.ds_store',
-    );
+    ];
     if (in_array(strtolower($filename), $bad_files)) {
         return;
     }

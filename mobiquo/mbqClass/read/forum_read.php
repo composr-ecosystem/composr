@@ -38,29 +38,29 @@ class CMSForumRead
         }
 
         if ($order_sub_alpha === null) {
-            $order_sub_alpha = ($GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_order_sub_alpha', array('id' => $forum_id)) == 1);
+            $order_sub_alpha = ($GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_order_sub_alpha', ['id' => $forum_id]) == 1);
         }
 
         if ($all_groupings === null) {
-            $all_groupings = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', array('*')));
+            $all_groupings = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_forum_groupings', ['*']));
         }
 
         if (($forum_id == -2) && (!$full_tree)) {
-            $_children = array(); // Announcements virtual forum
+            $_children = []; // Announcements virtual forum
         } else {
             $_children = $this->get_forum($forum_id, $order_sub_alpha);
         }
 
-        $_forums_with_groupings = array();
+        $_forums_with_groupings = [];
         foreach ($_children as $child) {
             $grouping_id = $child['f_forum_grouping_id'];
             if (!isset($_forums_with_groupings[$grouping_id])) {
-                $_forums_with_groupings[$grouping_id] = array();
+                $_forums_with_groupings[$grouping_id] = [];
             }
             $_forums_with_groupings[$grouping_id][] = $child;
         }
 
-        $forums_with_groupings = array();
+        $forums_with_groupings = [];
         foreach ($_forums_with_groupings as $grouping_id => $forums_in_grouping) {
             if (!isset($all_groupings[$grouping_id])) {
                 $all_groupings[$grouping_id] = $all_groupings[db_get_first_id()];
@@ -72,17 +72,17 @@ class CMSForumRead
                 $pseudo_parent = 'grouping_' . strval($forum_id) . '_' . strval($grouping_id);
             }
 
-            $forums = array();
+            $forums = [];
 
             // Do we need a virtual forum for the root forum? As we don't show an actual root forum in Tapatalk
-            if (($forum_id == db_get_first_id()) && (empty($forums_with_groupings)) && ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', array('t_forum_id' => $forum_id)) > 1)) {
+            if (($forum_id == db_get_first_id()) && (empty($forums_with_groupings)) && ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', ['t_forum_id' => $forum_id]) > 1)) {
                 $unread_count = get_num_unread_topics(db_get_first_id());
                 $new_post = ($unread_count > 0);
 
                 require_code('notifications');
                 $is_subscribed = notifications_enabled('cns_topic', 'forum:' . strval(db_get_first_id()));
 
-                $arr = array(
+                $arr = [
                     'forum_id' => mobiquo_val('-2', 'string'),
                     'forum_name' => mobiquo_val(do_lang('TAPATALK_ROOT_FORUM_NAME'), 'base64'),
                     'parent_id' => mobiquo_val($pseudo_parent, 'string'),
@@ -94,8 +94,8 @@ class CMSForumRead
                     'is_subscribed' => mobiquo_val($is_subscribed, 'boolean'),
                     'url' => mobiquo_val('', 'string'),
                     'sub_only' => mobiquo_val(false, 'boolean'), // Forum
-                    'child' => mobiquo_val(array(), 'array'),
-                );
+                    'child' => mobiquo_val([], 'array'),
+                ];
                 if ($return_description) {
                     $arr['description'] = mobiquo_val('', 'base64');
                 }
@@ -115,10 +115,10 @@ class CMSForumRead
                 if ($full_tree || $recursion_depth == 0) {
                     $children = $this->forum_recursive_load($forum['id'], $full_tree, $return_description, $forum['f_order_sub_alpha'] == 1, $all_groupings, $recursion_depth + 1);
                 } else {
-                    $children = array();
+                    $children = [];
                 }
 
-                $arr = array(
+                $arr = [
                     'forum_id' => mobiquo_val(strval($forum['forum_id']), 'string'),
                     'forum_name' => mobiquo_val($forum['f_name'], 'base64'),
                     'parent_id' => mobiquo_val($pseudo_parent, 'string'),
@@ -131,7 +131,7 @@ class CMSForumRead
                     'url' => mobiquo_val($url, 'string'),
                     'sub_only' => mobiquo_val(false, 'boolean'), // Forum
                     'child' => $children,
-                );
+                ];
                 if ($return_description) {
                     $arr['description'] = mobiquo_val(get_translated_text($forum['f_description'], $GLOBALS['FORUM_DB']), 'base64');
                 }
@@ -142,7 +142,7 @@ class CMSForumRead
             if (count($forums_in_grouping) == 1) {
                 $forums_with_groupings = array_merge($forums_with_groupings, $forums); // Actually could just be assignment, but array_merge allows for future code complexity growth
             } else {
-                $arr = array(
+                $arr = [
                     'forum_id' => mobiquo_val($pseudo_parent, 'string'),
                     'forum_name' => mobiquo_val($all_groupings[$grouping_id]['c_title'], 'base64'),
                     'parent_id' => mobiquo_val(($forum_id == db_get_first_id()) ? '-1' : strval($forum_id), 'string'),
@@ -155,7 +155,7 @@ class CMSForumRead
                     'url' => mobiquo_val('', 'string'),
                     'sub_only' => mobiquo_val(true, 'boolean'), // Forum grouping
                     'child' => mobiquo_val($forums, 'array'),
-                );
+                ];
                 if ($return_description) {
                     $arr['description'] = mobiquo_val($all_groupings[$grouping_id]['c_description'], 'base64');
                 }
@@ -178,7 +178,7 @@ class CMSForumRead
     {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        $_forum_conditions = array();
+        $_forum_conditions = [];
 
         $_forum_conditions[] = 'f.f_parent_forum=' . strval($forum_id);
 
@@ -195,7 +195,7 @@ class CMSForumRead
         } else {
             $query .= ' ORDER BY f_position,f_name';
         }
-        return (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query($query);
+        return (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($query);
     }
 
     /**
@@ -208,7 +208,7 @@ class CMSForumRead
         cms_verify_parameters_phpdoc();
 
         if (is_guest()) {
-            return array(0, array());
+            return [0, []];
         }
 
         $member_id = get_member();
@@ -216,24 +216,24 @@ class CMSForumRead
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $table = 'f_forums f JOIN ' . $table_prefix . 'f_posts p ON f.id=p.p_cache_forum_id';
 
-        $select = array('f.id', 'f_name');
+        $select = ['f.id', 'f_name'];
 
-        $where = array('p_poster' => $member_id);
+        $where = ['p_poster' => $member_id];
 
         $extra = ' AND f.f_parent_forum IN (' . get_allowed_forum_sql() . ') GROUP BY f.id ORDER BY MAX(p_time) DESC';
 
-        $participated = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra);
+        $participated = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra);
 
-        $forums = array();
+        $forums = [];
         foreach ($participated as $forum) {
-            $forums[] = array(
+            $forums[] = [
                 'forum_id' => $forum['id'],
                 'forum_name' => $forum['f_name'],
                 'new_post' => get_num_unread_topics($forum['id']),
-            );
+            ];
         }
 
-        return array(count($participated), $forums);
+        return [count($participated), $forums];
     }
 
     /**
@@ -250,17 +250,17 @@ class CMSForumRead
 
         $_forum_ids = implode(',', array_map('strval', $forum_ids));
         $sql = 'SELECT id,f_name FROM ' . $table_prefix . 'f_forums WHERE id IN (' . $_forum_ids . ') AND id IN (' . get_allowed_forum_sql() . ')';
-        $forum_details = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query($sql);
+        $forum_details = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query($sql);
 
-        $forums = array();
+        $forums = [];
         foreach ($forum_details as $forum) {
-            $forums[] = array(
+            $forums[] = [
                 'forum_id' => $forum['id'],
                 'forum_name' => $forum['f_name'],
                 'logo_url' => '',
                 'is_protected' => false,
                 'new_post' => is_forum_unread($forum['id']),
-            );
+            ];
         }
 
         return $forums;
@@ -275,13 +275,13 @@ class CMSForumRead
     {
         cms_verify_parameters_phpdoc();
 
-        $where = array();
+        $where = [];
         if (!has_privilege(get_member(), 'use_special_emoticons')) {
             $where['e_is_special'] = 0;
         }
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_emoticons', array('*'), $where);
-        $smiley_categories = array();
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['*'], $where);
+        $smiley_categories = [];
         foreach ($rows as $row) {
             $url = find_theme_image($row['e_theme_img_code']);
 
@@ -304,13 +304,13 @@ class CMSForumRead
             }
 
             if (!isset($smiley_categories[$category])) {
-                $smiley_categories[$category] = array();
+                $smiley_categories[$category] = [];
             }
 
-            $smiley_categories[$category][] = array(
+            $smiley_categories[$category][] = [
                 'code' => $row['e_code'],
                 'url' => $url,
-            );
+            ];
         }
         return $smiley_categories;
     }

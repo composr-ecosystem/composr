@@ -42,7 +42,7 @@ class Hook_health_check_domains extends Hook_Health_Check
         $this->process_checks_section('testDNSResolution', 'DNS resolution', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDomainExpiry', 'Domain expiry', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -118,7 +118,7 @@ class Hook_health_check_domains extends Hook_Health_Check
                     return;
                 }
 
-                $matches = array();
+                $matches = [];
                 if (preg_match('#(Expiry date|Expiration date|Expiration):\s*([^\s]*)#im', $data, $matches) != 0) {
                     $expiry = strtotime($matches[2]);
                     if ($expiry > 0) {

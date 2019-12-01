@@ -36,10 +36,10 @@ class Hook_admin_stats_downloads
 
         require_lang('downloads');
 
-        return array(
-            array('downloads' => array('SECTION_DOWNLOADS', 'menu/rich_content/downloads'),),
-            array('menu/rich_content/downloads', array('_SELF', array('type' => 'downloads'), '_SELF'), do_lang('SECTION_DOWNLOADS'), 'DESCRIPTION_DOWNLOADS_STATISTICS'),
-        );
+        return [
+            ['downloads' => ['SECTION_DOWNLOADS', 'menu/rich_content/downloads'],],
+            ['menu/rich_content/downloads', ['_SELF', ['type' => 'downloads'], '_SELF'], do_lang('SECTION_DOWNLOADS'), 'DESCRIPTION_DOWNLOADS_STATISTICS'],
+        ];
     }
 
     /**
@@ -69,7 +69,7 @@ class Hook_admin_stats_downloads
         }
 
         if (($time_start === null) && ($time_end === null)) {
-            $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('id', 'num_downloads', 'name'));
+            $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'num_downloads', 'name']);
         } else {
             if ($time_start === null) {
                 $time_start = 0;
@@ -78,7 +78,7 @@ class Hook_admin_stats_downloads
                 $time_end = time();
             }
 
-            $title = get_screen_title('SECTION_DOWNLOADS_RANGE', true, array(escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))));
+            $title = get_screen_title('SECTION_DOWNLOADS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
 
             $rows = $GLOBALS['SITE_DB']->query('SELECT id,num_downloads,name FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'download_downloads WHERE add_date>' . strval($time_start) . ' AND add_date<' . strval($time_end));
         }
@@ -87,10 +87,10 @@ class Hook_admin_stats_downloads
             return warn_screen($title, do_lang_tempcode('NO_DATA'));
         }
 
-        $downloads = array();
+        $downloads = [];
         foreach ($rows as $i => $row) {
             if (!array_key_exists('num_downloads', $row)) {
-                $row['num_downloads'] = $GLOBALS['SITE_DB']->query_select_value('download_logging', 'COUNT(*)', array('id' => $row['id']));
+                $row['num_downloads'] = $GLOBALS['SITE_DB']->query_select_value('download_logging', 'COUNT(*)', ['id' => $row['id']]);
                 $rows[$i] = $row;
             }
             $downloads[get_translated_text($row['name']) . ' (#' . strval($row['id']) . ')'] = $row['num_downloads'];
@@ -104,7 +104,7 @@ class Hook_admin_stats_downloads
             $start = 0;
             $max = 10000;
         }
-        $sortables = array('num_downloads' => do_lang_tempcode('COUNT_DOWNLOADS'));
+        $sortables = ['num_downloads' => do_lang_tempcode('COUNT_DOWNLOADS')];
         $test = explode(' ', get_param_string('sort', 'num_downloads DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -121,9 +121,9 @@ class Hook_admin_stats_downloads
         }
 
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('TITLE'), do_lang_tempcode('COUNT_DOWNLOADS')), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('TITLE'), do_lang_tempcode('COUNT_DOWNLOADS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
-        $real_data = array();
+        $real_data = [];
         $i = 0;
         foreach ($downloads as $download_name => $value) {
             if ($i < $start) {
@@ -132,12 +132,12 @@ class Hook_admin_stats_downloads
             } elseif ($i >= $start + $max) {
                 break;
             }
-            $result_entries->attach(results_entry(array($download_name, integer_format($value)), true));
+            $result_entries->attach(results_entry([$download_name, integer_format($value)], true));
 
-            $real_data[] = array(
+            $real_data[] = [
                 'Download name' => $download_name,
                 'Tally' => $value,
-            );
+            ];
 
             $i++;
         }
@@ -152,14 +152,14 @@ class Hook_admin_stats_downloads
         $output = create_bar_chart(array_slice($downloads, $start, $max), do_lang('TITLE'), do_lang('COUNT_DOWNLOADS'), '', '');
         $ob->save_graph('Global-Downloads', $output);
 
-        $graph = do_template('STATS_GRAPH', array(
+        $graph = do_template('STATS_GRAPH', [
             '_GUID' => 'd2cd5da7cf2139f750d4373acf6149e8',
             'GRAPH' => $ob->get_stats_url('Global-Downloads'),
             'TITLE' => do_lang_tempcode('SECTION_DOWNLOADS'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_DOWNLOADS_STATISTICS'),
-        ));
+        ]);
 
-        $tpl = do_template('STATS_SCREEN', array('_GUID' => '4b8e0478231473d690e947ffc4580840', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list));
+        $tpl = do_template('STATS_SCREEN', ['_GUID' => '4b8e0478231473d690e947ffc4580840', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

@@ -37,7 +37,7 @@ class Hook_fields_theme_image
 
         require_code('themes2');
         $images = get_all_image_ids_type('', true, null, null, true);
-        $ret = array();
+        $ret = [];
         foreach ($images as $image) {
             $ret['th_' . $image] = do_lang_tempcode('FIELD_TYPE_theme_image_x', escape_html($image));
         }
@@ -86,7 +86,7 @@ class Hook_fields_theme_image
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_text', $default, 'short');
+        return ['short_text', $default, 'short'];
     }
 
     /**
@@ -107,9 +107,9 @@ class Hook_fields_theme_image
 
             $img_url = find_theme_image($ev);
 
-            set_extra_request_metadata(array(
+            set_extra_request_metadata([
                 'image' => $img_url,
-            ));
+            ]);
         }
     }
 
@@ -141,14 +141,14 @@ class Hook_fields_theme_image
         $width = option_value_from_field_array($field, 'width', '');
         $height = option_value_from_field_array($field, 'height', '');
 
-        return do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', array(
+        return do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', [
             'I' => ($only_fields === null) ? '-1' : strval($i),
             'CATALOGUE' => $field['c_name'],
             'URL' => $img_url,
             'THUMB_URL' => $img_url,
             'WIDTH' => $width,
             'HEIGHT' => $height,
-        ), null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');
+        ], null, false, 'CATALOGUE_DEFAULT_FIELD_PICTURE');
     }
 
     // ======================

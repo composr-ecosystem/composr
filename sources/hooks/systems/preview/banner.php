@@ -31,7 +31,7 @@ class Hook_preview_banner
     public function applies()
     {
         $applies = (addon_installed('banners')) && (get_page_name() == 'cms_banners') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -52,7 +52,7 @@ class Hook_preview_banner
         require_code('uploads');
         is_plupload(true);
         $is_upload = (((array_key_exists($file_param_name, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$file_param_name]['tmp_name'])))));
-        $_banner_type_rows = $GLOBALS['SITE_DB']->query_select('banner_types', array('*'), array('id' => post_param_string('b_type')), '', 1);
+        $_banner_type_rows = $GLOBALS['SITE_DB']->query_select('banner_types', ['*'], ['id' => post_param_string('b_type')], '', 1);
         if (!array_key_exists(0, $_banner_type_rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'banner_type'));
         }
@@ -81,6 +81,6 @@ class Hook_preview_banner
         require_code('banners');
         $preview = show_banner(post_param_string('name'), post_param_string('title_text', ''), comcode_to_tempcode(post_param_string('caption')), post_param_string('direct_code', ''), $img_url, '', post_param_string('site_url', false, INPUT_FILTER_URL_GENERAL), post_param_string('b_type'), get_member());
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

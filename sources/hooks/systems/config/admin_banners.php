@@ -30,7 +30,7 @@ class Hook_config_admin_banners
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ADMIN_BANNERS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_admin_banners
             'public' => false,
 
             'addon' => 'banners',
-        );
+        ];
     }
 
     /**

@@ -103,7 +103,7 @@ function add_poll($question, $a1, $a2, $a3 = '', $a4 = '', $a5 = '', $a6 = '', $
 
     if ($current == 1) {
         persistent_cache_delete('POLL');
-        $GLOBALS['SITE_DB']->query_update('poll', array('is_current' => 0), array('is_current' => 1), '', 1);
+        $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0], ['is_current' => 1], '', 1);
     }
 
     if ($time === null) {
@@ -113,7 +113,7 @@ function add_poll($question, $a1, $a2, $a3 = '', $a4 = '', $a5 = '', $a6 = '', $
         $submitter = get_member();
     }
 
-    $map = array(
+    $map = [
         'edit_date' => $edit_date,
         'poll_views' => $views,
         'add_time' => $time,
@@ -135,7 +135,7 @@ function add_poll($question, $a1, $a2, $a3 = '', $a4 = '', $a5 = '', $a6 = '', $
         'votes10' => $v10,
         'num_options' => $num_options,
         'is_current' => $current,
-    );
+    ];
     $map += insert_lang_comcode('question', $question, 1);
     $map += insert_lang_comcode('option1', $a1, 1);
     $map += insert_lang_comcode('option2', $a2, 1);
@@ -201,7 +201,7 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
     }
@@ -227,13 +227,13 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
     $_a9 = $rows[0]['option9'];
     $_a10 = $rows[0]['option10'];
 
-    $update_map = array(
+    $update_map = [
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
         'allow_trackbacks' => $allow_trackbacks,
         'notes' => $notes,
         'num_options' => $num_options,
-    );
+    ];
     $update_map += lang_remap_comcode('question', $_question, $question);
     $update_map += lang_remap_comcode('option1', $_a1, $a1);
     $update_map += lang_remap_comcode('option2', $_a2, $a2);
@@ -257,7 +257,7 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
         $update_map['submitter'] = $submitter;
     }
 
-    $GLOBALS['SITE_DB']->query_update('poll', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('poll', $update_map, ['id' => $id], '', 1);
     persistent_cache_delete('POLL');
     delete_cache_entry('main_poll');
 
@@ -269,7 +269,7 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
         $allow_comments != 0,
         'polls',
         strval($id),
-        build_url(array('page' => 'polls', 'type' => 'view', 'id' => $id), get_module_zone('polls'), array(), false, false, true),
+        build_url(['page' => 'polls', 'type' => 'view', 'id' => $id], get_module_zone('polls'), [], false, false, true),
         $question,
         find_overridden_comment_forum('polls')
     );
@@ -289,7 +289,7 @@ function edit_poll($id, $question, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, 
  */
 function delete_poll($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
     }
@@ -307,14 +307,14 @@ function delete_poll($id)
         delete_lang($rows[0]['option' . strval($i)]);
     }
 
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'polls', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'polls', 'trackback_for_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'polls', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'polls', 'trackback_for_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'polls_' . strval($id));
 
-    $GLOBALS['SITE_DB']->query_delete('poll', array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('poll', ['id' => $id], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'polls', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'polls', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)]);
 
     log_it('DELETE_POLL', strval($id), $question);
 
@@ -334,7 +334,7 @@ function delete_poll($id)
  */
 function set_poll($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('poll', array('question', 'submitter'), array('id' => $id));
+    $rows = $GLOBALS['SITE_DB']->query_select('poll', ['question', 'submitter'], ['id' => $id]);
     $question = $rows[0]['question'];
     $submitter = $rows[0]['submitter'];
 
@@ -354,8 +354,8 @@ function set_poll($id)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('poll', array('is_current' => 0), array('is_current' => 1));
-    $GLOBALS['SITE_DB']->query_update('poll', array('is_current' => 1, 'date_and_time' => time()), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 0], ['is_current' => 1]);
+    $GLOBALS['SITE_DB']->query_update('poll', ['is_current' => 1, 'date_and_time' => time()], ['id' => $id], '', 1);
 
     delete_cache_entry('main_poll');
     persistent_cache_delete('POLL');
@@ -363,7 +363,7 @@ function set_poll($id)
     require_lang('polls');
     require_code('notifications');
     $subject = do_lang('POLL_CHOSEN_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $question);
-    $poll_url = build_url(array('page' => 'polls', 'type' => 'view', 'id' => $id), get_module_zone('polls'), array(), false, false, true);
+    $poll_url = build_url(['page' => 'polls', 'type' => 'view', 'id' => $id], get_module_zone('polls'), [], false, false, true);
     $mail = do_notification_lang('POLL_CHOSEN_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape(get_translated_text($question)), $poll_url->evaluate());
     dispatch_notification('poll_chosen', null, $subject, $mail);
 

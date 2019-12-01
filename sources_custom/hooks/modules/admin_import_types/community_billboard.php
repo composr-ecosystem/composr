@@ -26,11 +26,11 @@ class Hook_admin_import_types_community_billboard
     public function run()
     {
         if (!addon_installed('community_billboard')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'community_billboard' => 'COMMUNITY_BILLBOARD_ARCHIVE',
-        );
+        ];
     }
 }

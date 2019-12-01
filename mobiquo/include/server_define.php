@@ -45,145 +45,145 @@ A signature is a description of a method's return type and its parameter types. 
 Within a server's dispatch map, each method has an array of possible signatures. Each signature is an array of types. The first entry is the return type. For instance, the method
 */
 
-$SERVER_DEFINE = array(
-    'login' => array(
+$SERVER_DEFINE = [
+    'login' => [
         'function' => 'login_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcString), // 4th parameter is unused but passed by client
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcString], // 4th parameter is unused but passed by client
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'sign_in' => array(
+    'sign_in' => [
         'function' => 'sign_in_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'register' => array(
+    'register' => [
         'function' => 'register_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBase64]],
+    ],
 
-    'ignore_user' => array(
+    'ignore_user' => [
         'function' => 'ignore_user_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'forget_password' => array(
+    'forget_password' => [
         'function' => 'forget_password_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'update_password' => array(
+    'update_password' => [
         'function' => 'update_password_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'update_email' => array(
+    'update_email' => [
         'function' => 'update_email_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64]],
+    ],
 
-    'get_forum' => array(
+    'get_forum' => [
         'function' => 'get_forum_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcBoolean, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcBoolean, $xmlrpcString]],
+    ],
 
-    'get_board_stat' => array(
+    'get_board_stat' => [
         'function' => 'get_board_stat_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_topic' => array(
+    'get_topic' => [
         'function' => 'get_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_thread' => array(
+    'get_thread' => [
         'function' => 'get_thread_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'get_thread_by_unread' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'get_thread_by_unread' => [
         'function' => 'get_thread_by_unread_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'get_thread_by_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'get_thread_by_post' => [
         'function' => 'get_thread_by_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_recommended_user' => array(
+    'get_recommended_user' => [
         'function' => 'get_recommended_user_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct]],
+    ],
 
-    'search_user' => array(
+    'search_user' => [
         'function' => 'search_user_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'mark_conversation_unread' => array(
+    'mark_conversation_unread' => [
         'function' => 'mark_conversation_unread_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'mark_conversation_read' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'mark_conversation_read' => [
         'function' => 'mark_conversation_read_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct]],
+    ],
 
-    'get_raw_post' => array(
+    'get_raw_post' => [
         'function' => 'get_raw_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'save_raw_post' => array(
+    'save_raw_post' => [
         'function' => 'save_raw_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcArray, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcArray, $xmlrpcString, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcArray, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcBoolean, $xmlrpcArray, $xmlrpcString, $xmlrpcBase64]],
+    ],
 
-    'get_quote_post' => array(
+    'get_quote_post' => [
         'function' => 'get_quote_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_user_topic' => array(
+    'get_user_topic' => [
         'function' => 'get_user_topic_func',
-        'signature' => array(array($xmlrpcArray, $xmlrpcBase64),
-                             array($xmlrpcArray, $xmlrpcBase64, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcArray, $xmlrpcBase64],
+                             [$xmlrpcArray, $xmlrpcBase64, $xmlrpcString]],
+    ],
 
-    'get_user_reply_post' => array(
+    'get_user_reply_post' => [
         'function' => 'get_user_reply_post_func',
-        'signature' => array(array($xmlrpcArray, $xmlrpcBase64),
-                             array($xmlrpcArray, $xmlrpcBase64, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcArray, $xmlrpcBase64],
+                             [$xmlrpcArray, $xmlrpcBase64, $xmlrpcString]],
+    ],
 
     /*'get_new_topic' => array( NO LONGER EXISTS
         'function' => 'get_new_topic_func',
@@ -191,64 +191,64 @@ $SERVER_DEFINE = array(
                                 array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
     ),*/
 
-    'get_latest_topic' => array(
+    'get_latest_topic' => [
         'function' => 'get_latest_topic_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcStruct]],
+    ],
 
-    'get_unread_topic' => array(
+    'get_unread_topic' => [
         'function' => 'get_unread_topic_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcArray)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcArray]],
+    ],
 
-    'get_subscribed_topic' => array(
+    'get_subscribed_topic' => [
         'function' => 'get_subscribed_topic_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
-    'get_subscribed_forum' => array(
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
+    'get_subscribed_forum' => [
         'function' => 'get_subscribed_forum_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_user_info' => array(
+    'get_user_info' => [
         'function' => 'get_user_info_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcString]],
+    ],
 
-    'get_config' => array(
+    'get_config' => [
         'function' => 'get_config_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'logout_user' => array(
+    'logout_user' => [
         'function' => 'logout_user_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'new_topic' => array(
+    'new_topic' => [
         'function' => 'new_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcArray),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcArray, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcArray],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcString, $xmlrpcArray, $xmlrpcString]],
+    ],
 
-    'reply_post' => array(
+    'reply_post' => [
         'function' => 'reply_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString, $xmlrpcBoolean)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString, $xmlrpcBoolean]],
+    ],
 
     /*'reply_topic' => array(   NO LONGER EXISTS
         'function' => 'reply_topic_func',
@@ -260,167 +260,167 @@ $SERVER_DEFINE = array(
                                array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString, $xmlrpcBoolean)),
     ),*/
 
-    'subscribe_topic' => array(
+    'subscribe_topic' => [
         'function' => 'subscribe_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'unsubscribe_topic' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'unsubscribe_topic' => [
         'function' => 'unsubscribe_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'subscribe_forum' => array(
+    'subscribe_forum' => [
         'function' => 'subscribe_forum_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'unsubscribe_forum' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'unsubscribe_forum' => [
         'function' => 'unsubscribe_forum_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_inbox_stat' => array(
+    'get_inbox_stat' => [
         'function' => 'get_inbox_stat_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_conversations' => array(
+    'get_conversations' => [
         'function' => 'get_conversations_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
 
-    'get_conversation' => array(
+    'get_conversation' => [
         'function' => 'get_conversation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcBoolean)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt, $xmlrpcBoolean]],
+    ],
 
-    'get_online_users' => array(
+    'get_online_users' => [
         'function' => 'get_online_users_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'mark_all_as_read' => array(
+    'mark_all_as_read' => [
         'function' => 'mark_all_as_read_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'search' => array(
+    'search' => [
         'function' => 'search_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcStruct)),
-    ),
-    'search_topic' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcStruct]],
+    ],
+    'search_topic' => [
         'function' => 'search_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
-    'search_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
+    'search_post' => [
         'function' => 'search_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'get_participated_topic' => array(
+    'get_participated_topic' => [
         'function' => 'get_participated_topic_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcInt, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'login_forum' => array(
+    'login_forum' => [
         'function' => 'login_forum_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64]],
+    ],
 
-    'invite_participant' => array(
+    'invite_participant' => [
         'function' => 'invite_participant_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcArray, $xmlrpcString, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcArray, $xmlrpcString, $xmlrpcBase64]],
+    ],
 
-    'new_conversation' => array(
+    'new_conversation' => [
         'function' => 'new_conversation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString]],
+    ],
 
-    'reply_conversation' => array(
+    'reply_conversation' => [
         'function' => 'reply_conversation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcArray, $xmlrpcString]],
+    ],
 
-    'get_quote_conversation' => array(
+    'get_quote_conversation' => [
         'function' => 'get_quote_conversation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'delete_conversation' => array(
+    'delete_conversation' => [
         'function' => 'delete_conversation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
 
-    'get_dashboard' => array(
+    'get_dashboard' => [
         'function' => 'get_dashboard_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBoolean)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBoolean]],
+    ],
 
-    'like_post' => array(
+    'like_post' => [
         'function' => 'like_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'unlike_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'unlike_post' => [
         'function' => 'unlike_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'report_post' => array(
+    'report_post' => [
         'function' => 'report_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64),
-        ),
-    ),
-    'report_pm' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64],
+        ],
+    ],
+    'report_pm' => [
         'function' => 'report_pm_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64],
+        ],
+    ],
 
-    'upload_attach' => array(
+    'upload_attach' => [
         'function' => 'upload_attach_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
     /*'set_avatar' => array(    NO LONGER EXISTS
         'function' => 'upload_avatar_func',
         'signature' => array(array($xmlrpcStruct)),
     ),*/
 
-    'upload_avatar' => array(
+    'upload_avatar' => [
         'function' => 'upload_avatar_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_id_by_url' => array(
+    'get_id_by_url' => [
         'function' => 'get_id_by_url_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
     /*'authorize_user' => array(    NO LONGER EXISTS
         'function' =>'authorize_user_func',
@@ -429,359 +429,359 @@ $SERVER_DEFINE = array(
         ),
     ),*/
 
-    'remove_attachment' => array(
+    'remove_attachment' => [
         'function' => 'remove_attachment_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'm_stick_topic' => array(
+    'm_stick_topic' => [
         'function' => 'm_stick_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
 
-    'm_close_topic' => array(
+    'm_close_topic' => [
         'function' => 'm_close_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
 
-    'm_delete_topic' => array(
+    'm_delete_topic' => [
         'function' => 'm_delete_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
-    'm_delete_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
+    'm_delete_post' => [
         'function' => 'm_delete_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'm_undelete_topic' => array(
+    'm_undelete_topic' => [
         'function' => 'm_undelete_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64),
-        ),
-    ),
-    'm_undelete_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64],
+        ],
+    ],
+    'm_undelete_post' => [
         'function' => 'm_undelete_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64],
+        ],
+    ],
 
     /*'m_delete_post_by_user' => array( NO LONGER EXISTS
         'function' => 'm_delete_post_by_user_func',
         'signature' => array(array($xmlrpcStruct,$xmlrpcString,$xmlrpcBase64)),
     ),*/
 
-    'm_move_topic' => array(
+    'm_move_topic' => [
         'function' => 'm_move_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean],
+        ],
+    ],
 
-    'm_rename_topic' => array(
+    'm_rename_topic' => [
         'function' => 'm_rename_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcBase64]],
+    ],
 
-    'm_move_post' => array(
+    'm_move_post' => [
         'function' => 'm_move_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcString),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBase64, $xmlrpcString],
+        ],
+    ],
 
-    'm_merge_topic' => array(
+    'm_merge_topic' => [
         'function' => 'm_merge_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean]],
+    ],
 
-    'm_get_moderate_topic' => array(
+    'm_get_moderate_topic' => [
         'function' => 'm_get_moderate_topic_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
-    'm_get_moderate_post' => array(
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
+    'm_get_moderate_post' => [
         'function' => 'm_get_moderate_post_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
 
-    'm_approve_topic' => array(
+    'm_approve_topic' => [
         'function' => 'm_approve_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
-    'm_approve_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
+    'm_approve_post' => [
         'function' => 'm_approve_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
 
-    'm_ban_user' => array(
+    'm_ban_user' => [
         'function' => 'm_ban_user_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcBase64, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcBase64, $xmlrpcInt, $xmlrpcBase64, $xmlrpcInt]],
+    ],
 
-    'm_get_report_post' => array(
+    'm_get_report_post' => [
         'function' => 'm_get_report_post_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
 
-    'reset_push_slug' => array(
+    'reset_push_slug' => [
         'function' => 'reset_push_slug_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcStruct, $xmlrpcBase64, $xmlrpcBase64]],
+    ],
 
-    'get_alert' => array(
+    'get_alert' => [
         'function' => 'get_alert_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcInt),
-                             array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcInt],
+                             [$xmlrpcStruct]],
+    ],
 
-    'prefetch_account' => array(
+    'prefetch_account' => [
         'function' => 'prefetch_account_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'm_unban_user' => array(
+    'm_unban_user' => [
         'function' => 'm_unban_user_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_contact' => array(
+    'get_contact' => [
         'function' => 'get_contact_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct]],
+    ],
 
-    'm_close_report' => array(
+    'm_close_report' => [
         'function' => 'm_close_report_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'update_signature' => array(
+    'update_signature' => [
         'function' => 'update_signature_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcBase64)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcBase64]],
+    ],
 
-    'get_topic_participants' => array(
+    'get_topic_participants' => [
         'function' => 'get_topic_participants_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
+    ],
 
     /*'activate_account' => array(  NO LONGER EXISTS
           'function' => 'activate_account_func',
           'signature' => array(array($xmlrpcStruct, $xmlrpcBase64, $xmlrpcString, $xmlrpcString)),
      ),*/
 
-    'set_api_key' => array(
+    'set_api_key' => [
         'function' => 'set_api_key_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'verify_connection' => array(
+    'verify_connection' => [
         'function' => 'verify_connection_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'sync_user' => array(
+    'sync_user' => [
         'function' => 'sync_user_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_contact' => array(
+    'get_contact' => [
         'function' => 'get_contact_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'user_subscription' => array(
+    'user_subscription' => [
         'function' => 'user_subscription_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'push_content_check' => array(
+    'push_content_check' => [
         'function' => 'push_content_check_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
     // Added missing ones...
 
-    'get_participated_forum' => array(
+    'get_participated_forum' => [
         'function' => 'get_participated_forum_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_forum_status' => array(
+    'get_forum_status' => [
         'function' => 'get_forum_status_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray]],
+    ],
 
-    'get_smilies' => array(
+    'get_smilies' => [
         'function' => 'get_smilies_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'login_mod' => array(
+    'login_mod' => [
         'function' => 'login_mod_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'm_merge_post' => array(
+    'm_merge_post' => [
         'function' => 'm_merge_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'm_get_delete_topic' => array(
+    'm_get_delete_topic' => [
         'function' => 'm_get_delete_topic_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
-    'm_get_delete_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
+    'm_get_delete_post' => [
         'function' => 'm_get_delete_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt]],
+    ],
 
-    'm_mark_as_spam' => array(
+    'm_mark_as_spam' => [
         'function' => 'm_mark_as_spam_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'create_message' => array(
+    'create_message' => [
         'function' => 'create_message_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64),
-                             array($xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcInt),
-                             array($xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcInt, $xmlrpcString),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64],
+                             [$xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcInt],
+                             [$xmlrpcStruct, $xmlrpcArray, $xmlrpcBase64, $xmlrpcBase64, $xmlrpcInt, $xmlrpcString],
+        ],
+    ],
 
-    'get_box_info' => array(
+    'get_box_info' => [
         'function' => 'get_box_info_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'get_box' => array(
+    'get_box' => [
         'function' => 'get_box_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString),
-                             array($xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString],
+                             [$xmlrpcStruct, $xmlrpcString, $xmlrpcInt, $xmlrpcInt],
+        ],
+    ],
 
-    'get_message' => array(
+    'get_message' => [
         'function' => 'get_message_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString, $xmlrpcBoolean]],
+    ],
 
-    'get_quote_pm' => array(
+    'get_quote_pm' => [
         'function' => 'get_quote_pm_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'delete_message' => array(
+    'delete_message' => [
         'function' => 'delete_message_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'mark_pm_unread' => array(
+    'mark_pm_unread' => [
         'function' => 'mark_pm_unread_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcString),
-        ),
-    ),
-    'mark_pm_read' => array(
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcString],
+        ],
+    ],
+    'mark_pm_read' => [
         'function' => 'mark_pm_read_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcString),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcString],
+        ],
+    ],
 
-    'thank_post' => array(
+    'thank_post' => [
         'function' => 'thank_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'follow' => array(
+    'follow' => [
         'function' => 'follow_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'unfollow' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'unfollow' => [
         'function' => 'unfollow_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'like_post' => array(
+    'like_post' => [
         'function' => 'like_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
-    'unlike_post' => array(
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
+    'unlike_post' => [
         'function' => 'unlike_post_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
+    ],
 
-    'get_dashboard' => array(
+    'get_dashboard' => [
         'function' => 'get_dashboard_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcBoolean),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcBoolean],
+        ],
+    ],
 
-    'get_feed' => array(
+    'get_feed' => [
         'function' => 'get_feed_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcString),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcString],
+        ],
+    ],
 
-    'get_following' => array(
+    'get_following' => [
         'function' => 'get_following_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
-    'get_follower' => array(
+        'signature' => [[$xmlrpcStruct]],
+    ],
+    'get_follower' => [
         'function' => 'get_follower_func',
-        'signature' => array(array($xmlrpcStruct)),
-    ),
+        'signature' => [[$xmlrpcStruct]],
+    ],
 
-    'set_reputation' => array(
+    'set_reputation' => [
         'function' => 'set_reputation_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
 
-    'get_activity' => array(
+    'get_activity' => [
         'function' => 'get_activity_func',
-        'signature' => array(array($xmlrpcStruct),
-                             array($xmlrpcStruct, $xmlrpcInt, $xmlrpcInt),
-        ),
-    ),
+        'signature' => [[$xmlrpcStruct],
+                             [$xmlrpcStruct, $xmlrpcInt, $xmlrpcInt],
+        ],
+    ],
 
-    'mark_topic_read' => array(
+    'mark_topic_read' => [
         'function' => 'mark_topic_read_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray]],
+    ],
 
-    'get_topic_status' => array(
+    'get_topic_status' => [
         'function' => 'get_topic_status_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcArray)),
-    ),
+        'signature' => [[$xmlrpcStruct, $xmlrpcArray]],
+    ],
 
     // Added by us, as will be needed in future by official client. Wanted to give a good starting example
 
-    'get_real_url' => array(
+    'get_real_url' => [
         'function' => 'get_real_url_func',
-        'signature' => array(array($xmlrpcStruct, $xmlrpcString, $xmlrpcString)),
-    ),
-);
+        'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcString]],
+    ],
+];
 
 // We don't want to define signatures outside dev-mode, because parameters may be added in the mobile clients over time
 if (!$GLOBALS['DEV_MODE']) {

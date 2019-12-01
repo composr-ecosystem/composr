@@ -30,7 +30,7 @@ class env_vars_test_set extends cms_test_case
 
     protected function wipe_data($blankify)
     {
-        foreach (array('DOCUMENT_ROOT', 'PHP_SELF', /*Derived in front controller 'SCRIPT_FILENAME', */'SCRIPT_NAME', 'REQUEST_URI', 'QUERY_STRING') as $var) {
+        foreach (['DOCUMENT_ROOT', 'PHP_SELF', /*Derived in front controller 'SCRIPT_FILENAME', */'SCRIPT_NAME', 'REQUEST_URI', 'QUERY_STRING'] as $var) {
             if ($blankify) {
                 $_SERVER[$var] = '';
                 $_ENV[$var] = '';

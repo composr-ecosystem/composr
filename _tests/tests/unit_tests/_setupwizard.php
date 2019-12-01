@@ -29,7 +29,7 @@ class _setupwizard_test_set extends cms_test_case
 
         $session_id = $this->establish_admin_callback_session();
 
-        $post_params = array(
+        $post_params = [
             'skip_9' => '0',
             'skip_8' => '0',
             'skip_7' => '0',
@@ -94,13 +94,13 @@ class _setupwizard_test_set extends cms_test_case
             'require__closed' => '0',
             'security_level' => 'low',
             'timezone' => 'Europe/London',
-        );
+        ];
         require_code('csrf_filter');
         $post_params['csrf_token'] = generate_csrf_token();
 
-        $url = build_url(array('page' => 'admin_setupwizard', 'type' => 'step10', 'keep_fatalistic' => 1), 'adminzone');
+        $url = build_url(['page' => 'admin_setupwizard', 'type' => 'step10', 'keep_fatalistic' => 1], 'adminzone');
 
-        $http = cms_http_request($url->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'timeout' => 300.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => array(get_session_cookie() => $session_id)));
+        $http = cms_http_request($url->evaluate(), ['convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'timeout' => 300.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => [get_session_cookie() => $session_id]]);
 
         $ok = ($http->message == '200');
 

@@ -37,14 +37,14 @@ class Hook_snippet_profile_tab
 
         require_code('urls2');
 
-        $keep_get = array();
+        $keep_get = [];
         foreach (array_keys($_GET) as $key) {
-            if (in_array($key, array('snippet', 'tab', 'url', 'title', 'member_id', 'utheme'))) {
+            if (in_array($key, ['snippet', 'tab', 'url', 'title', 'member_id', 'utheme'])) {
                 continue;
             }
             $keep_get[$key] = get_param_string($key, null, INPUT_FILTER_GET_COMPLEX);
         }
-        $former_context = set_execution_context(array('page' => 'members', 'type' => 'view', 'id' => $member_id_of) + $keep_get, get_module_zone('members'));
+        $former_context = set_execution_context(['page' => 'members', 'type' => 'view', 'id' => $member_id_of] + $keep_get, get_module_zone('members'));
 
         require_code('hooks/systems/profiles_tabs/' . filter_naughty_harsh($hook), true);
         $ob = object_factory('Hook_profiles_tabs_' . filter_naughty_harsh($hook));
@@ -74,10 +74,10 @@ class Hook_snippet_profile_tab
 
         // Very likely a session was lost
         if (is_guest()) {
-            $login_url = build_url(array('page' => 'login', 'type' => 'login'), '_SELF');
+            $login_url = build_url(['page' => 'login', 'type' => 'login'], '_SELF');
             require_css('login');
             $passion = form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))));
-            $ret = do_template('LOGIN_SCREEN', array(
+            $ret = do_template('LOGIN_SCREEN', [
                 '_GUID' => 'f401d48a9d2a70af6c2976d396207fc1',
                 'EXTRA' => '',
                 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id_of),
@@ -85,7 +85,7 @@ class Hook_snippet_profile_tab
                 'TITLE' => '',
                 'LOGIN_URL' => $login_url,
                 'PASSION' => $passion,
-            ));
+            ]);
             $out = new Tempcode();
             $eval = $ret->evaluate();
             $out->attach(symbol_tempcode('CSS_TEMPCODE'));
@@ -96,6 +96,6 @@ class Hook_snippet_profile_tab
 
         call_user_func_array('set_execution_context', $former_context);
 
-        return do_template('INLINE_WIP_MESSAGE', array('_GUID' => 'aae58043638dac785405a42e9578202b', 'MESSAGE' => do_lang_tempcode('INTERNAL_ERROR')));
+        return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'aae58043638dac785405a42e9578202b', 'MESSAGE' => do_lang_tempcode('INTERNAL_ERROR')]);
     }
 }

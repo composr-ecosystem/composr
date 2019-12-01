@@ -31,8 +31,8 @@ class Hook_notification_task_completed extends Hook_Notification
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['task_completed'] = array(do_lang('tasks:TASK_COMPLETED'), do_lang('tasks:NOTIFICATION_TYPE_task_completed'));
+        $list = [];
+        $list['task_completed'] = [do_lang('tasks:TASK_COMPLETED'), do_lang('tasks:NOTIFICATION_TYPE_task_completed')];
         return $list;
     }
 }

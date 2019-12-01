@@ -28,15 +28,15 @@ class Hook_page_groupings_meta_toolkit
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('meta_toolkit')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'admin/tool', array('sql_schema_generate', array(), get_page_zone('sql_schema_generate')), make_string_tempcode('Doc build: Generate database schema')),
-            array('tools', 'admin/tool', array('sql_schema_generate_by_addon', array(), get_page_zone('sql_schema_generate_by_addon')), make_string_tempcode('Doc build: Generate database schema, by addon')),
-            array('tools', 'admin/tool', array('sql_show_tables_by_addon', array(), get_page_zone('sql_show_tables_by_addon')), make_string_tempcode('Doc build: Show database tables, by addon')),
-            array('tools', 'admin/tool', array('sql_dump', array(), get_page_zone('sql_dump')), make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')),
-            array('tools', 'admin/tool', array('tar_dump', array(), get_page_zone('tar_dump')), make_string_tempcode('Backup tools: Create files dump (TAR file)')),
-        );
+        return [
+            ['tools', 'admin/tool', ['sql_schema_generate', [], get_page_zone('sql_schema_generate')], make_string_tempcode('Doc build: Generate database schema')],
+            ['tools', 'admin/tool', ['sql_schema_generate_by_addon', [], get_page_zone('sql_schema_generate_by_addon')], make_string_tempcode('Doc build: Generate database schema, by addon')],
+            ['tools', 'admin/tool', ['sql_show_tables_by_addon', [], get_page_zone('sql_show_tables_by_addon')], make_string_tempcode('Doc build: Show database tables, by addon')],
+            ['tools', 'admin/tool', ['sql_dump', [], get_page_zone('sql_dump')], make_string_tempcode('Backup tools: Create SQL dump (MySQL syntax)')],
+            ['tools', 'admin/tool', ['tar_dump', [], get_page_zone('tar_dump')], make_string_tempcode('Backup tools: Create files dump (TAR file)')],
+        ];
     }
 }

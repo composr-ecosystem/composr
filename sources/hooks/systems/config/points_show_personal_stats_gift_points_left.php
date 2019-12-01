@@ -30,7 +30,7 @@ class Hook_config_points_show_personal_stats_gift_points_left
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_GIFT_POINTS_LEFT',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_points_show_personal_stats_gift_points_left
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

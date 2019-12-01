@@ -25,7 +25,7 @@ class Hook_config_points_for_thanking
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_POINTS_FOR_THANKING',
             'type' => 'integer',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_points_for_thanking
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

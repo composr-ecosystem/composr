@@ -50,7 +50,7 @@ function _ensure_thumbnail($full_url, $thumb_url, $thumb_dir, $table, $id, $thum
 
     // Update database
     $db = get_db_for($table);
-    $db->query_update($table, array($thumb_field_name => $thumb_url), array('id' => $id), '', 1);
+    $db->query_update($table, [$thumb_field_name => $thumb_url], ['id' => $id], '', 1);
 
     if (!$is_vector) {
         // Do thumbnail conversion
@@ -243,7 +243,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
 
             // Now do the cropping, padding and scaling
             if ($will_modify_image) {
-                $thumbnail_url = @_convert_image($orig_url, $save_path, $exp_dimensions[0], $exp_dimensions[1], null, false, null, false, $only_make_smaller, array('type' => $algorithm, 'background' => $background, 'where' => $where, 'scale_to' => $scale_to));
+                $thumbnail_url = @_convert_image($orig_url, $save_path, $exp_dimensions[0], $exp_dimensions[1], null, false, null, false, $only_make_smaller, ['type' => $algorithm, 'background' => $background, 'where' => $where, 'scale_to' => $scale_to]);
             } else {
                 // Just resize
                 $thumbnail_url = @_convert_image($orig_url, $save_path, $exp_dimensions[0], $exp_dimensions[1], null, false, null, false, $only_make_smaller);
@@ -321,7 +321,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
             $from_file = @cms_file_get_contents_safe($file_path_stub, FILE_READ_LOCK);
             $exif = function_exists('exif_read_data') ? @exif_read_data($file_path_stub) : false;
         } else {
-            $from_file = http_get_contents($from, array('trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/* reasonable limit */));
+            $from_file = http_get_contents($from, ['trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/* reasonable limit */]);
             if ($from_file === null) {
                 $from_file = false;
                 $exif = false;
@@ -744,7 +744,7 @@ function check_memory_limit_for($file_path, $exit_on_error = true)
                     $shrink_command .= ' -resize ' . strval(intval(floatval($max_dim) / 1.5)) . 'x' . strval(intval(floatval($max_dim) / 1.5));
                     $shrink_command .= ' ' . cms_escapeshellarg($file_path);
                     $err_cond = -1;
-                    $output_arr = array();
+                    $output_arr = [];
                     if (php_function_allowed('shell_exec')) {
                         $err_cond = @shell_exec($shrink_command);
                         if ($err_cond !== null) {

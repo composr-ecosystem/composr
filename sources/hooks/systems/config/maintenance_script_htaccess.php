@@ -30,7 +30,7 @@ class Hook_config_maintenance_script_htaccess
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAINTENANCE_SCRIPT_ACCESS',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_maintenance_script_htaccess
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

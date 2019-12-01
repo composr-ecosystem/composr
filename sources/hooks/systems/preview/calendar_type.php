@@ -31,7 +31,7 @@ class Hook_preview_calendar_type
     public function applies()
     {
         $applies = (addon_installed('calendar')) && (get_page_name() == 'cms_calendar') && ((get_param_string('type', '') == 'add_category') || (get_param_string('type', '') == '_edit_category'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -46,7 +46,7 @@ class Hook_preview_calendar_type
         $urls = get_url('', 'image', 'uploads/auto_thumbs', 0, CMS_UPLOAD_IMAGE, false);
         if ($urls[0] == '') {
             if (post_param_integer('id', null) !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('t_logo'), array('id' => post_param_integer('id')), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['t_logo'], ['id' => post_param_integer('id')], '', 1);
                 $urls = $rows[0];
 
                 $url = find_theme_image($urls['t_logo']);
@@ -62,6 +62,6 @@ class Hook_preview_calendar_type
         require_code('images');
         $preview = do_image_thumb(url_is_local($url) ? (get_custom_base_url() . '/' . $url) : $url, post_param_string('title'), true);
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

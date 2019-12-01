@@ -44,7 +44,7 @@ class CMS_Topic
 {
     // Settable...
     //Influences comment form
-    public $reviews_rating_criteria = array();
+    public $reviews_rating_criteria = [];
     //Influences spacer post detection (usually only on first render, and only in the Conversr topicview)
     public $first_post_id = null;
     public $topic_description = null;
@@ -140,22 +140,22 @@ class CMS_Topic
                 if (array_key_exists($content_type, $REVIEWS_STRUCTURE)) {
                     $this->set_reviews_rating_criteria($REVIEWS_STRUCTURE[$content_type]);
                 } else {
-                    $this->set_reviews_rating_criteria(array(''));
+                    $this->set_reviews_rating_criteria(['']);
                 }
             }
 
             // Load up reviews
             if ((get_forum_type() == 'cns') && ($allow_reviews)) {
-                $all_individual_review_ratings = $GLOBALS['SITE_DB']->query_select('review_supplement', array('*'), array('r_topic_id' => $topic_id));
+                $all_individual_review_ratings = $GLOBALS['SITE_DB']->query_select('review_supplement', ['*'], ['r_topic_id' => $topic_id]);
             } else {
-                $all_individual_review_ratings = array();
+                $all_individual_review_ratings = [];
             }
 
             $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name);
 
             $topic_info = null;
             if (get_forum_type() == 'cns') {
-                $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('id' => $topic_id), '', 1);
+                $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (array_key_exists(0, $_topic_info)) {
                     $topic_info = $_topic_info[0];
                 }
@@ -186,16 +186,16 @@ class CMS_Topic
             }
 
             // Existing review ratings
-            $reviews_rating_criteria = array();
+            $reviews_rating_criteria = [];
             if ((get_forum_type() == 'cns') && ($allow_reviews)) {
                 foreach ($this->reviews_rating_criteria as $review_title) {
-                    $_rating = $GLOBALS['SITE_DB']->query_select_value('review_supplement', 'AVG(r_rating)', array('r_rating_type' => $review_title, 'r_topic_id' => $topic_id));
+                    $_rating = $GLOBALS['SITE_DB']->query_select_value('review_supplement', 'AVG(r_rating)', ['r_rating_type' => $review_title, 'r_topic_id' => $topic_id]);
                     $rating = ($_rating === null) ? null : @intval(round($_rating));
-                    $reviews_rating_criteria[] = array('REVIEW_TITLE' => $review_title, 'REVIEW_RATING' => make_string_tempcode(($rating === null) ? '' : float_format($rating)));
+                    $reviews_rating_criteria[] = ['REVIEW_TITLE' => $review_title, 'REVIEW_RATING' => make_string_tempcode(($rating === null) ? '' : float_format($rating))];
                     if ($rating !== null) {
-                        set_extra_request_metadata(array(
+                        set_extra_request_metadata([
                             'rating' => float_to_raw_string($rating),
-                        ));
+                        ]);
                     }
                 }
             }
@@ -210,7 +210,7 @@ class CMS_Topic
 
             // Show it all
             $sort = $this->_get_sort_order($reverse);
-            return do_template('COMMENTS_WRAPPER', array(
+            return do_template('COMMENTS_WRAPPER', [
                 '_GUID' => 'a89cacb546157d34vv0994ef91b2e707',
                 'PAGINATION' => $pagination,
                 'TYPE' => $content_type,
@@ -225,7 +225,7 @@ class CMS_Topic
                 'SORT' => $sort,
                 'TOTAL_POSTS' => ($this->total_posts === null) ? '0' : strval($this->total_posts),
                 'IS_THREADED' => $this->is_threaded,
-            ));
+            ]);
         }
 
         return new Tempcode();
@@ -271,20 +271,20 @@ class CMS_Topic
             }
 
             // Prepare review titles
-            $this->set_reviews_rating_criteria(array(''));
+            $this->set_reviews_rating_criteria(['']);
 
             // Load up reviews
             if ((get_forum_type() == 'cns') && ($allow_reviews)) {
-                $all_individual_review_ratings = $GLOBALS['SITE_DB']->query_select('review_supplement', array('*'), array('r_topic_id' => $topic_id));
+                $all_individual_review_ratings = $GLOBALS['SITE_DB']->query_select('review_supplement', ['*'], ['r_topic_id' => $topic_id]);
             } else {
-                $all_individual_review_ratings = array();
+                $all_individual_review_ratings = [];
             }
 
             $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name);
 
             $topic_info = null;
             if (get_forum_type() == 'cns') {
-                $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('id' => $topic_id), '', 1);
+                $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
@@ -321,7 +321,7 @@ class CMS_Topic
 
             $sort = either_param_string('comments_sort', $default_sort_order);
 
-            if (!in_array($sort, array('relevance', 'newest', 'oldest', 'average_rating', 'compound_rating'))) {
+            if (!in_array($sort, ['relevance', 'newest', 'oldest', 'average_rating', 'compound_rating'])) {
                 $sort = $default_sort_order;
             }
         }
@@ -343,7 +343,7 @@ class CMS_Topic
     public function load_from_topic($topic_id, $num_to_show_limit, $start = 0, $reverse = null, $posts = null, $load_spacer_posts_too = false)
     {
         $this->topic_id = $topic_id;
-        $this->topic_last_read = (is_guest() || get_forum_type() != 'cns') ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => get_member(), 'l_topic_id' => $this->topic_id));
+        $this->topic_last_read = (is_guest() || get_forum_type() != 'cns') ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $this->topic_id]);
         $this->reverse = $reverse;
 
         if (get_param_integer('threaded', null) === 1) {
@@ -384,7 +384,7 @@ class CMS_Topic
 
         if ($posts !== -1) {
             if ($posts === -2) {
-                $posts = array();
+                $posts = [];
             }
 
             // Check if threaded mode and post map enabled, orphan any children of the first post if so - because
@@ -414,7 +414,7 @@ class CMS_Topic
      */
     public function inject_posts_for_scoring_algorithm($posts)
     {
-        $all_posts_ordered = array();
+        $all_posts_ordered = [];
         foreach ($posts as $post) {
             if ($post === null) {
                 continue;
@@ -462,10 +462,10 @@ class CMS_Topic
         require_code('feedback');
 
         if ((get_forum_type() == 'cns') && (!addon_installed('cns_forum'))) {
-            return array();
+            return [];
         }
 
-        $posts = array();
+        $posts = [];
         $queue = $this->all_posts_ordered;
         if (($parent_post_id !== null) && (!$maybe_missing_links)) {
             $queue = $this->_grab_at_and_underneath($parent_post_id, $queue);
@@ -475,13 +475,13 @@ class CMS_Topic
         }
         if (($num_to_show_limit === null) || (!$this->is_threaded)) {
             $posts = $queue;
-            $queue = array();
+            $queue = [];
         } else {
             $posts = $this->_decide_what_to_render($num_to_show_limit, $queue);
         }
 
         // Work out sequence numbers
-        $post_numbers = array();
+        $post_numbers = [];
         foreach ($posts as $i => $post) {
             $post_numbers[$post['id']] = $i;
         }
@@ -495,7 +495,7 @@ class CMS_Topic
         // Precache member/group details in one fell swoop
         if (get_forum_type() == 'cns') {
             require_code('cns_topicview');
-            $members = array();
+            $members = [];
             foreach ($posts as $_postdetails) {
                 $members[$_postdetails['p_poster']] = 1;
             }
@@ -537,22 +537,22 @@ class CMS_Topic
                 }
             }
         } else {
-            $tree = array($posts);
+            $tree = [$posts];
         }
 
         $ret = $this->_render_post_tree($num_to_show_limit, $tree, $may_reply, $highlight_by_member, $all_individual_review_ratings, $forum_id, $topic_info);
 
         $other_ids = null;
         if ($this->is_threaded) {
-            $other_ids = array();
+            $other_ids = [];
             foreach ($tree[1] as $u) {
                 $other_ids[] = strval($u['id']);
             }
         }
-        $ret->attach(do_template('POST_CHILD_LOAD_LINK', array('_GUID' => '79e1f3feec7a6d48cd554b41e831b287', 'NUM_TO_SHOW_LIMIT' => strval($num_to_show_limit), 'OTHER_IDS' => $other_ids, 'ID' => '', 'CHILDREN' => (($other_ids === null) || (empty($other_ids))) ? '' : '1')));
+        $ret->attach(do_template('POST_CHILD_LOAD_LINK', ['_GUID' => '79e1f3feec7a6d48cd554b41e831b287', 'NUM_TO_SHOW_LIMIT' => strval($num_to_show_limit), 'OTHER_IDS' => $other_ids, 'ID' => '', 'CHILDREN' => (($other_ids === null) || (empty($other_ids))) ? '' : '1']));
 
         if ($this->topic_id !== null) {
-            $serialized_options = json_encode(array($this->topic_id, $num_to_show_limit, true, false, strval($forum_id), $this->reverse, $may_reply, $highlight_by_member, !empty($all_individual_review_ratings)));
+            $serialized_options = json_encode([$this->topic_id, $num_to_show_limit, true, false, strval($forum_id), $this->reverse, $may_reply, $highlight_by_member, !empty($all_individual_review_ratings)]);
             require_code('crypt');
             $hash = ratchet_hash($serialized_options, get_site_salt());
         } else {
@@ -560,7 +560,7 @@ class CMS_Topic
             $hash = null;
         }
 
-        return array($ret, $serialized_options, $hash);
+        return [$ret, $serialized_options, $hash];
     }
 
     /**
@@ -572,7 +572,7 @@ class CMS_Topic
      */
     protected function _decide_what_to_render($num_to_show_limit, &$queue)
     {
-        $posts = array();
+        $posts = [];
         while ((count($posts) < $num_to_show_limit) && (!empty($queue))) {
             $next = reset($queue);
 
@@ -593,7 +593,7 @@ class CMS_Topic
                     $this->replied = true;
                     if ($q['id'] === $this->first_post_id) { // First post must go first
                         $posts_backup = $posts;
-                        $posts = array();
+                        $posts = [];
                         $posts['post_' . strval($q['id'])] = $q;
                         $posts += $posts_backup;
                     } else {
@@ -623,7 +623,7 @@ class CMS_Topic
             $grabbed = $queue['post_' . strval($post_id)];
             if ($post_id === $this->first_post_id) { // First post must go first
                 $posts_backup = $posts;
-                $posts = array();
+                $posts = [];
                 $posts['post_' . strval($post_id)] = $grabbed;
                 $posts += $posts_backup;
             } else {
@@ -646,7 +646,7 @@ class CMS_Topic
      */
     protected function _grab_at_and_underneath($parent_post_id, $posts_in)
     {
-        $posts_out = array();
+        $posts_out = [];
 
         if ($parent_post_id !== null) {
             if (isset($posts_in['post_' . strval($parent_post_id)])) {
@@ -676,7 +676,7 @@ class CMS_Topic
      */
     protected function _grab_full_post_details($posts)
     {
-        $id_list = array();
+        $id_list = [];
         foreach ($posts as $p) {
             if (!isset($p['post'])) {
                 $id_list[] = $p['id'];
@@ -703,8 +703,8 @@ class CMS_Topic
      */
     protected function _arrange_posts_in_tree($post_id, &$posts, $queue, $max_thread_depth, $depth = 0)
     {
-        $rendered = array();
-        $non_rendered = array();
+        $rendered = [];
+        $non_rendered = [];
 
         $posts_copy = $posts; // So the foreach's array iteration pointer is not corrupted by the iterations in our recursive calls (issue on some PHP versions)
         foreach ($posts_copy as $i => $p) {
@@ -717,7 +717,7 @@ class CMS_Topic
                     foreach ($children[0] as $j => $c) {
                         if (strpos($c['message_comcode'], '[quote') === false) {
                             $c['message_comcode'] = '[quote="' . comcode_escape($p['username']) . '"]' . $p['message_comcode'] . '[/quote]' . "\n\n" . $c['message_comcode'];
-                            $new = do_template('COMCODE_QUOTE_BY', array('_GUID' => 'e5c1b08d7ca2368954e9c2f032044218', 'SAIDLESS' => false, 'BY' => $p['username'], 'CONTENT' => $p['message']));
+                            $new = do_template('COMCODE_QUOTE_BY', ['_GUID' => 'e5c1b08d7ca2368954e9c2f032044218', 'SAIDLESS' => false, 'BY' => $p['username'], 'CONTENT' => $p['message']]);
                             $new->attach($c['message']);
                             $c['message'] = $new;
                         }
@@ -725,7 +725,7 @@ class CMS_Topic
                         $children[0][$j] = $c;
                     }
 
-                    $p['children'] = array(array(), array());
+                    $p['children'] = [[], []];
                     $rendered[] = $p;
                     $rendered = array_merge($rendered, $children[0]);
                     $non_rendered = array_merge($non_rendered, $children[1]);
@@ -738,7 +738,7 @@ class CMS_Topic
 
         $non_rendered = array_merge($non_rendered, $this->_grab_at_and_underneath($post_id, $queue));
 
-        return array($rendered, $non_rendered);
+        return [$rendered, $non_rendered];
     }
 
     /**
@@ -774,13 +774,13 @@ class CMS_Topic
             $highlight = ($highlight_by_member === $post['member']);
 
             // Find review, if there is one
-            $individual_review_ratings = array();
+            $individual_review_ratings = [];
             foreach ($all_individual_review_ratings as $potential_individual_review_rating) {
                 if ($potential_individual_review_rating['r_post_id'] == $post['id']) {
-                    $individual_review_ratings[$potential_individual_review_rating['r_rating_type']] = array(
+                    $individual_review_ratings[$potential_individual_review_rating['r_rating_type']] = [
                         'REVIEW_TITLE' => $potential_individual_review_rating['r_rating_type'],
                         'REVIEW_RATING' => float_to_raw_string($potential_individual_review_rating['r_rating']),
-                    );
+                    ];
                 }
             }
 
@@ -823,13 +823,13 @@ class CMS_Topic
                 $emphasis = cns_get_post_emphasis($post);
                 $unvalidated = ($post['validated'] == 0) ? do_lang_tempcode('UNVALIDATED') : new Tempcode();
                 if (array_key_exists('last_edit_time', $post)) {
-                    $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', array(
+                    $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
                         '_GUID' => '6301ad8d8f80948ad8270828f1bdaf33',
                         'LAST_EDIT_DATE_RAW' => ($post['last_edit_time'] === null) ? '' : strval($post['last_edit_time']),
                         'LAST_EDIT_DATE' => $post['last_edit_date'],
                         'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post['last_edit_by'], true),
                         'LAST_EDIT_USERNAME' => $post['last_edit_by_username'],
-                    ));
+                    ]);
                     $last_edited_raw = (($post['last_edit_time'] === null) ? '' : strval($post['last_edit_time']));
                 }
 
@@ -856,7 +856,7 @@ class CMS_Topic
                         $sig = $SIGNATURES_CACHE[$post['member']];
                     } else {
                         $member_row = $GLOBALS['CNS_DRIVER']->get_member_row($post['member']);
-                        $just_member_row = db_map_restrict($member_row, array('id', 'm_signature'));
+                        $just_member_row = db_map_restrict($member_row, ['id', 'm_signature']);
                         $sig = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
                         $SIGNATURES_CACHE[$post['member']] = $sig;
                     }
@@ -866,12 +866,12 @@ class CMS_Topic
                 if (!$is_spacer_post) {
                     if (!is_guest($post['member'])) {
                         require_code('cns_members2');
-                        $poster_details = render_member_box($post['member'], false, false, array(), false);
+                        $poster_details = render_member_box($post['member'], false, false, [], false);
                     } else {
                         $custom_fields = new Tempcode();
                         if ((array_key_exists('ip_address', $post)) && (addon_installed('cns_forum'))) {
-                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => 'f7e62822e879682cf1588d9f49484bfa', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($post['ip_address']))));
-                            $poster_details = do_template('CNS_GUEST_DETAILS', array('_GUID' => 'df42e7d5003834a60fdb3bf476b393c5', 'CUSTOM_FIELDS' => $custom_fields));
+                            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => 'f7e62822e879682cf1588d9f49484bfa', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => ($post['ip_address'])]));
+                            $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => 'df42e7d5003834a60fdb3bf476b393c5', 'CUSTOM_FIELDS' => $custom_fields]);
                         } else {
                             $poster_details = new Tempcode();
                         }
@@ -880,22 +880,22 @@ class CMS_Topic
                 if (addon_installed('cns_forum')) {
                     require_code('users2');
                     if (!is_guest($post['member'])) {
-                        $poster = do_template('CNS_POSTER_MEMBER', array(
+                        $poster = do_template('CNS_POSTER_MEMBER', [
                             '_GUID' => 'da673c38b3cfbe9bf53d4334ca0eacfd',
                             'ONLINE' => member_is_online($post['member']),
                             'ID' => strval($post['member']),
                             'POSTER_DETAILS' => $poster_details,
                             'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post['member'], true),
                             'POSTER_USERNAME' => $post['poster_username'],
-                        ));
+                        ]);
                     } else {
-                        $ip_url = ((array_key_exists('ip_address', $post)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(array('page' => 'admin_lookup', 'param' => $post['ip_address']), get_module_zone('admin_lookup')) : new Tempcode();
-                        $poster = do_template('CNS_POSTER_GUEST', array(
+                        $ip_url = ((array_key_exists('ip_address', $post)) && (has_actual_page_access(get_member(), 'admin_lookup'))) ? build_url(['page' => 'admin_lookup', 'param' => $post['ip_address']], get_module_zone('admin_lookup')) : new Tempcode();
+                        $poster = do_template('CNS_POSTER_GUEST', [
                             '_GUID' => '93107543c6a0138f379e7124b72b24ff',
                             'LOOKUP_IP_URL' => $ip_url,
                             'POSTER_DETAILS' => $poster_details,
                             'POSTER_USERNAME' => $post['poster_username'],
-                        ));
+                        ]);
                         $poster_url = $ip_url;
                     }
                 } else {
@@ -905,7 +905,7 @@ class CMS_Topic
 
             // Child posts
             $children = null; // null
-            $other_ids = array();
+            $other_ids = [];
             if (array_key_exists('children', $post)) {
                 foreach ($post['children'][1] as $u) {
                     $other_ids[] = strval($u['id']);
@@ -936,7 +936,7 @@ class CMS_Topic
             if ($post['member'] == get_member()) {
                 $is_unread = false;
             }
-            $post_tempcode = do_template('POST', array(
+            $post_tempcode = do_template('POST', [
                 '_GUID' => 'eb7df038959885414e32f58e9f0f9f39',
                 'INDIVIDUAL_REVIEW_RATINGS' => $individual_review_ratings,
                 'HIGHLIGHT' => $highlight,
@@ -966,7 +966,7 @@ class CMS_Topic
                 'SIGNATURE' => $sig->is_empty() ? null : $sig,
                 'IS_UNREAD' => $is_unread,
                 'IS_THREADED' => $this->is_threaded,
-            ));
+            ]);
 
             if ($this->is_threaded && ($this->first_post_id === $post['id']) && (count($rendered) > 1) && (get_forum_type() === 'cns') && (get_option('is_on_post_map') === '1')) { // If threaded mode, first post with replies, forum type is CNS and post map feature is enabled
                 $this->set_level_has_adjacent_sibling($rendered);
@@ -977,10 +977,10 @@ class CMS_Topic
                     $items->attach($this->render_post_map_item($p));
                 }
 
-                $post_tempcode->attach(do_template('CNS_POST_MAP', array(
+                $post_tempcode->attach(do_template('CNS_POST_MAP', [
                     '_GUID' => '9fe6a70073284f7d9028c2425948e13a',
                     'ITEMS' => $items,
-                )));
+                ]));
             }
 
             $sequence->attach($post_tempcode);
@@ -996,7 +996,7 @@ class CMS_Topic
      * @param  array $posts An array of posts
      * @param  array $level_has_adjacent_sibling For internal use only
      */
-    protected function set_level_has_adjacent_sibling(&$posts, $level_has_adjacent_sibling = array())
+    protected function set_level_has_adjacent_sibling(&$posts, $level_has_adjacent_sibling = [])
     {
         foreach ($posts as $i => &$post) {
             $post['level_has_adjacent_sibling'] = $level_has_adjacent_sibling;
@@ -1022,7 +1022,7 @@ class CMS_Topic
             $is_unread = false;
         }
 
-        $tempcode = do_template('CNS_POST_MAP_ITEM', array(
+        $tempcode = do_template('CNS_POST_MAP_ITEM', [
             '_GUID' => '763f031c2c8d4af986ff38bc51c8f6f4',
             'TITLE' => $this->topic_title,
             'URL' => '#post_' . strval($post['id']),
@@ -1035,7 +1035,7 @@ class CMS_Topic
             'POST_LEVEL' => strval(count($post['level_has_adjacent_sibling']) - 1), // Calculate this post's level
             'DATE' => $date,
             'IS_UNREAD' => $is_unread,
-        ));
+        ]);
 
         foreach ($post['children'][0] as $child_post) {
             $tempcode->attach($this->render_post_map_item($child_post));
@@ -1061,9 +1061,9 @@ class CMS_Topic
      */
     public function inject_metadata()
     {
-        set_extra_request_metadata(array(
+        set_extra_request_metadata([
             'numcomments' => strval(count($this->all_posts_ordered)),
-        ));
+        ]);
     }
 
     /**
@@ -1117,18 +1117,18 @@ class CMS_Topic
             $join_bits = do_lang_tempcode('JOIN_OR_LOGIN', escape_html($join_url), escape_html(is_object($login_url) ? $login_url->evaluate() : $login_url));
         }
 
-        $reviews_rating_criteria = array();
+        $reviews_rating_criteria = [];
         foreach ($this->reviews_rating_criteria as $review_title) {
-            $reviews_rating_criteria[] = array(
+            $reviews_rating_criteria[] = [
                 'REVIEW_TITLE' => $review_title,
-            );
+            ];
         }
 
         if ($this->is_threaded) {
             $post_warning = do_lang('THREADED_REPLY_NOTICE', $post_warning);
         }
 
-        return do_template('COMMENTS_POSTING_FORM', array(
+        return do_template('COMMENTS_POSTING_FORM', [
             '_GUID' => 'c87025f81ee64c885f0ac545efa5f16c',
             'TITLE' => $title,
             'HIDDEN' => $hidden,
@@ -1154,6 +1154,6 @@ class CMS_Topic
             'FIRST_POST_URL' => '',
             'FIRST_POST' => '',
             'COMMENT_URL' => $post_url,
-        ));
+        ]);
     }
 }

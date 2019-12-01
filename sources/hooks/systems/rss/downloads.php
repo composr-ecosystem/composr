@@ -49,7 +49,7 @@ class Hook_rss_downloads
         }
 
         $content = new Tempcode();
-        $_categories = $GLOBALS['SITE_DB']->query_select('download_categories', array('id', 'category'), array(), '', 300);
+        $_categories = $GLOBALS['SITE_DB']->query_select('download_categories', ['id', 'category'], [], '', 300);
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_title'] = get_translated_text($_category['category']);
         }
@@ -70,7 +70,7 @@ class Hook_rss_downloads
                 $news = '';
 
                 if (!array_key_exists($row['category_id'], $categories)) {
-                    $c = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'category', array('id' => $row['category_id']));
+                    $c = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'category', ['id' => $row['category_id']]);
                     if ($c === null) {
                         continue; // Slight corruption
                     }
@@ -82,10 +82,10 @@ class Hook_rss_downloads
                 $category = $categories[$row['category_id']];
                 $category_raw = strval($row['category_id']);
 
-                $view_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $row['id']), get_module_zone('downloads'), array(), false, false, true);
+                $view_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $row['id']], get_module_zone('downloads'), [], false, false, true);
 
                 if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '2a3615d747190e5268df1e7d9eaee7be', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '2a3615d747190e5268df1e7d9eaee7be', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
@@ -99,7 +99,7 @@ class Hook_rss_downloads
                 list($enclosure_length,) = get_enclosure_details($row['url'], $full_url);
                 $enclosure_type = 'application/octet-stream';
 
-                $content->attach(do_template($prefix . 'ENTRY', array(
+                $content->attach(do_template($prefix . 'ENTRY', [
                     'ENCLOSURE_URL' => $enclosure_url,
                     'ENCLOSURE_LENGTH' => $enclosure_length,
                     'ENCLOSURE_TYPE' => $enclosure_type,
@@ -114,11 +114,11 @@ class Hook_rss_downloads
                     'ID' => $id,
                     'NEWS' => $news,
                     'DATE' => $news_date,
-                ), null, false, null, '.xml', 'xml'));
+                ], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('downloads');
-        return array($content, do_lang('SECTION_DOWNLOADS'));
+        return [$content, do_lang('SECTION_DOWNLOADS')];
     }
 }

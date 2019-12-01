@@ -32,11 +32,11 @@ class Hook_cron_log_purging
      */
     public function info($last_run, $calculate_num_queued)
     {
-        return array(
+        return [
             'label' => 'Log purging',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**
@@ -72,11 +72,11 @@ class Hook_cron_log_purging
 
         $threshold_time = time() - 60 * 60 * 24 * $days_to_keep;
 
-        $lines = array();
+        $lines = [];
 
         $myfile_charset = null;
         $myfile = cms_fopen_text_read($path, $myfile_charset, true, 'c+b');
-        $matches = array();
+        $matches = [];
         $found_pivot = false;
         $found_some_date = false;
         while (!feof($myfile)) {

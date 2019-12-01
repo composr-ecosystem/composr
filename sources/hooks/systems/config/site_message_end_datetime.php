@@ -30,7 +30,7 @@ class Hook_config_site_message_end_datetime
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITE_MESSAGE_END_DATETIME',
             'type' => 'datetime',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_site_message_end_datetime
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

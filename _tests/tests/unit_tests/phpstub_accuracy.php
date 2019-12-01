@@ -21,9 +21,9 @@ class phpstub_accuracy_test_set extends cms_test_case
     public function testFunctionsNeeded()
     {
         $phpstub = cms_file_get_contents_safe(get_file_base() . '/sources_custom/phpstub.php', FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^function (\w+)\(#m', $phpstub, $matches);
-        $declared_functions = array();
+        $declared_functions = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $function = $matches[1][$i];
             $declared_functions[] = $function;
@@ -50,7 +50,7 @@ class phpstub_accuracy_test_set extends cms_test_case
         }
 
         if (get_param_integer('dev_check', 0) == 1) { // This extra switch let's us automatically find new functions in PHP we aren't coding for
-            $will_never_define = array(
+            $will_never_define = [
                 // Extensions, inconsistent prefix
                 'read_exif_data',
                 'hash',
@@ -58,7 +58,7 @@ class phpstub_accuracy_test_set extends cms_test_case
                 // FreeType needed
                 'imagefttext',
                 'imageftbbox',
-            );
+            ];
 
             $defined = get_defined_functions();
             foreach ($defined['internal'] as $function) {

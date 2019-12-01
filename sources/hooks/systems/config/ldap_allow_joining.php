@@ -30,7 +30,7 @@ class Hook_config_ldap_allow_joining
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_ALLOW_JOINING',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_ldap_allow_joining
             'required' => true,
             'public' => false,
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

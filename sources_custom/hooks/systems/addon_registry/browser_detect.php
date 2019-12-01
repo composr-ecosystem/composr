@@ -26,7 +26,7 @@ class Hook_addon_registry_browser_detect
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_browser_detect
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Chris Schuld',
-        );
+        ];
     }
 
     /**
@@ -102,7 +102,7 @@ If you would like to show the message as a Composr warning (at the top of the sc
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,11 +112,11 @@ If you would like to show the message as a Composr warning (at the top of the sc
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,11 +136,11 @@ If you would like to show the message as a Composr warning (at the top of the sc
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/browser_detect.php',
             'sources_custom/browser_detect.php',
             'sources_custom/miniblocks/browser_upgrade_suggest.php',
             'lang_custom/EN/browser_upgrade_suggest.ini',
-        );
+        ];
     }
 }

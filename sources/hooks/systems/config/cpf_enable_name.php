@@ -30,7 +30,7 @@ class Hook_config_cpf_enable_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CPF_ENABLE_NAME',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_cpf_enable_name
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

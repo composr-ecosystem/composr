@@ -30,7 +30,7 @@ class Hook_config_repair_images
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REPAIR_IMAGES',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_repair_images
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

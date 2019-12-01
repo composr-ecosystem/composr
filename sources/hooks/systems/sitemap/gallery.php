@@ -27,8 +27,8 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
     protected $screen_type = 'browse';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('image', 'video');
-    protected $entry_sitetree_hook = array('image', 'video');
+    protected $entry_content_type = ['image', 'video'];
+    protected $entry_sitetree_hook = ['image', 'video'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -60,10 +60,10 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -74,7 +74,7 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
         $parent = (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) ? 'root' : '';
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', array('parent_id' => $parent));
+            $count = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)', ['parent_id' => $parent]);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
@@ -84,7 +84,7 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $parent), ' AND name NOT LIKE \'download\_%\'', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $parent], ' AND name NOT LIKE \'download\_%\'', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if ((get_option('show_empty_galleries') == '1') || (gallery_has_content($row['name']))) {
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . $row['name'];
@@ -137,14 +137,14 @@ class Hook_sitemap_gallery extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_galleries', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_galleries')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_galleries', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_galleries')),
+        ] + $partial_struct;
 
         $struct['extra_meta']['is_a_category_tree_root'] = true;
 

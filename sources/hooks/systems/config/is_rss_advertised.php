@@ -30,7 +30,7 @@ class Hook_config_is_rss_advertised
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_RSS_ADVERTISING',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_is_rss_advertised
             'required' => true,
             'public' => false,
             'addon' => 'syndication_blocks',
-        );
+        ];
     }
 
     /**

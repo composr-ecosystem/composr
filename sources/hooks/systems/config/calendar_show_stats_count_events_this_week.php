@@ -30,7 +30,7 @@ class Hook_config_calendar_show_stats_count_events_this_week
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => '_EVENTS_THIS_WEEK',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_calendar_show_stats_count_events_this_week
             'public' => false,
 
             'addon' => 'calendar',
-        );
+        ];
     }
 
     /**

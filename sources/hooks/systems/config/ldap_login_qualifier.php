@@ -30,7 +30,7 @@ class Hook_config_ldap_login_qualifier
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_LOGIN_QUALIFIER',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_login_qualifier
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

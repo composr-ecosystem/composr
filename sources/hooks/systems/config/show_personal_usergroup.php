@@ -30,7 +30,7 @@ class Hook_config_show_personal_usergroup
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERGROUP',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_show_personal_usergroup
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

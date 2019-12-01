@@ -31,7 +31,7 @@ class Hook_preview_quiz
     public function applies()
     {
         $applies = (addon_installed('quizzes')) && (get_page_name() == 'cms_quiz') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -44,7 +44,7 @@ class Hook_preview_quiz
         require_code('quiz');
         require_code('quiz2');
 
-        $questions = array();
+        $questions = [];
 
         $type = post_param_string('type');
 
@@ -52,7 +52,7 @@ class Hook_preview_quiz
 
         $text = post_param_string('text');
         $_qs = explode("\n\n", $text);
-        $qs = array();
+        $qs = [];
         foreach ($_qs as $q) {
             $q = trim($q);
             if ($q != '') {
@@ -63,7 +63,7 @@ class Hook_preview_quiz
         foreach ($qs as $i => $q) {
             $_as = explode("\n", $q);
 
-            $as = array();
+            $as = [];
             foreach ($_as as $a) {
                 if ($a != '') {
                     if (substr($a, 0, 1) == ':') { // Is an explanation
@@ -71,7 +71,7 @@ class Hook_preview_quiz
                             $as[count($as) - 1][1] = trim($as[count($as) - 1][1] . "\n" . trim(substr($a, 1)));
                         }
                     } else {
-                        $as[] = array($a, '');
+                        $as[] = [$a, ''];
                     }
                 }
             }
@@ -86,29 +86,29 @@ class Hook_preview_quiz
             list($question, $type, $required, $marked, $question_extra_text) = parse_quiz_question_line($question, $as, $question_extra_text);
 
             // Now we add the answers
-            $answers = array();
+            $answers = [];
             foreach ($as as $x => $a) {
                 $a[0] = str_replace(' [*]', '', $a[0]);
 
-                $answers[] = array(
+                $answers[] = [
                     'id' => $x,
                     'q_answer_text' => $a[0],
                     'q_is_correct' => 1,
-                );
+                ];
             }
 
-            $questions[] = array(
+            $questions[] = [
                 'id' => $i,
                 'q_type' => $type,
                 'q_question_text' => $question,
                 'q_question_extra_text' => $question_extra_text,
                 'answers' => $answers,
                 'q_required' => $required,
-            );
+            ];
         }
 
         $preview = render_quiz($questions);
 
-        return array(do_template('FORM', array('_GUID' => '671da928305bee72d7508beb7687d6df', 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => '', 'TEXT' => '', 'URL' => '', 'HIDDEN' => '', 'FIELDS' => $preview)), null);
+        return [do_template('FORM', ['_GUID' => '671da928305bee72d7508beb7687d6df', 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => '', 'TEXT' => '', 'URL' => '', 'HIDDEN' => '', 'FIELDS' => $preview]), null];
     }
 }

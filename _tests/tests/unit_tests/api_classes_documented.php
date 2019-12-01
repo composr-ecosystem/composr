@@ -24,7 +24,7 @@ class api_classes_documented_test_set extends cms_test_case
         NB: This only bothers with stuff we are going to include in the PHPDocumentor scan. Otherwise we don't care as Composr doesn't (packages work on a file level, this isn't Java).
         */
 
-        foreach (array('sources', 'sources/database', 'sources/database/shared', 'sources/forum') as $d) {
+        foreach (['sources', 'sources/database', 'sources/database/shared', 'sources/forum'] as $d) {
             $path = get_file_base() . '/' . $d;
             $dh = @opendir($path);
             if ($dh !== false) {
@@ -42,7 +42,7 @@ class api_classes_documented_test_set extends cms_test_case
                         continue;
                     }
 
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#\n\t*(abstract\s+)?class (\w+)#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $this->assertTrue(

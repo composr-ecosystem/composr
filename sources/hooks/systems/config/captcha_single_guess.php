@@ -30,7 +30,7 @@ class Hook_config_captcha_single_guess
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CAPTCHA_SINGLE_GUESS',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_captcha_single_guess
             'required' => true,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

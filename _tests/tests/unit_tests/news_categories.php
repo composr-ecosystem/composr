@@ -28,14 +28,14 @@ class news_categories_test_set extends cms_test_case
 
         $this->news_id = add_news_category('Today', 'news.gif', 'Headlines', null, null);
 
-        $this->assertTrue('Today' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $this->news_id))));
+        $this->assertTrue('Today' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $this->news_id])));
     }
 
     public function testEditNewscategory()
     {
         edit_news_category($this->news_id, 'Politics', 'world.jpg', 'Around the world', null);
 
-        $this->assertTrue('Politics' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $this->news_id))));
+        $this->assertTrue('Politics' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $this->news_id])));
     }
 
     public function tearDown()

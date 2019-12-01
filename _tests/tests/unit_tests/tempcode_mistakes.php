@@ -26,11 +26,11 @@ class Tempcode_mistakes_test_set extends cms_test_case
 
         $regexp = '#\{\+START,IF_PASSED,(\w+)\}[^\{\}]*\{(?:(?!\1)\w)*\*?\}[^\{\}]*\{\+END\}#';
 
-        $exceptions = array(
+        $exceptions = [
             'default/templates/ATTACHMENT.tpl',
             'default/templates/FORM_SCREEN_INPUT_UPLOAD.tpl',
             'default/templates/FORM_SCREEN_INPUT_UPLOAD_MULTI.tpl',
-        );
+        ];
 
         foreach ($files as $file) {
             if (in_array($file, $exceptions)) {

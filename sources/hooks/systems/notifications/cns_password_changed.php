@@ -32,11 +32,11 @@ class Hook_notification_cns_password_changed extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_password_changed'] = array(do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_password_changed'));
+        $list = [];
+        $list['cns_password_changed'] = [do_lang('MEMBERS'), do_lang('cns:NOTIFICATION_TYPE_cns_password_changed')];
         return $list;
     }
 }

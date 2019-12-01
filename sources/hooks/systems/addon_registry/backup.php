@@ -31,7 +31,7 @@ class Hook_addon_registry_backup
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_backup
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_backup',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_backup
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_backup
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/bulk_content_actions/backups.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/bulk_content_actions/backups.svg',
             'sources/hooks/systems/config/backup_overwrite.php',
@@ -125,7 +125,7 @@ class Hook_addon_registry_backup
             'sources/hooks/systems/tasks/make_backup.php',
             'themes/default/javascript/backup.js',
             'sources/hooks/systems/actionlog/backups.php',
-        );
+        ];
     }
 
     /**
@@ -135,10 +135,10 @@ class Hook_addon_registry_backup
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/RESTORE_HTML_WRAP.tpl' => 'administrative__restore_wrap',
             'templates/BACKUP_LAUNCH_SCREEN.tpl' => 'administrative__backup_launch_screen',
-        );
+        ];
     }
 
     /**
@@ -150,14 +150,14 @@ class Hook_addon_registry_backup
      */
     public function tpl_preview__administrative__backup_launch_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BACKUP_LAUNCH_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('BACKUP_LAUNCH_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TEXT' => lorem_sentence(),
                 'RESULTS' => lorem_phrase(),
                 'FORM' => placeholder_form_with_field('submit_button'),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -171,12 +171,12 @@ class Hook_addon_registry_backup
     {
         // This preview inevitably looks ugly because the install CSS can't be shown (its loaded via self-reference to a non-existent file)
 
-        return array(
-            lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', array(
+        return [
+            lorem_globalise(do_lorem_template('RESTORE_HTML_WRAP', [
                 'MESSAGE' => lorem_sentence_html(),
                 'CSS_NOCACHE' => '',
                 'SUCCESS' => '1',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

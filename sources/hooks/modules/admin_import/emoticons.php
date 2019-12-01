@@ -30,7 +30,7 @@ class Hook_import_emoticons
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['product'] = 'Emoticons';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'admin_cns_emoticons';

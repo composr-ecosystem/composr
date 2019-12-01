@@ -30,7 +30,7 @@ class Hook_config_show_conceded_mode_link
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CONCEDED_MODE_LINK',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_show_conceded_mode_link
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -26,7 +26,7 @@ class Hook_addon_registry_aws
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_aws
      */
     public function get_copyright_attribution()
     {
-        return array('Amazon');
+        return ['Amazon'];
     }
 
     /**
@@ -117,7 +117,7 @@ You need to:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -127,15 +127,15 @@ You need to:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP curl extension',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'better_mail',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -155,7 +155,7 @@ You need to:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/aws.php',
             'data_custom/amazon_sns_topic_handler.php',
             'sources_custom/aws.php',
@@ -1084,6 +1084,6 @@ You need to:
             'sources_custom/aws/GuzzleHttp/Cookie/.htaccess',
             'sources_custom/aws/GuzzleHttp/.htaccess',
             'sources_custom/aws/.htaccess',
-        );
+        ];
     }
 }

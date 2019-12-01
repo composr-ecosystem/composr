@@ -47,7 +47,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         $this->process_checks_section('testXMLSitemap', 'XML Sitemap', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testBotBanning', 'Crawlers incorrectly banned', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $meta_description = null;
-        $matches = array();
+        $matches = [];
         if (preg_match('#<meta\s+[^<>]*name="?description"?[^<>]*content="([^"]*)"#is', $data, $matches) != 0) {
             $meta_description = html_entity_decode($matches[1], ENT_QUOTES);
         } elseif (preg_match('#<meta\s+[^<>]*content="([^"]*)"[^<>]*name="?description"?#is', $data, $matches) != 0) {
@@ -150,7 +150,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $meta_keywords = null;
-        $matches = array();
+        $matches = [];
         if (preg_match('#<meta\s+[^<>]*name="?keywords"?[^<>]*content="([^"]*)"#is', $data, $matches) != 0) {
             $meta_keywords = array_map('trim', explode(',', $matches[1]));
         } elseif (preg_match('#<meta\s+[^<>]*content="([^"]*)"[^<>]*name="?keywords"?#is', $data, $matches) != 0) {
@@ -194,7 +194,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $title = null;
-        $matches = array();
+        $matches = [];
         if (preg_match('#<title[^<>]*>([^<>]*)</title>#is', $data, $matches) != 0) {
             $title = html_entity_decode($matches[1], ENT_QUOTES);
         }
@@ -236,7 +236,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
         }
 
         $header = null;
-        $matches = array();
+        $matches = [];
         if (preg_match('#<h1[^<>]*>(.*)</h1>#is', $data, $matches) != 0) {
             $header = $matches[1];
         }
@@ -284,7 +284,7 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
                 }
             }
             closedir($dh);
-            $last_updated = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(last_updated)', array(), ' AND last_updated<' . strval(time() - 60 * 60 * 25));
+            $last_updated = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(last_updated)', [], ' AND last_updated<' . strval(time() - 60 * 60 * 25));
             if ($last_updated !== null) {
                 $this->assertTrue($last_updated_file > $last_updated - 60 * 60 * 24, 'XML Sitemap does not seem to be updating');
             } else {

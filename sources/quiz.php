@@ -36,9 +36,9 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
     require_lang('quiz');
 
     $date = get_timezoned_date_time_tempcode($row['q_add_date']);
-    $url = build_url(array('page' => 'quiz', 'type' => 'do', 'id' => $row['id']), $zone);
+    $url = build_url(['page' => 'quiz', 'type' => 'do', 'id' => $row['id']], $zone);
 
-    $just_quiz_row = db_map_restrict($row, array('id', 'q_start_text'));
+    $just_quiz_row = db_map_restrict($row, ['id', 'q_start_text']);
 
     $name = get_translated_text($row['q_name']);
     $start_text = get_translated_tempcode('quizzes', $just_quiz_row, 'q_start_text');
@@ -50,7 +50,7 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
     $timeout = ($row['q_timeout'] === null) ? '' : display_time_period($row['q_timeout'] * 60);
     $redo_time = (($row['q_redo_time'] === null) || ($row['q_redo_time'] == 0)) ? '' : display_time_period($row['q_redo_time'] * 60 * 60);
 
-    return do_template('QUIZ_BOX', array(
+    return do_template('QUIZ_BOX', [
         '_GUID' => ($guid != '') ? $guid : '3ba4e19d93eb41f6cf2d472af982116e',
         'GIVE_CONTEXT' => $give_context,
         '_TYPE' => $row['q_type'],
@@ -63,7 +63,7 @@ function render_quiz_box($row, $zone = '_SEARCH', $give_context = true, $guid = 
         'NAME' => $name,
         'START_TEXT' => $start_text,
         'ID' => strval($row['id']),
-    ));
+    ]);
 }
 
 /**
@@ -85,7 +85,7 @@ function render_quiz($questions)
     foreach ($questions as $i => $q) {
         $name = 'q_' . strval($q['id']);
 
-        $just_quiz_row = db_map_restrict($q, array('id', 'q_question_text', 'q_question_extra_text'));
+        $just_quiz_row = db_map_restrict($q, ['id', 'q_question_text', 'q_question_extra_text']);
         $question = protect_from_escaping((is_string($q['q_question_text']) && !isset($q['q_question_text__text_parsed'])) ? comcode_to_tempcode($q['q_question_text']) : get_translated_tempcode('quiz_questions', $just_quiz_row, 'q_question_text'));
         $description = protect_from_escaping((is_string($q['q_question_extra_text']) && !isset($q['q_question_extra_text__text_parsed'])) ? comcode_to_tempcode($q['q_question_extra_text']) : get_translated_tempcode('quiz_questions', $just_quiz_row, 'q_question_extra_text'));
 
@@ -100,9 +100,9 @@ function render_quiz($questions)
                 break;
 
             case 'MULTIMULTIPLE':
-                $content = array();
+                $content = [];
                 foreach ($q['answers'] as $a) {
-                    $content[] = array(protect_from_escaping((is_string($a['q_answer_text']) && !isset($a['q_answer_text__text_parsed'])) ? comcode_to_tempcode($a['q_answer_text']) : get_translated_tempcode('quiz_question_answers', $a, 'q_answer_text')), $name . '_' . strval($a['id']), false, '');
+                    $content[] = [protect_from_escaping((is_string($a['q_answer_text']) && !isset($a['q_answer_text__text_parsed'])) ? comcode_to_tempcode($a['q_answer_text']) : get_translated_tempcode('quiz_question_answers', $a, 'q_answer_text')), $name . '_' . strval($a['id']), false, ''];
                 }
                 $fields->attach(form_input_various_ticks($content, $description, null, $question, true));
                 break;
@@ -137,29 +137,29 @@ function render_quiz($questions)
 function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null, $reveal_all = false)
 {
     if ($quiz_id === null) {
-        $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz', array('id' => $entry_id));
+        $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz', ['id' => $entry_id]);
     }
     if ($quiz_id === null) {
-        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('id' => $quiz_id), '', 1);
+        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $quiz_id], '', 1);
         if (!array_key_exists(0, $quizzes)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
         }
         $quiz = $quizzes[0];
     }
 
-    $__given_answers = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer', array('q_question', 'q_answer'), array('q_entry' => $entry_id));
-    $_given_answers = array();
+    $__given_answers = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer', ['q_question', 'q_answer'], ['q_entry' => $entry_id]);
+    $_given_answers = [];
     foreach ($__given_answers as $_given_answer) {
         if (!isset($_given_answers[$_given_answer['q_question']])) {
-            $_given_answers[$_given_answer['q_question']] = array();
+            $_given_answers[$_given_answer['q_question']] = [];
         }
         $_given_answers[$_given_answer['q_question']][] = $_given_answer['q_answer'];
     }
 
     if ($questions === null) {
-        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $quiz_id), 'ORDER BY q_order');
+        $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $quiz_id], 'ORDER BY q_order');
         foreach ($questions as $i => $question) {
-            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', array('*'), array('q_question' => $question['id']), 'ORDER BY q_order');
+            $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $question['id']], 'ORDER BY q_order');
             $questions[$i]['answers'] = $answers;
         }
     }
@@ -167,10 +167,10 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
     $marks = 0.0;
     $potential_extra_marks = 0;
     $out_of = 0;
-    $given_answers = array();
-    $corrections = array();
-    $affirmations = array();
-    $unknowns = array();
+    $given_answers = [];
+    $corrections = [];
+    $affirmations = [];
+    $unknowns = [];
     foreach ($questions as $i => $question) {
         if (!array_key_exists($question['id'], $_given_answers)) {
             continue; // Question did not exist when this quiz entry was filled
@@ -181,7 +181,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
 
         $has_an_answer = false;
 
-        $just_question_row = db_map_restrict($question, array('id', 'q_question_text'));
+        $just_question_row = db_map_restrict($question, ['id', 'q_question_text']);
         $question_text = get_translated_tempcode('quiz_questions', $just_question_row, 'q_question_text');
 
         if ($question['q_type'] == 'SHORT' || $question['q_type'] == 'SHORT_STRICT' || $question['q_type'] == 'LONG') { // Text box ("free question"). May be an actual answer, or may not be
@@ -191,7 +191,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
             $correct_explanation = null;
             if (empty($question['answers'])) {
                 $potential_extra_marks++;
-                $unknowns[] = array($question_text, $given_answer);
+                $unknowns[] = [$question_text, $given_answer];
                 $was_correct = null;
             } else {
                 $was_correct = false;
@@ -208,13 +208,13 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 if ($was_correct) {
                     $marks++;
 
-                    $affirmation = array($question['id'], $question_text, $correct_answer, $given_answer);
+                    $affirmation = [$question['id'], $question_text, $correct_answer, $given_answer];
                     if (!cms_empty_safe($correct_explanation)) {
                         $affirmation[] = $correct_explanation;
                     }
                     $affirmations[] = $affirmation;
                 } else {
-                    $correction = array($question['id'], $question_text, $correct_answer, $given_answer);
+                    $correction = [$question['id'], $question_text, $correct_answer, $given_answer];
                     if (!cms_empty_safe($correct_explanation)) {
                         $correction[] = $correct_explanation;
                     }
@@ -222,13 +222,13 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 }
             }
 
-            $given_answers[] = array(
+            $given_answers[] = [
                 'QUESTION' => $question_text,
                 'GIVEN_ANSWER' => $given_answer,
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => $correct_answer,
                 'CORRECT_EXPLANATION' => $correct_explanation,
-            );
+            ];
 
         } elseif ($question['q_type'] == 'MULTIMULTIPLE') { // Check boxes
             // Vector distance
@@ -269,7 +269,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
             $marks += $correctness;
 
             if ($correctness != 1.0) {
-                $correction = array($question['id'], $question_text, $correct_answer, $accum);
+                $correction = [$question['id'], $question_text, $correct_answer, $accum];
                 if (!cms_empty_safe($correct_explanation)) {
                     $correction[] = $correct_explanation;
                 }
@@ -278,13 +278,13 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
 
             $given_answer = $accum->evaluate();
 
-            $given_answers[] = array(
+            $given_answers[] = [
                 'QUESTION' => $question_text,
                 'GIVEN_ANSWER' => $given_answer,
                 'WAS_CORRECT' => $correctness == 1.0,
                 'CORRECT_ANSWER' => $correct_answer,
                 'CORRECT_EXPLANATION' => $correct_explanation,
-            );
+            ];
 
         } elseif ($question['q_type'] == 'MULTIPLECHOICE') { // Radio buttons
             $was_correct = false;
@@ -311,26 +311,26 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
             }
 
             if (!$was_correct) {
-                $correction = array($question['id'], $question_text, $correct_answer, $given_answer);
+                $correction = [$question['id'], $question_text, $correct_answer, $given_answer];
                 if (!cms_empty_safe($correct_explanation)) {
                     $correction[] = $correct_explanation;
                 }
                 $corrections[] = $correction;
             } else {
-                $affirmation = array($question['id'], $question_text, $correct_answer, $given_answer);
+                $affirmation = [$question['id'], $question_text, $correct_answer, $given_answer];
                 if (!cms_empty_safe($correct_explanation)) {
                     $affirmation[] = $correct_explanation;
                 }
                 $affirmations[] = $affirmation;
             }
 
-            $given_answers[] = array(
+            $given_answers[] = [
                 'QUESTION' => $question_text,
                 'GIVEN_ANSWER' => $given_answer,
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => $correct_answer,
                 'CORRECT_EXPLANATION' => $correct_explanation,
-            );
+            ];
         }
 
         if ($has_an_answer) {
@@ -356,10 +356,10 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 array_key_exists(4, $correction) ? 'QUIZ_MISTAKE_EXPLAINED_HTML' : 'QUIZ_MISTAKE_HTML',
                 $correction[1],
                 comcode_to_tempcode(is_object($correction[3]) ? $correction[3]->evaluate() : $correction[3]),
-                array(
+                [
                     comcode_to_tempcode(is_object($correction[2]) ? $correction[2]->evaluate() : $correction[2]),
                     comcode_to_tempcode(array_key_exists(4, $correction) ? $correction[4] : ''),
-                )
+                ]
             );
             $corrections_to_member->attach($__correction);
         }
@@ -369,10 +369,10 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
             array_key_exists(4, $correction) ? 'QUIZ_MISTAKE_EXPLAINED_COMCODE' : 'QUIZ_MISTAKE_COMCODE',
             $correction[1],
             comcode_to_tempcode(is_object($correction[3]) ? $correction[3]->evaluate() : $correction[3]),
-            array(
+            [
                 comcode_to_tempcode(is_object($correction[2]) ? $correction[2]->evaluate() : $correction[2]),
                 comcode_to_tempcode(array_key_exists(4, $correction) ? $correction[4] : ''),
-            )
+            ]
         );
         $corrections_to_staff->attach($_correction);
     }
@@ -383,10 +383,10 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 'QUIZ_AFFIRMATION_HTML', // You could imagine this named as QUIZ_AFFIRMATION_EXPLAINED_HTML if you prefer
                 $affirmation[1],
                 comcode_to_tempcode(is_object($affirmation[3]) ? $affirmation[3]->evaluate() : $affirmation[3]),
-                array(
+                [
                     comcode_to_tempcode(is_object($affirmation[2]) ? $affirmation[2]->evaluate() : $affirmation[2]),
                     comcode_to_tempcode(array_key_exists(4, $affirmation) ? $affirmation[4] : ''),
-                )
+                ]
             );
             $affirmations_to_member->attach($__affirmation);
         }
@@ -413,7 +413,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
         $passed = false;
     }
 
-    return array(
+    return [
         $marks,
         $potential_extra_marks,
         $out_of,
@@ -431,7 +431,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
         $unknowns_to_staff,
         $given_answers_to_staff,
         $passed,
-    );
+    ];
 }
 
 /**

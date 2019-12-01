@@ -25,14 +25,14 @@ class db_correctness_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | (in_safe_mode() ? IGNORE_NONBUNDLED : 0), true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | (in_safe_mode() ? IGNORE_NONBUNDLED : 0), true, true, ['php']);
         $files[] = 'install.php';
 
-        $db_fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_table', 'm_name'));
+        $db_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_table', 'm_name']);
 
-        $db_indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_table', 'i_name'));
+        $db_indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_table', 'i_name']);
 
-        $table_fields = array('site' => array(), 'forum' => array());
+        $table_fields = ['site' => [], 'forum' => []];
         foreach ($db_fields as $db_field) {
             $forum = $this->is_forum_table($db_field['m_table']);
             if ($forum === null) {
@@ -46,19 +46,19 @@ class db_correctness_test_set extends cms_test_case
         $table_fields['forum_regexp'] = implode('|', $table_fields['_forum']);
         $this->table_fields = $table_fields;
 
-        $all_fields = array();
+        $all_fields = [];
         foreach ($db_fields as $field) {
             $table = $field['m_table'];
             $name = $field['m_name'];
 
             if (!isset($all_fields[$table])) {
-                $all_fields[$table] = array();
+                $all_fields[$table] = [];
             }
             $all_fields[$table][] = $name;
         }
         $this->all_fields = $all_fields;
 
-        $tables = array();
+        $tables = [];
         foreach (array_unique(collapse_1d_complexity('m_table', $db_fields)) as $table) {
             $forum = $this->is_forum_table($table);
             if ($forum === null) {
@@ -70,7 +70,7 @@ class db_correctness_test_set extends cms_test_case
         $tables['forum_regexp'] = implode('|', $tables['forum']);
         $this->tables = $tables;
 
-        $indexes = array('site' => array(), 'forum' => array());
+        $indexes = ['site' => [], 'forum' => []];
         foreach ($db_indices as $db_field) {
             $forum = $this->is_forum_table($db_field['i_table']);
             if ($forum === null) {
@@ -111,7 +111,7 @@ class db_correctness_test_set extends cms_test_case
     protected function _testNoBadTablePrefixing($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'sources/forum/none.php',
             'sources/users.php',
             '_tests/tests/unit_tests/db_correctness.php',
@@ -120,14 +120,14 @@ class db_correctness_test_set extends cms_test_case
             'sources/hooks/modules/admin_setupwizard/cns_forum.php',
             'sources/hooks/systems/cron/subscription_mails.php',
             'sources/upgrade_db_upgrade.php',
-        ))) {
+        ])) {
             return;
         }
 
         $this->assertTrue(strpos($c, ". get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
         $this->assertTrue(strpos($c, ". \$GLOBALS['SITE_DB']->get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\$GLOBALS\[\'FORUM_DB\'\]->get_table_prefix\(\) . \'(\w+)#', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $table = $matches[1][$i];
@@ -138,7 +138,7 @@ class db_correctness_test_set extends cms_test_case
 
     protected function _testGetTranslatedTempcodeMatchingFieldsAndTables($path, $c)
     {
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#get_translated_tempcode\(\'(\w+)\', [^,]*, \'(\w+)\'\)#', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $table = $matches[1][$i];
@@ -215,9 +215,9 @@ class db_correctness_test_set extends cms_test_case
     protected function _testSelectRef($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'sources/forum/none.php',
-        ))) {
+        ])) {
             return;
         }
 
@@ -270,10 +270,10 @@ class db_correctness_test_set extends cms_test_case
     protected function _testCreateRef($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'site/pages/modules/subscriptions.php',
             'adminzone/pages/modules/admin_version.php',
-        ))) {
+        ])) {
             return;
         }
 
@@ -287,10 +287,10 @@ class db_correctness_test_set extends cms_test_case
     protected function _testDropRef($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'site/pages/modules/subscriptions.php',
             'adminzone/pages/modules/admin_version.php',
-        ))) {
+        ])) {
             return;
         }
 
@@ -304,10 +304,10 @@ class db_correctness_test_set extends cms_test_case
     protected function _testCreateIndexRef($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'site/pages/modules/subscriptions.php',
             'adminzone/pages/modules/admin_version.php',
-        ))) {
+        ])) {
             return;
         }
 
@@ -321,10 +321,10 @@ class db_correctness_test_set extends cms_test_case
     protected function _testDeleteIndexRef($path, $c)
     {
         // Exceptions
-        if (in_array($path, array(
+        if (in_array($path, [
             'site/pages/modules/subscriptions.php',
             'adminzone/pages/modules/admin_version.php',
-        ))) {
+        ])) {
             return;
         }
 
@@ -352,7 +352,7 @@ class db_correctness_test_set extends cms_test_case
 
     protected function _testForumDbForumDriverMixup($path, $c)
     {
-        $driver_funcs = array(
+        $driver_funcs = [
             'cns_flood_control',
             'find_emoticons',
             'find_topic_id_for_topic_identifier',
@@ -431,27 +431,27 @@ class db_correctness_test_set extends cms_test_case
             'topic_url',
             'users_online_url',
             '_get_theme',
-        );
+        ];
         $bad_pattern = '#\$GLOBALS\[\'FORUM_DB\'\]->(' . implode('|', $driver_funcs) . ')\(#';
         $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-        $db_funcs = array(
+        $db_funcs = [
             'query.*',
-        );
+        ];
         $bad_pattern = '#\$GLOBALS\[\'FORUM_DRIVER\'\]->(' . implode('|', $db_funcs) . ')\(#';
         $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
     protected function is_forum_table($table)
     {
-        if (in_array($table, array(
+        if (in_array($table, [
             'group_privileges', 'member_privileges', 'group_category_access', 'member_category_access',
             'attachments', 'attachment_refs',
             'notifications_enabled',
             'translate',
             'member_tracking',
             'custom_comcode',
-        ))) {
+        ])) {
             return null;
         }
 

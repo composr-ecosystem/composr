@@ -31,7 +31,7 @@ class Hook_addon_registry_captcha
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_captcha
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_captcha
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_captcha'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_captcha'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_captcha
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/captcha.php',
             'sources/hooks/systems/snippets/captcha_wrong.php',
             'sources/hooks/systems/addon_registry/captcha.php',
@@ -158,7 +158,7 @@ class Hook_addon_registry_captcha
             'sources/hooks/systems/config/captcha_question_pages.php',
             'sources/hooks/systems/config/captcha_question_total.php',
             'sources/hooks/systems/config/captcha_questions.php',
-        );
+        ];
     }
 
     /**
@@ -168,10 +168,10 @@ class Hook_addon_registry_captcha
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/FORM_SCREEN_INPUT_CAPTCHA.tpl' => 'form_screen_input_captcha',
             'templates/CAPTCHA_LOOSE.tpl' => 'captcha_loose',
-        );
+        ];
     }
 
     /**
@@ -188,10 +188,10 @@ class Hook_addon_registry_captcha
 
         require_css('forms');
 
-        $input = do_lorem_template('FORM_SCREEN_INPUT_CAPTCHA', array(
+        $input = do_lorem_template('FORM_SCREEN_INPUT_CAPTCHA', [
             'TABINDEX' => placeholder_number(),
-        ));
-        $captcha = do_lorem_template('FORM_SCREEN_FIELD', array(
+        ]);
+        $captcha = do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => true,
             'NAME' => 'captcha',
@@ -200,10 +200,10 @@ class Hook_addon_registry_captcha
             'DESCRIPTION_SIDE' => '',
             'INPUT' => $input,
             'COMCODE' => '',
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('FORM_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('FORM_SCREEN', [
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
                 'TITLE' => lorem_title(),
@@ -212,8 +212,8 @@ class Hook_addon_registry_captcha
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
                 'TEXT' => lorem_sentence_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -226,16 +226,16 @@ class Hook_addon_registry_captcha
     public function tpl_preview__captcha_loose()
     {
         $name = placeholder_random_id();
-        $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', array(
+        $input = do_lorem_template('FORM_SCREEN_INPUT_TEXT', [
             'RAW' => true,
             'SCROLLS' => '',
             'TABINDEX' => placeholder_number(),
             'REQUIRED' => '',
             'NAME' => $name,
             'DEFAULT' => '',
-        ));
+        ]);
         $fields = new Tempcode();
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array(
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => false,
             'NAME' => $name,
@@ -244,9 +244,9 @@ class Hook_addon_registry_captcha
             'DESCRIPTION_SIDE' => '',
             'INPUT' => $input,
             'COMCODE' => '',
-        )));
+        ]));
 
-        $tpl = do_lorem_template('FORM', array(
+        $tpl = do_lorem_template('FORM', [
             'GET' => null,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
@@ -256,11 +256,11 @@ class Hook_addon_registry_captcha
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
             'TEXT' => lorem_sentence_html(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('CAPTCHA_LOOSE', array(
-            )), null, '', true)
-        );
+        return [
+            lorem_globalise(do_lorem_template('CAPTCHA_LOOSE', [
+            ]), null, '', true)
+        ];
     }
 }

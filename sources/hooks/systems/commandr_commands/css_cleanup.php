@@ -34,13 +34,13 @@ class Hook_commandr_command_css_cleanup
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('css_cleanup', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('css_cleanup', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'css_cleanup'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'css_cleanup')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'css_cleanup'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'css_cleanup')];
             }
 
             require_code('css_cleanup');
@@ -58,7 +58,7 @@ class Hook_commandr_command_css_cleanup
                         break;
 
                     default:
-                        return array('', '', '', do_lang('MISSING_RESOURCE'));
+                        return ['', '', '', do_lang('MISSING_RESOURCE')];
                 }
 
                 $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
@@ -69,7 +69,7 @@ class Hook_commandr_command_css_cleanup
 
             $result = do_lang('SUCCESS');
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

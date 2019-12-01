@@ -32,12 +32,12 @@ function cns_make_post_template($title, $text, $forum_multi_code, $use_default_f
     require_code('global4');
     prevent_double_submit('ADD_POST_TEMPLATE', null, $title);
 
-    $id = $GLOBALS['FORUM_DB']->query_insert('f_post_templates', array(
+    $id = $GLOBALS['FORUM_DB']->query_insert('f_post_templates', [
         't_title' => $title,
         't_text' => $text,
         't_forum_multi_code' => $forum_multi_code,
         't_use_default_forums' => $use_default_forums,
-    ), true);
+    ], true);
 
     log_it('ADD_POST_TEMPLATE', strval($id), $title);
 
@@ -62,20 +62,20 @@ function cns_make_post_template($title, $text, $forum_multi_code, $use_default_f
 function cns_make_emoticon($code, $theme_img_code, $relevance_level = 1, $use_topics = 1, $is_special = 0)
 {
     if (!running_script('install')) {
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', array('e_code' => $code));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $code]);
         if ($test !== null) {
             require_lang('cns');
             warn_exit(do_lang_tempcode('CONFLICTING_EMOTICON_CODE', escape_html($test)));
         }
     }
 
-    $GLOBALS['FORUM_DB']->query_insert('f_emoticons', array(
+    $GLOBALS['FORUM_DB']->query_insert('f_emoticons', [
         'e_code' => $code,
         'e_theme_img_code' => $theme_img_code,
         'e_relevance_level' => $relevance_level,
         'e_use_topics' => $use_topics,
         'e_is_special' => $is_special,
-    ));
+    ]);
 
     if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
         require_code('resource_fs');
@@ -107,13 +107,13 @@ function cns_make_welcome_email($name, $subject, $text, $send_time, $newsletter 
     require_code('global4');
     prevent_double_submit('ADD_WELCOME_EMAIL', null, $subject);
 
-    $map = array(
+    $map = [
         'w_name' => $name,
         'w_newsletter' => $newsletter,
         'w_send_time' => $send_time,
         'w_usergroup' => $usergroup,
         'w_usergroup_type' => $usergroup_type,
-    );
+    ];
     $map += insert_lang('w_subject', $subject, 2);
     $map += insert_lang('w_text', $text, 2);
     $id = $GLOBALS['SITE_DB']->query_insert('f_welcome_emails', $map, true);

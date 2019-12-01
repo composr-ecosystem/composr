@@ -36,7 +36,7 @@ class Hook_unvalidated_quiz
 
         require_lang('quiz');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'quizzes';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'q_validated';

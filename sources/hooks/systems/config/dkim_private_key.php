@@ -30,7 +30,7 @@ class Hook_config_dkim_private_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DKIM_PRIVATE_KEY',
             'type' => 'text',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_dkim_private_key
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

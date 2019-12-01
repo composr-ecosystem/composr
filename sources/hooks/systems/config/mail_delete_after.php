@@ -30,7 +30,7 @@ class Hook_config_mail_delete_after
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAIL_DELETE_AFTER',
             'type' => 'integer',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_mail_delete_after
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

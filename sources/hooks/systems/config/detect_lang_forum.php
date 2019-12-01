@@ -30,7 +30,7 @@ class Hook_config_detect_lang_forum
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DETECT_LANG_FORUM',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_detect_lang_forum
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

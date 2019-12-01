@@ -67,7 +67,7 @@ function do_work()
         exit('Must run this script on command line, for security reasons');
     }
 
-    $deps = array(
+    $deps = [
         'authors',
         'banners',
         'calendar',
@@ -83,7 +83,7 @@ function do_work()
         'shopping',
         'tickets',
         'wiki',
-    );
+    ];
     foreach ($deps as $dep) {
         if (!addon_installed($dep)) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html($dep)));
@@ -121,7 +121,7 @@ function do_work()
             intval(date('d')), // dob_day
             intval(date('m')), // dob_month
             intval(date('Y')), // dob_year
-            array(), // custom_fields
+            [], // custom_fields
             null, // timezone
             '', // language
             '', // theme
@@ -157,11 +157,11 @@ function do_work()
         enable_notifications('cns_topic', strval(db_get_first_id()), $member_id);
 
         // number of friends to a single member
-        $GLOBALS['SITE_DB']->query_insert('chat_friends', array(
+        $GLOBALS['SITE_DB']->query_insert('chat_friends', [
             'member_likes' => $member_id,
             'member_liked' => db_get_first_id() + 1,
             'date_and_time' => time(),
-        ), false, true);
+        ], false, true);
     }
     $member_id = db_get_first_id() + 2;
     // point earn list / gift points to a single member
@@ -171,11 +171,11 @@ function do_work()
     }
     // number of friends of a single member
     for ($j = intval(floatval($GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)')) / 2.0); $j < $num_wanted; $j++) {
-        $GLOBALS['SITE_DB']->query_insert('chat_friends', array(
+        $GLOBALS['SITE_DB']->query_insert('chat_friends', [
             'member_likes' => $member_id,
             'member_liked' => $j + db_get_first_id(),
             'date_and_time' => time(),
-        ), false, true);
+        ], false, true);
     }
     echo 'done member/authors/points/notifications/friends stuff' . "\n";
 
@@ -202,7 +202,7 @@ function do_work()
         $file = uniqid('', false);
         /*$path = get_custom_file_base() . '/site/pages/comcode_custom/' . fallback_lang() . '/' . $file . '.txt';
         cms_file_put_contents_safe($path, random_text(), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);*/
-        $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+        $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
             'the_zone' => 'site',
             'the_page' => $file,
             'p_parent_page' => '',
@@ -212,7 +212,7 @@ function do_work()
             'p_submitter' => db_get_first_id(),
             'p_show_as_edit' => 0,
             'p_order' => 0,
-        ));
+        ]);
     }
     echo 'done comcode stuff' . "\n";
 
@@ -254,7 +254,7 @@ function do_work()
     $room_id = db_get_first_id() + 1;
     // messages in chatroom
     for ($j = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        $map = array(
+        $map = [
             'system_message' => 0,
             'ip_address' => '',
             'room_id' => $room_id,
@@ -262,7 +262,7 @@ function do_work()
             'date_and_time' => time(),
             'text_colour' => get_option('chat_default_post_colour'),
             'font_name' => get_option('chat_default_post_font'),
-        );
+        ];
         $map += insert_lang_comcode('the_message', random_text(), 4);
         $GLOBALS['SITE_DB']->query_insert('chat_messages', $map);
     }
@@ -287,13 +287,13 @@ function do_work()
         give_award(db_get_first_id(), strval($content_id), $time - $i);
     }
     $content_id = db_get_first_id();
-    $content_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $content_id), 'site');
+    $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], 'site');
     for ($j = $GLOBALS['SITE_DB']->query_select_value('trackbacks', 'COUNT(*)'); $j < $num_wanted; $j++) {
         // trackbacks
-        $GLOBALS['SITE_DB']->query_insert('trackbacks', array('trackback_for_type' => 'download', 'trackback_for_id' => strval($content_id), 'trackback_ip' => '', 'trackback_time' => time(), 'trackback_url' => '', 'trackback_title' => random_line(), 'trackback_excerpt' => random_text(), 'trackback_name' => random_line()));
+        $GLOBALS['SITE_DB']->query_insert('trackbacks', ['trackback_for_type' => 'download', 'trackback_for_id' => strval($content_id), 'trackback_ip' => '', 'trackback_time' => time(), 'trackback_url' => '', 'trackback_title' => random_line(), 'trackback_excerpt' => random_text(), 'trackback_name' => random_line()]);
 
         // ratings
-        $GLOBALS['SITE_DB']->query_insert('rating', array('rating_for_type' => 'download', 'rating_for_id' => strval($content_id), 'rating_member' => $j + 1, 'rating_ip' => '', 'rating_time' => time(), 'rating' => 3));
+        $GLOBALS['SITE_DB']->query_insert('rating', ['rating_for_type' => 'download', 'rating_for_id' => strval($content_id), 'rating_member' => $j + 1, 'rating_ip' => '', 'rating_time' => time(), 'rating' => 3]);
 
         // posts in a comment topic
         $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
@@ -320,7 +320,7 @@ function do_work()
     // forums under a forum (don't test it can display, just make sure the main index still works)
     require_code('cns_forums_action');
     for ($i = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        cns_make_forum(random_line(), random_text(), db_get_first_id(), array(), db_get_first_id() + 3);
+        cns_make_forum(random_line(), random_text(), db_get_first_id(), [], db_get_first_id() + 3);
     }
     // forum topics
     require_code('cns_topics_action');
@@ -401,12 +401,12 @@ function do_work()
         $cast = mt_rand(1, 6);
         $ip = uniqid('', true);
 
-        $GLOBALS['SITE_DB']->query_insert('poll_votes', array(
+        $GLOBALS['SITE_DB']->query_insert('poll_votes', [
             'v_poll_id' => $poll_id,
             'v_voter_id' => 2,
             'v_voter_ip' => $ip,
             'v_vote_for' => $cast,
-        ));
+        ]);
     }
     echo 'done polls stuff' . "\n";
 
@@ -443,7 +443,7 @@ function do_work()
 
     // logged hack attempts
     for ($i = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        $GLOBALS['SITE_DB']->query_insert('hackattack', array(
+        $GLOBALS['SITE_DB']->query_insert('hackattack', [
             'url' => get_base_url(),
             'data_post' => '',
             'user_agent' => '',
@@ -456,7 +456,7 @@ function do_work()
             'reason_param_a' => '',
             'reason_param_b' => '',
             'percentage_score' => 100,
-        ));
+        ]);
     }
     // logged hits in one day
     require_code('site');
@@ -472,7 +472,7 @@ function do_work()
     // blogs and news entries (remember to test both blogs [categories] list, and a list of all news entries)
     require_code('news2');
     for ($i = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        add_news(random_line(), random_text(), 'admin', 1, 1, 1, 1, '', random_text(), null, array(), null, db_get_first_id() + $i);
+        add_news(random_line(), random_text(), 'admin', 1, 1, 1, 1, '', random_text(), null, [], null, db_get_first_id() + $i);
     }
     echo 'done news stuff' . "\n";
 
@@ -502,7 +502,7 @@ function do_work()
         actual_add_catalogue($catalogue_name, random_line(), random_text(), mt_rand(0, 3), 1, '', 30);
     }
     $catalogue_name = 'products';
-    $root_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', array('c_name' => $catalogue_name));
+    $root_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'id', ['c_name' => $catalogue_name]);
     // catalogue categories under a subcategory (remember to test all catalogue views: atoz, index, and root cat)
     $subcat_id = actual_add_catalogue_category($catalogue_name, random_line(), random_text(), '', $root_id);
     for ($j = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)'); $j < $num_wanted; $j++) {
@@ -516,10 +516,10 @@ function do_work()
 
     // items in shopping catalogue
     require_code('catalogues2');
-    $cat_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', array('c_name' => 'products'));
-    $fields = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id'), array('c_name' => 'products')));
+    $cat_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => 'products']);
+    $fields = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['c_name' => 'products']));
     for ($i = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)'); $i < $num_wanted; $i++) {
-        $map = array(
+        $map = [
             $fields[0] => random_line(),
             $fields[1] => uniqid('', true),
             $fields[2] => '1.0',
@@ -530,27 +530,27 @@ function do_work()
             $fields[7] => get_logo_url(),
             $fields[8] => '2.0',
             $fields[9] => random_text(),
-        );
+        ];
         $pid = actual_add_catalogue_entry($cat_id, 1, '', 1, 1, 1, $map);
         unset($map);
     }
     // outstanding shopping orders
-    $pid = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'MIN(id)', array('c_name' => 'products'));
+    $pid = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'MIN(id)', ['c_name' => 'products']);
     if ($pid === null) {
         $pid = db_get_first_id();
     }
     require_code('shopping');
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_cart', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        $GLOBALS['SITE_DB']->query_insert('shopping_cart', array(
+        $GLOBALS['SITE_DB']->query_insert('shopping_cart', [
             'session_id' => get_secure_random_string(),
             'ordered_by' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
             'type_code' => strval(db_get_first_id()),
             'purchase_id' => strval(get_member()),
             'quantity' => 1,
-        ));
+        ]);
     }
     for ($j = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', array(
+        $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', [
             'member_id' => mt_rand(db_get_first_id() + 1, $num_wanted - 1),
             'session_id' => get_secure_random_string(),
             'add_date' => time(),
@@ -569,9 +569,9 @@ function do_work()
             'notes' => '',
             'purchase_through' => 'purchase_module',
             'txn_id' => '',
-        ), true);
+        ], true);
 
-        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', array(
+        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', [
             'p_type_code' => '123',
             'p_purchase_id' => '',
             'p_name' => random_line(),
@@ -582,7 +582,7 @@ function do_work()
             'p_tax' => 1.00,
             'p_order_id' => $order_id,
             'p_dispatch_status' => 'ORDER_STATUS_awaiting_payment',
-        ));
+        ]);
     }
     echo 'done store stuff' . "\n";
 
@@ -609,7 +609,7 @@ function do_work()
 
 function random_text()
 {
-    static $words = array('fish', 'cheese', 'soup', 'tomato', 'alphabet', 'whatever', 'cannot', 'be', 'bothered', 'to', 'type', 'many', 'more', 'will', 'be', 'here', 'all', 'day');
+    static $words = ['fish', 'cheese', 'soup', 'tomato', 'alphabet', 'whatever', 'cannot', 'be', 'bothered', 'to', 'type', 'many', 'more', 'will', 'be', 'here', 'all', 'day'];
     static $word_count = null;
     if ($word_count === null) {
         $word_count = count($words);
@@ -627,7 +627,7 @@ function random_text()
 
 function random_line()
 {
-    static $words = array('fish', 'cheese', 'soup', 'tomato', 'alphabet', 'whatever', 'cannot', 'be', 'bothered', 'to', 'type', 'many', 'more', 'will', 'be', 'here', 'all', 'day');
+    static $words = ['fish', 'cheese', 'soup', 'tomato', 'alphabet', 'whatever', 'cannot', 'be', 'bothered', 'to', 'type', 'many', 'more', 'will', 'be', 'here', 'all', 'day'];
     static $word_count = null;
     if ($word_count === null) {
         $word_count = count($words);

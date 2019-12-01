@@ -65,7 +65,7 @@ class Hook_fields_upload_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -92,7 +92,7 @@ class Hook_fields_upload_multi
             return '';
         }
 
-        $out = array();
+        $out = [];
         $evs = explode("\n", $ev);
         foreach ($evs as $ev) {
             $original_filename = basename($ev);
@@ -162,7 +162,7 @@ class Hook_fields_upload_multi
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
 
-        return array($ffield, $hidden);
+        return [$ffield, $hidden];
     }
 
     /**
@@ -187,7 +187,7 @@ class Hook_fields_upload_multi
 
             $value = '';
 
-            $_old_value = (($old_value === null) || ($old_value['cv_value'] == '')) ? array() : explode("\n", $old_value['cv_value']);
+            $_old_value = (($old_value === null) || ($old_value['cv_value'] == '')) ? [] : explode("\n", $old_value['cv_value']);
 
             require_code('uploads');
             is_plupload(true);

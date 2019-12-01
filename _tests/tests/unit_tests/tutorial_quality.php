@@ -51,8 +51,8 @@ class tutorial_quality_test_set extends cms_test_case
             $this->assertTrue($tutorial['author'] != '', 'Author undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['summary'] != '', 'Summary undefined for ' . $tutorial_name);
             $this->assertTrue($tutorial['icon'] != '', 'Icon undefined for ' . $tutorial_name);
-            $this->assertTrue($tutorial['tags'] != array(), 'Tags undefined for ' . $tutorial_name);
-            $this->assertTrue(array_intersect($tutorial['raw_tags'], array('novice', 'regular', 'expert')) != array(), 'No difficulty level defined for ' . $tutorial_name);
+            $this->assertTrue($tutorial['tags'] != [], 'Tags undefined for ' . $tutorial_name);
+            $this->assertTrue(array_intersect($tutorial['raw_tags'], ['novice', 'regular', 'expert']) != [], 'No difficulty level defined for ' . $tutorial_name);
         }
     }
 
@@ -111,7 +111,7 @@ class tutorial_quality_test_set extends cms_test_case
     protected function skip_tutorial($file)
     {
         // Not subject to ocProducts coding standards
-        if (in_array(basename($file, '.txt'), array('sup_youtube_channel_integration_block_addon_documentation'))) {
+        if (in_array(basename($file, '.txt'), ['sup_youtube_channel_integration_block_addon_documentation'])) {
             return true;
         }
 
@@ -136,7 +136,7 @@ class tutorial_quality_test_set extends cms_test_case
                     continue;
                 }
 
-                if (in_array(basename($file, '.txt'), array('sup_glossary', 'tut_addon_index'))) {
+                if (in_array(basename($file, '.txt'), ['sup_glossary', 'tut_addon_index'])) {
                     continue;
                 }
 
@@ -160,7 +160,7 @@ class tutorial_quality_test_set extends cms_test_case
             return;
         }
 
-        $data = array();
+        $data = [];
 
         $path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($path);
@@ -183,12 +183,12 @@ class tutorial_quality_test_set extends cms_test_case
                 $image_count = (substr_count($c, '[media')) + (substr_count($c, '[img')) + (substr_count($c, '[concepts')) + (substr_count($c, '[code')) + (substr_count($c, '[box')) + (substr_count($c, '{|')) + (substr_count($c, '<table'));
                 $size = strlen($c);
 
-                $data[] = array(
+                $data[] = [
                     'file' => $file,
                     'image_count' => $image_count,
                     'size' => $size,
                     'ratio' => 100.0 * floatval($image_count) / floatval($size), // % of bytes that are images
-                );
+                ];
             }
         }
         closedir($dh);
@@ -197,7 +197,7 @@ class tutorial_quality_test_set extends cms_test_case
             $file = $d['file'];
 
             // We'll make exceptions for a few wordy ones
-            if (in_array(basename($file, '.txt'), array('sup_glossary', 'tut_addon_index', 'faq', 'atag'))) {
+            if (in_array(basename($file, '.txt'), ['sup_glossary', 'tut_addon_index', 'faq', 'atag'])) {
                 continue;
             }
 

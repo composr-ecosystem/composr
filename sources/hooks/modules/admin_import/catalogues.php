@@ -34,7 +34,7 @@ class Hook_import_catalogues
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['product'] = 'Catalogues (spreadsheet files)';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'cms_catalogues';

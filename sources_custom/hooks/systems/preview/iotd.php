@@ -27,7 +27,7 @@ class Hook_preview_iotd
     {
         require_code('uploads');
         $applies = (addon_installed('iotds')) && (get_page_name() == 'cms_iotds') && ((get_param_string('type') == '_edit') || (get_param_string('type') == 'add')) && ((is_plupload()) || (!empty($_FILES)));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -49,7 +49,7 @@ class Hook_preview_iotd
 
         if ($url == '') {
             if (post_param_integer('id', null) !== null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('iotds', array('url', 'thumb_url'), array('id' => post_param_integer('id')), '', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('iotds', ['url', 'thumb_url'], ['id' => post_param_integer('id')], '', 1);
                 $urls = $rows[0];
 
                 $url = $urls['url'];
@@ -76,7 +76,7 @@ class Hook_preview_iotd
 
         $view_url = null;
 
-        $preview = do_template('IOTD_BOX', array(
+        $preview = do_template('IOTD_BOX', [
             '_GUID' => 'a6479902d2cd7b4119be7159147e0a0b',
             'VIEWS' => '',
             'THUMB' => $thumb,
@@ -94,8 +94,8 @@ class Hook_preview_iotd
             'SUBMITTER' => strval($submitter),
             'USERNAME' => $username,
             'GIVE_CONTEXT' => true,
-        ));
+        ]);
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

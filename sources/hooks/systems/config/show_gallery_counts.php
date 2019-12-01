@@ -30,7 +30,7 @@ class Hook_config_show_gallery_counts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_GALLERY_COUNTS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_show_gallery_counts
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

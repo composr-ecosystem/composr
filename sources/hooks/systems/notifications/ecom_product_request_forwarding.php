@@ -32,11 +32,11 @@ class Hook_notification_ecom_product_request_forwarding extends Hook_notificatio
     public function list_handled_codes()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ecom_product_request_forwarding'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_forwarding'));
+        $list = [];
+        $list['ecom_product_request_forwarding'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_ecom_product_request_forwarding')];
         return $list;
     }
 }

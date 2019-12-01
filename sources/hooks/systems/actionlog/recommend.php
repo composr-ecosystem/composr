@@ -31,20 +31,20 @@ class Hook_actionlog_recommend extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('recommend')) {
-            return array();
+            return [];
         }
 
         require_lang('recommend');
 
-        return array(
-            'RECOMMENDED' => array(
+        return [
+            'RECOMMENDED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                ),
-            ),
-        );
+                'followup_page_links' => [
+                ],
+            ],
+        ];
     }
 }

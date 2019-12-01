@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_usergroup_subscription
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'ecommerce:USERGROUP_SUBSCRIPTION',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_usergroup_subscription
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_USERGROUP_SUBSCRIPTION',
-        );
+        ];
     }
 }

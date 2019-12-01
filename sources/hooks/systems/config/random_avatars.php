@@ -30,7 +30,7 @@ class Hook_config_random_avatars
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ASSIGN_RANDOM_AVATARS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_random_avatars
             'required' => true,
             'public' => false,
             'addon' => 'cns_member_avatars',
-        );
+        ];
     }
 
     /**

@@ -30,14 +30,14 @@ class Block_main_image_fader_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('title', 'max', 'time', 'param', 'zone', 'blogs', 'as_guest', 'check');
+        $info['parameters'] = ['title', 'max', 'time', 'param', 'zone', 'blogs', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_image_fader_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
@@ -83,7 +83,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'rj087xxp2oo40zaibz8iyzwsxm8a6jok', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'rj087xxp2oo40zaibz8iyzwsxm8a6jok', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         require_lang('news');
@@ -149,17 +149,17 @@ PHP;
 
         $query = 'SELECT r.* FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . $select_sql . $q_filter . ' AND validated=1 ORDER BY date_and_time DESC';
         $all_rows = $GLOBALS['SITE_DB']->query($query, 100/*reasonable amount*/);
-        $news = array();
+        $news = [];
         require_code('images');
         foreach ($all_rows as $row) {
-            $just_news_row = db_map_restrict($row, array('id', 'title', 'news', 'news_article'));
+            $just_news_row = db_map_restrict($row, ['id', 'title', 'news', 'news_article']);
 
             $title = get_translated_tempcode('news', $just_news_row, 'title');
 
             $image_url = $row['news_image'];
             if ($image_url == '') {
                 $article = get_translated_text($row['news_article']);
-                $matches = array();
+                $matches = [];
                 if (preg_match('#["\'\]](http:[^\'"\[\]]+\.(jpeg|jpg|gif|png))["\'\[]#i', $article, $matches) != 0) {
                     $image_url = $matches[1];
                 } else {
@@ -170,7 +170,7 @@ PHP;
                 $image_url = get_custom_base_url() . '/' . $image_url;
             }
 
-            $url_map = array('page' => 'news', 'type' => 'view', 'id' => $row['id'], 'select' => ($cat == '') ? null : $cat);
+            $url_map = ['page' => 'news', 'type' => 'view', 'id' => $row['id'], 'select' => ($cat == '') ? null : $cat];
             if ($blogs === 1) {
                 $url_map['blog'] = 1;
             }
@@ -187,9 +187,9 @@ PHP;
             $date = get_timezoned_date_time_tempcode($row['date_and_time']);
             $date_raw = strval($row['date_and_time']);
 
-            $author_url = (addon_installed('authors')) ? build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $row['author']), get_module_zone('authors')) : new Tempcode();
+            $author_url = (addon_installed('authors')) ? build_url(['page' => 'authors', 'type' => 'browse', 'id' => $row['author']], get_module_zone('authors')) : new Tempcode();
 
-            $news[] = array(
+            $news[] = [
                 'TITLE' => $title,
                 'IMAGE_URL' => $image_url,
                 'URL' => $url,
@@ -199,7 +199,7 @@ PHP;
                 'SUBMITTER' => strval($row['submitter']),
                 'AUTHOR' => $row['author'],
                 'AUTHOR_URL' => $author_url,
-            );
+            ];
 
             if (count($news) == $max) {
                 break;
@@ -208,10 +208,10 @@ PHP;
 
         if (empty($news)) {
             $submit_url = null;
-            if ((has_actual_page_access(null, ($blogs === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), ($blogs === 1) ? 'cms_blogs' : 'cms_news', array('news', $cat)))) {
-                $submit_url = build_url(array('page' => ($blogs === 1) ? 'cms_blogs' : 'cms_news', 'type' => 'add', 'cat' => $cat, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone(($blogs === 1) ? 'cms_blogs' : 'cms_news'));
+            if ((has_actual_page_access(null, ($blogs === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), ($blogs === 1) ? 'cms_blogs' : 'cms_news', ['news', $cat]))) {
+                $submit_url = build_url(['page' => ($blogs === 1) ? 'cms_blogs' : 'cms_news', 'type' => 'add', 'cat' => $cat, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone(($blogs === 1) ? 'cms_blogs' : 'cms_news'));
             }
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'ba84d65b8dd134ba6cd7b1b7bde99de2',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => false,
@@ -219,22 +219,22 @@ PHP;
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'news'),
                 'ADD_NAME' => do_lang_tempcode('ADD_NEWS'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
 
-        $tmp = array('page' => 'news', 'type' => 'browse', 'select' => ($cat == '') ? null : $cat);
+        $tmp = ['page' => 'news', 'type' => 'browse', 'select' => ($cat == '') ? null : $cat];
         if ($blogs != -1) {
             $tmp['blog'] = $blogs;
         }
         $archive_url = build_url($tmp, $zone);
 
-        return do_template('BLOCK_MAIN_IMAGE_FADER_NEWS', array(
+        return do_template('BLOCK_MAIN_IMAGE_FADER_NEWS', [
             '_GUID' => 'dbe34e6f670edfd74b15d3c4afbe615e',
             'BLOCK_ID' => $block_id,
             'TITLE' => $main_title,
             'ARCHIVE_URL' => $archive_url,
             'NEWS' => $news,
             'MILL' => strval($mill),
-        ));
+        ]);
     }
 }

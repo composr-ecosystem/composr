@@ -25,7 +25,7 @@ class Hook_config_member_comments_forum_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MEMBER_COMMENTS_FORUM_NAME',
             'type' => 'forum',
             'category' => 'USER_INTERACTION',
@@ -38,7 +38,7 @@ class Hook_config_member_comments_forum_name
             'public' => false,
 
             'addon' => 'member_comments',
-        );
+        ];
     }
 
     /**

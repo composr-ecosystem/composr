@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_forum
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,13 +61,13 @@ class Hook_addon_registry_cns_forum
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_forums',
             'tut_adv_forums',
             'tut_forum_tracking',
             'tut_moderation',
             'tut_information',
-        );
+        ];
     }
 
     /**
@@ -77,13 +77,13 @@ class Hook_addon_registry_cns_forum
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(
+        return [
+            'requires' => [],
+            'recommends' => [
                 'polls',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -103,7 +103,7 @@ class Hook_addon_registry_cns_forum
      */
     public function get_file_list()
     {
-        return array(
+        return [
 
             'themes/default/images/icons/menu/social/forum/inline_personal_posts.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/posting_rates.svg',
@@ -345,7 +345,7 @@ class Hook_addon_registry_cns_forum
             'sources/cns_forum_email_integration.php',
             'themes/default/text/CNS_POST_FROM_MAILING_LIST.txt',
             'sources/hooks/systems/actionlog/cns_forum.php',
-        );
+        ];
     }
 
     /**
@@ -355,7 +355,7 @@ class Hook_addon_registry_cns_forum
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_TOPIC_POST_AVATAR.tpl' => 'cns_topic_not_voted_checkboxes_wrap',
             'templates/CNS_FORUM_TOPIC_WRAPPER.tpl' => 'cns_forum',
             'templates/CNS_EDIT_FORUM_SCREEN_GROUPING.tpl' => 'administrative__cns_edit_forum_screen',
@@ -414,7 +414,7 @@ class Hook_addon_registry_cns_forum
             'templates/CNS_MEMBER_PROFILE_PTS.tpl' => 'cns_member_profile_pts',
             'templates/CNS_VFORUM_FILTERING.tpl' => 'cns_vforum_filtering',
             'text/CNS_POST_FROM_MAILING_LIST.txt' => 'cns_post_from_mailing_list',
-        );
+        ];
     }
 
     /**
@@ -426,9 +426,9 @@ class Hook_addon_registry_cns_forum
      */
     public function tpl_preview__cns_vforum_filtering()
     {
-        $filtering = do_lorem_template('CNS_VFORUM_FILTERING', array());
+        $filtering = do_lorem_template('CNS_VFORUM_FILTERING', []);
 
-        $content = do_lorem_template('CNS_FORUM', array(
+        $content = do_lorem_template('CNS_FORUM', [
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'FILTERS' => '',
             'FILTERING' => $filtering,
@@ -440,16 +440,16 @@ class Hook_addon_registry_cns_forum
             'ID' => placeholder_id(),
             'DESCRIPTION' => lorem_phrase(),
             'PARENT_FORUM' => '',
-        ));
+        ]);
 
-        $screen = do_lorem_template('CNS_FORUM_SCREEN', array(
+        $screen = do_lorem_template('CNS_FORUM_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($screen, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -463,8 +463,8 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_PRIVATE_TOPIC_LINK', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_PRIVATE_TOPIC_LINK', [
                 'TOPIC_URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
@@ -483,8 +483,8 @@ class Hook_addon_registry_cns_forum
                 'POSTER_ID' => placeholder_id(),
                 'NUM_POSTS' => placeholder_number(),
                 'HAS_READ' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -505,13 +505,13 @@ class Hook_addon_registry_cns_forum
 
         $orderings = '<label for="order_' . strval(1) . '">' . do_lang('SORT') . ' <select id="order_' . strval(1) . '" name="order_' . strval(1) . '">' . $orderings . '</select></label>';
 
-        $forum_groupings = do_lorem_template('CNS_EDIT_FORUM_SCREEN_GROUPING', array(
+        $forum_groupings = do_lorem_template('CNS_EDIT_FORUM_SCREEN_GROUPING', [
             'ORDERINGS' => $orderings,
             'GROUPING' => lorem_word_2(),
             'SUBFORUMS' => lorem_phrase(),
-        ));
+        ]);
 
-        $root_forum = do_lorem_template('CNS_EDIT_FORUM_SCREEN_FORUM', array(
+        $root_forum = do_lorem_template('CNS_EDIT_FORUM_SCREEN_FORUM', [
             'ID' => placeholder_id(),
             'ORDERINGS' => lorem_phrase(),
             'FORUM_GROUPINGS' => $forum_groupings,
@@ -519,15 +519,15 @@ class Hook_addon_registry_cns_forum
             'FORUM' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
             'EDIT_URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_EDIT_FORUM_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_EDIT_FORUM_SCREEN', [
                 'REORDER_URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'ROOT_FORUM' => $root_forum,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -541,14 +541,14 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_RANK_IMAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_RANK_IMAGE', [
                 'GROUP_NAME' => lorem_word(),
                 'USERNAME' => lorem_word(),
                 'IMG' => 'cns_rank_images/' . placeholder_img_code('cns_rank_images'),
                 'IS_LEADER' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -566,49 +566,49 @@ class Hook_addon_registry_cns_forum
 
         $first_unread = do_lorem_template('CNS_TOPIC_FIRST_UNREAD');
 
-        $last_edited = do_lorem_template('CNS_TOPIC_POST_LAST_EDITED', array(
+        $last_edited = do_lorem_template('CNS_TOPIC_POST_LAST_EDITED', [
             'LAST_EDIT_DATE_RAW' => placeholder_date_raw(),
             'LAST_EDIT_DATE' => placeholder_date(),
             'LAST_EDIT_PROFILE_URL' => placeholder_url(),
             'LAST_EDIT_USERNAME' => lorem_word(),
-        ));
+        ]);
 
-        $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array(
+        $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
             'NAME' => lorem_phrase(),
             'VALUE' => placeholder_ip(),
-        ));
+        ]);
 
-        $poster_details = do_lorem_template('CNS_GUEST_DETAILS', array(
+        $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
             'CUSTOM_FIELDS' => $custom_fields,
-        ));
+        ]);
 
-        $poster = do_lorem_template('CNS_POSTER_GUEST', array(
+        $poster = do_lorem_template('CNS_POSTER_GUEST', [
             'LOOKUP_IP_URL' => placeholder_url(),
             'POSTER_DETAILS' => $poster_details,
             'POSTER_USERNAME' => lorem_word(),
-        ));
+        ]);
 
-        $post_avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', array(
+        $post_avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', [
             'AVATAR' => placeholder_image_url(),
-        ));
+        ]);
 
-        $rank_images = do_lorem_template('CNS_RANK_IMAGE', array(
+        $rank_images = do_lorem_template('CNS_RANK_IMAGE', [
             'GROUP_NAME' => lorem_phrase(),
             'USERNAME' => lorem_word(),
             'IMG' => 'cns_rank_images/' . placeholder_img_code('cns_rank_images'),
             'IS_LEADER' => lorem_phrase(),
-        ));
+        ]);
 
-        $buttons = do_lorem_template('BUTTON_SCREEN_ITEM', array(
+        $buttons = do_lorem_template('BUTTON_SCREEN_ITEM', [
             'REL' => lorem_word(),
             'IMMEDIATE' => false,
             'IMG' => 'buttons/proceed',
             'URL' => placeholder_url(),
             'FULL_TITLE' => lorem_phrase(),
             'TITLE' => lorem_word(),
-        ));
+        ]);
 
-        $map = array(
+        $map = [
             'ID' => placeholder_id(),
             'GIVE_CONTEXT' => false,
             'TOPIC_FIRST_POST_ID' => placeholder_id(),
@@ -635,18 +635,18 @@ class Hook_addon_registry_cns_forum
             'SIGNATURE' => lorem_phrase(),
             'UNVALIDATED' => lorem_phrase(),
             'DESCRIPTION' => lorem_phrase(),
-        );
+        ];
         $post = do_lorem_template('CNS_TOPIC_POST', $map);
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_POST_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_POST_BOX', [
                 'GIVE_CONTEXT' => true,
                 'ID' => placeholder_id(),
                 'POST' => $post,
                 'URL' => placeholder_url(),
                 'BREADCRUMBS' => lorem_phrase(),
-            ) + $map + array('ACTUAL_POST' => $post)), null, '', true)
-        );
+            ] + $map + ['ACTUAL_POST' => $post]), null, '', true)
+        ];
     }
 
     /**
@@ -662,8 +662,8 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_CNS_INVOLVED_TOPICS', [
                 'BLOCK_ID' => lorem_word(),
                 'TOPICS' => lorem_paragraph_html(),
                 'BLOCK_PARAMS' => '',
@@ -672,8 +672,8 @@ class Hook_addon_registry_cns_forum
                 'MAX' => '10',
                 'START_PARAM' => 'x_start',
                 'MAX_PARAM' => 'x_max',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -691,7 +691,7 @@ class Hook_addon_registry_cns_forum
 
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('CNS_PRIVATE_TOPIC_LINK', array(
+            $out->attach(do_lorem_template('CNS_PRIVATE_TOPIC_LINK', [
                 'TOPIC_URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
@@ -710,18 +710,18 @@ class Hook_addon_registry_cns_forum
                 'POSTER_ID' => placeholder_id(),
                 'NUM_POSTS' => placeholder_number(),
                 'HAS_READ' => true,
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_CNS_PRIVATE_TOPICS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_CNS_PRIVATE_TOPICS', [
                 'BLOCK_ID' => lorem_word(),
                 'SEND_URL' => placeholder_url(),
                 'VIEW_URL' => placeholder_url(),
                 'CONTENT' => $out,
                 'FORUM_NAME' => lorem_word_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -735,12 +735,12 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_FORUM_TOPIC_LIST_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_FORUM_TOPIC_LIST_LINE', [
                 'PRE' => lorem_phrase(),
                 'TOPIC_TITLE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -754,13 +754,13 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_FORUM_LIST_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_FORUM_LIST_LINE', [
                 'PRE' => lorem_phrase(),
                 'NAME' => lorem_word(),
                 'CAT_BIT' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -776,14 +776,14 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $content = do_lorem_template('CNS_FORUM_INTRO_QUESTION_POPUP', array(
+        $content = do_lorem_template('CNS_FORUM_INTRO_QUESTION_POPUP', [
             'QUESTION' => lorem_phrase(),
             'ANSWER' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -799,23 +799,23 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $bar = do_lorem_template('CNS_GUEST_BAR', array(
+        $bar = do_lorem_template('CNS_GUEST_BAR', [
             'LOGIN_URL' => placeholder_url(),
             'JOIN_URL' => placeholder_url(),
             'FULL_LOGIN_URL' => placeholder_url(),
             'INLINE_PERSONAL_POSTS_URL' => placeholder_url(),
             'NEW_POSTS_URL' => placeholder_url(),
             'UNANSWERED_TOPICS_URL' => placeholder_url(),
-        ));
+        ]);
 
-        $member_bar = do_lorem_template('BLOCK_MAIN_MEMBER_BAR', array(
+        $member_bar = do_lorem_template('BLOCK_MAIN_MEMBER_BAR', [
             'BLOCK_ID' => lorem_word(),
             'BAR' => $bar,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($member_bar, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -831,11 +831,11 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $bar = do_template('MEMBER_BAR_SEARCH', array());
+        $bar = do_template('MEMBER_BAR_SEARCH', []);
 
-        return array(
+        return [
             lorem_globalise($bar, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -852,19 +852,19 @@ class Hook_addon_registry_cns_forum
         require_lang('cns');
 
         $details = new Tempcode();
-        $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE', array(
+        $details->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINE', [
             'KEY' => lorem_word(),
             'VALUE' => placeholder_number(),
-        )));
+        ]));
 
         $links = new Tempcode();
-        $links->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINK', array(
+        $links->attach(do_lorem_template('BLOCK_SIDE_PERSONAL_STATS_LINK', [
             'NAME' => lorem_word(),
             'URL' => placeholder_url(),
             'REL' => 'me',
-        )));
+        ]));
 
-        $bar = do_template('CNS_MEMBER_BAR', array(
+        $bar = do_template('CNS_MEMBER_BAR', [
             '_GUID' => 'd26f142a850c232ef14ec6de627cef4a',
             'AVATAR_URL' => placeholder_image_url(),
             'PROFILE_URL' => placeholder_url(),
@@ -891,16 +891,16 @@ class Hook_addon_registry_cns_forum
             'LINKS' => $links,
             'LINKS_ECOMMERCE' => $links,
             'DETAILS' => $details,
-        ));
+        ]);
 
-        $member_bar = do_lorem_template('BLOCK_MAIN_MEMBER_BAR', array(
+        $member_bar = do_lorem_template('BLOCK_MAIN_MEMBER_BAR', [
             'BLOCK_ID' => lorem_word(),
             'BAR' => $bar,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($member_bar, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -916,7 +916,7 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $notifications = do_lorem_template('CNS_NOTIFICATION', array(
+        $notifications = do_lorem_template('CNS_NOTIFICATION', [
             'ADDITIONAL_POSTS' => placeholder_number(),
             '_ADDITIONAL_POSTS' => lorem_phrase(),
             'ID' => placeholder_id(),
@@ -932,16 +932,16 @@ class Hook_addon_registry_cns_forum
             'BY' => lorem_phrase(),
             'PROFILE_URL' => placeholder_url(),
             'TYPE' => lorem_phrase(),
-        ));
+        ]);
 
-        $notifications_bar = do_lorem_template('BLOCK_MAIN_PT_NOTIFICATIONS', array(
+        $notifications_bar = do_lorem_template('BLOCK_MAIN_PT_NOTIFICATIONS', [
             'BLOCK_ID' => lorem_word(),
             'NOTIFICATIONS' => $notifications,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($notifications_bar, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -957,17 +957,17 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $birthdays = array();
+        $birthdays = [];
         foreach (placeholder_array() as $k => $v) {
-            $birthdays[] = array(
+            $birthdays[] = [
                 'AGE' => placeholder_number(),
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_word(),
                 'BIRTHDAY_URL' => placeholder_url(),
-            );
+            ];
         }
 
-        $foot = do_lorem_template('BLOCK_MAIN_BOTTOM_BAR', array(
+        $foot = do_lorem_template('BLOCK_MAIN_BOTTOM_BAR', [
             'BLOCK_ID' => lorem_word(),
             'NEWEST_MEMBER_PROFILE_URL' => placeholder_url(),
             'NEWEST_MEMBER_USERNAME' => lorem_word(),
@@ -982,11 +982,11 @@ class Hook_addon_registry_cns_forum
             'GCOLOUR' => lorem_word(),
             'GTITLE' => lorem_word(),
             'GROUPS' => placeholder_array(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($foot, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1002,14 +1002,14 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_FORUM_INTRO_QUESTION_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_FORUM_INTRO_QUESTION_SCREEN', [
                 'ANSWER' => lorem_phrase(),
                 'TITLE' => lorem_title(),
                 'URL' => placeholder_url(),
                 'QUESTION' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -1027,57 +1027,57 @@ class Hook_addon_registry_cns_forum
 
         $buttons = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $buttons->attach(do_lorem_template('BUTTON_SCREEN', array(
+            $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
                 'REL' => lorem_word(),
                 'URL' => placeholder_url(),
                 'IMG' => 'buttons/proceed',
                 'TITLE' => lorem_word(),
                 'IMMEDIATE' => false,
-            )));
+            ]));
         }
 
         $topics = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $marker = do_lorem_template('CNS_TOPIC_MARKER', array(
+            $marker = do_lorem_template('CNS_TOPIC_MARKER', [
                 'ID' => placeholder_id() . strval($k),
-            ));
+            ]);
 
-            $topic_row_links = array();
-            $topic_row_links[] = array(
+            $topic_row_links = [];
+            $topic_row_links[] = [
                 'URL' => placeholder_url(),
                 'IMG' => placeholder_img_code('icons/cns_topic_modifiers'),
                 'ALT' => lorem_phrase(),
-            );
+            ];
 
-            $topic_row_modifiers = array();
-            $topic_row_modifiers[] = array(
+            $topic_row_modifiers = [];
+            $topic_row_modifiers[] = [
                 'IMG' => placeholder_img_code('icons/cns_topic_modifiers'),
                 'ALT' => lorem_phrase(),
-            );
+            ];
 
-            $b = do_lorem_template('CNS_USER_MEMBER', array(
+            $b = do_lorem_template('CNS_USER_MEMBER', [
                 'FIRST' => true,
                 'COLOUR' => lorem_word(),
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
                 'AT' => lorem_phrase(),
-            ));
+            ]);
 
-            $poster = do_lorem_template('CNS_PT_BETWEEN', array(
+            $poster = do_lorem_template('CNS_PT_BETWEEN', [
                 'A' => lorem_phrase(),
                 'B' => $b,
-            ));
+            ]);
 
-            $last_post = do_lorem_template('CNS_FORUM_TOPIC_ROW_LAST_POST', array(
+            $last_post = do_lorem_template('CNS_FORUM_TOPIC_ROW_LAST_POST', [
                 'ID' => placeholder_id(),
                 'DATE_RAW' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'POSTER' => lorem_phrase(),
                 'LAST_URL' => placeholder_url(),
-            ));
+            ]);
 
-            $topics->attach(do_lorem_template('CNS_FORUM_TOPIC_ROW', array(
+            $topics->attach(do_lorem_template('CNS_FORUM_TOPIC_ROW', [
                 'BREADCRUMBS' => placeholder_breadcrumbs(),
                 'RAW_TIME' => placeholder_date_raw(),
                 'UNREAD' => lorem_phrase(),
@@ -1088,7 +1088,7 @@ class Hook_addon_registry_cns_forum
                 'MARKER' => $marker,
                 'TOPIC_ROW_LINKS' => $topic_row_links,
                 'TOPIC_ROW_MODIFIERS' => $topic_row_modifiers,
-                '_TOPIC_ROW_MODIFIERS' => array(),
+                '_TOPIC_ROW_MODIFIERS' => [],
                 'POST' => lorem_phrase(),
                 'EMOTICON' => 'cns_emoticons/' . placeholder_img_code('cns_emoticons'),
                 'DESCRIPTION' => lorem_paragraph(),
@@ -1099,22 +1099,22 @@ class Hook_addon_registry_cns_forum
                 'NUM_POSTS' => placeholder_number(),
                 'NUM_VIEWS' => placeholder_number(),
                 'LAST_POST' => $last_post,
-            )));
+            ]));
         }
 
         $forum_groupings = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
             $forums = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $poster = do_lorem_template('CNS_USER_MEMBER', array(
+                $poster = do_lorem_template('CNS_USER_MEMBER', [
                     'FIRST' => true,
                     'USERNAME' => lorem_word(),
                     'MEMBER_ID' => placeholder_id(),
                     'PROFILE_URL' => placeholder_url(),
                     'AT' => lorem_phrase(),
-                ));
+                ]);
 
-                $latest = do_lorem_template('CNS_FORUM_LATEST', array(
+                $latest = do_lorem_template('CNS_FORUM_LATEST', [
                     'DATE' => placeholder_date(),
                     'DATE_RAW' => placeholder_date_raw(),
                     'TOPIC_URL' => placeholder_url(),
@@ -1122,9 +1122,9 @@ class Hook_addon_registry_cns_forum
                     'POSTER' => $poster,
                     'MEMBER_ID' => placeholder_id(),
                     'ID' => placeholder_id(),
-                ));
+                ]);
 
-                $forums->attach(do_lorem_template('CNS_FORUM_IN_GROUPING', array(
+                $forums->attach(do_lorem_template('CNS_FORUM_IN_GROUPING', [
                     'ID' => placeholder_random_id(),
                     'NEW_POST_OR_NOT' => placeholder_img_code('icons/cns_general'),
                     'LANG_NEW_POST_OR_NOT' => lorem_word(),
@@ -1138,29 +1138,29 @@ class Hook_addon_registry_cns_forum
                     'EDIT_URL' => placeholder_url(),
                     'FORUM_RULES_URL' => placeholder_url(),
                     'INTRO_QUESTION_URL' => placeholder_url(),
-                )));
+                ]));
                 if ($_k == 1) {
-                    $forums->attach(do_lorem_template('CNS_PINNED_DIVIDER', array()));
+                    $forums->attach(do_lorem_template('CNS_PINNED_DIVIDER', []));
                 }
             }
 
-            $forum_groupings->attach(do_lorem_template('CNS_FORUM_GROUPING', array(
+            $forum_groupings->attach(do_lorem_template('CNS_FORUM_GROUPING', [
                 'GROUPING_ID' => placeholder_random_id(),
                 'EXPAND_TYPE' => 'expand',
                 'DISPLAY' => 'block',
                 'GROUPING_TITLE' => lorem_phrase(),
                 'GROUPING_DESCRIPTION' => lorem_phrase(),
                 'FORUMS' => $forums,
-            )));
+            ]));
         }
 
-        $filters = do_lorem_template('CNS_PT_FILTERS', array(
-            'FILTERS' => array(),
+        $filters = do_lorem_template('CNS_PT_FILTERS', [
+            'FILTERS' => [],
             'RESET_URL' => placeholder_url(),
-        ));
+        ]);
 
         $pagination = placeholder_pagination();
-        $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', array(
+        $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', [
             'TYPE' => 'browse',
             'MAX' => lorem_phrase(),
             'SORT' => lorem_phrase(),
@@ -1173,8 +1173,8 @@ class Hook_addon_registry_cns_forum
             'ACTION_URL' => placeholder_url(),
             'TOPICS' => $topics,
             'FORUM_NAME' => lorem_word(),
-        ));
-        $content = do_lorem_template('CNS_FORUM', array(
+        ]);
+        $content = do_lorem_template('CNS_FORUM', [
             'BREADCRUMBS' => placeholder_breadcrumbs(),
             'FILTERS' => $filters,
             'FORUM_NAME' => lorem_word_html(),
@@ -1186,31 +1186,31 @@ class Hook_addon_registry_cns_forum
             'DESCRIPTION' => lorem_phrase(),
             'MAIL_EMAIL_ADDRESS' => 'example@example.com',
             'PARENT_FORUM' => '',
-        ));
+        ]);
 
         $members_viewing = new Tempcode();
         foreach (placeholder_array() as $_k => $_v) {
-            $members_viewing->attach(do_lorem_template('CNS_USER_MEMBER', array(
+            $members_viewing->attach(do_lorem_template('CNS_USER_MEMBER', [
                 'FIRST' => true,
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
                 'AT' => lorem_phrase(),
                 'COLOUR' => lorem_word(),
-            )));
+            ]));
         }
 
-        $screen = do_lorem_template('CNS_FORUM_SCREEN', array(
+        $screen = do_lorem_template('CNS_FORUM_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => $content,
             'NUM_GUESTS' => placeholder_number(),
             'NUM_MEMBERS' => placeholder_number(),
             'MEMBERS_VIEWING' => $members_viewing,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($screen, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1226,14 +1226,14 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $content = do_lorem_template('CNS_VFORUM_SCREEN', array(
+        $content = do_lorem_template('CNS_VFORUM_SCREEN', [
             'TITLE' => lorem_title(),
             'CONTENT' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1249,13 +1249,13 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_WHISPER_CHOICE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_WHISPER_CHOICE_SCREEN', [
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'USERNAME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -1269,15 +1269,15 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_QUOTE_FCOMCODE', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_QUOTE_FCOMCODE', [
                 'ID' => placeholder_id(),
                 'TITLE' => lorem_phrase(),
                 'POST' => lorem_phrase(),
                 'BY' => lorem_phrase(),
                 'BY_ID' => placeholder_id(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -1293,15 +1293,15 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_MEMBER_PT_RULES_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_MEMBER_PT_RULES_SCREEN', [
                 'TITLE' => lorem_title(),
                 'USERNAME' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
                 'URL' => placeholder_url(),
                 'RULES' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -1322,11 +1322,11 @@ class Hook_addon_registry_cns_forum
             $posts->attach(lorem_paragraph_html());
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_POSTING_SCREEN_POSTS', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_POSTING_SCREEN_POSTS', [
                 'POSTS' => $posts,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -1343,46 +1343,46 @@ class Hook_addon_registry_cns_forum
         $topics = new Tempcode();
         if (addon_installed('cns_forum')) {
             foreach (placeholder_array() as $k => $v) {
-                $marker = do_lorem_template('CNS_TOPIC_MARKER', array(
+                $marker = do_lorem_template('CNS_TOPIC_MARKER', [
                     'ID' => placeholder_id() . strval($k),
-                ));
+                ]);
 
-                $topic_row_links = array();
-                $topic_row_links[] = array(
+                $topic_row_links = [];
+                $topic_row_links[] = [
                     'URL' => placeholder_url(),
                     'IMG' => placeholder_img_code('icons/cns_topic_modifiers'),
                     'ALT' => lorem_phrase(),
-                );
+                ];
 
-                $topic_row_modifiers = array();
-                $topic_row_modifiers[] = array(
+                $topic_row_modifiers = [];
+                $topic_row_modifiers[] = [
                     'IMG' => placeholder_img_code('icons/cns_topic_modifiers'),
                     'ALT' => lorem_phrase(),
-                );
+                ];
 
-                $b = do_lorem_template('CNS_USER_MEMBER', array(
+                $b = do_lorem_template('CNS_USER_MEMBER', [
                     'FIRST' => true,
                     'COLOUR' => lorem_word(),
                     'PROFILE_URL' => placeholder_url(),
                     'USERNAME' => lorem_word(),
                     'MEMBER_ID' => placeholder_id(),
                     'AT' => lorem_phrase(),
-                ));
+                ]);
 
-                $poster = do_lorem_template('CNS_PT_BETWEEN', array(
+                $poster = do_lorem_template('CNS_PT_BETWEEN', [
                     'A' => lorem_phrase(),
                     'B' => $b,
-                ));
+                ]);
 
-                $last_post = do_lorem_template('CNS_FORUM_TOPIC_ROW_LAST_POST', array(
+                $last_post = do_lorem_template('CNS_FORUM_TOPIC_ROW_LAST_POST', [
                     'ID' => placeholder_id(),
                     'DATE_RAW' => placeholder_date_raw(),
                     'DATE' => placeholder_date(),
                     'POSTER' => lorem_phrase(),
                     'LAST_URL' => placeholder_url(),
-                ));
+                ]);
 
-                $topics->attach(do_lorem_template('CNS_FORUM_TOPIC_ROW', array(
+                $topics->attach(do_lorem_template('CNS_FORUM_TOPIC_ROW', [
                     'BREADCRUMBS' => placeholder_breadcrumbs(),
                     'RAW_TIME' => placeholder_date_raw(),
                     'UNREAD' => lorem_phrase(),
@@ -1403,7 +1403,7 @@ class Hook_addon_registry_cns_forum
                     'NUM_POSTS' => placeholder_number(),
                     'NUM_VIEWS' => placeholder_number(),
                     'LAST_POST' => $last_post,
-                )));
+                ]));
             }
         }
 
@@ -1411,7 +1411,7 @@ class Hook_addon_registry_cns_forum
 
         $buttons = lorem_phrase();
 
-        $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', array(
+        $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', [
             'TYPE' => '',
             'MAX' => lorem_phrase(),
             'SORT' => lorem_phrase(),
@@ -1424,15 +1424,15 @@ class Hook_addon_registry_cns_forum
             'ACTION_URL' => placeholder_url(),
             'TOPICS' => $topics,
             'FORUM_NAME' => lorem_word(),
-        ));
+        ]);
 
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_POSTS', array(
+        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_POSTS', [
             'MEMBER_ID' => placeholder_id(),
             'TOPICS' => $topic_wrapper,
-        ));
-        return array(
+        ]);
+        return [
             lorem_globalise($tab_content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1446,11 +1446,11 @@ class Hook_addon_registry_cns_forum
     {
         require_css('cns');
 
-        $tab_content = do_template('CNS_MEMBER_PROFILE_PTS', array('_GUID' => '1bcb43f6ded79efdc08cde4ee80be15d', 'CONTENT' => lorem_paragraph_html()));
+        $tab_content = do_template('CNS_MEMBER_PROFILE_PTS', ['_GUID' => '1bcb43f6ded79efdc08cde4ee80be15d', 'CONTENT' => lorem_paragraph_html()]);
 
-        return array(
+        return [
             lorem_globalise($tab_content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1507,26 +1507,26 @@ class Hook_addon_registry_cns_forum
             require_lang('polls');
         }
 
-        $warning_details = do_lorem_template('WARNING_BOX', array(
+        $warning_details = do_lorem_template('WARNING_BOX', [
             'WARNING' => lorem_phrase(),
-        ));
+        ]);
 
         foreach (placeholder_array() as $k => $v) {
             $members_viewing = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $members_viewing->attach(do_lorem_template('CNS_USER_MEMBER', array(
+                $members_viewing->attach(do_lorem_template('CNS_USER_MEMBER', [
                     'FIRST' => $members_viewing->is_empty(),
                     'PROFILE_URL' => placeholder_url(),
                     'USERNAME' => lorem_word(),
                     'MEMBER_ID' => placeholder_id(),
                     'AT' => lorem_phrase(),
                     'COLOUR' => lorem_word(),
-                )));
+                ]));
             }
 
             $pagination = placeholder_pagination();
 
-            $quick_reply = do_lorem_template('COMMENTS_POSTING_FORM', array(
+            $quick_reply = do_lorem_template('COMMENTS_POSTING_FORM', [
                 'TITLE' => lorem_phrase(),
                 'JOIN_BITS' => lorem_phrase_html(),
                 'USE_CAPTCHA' => false,
@@ -1546,33 +1546,33 @@ class Hook_addon_registry_cns_forum
                 'FIRST_POST_URL' => placeholder_url(),
                 'FIRST_POST' => lorem_paragraph_html(),
                 'COMMENT_URL' => placeholder_url(),
-            ));
+            ]);
 
             $poll = new Tempcode();
 
             if (addon_installed('polls')) {
-                $num_choices = do_lorem_template('PARAGRAPH', array(
+                $num_choices = do_lorem_template('PARAGRAPH', [
                     'TEXT' => lorem_phrase(),
                     'CLASS' => lorem_word(),
-                ));
+                ]);
                 $private = $num_choices;
 
                 if (!$voted) {
                     $answers = new Tempcode();
                     foreach (placeholder_array() as $_k => $_v) {
-                        $answers->attach(do_lorem_template($checkboxes ? 'CNS_TOPIC_POLL_ANSWER' : 'CNS_TOPIC_POLL_ANSWER_RADIO', array(
+                        $answers->attach(do_lorem_template($checkboxes ? 'CNS_TOPIC_POLL_ANSWER' : 'CNS_TOPIC_POLL_ANSWER_RADIO', [
                             'REAL_BUTTON' => '',
                             'ID' => placeholder_random_id(),
                             'ANSWER' => lorem_phrase(),
                             'I' => strval($_k),
-                        )));
+                        ]));
                     }
 
-                    $button = do_lorem_template('CNS_TOPIC_POLL_BUTTON', array(
+                    $button = do_lorem_template('CNS_TOPIC_POLL_BUTTON', [
                         'RESULTS_URL' => placeholder_url(),
-                    ));
+                    ]);
 
-                    $poll->attach(do_lorem_template('CNS_TOPIC_POLL', array(
+                    $poll->attach(do_lorem_template('CNS_TOPIC_POLL', [
                         'ID' => placeholder_random_id(),
                         'NUM_CHOICES' => $num_choices,
                         'PRIVATE' => $private,
@@ -1584,37 +1584,37 @@ class Hook_addon_registry_cns_forum
                         'MINIMUM_SELECTIONS' => placeholder_number(),
                         'MAXIMUM_SELECTIONS' => placeholder_number(),
                         'TOTAL_VOTES' => placeholder_number(),
-                    )));
+                    ]));
                 } else {
                     $answers = new Tempcode();
-                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', array(
+                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', [
                         'ID' => placeholder_random_id(),
                         'NUM_VOTES' => '10',
                         'TOTAL_VOTES' => '45',
                         'WIDTH' => '30',
                         'ANSWER' => lorem_phrase(),
                         'I' => '0',
-                    )));
-                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', array(
+                    ]));
+                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', [
                         'ID' => placeholder_random_id(),
                         'NUM_VOTES' => '15',
                         'TOTAL_VOTES' => '45',
                         'WIDTH' => '45',
                         'ANSWER' => lorem_phrase(),
                         'I' => '1',
-                    )));
-                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', array(
+                    ]));
+                    $answers->attach(do_lorem_template('CNS_TOPIC_POLL_ANSWER_RESULTS', [
                         'ID' => placeholder_random_id(),
                         'NUM_VOTES' => '20',
                         'TOTAL_VOTES' => '45',
                         'WIDTH' => '60',
                         'ANSWER' => lorem_phrase(),
                         'I' => '2',
-                    )));
+                    ]));
 
                     $button = new Tempcode();
 
-                    $poll->attach(do_lorem_template('CNS_TOPIC_POLL_VIEW_RESULTS', array(
+                    $poll->attach(do_lorem_template('CNS_TOPIC_POLL_VIEW_RESULTS', [
                         'ID' => placeholder_random_id(),
                         'NUM_CHOICES' => $num_choices,
                         'PRIVATE' => $private,
@@ -1625,20 +1625,20 @@ class Hook_addon_registry_cns_forum
                         'VOTE_URL' => placeholder_url(),
                         'MINIMUM_SELECTIONS' => placeholder_number(),
                         'MAXIMUM_SELECTIONS' => placeholder_number(),
-                    )));
+                    ]));
                 }
             }
 
             // Buttons
             $buttons = new Tempcode();
             foreach (placeholder_array(1) as $_k => $_v) {
-                $buttons->attach(do_lorem_template('BUTTON_SCREEN', array(
+                $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
                     'REL' => lorem_word(),
                     'IMMEDIATE' => null,
                     'URL' => placeholder_url(),
                     'IMG' => 'buttons/proceed',
                     'TITLE' => lorem_word(),
-                )));
+                ]));
             }
 
             // Posts...
@@ -1647,22 +1647,22 @@ class Hook_addon_registry_cns_forum
 
             $first_unread = do_lorem_template('CNS_TOPIC_FIRST_UNREAD');
 
-            $last_edited = do_lorem_template('CNS_TOPIC_POST_LAST_EDITED', array(
+            $last_edited = do_lorem_template('CNS_TOPIC_POST_LAST_EDITED', [
                 'LAST_EDIT_DATE_RAW' => placeholder_date_raw(),
                 'LAST_EDIT_DATE' => placeholder_date(),
                 'LAST_EDIT_PROFILE_URL' => placeholder_url(),
                 'LAST_EDIT_USERNAME' => lorem_word(),
-            ));
+            ]);
 
-            $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array(
+            $custom_fields = do_lorem_template('CNS_MEMBER_BOX_CUSTOM_FIELD', [
                 'NAME' => lorem_phrase(),
                 'VALUE' => placeholder_ip(),
-            ));
-            $poster_details = do_lorem_template('CNS_GUEST_DETAILS', array(
+            ]);
+            $poster_details = do_lorem_template('CNS_GUEST_DETAILS', [
                 'CUSTOM_FIELDS' => $custom_fields,
-            ));
+            ]);
 
-            $poster_details_mem = do_lorem_template('CNS_MEMBER_BOX', array(
+            $poster_details_mem = do_lorem_template('CNS_MEMBER_BOX', [
                 'GIVE_CONTEXT' => false,
                 'MEMBER_ID' => placeholder_id(),
                 'USERNAME' => lorem_phrase(),
@@ -1671,9 +1671,9 @@ class Hook_addon_registry_cns_forum
                 'JOIN_DATE_RAW' => placeholder_date_raw(),
                 'JOIN_DATE' => placeholder_date(),
                 'PRIMARY_GROUP_NAME' => lorem_phrase(),
-                'SECONDARY_GROUPS' => array(
+                'SECONDARY_GROUPS' => [
                     lorem_word_html(),
-                ),
+                ],
                 'CUSTOM_FIELDS' => lorem_phrase(),
                 'ONLINE' => false,
                 'AVATAR_URL' => placeholder_image_url(),
@@ -1681,9 +1681,9 @@ class Hook_addon_registry_cns_forum
                 'DOB' => lorem_title(),
                 '_DOB' => placeholder_date_raw(),
                 '_DOB_CENSORED' => placeholder_date_raw(),
-            ));
+            ]);
 
-            $poster = do_lorem_template('CNS_POSTER_MEMBER', array(
+            $poster = do_lorem_template('CNS_POSTER_MEMBER', [
                 'ID' => placeholder_random_id(),
                 'POSTER_DETAILS' => $poster_details_mem,
                 'PROFILE_URL' => placeholder_url(),
@@ -1691,33 +1691,33 @@ class Hook_addon_registry_cns_forum
                 'POSTER' => placeholder_number(),
                 'HIGHLIGHT_NAME' => lorem_word_html(),
                 'ONLINE' => false,
-            ));
+            ]);
 
-            $post_avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', array(
+            $post_avatar = do_lorem_template('CNS_TOPIC_POST_AVATAR', [
                 'AVATAR' => placeholder_image_url(),
-            ));
+            ]);
 
-            $rank_images = do_lorem_template('CNS_RANK_IMAGE', array(
+            $rank_images = do_lorem_template('CNS_RANK_IMAGE', [
                 'GROUP_NAME' => lorem_phrase(),
                 'USERNAME' => lorem_word(),
                 'IMG' => 'cns_rank_images/' . placeholder_img_code('cns_rank_images'),
                 'IS_LEADER' => lorem_phrase(),
-            ));
+            ]);
 
             // Buttons
             $buttons = new Tempcode();
             foreach (placeholder_array(1) as $_k => $_v) {
-                $buttons->attach(do_lorem_template('BUTTON_SCREEN_ITEM', array(
+                $buttons->attach(do_lorem_template('BUTTON_SCREEN_ITEM', [
                     'REL' => lorem_word(),
                     'IMMEDIATE' => '',
                     'URL' => placeholder_url(),
                     'IMG' => 'buttons/proceed',
                     'FULL_TITLE' => lorem_phrase(),
                     'TITLE' => lorem_word(),
-                )));
+                ]));
             }
 
-            $posts->attach(do_lorem_template('CNS_TOPIC_POST', array(
+            $posts->attach(do_lorem_template('CNS_TOPIC_POST', [
                 'ID' => placeholder_random_id(),
                 'GIVE_CONTEXT' => false,
                 'TOPIC_FIRST_POST_ID' => placeholder_random_id(),
@@ -1744,22 +1744,22 @@ class Hook_addon_registry_cns_forum
                 'SIGNATURE' => lorem_phrase(),
                 'UNVALIDATED' => lorem_phrase(),
                 'DESCRIPTION' => lorem_phrase(),
-            )));
+            ]));
         }
 
         // Buttons
         $buttons = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
-            $buttons->attach(do_lorem_template('BUTTON_SCREEN', array(
+            $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
                 'REL' => lorem_word(),
                 'IMMEDIATE' => '',
                 'URL' => placeholder_url(),
                 'IMG' => 'buttons/proceed',
                 'TITLE' => lorem_word(),
-            )));
+            ]));
         }
 
-        $topic_tpl = do_lorem_template('CNS_TOPIC_SCREEN', array(
+        $topic_tpl = do_lorem_template('CNS_TOPIC_SCREEN', [
             'TITLE' => lorem_title(),
             'THREADED' => false,
             'ID' => placeholder_id(),
@@ -1782,11 +1782,11 @@ class Hook_addon_registry_cns_forum
             'LAST_POSTER' => placeholder_random_id(),
             'FORUM_ID' => placeholder_id(),
             'TICKET_FORUM' => false,
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($topic_tpl, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -1807,31 +1807,31 @@ class Hook_addon_registry_cns_forum
         require_lang('cns');
 
         // Normal topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase()));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase()]);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
 
         // Closed topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_closed') . ')'));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_closed') . ')']);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
 
         // Non-validated topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_unvalidated') . ')'));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_unvalidated') . ')']);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
 
         // Pinned topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_pinned') . ')'));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_pinned') . ')']);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
 
         // Announcement topic
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_announcement') . ')'));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_announcement') . ')']);
         foreach ($to_delete as $record) {
             cns_delete_topic($record['id']);
         }
@@ -1840,7 +1840,7 @@ class Hook_addon_registry_cns_forum
         if (addon_installed('polls')) {
             require_code('cns_polls_action');
 
-            $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_poll') . ')'));
+            $to_delete = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => lorem_phrase() . ' (' . do_lang('MODIFIER_poll') . ')']);
             foreach ($to_delete as $record) {
                 cns_delete_topic($record['id']);
             }
@@ -1892,7 +1892,7 @@ class Hook_addon_registry_cns_forum
             // Poll topic
             $topic_id = cns_make_topic(db_get_first_id(), lorem_phrase(), '', 1, 1, 0, 0, null, null, false);
             cns_make_post($topic_id, lorem_phrase(), lorem_chunk(), 0, true, 1, 0, null, null, null, null, null, null, null, false, true, null, true, lorem_phrase() . ' (' . do_lang('MODIFIER_poll') . ')');
-            cns_make_poll($topic_id, lorem_phrase(), 0, 1, 1, 1, 0, array(lorem_phrase() . ' 1', lorem_phrase() . ' 2'), false);
+            cns_make_poll($topic_id, lorem_phrase(), 0, 1, 1, 1, 0, [lorem_phrase() . ' 1', lorem_phrase() . ' 2'], false);
         }
 
         // In "General Chat"
@@ -1921,12 +1921,12 @@ class Hook_addon_registry_cns_forum
     {
         require_lang('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_POST_FROM_MAILING_LIST', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_POST_FROM_MAILING_LIST', [
                 'UNCONFIRMED_MEMBER_NOTICE' => true,
                 'POST' => lorem_paragraph(),
                 'USERNAME' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_sms_high_trigger_limit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SMS_HIGH_TRIGGER_LIMIT',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -46,7 +46,7 @@ class Hook_config_sms_high_trigger_limit
             'addon' => 'sms',
 
             'maintenance_code' => 'sms',
-        );
+        ];
     }
 
     /**

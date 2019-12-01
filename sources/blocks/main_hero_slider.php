@@ -25,16 +25,16 @@ class Block_main_hero_slider
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Salman Abbas';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array(
+        $info['parameters'] = [
             'gallery_name', 'effect', 'fullscreen', 'show_indicators', 'show_scroll_down', 'interval', 'check_perms', 'blank_if_empty'
-        );
+        ];
 
         return $info;
     }
@@ -46,7 +46,7 @@ class Block_main_hero_slider
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false,
@@ -76,11 +76,11 @@ PHP;
         $blank_if_empty = isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false;
 
         if (!addon_installed('galleries')) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', array('_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))));
+            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))]);
         }
 
         if (@cms_empty_safe($map['gallery_name'])) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', array('_GUID' => 'a9a5d583cdc145df840b40bdeb6577cd', 'TEXT' => escape_html('Block main_hero_slider: Parameter "gallery_name" is required.')));
+            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => 'a9a5d583cdc145df840b40bdeb6577cd', 'TEXT' => escape_html('Block main_hero_slider: Parameter "gallery_name" is required.')]);
         }
 
         $block_id = get_block_id($map);
@@ -98,15 +98,15 @@ PHP;
         $check_perms = isset($map['check_perms']) ? !empty($map['check_perms']) : true;
 
         // Check if the gallery exists
-        $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('name' => $map['gallery_name']));
+        $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $map['gallery_name']]);
 
         if ($gallery_name === null) {
             // Maybe the user specified a gallery's full name instead of the code name?
-            $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', array('fullname' => $map['gallery_name']));
+            $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['fullname' => $map['gallery_name']]);
         }
 
         if ($gallery_name === null) {
-            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', array('_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $map['gallery_name'] . '" not found.')));
+            return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', ['_GUID' => '19737ba0c9c84c36b92690b7c896040d', 'TEXT' => escape_html('Block main_hero_slider: Gallery named "' . $map['gallery_name'] . '" not found.')]);
         }
 
         if ($gallery_name === 'root') {
@@ -146,8 +146,8 @@ PHP;
             $where_sup .= get_permission_where_clause(get_member(), get_permission_where_clause_groups(get_member()));
         }
 
-        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, array('title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS'));
-        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, array('title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS'));
+        $image_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS content_type,cat FROM ' . get_table_prefix() . 'images r ' . $extra_join_image . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_image . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
+        $video_rows = $GLOBALS['SITE_DB']->query('SELECT r.*,\'video\' AS content_type,cat FROM ' . get_table_prefix() . 'videos r ' . $extra_join_video . $extra_join_sql . ' WHERE ' . $cat_select . $extra_where_video . $where_sup . ' AND validated=1 ORDER BY title ASC', 100/*reasonable amount*/, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
 
         $all_rows = array_merge($image_rows, $video_rows);
 
@@ -159,19 +159,19 @@ PHP;
             }
 
             $submit_url = null;
-            if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', array('galleries', $gallery_name))) && (can_submit_to_gallery($gallery_name))) {
-                $submit_url = build_url(array('page' => 'cms_galleries', 'type' => 'add', 'cat' => $gallery_name, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_galleries'));
+            if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', ['galleries', $gallery_name])) && (can_submit_to_gallery($gallery_name))) {
+                $submit_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => $gallery_name, 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_galleries'));
             }
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => '27fb27331dc5471f977781b1c505b307',
                 'TITLE' => do_lang_tempcode('GALLERY'),
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'image'),
                 'ADD_NAME' => do_lang_tempcode('ADD_IMAGE'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
 
-        $items = array();
+        $items = [];
         foreach ($all_rows as $row) {
             $full_url = $row['url'];
             if (url_is_local($full_url)) {
@@ -183,32 +183,32 @@ PHP;
                 $thumb_url = get_custom_base_url() . '/' . $thumb_url;
             }
 
-            $just_media_row = db_map_restrict($row, array('id', 'the_description'));
+            $just_media_row = db_map_restrict($row, ['id', 'the_description']);
 
             $description = get_translated_tempcode($row['content_type'] . 's', $just_media_row, 'the_description');
 
             $edit_url = null;
-            if ((has_actual_page_access(get_member(), 'cms_galleries')) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', array('galleries', $gallery_name)))) {
+            if ((has_actual_page_access(get_member(), 'cms_galleries')) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_galleries', ['galleries', $gallery_name]))) {
                 $url_type = '_edit';
                 if ($row['content_type'] === 'video') {
                     $url_type = '_edit_other';
                 }
-                $edit_url = build_url(array('page' => 'cms_galleries', 'type' => $url_type, 'id' => $row['id']), get_module_zone('cms_galleries'));
+                $edit_url = build_url(['page' => 'cms_galleries', 'type' => $url_type, 'id' => $row['id']], get_module_zone('cms_galleries'));
             }
 
-            $items[] = array(
+            $items[] = [
                 'BACKGROUND_ID' => strval($row['id']),
                 'BACKGROUND_TYPE' => $row['content_type'],
                 'BACKGROUND_URL' => $full_url,
                 'BACKGROUND_THUMB_URL' => $thumb_url,
                 'CONTENT_HTML' => $description,
                 'EDIT_URL' => $edit_url,
-            );
+            ];
         }
 
         require_css('galleries');
 
-        return do_template('BLOCK_MAIN_HERO_SLIDER', array(
+        return do_template('BLOCK_MAIN_HERO_SLIDER', [
             '_GUID' => '3afebc2955314f1fbc1b2d4935e998e4',
             'BLOCK_ID' => $block_id,
             'EFFECT' => $effect,
@@ -218,6 +218,6 @@ PHP;
             'INTERVAL' => $interval,
             'ITEMS' => $items,
             'HAS_MULTIPLE_ITEMS' => (count($items) > 1) ? '1' : '0',
-        ));
+        ]);
     }
 }

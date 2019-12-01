@@ -26,7 +26,7 @@ require_code('resource_fs');
 class Hook_commandr_fs_galleries extends Resource_fs_base
 {
     public $folder_resource_type = 'gallery';
-    public $file_resource_type = array('image', 'video');
+    public $file_resource_type = ['image', 'video'];
 
     /**
      * Standard Commandr-fs function for seeing how many resources are. Useful for determining whether to do a full rebuild.
@@ -59,18 +59,18 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         switch ($resource_type) {
             case 'image':
             case 'video':
-                $_ret = $GLOBALS['SITE_DB']->query_select($resource_type . 's', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select($resource_type . 's', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'gallery':
-                $ret = $GLOBALS['SITE_DB']->query_select('galleries', array('name'), array($GLOBALS['SITE_DB']->translate_field_ref('fullname') => $label));
+                $ret = $GLOBALS['SITE_DB']->query_select('galleries', ['name'], [$GLOBALS['SITE_DB']->translate_field_ref('fullname') => $label]);
                 return collapse_1d_complexity('name', $ret);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -157,7 +157,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('name' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['name' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -165,7 +165,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for($resource_type, strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['fullname']),
             'name' => $row['name'],
             'description' => get_translated_text($row['the_description']),
@@ -185,7 +185,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             'owner' => remap_resource_id_as_portable('member', $row['g_owner']),
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -326,7 +326,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $views = $this->_default_property_int($properties, 'views');
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         require_code('images');
         if ($is_image) {
@@ -334,7 +334,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             $allow_comments = $this->_default_property_int_modeavg($properties, 'allow_comments', 'images', 1);
             $allow_trackbacks = $this->_default_property_int_modeavg($properties, 'allow_trackbacks', 'images', 1);
 
-            $accept_images = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_images', array('name' => $category));
+            $accept_images = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_images', ['name' => $category]);
             if ($accept_images === 0) {
                 return false;
             }
@@ -347,7 +347,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             $allow_comments = $this->_default_property_int_modeavg($properties, 'allow_comments', 'videos', 1);
             $allow_trackbacks = $this->_default_property_int_modeavg($properties, 'allow_trackbacks', 'videos', 1);
 
-            $accept_videos = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_videos', array('name' => $category));
+            $accept_videos = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_videos', ['name' => $category]);
             if ($accept_videos === 0) {
                 return false;
             }
@@ -381,7 +381,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select($resource_type . 's', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select($resource_type . 's', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -389,7 +389,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for($resource_type, strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['title']),
             'description' => get_translated_text($row['the_description']),
             'url' => remap_urlpath_as_portable($row['url']),
@@ -404,21 +404,21 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),
             'add_date' => remap_time_as_portable($row['add_date']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => $resource_type, 'content_id' => strval($row['id'])))),
-        );
+            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => $resource_type, 'content_id' => strval($row['id'])])),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
 
         if ($resource_type == 'video') {
-            $properties += array(
+            $properties += [
                 'views' => $row['video_views'],
                 'video_length' => $row['video_length'],
                 'video_width' => $row['video_width'],
                 'video_height' => $row['video_height'],
-            );
+            ];
         } else {
-            $properties += array(
+            $properties += [
                 'views' => $row['image_views'],
-            );
+            ];
         }
 
         return $properties;
@@ -460,14 +460,14 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $views = $this->_default_property_int($properties, 'views');
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         if ($resource_type == 'image') {
             $allow_rating = $this->_default_property_int_modeavg($properties, 'allow_rating', 'images', 1);
             $allow_comments = $this->_default_property_int_modeavg($properties, 'allow_comments', 'images', 1);
             $allow_trackbacks = $this->_default_property_int_modeavg($properties, 'allow_trackbacks', 'images', 1);
 
-            $accept_images = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_images', array('name' => $category));
+            $accept_images = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_images', ['name' => $category]);
             if ($accept_images === 0) {
                 return false;
             }
@@ -480,7 +480,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             $allow_comments = $this->_default_property_int_modeavg($properties, 'allow_comments', 'videos', 1);
             $allow_trackbacks = $this->_default_property_int_modeavg($properties, 'allow_trackbacks', 'videos', 1);
 
-            $accept_videos = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_videos', array('name' => $category));
+            $accept_videos = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'accept_videos', ['name' => $category]);
             if ($accept_videos === 0) {
                 return false;
             }

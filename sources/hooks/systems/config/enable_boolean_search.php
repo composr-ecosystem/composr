@@ -30,7 +30,7 @@ class Hook_config_enable_boolean_search
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_BOOLEAN_SEARCH',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_enable_boolean_search
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

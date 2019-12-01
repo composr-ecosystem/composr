@@ -31,7 +31,7 @@ function find_post_id_url($post_id)
         $max = 1;
     }
 
-    $id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $post_id));
+    $id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $post_id]);
     if ($id === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }
@@ -41,9 +41,9 @@ function find_post_id_url($post_id)
     $start = intval(floor(floatval($before) / floatval($max))) * $max;
 
     // Now redirect accordingly
-    $map = array('page' => 'topicview', 'type' => null, 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $post_id, 'threaded' => get_param_integer('threaded', null));
+    $map = ['page' => 'topicview', 'type' => null, 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $post_id, 'threaded' => get_param_integer('threaded', null)];
     foreach ($_GET as $key => $val) {
-        if ((substr($key, 0, 3) == 'kfs') || (in_array($key, array('topic_start', 'topic_max')))) {
+        if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;
         }
     }
@@ -51,7 +51,7 @@ function find_post_id_url($post_id)
     if ($test_threaded !== null) {
         $map['threaded'] = $test_threaded;
     }
-    $_redirect = build_url($map, '_SELF', array(), true);
+    $_redirect = build_url($map, '_SELF', [], true);
     $redirect = $_redirect->evaluate();
     $redirect .= '#post_' . strval($post_id);
 
@@ -71,7 +71,7 @@ function find_first_unread_url($id)
         $max = 1;
     }
 
-    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => get_member(), 'l_topic_id' => $id));
+    $last_read_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => get_member(), 'l_topic_id' => $id]);
     if ($last_read_time === null) {
         // Assumes that everything made in the last two weeks has not been read
         $unread_details = $GLOBALS['FORUM_DB']->query('SELECT id,p_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_topic_id=' . strval($id) . ' AND p_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' ORDER BY p_time', 1);
@@ -98,13 +98,13 @@ function find_first_unread_url($id)
     }
 
     // Now redirect accordingly
-    $map = array('page' => 'topicview', 'id' => $id, 'type' => null, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $first_unread_id);
+    $map = ['page' => 'topicview', 'id' => $id, 'type' => null, 'topic_start' => ($start == 0) ? null : $start, 'post_id' => $first_unread_id];
     foreach ($_GET as $key => $val) {
-        if ((substr($key, 0, 3) == 'kfs') || (in_array($key, array('topic_start', 'topic_max')))) {
+        if ((substr($key, 0, 3) == 'kfs') || (in_array($key, ['topic_start', 'topic_max']))) {
             $map[$key] = $val;
         }
     }
-    $_redirect = build_url($map, '_SELF', array(), true);
+    $_redirect = build_url($map, '_SELF', [], true);
     $redirect = $_redirect->evaluate();
     if ($first_unread_id > 0) {
         $redirect .= '#post-' . strval($first_unread_id);
@@ -133,7 +133,7 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
         $primary_group = db_get_first_id();
     }
 
-    $post = array(
+    $post = [
         'id' => $_postdetails['id'],
         'topic_id' => $_postdetails['p_topic_id'],
         'title' => $_postdetails['p_title'],
@@ -144,13 +144,13 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
         'is_emphasised' => $_postdetails['p_is_emphasised'],
         'poster_username' => $_postdetails['p_poster_name_if_guest'],
         'poster' => $_postdetails['p_poster'],
-    );
+    ];
 
     $post['has_revisions'] = false;
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase(true);
-        if ($revision_engine->has_revisions(array('post'), strval($_postdetails['id']))) {
+        if ($revision_engine->has_revisions(['post'], strval($_postdetails['id']))) {
             $post['has_revisions'] = true;
         }
     }
@@ -182,13 +182,13 @@ function cns_get_details_to_show_post($_postdetails, $topic_info, $only_post = f
     // If this isn't guest posted, we can put some member details in
     if (($_postdetails['p_poster'] !== null) && ($_postdetails['p_poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id())) {
         require_code('cns_general');
-        $need = array(
+        $need = [
             'highlighted_name',
             'online',
             'avatar',
             'ip_address',
             'signature',
-        );
+        ];
         $post += cns_read_in_member_profile($_postdetails['p_poster'], $need, false, false);
     } elseif ($_postdetails['p_poster'] == $GLOBALS['CNS_DRIVER']->get_guest_id()) {
         if ($_postdetails['p_poster_name_if_guest'] == do_lang('SYSTEM')) {
@@ -236,14 +236,14 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
 {
     if ($topic_id !== null) {
         $table = 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f ON f.id=t.t_forum_id';
-        $select = array('t.*', 'f.f_is_threaded');
+        $select = ['t.*', 'f.f_is_threaded'];
         if (multi_lang_content()) {
             $select[] = 't_cache_first_post AS p_post';
         } else {
             $table .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
             $select[] = 'p_post,p_post__text_parsed,p_post__source_user';
         }
-        $_topic_info = $GLOBALS['FORUM_DB']->query_select($table, $select, array('t.id' => $topic_id), '', 1);
+        $_topic_info = $GLOBALS['FORUM_DB']->query_select($table, $select, ['t.id' => $topic_id], '', 1);
         if (!array_key_exists(0, $_topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
@@ -290,8 +290,8 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
 
         // Some general info
         require_code('content2');
-        list(, $meta_description) = _seo_meta_find_data(array(), get_translated_text($topic_info['p_post'], $GLOBALS['FORUM_DB']));
-        $out = array(
+        list(, $meta_description) = _seo_meta_find_data([], get_translated_text($topic_info['p_post'], $GLOBALS['FORUM_DB']));
+        $out = [
             'num_views' => $topic_info['t_num_views'],
             'num_posts' => $topic_info['t_cache_num_posts'],
             'validated' => $topic_info['t_validated'],
@@ -309,21 +309,21 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
             'is_threaded' => $is_threaded,
             'is_really_threaded' => ($topic_info['f_is_threaded'] === null) ? 0 : $topic_info['f_is_threaded'],
             'last_time' => $topic_info['t_cache_last_time'],
-            'metadata' => array(
+            'metadata' => [
                 'identifier' => '_SEARCH:topicview:browse:' . strval($topic_id),
                 'numcomments' => strval($topic_info['t_cache_num_posts']),
                 'description' => $meta_description, // There's no meta description, so we'll take this as a description, which will feed through
-            ),
+            ],
             'row' => $topic_info,
-        );
+        ];
 
         // Poll?
         if (($topic_info['t_poll_id'] !== null) && (addon_installed('polls'))) {
             require_code('cns_polls');
             if (is_guest()) {
-                $voted_already_map = array('pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip' => get_ip_address());
+                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_ip' => get_ip_address()];
             } else {
-                $voted_already_map = array('pv_poll_id' => $topic_info['t_poll_id'], 'pv_member_id' => get_member());
+                $voted_already_map = ['pv_poll_id' => $topic_info['t_poll_id'], 'pv_member_id' => get_member()];
             }
             $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
             $test = cns_poll_get_results($topic_info['t_poll_id'], $view_poll_results || ($voted_already !== null));
@@ -338,7 +338,7 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
         $where = cns_get_topic_where($topic_id);
         $query = 'SELECT p.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE ' . $where . ' ORDER BY p_time,p.id';
     } else {
-        $out = array(
+        $out = [
             'num_views' => 0,
             'num_posts' => 0,
             'validated' => 1,
@@ -355,23 +355,23 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
             'is_open' => 1,
             'is_threaded' => 0,
             'last_time' => time(),
-            'metadata' => array(),
-            'row' => array(),
-        );
+            'metadata' => [],
+            'row' => [],
+        ];
 
         // Post query
         $where = 'p_intended_solely_for=' . strval(get_member());
         $query = 'SELECT p.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE ' . $where . ' ORDER BY p_time,p.id';
 
-        $topic_info = array(
+        $topic_info = [
             't_is_open' => 1,
-        );
+        ];
     }
 
     // Posts
     if ($out['is_threaded'] == 0) {
         if ($start < 200) {
-            $_postdetailss = list_to_map('id', $GLOBALS['FORUM_DB']->query($query, $max, $start, false, false, array('p_post' => 'LONG_TRANS__COMCODE')));
+            $_postdetailss = list_to_map('id', $GLOBALS['FORUM_DB']->query($query, $max, $start, false, false, ['p_post' => 'LONG_TRANS__COMCODE']));
         } else { // deep search, so we need to make offset more efficient, trade-off is more queries
             $_postdetailss = list_to_map('id', $GLOBALS['FORUM_DB']->query($query, $max, $start));
         }
@@ -380,9 +380,9 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
         } else {
             $out['max_rows'] = (($topic_id === null) || $topic_info['t_cache_num_posts'] < 500) ? $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE ' . $where) : $topic_info['t_cache_num_posts']/*for performance reasons*/;
         }
-        $posts = array();
+        $posts = [];
         // Precache member/group details in one fell swoop
-        $members = array();
+        $members = [];
         foreach ($_postdetailss as $_postdetails) {
             $members[$_postdetails['p_poster']] = 1;
             if ($out['title'] == '') {
@@ -411,7 +411,7 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
             }
 
             // Load post
-            $post_row = db_map_restrict($_postdetails, array('id', 'p_post'));
+            $post_row = db_map_restrict($_postdetails, ['id', 'p_post']);
             $_postdetails['message'] = get_translated_tempcode('f_posts', $post_row, 'p_post', $GLOBALS['FORUM_DB']);
 
             // Fake a quoted post? (kind of a nice 'tidy up' feature if a forum's threading has been turned off, leaving things for flat display)
@@ -421,18 +421,18 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
                     $p = $_postdetailss[$_postdetails['p_parent_id']];
 
                     // Load post
-                    $_p = db_map_restrict($p, array('id', 'p_post'));
+                    $_p = db_map_restrict($p, ['id', 'p_post']);
                     $p['message'] = get_translated_tempcode('f_posts', $_p, 'p_post', $GLOBALS['FORUM_DB']);
                 } else { // Drat, we need to load it
-                    $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => $_postdetails['p_parent_id']), '', 1);
+                    $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $_postdetails['p_parent_id']], '', 1);
                     if (array_key_exists(0, $_p)) {
-                        $p = db_map_restrict($_p[0], array('id', 'p_post'));
+                        $p = db_map_restrict($_p[0], ['id', 'p_post']);
                         $p['message'] = get_translated_tempcode('f_posts', $p, 'p_post', $GLOBALS['FORUM_DB']);
                     }
                 }
                 $temp = $_postdetails['message'];
                 $_postdetails['message'] = new Tempcode();
-                $_postdetails['message'] = do_template('COMCODE_QUOTE_BY', array('_GUID' => '4521bfe295b1834460f498df488ee7cb', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']));
+                $_postdetails['message'] = do_template('COMCODE_QUOTE_BY', ['_GUID' => '4521bfe295b1834460f498df488ee7cb', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']]);
                 $_postdetails['message']->attach($temp);
             }
 
@@ -456,10 +456,10 @@ function cns_read_in_topic($topic_id, $start, $max, $view_poll_results = false, 
                     require_lang('tickets');
                     require_code('feedback');
                     $ticket_id = extract_topic_identifier($out['description']);
-                    $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', array('ticket_id' => $ticket_id));
+                    $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('tickets', 'ticket_type', ['ticket_id' => $ticket_id]);
                     $ticket_type_name = null;
                     if ($ticket_type_id !== null) {
-                        $ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', array('id' => $ticket_id));
+                        $ticket_type_name = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'ticket_type_name', ['id' => $ticket_id]);
                     }
                     $out['title'] = do_lang_tempcode('_VIEW_SUPPORT_TICKET', escape_html($out['title']), ($ticket_type_name === null) ? do_lang('UNKNOWN') : escape_html(get_translated_text($ticket_type_name)));
                     $_postdetails['p_title'] = '';
@@ -587,7 +587,7 @@ function cns_cache_member_details($members)
         global $TABLE_LANG_FIELDS_CACHE;
         $member_rows_g = $GLOBALS['FORUM_DB']->query('SELECT gm_group_id,gm_member_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE gm_validated=1 AND (' . str_replace('m.id', 'gm_member_id', $member_or_list) . ')', null, 0, false, true);
         global $MEMBER_CACHE_FIELD_MAPPINGS, $SIGNATURES_CACHE;
-        $found_groups = array();
+        $found_groups = [];
         foreach ($member_rows as $row) {
             $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED[$row['id']] = $row;
 
@@ -599,7 +599,7 @@ function cns_cache_member_details($members)
 
             // Signature
             if ((get_page_name() != 'search') && ($row['m_signature'] !== null) && ($row['m_signature'] !== '') && ($row['m_signature'] !== 0)) {
-                $just_row = db_map_restrict($row, array('id', 'm_signature'));
+                $just_row = db_map_restrict($row, ['id', 'm_signature']);
                 $SIGNATURES_CACHE[$row['id']] = get_translated_tempcode('f_members', $just_row, 'm_signature', $GLOBALS['FORUM_DB']);
             }
 
@@ -635,7 +635,7 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
     $buttons = new Tempcode();
 
     if ((array_key_exists('may_validate_posts', $topic_info)) && (addon_installed('unvalidated')) && ((($topic_info['validated'] == 0) && ($_postdetails['id'] == $topic_info['first_post_id'])) || ($_postdetails['validated'] == 0))) {
-        $map = array('page' => 'topics', 'type' => 'validate_post', 'id' => $_postdetails['id']);
+        $map = ['page' => 'topics', 'type' => 'validate_post', 'id' => $_postdetails['id']];
         $test = get_param_string('kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id'])), null, INPUT_FILTER_GET_COMPLEX);
         if (($test !== null) && ($test !== '0')) {
             $map['kfs' . (($topic_info['forum_id'] === null) ? '' : strval($topic_info['forum_id']))] = $test;
@@ -649,11 +649,11 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/unvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '712fdaee35f378e37b007f3a73246690', 'REL' => 'validate nofollow', 'IMMEDIATE' => true, 'IMG' => 'menu/adminzone/audit/unvalidated', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
     if (($may_reply) && (get_bot_type() === null)) {
-        $map = array('page' => 'topics', 'type' => 'new_post', 'id' => $_postdetails['topic_id'], 'parent_id' => $_postdetails['id']);
+        $map = ['page' => 'topics', 'type' => 'new_post', 'id' => $_postdetails['topic_id'], 'parent_id' => $_postdetails['id']];
         if ($topic_info['is_threaded'] == 0) {
             $map['quote'] = $_postdetails['id'];
         }
@@ -678,22 +678,22 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
             $replying_to_post = comcode_censored_raw_code_access($_postdetails['message_comcode']);
             $replying_to_post_plain = ($topic_info['is_threaded'] == 0) ? '' : strip_comcode($_postdetails['message_comcode']);
             require_javascript('cns_forum');
-            $onclick_call_functions = array(array('topicReply', $topic_info['is_threaded'], $_postdetails['id'], $_postdetails['poster_username'], $replying_to_post, $replying_to_post_plain, false));
-            $onclick_call_functions_explicit_quote = array(array('topicReply', 0, $_postdetails['id'], $_postdetails['poster_username'], $replying_to_post, $replying_to_post_plain, true));
+            $onclick_call_functions = [['topicReply', $topic_info['is_threaded'], $_postdetails['id'], $_postdetails['poster_username'], $replying_to_post, $replying_to_post_plain, false]];
+            $onclick_call_functions_explicit_quote = [['topicReply', 0, $_postdetails['id'], $_postdetails['poster_username'], $replying_to_post, $replying_to_post_plain, true]];
         }
         $_title = do_lang_tempcode(($topic_info['is_threaded'] == 1) ? '_REPLY' : '_QUOTE_POST');
         $_title_full = new Tempcode();
         $_title_full->attach(do_lang_tempcode(($topic_info['is_threaded'] == 1) ? 'REPLY' : 'QUOTE_POST'));
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
 
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'fc13d12cfe58324d78befec29a663b4f', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => ($topic_info['is_threaded'] == 1) ? 'buttons/new_reply' : 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONCLICK_CALL_FUNCTIONS' => $onclick_call_functions)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'fc13d12cfe58324d78befec29a663b4f', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => ($topic_info['is_threaded'] == 1) ? 'buttons/new_reply' : 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONCLICK_CALL_FUNCTIONS' => $onclick_call_functions]));
 
         if ($topic_info['is_threaded'] == 1) { // Second button for replying with explicit quote
             $_title = do_lang_tempcode('_QUOTE_POST');
             $_title_full = new Tempcode();
             $_title_full->attach($_title);
             $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'fc13d12cfe58324d78befec29a663b4f', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONCLICK_CALL_FUNCTIONS' => $onclick_call_functions_explicit_quote)));
+            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'fc13d12cfe58324d78befec29a663b4f', 'REL' => 'add reply nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONCLICK_CALL_FUNCTIONS' => $onclick_call_functions_explicit_quote]));
         }
     }
 
@@ -711,13 +711,13 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
                     $_title_full->attach($_title);
                     $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
 
-                    $action_url = build_url(array('page' => 'tickets', 'type' => 'ticket', 'post_as' => ($ticket_owner == get_member()) ? null : $ticket_owner), get_module_zone('tickets'));
+                    $action_url = build_url(['page' => 'tickets', 'type' => 'ticket', 'post_as' => ($ticket_owner == get_member()) ? null : $ticket_owner], get_module_zone('tickets'));
 
                     $ticket_url = ticket_url($ticket_id);
                     $quote_to_new_post = do_lang('POSTING_TICKET_AS', $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $ticket_url, $_postdetails['message_comcode']);
                     $hidden = form_input_hidden('post', $quote_to_new_post);
 
-                    $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '927d758415a3358d6b69e1587cab1e8d', 'IMMEDIATE' => true, 'HIDDEN' => $hidden, 'IMG' => 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'TARGET' => '_blank')));
+                    $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '927d758415a3358d6b69e1587cab1e8d', 'IMMEDIATE' => true, 'HIDDEN' => $hidden, 'IMG' => 'buttons/new_quote', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'TARGET' => '_blank']));
                 }
             }
         }
@@ -725,18 +725,18 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
 
     if ((array_key_exists('may_pt_members', $topic_info)) && ($may_reply_private_post) && ($_postdetails['poster'] != get_member()) && ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) && (cns_may_whisper($_postdetails['poster'])) && (get_option('overt_whisper_suggestion') == '1')) {
         $whisper_type = (get_option('inline_pp_advertise') == '0') ? 'new_pt' : 'whisper';
-        $action_url = build_url(array('page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'intended_solely_for' => $_postdetails['poster']), get_module_zone('topics'));
+        $action_url = build_url(['page' => 'topics', 'type' => $whisper_type, 'id' => $_postdetails['topic_id'], 'quote' => $_postdetails['id'], 'intended_solely_for' => $_postdetails['poster']], get_module_zone('topics'));
         $_title = do_lang_tempcode('WHISPER');
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'fb1c74bae9c553dc160ade85adf289b5', 'REL' => 'add reply contact nofollow', 'IMMEDIATE' => false, 'IMG' => (get_option('inline_pp_advertise') == '0') ? 'buttons/send' : 'buttons/whisper', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'fb1c74bae9c553dc160ade85adf289b5', 'REL' => 'add reply contact nofollow', 'IMMEDIATE' => false, 'IMG' => (get_option('inline_pp_advertise') == '0') ? 'buttons/send' : 'buttons/whisper', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
     if (array_key_exists('may_edit', $_postdetails)) {
-        $map = array('page' => 'topics', 'type' => 'edit_post', 'id' => $_postdetails['id']);
+        $map = ['page' => 'topics', 'type' => 'edit_post', 'id' => $_postdetails['id']];
         if ($rendering_context == 'tickets') {
-            $map['redirect'] = protect_url_parameter(build_url(array('page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')), get_module_zone('tickets'), array(), false, false, false, '_top'));
+            $map['redirect'] = protect_url_parameter(build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')], get_module_zone('tickets'), [], false, false, false, '_top'));
         } else {
             $map['redirect'] = protect_url_parameter(SELF_REDIRECT);
         }
@@ -753,13 +753,13 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $_title_full = do_lang_tempcode('EDIT_POST');
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'f341cfc94b3d705437d43e89f572bff6', 'REL' => 'edit nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/edit', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $edit_url)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'f341cfc94b3d705437d43e89f572bff6', 'REL' => 'edit nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/edit', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $edit_url]));
     }
 
     if (array_key_exists('may_delete', $_postdetails)) {
-        $map = array('page' => 'topics', 'type' => 'delete_post', 'id' => $_postdetails['id']);
+        $map = ['page' => 'topics', 'type' => 'delete_post', 'id' => $_postdetails['id']];
         if ($rendering_context == 'tickets') {
-            $map['redirect'] = protect_url_parameter(build_url(array('page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')), get_module_zone('tickets'), array(), false, false, false, '_top'));
+            $map['redirect'] = protect_url_parameter(build_url(['page' => 'tickets', 'type' => 'ticket', 'id' => get_param_string('id')], get_module_zone('tickets'), [], false, false, false, '_top'));
         } else {
             $map['redirect'] = protect_url_parameter(SELF_REDIRECT);
         }
@@ -776,48 +776,48 @@ function cns_render_post_buttons($topic_info, $_postdetails, $may_reply, $render
         $_title_full = new Tempcode();
         $_title_full->attach(do_lang_tempcode('DELETE_POST'));
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '8bf6d098ddc217eef75718464dc03d41', 'REL' => 'delete nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/delete3', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $delete_url)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '8bf6d098ddc217eef75718464dc03d41', 'REL' => 'delete nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/delete3', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $delete_url]));
     }
 
     if ($rendering_context != 'tickets') {
         if ((array_key_exists('may_report_content', $topic_info)) && (addon_installed('tickets')) && (get_bot_type() === null)) {
             require_lang('report_content');
-            $action_url = build_url(array('page' => 'topics', 'type' => 'report_post', 'id' => $_postdetails['id']), get_module_zone('topics'));
+            $action_url = build_url(['page' => 'topics', 'type' => 'report_post', 'id' => $_postdetails['id']], get_module_zone('topics'));
             $_title = do_lang_tempcode('_REPORT_POST');
             $_title_full = new Tempcode();
             $_title_full->attach(do_lang_tempcode('REPORT_POST'));
             $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'f81cbe84f524b4ed9e089c6e89a7c717', 'REL' => 'report nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons/report', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'EXTRA_ATTRS' => 'data-open-as-overlay=\'{"height": "100%"}\' ')));
+            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'f81cbe84f524b4ed9e089c6e89a7c717', 'REL' => 'report nofollow', 'IMMEDIATE' => false, 'IMG' => 'buttons/report', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'EXTRA_ATTRS' => 'data-open-as-overlay=\'{"height": "100%"}\' ']));
         }
 
         if ((array_key_exists('may_warn_members', $topic_info)) && ($_postdetails['poster'] != $GLOBALS['CNS_DRIVER']->get_guest_id()) && (addon_installed('cns_warnings'))) {
             $redir_url = get_self_url(true);
             $redir_url .= '#post_' . strval($_postdetails['id']);
-            $action_url = build_url(array('page' => 'warnings', 'type' => 'add', 'member_id' => $_postdetails['poster'], 'post_id' => $_postdetails['id'], 'redirect' => protect_url_parameter($redir_url)), get_module_zone('warnings'));
+            $action_url = build_url(['page' => 'warnings', 'type' => 'add', 'member_id' => $_postdetails['poster'], 'post_id' => $_postdetails['id'], 'redirect' => protect_url_parameter($redir_url)], get_module_zone('warnings'));
             $_title = do_lang_tempcode('__WARN_MEMBER');
             $_title_full = do_lang_tempcode('WARN_MEMBER');
             $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-            $onmousedown_call_functions = array(array('spamWarning'));
-            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '2698c51b06a72773ac7135bbfe791318', 'REL' => 'nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/warn', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONMOUSEDOWN_CALL_FUNCTIONS' => $onmousedown_call_functions)));
+            $onmousedown_call_functions = [['spamWarning']];
+            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '2698c51b06a72773ac7135bbfe791318', 'REL' => 'nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/warn', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url, 'ONMOUSEDOWN_CALL_FUNCTIONS' => $onmousedown_call_functions]));
         }
     }
 
     if ($_postdetails['has_revisions']) {
-        $action_url = build_url(array('page' => 'admin_revisions', 'type' => 'browse', 'resource_types' => 'post', 'resource_id' => $_postdetails['id']), get_module_zone('admin_revisions'));
+        $action_url = build_url(['page' => 'admin_revisions', 'type' => 'browse', 'resource_types' => 'post', 'resource_id' => $_postdetails['id']], get_module_zone('admin_revisions'));
         $_title = do_lang_tempcode('actionlog:REVISIONS');
         $_title_full = new Tempcode();
         $_title_full->attach($_title);
         $_title_full->attach(do_lang_tempcode('ID_NUM', strval($_postdetails['id'])));
-        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => '6086b2ae226bf2a69d1e34641d22ae21', 'REL' => 'history nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/revisions', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url)));
+        $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => '6086b2ae226bf2a69d1e34641d22ae21', 'REL' => 'history nofollow', 'IMMEDIATE' => false, 'IMG' => 'admin/revisions', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
     }
 
     if ($rendering_context != 'tickets') {
         if ((addon_installed('points')) && (!is_guest()) && (!is_guest($_postdetails['poster'])) && (has_privilege($_postdetails['poster'], 'use_points'))) {
             require_css('points');
-            $action_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $_postdetails['poster']), get_module_zone('points'));
+            $action_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $_postdetails['poster']], get_module_zone('points'));
             $_title = do_lang_tempcode('__POINTS_THANKS');
             $_title_full = do_lang_tempcode('POINTS_THANKS');
-            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', array('_GUID' => 'a66f98cb4d56bd0d64e9ecc44d357141', 'IMMEDIATE' => false, 'IMG' => 'buttons/points', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url)));
+            $buttons->attach(do_template('BUTTON_SCREEN_ITEM', ['_GUID' => 'a66f98cb4d56bd0d64e9ecc44d357141', 'IMMEDIATE' => false, 'IMG' => 'buttons/points', 'TITLE' => $_title, 'FULL_TITLE' => $_title_full, 'URL' => $action_url]));
         }
     }
 

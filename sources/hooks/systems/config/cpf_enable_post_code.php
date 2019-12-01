@@ -30,7 +30,7 @@ class Hook_config_cpf_enable_post_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CPF_ENABLE_POST_CODE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_cpf_enable_post_code
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

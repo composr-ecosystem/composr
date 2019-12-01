@@ -25,7 +25,7 @@ class Hook_implicit_usergroups_under18s
      */
     public function get_bound_group_ids()
     {
-        return array(db_get_first_id() + 9); // Probation on standard install; customise as required
+        return [db_get_first_id() + 9]; // Probation on standard install; customise as required
     }
 
     protected function _where()
@@ -43,7 +43,7 @@ class Hook_implicit_usergroups_under18s
     public function get_member_list($group_id)
     {
         if (!addon_installed('under18s')) {
-            return array();
+            return [];
         }
 
         return list_to_map('id', $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . $this->_where()));

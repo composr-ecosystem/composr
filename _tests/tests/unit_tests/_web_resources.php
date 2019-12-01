@@ -55,7 +55,7 @@ class _web_resources_test_set extends cms_test_case
                 continue;
             }
 
-            foreach (array('javascript', 'javascript_custom') as $dir) {
+            foreach (['javascript', 'javascript_custom'] as $dir) {
                 $this->javascript_test_for_theme($theme, $dir);
             }
         }
@@ -63,7 +63,7 @@ class _web_resources_test_set extends cms_test_case
 
     protected function javascript_test_for_theme($theme, $dir)
     {
-        $exceptions = array(
+        $exceptions = [
             // Won't parse
             'jquery_ui.js',
             'modernizr.js',
@@ -92,13 +92,13 @@ class _web_resources_test_set extends cms_test_case
 
             // Partial code that will give errors
             'ATTACHMENT_UI_DEFAULTS.js',
-        );
+        ];
 
         if (($this->only !== null) && (in_array($this->only, $exceptions))) {
             unset($exceptions[array_search($this->only, $exceptions)]);
         }
 
-        $files = get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $dir, get_file_base() . '/themes/' . $theme . '/' . $dir, null, false, true, array('js'));
+        $files = get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $dir, get_file_base() . '/themes/' . $theme . '/' . $dir, null, false, true, ['js']);
         foreach ($files as $path) {
             if (in_array(basename($path), $exceptions)) {
                 continue;
@@ -123,7 +123,7 @@ class _web_resources_test_set extends cms_test_case
                     $errors['errors'][$i] = $e;
                 }
             }
-            if (($errors !== null) && ($errors['errors'] == array())) {
+            if (($errors !== null) && ($errors['errors'] == [])) {
                 $errors = null; // Normalise
             }
             $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));
@@ -148,7 +148,7 @@ class _web_resources_test_set extends cms_test_case
                 continue;
             }
 
-            foreach (array('css', 'css_custom') as $dir) {
+            foreach (['css', 'css_custom'] as $dir) {
                 $this->css_test_for_theme($theme, $dir);
             }
         }
@@ -156,7 +156,7 @@ class _web_resources_test_set extends cms_test_case
 
     protected function css_test_for_theme($theme, $dir)
     {
-        $exceptions = array(
+        $exceptions = [
             'no_cache.css',
             'svg.css', // SVG-CSS
 
@@ -170,13 +170,13 @@ class _web_resources_test_set extends cms_test_case
             'jquery_ui.css',
             'confluence.css',
             'widget_glide.css',
-        );
+        ];
 
         if (($this->only !== null) && (in_array($this->only, $exceptions))) {
             unset($exceptions[array_search($this->only, $exceptions)]);
         }
 
-        $files = get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $dir, get_file_base() . '/themes/' . $theme . '/' . $dir, null, false, true, array('css'));
+        $files = get_directory_contents(get_file_base() . '/themes/' . $theme . '/' . $dir, get_file_base() . '/themes/' . $theme . '/' . $dir, null, false, true, ['css']);
         foreach ($files as $path) {
             if (in_array(basename($path), $exceptions)) {
                 continue;
@@ -195,7 +195,7 @@ class _web_resources_test_set extends cms_test_case
 
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
             $errors = check_css($c);
-            if (($errors !== null) && ($errors['errors'] == array())) {
+            if (($errors !== null) && ($errors['errors'] == [])) {
                 $errors = null; // Normalise
             }
             $this->assertTrue(($errors === null), 'Bad CSS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));

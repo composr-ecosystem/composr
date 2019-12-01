@@ -30,7 +30,7 @@ class Hook_config_show_personal_sub_links
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PERSONAL_SUB_LINKS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_show_personal_sub_links
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

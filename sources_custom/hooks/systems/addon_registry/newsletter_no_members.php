@@ -26,7 +26,7 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,14 +106,14 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'newsletter',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -133,9 +133,9 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/newsletter_no_members.php',
             'sources_custom/hooks/systems/cron/newsletter_no_members.php',
-        );
+        ];
     }
 }

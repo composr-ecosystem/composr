@@ -30,7 +30,7 @@ class Hook_config_enable_previews
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_PREVIEWS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_previews
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

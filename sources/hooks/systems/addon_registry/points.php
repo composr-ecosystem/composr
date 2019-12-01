@@ -31,7 +31,7 @@ class Hook_addon_registry_points
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_points
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_points',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_points
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_points
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/points.php',
             'themes/default/images/icons/menu/social/points.svg',
             'themes/default/images/icons/menu/adminzone/audit/points_log.svg',
@@ -164,7 +164,7 @@ class Hook_addon_registry_points
             'sources/hooks/systems/commandr_fs_extended_member/point_gifts_given.php',
             'themes/default/javascript/points.js',
             'sources/hooks/systems/actionlog/points.php',
-        );
+        ];
     }
 
     /**
@@ -174,7 +174,7 @@ class Hook_addon_registry_points
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/POINTS_LEADER_BOARD_ROW.tpl' => 'points_leader_board',
             'templates/POINTS_LEADER_BOARD.tpl' => 'points_leader_board',
             'templates/POINTS_LEADER_BOARD_WEEK.tpl' => 'points_leader_board_screen',
@@ -184,7 +184,7 @@ class Hook_addon_registry_points
             'templates/POINTS_GIVE.tpl' => 'points_screen',
             'templates/POINTS_PROFILE.tpl' => 'points_screen',
             'templates/POINTS_SCREEN.tpl' => 'points_screen',
-        );
+        ];
     }
 
     /**
@@ -198,23 +198,23 @@ class Hook_addon_registry_points
     {
         $out = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', array(
+            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
                 'ID' => placeholder_id(),
                 'POINTS_URL' => placeholder_url(),
                 'PROFILE_URL' => placeholder_url(),
                 'POINTS' => placeholder_number(),
                 'USERNAME' => lorem_phrase(),
                 'HAS_RANK_IMAGES' => true,
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', array(
+        return [
+            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD', [
                 'URL' => placeholder_url(),
                 'LIMIT' => placeholder_number(),
                 'ROWS' => $out,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -230,27 +230,27 @@ class Hook_addon_registry_points
         foreach (placeholder_array() as $k => $v) {
             $week_tpl = new Tempcode();
             foreach (placeholder_array() as $_k => $_v) {
-                $week_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', array(
+                $week_tpl->attach(do_lorem_template('POINTS_LEADER_BOARD_ROW', [
                     'ID' => placeholder_id(),
                     'POINTS_URL' => placeholder_url(),
                     'PROFILE_URL' => placeholder_url(),
                     'POINTS' => placeholder_number(),
                     'USERNAME' => lorem_phrase(),
                     'HAS_RANK_IMAGES' => true,
-                )));
+                ]));
             }
-            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_WEEK', array(
+            $out->attach(do_lorem_template('POINTS_LEADER_BOARD_WEEK', [
                 'WEEK' => placeholder_number(),
                 'ROWS' => $week_tpl,
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('POINTS_LEADER_BOARD_SCREEN', [
                 'TITLE' => lorem_title(),
                 'WEEKS' => $out,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -264,19 +264,19 @@ class Hook_addon_registry_points
     {
         $results = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $results->attach(do_lorem_template('POINTS_SEARCH_RESULT', array(
+            $results->attach(do_lorem_template('POINTS_SEARCH_RESULT', [
                 'URL' => placeholder_url(),
                 'ID' => placeholder_id(),
                 'USERNAME' => lorem_word(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('POINTS_SEARCH_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('POINTS_SEARCH_SCREEN', [
                 'TITLE' => lorem_title(),
                 'RESULTS' => $results,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -294,13 +294,13 @@ class Hook_addon_registry_points
 
         $to = placeholder_table();
 
-        $give_template = do_lorem_template('POINTS_GIVE', array(
+        $give_template = do_lorem_template('POINTS_GIVE', [
             'GIVE_URL' => placeholder_url(),
             'MEMBER' => placeholder_id(),
             'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
-        ));
+        ]);
 
-        $content = do_lorem_template('POINTS_PROFILE', array(
+        $content = do_lorem_template('POINTS_PROFILE', [
             'MEMBER' => placeholder_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
@@ -336,13 +336,13 @@ class Hook_addon_registry_points
             'MULT_POINTS_PER_DAY' => placeholder_number(),
             'MULT_POINTS_VISITING' => placeholder_number(),
             'POINTS_CREDITS' => '', // From non-bundled addon
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('POINTS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('POINTS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENT' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

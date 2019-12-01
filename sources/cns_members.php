@@ -26,7 +26,7 @@
 function init__cns_members()
 {
     global $CUSTOM_FIELD_CACHE;
-    $CUSTOM_FIELD_CACHE = array();
+    $CUSTOM_FIELD_CACHE = [];
     if (function_exists('persistent_cache_get')) {
         $test = persistent_cache_get('CUSTOM_FIELD_CACHE');
         if (is_array($test)) {
@@ -35,10 +35,10 @@ function init__cns_members()
     }
 
     global $MEMBER_CACHE_FIELD_MAPPINGS;
-    $MEMBER_CACHE_FIELD_MAPPINGS = array();
+    $MEMBER_CACHE_FIELD_MAPPINGS = [];
 
     global $PRIMARY_GROUP_MEMBERS_CACHE;
-    $PRIMARY_GROUP_MEMBERS_CACHE = array();
+    $PRIMARY_GROUP_MEMBERS_CACHE = [];
 }
 
 /**
@@ -49,13 +49,13 @@ function init__cns_members()
  */
 function cns_get_filter_cats($only_exists_now = false)
 {
-    $filter_rows_a = $GLOBALS['FORUM_DB']->query_select('f_topics', array('DISTINCT t_pt_from_category'), array('t_pt_from' => get_member()));
-    $filter_rows_b = $GLOBALS['FORUM_DB']->query_select('f_topics', array('DISTINCT t_pt_to_category'), array('t_pt_to' => get_member()));
-    $filter_cats = array('' => 1);
+    $filter_rows_a = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_from_category'], ['t_pt_from' => get_member()]);
+    $filter_rows_b = $GLOBALS['FORUM_DB']->query_select('f_topics', ['DISTINCT t_pt_to_category'], ['t_pt_to' => get_member()]);
+    $filter_cats = ['' => 1];
     if (!$only_exists_now) {
         $filter_cats[do_lang('TRASH')] = 1;
     }
-    if ($GLOBALS['FORUM_DB']->query_select_value('f_special_pt_access', 'COUNT(*)', array('s_member_id' => get_member())) > 0) {
+    if ($GLOBALS['FORUM_DB']->query_select_value('f_special_pt_access', 'COUNT(*)', ['s_member_id' => get_member()]) > 0) {
         $filter_cats[do_lang('INVITED_TO_PTS')] = 1;
     }
     foreach ($filter_rows_a as $filter_row) {
@@ -76,7 +76,7 @@ function cns_get_filter_cats($only_exists_now = false)
  */
 function cns_authusername_is_bound_via_httpauth($authusername)
 {
-    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_password_compat_scheme' => 'httpauth', 'm_pass_hash_salted' => $authusername));
+    $ret = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_password_compat_scheme' => 'httpauth', 'm_pass_hash_salted' => $authusername]);
     if ($ret === null) {
         $ret = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_password_compat_scheme', '') . ' AND ' . db_string_equal_to('m_username', $authusername));
     }
@@ -127,16 +127,16 @@ function cns_is_httpauth_member($member_id)
  * @param  array $adjusted_config_options A map of adjusted config options; actually it is field_<id>=0|1 for the purposes of this function, and overrides cf_show_on_join_form
  * @return array A list of rows of such fields
  */
-function cns_get_all_custom_fields_match($groups = null, $public_view = null, $owner_view = null, $owner_set = null, $required = null, $show_in_posts = null, $show_in_post_previews = null, $special_start = null, $show_on_join_form = null, $adjusted_config_options = array())
+function cns_get_all_custom_fields_match($groups = null, $public_view = null, $owner_view = null, $owner_set = null, $required = null, $show_in_posts = null, $show_in_post_previews = null, $special_start = null, $show_on_join_form = null, $adjusted_config_options = [])
 {
     global $CUSTOM_FIELD_CACHE;
-    $x = serialize(array($public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form));
+    $x = serialize([$public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form]);
     if (isset($CUSTOM_FIELD_CACHE[$x])) { // Composr offers a wide array of features. It's multi dimensional. Composr.. entering the 6th dimension. hyper-hyper-time.
         $result = $CUSTOM_FIELD_CACHE[$x];
     } else {
         // Load up filters
         $hooks = find_all_hook_obs('systems', 'cns_cpf_filter', 'Hook_cns_cpf_filter_');
-        $to_keep = array();
+        $to_keep = [];
         foreach ($hooks as $ob) {
             $to_keep += $ob->to_enable();
         }
@@ -189,8 +189,8 @@ function cns_get_all_custom_fields_match($groups = null, $public_view = null, $o
         }
 
         global $TABLE_LANG_FIELDS_CACHE;
-        $_result = $GLOBALS['FORUM_DB']->query('SELECT f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields f' . $where . ' ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name'), null, 0, false, true, isset($TABLE_LANG_FIELDS_CACHE['f_custom_fields']) ? $TABLE_LANG_FIELDS_CACHE['f_custom_fields'] : array());
-        $result = array();
+        $_result = $GLOBALS['FORUM_DB']->query('SELECT f.* FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_custom_fields f' . $where . ' ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name'), null, 0, false, true, isset($TABLE_LANG_FIELDS_CACHE['f_custom_fields']) ? $TABLE_LANG_FIELDS_CACHE['f_custom_fields'] : []);
+        $result = [];
         foreach ($_result as $row) {
             $row['trans_name'] = get_translated_text($row['cf_name'], $GLOBALS['FORUM_DB']);
 
@@ -217,7 +217,7 @@ function cns_get_all_custom_fields_match($groups = null, $public_view = null, $o
         }
     }
 
-    $result2 = array();
+    $result2 = [];
     foreach ($result as $row) {
         if (($row['cf_only_group'] == '') || ($groups === null) || (!empty(array_intersect(explode(',', $row['cf_only_group']), $groups)))) {
             $result2[] = $row;
@@ -245,15 +245,15 @@ function cns_get_all_custom_fields_match($groups = null, $public_view = null, $o
 function cns_get_all_custom_fields_match_member($member_id, $public_view = null, $owner_view = null, $owner_set = null, $encrypted = null, $required = null, $show_in_posts = null, $show_in_post_previews = null, $special_start = null, $show_on_join_form = null)
 {
     $fields_to_show = cns_get_all_custom_fields_match($GLOBALS['FORUM_DRIVER']->get_members_groups($member_id), $public_view, $owner_view, $owner_set, $required, $show_in_posts, $show_in_post_previews, $special_start, $show_on_join_form);
-    $custom_fields = array();
+    $custom_fields = [];
     $member_mappings = cns_get_custom_field_mappings($member_id);
     $member_value = null; // Initialise type to mixed
-    $all_cpf_permissions = ((get_member() == $member_id) || $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) ? /*no restricts if you are the member or a super-admin*/array() : list_to_map('field_id', $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', array('*'), array('member_id' => $member_id)));
+    $all_cpf_permissions = ((get_member() == $member_id) || $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) ? /*no restricts if you are the member or a super-admin*/[] : list_to_map('field_id', $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', ['*'], ['member_id' => $member_id]));
 
     require_code('fields');
 
-    $editable_with_comcode = array('long_text' => 1, 'long_trans' => 1, 'short_trans' => 1);
-    $editable_without_comcode = array('list' => 1, 'short_text' => 1, 'codename' => 1, 'url' => 1, 'integer' => 1, 'float' => 1, 'email' => 1);
+    $editable_with_comcode = ['long_text' => 1, 'long_trans' => 1, 'short_trans' => 1];
+    $editable_without_comcode = ['list' => 1, 'short_text' => 1, 'codename' => 1, 'url' => 1, 'integer' => 1, 'float' => 1, 'email' => 1];
     foreach ($fields_to_show as $i => $field_to_show) {
         $key = 'field_' . strval($field_to_show['id']);
         if (!array_key_exists($key, $member_mappings)) {
@@ -285,7 +285,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
                 $member_value = ''; // This is meant to be '' for blank, not new Tempcode()
             } else {
                 $member_value_raw = get_translated_text($member_mappings['field_' . strval($field_to_show['id'])], $GLOBALS['FORUM_DB']);
-                $member_mappings_copy = db_map_restrict($member_mappings, array('mf_member_id', 'field_' . strval($field_to_show['id'])));
+                $member_mappings_copy = db_map_restrict($member_mappings, ['mf_member_id', 'field_' . strval($field_to_show['id'])]);
                 $member_value = get_translated_tempcode('f_member_custom_fields', $member_mappings_copy, 'field_' . strval($field_to_show['id']), $GLOBALS['FORUM_DB']);
                 if ((is_object($member_value)) && ($member_value->is_empty())) {
                     $member_value = '';
@@ -320,7 +320,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
             if (!$display_cpf) { // Guard this, as the code will take some time to run
                 if ($cpf_permissions['friend_view'] == 1) {
                     if (addon_installed('chat')) {
-                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', array('member_likes' => $member_id, 'member_liked' => get_member())) !== null) {
+                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', ['member_likes' => $member_id, 'member_liked' => get_member()]) !== null) {
                             $display_cpf = true;
                         }
                     }
@@ -360,7 +360,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
                 $edit_type = 'textarea';
             }
 
-            $bindings = array(
+            $bindings = [
                 'NAME_FULL' => $field_to_show['trans_name'],
                 'NAME' => preg_replace('#^.*: #', '', $field_to_show['trans_name']),
                 'RAW' => $member_value_raw, // Always a string or NULL
@@ -371,7 +371,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
                 'FIELD_TYPE' => $field_to_show['cf_type'],
                 'EDITABILITY' => $editability, // null not editable. 1 for Comcode, 0 otherwise
                 'EDIT_TYPE' => $edit_type,
-            );
+            ];
 
             if ($field_to_show['cf_tempcode'] != '') {
                 require_code('tempcode_compiler');
@@ -395,7 +395,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
  */
 function find_cpf_field_id($title)
 {
-    static $cache = array();
+    static $cache = [];
     if (array_key_exists($title, $cache)) {
         return $cache[$title];
     }
@@ -418,7 +418,7 @@ function find_cpf_field_id($title)
  */
 function find_cms_cpf_field_id($title)
 {
-    static $cache = array();
+    static $cache = [];
     if (array_key_exists($title, $cache)) {
         return $cache[$title];
     }
@@ -465,14 +465,14 @@ function cns_get_custom_field_mappings($member_id)
             }
         }
 
-        $row = array('mf_member_id' => $member_id);
+        $row = ['mf_member_id' => $member_id];
 
-        $query = $GLOBALS['FORUM_DB']->query_select('f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=m.id', array('*'), $row, '', 1);
+        $query = $GLOBALS['FORUM_DB']->query_select('f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields c ON c.mf_member_id=m.id', ['*'], $row, '', 1);
         if (!isset($query[0]['mf_member_id'])) { // Repair
             $value = null;
-            $row = array();
+            $row = [];
 
-            $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type', 'cf_required', 'cf_default'));
+            $all_fields_regardless = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type', 'cf_required', 'cf_default']);
             foreach ($all_fields_regardless as $field) {
                 $ob = get_fields_hook($field['cf_type']);
                 list(, $value, $storage_type) = $ob->get_field_value_row_bits($field, $field['cf_required'] == 1, '', $GLOBALS['FORUM_DB']);
@@ -497,12 +497,12 @@ function cns_get_custom_field_mappings($member_id)
                     }
                 }
             }
-            $row = array('mf_member_id' => $member_id) + $row;
+            $row = ['mf_member_id' => $member_id] + $row;
             $GLOBALS['FORUM_DB']->query_insert('f_member_custom_fields', $row, false, true);
             if (!isset($query[0])) {
-                $query[0] = array();
+                $query[0] = [];
             }
-            $query[0] += array($row);
+            $query[0] += [$row];
         }
         $MEMBER_CACHE_FIELD_MAPPINGS[$member_id] = $query[0];
 
@@ -523,7 +523,7 @@ function cns_get_custom_field_mappings($member_id)
 function cns_get_custom_fields_member($member_id)
 {
     $row = cns_get_custom_field_mappings($member_id);
-    $result = array();
+    $result = [];
     foreach ($row as $column => $val) {
         if (preg_match('#^field_\d+$#', $column) != 0) {
             $result[intval(substr($column, 6))] = $val;

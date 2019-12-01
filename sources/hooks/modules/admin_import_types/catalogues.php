@@ -31,10 +31,10 @@ class Hook_admin_import_types_catalogues
     public function run()
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'catalogue_links' => 'DEFAULT_CATALOGUE_LINKS_TITLE',
             'catalogue_projects' => 'DEFAULT_CATALOGUE_PROJECTS_TITLE',
             'catalogue_faqs' => 'DEFAULT_CATALOGUE_FAQS_TITLE',
@@ -42,6 +42,6 @@ class Hook_admin_import_types_catalogues
             'ephems' => 'EPHEMS',
             'contacts' => 'CONTACTS',
             'reviews' => 'REVIEWS',
-        );
+        ];
     }
 }

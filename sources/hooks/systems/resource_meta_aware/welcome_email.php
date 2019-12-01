@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_welcome_email
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'cns_welcome_emails:WELCOME_EMAIL',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_welcome_email
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_WELCOME_EMAIL',
-        );
+        ];
     }
 }

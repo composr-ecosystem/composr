@@ -33,14 +33,14 @@ class Hook_page_groupings_chat
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'menu/social/chat/chat', array('cms_chat', array('type' => 'browse'), get_module_zone('cms_chat')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('chat:CHAT_MODERATION'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)')))))), 'chat:DOC_CHAT'),
-            array('structure', 'menu/social/chat/chat', array('admin_chat', array('type' => 'browse'), get_module_zone('admin_chat')), do_lang_tempcode('chat:CHATROOMS'), 'chat:DOC_CHAT'),
-            array('social', 'menu/social/chat/chat', array('chat', array(), get_module_zone('chat')), do_lang_tempcode('chat:CHAT_LOBBY')),
+        return [
+            ['cms', 'menu/social/chat/chat', ['cms_chat', ['type' => 'browse'], get_module_zone('cms_chat')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('chat:CHAT_MODERATION'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)')))))), 'chat:DOC_CHAT'],
+            ['structure', 'menu/social/chat/chat', ['admin_chat', ['type' => 'browse'], get_module_zone('admin_chat')], do_lang_tempcode('chat:CHATROOMS'), 'chat:DOC_CHAT'],
+            ['social', 'menu/social/chat/chat', ['chat', [], get_module_zone('chat')], do_lang_tempcode('chat:CHAT_LOBBY')],
             // userguide_chatcode and popup_blockers are children of help_page
-        );
+        ];
     }
 }

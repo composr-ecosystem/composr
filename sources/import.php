@@ -84,12 +84,12 @@ function cns_over_msn()
  */
 function import_id_remap_get($type, $id_old, $fail_ok = false)
 {
-    static $remap_cache = array();
+    static $remap_cache = [];
     if ((array_key_exists($type, $remap_cache)) && (array_key_exists($id_old, $remap_cache[$type]))) {
         return $remap_cache[$type][$id_old];
     }
 
-    $value = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', array('id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old));
+    $value = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old]);
     if ($value === null) {
         if ($fail_ok) {
             return null;
@@ -111,7 +111,7 @@ function import_check_if_imported($type, $id_old)
 {
     send_http_output_ping();
 
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', array('id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('import_id_remap', 'id_new', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old]);
     return $test !== null;
 }
 
@@ -124,7 +124,7 @@ function import_check_if_imported($type, $id_old)
  */
 function import_id_remap_put($type, $id_old, $id_new)
 {
-    $GLOBALS['SITE_DB']->query_insert('import_id_remap', array('id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old, 'id_new' => $id_new));
+    $GLOBALS['SITE_DB']->query_insert('import_id_remap', ['id_session' => get_session_id(), 'id_type' => $type, 'id_old' => $id_old, 'id_new' => $id_new]);
 }
 
 /**
@@ -136,9 +136,9 @@ function import_id_remap_put($type, $id_old, $id_new)
  */
 function add_wordfilter_word($word, $replacement = '', $substr = 0)
 {
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'word', array('word' => $word));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('wordfilter', 'word', ['word' => $word]);
     if ($test === null) {
-        $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $word, 'w_replacement' => $replacement, 'w_substr' => $substr));
+        $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_substr' => $substr]);
     }
 }
 
@@ -169,8 +169,8 @@ function i_force_refresh()
 
         global $I_REFRESH_URL, $I_REFRESH_TIME;
 
-        $post = build_keep_post_fields(array(), true);
-        $refresh = do_template('JS_REFRESH', array('FORM_NAME' => 'redir_form'));
+        $post = build_keep_post_fields([], true);
+        $refresh = do_template('JS_REFRESH', ['FORM_NAME' => 'redir_form']);
 
         $title = get_screen_title('IMPORT');
         $url = $I_REFRESH_URL;
@@ -180,7 +180,7 @@ function i_force_refresh()
                 $url .= '&' . $key . '=' . strval($val);
             }
         }
-        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', array('REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post));
+        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', ['REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post]);
 
         $echo = globalise($middle, null, '', true);
         $echo->evaluate_echo();
@@ -209,7 +209,7 @@ function set_database_index_maintenance($on)
     if (strpos(get_db_type(), 'mysql') !== false) {
         push_db_scope_check(false);
 
-        $tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+        $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($tables as $table) {
             $tbl = $table['m_table'];
             $GLOBALS['SITE_DB']->query('ALTER TABLE ' . $GLOBALS['SITE_DB']->get_table_prefix() . $tbl . ' ' . ($on ? 'ENABLE' : 'DISABLE') . ' KEYS');

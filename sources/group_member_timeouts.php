@@ -31,7 +31,7 @@ function bump_member_group_timeout($member_id, $group_id, $num_minutes, $prefer_
     $db = get_db_for('f_group_member_timeouts');
 
     // Extend or add, depending on whether they're in it yet
-    $existing_timeout = $db->query_select_value_if_there('f_group_member_timeouts', 'timeout', array('member_id' => $member_id, 'group_id' => $group_id));
+    $existing_timeout = $db->query_select_value_if_there('f_group_member_timeouts', 'timeout', ['member_id' => $member_id, 'group_id' => $group_id]);
     if ($existing_timeout === null) {
         $timestamp = time() + 60 * $num_minutes;
     } else {
@@ -70,14 +70,14 @@ function set_member_group_timeout($member_id, $group_id, $timestamp, $prefer_for
             $GLOBALS['FORUM_DRIVER']->add_member_to_group($member_id, $group_id);
         } else {
             if ($prefer_for_primary_group) {
-                $db->query_update('f_members', array('m_primary_group' => $group_id), array('id' => $member_id), '', 1);
-                $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = array();
+                $db->query_update('f_members', ['m_primary_group' => $group_id], ['id' => $member_id], '', 1);
+                $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
 
-                $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', array(
+                $GLOBALS['FORUM_DB']->query_insert('f_group_join_log', [
                     'member_id' => $member_id,
                     'usergroup_id' => $group_id,
                     'join_time' => time(),
-                ));
+                ]);
             } else {
                 cns_add_member_to_group($member_id, $group_id);
             }
@@ -85,19 +85,19 @@ function set_member_group_timeout($member_id, $group_id, $timestamp, $prefer_for
     }
 
     // Set
-    $db->query_delete('f_group_member_timeouts', array(
+    $db->query_delete('f_group_member_timeouts', [
         'member_id' => $member_id,
         'group_id' => $group_id,
-    ), '', 1);
-    $db->query_insert('f_group_member_timeouts', array(
+    ], '', 1);
+    $db->query_insert('f_group_member_timeouts', [
         'member_id' => $member_id,
         'group_id' => $group_id,
         'timeout' => $timestamp,
-    ));
+    ]);
 
     global $USERS_GROUPS_CACHE, $GROUP_MEMBERS_CACHE;
-    $USERS_GROUPS_CACHE = array();
-    $GROUP_MEMBERS_CACHE = array();
+    $USERS_GROUPS_CACHE = [];
+    $GROUP_MEMBERS_CACHE = [];
 }
 
 /**
@@ -132,15 +132,15 @@ function cleanup_member_timeouts()
                     $GLOBALS['FORUM_DRIVER']->remove_member_from_group($member_id, $group_id);
                 } else {
                     if ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_primary_group') == $group_id) {
-                        $db->query_update('f_members', array('m_primary_group' => get_first_default_group()), array('id' => $member_id), '', 1);
-                        $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = array();
+                        $db->query_update('f_members', ['m_primary_group' => get_first_default_group()], ['id' => $member_id], '', 1);
+                        $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
                     }
-                    $db->query_delete('f_group_members', array('gm_group_id' => $group_id, 'gm_member_id' => $member_id), '', 1);
+                    $db->query_delete('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id], '', 1);
                 }
 
                 global $USERS_GROUPS_CACHE, $GROUP_MEMBERS_CACHE;
-                $USERS_GROUPS_CACHE = array();
-                $GROUP_MEMBERS_CACHE = array();
+                $USERS_GROUPS_CACHE = [];
+                $GROUP_MEMBERS_CACHE = [];
             }
         }
         $start += 100;

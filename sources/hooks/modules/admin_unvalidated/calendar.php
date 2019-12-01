@@ -36,7 +36,7 @@ class Hook_unvalidated_calendar
 
         require_lang('calendar');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'calendar_events';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'validated';

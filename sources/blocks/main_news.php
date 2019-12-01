@@ -30,14 +30,14 @@ class Block_main_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'member_based', 'select', 'select_and', 'multiplier', 'fallback_full', 'fallback_archive', 'blogs', 'historic', 'zone', 'title', 'show_in_full', 'no_links', 'attach_to_url_filter', 'render_if_empty', 'filter', 'start', 'pagination', 'as_guest', 'optimise', 'check');
+        $info['parameters'] = ['param', 'member_based', 'select', 'select_and', 'multiplier', 'fallback_full', 'fallback_archive', 'blogs', 'historic', 'zone', 'title', 'show_in_full', 'no_links', 'attach_to_url_filter', 'render_if_empty', 'filter', 'start', 'pagination', 'as_guest', 'optimise', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         ((preg_match('#<\w+>#', array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
         ?
@@ -102,7 +102,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'd791iqh0ytnpf0azwolpxojd881q9ir2', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'd791iqh0ytnpf0azwolpxojd881q9ir2', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         require_lang('cns');
@@ -138,7 +138,7 @@ PHP;
         // Read in news categories ahead, for performance
         global $NEWS_CATS_CACHE;
         if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
             $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
         }
 
@@ -206,20 +206,20 @@ PHP;
         // Read in rows
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(DISTINCT r.id) FROM ' . get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : ''), false, true);
         if ($historic == '') {
-            $rows = ($days_full == 0.0) ? array() : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, array('title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS'));
+            $rows = ($days_full == 0.0) ? [] : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             if (!isset($rows[0])) { // Nothing recent, so we work to get at least something
-                $rows = ($fallback_full == 0) ? array() : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $fallback_full, $start, false, true, array('title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS'));
-                $rows2 = ($fallback_archive == 0) ? array() : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $fallback_archive, $fallback_full + $start, false, true, array('title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS'));
+                $rows = ($fallback_full == 0) ? [] : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $fallback_full, $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
+                $rows2 = ($fallback_archive == 0) ? [] : $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $fallback_archive, $fallback_full + $start, false, true, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             } else {
-                $rows2 = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full + $days_outline)) . ' AND date_and_time<' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, array('title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS'));
+                $rows2 = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ' AND date_and_time>=' . strval(time() - 60 * 60 * 24 * intval($days_full + $days_outline)) . ' AND date_and_time<' . strval(time() - 60 * 60 * 24 * intval($days_full)) . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', max($fallback_full + $fallback_archive, 30)/*reasonable limit*/, 0, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
             }
         } else {
             $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
             $start = 0;
             do {
                 $_rows = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON r.id=d.news_entry' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', 200, $start, false, true);
-                $rows = array();
-                $rows2 = array();
+                $rows = [];
+                $rows2 = [];
                 foreach ($_rows as $row) {
                     $ok = false;
                     switch ($historic) {
@@ -261,7 +261,7 @@ PHP;
         // Shared calculations
         $show_in_full = (isset($map['show_in_full'])) && ($map['show_in_full'] == '1');
         $show_author = (addon_installed('authors')) && (!$member_based);
-        $prop_url = array();
+        $prop_url = [];
         if ($attach_to_url_filter) {
             $prop_url += propagate_filtercode();
         }
@@ -280,7 +280,7 @@ PHP;
         // Render loop
         $news_text = new Tempcode();
         foreach ($rows as $i => $myrow) {
-            $just_news_row = db_map_restrict($myrow, array('id', 'title', 'news', 'news_article'), array('id' => 'p_id'));
+            $just_news_row = db_map_restrict($myrow, ['id', 'title', 'news', 'news_article'], ['id' => 'p_id']);
 
             // Basic details
             $id = $myrow['p_id'];
@@ -291,7 +291,7 @@ PHP;
             // Author
             $author_url = new Tempcode();
             if ($show_author) {
-                $url_map = array('page' => 'authors', 'type' => 'browse', 'id' => $myrow['author']);
+                $url_map = ['page' => 'authors', 'type' => 'browse', 'id' => $myrow['author']];
                 if ($attach_to_url_filter) {
                     $url_map += propagate_filtercode();
                 }
@@ -335,12 +335,12 @@ PHP;
             }
 
             // URL
-            $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $id) + $prop_url;
+            $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $id] + $prop_url;
             $full_url = build_url($tmp, $zone);
 
             // Category
             if (!isset($NEWS_CATS_CACHE[$myrow['news_category']])) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('id' => $myrow['news_category']), '', 1);
+                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $myrow['news_category']], '', 1);
                 if (isset($_news_cats[0])) {
                     $NEWS_CATS_CACHE[$myrow['news_category']] = $_news_cats[0];
                 } else {
@@ -362,10 +362,10 @@ PHP;
             }
 
             // SEO
-            $seo_bits = (get_value('disable_tags') === '1') ? array('', '') : seo_meta_get_for('news', strval($id));
+            $seo_bits = (get_value('disable_tags') === '1') ? ['', ''] : seo_meta_get_for('news', strval($id));
 
             // Render
-            $map2 = array(
+            $map2 = [
                 'GIVE_CONTEXT' => false,
                 'TAGS' => get_loaded_tags('news', explode(',', $seo_bits[0])),
                 'ID' => strval($id),
@@ -384,7 +384,7 @@ PHP;
                 'AUTHOR_URL' => $author_url,
                 'NEWS' => $news,
                 'FULL_URL' => $full_url,
-            );
+            ];
             if (($allow_comments_shared) && ($myrow['allow_comments'] >= 1)) {
                 $map2['COMMENT_COUNT'] = '1';
             }
@@ -392,13 +392,13 @@ PHP;
         }
         $news_text2 = new Tempcode();
         foreach ($rows2 as $j => $myrow) {
-            $just_news_row = db_map_restrict($myrow, array('id', 'title', 'news', 'news_article'), array('id' => 'p_id'));
+            $just_news_row = db_map_restrict($myrow, ['id', 'title', 'news', 'news_article'], ['id' => 'p_id']);
 
             // Basic details
             $date = get_timezoned_date_time_tempcode($myrow['date_and_time']);
 
             // URL
-            $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $myrow['p_id']) + $prop_url;
+            $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $myrow['p_id']] + $prop_url;
             $url = build_url($tmp, $zone);
 
             // Title
@@ -406,8 +406,8 @@ PHP;
             $title_plain = get_translated_text($myrow['title']);
 
             // Render
-            $seo_bits = (get_value('disable_tags') === '1') ? array('', '') : seo_meta_get_for('news', strval($myrow['p_id']));
-            $map2 = array('_GUID' => 'd81bda3a0912a1e708af6bb1f503b296', 'TAGS' => get_loaded_tags('news', explode(',', $seo_bits[0])), 'BLOG' => $blogs === 1, 'ID' => strval($myrow['p_id']), 'SUBMITTER' => strval($myrow['submitter']), 'DATE' => $date, 'DATE_RAW' => strval($myrow['date_and_time']), 'FULL_URL' => $url, 'NEWS_TITLE_PLAIN' => $title_plain, 'NEWS_TITLE' => $title);
+            $seo_bits = (get_value('disable_tags') === '1') ? ['', ''] : seo_meta_get_for('news', strval($myrow['p_id']));
+            $map2 = ['_GUID' => 'd81bda3a0912a1e708af6bb1f503b296', 'TAGS' => get_loaded_tags('news', explode(',', $seo_bits[0])), 'BLOG' => $blogs === 1, 'ID' => strval($myrow['p_id']), 'SUBMITTER' => strval($myrow['submitter']), 'DATE' => $date, 'DATE_RAW' => strval($myrow['date_and_time']), 'FULL_URL' => $url, 'NEWS_TITLE_PLAIN' => $title_plain, 'NEWS_TITLE' => $title];
             if (($allow_comments_shared) && ($myrow['allow_comments'] >= 1)) {
                 $map2['COMMENT_COUNT'] = '1';
             }
@@ -415,7 +415,7 @@ PHP;
         }
 
         // Work out management URLs
-        $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse');
+        $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse'];
         if ($select != '*') {
             $tmp[is_numeric($select) ? 'id' : 'select'] = $select;
         }
@@ -431,7 +431,7 @@ PHP;
         $submit_url = new Tempcode();
         $management_page = ($blogs === 1) ? 'cms_blogs' : 'cms_news';
         if ((($blogs !== 1) || (has_privilege(get_member(), 'have_personal_category', 'cms_news'))) && (has_actual_page_access(null, $management_page, null, null)) && (has_submit_permission(($blogs === 1) ? 'mid' : 'high', get_member(), get_ip_address(), $management_page))) {
-            $map2 = array('page' => $management_page, 'type' => 'add');
+            $map2 = ['page' => $management_page, 'type' => 'add'];
             if (is_numeric($select)) {
                 $map2['cat'] = $select; // select news cat by default, if we are only showing one news cat in this block
             } elseif ($select != '*') {
@@ -475,7 +475,7 @@ PHP;
 
         if ((empty($rows)) && (empty($rows2))) {
             if ((!isset($map['render_if_empty'])) || ($map['render_if_empty'] == '0')) {
-                return do_template('BLOCK_NO_ENTRIES', array(
+                return do_template('BLOCK_NO_ENTRIES', [
                     '_GUID' => '9d7065af4dd4026ffb34243fd931f99d',
                     'BLOCK_ID' => $block_id,
                     'HIGH' => false,
@@ -483,7 +483,7 @@ PHP;
                     'MESSAGE' => do_lang_tempcode(($blogs == 1) ? 'BLOG_NO_NEWS' : 'NO_NEWS'),
                     'ADD_NAME' => do_lang_tempcode(($blogs == 1) ? 'ADD_NEWS_BLOG' : 'ADD_NEWS'),
                     'SUBMIT_URL' => $submit_url,
-                ));
+                ]);
             }
         }
 
@@ -494,10 +494,10 @@ PHP;
             $pagination = pagination(do_lang_tempcode('NEWS'), $start, $block_id . '_start', $fallback_full + $fallback_archive, $block_id . '_max', $max_rows);
         }
 
-        return do_template('BLOCK_MAIN_NEWS', array(
+        return do_template('BLOCK_MAIN_NEWS', [
             '_GUID' => '01f5fbd2b0c7c8f249023ecb4254366e',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'BLOG' => $blogs === 1,
             'TITLE' => $_title,
             'CONTENT' => $news_text,
@@ -512,7 +512,7 @@ PHP;
             'MAX' => strval($fallback_full + $fallback_archive),
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
-        ));
+        ]);
     }
 
     /**

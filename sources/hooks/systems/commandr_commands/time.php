@@ -34,9 +34,9 @@ class Hook_commandr_command_time
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('time', array('h'), array()), '', '');
+            return ['', do_command_help('time', ['h'], []), '', ''];
         } else {
-            return array('', '', strval(time()), '');
+            return ['', '', strval(time()), ''];
         }
     }
 }

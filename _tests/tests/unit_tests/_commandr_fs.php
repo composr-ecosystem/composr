@@ -37,7 +37,7 @@ class _commandr_fs_test_set extends cms_test_case
         $ob = new Commandr_fs();
 
         // Check top-level 'var' works
-        $var_files = $ob->listing(array('var'));
+        $var_files = $ob->listing(['var']);
         $cnt = 0;
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
@@ -45,7 +45,7 @@ class _commandr_fs_test_set extends cms_test_case
             $c = cms_file_get_contents_safe($_path, FILE_READ_LOCK);
             if (strpos($c, ' extends Resource_fs_base') !== false) {
                 if (get_forum_type() != 'cns') {
-                    if (in_array($commandr_fs_hook, array('forums', 'groups'))) {
+                    if (in_array($commandr_fs_hook, ['forums', 'groups'])) {
                         continue;
                     }
                 }
@@ -56,21 +56,21 @@ class _commandr_fs_test_set extends cms_test_case
         $this->assertTrue(count($var_files[0]) == $cnt, 'Not all var filesystems showing up');
 
         // Check one of the repository-FS filesystems works
-        $files = $ob->listing(array('var', 'banners'));
+        $files = $ob->listing(['var', 'banners']);
         $this->assertTrue(!empty($files[0]), 'Missing banner types in file system');
-        $files = $ob->listing(array('var', 'banners', 'untitled'));
+        $files = $ob->listing(['var', 'banners', 'untitled']);
         $this->assertTrue(empty($files[0]), 'Unexpected subdirectory under banner type');
         $this->assertTrue(!empty($files[1]), 'Missing default banners under banner type');
-        $path = array('var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION);
-        $GLOBALS['SITE_DB']->query_update('banners', array('edit_date' => null));
+        $path = ['var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION];
+        $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
         $data1 = $ob->read_file($path);
         $ob->write_file($path, $data1);
-        $GLOBALS['SITE_DB']->query_update('banners', array('edit_date' => null));
+        $GLOBALS['SITE_DB']->query_update('banners', ['edit_date' => null]);
         $data2 = $ob->read_file($path);
         $this->assertTrue($data1 == $data2, 'Inconsistent banner read/write');
 
         // Check folder property editing works
-        $path = array('var', 'banners', 'untitled', '_folder.' . RESOURCE_FS_DEFAULT_EXTENSION);
+        $path = ['var', 'banners', 'untitled', '_folder.' . RESOURCE_FS_DEFAULT_EXTENSION];
         $data1 = $ob->read_file($path);
         $ob->write_file($path, $data1);
         $data2 = $ob->read_file($path);
@@ -92,11 +92,11 @@ class _commandr_fs_test_set extends cms_test_case
 
         // Test importing to something - something that does not exist
         $ob = get_resource_commandr_fs_object('download');
-        $port_in = array(
+        $port_in = [
             'guid' => 'a-b-c-d-e-f',
             'label' => 'My Test Download',
             'subpath' => 'downloads-home/some-deep/path',
-        );
+        ];
         $resource_id_out = remap_portable_as_resource_id('download', $port_in); // Will create a new empty resource as it is missing
         $guid = find_guid_via_id('download', $resource_id_out);
         $filename = $ob->convert_id_to_filename('download', $resource_id_out);
@@ -113,7 +113,7 @@ class _commandr_fs_test_set extends cms_test_case
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
 
-        $referenced_in_cma = array();
+        $referenced_in_cma = [];
 
         foreach (array_keys($cma_hooks) as $cma_hook) {
             $ob = get_content_object($cma_hook);
@@ -129,7 +129,7 @@ class _commandr_fs_test_set extends cms_test_case
 
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
             if (get_forum_type() != 'cns') {
-                if (in_array($commandr_fs_hook, array('forums', 'groups'))) {
+                if (in_array($commandr_fs_hook, ['forums', 'groups'])) {
                     continue;
                 }
             }
@@ -146,10 +146,10 @@ class _commandr_fs_test_set extends cms_test_case
     public function testEtcDir()
     {
         $ob = new Commandr_fs();
-        $files = $ob->listing(array('etc'));
+        $files = $ob->listing(['etc']);
         foreach ($files[1] as $file) {
             if (strpos($file[0], '.' . RESOURCE_FS_DEFAULT_EXTENSION) !== false) {
-                $path = array('etc', $file[0]);
+                $path = ['etc', $file[0]];
                 $data1 = $ob->read_file($path);
                 $ob->write_file($path, $data1);
                 $data2 = $ob->read_file($path);

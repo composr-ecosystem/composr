@@ -30,7 +30,7 @@ class Hook_config_tax_system
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAX_SYSTEM',
             'type' => 'list',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_tax_system
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

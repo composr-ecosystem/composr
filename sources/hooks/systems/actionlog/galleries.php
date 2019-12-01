@@ -31,110 +31,110 @@ class Hook_actionlog_galleries extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
         require_lang('galleries');
 
-        return array(
-            'ADD_GALLERY' => array(
+        return [
+            'ADD_GALLERY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'gallery',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:browse:{ID}',
                     'EDIT_THIS_GALLERY' => '_SEARCH:cms_galleries:_edit_category:{ID}',
                     'ADD_GALLERY' => '_SEARCH:cms_galleries:add_category',
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={ID}',
                     'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={ID}',
-                ),
-            ),
-            'EDIT_GALLERY' => array(
+                ],
+            ],
+            'EDIT_GALLERY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'gallery',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:browse:{ID}',
                     'EDIT_THIS_GALLERY' => '_SEARCH:cms_galleries:_edit_category:{ID}',
                     'ADD_GALLERY' => '_SEARCH:cms_galleries:add_category',
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={ID}',
                     'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={ID}',
-                ),
-            ),
-            'DELETE_GALLERY' => array(
+                ],
+            ],
+            'DELETE_GALLERY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'gallery',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_GALLERY' => '_SEARCH:cms_galleries:add_category',
-                ),
-            ),
-            'ADD_IMAGE' => array(
+                ],
+            ],
+            'ADD_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'image',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:image:{ID}',
                     'EDIT_THIS_IMAGE' => '_SEARCH:cms_galleries:_edit:{ID}',
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'EDIT_IMAGE' => array(
+                ],
+            ],
+            'EDIT_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'image',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:image:{ID}',
                     'EDIT_THIS_IMAGE' => '_SEARCH:cms_galleries:_edit:{ID}',
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'DELETE_IMAGE' => array(
+                ],
+            ],
+            'DELETE_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'image',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_IMAGE' => '_SEARCH:cms_galleries:add',
-                ),
-            ),
-            'ADD_VIDEO' => array(
+                ],
+            ],
+            'ADD_VIDEO' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'video',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:video:{ID}',
                     'EDIT_THIS_VIDEO' => '_SEARCH:cms_galleries:_edit_other:{ID}',
                     'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'EDIT_VIDEO' => array(
+                ],
+            ],
+            'EDIT_VIDEO' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'video',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:galleries:video:{ID}',
                     'EDIT_THIS_VIDEO' => '_SEARCH:cms_galleries:_edit_other:{ID}',
                     'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'DELETE_VIDEO' => array(
+                ],
+            ],
+            'DELETE_VIDEO' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'video',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_VIDEO' => '_SEARCH:cms_galleries:add_other',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -150,21 +150,21 @@ class Hook_actionlog_galleries extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_IMAGE':
             case 'EDIT_IMAGE':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array('id' => intval($identifier)));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', ['id' => intval($identifier)]);
                 if ($cat !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => $cat,
-                    );
+                    ];
                 }
                 break;
 
             case 'ADD_VIDEO':
             case 'EDIT_VIDEO':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', array('id' => intval($identifier)));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('videos', 'cat', ['id' => intval($identifier)]);
                 if ($cat !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => $cat,
-                    );
+                    ];
                 }
                 break;
         }

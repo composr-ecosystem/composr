@@ -52,7 +52,7 @@ function _helper_install_create_custom_field($this_ref, $name, $length, $locked 
     require_code('cns_members_action');
 
     $name = 'cms_' . $name;
-    $id = $this_ref->db->query_select_value_if_there('f_custom_fields', 'id', array($this_ref->db->translate_field_ref('cf_name') => $name));
+    $id = $this_ref->db->query_select_value_if_there('f_custom_fields', 'id', [$this_ref->db->translate_field_ref('cf_name') => $name]);
     if ($id === null) {
         if ($default === null) {
             $default = (strpos($name, 'points') !== false) ? '0' : '';
@@ -76,32 +76,32 @@ function _helper_install_create_custom_field($this_ref, $name, $length, $locked 
  */
 function _helper_install_specifics()
 {
-    $a = array();
+    $a = [];
     $a['name'] = 'cns_table_prefix';
     $a['default'] = function_exists('get_default_table_prefix') ? get_default_table_prefix() : 'cms_';
     $a['description'] = do_lang('MOST_DEFAULT');
     $a['title'] = do_lang('TABLE_PREFIX');
 
-    $b = array();
+    $b = [];
     $b['name'] = 'clear_existing_forums_on_install';
     $b['default'] = 'no';
     $b['description'] = do_lang_tempcode('DESCRIPTION_CLEAR_EXISTING_FORUMS_ON_INSTALL');
     $b['title'] = do_lang_tempcode('CLEAR_EXISTING_FORUMS_ON_INSTALL');
 
-    $c = array();
+    $c = [];
     $c['name'] = 'admin_username';
     $c['default'] = 'admin';
     $c['description'] = do_lang_tempcode('DESCRIPTION_ADMIN_USERNAME');
     $c['title'] = do_lang_tempcode('ADMIN_USERNAME');
     $c['required'] = true;
 
-    $d = array();
+    $d = [];
     $d['name'] = 'cns_admin_password';
     $d['default'] = '';
     $d['description'] = do_lang_tempcode('DESCRIPTION_ADMIN_USERS_PASSWORD');
     $d['title'] = do_lang_tempcode('ADMIN_USERS_PASSWORD');
 
-    return array($a, $b, $c, $d);
+    return [$a, $b, $c, $d];
 }
 
 /**

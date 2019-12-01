@@ -34,14 +34,14 @@ class Hook_commandr_command_find_entry_points
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('find_entry_points', array('h'), array(true)), '', '');
+            return ['', do_command_help('find_entry_points', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'find_entry_points'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_entry_points')];
             }
 
             // NOTE: this code assumes the search-string is contained within the zone:page portion of the entry point, not any part of the parameterisation
-            $entry_points = array();
+            $entry_points = [];
             $zones = find_all_zones();
             require_all_lang();
             foreach ($zones as $zone) {
@@ -82,7 +82,7 @@ class Hook_commandr_command_find_entry_points
                     }
                 }
             }
-            return array('', do_template('COMMANDR_ENTRY_POINTS', array('_GUID' => 'afaf0b0451ccbdae399dd56e39359c0e', 'ENTRY_POINTS' => $entry_points)), '', '');
+            return ['', do_template('COMMANDR_ENTRY_POINTS', ['_GUID' => 'afaf0b0451ccbdae399dd56e39359c0e', 'ENTRY_POINTS' => $entry_points]), '', ''];
         }
     }
 }

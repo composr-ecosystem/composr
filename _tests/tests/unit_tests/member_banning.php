@@ -39,9 +39,9 @@ class member_banning_test_set extends cms_test_case
         }
 
         cns_ban_member(3);
-        $this->assertTrue(1 == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_is_perm_banned', array('id' => 3)));
+        $this->assertTrue(1 == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_is_perm_banned', ['id' => 3]));
 
         cns_unban_member(3);
-        $this->assertTrue(0 == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_is_perm_banned', array('id' => 3)));
+        $this->assertTrue(0 == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_is_perm_banned', ['id' => 3]));
     }
 }

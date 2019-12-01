@@ -30,7 +30,7 @@ class Hook_config_moz_access_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MOZ_ACCESS_ID',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -46,7 +46,7 @@ class Hook_config_moz_access_id
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'moz',
-        );
+        ];
     }
 
     /**

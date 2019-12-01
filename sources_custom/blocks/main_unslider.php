@@ -25,14 +25,14 @@ class Block_main_unslider
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('pages', 'width', 'height', 'buttons', 'delay', 'speed', 'keypresses', 'slider_id', 'bgcolor');
+        $info['parameters'] = ['pages', 'width', 'height', 'buttons', 'delay', 'speed', 'keypresses', 'slider_id', 'bgcolor'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_unslider
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             explode(',', isset($map['pages']) ? $map['pages'] : 'slide1,slide2,slide3,slide4,slide5,slide6'),
@@ -103,7 +103,7 @@ PHP;
         $slider_id = isset($map['slider_id']) ? $map['slider_id'] : 'unslider';
 
         $bgcolor = isset($map['bgcolor']) ? str_replace('#', '', $map['bgcolor']) : '';
-        $bgcolors = array();
+        $bgcolors = [];
         if (strpos($bgcolor, ',') === false) {
             for ($i = 0; $i < count($pages); $i++) {
                 $bgcolors[$pages[$i]] = $bgcolor;
@@ -115,7 +115,7 @@ PHP;
             }
         }
 
-        return do_template('BLOCK_MAIN_UNSLIDER', array(
+        return do_template('BLOCK_MAIN_UNSLIDER', [
             '_GUID' => 'ae60f714ef84227c0cb958b65f7a253c',
             'BLOCK_ID' => $block_id,
             'PAGES' => $pages,
@@ -128,6 +128,6 @@ PHP;
             'KEYPRESSES' => $keypresses,
             'SLIDER_ID' => $slider_id,
             'BGCOLORS' => $bgcolors,
-        ));
+        ]);
     }
 }

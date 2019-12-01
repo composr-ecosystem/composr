@@ -30,7 +30,7 @@ class Module_notifications
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -52,14 +52,14 @@ class Module_notifications
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
         if (get_forum_type() == 'cns') {
-            return array();
+            return [];
         }
         if ($check_perms && is_guest($member_id)) {
-            return array();
+            return [];
         }
-        return array(
-            'browse' => array('NOTIFICATIONS', 'tool_buttons/notifications'),
-        );
+        return [
+            'browse' => ['NOTIFICATIONS', 'tool_buttons/notifications'],
+        ];
     }
 
     public $title;
@@ -80,13 +80,13 @@ class Module_notifications
         if ($type == 'view') {
             $id = get_param_integer('id');
 
-            $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('*'), array('id' => $id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
             $row = $rows[0];
 
-            $this->title = get_screen_title('NOTIFICATION_VIEW', true, array(escape_html($row['d_subject'])));
+            $this->title = get_screen_title('NOTIFICATION_VIEW', true, [escape_html($row['d_subject'])]);
 
             $this->id = $id;
             $this->row = $row;
@@ -149,12 +149,12 @@ class Module_notifications
         require_code('templates_pagination');
         $pagination = pagination(do_lang('NOTIFICATIONS'), $start, 'n_start', $max, 'n_max', $max_rows);
 
-        return do_template('NOTIFICATION_BROWSE_SCREEN', array(
+        return do_template('NOTIFICATION_BROWSE_SCREEN', [
             '_GUID' => '2b503097bcf97b3296c826e87131cf8e',
             'TITLE' => $this->title,
             'NOTIFICATIONS' => $notifications,
             'PAGINATION' => $pagination,
-        ));
+        ]);
     }
 
     /**
@@ -184,12 +184,12 @@ class Module_notifications
         $_message = comcode_to_tempcode(get_translated_text($row['d_message']), $effective_member_id);
 
         if ($row['d_read'] == 0) {
-            $GLOBALS['SITE_DB']->query_update('digestives_tin', array('d_read' => 1), array('id' => $id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('digestives_tin', ['d_read' => 1], ['id' => $id], '', 1);
 
             delete_cache_entry('_get_notifications', null, $member_id);
         }
 
-        return do_template('NOTIFICATION_VIEW_SCREEN', array(
+        return do_template('NOTIFICATION_VIEW_SCREEN', [
             '_GUID' => '0099edc0157ccd4544877e0e0e552dce',
             'TITLE' => $this->title,
             'ID' => strval($row['id']),
@@ -205,7 +205,7 @@ class Module_notifications
             'NOTIFICATION_CODE' => $row['d_notification_code'],
             'CODE_CATEGORY' => $row['d_code_category'],
             'HAS_READ' => ($row['d_read'] == 1),
-        ));
+        ]);
     }
 
     /**
@@ -217,12 +217,12 @@ class Module_notifications
     {
         $interface = notifications_ui(get_member());
 
-        return do_template('NOTIFICATIONS_MANAGE_SCREEN', array(
+        return do_template('NOTIFICATIONS_MANAGE_SCREEN', [
             '_GUID' => '3c81043e6fd004baf9a36c68cb47ffe5',
             'TITLE' => $this->title,
             'INTERFACE' => $interface,
             'ACTION_URL' => get_self_url(),
-        ));
+        ]);
     }
 
     /**

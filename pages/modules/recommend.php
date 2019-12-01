@@ -30,7 +30,7 @@ class Module_recommend
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -46,10 +46,10 @@ class Module_recommend
      */
     public function uninstall()
     {
-        $GLOBALS['SITE_DB']->query_delete('comcode_pages', array(
+        $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
             'the_zone' => '',
             'the_page' => 'recommend_help',
-        ), '', 1);
+        ], '', 1);
     }
 
     /**
@@ -64,11 +64,11 @@ class Module_recommend
             require_code('users_active_actions');
             $admin_user = get_first_admin_user();
 
-            $GLOBALS['SITE_DB']->query_delete('comcode_pages', array(
+            $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => '',
                 'the_page' => 'recommend_help',
-            ), '', 1);
-            $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+            ], '', 1);
+            $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
                 'the_zone' => '',
                 'the_page' => 'recommend_help',
                 'p_parent_page' => 'recommend',
@@ -78,7 +78,7 @@ class Module_recommend
                 'p_submitter' => $admin_user,
                 'p_show_as_edit' => 0,
                 'p_order' => 0,
-            ));
+            ]);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
@@ -101,12 +101,12 @@ class Module_recommend
             return null;
         }
 
-        $ret = array(
-            'browse' => array('RECOMMEND_SITE', 'menu/site_meta/recommend'),
-        );
+        $ret = [
+            'browse' => ['RECOMMEND_SITE', 'menu/site_meta/recommend'],
+        ];
 
         if ($support_crosslinks) {
-            $ret[':recommend_help'] = array('HELP', 'help');
+            $ret[':recommend_help'] = ['HELP', 'help'];
         }
 
         return $ret;
@@ -157,7 +157,7 @@ class Module_recommend
                 }
             } else {
                 if ($page_title === null) {
-                    $this->title = get_screen_title('_RECOMMEND_SITE', true, array(escape_html(get_site_name())));
+                    $this->title = get_screen_title('_RECOMMEND_SITE', true, [escape_html(get_site_name())]);
                 } else {
                     $this->title = get_screen_title($page_title, false);
                 }
@@ -165,11 +165,11 @@ class Module_recommend
         }
 
         if ($type == 'actual') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('RECOMMEND_SITE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('RECOMMEND_SITE')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             if (post_param_integer('wrap_message', 0) == 1) {
-                $this->title = get_screen_title('_RECOMMEND_SITE', true, array(escape_html(get_site_name())));
+                $this->title = get_screen_title('_RECOMMEND_SITE', true, [escape_html(get_site_name())]);
             } else {
                 $this->title = get_screen_title('RECOMMEND_LINK');
             }
@@ -230,7 +230,7 @@ class Module_recommend
         $page_title = get_param_string('page_title', null, INPUT_FILTER_GET_COMPLEX);
 
         $submit_name = ($page_title !== null) ? make_string_tempcode($page_title) : do_lang_tempcode('SEND');
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'actual'), '_SELF', array(), true);
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF', [], true);
 
         $hidden = new Tempcode();
 
@@ -240,7 +240,7 @@ class Module_recommend
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('YOUR_NAME'), '', 'name', $name, true));
         $fields->attach(form_input_email(do_lang_tempcode('YOUR_EMAIL_ADDRESS'), '', 'email', $recommender_email_address, true));
-        $already = array();
+        $already = [];
         foreach ($_POST as $key => $email_address) {
             if (substr($key, 0, 14) != 'email_address_') {
                 continue;
@@ -261,7 +261,7 @@ class Module_recommend
                 $email_address_field = form_input_line_multi(do_lang_tempcode('FRIEND_EMAIL_ADDRESS'), do_lang_tempcode('THEIR_ADDRESS'), 'email_address_', $already, 1, null, 'email');
                 $field_set->attach($email_address_field);
 
-                $_help_url = build_url(array('page' => 'recommend_help'));
+                $_help_url = build_url(['page' => 'recommend_help']);
                 $help_url = $_help_url->evaluate();
 
                 require_code('files_spreadsheets_read');
@@ -291,9 +291,9 @@ class Module_recommend
                 if ($from !== null) {
                     $resource_title = get_param_string('title', '', INPUT_FILTER_GET_COMPLEX);
                     if ($resource_title == '') { // Auto download it
-                        $downloaded_at_link = http_get_contents($from, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 3000));
+                        $downloaded_at_link = http_get_contents($from, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 3000]);
                         if (is_string($downloaded_at_link)) {
-                            $matches = array();
+                            $matches = [];
                             if (cms_preg_match_safe('#\s*<title[^>]*\s*>\s*(.*)\s*\s*<\s*/title\s*>#mi', $downloaded_at_link, $matches) != 0) {
                                 $resource_title = trim(str_replace('&ndash;', '-', str_replace('&mdash;', '-', @html_entity_decode($matches[1], ENT_QUOTES))));
                                 $resource_title = preg_replace('#^' . preg_quote(get_site_name(), '#') . ' - #', '', $resource_title);
@@ -342,9 +342,9 @@ class Module_recommend
 
         $hidden->attach(form_input_hidden('comcode__message', '1'));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '08a538ca8d78597b0417f464758a59fd',
-            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? array(captcha_ajax_check_function()) : array(),
+            'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
             'PREVIEW' => true,
@@ -356,7 +356,7 @@ class Module_recommend
             'TEXT' => $text,
             'SUPPORT_AUTOSAVE' => true,
             'TARGET' => '_self',
-        ));
+        ]);
     }
 
     /**
@@ -369,11 +369,11 @@ class Module_recommend
         require_code('form_templates');
 
         $submit_name = do_lang_tempcode('PROCEED');
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'actual'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
 
         $fields = new Tempcode();
         $hidden = new Tempcode();
-        $already = array();
+        $already = [];
         $email_counter = 0;
         foreach ($_POST as $key => $input_value) {
             if (substr($key, 0, 14) == 'email_address_') {
@@ -412,8 +412,8 @@ class Module_recommend
                 }
 
                 if (is_spreadsheet_readable($_FILES['upload']['tmp_name'])) {
-                    $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
-                    $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
+                    $possible_email_fields = ['E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email'];
+                    $possible_name_fields = ['Name', 'Forename', 'First Name', 'Display Name', 'First'];
 
                     $sheet_reader = spreadsheet_open_read($_FILES['upload']['tmp_name'], $_FILES['upload']['name'], CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
@@ -493,7 +493,7 @@ class Module_recommend
             warn_exit(do_lang_tempcode('ERROR_NO_CONTACTS_SELECTED'));
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e3831cf87d76295c48cbce627bdd07e3',
             'PREVIEW' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -504,7 +504,7 @@ class Module_recommend
             'SUBMIT_ICON' => 'menu/site_meta/recommend',
             'SUBMIT_NAME' => $submit_name,
             'TEXT' => $text,
-        ));
+        ]);
     }
 
     /**
@@ -527,8 +527,8 @@ class Module_recommend
 
         require_code('type_sanitisation');
 
-        $email_adrs_to_send = array();
-        $names_to_send = array();
+        $email_adrs_to_send = [];
+        $names_to_send = [];
 
         foreach ($_POST as $key => $email_address) {
             if (substr($key, 0, 14) != 'email_address_') {
@@ -551,9 +551,9 @@ class Module_recommend
             }
         }
 
-        $adrbook_emails = array();
-        $adrbook_names = array();
-        $adrbook_use_these = array();
+        $adrbook_emails = [];
+        $adrbook_names = [];
+        $adrbook_use_these = [];
         foreach ($_POST as $key => $email_address) {
             if (preg_match('#details_email_|details_name_|^use_details_#', $key) == 0) {
                 continue;
@@ -599,10 +599,10 @@ class Module_recommend
                 }
 
                 $referring_username = is_guest() ? null : get_member();
-                $_url = (post_param_integer('invite', 0) == 1) ? build_url(array('page' => 'join', 'email' => $email_address, '_lead_source_description' => $_lead_source_description, 'keep_referrer' => $referring_username), get_module_zone('join')) : build_url(array('page' => '', 'keep_referrer' => $referring_username), '');
+                $_url = (post_param_integer('invite', 0) == 1) ? build_url(['page' => 'join', 'email' => $email_address, '_lead_source_description' => $_lead_source_description, 'keep_referrer' => $referring_username], get_module_zone('join')) : build_url(['page' => '', 'keep_referrer' => $referring_username], '');
                 $url = $_url->evaluate();
                 $join_url = $GLOBALS['FORUM_DRIVER']->join_url();
-                $_message = do_lang((post_param_integer('invite', 0) == 1) ? 'INVITE_MEMBER_MESSAGE' : 'RECOMMEND_MEMBER_MESSAGE', $name, $url, array(get_site_name(), $join_url)) . $message;
+                $_message = do_lang((post_param_integer('invite', 0) == 1) ? 'INVITE_MEMBER_MESSAGE' : 'RECOMMEND_MEMBER_MESSAGE', $name, $url, [get_site_name(), $join_url]) . $message;
             } else {
                 $_message = $message;
             }
@@ -610,21 +610,21 @@ class Module_recommend
             if ((may_use_invites()) && (post_param_integer('invite', 0) == 1)) {
                 send_recommendation_email($name, $email_address, $_message, true, $recommender_email_address, post_param_string('subject', null), $names_to_send[$key]);
 
-                $GLOBALS['FORUM_DB']->query_insert('f_invites', array(
+                $GLOBALS['FORUM_DB']->query_insert('f_invites', [
                     'i_inviter' => get_member(),
                     'i_email_address' => $email_address,
                     'i_time' => time(),
                     'i_taken' => 0,
-                ));
+                ]);
 
                 $invite = true;
             } elseif ((get_option('is_on_invites') == '0') && (get_forum_type() == 'cns')) {
-                $GLOBALS['FORUM_DB']->query_insert('f_invites', array( // Used for referral tracking
+                $GLOBALS['FORUM_DB']->query_insert('f_invites', [ // Used for referral tracking
                     'i_inviter' => get_member(),
                     'i_email_address' => $email_address,
                     'i_time' => time(),
                     'i_taken' => 0,
-                ));
+                ]);
             }
 
             if (!$invite) {

@@ -30,7 +30,7 @@ class Module_admin_invoices
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -59,12 +59,12 @@ class Module_admin_invoices
             return null;
         }
 
-        return array(
-            'browse' => array('INVOICES', 'menu/adminzone/audit/ecommerce/invoices'),
-            'outstanding' => array('OUTSTANDING_INVOICES', 'menu/adminzone/audit/ecommerce/outstanding_invoices'),
-            'unfulfilled' => array('UNFULFILLED_INVOICES', 'menu/adminzone/audit/ecommerce/unfulfilled_invoices'),
-            'add' => array('CREATE_INVOICE', 'menu/adminzone/audit/ecommerce/create_invoice'),
-        );
+        return [
+            'browse' => ['INVOICES', 'menu/adminzone/audit/ecommerce/invoices'],
+            'outstanding' => ['OUTSTANDING_INVOICES', 'menu/adminzone/audit/ecommerce/outstanding_invoices'],
+            'unfulfilled' => ['UNFULFILLED_INVOICES', 'menu/adminzone/audit/ecommerce/unfulfilled_invoices'],
+            'add' => ['CREATE_INVOICE', 'menu/adminzone/audit/ecommerce/create_invoice'],
+        ];
     }
 
     public $title;
@@ -91,36 +91,36 @@ class Module_admin_invoices
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('INVOICES'));
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
         }
 
         if ($type == 'add') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
 
             $this->title = get_screen_title('CREATE_INVOICE');
         }
 
         if ($type == '_add') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES')), array('_SELF:_SELF:add', do_lang_tempcode('CREATE_INVOICE'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:add', do_lang_tempcode('CREATE_INVOICE')]]);
 
             $this->title = get_screen_title('CREATE_INVOICE');
         }
 
         if ($type == 'outstanding') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
 
             $this->title = get_screen_title('OUTSTANDING_INVOICES');
         }
 
         if ($type == 'unfulfilled') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')]]);
 
             $this->title = get_screen_title('UNFULFILLED_INVOICES');
         }
 
         if ($type == 'delete') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES')), array('_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES')]]);
             if (post_param_integer('confirmed', 0) != 1) {
                 breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
             } else {
@@ -132,7 +132,7 @@ class Module_admin_invoices
 
         if ($type == 'fulfill') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('INVOICES')), array('_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('INVOICES')], ['_SELF:_SELF:unfulfilled', do_lang_tempcode('UNFULFILLED_INVOICES')]]);
 
             $this->title = get_screen_title('MARK_AS_FULFILLED');
         }
@@ -184,11 +184,11 @@ class Module_admin_invoices
         return do_next_manager(
             get_screen_title('INVOICES'),
             comcode_lang_string('DOC_ECOMMERCE'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('CREATE_INVOICE')),
-                array('menu/adminzone/audit/ecommerce/outstanding_invoices', array('_SELF', array('type' => 'outstanding'), '_SELF'), do_lang('OUTSTANDING_INVOICES')),
-                array('menu/adminzone/audit/ecommerce/unfulfilled_invoices', array('_SELF', array('type' => 'unfulfilled'), '_SELF'), do_lang('UNFULFILLED_INVOICES')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('CREATE_INVOICE')],
+                ['menu/adminzone/audit/ecommerce/outstanding_invoices', ['_SELF', ['type' => 'outstanding'], '_SELF'], do_lang('OUTSTANDING_INVOICES')],
+                ['menu/adminzone/audit/ecommerce/unfulfilled_invoices', ['_SELF', ['type' => 'unfulfilled'], '_SELF'], do_lang('UNFULFILLED_INVOICES')],
+            ],
             do_lang('INVOICES')
         );
     }
@@ -226,10 +226,10 @@ class Module_admin_invoices
         $fields->attach(form_input_line(do_lang_tempcode('PURCHASE_ID'), do_lang_tempcode('DESCRIPTION_PURCHASE_ID_INVOICE'), 'special', '', false));
         $fields->attach(form_input_text(do_lang_tempcode('NOTE'), do_lang_tempcode('DESCRIPTION_INVOICE_NOTE'), 'note', '', false));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_add'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
         $submit_name = do_lang_tempcode('CREATE_INVOICE');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'b8a08145bd1262c277e00a1151d6383e',
             'HIDDEN' => '',
             'TITLE' => $this->title,
@@ -239,7 +239,7 @@ class Module_admin_invoices
             'SUBMIT_NAME' => $submit_name,
             'TEXT' => do_lang_tempcode('DESCRIPTION_INVOICE_PAGE'),
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -274,7 +274,7 @@ class Module_admin_invoices
         $tax_code = post_param_tax_code('tax_code', $details['tax_code']);
         list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($details, $tax_code, $amount, $shipping_cost, $member_id);
 
-        $id = $GLOBALS['SITE_DB']->query_insert('ecom_invoices', array(
+        $id = $GLOBALS['SITE_DB']->query_insert('ecom_invoices', [
             'i_type_code' => $type_code,
             'i_member_id' => $member_id,
             'i_state' => 'new',
@@ -287,13 +287,13 @@ class Module_admin_invoices
             'i_special' => post_param_string('special'),
             'i_time' => time(),
             'i_note' => post_param_string('note'),
-        ), true);
+        ], true);
 
         log_it('CREATE_INVOICE', strval($id), $type_code);
 
         send_invoice_notification($member_id, $id);
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'outstanding'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'outstanding'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -326,14 +326,14 @@ class Module_admin_invoices
      */
     protected function show_invoices($db_value, $from_codename)
     {
-        $invoices = array();
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('*'), array('i_state' => $db_value), 'ORDER BY i_time');
+        $invoices = [];
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['i_state' => $db_value], 'ORDER BY i_time');
         foreach ($rows as $row) {
             $invoice_title = do_lang('CUSTOM_PRODUCT_' . $row['i_type_code']);
             $date = get_timezoned_date_time($row['i_time']);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['i_member_id']);
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['i_member_id'], true);
-            $invoices[] = array(
+            $invoices[] = [
                 'INVOICE_TITLE' => $invoice_title,
                 'PROFILE_URL' => $profile_url,
                 'USERNAME' => $username,
@@ -345,18 +345,18 @@ class Module_admin_invoices
                 'DATE' => $date,
                 'NOTE' => $row['i_note'],
                 'TYPE_CODE' => $row['i_type_code'],
-            );
+            ];
         }
         if (empty($invoices)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        return do_template('ECOM_OUTSTANDING_INVOICES_SCREEN', array(
+        return do_template('ECOM_OUTSTANDING_INVOICES_SCREEN', [
             '_GUID' => 'fab0fa7dbcd9d6484fa1861ce170717a',
             'TITLE' => $this->title,
             'FROM' => $from_codename,
             'INVOICES' => $invoices,
-        ));
+        ]);
     }
 
     /**
@@ -374,21 +374,21 @@ class Module_admin_invoices
             $hidden->attach(form_input_hidden('confirmed', '1'));
             $hidden->attach(form_input_hidden('from', get_param_string('from', 'browse')));
 
-            return do_template('CONFIRM_SCREEN', array('_GUID' => '45707062c00588c33726b256e8f9ba40', 'TITLE' => $this->title, 'FIELDS' => $hidden, 'PREVIEW' => $text, 'URL' => $url));
+            return do_template('CONFIRM_SCREEN', ['_GUID' => '45707062c00588c33726b256e8f9ba40', 'TITLE' => $this->title, 'FIELDS' => $hidden, 'PREVIEW' => $text, 'URL' => $url]);
         }
 
         $id = get_param_integer('id');
 
-        $type_code = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_type_code', array('id' => $id));
+        $type_code = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_type_code', ['id' => $id]);
         if ($id === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
 
-        $GLOBALS['SITE_DB']->query_delete('ecom_invoices', array('id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('ecom_invoices', ['id' => $id], '', 1);
 
         log_it('DELETE_INVOICE', strval($id), $type_code);
 
-        $url = build_url(array('page' => '_SELF', 'type' => post_param_string('from', 'browse')), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => post_param_string('from', 'browse')], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -399,9 +399,9 @@ class Module_admin_invoices
      */
     public function fulfill()
     {
-        $GLOBALS['SITE_DB']->query_update('ecom_invoices', array('i_state' => 'delivered'), array('id' => get_param_integer('id')), '', 1);
+        $GLOBALS['SITE_DB']->query_update('ecom_invoices', ['i_state' => 'delivered'], ['id' => get_param_integer('id')], '', 1);
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'unfulfilled'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'unfulfilled'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

@@ -31,10 +31,10 @@ class cms_test_case extends WebTestCase
             require_code('config2');
             set_option('site_closed', '0', 0);
             $done_once = true;
-            register_shutdown_function(array($this, 'reopen_site'));
+            register_shutdown_function([$this, 'reopen_site']);
         }
 
-        $args = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 2) : array();
+        $args = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 2) : [];
 
         $this->debug = (get_param_integer('debug', 0) == 1);
         if (in_array('debug', $args)) {
@@ -77,7 +77,7 @@ class cms_test_case extends WebTestCase
 
     public function get($url, $parameters = null)
     {
-        $parts = array();
+        $parts = [];
         if ((preg_match('#([' . URL_CONTENT_REGEXP . ']*):([' . URL_CONTENT_REGEXP . ']+|[^/]|$)((:(.*))*)#', $url, $parts) != 0) && ($parts[1] != 'mailto')) { // Specially encoded page-link. Complex regexp to make sure URLs do not match
             $real_url = page_link_to_url($url);
 

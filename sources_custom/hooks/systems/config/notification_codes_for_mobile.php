@@ -25,7 +25,7 @@ class Hook_config_notification_codes_for_mobile
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATION_CODES_FOR_MOBILE',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_notification_codes_for_mobile
             'public' => false,
 
             'addon' => 'composr_mobile_sdk',
-        );
+        ];
     }
 
     /**

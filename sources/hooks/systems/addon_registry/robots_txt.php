@@ -31,7 +31,7 @@ class Hook_addon_registry_robots_txt
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_robots_txt
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_seo',
             'tut_security',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_robots_txt
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_robots_txt
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/robots_txt.php',
             'data/robots.txt.template',
             'sources/robots_txt.php',
@@ -107,7 +107,7 @@ class Hook_addon_registry_robots_txt
             'themes/default/javascript/robots_txt.js',
             'themes/default/templates/ROBOTS_TXT_SCREEN.tpl',
             'sources/hooks/systems/actionlog/robots_txt.php',
-        );
+        ];
     }
 
     /**
@@ -117,9 +117,9 @@ class Hook_addon_registry_robots_txt
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/ROBOTS_TXT_SCREEN.tpl' => 'administrative__robots_txt_screen',
-        );
+        ];
     }
 
     /**
@@ -131,13 +131,13 @@ class Hook_addon_registry_robots_txt
      */
     public function tpl_preview__administrative__robots_txt_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('ROBOTS_TXT_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('ROBOTS_TXT_SCREEN', [
                 'TITLE' => lorem_title(),
                 'POST_URL' => placeholder_url(),
                 'TEXT' => lorem_chunk(),
                 'DEFAULT' => lorem_chunk(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

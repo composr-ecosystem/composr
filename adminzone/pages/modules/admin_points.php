@@ -30,7 +30,7 @@ class Module_admin_points
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,13 +55,13 @@ class Module_admin_points
             return null;
         }
 
-        $ret = array(
-            'browse' => array('GIFT_TRANSACTIONS', 'menu/adminzone/audit/points_log'),
-        );
+        $ret = [
+            'browse' => ['GIFT_TRANSACTIONS', 'menu/adminzone/audit/points_log'],
+        ];
         if (!$be_deferential) {
-            $ret += array(
-                'export' => array('EXPORT_POINTS', 'menu/social/points'),
-            );
+            $ret += [
+                'export' => ['EXPORT_POINTS', 'menu/social/points'],
+            ];
         }
         return $ret;
     }
@@ -89,7 +89,7 @@ class Module_admin_points
         if ($type == 'export') {
             set_helper_panel_text(comcode_lang_string('DOC_EXPORT_POINTS'));
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('POINTS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('POINTS')]]);
             breadcrumb_set_self(do_lang_tempcode('EXPORT'));
 
             $this->title = get_screen_title('EXPORT_POINTS');
@@ -156,7 +156,7 @@ class Module_admin_points
         $fields->attach(form_input_date(do_lang_tempcode('FROM'), '', 'from', true, false, false, $time_start, 10, intval(date('Y')) - 9));
         $fields->attach(form_input_date(do_lang_tempcode('TO'), '', 'to', true, false, false, time(), 10, intval(date('Y')) - 9));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e7529ab3f49792924ecdad78e1f3593c',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -164,10 +164,10 @@ class Module_admin_points
             'FIELDS' => $fields,
             'TEXT' => '',
             'HIDDEN' => '',
-            'URL' => get_self_url(false, false, array(), false, true),
+            'URL' => get_self_url(false, false, [], false, true),
             'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => do_lang_tempcode('EXPORT'),
-        ));
+        ]);
     }
 
     /**
@@ -177,14 +177,14 @@ class Module_admin_points
      */
     public function points_export()
     {
-        $d = array(post_param_date('from', true), post_param_date('to', true));
+        $d = [post_param_date('from', true), post_param_date('to', true)];
         if ($d[0] === null) {
             return $this->_get_between($this->title);
         }
         list($from, $to) = $d;
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_POINTS'), $this->title, 'export_points_log', array($from, $to));
+        return call_user_func_array__long_task(do_lang('EXPORT_POINTS'), $this->title, 'export_points_log', [$from, $to]);
     }
 
     /**
@@ -196,7 +196,7 @@ class Module_admin_points
     {
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = array('date_and_time' => do_lang_tempcode('DATE_TIME'), 'amount' => do_lang_tempcode('AMOUNT'));
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME'), 'amount' => do_lang_tempcode('AMOUNT')];
         $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -207,13 +207,13 @@ class Module_admin_points
         }
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)');
-        $rows = $GLOBALS['SITE_DB']->query_select('gifts', array('*'), array(), 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], [], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('DATE_TIME'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON'), do_lang_tempcode('REVERSE')), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON'), do_lang_tempcode('REVERSE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time']);
 
@@ -223,19 +223,19 @@ class Module_admin_points
                 $to = do_lang_tempcode('USER_SYSTEM');
             } else {
                 $to_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_to'], false, USERNAME_DEFAULT_NULL);
-                $to_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']), get_module_zone('points'));
+                $to_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']], get_module_zone('points'));
                 $to = ($to_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($to_url, $to_name, false, true);
             }
             if (is_guest($myrow['gift_from'])) {
                 $from = do_lang_tempcode('USER_SYSTEM');
             } else {
                 $from_name = $GLOBALS['FORUM_DRIVER']->get_username($myrow['gift_from'], false, USERNAME_DEFAULT_NULL);
-                $from_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']), get_module_zone('points'));
+                $from_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points'));
                 $from = ($from_name === null) ? do_lang_tempcode('UNKNOWN_EM') : hyperlink($from_url, $from_name, false, true);
             }
 
-            $delete_url = build_url(array('page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)), '_SELF');
-            $delete = do_template('COLUMNED_TABLE_ACTION', array(
+            $delete_url = build_url(['page' => '_SELF', 'type' => 'reverse', 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF');
+            $delete = do_template('COLUMNED_TABLE_ACTION', [
                 '_GUID' => '3585ec7f35a1027e8584d62ffeb41e56',
                 'NAME' => do_lang_tempcode('REVERSE'),
                 'URL' => $delete_url,
@@ -243,14 +243,14 @@ class Module_admin_points
                 'ACTION_TITLE' => do_lang_tempcode('DELETE'),
                 'ICON' => 'admin/delete',
                 'GET' => true,
-            ));
+            ]);
 
-            $result_entries->attach(results_entry(array($date, integer_format($myrow['amount']), $from, $to, $reason, $delete), true));
+            $result_entries->attach(results_entry([$date, integer_format($myrow['amount']), $from, $to, $reason, $delete], true));
         }
 
         $results_table = results_table(do_lang_tempcode('GIFT_TRANSACTIONS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('GIFT_POINTS_LOG')));
 
-        $tpl = do_template('RESULTS_TABLE_SCREEN', array('_GUID' => '12ce8cf5c2f669948b14e68bd6c00fe9', 'TITLE' => $this->title, 'RESULTS_TABLE' => $results_table));
+        $tpl = do_template('RESULTS_TABLE_SCREEN', ['_GUID' => '12ce8cf5c2f669948b14e68bd6c00fe9', 'TITLE' => $this->title, 'RESULTS_TABLE' => $results_table]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -264,7 +264,7 @@ class Module_admin_points
     public function reverse()
     {
         $id = post_param_integer('id');
-        $rows = $GLOBALS['SITE_DB']->query_select('gifts', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -278,13 +278,13 @@ class Module_admin_points
             $_sender_id = (is_guest($sender_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($sender_id);
             $_recipient_id = (is_guest($recipient_id)) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($recipient_id);
             $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount)), escape_html($_sender_id), escape_html($_recipient_id));
-            return do_template('CONFIRM_SCREEN', array(
+            return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'd3d654c7dcffb353638d08b53697488b',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
-                'URL' => get_self_url(false, false, array('confirm' => 1)),
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
                 'FIELDS' => build_keep_post_fields(),
-            ));
+            ]);
         }
 
         require_code('points2');
@@ -293,7 +293,7 @@ class Module_admin_points
         // Show it worked / Refresh
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+            $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
@@ -320,7 +320,7 @@ class Module_admin_points
         // Show it worked / Refresh
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points'));
+            $_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, $text);

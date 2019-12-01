@@ -34,42 +34,42 @@ class Hook_privacy_tickets extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'ticket_known_emailers' => array(
+            'database_records' => [
+                'ticket_known_emailers' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('email_address'),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['email_address'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'ticket_extra_access' => array(
+                ],
+                'ticket_extra_access' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

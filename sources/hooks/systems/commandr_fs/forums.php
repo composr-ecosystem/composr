@@ -25,7 +25,7 @@ require_code('resource_fs');
  */
 class Hook_commandr_fs_forums extends Resource_fs_base
 {
-    public $folder_resource_type = array('forum', 'topic');
+    public $folder_resource_type = ['forum', 'topic'];
     public $file_resource_type = 'post';
 
     /**
@@ -60,30 +60,30 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'post':
-                $_ret = $GLOBALS['FORUM_DB']->query_select('f_posts', array('id'), array('p_title' => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['FORUM_DB']->query_select('f_posts', ['id'], ['p_title' => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'topic':
-                $_ret = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id'), array('t_cache_first_title' => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id'], ['t_cache_first_title' => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'forum':
-                $_ret = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id'), array('f_name' => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], ['f_name' => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -116,35 +116,35 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 }
 
                 if ($under == 'topic') {
-                    return array(
+                    return [
                         'cat_field' => 't_forum_id',
                         'linker_table' => null,
                         'id_field' => 'id',
                         'id_field_linker' => 'id',
                         'cat_field_numeric' => true,
-                    );
+                    ];
                 }
 
                 if ($under == 'forum') {
-                    return array(
+                    return [
                         'cat_field' => 'f_parent_forum',
                         'linker_table' => 'f_forums',
                         'id_field' => 'id',
                         'id_field_linker' => 'id',
                         'cat_field_numeric' => true,
-                    );
+                    ];
                 }
                 break;
 
             case 'topic':
                 if ($under == 'post') {
-                    return array(
+                    return [
                         'cat_field' => 'p_topic_id',
                         'linker_table' => 'f_posts',
                         'id_field' => 'id',
                         'id_field_linker' => 'id',
                         'cat_field_numeric' => true,
-                    );
+                    ];
                 }
                 break;
         }
@@ -232,7 +232,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         if ($forum_grouping_id === null) {
             $forum_grouping_id = $GLOBALS['FORUM_DB']->query_select_value('f_forum_groupings', 'MIN(id)');
         }
-        $access_mapping = array();
+        $access_mapping = [];
         $position = $this->_default_property_int_null($properties, 'position');
         if ($position === null) {
             $position = 1;
@@ -262,7 +262,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $mail_nonmatch_policy = $this->_default_property_str($properties, 'mail_nonmatch_policy');
         $mail_unconfirmed_notice = $this->_default_property_int($properties, 'mail_unconfirmed_notice');
 
-        return array($description, $forum_grouping_id, $access_mapping, $position, $post_count_increment, $order_sub_alpha, $intro_question, $intro_answer, $redirection, $order, $is_threaded, $allows_anonymous_posts, $mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice);
+        return [$description, $forum_grouping_id, $access_mapping, $position, $post_count_increment, $order_sub_alpha, $intro_question, $intro_answer, $redirection, $order, $is_threaded, $allows_anonymous_posts, $mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice];
     }
 
     /**
@@ -285,7 +285,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $num_views = $this->_default_property_int($properties, 'views');
         $description_link = $this->_default_property_str($properties, 'description_link');
 
-        return array($description, $emoticon, $validated, $open, $pinned, $cascading, $pt_from, $pt_to, $num_views, $description_link);
+        return [$description, $emoticon, $validated, $open, $pinned, $cascading, $pt_from, $pt_to, $num_views, $description_link];
     }
 
     /**
@@ -337,7 +337,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             list($description, $emoticon, $validated, $open, $pinned, $cascading, $pt_from, $pt_to, $num_views, $description_link) = $this->__folder_read_in_properties_topic($path, $properties);
 
             $id = cns_make_topic($forum_id, $description, $emoticon, $validated, $open, $pinned, $cascading, $pt_from, $pt_to, false, $num_views, null, $description_link);
-            $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_cache_first_title' => $label), array('id' => $id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_cache_first_title' => $label], ['id' => $id], '', 1);
             generate_resource_fs_moniker('topic', strval($id));
             if ((array_key_exists('poll', $properties)) && (!empty($properties['poll']))) {
                 require_code('cns_polls_action');
@@ -355,11 +355,11 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 $poll_id = cns_make_poll($id, $question, $is_private, $is_open, $minimum_selections, $maximum_selections, $requires_reply, $answers, false);
 
                 $votes = $poll_data['votes'];
-                table_from_portable_rows('f_poll_votes', $properties['votes'], array('pv_poll_id' => $poll_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_poll_votes', $properties['votes'], ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             }
 
             if (isset($properties['special_pt_access'])) {
-                table_from_portable_rows('f_special_pt_access', $properties['special_pt_access'], array('s_topic_id' => $id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_special_pt_access', $properties['special_pt_access'], ['s_topic_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             }
 
             $this->save_ticket_associations($properties, $id);
@@ -380,18 +380,18 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     {
         if (addon_installed('tickets')) {
             if (isset($properties['ticket_associations'])) {
-                $GLOBALS['SITE_DB']->query_delete('tickets', array('topic_id' => $topic_id));
+                $GLOBALS['SITE_DB']->query_delete('tickets', ['topic_id' => $topic_id]);
                 foreach ($properties['ticket_associations'] as $ticket_association) {
                     $extra_access = $ticket_association['extra_access'];
                     unset($ticket_association['extra_access']);
 
-                    $GLOBALS['SITE_DB']->query_delete('ticket_extra_access', array('ticket_id' => $ticket_association['ticket_id']));
+                    $GLOBALS['SITE_DB']->query_delete('ticket_extra_access', ['ticket_id' => $ticket_association['ticket_id']]);
 
                     foreach ($extra_access as $_extra_access) {
-                        $GLOBALS['SITE_DB']->query_insert('ticket_extra_access', $_extra_access + array('ticket_id' => $ticket_association['ticket_id']));
+                        $GLOBALS['SITE_DB']->query_insert('ticket_extra_access', $_extra_access + ['ticket_id' => $ticket_association['ticket_id']]);
                     }
 
-                    $GLOBALS['SITE_DB']->query_insert('tickets', $ticket_association + array('topic_id' => $topic_id));
+                    $GLOBALS['SITE_DB']->query_insert('tickets', $ticket_association + ['topic_id' => $topic_id]);
                 }
             }
         }
@@ -410,13 +410,13 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'forum');
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
 
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('id' => intval($resource_id)), '', 1);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['*'], ['id' => intval($resource_id)], '', 1);
             if (!array_key_exists(0, $rows)) {
                 return false;
             }
             $row = $rows[0];
 
-            $properties = array(
+            $properties = [
                 'label' => $row['f_name'],
                 'description' => get_translated_text($row['f_description'], $GLOBALS['FORUM_DB']),
                 'forum_grouping_id' => remap_resource_id_as_portable('forum_grouping', $row['f_forum_grouping_id']),
@@ -437,7 +437,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 'mail_password' => $row['f_mail_password'],
                 'mail_nonmatch_policy' => $row['f_mail_nonmatch_policy'],
                 'mail_unconfirmed_notice' => $row['f_mail_unconfirmed_notice'],
-            );
+            ];
             $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
             return $properties;
         }
@@ -445,20 +445,20 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'topic');
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', array('*'), array('id' => intval($row['t_poll_id'])), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => intval($row['t_poll_id'])], '', 1);
         if (array_key_exists(0, $rows)) {
-            $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('pa_answer', 'pa_cache_num_votes'), array('pa_poll_id' => $row['t_poll_id']));
-            $_answers = array();
+            $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer', 'pa_cache_num_votes'], ['pa_poll_id' => $row['t_poll_id']]);
+            $_answers = [];
             foreach ($answers as $a) {
-                $_answers[] = array($a['pa_answer'], $a['pa_cache_num_votes']);
+                $_answers[] = [$a['pa_answer'], $a['pa_cache_num_votes']];
             }
-            $poll_data = array(
+            $poll_data = [
                 'question' => $rows[0]['po_question'],
                 'is_private' => $rows[0]['po_is_private'],
                 'is_open' => $rows[0]['po_is_open'],
@@ -466,13 +466,13 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 'maximum_selections' => $rows[0]['po_maximum_selections'],
                 'requires_reply' => $rows[0]['po_requires_reply'],
                 'answers' => $_answers,
-                'votes' => table_to_portable_rows('f_poll_votes', /*skip*/array('id'), array('pv_poll_id' => $row['t_poll_id'])),
-            );
+                'votes' => table_to_portable_rows('f_poll_votes', /*skip*/['id'], ['pv_poll_id' => $row['t_poll_id']]),
+            ];
         } else {
             $poll_data = null;
         }
 
-        $properties = array(
+        $properties = [
             'label' => $row['t_cache_first_title'],
             'description' => $row['t_description'],
             'emoticon' => $row['t_emoticon'],
@@ -485,17 +485,17 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             'views' => $row['t_num_views'],
             'description_link' => $row['t_description_link'],
             'poll' => $poll_data,
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
 
         if ($row['t_forum_id'] !== null) {
-            $properties['special_pt_access'] = table_to_portable_rows('f_special_pt_access', /*skip*/array(), array('s_topic_id' => intval($resource_id)));
+            $properties['special_pt_access'] = table_to_portable_rows('f_special_pt_access', /*skip*/[], ['s_topic_id' => intval($resource_id)]);
         }
 
         if (addon_installed('tickets')) {
-            $ticket_associations = table_to_portable_rows('tickets', /*skip*/array(), array('topic_id' => intval($resource_id)));
+            $ticket_associations = table_to_portable_rows('tickets', /*skip*/[], ['topic_id' => intval($resource_id)]);
             foreach ($ticket_associations as &$ticket_association) {
-                $ticket_association['extra_access'] = table_to_portable_rows('ticket_extra_access', /*skip*/array(), array('ticket_id' => $ticket_association['ticket_id']));
+                $ticket_association['extra_access'] = table_to_portable_rows('ticket_extra_access', /*skip*/[], ['ticket_id' => $ticket_association['ticket_id']]);
             }
             $properties['ticket_associations'] = $ticket_associations;
         }
@@ -544,7 +544,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
             cns_edit_topic(intval($resource_id), $description, $emoticon, $validated, $open, $pinned, $cascading, '', $label, $description_link, false, $num_views, true);
 
-            $poll_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_poll_id', array('id' => intval($resource_id)));
+            $poll_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_poll_id', ['id' => intval($resource_id)]);
 
             if ((array_key_exists('poll', $properties)) && (!empty($properties['poll']))) {
                 $poll_data = $properties['poll'];
@@ -566,7 +566,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
                 }
 
                 $votes = $poll_data['votes'];
-                table_from_portable_rows('f_poll_votes', $properties['votes'], array('pv_poll_id' => $poll_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_poll_votes', $properties['votes'], ['pv_poll_id' => $poll_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             } else {
                 if ($poll_id !== null) {
                     require_code('cns_polls_action2');
@@ -575,7 +575,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             }
 
             if (isset($properties['special_pt_access'])) {
-                table_from_portable_rows('f_special_pt_access', $properties['special_pt_access'], array('s_topic_id' => intval($resource_id)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+                table_from_portable_rows('f_special_pt_access', $properties['special_pt_access'], ['s_topic_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             }
 
             $this->save_ticket_associations($properties, intval($resource_id));
@@ -666,13 +666,13 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['p_title'],
             'post' => get_translated_text($row['p_post'], $GLOBALS['FORUM_DB']),
             'skip_sig' => $row['p_skip_sig'],
@@ -686,7 +686,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             'last_edit_by' => $row['p_last_edit_by'],
             'add_date' => remap_time_as_portable($row['p_time']),
             'edit_date' => remap_time_as_portable($row['p_last_edit_time']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -754,7 +754,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         $topic_id = $this->_integer_category($category);
 
         require_code('cns_posts_action3');
-        cns_delete_posts_topic($topic_id, array(intval($resource_id)), '', false, false);
+        cns_delete_posts_topic($topic_id, [intval($resource_id)], '', false, false);
 
         return true;
     }

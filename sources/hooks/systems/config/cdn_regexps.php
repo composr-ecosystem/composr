@@ -30,7 +30,7 @@ class Hook_config_cdn_regexps
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CDN_REGEXPS',
             'type' => 'text',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_cdn_regexps
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

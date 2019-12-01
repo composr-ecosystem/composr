@@ -30,7 +30,7 @@ class Hook_config_website_email
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WEBSITE_EMAIL',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_website_email
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

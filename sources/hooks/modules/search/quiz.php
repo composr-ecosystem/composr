@@ -52,22 +52,22 @@ class Hook_search_quiz extends FieldsSearchHook
 
         require_lang('quiz');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('QUIZZES');
         $info['default'] = (get_option('search_quiz') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_quiz');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('quiz'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('quiz'),
                 'page_name' => 'quiz',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -123,7 +123,7 @@ class Hook_search_quiz extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('q_submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -135,14 +135,14 @@ class Hook_search_quiz extends FieldsSearchHook
         }
 
         $table = 'quizzes r';
-        $trans_fields = array('' => '', 'r.q_start_text' => 'LONG_TRANS__COMCODE', 'r.q_name' => 'SHORT_TRANS');
-        $nontrans_fields = array();
+        $trans_fields = ['' => '', 'r.q_start_text' => 'LONG_TRANS__COMCODE', 'r.q_name' => 'SHORT_TRANS'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_quiz', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('quiz', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'quiz', 'id');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

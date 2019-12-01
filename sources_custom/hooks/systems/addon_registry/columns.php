@@ -26,7 +26,7 @@ class Hook_addon_registry_columns
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_columns
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Based on the code of Adam Wulf ("Columnizer")',
-        );
+        ];
     }
 
     /**
@@ -111,7 +111,7 @@ You may want to edit the column CSS, via editing the [tt]columns[/tt] CSS file. 
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -121,11 +121,11 @@ You may want to edit the column CSS, via editing the [tt]columns[/tt] CSS file. 
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -145,11 +145,11 @@ You may want to edit the column CSS, via editing the [tt]columns[/tt] CSS file. 
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/columns.php',
             'themes/default/css_custom/columns.css',
             'themes/default/javascript_custom/columns.js',
             'sources_custom/hooks/systems/startup/columns.php',
-        );
+        ];
     }
 }

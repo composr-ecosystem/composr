@@ -30,7 +30,7 @@ class Hook_config_grow_template_meta_tree
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GROW_TEMPLATE_META_TREE',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_grow_template_meta_tree
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

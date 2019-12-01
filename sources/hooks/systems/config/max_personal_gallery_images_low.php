@@ -30,7 +30,7 @@ class Hook_config_max_personal_gallery_images_low
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_IMAGE_LIMIT_LOW',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_max_personal_gallery_images_low
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_backup_server_path
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BACKUP_SERVER_PATH',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_backup_server_path
             'public' => false,
 
             'addon' => 'backup',
-        );
+        ];
     }
 
     /**

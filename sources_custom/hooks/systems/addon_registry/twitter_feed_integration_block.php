@@ -19,7 +19,7 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -59,7 +59,7 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,14 +109,14 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'twitter_support',
                 'PHP curl extension',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,7 +136,7 @@ class Hook_addon_registry_twitter_feed_integration_block
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/twitter_feed_integration_block.php',
             'lang_custom/EN/twitter_feed.ini',
             'sources_custom/blocks/twitter_feed.php',
@@ -163,6 +163,6 @@ class Hook_addon_registry_twitter_feed_integration_block
             'themes/default/images_custom/twitter_feed/retweet_on.png',
             'sources_custom/hooks/systems/config/twitterfeed_update_time.php',
             'themes/default/javascript_custom/twitter_feed_integration_block.js',
-        );
+        ];
     }
 }

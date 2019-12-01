@@ -57,7 +57,7 @@ function _page_link_to_static($node)
             }
 
             list($zone, $attributes, $hash) = page_link_decode($page_link);
-            $url_test = _build_url($attributes, $zone, array(), false, false, true, $hash);
+            $url_test = _build_url($attributes, $zone, [], false, false, true, $hash);
             if (strpos($url_test, '?') !== false) {
                 continue;
             }
@@ -70,7 +70,7 @@ function _page_link_to_static($node)
                 $extended_page_link .= ':keep_lang=' . $lang . ':max=10000';
             }
             list($zone, $attributes, $hash) = page_link_decode($extended_page_link);
-            $url = _build_url($attributes, $zone, array(), false, false, true, $hash);
+            $url = _build_url($attributes, $zone, [], false, false, true, $hash);
 
             $target_path = urldecode(preg_replace('#\?.*$#', '', preg_replace('#^' . preg_quote(get_base_url(), '#') . '/#', '', $url)));
 
@@ -84,7 +84,7 @@ function _page_link_to_static($node)
             }
 
             $session_cookie_id = get_session_cookie();
-            $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => array($session_cookie_id => get_secure_random_string())));
+            $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => [$session_cookie_id => get_secure_random_string()]]);
             if ($data === null) {
                 continue;
             }
@@ -176,7 +176,7 @@ function _static_export_scriptrep_callback($matches)
             if ($thumb) {
                 $field = 'a_thumb_url';
             }
-            $attachment = $GLOBALS['SITE_DB']->query_select('attachments', array('id', $field, 'a_original_filename'), array('id' => $id), '', 1);
+            $attachment = $GLOBALS['SITE_DB']->query_select('attachments', ['id', $field, 'a_original_filename'], ['id' => $id], '', 1);
 
             if (url_is_local($attachment[0][$field])) {
                 $prefix = ($thumb ? 'thumbnail__' : '') . $attachment[0]['id'] . '__';
@@ -212,7 +212,7 @@ function _static_export_scriptrep_callback($matches)
             $id = intval($matches[3]);
 
             $field = 'a_url';
-            $download = $GLOBALS['SITE_DB']->query_select('download_downloads', array('id', 'url', 'original_filename'), array('id' => $id), '', 1);
+            $download = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'url', 'original_filename'], ['id' => $id], '', 1);
 
             if (url_is_local($download[0]['url'])) {
                 $download[0]['original_filename'] = _static_export_make_ascii($download[0]['original_filename']);

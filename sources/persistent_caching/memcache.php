@@ -48,7 +48,7 @@ class Persistent_caching_memcache
         if ($this->objects_list === null) {
             $this->objects_list = $this->get(get_file_base() . 'PERSISTENT_CACHE_OBJECTS');
             if ($this->objects_list === false) {
-                $this->objects_list = array();
+                $this->objects_list = [];
             }
         }
         return $this->objects_list;
@@ -91,7 +91,7 @@ class Persistent_caching_memcache
             $this->set(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list, 0, 0);
         }
 
-        $this->object->set($key, array(time(), $data), $flags, $expire_secs);
+        $this->object->set($key, [time(), $data], $flags, $expire_secs);
     }
 
     /**
@@ -115,7 +115,7 @@ class Persistent_caching_memcache
     public function flush()
     {
         // Update list of persistent-objects
-        $this->objects_list = array();
+        $this->objects_list = [];
         $this->set(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list, 0, 0);
 
         $this->object->flush();

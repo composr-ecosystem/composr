@@ -43,8 +43,8 @@ class Hook_notification_error_occurred extends Hook_notification__Staff
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['error_occurred'] = array(do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred'));
+        $list = [];
+        $list['error_occurred'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred')];
         return $list;
     }
 }

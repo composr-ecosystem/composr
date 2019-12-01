@@ -22,7 +22,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
     {
         cms_disable_time_limit();
 
-        $to_scan = array();
+        $to_scan = [];
 
         $hooks = find_all_hooks('systems', 'addon_registry');
         ksort($hooks);
@@ -39,7 +39,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 foreach ($files as $file) {
                     if (substr($file, -4) == '.php') {
                         // Exceptions
-                        $no_go_dirs = array('sources_custom/aws',
+                        $no_go_dirs = ['sources_custom/aws',
                             'sources_custom/swift_mailer',
                             'tracker',
                             'sources_custom/spout',
@@ -58,11 +58,11 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             '_tests/codechecker',
                             'sources_custom/Cloudinary',
                             'sources_custom/facebook',
-                        );
+                        ];
                         if (preg_match('#^(' . implode('|', $no_go_dirs) . ')/#', $file) != 0) {
                             continue;
                         }
-                        if (in_array($file, array(
+                        if (in_array($file, [
                             'sources_custom/sugar_crm_lib.php',
                             'sources_custom/curl.php',
                             'sources_custom/geshi.php',
@@ -70,7 +70,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             'data_custom/upload-crop/upload_crop_v1.2.php',
                             'sources_custom/hooks/systems/startup/tapatalk.php',
                             '_tests/libs/mf_parse.php',
-                        ))) {
+                        ])) {
                             continue;
                         }
 
@@ -94,7 +94,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 }
                 $url .= urlencode($to_scan[$j]);
             }
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 10000.0));
+            $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
             foreach (explode('<br />', $result) as $line) {
                 // Exceptions
                 if (strpos($line, 'Could not find function') !== false) {

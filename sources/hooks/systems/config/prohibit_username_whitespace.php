@@ -30,7 +30,7 @@ class Hook_config_prohibit_username_whitespace
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PROHIBIT_USERNAME_WHITESPACE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_prohibit_username_whitespace
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -33,16 +33,16 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Plug in missing GUIDs';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 $title = get_screen_title('Plug in missing GUIDs', false);
 $title->evaluate_echo();
 
 global $FOUND_GUID;
-$FOUND_GUID = array();
+$FOUND_GUID = [];
 global $GUID_LANDSCAPE;
-$GUID_LANDSCAPE = array();
+$GUID_LANDSCAPE = [];
 global $FILENAME, $IN;
 
 require_code('files');
@@ -50,9 +50,9 @@ require_code('files2');
 
 $limit_file = get_param_string('file', '');
 if ($limit_file == '') {
-    $files = get_directory_contents(get_file_base(), '', 0, true, true, array('php'));
+    $files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
 } else {
-    $files = array($limit_file);
+    $files = [$limit_file];
 }
 foreach ($files as $i => $file) {
     if (preg_match('#^exports/#', $file) != 0) {
@@ -68,8 +68,8 @@ foreach ($files as $i => $file) {
 
     $IN = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file, FILE_READ_LOCK);
 
-    $out = preg_replace_callback("#do_template\('([^']*)', array\((\s*)'([^']+)' => ('[^']+')#", 'callback', $IN);
-    $out = preg_replace_callback("#do_template\('([^']*)', array\((\s*)'([^']+)' => #", 'callback', $IN);
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => ('[^']+')#", 'callback', $IN);
+    $out = preg_replace_callback("#do_template\('([^']*)', \[(\s*)'([^']+)' => #", 'callback', $IN);
 
     if ($IN != $out) {
         if (get_param_integer('debug', 0) == 1) {
@@ -106,7 +106,7 @@ function callback($match)
     global $GUID_LANDSCAPE, $FILENAME, $IN;
     $new_guid = md5(uniqid('', true));
     if (!array_key_exists($template_name, $GUID_LANDSCAPE)) {
-        $GUID_LANDSCAPE[$template_name] = array();
+        $GUID_LANDSCAPE[$template_name] = [];
     }
 
     $line = substr_count(substr($IN, 0, strpos($IN, $full_match_line)), "\n") + 1;
@@ -114,7 +114,7 @@ function callback($match)
     // Handle missing GUIDs
     if ($first_param_name != '_GUID') {
         echo 'Insert needed for ' . escape_html($template_name) . '<br />';
-        $GUID_LANDSCAPE[$template_name][] = array($FILENAME, $line, $new_guid);
+        $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $new_guid];
         return "do_template('" . $template_name . "', array(" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null) ? $first_param_value : ' ');
     }
 
@@ -126,12 +126,12 @@ function callback($match)
         // Handle duplicated GUIDs
         if (array_key_exists($guid_value, $FOUND_GUID)) {
             echo 'Repair needed for ' . escape_html($template_name) . '<br />';
-            $GUID_LANDSCAPE[$template_name][] = array($FILENAME, $line, $new_guid);
+            $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $new_guid];
             return "do_template('" . $template_name . "', array(" . $whitespace . "'_GUID' => '" . $new_guid . "'";
         }
 
         $FOUND_GUID[$guid_value] = true;
-        $GUID_LANDSCAPE[$template_name][] = array($FILENAME, $line, $guid_value);
+        $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $guid_value];
     }
 
     return $full_match_line;

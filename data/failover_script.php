@@ -54,7 +54,7 @@ if ($cli) {
 
 header('X-Robots-Tag: noindex');
 
-$required_settings = array(
+$required_settings = [
     'fast_spider_cache',
     'any_guest_cached_too',
     'failover_mode',
@@ -65,7 +65,7 @@ $required_settings = array(
     'failover_email_contact',
     //'failover_check_urls',    Actually, may be blank
     'base_url',
-);
+];
 
 global $SITE_INFO;
 foreach ($required_settings as $setting) {
@@ -95,12 +95,12 @@ function handle_failover_auto_switching($iteration = 0)
 
     // Check URLs
     if (!empty($SITE_INFO['failover_check_urls'])) {
-        $context = stream_context_create(array(
-            'http' => array(
+        $context = stream_context_create([
+            'http' => [
                 'user_agent' => 'ocportal_failover_test',
                 'timeout' => floatval(isset($SITE_INFO['failover_loadtime_threshold']) ? $SITE_INFO['failover_loadtime_threshold'] : 5) + 1.0,
-            ),
-        ));
+            ],
+        ]);
         $urls = explode(';', $SITE_INFO['failover_check_urls']);
         foreach ($urls as $url) {
             $done_retries = 0;
@@ -143,7 +143,7 @@ function handle_failover_auto_switching($iteration = 0)
                 }
 
                 // Parse error or fatal error, with display errors on in php.ini (without display errors, PHP uses the correct HTTP status)
-                $matches = array();
+                $matches = [];
                 if ((strlen($data) < 500) && (preg_match('#<b>(\w+ error)</b>#', $data, $matches) != 0)) {
                     if ($done_retries >= $max_retries) {
                         is_failing($full_url . ' (' . $matches[1] . ')');
@@ -296,7 +296,7 @@ function set_failover_mode($new_mode)
                 $new_code .= 'RewriteRule ^(.*) sources/static_cache.php [L,QSA]' . "\n";
             } else {
                 // The set of browsers
-                $browsers = array(
+                $browsers = [
                     // Implication by technology claims
                     'WML',
                     'WAP',
@@ -318,7 +318,7 @@ function set_failover_mode($new_mode)
                     'BlackBerry',
                     'Windows Phone',
                     'nook browser', // Barnes and Noble
-                );
+                ];
                 $regexp = '(' . str_replace(' ', '\ ', implode('|', $browsers)) . ')';
 
                 //$new_code .= 'RewriteMap failover_mode txt:' . $FILE_BASE . '/data_custom/failover_rewritemap.txt' . "\n";    Has to be defined in main Apache config

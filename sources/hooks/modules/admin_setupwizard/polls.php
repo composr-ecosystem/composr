@@ -31,9 +31,9 @@ class Hook_sw_polls
     public function get_blocks()
     {
         if (!addon_installed('polls')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_poll' => array('NO', 'YES_CELL')), array());
+        return [['main_poll' => ['NO', 'YES_CELL']], []];
     }
 }

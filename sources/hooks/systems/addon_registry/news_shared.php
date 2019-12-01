@@ -31,7 +31,7 @@ class Hook_addon_registry_news_shared
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_news_shared
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_news',
             'tut_adv_news',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_news_shared
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,13 +98,13 @@ class Hook_addon_registry_news_shared
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/news_shared.php',
             'themes/default/templates/NEWS_BOX.tpl',
             'themes/default/templates/NEWS_BRIEF.tpl',
             'themes/default/css/news.css',
             'lang/EN/news.ini',
-        );
+        ];
     }
 
     /**
@@ -114,9 +114,9 @@ class Hook_addon_registry_news_shared
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/NEWS_BOX.tpl' => 'news_piece_summary',
-        );
+        ];
     }
 
     /**
@@ -128,8 +128,8 @@ class Hook_addon_registry_news_shared
      */
     public function tpl_preview__news_piece_summary()
     {
-        return array(
-            lorem_globalise(do_lorem_template('NEWS_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('NEWS_BOX', [
                 'BLOG' => lorem_phrase(),
                 'AUTHOR_URL' => placeholder_url(),
                 'TAGS' => '',
@@ -161,7 +161,7 @@ class Hook_addon_registry_news_shared
                 'LASTMEMBERID' => placeholder_random_id(),
                 'DATE_RAW' => lorem_word(),
                 'GIVE_CONTEXT' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

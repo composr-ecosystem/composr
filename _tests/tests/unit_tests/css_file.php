@@ -72,17 +72,17 @@ class css_file_test_set extends cms_test_case
 
     protected function find_classes_defined($theme)
     {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$theme])) {
             return $cache[$theme];
         }
 
-        $out = array();
+        $out = [];
 
-        $directories = array(
+        $directories = [
              get_file_base() . '/themes/' . $theme . '/css_custom',
              get_file_base() . '/themes/' . $theme . '/css',
-        );
+        ];
 
         foreach ($directories as $dir) {
             $d = @opendir($dir);
@@ -90,17 +90,17 @@ class css_file_test_set extends cms_test_case
                 while (($e = readdir($d)) !== false) {
                     if (substr($e, -4) == '.css') {
                         // Exceptions
-                        $exceptions = array(
+                        $exceptions = [
                             'svg.css',
                             'confluence.css',
                             'mediaelementplayer.css',
-                        );
+                        ];
                         if (in_array($e, $exceptions)) {
                             continue;
                         }
 
                         $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-                        $matches = array();
+                        $matches = [];
                         $found = preg_match_all('#\.([a-z][\w\-]*)[ ,:]#i', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
                             if ($matches[1][$i] != 'txt') {
@@ -119,18 +119,18 @@ class css_file_test_set extends cms_test_case
 
     protected function find_classes_used($theme)
     {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$theme])) {
             return $cache[$theme];
         }
-        $out = array();
+        $out = [];
 
-        $directories = array(
+        $directories = [
              get_file_base() . '/themes/' . $theme . '/templates_custom',
              get_file_base() . '/themes/' . $theme . '/templates',
              get_file_base() . '/themes/' . $theme . '/javascript_custom',
              get_file_base() . '/themes/' . $theme . '/javascript',
-        );
+        ];
 
         foreach ($directories as $dir) {
             $d = @opendir($dir);
@@ -138,7 +138,7 @@ class css_file_test_set extends cms_test_case
                 while (($e = readdir($d)) !== false) {
                     if (substr($e, -4) == '.tpl' || substr($e, -3) == '.js') {
                         $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-                        $matches = array();
+                        $matches = [];
                         $found = preg_match_all('#class="([\w\- ]+)"#', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
                             $out = array_merge($out, explode(' ', $matches[1][$i]));
@@ -165,34 +165,34 @@ class css_file_test_set extends cms_test_case
                 continue;
             }
 
-            $directories = array(
+            $directories = [
                  get_file_base() . '/themes/default/css_custom' => ($theme == 'default'),
                  get_file_base() . '/themes/default/css' => ($theme == 'default'),
                  get_file_base() . '/themes/default/templates_custom' => ($theme == 'default'),
                  get_file_base() . '/themes/default/templates' => ($theme == 'default'),
                  get_file_base() . '/themes/default/javascript_custom' => ($theme == 'default'),
                  get_file_base() . '/themes/default/javascript' => ($theme == 'default'),
-            );
+            ];
             if ($theme != 'default') {
-                $directories = array_merge($directories, array(
+                $directories = array_merge($directories, [
                     get_file_base() . '/themes/' . $theme . '/css_custom' => true,
                     get_file_base() . '/themes/' . $theme . '/css' => true,
                     get_file_base() . '/themes/' . $theme . '/templates_custom' => true,
                     get_file_base() . '/themes/' . $theme . '/templates' => true,
                     get_file_base() . '/themes/' . $theme . '/javascript_custom' => true,
                     get_file_base() . '/themes/' . $theme . '/javascript' => true,
-                ));
+                ]);
             }
 
             $non_css_contents = '';
-            $selector_files = array();
+            $selector_files = [];
 
             foreach ($directories as $dir => $to_use) {
                 $dh = @opendir($dir);
                 if ($dh !== false) {
                     while (($file = readdir($dh)) !== false) {
                         // Exceptions
-                        $exceptions = array(
+                        $exceptions = [
                             '.',
                             '..',
                             'columns.css',
@@ -206,7 +206,7 @@ class css_file_test_set extends cms_test_case
                             'widget_select2.css',
                             'widget_glide.css',
                             'confluence.css',
-                        );
+                        ];
                         if (in_array($file, $exceptions)) {
                             continue;
                         }
@@ -234,10 +234,10 @@ class css_file_test_set extends cms_test_case
                                 $c = preg_replace('#/\*.*\*/#s', '', $c);
 
                                 // Test selectors
-                                $matches = array();
+                                $matches = [];
                                 $num_matches = preg_match_all('#^\s*[^@\s].*[^%\s]\s*\{$#m', $c, $matches); // Finds selectors. However NB: @ is media rules, % is keyframe rules, neither are selectors.
                                 for ($i = 0; $i < $num_matches; $i++) {
-                                    $matches2 = array();
+                                    $matches2 = [];
                                     $current = $matches[0][$i];
                                     $current = /*strip CSS syntax*/preg_replace('#[:@][\w\-]+#', '', $current);
                                     $current = /*strip quotes*/preg_replace('#"[^"]*"#', '', $current);
@@ -245,7 +245,7 @@ class css_file_test_set extends cms_test_case
                                     $num_matches2 = /*find class/ID words*/preg_match_all('#[\w\-]+#', $current, $matches2);
                                     for ($j = 0; $j < $num_matches2; $j++) {
                                         if (!isset($selector_files[$file])) {
-                                            $selector_files[$file] = array();
+                                            $selector_files[$file] = [];
                                         }
                                         $selector_files[$file][$matches2[0][$j]] = true;
                                     }
@@ -278,7 +278,7 @@ class css_file_test_set extends cms_test_case
 
     protected function is_class_defined_and_intentionally_not_explicitly_used($class)
     {
-        $prefix_exceptions = array(
+        $prefix_exceptions = [
             'zone-running-',
             'page-running-',
             'menu-',
@@ -294,18 +294,18 @@ class css_file_test_set extends cms_test_case
             'align',
             'display-type-',
             'icon-',
-        );
+        ];
         if (preg_match('#^' . implode('|', $prefix_exceptions) . '#', $class) != 0) {
             return true;
         }
-        $suffix_exceptions = array(
+        $suffix_exceptions = [
             '-link',
-        );
+        ];
         if (preg_match('#' . implode('|', $suffix_exceptions) . '$#', $class) != 0) {
             return true;
         }
 
-        $exceptions = array(
+        $exceptions = [
             'responsive-video',
             'content-wrap-auto-center',
             'table-header-sorted',
@@ -1050,7 +1050,7 @@ class css_file_test_set extends cms_test_case
             'ui-widget-overlay',
             'ui-widget-shadow',
             'wp-caption',
-        );
+        ];
         if (in_array($class, $exceptions)) {
             return true;
         }
@@ -1060,7 +1060,7 @@ class css_file_test_set extends cms_test_case
 
     protected function is_id_defined_and_intentionally_not_explicitly_used($id)
     {
-        $prefix_exceptions = array(
+        $prefix_exceptions = [
             't_1_',
             'jump_to_',
             'sort-filedump-',
@@ -1069,14 +1069,14 @@ class css_file_test_set extends cms_test_case
             'info_panel_',
             'settings_panel_',
             'view_panel_',
-        );
+        ];
         if (preg_match('#^' . implode('|', $prefix_exceptions) . '#', $id) != 0) {
             return true;
         }
 
-        $exceptions = array(
+        $exceptions = [
             'xslt-introduction',
-        );
+        ];
         if (in_array($id, $exceptions)) {
             return true;
         }

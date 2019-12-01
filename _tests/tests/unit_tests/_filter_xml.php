@@ -51,7 +51,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -60,11 +60,11 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
     }
 
@@ -90,7 +90,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -99,11 +99,11 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result === null);
     }
 
@@ -124,7 +124,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -133,11 +133,11 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
     }
 
@@ -158,7 +158,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -167,11 +167,11 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result === null);
     }
 
@@ -193,7 +193,7 @@ class _filter_xml_test_set extends cms_test_case
         $rnd = strval(mt_rand(1, 100000));
         $title = 'EXAMPLE' . $rnd;
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -202,17 +202,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'Example' . $rnd);
     }
@@ -234,7 +234,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'this is a test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -243,17 +243,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC'/*, 1*/);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC'/*, 1*/);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'This is a test');
     }
@@ -275,7 +275,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'this is a test';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -284,17 +284,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'This Is A Test');
     }
@@ -317,7 +317,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'EXAMPLE';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -326,17 +326,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'foobarEXAMPLEfoobar');
     }
@@ -358,7 +358,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'blah';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -367,17 +367,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'foobar');
     }
@@ -399,7 +399,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = ' blah ';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -408,17 +408,17 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], [], 'ORDER BY date_and_time DESC, id DESC', 1);
         $row = $rows[0];
         $this->assertTrue(get_translated_text($row['title']) == 'blah');
     }
@@ -440,7 +440,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $title = 'EXAMPLE';
 
-        $post = array(
+        $post = [
             'title' => $title,
             'main_news_category' => '7',
             'author' => 'admin',
@@ -449,14 +449,14 @@ class _filter_xml_test_set extends cms_test_case
             'news' => 'Test Test Test Test Test',
             'csrf_token' => generate_csrf_token(),
             'confirm_double_post' => '1',
-        );
+        ];
 
-        $url = build_url(array('page' => 'cms_news', 'type' => 'add'), 'cms');
+        $url = build_url(['page' => 'cms_news', 'type' => 'add'], 'cms');
 
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+        $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result !== null);
 
         $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
@@ -478,15 +478,15 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'xxx' => false,
             'xxxx' => true,
             'xxxxxx' => true,
             'xxxxxxx' => false,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -495,11 +495,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -523,13 +523,13 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'b' => true,
             'x' => false,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -538,11 +538,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -566,13 +566,13 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'hello' => true,
             'yogurt' => false,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -581,11 +581,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -609,14 +609,14 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'blah blah' => true,
             'blah blah blah' => false,
             'blah blah blah blah' => false,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -625,11 +625,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -653,13 +653,13 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'foobar' => true,
             'xxx' => false,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -668,11 +668,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -696,13 +696,13 @@ class _filter_xml_test_set extends cms_test_case
         ';
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml', $test_xml, FILE_WRITE_BOM);
 
-        $expects = array(
+        $expects = [
             'foobar' => false,
             'xxx' => true,
-        );
+        ];
 
         foreach ($expects as $title => $expect) {
-            $post = array(
+            $post = [
                 'title' => $title,
                 'main_news_category' => '7',
                 'author' => 'admin',
@@ -711,11 +711,11 @@ class _filter_xml_test_set extends cms_test_case
                 'news' => 'Test Test Test Test Test',
                 'csrf_token' => generate_csrf_token(),
                 'confirm_double_post' => '1',
-            );
+            ];
 
-            $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
+            $url = build_url(['page' => 'cms_news', 'type' => '_add'], 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
+            $result = http_get_contents($url->evaluate(), ['trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => [get_session_cookie() => $this->session_id]]);
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {

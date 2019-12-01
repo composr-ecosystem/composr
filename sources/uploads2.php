@@ -26,7 +26,7 @@
 function init__uploads2()
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
-    $REORGANISE_UPLOADS_ERRORMSG = array();
+    $REORGANISE_UPLOADS_ERRORMSG = [];
 }
 
 /**
@@ -40,7 +40,7 @@ function init__uploads2()
  * @param  boolean $append_content_type_to_upload_dir "$upload_directory" should become "$upload_directory/$content_type"
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads($content_type, $upload_directory, $upload_field, $where = array(), $cma_info = null, $append_content_type_to_upload_dir = false, $tolerate_errors = false)
+function reorganise_uploads($content_type, $upload_directory, $upload_field, $where = [], $cma_info = null, $append_content_type_to_upload_dir = false, $tolerate_errors = false)
 {
     global $REORGANISE_UPLOADS_ERRORMSGS;
 
@@ -62,10 +62,10 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
     $table = $cma_info['table'];
     $table_extended = isset($cma_info['table_extended']) ? $cma_info['table_extended'] : $table;
 
-    $select = array(
+    $select = [
         $cma_info['id_field'],
         $upload_field,
-    );
+    ];
     if ($cma_info['parent_category_field'] !== null) {
         $select[] = $cma_info['parent_category_field'];
     }
@@ -92,7 +92,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
                 $parts = explode("\n", $current_upload_url);
                 $new_upload_url = '';
                 foreach ($parts as $current_part) {
-                    $new_part = _reorganise_content_row_upload(array($upload_field => $current_part) + $row, $content_type, $upload_directory, $upload_field, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
+                    $new_part = _reorganise_content_row_upload([$upload_field => $current_part] + $row, $content_type, $upload_directory, $upload_field, $cma_info, $flat, $append_content_type_to_upload_dir, $tolerate_errors);
 
                     if ($current_part != '') {
                         $new_upload_url .= "\n";
@@ -107,9 +107,9 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
 
             // Update database
             if (($new_upload_url !== null) && ($new_upload_url != $current_upload_url)) {
-                $update = array($upload_field => $new_upload_url);
+                $update = [$upload_field => $new_upload_url];
                 $_id_field = preg_replace('#^\w+\.#', '', $cma_info['id_field']);
-                $update_where = array($_id_field => $row[$_id_field]);
+                $update_where = [$_id_field => $row[$_id_field]];
                 $cma_info['db']->query_update($table, $update, $update_where, '', 1);
             }
         }
@@ -188,7 +188,7 @@ function _reorganise_content_row_upload($row, $content_type, $upload_directory, 
         }
 
         // Simplify filename back of its suffixing
-        $matches = array();
+        $matches = [];
         if (($content_title != '') && (preg_match('#^\d+(' . preg_quote($content_title, '#') . ')$#', $optimal_filename_stub, $matches) != 0)) {
             $optimal_filename_stub = $matches[1]; // LEGACY: Old style prefixing of what we can see are based on content titles
         } elseif (preg_match('#^(.*)_\d+$#', $optimal_filename_stub, $matches) != 0) {
@@ -275,22 +275,22 @@ function _get_upload_tree_path($content_type, $parent_id, $cma_info, $upload_dir
         return cms_rawurlrecode($upload_directory . (($path == '') ? '' : ('/' . $path)));
     }
 
-    $select = array(
+    $select = [
         $cma_info['parent_spec__field_name'],
-    );
+    ];
     if ($cma_info['parent_spec__parent_name'] !== null) {
         $select[] = $cma_info['parent_spec__parent_name'];
     }
 
-    $seen = array();
+    $seen = [];
 
     $path = '';
     do {
         $seen[$parent_id] = true;
 
-        $where = array(
+        $where = [
             $cma_info['parent_spec__field_name'] => $parent_id
-        );
+        ];
 
         $parent_rows = $cma_info['db']->query_select($table, $select, $where, '', 1);
         if (!array_key_exists(0, $parent_rows)) {

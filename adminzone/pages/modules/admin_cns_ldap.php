@@ -30,7 +30,7 @@ class Module_admin_cns_ldap
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -59,9 +59,9 @@ class Module_admin_cns_ldap
             return null;
         }
 
-        return array(
-            'browse' => array('LDAP_SYNC', 'menu/adminzone/security/ldap'),
-        );
+        return [
+            'browse' => ['LDAP_SYNC', 'menu/adminzone/security/ldap'],
+        ];
     }
 
     public $title;
@@ -90,7 +90,7 @@ class Module_admin_cns_ldap
         set_helper_panel_tutorial('tut_ldap');
 
         if ($type == 'actual') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('LDAP_SYNC'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('LDAP_SYNC')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -148,14 +148,14 @@ class Module_admin_cns_ldap
         foreach ($all_ldap_groups as $group) {
             if (cns_group_ldapcn_to_cnsid($group) === null) {
                 $_group = str_replace(' ', '_space_', $group);
-                $tpl = do_template('CNS_LDAP_LIST_ENTRY', array('_GUID' => '99aa6dd1a7a4caafd0199f8b5512cf29', 'NAME' => 'add_group_' . $_group, 'NICE_NAME' => $group));
+                $tpl = do_template('CNS_LDAP_LIST_ENTRY', ['_GUID' => '99aa6dd1a7a4caafd0199f8b5512cf29', 'NAME' => 'add_group_' . $_group, 'NICE_NAME' => $group]);
                 $groups_add->attach($tpl);
             }
         }
         $all_cms_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         foreach ($all_cms_groups as $id => $group) {
             if ((!in_array($group, $all_ldap_groups)) && ($id != db_get_first_id() + 0) && ($id != db_get_first_id() + 1) && ($id != db_get_first_id() + 8)) {
-                $tpl = do_template('CNS_LDAP_LIST_ENTRY', array('_GUID' => '48de4d176157941a0ce7caa7a1c395fb', 'NAME' => 'delete_group_' . strval($id), 'NICE_NAME' => $group));
+                $tpl = do_template('CNS_LDAP_LIST_ENTRY', ['_GUID' => '48de4d176157941a0ce7caa7a1c395fb', 'NAME' => 'delete_group_' . strval($id), 'NICE_NAME' => $group]);
                 $groups_delete->attach($tpl);
             }
         }
@@ -166,29 +166,29 @@ class Module_admin_cns_ldap
         do {
             send_http_output_ping();
 
-            $all_ldap_members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username'), array('m_password_compat_scheme' => 'ldap'), '', 400, $start);
+            $all_ldap_members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username'], ['m_password_compat_scheme' => 'ldap'], '', 400, $start);
             foreach ($all_ldap_members as $row) {
                 $id = $row['id'];
                 $username = $row['m_username'];
 
                 if (!cns_is_ldap_member_potential($username)) {
-                    $tpl = do_template('CNS_LDAP_LIST_ENTRY', array('_GUID' => '572c0f1e87a2dbe6cdf31d97fd71d3a4', 'NAME' => 'delete_member_' . strval($id), 'NICE_NAME' => $username));
+                    $tpl = do_template('CNS_LDAP_LIST_ENTRY', ['_GUID' => '572c0f1e87a2dbe6cdf31d97fd71d3a4', 'NAME' => 'delete_member_' . strval($id), 'NICE_NAME' => $username]);
                     $members_delete->attach($tpl);
                 }
             }
             $start += 400;
         } while (array_key_exists(0, $all_ldap_members));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'actual'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
 
-        return do_template('CNS_LDAP_SYNC_SCREEN', array(
+        return do_template('CNS_LDAP_SYNC_SCREEN', [
             '_GUID' => '38c608ce56cf3dbafb1dd1446c65d592',
             'URL' => $post_url,
             'TITLE' => $this->title,
             'MEMBERS_DELETE' => $members_delete,
             'GROUPS_DELETE' => $groups_delete,
             'GROUPS_ADD' => $groups_add,
-        ));
+        ]);
     }
 
     /**
@@ -211,7 +211,7 @@ class Module_admin_cns_ldap
             }
         }
 
-        $all_ldap_members = $GLOBALS['FORUM_DB']->query_select('f_members', array('id'), array('m_password_compat_scheme' => 'ldap'));
+        $all_ldap_members = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], ['m_password_compat_scheme' => 'ldap']);
         require_code('cns_groups_action');
         require_code('cns_groups_action2');
         require_code('cns_members_action2');
@@ -225,7 +225,7 @@ class Module_admin_cns_ldap
 
         log_it('LDAP_SYNC');
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

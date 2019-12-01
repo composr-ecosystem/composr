@@ -30,14 +30,14 @@ class Block_main_news_slider
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('member_based', 'select', 'select_and', 'blogs', 'historic', 'zone', 'title', 'show_in_full', 'no_links', 'attach_to_url_filter', 'filter', 'start', 'max', 'interval', 'as_guest', 'optimise', 'check');
+        $info['parameters'] = ['member_based', 'select', 'select_and', 'blogs', 'historic', 'zone', 'title', 'show_in_full', 'no_links', 'attach_to_url_filter', 'filter', 'start', 'max', 'interval', 'as_guest', 'optimise', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_news_slider
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('optimise', $map) ? $map['optimise'] : '0',
@@ -91,7 +91,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'a73d28b7a78540e89086cc806e382c80', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'a73d28b7a78540e89086cc806e382c80', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         require_lang('cns');
@@ -120,7 +120,7 @@ PHP;
         // Read in news categories ahead, for performance
         global $NEWS_CATS_CACHE;
         if (!isset($NEWS_CATS_CACHE)) {
-            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+            $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
             $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
         }
 
@@ -177,12 +177,12 @@ PHP;
 
         // Read in rows
         if ($historic == '') {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $max, $start, false, false, array('title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS'));
+            $rows = $GLOBALS['SITE_DB']->query('SELECT *,r.id AS p_id' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news_category_entries d ON d.news_entry=r.id' . $join . ' WHERE ' . $q_filter . ((!has_privilege(get_member(), 'see_unvalidated')) ? ' AND validated=1' : '') . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY r.id' : '') . ' ORDER BY r.date_and_time DESC', $max, $start, false, false, ['title' => 'SHORT_TRANS', 'news' => 'LONG_TRANS', 'news_article' => 'LONG_TRANS']);
         } else {
             if (php_function_allowed('set_time_limit')) {
                 @set_time_limit(100);
             }
-            $rows = array();
+            $rows = [];
             $search_start = 0;
             $okayed = 0;
             do {
@@ -229,7 +229,7 @@ PHP;
         // Shared calculations
         $show_in_full = (isset($map['show_in_full'])) && ($map['show_in_full'] == '1');
         $show_author = (addon_installed('authors')) && (!$member_based);
-        $prop_url = array();
+        $prop_url = [];
         if ($attach_to_url_filter) {
             $prop_url += propagate_filtercode();
         }
@@ -245,9 +245,9 @@ PHP;
         $allow_comments_shared = (get_option('is_on_comments') == '1') && (!has_no_forum());
 
         // Render loop
-        $slide_items = array();
+        $slide_items = [];
         foreach ($rows as $i => $news_row) {
-            $just_news_row = db_map_restrict($news_row, array('id', 'title', 'news', 'news_article'));
+            $just_news_row = db_map_restrict($news_row, ['id', 'title', 'news', 'news_article']);
 
             // Basic details
             $id = $news_row['p_id'];
@@ -258,7 +258,7 @@ PHP;
             // Author
             $author_url = null;
             if ($show_author) {
-                $url_map = array('page' => 'authors', 'type' => 'browse', 'id' => $news_row['author']);
+                $url_map = ['page' => 'authors', 'type' => 'browse', 'id' => $news_row['author']];
                 if ($attach_to_url_filter) {
                     $url_map += propagate_filtercode();
                 }
@@ -297,12 +297,12 @@ PHP;
             }
 
             // URL
-            $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $id) + $prop_url;
+            $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'view', 'id' => $id] + $prop_url;
             $full_url = build_url($tmp, $zone);
 
             // Category
             if (!isset($NEWS_CATS_CACHE[$news_row['news_category']])) {
-                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('id' => $news_row['news_category']), '', 1);
+                $_news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => $news_row['news_category']], '', 1);
                 if (isset($_news_cats[0])) {
                     $NEWS_CATS_CACHE[$news_row['news_category']] = $_news_cats[0];
                 } else {
@@ -312,7 +312,7 @@ PHP;
             $news_cat_row = $NEWS_CATS_CACHE[$news_row['news_category']];
 
             $category = get_translated_text($news_cat_row['nc_title']);
-            $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $news_row['news_category']) + $prop_url;
+            $tmp = ['page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $news_row['news_category']] + $prop_url;
             $category_url = build_url($tmp, $zone);
 
             if ($news_row['news_image'] != '') {
@@ -334,7 +334,7 @@ PHP;
             }
 
             // Render
-            $slide_item = array(
+            $slide_item = [
                 'ID' => strval($id),
                 'BLOG' => $blogs === 1,
                 'SUBMITTER' => strval($news_row['submitter']),
@@ -351,7 +351,7 @@ PHP;
                 'SUMMARY' => $news_excerpt,
                 'TRUNCATE' => $truncate,
                 'FULL_URL' => $full_url,
-            );
+            ];
             if ($allow_comments_shared && ($news_row['allow_comments'] >= 1)) {
                 $slide_item['COMMENT_COUNT'] = '1';
             }
@@ -363,7 +363,7 @@ PHP;
         $slides_count = 0;
 
         for ($i = 0; $i < count($slide_items); $i += 3) {
-            $news_items = array($slide_items[$i]);
+            $news_items = [$slide_items[$i]];
             $items_count = 1;
 
             if (isset($slide_items[$i + 1])) {
@@ -376,17 +376,17 @@ PHP;
                 $items_count++;
             }
 
-            $slides->attach(do_template('BLOCK_MAIN_NEWS_SLIDER_SLIDE', array(
+            $slides->attach(do_template('BLOCK_MAIN_NEWS_SLIDER_SLIDE', [
                 '_GUID' => '854c5f329ba048968b307d2944f6c061',
                 'BLOCK_ID' => $block_id,
                 'ACTIVE' => $i === 0,
                 'ITEMS_COUNT' => strval($items_count),
                 'NEWS_ITEMS' => $news_items,
-            )));
+            ]));
             $slides_count++;
         }
 
-        return do_template('BLOCK_MAIN_NEWS_SLIDER', array(
+        return do_template('BLOCK_MAIN_NEWS_SLIDER', [
             '_GUID' => '01f5fbd2b0c7c8f249023ecb4254366e',
             'BLOCK_ID' => $block_id,
             'BLOG' => $blogs === 1,
@@ -394,7 +394,7 @@ PHP;
             'SLIDES_COUNT' => strval($slides_count),
             'SLIDES_COUNT_ARRAY' => ($slides_count > 1) ? range(1, $slides_count) : null,
             'INTERVAL' => strval($interval),
-        ));
+        ]);
     }
 
     /**

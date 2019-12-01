@@ -31,22 +31,22 @@ class Hook_checklist_default_content
     public function run()
     {
         if (!addon_installed('setupwizard')) {
-            return array();
+            return [];
         }
 
-        $status = ($GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', array('zone_name' => 'lorem')) === null) ? 1 : 0;
+        $status = ($GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', ['zone_name' => 'lorem']) === null) ? 1 : 0;
 
         if ($status == 0) {
-            return array(); // Don't bloat things up
+            return []; // Don't bloat things up
         }
 
-        $url = build_url(array('page' => 'admin_setupwizard', 'type' => 'uninstall_test_content'), get_module_zone('admin_setupwizard'));
+        $url = build_url(['page' => 'admin_setupwizard', 'type' => 'uninstall_test_content'], get_module_zone('admin_setupwizard'));
         $task = do_lang_tempcode('config:NAG_UNINSTALL_TEST_CONTENT', escape_html_tempcode($url));
 
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array('_GUID' => 'ffd7a39b9b4b9f8bb1cfbb6fca366d61', 'URL' => '', 'STATUS' => $_status, 'TASK' => $task));
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', ['_GUID' => 'ffd7a39b9b4b9f8bb1cfbb6fca366d61', 'URL' => '', 'STATUS' => $_status, 'TASK' => $task]);
 
-        return array(array($tpl, ($status == 0) ? -1 : 0, 1, null));
+        return [[$tpl, ($status == 0) ? -1 : 0, 1, null]];
     }
 }

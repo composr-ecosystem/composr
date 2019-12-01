@@ -22,9 +22,9 @@ function thank_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -39,9 +39,9 @@ function follow_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '3',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -56,9 +56,9 @@ function unfollow_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '2',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -73,9 +73,9 @@ function like_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '1',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -90,9 +90,9 @@ function unlike_post_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(
+        [
             '5',
-        ),
+        ],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -107,7 +107,7 @@ function get_following_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(),
+        [],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -122,7 +122,7 @@ function get_follower_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(),
+        [],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -137,7 +137,7 @@ function get_alert_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(),
+        [],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);
@@ -152,7 +152,7 @@ function get_activity_test()
 {
     $result = mobiquo_xmlrpc_simple_call(
         preg_replace('#_test$#', '', __FUNCTION__),
-        array(),
+        [],
         'admin' // Log in as admin. Only works with a backdoored IP
     );
     print_mobiquo_result($result);

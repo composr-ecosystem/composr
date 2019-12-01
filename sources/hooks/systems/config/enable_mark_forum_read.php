@@ -30,7 +30,7 @@ class Hook_config_enable_mark_forum_read
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_MARK_FORUM_READ',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_enable_mark_forum_read
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

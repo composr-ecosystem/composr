@@ -40,10 +40,10 @@ class Hook_admin_stats_cns_posting_rates
 
         require_lang('stats');
 
-        return array(
-            array('posting_rates' => array('POSTING_RATES', 'menu/adminzone/audit/statistics/posting_rates'),),
-            array('menu/adminzone/audit/statistics/posting_rates', array('_SELF', array('type' => 'posting_rates'), '_SELF'), do_lang('POSTING_RATES'), 'DESCRIPTION_POSTING_RATES'),
-        );
+        return [
+            ['posting_rates' => ['POSTING_RATES', 'menu/adminzone/audit/statistics/posting_rates'],],
+            ['menu/adminzone/audit/statistics/posting_rates', ['_SELF', ['type' => 'posting_rates'], '_SELF'], do_lang('POSTING_RATES'), 'DESCRIPTION_POSTING_RATES'],
+        ];
     }
 
     /**
@@ -83,7 +83,7 @@ class Hook_admin_stats_cns_posting_rates
             $time_end = time();
         }
 
-        $title = get_screen_title('SECTION_POSTING_RATES_RANGE', true, array(escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))));
+        $title = get_screen_title('SECTION_POSTING_RATES_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
 
         $poster_exception = '';
         foreach (explode(',', get_param_string('poster_exception', '', INPUT_FILTER_GET_COMPLEX)) as $e) {
@@ -112,7 +112,7 @@ class Hook_admin_stats_cns_posting_rates
         $iterate_months = ((floatval($time_end - $time_start) / (60.0 * 60.0 * 24.0)) > 100.0);
 
         // Gather data
-        $posting_rates = array();
+        $posting_rates = [];
         if ($hourly) {
             for ($i = 0; $i < 24; $i++) {
                 $date = str_pad(strval($i), 2, '0', STR_PAD_LEFT) . ':00';
@@ -156,20 +156,20 @@ class Hook_admin_stats_cns_posting_rates
 
         $start = 0;
         $max = 1000; // Little trick, as we want all to fit
-        $sortables = array();
+        $sortables = [];
 
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('DATE'), do_lang_tempcode('COUNT_TOTAL')), $sortables);
+        $header_row = results_header_row([do_lang_tempcode('DATE'), do_lang_tempcode('COUNT_TOTAL')], $sortables);
         $result_entries = new Tempcode();
-        $real_data = array();
+        $real_data = [];
         $i = 0;
         foreach ($posting_rates as $date => $value) {
-            $result_entries->attach(results_entry(array($date, integer_format($value)), true));
+            $result_entries->attach(results_entry([$date, integer_format($value)], true));
 
-            $real_data[] = array(
+            $real_data[] = [
                 'Date/Time' => $date,
                 'Tally' => $value,
-            );
+            ];
 
             $i++;
         }
@@ -184,14 +184,14 @@ class Hook_admin_stats_cns_posting_rates
         $output = create_bar_chart($posting_rates, do_lang('DATE'), do_lang('COUNT_TOTAL'), '', '');
         $ob->save_graph('Global-Posting_rates', $output);
 
-        $graph = do_template('STATS_GRAPH', array(
+        $graph = do_template('STATS_GRAPH', [
             '_GUID' => '8c6f81c928789e267c81b1d50544ca25',
             'GRAPH' => $ob->get_stats_url('Global-Posting_rates'),
             'TITLE' => do_lang_tempcode('POSTING_RATES'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_POSTING_RATES'),
-        ));
+        ]);
 
-        $tpl = do_template('STATS_SCREEN', array('_GUID' => '2af485cee293bf89607066db9f667423', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list));
+        $tpl = do_template('STATS_SCREEN', ['_GUID' => '2af485cee293bf89607066db9f667423', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

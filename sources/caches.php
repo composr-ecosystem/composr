@@ -99,8 +99,8 @@ function init__caches()
 
     // Some loading from the smart cache
     global $CSS_OUTPUT_STARTED_LIST, $JS_OUTPUT_STARTED_LIST;
-    $CSS_OUTPUT_STARTED_LIST = array();
-    $JS_OUTPUT_STARTED_LIST = array();
+    $CSS_OUTPUT_STARTED_LIST = [];
+    $JS_OUTPUT_STARTED_LIST = [];
     global $JAVASCRIPTS, $JS_OUTPUT_STARTED_LIST, $CSSS, $CSS_OUTPUT_STARTED_LIST;
     $test = $SMART_CACHE->get('JAVASCRIPTS');
     if ($test !== null) {
@@ -140,7 +140,7 @@ class Self_learning_cache
     private $bucket_name = null;
     private $path = null;
     private $data = null; // null means "Nothing loaded"
-    private $keys_inital = array();
+    private $keys_inital = [];
     private $pending_save = false;
     public $paused = false;
     public $empty = true;
@@ -188,7 +188,7 @@ class Self_learning_cache
             return;
         }
 
-        $data = persistent_cache_get(array('SELF_LEARNING_CACHE', $this->bucket_name));
+        $data = persistent_cache_get(['SELF_LEARNING_CACHE', $this->bucket_name]);
         if ($data !== null) {
             $this->data = $data;
         } elseif (is_file($this->path)) {
@@ -272,11 +272,11 @@ class Self_learning_cache
     public function append($key, $value, $value_2 = true)
     {
         if (!isset($this->data[$key])) {
-            $this->data[$key] = array();
+            $this->data[$key] = [];
         }
 
         if ((isset($this->data[$key])) && (!is_array($this->data[$key]))) { // Fix to corrupted data
-            $this->data[$key] = array();
+            $this->data[$key] = [];
         }
 
         if ((!isset($this->data[$key][$value])) && !array_key_exists($value, $this->data[$key]) || $this->data[$key][$value] !== $value_2) {
@@ -308,7 +308,7 @@ class Self_learning_cache
         if (!$do_immediately) {
             if (!$this->pending_save) {
                 // Mark to save later
-                cms_register_shutdown_function_safe(array($this, '_page_cache_resave'));
+                cms_register_shutdown_function_safe([$this, '_page_cache_resave']);
             }
             $this->pending_save = true;
             return;
@@ -326,7 +326,7 @@ class Self_learning_cache
     public function _page_cache_resave()
     {
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
-            persistent_cache_set(array('SELF_LEARNING_CACHE', $this->bucket_name), $this->data);
+            persistent_cache_set(['SELF_LEARNING_CACHE', $this->bucket_name], $this->data);
             return;
         }
 
@@ -473,7 +473,7 @@ function persistent_cache_delete($key, $substring = false)
         $list = $PERSISTENT_CACHE->load_objects_list();
         foreach (array_keys($list) as $l) {
             $delete = true;
-            foreach (is_array($key) ? $key : array($key) as $key_part) {
+            foreach (is_array($key) ? $key : [$key] as $key_part) {
                 if (strpos($l, $key_part) === false) { // Should work even though key was serialized, in reasonable cases
                     $delete = false;
                     break;
@@ -575,7 +575,7 @@ function has_caching_for($type)
         return false;
     }
 
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$type])) {
         return $cache[$type];
     }
@@ -598,7 +598,7 @@ function has_caching_for($type)
  */
 function decache_private_topics($member_id = null)
 {
-    delete_cache_entry(array('side_cns_private_topics', '_new_pp', '_get_pts'), null, $member_id);
+    delete_cache_entry(['side_cns_private_topics', '_new_pp', '_get_pts'], null, $member_id);
 }
 
 /**
@@ -631,7 +631,7 @@ function find_cache_on($codename)
     if ($BLOCK_CACHE_ON_CACHE === null) {
         $BLOCK_CACHE_ON_CACHE = persistent_cache_get('BLOCK_CACHE_ON_CACHE');
         if ($BLOCK_CACHE_ON_CACHE === null) {
-            $BLOCK_CACHE_ON_CACHE = list_to_map('cached_for', $GLOBALS['SITE_DB']->query_select('cache_on', array('*')));
+            $BLOCK_CACHE_ON_CACHE = list_to_map('cached_for', $GLOBALS['SITE_DB']->query_select('cache_on', ['*']));
             persistent_cache_set('BLOCK_CACHE_ON_CACHE', $BLOCK_CACHE_ON_CACHE);
         }
     }
@@ -653,12 +653,12 @@ function find_cache_on($codename)
  * @param  array $map Parameters to call up block with if we have to defer caching
  * @return ?mixed The cached result (null: no cached result)
  */
-function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CACHE_AGAINST_DEFAULT, $ttl = 10000, $tempcode = false, $caching_via_cron = false, $map = array())
+function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CACHE_AGAINST_DEFAULT, $ttl = 10000, $tempcode = false, $caching_via_cron = false, $map = [])
 {
-    $det = array($codename, $cache_identifier, md5($cache_identifier), $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map);
+    $det = [$codename, $cache_identifier, md5($cache_identifier), $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map];
 
     global $SMART_CACHE;
-    $test = (get_page_name() == 'admin_addons'/*special case*/) ? array() : $SMART_CACHE->get('blocks_needed');
+    $test = (get_page_name() == 'admin_addons'/*special case*/) ? [] : $SMART_CACHE->get('blocks_needed');
     if ($test !== false) {
         if (($test === null) || (count($test) < 20)) {
             $SMART_CACHE->append('blocks_needed', serialize($det));
@@ -667,7 +667,7 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags = CA
         }
     }
 
-    $rets = _get_cache_entries(array($det), $special_cache_flags);
+    $rets = _get_cache_entries([$det], $special_cache_flags);
     return $rets[0];
 }
 
@@ -698,14 +698,14 @@ function get_cache_signature_details($special_cache_flags, &$staff_status, &$mem
 
             if ($groups_cache === null) {
                 $actual_groups = filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()));
-                $m_zone = collapse_1d_complexity('zone_name', $GLOBALS['SITE_DB']->query_select('member_zone_access', array('zone_name'), array('member_id' => get_member())));
-                $m_page = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_page_access', array('page_name', 'zone_name'), array('member_id' => get_member()), 'ORDER BY zone_name,page_name'));
-                $m_privileges = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_privileges', array('privilege', 'the_page', 'module_the_name', 'category_name', 'the_value'), array('member_id' => get_member()), 'ORDER BY privilege,the_page,module_the_name,category_name,the_value'));
-                $m_categories = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_category_access', array('module_the_name', 'category_name'), array('member_id' => get_member()), 'ORDER BY module_the_name,category_name'));
+                $m_zone = collapse_1d_complexity('zone_name', $GLOBALS['SITE_DB']->query_select('member_zone_access', ['zone_name'], ['member_id' => get_member()]));
+                $m_page = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_page_access', ['page_name', 'zone_name'], ['member_id' => get_member()], 'ORDER BY zone_name,page_name'));
+                $m_privileges = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_privileges', ['privilege', 'the_page', 'module_the_name', 'category_name', 'the_value'], ['member_id' => get_member()], 'ORDER BY privilege,the_page,module_the_name,category_name,the_value'));
+                $m_categories = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_category_access', ['module_the_name', 'category_name'], ['member_id' => get_member()], 'ORDER BY module_the_name,category_name'));
                 if ((empty($m_zone)) && (empty($m_page)) && (empty($m_privileges)) && (empty($m_categories))) {
                     $groups_cache = implode(',', array_map('strval', $actual_groups));
                 } else {
-                    $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories));
+                    $groups_cache = json_encode([$actual_groups, $m_zone, $m_page, $m_privileges, $m_categories]);
                 }
             }
 
@@ -750,13 +750,13 @@ function get_cache_signature_details($special_cache_flags, &$staff_status, &$mem
  */
 function _get_cache_entries($dets, $special_cache_flags = null)
 {
-    static $cache = array();
+    static $cache = [];
 
-    if ($dets == array()) {
-        return array();
+    if ($dets == []) {
+        return [];
     }
 
-    $rets = array();
+    $rets = [];
 
     $staff_status = null;
     $member_id = null;
@@ -812,7 +812,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
         foreach ($dets as $det) {
             list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-            $sz = serialize(array($codename, $md5_cache_identifier));
+            $sz = serialize([$codename, $md5_cache_identifier]);
             if (isset($cache[$sz])) { // Already cached
                 $rets[] = $cache[$sz];
                 continue;
@@ -825,14 +825,14 @@ function _get_cache_entries($dets, $special_cache_flags = null)
         }
         $sql .= ')';
 
-        $cache_rows = $do_query ? $GLOBALS['SITE_DB']->query($sql) : array();
+        $cache_rows = $do_query ? $GLOBALS['SITE_DB']->query($sql) : [];
     }
 
     // Each requested entry
     foreach ($dets as $det) {
         list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-        $sz = serialize(array($codename, $md5_cache_identifier));
+        $sz = serialize([$codename, $md5_cache_identifier]);
         if (isset($cache[$sz])) { // Already cached
             $rets[] = $cache[$sz];
             continue;
@@ -841,7 +841,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
         if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
             $theme = $GLOBALS['FORUM_DRIVER']->get_theme();
             $lang = user_lang();
-            $cache_row = persistent_cache_get(array('CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl));
+            $cache_row = persistent_cache_get(['CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone, $is_ssl]);
 
             if ($cache_row === null) { // No
                 if ($caching_via_cron) {

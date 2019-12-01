@@ -37,44 +37,44 @@ class Hook_task_find_orphaned_content_lang_strings
         push_db_scope_check(false);
 
         // When a content language string isn't there
-        $missing_content_lang_strings = array();
-        $missing_content_lang_strings_zero = array();
+        $missing_content_lang_strings = [];
+        $missing_content_lang_strings_zero = [];
         // When a content language string isn't used
-        $orphaned_content_lang_strings = array();
+        $orphaned_content_lang_strings = [];
         // When a content language string is used more than once
-        $fused_content_lang_strings = array();
+        $fused_content_lang_strings = [];
 
-        $_all_ids = $GLOBALS['SITE_DB']->query_select('translate', array('DISTINCT id'));
-        $all_ids = array();
+        $_all_ids = $GLOBALS['SITE_DB']->query_select('translate', ['DISTINCT id']);
+        $all_ids = [];
         foreach ($_all_ids as $id) {
             $all_ids[$id['id']] = true;
         }
 
-        $ids_seen_so_far = array();
+        $ids_seen_so_far = [];
 
-        $where = array();
+        $where = [];
         if ($table !== null) {
             $where['m_table'] = $table;
         }
 
-        $all_fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'), $where);
+        $all_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['*'], $where);
 
-        $langidfields = array();
+        $langidfields = [];
         foreach ($all_fields as $f) {
             if (strpos($f['m_type'], '_TRANS') !== false) {
-                $langidfields[] = array('m_name' => $f['m_name'], 'm_table' => $f['m_table']);
+                $langidfields[] = ['m_name' => $f['m_name'], 'm_table' => $f['m_table']];
             }
         }
         foreach ($langidfields as $iteration => $langidfield) {
             task_log($this, 'Processing table ' . $langidfield['m_table'], $iteration, count($langidfields));
 
-            $select = array($langidfield['m_name']);
+            $select = [$langidfield['m_name']];
             foreach ($all_fields as $f) {
                 if ((substr($f['m_type'], 0, 1) == '*') && ($f['m_table'] == $langidfield['m_table'])) {
                     $select[] = $f['m_name'];
                 }
             }
-            $ofs = $GLOBALS['SITE_DB']->query_select($langidfield['m_table'], $select, array(), '', null, 0, false, array());
+            $ofs = $GLOBALS['SITE_DB']->query_select($langidfield['m_table'], $select, [], '', null, 0, false, []);
             foreach ($ofs as $of) {
                 $id = $of[$langidfield['m_name']];
                 if ($id === null) {
@@ -94,7 +94,7 @@ class Hook_task_find_orphaned_content_lang_strings
                 } elseif (array_key_exists($id, $ids_seen_so_far)) {
                     $looked_up = get_translated_text($id);
                     if ($fix) {
-                        $_of = $GLOBALS['SITE_DB']->query_select($langidfield['m_table'], array('*'), $of, '', 1, 0, false, array());
+                        $_of = $GLOBALS['SITE_DB']->query_select($langidfield['m_table'], ['*'], $of, '', 1, 0, false, []);
                         $of = $_of[0];
                         $of_orig = $of;
                         $of = insert_lang($langidfield['m_name'], $looked_up, 2) + $of;
@@ -117,13 +117,13 @@ class Hook_task_find_orphaned_content_lang_strings
             }
         }
 
-        $ret = do_template('BROKEN_CONTENT_LANG_STRINGS', array(
+        $ret = do_template('BROKEN_CONTENT_LANG_STRINGS', [
             '_GUID' => '318fcbe81e1e4324350114c3def020dd',
             'MISSING_CONTENT_LANG_STRINGS' => array_keys($missing_content_lang_strings),
             'MISSING_CONTENT_LANG_STRINGS_ZERO' => array_keys($missing_content_lang_strings_zero),
             'FUSED_CONTENT_LANG_STRINGS' => $fused_content_lang_strings,
             'ORPHANED_CONTENT_LANG_STRINGS' => $orphaned_content_lang_strings,
-        ));
-        return array('text/html', $ret);
+        ]);
+        return ['text/html', $ret];
     }
 }

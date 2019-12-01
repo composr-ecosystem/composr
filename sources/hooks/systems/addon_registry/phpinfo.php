@@ -31,7 +31,7 @@ class Hook_addon_registry_phpinfo
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_phpinfo
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_website_health',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_phpinfo
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,13 +97,13 @@ class Hook_addon_registry_phpinfo
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/phpinfo.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/phpinfo.svg',
             'themes/default/css/phpinfo.css',
             'sources/hooks/systems/page_groupings/phpinfo.php',
             'sources/hooks/systems/addon_registry/phpinfo.php',
             'adminzone/pages/modules/admin_phpinfo.php',
-        );
+        ];
     }
 }

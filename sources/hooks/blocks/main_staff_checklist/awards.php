@@ -31,12 +31,12 @@ class Hook_checklist_awards
     public function run()
     {
         if (!addon_installed('awards')) {
-            return array();
+            return [];
         }
 
-        $award_types = $GLOBALS['SITE_DB']->query_select('award_types', array('*'));
+        $award_types = $GLOBALS['SITE_DB']->query_select('award_types', ['*']);
 
-        $out = array();
+        $out = [];
 
         foreach ($award_types as $award) {
             // Find out how many submissions we've had since the last award was given
@@ -53,10 +53,10 @@ class Hook_checklist_awards
             }
             $details = $hook_object->info(null, true);
             if ($details !== null) {
-                $date = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'date_and_time', array('a_type_id' => $award['id']), 'ORDER BY date_and_time DESC');
+                $date = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'date_and_time', ['a_type_id' => $award['id']], 'ORDER BY date_and_time DESC');
 
                 if ($date === null) {
-                    $count = $details['db']->query_select_value($details['table'], 'COUNT(*)', array(), '', true);
+                    $count = $details['db']->query_select_value($details['table'], 'COUNT(*)', [], '', true);
                     if ($count === null) {
                         continue;
                     }
@@ -74,7 +74,7 @@ class Hook_checklist_awards
                     $status = 0;
                 }
 
-                $config_url = build_url(array('page' => 'admin_awards', 'type' => '_edit', 'id' => $award['id']), get_module_zone('admin_awards'));
+                $config_url = build_url(['page' => 'admin_awards', 'type' => '_edit', 'id' => $award['id']], get_module_zone('admin_awards'));
 
                 $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
@@ -102,8 +102,8 @@ class Hook_checklist_awards
 
                 list($info, $seconds_due_in) = staff_checklist_time_ago_and_due($seconds_ago, $limit_hours);
                 $info->attach($num_new_since);
-                $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array('_GUID' => '4049affae5a6f38712ee3e0237a2e18e', 'CONFIG_URL' => $config_url, 'URL' => $url, 'STATUS' => $_status, 'TASK' => $task, 'INFO' => $info));
-                $out[] = array($tpl, $seconds_due_in, null, null);
+                $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', ['_GUID' => '4049affae5a6f38712ee3e0237a2e18e', 'CONFIG_URL' => $config_url, 'URL' => $url, 'STATUS' => $_status, 'TASK' => $task, 'INFO' => $info]);
+                $out[] = [$tpl, $seconds_due_in, null, null];
             }
         }
 

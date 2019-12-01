@@ -32,8 +32,8 @@ class Hook_whatsnew_comcode_pages
     public function choose_categories($updated_since)
     {
         require_code('zones3');
-        $cats = create_selection_list_zones(null, array(), null, $updated_since);
-        return array($cats, do_lang('PAGES'));
+        $cats = create_selection_list_zones(null, [], null, $updated_since);
+        return [$cats, do_lang('PAGES')];
     }
 
     /**
@@ -58,14 +58,14 @@ class Hook_whatsnew_comcode_pages
 
         $_rows = $GLOBALS['SITE_DB']->query('SELECT a.* FROM ' . get_table_prefix() . 'cached_comcode_pages a JOIN ' . get_table_prefix() . 'comcode_pages b ON a.the_page=b.the_page AND a.the_zone=b.the_zone WHERE p_add_date>' . strval($cutoff_time) . ' AND (' . $or_list . ')', $max);
         if (count($_rows) == $max) {
-            return array();
+            return [];
         }
-        $rows = array();
+        $rows = [];
         foreach ($_rows as $row) {
             $rows[$row['the_zone'] . ':' . $row['the_page']] = $row;
         }
-        $_rows2 = $GLOBALS['SITE_DB']->query_select('seo_meta', array('meta_description', 'meta_for_id'), array('meta_for_type' => 'comcode_page'));
-        $rows2 = array();
+        $_rows2 = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description', 'meta_for_id'], ['meta_for_type' => 'comcode_page']);
+        $rows2 = [];
         foreach ($_rows2 as $row) {
             $rows2[$row['meta_for_id']] = $row;
         }
@@ -90,7 +90,7 @@ class Hook_whatsnew_comcode_pages
 
                 $id = $zone . ':' . $page;
 
-                $_url = build_url(array('page' => $page), $zone, array(), false, false, true);
+                $_url = build_url(['page' => $page], $zone, [], false, false, true);
                 $url = $_url->evaluate();
 
                 list(, , $path) = find_comcode_page($lang, $page, $zone);
@@ -112,12 +112,12 @@ class Hook_whatsnew_comcode_pages
                     $description = get_translated_text($rows2[$id]['meta_description']);
                 }
 
-                $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => '67f165847dacd54d2965686d561b57ee', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'comcode_page', 'CONTENT_ID' => $zone . ':' . $page), null, false, null, '.txt', 'text'));
+                $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '67f165847dacd54d2965686d561b57ee', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'comcode_page', 'CONTENT_ID' => $zone . ':' . $page], null, false, null, '.txt', 'text'));
 
                 handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
             }
         }
 
-        return array($new, do_lang('PAGES', '', '', '', $lang));
+        return [$new, do_lang('PAGES', '', '', '', $lang)];
     }
 }

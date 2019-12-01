@@ -31,7 +31,7 @@ class Hook_addon_registry_authors
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_authors
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_authors',
             'tut_users',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_authors
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_authors
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/authors.php',
             'themes/default/images/icons/menu/cms/author_set_own_profile.svg',
             'themes/default/images/icons/menu/rich_content/authors.svg',
@@ -123,7 +123,7 @@ class Hook_addon_registry_authors
             'sources/hooks/systems/sitemap/author.php',
             'themes/default/javascript/authors.js',
             'sources/hooks/systems/actionlog/authors.php',
-        );
+        ];
     }
 
     /**
@@ -133,12 +133,12 @@ class Hook_addon_registry_authors
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/AUTHOR_MANAGE_SCREEN.tpl' => 'administrative__author_manage_screen',
             'templates/AUTHOR_SCREEN.tpl' => 'author_screen',
             'templates/AUTHOR_POPUP.tpl' => 'author_popup_window',
             'templates/AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY.tpl' => 'author_screen',
-        );
+        ];
     }
 
     /**
@@ -150,13 +150,13 @@ class Hook_addon_registry_authors
      */
     public function tpl_preview__administrative__author_manage_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('AUTHOR_MANAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('AUTHOR_MANAGE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'DEFINE_FORM' => placeholder_form(),
                 'MERGE_FORM' => placeholder_form(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -170,13 +170,13 @@ class Hook_addon_registry_authors
     {
         $news_released = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $tpl = do_lorem_template('NEWS_BRIEF', array(
+            $tpl = do_lorem_template('NEWS_BRIEF', [
                 'DATE' => placeholder_date(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE_PLAIN' => lorem_word(),
                 'ID' => placeholder_id(),
                 'NEWS_TITLE' => lorem_word(),
-            ));
+            ]);
             $news_released->attach($tpl);
         }
 
@@ -185,31 +185,31 @@ class Hook_addon_registry_authors
             $downloads_released->attach(lorem_sentence_html());
         }
 
-        $staff_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+        $staff_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
             'ACTION' => hyperlink(placeholder_url(), do_lang_tempcode('DEFINE_AUTHOR'), false, true),
-        ));
+        ]);
 
-        $point_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+        $point_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
             'ACTION' => hyperlink(placeholder_url(), do_lang_tempcode('AUTHOR_POINTS'), false, true),
-        ));
+        ]);
 
-        $url_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+        $url_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
             'ACTION' => hyperlink(placeholder_url(), do_lang_tempcode('AUTHOR_HOMEPAGE'), false, true),
-        ));
+        ]);
 
-        $search_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+        $search_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
             'ACTION' => hyperlink(placeholder_url(), do_lang_tempcode('SEARCH'), false, true),
-        ));
+        ]);
 
-        $forum_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+        $forum_details = do_lorem_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
             'ACTION' => hyperlink(placeholder_url(), do_lang_tempcode('AUTHOR_PROFILE'), false, true),
-        ));
+        ]);
 
         $skills = new Tempcode();
         $description = new Tempcode();
 
-        return array(
-            lorem_globalise(do_lorem_template('AUTHOR_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('AUTHOR_SCREEN', [
                 'TAGS' => lorem_word_html(),
                 'TITLE' => lorem_title(),
                 'EDIT_URL' => placeholder_url(),
@@ -222,8 +222,8 @@ class Hook_addon_registry_authors
                 'FORUM_DETAILS' => $forum_details,
                 'SKILLS' => $skills,
                 'DESCRIPTION' => $description,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -235,22 +235,22 @@ class Hook_addon_registry_authors
      */
     public function tpl_preview__author_popup_window()
     {
-        $authors = array();
-        $authors[] = array(
+        $authors = [];
+        $authors[] = [
             'AUTHOR' => lorem_phrase(),
             'FIELD_NAME' => lorem_word(),
             'DEFINED' => true,
-        );
-        $authors[] = array(
+        ];
+        $authors[] = [
             'AUTHOR' => lorem_phrase(),
             'FIELD_NAME' => lorem_word(),
             'DEFINED' => false,
-        );
+        ];
 
-        $out = do_lorem_template('AUTHOR_POPUP', array('AUTHORS' => $authors, 'NEXT_URL' => placeholder_url()));
+        $out = do_lorem_template('AUTHOR_POPUP', ['AUTHORS' => $authors, 'NEXT_URL' => placeholder_url()]);
 
-        return array(
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 }

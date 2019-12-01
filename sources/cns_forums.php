@@ -37,7 +37,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
 
     require_lang('cns');
 
-    $map = array('page' => 'forumview');
+    $map = ['page' => 'forumview'];
     if ($row['id'] != db_get_first_id()) {
         $map['id'] = $row['id'];
     }
@@ -53,7 +53,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
         $breadcrumbs = breadcrumb_segments_to_tempcode(cns_forum_breadcrumbs($row['id'], null, null, true, ($root === null) ? get_param_integer('keep_forum_root', null) : $root));
     }
 
-    $just_forum_row = db_map_restrict($row, array('id', 'f_description'));
+    $just_forum_row = db_map_restrict($row, ['id', 'f_description']);
 
     $summary = get_translated_tempcode('f_forums', $just_forum_row, 'f_description', $GLOBALS['FORUM_DB']);
 
@@ -65,7 +65,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
     $entry_details->attach(do_lang_tempcode('LIST_SEP'));
     $entry_details->attach(do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts))));
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'f61cd0ea4c2ac496da958a36f118495d',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -77,7 +77,7 @@ function render_forum_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'name',
         'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:admin_cns_forums:__edit_category:' . strval($row['id'])),
         'RESOURCE_TYPE' => 'forum',
-    ));
+    ]);
 }
 
 /**
@@ -99,7 +99,7 @@ function get_forum_access_sql($field)
         return '0=1';
     }
 
-    $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id'));
+    $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id']);
 
     $or_list = '';
     foreach ($perhaps as $row) {
@@ -135,7 +135,7 @@ function get_forum_access_sql($field)
  */
 function cns_organise_into_tree(&$all_forums, $forum_id)
 {
-    $children = array();
+    $children = [];
     $all_forums_copy = $all_forums;
     foreach ($all_forums_copy as $i => $forum) {
         if ($forum['f_parent_forum'] == $forum_id) {
@@ -160,7 +160,7 @@ function cns_get_all_subordinate_forums($forum_id, $create_or_list = null, $tree
 {
     if ($forum_id === null) {
         if ($create_or_list === null) {
-            return array($forum_id);
+            return [$forum_id];
         } else {
             return '(' . $create_or_list . ' IS NULL)';
         }
@@ -177,7 +177,7 @@ function cns_get_all_subordinate_forums($forum_id, $create_or_list = null, $tree
                 $all_descendant = $GLOBALS['FORUM_DB']->query('SELECT id,f_parent_forum FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums WHERE id=' . strval($forum_id) . ' OR f_parent_forum=' . strval($forum_id), $max_forum_inspect);
                 if (count($all_descendant) == $max_forum_inspect) { // Too many
                     if ($create_or_list === null) {
-                        return array($forum_id);
+                        return [$forum_id];
                     } else {
                         return '(' . $create_or_list . '=' . strval($forum_id) . ')';
                     }
@@ -194,7 +194,7 @@ function cns_get_all_subordinate_forums($forum_id, $create_or_list = null, $tree
         }
     }
 
-    $subordinates = array();
+    $subordinates = [];
     foreach ($tree as $subordinate) {
         $subordinates = $subordinates + cns_get_all_subordinate_forums($subordinate['id'], null, $subordinate['children'], $ignore_permissions);
     }
@@ -250,7 +250,7 @@ function cns_may_moderate_forum($forum_id, $member_id = null)
         return has_privilege($member_id, 'moderate_private_topic');
     }
 
-    return has_privilege($member_id, 'edit_midrange_content', 'topics', array('forums', $forum_id));
+    return has_privilege($member_id, 'edit_midrange_content', 'topics', ['forums', $forum_id]);
 }
 
 /**
@@ -267,7 +267,7 @@ function cns_get_forum_parent_or_list($forum_id, $parent_id = -1)
     }
 
     if ($parent_id == -1) {
-        $parent_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_parent_forum', array('id' => $forum_id));
+        $parent_id = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'f_parent_forum', ['id' => $forum_id]);
     }
 
     $out = 't_forum_id=' . strval($forum_id);
@@ -295,33 +295,33 @@ function cns_get_forum_parent_or_list($forum_id, $parent_id = -1)
 function cns_forum_breadcrumbs($end_point_forum, $this_name = null, $parent_forum = null, $start = true, $root = null)
 {
     if ($end_point_forum === null) {
-        return array();
+        return [];
     }
 
     if ($root === null) {
         $root = get_param_integer('keep_forum_root', db_get_first_id());
     }
 
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$end_point_forum])) {
         return $cache[$end_point_forum];
     }
 
     if ($this_name === null) {
-        $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', array('f_name', 'f_parent_forum'), array('id' => $end_point_forum), '', 1);
+        $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_name', 'f_parent_forum'], ['id' => $end_point_forum], '', 1);
         if (!array_key_exists(0, $_forum_details)) {
             //warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($end_point_forum)), 'forum'));
-            return array();
+            return [];
         }
         $forum_details = $_forum_details[0];
         $this_name = $forum_details['f_name'];
         $parent_forum = $forum_details['f_parent_forum'];
     }
 
-    $segments = array();
+    $segments = [];
 
     if (((!$start) || ((has_privilege(get_member(), 'open_virtual_roots'))) && (get_value('disable_virtual_roots') !== '1') && (is_integer($end_point_forum)))) {
-        $map = array('page' => 'forumview');
+        $map = ['page' => 'forumview'];
         if ($end_point_forum != db_get_first_id()) {
             $map['id'] = $end_point_forum;
         }
@@ -333,15 +333,15 @@ function cns_forum_breadcrumbs($end_point_forum, $this_name = null, $parent_foru
             $map['keep_forum_root'] = $end_point_forum;
         }
         $page_link = build_page_link($map, get_module_zone('forumview'));
-        $segments[] = array($page_link, $this_name, $start ? do_lang_tempcode('VIRTUAL_ROOT') : new Tempcode());
+        $segments[] = [$page_link, $this_name, $start ? do_lang_tempcode('VIRTUAL_ROOT') : new Tempcode()];
     } else {
-        $segments[] = array('', $this_name);
+        $segments[] = ['', $this_name];
     }
 
     if ($end_point_forum !== $root) {
         $out = cns_forum_breadcrumbs($parent_forum, null, null, false, $root);
     } else {
-        $out = array();
+        $out = [];
     }
 
     $out = array_merge($out, $segments);
@@ -364,5 +364,5 @@ function cns_forum_allows_anonymous_posts($forum_id)
     if ($forum_id === null) {
         return (get_option('is_on_anonymous_posts') == '1');
     }
-    return ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_allows_anonymous_posts', array('id' => $forum_id)) === 1);
+    return ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_allows_anonymous_posts', ['id' => $forum_id]) === 1);
 }

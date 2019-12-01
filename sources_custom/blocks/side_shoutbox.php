@@ -25,14 +25,14 @@ class Block_side_shoutbox
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'max');
+        $info['parameters'] = ['param', 'max'];
         return $info;
     }
 
@@ -52,7 +52,7 @@ class Block_side_shoutbox
         }
 
         if (!addon_installed('chat')) {
-            return do_template('RED_ALERT', array('_GUID' => 'y8h6nmz8sgqyr3pyc0u3utctjxqomeje', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('chat'))));
+            return do_template('RED_ALERT', ['_GUID' => 'y8h6nmz8sgqyr3pyc0u3utctjxqomeje', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('chat'))]);
         }
 
         require_lang('chat');
@@ -67,15 +67,15 @@ class Block_side_shoutbox
         $num_messages = array_key_exists('max', $map) ? intval($map['max']) : 5;
 
         if ($room_id === null) {
-            $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', array('is_im' => 0/*, 'room_language' => user_lang()*/));
+            $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', ['is_im' => 0/*, 'room_language' => user_lang()*/]);
             if ($room_id === null) {
-                return do_template('RED_ALERT', array('_GUID' => '5g9vvms33t368bjqdlceztmd2gxn0vec', 'TEXT' => do_lang_tempcode('NO_CATEGORIES', 'chat')));
+                return do_template('RED_ALERT', ['_GUID' => '5g9vvms33t368bjqdlceztmd2gxn0vec', 'TEXT' => do_lang_tempcode('NO_CATEGORIES', 'chat')]);
             }
         }
 
-        $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('id' => $room_id), '', 1);
+        $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
         if (!array_key_exists(0, $room_check)) {
-            return do_template('RED_ALERT', array('_GUID' => 'bb4e9iolej3agl06lk4z38gy1zgtz5vc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'chat')));
+            return do_template('RED_ALERT', ['_GUID' => 'bb4e9iolej3agl06lk4z38gy1zgtz5vc', 'TEXT' => do_lang_tempcode('MISSING_RESOURCE', 'chat')]);
         }
         require_code('chat');
         if (!check_chatroom_access($room_check[0], true)) {
@@ -90,16 +90,16 @@ class Block_side_shoutbox
         $zone = get_module_zone('chat');
 
         if ($room_id === null) {
-            $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', array('is_im' => 0, 'room_language' => user_lang()));
+            $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', ['is_im' => 0, 'room_language' => user_lang()]);
             if ($room_id === null) {
-                $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', array('is_im' => 0));
+                $room_id = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'MIN(id)', ['is_im' => 0]);
             }
             if ($room_id === null) {
                 return paragraph(do_lang_tempcode('NONE_EM'), 'bwkc04vf6j5ebavzfnbxlh161qctdwtb', 'nothing-here');
             }
         }
 
-        $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('id' => $room_id), '', 1);
+        $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $room_id], '', 1);
         if (!array_key_exists(0, $room_check)) {
             return paragraph(do_lang_tempcode('MISSING_RESOURCE', 'chat'), 'qgkdgqhgdd9yymwqc6t9ma3nt9rp9w2x', 'nothing-here');
         }
@@ -113,7 +113,7 @@ class Block_side_shoutbox
         }
 
         $messages = chat_get_room_content($room_id, $room_check, $num_messages * 3, false, false, null, null, -1, $zone, null, true, $shoutbox_message != '');
-        $_tpl = array();
+        $_tpl = [];
         foreach ($messages as $_message) {
             $evaluated = $_message['the_message']->evaluate();
 
@@ -125,7 +125,7 @@ class Block_side_shoutbox
             if ((strpos($evaluated, '[private') === false) || (($shoutbox_message != '') && (strpos($evaluated, '[private="' . $GLOBALS['FORUM_DRIVER']->get_username(get_member()) . '"]') !== false))) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_message['username']);
                 $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, $_message['username']);
-                $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array(
+                $_tpl[] = do_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', [
                     '_GUID' => 'a6f86aa48af7de7ec78423864c82c626',
                     'MEMBER_ID' => strval($member_id),
                     'MEMBER_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id),
@@ -133,7 +133,7 @@ class Block_side_shoutbox
                     'MESSAGE' => $_message['the_message'],
                     '_TIME' => strval($_message['date_and_time']),
                     'DATE' => $_message['date_and_time_nice'],
-                ));
+                ]);
             }
         }
 
@@ -145,9 +145,9 @@ class Block_side_shoutbox
             $tpl->attach($t);
         }
 
-        $url = get_self_url(false, false, array('room_id' => $room_id));
+        $url = get_self_url(false, false, ['room_id' => $room_id]);
 
-        return do_template('BLOCK_SIDE_SHOUTBOX', array(
+        return do_template('BLOCK_SIDE_SHOUTBOX', [
             '_GUID' => '023aef81ed14e33f1b9337c5aa3b7bc9',
             'BLOCK_ID' => $block_id,
             'LAST_MESSAGE_ID' => strval($last_message_id),
@@ -156,6 +156,6 @@ class Block_side_shoutbox
             'CHATROOM_ID' => strval($room_id),
             'NUM_MESSAGES' => strval($num_messages),
             'BLOCK_PARAMS' => '',
-        ));
+        ]);
     }
 }

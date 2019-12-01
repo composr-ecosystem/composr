@@ -33,12 +33,12 @@ class Hook_page_groupings_polls
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('polls')) {
-            return array();
+            return [];
         }
 
-        return array(
-            (get_value('hide_polls') === '1') ? null : array('cms', 'menu/social/polls', array('cms_polls', array('type' => 'browse'), get_module_zone('cms_polls')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('POLLS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('poll', 'COUNT(*)')))))), 'polls:DOC_POLLS'),
-            array('social', 'menu/social/polls', array('polls', array(), get_module_zone('polls')), do_lang_tempcode('POLLS')),
-        );
+        return [
+            (get_value('hide_polls') === '1') ? null : ['cms', 'menu/social/polls', ['cms_polls', ['type' => 'browse'], get_module_zone('cms_polls')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('POLLS'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('poll', 'COUNT(*)')))))), 'polls:DOC_POLLS'],
+            ['social', 'menu/social/polls', ['polls', [], get_module_zone('polls')], do_lang_tempcode('POLLS')],
+        ];
     }
 }

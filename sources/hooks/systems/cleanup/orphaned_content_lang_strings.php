@@ -44,7 +44,7 @@ class Hook_cleanup_orphaned_content_lang_strings
             return null; // Too much, and we don't have much use for it outside development anyway
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('ORPHANED_CONTENT_LANG_STRINGS');
         $info['description'] = do_lang_tempcode('DESCRIPTION_ORPHANED_CONTENT_LANG_STRINGS');
         $info['type'] = 'optimise';

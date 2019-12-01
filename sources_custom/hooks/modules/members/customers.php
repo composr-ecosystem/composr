@@ -27,17 +27,17 @@ class Hook_members_customers
     public function run($member_id)
     {
         if (!addon_installed('composr_homesite_support_credits')) {
-            return array();
+            return [];
         }
 
         if (!has_actual_page_access(get_member(), 'admin_ecommerce', get_module_zone('admin_ecommerce'))) {
-            return array();
+            return [];
         }
 
         require_lang('customers');
-        return array(
-            array('views', do_lang_tempcode('GIVE_CREDITS'), build_url(array('page' => 'admin_ecommerce_logs', 'type' => 'trigger', 'member_id' => $member_id), get_module_zone('admin_ecommerce')), 'menu/rich_content/ecommerce/purchase'),
-            array('views', do_lang_tempcode('CHARGE_CUSTOMER'), build_url(array('page' => 'admin_customers', 'type' => 'charge', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)), get_module_zone('admin_customers')), 'menu/adminzone/audit/ecommerce/transactions'),
-        );
+        return [
+            ['views', do_lang_tempcode('GIVE_CREDITS'), build_url(['page' => 'admin_ecommerce_logs', 'type' => 'trigger', 'member_id' => $member_id], get_module_zone('admin_ecommerce')), 'menu/rich_content/ecommerce/purchase'],
+            ['views', do_lang_tempcode('CHARGE_CUSTOMER'), build_url(['page' => 'admin_customers', 'type' => 'charge', 'username' => $GLOBALS['FORUM_DRIVER']->get_username($member_id)], get_module_zone('admin_customers')), 'menu/adminzone/audit/ecommerce/transactions'],
+        ];
     }
 }

@@ -32,7 +32,7 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):admin_permissions:privileges#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = 'admin_permissions';
@@ -66,7 +66,7 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array('_privilege_category', $valid_node_types))) {
             return $nodes;
@@ -80,7 +80,7 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
 
         require_all_lang();
 
-        $_sections = list_to_map('p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', array('DISTINCT p_section')));
+        $_sections = list_to_map('p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['DISTINCT p_section']));
         foreach ($_sections as $i => $s) {
             $test = do_lang($i, null, null, null, null, false);
             if ($test !== null) {
@@ -126,7 +126,7 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
      */
     public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
     {
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*):([^:]*):([^:]*)#', $page_link, $matches);
         $page = $matches[2];
         $privilege_category = $matches[4];
@@ -138,15 +138,15 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
             $title = do_lang($privilege_category);
         }
 
-        $struct = array(
+        $struct = [
             'title' => make_string_tempcode($title),
             'content_type' => '_privilege_category',
             'content_id' => null,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => null,
                 'add_time' => null,
@@ -159,8 +159,8 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(),
+            ],
+            'permissions' => [],
             'has_possible_children' => false,
             'children' => null,
 
@@ -169,7 +169,7 @@ class Hook_sitemap_privilege_category extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'yearly',
 
             'privilege_page' => null,
-        );
+        ];
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__chat_blocking
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('chat_blocking', array(), array('member_blocker' => $member_id));
+        return table_to_portable_rows('chat_blocking', [], ['member_blocker' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__chat_blocking
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('chat_blocking', $data, array('member_blocker' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('chat_blocking', $data, ['member_blocker' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

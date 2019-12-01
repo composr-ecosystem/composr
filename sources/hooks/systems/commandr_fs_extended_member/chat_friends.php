@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__chat_friends
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('chat_friends', array(), array('member_likes' => $member_id));
+        return table_to_portable_rows('chat_friends', [], ['member_likes' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__chat_friends
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('chat_friends', $data, array('member_likes' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('chat_friends', $data, ['member_likes' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

@@ -42,24 +42,24 @@ class Hook_member_boxes_buildr
 
         $zone = get_page_zone('buildr', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
         if (!has_zone_access(get_member(), $zone)) {
-            return array();
+            return [];
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('w_members m JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_realms r ON m.location_realm=r.id JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_rooms rm ON m.location_x=rm.location_x AND m.location_y=rm.location_y AND m.location_realm=rm.location_realm', array('m.*', 'r.*', 'rm.name AS room_name'), array('m.id' => $member_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('w_members m JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_realms r ON m.location_realm=r.id JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'w_rooms rm ON m.location_x=rm.location_x AND m.location_y=rm.location_y AND m.location_realm=rm.location_realm', ['m.*', 'r.*', 'rm.name AS room_name'], ['m.id' => $member_id], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array();
+            return [];
         }
 
         $row = $rows[0];
 
         require_lang('buildr');
 
-        return array(
-            do_lang('_W_ROOM') => do_lang('W_ROOM_COORD', escape_html($row['room_name']), strval($row['location_realm']), array(strval($row['location_x']), strval($row['location_y']))),
+        return [
+            do_lang('_W_ROOM') => do_lang('W_ROOM_COORD', escape_html($row['room_name']), strval($row['location_realm']), [strval($row['location_x']), strval($row['location_y'])]),
             do_lang('_W_REALM') => $row['name'],
-        );
+        ];
     }
 }

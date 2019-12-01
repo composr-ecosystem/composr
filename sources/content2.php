@@ -62,7 +62,7 @@ function define_page_metadata($page_metadata, $zone = '')
         $order = 0;
 
         foreach ($metadata as $key => $val) {
-            if (in_array($key, array('description', 'keywords'))) {
+            if (in_array($key, ['description', 'keywords'])) {
                 continue;
             }
 
@@ -75,8 +75,8 @@ function define_page_metadata($page_metadata, $zone = '')
             $field_id = define_custom_field($key, '', $order);
             $order++;
 
-            $GLOBALS['SITE_DB']->query_delete('catalogue_efv_short', array('cf_id' => $field_id, 'ce_id' => $catalogue_entry_id));
-            $GLOBALS['SITE_DB']->query_insert('catalogue_efv_short', array('cf_id' => $field_id, 'ce_id' => $catalogue_entry_id, 'cv_value' => $val));
+            $GLOBALS['SITE_DB']->query_delete('catalogue_efv_short', ['cf_id' => $field_id, 'ce_id' => $catalogue_entry_id]);
+            $GLOBALS['SITE_DB']->query_insert('catalogue_efv_short', ['cf_id' => $field_id, 'ce_id' => $catalogue_entry_id, 'cv_value' => $val]);
         }
 
         seo_meta_set_for_explicit('comcode_page', ':' . $page_name, isset($metadata['keywords']) ? $metadata['keywords'] : '', isset($metadata['description']) ? $metadata['description'] : '');
@@ -182,7 +182,7 @@ function post_param_order_field($order_field = 'order')
  * @param  integer $show_header Whether to show a header (a METADATA_HEADER_* constant)
  * @return Tempcode Form page Tempcode fragment
  */
-function metadata_get_fields($content_type, $content_id, $require_owner = true, $fields_to_skip = array(), $show_header = 1)
+function metadata_get_fields($content_type, $content_id, $require_owner = true, $fields_to_skip = [], $show_header = 1)
 {
     require_lang('metadata');
 
@@ -234,24 +234,24 @@ function metadata_get_fields($content_type, $content_id, $require_owner = true, 
             if ($content_id !== null) {
                 if ($content_type == 'comcode_page') {
                     list($zone, $_content_id) = explode(':', $content_id);
-                    $attributes = array();
-                    $url_moniker = find_id_moniker(array('page' => $_content_id) + $attributes, $zone);
+                    $attributes = [];
+                    $url_moniker = find_id_moniker(['page' => $_content_id] + $attributes, $zone);
                 } else {
                     $_content_id = $content_id;
                     list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
-                    $url_moniker = find_id_moniker(array('id' => $_content_id) + $attributes, $zone);
+                    $url_moniker = find_id_moniker(['id' => $_content_id] + $attributes, $zone);
                 }
 
                 if ($url_moniker === null) {
                     $url_moniker = '';
                 }
 
-                $moniker_where = array(
+                $moniker_where = [
                     'm_manually_chosen' => 1,
                     'm_resource_page' => ($content_type == 'comcode_page') ? $_content_id : $attributes['page'],
                     'm_resource_type' => ($content_type == 'comcode_page') ? '' : (isset($attributes['type']) ? $attributes['type'] : ''),
                     'm_resource_id' => ($content_type == 'comcode_page') ? $zone : $_content_id,
-                );
+                ];
                 $manually_chosen = ($GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_moniker', $moniker_where) !== null);
             } else {
                 $url_moniker = '';
@@ -262,7 +262,7 @@ function metadata_get_fields($content_type, $content_id, $require_owner = true, 
             } else {
                 $url_moniker_to_show = make_string_tempcode(escape_html($url_moniker));
             }
-            $fields->attach(form_input_codename(do_lang_tempcode('URL_MONIKER'), do_lang_tempcode('DESCRIPTION_META_URL_MONIKER', $url_moniker_to_show), 'meta_url_moniker', $manually_chosen ? $url_moniker : '', false, null, null, array('/')));
+            $fields->attach(form_input_codename(do_lang_tempcode('URL_MONIKER'), do_lang_tempcode('DESCRIPTION_META_URL_MONIKER', $url_moniker_to_show), 'meta_url_moniker', $manually_chosen ? $url_moniker : '', false, null, null, ['/']));
         }
     } else {
         if ($show_header != METADATA_HEADER_FORCE) {
@@ -272,12 +272,12 @@ function metadata_get_fields($content_type, $content_id, $require_owner = true, 
 
     if ((!$fields->is_empty()) && ($show_header != METADATA_HEADER_NO)) {
         $_fields = new Tempcode();
-        $_fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $_fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => 'adf2a2cda231619243763ddbd0cc9d4e',
             'SECTION_HIDDEN' => true,
             'TITLE' => do_lang_tempcode('METADATA'),
             'HELP' => do_lang_tempcode('DESCRIPTION_METADATA', ($content_id === null) ? do_lang_tempcode('RESOURCE_NEW') : $content_id),
-        )));
+        ]));
         $_fields->attach($fields);
         return $_fields;
     }
@@ -294,28 +294,28 @@ function metadata_get_fields($content_type, $content_id, $require_owner = true, 
  * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
  * @return array A map of standard metadata fields (name to value). If adding, this map is accurate for adding. If editing, nulls mean do-not-edit or non-editable.
  */
-function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip = array(), $new_content_id = null)
+function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip = [], $new_content_id = null)
 {
     require_lang('metadata');
 
     if (fractional_edit()) {
-        return array(
+        return [
             'views' => INTEGER_MAGIC_NULL,
             'submitter' => INTEGER_MAGIC_NULL,
             'add_time' => INTEGER_MAGIC_NULL,
             'edit_time' => INTEGER_MAGIC_NULL,
             /*'url_moniker' => null, was handled internally*/
-        );
+        ];
     }
 
     if (!has_privilege(get_member(), 'edit_meta_fields')) { // Pass through as how an edit would normally function (things left alone except edit time)
-        return array(
+        return [
             'views' => ($content_id === null) ? 0 : INTEGER_MAGIC_NULL,
             'submitter' => ($content_id === null) ? get_member() : INTEGER_MAGIC_NULL,
             'add_time' => ($content_id === null) ? time() : INTEGER_MAGIC_NULL,
             'edit_time' => time(),
             /*'url_moniker' => null, was handled internally*/
-        );
+        ];
     }
 
     require_code('content');
@@ -393,13 +393,13 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
         set_url_moniker($content_type, $content_id, $fields_to_skip, $new_content_id);
     }
 
-    return array(
+    return [
         'views' => $views,
         'submitter' => $submitter,
         'add_time' => $add_time,
         'edit_time' => $edit_time,
         /*'url_moniker' => $url_moniker, was handled internally*/
-    );
+    ];
 }
 
 /**
@@ -410,7 +410,7 @@ function actual_metadata_get_fields($content_type, $content_id, $fields_to_skip 
  * @param  array $fields_to_skip List of fields to NOT take in
  * @param  ?ID_TEXT $new_content_id The new ID of the resource (null: not being renamed)
  */
-function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), $new_content_id = null)
+function set_url_moniker($content_type, $content_id, $fields_to_skip = [], $new_content_id = null)
 {
     require_lang('metadata');
 
@@ -428,7 +428,7 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), 
                 while ($parent != '') {
                     $url_moniker = str_replace('_', '-', $parent) . (($url_moniker != '') ? ('/' . $url_moniker) : '');
 
-                    $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', array('the_page' => $parent));
+                    $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', ['the_page' => $parent]);
                     if ($parent === null) {
                         $parent = '';
                     }
@@ -458,9 +458,9 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), 
 
                     // Update ID of existing moniker(s)
                     if ($new_content_id !== null) {
-                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
+                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', [
                             'm_resource_page' => $new_content_id,
-                        ), array('m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone));
+                        ], ['m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone]);
                     }
                 } else {
                     list($zone, $attributes,) = page_link_decode($info['view_page_link_pattern']);
@@ -470,25 +470,25 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), 
 
                     // Update ID of existing moniker(s)
                     if ($new_content_id !== null) {
-                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', array(
+                        $GLOBALS['SITE_DB']->query_update('url_id_monikers', [
                             'm_resource_id' => $new_content_id,
-                        ), array('m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $content_id));
+                        ], ['m_resource_page' => $page, 'm_resource_type' => $type, 'm_resource_id' => $content_id]);
                     }
                 }
 
                 $ok = true;
 
                 // Test for conflicts
-                $conflict_test_map = array(
+                $conflict_test_map = [
                     'm_moniker' => $url_moniker,
-                );
+                ];
                 if (substr($url_moniker, 0, 1) != '/') { // Can narrow the conflict-check scope if it's relative to a module rather than a zone ('/' prefix)
-                    $conflict_test_map += array(
+                    $conflict_test_map += [
                         'm_resource_page' => $page,
                         'm_resource_type' => $type,
-                    );
+                    ];
                 }
-                $test = $GLOBALS['SITE_DB']->query_select('url_id_monikers', array('*'), $conflict_test_map);
+                $test = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['*'], $conflict_test_map);
                 if ((array_key_exists(0, $test)) && ($test[0]['m_resource_id'] !== $_content_id)) {
                     if ($test[0]['m_deprecated'] == 0) {
                         $ok = false;
@@ -539,7 +539,7 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), 
                         // Test there are no page conflicts, from perspective of deep zones
                         require_code('site');
                         $start = 0;
-                        $zones = array();
+                        $zones = [];
                         do {
                             $zones = find_all_zones(false, false, false, $start, 50);
                             foreach ($zones as $zone_name) {
@@ -614,7 +614,7 @@ function seo_meta_clear_caching($type, $id)
     }
 
     if (function_exists('persistent_cache_delete')) {
-        persistent_cache_delete(array('seo', $type, $id));
+        persistent_cache_delete(['seo', $type, $id]);
     }
 }
 
@@ -627,17 +627,17 @@ function seo_meta_clear_caching($type, $id)
  */
 function seo_meta_erase_storage($type, $id, $do_decache = true)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', array('meta_description'), array('meta_for_type' => $type, 'meta_for_id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], ['meta_for_type' => $type, 'meta_for_id' => $id], '', 1);
     if (array_key_exists(0, $rows)) {
         delete_lang($rows[0]['meta_description']);
-        $GLOBALS['SITE_DB']->query_delete('seo_meta', array('meta_for_type' => $type, 'meta_for_id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('seo_meta', ['meta_for_type' => $type, 'meta_for_id' => $id], '', 1);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', array('meta_keyword'), array('meta_for_type' => $type, 'meta_for_id' => $id));
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], ['meta_for_type' => $type, 'meta_for_id' => $id]);
     foreach ($rows as $row) {
         delete_lang($row['meta_keyword']);
     }
-    $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', array('meta_for_type' => $type, 'meta_for_id' => $id));
+    $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['meta_for_type' => $type, 'meta_for_id' => $id]);
 
     if ($do_decache) {
         seo_meta_clear_caching($type, $id);
@@ -656,7 +656,7 @@ function seo_get_fields($type, $id = null, $show_header = true)
 {
     require_code('form_templates');
     if ($id === null) {
-        list($keywords, $description) = array('', '');
+        list($keywords, $description) = ['', ''];
     } else {
         list($keywords, $description) = seo_meta_get_for($type, $id);
     }
@@ -664,12 +664,12 @@ function seo_get_fields($type, $id = null, $show_header = true)
     $fields = new Tempcode();
     if ((get_option('enable_seo_fields') != 'no') && ((get_option('enable_seo_fields') != 'only_on_edit') || ($id !== null))) {
         if ($show_header) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
                 '_GUID' => '545aefd48d73cf01bdec7226dc6d93fb',
                 'SECTION_HIDDEN' => $keywords == '' && $description == '',
                 'TITLE' => do_lang_tempcode('SEO'),
                 'HELP' => (get_option('show_docs') === '0') ? null : do_lang_tempcode('TUTORIAL_ON_THIS', get_tutorial_url('tut_seo')),
-            )));
+            ]));
         }
         $fields->attach(form_input_line_multi(do_lang_tempcode('KEYWORDS'), do_lang_tempcode('DESCRIPTION_META_KEYWORDS'), 'meta_keywords[]', array_map('trim', explode(',', preg_replace('#,+#', ',', $keywords))), 0));
         $fields->attach(form_input_line(do_lang_tempcode('META_DESCRIPTION'), do_lang_tempcode('DESCRIPTION_META_DESCRIPTION'), 'meta_description', $description, false));
@@ -694,18 +694,18 @@ function seo_meta_set_for_explicit($type, $id, $keywords, $description)
         return;
     }
 
-    $map_general = array(
+    $map_general = [
         'meta_for_type' => $type,
         'meta_for_id' => $id,
-    );
+    ];
 
     // Description...
 
     $description = str_replace("\n", ' ', $description);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', array('meta_description'), $map_general, '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], $map_general, '', 1);
     if (array_key_exists(0, $rows)) {
-        $map = array();
+        $map = [];
         $map += lang_remap('meta_description', $rows[0]['meta_description'], $description);
         $GLOBALS['SITE_DB']->query_update('seo_meta', $map, $map_general, '', 1);
     } else {
@@ -716,7 +716,7 @@ function seo_meta_set_for_explicit($type, $id, $keywords, $description)
 
     // Keywords...
 
-    $_keywords = array();
+    $_keywords = [];
     foreach (array_unique(explode(',', $keywords)) as $keyword) {
         if (trim($keyword) == '') {
             continue;
@@ -724,15 +724,15 @@ function seo_meta_set_for_explicit($type, $id, $keywords, $description)
         $_keywords[] = $keyword;
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', array('*'), $map_general);
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['*'], $map_general);
     foreach ($rows as $i => $row) {
         if ($i < count($_keywords)) {
-            $map = array();
+            $map = [];
             $map += lang_remap('meta_keyword', $row['meta_keyword'], $_keywords[$i]);
-            $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', $map, array('id' => $row['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', $map, ['id' => $row['id']], '', 1);
         } else {
             delete_lang($row['meta_keyword']);
-            $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', array('id' => $row['id']));
+            $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['id' => $row['id']]);
         }
     }
 
@@ -781,8 +781,8 @@ function _seo_meta_find_data($keyword_sources, $description = '')
 
     $min_word_length = 3;
 
-    $keywords_might_use = array(); // This will be filled
-    $keywords_must_use = array(); // ...and/or this
+    $keywords_might_use = []; // This will be filled
+    $keywords_must_use = []; // ...and/or this
 
     $this_word = '';
 
@@ -922,7 +922,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
 
     // Put together keywords (in priority and frequency order, not alphabetical)
     $i = 0;
-    $_keywords = array();
+    $_keywords = [];
     foreach (array_keys($keywords_must_use) as $keyword) {
         $_keywords[] = $keyword;
         $i++;
@@ -935,7 +935,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
 
         $keyword_lower = cms_mb_strtolower($keyword);
         if (!isset($_keywords[$keyword_lower])) {
-            $_keywords[$keyword_lower] = array();
+            $_keywords[$keyword_lower] = [];
         }
         $_keywords[$keyword_lower][] = $keyword;
 
@@ -973,7 +973,7 @@ function _seo_meta_find_data($keyword_sources, $description = '')
 
     // ---
 
-    return array($keywords, $description);
+    return [$keywords, $description];
 }
 
 /**

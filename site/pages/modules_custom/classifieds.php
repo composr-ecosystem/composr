@@ -25,7 +25,7 @@ class Module_classifieds
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -53,32 +53,32 @@ class Module_classifieds
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('ecom_classifieds_prices', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_classifieds_prices', [
                 'id' => '*AUTO',
                 'c_catalogue_name' => 'ID_TEXT',
                 //'c_category_id' => '?AUTO_LINK',
                 'c_days' => 'INTEGER',
                 'c_label' => 'SHORT_TRANS',
                 'c_price' => 'REAL',
-            ));
-            $GLOBALS['SITE_DB']->create_index('ecom_classifieds_prices', 'c_catalogue_name', array('c_catalogue_name'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('ecom_classifieds_prices', 'c_catalogue_name', ['c_catalogue_name']);
 
             require_lang('classifieds');
 
-            $prices = array(
-                'ONE_WEEK' => array(0.0, 7),
-                'ONE_MONTH' => array(5.0, 30),
-                'THREE_MONTHS' => array(12.0, 90),
-                'SIX_MONTHS' => array(20.0, 180),
-                'ONE_YEAR' => array(32.0, 365),
-            );
+            $prices = [
+                'ONE_WEEK' => [0.0, 7],
+                'ONE_MONTH' => [5.0, 30],
+                'THREE_MONTHS' => [12.0, 90],
+                'SIX_MONTHS' => [20.0, 180],
+                'ONE_YEAR' => [32.0, 365],
+            ];
             foreach ($prices as $level => $bits) {
                 list($price, $days) = $bits;
-                $map = array(
+                $map = [
                     'c_catalogue_name' => 'classifieds',
                     'c_days' => $days,
                     'c_price' => $price,
-                );
+                ];
                 $map += insert_lang('c_label', do_lang('CLASSIFIEDS_DEFAULT_PRICE_LEVEL_' . $level), 2);
                 $GLOBALS['SITE_DB']->query_insert('ecom_classifieds_prices', $map);
             }
@@ -104,9 +104,9 @@ class Module_classifieds
             return null;
         }
 
-        $ret = array();
+        $ret = [];
         if (!$check_perms || !is_guest($member_id)) {
-            $ret['adverts'] = array('CLASSIFIED_ADVERTS', 'spare/classifieds');
+            $ret['adverts'] = ['CLASSIFIED_ADVERTS', 'spare/classifieds'];
         }
         return $ret;
     }
@@ -139,7 +139,7 @@ class Module_classifieds
         require_lang('classifieds');
 
         $member_id = get_param_integer('member_id', get_member());
-        $this->title = get_screen_title(($member_id == get_member()) ? 'CLASSIFIED_ADVERTS' : '_CLASSIFIED_ADVERTS', true, array($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)));
+        $this->title = get_screen_title(($member_id == get_member()) ? 'CLASSIFIED_ADVERTS' : '_CLASSIFIED_ADVERTS', true, [$GLOBALS['FORUM_DRIVER']->get_username($member_id, true)]);
 
         return null;
     }
@@ -183,24 +183,24 @@ class Module_classifieds
 
         require_code('templates_pagination');
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', 'COUNT(*)', array('ce_submitter' => $member_id));
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', 'COUNT(*)', ['ce_submitter' => $member_id]);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', array('e.*'), array('ce_submitter' => $member_id), 'ORDER BY ce_add_date DESC');
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', ['e.*'], ['ce_submitter' => $member_id], 'ORDER BY ce_add_date DESC');
         $rows = remove_duplicate_rows($rows, 'e_id');
         if (empty($rows)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'catalogue_entry'));
         }
 
-        $ads = array();
+        $ads = [];
         foreach ($rows as $row) {
-            $data_map = get_catalogue_entry_map($row, null, 'CATEGORY', 'DEFAULT', get_param_integer('keep_catalogue_' . $row['c_name'] . '_root', null), null, array(0));
+            $data_map = get_catalogue_entry_map($row, null, 'CATEGORY', 'DEFAULT', get_param_integer('keep_catalogue_' . $row['c_name'] . '_root', null), null, [0]);
             $ad_title = $data_map['FIELD_0'];
 
-            $purchase_url = build_url(array('page' => 'purchase', 'type' => 'browse', 'category' => 'classifieds', 'id' => $row['id']), get_module_zone('purchase'));
+            $purchase_url = build_url(['page' => 'purchase', 'type' => 'browse', 'category' => 'classifieds', 'id' => $row['id']], get_module_zone('purchase'));
 
             // We'll show all transactions against this ad
             $transaction_details = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_transactions WHERE t_purchase_id=' . strval($row['id']) . ' AND t_type_code LIKE \'' . db_encode_like('CLASSIFIEDS\_ADVERT\_%') . '\'');
-            $_transaction_details = array();
+            $_transaction_details = [];
             foreach ($transaction_details as $t) {
                 list($details) = find_product_details($t['t_type_code']);
                 if ($details !== null) {
@@ -209,7 +209,7 @@ class Module_classifieds
                     $item_title = $t['t_type_code'];
                 }
 
-                $_transaction_details[] = array(
+                $_transaction_details[] = [
                     'T_ID' => strval($t['id']),
                     'T_PURCHASE_ID' => strval($t['t_purchase_id']),
                     'T_STATUS' => get_transaction_status_string($t['t_status']),
@@ -224,9 +224,9 @@ class Module_classifieds
                     'T_PENDING_REASON' => $t['t_pending_reason'],
                     'T_MEMO' => $t['t_memo'],
                     'T_PAYMENT_GATEWAY' => $t['t_payment_gateway'],
-                );
+                ];
             }
-            $url_map = array('page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']);
+            $url_map = ['page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']];
             $url = build_url($url_map, '_SELF');
 
             // No known expiry status: put on free, or let expire
@@ -235,7 +235,7 @@ class Module_classifieds
                 initialise_classified_listing($row);
             }
 
-            $ads[] = array(
+            $ads[] = [
                 'AD_TITLE' => $ad_title,
                 'TRANSACTION_DETAILS' => $_transaction_details,
                 'DATE' => get_timezoned_date_time($row['ce_add_date']),
@@ -247,12 +247,12 @@ class Module_classifieds
                 'ID' => strval($row['id']),
                 'URL' => $url,
                 'NUM_VIEWS' => integer_format($row['ce_views']),
-            );
+            ];
         }
 
         $pagination = pagination(do_lang('_CLASSIFIED_ADVERTS'), $start, 'classifieds_start', $max, 'classifieds_max', $max_rows);
 
-        $tpl = do_template('CLASSIFIED_ADVERTS_SCREEN', array('_GUID' => 'b25659c245a738b4f161dc87869d9edc', 'TITLE' => $this->title, 'PAGINATION' => $pagination, 'ADS' => $ads));
+        $tpl = do_template('CLASSIFIED_ADVERTS_SCREEN', ['_GUID' => 'b25659c245a738b4f161dc87869d9edc', 'TITLE' => $this->title, 'PAGINATION' => $pagination, 'ADS' => $ads]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

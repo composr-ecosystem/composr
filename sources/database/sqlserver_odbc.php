@@ -41,7 +41,7 @@ function init__database__sqlserver_odbc()
  */
 class Database_Static_sqlserver_odbc extends Database_super_sqlserver
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
 
     /**
      * Get a database connection. This function shouldn't be used by you, as a connection to the database is established automatically.
@@ -102,7 +102,7 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
     public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false)
     {
         if ($max === 0) {
-            return array();
+            return [];
         }
         $this->apply_sql_limit_clause($query, $max, $start);
 
@@ -164,22 +164,22 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
      */
     public function get_query_rows($results, $query, $start = null)
     {
-        $out = array();
+        $out = [];
         if ($start === null) {
             $start = 0;
         }
         $i = 0;
 
         $num_fields = odbc_num_fields($results);
-        $types = array();
-        $names = array();
+        $types = [];
+        $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
             $types[$x] = strtoupper(odbc_field_type($results, $x));
             $names[$x] = strtolower(odbc_field_name($results, $x));
         }
 
         while (odbc_fetch_row($results, $start + $i + 1)) {
-            $newrow = array();
+            $newrow = [];
 
             for ($j = 1; $j <= $num_fields; $j++) {
                 $v = odbc_result($results, $j);
@@ -214,7 +214,7 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
      */
     public function close_connections()
     {
-        $this->cache_db = array();
+        $this->cache_db = [];
     }
 
     /**

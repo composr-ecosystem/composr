@@ -44,10 +44,10 @@ function reprocess_url($url, $operation_base_url)
         $url_bits['host'] = get_base_url_hostname();
     }
     if ($url_bits['host'] == get_base_url_hostname()) {
-        $cookies_relayed = array();
+        $cookies_relayed = [];
         foreach ($_COOKIE as $key => $val) {
             if (is_array($val)) {
-                $cookies_relayed[$key] = array();
+                $cookies_relayed[$key] = [];
                 foreach ($val as $_val) {
                     $cookies_relayed[$key][] = $_val;
                 }
@@ -76,10 +76,10 @@ function reprocess_url($url, $operation_base_url)
     }
     $post_relayed = null;
     if (!empty($_POST)) {
-        $post_relayed = array();
+        $post_relayed = [];
         foreach ($_POST as $key => $val) {
             if (is_array($val)) {
-                $post_relayed[$key] = array();
+                $post_relayed[$key] = [];
                 foreach ($val as $_val) {
                     $post_relayed[$key] = $val;
                 }
@@ -88,7 +88,7 @@ function reprocess_url($url, $operation_base_url)
             }
         }
     }
-    $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language));
+    $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language]);
     $document = $http_result->data;
 
     if (($http_result->download_mime_type != 'text/html') && ($http_result->download_mime_type != 'application/xhtml+xml')) {
@@ -110,7 +110,7 @@ function reprocess_url($url, $operation_base_url)
     }
 
     // Sort out title
-    $matches = array();
+    $matches = [];
     if (preg_match('#<\s*title[^>]*>(.*)<\s*/\s*title\s*>#is', $document, $matches) != 0) {
         $title = str_replace('&bull;', '-', str_replace('&ndash;', '-', str_replace('&mdash;', '-', @html_entity_decode($matches[1], ENT_QUOTES))));
         set_short_title(trim($title));
@@ -118,7 +118,7 @@ function reprocess_url($url, $operation_base_url)
     }
 
     // Better base?
-    $matches = array();
+    $matches = [];
     if (preg_match('#<\s*base\s+href\s*=\s*["\']?(.*)["\']?\s*/?\s*>#is', $document, $matches) != 0) {
         $url_base = trim(@html_entity_decode($matches[1], ENT_QUOTES));
     }
@@ -131,16 +131,16 @@ function reprocess_url($url, $operation_base_url)
     }
 
     // Link filtering, so as to make non-external/non-new-window hyperlinks link through the Composr module
-    $_self_url = build_url(array('page' => '_SELF'), '_SELF', array(), false, true);
+    $_self_url = build_url(['page' => '_SELF'], '_SELF', [], false, true);
     $self_url = $_self_url->evaluate();
-    $expressions = array(
+    $expressions = [
         '(src)="([^"]*)"', '(src)=\'([^\'])*\'',
         '(href)="([^"]*)"', '(href)=\'([^\'])*\'',
         '(data)="([^"]*)"', '(data)=\'([^\']*)\'',
         '(action)="([^"]*)"', '(action)=\'([^\']*)\'',
-    );
+    ];
     foreach ($expressions as $expression) {
-        $all_matches = array();
+        $all_matches = [];
         $count = preg_match_all('#(<[^>]*)' . $expression . '([^>]*>)#i', $body, $all_matches, PREG_OFFSET_CAPTURE);
         for ($i = $count - 1; $i >= 0 ; $i--) {
             $m_to_replace = $all_matches[0][$i][0];
@@ -161,7 +161,7 @@ function reprocess_url($url, $operation_base_url)
 
             if ((strtolower($m_type) == 'action') && (strpos($new_url, '?') !== false)) {
                 if (preg_match('#<form.*\smethod="get".*>#i', $m_to_replace) != 0) {
-                    $extra_get_fields = array();
+                    $extra_get_fields = [];
                     parse_str(preg_replace('#^.*\?#', '', $new_url), $extra_get_fields);
 
                     $_extra_get_fields = '';
@@ -201,12 +201,12 @@ function reprocess_url($url, $operation_base_url)
         }
 
         // Stuff to copy
-        $head_patterns = array('#<\s*script.*<\s*/\s*script\s*>#isU', '#<\s*link[^<>]*>#isU', '#<\s*style.*<\s*/\s*style\s*>#isU');
+        $head_patterns = ['#<\s*script.*<\s*/\s*script\s*>#isU', '#<\s*link[^<>]*>#isU', '#<\s*style.*<\s*/\s*style\s*>#isU'];
         foreach ($head_patterns as $pattern) {
             $num_matches = preg_match_all($pattern, $head, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $x = $matches[0][$i];
-                $match_x = array();
+                $match_x = [];
                 if (preg_match('#\s(src|href)=["\']([^"\']+)["\']#i', $x, $match_x) != 0) {
                     if (url_is_local($match_x[1])) {
                         $url_new = qualify_url($match_x[2], $url_base);

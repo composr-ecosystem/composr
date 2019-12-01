@@ -25,14 +25,14 @@ class Block_main_google_map
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Kamen / Chris Graham / temp1024';
         $info['organisation'] = 'Miscellaneous';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('select', 'filter', 'title', 'region', 'cluster', 'geolocate_user', 'latfield', 'longfield', 'catalogue', 'width', 'height', 'zoom', 'center', 'latitude', 'longitude', 'show_links', 'min_latitude', 'max_latitude', 'min_longitude', 'max_longitude', 'star_entry', 'max_results', 'extra_sources', 'guid');
+        $info['parameters'] = ['select', 'filter', 'title', 'region', 'cluster', 'geolocate_user', 'latfield', 'longfield', 'catalogue', 'width', 'height', 'zoom', 'center', 'latitude', 'longitude', 'show_links', 'min_latitude', 'max_latitude', 'min_longitude', 'max_longitude', 'star_entry', 'max_results', 'extra_sources', 'guid'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_google_map
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         $map
 PHP;
@@ -68,7 +68,7 @@ PHP;
         }
 
         if (!addon_installed('catalogues')) {
-            return do_template('RED_ALERT', array('_GUID' => 'xulrf07ih9l80h4vjwdi4uxjgfg41hor', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('catalogues'))));
+            return do_template('RED_ALERT', ['_GUID' => 'xulrf07ih9l80h4vjwdi4uxjgfg41hor', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('catalogues'))]);
         }
 
         require_code('catalogues');
@@ -127,7 +127,7 @@ PHP;
         $filter = isset($map['filter']) ? $map['filter'] : '';
         $guid = isset($map['guid']) ? $map['guid'] : '';
 
-        $data = array();
+        $data = [];
 
         // Info about our catalogue
         $catalogue_row = null;
@@ -140,7 +140,7 @@ PHP;
 
         $hooks_to_use = explode('|', isset($map['extra_sources']) ? $map['extra_sources'] : '');
         $hooks = find_all_hook_obs('blocks', 'main_google_map', 'Hook_Map_');
-        $entries_to_load = array();
+        $entries_to_load = [];
         foreach ($hooks as $hook => $ob) {
             if (in_array($hook, $hooks_to_use)) {
                 $hook_results = $ob->get_data($map, $max_results, $min_latitude, $max_latitude, $min_longitude, $max_longitude, $latitude_key, $longitude_key, $catalogue_row, $catalogue_name);
@@ -196,9 +196,9 @@ PHP;
             $query = 'SELECT r.*' . $extra_select_sql . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries r' . $join . $privacy_join . ' WHERE ' . $where . $privacy_where;
 
             // Get results
-            $entries_to_show = array();
-            if (($map['select'] == '/') && ($entries_to_load == array())) {
-                $ce_entries = array();
+            $entries_to_show = [];
+            if (($map['select'] == '/') && ($entries_to_load == [])) {
+                $ce_entries = [];
             } else {
                 $ce_entries = $GLOBALS['SITE_DB']->query($query . ' ORDER BY ce_add_date DESC', $max_results);
             }
@@ -212,7 +212,7 @@ PHP;
             if (isset($CAT_FIELDS_CACHE[$catalogue_name])) {
                 $fields = $CAT_FIELDS_CACHE[$catalogue_name];
             } else {
-                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
             }
             $CAT_FIELDS_CACHE[$catalogue_name] = $fields;
             $_latitude_key = 'FIELD_1';
@@ -251,7 +251,7 @@ PHP;
                         $details['_GUID'] = $map['guid'];
                     }
 
-                    $entry_content = do_template('CATALOGUE_googlemap_FIELDMAP_ENTRY_WRAP', $details + array('GIVE_CONTEXT' => false), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
+                    $entry_content = do_template('CATALOGUE_googlemap_FIELDMAP_ENTRY_WRAP', $details + ['GIVE_CONTEXT' => false], null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');
                     $details['ENTRY_CONTENT'] = $entry_content;
 
                     $details['STAR'] = (($entry_row['id'] == $star_entry_int)) ? '1' : '0';
@@ -266,7 +266,7 @@ PHP;
         $uniqid = uniqid('', true);
         $div_id = 'div_' . $catalogue_name . '_' . $uniqid;
 
-        return do_template('BLOCK_MAIN_GOOGLE_MAP', array(
+        return do_template('BLOCK_MAIN_GOOGLE_MAP', [
             '_GUID' => ($guid == '') ? '939dd8fe2397bba0609fba129a8a3bfd' : $guid,
             'BLOCK_ID' => $block_id,
             'TITLE' => $map['title'],
@@ -286,6 +286,6 @@ PHP;
             'LONGITUDE' => $map['longitude'],
             'ZOOM' => $set_zoom,
             'CENTER' => $set_center,
-        ));
+        ]);
     }
 }

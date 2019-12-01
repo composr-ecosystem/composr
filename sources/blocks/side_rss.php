@@ -30,14 +30,14 @@ class Block_side_rss
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'max_entries', 'title', 'copyright', 'ticker');
+        $info['parameters'] = ['param', 'max_entries', 'title', 'copyright', 'ticker'];
         return $info;
     }
 
@@ -48,8 +48,8 @@ class Block_side_rss
      */
     public function caching_environment()
     {
-        $info = array();
-        $info['cache_on'] = array('block_side_rss__cache_on');
+        $info = [];
+        $info['cache_on'] = ['block_side_rss__cache_on'];
         $info['ttl'] = intval(get_option('rss_update_time'));
         return $info;
     }
@@ -68,7 +68,7 @@ class Block_side_rss
         }
 
         if (!addon_installed('news')) {
-            return do_template('RED_ALERT', array('_GUID' => '0cyxfhw3xxpxosehm6togd48cs3bqwka', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))));
+            return do_template('RED_ALERT', ['_GUID' => '0cyxfhw3xxpxosehm6togd48cs3bqwka', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
         }
 
         require_lang('news');
@@ -98,11 +98,11 @@ class Block_side_rss
                     return new Tempcode();
                 }
             }
-            return do_template('INLINE_WIP_MESSAGE', array('_GUID' => 'b1da4a43b092dc991c27952a7ef530d1', 'MESSAGE' => htmlentities($rss->error)));
+            return do_template('INLINE_WIP_MESSAGE', ['_GUID' => 'b1da4a43b092dc991c27952a7ef530d1', 'MESSAGE' => htmlentities($rss->error)]);
         }
 
         // Sorting
-        $items = array();
+        $items = [];
         foreach ($rss->gleamed_items as $item) {
             if (!array_key_exists('clean_add_date', $item)) {
                 $item['clean_add_date'] = time();
@@ -113,7 +113,7 @@ class Block_side_rss
         $items = array_reverse($items);
 
         global $NEWS_CATS_CACHE;
-        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('nc_owner' => null));
+        $NEWS_CATS_CACHE = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['nc_owner' => null]);
         $NEWS_CATS_CACHE = list_to_map('id', $NEWS_CATS_CACHE);
 
         if (!array_key_exists('title', $rss->gleamed_feed)) {
@@ -171,7 +171,7 @@ class Block_side_rss
             $_title = array_key_exists('title', $item) ? $item['title'] : '';
             $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_tempcode($item['clean_add_date']) : (array_key_exists('add_date', $item) ? make_string_tempcode($item['add_date']) : new Tempcode());
 
-            $content->attach(do_template('BLOCK_SIDE_RSS_SUMMARY', array(
+            $content->attach(do_template('BLOCK_SIDE_RSS_SUMMARY', [
                 '_GUID' => '18f6d1ccfe980cc01bbdd2ee178c2410',
                 'TICKER' => $ticker,
                 'FEED_URL' => $url,
@@ -179,17 +179,17 @@ class Block_side_rss
                 'NEWS_TITLE' => $_title,
                 'DATE' => $date,
                 'DATE_RAW' => array_key_exists('clean_add_date', $item) ? strval($item['clean_add_date']) : '', 'SUMMARY' => array_key_exists('news', $item) ? $item['news'] : (array_key_exists('news_article', $item) ? $item['news_article'] : ''),
-            )));
+            ]));
         }
 
-        return do_template('BLOCK_SIDE_RSS', array(
+        return do_template('BLOCK_SIDE_RSS', [
             '_GUID' => 'fe3319e942d75fedb83e4cf80f80e19f',
             'BLOCK_ID' => $block_id,
             'TICKER' => $ticker,
             'FEED_URL' => $url,
             'TITLE' => $rss->gleamed_feed['title'],
             'CONTENT' => $content,
-        ));
+        ]);
     }
 }
 
@@ -201,5 +201,5 @@ class Block_side_rss
  */
 function block_side_rss__cache_on($map)
 {
-    return array(cron_installed(true) ? null : $GLOBALS['FORUM_DRIVER']->is_staff(get_member()), array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10, array_key_exists('title', $map) ? $map['title'] : '', array_key_exists('copyright', $map) ? $map['copyright'] : '', array_key_exists('param', $map) ? $map['param'] : '');
+    return [cron_installed(true) ? null : $GLOBALS['FORUM_DRIVER']->is_staff(get_member()), array_key_exists('max_entries', $map) ? intval($map['max_entries']) : 10, array_key_exists('title', $map) ? $map['title'] : '', array_key_exists('copyright', $map) ? $map['copyright'] : '', array_key_exists('param', $map) ? $map['param'] : ''];
 }

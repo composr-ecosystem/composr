@@ -55,7 +55,7 @@ class Hook_notification_comment_posted extends Hook_Notification
                 }
             }
             if (!$found) {
-                $categories[] = array('id' => $notification_category, 'title' => do_lang('UNKNOWN'));
+                $categories[] = ['id' => $notification_category, 'title' => do_lang('UNKNOWN')];
             }
         }
 
@@ -63,7 +63,7 @@ class Hook_notification_comment_posted extends Hook_Notification
         require_code('feedback');
         $num_done = 0;
         foreach ($categories as $i => $c) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^([^_]*)_(.*)$#', preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $c['id']), $matches) != 0) {
                 $details = get_details_behind_feedback_code($matches[1], $matches[2]);
                 $new_title = $details[0];
@@ -115,8 +115,8 @@ class Hook_notification_comment_posted extends Hook_Notification
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['comment_posted'] = array(do_lang('MESSAGES'), do_lang('NOTIFICATION_TYPE_comment_posted'));
+        $list = [];
+        $list['comment_posted'] = [do_lang('MESSAGES'), do_lang('NOTIFICATION_TYPE_comment_posted')];
         return $list;
     }
 
@@ -135,13 +135,13 @@ class Hook_notification_comment_posted extends Hook_Notification
     {
         list($_members, $maybe_more) = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         if ($category !== null) { // Check permissions for content
-            $matches = array();
+            $matches = [];
             if (preg_match('#^catalogues__(.*)_(\d+)$#', $category, $matches) != 0) {
-                list($type_id, $id) = array($matches[1], $matches[2]);
+                list($type_id, $id) = [$matches[1], $matches[2]];
             } else {
                 list($type_id, $id) = explode('_', $category, 2);
             }
-            $members = array();
+            $members = [];
             foreach ($_members as $member_id => $setting) {
                 require_code('content');
                 if (may_view_content_behind($member_id, $type_id, $id, 'feedback_type_code')) {
@@ -152,6 +152,6 @@ class Hook_notification_comment_posted extends Hook_Notification
             $members = $_members;
         }
 
-        return array($members, $maybe_more);
+        return [$members, $maybe_more];
     }
 }

@@ -31,7 +31,7 @@ function email_spam_check($mime_email)
     $spam_report = null;
     $spam_score = null;
 
-    $_spam_test = cms_http_request('http://spamcheck.postmarkapp.com/filter', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'raw_post' => true, 'post_params' => array(json_encode(array('email' => $mime_email, 'options' => 'long'))), 'raw_content_type' => 'application/json'));
+    $_spam_test = cms_http_request('http://spamcheck.postmarkapp.com/filter', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'raw_post' => true, 'post_params' => [json_encode(['email' => $mime_email, 'options' => 'long'])], 'raw_content_type' => 'application/json']);
     if ($_spam_test->data != '') {
         $spam_test = @json_decode($_spam_test->data, true);
         if (($spam_test !== null) && (isset($spam_test['success'])) && (isset($spam_test['report'])) && (isset($spam_test['score']))) {
@@ -42,7 +42,7 @@ function email_spam_check($mime_email)
         }
     }
 
-    return array($spam_report, $spam_score, $_spam_test->data, $_spam_test->message);
+    return [$spam_report, $spam_score, $_spam_test->data, $_spam_test->message];
 }
 
 
@@ -137,7 +137,7 @@ function find_mail_folders($host, $port, $type, $username, $password)
     }
     $_folders = imap_list($mbox, $server_spec, '*');
 
-    $folders = array();
+    $folders = [];
     foreach ($_folders as $folder) {
         $folder = preg_replace('#\{[^{}]+\}#', '', $folder);
         $label = preg_replace('#@.*$#', '', $folder);
@@ -207,7 +207,7 @@ function is_mail_bounced($email, $host = null, $port = null, $type = null, $fold
     }
     update_bounce_storage($host, $port, $type, $folder, $username, $password, $update_since);
 
-    return $GLOBALS['SITE_DB']->query_select_value_if_there('email_bounces', 'MAX(b_time)', array('b_email_address' => $email));
+    return $GLOBALS['SITE_DB']->query_select_value_if_there('email_bounces', 'MAX(b_time)', ['b_email_address' => $email]);
 }
 
 /**
@@ -241,18 +241,18 @@ function update_bounce_storage($host, $port, $type, $folder, $username, $passwor
     foreach ($bounces as $email => $_details) {
         list($subject, $is_bounce, $time, $body) = $_details;
 
-        $GLOBALS['SITE_DB']->query_delete('email_bounces', array(
+        $GLOBALS['SITE_DB']->query_delete('email_bounces', [
             'b_email_address' => $email,
             'b_time' => $time,
             'b_subject' => $subject,
             'b_body' => $body,
-        ), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('email_bounces', array(
+        ], '', 1);
+        $GLOBALS['SITE_DB']->query_insert('email_bounces', [
             'b_email_address' => $email,
             'b_time' => $time,
             'b_subject' => $subject,
             'b_body' => $body,
-        ));
+        ]);
     }
 }
 
@@ -285,10 +285,10 @@ function find_mail_bounces($host, $port, $type, $folder, $username, $password, $
 
     update_bounce_storage($host, $port, $type, $folder, $username, $password, $_since);
 
-    $_ret = $GLOBALS['SITE_DB']->query_select('email_bounces', array('b_email_address', 'b_subject', 'b_time', 'b_body'), array(), 'ORDER BY b_time');
-    $ret = array();
+    $_ret = $GLOBALS['SITE_DB']->query_select('email_bounces', ['b_email_address', 'b_subject', 'b_time', 'b_body'], [], 'ORDER BY b_time');
+    $ret = [];
     foreach ($_ret as $r) {
-        $ret[$r['b_email_address']] = array($r['b_subject'], true, $r['b_time'], $r['b_body']);
+        $ret[$r['b_email_address']] = [$r['b_subject'], true, $r['b_time'], $r['b_body']];
     }
     return $ret;
 }
@@ -327,7 +327,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
         warn_exit(do_lang_tempcode('IMAP_ERROR', $error), false, true);
     }
 
-    $out = array();
+    $out = [];
 
     $filter = 'UNDELETED';
     if ($since !== null) {
@@ -335,7 +335,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
     }
     $messages = imap_search($mbox, $filter);
     if ($messages === false) {
-        $messages = array();
+        $messages = [];
     }
     sort($messages); // Date order, approximately
     $num = 0;
@@ -372,16 +372,16 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
             if (strpos($header, 'X-Failed-Recipients') !== false) { // Best way
                 $overview = imap_headerinfo($mbox, $val);
 
-                $matches2 = array();
+                $matches2 = [];
                 preg_match('#X-Failed-Recipients:\s*([^\"\n<>@]+@[^\n<>@]+)#', $header, $matches2);
                 $email = str_replace('@localhost.localdomain', '', $matches2[1]);
                 if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
-                    $out[$email] = array($overview->subject, $is_bounce, strtotime($overview->date), $body);
+                    $out[$email] = [$overview->subject, $is_bounce, strtotime($overview->date), $body];
                 }
             } else {
                 $overview = imap_headerinfo($mbox, $val);
 
-                $matches = array();
+                $matches = [];
 
                 // Find e-mail addresses in body
                 // (message/content IDs look similar, avoid those, also avoid routine headers)
@@ -397,7 +397,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
                     $email = str_replace('@localhost.localdomain', '', $matches[1][$i]);
 
                     if (($email != get_option('staff_address')) && ($email != get_option('website_email')) && (is_email_address($email)) && ((!isset($out[$email])) || (!$out[$email][1]))) {
-                        $out[$email] = array($overview->subject, $is_bounce, strtotime($overview->date), $body);
+                        $out[$email] = [$overview->subject, $is_bounce, strtotime($overview->date), $body];
                     }
                 }
             }
@@ -420,7 +420,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = array())
+    public function __construct($advanced_parameters = [])
     {
         $this->line_term = "\n";
 
@@ -480,7 +480,7 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
             }
         }
 
-        return array($worked, $error);
+        return [$worked, $error];
     }
 
     /**
@@ -495,12 +495,12 @@ class Mail_dispatcher_manualproc extends Mail_dispatcher_base
      */
     protected function manualproc_mail($to, $subject, $message, $additional_headers, $additional_flags = '')
     {
-        $descriptorspec = array(
-            0 => array('pipe', 'r'), // stdin is a pipe that the child will read from
-            1 => array('pipe', 'w'), // stdout is a pipe that the child will write to
-            2 => array('pipe', 'w'), // stderr is a file to write to
-        );
-        $pipes = array();
+        $descriptorspec = [
+            0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
+            1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
+            2 => ['pipe', 'w'], // stderr is a file to write to
+        ];
+        $pipes = [];
         if (substr($additional_flags, 0, 1) != ' ') {
             $additional_flags = ' ' . $additional_flags;
         }

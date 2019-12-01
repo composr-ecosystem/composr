@@ -30,7 +30,7 @@ class Hook_config_cc_address
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CC_ADDRESS',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_cc_address
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

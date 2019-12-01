@@ -80,7 +80,7 @@ class Hook_translation_bing_translator
             return null;
         }
 
-        return array($_from, $_to);
+        return [$_from, $_to];
     }
 
     /**
@@ -128,11 +128,11 @@ class Hook_translation_bing_translator
         }
 
 
-        $request = array(
-            array(
+        $request = [
+            [
                 'Text' => $text,
-            )
-        );
+            ]
+        ];
 
         $result = $this->_bing_translator_api_request($url, $request, $errormsg);
 
@@ -177,7 +177,7 @@ class Hook_translation_bing_translator
     protected function get_bing_lang_code($in, &$errormsg = null)
     {
         // Pre-cleanup
-        $remap = array('ZH' => 'zh-Hant');
+        $remap = ['ZH' => 'zh-Hant'];
         $ret = str_replace(array_keys($remap), array_values($remap), $in);
         $ret = str_replace('_', '-', strtolower($in));
 
@@ -187,7 +187,7 @@ class Hook_translation_bing_translator
 
         require_code('http');
         $errormsg = null;
-        $result = unserialize(cache_and_carry(array($this, '_bing_translator_api_request'), array($url, null, &$errormsg)));
+        $result = unserialize(cache_and_carry([$this, '_bing_translator_api_request'], [$url, null, &$errormsg]));
 
         if (isset($result['translation'][$ret])) {
             return $ret;
@@ -218,17 +218,17 @@ class Hook_translation_bing_translator
             $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
         }
 
-        $options = array(
+        $options = [
             'convert_to_internal_encoding' => true,
             'ignore_http_status' => true,
             'trigger_error' => false,
-            'post_params' => ($_request === null) ? null : array($_request),
+            'post_params' => ($_request === null) ? null : [$_request],
             'timeout' => 0.5,
             'raw_post' => ($request !== null),
             'http_verb' => ($request === null) ? 'GET' : 'POST',
             'raw_content_type' => 'application/json',
-            'extra_headers' => array('Ocp-Apim-Subscription-Key' => $key),
-        );
+            'extra_headers' => ['Ocp-Apim-Subscription-Key' => $key],
+        ];
         $_result = http_get_contents($url, $options);
 
         $result = @json_decode($_result, true);

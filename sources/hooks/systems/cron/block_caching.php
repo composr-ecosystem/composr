@@ -32,11 +32,11 @@ class Hook_cron_block_caching
      */
     public function info($last_run, $calculate_num_queued)
     {
-        return array(
+        return [
             'label' => 'Block cache population',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)') : 0,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**
@@ -54,11 +54,11 @@ class Hook_cron_block_caching
             foreach (array_keys($langs) as $lang) {
                 foreach (array_keys($themes) as $theme) {
                     if (($theme == 'default') || (has_category_access(get_member(), 'theme', $theme))) {
-                        $where = array('c_theme' => $theme, 'c_lang' => $lang);
+                        $where = ['c_theme' => $theme, 'c_lang' => $lang];
                         $count = $GLOBALS['SITE_DB']->query_select_value('cron_caching_requests', 'COUNT(*)', $where);
                         if ($count > 0) {
                             $url = get_base_url() . '/data/cron_bridge.php?limit_hook=block_caching&keep_lang=' . urlencode($lang) . '&keep_theme=' . urlencode($theme);
-                            http_get_contents($url, array('trigger_error' => false));
+                            http_get_contents($url, ['trigger_error' => false]);
                         }
                     }
                 }
@@ -66,14 +66,14 @@ class Hook_cron_block_caching
 
             // Force re-loading of values that we use to mark progress (as above calls probably resulted in changes happening)
             global $VALUE_OPTIONS_CACHE;
-            $VALUE_OPTIONS_CACHE = $GLOBALS['SITE_DB']->query_select('values', array('*'));
+            $VALUE_OPTIONS_CACHE = $GLOBALS['SITE_DB']->query_select('values', ['*']);
             $VALUE_OPTIONS_CACHE = list_to_map('the_name', $VALUE_OPTIONS_CACHE);
 
             return;
         }
 
-        $where = array('c_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'c_lang' => user_lang());
-        $requests = $GLOBALS['SITE_DB']->query_select('cron_caching_requests', array('*'), $where);
+        $where = ['c_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'c_lang' => user_lang()];
+        $requests = $GLOBALS['SITE_DB']->query_select('cron_caching_requests', ['*'], $where);
         foreach ($requests as $request) {
             push_query_limiting(false);
 
@@ -93,8 +93,8 @@ class Hook_cron_block_caching
                 $backup_required_all_lang = $REQUIRED_ALL_LANG;
                 get_users_timezone();
                 $backup_timezone = $TIMEZONE_MEMBER_CACHE[get_member()];
-                $LANGS_REQUESTED = array();
-                $REQUIRED_ALL_LANG = array();
+                $LANGS_REQUESTED = [];
+                $REQUIRED_ALL_LANG = [];
                 push_output_state(false, true);
                 $cache = $object->run($map);
                 $TIMEZONE_MEMBER_CACHE[get_member()] = $backup_timezone;
@@ -103,7 +103,7 @@ class Hook_cron_block_caching
                     if (method_exists($object, 'caching_environment')) {
                         $info = $object->caching_environment();
                     } else {
-                        $info = array();
+                        $info = [];
                         $info['cache_on'] = <<<'PHP'
                         $map
 PHP;
@@ -112,7 +112,7 @@ PHP;
                     }
                     $ttl = $info['ttl'];
 
-                    $_cache_identifier = array();
+                    $_cache_identifier = [];
                     $cache_on = $info['cache_on'];
                     if (is_array($cache_on)) {
                         $_cache_identifier = call_user_func($cache_on[0], $map);

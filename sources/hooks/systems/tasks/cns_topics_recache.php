@@ -39,7 +39,7 @@ class Hook_task_cns_topics_recache
         // Topics and posts
         $start = 0;
         do {
-            $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id', 't_forum_id'), array(), '', 500, $start);
+            $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], [], '', 500, $start);
             foreach ($topics as $i => $topic) {
                 task_log($this, 'Recaching topic', $i, count($topics));
 
@@ -50,7 +50,7 @@ class Hook_task_cns_topics_recache
                 if ($topic['t_forum_id'] === null) {
                     $topic['t_forum_id'] = null;
                 }
-                $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_cache_forum_id' => ($topic['t_forum_id'] === null) ? null : $topic['t_forum_id']), array('p_topic_id' => ($topic['id'] === null) ? null : $topic['id']));
+                $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_cache_forum_id' => ($topic['t_forum_id'] === null) ? null : $topic['t_forum_id']], ['p_topic_id' => ($topic['id'] === null) ? null : $topic['id']]);
             }
 
             $start += 500;
@@ -60,17 +60,17 @@ class Hook_task_cns_topics_recache
         if (addon_installed('polls')) {
             $start = 0;
             do {
-                $polls = $GLOBALS['FORUM_DB']->query_select('f_polls', array('id'), array(), '', 500, $start);
+                $polls = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], [], '', 500, $start);
                 foreach ($polls as $i => $poll) {
                     task_log($this, 'Recaching poll', $i, count($polls));
 
-                    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', array('pv_poll_id' => $poll['id']));
-                    $GLOBALS['FORUM_DB']->query_update('f_polls', array('po_cache_total_votes' => $total_votes), array('id' => $poll['id']), '', 1);
+                    $total_votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_poll_id' => $poll['id']]);
+                    $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_cache_total_votes' => $total_votes], ['id' => $poll['id']], '', 1);
 
-                    $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('id'), array('pa_poll_id' => $poll['id']));
+                    $answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $poll['id']]);
                     foreach ($answers as $answer) {
-                        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', array('pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll['id']));
-                        $GLOBALS['FORUM_DB']->query_update('f_poll_answers', array('pa_cache_num_votes' => $votes), array('id' => $answer['id']), '', 1);
+                        $votes = $GLOBALS['FORUM_DB']->query_select_value('f_poll_votes', 'COUNT(*)', ['pv_answer_id' => $answer['id'], 'pv_poll_id' => $poll['id']]);
+                        $GLOBALS['FORUM_DB']->query_update('f_poll_answers', ['pa_cache_num_votes' => $votes], ['id' => $answer['id']], '', 1);
                     }
                 }
 

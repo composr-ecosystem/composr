@@ -30,7 +30,7 @@ class Hook_config_autoban
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_AUTOBAN',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_autoban
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

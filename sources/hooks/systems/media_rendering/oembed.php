@@ -91,7 +91,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
      */
     public function get_video_thumbnail($src_url)
     {
-        $data = $this->get_oembed_data_result($src_url, array());
+        $data = $this->get_oembed_data_result($src_url, []);
         if (($data !== null) && (isset($data['thumbnail_url']))) {
             return $data['thumbnail_url'];
         }
@@ -138,14 +138,14 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
         // Call endpoint
         require_code('http');
-        $result = cache_and_carry('cms_http_request', array($endpoint, array('trigger_error' => false, 'timeout' => 2.0)));
+        $result = cache_and_carry('cms_http_request', [$endpoint, ['trigger_error' => false, 'timeout' => 2.0]]);
         if ($result === false || $result[4] != '200') {
             return null;
         }
 
         // Handle
         require_code('character_sets');
-        $data = array();
+        $data = [];
         switch ($result[1]) {
             case 'text/xml':
             case 'text/xml+oembed':
@@ -167,7 +167,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 if ($_data === null) {
                     return null;
                 }
-                $data = array();
+                $data = [];
                 foreach ($_data as $key => $val) { // It's currently an object, we want an array
                     if ($val === null) {
                         continue;
@@ -242,7 +242,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
         // See if we can improve things
         if ($data['type'] == 'photo') {
-            $matches = array();
+            $matches = [];
 
             // Flickr
             if (preg_match('#^(https?://[^/]+\.staticflickr\.com/.*_)[nm](\.jpg)$#', $data['url'], $matches) != 0) {
@@ -309,9 +309,9 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
         switch ($data['type']) {
             case 'photo':
-                $map = array(
+                $map = [
                     'click_url' => $url,
-                );
+                ];
                 if (isset($data['width'])) {
                     unset($attributes['width']);
                     $map['width'] = $data['width'];
@@ -347,14 +347,14 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
 
             case 'video':
             case 'rich':
-                return do_template('MEDIA_WEBPAGE_OEMBED_' . strtoupper($data['type']), array(
+                return do_template('MEDIA_WEBPAGE_OEMBED_' . strtoupper($data['type']), [
                     'TITLE' => array_key_exists('title', $data) ? $data['title'] : '',
                     'HTML' => $data['html'],
                     'WIDTH' => array_key_exists('width', $data) ? $data['width'] : '',
                     'HEIGHT' => array_key_exists('height', $data) ? $data['height'] : '',
                     'URL' => $url,
                     'REL' => $rel,
-                ));
+                ]);
 
             case 'link':
                 if (!array_key_exists('thumbnail_url', $data)) {
@@ -362,7 +362,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 }
 
                 // embed.ly and Wordpress may show thumbnail details within a "link" type
-                return do_template('MEDIA_WEBPAGE_SEMANTIC', array(
+                return do_template('MEDIA_WEBPAGE_SEMANTIC', [
                     '_GUID' => '58ab7a83f5671bcfd9587ca8d589441c',
                     'TITLE' => array_key_exists('title', $attributes) ? $attributes['title'] : '', // not official, but embed.ly has it
                     'META_TITLE' => array_key_exists('title', $data) ? $data['title'] : '', // not official, but embed.ly has it
@@ -372,7 +372,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                     'WIDTH' => ((array_key_exists('thumbnail_width', $attributes)) && ($attributes['thumbnail_width'] != '')) ? $attributes['thumbnail_width'] : get_option('thumb_width'),
                     'HEIGHT' => ((array_key_exists('thumbnail_height', $attributes)) && ($attributes['thumbnail_height'] != '')) ? $attributes['thumbnail_height'] : get_option('thumb_width'),
                     'REL' => $rel,
-                ));
+                ]);
         }
 
         // Should not get here
@@ -406,7 +406,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
         $comcode = '';
         $url_tempcode = new Tempcode();
         $url_tempcode->attach($url);
-        return _do_tags_comcode('url', array('param' => $link_captions_title), $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
+        return _do_tags_comcode('url', ['param' => $link_captions_title], $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
     }
 
     /**

@@ -27,11 +27,11 @@ class Hook_notification_ecom_product_request_community_billboard extends Hook_no
     public function list_handled_codes()
     {
         if (!addon_installed('community_billboard')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ecom_request_community_billboard'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('community_billboard:NOTIFICATION_TYPE_ecom_request_community_billboard'));
+        $list = [];
+        $list['ecom_request_community_billboard'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('community_billboard:NOTIFICATION_TYPE_ecom_request_community_billboard')];
         return $list;
     }
 }

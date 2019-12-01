@@ -26,9 +26,9 @@ class Hook_sw_iotds
     public function get_blocks()
     {
         if (!addon_installed('iotds')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_iotd' => array('YES_CELL', 'YES_CELL')), array());
+        return [['main_iotd' => ['YES_CELL', 'YES_CELL']], []];
     }
 }

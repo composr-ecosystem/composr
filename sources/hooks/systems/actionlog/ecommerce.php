@@ -31,106 +31,106 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
         require_lang('ecommerce');
 
-        return array(
-            'ADD_USERGROUP_SUBSCRIPTION' => array(
+        return [
+            'ADD_USERGROUP_SUBSCRIPTION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'usergroup_subscription',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_USERGROUP_SUBSCRIPTION' => '_SEARCH:admin_ecommerce:_edit:{ID}',
                     'ADD_USERGROUP_SUBSCRIPTION' => '_SEARCH:admin_ecommerce:add',
-                ),
-            ),
-            'EDIT_USERGROUP_SUBSCRIPTION' => array(
+                ],
+            ],
+            'EDIT_USERGROUP_SUBSCRIPTION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'usergroup_subscription',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_USERGROUP_SUBSCRIPTION' => '_SEARCH:admin_ecommerce:_edit:{ID}',
                     'ADD_USERGROUP_SUBSCRIPTION' => '_SEARCH:admin_ecommerce:add',
-                ),
-            ),
-            'DELETE_USERGROUP_SUBSCRIPTION' => array(
+                ],
+            ],
+            'DELETE_USERGROUP_SUBSCRIPTION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'usergroup_subscription',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_USERGROUP_SUBSCRIPTION' => '_SEARCH:admin_ecommerce:add',
-                ),
-            ),
-            'CREATE_INVOICE' => array(
+                ],
+            ],
+            'CREATE_INVOICE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{MEMBER_ID}'),
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{MEMBER_ID}'],
                     'CREATE_INVOICE' => '_SEARCH:admin_invoices:add',
-                ),
-            ),
-            'DELETE_INVOICE' => array(
+                ],
+            ],
+            'DELETE_INVOICE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CREATE_INVOICE' => '_SEARCH:admin_invoices:add',
-                ),
-            ),
-            'ECOM_PRODUCTS_ADD_MAIL_FORWARDER' => array(
+                ],
+            ],
+            'ECOM_PRODUCTS_ADD_MAIL_FORWARDER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
-                ),
-            ),
-            'ECOM_PRODUCTS_ADD_MAIL_POP3' => array(
+                ],
+            ],
+            'ECOM_PRODUCTS_ADD_MAIL_POP3' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
-                ),
-            ),
-            'ECOM_PRODUCTS_AMEND_CUSTOM_PERMISSIONS' => array(
+                ],
+            ],
+            'ECOM_PRODUCTS_AMEND_CUSTOM_PERMISSIONS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
-                ),
-            ),
-            'ECOM_PRODUCTS_AMEND_CUSTOM_PRODUCTS' => array(
+                ],
+            ],
+            'ECOM_PRODUCTS_AMEND_CUSTOM_PRODUCTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
-                ),
-            ),
-            'ECOM_PRODUCT_CHANGED_PRICES' => array(
+                ],
+            ],
+            'ECOM_PRODUCT_CHANGED_PRICES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ECOM_PRODUCTS_MANAGE_INVENTORY' => '_SEARCH:admin_pointstore:p',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -145,7 +145,7 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
     {
         switch ($actionlog_row['the_type']) {
             case 'CREATE_INVOICE':
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', array('id' => intval($actionlog_row['param_a'])));
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($actionlog_row['param_a'])]);
                 if ($member_id !== null) {
                     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
                     if ($username === null) {
@@ -174,11 +174,11 @@ class Hook_actionlog_ecommerce extends Hook_actionlog
     {
         switch ($actionlog_row['the_type']) {
             case 'CREATE_INVOICE':
-                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', array('id' => intval($identifier)));
+                $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($identifier)]);
                 if ($member_id !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'MEMBER_ID' => strval($member_id),
-                    );
+                    ];
                 }
                 break;
         }

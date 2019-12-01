@@ -31,7 +31,7 @@ class Hook_addon_registry_ssl
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_ssl
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_security',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_ssl
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_ssl
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/security/ssl.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/ssl.svg',
             'sources/hooks/systems/addon_registry/ssl.php',
@@ -107,7 +107,7 @@ class Hook_addon_registry_ssl
             'lang/EN/ssl.ini',
             'sources/hooks/systems/commandr_fs_extended_config/https_settings.php',
             'sources/hooks/systems/actionlog/ssl.php',
-        );
+        ];
     }
 
     /**
@@ -117,9 +117,9 @@ class Hook_addon_registry_ssl
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/SSL_CONFIGURATION_SCREEN.tpl' => 'administrative__ssl_configuration_screen',
-        );
+        ];
     }
 
     /**
@@ -131,25 +131,25 @@ class Hook_addon_registry_ssl
      */
     public function tpl_preview__administrative__ssl_configuration_screen()
     {
-        $entries = array();
+        $entries = [];
         $k = 0;
         foreach (placeholder_array() as $_k => $v) {
             foreach (placeholder_array() as $k => $v2) {
                 $k++;
-                $entries[] = array(
+                $entries[] = [
                     'TICKED' => lorem_word(),
                     'PAGE' => $v,
                     'ZONE' => $v2,
-                );
+                ];
             }
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('SSL_CONFIGURATION_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SSL_CONFIGURATION_SCREEN', [
                 'URL' => placeholder_url(),
                 'TITLE' => lorem_title(),
                 'ENTRIES' => $entries,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

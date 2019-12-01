@@ -26,7 +26,7 @@
 function init__hooks__modules__admin_import__vb3()
 {
     global $TOPIC_FORUM_CACHE;
-    $TOPIC_FORUM_CACHE = array();
+    $TOPIC_FORUM_CACHE = [];
 
     global $STRICT_FILE;
     $STRICT_FILE = false; // Disable this for a quicker import that is quite liable to go wrong if you don't have the files in the right place
@@ -47,11 +47,11 @@ class Hook_import_vb3
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'vBulletin 3.0.x / 3.5.x';
         $info['prefix'] = 'vb3_';
-        $info['import'] = array(
+        $info['import'] = [
             'cns_groups',
             'custom_comcode',
             'cns_members',
@@ -70,23 +70,23 @@ class Hook_import_vb3
             'config',
             'calendar',
             //'logs',
-        );
-        $info['dependencies'] = array(
+        ];
+        $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
-           'cns_members' => array('cns_groups'),
-           'cns_member_files' => array('cns_members'),
-           'cns_forums' => array('cns_forum_groupings', 'cns_members', 'cns_groups'),
-           'cns_topics' => array('cns_forums', 'cns_members'),
-           'cns_polls_and_votes' => array('cns_topics', 'cns_members'),
-           'cns_posts' => array('custom_comcode', 'cns_topics', 'cns_members'),
-           'cns_post_files' => array('cns_posts'),
-           'notifications' => array('cns_topics', 'cns_members'),
-           'cns_private_topics' => array('custom_comcode', 'cns_members'),
-           'points_gifts_and_charges' => array('cns_members'),
-           'logs' => array('cns_members', 'cns_posts'),
-           'calendar' => array('cns_members'),
-        );
-        $_cleanup_url = build_url(array('page' => 'admin_cleanup'), get_module_zone('admin_cleanup'));
+           'cns_members' => ['cns_groups'],
+           'cns_member_files' => ['cns_members'],
+           'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups'],
+           'cns_topics' => ['cns_forums', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_posts' => ['custom_comcode', 'cns_topics', 'cns_members'],
+           'cns_post_files' => ['cns_posts'],
+           'notifications' => ['cns_topics', 'cns_members'],
+           'cns_private_topics' => ['custom_comcode', 'cns_members'],
+           'points_gifts_and_charges' => ['cns_members'],
+           'logs' => ['cns_members', 'cns_posts'],
+           'calendar' => ['cns_members'],
+        ];
+        $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
         $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
 
@@ -106,7 +106,7 @@ class Hook_import_vb3
         $dbpassword = '';
         $tableprefix = '';
         $servername = '';
-        $config = array();
+        $config = [];
         if (!file_exists($file_base . '/includes/config.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('includes/config.php')));
         }
@@ -126,7 +126,7 @@ class Hook_import_vb3
             $sql_host = $config['MasterServer']['servername'];
         }
 
-        return array($sql_database, $sql_user, $sql_pass, $sql_tbl_prefix, $sql_host);
+        return [$sql_database, $sql_user, $sql_pass, $sql_tbl_prefix, $sql_host];
     }
 
     /**
@@ -138,7 +138,7 @@ class Hook_import_vb3
      */
     public function import_config($db, $table_prefix, $file_base)
     {
-        $config_remapping = array(
+        $config_remapping = [
             'bbactive' => '!site_closed',
             'bbclosedreason' => 'closed',
             'webmasteremail' => 'staff_address',
@@ -151,10 +151,10 @@ class Hook_import_vb3
             'regimagecheck' => 'use_captchas',
             'moderatenewmembers' => 'require_new_member_validation',
             'timeoffset' => 'timezone',
-        );
+        ];
 
-        $rows = $db->query_select('setting', array('*'));
-        $PROBED_FORUM_CONFIG = array();
+        $rows = $db->query_select('setting', ['*']);
+        $PROBED_FORUM_CONFIG = [];
         foreach ($rows as $row) {
             if ($row['value'] == '') {
                 $row['value'] = $row['defaultvalue'];
@@ -173,13 +173,13 @@ class Hook_import_vb3
 
         // Now some usergroup options
         $groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list();
-        $page_remap = array(
+        $page_remap = [
             'allowregistration' => 'join',
             'enablesearches' => 'search',
             'enablememberlist' => 'members',
-        );
+        ];
         foreach ($page_remap as $to) {
-            $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $to, 'zone_name' => get_module_zone($to)));
+            $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $to, 'zone_name' => get_module_zone($to)]);
         }
         foreach (array_keys($groups) as $id) {
             if ($GLOBALS['CNS_DRIVER']->is_super_admin($id)) {
@@ -188,11 +188,11 @@ class Hook_import_vb3
 
             foreach ($page_remap as $from => $to) {
                 if ($PROBED_FORUM_CONFIG[$from] == '1') {
-                    $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $to, 'zone_name' => get_module_zone($to), 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $to, 'zone_name' => get_module_zone($to), 'group_id' => $id]);
                 }
             }
 
-            $map = array();
+            $map = [];
             $map['g_max_attachments_per_post'] = $PROBED_FORUM_CONFIG['attachlimit'];
             if ($PROBED_FORUM_CONFIG['postmaxchars'] > 0) {
                 $map['g_max_post_length_comcode'] = $PROBED_FORUM_CONFIG['postmaxchars'];
@@ -206,7 +206,7 @@ class Hook_import_vb3
                     $map['g_max_sig_length_comcode'] = 1000000;
                 }
             }
-            $GLOBALS['FORUM_DB']->query_update('f_groups', $map, array('id' => $id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_groups', $map, ['id' => $id], '', 1);
 
             set_privilege($id, 'use_quick_reply', $PROBED_FORUM_CONFIG['quickreply']);
             set_privilege($id, 'comcode_dangerous', $PROBED_FORUM_CONFIG['allowhtml']);
@@ -222,8 +222,8 @@ class Hook_import_vb3
      */
     public function import_cns_groups($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('setting', array('*'));
-        $PROBED_FORUM_CONFIG = array();
+        $rows = $db->query_select('setting', ['*']);
+        $PROBED_FORUM_CONFIG = [];
         foreach ($rows as $row) {
             $key = $row['varname'];
             $val = $row['value'];
@@ -233,8 +233,8 @@ class Hook_import_vb3
             $PROBED_FORUM_CONFIG[$key] = $val;
         }
 
-        $rows = $db->query_select('usergroup g LEFT JOIN ' . $table_prefix . 'usergroupleader l ON g.usergroupid=l.usergroupid LEFT JOIN ' . $table_prefix . 'userpromotion p ON g.usergroupid=p.usergroupid', array('*', 'g.usergroupid AS usergroupid'));
-        $remap_id = array();
+        $rows = $db->query_select('usergroup g LEFT JOIN ' . $table_prefix . 'usergroupleader l ON g.usergroupid=l.usergroupid LEFT JOIN ' . $table_prefix . 'userpromotion p ON g.usergroupid=p.usergroupid', ['*', 'g.usergroupid AS usergroupid']);
+        $remap_id = [];
         foreach ($rows as $row) {
             if (import_check_if_imported('group', strval($row['usergroupid']))) {
                 continue;
@@ -250,32 +250,32 @@ class Hook_import_vb3
             $is_super_admin = (($row['adminpermissions'] & 2) != 0) ? 1 : 0;
             $is_super_moderator = (($row['adminpermissions'] & 1) != 0) ? 1 : 0;
 
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']]);
             if ($id_new === null) {
                 $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, $row['usertitle'], '', $row_promotion_target, $row['reputation'], $row_group_leader, 5, 0, 5, $row['attachlimit'], $row['avatarmaxwidth'], $row['avatarmaxheight'], $PROBED_FORUM_CONFIG['postmaxchars'], array_key_exists('sigmax', $PROBED_FORUM_CONFIG) ? $PROBED_FORUM_CONFIG['sigmax'] : 700);
             }
 
             // Zone permissions
             if (!(($row['forumpermissions'] & 1) != 0) || (($row['genericoptions'] & 32) != 0)) {
-                $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('group_id' => $id_new));
+                $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['group_id' => $id_new]);
             }
 
             // Page permissions
-            $denies = array();
+            $denies = [];
             if (($row['forumpermissions'] & 4) == 0) {
-                $denies[] = array('search', get_module_zone('search'));
+                $denies[] = ['search', get_module_zone('search')];
             }
             if (($row['forumpermissions'] & 8) == 0) {
-                $denies[] = array('contact_member', get_module_zone('contact_member'));
+                $denies[] = ['contact_member', get_module_zone('contact_member')];
             }
             if (($row['genericpermissions'] & 1) == 0) {
-                $denies[] = array('members', get_module_zone('members'));
+                $denies[] = ['members', get_module_zone('members')];
             }
             foreach ($denies as $deny) {
                 list($page, $zone) = $deny;
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_page_access', 'group_id', array('group_id' => $id_new, 'zone_name' => $zone, 'page_name' => $page));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_page_access', 'group_id', ['group_id' => $id_new, 'zone_name' => $zone, 'page_name' => $page]);
                 if ($test === null) {
-                    $GLOBALS['SITE_DB']->query_insert('group_page_access', array('group_id' => $id_new, 'zone_name' => $zone, 'page_name' => $page));
+                    $GLOBALS['SITE_DB']->query_insert('group_page_access', ['group_id' => $id_new, 'zone_name' => $zone, 'page_name' => $page]);
                 }
             }
 
@@ -298,7 +298,7 @@ class Hook_import_vb3
         foreach ($rows as $row) {
             if ($row['joinusergroupid'] !== null) {
                 $row_promotion_target = $remap_id[$row['joinusergroupid']];
-                $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_promotion_target' => $row_promotion_target), array('id' => $remap_id[$row['usergroupid']]), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $row_promotion_target], ['id' => $remap_id[$row['usergroupid']]], '', 1);
             }
         }
     }
@@ -313,9 +313,9 @@ class Hook_import_vb3
     public function import_cns_members($db, $table_prefix, $file_base)
     {
         $row_start = get_param_integer('JUMPSTART_import_cns_members', 0);
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query('user u LEFT JOIN ' . $table_prefix . 'administrator a ON u.userid=a.userid LEFT JOIN ' . $table_prefix . 'usertextfield t ON u.userid=t.userid', array('*'), 'ORDER BY u.userid', 200, $row_start);
+            $rows = $db->query('user u LEFT JOIN ' . $table_prefix . 'administrator a ON u.userid=a.userid LEFT JOIN ' . $table_prefix . 'usertextfield t ON u.userid=t.userid', ['*'], 'ORDER BY u.userid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('member', strval($row['userid']))) {
                     continue;
@@ -329,7 +329,7 @@ class Hook_import_vb3
 
                 $language = '';
                 if (!empty($row['languageid'])) {
-                    $rows2 = $db->query_select('language', array('languagecode'), array('languageid' => $row['languageid']));
+                    $rows2 = $db->query_select('language', ['languagecode'], ['languageid' => $row['languageid']]);
                     if (array_key_exists(0, $rows2)) {
                         $language = strtoupper($rows2[0]['languagecode']);
                         if ((!file_exists(get_custom_file_base() . '/lang_custom/' . $language)) && (!file_exists(get_file_base() . '/lang/' . $language))) {
@@ -339,12 +339,12 @@ class Hook_import_vb3
                 }
 
                 $primary_group = import_id_remap_get('group', strval($row['usergroupid']));
-                $secondary_groups = array();
+                $secondary_groups = [];
                 if ($row['membergroupids'] != '') {
                     $secondary_groups = explode(',', $row['membergroupids']);
                 }
 
-                $custom_fields = array();
+                $custom_fields = [];
                 if ($row['homepage'] != '') {
                     $custom_fields[cns_make_predefined_content_field('website')] = (strlen($row['homepage']) > 0) ? ('[url]' . $row['homepage'] . '[/url]') : '';
                 }
@@ -356,7 +356,7 @@ class Hook_import_vb3
                 if (($reveal_age == 1) && (count($bits) == 3)) {
                     list($bday_month, $bday_day, $bday_year) = $bits;
                 } else {
-                    list($bday_month, $bday_day, $bday_year) = array(0, 0, 0);
+                    list($bday_month, $bday_day, $bday_year) = [0, 0, 0];
                 }
                 $title = ($row['customtitle'] == 1) ? $row['usertitle'] : '';
                 $views_signatures = $row['options'] & 1;
@@ -371,7 +371,7 @@ class Hook_import_vb3
                 $type = 'vb3';
                 $salt = $row['salt'];
 
-                $requests = $db->query_select('usergrouprequest', array('*'), array('userid' => $row['userid']));
+                $requests = $db->query_select('usergrouprequest', ['*'], ['userid' => $row['userid']]);
                 foreach ($requests as $i => $request) {
                     $requests[$i]['usergroupid'] = import_id_remap_get('group', strval($request['usergroupid']));
                 }
@@ -421,7 +421,7 @@ class Hook_import_vb3
                 );
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_group_leader' => $id_new), array('g_group_leader' => -$row['userid']));
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['userid']]);
 
                 import_id_remap_put('member', strval($row['userid']), $id_new);
 
@@ -452,10 +452,10 @@ class Hook_import_vb3
         global $STRICT_FILE;
 
         $row_start = get_param_integer('JUMPSTART_import_cns_member_files', 0);
-        $rows = array();
+        $rows = [];
         do {
             $extra = '';
-            $is_vb35 = ($db->query_select_value('customprofilepic', 'COUNT(*)', array('filedata' => ''), '', true) !== null); // i.e. if it doesn't fail
+            $is_vb35 = ($db->query_select_value('customprofilepic', 'COUNT(*)', ['filedata' => ''], '', true) !== null); // i.e. if it doesn't fail
 
             if ($is_vb35) {
                 $extra = ',a.filedata AS avatardata,p.filedata AS profilepicdata';
@@ -480,8 +480,8 @@ class Hook_import_vb3
                     list($avatar_url) = $this->data_to_disk($row['avatardata'], $row['a_filename'], 'cns_avatars', false);
                 } else {
                     if (!empty($row['avatarid'])) {
-                        $avatar_rows = $db->query_select('avatar', array('*'), array('avatarid' => $row['avatarid']));
-                        $setting_row = $db->query_select('setting', array('value', 'defaultvalue'), array('varname' => 'avatarpath'));
+                        $avatar_rows = $db->query_select('avatar', ['*'], ['avatarid' => $row['avatarid']]);
+                        $setting_row = $db->query_select('setting', ['value', 'defaultvalue'], ['varname' => 'avatarpath']);
                         $setting = ($setting_row[0]['value'] == '') ? $setting_row[0]['defaultvalue'] : $setting_row[0]['value'];
                         if (array_key_exists(0, $avatar_rows)) {
                             $avatar_row = $avatar_rows[0];
@@ -494,7 +494,7 @@ class Hook_import_vb3
                     }
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url, 'm_photo_thumb_url' => $photo_thumb_url), array('id' => $member_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url, 'm_photo_url' => $photo_url, 'm_photo_thumb_url' => $photo_thumb_url], ['id' => $member_id], '', 1);
 
                 import_id_remap_put('member_files', strval($row['userid']), 1);
             }
@@ -513,7 +513,7 @@ class Hook_import_vb3
      */
     public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('profilefield', array('*'));
+        $rows = $db->query_select('profilefield', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('cpf', strval($row['profilefieldid']))) {
                 continue;
@@ -530,7 +530,7 @@ class Hook_import_vb3
                 $row['title'] = $db->query_value_if_there('SELECT text FROM ' . $table_prefix . 'phrase WHERE ' . db_string_equal_to('product', 'vbulletin') . ' AND ' . db_string_equal_to('varname', 'field' . strval($row['profilefieldid']) . '_title'));
                 $row['description'] = $db->query_value_if_there('SELECT text FROM ' . $table_prefix . 'phrase WHERE ' . db_string_equal_to('product', 'vbulletin') . ' AND ' . db_string_equal_to('varname', 'field' . strval($row['profilefieldid']) . '_desc'));
             }
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $row['title']));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $row['title']]);
             if ($id_new === null) {
                 $id_new = cns_make_custom_field($row['title'], 0, $row['description'], '', 1 - $row['hidden'], 1 - $row['hidden'], $row['editable'], 0, $type, $row['required'], $row['memberlist'], $row['memberlist'], $row['displayorder'], '', 0, '', 0, 0, '', '', '', true);
             }
@@ -539,9 +539,9 @@ class Hook_import_vb3
         }
 
         $row_start = get_param_integer('JUMPSTART_import_cns_custom_profile_fields', 0);
-        $members = array();
+        $members = [];
         do {
-            $members = $db->query_select('userfield', array('*'), array(), '', 200, $row_start);
+            $members = $db->query_select('userfield', ['*'], [], '', 200, $row_start);
             foreach ($members as $member) {
                 if (import_check_if_imported('cpf_member', strval($member['userid']))) {
                     continue;
@@ -574,7 +574,7 @@ class Hook_import_vb3
      */
     public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
     {
-        $rows = $db->query_select('forum', array('*'), array('parentid' => -1));
+        $rows = $db->query_select('forum', ['*'], ['parentid' => -1]);
         foreach ($rows as $row) {
             if (import_check_if_imported('category', strval($row['forumid']))) {
                 continue;
@@ -582,7 +582,7 @@ class Hook_import_vb3
 
             $title = $row['title'];
 
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => $title));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $title]);
             if ($test !== null) {
                 import_id_remap_put('category', strval($row['forumid']), $test);
                 continue;
@@ -605,7 +605,7 @@ class Hook_import_vb3
     {
         require_code('cns_forums_action2');
 
-        $remap_id = array();
+        $remap_id = [];
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'forum WHERE parentid<>-1');
         foreach ($rows as $row) {
             $remapped = import_id_remap_get('forum', strval($row['forumid']), true);
@@ -625,8 +625,8 @@ class Hook_import_vb3
             }
             $parent_forum = db_get_first_id();
 
-            $permissions = $db->query_select('forumpermission', array('usergroupid', 'forumpermissions'), array('forumid' => $row['forumid']));
-            $access_mapping = array();
+            $permissions = $db->query_select('forumpermission', ['usergroupid', 'forumpermissions'], ['forumid' => $row['forumid']]);
+            $access_mapping = [];
             foreach ($permissions as $p) {
                 $x = $p['forumpermissions'];
                 $v = 0;
@@ -663,7 +663,7 @@ class Hook_import_vb3
                 $r = $parents[($category_id === null) ? 1 : 2];
                 if ($r != -1) {
                     $parent_id = $remap_id[$r];
-                    $GLOBALS['FORUM_DB']->query_update('f_forums', array('f_parent_forum' => $parent_id), array('id' => $remap_id[$row['forumid']]), '', 1);
+                    $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => $remap_id[$row['forumid']]], '', 1);
                 }
             }
         }
@@ -679,9 +679,9 @@ class Hook_import_vb3
     public function import_cns_topics($db, $table_prefix, $file_base)
     {
         $row_start = get_param_integer('JUMPSTART_import_cns_topics', 0);
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('thread', array('*'), array('visible' => 1), 'ORDER BY threadid', 200, $row_start);
+            $rows = $db->query_select('thread', ['*'], ['visible' => 1], 'ORDER BY threadid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic', strval($row['threadid']))) {
                     continue;
@@ -700,7 +700,7 @@ class Hook_import_vb3
             $GLOBALS['JUMPSTART_import_cns_topics'] = $row_start;
         } while (!empty($rows));
 
-        $rows = $db->query_select('announcement', array('*'), 'ORDER BY announcementid', 200, $row_start);
+        $rows = $db->query_select('announcement', ['*'], 'ORDER BY announcementid', 200, $row_start);
         foreach ($rows as $row) {
             if (import_check_if_imported('announcement', strval($row['announcementid']))) {
                 continue;
@@ -720,7 +720,7 @@ class Hook_import_vb3
         }
 
         // Read logs
-        $rows = $db->query_select('threadread', array('*'), array(), '', null, 0, true);
+        $rows = $db->query_select('threadread', ['*'], [], '', null, 0, true);
         if ($rows !== null) {
             foreach ($rows as $row) {
                 send_http_output_ping();
@@ -733,7 +733,7 @@ class Hook_import_vb3
                 if ($topic_id === null) {
                     continue;
                 }
-                $new_row = array('l_member_id' => $member_id, 'l_topic_id' => $topic_id, 'l_time' => $row['readtime']);
+                $new_row = ['l_member_id' => $member_id, 'l_topic_id' => $topic_id, 'l_time' => $row['readtime']];
                 $GLOBALS['FORUM_DB']->query_delete('f_read_logs', $new_row, '', 1);
                 $GLOBALS['FORUM_DB']->query_insert('f_read_logs', $new_row);
             }
@@ -765,9 +765,9 @@ class Hook_import_vb3
             $row_start += $max_per_cycle;
         } while (true);
 
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('post', array('*'), array(), 'ORDER BY postid', $max_per_cycle, $row_start);
+            $rows = $db->query_select('post', ['*'], [], 'ORDER BY postid', $max_per_cycle, $row_start);
             foreach ($rows as $row) {
                 if ($row['visible'] == 0) { // We don't have in WHERE query as there's no index for it
                     import_id_remap_put('post', strval($row['postid']), -1);
@@ -793,7 +793,7 @@ class Hook_import_vb3
                 if (array_key_exists($topic_id, $TOPIC_FORUM_CACHE)) {
                     $forum_id = $TOPIC_FORUM_CACHE[$topic_id];
                 } else {
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', array('id' => $topic_id));
+                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => $topic_id]);
                     if ($forum_id === null) {
                         continue;
                     }
@@ -802,7 +802,7 @@ class Hook_import_vb3
 
                 $title = '';
                 if ($row['parentid'] == 0) {
-                    $topics = $db->query_select('thread', array('title'), array('threadid' => $row['threadid']));
+                    $topics = $db->query_select('thread', ['title'], ['threadid' => $row['threadid']]);
                     $title = $topics[0]['title'];
                 } elseif ($row['title'] !== null) {
                     $title = $row['title'];
@@ -878,13 +878,13 @@ class Hook_import_vb3
     {
         global $OLD_BASE_URL;
         if ($OLD_BASE_URL === null) {
-            $rows = $db->query_select('setting', array('value'), array('varname' => 'bburl'));
+            $rows = $db->query_select('setting', ['value'], ['varname' => 'bburl']);
             $OLD_BASE_URL = $rows[0]['value'];
         }
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showthread\.php\?t=)(\d*)(&page=\d+)?#', array($this, '_fix_links_callback_topic'), $post);
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showpost\.php\?p=)(\d*)#', array($this, '_fix_links_callback_post'), $post);
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(forumdisplay\.php\?f=)(\d*)#', array($this, '_fix_links_callback_forum'), $post);
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(member\.php\?user=)(\d*)#', array($this, '_fix_links_callback_member'), $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showthread\.php\?t=)(\d*)(&page=\d+)?#', [$this, '_fix_links_callback_topic'], $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showpost\.php\?p=)(\d*)#', [$this, '_fix_links_callback_post'], $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(forumdisplay\.php\?f=)(\d*)#', [$this, '_fix_links_callback_forum'], $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(member\.php\?user=)(\d*)#', [$this, '_fix_links_callback_member'], $post);
         $post = preg_replace('#\[size="?(\d+)"?\]#', '[size="${1}of"]', $post);
         return $post;
     }
@@ -903,9 +903,9 @@ class Hook_import_vb3
         require_code('attachments3');
 
         $row_start = get_param_integer('JUMPSTART_import_cns_post_files', 0);
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('attachment', array('*'), 'ORDER BY attachmentid', 200, $row_start);
+            $rows = $db->query_select('attachment', ['*'], 'ORDER BY attachmentid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('post_files', strval($row['attachmentid']))) {
                     continue;
@@ -916,7 +916,7 @@ class Hook_import_vb3
                     continue;
                 }
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', array('p_time', 'p_poster', 'p_post'), array('id' => $post_id), '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['attachmentid']), 1);
                     continue; // Orphaned post
@@ -925,13 +925,13 @@ class Hook_import_vb3
                 $member_id = $post_row[0]['p_poster'];
 
                 list($url, $thumb_url) = $this->data_to_disk($row['filedata'], $row['filename'], 'attachments', false, $row['thumbnail'], true);
-                $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', array('a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['counter'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateline'], 'a_description' => ''), true);
+                $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['counter'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateline'], 'a_description' => ''], true);
 
-                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', array('r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id));
+                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
                 $post .= "\n\n" . '[attachment]' . strval($a_id) . '[/attachment]';
 
                 cns_over_msn();
-                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), array('id' => $post_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), ['id' => $post_id], '', 1);
                 cns_over_local();
 
                 import_id_remap_put('post_files', strval($row['attachmentid']), 1);
@@ -981,18 +981,18 @@ class Hook_import_vb3
                     list($thumb_path) = find_unique_path('uploads/' . $sections . '_thumbs', $t_filename);
                     require_code('images');
                     $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), false, null, true);
-                    return array($url, $thumb_url);
+                    return [$url, $thumb_url];
                 } else {
-                    return array($url, '');
+                    return [$url, ''];
                 }
             } else {
                 list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $t_filename);
                 cms_file_put_contents_safe($path, $thumbnail_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-                return array($url, $thumb_url);
+                return [$url, $thumb_url];
             }
         }
-        return array('', '');
+        return ['', ''];
     }
 
     /**
@@ -1004,7 +1004,7 @@ class Hook_import_vb3
      */
     public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('poll p LEFT JOIN ' . $table_prefix . 'thread t ON p.pollid=t.pollid', array('*', 'p.pollid AS pollid'));
+        $rows = $db->query_select('poll p LEFT JOIN ' . $table_prefix . 'thread t ON p.pollid=t.pollid', ['*', 'p.pollid AS pollid']);
         foreach ($rows as $row) {
             if (import_check_if_imported('poll', strval($row['pollid']))) {
                 continue;
@@ -1020,20 +1020,20 @@ class Hook_import_vb3
             $answers = explode('|||', $row['options']);
             $maximum = ($row['multiple'] == 1) ? count($answers) : 1;
 
-            $rows2 = $db->query_select('pollvote', array('*'), array('pollid' => $row['pollid']));
+            $rows2 = $db->query_select('pollvote', ['*'], ['pollid' => $row['pollid']]);
             foreach ($rows2 as $i => $row2) {
                 $rows2[$i]['userid'] = import_id_remap_get('member', strval($row2['userid']), true);
             }
 
             $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, false);
 
-            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('id'), array('pa_poll_id' => $id_new))); // Effectively, a remapping from VB vote number to Composr vote number
+            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new])); // Effectively, a remapping from VB vote number to Composr vote number
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['userid'];
                 if (!empty($member_id)) {
                     $answer = array_key_exists($row2['voteoption'] - 1, $answers) ? $answers[$row2['voteoption'] - 1] : -1;
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array('pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => ''));
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '']);
                 }
             }
 
@@ -1052,7 +1052,7 @@ class Hook_import_vb3
     {
         require_code('calendar2');
 
-        $rows = $db->query_select('event', array('*'));
+        $rows = $db->query_select('event', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('event', strval($row['eventid']))) {
                 continue;
@@ -1112,19 +1112,19 @@ class Hook_import_vb3
                     break;
             }
             list($start_year, $start_month, $start_day, $start_hour, $start_minute) = explode('-', date('Y-m-d-h-i', $row['dateline']));
-            list($end_year, $end_month, $end_day, $end_hour, $end_minute) = array(null, null, null, null, null);
+            list($end_year, $end_month, $end_day, $end_hour, $end_minute) = [null, null, null, null, null];
             cns_over_msn();
             $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $row['event'], 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter, 0, $row['dateline']);
             cns_over_local();
             if ($row['visible'] == 0) {
                 if (addon_installed('content_privacy')) {
-                    $GLOBALS['SITE_DB']->query_insert('content_privacy', array(
+                    $GLOBALS['SITE_DB']->query_insert('content_privacy', [
                         'content_type' => 'event',
                         'content_id' => strval($id_new),
                         'guest_view' => 0,
                         'member_view' => 0,
                         'friend_view' => 0,
-                    ));
+                    ]);
                 }
             }
 
@@ -1145,7 +1145,7 @@ class Hook_import_vb3
         $rows = $db->query($sql);
 
         // Group them up into what will become topics
-        $groups = array();
+        $groups = [];
         foreach ($rows as $row) {
             // Do some fiddling around for duplication
             if ($row['fromuserid'] > $row['userid']) {
@@ -1167,7 +1167,7 @@ class Hook_import_vb3
                 continue;
             }
 
-            $row_sup = $db->query_select('pm p LEFT JOIN ' . $table_prefix . 'pmtext t ON p.pmtextid=t.pmtextid', array('iconid', 'dateline', 'fromusername', 'message'), array('pmid' => $row['pmid']), '', 1);
+            $row_sup = $db->query_select('pm p LEFT JOIN ' . $table_prefix . 'pmtext t ON p.pmtextid=t.pmtextid', ['iconid', 'dateline', 'fromusername', 'message'], ['pmid' => $row['pmid']], '', 1);
             $row += $row_sup[0];
 
             // Create topic
@@ -1183,7 +1183,7 @@ class Hook_import_vb3
 
             $first_post = true;
             foreach ($group as $_postdetails) {
-                $_postdetails_sup = $db->query_select('pm p LEFT JOIN ' . $table_prefix . 'pmtext t ON p.pmtextid=t.pmtextid', array('iconid', 'dateline', 'fromusername', 'message'), array('pmid' => $_postdetails['pmid']), '', 1);
+                $_postdetails_sup = $db->query_select('pm p LEFT JOIN ' . $table_prefix . 'pmtext t ON p.pmtextid=t.pmtextid', ['iconid', 'dateline', 'fromusername', 'message'], ['pmid' => $_postdetails['pmid']], '', 1);
                 $_postdetails += $_postdetails_sup[0];
 
                 if ($first_post) {
@@ -1256,14 +1256,14 @@ class Hook_import_vb3
 
         init_valid_comcode_tags();
 
-        $rows = $db->query_select('bbcode', array('*'));
+        $rows = $db->query_select('bbcode', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('custom_comcode', strval($row['bbcodeid']))) {
                 continue;
             }
 
             global $VALID_COMCODE_TAGS;
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', array('tag_tag' => $row['bbcodetag']));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $row['bbcodetag']]);
             if ((array_key_exists($row['bbcodetag'], $VALID_COMCODE_TAGS)) || ($test !== null)) {
                 import_id_remap_put('custom_comcode', strval($row['bbcodeid']), 1);
                 continue;
@@ -1297,7 +1297,7 @@ class Hook_import_vb3
     {
         require_code('notifications');
 
-        $rows = $db->query_select('subscribeforum', array('*'));
+        $rows = $db->query_select('subscribeforum', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('forum_notification', strval($row['subscribeforumid']))) {
                 continue;
@@ -1317,7 +1317,7 @@ class Hook_import_vb3
         }
         $row_start = 0;
         do {
-            $rows = $db->query_select('subscribethread', array('*'), '', 200, $row_start);
+            $rows = $db->query_select('subscribethread', ['*'], '', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic_notification', strval($row['subscribethreadid']))) {
                     continue;
@@ -1351,7 +1351,7 @@ class Hook_import_vb3
     {
         require_code('cns_general_action2');
 
-        $rows = $db->query_select('editlog', array('*'));
+        $rows = $db->query_select('editlog', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('editlog', strval($row['postid']))) {
                 continue;
@@ -1361,7 +1361,7 @@ class Hook_import_vb3
 
             import_id_remap_put('editlog', strval($row['postid']), -1);
         }
-        $rows = $db->query_select('deletionlog', array('*'));
+        $rows = $db->query_select('deletionlog', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('deletionlog', strval($row['primaryid']))) {
                 continue;
@@ -1402,7 +1402,7 @@ class Hook_import_vb3
     {
         $row_start = get_param_integer('JUMPSTART_import_points_gifts_and_charges', 0);
         do {
-            $rows = $db->query_select('reputation', array('*'), array(), '', 200, $row_start);
+            $rows = $db->query_select('reputation', ['*'], [], '', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('points', strval($row['reputationid']))) {
                     continue;
@@ -1414,13 +1414,13 @@ class Hook_import_vb3
                 $member_id = import_id_remap_get('member', strval($row['userid']), true);
                 $reason = $row['reason'];
                 $anonymous = 0;
-                $map = array(
+                $map = [
                     'date_and_time' => $time,
                     'amount' => $amount,
                     'gift_from' => $viewer_member,
                     'gift_to' => $member_id,
                     'anonymous' => $anonymous,
-                );
+                ];
                 $map += insert_lang_comcode('reason', $reason, 4);
                 $GLOBALS['SITE_DB']->query_insert('gifts', $map);
 
@@ -1441,7 +1441,7 @@ class Hook_import_vb3
      */
     public function import_wordfilter($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('setting', array('value'), array('varname' => 'censorwords'));
+        $rows = $db->query_select('setting', ['value'], ['varname' => 'censorwords']);
         $censorwords = $rows[0]['value'];
         foreach (explode(' ', $censorwords) as $word) {
             if ($word != '') {

@@ -32,12 +32,12 @@ class Hook_members_ecommerce
     public function run($member_id)
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
         require_lang('ecommerce');
 
-        $modules = array();
+        $modules = [];
 
         /*  Now we provide this link under the embedded list of subscriptions
         if ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', array('s_member_id' => $member_id)) != 0) {
@@ -45,13 +45,13 @@ class Hook_members_ecommerce
         }
         */
 
-        if ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', array('i_member_id' => $member_id)) != 0) {
-            $modules[] = array('views', do_lang_tempcode('MY_INVOICES'), build_url(array('page' => 'invoices', 'type' => 'browse', 'id' => $member_id), get_module_zone('invoices')), 'menu/adminzone/audit/ecommerce/invoices');
+        if ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) != 0) {
+            $modules[] = ['views', do_lang_tempcode('MY_INVOICES'), build_url(['page' => 'invoices', 'type' => 'browse', 'id' => $member_id], get_module_zone('invoices')), 'menu/adminzone/audit/ecommerce/invoices'];
         }
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce', get_module_zone('admin_ecommerce'))) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-            $modules[] = array('views', do_lang_tempcode('CREATE_INVOICE'), build_url(array('page' => 'admin_invoices', 'type' => 'add', 'to' => $username), get_module_zone('admin_invoices')), 'menu/adminzone/audit/ecommerce/create_invoice');
+            $modules[] = ['views', do_lang_tempcode('CREATE_INVOICE'), build_url(['page' => 'admin_invoices', 'type' => 'add', 'to' => $username], get_module_zone('admin_invoices')), 'menu/adminzone/audit/ecommerce/create_invoice'];
         }
 
         return $modules;
@@ -66,11 +66,11 @@ class Hook_members_ecommerce
     public function get_sections($member_id)
     {
         if (($member_id != get_member()) && (!has_privilege(get_member(), 'view_any_profile_field'))) {
-            return array();
+            return [];
         }
 
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
         require_code('ecommerce_subscriptions');
@@ -78,7 +78,7 @@ class Hook_members_ecommerce
 
         // Note that this display is similar to the subscriptions module, but a bit more cut down, and showing only active subscriptions
 
-        $subscriptions = array();
+        $subscriptions = [];
         foreach ($_subscriptions as $_subscription) {
             if (!$_subscription['is_active']) {
                 continue; // We only show active subscriptions here
@@ -88,11 +88,11 @@ class Hook_members_ecommerce
         }
 
         if (empty($subscriptions)) {
-            return array();
+            return [];
         }
 
         require_lang('ecommerce');
 
-        return array(do_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', array('_GUID' => '74e2193b1f31ca5c962a525d887e9ca1', 'SUBSCRIPTIONS' => $subscriptions, 'MEMBER_ID' => strval($member_id))));
+        return [do_template('ECOM_MEMBER_SUBSCRIPTION_STATUS', ['_GUID' => '74e2193b1f31ca5c962a525d887e9ca1', 'SUBSCRIPTIONS' => $subscriptions, 'MEMBER_ID' => strval($member_id)])];
     }
 }

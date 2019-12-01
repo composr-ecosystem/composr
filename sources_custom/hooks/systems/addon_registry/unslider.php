@@ -26,7 +26,7 @@ class Hook_addon_registry_unslider
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_unslider
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             '"@idiot"',
-        );
+        ];
     }
 
     /**
@@ -109,7 +109,7 @@ If the [tt]delay[/tt] is set to blank or 0, it will disable automatic (timed) tr
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -119,11 +119,11 @@ If the [tt]delay[/tt] is set to blank or 0, it will disable automatic (timed) tr
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -143,7 +143,7 @@ If the [tt]delay[/tt] is set to blank or 0, it will disable automatic (timed) tr
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/unslider.php',
             'sources_custom/blocks/main_unslider.php',
             'themes/default/css_custom/unslider.css',
@@ -161,6 +161,6 @@ If the [tt]delay[/tt] is set to blank or 0, it will disable automatic (timed) tr
             'themes/default/images_custom/unslider_backgrounds/subway.jpg',
             'themes/default/images_custom/unslider_backgrounds/sunset.jpg',
             'themes/default/images_custom/unslider_backgrounds/wood.jpg',
-        );
+        ];
     }
 }

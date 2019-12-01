@@ -30,7 +30,7 @@ class Hook_config_automatic_meta_extraction
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AUTOMATIC_META_EXTRACTION',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_automatic_meta_extraction
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

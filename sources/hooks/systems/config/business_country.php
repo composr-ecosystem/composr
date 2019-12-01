@@ -30,7 +30,7 @@ class Hook_config_business_country
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BUSINESS_COUNTRY',
             'type' => 'country',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_business_country
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

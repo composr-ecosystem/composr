@@ -36,7 +36,7 @@ function init__cns_general()
  */
 function cns_get_forums_stats()
 {
-    $forums_stats = array();
+    $forums_stats = [];
 
     if (isset($GLOBALS['CNS_DRIVER'])) {
         $forums_stats['num_topics'] = $GLOBALS['CNS_DRIVER']->get_num_topics();
@@ -98,9 +98,9 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         $member_id_viewing = get_member();
     }
 
-    $sz = serialize(array($member_id, $need, $include_encrypted_cpfs, $cpf_preview_mode, $member_id_viewing));
+    $sz = serialize([$member_id, $need, $include_encrypted_cpfs, $cpf_preview_mode, $member_id_viewing]);
 
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$sz])) {
         return $cache[$sz];
     }
@@ -121,7 +121,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
     $last_visit_time = (($member_id == get_member()) && (array_key_exists('last_visit', $_COOKIE))) ? intval($_COOKIE['last_visit']) : $row['m_last_visit_time'];
     $is_banned = $GLOBALS['FORUM_DRIVER']->is_banned($member_id);
     $join_time = $row['m_join_time'];
-    $member_info = array(
+    $member_info = [
         'username' => $row['m_username'],
         'display_name' => $GLOBALS['FORUM_DRIVER']->get_username($member_id, true),
         'last_visit_time' => $last_visit_time,
@@ -138,7 +138,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         'highlighted_name' => ($row['m_highlighted_name'] == 1),
         'profile_views' => $row['m_profile_views'],
         'total_sessions' => $row['m_total_sessions'],
-    );
+    ];
     if ($row['m_email_address'] != '') {
         $member_info['email_address'] = $row['m_email_address'];
     }
@@ -178,7 +178,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
             if (array_key_exists($member_id, $SIGNATURES_CACHE)) {
                 $member_info['signature'] = $SIGNATURES_CACHE[$member_id];
             } else {
-                $just_member_row = db_map_restrict($row, array('id', 'm_signature'));
+                $just_member_row = db_map_restrict($row, ['id', 'm_signature']);
                 $member_info['signature'] = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
 
                 if (($is_banned) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin($member_id_viewing))) {
@@ -228,39 +228,39 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         $secondary_groups = cns_get_members_groups($member_id, true, false);
         unset($secondary_groups[$primary_group]);
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list($member_id != $member_id_viewing, false, false, array_keys($secondary_groups), $member_id);
-        $secondary_groups_named = array();
+        $secondary_groups_named = [];
         foreach (array_keys($secondary_groups) as $group_id) {
             if (isset($all_usergroups[$group_id])) {
                 $secondary_groups_named[$group_id] = $all_usergroups[$group_id];
             }
         }
-        $member_info += array(
+        $member_info += [
             'secondary_groups' => array_keys($secondary_groups),
             'secondary_groups_named' => $secondary_groups_named,
-        );
+        ];
     }
 
     // Points
     if (addon_installed('points')) {
         if (($need === null) || (in_array('points_used', $need))) {
-            $member_info += array(
+            $member_info += [
                 'points_used' => points_used($member_id),
-            );
+            ];
         }
         if (($need === null) || (in_array('available_points', $need))) {
-            $member_info += array(
+            $member_info += [
                 'available_points' => available_points($member_id),
-            );
+            ];
         }
         if (($need === null) || (in_array('gift_points_to_give', $need))) {
-            $member_info += array(
+            $member_info += [
                 'gift_points_to_give' => get_gift_points_to_give($member_id),
-            );
+            ];
         }
         if (($need === null) || (in_array('gift_points_used', $need))) {
-            $member_info += array(
+            $member_info += [
                 'gift_points_used' => get_gift_points_used($member_id),
-            );
+            ];
         }
     }
 
@@ -276,37 +276,37 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
     if (($need === null) || (in_array('likes', $need)) || (in_array('liked', $need))) {
         if ((addon_installed('chat')) && ($member_id != $member_id_viewing)) {
             require_code('chat');
-            $member_info += array(
+            $member_info += [
                 'likes' => member_befriended($member_id, $member_id_viewing),
                 'liked' => member_befriended($member_id_viewing, $member_id),
-            );
+            ];
         }
     }
 
     // Times
     if (($need === null) || (in_array('timezone_raw', $need)) || (in_array('timezone', $need)) || (in_array('time_for_them_raw', $need)) || (in_array('time_for_them', $need))) {
         $users_timezone = get_users_timezone($member_id);
-        $member_info += array(
+        $member_info += [
             'timezone_raw' => $users_timezone,
             'timezone' => make_nice_timezone_name($users_timezone),
             'time_for_them_raw' => tz_time(time(), $users_timezone),
             'time_for_them' => get_timezoned_time(time(), false, false, $member_id),
-        );
+        ];
     }
 
     // Since last visit
     if (($need === null) || (in_array('new_posts', $need)) || (in_array('new_topics', $need))) {
         $new_posts = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_cache_forum_id IS NOT NULL AND p_time>' . strval($last_visit_time));
         $new_topics = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_forum_id IS NOT NULL AND t_cache_first_time>' . strval($last_visit_time));
-        $member_info += array(
+        $member_info += [
             'new_posts' => $new_posts,
             'new_topics' => $new_topics,
-        );
+        ];
     }
 
     // Browser
     if (($need === null) || (in_array('browser', $need)) || (in_array('operating_system', $need))) {
-        $last_stats = $GLOBALS['SITE_DB']->query_select('stats', array('browser', 'operating_system'), array('member_id' => $member_id), 'ORDER BY date_and_time DESC', 1);
+        $last_stats = $GLOBALS['SITE_DB']->query_select('stats', ['browser', 'operating_system'], ['member_id' => $member_id], 'ORDER BY date_and_time DESC', 1);
         if (array_key_exists(0, $last_stats)) {
             $member_info['browser'] = $last_stats[0]['browser'];
             $member_info['operating_system'] = $last_stats[0]['operating_system'];
@@ -315,7 +315,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
 
     // Last viewed page
     if (($need === null) || (in_array('current_action', $need))) {
-        $at_title = $GLOBALS['SITE_DB']->query_select_value_if_there('sessions', 'the_title', array('member_id' => $member_id), 'ORDER BY last_activity DESC');
+        $at_title = $GLOBALS['SITE_DB']->query_select_value_if_there('sessions', 'the_title', ['member_id' => $member_id], 'ORDER BY last_activity DESC');
         if ($at_title !== null) {
             $member_info['current_action'] = $at_title;
         }
@@ -341,7 +341,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         if ($hook_objects === null) {
             $hook_objects = find_all_hook_obs('systems', 'member_boxes', 'Hook_member_boxes_');
         }
-        $member_info['custom_data'] = array();
+        $member_info['custom_data'] = [];
         foreach ($hook_objects as $hook_object) {
             $_temp = $hook_object->run($member_id);
             if (is_array($_temp)) {
@@ -353,13 +353,13 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
     // Birthday
     $dob_test = get_member_dob_details($member_id);
     if ($dob_test !== null) {
-        $member_info += array(
+        $member_info += [
             'dob_label' => $dob_test[0],
             'dob' => $dob_test[1],
             '_dob_censored' => $dob_test[2],
             '_dob' => $dob_test[3],
             'age' => $dob_test[4],
-        );
+        ];
     }
 
     // Find title
@@ -395,7 +395,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         $best_yet_forum = 0; // Initialise to integer type
         $best_yet_forum = null;
         $_most_active_forum = null;
-        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', array('COUNT(*) as cnt', 'p_cache_forum_id'), array('p_poster' => $member_id), 'GROUP BY p_cache_forum_id ORDER BY COUNT(*) DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
+        $_best_yet_forum = $GLOBALS['FORUM_DB']->query_select('f_posts', ['COUNT(*) as cnt', 'p_cache_forum_id'], ['p_poster' => $member_id], 'GROUP BY p_cache_forum_id ORDER BY COUNT(*) DESC', 1); // order by and limit have been added since original code, makes it run a bit faster
         $_best_yet_forum = collapse_2d_complexity('p_cache_forum_id', 'cnt', $_best_yet_forum);
         foreach ($forums as $forum) {
             if (((array_key_exists($forum['id'], $_best_yet_forum)) && (($best_yet_forum === null) || ($_best_yet_forum[$forum['id']] > $best_yet_forum)))) {
@@ -405,14 +405,14 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
         }
         $post_count = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_cache_num_posts');
         $best_post_fraction = ($post_count == 0) ? do_lang_tempcode('NA_EM') : make_string_tempcode(integer_format(100 * @intval(round(floatval($best_yet_forum) / floatval($post_count)))));
-        $member_info['most_active_forum'] = ($_most_active_forum === null) ? new Tempcode() : do_lang_tempcode('_MOST_ACTIVE_FORUM', $_most_active_forum, make_string_tempcode(integer_format($best_yet_forum)), array($best_post_fraction));
+        $member_info['most_active_forum'] = ($_most_active_forum === null) ? new Tempcode() : do_lang_tempcode('_MOST_ACTIVE_FORUM', $_most_active_forum, make_string_tempcode(integer_format($best_yet_forum)), [$best_post_fraction]);
     }
 
     // Further posting details
     if (($need === null) || (in_array('posts_details', $need))) {
         $days_joined = intval(round((time() - $join_time) / 60 / 60 / 24));
         $total_posts = $GLOBALS['FORUM_DRIVER']->get_num_forum_posts();
-        $member_info['posts_details'] = do_lang_tempcode('_COUNT_POSTS', escape_html(integer_format($post_count)), escape_html(float_format(floatval($post_count) / floatval(($days_joined == 0) ? 1 : $days_joined))), array(escape_html(float_format(floatval(100 * $post_count) / floatval(($total_posts == 0) ? 1 : $total_posts)))));
+        $member_info['posts_details'] = do_lang_tempcode('_COUNT_POSTS', escape_html(integer_format($post_count)), escape_html(float_format(floatval($post_count) / floatval(($days_joined == 0) ? 1 : $days_joined))), [escape_html(float_format(floatval(100 * $post_count) / floatval(($total_posts == 0) ? 1 : $total_posts)))]);
     }
 
     // Find photo
@@ -501,7 +501,7 @@ function get_member_dob_details($member_id)
         $age = null;
     }
 
-    return array($label, $dob, $_dob_censored_if_needed, $_dob, $age);
+    return [$label, $dob, $_dob_censored_if_needed, $_dob, $age];
 }
 
 /**
@@ -532,7 +532,7 @@ function get_member_title($member_id)
  */
 function get_group_colour($gid)
 {
-    $all_colours = array('cns-gcol-1', 'cns-gcol-2', 'cns-gcol-3', 'cns-gcol-4', 'cns-gcol-5', 'cns-gcol-6', 'cns-gcol-7', 'cns-gcol-8', 'cns-gcol-9', 'cns-gcol-10', 'cns-gcol-11', 'cns-gcol-12', 'cns-gcol-13', 'cns-gcol-14', 'cns-gcol-15');
+    $all_colours = ['cns-gcol-1', 'cns-gcol-2', 'cns-gcol-3', 'cns-gcol-4', 'cns-gcol-5', 'cns-gcol-6', 'cns-gcol-7', 'cns-gcol-8', 'cns-gcol-9', 'cns-gcol-10', 'cns-gcol-11', 'cns-gcol-12', 'cns-gcol-13', 'cns-gcol-14', 'cns-gcol-15'];
     return $all_colours[$gid % count($all_colours)];
 }
 
@@ -551,18 +551,18 @@ function cns_find_birthdays($time = null)
     $upper_limit = intval(get_option('enable_birthdays'));
 
     list($day, $month, $year) = explode(' ', date('j m Y', utctime_to_usertime($time)));
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username', 'm_reveal_age', 'm_dob_year'), array('m_dob_day' => intval($day), 'm_dob_month' => intval($month)), 'ORDER BY m_last_visit_time DESC', $upper_limit);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username', 'm_reveal_age', 'm_dob_year'], ['m_dob_day' => intval($day), 'm_dob_month' => intval($month)], 'ORDER BY m_last_visit_time DESC', $upper_limit);
     if (count($rows) == $upper_limit) {
-        return array();
+        return [];
     }
 
-    $birthdays = array();
+    $birthdays = [];
     foreach ($rows as $row) {
         if (!has_privilege($row['id'], 'appear_under_birthdays')) {
             continue;
         }
 
-        $birthday = array('id' => $row['id'], 'username' => $row['m_username']);
+        $birthday = ['id' => $row['id'], 'username' => $row['m_username']];
         if ($row['m_reveal_age'] == 1) {
             $birthday['age'] = intval($year) - $row['m_dob_year'];
         }
@@ -587,7 +587,7 @@ function cns_button_screen_wrap($buttons)
 
     $b = new Tempcode();
     foreach ($buttons as $button) {
-        $b->attach(do_template('BUTTON_SCREEN', array('_GUID' => 'bdd441c40c5b03134ce6541335fece2c', 'REL' => array_key_exists('rel', $button) ? $button['rel'] : null, 'IMMEDIATE' => $button['immediate'], 'URL' => $button['url'], 'IMG' => $button['img'], 'TITLE' => $button['title'])));
+        $b->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'bdd441c40c5b03134ce6541335fece2c', 'REL' => array_key_exists('rel', $button) ? $button['rel'] : null, 'IMMEDIATE' => $button['immediate'], 'URL' => $button['url'], 'IMG' => $button['img'], 'TITLE' => $button['title']]));
     }
     return $b;
 }

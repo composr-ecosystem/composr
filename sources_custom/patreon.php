@@ -15,7 +15,7 @@
 
 function get_patreon_patrons_on_minimum_level($level)
 {
-    $patreon_patrons = array();
+    $patreon_patrons = [];
 
     require_code('files_spreadsheets_read');
     $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/data_custom/patreon_patrons.csv');
@@ -24,11 +24,11 @@ function get_patreon_patrons_on_minimum_level($level)
             continue;
         }
 
-        $patreon_patrons[] = array(
+        $patreon_patrons[] = [
             'name' => $row['name'],
             'username' => $row['username'],
             'monthly' => intval($row['as_level']),
-        );
+        ];
     }
     $sheet_reader->close();
 

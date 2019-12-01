@@ -80,7 +80,7 @@ END;
 END;
 } else {
     // Load POSTed settings
-    $settings = array();
+    $settings = [];
     foreach ($_POST as $key => $val) {
         $settings[$key] = $val;
     }
@@ -92,7 +92,7 @@ END;
         } else { // Put into the task queue
             require_once('google/appengine/api/taskqueue/PushTask.php');
 
-            $task = new \google\appengine\api\taskqueue\PushTask('/rootkit_detection.php', array('type' => 'go', 'settings' => serialize($settings)));
+            $task = new \google\appengine\api\taskqueue\PushTask('/rootkit_detection.php', ['type' => 'go', 'settings' => serialize($settings)]);
             $task_name = $task->add();
 
             echo '<p>The task has been added to the GAE task queue.</p>';
@@ -104,12 +104,12 @@ END;
     // Find and check password
     if (!defined('EXTERNAL_ROOTKIT_DETECTION_CALL')) {
         $config_file = file_get_contents($FILE_BASE . '/_config.php');
-        $matches = array();
+        $matches = [];
         if (preg_match('#\$SITE_INFO\[\'master_password\'\] = \'([^\']*)\';#', $config_file, $matches) == 0) {
             exit(':(');
         }
         global $SITE_INFO;
-        $SITE_INFO = array('master_password' => $matches[1]);
+        $SITE_INFO = ['master_password' => $matches[1]];
         if (!rk_check_master_password($settings['password'])) {
             echo '<p>Incorrect master password</p>';
             rd_do_footer();
@@ -153,7 +153,7 @@ END;
         }
     }
     $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'f_groups WHERE g_is_super_admin=1 OR g_is_super_moderator=1 ORDER BY id');
-    $staff_groups = array();
+    $staff_groups = [];
     $pg = '';
     while (($row = mysqli_fetch_assoc($r)) !== null) {
         if ($pg != '') {
@@ -201,7 +201,7 @@ END;
     if ((!isset($settings['do_files'])) || ($settings['do_files'] == '1')) {
         $files = rd_do_dir('');
     } else {
-        $files = array();
+        $files = [];
     }
     foreach ($files as $file) {
         if (preg_match('#^data_custom/errorlog\.php$#', $file) != 0) {
@@ -221,11 +221,11 @@ END;
     if (!empty($settings['email'])) { // Will only be the case on Google App Engine
         require_once('google/appengine/api/mail/Message.php');
 
-        $task = new \google\appengine\api\mail\Message(array(
+        $task = new \google\appengine\api\mail\Message([
             'to' => $settings['email'],
             'subject' => 'Rootkit detection results',
             'textBody' => $results,
-        ));
+        ]);
         $task_name = $task->add();
     }
 
@@ -246,12 +246,12 @@ rd_do_footer();
  */
 function rd_do_dir($dir)
 {
-    $out = array();
+    $out = [];
     $_dir = ($dir == '') ? '.' : $dir;
     $dh = @opendir($_dir);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
-            if (!in_array($file, array('.', '..', 'website_specific'))) {
+            if (!in_array($file, ['.', '..', 'website_specific'])) {
                 if (is_file($_dir . '/' . $file)) {
                     $path = $dir . (($dir != '') ? '/' : '') . $file;
                     if (substr($path, -4) == '.php') {

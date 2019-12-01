@@ -33,7 +33,7 @@ class persistent_cache_test_set extends cms_test_case
         // Test value lifetimes
         // --------------------
 
-        $values = array('foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10));
+        $values = ['foobar', '', false, null, str_repeat('x', 1024 * 1024 * 10)];
         foreach ($values as $value) {
             // Set
             $cache->set('test', $value);

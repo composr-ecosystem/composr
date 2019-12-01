@@ -19,7 +19,7 @@
 class addon_guards_test_set extends cms_test_case
 {
     // We don't need to (and shouldn't) do addon_installed checks in these hook types for the given addon, as it's implied to already exist (nothing else using the hooks)
-    protected $hook_ownership = array(
+    protected $hook_ownership = [
         'blocks/main_custom_gfx' => 'custom_comcode',
         'blocks/side_stats' => 'stats_block',
         'modules/admin_import' => 'import',
@@ -43,7 +43,7 @@ class addon_guards_test_set extends cms_test_case
         'systems/realtime_rain' => 'realtime_rain',
         'systems/referrals' => 'referrals',
         'systems/syndication' => 'activity_feed',
-    );
+    ];
 
     public function testAddonGuardsCohesion()
     {
@@ -51,31 +51,31 @@ class addon_guards_test_set extends cms_test_case
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
-        $exceptions = array(
+        $exceptions = [
             '(sources|sources_custom)/hooks/systems/addon_registry/\w+\.php',
             '(sources|sources_custom)/hooks/systems/ajax_tree/\w+\.php',
 
             // These contain no code
             '(sources|sources_custom)/hooks/systems/disposable_values/\w+\.php',
             '(sources|sources_custom)/hooks/systems/non_active_urls/\w+\.php',
-        );
+        ];
 
-        $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, array('php'));
-        $hooks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/hooks', 'sources_custom/hooks', null, true, true, array('php'));
-        $blocks_files = get_directory_contents(get_file_base() . '/sources/blocks', 'sources/blocks', null, true, true, array('php'));
-        $blocks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/blocks', 'sources_custom/blocks', null, true, true, array('php'));
-        $miniblocks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/miniblocks', 'sources_custom/miniblocks', null, true, true, array('php'));
+        $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, ['php']);
+        $hooks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/hooks', 'sources_custom/hooks', null, true, true, ['php']);
+        $blocks_files = get_directory_contents(get_file_base() . '/sources/blocks', 'sources/blocks', null, true, true, ['php']);
+        $blocks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/blocks', 'sources_custom/blocks', null, true, true, ['php']);
+        $miniblocks_custom_files = get_directory_contents(get_file_base() . '/sources_custom/miniblocks', 'sources_custom/miniblocks', null, true, true, ['php']);
 
-        $modules_files = array();
+        $modules_files = [];
         $zones = find_all_zones();
         foreach ($zones as $zone) {
-            $modules_files = get_directory_contents(get_file_base() . '/' . $zone . '/pages', $zone . '/pages', null, true, true, array('php'));
+            $modules_files = get_directory_contents(get_file_base() . '/' . $zone . '/pages', $zone . '/pages', null, true, true, ['php']);
         }
 
         $files = array_merge($hooks_files, $hooks_custom_files, $blocks_files, $blocks_custom_files, $miniblocks_custom_files, $modules_files);
 
         foreach ($files as $path) {
-            $matches_hook_details = array();
+            $matches_hook_details = [];
             if (preg_match('#^\w+/hooks/(\w+)/(\w+)/\w+\.php$#', $path, $matches_hook_details) != 0) {
                 $hook_type = $matches_hook_details[1];
                 $hook_subtype = $matches_hook_details[2];
@@ -93,7 +93,7 @@ class addon_guards_test_set extends cms_test_case
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-            $matches = array();
+            $matches = [];
             if (preg_match('#@package\s+(\w+)#', $c, $matches) == 0) {
                 $this->assertTrue(false, 'Could not detect addon in ' . $path);
                 continue;
@@ -116,7 +116,7 @@ class addon_guards_test_set extends cms_test_case
 
     public function testAddonGuardsImplicitCodeCalls()
     {
-        $files_in_addons = array();
+        $files_in_addons = [];
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($addons as $addon_name => $ob) {
@@ -144,7 +144,7 @@ class addon_guards_test_set extends cms_test_case
                 if ((substr($path, -4) == '.php') && (preg_match('#(^_tests/|^data_custom/stress_test_loader\.php$|^sources/hooks/modules/admin_import/)#', $path) == 0)) {
                     $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template)\(\'([^\']*)\'[\),]#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $include = $matches[2][$i];
@@ -186,7 +186,7 @@ class addon_guards_test_set extends cms_test_case
                                     }
                                 }
                                 if (!$ok) {
-                                    $matches_hook_details = array();
+                                    $matches_hook_details = [];
                                     if (preg_match('#^\w+/hooks/(\w+)/(\w+)/\w+\.php$#', $path, $matches_hook_details) != 0) {
                                         $hook_type = $matches_hook_details[1];
                                         $hook_subtype = $matches_hook_details[2];
@@ -199,7 +199,7 @@ class addon_guards_test_set extends cms_test_case
 
                                 $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[0][$i];
 
-                                if (in_array($error_message, array(
+                                if (in_array($error_message, [
                                     'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\')',
                                     'Cannot find a guard for the chat addon in sources/global2.php [core], due to require_code(\'chat_poller\')',
                                     'Cannot find a guard for the catalogues addon in sources/crud_module.php [core], due to require_javascript(\'catalogues\')',
@@ -209,7 +209,7 @@ class addon_guards_test_set extends cms_test_case
                                     'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\',',
                                     'Cannot find a guard for the backup addon in sources/minikernel.php [core], due to do_template(\'RESTORE_HTML_WRAP\',',
                                     'Cannot find a guard for the installer addon in sources/minikernel.php [core], due to do_template(\'INSTALLER_HTML_WRAP\',',
-                                ))) {
+                                ])) {
                                     continue; // Exceptions
                                 }
 

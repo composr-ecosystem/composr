@@ -30,7 +30,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Generate database schema, by addon';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '20abeb186755f6e74d755586dcea3c56', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '20abeb186755f6e74d755586dcea3c56', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 cms_ini_set('ocproducts.xss_detect', '0');
@@ -41,10 +41,10 @@ $all_tables_detailed = get_all_innodb_tables();
 
 $tables_by_addon = get_innodb_tables_by_addon();
 
-$file_array = array();
+$file_array = [];
 
 foreach ($tables_by_addon as $addon_name => $tables_in_addon) {
-    $tables_in_addon_detailed = array();
+    $tables_in_addon_detailed = [];
     foreach ($tables_in_addon as $table_in_addon) {
         if (array_key_exists($table_in_addon, $all_tables_detailed)) {
             $tables_in_addon_detailed[$table_in_addon] = $all_tables_detailed[$table_in_addon];
@@ -53,11 +53,11 @@ foreach ($tables_by_addon as $addon_name => $tables_in_addon) {
 
     $data = get_innodb_table_sql($tables_in_addon_detailed, $all_tables_detailed);
 
-    $file_array[] = array(
+    $file_array[] = [
         'time' => time(),
         'data' => $data,
         'name' => 'composr_erd__' . $addon_name . '.sql',
-    );
+    ];
 }
 
 $filename = 'erd_sql__by_addon.zip';

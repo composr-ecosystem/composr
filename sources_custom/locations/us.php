@@ -20,8 +20,8 @@
  */
 function get_region_structure_US()
 {
-    return array(
-        'Northeast' => array(
+    return [
+        'Northeast' => [
             'CT' => 'Connecticut',
             'ME' => 'Maine',
             'MA' => 'Massachusetts',
@@ -31,9 +31,9 @@ function get_region_structure_US()
             'PA' => 'Pennsylvania',
             'RI' => 'Rhode Island',
             'VT' => 'Vermont',
-        ),
+        ],
 
-        'Midwest' => array(
+        'Midwest' => [
             'IL' => 'Illinois',
             'IN' => 'Indiana',
             'IA' => 'Iowa',
@@ -46,9 +46,9 @@ function get_region_structure_US()
             'OH' => 'Ohio',
             'SD' => 'South Dakota',
             'WI' => 'Wisconsin',
-        ),
+        ],
 
-        'South' => array(
+        'South' => [
             'AL' => 'Alabama',
             'AR' => 'Arkansas',
             'DC' => 'D.C.',
@@ -66,9 +66,9 @@ function get_region_structure_US()
             'TX' => 'Texas',
             'VA' => 'Virginia',
             'WV' => 'West Virginia',
-        ),
+        ],
 
-        'West' => array(
+        'West' => [
             'AK' => 'Alaska ',
             'AZ' => 'Arizona',
             'CA' => 'California',
@@ -82,8 +82,8 @@ function get_region_structure_US()
             'UT' => 'Utah',
             'WA' => 'Washington',
             'WY' => 'Wyoming',
-        ),
-    );
+        ],
+    ];
 }
 
 function find_state_name_from_code_US($code)
@@ -117,7 +117,7 @@ function get_states_US()
 {
     $structure = get_region_structure_US();
 
-    $states = array();
+    $states = [];
 
     foreach ($structure as $region) {
         $states += $region;

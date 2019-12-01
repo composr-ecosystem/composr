@@ -60,9 +60,9 @@ class Module_cms_polls extends Standard_crud_module
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_POLLS', 'menu/social/polls'),
-        ) + parent::get_entry_points();
+        $ret = [
+            'browse' => ['MANAGE_POLLS', 'menu/social/polls'],
+        ] + parent::get_entry_points();
 
         if ($support_crosslinks) {
             require_code('fields');
@@ -128,7 +128,7 @@ class Module_cms_polls extends Standard_crud_module
     public function get_privilege_overrides()
     {
         require_lang('polls');
-        return array('submit_midrange_content' => array(0, 'ADD_POLL'), 'bypass_validation_midrange_content' => array(0, 'BYPASS_VALIDATION_POLL'), 'edit_own_midrange_content' => array(0, 'EDIT_OWN_POLL'), 'edit_midrange_content' => array(0, 'EDIT_POLL'), 'delete_own_midrange_content' => array(0, 'DELETE_OWN_POLL'), 'delete_midrange_content' => array(0, 'DELETE_POLL'), 'edit_own_highrange_content' => array(0, 'EDIT_OWN_LIVE_POLL'), 'edit_highrange_content' => array(0, 'EDIT_LIVE_POLL'), 'delete_own_highrange_content' => array(0, 'DELETE_OWN_LIVE_POLL'), 'delete_highrange_content' => array(0, 'DELETE_LIVE_POLL'), 'vote_in_polls' => 0);
+        return ['submit_midrange_content' => [0, 'ADD_POLL'], 'bypass_validation_midrange_content' => [0, 'BYPASS_VALIDATION_POLL'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_POLL'], 'edit_midrange_content' => [0, 'EDIT_POLL'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_POLL'], 'delete_midrange_content' => [0, 'DELETE_POLL'], 'edit_own_highrange_content' => [0, 'EDIT_OWN_LIVE_POLL'], 'edit_highrange_content' => [0, 'EDIT_LIVE_POLL'], 'delete_own_highrange_content' => [0, 'DELETE_OWN_LIVE_POLL'], 'delete_highrange_content' => [0, 'DELETE_LIVE_POLL'], 'vote_in_polls' => 0];
     }
 
     /**
@@ -143,10 +143,10 @@ class Module_cms_polls extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_POLLS'),
             comcode_lang_string('DOC_POLLS'),
-            array_merge(array(
-                has_privilege(get_member(), 'submit_midrange_content', 'cms_polls') ? array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_POLL')) : null,
-                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_polls') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_OR_CHOOSE_POLL')) : null,
-            ), manage_custom_fields_donext_link('poll')),
+            array_merge([
+                has_privilege(get_member(), 'submit_midrange_content', 'cms_polls') ? ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_POLL')] : null,
+                has_privilege(get_member(), 'edit_own_midrange_content', 'cms_polls') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_OR_CHOOSE_POLL')] : null,
+            ], manage_custom_fields_donext_link('poll')),
             do_lang('MANAGE_POLLS')
         );
     }
@@ -164,28 +164,28 @@ class Module_cms_polls extends Standard_crud_module
         $default_order = 'is_current DESC,add_time DESC';
         $current_ordering = get_param_string('sort', $default_order, INPUT_FILTER_GET_COMPLEX);
         if ($current_ordering == 'is_current DESC,add_time DESC') {
-            list($sortable, $sort_order) = array('is_current DESC,add_time', 'DESC');
+            list($sortable, $sort_order) = ['is_current DESC,add_time', 'DESC'];
         } elseif (($current_ordering == 'is_current ASC,add_time ASC') || ($current_ordering == 'is_current DESC,add_time ASC')) {
-            list($sortable, $sort_order) = array('is_current ASC,add_time', 'ASC');
+            list($sortable, $sort_order) = ['is_current ASC,add_time', 'ASC'];
         } else {
             if (strpos($current_ordering, ' ') === false) {
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
             list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
         }
-        $sortables = array(
+        $sortables = [
             'question' => do_lang_tempcode('QUESTION'),
             'add_time' => do_lang_tempcode('ADDED'),
             'is_current DESC,add_time' => do_lang_tempcode('CURRENT'),
             'submitter' => do_lang_tempcode('metadata:OWNER'),
             'poll_views' => do_lang_tempcode('COUNT_VIEWS'),
             'votes1+votes2+votes3+votes4+votes5+votes6+votes7+votes8+votes9+votes10' => do_lang_tempcode('COUNT_TOTAL'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('QUESTION'),
             do_lang_tempcode('ADDED'),
             do_lang_tempcode('CURRENT'),
@@ -194,14 +194,14 @@ class Module_cms_polls extends Standard_crud_module
             do_lang_tempcode('COUNT_VIEWS'),
             do_lang_tempcode('COUNT_TOTAL'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_polls') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, (($only_owned === null) ? array() : array('submitter' => $only_owned)));
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, (($only_owned === null) ? [] : ['submitter' => $only_owned]));
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $username = protect_from_escaping($GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['submitter']));
 
@@ -209,8 +209,8 @@ class Module_cms_polls extends Standard_crud_module
             $used = ($total_votes != 0);
             $current = ($row['is_current'] == 1);
 
-            $result_entries->attach(results_entry(array(
-                protect_from_escaping(hyperlink(build_url(array('page' => 'polls', 'type' => 'view', 'id' => $row['id']), get_module_zone('polls')), get_translated_text($row['question']), false, true)),
+            $result_entries->attach(results_entry([
+                protect_from_escaping(hyperlink(build_url(['page' => 'polls', 'type' => 'view', 'id' => $row['id']], get_module_zone('polls')), get_translated_text($row['question']), false, true)),
                 get_timezoned_date_time($row['add_time']),
                 $current ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
                 ($used || $current) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'),
@@ -218,13 +218,13 @@ class Module_cms_polls extends Standard_crud_module
                 integer_format($row['poll_views']),
                 do_lang_tempcode('VOTES', escape_html(integer_format($total_votes))),
                 protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id']))),
-            ), true));
+            ], true));
         }
 
-        $search_url = build_url(array('page' => 'search', 'id' => 'polls'), get_module_zone('search'));
-        $archive_url = build_url(array('page' => 'polls'), get_module_zone('polls'));
+        $search_url = build_url(['page' => 'search', 'id' => 'polls'], get_module_zone('search'));
+        $archive_url = build_url(['page' => 'polls'], get_module_zone('polls'));
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
     }
 
     /**
@@ -279,7 +279,7 @@ class Module_cms_polls extends Standard_crud_module
         $fields->attach(form_input_line_comcode(do_lang_tempcode('ANSWER_X', escape_html(integer_format(10))), do_lang_tempcode('DESCRIPTION_ANSWER'), 'option10', $a10, false));
         if (has_privilege(get_member(), 'choose_poll')) {
             if ($question == '') {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'is_current', array('is_current' => 1));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('poll', 'is_current', ['is_current' => 1]);
                 if ($test === null) {
                     $current = true;
                 }
@@ -290,14 +290,14 @@ class Module_cms_polls extends Standard_crud_module
         // Metadata
         require_code('feedback2');
         $feedback_fields = feedback_fields($this->content_type, $allow_rating == 1, $allow_comments == 1, $allow_trackbacks == 1, false, $notes, $allow_comments == 2, false, true, false);
-        $fields->attach(metadata_get_fields('poll', ($id === null) ? null : strval($id), false, array(), ($feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
+        $fields->attach(metadata_get_fields('poll', ($id === null) ? null : strval($id), false, [], ($feedback_fields->is_empty()) ? METADATA_HEADER_YES : METADATA_HEADER_FORCE));
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
             $fields->attach(content_review_get_fields('poll', ($id === null) ? null : strval($id)));
         }
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -308,11 +308,11 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function get_submitter($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('submitter', 'date_and_time'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['submitter', 'date_and_time'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
-            return array(null, null);
+            return [null, null];
         }
-        return array(intval($id), $rows[0]['submitter'], $rows[0]['date_and_time']);
+        return [intval($id), $rows[0]['submitter'], $rows[0]['date_and_time']];
     }
 
     /**
@@ -323,7 +323,7 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => intval($id)));
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => intval($id)]);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
         }
@@ -418,7 +418,7 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function edit_actualisation($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('is_current', 'submitter', 'num_options'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['is_current', 'submitter', 'num_options'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
         }
@@ -477,8 +477,8 @@ class Module_cms_polls extends Standard_crud_module
 
         $current = post_param_integer('validated', 0);
 
-        if (($current == 1) && ($GLOBALS['SITE_DB']->query_select_value('poll', 'is_current', array('id' => $id)) == 0)) { // Just became validated, syndicate as just added
-            $submitter = $GLOBALS['SITE_DB']->query_select_value('poll', 'submitter', array('id' => $id));
+        if (($current == 1) && ($GLOBALS['SITE_DB']->query_select_value('poll', 'is_current', ['id' => $id]) == 0)) { // Just became validated, syndicate as just added
+            $submitter = $GLOBALS['SITE_DB']->query_select_value('poll', 'submitter', ['id' => $id]);
 
             if (has_actual_page_access(get_modal_user(), 'polls')) {
                 require_code('activities');
@@ -514,7 +514,7 @@ class Module_cms_polls extends Standard_crud_module
      */
     public function delete_actualisation($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('is_current', 'submitter'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['is_current', 'submitter'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
         }

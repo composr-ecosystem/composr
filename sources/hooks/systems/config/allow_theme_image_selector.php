@@ -30,7 +30,7 @@ class Hook_config_allow_theme_image_selector
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_THEME_IMAGE_SELECTOR',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_allow_theme_image_selector
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

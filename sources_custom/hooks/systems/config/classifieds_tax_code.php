@@ -25,7 +25,7 @@ class Hook_config_classifieds_tax_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLASSIFIEDS_TAX_CODE',
             'type' => 'tax_code',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_classifieds_tax_code
             'public' => false,
 
             'addon' => 'classified_ads',
-        );
+        ];
     }
 
     /**

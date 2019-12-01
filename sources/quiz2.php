@@ -27,9 +27,9 @@
 function load_quiz_questions_to_string($id)
 {
     $text = '';
-    $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $id), 'ORDER BY q_order');
+    $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id], 'ORDER BY q_order');
     foreach ($question_rows as $q) {
-        $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', array('*'), array('q_question' => $q['id']), 'ORDER BY q_order');
+        $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $q['id']], 'ORDER BY q_order');
         $text .= get_translated_text($q['q_question_text']);
         $question_extra_text = get_translated_text($q['q_question_extra_text']);
         $text .= ' [' . $q['q_type'] . ']';
@@ -69,7 +69,7 @@ function parse_quiz_question_line($question, $answers, $question_extra_text = ''
 
     // Type?
     $type = ((empty($answers)) ? 'SHORT' : 'MULTIPLECHOICE');
-    foreach (array('MULTIPLECHOICE', 'MULTIMULTIPLE', 'LONG', 'SHORT', 'SHORT_STRICT') as $possible_type) {
+    foreach (['MULTIPLECHOICE', 'MULTIMULTIPLE', 'LONG', 'SHORT', 'SHORT_STRICT'] as $possible_type) {
         if (strpos($question, ' [' . $possible_type . ']') !== false) {
             $type = $possible_type;
         }
@@ -103,7 +103,7 @@ function parse_quiz_question_line($question, $answers, $question_extra_text = ''
         }
     }
 
-    return array($question, $type, $required, $marked, $question_extra_text);
+    return [$question, $type, $required, $marked, $question_extra_text];
 }
 
 /**
@@ -120,7 +120,7 @@ function _save_available_quiz_answers($id, $text, $type)
 {
     // Basic pre-parse
     $_qs = explode("\n\n", $text);
-    $qs = array();
+    $qs = [];
     foreach ($_qs as $q) {
         $q = trim($q);
         if ($q != '') {
@@ -130,12 +130,12 @@ function _save_available_quiz_answers($id, $text, $type)
     $num_q = 0;
 
     // Try and bind to existing questions (if editing)
-    $_existing = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $id), 'ORDER BY q_order');
-    $qs2 = array();
-    $existing = array();
+    $_existing = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id], 'ORDER BY q_order');
+    $qs2 = [];
+    $existing = [];
     foreach ($qs as $i => $q) {
         $_as = explode("\n", $q);
-        $as = array();
+        $as = [];
         foreach ($_as as $a) {
             if ($a != '') {
                 $as[] = $a;
@@ -171,7 +171,7 @@ function _save_available_quiz_answers($id, $text, $type)
     // Parse out answers etc for each question
     foreach ($qs2 as $i => $q) {
         $_as = explode("\n", $q);
-        $as = array();
+        $as = [];
         foreach ($_as as $a) {
             if ($a != '') {
                 if (substr($a, 0, 1) == ':') { // Is an explanation
@@ -179,7 +179,7 @@ function _save_available_quiz_answers($id, $text, $type)
                         $as[count($as) - 1][1] = trim($as[count($as) - 1][1] . "\n" . trim(substr($a, 1)));
                     }
                 } else {
-                    $as[] = array($a, '');
+                    $as[] = [$a, ''];
                 }
             }
         }
@@ -194,13 +194,13 @@ function _save_available_quiz_answers($id, $text, $type)
         list($question, $type, $required, $marked, $question_extra_text) = parse_quiz_question_line($question, $as, $question_extra_text);
 
         if ($existing[$i] === null) { // We're adding a new question on the end
-            $map = array(
+            $map = [
                 'q_quiz' => $id,
                 'q_type' => $type,
                 'q_order' => $i,
                 'q_required' => $required,
                 'q_marked' => $marked,
-            );
+            ];
             $map += insert_lang_comcode('q_question_text', $question, 2);
             $map += insert_lang_comcode('q_question_extra_text', $question_extra_text, 2);
             $q_id = $GLOBALS['SITE_DB']->query_insert('quiz_questions', $map, true);
@@ -212,11 +212,11 @@ function _save_available_quiz_answers($id, $text, $type)
                 $is_correct = ((($x == 0) && (strpos($qs2[$i], ' [*]') === false) && ($type != 'SURVEY')) || (strpos($a, ' [*]') !== false)) ? 1 : 0;
                 $a = str_replace(' [*]', '', $a);
 
-                $map = array(
+                $map = [
                     'q_question' => $q_id,
                     'q_is_correct' => $is_correct,
                     'q_order' => $x,
-                );
+                ];
                 $map += insert_lang_comcode('q_answer_text', $a, 2);
                 $map += insert_lang('q_explanation', $explanation, 2);
                 $GLOBALS['SITE_DB']->query_insert('quiz_question_answers', $map);
@@ -228,20 +228,20 @@ function _save_available_quiz_answers($id, $text, $type)
                 }
             }
 
-            $map = array(
+            $map = [
                 'q_quiz' => $id,
                 'q_type' => $type,
                 'q_order' => $i,
                 'q_required' => $required,
                 'q_marked' => $marked,
-            );
+            ];
             $map += lang_remap('q_question_text', $existing[$i]['q_question_text'], $question);
             $map += lang_remap('q_question_extra_text', $existing[$i]['q_question_extra_text'], $question_extra_text);
-            $GLOBALS['SITE_DB']->query_update('quiz_questions', $map, array('id' => $existing[$i]['id']));
+            $GLOBALS['SITE_DB']->query_update('quiz_questions', $map, ['id' => $existing[$i]['id']]);
 
             // Now we add the answers
-            $_existing_a = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', array('*'), array('q_question' => $existing[$i]['id']), 'ORDER BY q_order');
-            $existing_a = array();
+            $_existing_a = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $existing[$i]['id']], 'ORDER BY q_order');
+            $existing_a = [];
             foreach ($as as $x => $_a) { // Try and match to an existing answer
                 list($a, $explanation) = $_a;
 
@@ -271,19 +271,19 @@ function _save_available_quiz_answers($id, $text, $type)
                 $a = str_replace(' [*]', '', $a);
 
                 if ($existing_a[$x] !== null) {
-                    $map = array(
+                    $map = [
                         'q_is_correct' => $is_correct,
                         'q_order' => $x,
-                    );
+                    ];
                     $map += lang_remap_comcode('q_answer_text', $existing_a[$x]['q_answer_text'], $a);
                     $map += lang_remap('q_explanation', $existing_a[$x]['q_explanation'], $explanation);
-                    $GLOBALS['SITE_DB']->query_update('quiz_question_answers', $map, array('id' => $existing_a[$x]['id']), '', 1);
+                    $GLOBALS['SITE_DB']->query_update('quiz_question_answers', $map, ['id' => $existing_a[$x]['id']], '', 1);
                 } else {
-                    $map = array(
+                    $map = [
                         'q_question' => $existing[$i]['id'],
                         'q_is_correct' => $is_correct,
                         'q_order' => $x,
-                    );
+                    ];
                     $map += insert_lang_comcode('q_answer_text', $a, 2);
                     $map += insert_lang('q_explanation', $explanation, 2);
                     $GLOBALS['SITE_DB']->query_insert('quiz_question_answers', $map);
@@ -292,7 +292,7 @@ function _save_available_quiz_answers($id, $text, $type)
             // If there were more answers before, deleting extra ones
             if (count($existing_a) > count($as)) {
                 for ($x = count($as); $x < count($existing_a); $x++) {
-                    $GLOBALS['SITE_DB']->query_delete('quiz_question_answers', array('id' => $existing_a[$x]['id']), '', 1);
+                    $GLOBALS['SITE_DB']->query_delete('quiz_question_answers', ['id' => $existing_a[$x]['id']], '', 1);
                 }
             }
         }
@@ -303,7 +303,7 @@ function _save_available_quiz_answers($id, $text, $type)
     // If there were more answers questions, deleting extra ones
     if (count($existing) > $num_q) {
         for ($x = $num_q; $x < count($existing); $x++) {
-            $GLOBALS['SITE_DB']->query_delete('quiz_questions', array('id' => $existing[$x]['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('quiz_questions', ['id' => $existing[$x]['id']], '', 1);
         }
     }
 }
@@ -355,7 +355,7 @@ function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $note
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'q_timeout' => $timeout,
         'q_notes' => $notes,
         'q_percentage' => $percentage,
@@ -372,7 +372,7 @@ function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $note
         'q_reveal_answers' => $reveal_answers,
         'q_shuffle_questions' => $shuffle_questions,
         'q_shuffle_answers' => $shuffle_answers,
-    );
+    ];
     $map += insert_lang('q_name', $name, 2);
     $map += insert_lang_comcode('q_start_text', $start_text, 2);
     $map += insert_lang_comcode('q_end_text', $end_text, 2);
@@ -383,7 +383,7 @@ function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $note
 
     require_code('content2');
     if (($meta_keywords == '') && ($meta_description == '')) {
-        seo_meta_set_for_implicit('quiz', strval($id), array($name, $start_text), $start_text);
+        seo_meta_set_for_implicit('quiz', strval($id), [$name, $start_text], $start_text);
     } else {
         seo_meta_set_for_explicit('quiz', strval($id), $meta_keywords, $meta_description);
     }
@@ -435,7 +435,7 @@ function add_quiz($name, $timeout, $start_text, $end_text, $end_text_fail, $note
  */
 function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail, $notes, $percentage, $open_time, $close_time, $num_winners, $redo_time, $type, $validated, $text, $meta_keywords, $meta_description, $points_for_passing = 0, $tied_newsletter = null, $reveal_answers = 0, $shuffle_questions = 0, $shuffle_answers = 0, $add_time = null, $submitter = null, $null_is_literal = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
     }
@@ -458,7 +458,7 @@ function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail,
         send_content_validated_notification('quiz', strval($id));
     }
 
-    $update_map = array(
+    $update_map = [
         'q_timeout' => $timeout,
         'q_notes' => $notes,
         'q_percentage' => $percentage,
@@ -473,7 +473,7 @@ function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail,
         'q_reveal_answers' => $reveal_answers,
         'q_shuffle_questions' => $shuffle_questions,
         'q_shuffle_answers' => $shuffle_answers,
-    );
+    ];
     $update_map += lang_remap('q_name', $_name, $name);
     $update_map += lang_remap_comcode('q_start_text', $_start_text, $start_text);
     $update_map += lang_remap_comcode('q_end_text', $_end_text, $end_text);
@@ -486,7 +486,7 @@ function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail,
         $update_map['q_submitter'] = $submitter;
     }
 
-    $GLOBALS['SITE_DB']->query_update('quizzes', $update_map, array('id' => $id));
+    $GLOBALS['SITE_DB']->query_update('quizzes', $update_map, ['id' => $id]);
 
     if (!fractional_edit()) {
         _save_available_quiz_answers($id, $text, $type);
@@ -520,7 +520,7 @@ function edit_quiz($id, $name, $timeout, $start_text, $end_text, $end_text_fail,
  */
 function delete_quiz($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
     }
@@ -538,29 +538,29 @@ function delete_quiz($id)
     require_code('content2');
     seo_meta_erase_storage('quiz', strval($id));
 
-    $GLOBALS['SITE_DB']->query_delete('quizzes', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('quiz_member_last_visit', array('v_quiz_id' => $id));
-    $GLOBALS['SITE_DB']->query_delete('quiz_winner', array('q_quiz' => $id));
-    $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $id));
+    $GLOBALS['SITE_DB']->query_delete('quizzes', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('quiz_member_last_visit', ['v_quiz_id' => $id]);
+    $GLOBALS['SITE_DB']->query_delete('quiz_winner', ['q_quiz' => $id]);
+    $questions = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id]);
     foreach ($questions as $question) {
         delete_lang($question['q_question_text']);
         delete_lang($question['q_question_extra_text']);
-        $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', array('*'), array('q_question' => $question['id']));
+        $answers = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $question['id']]);
         foreach ($answers as $answer) {
             delete_lang($answer['q_answer_text']);
             delete_lang($answer['q_explanation']);
         }
-        $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', array('q_question' => $question['id']));
-        $GLOBALS['SITE_DB']->query_delete('quiz_question_answers', array('q_question' => $question['id']));
+        $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_question' => $question['id']]);
+        $GLOBALS['SITE_DB']->query_delete('quiz_question_answers', ['q_question' => $question['id']]);
     }
-    $GLOBALS['SITE_DB']->query_delete('quiz_questions', array('q_quiz' => $id));
-    $GLOBALS['SITE_DB']->query_delete('quiz_entries', array('q_quiz' => $id));
+    $GLOBALS['SITE_DB']->query_delete('quiz_questions', ['q_quiz' => $id]);
+    $GLOBALS['SITE_DB']->query_delete('quiz_entries', ['q_quiz' => $id]);
 
     update_catalogue_content_ref('quiz', strval($id), '');
 
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'quiz', 'category_name' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'quiz', 'category_name' => strval($id)]);
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'quiz', 'm_resource_type' => 'do', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'quiz', 'm_resource_type' => 'do', 'm_resource_id' => strval($id)]);
 
     log_it('DELETE_QUIZ', strval($id), $name);
 

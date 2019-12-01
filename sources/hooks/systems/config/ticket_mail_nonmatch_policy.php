@@ -30,7 +30,7 @@ class Hook_config_ticket_mail_nonmatch_policy
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TICKET_MAIL_NONMATCH_POLICY',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_ticket_mail_nonmatch_policy
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

@@ -35,7 +35,7 @@ class rest_test_set extends cms_test_case
         // This is needed for the default news categories to be discovered in the alternative_ids table
         require_code('commandr_fs');
         $fs = new Commandr_fs();
-        $fs->listing(array('var', 'news'));
+        $fs->listing(['var', 'news']);
 
         if ($this->path === null) {
             $this->path = '/var/news/general/hello' . substr(md5(uniqid('', true)), 0, 10) . '.cms';
@@ -49,12 +49,12 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => $this->session_id);
+        $post_params = [json_encode(['summary' => 'test'])];
+        $cookies = [get_session_cookie() => $this->session_id];
         $raw_post = true;
         $http_verb = 'POST';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type));
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {
@@ -80,12 +80,12 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => $this->session_id);
+        $post_params = [json_encode(['summary' => 'test'])];
+        $cookies = [get_session_cookie() => $this->session_id];
         $raw_post = true;
         $http_verb = 'PUT';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type));
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {
@@ -108,12 +108,12 @@ class rest_test_set extends cms_test_case
         }
 
         $url = get_base_url() . '/data/endpoint.php/content/commandr_fs' . $this->path;
-        $post_params = array(json_encode(array('summary' => 'test')));
-        $cookies = array(get_session_cookie() => $this->session_id);
+        $post_params = [json_encode(['summary' => 'test'])];
+        $cookies = [get_session_cookie() => $this->session_id];
         $raw_post = true;
         $http_verb = 'DELETE';
         $raw_content_type = 'application/json';
-        $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type));
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'post_params' => $post_params, 'cookies' => $cookies, 'raw_post' => $raw_post, 'http_verb' => $http_verb, 'raw_content_type' => $raw_content_type]);
         $_result = @json_decode($result, true);
         $this->assertTrue(is_array($_result));
         if (is_array($_result)) {

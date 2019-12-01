@@ -28,13 +28,13 @@ class template_no_unused_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         $all_code = '';
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
 
-        $exceptions = array(
+        $exceptions = [
             'MAIL_RAW',
             'BLOCK_MAIN_MEMBERS',
             'BLOCK_MAIN_MEMBERS_COMPLEX',
@@ -196,7 +196,7 @@ class template_no_unused_test_set extends cms_test_case
             'HEADER_CLASSIC',
             'HEADER_SIDE',
             'HEADER_MODERN',
-        );
+        ];
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
@@ -204,10 +204,10 @@ class template_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $paths = array(
+            $paths = [
                 get_file_base() . '/themes/' . $theme . '/templates',
                 get_file_base() . '/themes/' . $theme . '/templates_custom',
-            );
+            ];
             foreach ($paths as $path) {
                 $dh = @opendir($path);
                 if ($dh !== false) {

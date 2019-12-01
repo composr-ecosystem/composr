@@ -51,7 +51,7 @@ function load_integrity_manifest($previous = false)
     $path = get_file_base() . '/data/' . ($previous ? 'files_previous.bin' : 'files.bin');
     $manifest = @unserialize(cms_file_get_contents_safe($path, FILE_READ_LOCK));
     if ($manifest === false) {
-        $manifest = array();
+        $manifest = [];
     }
     return $manifest;
 }
@@ -69,7 +69,7 @@ function load_files_list_of_installed_addons($manifest)
         $hooks = find_all_hooks('systems', 'addon_registry');
     } else {
         // In case failing with a critical error
-        $hooks = array();
+        $hooks = [];
         $dir = get_file_base() . '/sources/hooks/systems/addon_registry';
         $dh = @opendir($dir);
         if ($dh !== false) {
@@ -81,7 +81,7 @@ function load_files_list_of_installed_addons($manifest)
             closedir($dh);
         }
     }
-    $hook_files = array();
+    $hook_files = [];
     foreach ($hooks as $hook => $hook_type) {
         if ($hook_type != 'sources_custom') {
             if (!isset($manifest['sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php'])) {
@@ -92,17 +92,17 @@ function load_files_list_of_installed_addons($manifest)
         $path = get_file_base() . '/' . $hook_type . '/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
         $hook_files[$hook] = $path;
     }
-    $files_to_check = array();
+    $files_to_check = [];
     foreach ($hook_files as $addon_name => $hook_path) {
         $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
             $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
         }
     }
     sort($files_to_check);
 
-    return array($files_to_check, $hook_files);
+    return [$files_to_check, $hook_files];
 }
 
 /**
@@ -125,7 +125,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
 
     // Moved module handling
     if ($basic) {
-        $not_missing = array();
+        $not_missing = [];
     } else {
         $hidden = post_fields_relay();
         $ret_str .= '<form title="' . do_lang('PROCEED') . '" action="upgrader.php?type=_integrity_scan" method="post">' . $hidden;
@@ -147,7 +147,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
     $outdated__outdated_original = '';
     $outdated__missing_file_entirely = '';
     $outdated__future_files = '';
-    $files_determined_to_upload = array();
+    $files_determined_to_upload = [];
     foreach ($files_to_check as $file) {
         if (($basic) && (time() - $_SERVER['REQUEST_TIME'] > 5)) {
             return ''; // Taking too long
@@ -255,7 +255,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
     // And some special help for unix geeks (copying missing files is a little hard when directories may be missing)
     if (($unix_help) && (php_function_allowed('escapeshellcmd'))) {
         $unix_out = 'CMS_EXTRACTED_AT="<manual-extracted-at-dir>";' . "\n" . 'cd "<temp-dir-to-upload-from>";' . "\n";
-        $directories_to_make = array();
+        $directories_to_make = [];
         foreach ($files_determined_to_upload as $file) {
             $dirname = dirname($file);
             if ($dirname == '.') {
@@ -327,7 +327,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
                     };
                 </script>';
             $ret_str .= '<p class="associated-details"><a href="#!" onclick="return tick_all(this.parentNode.parentNode.parentNode);">' . do_lang('UPGRADER_CHECK_ALL') . '</a></p>';
-            $proceed_icon = do_template('ICON', array('_GUID' => 'be08f7c50a1407f152770aef6ab6ead7', 'NAME' => 'buttons/proceed'));
+            $proceed_icon = do_template('ICON', ['_GUID' => 'be08f7c50a1407f152770aef6ab6ead7', 'NAME' => 'buttons/proceed']);
             $ret_str .= '<button onclick="return solve_max_input_vars(this.form);" class="btn btn-primary btn-scr buttons--proceed" accesskey="c" type="submit">' . $proceed_icon->evaluate() . ' ' . do_lang('UPGRADER_AUTO_HANDLE') . '</button>';
             $ret_str .= '</div>';
 
@@ -351,7 +351,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
 function move_modules_ui()
 {
     $out = '';
-    $outr = array();
+    $outr = [];
 
     $zones = find_all_zones();
     foreach ($zones as $zone) {
@@ -375,7 +375,7 @@ function move_modules_ui()
         }
     }
 
-    return array($out, $outr);
+    return [$out, $outr];
 }
 
 /**
@@ -480,7 +480,7 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
         closedir($dh);
     }
 
-    return array($outdated__outdated_original_and_override, $outdated__possibly_outdated_override, $outdated__missing_original_but_has_override, $outdated__uninstalled_addon_but_has_override);
+    return [$outdated__outdated_original_and_override, $outdated__possibly_outdated_override, $outdated__missing_original_but_has_override, $outdated__uninstalled_addon_but_has_override];
 }
 
 /**
@@ -497,7 +497,7 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
 function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_files = null, $files = null)
 {
     if ($addon_files === null) {
-        $addon_files = collapse_2d_complexity('filepath', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', array('filepath', 'addon_name')));
+        $addon_files = collapse_2d_complexity('filepath', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath', 'addon_name']));
     }
     if ($old_files === null) {
         $old_files = load_integrity_manifest(true);
@@ -517,11 +517,11 @@ function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_f
     $dh = @opendir($dir);
     if ($dh !== false) {
         if ($rela == '') {
-            $old_addons_now_gone = array(
+            $old_addons_now_gone = [
                 'sources/hooks/systems/addon_registry/core_installation_uninstallation.php', // LEGACY
-            );
-            $modules_moved_intentionally = array(
-            );
+            ];
+            $modules_moved_intentionally = [
+            ];
             foreach (array_merge($old_addons_now_gone, $modules_moved_intentionally) as $x) {
                 if (file_exists(get_file_base() . '/' . $x)) {
                     $alien .= '<li>';
@@ -532,7 +532,7 @@ function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_f
                 }
             }
         }
-        $dir_files = array();
+        $dir_files = [];
         while (($file = readdir($dh)) !== false) {
             $dir_files[] = $file;
         }
@@ -570,7 +570,7 @@ function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_f
                 if (!array_key_exists($rela . $file, $files)) {
                     if (strpos($rela, 'pages/modules') !== false) { // Check it isn't a moved module
                         $zones = find_all_zones();
-                        $matches = array();
+                        $matches = [];
                         preg_match('#(.*)pages/modules#', $rela, $matches);
                         $current_zone = str_replace('/', '', $matches[1]);
                         foreach ($zones as $zone) {
@@ -611,7 +611,7 @@ function check_alien($dir, $rela = '', $raw = false, $addon_files = null, $old_f
         $alien = '';
     }
 
-    return array($alien, $addon);
+    return [$alien, $addon];
 }
 
 /**
@@ -649,7 +649,7 @@ function upgrader__integrity_scan_screen()
 
             // Now delete empty directories
             $_subdirs = explode('/', dirname($bits[1]));
-            $subdirs = array();
+            $subdirs = [];
             $buildup = '';
             foreach ($_subdirs as $subdir) {
                 if ($buildup != '') {
@@ -661,7 +661,7 @@ function upgrader__integrity_scan_screen()
             }
             foreach (array_reverse($subdirs) as $subdir) {
                 $files = @scandir(get_file_base() . '/' . $subdir);
-                if (($files !== false) && (empty(array_diff($files, array('..', '.', '.DS_Store'))))) {
+                if (($files !== false) && (empty(array_diff($files, ['..', '.', '.DS_Store'])))) {
                     @unlink(get_file_base() . '/' . $subdir . '/.DS_Store');
                     @rmdir(get_file_base() . '/' . $subdir);
                 }
@@ -692,7 +692,7 @@ function upgrader_addon_remove_screen()
     $out .= '</p>';
     $out .= '<form action="upgrader.php?type=_addon_remove" method="post">';
     $out .= '<p><label for="addons">Addons to remove:</label><br /><textarea name="addons" id="addons" class="form-control" rows="10"></textarea>';
-    $icon = do_template('ICON', array('_GUID' => 'badc7bcfa033db703fd501a97cb64314', 'NAME' => 'admin/delete3'));
+    $icon = do_template('ICON', ['_GUID' => 'badc7bcfa033db703fd501a97cb64314', 'NAME' => 'admin/delete3']);
     $out .= '<button class="btn btn-danger btn-scr" type="submit">' . $icon->evaluate() . ' Remove addon files</button>';
     $out .= post_fields_relay();
     $out .= '</form>';
@@ -712,7 +712,7 @@ function upgrader__addon_remove_screen()
 
     $_addons = post_param_string('addons');
     $addons = explode("\n", $_addons);
-    $addon_files = array();
+    $addon_files = [];
     require_code('addons');
     foreach ($addons as $addon_name) {
         $addon_name = trim($addon_name);

@@ -30,7 +30,7 @@ class Module_forums
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -56,9 +56,9 @@ class Module_forums
             return null;
         }
 
-        return array(
-            '!' => array('SECTION_FORUMS', 'menu/social/forum/forums'),
-        );
+        return [
+            '!' => ['SECTION_FORUMS', 'menu/social/forum/forums'],
+        ];
     }
 
     public $title;
@@ -125,12 +125,12 @@ class Module_forums
             }
 
             require_code('site2');
-            redirect_exit(get_self_url(true, false, array('url' => protect_url_parameter(get_forum_base_url()))));
+            redirect_exit(get_self_url(true, false, ['url' => protect_url_parameter(get_forum_base_url())]));
         }
 
         $old_method = false;
         if ($old_method) {
-            return do_template('FORUMS_EMBED', array('_GUID' => '159575f6b83c5366d29e184a8dd5fc49', 'FORUMS' => $access_url));
+            return do_template('FORUMS_EMBED', ['_GUID' => '159575f6b83c5366d29e184a8dd5fc49', 'FORUMS' => $access_url]);
         }
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
@@ -138,6 +138,6 @@ class Module_forums
         require_code('integrator');
         $result = reprocess_url($access_url, $base_url);
 
-        return do_template('COMCODE_SURROUND', array('_GUID' => '4d5a8ce37df94f7d61f1a96f5689b9c0', 'CLASS' => 'clearfix', 'CONTENT' => protect_from_escaping($result)));
+        return do_template('COMCODE_SURROUND', ['_GUID' => '4d5a8ce37df94f7d61f1a96f5689b9c0', 'CLASS' => 'clearfix', 'CONTENT' => protect_from_escaping($result)]);
     }
 }

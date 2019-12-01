@@ -30,7 +30,7 @@ class Hook_config_sitewide_im
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITEWIDE_IM',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -42,7 +42,7 @@ class Hook_config_sitewide_im
             'public' => true,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

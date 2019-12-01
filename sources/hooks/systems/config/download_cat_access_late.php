@@ -30,7 +30,7 @@ class Hook_config_download_cat_access_late
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DOWNLOAD_CAT_ACCESS_LATE',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_download_cat_access_late
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

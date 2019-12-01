@@ -25,14 +25,14 @@ class Block_main_tutorial_rating
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -52,26 +52,26 @@ class Block_main_tutorial_rating
         }
 
         if (!addon_installed('composr_homesite')) {
-            return do_template('RED_ALERT', array('_GUID' => 'hz8wk7almyfhzemamnguz0e6ex01qrvs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))));
+            return do_template('RED_ALERT', ['_GUID' => 'hz8wk7almyfhzemamnguz0e6ex01qrvs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
         }
         if (!addon_installed('composr_homesite_support_credits')) {
-            return do_template('RED_ALERT', array('_GUID' => 'dopmcgzft9wr03wark2ydpfkwdzalztg', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))));
+            return do_template('RED_ALERT', ['_GUID' => 'dopmcgzft9wr03wark2ydpfkwdzalztg', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite_support_credits'))]);
         }
         if (!addon_installed('composr_release_build')) {
-            return do_template('RED_ALERT', array('_GUID' => 'mz0bowx3abdddomvv19ps29mpcnolnak', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build'))));
+            return do_template('RED_ALERT', ['_GUID' => 'mz0bowx3abdddomvv19ps29mpcnolnak', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_release_build'))]);
         }
 
         $block_id = get_block_id($map);
 
         $page_name = get_page_name();
 
-        $views = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_internal', 't_views', array('t_page_name' => $page_name));
+        $views = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_internal', 't_views', ['t_page_name' => $page_name]);
         if ($views === null) {
-            $GLOBALS['SITE_DB']->query_insert('tutorials_internal', array('t_views' => 0, 't_page_name' => $page_name));
+            $GLOBALS['SITE_DB']->query_insert('tutorials_internal', ['t_views' => 0, 't_page_name' => $page_name]);
 
             $views = 0;
         }
-        $GLOBALS['SITE_DB']->query_update('tutorials_internal', array('t_views' => $views + 1), array('t_page_name' => $page_name), '', 1);
+        $GLOBALS['SITE_DB']->query_update('tutorials_internal', ['t_views' => $views + 1], ['t_page_name' => $page_name], '', 1);
 
         require_code('feedback');
 
@@ -86,10 +86,10 @@ class Block_main_tutorial_rating
 
         $rating = display_rating($self_url, $self_title, 'tutorial', $id, 'RATING_INLINE_DYNAMIC');
 
-        return do_template('BLOCK_MAIN_TUTORIAL_RATING', array(
+        return do_template('BLOCK_MAIN_TUTORIAL_RATING', [
             '_GUID' => 'f68915b7d913e4736b558d0ccd59634a',
             'BLOCK_ID' => $block_id,
             'RATING' => $rating,
-        ));
+        ]);
     }
 }

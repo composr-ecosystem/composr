@@ -30,14 +30,14 @@ class Block_main_forum_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'forum', 'member_based', 'date_key', 'title', 'optimise', 'check');
+        $info['parameters'] = ['param', 'forum', 'member_based', 'date_key', 'title', 'optimise', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_forum_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('optimise', $map) ? $map['optimise'] : '0',
@@ -79,11 +79,11 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'ivs1rzweo698vmevkjwl2nfas9pg60nm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'ivs1rzweo698vmevkjwl2nfas9pg60nm', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', array('_GUID' => 'cp9sxfimulv0ufhct6zca6ntdivhrt8p', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => 'cp9sxfimulv0ufhct6zca6ntdivhrt8p', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_lang('news');
@@ -101,11 +101,11 @@ PHP;
 
         $date_key = array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime';
 
-        $rows = array();
+        $rows = [];
         $archive_url = null;
         $submit_url = new Tempcode();
 
-        $forum_ids = array();
+        $forum_ids = [];
         if ((get_forum_type() == 'cns') && ((strpos($forum_name, ',') !== false) || (preg_match('#\d[-\*\+]#', $forum_name) != 0) || (is_numeric($forum_name)))) {
             require_code('selectcode');
             $forum_names = selectcode_to_idlist_using_db($forum_name, 'id', 'f_forums', 'f_forums', 'f_parent_forum', 'f_parent_forum', 'id', true, true, $GLOBALS['FORUM_DB']);
@@ -113,7 +113,7 @@ PHP;
             $forum_names = explode(',', $forum_name);
         }
         if (($forum_name == do_lang('NEWS')) && (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name) === null)) {
-            $forum_names = array(do_lang('DEFAULT_FORUM_TITLE'));
+            $forum_names = [do_lang('DEFAULT_FORUM_TITLE')];
         }
         foreach ($forum_names as $forum_name) {
             $forum_name = is_integer($forum_name) ? strval($forum_name) : trim($forum_name);
@@ -135,7 +135,7 @@ PHP;
                 if ($archive_url === null) {
                     $archive_url = $GLOBALS['FORUM_DRIVER']->forum_url($forum_id, true); // First forum will count as archive
                     if (get_forum_type() == 'cns') {
-                        $submit_url = build_url(array('page' => 'topics', 'type' => 'new_topic', 'id' => $forum_id), get_module_zone('topics'));
+                        $submit_url = build_url(['page' => 'topics', 'type' => 'new_topic', 'id' => $forum_id], get_module_zone('topics'));
                     }
                 }
             }
@@ -144,7 +144,7 @@ PHP;
         $max_rows = 0;
         $rows = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $num_topics, 0, $max_rows, '', true, $date_key);
         if ($rows === null) {
-            $rows = array();
+            $rows = [];
         }
 
         sort_maps_by($rows, $date_key);
@@ -162,7 +162,7 @@ PHP;
 
             $id = $myrow['id'];
             $date = get_timezoned_date_time_tempcode($myrow[$date_key]);
-            $author_url = (((array_key_exists('member_based', $map)) && ($map['member_based'] == '1')) || (!addon_installed('authors'))) ? new Tempcode() : build_url(array('page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']), get_module_zone('authors'));
+            $author_url = (((array_key_exists('member_based', $map)) && ($map['member_based'] == '1')) || (!addon_installed('authors'))) ? new Tempcode() : build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));
             $author = $myrow['firstusername'];
             $news_title = escape_html($myrow['title']);
             if (is_object($myrow['firstpost'])) {
@@ -171,9 +171,9 @@ PHP;
                     $news = make_string_tempcode($news->evaluate());
                     if (get_forum_type() == 'cns') {
                         if (multi_lang_content()) {
-                            $GLOBALS['FORUM_DB']->query_update('translate', array('text_parsed' => $news->to_assembly()), array('id' => $myrow['firstpost_language_string'], 'language' => user_lang()), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('translate', ['text_parsed' => $news->to_assembly()], ['id' => $myrow['firstpost_language_string'], 'language' => user_lang()], '', 1);
                         } else {
-                            $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_post__text_parsed' => $news->to_assembly()), array('id' => $myrow['id']), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_post__text_parsed' => $news->to_assembly()], ['id' => $myrow['id']], '', 1);
                         }
                     }
                 }
@@ -185,7 +185,7 @@ PHP;
             }
             require_code('lorem');
             $full_url = $GLOBALS['FORUM_DRIVER']->topic_url($id, '', true);
-            $news_text->attach(do_template('NEWS_BOX', array(
+            $news_text->attach(do_template('NEWS_BOX', [
                 '_GUID' => '12fa98717a768ccbe28884bdbae0313b',
                 'GIVE_CONTEXT' => false,
                 'TRUNCATE' => false,
@@ -212,7 +212,7 @@ PHP;
                 'AUTHOR_URL' => $author_url,
                 'NEWS' => $news,
                 'FORUM_ID' => isset($myrow['forum_id']) ? strval($myrow['forum_id']) : '',
-            )));
+            ]));
 
             $i++;
 
@@ -221,7 +221,7 @@ PHP;
             }
         }
         if ($news_text->is_empty()) {
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'f55c90205b4c80162494fc5e2b565ce6',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => false,
@@ -229,14 +229,14 @@ PHP;
                 'MESSAGE' => do_lang_tempcode('NO_NEWS'),
                 'ADD_NAME' => do_lang_tempcode('ADD_TOPIC'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
 
         if ($forum_id === null) {
             $archive_url = '';
         }
 
-        return do_template('BLOCK_MAIN_FORUM_NEWS', array(
+        return do_template('BLOCK_MAIN_FORUM_NEWS', [
             '_GUID' => '36b05da9aed5a2056bdb266e2ce4be9f',
             'BLOCK_ID' => $block_id,
             'TITLE' => $_title,
@@ -247,6 +247,6 @@ PHP;
             'SUBMIT_URL' => $submit_url,
             'RSS_URL' => '',
             'ATOM_URL' => '',
-        ));
+        ]);
     }
 }

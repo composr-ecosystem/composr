@@ -34,21 +34,21 @@ class Hook_privacy_commandr extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
+        return [
+            'cookies' => [
                 /*'commandr_*' => $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? null : array(    Silly to include this
                     'reason' => 'Your current Commandr system environment',
                 ),*/
-            ),
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-            ),
-        );
+            'database_records' => [
+            ],
+        ];
     }
 }

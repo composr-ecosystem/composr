@@ -121,7 +121,7 @@ class Hook_media_rendering_hyperlink
                     $meta_title = escape_html($title);
                 }
 
-                return do_template('MEDIA_WEBPAGE_SEMANTIC', array(
+                return do_template('MEDIA_WEBPAGE_SEMANTIC', [
                     '_GUID' => '59ae26467bbde639a176a213d85370ea',
                     'TITLE' => $meta_details['t_title'],
                    'META_TITLE' => $meta_title,
@@ -130,7 +130,7 @@ class Hook_media_rendering_hyperlink
                    'URL' => $meta_details['t_url'],
                    'WIDTH' => ((array_key_exists('width', $attributes)) && ($attributes['width'] != '')) ? $attributes['width'] : get_option('thumb_width'),
                    'HEIGHT' => ((array_key_exists('height', $attributes)) && ($attributes['height'] != '')) ? $attributes['height'] : get_option('thumb_width'),
-                ));
+                ]);
             }
             // Hmm, okay we'll proceed towards a plain link if it's not a download and has no metadata to box
         } // Hmm, we explicitly said we want a plain link
@@ -155,7 +155,7 @@ class Hook_media_rendering_hyperlink
         // Render as a 'page' link?
         $page_link = url_to_page_link($_url_safe, true);
         if ($page_link != '') {
-            return _do_tags_comcode('page', array('param' => $page_link), make_string_tempcode(escape_html($link_captions_title)), false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
+            return _do_tags_comcode('page', ['param' => $page_link], make_string_tempcode(escape_html($link_captions_title)), false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
         }
 
         // Okay, just render as a URL then
@@ -165,6 +165,6 @@ class Hook_media_rendering_hyperlink
             $url_tempcode = new Tempcode();
             $url_tempcode->attach($url);
         }
-        return _do_tags_comcode('url', array('param' => $link_captions_title), $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
+        return _do_tags_comcode('url', ['param' => $link_captions_title], $url_tempcode, false, '', 0, $source_member, false, $GLOBALS['SITE_DB'], $comcode, false, false);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_mail_server_type
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SERVER_TYPE',
             'type' => 'list',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_mail_server_type
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

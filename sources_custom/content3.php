@@ -37,18 +37,18 @@ abstract class CMS_API_object
 function catalogue_find_options($field, $catalogue_name, $where = '')
 {
     if (!addon_installed('catalogues')) {
-        return array();
+        return [];
     }
 
     $sx = $catalogue_name . '__' . $field;
-    static $capi_catalogue_options = array();
+    static $capi_catalogue_options = [];
     if (isset($capi_catalogue_options[$sx])) {
         return $capi_catalogue_options[$sx];
     }
 
-    $cf_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('cf_name') => $field, 'c_name' => $catalogue_name));
-    $rows = $GLOBALS['SITE_DB']->query_select('catalogue_efv_short s JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=s.ce_id', array('s.*'), array('c_name' => $catalogue_name, 'cf_id' => $cf_id), $where . ' ORDER BY cv_value');
-    $out = array();
+    $cf_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('cf_name') => $field, 'c_name' => $catalogue_name]);
+    $rows = $GLOBALS['SITE_DB']->query_select('catalogue_efv_short s JOIN ' . get_table_prefix() . 'catalogue_entries e ON e.id=s.ce_id', ['s.*'], ['c_name' => $catalogue_name, 'cf_id' => $cf_id], $where . ' ORDER BY cv_value');
+    $out = [];
     foreach ($rows as $row) {
         $out[$row['ce_id']] = $row['cv_value'];
     }
@@ -57,14 +57,14 @@ function catalogue_find_options($field, $catalogue_name, $where = '')
     return $out;
 }
 
-function catalogue_query_select($catalogue_name, $select, $where = array(), $filters = '', $max = null, $start = 0)
+function catalogue_query_select($catalogue_name, $select, $where = [], $filters = '', $max = null, $start = 0)
 {
     if (!addon_installed('catalogues')) {
-        return array();
+        return [];
     }
 
-    static $capi_catalogue_query_cache = array();
-    $sz = serialize(array($catalogue_name, $select, $where, $filters, $max, $start));
+    static $capi_catalogue_query_cache = [];
+    $sz = serialize([$catalogue_name, $select, $where, $filters, $max, $start]);
     if (isset($capi_catalogue_query_cache[$sz])) {
         return $capi_catalogue_query_cache[$sz];
     }
@@ -84,10 +84,10 @@ function catalogue_query_select($catalogue_name, $select, $where = array(), $fil
 
     $query = 'SELECT r.*' . implode(',', $extra_select) . ' FROM ' . get_table_prefix() . 'catalogue_entries r' . implode('', $extra_join) . ' WHERE ' . db_string_equal_to('c_name', $catalogue_name) . $extra_where;
     $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
-    $out = array();
+    $out = [];
     foreach ($rows as $_row) {
         $values = get_catalogue_entry_field_values($catalogue_name, $_row['id']);
-        $row = array();
+        $row = [];
         foreach ($values as $_val) {
             $key = get_translated_text($_val['cf_name']);
             if ((in_array($key, $select)) || (in_array('*', $select))) {
@@ -95,7 +95,7 @@ function catalogue_query_select($catalogue_name, $select, $where = array(), $fil
                 $row[$key] = $val;
             }
         }
-        foreach (array('id') as $key) {
+        foreach (['id'] as $key) {
             if ((in_array($key, $select)) || (in_array('*', $select))) {
                 $row[$key] = $_row[$key];
             }
@@ -107,7 +107,7 @@ function catalogue_query_select($catalogue_name, $select, $where = array(), $fil
     return $out;
 }
 
-function catalogue_query_select_count($catalogue_name, $where = array(), $filters = '')
+function catalogue_query_select_count($catalogue_name, $where = [], $filters = '')
 {
     if (!addon_installed('catalogues')) {
         return 0;
@@ -132,7 +132,7 @@ function catalogue_query_select_count($catalogue_name, $where = array(), $filter
 
 abstract class CMS_API_catalogue_object extends CMS_API_object
 {
-    public $field_refs = array();
+    public $field_refs = [];
 
     public function __construct($entity_id, $missing_ok = false)
     {
@@ -140,9 +140,9 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
             return;
         }
 
-        static $capi_catalogue_object_cache = array();
+        static $capi_catalogue_object_cache = [];
         if (!isset($capi_catalogue_object_cache[$entity_id])) {
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => $entity_id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => $entity_id], '', 1);
             if (!array_key_exists(0, $rows)) {
                 if ($missing_ok) {
                     return;
@@ -165,7 +165,7 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
                 $this->field_refs[$key] = $_val;
             }
 
-            $capi_catalogue_object_cache[$entity_id] = array($this->properties, $this->field_refs);
+            $capi_catalogue_object_cache[$entity_id] = [$this->properties, $this->field_refs];
         } else {
             list($this->properties, $this->field_refs) = $capi_catalogue_object_cache[$entity_id];
         }
@@ -175,8 +175,8 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
 
     protected function _keyfield_entity_id_convert($id, $field)
     {
-        $cf_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('cf_name') => $field, 'c_name' => $this->catalogue));
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'ce_id', array('cf_id' => $cf_id, 'cv_value' => $id));
+        $cf_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_fields', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('cf_name') => $field, 'c_name' => $this->catalogue]);
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'ce_id', ['cf_id' => $cf_id, 'cv_value' => $id]);
     }
 
     public function set($property_label, $val)
@@ -199,23 +199,23 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
         list(, , $sup_table_name) = $ob->get_field_value_row_bits($__val);
 
         if (substr($sup_table_name, -6) == '_trans') {
-            $_val = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $sup_table_name, 'cv_value', array('cf_id' => $field_id, 'ce_id' => $id));
+            $_val = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_' . $sup_table_name, 'cv_value', ['cf_id' => $field_id, 'ce_id' => $id]);
             if ($_val === null) {
                 $_val = insert_lang_comcode('cv_value', $val, 3);
             } else {
                 $_val = lang_remap_comcode('cv_value', $_val, $val);
             }
 
-            $GLOBALS['SITE_DB']->query_update('catalogue_efv_' . $sup_table_name, $_val, array('cf_id' => $field_id, 'ce_id' => $id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('catalogue_efv_' . $sup_table_name, $_val, ['cf_id' => $field_id, 'ce_id' => $id], '', 1);
         } else {
             if ($sup_table_name == 'float') {
-                $smap = array('cv_value' => (($val === null) || ($val == '')) ? null : floatval($val));
+                $smap = ['cv_value' => (($val === null) || ($val == '')) ? null : floatval($val)];
             } elseif ($sup_table_name == 'integer') {
-                $smap = array('cv_value' => (($val === null) || ($val == '')) ? null : intval($val));
+                $smap = ['cv_value' => (($val === null) || ($val == '')) ? null : intval($val)];
             } else {
-                $smap = array('cv_value' => $val);
+                $smap = ['cv_value' => $val];
             }
-            $GLOBALS['SITE_DB']->query_update('catalogue_efv_' . $sup_table_name, $smap, array('cf_id' => $field_id, 'ce_id' => $id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('catalogue_efv_' . $sup_table_name, $smap, ['cf_id' => $field_id, 'ce_id' => $id], '', 1);
         }
 
         parent::set($property_label, $val);
@@ -228,13 +228,13 @@ abstract class CMS_API_database_object extends CMS_API_object
 
     public function __construct($entity_id)
     {
-        static $capi_database_object_cache = array();
-        $sx = serialize(array($this->table, $entity_id));
+        static $capi_database_object_cache = [];
+        $sx = serialize([$this->table, $entity_id]);
 
         if (isset($capi_database_object_cache[$sx])) {
             $this->properties = $capi_database_object_cache[$sx];
         } else {
-            $rows = $GLOBALS['SITE_DB']->query_select($this->table, array('*'), array('id' => $entity_id));
+            $rows = $GLOBALS['SITE_DB']->query_select($this->table, ['*'], ['id' => $entity_id]);
             if (!isset($rows[0])) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
@@ -248,7 +248,7 @@ abstract class CMS_API_database_object extends CMS_API_object
 
     public function set($property_label, $value)
     {
-        $GLOBALS['SITE_DB']->query_update($this->table, array($property_label => $value), array('id' => $this->entity_id), '', 1);
+        $GLOBALS['SITE_DB']->query_update($this->table, [$property_label => $value], ['id' => $this->entity_id], '', 1);
         parent::set($property_label, $value);
     }
 }

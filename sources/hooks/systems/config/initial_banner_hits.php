@@ -30,7 +30,7 @@ class Hook_config_initial_banner_hits
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HITS_ALLOCATED',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_initial_banner_hits
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

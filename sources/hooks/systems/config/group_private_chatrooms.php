@@ -30,7 +30,7 @@ class Hook_config_group_private_chatrooms
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GROUP_PRIVATE_CHATROOMS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_group_private_chatrooms
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

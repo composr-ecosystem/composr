@@ -30,9 +30,9 @@ class Hook_admin_setupwizard_installprofiles_community
      */
     public function info()
     {
-        return array(
+        return [
             'title' => do_lang('COMMUNITY'),
-        );
+        ];
     }
 
     /**
@@ -42,9 +42,9 @@ class Hook_admin_setupwizard_installprofiles_community
      */
     public function get_addon_list()
     {
-        return array(
-            array('facebook_support'/*this will be downloaded as it is not bundled*/, 'cns_forum', 'points', 'ecommerce', 'cns_thematic_avatars', 'cns_cartoon_avatars', 'calendar', 'chat', 'polls', 'users_online_block', 'forum_blocks', 'polls', 'newsletter'),
-            array());
+        return [
+            ['facebook_support'/*this will be downloaded as it is not bundled*/, 'cns_forum', 'points', 'ecommerce', 'cns_thematic_avatars', 'cns_cartoon_avatars', 'calendar', 'chat', 'polls', 'users_online_block', 'forum_blocks', 'polls', 'newsletter'],
+            []];
     }
 
     /**
@@ -54,7 +54,7 @@ class Hook_admin_setupwizard_installprofiles_community
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '1',
             'have_default_banners_advertising' => '1',
@@ -69,7 +69,7 @@ class Hook_admin_setupwizard_installprofiles_community
             'show_content_tagging_inline' => '0',
             'show_screen_actions' => '0',
             'rules' => 'liberal',
-        );
+        ];
     }
 
     /**
@@ -79,26 +79,26 @@ class Hook_admin_setupwizard_installprofiles_community
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_greeting',
                 'main_forum_news',
                 'main_leader_board',
                 'main_forum_topics',
                 'main_quotes',
-            ),
-            'YES_CELL' => array(
+            ],
+            'YES_CELL' => [
                 'main_content',
                 'main_poll',
-            ),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'side_users_online',
                 'side_stats',
                 'side_calendar',
                 'side_shoutbox',
-            ) + ((get_option('sitewide_im', true) === '1') ? array('side_friends') : array()),
-        );
+            ] + ((get_option('sitewide_im', true) === '1') ? ['side_friends'] : []),
+        ];
     }
 
     /**
@@ -108,7 +108,7 @@ class Hook_admin_setupwizard_installprofiles_community
      */
     public function block_options()
     {
-        return array();
+        return [];
     }
 
     /**

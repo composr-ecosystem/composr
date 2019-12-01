@@ -30,7 +30,7 @@ class Hook_config_is_on_automatic_mark_topic_read
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_AUTOMATIC_MARK_TOPIC_READ',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_automatic_mark_topic_read
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -26,8 +26,8 @@
 abstract class CSSCleanup
 {
     protected $theme = 'default';
-    protected $css_files = array();
-    protected $css_files_old_names = array();
+    protected $css_files = [];
+    protected $css_files_old_names = [];
     protected $do_as_overrides = true;
     protected $carry_from_default = true;
 
@@ -88,15 +88,15 @@ abstract class CSSCleanup
             return; // Already done
         }
 
-        $this->css_files = array();
+        $this->css_files = [];
 
         if ($this->carry_from_default) {
-            $themes = array_unique(array('default', $this->theme));
+            $themes = array_unique(['default', $this->theme]);
         } else {
-            $themes = array($this->theme);
+            $themes = [$this->theme];
         }
         foreach ($themes as $theme) {
-            foreach (array('css', 'css_custom') as $_dir) {
+            foreach (['css', 'css_custom'] as $_dir) {
                 $dir = get_file_base() . '/themes/' . $theme . '/' . $_dir;
                 $dh = opendir($dir);
                 while (($f = readdir($dh)) !== false) {
@@ -133,7 +133,7 @@ abstract class CSSCleanup
  */
 class DirSimplify extends CSSCleanup
 {
-    protected $selectors = array();
+    protected $selectors = [];
 
     /**
      * Calculate changes.
@@ -143,7 +143,7 @@ class DirSimplify extends CSSCleanup
         $this->find_css_files();
 
         foreach ($this->css_files as $path => &$c) {
-            $c = str_replace(array('{!dir}', '{!en_left}', '{!en_right}'), array(do_lang('dir'), do_lang('en_left'), do_lang('en_right')), $c);
+            $c = str_replace(['{!dir}', '{!en_left}', '{!en_right}'], [do_lang('dir'), do_lang('en_left'), do_lang('en_right')], $c);
         }
     }
 
@@ -168,7 +168,7 @@ class DirSimplify extends CSSCleanup
  */
 class EmToPx extends CSSCleanup
 {
-    protected $selectors = array();
+    protected $selectors = [];
 
     /**
      * Calculate changes.
@@ -191,7 +191,7 @@ class EmToPx extends CSSCleanup
 
                 $full_new = $full;
 
-                $matches = array();
+                $matches = [];
                 $num_em_parts = preg_match_all('#([\d\.]+)em([^\w]|$)#', $full, $matches, PREG_OFFSET_CAPTURE);
                 for ($i = 0; $i < $num_em_parts; $i++) {
                     $offset = $matches[1][$i][1];
@@ -238,11 +238,11 @@ class EmToPx extends CSSCleanup
             return; // Already done
         }
 
-        $this->selectors = array();
+        $this->selectors = [];
 
         foreach ($this->css_files as $path => $c) {
             $len = strlen($c);
-            $matches = array();
+            $matches = [];
             $num_selectors = preg_match_all('#^\s*?([^{};/@\s][^{};/]*)\s*\{(?![\$\!])#Um', $c, $matches, PREG_OFFSET_CAPTURE);
             for ($i = 0; $i < $num_selectors; $i++) {
                 $offset = $matches[0][$i][1];
@@ -265,21 +265,21 @@ class EmToPx extends CSSCleanup
                 $full = $matches[0][$i][0] . $selector_contents . '}';
 
                 $font_size = null;
-                $matches2 = array();
+                $matches2 = [];
                 if (preg_match('#font-size:\s*([\d\.]+(px|em|%|pt))#i', $selector_contents, $matches2) != 0) {
                     $font_size = $this->normalise_font_size($matches2[1]);
                 }
 
-                $_selector = array(
+                $_selector = [
                     $selector_contents,
                     $full,
                     $font_size,
                     $offset,
                     $path,
                     $selector,
-                );
+                ];
                 if (!isset($this->selectors[$selector])) {
-                    $this->selectors[$selector] = array();
+                    $this->selectors[$selector] = [];
                 }
                 $this->selectors[$selector][] = $_selector;
             }
@@ -361,13 +361,13 @@ class EmToPx extends CSSCleanup
         //  (b) compounding can't be represented in px anyway
         //  (c) we don't have many places we re-set font size in practice, because consistent font-size is good design practice
 
-        $chain = array();
+        $chain = [];
 
-        if (!$this->selector_corresponds('html', $selector, array(), true)) {
+        if (!$this->selector_corresponds('html', $selector, [], true)) {
             $chain[] = 'html';
         }
 
-        if (!$this->selector_corresponds('body', $selector, array('html'), true)) {
+        if (!$this->selector_corresponds('body', $selector, ['html'], true)) {
             $chain[] = 'body.website-body'; // Assumption of our default theme that we use ".website-body"
         }
 
@@ -375,7 +375,7 @@ class EmToPx extends CSSCleanup
         $part = trim($parts[0]);
         $_parts = preg_split('#[ >]#', $part);
         foreach ($_parts as $__part) {
-            if ((!$this->selector_corresponds('html', $__part, array(), true)) && (!$this->selector_corresponds('body', $__part, array('html'), true))) {
+            if ((!$this->selector_corresponds('html', $__part, [], true)) && (!$this->selector_corresponds('body', $__part, ['html'], true))) {
                 $chain[] = $__part;
             }
         }
@@ -401,7 +401,7 @@ class EmToPx extends CSSCleanup
         $font_size = 16;
         $root_font_size = $font_size;
 
-        $may_be_chained_by = array();
+        $may_be_chained_by = [];
 
         foreach ($chain as $selector) {
             $may_be_chained_by_copy = $may_be_chained_by;
@@ -413,7 +413,7 @@ class EmToPx extends CSSCleanup
             $may_be_chained_by[] = $selector;
 
             //$_selectors = isset($this->selectors[$selector]) ? $this->selectors[$selector] : array(); Actually we might have selectors that have multiple comma-d components, so this is too naive even for our approximations
-            $_selectors = array();
+            $_selectors = [];
             foreach ($this->selectors as $__selector => $__selectors) {
                 if ($this->selector_corresponds($selector, $__selector, $may_be_chained_by)) {
                     $_selectors = array_merge($_selectors, $__selectors);
@@ -458,7 +458,7 @@ class EmToPx extends CSSCleanup
      * @param  boolean $just_element Just check the element part of the selector, ignore any complex selector parts of it (like attribute selector)
      * @return boolean Whether it corresponds
      */
-    protected function selector_corresponds($simple, $complex, $may_be_chained_by = array(), $just_element = false)
+    protected function selector_corresponds($simple, $complex, $may_be_chained_by = [], $just_element = false)
     {
         if ($simple == '') {
             return false;

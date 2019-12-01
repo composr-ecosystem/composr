@@ -43,7 +43,7 @@ class Hook_attachments_catalogue_entry
             }
         }
 
-        $info = $db->query_select('catalogue_entries', array('c_name', 'cc_id'), array('id' => intval($id)), '', 1);
+        $info = $db->query_select('catalogue_entries', ['c_name', 'cc_id'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $info)) {
             return false;
         }

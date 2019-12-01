@@ -149,7 +149,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
     $cached_mappings = null;
 
     $tokens = explode(',', $filter);
-    $matches = array();
+    $matches = [];
     foreach ($tokens as $token) {
         $token = trim($token);
 
@@ -186,7 +186,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
             } else {
                 if (($parent_spec__table_name == 'catalogue_categories') && (strpos($field_name, 'c_name') === false) && ($category_field_name == 'cc_id') && ($matches[2] != '>')) { // Special case (optimisation) for catalogues
                     // MySQL should be smart enough to not enumerate the 'IN' clause here, which would be bad - instead it can jump into the embedded WHERE clause on each test iteration
-                    $this_details = $db->query_select('catalogue_categories cc JOIN ' . $db->get_table_prefix() . 'catalogues c ON c.c_name=cc.c_name', array('cc_parent_id', 'cc.c_name', 'c_is_tree'), array('id' => intval($matches[1])), '', 1);
+                    $this_details = $db->query_select('catalogue_categories cc JOIN ' . $db->get_table_prefix() . 'catalogues c ON c.c_name=cc.c_name', ['cc_parent_id', 'cc.c_name', 'c_is_tree'], ['id' => intval($matches[1])], '', 1);
                     if ($out_or != '') {
                         $out_or .= ' OR ';
                     }
@@ -270,7 +270,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
     }
 
     if ($filter == '') {
-        return array();
+        return [];
     }
 
     if ($parent_spec__table_name !== null) {
@@ -283,14 +283,14 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
         }
     }
 
-    $out_accept = array();
-    $out_avoid = array();
+    $out_accept = [];
+    $out_avoid = [];
 
     $cached_mappings = null;
 
     if (($ids_and_parents === null) && ($ids_and_parents_callback === null)) {
         $has_no_parents = ($category_field_name === null);
-        $ids_and_parents_callback = array('_selectcode_to_generic_callback', array($table_name, $field_name, $category_field_name, $has_no_parents));
+        $ids_and_parents_callback = ['_selectcode_to_generic_callback', [$table_name, $field_name, $category_field_name, $has_no_parents]];
     }
 
     // Support read_multi_code subsyntax also (this isn't user-edited normally, but we like to be able to use the same selectcode API)
@@ -312,7 +312,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
     }
 
     $tokens = explode(',', $filter);
-    $matches = array();
+    $matches = [];
     foreach ($tokens as $token) {
         $token = trim($token);
 
@@ -355,7 +355,7 @@ function _selectcode_to_generic($filter, $field_name, $table_name, $ids_and_pare
             _ensure_loaded__ids_and_parents($field_name, $table_name, $ids_and_parents, $ids_and_parents_callback, $category_field_name, $db);
 
             if ($matches[2] == '#') {
-                $subtree = array($matches[1]);
+                $subtree = [$matches[1]];
             } else {
                 $subtree = _selectcode_subtree_fetch($matches[1], $parent_spec__table_name, $parent_spec__parent_name, $parent_spec__field_name, $numeric_category_set_ids, $db, $cached_mappings, $matches[2] != '>', $matches[2] != '>');
             }
@@ -421,7 +421,7 @@ function _ensure_loaded__ids_and_parents($field_name, $table_name, &$ids_and_par
 {
     if ($ids_and_parents === null) {
         if ($field_name === null) {
-            $ids_and_parents = call_user_func_array($ids_and_parents_callback[0], array_merge($ids_and_parents_callback[1], array($db)));
+            $ids_and_parents = call_user_func_array($ids_and_parents_callback[0], array_merge($ids_and_parents_callback[1], [$db]));
         } else {
             $ids_and_parents = _selectcode_find_ids_and_parents($field_name, $table_name, $category_field_name, $db);
         }
@@ -442,8 +442,8 @@ function _ensure_loaded__ids_and_parents($field_name, $table_name, &$ids_and_par
  */
 function _selectcode_to_generic_callback($table_name, $field_name, $category_field_name, $has_no_parents, $db)
 {
-    $vals = $db->query_select($table_name, $has_no_parents ? array($field_name) : array($field_name, $category_field_name));
-    $out = array();
+    $vals = $db->query_select($table_name, $has_no_parents ? [$field_name] : [$field_name, $category_field_name]);
+    $out = [];
     foreach ($vals as $x) {
         $out[$x[$field_name]] = $has_no_parents ? null : $x[$category_field_name];
     }
@@ -506,7 +506,7 @@ function _selectcode_eq($field_name, $var, $numeric)
  */
 function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $field_name, $numeric_ids, $db, &$cached_mappings, $first = true, $recurse = true)
 {
-    $under = array();
+    $under = [];
 
     if ($table_name === null) {
         return $under;
@@ -522,9 +522,9 @@ function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $fiel
 
     if (get_value('lots_of_data_in_' . $table_name) !== null) {
         if ($numeric_ids) {
-            $children = $db->query_select($table_name, array($field_name), array($parent_name => intval($look_under)), '', 400/*reasonable limit*/);
+            $children = $db->query_select($table_name, [$field_name], [$parent_name => intval($look_under)], '', 400/*reasonable limit*/);
         } else {
-            $children = $db->query_select($table_name, array($field_name), array($parent_name => $look_under), '', 400/*reasonable limit*/);
+            $children = $db->query_select($table_name, [$field_name], [$parent_name => $look_under], '', 400/*reasonable limit*/);
         }
         foreach ($children as $child) {
             $under[] = $child[$field_name];
@@ -534,7 +534,7 @@ function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $fiel
         }
     } else {
         if ($cached_mappings === null) {
-            $cached_mappings = $db->query_select($table_name, array($field_name, $parent_name), array(), '', 1000/*reasonable limit*/);
+            $cached_mappings = $db->query_select($table_name, [$field_name, $parent_name], [], '', 1000/*reasonable limit*/);
         }
 
         $cached_mappings_copy = $cached_mappings; // Works around weird PHP bug in some versions (due to recursing over reference parameter)
@@ -565,11 +565,11 @@ function _selectcode_subtree_fetch($look_under, $table_name, $parent_name, $fiel
 function _selectcode_find_ids_and_parents($field_name, $table_name, $category_field_name, $db)
 {
     if ($category_field_name === null) {
-        return array();
+        return [];
     }
 
-    $rows = $db->query_select($table_name, ($category_field_name === null) ? array($field_name) : array($field_name, $category_field_name));
-    $ret = array();
+    $rows = $db->query_select($table_name, ($category_field_name === null) ? [$field_name] : [$field_name, $category_field_name]);
+    $ret = [];
 
     foreach ($rows as $row) {
         $ret[$row[$field_name]] = ($category_field_name === null) ? '' : $row[$category_field_name];

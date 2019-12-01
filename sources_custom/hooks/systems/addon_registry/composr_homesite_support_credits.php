@@ -26,7 +26,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Incorporates MantisBT',
-        );
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,23 +108,23 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'tickets',
                 'ecommerce',
                 'points',
                 'Conversr',
                 'all_icons',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'stats',
                 'MySQL',
                 'composr_homesite',
                 'composr_release_build',
                 'composr_tutorials',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -144,7 +144,7 @@ class Hook_addon_registry_composr_homesite_support_credits
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/composr_homesite_support_credits.php',
             'sources_custom/hooks/systems/addon_registry/composr_homesite_support_credits.php',
             'adminzone/pages/minimodules_custom/outstanding_credits.php',
@@ -1894,6 +1894,6 @@ class Hook_addon_registry_composr_homesite_support_credits
             'tracker/vendor/webmozart/index.html',
             'tracker/vendor/webmozart/assert/index.html',
             'tracker/vendor/webmozart/assert/src/index.html',
-        );
+        ];
     }
 }

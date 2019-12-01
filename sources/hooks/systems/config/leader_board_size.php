@@ -30,7 +30,7 @@ class Hook_config_leader_board_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LEADER_BOARD_SIZE',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_leader_board_size
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

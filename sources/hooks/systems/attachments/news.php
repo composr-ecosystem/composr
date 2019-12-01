@@ -47,7 +47,7 @@ class Hook_attachments_news
             }
         }
 
-        $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', array('id' => intval($id)));
+        $cat_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($id)]);
         if ($cat_id === null) {
             return false;
         }

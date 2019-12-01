@@ -46,16 +46,16 @@ function realtime_rain_script()
     $to = get_param_integer('to', $time_now);
 
     if (get_param_integer('keep_realtime_test', 0) == 1) {
-        $types = array('post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'point_charges', 'banners', 'point_gifts');
+        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'point_charges', 'banners', 'point_gifts'];
         shuffle($types);
 
-        $events = array();
+        $events = [];
         $cnt = count($types);
         for ($i = 0; $i < max($cnt, 5); $i++) {
             $timestamp = mt_rand($from, $to);
             $type = array_pop($types);
 
-            $event = rain_get_special_icons(get_ip_address(), $timestamp) + array(
+            $event = rain_get_special_icons(get_ip_address(), $timestamp) + [
                     'TYPE' => $type,
                     'FROM_MEMBER_ID' => null,
                     'TO_MEMBER_ID' => null,
@@ -72,7 +72,7 @@ function realtime_rain_script()
                     'FROM_ID' => null,
                     'TO_ID' => null,
                     'GROUP_ID' => 'example_' . strval(mt_rand(0, 4)),
-                );
+                ];
             $event['SPECIAL_ICON'] = 'email_icon';
             $event['MULTIPLICITY'] = '10';
             $events[] = $event;
@@ -104,7 +104,7 @@ function get_realtime_events($from, $to)
 {
     //restrictify();
 
-    $drops = array();
+    $drops = [];
 
     $hooks = find_all_hook_obs('systems', 'realtime_rain', 'Hook_realtime_rain_');
     foreach ($hooks as $ob) {
@@ -122,7 +122,7 @@ function get_realtime_events($from, $to)
  */
 function rain_truncate_for_title($text)
 {
-    return protect_from_escaping(symbol_truncator(array($text, '40', '1'), 'left'));
+    return protect_from_escaping(symbol_truncator([$text, '40', '1'], 'left'));
 }
 
 /**
@@ -170,7 +170,7 @@ function rain_get_special_icons($ip_address, $timestamp, $user_agent = null, $ne
             $icon = 'phone';
             $tooltip = do_lang('RTEV_PHONE');
         } else {
-            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', array('m_date_and_time' => $timestamp));
+            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_date_and_time' => $timestamp]);
             if ($mails_sent > 0) {
                 $multiplicity = $mails_sent;
                 $icon = 'email';
@@ -182,5 +182,5 @@ function rain_get_special_icons($ip_address, $timestamp, $user_agent = null, $ne
         }
     }
 
-    return array('SPECIAL_ICON' => $icon, 'SPECIAL_TOOLTIP' => $tooltip, 'MULTIPLICITY' => strval(min(20, $multiplicity)));
+    return ['SPECIAL_ICON' => $icon, 'SPECIAL_TOOLTIP' => $tooltip, 'MULTIPLICITY' => strval(min(20, $multiplicity))];
 }

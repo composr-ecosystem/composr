@@ -109,7 +109,7 @@ class Hook_media_rendering_video_websafe extends Media_renderer_with_fallback
             if (substr($__url, 0, 17) == 'uploads/filedump/') {
                 $ext = get_file_extension($__url);
                 $base_path = substr($__url, 0, strlen($__url) - strlen($ext) - 1);
-                foreach (array('vtt') as $subtitle_type) {
+                foreach (['vtt'] as $subtitle_type) {
                     if (is_file(get_custom_file_base() . '/' . $base_path . '.' . $subtitle_type)) {
                         $closed_captions_url = get_custom_base_url() . '/' . $base_path . '.' . $subtitle_type;
                         break;
@@ -122,6 +122,6 @@ class Hook_media_rendering_video_websafe extends Media_renderer_with_fallback
 
         $autostart = ((array_key_exists('autostart', $attributes)) && ($attributes['autostart'] == '1'));
 
-        return do_template('MEDIA_VIDEO_WEBSAFE', array('_GUID' => '26387b2cee516e1ab54acb552aee2dcb', 'HOOK' => 'video_websafe', 'CLOSED_CAPTIONS_URL' => $closed_captions_url, 'RESPONSIVE' => $responsive, 'AUTOSTART' => $autostart) + _create_media_template_parameters($url, $attributes, $as_admin, $source_member, false, $url_direct_filesystem));
+        return do_template('MEDIA_VIDEO_WEBSAFE', ['_GUID' => '26387b2cee516e1ab54acb552aee2dcb', 'HOOK' => 'video_websafe', 'CLOSED_CAPTIONS_URL' => $closed_captions_url, 'RESPONSIVE' => $responsive, 'AUTOSTART' => $autostart] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member, false, $url_direct_filesystem));
     }
 }

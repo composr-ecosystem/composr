@@ -30,7 +30,7 @@ class Hook_config_error_handling_deprecated
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ERROR_HANDLING_DEPRECATED',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_error_handling_deprecated
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

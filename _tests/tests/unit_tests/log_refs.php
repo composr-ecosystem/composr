@@ -26,7 +26,7 @@ class log_refs_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         $all_code = '';
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         foreach ($files as $path) {
             $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
@@ -35,19 +35,19 @@ class log_refs_test_set extends cms_test_case
 
         $web_config = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK | FILE_READ_BOM);
 
-        $defined_logs = array();
+        $defined_logs = [];
         $hook_obs = find_all_hook_obs('systems', 'logs', 'Hook_logs_');
         foreach ($hook_obs as $hook_ob) {
             $defined_logs = array_merge($defined_logs, array_keys($hook_ob->enumerate_logs()));
         }
 
-        $matches = array();
-        $logs_in_code = array();
+        $matches = [];
+        $logs_in_code = [];
         $num_matches = preg_match_all('#data_custom/\w+\.log#', $all_code, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $log = $matches[0][$i];
 
-            if (!in_array(basename($log), array('performance.log', 'performance_warnings.log', 'sugarcrm.log', 'tapatalk.log'))) {
+            if (!in_array(basename($log), ['performance.log', 'performance_warnings.log', 'sugarcrm.log', 'tapatalk.log'])) {
                 $logs_in_code[] = $log;
             }
         }

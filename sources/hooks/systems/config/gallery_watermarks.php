@@ -30,7 +30,7 @@ class Hook_config_gallery_watermarks
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_WATERMARKS',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_watermarks
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

@@ -36,11 +36,11 @@ function cns_may_edit_poll_by($forum_id, $poll_owner, $member_id = null)
         $member_id = get_member();
     }
 
-    if (has_privilege($member_id, 'edit_midrange_content', 'topics', array('forums', $forum_id))) {
+    if (has_privilege($member_id, 'edit_midrange_content', 'topics', ['forums', $forum_id])) {
         return true;
     }
 
-    if ((has_privilege($member_id, 'edit_own_polls', 'topics', array('forums', $forum_id))) && ($member_id == $poll_owner)) {
+    if ((has_privilege($member_id, 'edit_own_polls', 'topics', ['forums', $forum_id])) && ($member_id == $poll_owner)) {
         return true;
     }
 
@@ -64,7 +64,7 @@ function cns_may_attach_poll($topic_id, $topic_owner = null, $has_poll_already =
     }
 
     if ($topic_owner === null) {
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('id' => $topic_id), '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -108,11 +108,11 @@ function cns_may_delete_poll_by($forum_id, $poll_owner, $member_id = null)
         $member_id = get_member();
     }
 
-    if (has_privilege($member_id, 'delete_midrange_content', 'topics', array('forums', $forum_id))) {
+    if (has_privilege($member_id, 'delete_midrange_content', 'topics', ['forums', $forum_id])) {
         return true;
     }
 
-    if ((has_privilege($member_id, 'delete_own_midrange_content', 'topics', array('forums', $forum_id))) && ($member_id == $poll_owner)) {
+    if ((has_privilege($member_id, 'delete_own_midrange_content', 'topics', ['forums', $forum_id])) && ($member_id == $poll_owner)) {
         return true;
     }
 
@@ -132,16 +132,16 @@ function cns_poll_get_results($poll_id, $request_results = true)
         return null;
     }
 
-    $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', array('*'), array('id' => $poll_id), '', 1);
+    $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $poll_info)) {
         attach_message(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($poll_id)), 'poll'), 'warn');
         return null;
     }
 
-    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('*'), array('pa_poll_id' => $poll_id), (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY id');
-    $answers = array();
+    $_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id], (get_db_type() == 'xml') ? 'ORDER BY pa_answer' : 'ORDER BY id');
+    $answers = [];
     foreach ($_answers as $_answer) {
-        $answer = array();
+        $answer = [];
 
         $answer['answer'] = $_answer['pa_answer'];
         $answer['id'] = $_answer['id'];
@@ -155,25 +155,25 @@ function cns_poll_get_results($poll_id, $request_results = true)
     if ($request_results) {
         // Forfeiting this by viewing results?
         if (is_guest()) {
-            $voted_already_map = array('pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address());
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address()];
         } else {
-            $voted_already_map = array('pv_poll_id' => $poll_id, 'pv_member_id' => get_member());
+            $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => get_member()];
         }
         $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
         if ($voted_already === null) {
             $forfeight = !has_privilege(get_member(), 'view_poll_results_before_voting');
             if ($forfeight) {
-                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array(
+                $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
                     'pv_poll_id' => $poll_id,
                     'pv_member_id' => get_member(),
                     'pv_answer_id' => -1,
                     'pv_ip' => get_ip_address(),
-                ));
+                ]);
             }
         }
     }
 
-    $out = array(
+    $out = [
         'is_private' => $poll_info[0]['po_is_private'],
         'id' => $poll_info[0]['id'],
         'question' => $poll_info[0]['po_question'],
@@ -183,7 +183,7 @@ function cns_poll_get_results($poll_id, $request_results = true)
         'is_open' => $poll_info[0]['po_is_open'],
         'answers' => $answers,
         'total_votes' => $poll_info[0]['po_cache_total_votes'],
-    );
+    ];
 
     return $out;
 }

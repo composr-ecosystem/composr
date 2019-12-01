@@ -30,7 +30,7 @@ class Hook_config_check_broken_urls
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHECK_BROKEN_URLS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_check_broken_urls
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -57,22 +57,22 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'download':
-                $_ret = $GLOBALS['SITE_DB']->query_select('download_downloads', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('name') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('name') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'download_category':
-                $_ret = $GLOBALS['SITE_DB']->query_select('download_categories', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('category') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('download_categories', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('category') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -144,7 +144,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('download_categories', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -152,7 +152,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('downloads_category', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['category']),
             'description' => get_translated_text($row['the_description']),
             'notes' => $row['notes'],
@@ -160,7 +160,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
             'add_date' => remap_time_as_portable($row['add_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -302,7 +302,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -310,7 +310,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('downloads_download', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['name']),
             'url' => remap_urlpath_as_portable($row['url']),
             'description' => get_translated_text($row['the_description']),
@@ -334,7 +334,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),
             'add_date' => remap_time_as_portable($row['add_date']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

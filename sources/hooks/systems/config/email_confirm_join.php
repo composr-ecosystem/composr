@@ -30,7 +30,7 @@ class Hook_config_email_confirm_join
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EMAIL_CONFIRM_JOIN',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_email_confirm_join
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

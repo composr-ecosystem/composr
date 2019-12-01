@@ -30,7 +30,7 @@ class Hook_config_spam_block_lists
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_BLOCK_LISTS',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_block_lists
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

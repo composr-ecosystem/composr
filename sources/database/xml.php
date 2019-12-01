@@ -58,33 +58,33 @@
 function init__database__xml()
 {
     global $SCHEMA_CACHE, $DIR_CONTENTS_CACHE;
-    $SCHEMA_CACHE = array();
-    $DIR_CONTENTS_CACHE = array();
+    $SCHEMA_CACHE = [];
+    $DIR_CONTENTS_CACHE = [];
 
     global $DELIMITERS_FLIPPED, $DELIMITERS, $SYMBOL_DELIMITER, $DELIMITERS_ALPHA;
-    $DELIMITERS = array_merge(array("\t", ' ', "\n"), _get_sql_keywords());
+    $DELIMITERS = array_merge(["\t", ' ', "\n"], _get_sql_keywords());
     sort($DELIMITERS);
     $DELIMITERS_FLIPPED = array_flip($DELIMITERS);
-    $SYMBOL_DELIMITER = array_flip(array("\t", ' ', "\n", '+', '-', '*', '/', '>', '<', '=', "'", '"', "\\'", '(', ')', ','));
+    $SYMBOL_DELIMITER = array_flip(["\t", ' ', "\n", '+', '-', '*', '/', '>', '<', '=', "'", '"', "\\'", '(', ')', ',']);
     foreach ($DELIMITERS as $d) {
         if (!isset($DELIMITERS_ALPHA[$d[0]])) {
-            $DELIMITERS_ALPHA[$d[0]] = array();
+            $DELIMITERS_ALPHA[$d[0]] = [];
         }
         $DELIMITERS_ALPHA[$d[0]][] = $d;
     }
 
     global $TABLE_BASES;
-    $TABLE_BASES = array();
+    $TABLE_BASES = [];
 
     global $INT_TYPES, $STRING_TYPES;
-    $INT_TYPES = array('AUTO', 'AUTO_LINK', 'INTEGER', 'UINTEGER', 'SHORT_INTEGER', 'BINARY', 'MEMBER', 'GROUP', 'TIME', 'integer');
+    $INT_TYPES = ['AUTO', 'AUTO_LINK', 'INTEGER', 'UINTEGER', 'SHORT_INTEGER', 'BINARY', 'MEMBER', 'GROUP', 'TIME', 'integer'];
     if (multi_lang_content()) {
         $INT_TYPES[] = 'SHORT_TRANS';
         $INT_TYPES[] = 'LONG_TRANS';
         $INT_TYPES[] = 'SHORT_TRANS__COMCODE';
         $INT_TYPES[] = 'LONG_TRANS__COMCODE';
     }
-    $STRING_TYPES = array(
+    $STRING_TYPES = [
         'SHORT_TEXT' => 255,
         'LONG_TEXT' => null,
         'ID_TEXT' => 80,
@@ -93,7 +93,7 @@ function init__database__xml()
         'LANGUAGE_NAME' => 5,
         'URLPATH' => 255,
         'UINTEGER' => 10, // Fudge as we need to send in unsigned integers using strings, as PHP can't hold them
-    );
+    ];
     if (!multi_lang_content()) {
         $STRING_TYPES['SHORT_TRANS'] = 255;
         $STRING_TYPES['LONG_TRANS'] = null;
@@ -115,7 +115,7 @@ function init__database__xml()
  */
 function _get_sql_keywords()
 {
-    return array(
+    return [
         'LEFT', 'RIGHT', // Join types
         'X_CONCAT', 'X_LENGTH', 'X_REPLACE', 'X_COALESCE',
         'X_SUBSTR', 'X_RAND', 'X_LEAST', 'X_GREATEST', 'X_MOD',
@@ -134,7 +134,7 @@ function _get_sql_keywords()
         '(', ')', ',',
         // Anything else is put into a value token
         // Tokens are delimited by white space or one of the symbol tokens
-    );
+    ];
 }
 
 /**
@@ -182,7 +182,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     public function get_type_remap($for_alter = false)
     {
-        $type_remap = array(
+        $type_remap = [
             'AUTO' => 'AUTO',
             'AUTO_LINK' => 'AUTO_LINK',
             'INTEGER' => 'INTEGER',
@@ -204,7 +204,7 @@ class Database_Static_xml extends DatabaseDriver
             'IP' => 'IP',
             'LANGUAGE_NAME' => 'LANGUAGE_NAME',
             'URLPATH' => 'URLPATH',
-        );
+        ];
         return $type_remap;
     }
 
@@ -223,7 +223,7 @@ class Database_Static_xml extends DatabaseDriver
     public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
     {
         // Indexes not supported
-        return array();
+        return [];
     }
 
     /**
@@ -237,7 +237,7 @@ class Database_Static_xml extends DatabaseDriver
     {
         $this->query('UPDATE db_meta SET m_type=X_REPLACE(m_type,\'*\',\'\') WHERE ' . db_string_equal_to('m_table', $table_name), $db);
         foreach ($new_key as $_new_key) {
-            $this->query('UPDATE db_meta SET m_type=' . db_function('CONCAT', array('\'*\'', 'm_type')) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key), $db);
+            $this->query('UPDATE db_meta SET m_type=' . db_function('CONCAT', ['\'*\'', 'm_type']) . ' WHERE ' . db_string_equal_to('m_table', $table_name) . ' AND ' . db_string_equal_to('m_name', $_new_key), $db);
         }
     }
 
@@ -281,7 +281,7 @@ class Database_Static_xml extends DatabaseDriver
 
         $query = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
 
-        return array($query);
+        return [$query];
     }
 
     /**
@@ -392,7 +392,7 @@ class Database_Static_xml extends DatabaseDriver
             cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
 
-        return array($db_name);
+        return [$db_name];
     }
 
     /**
@@ -511,7 +511,7 @@ class Database_Static_xml extends DatabaseDriver
         $i = 0;
         $query .= ' '; // Cheat so that we do not have to handle the end state differently
         $len = strlen($query);
-        $tokens = array();
+        $tokens = [];
         $current_token = '';
         $doing_symbol_delimiter = true;
         while ($i < $len) {
@@ -659,43 +659,43 @@ class Database_Static_xml extends DatabaseDriver
         $schema_query = 'SELECT m_name,m_type FROM ' . $table_prefix . 'db_meta WHERE ' . db_string_equal_to('m_table', substr($table_name, strlen($table_prefix)));
 
         if ($table_name == $table_prefix . 'db_meta') {
-            $fields = array(
-                array(
+            $fields = [
+                [
                     'm_name' => 'm_table',
                     'm_type' => '*ID_TEXT',
-                ),
-                array(
+                ],
+                [
                     'm_name' => 'm_name',
                     'm_type' => '*ID_TEXT',
-                ),
-                array(
+                ],
+                [
                     'm_name' => 'm_type',
                     'm_type' => 'ID_TEXT',
-                ),
-            );
+                ],
+            ];
         } elseif ($table_name == $table_prefix . 'db_meta_indices') {
-            $fields = array(
-                array(
+            $fields = [
+                [
                     'm_name' => 'i_table',
                     'm_type' => '*ID_TEXT',
-                ),
-                array(
+                ],
+                [
                     'm_name' => 'i_name',
                     'm_type' => '*ID_TEXT',
-                ),
-                array(
+                ],
+                [
                     'm_name' => 'i_fields',
                     'm_type' => '*ID_TEXT',
-                ),
-            );
+                ],
+            ];
         } else {
             $fields = $this->query($schema_query, $db, null, 0, $fail_ok);
             if ($fields === null) {
-                return array(); // Can happen during installation
+                return []; // Can happen during installation
             }
         }
 
-        $schema = array();
+        $schema = [];
         foreach ($fields as $f) {
             $schema[$f['m_name']] = $f['m_type'];
 
@@ -759,7 +759,7 @@ class Database_Static_xml extends DatabaseDriver
                     $this->_bad_query($query, false, 'Database type strictness error: ' . $schema_type . ' wanted for ' . $key . ' field (text too long, maximum is ' . integer_format($max_length) . ')');
                 }
             } elseif (is_float($val)) {
-                if (!in_array($schema_type, array('REAL'))) {
+                if (!in_array($schema_type, ['REAL'])) {
                     $this->_bad_query($query, false, 'Database type strictness error: ' . $schema_type . ' wanted for ' . $key . ' field, but float was given');
                 }
             } elseif ($val === null) {
@@ -789,11 +789,11 @@ class Database_Static_xml extends DatabaseDriver
      */
     protected function _read_all_records($db, $table_name, $table_as, $schema, $where_expr, $bindings, $fail_ok, $query, $include_unused_fields = false, $max = null)
     {
-        $records = array();
+        $records = [];
         $key_fragments = ''; // We can do a filename substring search to stop us having to parse ALL
-        $must_contain = array();
+        $must_contain = [];
         if (($schema !== null) && ($where_expr !== null)) { // Try for an efficient filename-based lookup
-            $keys = array();
+            $keys = [];
             foreach ($schema as $key => $type) {
                 if (strpos($type, '*') !== false) {
                     $keys[] = $key;
@@ -815,7 +815,7 @@ class Database_Static_xml extends DatabaseDriver
             $key_lookup = true;
             $where_expr_compressed = $this->_turn_where_expr_to_map($where_expr, $table_as, $schema);
             $where_expr_compressed_b = $this->_turn_where_expr_to_map($where_expr, $table_as, $schema, true);
-            $must_contain = array();
+            $must_contain = [];
 
             foreach ($where_expr_compressed_b as $key => $val) {
                 $new_val = null;
@@ -826,7 +826,7 @@ class Database_Static_xml extends DatabaseDriver
                 } elseif (is_float($val)) {
                     $new_val = float_to_raw_string($val);
                 } elseif (is_array($val)) {
-                    $new_val = array();
+                    $new_val = [];
                     foreach ($val as $_val) {
                         if (is_string($_val)) {
                             $new_val[] = $_val;
@@ -902,21 +902,21 @@ class Database_Static_xml extends DatabaseDriver
                 if (($file_exists_xml) || ($file_exists_xml_volatile)) {
                     $the_key = preg_replace('#\.[\w\-]+$#', '', $key_buildup);
                     $suffix = $file_exists_xml ? '.xml' : '.xml-volatile';
-                    $test = $this->_read_record($db[0] . '/' . $table_name . '/' . $key_buildup . $suffix, $schema, array(), $include_unused_fields, $fail_ok);
+                    $test = $this->_read_record($db[0] . '/' . $table_name . '/' . $key_buildup . $suffix, $schema, [], $include_unused_fields, $fail_ok);
                     if ($test === null) {
-                        return array();
+                        return [];
                     }
                     $records[$the_key] = $test;
                     if ($table_name == get_table_prefix() . 'translate') {
                         $sup_file = $db[0] . '/' . $table_name . '/sup/' . $key_buildup . '.xml-volatile';
                         if (file_exists($sup_file)) {
-                            $sup_record = $this->_read_record($sup_file, $schema, array(), $include_unused_fields, $fail_ok);
+                            $sup_record = $this->_read_record($sup_file, $schema, [], $include_unused_fields, $fail_ok);
                             $records[$the_key]['text_parsed'] = $sup_record['text_parsed'];
                         }
                     }
                     return $records;
                 } else {
-                    return array();
+                    return [];
                 }
             }
         }
@@ -933,7 +933,7 @@ class Database_Static_xml extends DatabaseDriver
             @chdir($db[0] . '/' . $table_name);
             $files = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
             if ($files === false) {
-                $files = array();
+                $files = [];
             }
             @chdir(get_file_base());
             if (file_exists($db[0] . '/' . $table_name . '/.xml')) {
@@ -971,14 +971,14 @@ class Database_Static_xml extends DatabaseDriver
                 if ($table_name == get_table_prefix() . 'translate') {
                     $sup_file = $db[0] . '/' . $table_name . '/sup/' . preg_replace('#\.\w+$#', '', $file) . '.xml-volatile';
                     if (file_exists($sup_file)) {
-                        $test = $this->_read_record($sup_file, $schema, array(), $include_unused_fields, $fail_ok);
+                        $test = $this->_read_record($sup_file, $schema, [], $include_unused_fields, $fail_ok);
                         if ($test !== null) {
                             $records[$the_key] += $test;
                         }
                     }
                 }
 
-                if (($max !== null) && (count($records) >= $max) && (($where_expr === null) || ($where_expr == array('LITERAL', true)))) {
+                if (($max !== null) && (count($records) >= $max) && (($where_expr === null) || ($where_expr == ['LITERAL', true]))) {
                     break;
                 }
             }
@@ -1010,24 +1010,24 @@ class Database_Static_xml extends DatabaseDriver
             $_alpha = array_keys($alpha);
             $_beta = array_keys($beta);
             if ((count($alpha) == 1) && (count($beta) == 1) && ($_alpha == $_beta)) {
-                $alpha[$_alpha[0]] = array_merge(is_array($alpha[$_alpha[0]]) ? $alpha[$_alpha[0]] : array($alpha[$_alpha[0]]), is_array($beta[$_beta[0]]) ? $beta[$_beta[0]] : array($beta[$_beta[0]]));
+                $alpha[$_alpha[0]] = array_merge(is_array($alpha[$_alpha[0]]) ? $alpha[$_alpha[0]] : [$alpha[$_alpha[0]]], is_array($beta[$_beta[0]]) ? $beta[$_beta[0]] : [$beta[$_beta[0]]]);
                 return $alpha;
             }
         }
         if (($where_expr[0] == '=') && ($where_expr[1][0] == 'LITERAL') && ($where_expr[2][0] == 'FIELD')) {
-            $where_expr = array($where_expr[0], $where_expr[2], $where_expr[1]);
+            $where_expr = [$where_expr[0], $where_expr[2], $where_expr[1]];
         }
         if (($where_expr[0] == 'LIKE') && ($where_expr[1][0] == 'FIELD') && ($where_expr[2][0] == 'LITERAL') && ($not_full_accuracy)) {
             $key = $where_expr[1][1];
             if ($table_as != '') {
                 $key = preg_replace('#^' . preg_quote($table_as, '#') . '\.#', '', $key);
                 if (strpos($key, '.') !== false) {
-                    return array(); // Not for our table
+                    return []; // Not for our table
                 }
             }
 
             if (($schema !== null) && (!array_key_exists($key, $schema))) {
-                return array(); // Not in our table (join involved. must be in other join)
+                return []; // Not in our table (join involved. must be in other join)
             }
 
             if (substr($where_expr[2][1], 0, 1) == '%') {
@@ -1037,25 +1037,25 @@ class Database_Static_xml extends DatabaseDriver
                 $where_expr[2][1] = substr($where_expr[2][1], 0, strlen($where_expr[2][1]) - 1);
             }
             if ((strpos($where_expr[2][1], '%') !== false) || (strpos($where_expr[2][1], '?') !== false)) {
-                return array();
+                return [];
             }
 
-            return array($key => $where_expr[2][1]);
+            return [$key => $where_expr[2][1]];
         }
         if (($where_expr[0] == '=') && ($where_expr[1][0] == 'FIELD') && ($where_expr[2][0] == 'LITERAL')) {
             $key = $where_expr[1][1];
             if ($table_as != '') {
                 $key = preg_replace('#^' . preg_quote($table_as, '#') . '\.#', '', $key);
                 if (strpos($key, '.') !== false) {
-                    return array(); // Not for our table
+                    return []; // Not for our table
                 }
             }
             if (($schema !== null) && (!array_key_exists($key, $schema))) {
-                return array(); // Not in our table (join involved. must be in other join)
+                return []; // Not in our table (join involved. must be in other join)
             }
-            return array($key => $where_expr[2][1]);
+            return [$key => $where_expr[2][1]];
         }
-        return array();
+        return [];
     }
 
     /**
@@ -1068,7 +1068,7 @@ class Database_Static_xml extends DatabaseDriver
      * @param  boolean $fail_ok Whether to not output an error on some kind of run-time failure (parse errors and clear programming errors are always fatal)
      * @return ?array The record map (null: does not contain requested substrings / error)
      */
-    protected function _read_record($path, $schema = null, $must_contain_strings = array(), $include_unused_fields = false, $fail_ok = false)
+    protected function _read_record($path, $schema = null, $must_contain_strings = [], $include_unused_fields = false, $fail_ok = false)
     {
         if ($fail_ok && !is_file($path)) {
             return null;
@@ -1116,7 +1116,7 @@ class Database_Static_xml extends DatabaseDriver
         */
         // This is much faster, even though it's a bit of a hack as it assumes all records are as Composr would write them
         $bits = preg_split('#</?([^>]*)>#', $file_contents, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $_record = array();
+        $_record = [];
         $bc = count($bits) - 2;
         $i = 0;
         while (trim($bits[$i]) == '') {
@@ -1146,7 +1146,7 @@ class Database_Static_xml extends DatabaseDriver
             return $_record;
         } else {
             global $INT_TYPES;
-            $record = array();
+            $record = [];
             foreach ($_record as $key => $val) {
                 $new_val = null;
                 if ((!array_key_exists($key, $schema)) && (!$include_unused_fields)) {
@@ -1160,7 +1160,7 @@ class Database_Static_xml extends DatabaseDriver
                     } else {
                         $new_val = @intval($val);
                     }
-                } elseif (in_array($schema_type, array('REAL'))) {
+                } elseif (in_array($schema_type, ['REAL'])) {
                     if ((($val === null) || ($val === '')) && (substr($type, 0, 1) == '?')) {
                         $new_val = null;
                     } else {
@@ -1185,7 +1185,7 @@ class Database_Static_xml extends DatabaseDriver
                     } else {
                         $record[$key] = 0;
                     }
-                } elseif (in_array($schema_type, array('REAL'))) {
+                } elseif (in_array($schema_type, ['REAL'])) {
                     if (substr($type, 0, 1) == '?') {
                         $record[$key] = 0.0;
                     } else {
@@ -1489,7 +1489,7 @@ class Database_Static_xml extends DatabaseDriver
                 $next = $this->_parsing_read($at, $tokens, $query, true);
                 if ($next == 'DEFAULT') {
                     $_default = $this->_parsing_read_expression($at, $tokens, $query, $db, false, false, $fail_ok);
-                    $default = $this->_execute_expression($_default, array(), $query, $db, $fail_ok);
+                    $default = $this->_execute_expression($_default, [], $query, $db, $fail_ok);
                 } else {
                     $default = false;
 
@@ -1521,7 +1521,7 @@ class Database_Static_xml extends DatabaseDriver
 
                 // Execute
                 if ($op == 'ADD') {
-                    $records = $this->_read_all_records($db, $table_name, '', null, null, array(), $fail_ok, $query);
+                    $records = $this->_read_all_records($db, $table_name, '', null, null, [], $fail_ok, $query);
                     if ($records === null) {
                         return null;
                     }
@@ -1542,7 +1542,7 @@ class Database_Static_xml extends DatabaseDriver
                     }
 
                     if ($new_column_name != $column_name) {
-                        $records = $this->_read_all_records($db, $table_name, '', null, null, array(), $fail_ok, $query, true);
+                        $records = $this->_read_all_records($db, $table_name, '', null, null, [], $fail_ok, $query, true);
                         if ($records === null) {
                             return null;
                         }
@@ -1568,7 +1568,7 @@ class Database_Static_xml extends DatabaseDriver
                 $column_name = $this->_parsing_read($at, $tokens, $query);
 
                 // Execute
-                $records = $this->_read_all_records($db, $table_name, '', null, null, array(), $fail_ok, $query);
+                $records = $this->_read_all_records($db, $table_name, '', null, null, [], $fail_ok, $query);
                 if ($records === null) {
                     return null;
                 }
@@ -1676,7 +1676,7 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
             return null;
         }
-        $fields = array();
+        $fields = [];
         do {
             $column_name = $this->_parsing_read($at, $tokens, $query);
             if ($column_name == 'PRIMARY') {
@@ -1776,8 +1776,8 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
             return null;
         }
-        $record_basic = array();
-        $reverse_index = array();
+        $record_basic = [];
+        $reverse_index = [];
         do {
             $token = $this->_parsing_read($at, $tokens, $query);
             $record_basic[$token] = null;
@@ -1791,7 +1791,7 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, 'VALUES', $query)) {
             return null;
         }
-        $inserts = array();
+        $inserts = [];
         do {
             if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                 return null;
@@ -1800,7 +1800,7 @@ class Database_Static_xml extends DatabaseDriver
             $i = 0;
             do {
                 $expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
-                $result = $this->_execute_expression($expr, array(), $query, $db, $fail_ok);
+                $result = $this->_execute_expression($expr, [], $query, $db, $fail_ok);
                 $record[$reverse_index[$i]] = $result;
                 $i++;
                 $token = $this->_parsing_read($at, $tokens, $query);
@@ -1824,7 +1824,7 @@ class Database_Static_xml extends DatabaseDriver
             return null;
         }
 
-        return array($table_name, $inserts);
+        return [$table_name, $inserts];
     }
 
     /**
@@ -1908,13 +1908,13 @@ class Database_Static_xml extends DatabaseDriver
     protected function _parsing_read_expression(&$at, $tokens, $query, $db, $look_for_connectives = true, $look_for_any_connectives = true, $fail_ok = false)
     {
         $token = $this->_parsing_read($at, $tokens, $query);
-        $expr = array();
+        $expr = [];
         $doing_not = false;
         switch ($token) {
             // Aggregate expressions...
 
             case 'DISTINCT':
-                $expr = array('DISTINCT', array());
+                $expr = ['DISTINCT', []];
                 $d = $this->_parsing_read($at, $tokens, $query);
                 if ($d == '(') {
                     $d = $this->_parsing_read($at, $tokens, $query);
@@ -1937,9 +1937,9 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
-                $expr = array($token, $this->_parsing_read($at, $tokens, $query));
+                $expr = [$token, $this->_parsing_read($at, $tokens, $query)];
                 if ($expr[1] == 'DISTINCT') {
-                    $expr[1] = array('DISTINCT');
+                    $expr[1] = ['DISTINCT'];
                     do {
                         $d = $this->_parsing_read($at, $tokens, $query);
                         $expr[1][] = $d;
@@ -1960,7 +1960,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
-                $expr = array($token);
+                $expr = [$token];
                 $next = $this->_parsing_read($at, $tokens, $query);
                 if ($next == 'DISTINCT') {
                     $distinct = true;
@@ -1970,7 +1970,7 @@ class Database_Static_xml extends DatabaseDriver
                 }
                 $_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
                 if ($distinct) {
-                    $expr[1] = array('DISTINCT', $_expr);
+                    $expr[1] = ['DISTINCT', $_expr];
                 } else {
                     $expr[1] = $_expr;
                 }
@@ -1988,7 +1988,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token);
+                $expr = [$token];
                 break;
 
             case 'X_MOD':
@@ -2003,7 +2003,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $expr1, $expr2);
+                $expr = [$token, $expr1, $expr2];
                 break;
 
             case 'X_LEAST':
@@ -2013,7 +2013,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, '(', $query)) {
                     return null;
                 }
-                $exprx = array();
+                $exprx = [];
                 do {
                     $exprx[] = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
                     if (!$this->_parsing_expects($at, $tokens, ',', $query, true)) {
@@ -2025,7 +2025,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $exprx);
+                $expr = [$token, $exprx];
                 break;
 
             case 'CAST':
@@ -2040,7 +2040,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $expr, $type);
+                $expr = [$token, $expr, $type];
                 break;
 
             case 'X_REPLACE':
@@ -2060,7 +2060,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $expr1, $expr2, $expr3);
+                $expr = [$token, $expr1, $expr2, $expr3];
                 break;
 
             case 'X_LENGTH':
@@ -2071,7 +2071,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $expr1);
+                $expr = [$token, $expr1];
                 break;
 
             case 'EXISTS':
@@ -2085,7 +2085,7 @@ class Database_Static_xml extends DatabaseDriver
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
-                $expr = array($token, $results);
+                $expr = [$token, $results];
                 break;
 
             case '(':
@@ -2096,9 +2096,9 @@ class Database_Static_xml extends DatabaseDriver
                     if ($subquery === null) {
                         return null;
                     }
-                    $expr = array('SUBQUERY_VALUE', $subquery);
+                    $expr = ['SUBQUERY_VALUE', $subquery];
                 } else {
-                    $expr = array('PARENTHESISED', $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok));
+                    $expr = ['PARENTHESISED', $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok)];
                 }
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
@@ -2111,18 +2111,18 @@ class Database_Static_xml extends DatabaseDriver
             case '"':
             case "'":
                 $token = $this->_parsing_read($at, $tokens, $query);
-                $expr = array('LITERAL', $token);
+                $expr = ['LITERAL', $token];
                 if ((!$this->_parsing_expects($at, $tokens, "'", $query)) && (!$this->_parsing_expects($at, $tokens, '"', $query))) {
                     return null;
                 }
                 break;
 
             case 'NULL':
-                $expr = array('NULL');
+                $expr = ['NULL'];
                 break;
 
             case 'NOT':
-                $expr = array('NOT', $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok));
+                $expr = ['NOT', $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok)];
                 break;
 
             default: // infix op
@@ -2130,22 +2130,22 @@ class Database_Static_xml extends DatabaseDriver
                 if (!in_array($token, $all_keywords)) { // Must be a field reference then
                     if (is_numeric($token)) {
                         if (strpos($token, '.') !== false) {
-                            $expr = array('LITERAL', floatval($token));
+                            $expr = ['LITERAL', floatval($token)];
                         } else {
-                            $expr = array('LITERAL', intval($token));
+                            $expr = ['LITERAL', intval($token)];
                         }
                     } else {
                         if (substr($token, -1) == '.') {
                             $token .= $this->_parsing_read($at, $tokens, $query);
                         }
-                        $expr = array('FIELD', $token);
+                        $expr = ['FIELD', $token];
                     }
                 } elseif ($token == '-') {
                     $token = $this->_parsing_read($at, $tokens, $query);
                     if (strpos($token, '.') !== false) {
-                        $expr = array('LITERAL', -floatval($token));
+                        $expr = ['LITERAL', -floatval($token)];
                     } else {
-                        $expr = array('LITERAL', -intval($token));
+                        $expr = ['LITERAL', -intval($token)];
                     }
                 } else {
                     $this->_bad_query($query, false, 'Unexpected token (' . $token . ') in expression');
@@ -2174,17 +2174,17 @@ class Database_Static_xml extends DatabaseDriver
                 case '=':
                 case '<>':
                 case 'LIKE':
-                    $expr = array($token, $expr, $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok));
+                    $expr = [$token, $expr, $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok)];
                     break;
 
                 case '*':
-                    $expr = array('MULTI', $expr, $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok));
+                    $expr = ['MULTI', $expr, $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok)];
                     break;
 
                 case 'IS':
                     $token = $this->_parsing_read($at, $tokens, $query);
                     if ($token == 'NULL') {
-                        $expr = array('IS_NULL', $expr);
+                        $expr = ['IS_NULL', $expr];
                     } else {
                         $at--;
                         if (!$this->_parsing_expects($at, $tokens, 'NOT', $query)) {
@@ -2193,7 +2193,7 @@ class Database_Static_xml extends DatabaseDriver
                         if (!$this->_parsing_expects($at, $tokens, 'NULL', $query)) {
                             return null;
                         }
-                        $expr = array('IS_NOT_NULL', $expr);
+                        $expr = ['IS_NOT_NULL', $expr];
                     }
                     break;
 
@@ -2203,7 +2203,7 @@ class Database_Static_xml extends DatabaseDriver
                         return null;
                     }
                     $expr2 = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                    $expr = array('BETWEEN', $expr, $expr1, $expr2);
+                    $expr = ['BETWEEN', $expr, $expr1, $expr2];
                     break;
 
                 case 'IN':
@@ -2221,9 +2221,9 @@ class Database_Static_xml extends DatabaseDriver
                             return null;
                         }
 
-                        $expr = array('IN_SUBQUERY', $expr, $test);
+                        $expr = ['IN_SUBQUERY', $expr, $test];
                     } else {
-                        $or_list = array();
+                        $or_list = [];
                         do {
                             $expr_in = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
                             if ($expr_in === null) { // Force an exit
@@ -2234,7 +2234,7 @@ class Database_Static_xml extends DatabaseDriver
                         } while ($token == ',');
                         $at--;
 
-                        $expr = array('IN', $expr, $or_list);
+                        $expr = ['IN', $expr, $or_list];
                     }
                     if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                         return null;
@@ -2249,7 +2249,7 @@ class Database_Static_xml extends DatabaseDriver
             }
 
             if ($doing_not) {
-                $expr = array('NOT', $expr);
+                $expr = ['NOT', $expr];
             }
         }
 
@@ -2261,12 +2261,12 @@ class Database_Static_xml extends DatabaseDriver
                 switch ($token) {
                     case 'AND':
                         $next_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                        $tail = array('AND', $tail, $next_expr);
+                        $tail = ['AND', $tail, $next_expr];
                         break;
 
                     case 'OR':
                         $next_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, false, true, $fail_ok);
-                        $expr = array('OR', $expr, $next_expr);
+                        $expr = ['OR', $expr, $next_expr];
                         $tail = &$next_expr;
                         break;
 
@@ -2307,7 +2307,7 @@ class Database_Static_xml extends DatabaseDriver
                     return $this->_bad_query($query, $fail_ok, 'Cannot use aggregate function (' . $expr[0] . ') outside SELECT/HAVING scope');
                 }
 
-                $temp = $this->_function_set_scoping($full_set, array($expr), $bindings, $query, $db, $fail_ok);
+                $temp = $this->_function_set_scoping($full_set, [$expr], $bindings, $query, $db, $fail_ok);
                 if ($temp === null) {
                     return null;
                 }
@@ -2318,7 +2318,7 @@ class Database_Static_xml extends DatabaseDriver
             // Conventional expressions...
 
             case 'X_COALESCE':
-                $vals = array();
+                $vals = [];
                 $val = null;
                 foreach ($expr[1] as $_expr) {
                     $val = $this->_execute_expression($_expr, $bindings, $query, $db, $fail_ok, $full_set);
@@ -2510,7 +2510,7 @@ class Database_Static_xml extends DatabaseDriver
                 return str_replace($search, $replace, $subject);
 
             case 'X_CONCAT':
-                $vals = array();
+                $vals = [];
                 foreach ($expr[1] as $_expr) {
                     $value = $this->_execute_expression($_expr, $bindings, $query, $db, $fail_ok, $full_set);
                     if ($value === null) {
@@ -2548,7 +2548,7 @@ class Database_Static_xml extends DatabaseDriver
                 return cms_mb_substr($string, $start, $length);
 
             case 'X_LEAST':
-                $vals = array();
+                $vals = [];
                 foreach ($expr[1] as $_expr) {
                     $value = $this->_execute_expression($_expr, $bindings, $query, $db, $fail_ok, $full_set);
                     if ($value === null) {
@@ -2559,7 +2559,7 @@ class Database_Static_xml extends DatabaseDriver
                 return call_user_func_array('min', $vals);
 
             case 'X_GREATEST':
-                $vals = array();
+                $vals = [];
                 foreach ($expr[1] as $_expr) {
                     $value = $this->_execute_expression($_expr, $bindings, $query, $db, $fail_ok, $full_set);
                     if ($value === null) {
@@ -2592,7 +2592,7 @@ class Database_Static_xml extends DatabaseDriver
                 list($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $subquery_start, $subquery_max) = $expr[2];
                 $results = $this->_execute_query_select($subquery_select, $subquery_as, $subquery_joins, $subquery_where_expr, $subquery_group_by, $subquery_having, $subquery_orders, $subquery_unions, $query, $db, $subquery_max, $subquery_start, $bindings, $fail_ok);
 
-                $or_list = array();
+                $or_list = [];
                 foreach ($results as $result) {
                     $result = array_values($result);
                     $or_list[] = $result[0];
@@ -2632,7 +2632,7 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, 'SET', $query)) {
             return null;
         }
-        $set = array();
+        $set = [];
         do {
             $token = $this->_parsing_read($at, $tokens, $query);
 
@@ -2655,7 +2655,7 @@ class Database_Static_xml extends DatabaseDriver
         if ($token === 'WHERE') {
             $where_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
         } else {
-            $where_expr = array('LITERAL', true);
+            $where_expr = ['LITERAL', true];
             if ($token !== null) {
                 $at--;
             }
@@ -2666,7 +2666,7 @@ class Database_Static_xml extends DatabaseDriver
         if ($schema === null) {
             return null;
         }
-        $records = $this->_read_all_records($db, $table_name, '', $schema, $where_expr, array(), $fail_ok, $query, false, $max);
+        $records = $this->_read_all_records($db, $table_name, '', $schema, $where_expr, [], $fail_ok, $query, false, $max);
         if ($records === null) {
             return null;
         }
@@ -2679,7 +2679,7 @@ class Database_Static_xml extends DatabaseDriver
             $test = $this->_execute_expression($where_expr, $record, $query, $db, $fail_ok);
             if ($test) {
                 if ($i >= $start) {
-                    $record_new = array();
+                    $record_new = [];
                     foreach ($set as $column_name => $expr) {
                         $record_new[$column_name] = $this->_execute_expression($expr, $record, $query, $db, $fail_ok);
                     }
@@ -2730,7 +2730,7 @@ class Database_Static_xml extends DatabaseDriver
         if ($token === 'WHERE') {
             $where_expr = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
         } else {
-            $where_expr = array('LITERAL', true);
+            $where_expr = ['LITERAL', true];
             if ($token !== null) {
                 $at--;
             }
@@ -2741,7 +2741,7 @@ class Database_Static_xml extends DatabaseDriver
         if ($schema === null) {
             return null;
         }
-        $records = $this->_read_all_records($db, $table_name, '', $schema, $where_expr, array(), $fail_ok, $query, false, $max);
+        $records = $this->_read_all_records($db, $table_name, '', $schema, $where_expr, [], $fail_ok, $query, false, $max);
         if ($records === null) {
             return null;
         }
@@ -2833,7 +2833,7 @@ class Database_Static_xml extends DatabaseDriver
             return null;
         }
         list($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max) = $test;
-        return $this->_execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, array(), $fail_ok);
+        return $this->_execute_query_select($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $query, $db, $max, $start, [], $fail_ok);
     }
 
     /**
@@ -2870,7 +2870,7 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_expects($at, $tokens, 'SELECT', $query)) {
             return null;
         }
-        $select = array();
+        $select = [];
         do {
             $token = $this->_parsing_read($at, $tokens, $query);
             if (substr($token, -1) == '.') {
@@ -2878,9 +2878,9 @@ class Database_Static_xml extends DatabaseDriver
             }
 
             if ($token == '*') {
-                $select[] = array('*');
+                $select[] = ['*'];
             } elseif (substr($token, -2) == '.*') {
-                $select[] = array('*', substr($token, 0, strlen($token) - 2));
+                $select[] = ['*', substr($token, 0, strlen($token) - 2)];
             } else {
                 $at--;
                 $expression = $this->_parsing_read_expression($at, $tokens, $query, $db, true, true, $fail_ok);
@@ -2895,9 +2895,9 @@ class Database_Static_xml extends DatabaseDriver
                 } else {
                     if ($as_token == 'AS') {
                         $as = $this->_parsing_read($at, $tokens, $query);
-                        $select[] = array('AS', $expression, $as);
+                        $select[] = ['AS', $expression, $as];
                     } elseif (($as_token == '*') && (substr($token, -1) == '.')) {
-                        $select[] = array('*', substr($token, 0, strlen($token) - 1));
+                        $select[] = ['*', substr($token, 0, strlen($token) - 1)];
                     } else {
                         $at--;
                         $select[] = $expression;
@@ -2946,7 +2946,7 @@ class Database_Static_xml extends DatabaseDriver
                 }
             }
 
-            $joins = array(array('SIMPLE', $table_name, $as));
+            $joins = [['SIMPLE', $table_name, $as]];
             do {
                 $test = $this->_read_join($at, $tokens, $query, $db, $fail_ok, $closing_parentheses_needed);
                 if ($test !== null) {
@@ -2960,7 +2960,7 @@ class Database_Static_xml extends DatabaseDriver
                 }
             }
         } else {
-            $joins = array();
+            $joins = [];
             $at--;
         }
 
@@ -2973,7 +2973,7 @@ class Database_Static_xml extends DatabaseDriver
                 return null;
             }
         } else {
-            $where_expr = array('LITERAL', true);
+            $where_expr = ['LITERAL', true];
             if ($token !== null) {
                 $at--;
             }
@@ -2987,7 +2987,7 @@ class Database_Static_xml extends DatabaseDriver
             if (!$this->_parsing_expects($at, $tokens, 'BY', $query)) {
                 return null;
             }
-            $group_by = array();
+            $group_by = [];
             do {
                 $group_by[] = $this->_parsing_read($at, $tokens, $query);
                 $test = $this->_parsing_read($at, $tokens, $query, true);
@@ -3094,7 +3094,7 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         // UNION clause?
-        $unions = array();
+        $unions = [];
         $token = $this->_parsing_read($at, $tokens, $query, true);
         if ($token === 'UNION') {
             $token = $this->_parsing_read($at, $tokens, $query);
@@ -3110,7 +3110,7 @@ class Database_Static_xml extends DatabaseDriver
                 return null;
             }
 
-            $unions[] = array($test, $de_dupe);
+            $unions[] = [$test, $de_dupe];
         } else {
             if ($token !== null) {
                 $at--;
@@ -3124,7 +3124,7 @@ class Database_Static_xml extends DatabaseDriver
 
         // ---
 
-        return array($select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max);
+        return [$select, $as, $joins, $where_expr, $group_by, $having, $orders, $unions, $start, $max];
     }
 
     /**
@@ -3151,28 +3151,28 @@ class Database_Static_xml extends DatabaseDriver
         // Execute to get records
         $done = 0;
         if (empty($joins)) {
-            $records = array(array());
+            $records = [[]];
         }
-        elseif ((count($joins) == 1) && (!is_array($joins[0][1])) && ($where_expr == array('LITERAL', true)) && ($select === array(array('COUNT', '*'))) && ($orders === null)) { // Quick fudge to get fast table counts
+        elseif ((count($joins) == 1) && (!is_array($joins[0][1])) && ($where_expr == ['LITERAL', true]) && ($select === [['COUNT', '*']]) && ($orders === null)) { // Quick fudge to get fast table counts
             global $DIR_CONTENTS_CACHE;
             if (!isset($DIR_CONTENTS_CACHE[$joins[0][1]])) {
                 if (is_dir($db[0] . '/' . $joins[0][1])) {
                     chdir($db[0] . '/' . $joins[0][1]);
                     $dh = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
                     if ($dh === false) {
-                        $dh = array();
+                        $dh = [];
                     }
                     @chdir(get_file_base());
                 } else {
-                    $dh = array();
+                    $dh = [];
                 }
                 $DIR_CONTENTS_CACHE[$joins[0][1]] = $dh;
             } else {
                 $dh = $DIR_CONTENTS_CACHE[$joins[0][1]];
             }
-            $records = array();
+            $records = [];
             foreach ($dh as $d) {
-                $records[] = array('file' => $d);
+                $records[] = ['file' => $d];
             }
         } else {
             foreach ($joins as $join) {
@@ -3180,7 +3180,7 @@ class Database_Static_xml extends DatabaseDriver
                     $joined_as = $join[2];
 
                     if (is_array($join[1])) {
-                        $schema = array();
+                        $schema = [];
 
                         list($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $join_start, $join_max) = $join[1];
                         $records = $this->_execute_query_select($join_select, $join_as, $join_joins, $join_where_expr, $join_group_by, $join_having, $join_orders, $join_unions, $query, $db, $join_max, $join_start, $bindings, $fail_ok);
@@ -3222,7 +3222,7 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         // Filter by WHERE
-        $pre_filtered_records = array();
+        $pre_filtered_records = [];
         foreach ($records as $record) {
             $test = $this->_execute_expression($where_expr, $record + $bindings, $query, $db, $fail_ok);
             if ($test) {
@@ -3233,19 +3233,19 @@ class Database_Static_xml extends DatabaseDriver
 
         if ($group_by !== null) {
             // GROUP BY
-            $record_sets = array();
+            $record_sets = [];
             foreach ($records as $record) {
-                $s = array();
+                $s = [];
                 foreach ($group_by as $v) {
                     $s[] = $record[$v];
                 }
                 if (!array_key_exists(serialize($s), $record_sets)) {
-                    $record_sets[serialize($s)] = array();
+                    $record_sets[serialize($s)] = [];
                 }
                 $record_sets[serialize($s)][] = $record;
             }
-            $records = array();
-            $records_full_set = array();
+            $records = [];
+            $records_full_set = [];
             foreach ($record_sets as $set) { // Functions have special meaning in GROUP BY, and we need to compute them in the group-aware scope
                 $rep = $this->_function_set_scoping($set, $select, $set[0], $query, $db, $fail_ok);
                 $records[] = $rep;
@@ -3255,7 +3255,7 @@ class Database_Static_xml extends DatabaseDriver
             // Filter by HAVING
             if ($group_by !== null) {
                 if ($having !== null) {
-                    $pre_filtered_records = array();
+                    $pre_filtered_records = [];
                     foreach ($records as $i => $record) {
                         $test = $this->_execute_expression($having, $record, $query, $db, $fail_ok, $records_full_set[$i]);
                         if ($test) {
@@ -3270,9 +3270,9 @@ class Database_Static_xml extends DatabaseDriver
             foreach ($select as $s_term) {
                 switch ($s_term[0]) {
                     case 'DISTINCT':
-                        $index = array();
+                        $index = [];
                         foreach ($records as $set_item) {
-                            $val = array();
+                            $val = [];
                             foreach ($s_term[1] as $di) {
                                 $val[] = $set_item[$di];
                             }
@@ -3293,7 +3293,7 @@ class Database_Static_xml extends DatabaseDriver
             foreach ($records as $i => $record) {
                 $records[$i] = $this->_function_set_scoping($records, $select, $record, $query, $db, $fail_ok); // (*MARKER*)
                 if ($single_result) {
-                    $records = array($i => $records[$i]);
+                    $records = [$i => $records[$i]];
                     break;
                 }
             }
@@ -3336,7 +3336,7 @@ class Database_Static_xml extends DatabaseDriver
 
         // Cut
         $i = 0;
-        $filtered_records = array();
+        $filtered_records = [];
         foreach ($records as $record) {
             if ($i >= $start) {
                 if (($max !== null) && ($done >= $max)) {
@@ -3351,9 +3351,9 @@ class Database_Static_xml extends DatabaseDriver
         $records = $filtered_records;
 
         // Selecting correct fields
-        $results = array();
+        $results = [];
         foreach ($records as $record) {
-            $_record = array();
+            $_record = [];
             foreach ($select as $i => $want) {
                 $as = null;
 
@@ -3371,7 +3371,7 @@ class Database_Static_xml extends DatabaseDriver
 
                     case '*':
                         if (array_key_exists(1, $want)) {
-                            $filtered_record = array();
+                            $filtered_record = [];
                             foreach ($record as $key => $val) {
                                 if (substr($key, 0, strlen($want[1] . '.')) == $want[1] . '.') {
                                     $filtered_record[substr($key, strlen($want[1] . '.'))] = $val;
@@ -3379,7 +3379,7 @@ class Database_Static_xml extends DatabaseDriver
                             }
                             $_record += $filtered_record;
                         } else {
-                            $filtered_record = array();
+                            $filtered_record = [];
                             foreach ($record as $key => $val) {
                                 if (strpos($key, '.') === false) {
                                     $filtered_record[$key] = $val;
@@ -3390,7 +3390,7 @@ class Database_Static_xml extends DatabaseDriver
                         break;
 
                     case 'DISTINCT':
-                        $val = array();
+                        $val = [];
                         foreach ($want[1] as $param) {
                             if (strpos($param, '.') === false) {
                                 $_record[$param] = $record[$param];
@@ -3433,7 +3433,7 @@ class Database_Static_xml extends DatabaseDriver
 
         // If there are no records, but some functions, we need to add a row
         if ((empty($results)) && ($group_by === null)) {
-            $rep = $this->_function_set_scoping(array(), $select, array(), $query, $db, $fail_ok);
+            $rep = $this->_function_set_scoping([], $select, [], $query, $db, $fail_ok);
             if (!empty($rep)) {
                 foreach ($select as $i => $want) {
                     $as = null;
@@ -3471,7 +3471,7 @@ class Database_Static_xml extends DatabaseDriver
         //  Can't dig into expressions because the XML driver doesn't support ordering by them.
         if (!empty($results)) {
             if ($orders !== null) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^\!?(\w+)$#', $orders, $matches) != 0) {
                     if (!array_key_exists($matches[1], $records[0])) {
                         warn_exit('Cannot sort by ' . $matches[1] . ', it\'s not selected');
@@ -3578,9 +3578,9 @@ class Database_Static_xml extends DatabaseDriver
 
                 case 'COUNT':
                     if ($s_term[1][0] == 'DISTINCT') {
-                        $index = array();
+                        $index = [];
                         foreach ($set as $set_item) {
-                            $val = array();
+                            $val = [];
                             for ($di = 1; $di < count($s_term[1]); $di++) {
                                 $val[] = $set_item[$s_term[1][$di]];
                             }
@@ -3691,7 +3691,7 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         if ($token == ',') {
-            $on_expr = array('LITERAL', true);
+            $on_expr = ['LITERAL', true];
         } else {
             if (!$this->_parsing_expects($at, $tokens, 'ON', $query)) {
                 return null;
@@ -3712,19 +3712,19 @@ class Database_Static_xml extends DatabaseDriver
 
         switch ($token) {
             case ',':
-                $join = array('JOIN', $join_table, $joined_as, $on_expr);
+                $join = ['JOIN', $join_table, $joined_as, $on_expr];
                 break;
             case 'JOIN':
-                $join = array('JOIN', $join_table, $joined_as, $on_expr);
+                $join = ['JOIN', $join_table, $joined_as, $on_expr];
                 break;
             case 'LEFT':
-                $join = array('LEFT_JOIN', $join_table, $joined_as, $on_expr);
+                $join = ['LEFT_JOIN', $join_table, $joined_as, $on_expr];
                 break;
             case 'RIGHT':
-                $join = array('RIGHT_JOIN', $join_table, $joined_as, $on_expr);
+                $join = ['RIGHT_JOIN', $join_table, $joined_as, $on_expr];
                 break;
             case 'INNER':
-                $join = array('INNER_JOIN', $join_table, $joined_as, $on_expr);
+                $join = ['INNER_JOIN', $join_table, $joined_as, $on_expr];
                 break;
         }
 
@@ -3746,14 +3746,14 @@ class Database_Static_xml extends DatabaseDriver
         if ($join_condition[0] == 'AND') {
             $join_condition_a = $this->_setify_join_condition_for_optimisation($join_condition[1], $schema, $records, $joined_as);
             $join_condition_b = $this->_setify_join_condition_for_optimisation($join_condition[2], $schema, $records, $joined_as);
-            $join_condition = array('AND', $join_condition_a, $join_condition_b);
+            $join_condition = ['AND', $join_condition_a, $join_condition_b];
         } else {
             if ($join_condition[0] == '=') {
-                foreach (array(1, 2) as $i) {
+                foreach ([1, 2] as $i) {
                     if (($join_condition[$i][0] == 'FIELD') && ($join_condition[3 - $i][0] == 'FIELD')) { // If this and other-side expression are both FIELD's
                         $var = preg_replace('#^' . $joined_as . '\.#', '', $join_condition[$i][1]); // Find field reference
                         if (array_key_exists($var, $schema)) { // If this side is in the schema
-                            $join_condition[$i][1] = array(); // We'll make it a list instead of a field reference
+                            $join_condition[$i][1] = []; // We'll make it a list instead of a field reference
                             foreach ($records as $r) {
                                 $join_condition[$i][1][] = $r[$var];
                             }
@@ -3797,10 +3797,10 @@ class Database_Static_xml extends DatabaseDriver
         $join_condition = $join[3];
         $join_condition = $this->_setify_join_condition_for_optimisation($join_condition, $schema, $records, $joined_as_prior);
         $where_expr = $this->_setify_join_condition_for_optimisation($where_expr, $schema, $records, $joined_as_prior); // Good for implicit joins (,)
-        if ($where_expr == array('LITERAL', true)) {
+        if ($where_expr == ['LITERAL', true]) {
             $where_expr_combined = $join_condition;
         } else {
-            $where_expr_combined = array('AND', $where_expr, $join_condition);
+            $where_expr_combined = ['AND', $where_expr, $join_condition];
         }
         $records_b = $this->_read_all_records($db, $join[1], $joined_as, $schema_b, $where_expr_combined, $bindings, $fail_ok, $query);
         if ($records_b === null) {
@@ -3819,7 +3819,7 @@ class Database_Static_xml extends DatabaseDriver
             $records_b[$guid] = $new_record;
         }
 
-        $records_results = array();
+        $records_results = [];
         switch ($join[0]) {
             case 'JOIN':
             case 'INNER_JOIN':
@@ -3901,7 +3901,7 @@ class Database_Static_xml extends DatabaseDriver
             $schema[$k] = $v;
         }
 
-        return array($records_results, $schema);
+        return [$records_results, $schema];
     }
 
     /**
@@ -4055,7 +4055,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     protected function _escape_name($in)
     {
-        return str_replace(array('=', ':', ',', '/', '|'), array('!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'), $in);
+        return str_replace(['=', ':', ',', '/', '|'], ['!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'], $in);
     }
 
     /**
@@ -4066,7 +4066,7 @@ class Database_Static_xml extends DatabaseDriver
      */
     protected function _unescape_name($in)
     {
-        return str_replace(array('!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'), array('=', ':', ',', '/', '|'), $in);
+        return str_replace(['!equals!', '!colon!', '!comma!', '!slash!', '!pipe!'], ['=', ':', ',', '/', '|'], $in);
     }
 
     /**

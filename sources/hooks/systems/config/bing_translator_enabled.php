@@ -30,7 +30,7 @@ class Hook_config_bing_translator_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BING_TRANSLATOR_ENABLED',
             'type' => 'tick',
             'category' => 'SITE',
@@ -46,7 +46,7 @@ class Hook_config_bing_translator_enabled
             'addon' => 'core_language_editing',
 
             'maintenance_code' => 'bing_translator',
-        );
+        ];
     }
 
     /**

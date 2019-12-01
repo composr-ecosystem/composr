@@ -31,21 +31,21 @@ class Hook_actionlog_breadcrumbs extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('breadcrumbs')) {
-            return array();
+            return [];
         }
 
         require_lang('config');
 
-        return array(
-            'BREADCRUMB_OVERRIDES' => array(
+        return [
+            'BREADCRUMB_OVERRIDES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'BREADCRUMB_OVERRIDES' => '_SEARCH:admin_config:xml_breadcrumbs',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

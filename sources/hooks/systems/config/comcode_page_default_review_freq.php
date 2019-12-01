@@ -30,7 +30,7 @@ class Hook_config_comcode_page_default_review_freq
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMCODE_PAGE_DEFAULT_REVIEW_FREQ',
             'type' => 'integer',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_comcode_page_default_review_freq
             'public' => false,
 
             'addon' => 'core_comcode_pages',
-        );
+        ];
     }
 
     /**

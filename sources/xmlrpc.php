@@ -61,7 +61,7 @@ END;
     require_code('character_sets');
     $rpc = convert_to_internal_encoding($rpc, get_charset(), 'utf-8');
 
-    $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => array($rpc), 'raw_post' => true, 'raw_content_type' => 'text/xml'));
+    $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => [$rpc], 'raw_post' => true, 'raw_content_type' => 'text/xml']);
     return $result;
 }
 

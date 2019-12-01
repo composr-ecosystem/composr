@@ -30,7 +30,7 @@ class Hook_config_show_empty_galleries
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_EMPTY_GALLERIES',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_show_empty_galleries
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

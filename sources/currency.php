@@ -214,13 +214,13 @@ function currency_convert($amount, $from_currency = null, $to_currency = null, $
             return $ret;
 
         case CURRENCY_DISPLAY_TEMPLATED:
-            $temp_tpl = do_template('CURRENCY', array(
+            $temp_tpl = do_template('CURRENCY', [
                 '_GUID' => '32f7e64b09569dd81c467ee4a369abed',
                 'AMOUNT' => float_format($amount),
                 'NEW_AMOUNT' => float_format($new_amount),
                 'FROM_CURRENCY' => $from_currency,
                 'TO_CURRENCY' => $to_currency,
-            ));
+            ]);
             return $temp_tpl->evaluate();
     }
 
@@ -252,7 +252,7 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
     }
 
     $conv_api_url = 'https://free.currencyconverterapi.com/api/v5/convert?q=' . $rate_key . '&compact=y&apiKey=' . urlencode($api_key);
-    $result = http_get_contents($conv_api_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+    $result = http_get_contents($conv_api_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
     if (is_string($result)) {
         $data = json_decode($result, true);
         if (isset($data[$rate_key]['val'])) {
@@ -276,12 +276,12 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
  */
 function get_currency_symbol($currency)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$currency])) {
         return $cache[$currency];
     }
 
-    $symbols = array(
+    $symbols = [
         'AFN' => '&#1547;',
         'AED' => '&#1583;.&#1573;',
         'ALL' => 'L',
@@ -438,7 +438,7 @@ function get_currency_symbol($currency)
         'ZAR' => 'R',
         'ZMK' => 'ZK',
         'ZWL' => 'Z$',
-    );
+    ];
 
     $ret = '';
     if (isset($symbols[$currency])) {
@@ -458,7 +458,7 @@ function get_currency_symbol($currency)
         }
     }
 
-    $_ret = array($ret, $has_primacy);
+    $_ret = [$ret, $has_primacy];
     $cache[$currency] = $_ret;
     return $_ret;
 }
@@ -470,60 +470,48 @@ function get_currency_symbol($currency)
  */
 function get_currency_map()
 {
-    return array
-    (
-        'AED' => array
-        (
+    return [
+        'AED' => [
             'AE',
-        ),
+        ],
 
-        'AFA' => array
-        (
+        'AFA' => [
             'AF',
-        ),
+        ],
 
-        'ALL' => array
-        (
+        'ALL' => [
             'AL',
-        ),
+        ],
 
-        'AMD' => array
-        (
+        'AMD' => [
             'AM',
-        ),
+        ],
 
-        'ANG' => array
-        (
+        'ANG' => [
             'AN',
-        ),
+        ],
 
-        'AOK' => array
-        (
+        'AOK' => [
             'AO',
-        ),
+        ],
 
-        'AON' => array
-        (
+        'AON' => [
             'AO',
-        ),
+        ],
 
-        'ARA' => array
-        (
+        'ARA' => [
             'AR',
-        ),
+        ],
 
-        'ARP' => array
-        (
+        'ARP' => [
             'AR',
-        ),
+        ],
 
-        'ARS' => array
-        (
+        'ARS' => [
             'AR',
-        ),
+        ],
 
-        'AUD' => array
-        (
+        'AUD' => [
             'AU',
             'CX',
             'CC',
@@ -532,220 +520,178 @@ function get_currency_map()
             'NR',
             'NF',
             'TV',
-        ),
+        ],
 
-        'AWG' => array
-        (
+        'AWG' => [
             'AW',
-        ),
+        ],
 
-        'AZM' => array
-        (
+        'AZM' => [
             'AZ',
-        ),
+        ],
 
-        'BAM' => array
-        (
+        'BAM' => [
             'BA',
-        ),
+        ],
 
-        'BBD' => array
-        (
+        'BBD' => [
             'BB',
-        ),
+        ],
 
-        'BDT' => array
-        (
+        'BDT' => [
             'BD',
-        ),
+        ],
 
-        'BGL' => array
-        (
+        'BGL' => [
             'BG',
-        ),
+        ],
 
-        'BHD' => array
-        (
+        'BHD' => [
             'BH',
-        ),
+        ],
 
-        'BIF' => array
-        (
+        'BIF' => [
             'BI',
-        ),
+        ],
 
-        'BMD' => array
-        (
+        'BMD' => [
             'BM',
-        ),
+        ],
 
-        'BND' => array
-        (
+        'BND' => [
             'BN',
-        ),
+        ],
 
-        'BOB' => array
-        (
+        'BOB' => [
             'BO',
-        ),
+        ],
 
-        'BOP' => array
-        (
+        'BOP' => [
             'BO',
-        ),
+        ],
 
-        'BRC' => array
-        (
+        'BRC' => [
             'BR',
-        ),
+        ],
 
-        'BRL' => array
-        (
+        'BRL' => [
             'BR',
-        ),
+        ],
 
-        'BRR' => array
-        (
+        'BRR' => [
             'BR',
-        ),
+        ],
 
-        'BSD' => array
-        (
+        'BSD' => [
             'BS',
-        ),
+        ],
 
-        'BTN' => array
-        (
+        'BTN' => [
             'BT',
-        ),
+        ],
 
-        'BWP' => array
-        (
+        'BWP' => [
             'BW',
-        ),
+        ],
 
-        'BYR' => array
-        (
+        'BYR' => [
             'BY',
-        ),
+        ],
 
-        'BZD' => array
-        (
+        'BZD' => [
             'BZ',
-        ),
+        ],
 
-        'CAD' => array
-        (
+        'CAD' => [
             'CA',
-        ),
+        ],
 
-        'CDZ' => array
-        (
+        'CDZ' => [
             'CD',
             'ZR',
-        ),
+        ],
 
-        'CHF' => array
-        (
+        'CHF' => [
             'LI',
             'CH',
-        ),
+        ],
 
-        'CLF' => array
-        (
+        'CLF' => [
             'CL',
-        ),
+        ],
 
-        'CLP' => array
-        (
+        'CLP' => [
             'CL',
-        ),
+        ],
 
-        'CNY' => array
-        (
+        'CNY' => [
             'CN',
-        ),
+        ],
 
-        'COP' => array
-        (
+        'COP' => [
             'CO',
-        ),
+        ],
 
-        'CRC' => array
-        (
+        'CRC' => [
             'CR',
-        ),
+        ],
 
-        'CSD' => array
-        (
+        'CSD' => [
             'CS',
-        ),
+        ],
 
-        'CUP' => array
-        (
+        'CUP' => [
             'CU',
-        ),
+        ],
 
-        'CVE' => array
-        (
+        'CVE' => [
             'CV',
-        ),
+        ],
 
-        'CYP' => array
-        (
+        'CYP' => [
             'CY',
-        ),
+        ],
 
-        'CZK' => array
-        (
+        'CZK' => [
             'CZ',
-        ),
+        ],
 
-        'DJF' => array
-        (
+        'DJF' => [
             'DJ',
-        ),
+        ],
 
-        'DKK' => array
-        (
+        'DKK' => [
             'DK',
             'FO',
             'GL',
-        ),
+        ],
 
-        'DOP' => array
-        (
+        'DOP' => [
             'DO',
-        ),
+        ],
 
-        'DZD' => array
-        (
+        'DZD' => [
             'DZ',
-        ),
+        ],
 
-        'EEK' => array
-        (
+        'EEK' => [
             'EE',
-        ),
+        ],
 
-        'EGP' => array
-        (
+        'EGP' => [
             'EG',
-        ),
+        ],
 
-        'ERN' => array
-        (
+        'ERN' => [
             'ER',
-        ),
+        ],
 
-        'ETB' => array
-        (
+        'ETB' => [
             'ER',
             'ET',
-        ),
+        ],
 
-        'EUR' => array
-        (
+        'EUR' => [
             'AT',
             'BE',
             'FI',
@@ -763,580 +709,468 @@ function get_currency_map()
             'CS',
             'VA',
             'SM',
-        ),
+        ],
 
-        'FJD' => array
-        (
+        'FJD' => [
             'FJ',
-        ),
+        ],
 
-        'FKP' => array
-        (
+        'FKP' => [
             'FK',
-        ),
+        ],
 
-        'GBP' => array
-        (
+        'GBP' => [
             'IO',
             'VG',
             'GS',
             'GB',
-        ),
+        ],
 
-        'GEL' => array
-        (
+        'GEL' => [
             'GE',
-        ),
+        ],
 
-        'GHC' => array
-        (
+        'GHC' => [
             'GH',
-        ),
+        ],
 
-        'GIP' => array
-        (
+        'GIP' => [
             'GI',
-        ),
+        ],
 
-        'GMD' => array
-        (
+        'GMD' => [
             'GM',
-        ),
+        ],
 
-        'GNS' => array
-        (
+        'GNS' => [
             'GN',
-        ),
+        ],
 
-        'GQE' => array
-        (
+        'GQE' => [
             'GQ',
-        ),
+        ],
 
-        'GTQ' => array
-        (
+        'GTQ' => [
             'GT',
-        ),
+        ],
 
-        'GWP' => array
-        (
+        'GWP' => [
             'GW',
-        ),
+        ],
 
-        'GYD' => array
-        (
+        'GYD' => [
             'GY',
-        ),
+        ],
 
-        'HKD' => array
-        (
+        'HKD' => [
             'HK',
-        ),
+        ],
 
-        'HNL' => array
-        (
+        'HNL' => [
             'HN',
-        ),
+        ],
 
-        'HRD' => array
-        (
+        'HRD' => [
             'HR',
-        ),
+        ],
 
-        'HRK' => array
-        (
+        'HRK' => [
             'HR',
-        ),
+        ],
 
-        'HTG' => array
-        (
+        'HTG' => [
             'HT',
-        ),
+        ],
 
-        'HUF' => array
-        (
+        'HUF' => [
             'HU',
-        ),
+        ],
 
-        'IDR' => array
-        (
+        'IDR' => [
             'ID',
-        ),
+        ],
 
-        'ILS' => array
-        (
+        'ILS' => [
             'IL',
-        ),
+        ],
 
-        'INR' => array
-        (
+        'INR' => [
             'BT',
             'IN',
-        ),
+        ],
 
-        'IQD' => array
-        (
+        'IQD' => [
             'IQ',
-        ),
+        ],
 
-        'IRR' => array
-        (
+        'IRR' => [
             'IR',
-        ),
+        ],
 
-        'ISK' => array
-        (
+        'ISK' => [
             'IS',
-        ),
+        ],
 
-        'JMD' => array
-        (
+        'JMD' => [
             'JM',
-        ),
+        ],
 
-        'JOD' => array
-        (
+        'JOD' => [
             'JO',
-        ),
+        ],
 
-        'JPY' => array
-        (
+        'JPY' => [
             'JP',
-        ),
+        ],
 
-        'KES' => array
-        (
+        'KES' => [
             'KE',
-        ),
+        ],
 
-        'KGS' => array
-        (
+        'KGS' => [
             'KG',
-        ),
+        ],
 
-        'KHR' => array
-        (
+        'KHR' => [
             'KH',
-        ),
+        ],
 
-        'KMF' => array
-        (
+        'KMF' => [
             'KM',
-        ),
+        ],
 
-        'KPW' => array
-        (
+        'KPW' => [
             'KP',
-        ),
+        ],
 
-        'KRW' => array
-        (
+        'KRW' => [
             'KR',
-        ),
+        ],
 
-        'KWD' => array
-        (
+        'KWD' => [
             'KW',
-        ),
+        ],
 
-        'KYD' => array
-        (
+        'KYD' => [
             'KY',
-        ),
+        ],
 
-        'KZT' => array
-        (
+        'KZT' => [
             'KZ',
-        ),
+        ],
 
-        'LAK' => array
-        (
+        'LAK' => [
             'LA',
-        ),
+        ],
 
-        'LBP' => array
-        (
+        'LBP' => [
             'LB',
-        ),
+        ],
 
-        'LKR' => array
-        (
+        'LKR' => [
             'LK',
-        ),
+        ],
 
-        'LRD' => array
-        (
+        'LRD' => [
             'LR',
-        ),
+        ],
 
-        'LSL' => array
-        (
+        'LSL' => [
             'LS',
-        ),
+        ],
 
-        'LSM' => array
-        (
+        'LSM' => [
             'LS',
-        ),
+        ],
 
-        'LTL' => array
-        (
+        'LTL' => [
             'LT',
-        ),
+        ],
 
-        'LVL' => array
-        (
+        'LVL' => [
             'LA',
-        ),
+        ],
 
-        'LYD' => array
-        (
+        'LYD' => [
             'LY',
-        ),
+        ],
 
-        'MAD' => array
-        (
+        'MAD' => [
             'MA',
             'EH',
-        ),
+        ],
 
-        'MDL' => array
-        (
+        'MDL' => [
             'MD',
-        ),
+        ],
 
-        'MGF' => array
-        (
+        'MGF' => [
             'MG',
-        ),
+        ],
 
-        'MKD' => array
-        (
+        'MKD' => [
             'MK',
-        ),
+        ],
 
-        'MLF' => array
-        (
+        'MLF' => [
             'ML',
-        ),
+        ],
 
-        'MMK' => array
-        (
+        'MMK' => [
             'MM',
             'BU',
-        ),
+        ],
 
-        'MNT' => array
-        (
+        'MNT' => [
             'MN',
-        ),
+        ],
 
-        'MOP' => array
-        (
+        'MOP' => [
             'MO',
-        ),
+        ],
 
-        'MRO' => array
-        (
+        'MRO' => [
             'MR',
             'EH',
-        ),
+        ],
 
-        'MTL' => array
-        (
+        'MTL' => [
             'MT',
-        ),
+        ],
 
-        'MUR' => array
-        (
+        'MUR' => [
             'MU',
-        ),
+        ],
 
-        'MVR' => array
-        (
+        'MVR' => [
             'MV',
-        ),
+        ],
 
-        'MWK' => array
-        (
+        'MWK' => [
             'MW',
-        ),
+        ],
 
-        'MXN' => array
-        (
+        'MXN' => [
             'MX',
-        ),
+        ],
 
-        'MYR' => array
-        (
+        'MYR' => [
             'MY',
-        ),
+        ],
 
-        'MZM' => array
-        (
+        'MZM' => [
             'MZ',
-        ),
+        ],
 
-        'NAD' => array
-        (
+        'NAD' => [
             'NA',
-        ),
+        ],
 
-        'NGN' => array
-        (
+        'NGN' => [
             'NG',
-        ),
+        ],
 
-        'NIC' => array
-        (
+        'NIC' => [
             'NI',
-        ),
+        ],
 
-        'NOK' => array
-        (
+        'NOK' => [
             'AQ',
             'BV',
             'NO',
             'SJ',
-        ),
+        ],
 
-        'NPR' => array
-        (
+        'NPR' => [
             'NP',
-        ),
+        ],
 
-        'NZD' => array
-        (
+        'NZD' => [
             'CK',
             'NZ',
             'NU',
             'PN',
             'TK',
-        ),
+        ],
 
-        'OMR' => array
-        (
+        'OMR' => [
             'OM',
-        ),
+        ],
 
-        'PAB' => array
-        (
+        'PAB' => [
             'PA',
-        ),
+        ],
 
-        'PEI' => array
-        (
+        'PEI' => [
             'PE',
-        ),
+        ],
 
-        'PEN' => array
-        (
+        'PEN' => [
             'PE',
-        ),
+        ],
 
-        'PGK' => array
-        (
+        'PGK' => [
             'PG',
-        ),
+        ],
 
-        'PHP' => array
-        (
+        'PHP' => [
             'PH',
-        ),
+        ],
 
-        'PKR' => array
-        (
+        'PKR' => [
             'PK',
-        ),
+        ],
 
-        'PLN' => array
-        (
+        'PLN' => [
             'PL',
-        ),
+        ],
 
-        'PYG' => array
-        (
+        'PYG' => [
             'PY',
-        ),
+        ],
 
-        'QAR' => array
-        (
+        'QAR' => [
             'QA',
-        ),
+        ],
 
-        'ROL' => array
-        (
+        'ROL' => [
             'RO',
-        ),
+        ],
 
-        'RUB' => array
-        (
+        'RUB' => [
             'RU',
-        ),
+        ],
 
-        'RWF' => array
-        (
+        'RWF' => [
             'RW',
-        ),
+        ],
 
-        'SAR' => array
-        (
+        'SAR' => [
             'SA',
-        ),
+        ],
 
-        'SBD' => array
-        (
+        'SBD' => [
             'SB',
-        ),
+        ],
 
-        'SCR' => array
-        (
+        'SCR' => [
             'IO',
             'SC',
-        ),
+        ],
 
-        'SDD' => array
-        (
+        'SDD' => [
             'SD',
-        ),
+        ],
 
-        'SDP' => array
-        (
+        'SDP' => [
             'SD',
-        ),
+        ],
 
-        'SEK' => array
-        (
+        'SEK' => [
             'SE',
-        ),
+        ],
 
-        'SGD' => array
-        (
+        'SGD' => [
             'SG',
-        ),
+        ],
 
-        'SHP' => array
-        (
+        'SHP' => [
             'SH',
-        ),
+        ],
 
-        'SIT' => array
-        (
+        'SIT' => [
             'SI',
-        ),
+        ],
 
-        'SKK' => array
-        (
+        'SKK' => [
             'SK',
-        ),
+        ],
 
-        'SLL' => array
-        (
+        'SLL' => [
             'SL',
-        ),
+        ],
 
-        'SOS' => array
-        (
+        'SOS' => [
             'SO',
-        ),
+        ],
 
-        'SRG' => array
-        (
+        'SRG' => [
             'SR',
-        ),
+        ],
 
-        'STD' => array
-        (
+        'STD' => [
             'ST',
-        ),
+        ],
 
-        'SUR' => array
-        (
+        'SUR' => [
             'SU',
-        ),
+        ],
 
-        'SVC' => array
-        (
+        'SVC' => [
             'SV',
-        ),
+        ],
 
-        'SYP' => array
-        (
+        'SYP' => [
             'SY',
-        ),
+        ],
 
-        'SZL' => array
-        (
+        'SZL' => [
             'SZ',
-        ),
+        ],
 
-        'THB' => array
-        (
+        'THB' => [
             'TH',
-        ),
+        ],
 
-        'TJR' => array
-        (
+        'TJR' => [
             'TJ',
-        ),
+        ],
 
-        'TMM' => array
-        (
+        'TMM' => [
             'TM',
-        ),
+        ],
 
-        'TND' => array
-        (
+        'TND' => [
             'TN',
-        ),
+        ],
 
-        'TOP' => array
-        (
+        'TOP' => [
             'TO',
-        ),
+        ],
 
-        'TPE' => array
-        (
+        'TPE' => [
             'TP',
-        ),
+        ],
 
-        'TRL' => array
-        (
+        'TRL' => [
             'TR',
-        ),
+        ],
 
-        'TTD' => array
-        (
+        'TTD' => [
             'TT',
-        ),
+        ],
 
-        'TWD' => array
-        (
+        'TWD' => [
             'TW',
-        ),
+        ],
 
-        'TZS' => array
-        (
+        'TZS' => [
             'TZ',
-        ),
+        ],
 
-        'UAH' => array
-        (
+        'UAH' => [
             'UA',
-        ),
+        ],
 
-        'UAK' => array
-        (
+        'UAK' => [
             'UA',
-        ),
+        ],
 
-        'UGS' => array
-        (
+        'UGS' => [
             'UG',
-        ),
+        ],
 
-        'USD' => array
-        (
+        'USD' => [
             'AS',
             'VG',
             'EC',
@@ -1351,40 +1185,33 @@ function get_currency_map()
             'US',
             'UM',
             'VI',
-        ),
+        ],
 
-        'UYU' => array
-        (
+        'UYU' => [
             'UY',
-        ),
+        ],
 
-        'UZS' => array
-        (
+        'UZS' => [
             'UZ',
-        ),
+        ],
 
-        'VEB' => array
-        (
+        'VEB' => [
             'VE',
-        ),
+        ],
 
-        'VND' => array
-        (
+        'VND' => [
             'VN',
-        ),
+        ],
 
-        'VUV' => array
-        (
+        'VUV' => [
             'VU',
-        ),
+        ],
 
-        'WST' => array
-        (
+        'WST' => [
             'WS',
-        ),
+        ],
 
-        'XAF' => array
-        (
+        'XAF' => [
             'BJ',
             'BF',
             'CM',
@@ -1399,10 +1226,9 @@ function get_currency_map()
             'NE',
             'SN',
             'TG',
-        ),
+        ],
 
-        'XCD' => array
-        (
+        'XCD' => [
             'AI',
             'AG',
             'VG',
@@ -1412,51 +1238,43 @@ function get_currency_map()
             'KN',
             'LC',
             'VC',
-        ),
+        ],
 
-        'XOF' => array
-        (
+        'XOF' => [
             'NE',
             'SN',
-        ),
+        ],
 
-        'XPF' => array
-        (
+        'XPF' => [
             'PF',
             'NC',
             'WF',
-        ),
+        ],
 
-        'YDD' => array
-        (
+        'YDD' => [
             'YD',
-        ),
+        ],
 
-        'YER' => array
-        (
+        'YER' => [
             'YE',
-        ),
+        ],
 
-        'ZAL' => array
-        (
+        'ZAL' => [
             'ZA',
-        ),
+        ],
 
-        'ZAR' => array
-        (
+        'ZAR' => [
             'LS',
             'NA',
             'ZA',
-        ),
+        ],
 
-        'ZMK' => array
-        (
+        'ZMK' => [
             'ZM',
-        ),
+        ],
 
-        'ZWD' => array
-        (
+        'ZWD' => [
             'ZW',
-        ),
-    );
+        ],
+    ];
 }

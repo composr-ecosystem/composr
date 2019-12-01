@@ -44,7 +44,7 @@ function init__database_search()
 function get_stopwords_list()
 {
     // Hard-coded from MySQL manual (https://dev.mysql.com/doc/refman/5.5/en/fulltext-stopwords.html). No way to read it dynamically.
-    return array(
+    return [
         'a\'s' => true,
         'able' => true,
         'about' => true,
@@ -588,7 +588,7 @@ function get_stopwords_list()
         'yourself' => true,
         'yourselves' => true,
         'zero' => true,
-    );
+    ];
 }
 
 /**
@@ -609,7 +609,7 @@ function generate_text_summary($_temp_summary, $words_searched)
     $_temp_summary_lower = strtolower($_temp_summary);
 
     // Add in some highlighting direct to XHTML
-    $all_occurrences = array();
+    $all_occurrences = [];
     foreach ($words_searched as $content_bit) {
         if ($content_bit == '') {
             continue;
@@ -650,13 +650,13 @@ function generate_text_summary($_temp_summary, $words_searched)
                     // Adjust all stores occurrence offsets
                     foreach ($all_occurrences as $i => $occ) {
                         if ($occ[0] > $last_pos) {
-                            $all_occurrences[$i] = array($all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post), $all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post));
+                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post), $all_occurrences[$i][0] + strlen($extra_pre) + strlen($extra_post)];
                         } elseif ($occ[0] > $content_bit_pos) {
-                            $all_occurrences[$i] = array($all_occurrences[$i][0] + strlen($extra_pre), $all_occurrences[$i][0] + strlen($extra_pre));
+                            $all_occurrences[$i] = [$all_occurrences[$i][0] + strlen($extra_pre), $all_occurrences[$i][0] + strlen($extra_pre)];
                         }
                     }
 
-                    $all_occurrences[] = array($content_bit_pos, $last_pos);
+                    $all_occurrences[] = [$content_bit_pos, $last_pos];
                 } else {
                     $last_pos = $content_bit_pos + strlen($content_bit_matched);
                 }
@@ -780,13 +780,13 @@ function opensearch_script()
 
             // URLs to search suggestions
             $filter = get_param_string('filter', '', INPUT_FILTER_GET_COMPLEX);
-            $filter_map = array();
+            $filter_map = [];
             if ($filter != '') {
                 foreach (explode(':', $filter) as $f) {
                     if ($f != '') {
                         $parts = explode('=', $f, 2);
                         if (count($parts) == 1) {
-                            $parts = array($parts[0], '1');
+                            $parts = [$parts[0], '1'];
                         }
                         $filter_map[$parts[0]] = $parts[1];
                     }
@@ -797,7 +797,7 @@ function opensearch_script()
                 if ($i != 0) {
                     echo ',';
                 }
-                $map = array('page' => 'search', 'type' => 'results', 'content' => $suggestion) + $filter_map;
+                $map = ['page' => 'search', 'type' => 'results', 'content' => $suggestion] + $filter_map;
                 $_search_url = build_url($map, get_param_string('zone', get_module_zone('search')));
                 $search_url = $_search_url->evaluate();
                 echo '"' . php_addslashes($search_url) . '"';
@@ -810,7 +810,7 @@ function opensearch_script()
         default:
             //header('Content-Type: application/opensearchdescription+xml; charset=' . get_charset());
             header('Content-Type: text/xml; charset=' . get_charset());
-            $tpl = do_template('OPENSEARCH', array('_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')), null, false, null, '.xml', 'xml');
+            $tpl = do_template('OPENSEARCH', ['_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')], null, false, null, '.xml', 'xml');
             $tpl->evaluate_echo();
             break;
     }
@@ -842,7 +842,7 @@ function build_search_submitter_clauses($member_field_name, $member_id, $author,
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
         foreach ($all_usergroups as $usergroup => $usergroup_name) {
             if ($usergroup_name == $author) {
-                $members_in_group = $GLOBALS['FORUM_DRIVER']->member_group_query(array($usergroup), 50);
+                $members_in_group = $GLOBALS['FORUM_DRIVER']->member_group_query([$usergroup], 50);
                 if (count($members_in_group) < 50) { // Let's be reasonable with how long the SQL could get!
                     foreach (array_keys($members_in_group) as $group_member_id) {
                         if ($clauses != '') {
@@ -902,12 +902,12 @@ function exact_match_sql($field, $i, $type = 'short', $param = null, $table_alia
         }
     }
 
-    $nontrans_fields = array();
+    $nontrans_fields = [];
     if (($type !== 'float') && ($type !== 'integer')) { // Numeric column types don't have fulltext indexes on them
         $nontrans_fields[] = $search_field;
     }
 
-    return array(array(), $nontrans_fields, $table, $search_field, $where_clause);
+    return [[], $nontrans_fields, $table, $search_field, $where_clause];
 }
 
 /**
@@ -933,7 +933,7 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
         $where_clause = '(' . $search_field . ' LIKE \'' . db_encode_like($param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param) . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like($param . "\n" . '%') . '\' OR ' . $search_field . ' LIKE \'' . db_encode_like('%' . "\n" . $param . "\n" . '%') . '\')';
     }
 
-    return array(array(), array($search_field), $table, $search_field, $where_clause);
+    return [[], [$search_field], $table, $search_field, $where_clause];
 }
 
 /**
@@ -962,7 +962,7 @@ function nl_delim_match_sql($field, $i, $type = 'short', $param = null, $table_a
  * @param  boolean $permissions_field_is_string Whether the permissions field is a string
  * @return array The rows found
  */
-function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $fields, $where_clause, $content_where, &$order, $select = '*', $raw_fields = array(), $permissions_module = null, $permissions_field = null, $permissions_field_is_string = false)
+function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $fields, $where_clause, $content_where, &$order, $select = '*', $raw_fields = [], $permissions_module = null, $permissions_field = null, $permissions_field_is_string = false)
 {
     if (multi_lang_content()) {
         @ignore_user_abort(false); // If the user multi-submits a search, we don't want to run parallel searches (very slow!). That said, this currently doesn't work in PHP, because PHP does not realise the connection has died until way too late :(. So we also use a different tact (dedupe_mode) but hope PHP will improve with time.
@@ -995,7 +995,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
     if (key($fields) == '') {
         if (($only_titles) && (!empty($fields))) {
-            return array();
+            return [];
         }
     }
 
@@ -1005,7 +1005,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
         $table_clause = '(' . $table_clause;
     }
 
-    $t_rows = array();
+    $t_rows = [];
     $t_count = 0;
 
     // Rating ordering, via special encoding
@@ -1036,7 +1036,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
         if ($keywords_where != '') {
             if ($meta_id_field == 'the_zone:the_page') { // Special case
-                $meta_join = 'm.meta_for_id=' . db_function('CONCAT', array('r.the_zone', '\':\'', 'r.the_page'));
+                $meta_join = 'm.meta_for_id=' . db_function('CONCAT', ['r.the_zone', '\':\'', 'r.the_page']);
             } else {
                 $meta_join = 'm.meta_for_id=' . db_cast('r.' . $meta_id_field, 'CHAR');
             }
@@ -1091,11 +1091,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $db->dedupe_mode = false;
         } else {
             $_count_query_keywords_search = null;
-            $t_keyword_search_rows = array();
+            $t_keyword_search_rows = [];
         }
     } else {
         $_count_query_keywords_search = null;
-        $t_keyword_search_rows = array();
+        $t_keyword_search_rows = [];
     }
 
     $orig_table_clause = $table_clause;
@@ -1103,12 +1103,12 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     // Main content search
     if (!$only_search_meta) {
         if (multi_lang_content()) {
-            $where_alternative_matches = array();
+            $where_alternative_matches = [];
 
             if (($content_where != '') || (preg_match('#t\d+\.text_original#', $where_clause) != 0) || (preg_match('#t\d+\.text_original#', $select) != 0)) {
                 // Each of the fields represents an 'OR' match, so we put it together into a list ($where_alternative_matches) of specifiers for each. Hopefully we will 'UNION' them rather than 'OR' them as it is much more efficient in terms of table index usage
 
-                $where_alternative_matches = array();
+                $where_alternative_matches = [];
                 foreach (array_keys($fields) as $i => $field) { // Referenced fields in where condition must result in the shared table clause having a reference to the translate for that
                     if ((strpos($select, 't' . strval($i) . '.text_original') !== false) || (strpos($where_clause, 't' . strval($i) . '.text_original') !== false)) {
                         $tc_add = ' JOIN ' . $db->get_table_prefix() . 'translate t' . strval($i) . ' ON t' . strval($i) . '.id=' . $field . ' AND ' . db_string_equal_to('t' . strval($i) . '.language', user_lang());
@@ -1144,11 +1144,11 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
                         $_table_clause = $orig_table_clause . $tc_add;
 
-                        $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, 't' . strval($i));
+                        $where_alternative_matches[] = [$where_clause_2, $where_clause_3, $_select, $_table_clause, 't' . strval($i)];
                     } else {
                         $_table_clause = $orig_table_clause . $tc_add;
 
-                        $where_alternative_matches[] = array('1=0', '', '1', $_table_clause, 't' . strval($i));
+                        $where_alternative_matches[] = ['1=0', '', '1', $_table_clause, 't' . strval($i)];
                     }
                 }
                 if ($content_where != '') { // Non-translatable fields
@@ -1171,13 +1171,13 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
                         $_table_clause = $orig_table_clause;
 
-                        $where_alternative_matches[] = array($where_clause_2, $where_clause_3, $_select, $_table_clause, null);
+                        $where_alternative_matches[] = [$where_clause_2, $where_clause_3, $_select, $_table_clause, null];
                     }
                 }
             }
 
             if (empty($where_alternative_matches)) {
-                $where_alternative_matches[] = array($where_clause, '', '', $table_clause, null);
+                $where_alternative_matches[] = [$where_clause, '', '', $table_clause, null];
             } else {
                 if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
                     $order = 'contextual_relevance DESC';
@@ -1191,7 +1191,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
             // Work out main query
             $query = '';
-            $main_query_parts = array();
+            $main_query_parts = [];
             foreach ($where_alternative_matches as $parts) { // We UNION them, because doing OR's on MATCH's is insanely slow in MySQL (sometimes I hate SQL...)
                 list($where_clause_2, $where_clause_3, $_select, $_table_clause, $tid) = $parts;
 
@@ -1274,13 +1274,13 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             list(, $boolean_operator, $body_where, $include_where, $exclude_where) = build_content_where($content, $boolean_search, $boolean_operator);
 
             $simple_table = preg_replace('# .*#', '', $table);
-            $indices_for_table = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_name', 'i_fields'), array('i_table' => $simple_table));
+            $indices_for_table = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name', 'i_fields'], ['i_table' => $simple_table]);
 
             $where_clause_and = '';
             $all_fields = array_merge($raw_fields, array_keys($fields));
             reset($raw_fields);
             reset($fields);
-            $search_clause_sets = array(array($include_where, 'AND'), array($body_where, $boolean_operator));
+            $search_clause_sets = [[$include_where, 'AND'], [$body_where, $boolean_operator]];
             foreach ($search_clause_sets as $search_clause_set) {
                 list($_where, $_operator) = $search_clause_set;
 
@@ -1423,13 +1423,13 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             $t_main_search_rows = $db->query($query, $max + $start, 0, false, true/*, $fields Actually will hurt performance - we usually won't show text_parsed fields as we re-parse Comcode with syntax highlighting*/);
             cms_profile_end_for('SEARCH:t_main_search_rows', $query);
             if ($t_main_search_rows === null) {
-                $t_main_search_rows = array(); // In case of a failed search query
+                $t_main_search_rows = []; // In case of a failed search query
             }
 
             $db->dedupe_mode = false;
         }
     } else {
-        $t_main_search_rows = array();
+        $t_main_search_rows = [];
     }
 
     // Clean results and return
@@ -1437,9 +1437,9 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
 
     $t_rows = array_merge($t_rows, $t_main_search_rows);
     if (!empty($t_rows)) {
-        $t_rows_new = array();
+        $t_rows_new = [];
         if ((array_key_exists('id', $t_rows[0])) || (array_key_exists('_primary_id', $t_rows[0]))) {
-            $done = array();
+            $done = [];
             foreach ($t_rows as $t_row) {
                 if (array_key_exists('id', $t_row)) {
                     if (array_key_exists($t_row['id'], $done)) {
@@ -1507,9 +1507,9 @@ function _boolean_search_prepare($search_filter)
 {
     $content_explode = explode(' ', $search_filter);
 
-    $body_words = array();
-    $include_words = array();
-    $exclude_words = array();
+    $body_words = [];
+    $include_words = [];
+    $exclude_words = [];
     for ($i = 0; $i < count($content_explode); $i++) {
         $word = trim($content_explode[$i]);
         if (($word == '') || ($word == '+') || ($word == '-')) {
@@ -1545,7 +1545,7 @@ function _boolean_search_prepare($search_filter)
         }
     }
 
-    return array($body_words, $include_words, $exclude_words);
+    return [$body_words, $include_words, $exclude_words];
 }
 
 /**
@@ -1623,20 +1623,20 @@ function build_content_where($content, $boolean_search, &$boolean_operator, $ful
         $under_radar = true;
     }
     if (($under_radar) || ($boolean_search) || (!$GLOBALS['SITE_DB']->has_full_text())) {
-        if (!in_array(strtoupper($boolean_operator), array('AND', 'OR'))) {
+        if (!in_array(strtoupper($boolean_operator), ['AND', 'OR'])) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
         if ($content == '') {
             $content_where = '';
-            $body_where = array();
-            $include_where = array();
+            $body_where = [];
+            $include_where = [];
             $exclude_where = '';
         } else {
             if ((get_param_integer('force_like', 0) == 0) && ($GLOBALS['SITE_DB']->has_full_text()) && ($GLOBALS['SITE_DB']->has_full_text_boolean()) && (!$under_radar)) {
                 $content_where = $GLOBALS['SITE_DB']->full_text_assemble($content, true);
-                $body_where = array($content_where);
-                $include_where = array();
+                $body_where = [$content_where];
+                $include_where = [];
                 $exclude_where = '';
             } else {
                 list($content_where, $boolean_operator, $body_where, $include_where, $exclude_where) = db_like_assemble($content, $boolean_operator, $full_coverage);
@@ -1648,19 +1648,19 @@ function build_content_where($content, $boolean_search, &$boolean_operator, $ful
     } else {
         if ($content == '') {
             $content_where = '';
-            $body_where = array();
-            $include_where = array();
+            $body_where = [];
+            $include_where = [];
             $exclude_where = '';
         } else {
             $content_where = $GLOBALS['SITE_DB']->full_text_assemble($content, false);
-            $body_where = array($content_where);
-            $include_where = array();
+            $body_where = [$content_where];
+            $include_where = [];
             $exclude_where = '';
         }
         $boolean_operator = 'OR';
     }
 
-    return array($content_where, $boolean_operator, $body_where, $include_where, $exclude_where);
+    return [$content_where, $boolean_operator, $body_where, $include_where, $exclude_where];
 }
 
 /**
@@ -1682,7 +1682,7 @@ function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = 
     $fc_before = $full_coverage ? '' : '%';
     $fc_after = $full_coverage ? '' : '%';
 
-    $body_where = array();
+    $body_where = [];
     foreach ($body_words as $word) {
         if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
             $body_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
@@ -1690,7 +1690,7 @@ function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = 
             $body_where[] = '? LIKE \'' . db_encode_like($fc_before . $word . $fc_after) . '\'';
         }
     }
-    $include_where = array();
+    $include_where = [];
     foreach ($include_words as $word) {
         if ((strtoupper($word) == $word) && ($GLOBALS['DB_STATIC_OBJECT']->has_collate_settings()) && (!is_numeric($word))) {
             $include_where[] = 'CONVERT(? USING latin1) LIKE _latin1\'' . db_encode_like($fc_before . $word . $fc_after) . '\' COLLATE latin1_general_cs';
@@ -1712,13 +1712,13 @@ function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = 
 
     // $content_where combines all
     $content_where = '';
-    if ($body_words != array()) {
+    if ($body_words != []) {
         if ($content_where != '') {
             $content_where .= ' AND ';
         }
         $content_where .= '(' . implode($boolean_operator, $body_where) . ')';
     }
-    if ($include_where != array()) {
+    if ($include_where != []) {
         if ($content_where != '') {
             $content_where .= ' AND ';
         }
@@ -1731,7 +1731,7 @@ function db_like_assemble($content, $boolean_operator = 'AND', $full_coverage = 
         $content_where .= '(' . $exclude_where . ')';
     }
 
-    return array($content_where, $boolean_operator, $body_where, $include_where, $exclude_where);
+    return [$content_where, $boolean_operator, $body_where, $include_where, $exclude_where];
 }
 
 /**
@@ -1756,7 +1756,7 @@ function sort_search_results($hook_results, $results, $direction)
                 break;
             }
             if ((array_key_exists('orderer', $result)) && (array_key_exists('orderer', $results[$results_position])) && ((($direction == 'ASC') && ($result['orderer'] <= $results[$results_position]['orderer'])) || (($direction == 'DESC') && ($result['orderer'] >= $results[$results_position]['orderer'])))) { // If it definitely beats, put in front. If it's unknown (no orderer on one - which is very common) it has to go on the end so FIFO is preserved
-                $results = array_merge(array_slice($results, 0, $results_position), array($result), array_slice($results, $results_position));
+                $results = array_merge(array_slice($results, 0, $results_position), [$result], array_slice($results, $results_position));
                 break;
             }
             $results_position++;
@@ -1786,7 +1786,7 @@ function build_search_results_interface($results, $start, $max, $direction, $gen
 
     $out = new Tempcode();
     $i = 0;
-    $tabular_results = array();
+    $tabular_results = [];
     foreach ($results as $result) {
         if (array_key_exists('restricted', $result)) {
             continue; // This has been blanked out due to insufficient access permissions or some other reason
@@ -1811,27 +1811,27 @@ function build_search_results_interface($results, $start, $max, $direction, $gen
                 if (is_array($rendered_result)) {
                     $class = get_class($result['object']);
                     if (!array_key_exists($class, $tabular_results)) {
-                        $tabular_results[$class] = array();
+                        $tabular_results[$class] = [];
                     }
                     $tabular_results[$class][] = $rendered_result;
                 } else {
-                    $out->attach(do_template('SEARCH_RESULT', array('_GUID' => '47da093f9ace87819e246f0cec1402a9', 'TYPE' => $content_type, 'ID' => $id, 'CONTENT' => $rendered_result)));
+                    $out->attach(do_template('SEARCH_RESULT', ['_GUID' => '47da093f9ace87819e246f0cec1402a9', 'TYPE' => $content_type, 'ID' => $id, 'CONTENT' => $rendered_result]));
                 }
             }
         } else {
-            $out->attach(static_evaluate_tempcode(do_template('SEARCH_RESULT', array('_GUID' => 'd8422a971f55a8a94d090861d519ca7a', 'TYPE' => $content_type, 'ID' => $id))));
+            $out->attach(static_evaluate_tempcode(do_template('SEARCH_RESULT', ['_GUID' => 'd8422a971f55a8a94d090861d519ca7a', 'TYPE' => $content_type, 'ID' => $id])));
         }
         $i++;
     }
     foreach ($tabular_results as $tabular_type => $types_results) {
         // Normalisation process
-        $ultimate_field_map = array();
+        $ultimate_field_map = [];
         foreach ($types_results as $r) {
             $ultimate_field_map += $r;
         }
         $ultimate_field_map = array_keys($ultimate_field_map);
         foreach ($types_results as $i => $r) {
-            $r2d2 = array();
+            $r2d2 = [];
             foreach ($ultimate_field_map as $key) {
                 if (!array_key_exists($key, $r)) {
                     $r[$key] = '';
@@ -1839,18 +1839,18 @@ function build_search_results_interface($results, $start, $max, $direction, $gen
                 $r2d2[$key] = $r[$key];
             }
             $r = $r2d2;
-            $types_results[$i] = array('R' => $r);
+            $types_results[$i] = ['R' => $r];
         }
 
         // Output
-        $out->attach(do_template('SEARCH_RESULT_TABLE', array('_GUID' => '816ec14dc0df432ca6e1e1014ef1f3d1', 'HEADERS' => $ultimate_field_map, 'ROWS' => $types_results)));
+        $out->attach(do_template('SEARCH_RESULT_TABLE', ['_GUID' => '816ec14dc0df432ca6e1e1014ef1f3d1', 'HEADERS' => $ultimate_field_map, 'ROWS' => $types_results]));
     }
 
-    set_extra_request_metadata(array(
+    set_extra_request_metadata([
         'opensearch_totalresults' => strval($i),
         'opensearch_startindex' => strval($start),
         'opensearch_itemsperpage' => strval($max),
-    ));
+    ]);
 
     $SEARCH__CONTENT_BITS = null;
 

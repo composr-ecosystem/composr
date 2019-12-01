@@ -25,7 +25,7 @@ class Hook_config_member_booking_only
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MEMBER_BOOKING_ONLY',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_member_booking_only
             'public' => false,
 
             'addon' => 'booking',
-        );
+        ];
     }
 
     /**

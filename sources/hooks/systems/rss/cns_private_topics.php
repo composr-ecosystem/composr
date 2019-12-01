@@ -78,7 +78,7 @@ class Hook_rss_cns_private_topics
             }
 
             $news_title = xmlentities($row['t_cache_first_title']);
-            $post_row = db_map_restrict($row, array('id', 'p_post_first'), array('id' => 't_cache_first_post_id'));
+            $post_row = db_map_restrict($row, ['id', 'p_post_first'], ['id' => 't_cache_first_post_id']);
             $_summary = get_translated_tempcode('f_posts', $post_row, 'p_post_first', $GLOBALS['FORUM_DB']);
             $summary = xmlentities($_summary->evaluate());
             $news = '';
@@ -86,20 +86,20 @@ class Hook_rss_cns_private_topics
             $category = do_lang('NA');
             $category_raw = '';
 
-            $_view_url = build_url(array('page' => 'topicview', 'id' => $row['t_id']), get_module_zone('forumview'));
+            $_view_url = build_url(['page' => 'topicview', 'id' => $row['t_id']], get_module_zone('forumview'));
             $view_url = $_view_url->evaluate();
             $view_url .= '#post_' . $id;
 
             if ($prefix == 'RSS_') {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '448f736ecf0154960177c131dde76125', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '448f736ecf0154960177c131dde76125', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('cns');
-        return array($content, do_lang('PRIVATE_TOPICS'));
+        return [$content, do_lang('PRIVATE_TOPICS')];
     }
 }

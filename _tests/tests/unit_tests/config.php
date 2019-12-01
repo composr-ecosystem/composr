@@ -42,7 +42,7 @@ class config_test_set extends cms_test_case
                     break;
 
                 case 'tick':
-                    $this->assertTrue((empty($default)) || (in_array($default, array('0', '1'))), 'Tick fields expect boolean values, for ' . $hook);
+                    $this->assertTrue((empty($default)) || (in_array($default, ['0', '1'])), 'Tick fields expect boolean values, for ' . $hook);
                     break;
             }
         }
@@ -82,8 +82,8 @@ class config_test_set extends cms_test_case
 
         require_code('files2');
 
-        $matches = array();
-        $done = array();
+        $matches = [];
+        $done = [];
 
         $hooks = find_all_hooks('systems', 'config');
 
@@ -129,7 +129,7 @@ class config_test_set extends cms_test_case
                         continue;
                     }
 
-                    if ((in_safe_mode()) && (in_array($hook, array('facebook_uid', 'facebook_appid')))) {
+                    if ((in_safe_mode()) && (in_array($hook, ['facebook_uid', 'facebook_appid']))) {
                         continue;
                     }
 
@@ -151,7 +151,7 @@ class config_test_set extends cms_test_case
 
         require_code('files2');
 
-        $settings_needed = array(
+        $settings_needed = [
             'human_name' => 'string',
             'type' => 'string',
             'category' => 'string',
@@ -162,14 +162,14 @@ class config_test_set extends cms_test_case
             'addon' => 'string',
             'required' => 'boolean',
             'public' => 'boolean',
-        );
-        $settings_optional = array(
+        ];
+        $settings_optional = [
             'theme_override' => 'boolean',
             'order_in_category_group' => 'integer',
             'maintenance_code' => 'string',
             'explanation_param_a' => 'string',
             'explanation_param_b' => 'string',
-        );
+        ];
 
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
@@ -282,7 +282,7 @@ class config_test_set extends cms_test_case
             return;
         }
 
-        $categories = array();
+        $categories = [];
 
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
@@ -294,7 +294,7 @@ class config_test_set extends cms_test_case
         }
 
         foreach ($categories as $category => $count) {
-            if (in_array($category, array('TRANSACTION_FEES'))) { // Exceptions
+            if (in_array($category, ['TRANSACTION_FEES'])) { // Exceptions
                 continue;
             }
 
@@ -309,16 +309,16 @@ class config_test_set extends cms_test_case
             return;
         }
 
-        $categories = array();
+        $categories = [];
 
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if (!isset($categories[$details['category']])) {
-                $categories[$details['category']] = array();
+                $categories[$details['category']] = [];
             }
             if (!isset($categories[$details['category']][$details['group']])) {
-                $categories[$details['category']][$details['group']] = array();
+                $categories[$details['category']][$details['group']] = [];
             }
             $categories[$details['category']][$details['group']][] = $details;
         }
@@ -326,7 +326,7 @@ class config_test_set extends cms_test_case
         foreach ($categories as $category => $group) {
             foreach ($group as $group_name => $options) {
                 $has_orders = null;
-                $orders = array();
+                $orders = [];
 
                 foreach ($options as $option) {
                     $_has_orders = isset($option['order_in_category_group']);
@@ -359,7 +359,7 @@ class config_test_set extends cms_test_case
 
         // Find all categories by searching
         $hooks = find_all_hooks('systems', 'config');
-        $categories_found = array();
+        $categories_found = [];
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));

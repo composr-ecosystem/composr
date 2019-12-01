@@ -35,7 +35,7 @@ class CMSTopicRead
         $member_id = get_member();
 
         if (empty($topic_ids)) {
-            return array();
+            return [];
         }
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
@@ -51,11 +51,11 @@ class CMSTopicRead
         if (addon_installed('unvalidated')) {
             $sql .= ' AND t_validated=1';
         }
-        $_topics = ($sql_ids == '') ? array() : $GLOBALS['FORUM_DB']->query($sql);
+        $_topics = ($sql_ids == '') ? [] : $GLOBALS['FORUM_DB']->query($sql);
 
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
-            $topics[] = array(
+            $topics[] = [
                 'topic_id' => $topic['topic_id'],
                 'is_subscribed' => get_topic_subscription_status($topic['topic_id'], $member_id),
                 'can_subscribe' => !is_guest($member_id),
@@ -64,7 +64,7 @@ class CMSTopicRead
                 'new_post' => is_topic_unread($topic['topic_id'], $member_id, $topic),
                 'reply_number' => $topic['t_cache_num_posts'],
                 'view_number' => $topic['t_num_views'],
-            );
+            ];
         }
         return $topics;
     }
@@ -85,7 +85,7 @@ class CMSTopicRead
             access_denied('I_ERROR');
         }
 
-        $where_basic = array('t_forum_id' => $forum_id);
+        $where_basic = ['t_forum_id' => $forum_id];
         if (addon_installed('unvalidated')) {
             $where_basic['t_validated'] = 1;
         }
@@ -110,7 +110,7 @@ class CMSTopicRead
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
         $_details = $GLOBALS['FORUM_DB']->query_select(
             'f_topics t JOIN ' . $table_prefix . 'f_forums f ON f.id=t.t_forum_id JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id',
-            array('*', 'f.id as forum_id', 't.id AS topic_id', 'p.id AS post_id'),
+            ['*', 'f.id as forum_id', 't.id AS topic_id', 'p.id AS post_id'],
             $where,
             'ORDER BY t_cache_last_time DESC',
             $max,
@@ -120,20 +120,20 @@ class CMSTopicRead
         if (!empty($_details)) {
             $forum_details = $_details[0];
         } else {
-            $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums f', array('*', 'f.id AS forum_id'), array('f.id' => $forum_id), '', 1);
+            $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums f', ['*', 'f.id AS forum_id'], ['f.id' => $forum_id], '', 1);
             if (!isset($_forum_details[0])) {
                 // Ideally we'd do a normal MISSING_RESOURCE, but tapatalk is sending some spurious requests to a forum '0' after doing moderation actions on iOS
-                return array(
+                return [
                     0,
-                    array(),
+                    [],
                     do_lang('MISSING_RESOURCE', 'forum'),
                     0,
                     0,
-                    array(
+                    [
                         'can_post' => false,
                         'can_upload' => false,
-                    ),
-                );
+                    ],
+                ];
             }
             $forum_details = $_forum_details[0];
         }
@@ -142,19 +142,19 @@ class CMSTopicRead
         $total_topic_num = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', $where, ' AND t_cache_first_member_id IS NOT NULL');
 
         $extra = ' AND (SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=t.id AND l_member_id=' . strval(get_member()) . ')<t.t_cache_last_time';
-        $unread_sticky_count = $GLOBALS['FORUM_DB']->query_select_value('f_topics t', 'COUNT(*)', array('t_pinned' => 1, 't_cascading' => 0) + $where_basic, $extra);
-        $unread_announce_count = $GLOBALS['FORUM_DB']->query_select_value('f_topics t', 'COUNT(*)', array('t_cascading' => 1) + $where_basic, $extra);
+        $unread_sticky_count = $GLOBALS['FORUM_DB']->query_select_value('f_topics t', 'COUNT(*)', ['t_pinned' => 1, 't_cascading' => 0] + $where_basic, $extra);
+        $unread_announce_count = $GLOBALS['FORUM_DB']->query_select_value('f_topics t', 'COUNT(*)', ['t_cascading' => 1] + $where_basic, $extra);
 
         $action_details = action_assessment_forum($forum_details, get_member());
 
-        return array(
+        return [
             $total_topic_num,
             $_details,
             $forum_name,
             $unread_sticky_count,
             $unread_announce_count,
             $action_details,
-        );
+        ];
     }
 
     /**
@@ -175,7 +175,7 @@ class CMSTopicRead
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        $conditions = array();
+        $conditions = [];
 
         // Implement filter
         if (!empty($filters)) {
@@ -229,7 +229,7 @@ class CMSTopicRead
             array_push($conditions, 't_forum_id IS NOT NULL');
         }
 
-        $conditions_full = array(); // For performance we won't put the less important ones that aren't easily indexable into a count query
+        $conditions_full = []; // For performance we won't put the less important ones that aren't easily indexable into a count query
 
         // No empty topic shells
         array_push($conditions_full, 't_cache_first_member_id IS NOT NULL');
@@ -242,7 +242,7 @@ class CMSTopicRead
         // Only unread ones?
         if ($method == self::GET_TOPICS_UNREAD_ONLY) {
             if (is_guest()) {
-                return array(0, array());
+                return [0, []];
             }
 
             $subquery = 'SELECT l_topic_id FROM ' . $table_prefix . 'f_read_logs WHERE ';
@@ -256,7 +256,7 @@ class CMSTopicRead
         // Only participated ones?
         if ($method == self::GET_TOPICS_PARTICIPATED_ONLY) {
             if (is_guest()) {
-                return array(0, array());
+                return [0, []];
             }
 
             $participant_id = $method_data;
@@ -271,7 +271,7 @@ class CMSTopicRead
             $sql .= ' GROUP BY t.id ORDER BY t_cache_last_time DESC,t.id DESC';
             $forum_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id,f.id AS forum_id FROM ' . $sql, $max, $start);
 
-            return array($total_forum_topics, $forum_topics);
+            return [$total_forum_topics, $forum_topics];
         }
 
         // Run query
@@ -283,6 +283,6 @@ class CMSTopicRead
         $sql .= ' ORDER BY t_cache_last_time DESC,t.id DESC';
         $forum_topics = $GLOBALS['FORUM_DB']->query('SELECT *,t.id AS topic_id,p.id AS post_id,f.id AS forum_id FROM ' . $sql, $max, $start);
 
-        return array($total_forum_topics, $forum_topics);
+        return [$total_forum_topics, $forum_topics];
     }
 }

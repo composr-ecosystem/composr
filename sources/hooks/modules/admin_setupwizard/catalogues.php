@@ -30,14 +30,14 @@ class Hook_sw_catalogues
      */
     public function get_current_settings()
     {
-        $settings = array();
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'projects'));
+        $settings = [];
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'projects']);
         $settings['have_default_catalogues_projects'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'faqs'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'faqs']);
         $settings['have_default_catalogues_faqs'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'links'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']);
         $settings['have_default_catalogues_links'] = ($test === null) ? '0' : '1';
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'contacts'));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'contacts']);
         $settings['have_default_catalogues_contacts'] = ($test === null) ? '0' : '1';
         return $settings;
     }
@@ -51,7 +51,7 @@ class Hook_sw_catalogues
     public function get_fields($field_defaults)
     {
         if (!addon_installed('catalogues') || post_param_integer('addon_catalogues', null) === 0) {
-            return array(new Tempcode(), new Tempcode());
+            return [new Tempcode(), new Tempcode()];
         }
 
         $current_settings = $this->get_current_settings();
@@ -71,7 +71,7 @@ class Hook_sw_catalogues
         if ($current_settings['have_default_catalogues_contacts'] == '1') {
             $fields->attach(form_input_tick(do_lang_tempcode('HAVE_DEFAULT_CATALOGUES_CONTACTS'), do_lang_tempcode('DESCRIPTION_HAVE_DEFAULT_CATALOGUES_CONTACTS'), 'have_default_catalogues_contacts', $field_defaults['have_default_catalogues_contacts'] == '1'));
         }
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -84,7 +84,7 @@ class Hook_sw_catalogues
         }
 
         if (post_param_integer('have_default_catalogues_projects', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'projects'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'projects']);
             if ($test !== null) {
                 require_code('catalogues2');
                 actual_delete_catalogue('projects');
@@ -96,7 +96,7 @@ class Hook_sw_catalogues
             }
         }
         if (post_param_integer('have_default_catalogues_faqs', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'faqs'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'faqs']);
             if ($test !== null) {
                 require_code('catalogues2');
                 actual_delete_catalogue('faqs');
@@ -105,7 +105,7 @@ class Hook_sw_catalogues
             }
         }
         if (post_param_integer('have_default_catalogues_links', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'links'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'links']);
             if ($test !== null) {
                 require_code('catalogues2');
                 actual_delete_catalogue('links');
@@ -114,7 +114,7 @@ class Hook_sw_catalogues
             }
         }
         if (post_param_integer('have_default_catalogues_contacts', 0) == 0) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => 'contacts'));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => 'contacts']);
             if ($test !== null) {
                 require_code('catalogues2');
                 actual_delete_catalogue('contacts');
@@ -132,9 +132,9 @@ class Hook_sw_catalogues
     public function get_blocks()
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        return array(array(), array());
+        return [[], []];
     }
 }

@@ -39,7 +39,7 @@ class tutorials_codebox_test_set extends cms_test_case
 
     public function testTutorialLangConsistency()
     {
-        $allowed_langs = array(
+        $allowed_langs = [
             'PHP',
             'HTML',
             'CSS',
@@ -67,7 +67,7 @@ class tutorials_codebox_test_set extends cms_test_case
 
             // Use this if nothing else (or [font="Courier"]...[/font])
             'Text',
-        );
+        ];
 
         $path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($path);
@@ -79,7 +79,7 @@ class tutorials_codebox_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\[(code|codebox)="([^"]*)"\]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $lang = $matches[2][$i];

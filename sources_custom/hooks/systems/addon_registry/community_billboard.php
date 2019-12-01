@@ -26,7 +26,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,9 +96,9 @@ class Hook_addon_registry_community_billboard
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_points',
-        );
+        ];
     }
 
     /**
@@ -108,13 +108,13 @@ class Hook_addon_registry_community_billboard
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'ecommerce',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/community_billboard.php',
             'themes/default/images_custom/icons/menu/adminzone/audit/community_billboard.svg',
             'themes/default/images_custom/icons/menu/adminzone/audit/index.html',
@@ -164,7 +164,7 @@ class Hook_addon_registry_community_billboard
             'sources_custom/hooks/systems/page_groupings/community_billboard.php',
             'themes/default/css_custom/community_billboard.css',
             'sources_custom/hooks/systems/actionlog/community_billboard.php',
-        );
+        ];
     }
 
     /**
@@ -174,11 +174,11 @@ class Hook_addon_registry_community_billboard
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/COMMUNITY_BILLBOARD_DETAILS.tpl' => 'administrative__community_billboard_manage_screen',
             'templates/COMMUNITY_BILLBOARD_STORE_LIST_LINE.tpl' => 'administrative__community_billboard_manage_screen',
             'templates/ECOM_PRODUCT_COMMUNITY_BILLBOARD.tpl' => 'community_billboard_screen',
-        );
+        ];
     }
 
     /**
@@ -190,12 +190,12 @@ class Hook_addon_registry_community_billboard
      */
     public function tpl_preview__community_billboard_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', array(
+        return [
+            lorem_globalise(do_lorem_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', [
                 'QUEUE' => placeholder_number(),
                 'DAYS' => placeholder_number(),
-            )), null, '', true),
-        );
+            ]), null, '', true),
+        ];
     }
 
     /**
@@ -209,37 +209,37 @@ class Hook_addon_registry_community_billboard
     {
         require_css('forms');
 
-        $about_current = do_lorem_template('COMMUNITY_BILLBOARD_DETAILS', array(
+        $about_current = do_lorem_template('COMMUNITY_BILLBOARD_DETAILS', [
             'USERNAME' => lorem_word_html(),
             'DAYS_ORDERED' => lorem_phrase(),
             'DATE_RAW' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
-        ));
+        ]);
 
         $out = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
-            $text = do_lorem_template('COMMUNITY_BILLBOARD_STORE_LIST_LINE', array(
+            $text = do_lorem_template('COMMUNITY_BILLBOARD_STORE_LIST_LINE', [
                 'MESSAGE' => $value,
                 'STATUS' => do_lang('NEW'),
-            ));
-            $out->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array(
+            ]);
+            $out->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', [
                 'SELECTED' => false,
                 'DISABLED' => false,
                 'CLASS' => '',
                 'NAME' => strval($key),
                 'TEXT' => $text->evaluate(),
-            )));
+            ]));
         }
         $name = placeholder_random_id();
-        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', array(
+        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', [
             'TABINDEX' => '5',
             'REQUIRED' => '-required',
             'NAME' => $name,
             'CONTENT' => $out,
             'INLINE_LIST' => true,
             'SIZE' => '9',
-        ));
-        $fields = do_lorem_template('FORM_SCREEN_FIELD', array(
+        ]);
+        $fields = do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => false,
             'PRETTY_NAME' => lorem_word(),
@@ -248,10 +248,10 @@ class Hook_addon_registry_community_billboard
             'DESCRIPTION_SIDE' => '',
             'INPUT' => $input,
             'COMCODE' => '',
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('FORM_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('FORM_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TEXT' => $about_current,
                 'HIDDEN' => '',
@@ -260,7 +260,7 @@ class Hook_addon_registry_community_billboard
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -34,23 +34,23 @@ class Hook_commandr_command_read
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('read', array('h'), array(true)), '', '');
+            return ['', do_command_help('read', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'read'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'read')];
             } else {
                 $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
             }
 
             if (!$commandr_fs->_is_file($parameters[0])) {
-                return array('', '', '', do_lang('NOT_A_FILE', '1'));
+                return ['', '', '', do_lang('NOT_A_FILE', '1')];
             }
 
             $success = $commandr_fs->read_file($parameters[0]);
             if ($success !== false) {
-                return array('', '', $success, '');
+                return ['', '', $success, ''];
             } else {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
             }
         }
     }

@@ -69,11 +69,11 @@ function _choose_language($title, $tip = false, $allow_all_selection = false)
     $fields = form_input_huge_list(do_lang_tempcode('LANGUAGE'), do_lang_tempcode('DESCRIPTION_LANGUAGE'), 'lang', $langs, null, true);
 
     $hidden = build_keep_post_fields();
-    $url = get_self_url(false, false, array('lang' => null));
+    $url = get_self_url(false, false, ['lang' => null]);
 
     breadcrumb_set_self(do_lang_tempcode('LANGUAGE'));
 
-    return do_template('FORM_SCREEN', array(
+    return do_template('FORM_SCREEN', [
         '_GUID' => '1a2823d450237aa299c095bf9c689a2a',
         'SKIP_WEBSTANDARDS' => true,
         'GET' => true,
@@ -84,7 +84,7 @@ function _choose_language($title, $tip = false, $allow_all_selection = false)
         'FIELDS' => $fields,
         'URL' => $url,
         'TEXT' => $text,
-    ));
+    ]);
 }
 
 /**
@@ -107,7 +107,7 @@ function attach_translation_notice()
         require_lang('lang');
         $_user_lang = lookup_language_full_name($user_lang);
         $_default_lang = lookup_language_full_name($default_lang);
-        $default_lang_url = get_self_url(true, false, array('keep_lang' => $default_lang), true);
+        $default_lang_url = get_self_url(true, false, ['keep_lang' => $default_lang], true);
         $notice = do_lang_tempcode('TRANSLATING_IN_LANGUAGE', escape_html($_user_lang), escape_html($_default_lang), escape_html($default_lang_url));
         attach_message($notice, 'notice');
     }
@@ -124,14 +124,14 @@ function _find_all_langs($even_empty_langs = false)
 {
     require_code('files');
 
-    static $cached = array();
+    static $cached = [];
     if (isset($cached[$even_empty_langs])) {
         return $cached[$even_empty_langs];
     }
 
     // NB: This code is heavily optimised
 
-    $_langs = array(fallback_lang() => 'lang');
+    $_langs = [fallback_lang() => 'lang'];
 
     if (!in_safe_mode()) {
         $test = persistent_cache_get('LANGS_LIST');
@@ -363,7 +363,7 @@ function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, 
     }
 
     if (!multi_lang_content()) {
-        $ret = array();
+        $ret = [];
         $ret[$field_name] = $text;
         if ($comcode) {
             $ret[$field_name . '__text_parsed'] = $text_parsed;
@@ -376,19 +376,19 @@ function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, 
     table_id_locking_start($db, $id, $lock);
 
     if ($lang == 'Gibb') { // Debug code to help us spot language layer bugs. We expect &keep_lang=EN to show EnglishEnglish content, but otherwise no EnglishEnglish content.
-        $map = array('source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => 'EnglishEnglishWarningWrongLanguageWantGibberishLang', 'text_parsed' => '', 'language' => 'EN');
+        $map = ['source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => 'EnglishEnglishWarningWrongLanguageWantGibberishLang', 'text_parsed' => '', 'language' => 'EN'];
         if ($id === null) {
             $id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
         } else {
-            $db->query_insert('translate', array('id' => $id) + $map, false, false, $save_as_volatile);
+            $db->query_insert('translate', ['id' => $id] + $map, false, false, $save_as_volatile);
         }
     }
 
-    $map = array('source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => $text, 'text_parsed' => $text_parsed, 'language' => $lang);
+    $map = ['source_user' => $source_user, 'broken' => 0, 'importance_level' => $level, 'text_original' => $text, 'text_parsed' => $text_parsed, 'language' => $lang];
     if (($id === null) || ($id === 0)) { //==0 because unless MySQL NO_AUTO_VALUE_ON_ZERO is on, 0 insertion is same as null is same as "use autoincrement"
         $id = $db->query_insert('translate', $map, true, false, $save_as_volatile);
     } else {
-        $db->query_insert('translate', array('id' => $id) + $map, false, false, $save_as_volatile);
+        $db->query_insert('translate', ['id' => $id] + $map, false, false, $save_as_volatile);
     }
 
     table_id_locking_end($db, $id, $lock);
@@ -401,9 +401,9 @@ function _insert_lang($field_name, $text, $level, $db = null, $comcode = false, 
         }
     }
 
-    return array(
+    return [
         $field_name => $id,
-    );
+    ];
 }
 
 /**
@@ -429,9 +429,9 @@ function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pas
     }
 
     if ($text === STRING_MAGIC_NULL) {
-        return array(
+        return [
             $field_name => $id,
-        );
+        ];
     }
 
     if ($db === null) {
@@ -477,7 +477,7 @@ function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pas
     }
 
     if (!multi_lang_content()) {
-        $ret = array();
+        $ret = [];
         $ret[$field_name] = $text;
         if ($comcode) {
             $ret[$field_name . '__text_parsed'] = $text_parsed;
@@ -488,33 +488,33 @@ function _lang_remap($field_name, $id, $text, $db = null, $comcode = false, $pas
         return $ret;
     }
 
-    $test = $db->query_select_value_if_there('translate', 'text_original', array('id' => $id, 'language' => $lang));
+    $test = $db->query_select_value_if_there('translate', 'text_original', ['id' => $id, 'language' => $lang]);
 
     // Mark old as out-of-date
     if ($test !== $text) {
-        $GLOBALS['SITE_DB']->query_update('translate', array('broken' => 1), array('id' => $id));
+        $GLOBALS['SITE_DB']->query_update('translate', ['broken' => 1], ['id' => $id]);
     }
 
-    $remap = array(
+    $remap = [
         'broken' => 0,
         'text_original' => $text,
         'text_parsed' => $text_parsed,
-    );
+    ];
     if ($source_user !== null) {
         $remap['source_user'] = $source_user;
     }
 
     if ($test !== null) { // Good, we save into our own language, as we have a translation for the lang entry setup properly
-        $db->query_update('translate', $remap, array('id' => $id, 'language' => $lang), '', 1);
+        $db->query_update('translate', $remap, ['id' => $id, 'language' => $lang], '', 1);
     } else { // Darn, we'll have to save over whatever we did load from
-        $db->query_update('translate', $remap, array('id' => $id), '', 1);
+        $db->query_update('translate', $remap, ['id' => $id], '', 1);
     }
 
     $db->text_lookup_original_cache[$id] = $text;
 
-    return array(
+    return [
         $field_name => $id,
-    );
+    ];
 }
 
 /**
@@ -539,7 +539,7 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
 
     $result = null;
     if (multi_lang_content()) {
-        $_result = $db->query_select('translate', array('text_original', 'source_user'), array('id' => $entry, 'language' => $lang), '', 1);
+        $_result = $db->query_select('translate', ['text_original', 'source_user'], ['id' => $entry, 'language' => $lang], '', 1);
         if (array_key_exists(0, $_result)) {
             $result = $_result[0];
         }
@@ -550,9 +550,9 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
                 return null;
             }
 
-            $result = $db->query_select_value_if_there('translate', 'text_parsed', array('id' => $entry, 'language' => get_site_default_lang()));
+            $result = $db->query_select_value_if_there('translate', 'text_parsed', ['id' => $entry, 'language' => get_site_default_lang()]);
             if ($result === null) {
-                $result = $db->query_select_value_if_there('translate', 'text_parsed', array('id' => $entry));
+                $result = $db->query_select_value_if_there('translate', 'text_parsed', ['id' => $entry]);
             }
 
             if (!cms_empty_safe($result)) {
@@ -566,9 +566,9 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
                 require_code('comcode'); // might not have been loaded for a quick-boot
                 require_code('permissions');
 
-                $result = $db->query_select('translate', array('text_original', 'source_user'), array('id' => $entry, 'language' => get_site_default_lang()), '', 1);
+                $result = $db->query_select('translate', ['text_original', 'source_user'], ['id' => $entry, 'language' => get_site_default_lang()], '', 1);
                 if (!array_key_exists(0, $result)) {
-                    $result = $db->query_select('translate', array('text_original', 'source_user'), array('id' => $entry), '', 1);
+                    $result = $db->query_select('translate', ['text_original', 'source_user'], ['id' => $entry], '', 1);
                 }
                 $result = array_key_exists(0, $result) ? $result[0] : null;
 
@@ -642,16 +642,16 @@ function _comcode_lang_string($lang_code)
     }
 
     if (multi_lang_content()) {
-        $comcode_page = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages p LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'translate t ON t.id=string_index AND ' . db_string_equal_to('t.language', user_lang()), array('string_index', 'text_parsed', 'source_user'), array('the_page' => $lang_code, 'the_zone' => '!'), '', 1);
+        $comcode_page = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages p LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'translate t ON t.id=string_index AND ' . db_string_equal_to('t.language', user_lang()), ['string_index', 'text_parsed', 'source_user'], ['the_page' => $lang_code, 'the_zone' => '!'], '', 1);
         if ((array_key_exists(0, $comcode_page)) && (!is_browser_decaching())) {
-            $comcode_page_row_cached_only = array(
+            $comcode_page_row_cached_only = [
                 'the_zone' => '!',
                 'the_page' => $lang_code,
                 'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
                 'string_index' => $comcode_page[0]['string_index'],
                 'string_index__text_parsed' => $comcode_page[0]['text_parsed'],
                 'string_index__source_user' => $comcode_page[0]['source_user'],
-            );
+            ];
             if (!cms_empty_safe($comcode_page[0]['text_parsed'])) {
                 $parsed = new Tempcode();
                 if (!$parsed->from_assembly($comcode_page[0]['text_parsed'], true)) {
@@ -665,7 +665,7 @@ function _comcode_lang_string($lang_code)
                     if ($looked_up === null) {
                         return make_string_tempcode(escape_html('{!' . $lang_code . '}'));
                     }
-                    $GLOBALS['SITE_DB']->query_insert('translate', array('id' => $comcode_page[0]['string_index'], 'source_user' => get_member(), 'broken' => 0, 'importance_level' => 1, 'text_original' => $looked_up, 'text_parsed' => '', 'language' => user_lang()), true, false, true); // errors suppressed in case of race condition
+                    $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $comcode_page[0]['string_index'], 'source_user' => get_member(), 'broken' => 0, 'importance_level' => 1, 'text_original' => $looked_up, 'text_parsed' => '', 'language' => user_lang()], true, false, true); // errors suppressed in case of race condition
                     $ret = get_translated_tempcode('cached_comcode_pages', $comcode_page_row_cached_only, 'string_index');
                 }
                 unset($GLOBALS['RECORDED_CONTENT_LANG_STRINGS'][$comcode_page[0]['string_index']]);
@@ -674,19 +674,19 @@ function _comcode_lang_string($lang_code)
             $COMCODE_LANG_STRING_CACHE[$lang_code] = $parsed;
             return $parsed;
         } elseif (array_key_exists(0, $comcode_page)) {
-            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_page' => $lang_code, 'the_zone' => '!'));
+            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_page' => $lang_code, 'the_zone' => '!']);
             delete_lang($comcode_page[0]['string_index']);
-            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
+            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
         }
     } else {
-        $comcode_page = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('*'), array('the_page' => $lang_code, 'the_zone' => '!'), '', 1);
+        $comcode_page = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['*'], ['the_page' => $lang_code, 'the_zone' => '!'], '', 1);
         if ((array_key_exists(0, $comcode_page)) && (!is_browser_decaching())) {
             $ret = get_translated_tempcode('cached_comcode_pages', $comcode_page[0], 'string_index');
             $COMCODE_LANG_STRING_CACHE[$lang_code] = $ret;
             return $ret;
         } elseif (array_key_exists(0, $comcode_page)) {
-            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_page' => $lang_code, 'the_zone' => '!'));
-            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
+            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_page' => $lang_code, 'the_zone' => '!']);
+            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
         }
     }
 
@@ -696,12 +696,12 @@ function _comcode_lang_string($lang_code)
     if ($looked_up === null) {
         return make_string_tempcode(escape_html('{!' . $lang_code . '}'));
     }
-    $map = array(
+    $map = [
         'the_zone' => '!',
         'the_page' => $lang_code,
         'the_theme' => $GLOBALS['FORUM_DRIVER']->get_theme(),
         'cc_page_title' => multi_lang_content() ? null : '',
-    );
+    ];
     $map += insert_lang_comcode('string_index', $looked_up, 4, null, true, null, false, true);
     $GLOBALS['SITE_DB']->query_insert('cached_comcode_pages', $map, false, true); // Race conditions
     $parsed = get_translated_tempcode('cached_comcode_pages', $map, 'string_index');
@@ -731,7 +731,7 @@ function mass_delete_lang($table, $attrs, $db)
 
     $start = 0;
     do {
-        $rows = $db->query_select($table, $attrs, array(), '', 1000, $start, true);
+        $rows = $db->query_select($table, $attrs, [], '', 1000, $start, true);
         if ($rows !== null) {
             foreach ($rows as $row) {
                 foreach ($attrs as $attr) {

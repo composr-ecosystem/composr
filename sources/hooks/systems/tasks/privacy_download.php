@@ -48,7 +48,7 @@ class Hook_task_privacy_download
             $username = do_lang('UNKNOWN');
         }
 
-        $data = array();
+        $data = [];
 
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook_ob) {
@@ -56,7 +56,7 @@ class Hook_task_privacy_download
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
                     if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] == 1)) {
-                        $data[$table_name] = array();
+                        $data[$table_name] = [];
 
                         $db = get_db_for($table_name);
                         $selection_sql = $hook_ob->get_selection_sql($table_name, $table_details, $member_id_username, $ip_addresses, $member_id, $email_address, $others);
@@ -70,16 +70,16 @@ class Hook_task_privacy_download
         }
 
         $filename = preg_replace('#[^\w]#', '_', $username) . '.json';
-        $headers = array();
+        $headers = [];
         $headers['Content-type'] = 'application/json';
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        $ini_set = array();
+        $ini_set = [];
         $ini_set['ocproducts.xss_detect'] = '0';
 
         require_code('files2');
         $outfile_path = cms_tempnam();
         cms_file_put_contents_safe($outfile_path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_BOM);
-        return array('application/json', array($filename, $outfile_path), $headers, $ini_set);
+        return ['application/json', [$filename, $outfile_path], $headers, $ini_set];
     }
 }

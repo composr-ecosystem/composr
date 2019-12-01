@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_censor',
             'tut_staff',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/social/warnings.svg',
             'themes/default/images/icons/links/warning_add.svg',
             'themes/default/images/icons/admin/warn.svg',
@@ -117,7 +117,7 @@ class Hook_addon_registry_cns_warnings
             'sources/hooks/systems/commandr_fs_extended_member/warnings.php',
             'themes/default/javascript/cns_warnings.js',
             'sources/hooks/systems/actionlog/cns_warnings.php',
-        );
+        ];
     }
 
     /**
@@ -127,12 +127,12 @@ class Hook_addon_registry_cns_warnings
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_SAVED_WARNING.tpl' => 'cns_saved_warning',
             'templates/CNS_WARNING_HISTORY_SCREEN.tpl' => 'administrative__cns_warning_history_screen',
             'templates/CNS_MEMBER_PROFILE_WARNINGS.tpl' => 'cns_member_profile_warnings',
             'templates/CNS_WARN_SPAM_URLS.tpl' => 'cns_warn_spam_urls',
-        );
+        ];
     }
 
     /**
@@ -144,13 +144,13 @@ class Hook_addon_registry_cns_warnings
      */
     public function tpl_preview__cns_member_profile_warnings()
     {
-        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', array(
+        $tab_content = do_lorem_template('CNS_MEMBER_PROFILE_WARNINGS', [
             'MEMBER_ID' => placeholder_id(),
             'WARNINGS' => lorem_phrase(),
-        ));
-        return array(
+        ]);
+        return [
             lorem_globalise($tab_content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -164,15 +164,15 @@ class Hook_addon_registry_cns_warnings
     {
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_SAVED_WARNING', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_SAVED_WARNING', [
                 'MESSAGE' => lorem_phrase(),
                 'MESSAGE_HTML' => lorem_phrase(),
                 'EXPLANATION' => lorem_phrase(),
                 'TITLE' => lorem_word(),
                 'DELETE_LINK' => placeholder_link(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -187,16 +187,16 @@ class Hook_addon_registry_cns_warnings
         require_lang('cns');
         require_css('cns');
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_WARNING_HISTORY_SCREEN', [
                 'TITLE' => lorem_title(),
                 'MEMBER_ID' => placeholder_id(),
                 'EDIT_PROFILE_URL' => placeholder_url(),
                 'VIEW_PROFILE_URL' => placeholder_url(),
                 'ADD_WARNING_URL' => placeholder_url(),
                 'RESULTS_TABLE' => placeholder_table(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -208,25 +208,25 @@ class Hook_addon_registry_cns_warnings
      */
     public function tpl_preview__cns_warn_spam_urls()
     {
-        $spam_urls = array(
-            array(
+        $spam_urls = [
+            [
                 'DOMAIN' => 'example.com',
-                'URLS' => array(
-                    array('I' => 0, 'URL' => 'http://example.com/'),
-                    array('I' => 1, 'URL' => 'http://example.com/test'),
-                ),
-                'POSTS' => array(
-                    array('I' => 0, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()),
-                    array('I' => 1, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()),
-                ),
-            ),
-        );
+                'URLS' => [
+                    ['I' => 0, 'URL' => 'http://example.com/'],
+                    ['I' => 1, 'URL' => 'http://example.com/test'],
+                ],
+                'POSTS' => [
+                    ['I' => 0, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()],
+                    ['I' => 1, 'POST_TITLE' => lorem_phrase(), 'POST' => lorem_paragraph()],
+                ],
+            ],
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('CNS_WARN_SPAM_URLS', array(
+        return [
+            lorem_globalise(do_lorem_template('CNS_WARN_SPAM_URLS', [
                 'USERNAME' => lorem_phrase(),
                 'SPAM_URLS' => $spam_urls,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

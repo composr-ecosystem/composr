@@ -30,7 +30,7 @@ class Hook_config_default_preview_guests
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_PREVIEW_GUESTS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_default_preview_guests
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

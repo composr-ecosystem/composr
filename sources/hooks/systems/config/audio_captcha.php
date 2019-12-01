@@ -30,7 +30,7 @@ class Hook_config_audio_captcha
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AUDIO_CAPTCHA',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_audio_captcha
             'required' => true,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

@@ -85,7 +85,7 @@ function points_profile($member_id_of, $member_id_viewing)
     if ((has_privilege($member_id_viewing, 'view_charge_log')) || ($member_id_viewing == $member_id_of)) {
         $start = get_param_integer('charge_start', 0);
         $max = get_param_integer('charge_max', intval(get_option('point_logs_per_page')));
-        $sortables = array('date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT'));
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT')];
         $test = explode(' ', get_param_string('charge_sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -95,21 +95,21 @@ function points_profile($member_id_of, $member_id_viewing)
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('chargelog', 'COUNT(*)', array('member_id' => $member_id_of));
-        $rows = $GLOBALS['SITE_DB']->query_select('chargelog', array('*'), array('member_id' => $member_id_of), 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('chargelog', 'COUNT(*)', ['member_id' => $member_id_of]);
+        $rows = $GLOBALS['SITE_DB']->query_select('chargelog', ['*'], ['member_id' => $member_id_of], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         $charges = new Tempcode();
         $from_name = get_site_name();
         $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')), $sortables, 'charge_sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')], $sortables, 'charge_sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time']);
             $amount = $myrow['amount'];
             $reason = get_translated_tempcode('chargelog', $myrow, 'reason');
 
-            $charges->attach(results_entry(array($date, integer_format($amount), $from_name, $to_name, $reason), true));
+            $charges->attach(results_entry([$date, integer_format($amount), $from_name, $to_name, $reason], true));
         }
-        $chargelog_details = results_table(do_lang_tempcode('CHARGES'), $start, 'charge_start', $max, 'charge_max', $max_rows, $header_row, $charges, $sortables, $sortable, $sort_order, 'charge_sort', null, array(), null, 8, 'fgfdgfdgfdgfdger4gtrhg', false, 'tab--points');
+        $chargelog_details = results_table(do_lang_tempcode('CHARGES'), $start, 'charge_start', $max, 'charge_max', $max_rows, $header_row, $charges, $sortables, $sortable, $sort_order, 'charge_sort', null, [], null, 8, 'fgfdgfdgfdgfdger4gtrhg', false, 'tab--points');
     }
 
     // Show giving form
@@ -121,13 +121,13 @@ function points_profile($member_id_of, $member_id_viewing)
         $give_ok = (($member_id_viewing != $member_id_of) || (has_privilege($member_id_viewing, 'give_points_self')));
         if (($enough_ok) && ($give_ok)) {
             // Show how many points are available also
-            $give_url = build_url(array('page' => 'points', 'type' => 'give', 'id' => $member_id_of), get_module_zone('points'));
-            $give_template = do_template('POINTS_GIVE', array(
+            $give_url = build_url(['page' => 'points', 'type' => 'give', 'id' => $member_id_of], get_module_zone('points'));
+            $give_template = do_template('POINTS_GIVE', [
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
                 'GIVE_URL' => $give_url,
                 'MEMBER' => strval($member_id_of),
                 'VIEWER_GIFT_POINTS_AVAILABLE' => $have_negative_gift_points ? '' : integer_format($viewer_gift_points_available),
-            ));
+            ]);
         } else {
             $give_template = do_lang_tempcode('PE_LACKING_GIFT_POINTS');
         }
@@ -139,7 +139,7 @@ function points_profile($member_id_of, $member_id_viewing)
         }
     }
 
-    return do_template('POINTS_PROFILE', array(
+    return do_template('POINTS_PROFILE', [
         '_GUID' => 'f91208ef0f9a1e1a8633ce307a778a8d',
         'MEMBER' => strval($member_id_of),
         'PROFILE_URL' => $profile_url,
@@ -184,7 +184,7 @@ function points_profile($member_id_of, $member_id_viewing)
         'FROM' => $from,
         'CHARGELOG_DETAILS' => $chargelog_details,
         'GIVE' => $give_template,
-    ));
+    ]);
 }
 
 /**
@@ -198,13 +198,13 @@ function points_profile($member_id_of, $member_id_viewing)
  */
 function points_get_transactions($type, $member_id_of, $member_id_viewing)
 {
-    $where = array('gift_' . $type => $member_id_of);
+    $where = ['gift_' . $type => $member_id_of];
     if ($type == 'from') {
         $where['anonymous'] = 0;
     }
     $start = get_param_integer('gift_start_' . $type, 0);
     $max = get_param_integer('gift_max_' . $type, intval(get_option('point_logs_per_page')));
-    $sortables = array('date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT'));
+    $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'amount' => do_lang_tempcode('AMOUNT')];
     $test = explode(' ', get_param_string('gift_sort_' . $type, 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX));
     if (count($test) == 1) {
         $test[1] = 'DESC';
@@ -217,11 +217,11 @@ function points_get_transactions($type, $member_id_of, $member_id_viewing)
     if ($max_rows == 0) {
         return new Tempcode();
     }
-    $rows = $GLOBALS['SITE_DB']->query_select('gifts', array('*'), $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
     $out = new Tempcode();
     $viewing_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
     require_code('templates_results_table');
-    $header_row = results_header_row(array(do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')), $sortables, 'gift_sort_' . $type, $sortable . ' ' . $sort_order);
+    $header_row = results_header_row([do_lang_tempcode('DATE'), do_lang_tempcode('AMOUNT'), do_lang_tempcode('FROM'), do_lang_tempcode('TO'), do_lang_tempcode('REASON')], $sortables, 'gift_sort_' . $type, $sortable . ' ' . $sort_order);
     foreach ($rows as $myrow) {
         if (($myrow['anonymous'] == 1) && ($type == 'from')) {
             continue;
@@ -234,18 +234,18 @@ function points_get_transactions($type, $member_id_of, $member_id_viewing)
             if (!has_privilege($member_id_viewing, 'trace_anonymous_gifts')) {
                 $_from_name = do_lang_tempcode('ANON');
             } else {
-                $_from_name = hyperlink(build_url(array('page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']), get_module_zone('points')), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
+                $_from_name = hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points')), do_lang_tempcode('ANON'), false, false, escape_html($from_name));
             }
         } else {
-            $_from_name = (is_guest($myrow['gift_from'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(build_url(array('page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']), get_module_zone('points')), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+            $_from_name = (is_guest($myrow['gift_from'])) ? make_string_tempcode(escape_html($from_name)) : hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_from']], get_module_zone('points')), escape_html($from_name), false, false, do_lang_tempcode('VIEW_POINTS'));
         }
-        $_to_name = hyperlink(build_url(array('page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']), get_module_zone('points')), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
+        $_to_name = hyperlink(build_url(['page' => 'points', 'type' => 'member', 'id' => $myrow['gift_to']], get_module_zone('points')), escape_html($to_name), false, false, do_lang_tempcode('VIEW_POINTS'));
 
         $date = get_timezoned_date_time($myrow['date_and_time']);
         $amount = $myrow['amount'];
         $reason = get_translated_tempcode('gifts', $myrow, 'reason');
 
-        $out->attach(results_entry(array(escape_html($date), escape_html(integer_format($amount)), $_from_name, $_to_name, $reason), false));
+        $out->attach(results_entry([escape_html($date), escape_html(integer_format($amount)), $_from_name, $_to_name, $reason], false));
     }
-    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'gift_start_' . $type, $max, 'gift_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'gift_sort_' . $type, null, array(), null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
+    return results_table(do_lang_tempcode('_POINTS', escape_html($viewing_name)), $start, 'gift_start_' . $type, $max, 'gift_max_' . $type, $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'gift_sort_' . $type, null, [], null, 8, 'gfhfghtrhhjghgfhfgf', false, 'tab--points');
 }

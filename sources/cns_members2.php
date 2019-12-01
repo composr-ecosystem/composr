@@ -40,7 +40,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, &$extra_select,
         if (!array_key_exists($filter_key, $db_fields)) {
             return null;
         }
-        return array($table_join_code . '.' . $filter_key, '', $field_val);
+        return [$table_join_code . '.' . $filter_key, '', $field_val];
     }
 
     // CPFS...
@@ -62,7 +62,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, &$extra_select,
             $extra_join[$filter_key] = $join_sql;
         }
 
-        return array($new_filter_key, '', $field_val);
+        return [$new_filter_key, '', $field_val];
     } elseif (preg_match('#^field_\d+$#', $filter_key) == 0) { // If it's not already correct
         require_code('cns_members');
         $cpf_id = find_cpf_field_id($filter_key);
@@ -77,7 +77,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, &$extra_select,
         $new_filter_key = $table_join_code . '.' . $new_filter_key;
     }
 
-    return array($new_filter_key, '', $field_val);
+    return [$new_filter_key, '', $field_val];
 }
 
 /**
@@ -91,7 +91,7 @@ function _members_filtercode($db, $info, $context, &$extra_join, &$extra_select,
  * @param  ID_TEXT $guid Overridden GUID to send to templates (blank: none)
  * @return Tempcode The member box
  */
-function render_member_box($member_id, $preview = false, $show_avatar = true, $extra_fields = array(), $give_context = true, $guid = '')
+function render_member_box($member_id, $preview = false, $show_avatar = true, $extra_fields = [], $give_context = true, $guid = '')
 {
     if ($member_id === null) { // Should never happen, but we need to be defensive
         return new Tempcode();
@@ -105,7 +105,7 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
     require_css('cns');
     require_code('cns_general');
 
-    $need = array(
+    $need = [
         'custom_fields',
         'custom_data',
         'username',
@@ -121,7 +121,7 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
         'galleries',
         'dob_label',
         'dob',
-    );
+    ];
     $member_info = cns_read_in_member_profile($member_id, $need, false, $preview);
 
     if ($member_info === null) {
@@ -134,7 +134,7 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
             if (is_integer($name)) {
                 $name = strval($name);
             }
-            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => ($guid != '') ? $guid : '10b72cd1ec240c315e56bc8a0f3a92a1', 'MEMBER_ID' => strval($member_id), 'NAME' => $name, 'RAW' => $value['RAW'], 'VALUE' => is_object($value['RENDERED']) ? protect_from_escaping($value['RENDERED']) : $value['RENDERED'])));
+            $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '10b72cd1ec240c315e56bc8a0f3a92a1', 'MEMBER_ID' => strval($member_id), 'NAME' => $name, 'RAW' => $value['RAW'], 'VALUE' => is_object($value['RENDERED']) ? protect_from_escaping($value['RENDERED']) : $value['RENDERED']]));
         }
     }
 
@@ -143,14 +143,14 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
             $key = strval($key);
         }
 
-        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => ($guid != '') ? $guid : '530f049d3b3065df2d1b69270aa93491', 'MEMBER_ID' => strval($member_id), 'NAME' => $key, 'VALUE' => $val)));
+        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '530f049d3b3065df2d1b69270aa93491', 'MEMBER_ID' => strval($member_id), 'NAME' => $key, 'VALUE' => $val]));
     }
 
     foreach ($member_info['custom_data'] as $hook_result) {
-        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => ($guid != '') ? $guid : '630f049d3b3065df2d1b69270aa93490', 'MEMBER_ID' => strval($member_id), 'NAME' => $hook_result[0], 'VALUE' => $hook_result[1])));
+        $custom_fields->attach(do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => ($guid != '') ? $guid : '630f049d3b3065df2d1b69270aa93490', 'MEMBER_ID' => strval($member_id), 'NAME' => $hook_result[0], 'VALUE' => $hook_result[1]]));
     }
 
-    return do_template('CNS_MEMBER_BOX', array(
+    return do_template('CNS_MEMBER_BOX', [
         '_GUID' => ($guid != '') ? $guid : 'dfskfdsf9',
         'GIVE_CONTEXT' => $give_context,
         'MEMBER_ID' => strval($member_id),
@@ -171,7 +171,7 @@ function render_member_box($member_id, $preview = false, $show_avatar = true, $e
         'DOB' => isset($member_info['dob']) ? $member_info['dob'] : '',
         '_DOB' => isset($member_info['_dob']) ? strval($member_info['_dob']) : '',
         '_DOB_CENSORED' => isset($member_info['_dob_censored']) ? strval($member_info['_dob_censored']) : '',
-    ));
+    ]);
 }
 
 /**
@@ -205,15 +205,15 @@ function cns_may_whisper($target, $member_id = null)
         return true;
     }
 
-    static $may_whisper_cache = array();
-    $key = serialize(array($target, $member_id));
+    static $may_whisper_cache = [];
+    $key = serialize([$target, $member_id]);
     if (array_key_exists($key, $may_whisper_cache)) {
         return $may_whisper_cache[$key];
     }
 
     require_code('selectcode');
     $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
-    $answer = !empty(array_intersect(selectcode_to_idlist_using_memory($pt_allow, $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, array(), $member_id)), $groups));
+    $answer = !empty(array_intersect(selectcode_to_idlist_using_memory($pt_allow, $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, [], $member_id)), $groups));
 
     if ((!$answer) && (addon_installed('chat'))) {
         require_code('chat');

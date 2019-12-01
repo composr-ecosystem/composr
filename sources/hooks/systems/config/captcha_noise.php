@@ -30,7 +30,7 @@ class Hook_config_captcha_noise
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CAPTCHA_NOISE',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_captcha_noise
             'required' => true,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

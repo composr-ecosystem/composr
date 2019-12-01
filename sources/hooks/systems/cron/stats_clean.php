@@ -36,11 +36,11 @@ class Hook_cron_stats_clean
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Clean out old statistics',
             'num_queued' => null,
             'minutes_between_runs' => 0, // Regularly to reduce lock contention
-        );
+        ];
     }
 
     /**

@@ -33,11 +33,11 @@ class Hook_page_groupings_trackbacks
     public function run($member_id = null, $extensive_docs = false)
     {
         if ((get_option('is_on_trackbacks') == '0') || (intval($GLOBALS['SITE_DB']->query_select_value('trackbacks', 'COUNT(*)')) == 0)) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/adminzone/audit/trackbacks', array('admin_trackbacks', array('type' => 'browse'), get_module_zone('admin_trackbacks')), do_lang_tempcode('trackbacks:MANAGE_TRACKBACKS'), 'trackbacks:DOC_TRACKBACKS'),
-        );
+        return [
+            ['audit', 'menu/adminzone/audit/trackbacks', ['admin_trackbacks', ['type' => 'browse'], get_module_zone('admin_trackbacks')], do_lang_tempcode('trackbacks:MANAGE_TRACKBACKS'), 'trackbacks:DOC_TRACKBACKS'],
+        ];
     }
 }

@@ -42,11 +42,11 @@ class Hook_task_index_download
 
         $data_mash = ($url == '') ? '' : create_data_mash($url, null, get_file_extension($original_filename));
 
-        $update_map = array(
+        $update_map = [
             'download_data_mash' => $data_mash,
-        );
+        ];
 
-        $GLOBALS['SITE_DB']->query_update('download_downloads', $update_map, array('id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('download_downloads', $update_map, ['id' => $id], '', 1);
 
         return null;
     }

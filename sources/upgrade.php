@@ -50,7 +50,7 @@ function upgrade_script()
         return;
     }
 
-    load_csp(array('csp_enabled' => '0'));
+    load_csp(['csp_enabled' => '0']);
 
     // Action handling...
 
@@ -219,7 +219,7 @@ function upgrader_link($url, $text, $disabled = false, $js = '')
 
     $ret = '<form title="' . escape_html($text) . '" style="display: inline" action="' . escape_html($url) . '" method="post">';
     $ret .= $hidden;
-    $icon = do_template('ICON', array('_GUID' => '7a9a0914fc785d0c748f5f3497c4eb2e', 'NAME' => $_icon));
+    $icon = do_template('ICON', ['_GUID' => '7a9a0914fc785d0c748f5f3497c4eb2e', 'NAME' => $_icon]);
     $ret .= '<button ' . (empty($js) ? '' : ('onclick="return window.confirm(\'' . addslashes($js) . '\');" ')) . 'accesskey="c" ' . ($disabled ? 'disabled="disabled"' : '') . ' class="btn btn-primary btn-scri" type="submit">' . $icon->evaluate() . ' ' . escape_html($text) . '</button>';
     $ret .= '</form>';
     return $ret;
@@ -326,7 +326,7 @@ function upgrader_output_login($message = null)
         ";
     }
 
-    $login_icon = do_template('ICON', array('_GUID' => 'f6b19594ec3a2fc6b1f26e67affc64b8', 'NAME' => 'menu/site_meta/user_actions/login'));
+    $login_icon = do_template('ICON', ['_GUID' => 'f6b19594ec3a2fc6b1f26e67affc64b8', 'NAME' => 'menu/site_meta/user_actions/login']);
     $_login_icon = $login_icon->evaluate();
     echo "
     <p>
@@ -444,7 +444,7 @@ function upgrader_menu_screen()
     $l_close_site = upgrader_link('upgrader.php?type=close_site', do_lang('UPGRADER_CLOSE_SITE'), get_option('site_closed') == '1');
     $l_open_site = upgrader_link('upgrader.php?type=open_site', do_lang('UPGRADER_OPEN_SITE'), get_option('site_closed') == '0');
     $closed = comcode_to_tempcode(get_option('closed'), null, true);
-    $closed_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'), get_module_zone('admin_config'), array(), false, false, false, 'group_CLOSED_SITE');
+    $closed_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'), [], false, false, false, 'group_CLOSED_SITE');
 
     // Transfer files link
     $news_id = post_param_integer('news_id', null);
@@ -453,7 +453,7 @@ function upgrader_menu_screen()
     if ($news_id !== null) {
         require_code('files');
         $fetch_url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/fetch_release_details.php?format=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
-        $news = http_get_contents($fetch_url, array('convert_to_internal_encoding' => true, 'timeout' => 30.0));
+        $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
         $details = json_decode($news, true);
         if ($details[0] != '') {

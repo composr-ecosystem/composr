@@ -62,7 +62,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
     }
     if ($filter == do_lang('INVITED_TO_PTS')) {
         $or_list = '';
-        $s_rows = $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', array('s_topic_id'), array('s_member_id' => get_member()));
+        $s_rows = $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', ['s_topic_id'], ['s_member_id' => get_member()]);
         foreach ($s_rows as $s_row) {
             if ($or_list != '') {
                 $or_list .= ' OR ';
@@ -83,10 +83,10 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
     $query_full .= ' ' . $query . $union . $sql_sup . $sql_sup_order_by;
     $topic_rows = $GLOBALS['FORUM_DB']->query($query_full, $max, $start, false, true);
     $max_rows += $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) ' . $query);
-    $topics = array();
+    $topics = [];
     $hot_topic_definition = intval(get_option('hot_topic_definition'));
     foreach ($topic_rows as $topic_row) {
-        $topic = array();
+        $topic = [];
         $topic['raw_row'] = $topic_row;
         $topic['id'] = $topic_row['id'];
         $topic['num_views'] = $topic_row['t_num_views'];
@@ -96,7 +96,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
         if ($topic_row['p_post'] === null) {
             $topic['first_post'] = new Tempcode();
         } else {
-            $post_row = db_map_restrict($topic_row, array('id', 'p_post'), array('id' => 't_cache_first_post_id'));
+            $post_row = db_map_restrict($topic_row, ['id', 'p_post'], ['id' => 't_cache_first_post_id']);
             $topic['first_post'] = get_translated_tempcode('f_posts', $post_row, 'p_post', $GLOBALS['FORUM_DB']);
         }
         $topic['first_post']->singular_bind('ATTACHMENT_DOWNLOADS', make_string_tempcode('?'));
@@ -114,7 +114,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
         $topic['pt_to'] = $topic_row['t_pt_to'];
 
         // Modifiers
-        $topic['modifiers'] = array();
+        $topic['modifiers'] = [];
         $has_read = cns_has_read_topic($topic['id'], $topic_row['t_cache_last_time'], $member_id);
         if (!$has_read) {
             $topic['modifiers'][] = 'unread';
@@ -142,7 +142,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
         $topics[] = $topic;
     }
 
-    $out = array('topics' => $topics, 'max_rows' => $max_rows);
+    $out = ['topics' => $topics, 'max_rows' => $max_rows];
 
     if ((has_privilege($member_id, 'moderate_private_topic')) && (($member_id == get_member()) || (has_privilege($member_id, 'multi_delete_topics')))) {
         $out['may_move_topics'] = 1;

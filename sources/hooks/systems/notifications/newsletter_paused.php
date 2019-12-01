@@ -44,11 +44,11 @@ class Hook_notification_newsletter_paused extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['newsletter_paused'] = array(do_lang('newsletter:NEWSLETTER'), do_lang('newsletter:NOTIFICATION_TYPE_newsletter_paused'));
+        $list = [];
+        $list['newsletter_paused'] = [do_lang('newsletter:NEWSLETTER'), do_lang('newsletter:NOTIFICATION_TYPE_newsletter_paused')];
         return $list;
     }
 }

@@ -25,7 +25,7 @@ class Hook_config_sugarcrm_member_mappings
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUGARCRM_MEMBER_MAPPINGS',
             'type' => 'text',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_sugarcrm_member_mappings
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

@@ -39,27 +39,27 @@ class Hook_checklist_version
         $num_addons_outdated = (cms_version_minor() == 'custom') ? 0 : count(find_updated_addons());
 
         if (($version_outdated) || ($num_addons_outdated > 0)) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', array('_GUID' => 'm578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'm578142633c6f3d37776e82a869deb91']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', array('_GUID' => 'n578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'n578142633c6f3d37776e82a869deb91']);
         }
 
         if ($version_outdated) {
             $url = new Tempcode(); // Don't want to point people to upgrade addons if on an old version
         } else {
-            $url = build_url(array('page' => 'admin_addons', 'type' => 'browse'), get_module_zone('admin_addons'));
+            $url = build_url(['page' => 'admin_addons', 'type' => 'browse'], get_module_zone('admin_addons'));
         }
 
         require_lang('addons');
 
         $cnt = $num_addons_outdated + ($version_outdated ? 1 : 0);
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'bbcf866e2ea104ac41685a8756e182f8',
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('UPGRADE'),
             'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt))),
-        ));
-        return array(array($tpl, null, $cnt, null));
+        ]);
+        return [[$tpl, null, $cnt, null]];
     }
 }

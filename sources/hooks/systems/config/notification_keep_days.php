@@ -30,7 +30,7 @@ class Hook_config_notification_keep_days
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NOTIFICATION_KEEP_DAYS',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_notification_keep_days
             'public' => false,
 
             'addon' => 'core_notifications',
-        );
+        ];
     }
 
     /**

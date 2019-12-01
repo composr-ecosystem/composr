@@ -40,11 +40,11 @@ class Hook_cron_implicit_usergroup_sync
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Sync implicit usergroups',
             'num_queued' => null,
             'minutes_between_runs' => 60,
-        );
+        ];
     }
 
     /**
@@ -58,19 +58,19 @@ class Hook_cron_implicit_usergroup_sync
         foreach ($hooks as $ob) {
             $group_ids = $ob->get_bound_group_ids();
             foreach ($group_ids as $group_id) {
-                $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_group_id' => $group_id));
+                $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_group_id' => $group_id]);
                 $list = $ob->get_member_list($group_id);
                 if ($list !== null) {
                     foreach ($list as $member_row) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', array('gm_group_id' => $group_id, 'gm_member_id' => $member_row['id'], 'gm_validated' => 1));
+                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_row['id'], 'gm_validated' => 1]);
                     }
                 } else {
                     $start = 0;
                     do {
-                        $members = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_members', array('id'), array(), '', 400, $start));
+                        $members = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], '', 400, $start));
                         foreach ($members as $member_id) {
                             if ($ob->is_member_within($member_id, $group_id)) {
-                                $GLOBALS['FORUM_DB']->query_insert('f_group_members', array('gm_group_id' => $group_id, 'gm_member_id' => $member_id, 'gm_validated' => 1));
+                                $GLOBALS['FORUM_DB']->query_insert('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id, 'gm_validated' => 1]);
                             }
                         }
                         $start += 400;

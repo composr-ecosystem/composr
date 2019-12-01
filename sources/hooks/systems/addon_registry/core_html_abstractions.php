@@ -31,7 +31,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_themes',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_html_abstractions.php',
             'themes/default/templates/JS_REFRESH.tpl',
             'themes/default/templates/META_REFRESH_LINE.tpl',
@@ -118,7 +118,7 @@ class Hook_addon_registry_core_html_abstractions
             'themes/default/templates/HTML_HEAD_POLYFILLS.tpl',
             'themes/default/templates/POOR_XHTML_WRAPPER.tpl',
             'themes/default/templates/WITH_WHITESPACE.tpl',
-        );
+        ];
     }
 
     /**
@@ -128,7 +128,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/POOR_XHTML_WRAPPER.tpl' => 'poor_xhtml_wrapper',
             'templates/JS_REFRESH.tpl' => 'js_refresh',
             'templates/ANCHOR.tpl' => 'anchor',
@@ -147,7 +147,7 @@ class Hook_addon_registry_core_html_abstractions
             'templates/SPAN.tpl' => 'span',
             'templates/PARAGRAPH.tpl' => 'paragraph',
             'templates/WITH_WHITESPACE.tpl' => 'with_whitespace',
-        );
+        ];
     }
 
     /**
@@ -159,11 +159,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__poor_xhtml_wrapper()
     {
-        return array(
-            lorem_globalise(do_lorem_template('POOR_XHTML_WRAPPER', array(
+        return [
+            lorem_globalise(do_lorem_template('POOR_XHTML_WRAPPER', [
                 'CONTENT' => lorem_phrase_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -175,11 +175,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__js_refresh()
     {
-        return array(
-            lorem_globalise(do_lorem_template('JS_REFRESH', array(
+        return [
+            lorem_globalise(do_lorem_template('JS_REFRESH', [
                 'FORM_NAME' => lorem_word_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -191,11 +191,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__anchor()
     {
-        return array(
-            lorem_globalise(do_lorem_template('ANCHOR', array(
+        return [
+            lorem_globalise(do_lorem_template('ANCHOR', [
                 'NAME' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -207,12 +207,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__standalone_html_wrap()
     {
-        return array(
-            lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', array(
+        return [
+            lorem_globalise(do_lorem_template('STANDALONE_HTML_WRAP', [
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_chunk_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -224,12 +224,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__meta_refresh_line()
     {
-        return array(
-            lorem_globalise(do_lorem_template('META_REFRESH_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('META_REFRESH_LINE', [
                 'URL' => placeholder_url(),
                 'TIME' => placeholder_date_raw(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -241,16 +241,16 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__hyperlink_popup_window()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HYPERLINK_POPUP_WINDOW', array(
+        return [
+            lorem_globalise(do_lorem_template('HYPERLINK_POPUP_WINDOW', [
                 'TITLE' => lorem_phrase(),
                 'CAPTION' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'WIDTH' => placeholder_number(),
                 'HEIGHT' => placeholder_number(),
                 'REL' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -262,12 +262,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__basic_html_wrap()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', array(
+        return [
+            lorem_globalise(do_lorem_template('BASIC_HTML_WRAP', [
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => lorem_chunk_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -279,12 +279,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__floater()
     {
-        return array(
-            lorem_globalise(do_lorem_template('FLOATER', array(
+        return [
+            lorem_globalise(do_lorem_template('FLOATER', [
                 'FLOAT' => 'left',
                 'CONTENT' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -296,11 +296,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__hyperlink_email()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('HYPERLINK_EMAIL', [
                 'VALUE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -312,14 +312,14 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__hyperlink_tooltip()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HYPERLINK_TOOLTIP', array(
+        return [
+            lorem_globalise(do_lorem_template('HYPERLINK_TOOLTIP', [
                 'TOOLTIP' => lorem_phrase(),
                 'CAPTION' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'NEW_WINDOW' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -331,11 +331,11 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__div()
     {
-        return array(
-            lorem_globalise(do_lorem_template('DIV', array(
+        return [
+            lorem_globalise(do_lorem_template('DIV', [
                 'TEMPCODE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -347,12 +347,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__span()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SPAN', array(
+        return [
+            lorem_globalise(do_lorem_template('SPAN', [
                 'TEMPCODE' => lorem_sentence_html(),
                 'CLASS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -364,12 +364,12 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__paragraph()
     {
-        return array(
-            lorem_globalise(do_lorem_template('PARAGRAPH', array(
+        return [
+            lorem_globalise(do_lorem_template('PARAGRAPH', [
                 'TEXT' => lorem_sentence_html(),
                 'CLASS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -383,19 +383,19 @@ class Hook_addon_registry_core_html_abstractions
     {
         $out = new Tempcode();
 
-        $out->attach(do_lorem_template('WITH_WHITESPACE', array(
+        $out->attach(do_lorem_template('WITH_WHITESPACE', [
             'CONTENT' => lorem_phrase(),
             'USING_TEXTAREA' => false,
-        )));
+        ]));
 
-        $out->attach(do_lorem_template('WITH_WHITESPACE', array(
+        $out->attach(do_lorem_template('WITH_WHITESPACE', [
             'CONTENT' => lorem_phrase(),
             'USING_TEXTAREA' => true,
-        )));
+        ]));
 
-        return array(
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -407,8 +407,8 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__hyperlink()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HYPERLINK', array(
+        return [
+            lorem_globalise(do_lorem_template('HYPERLINK', [
                 'REL' => null,
                 'POST_DATA' => null,
                 'ACCESSKEY' => null,
@@ -416,8 +416,8 @@ class Hook_addon_registry_core_html_abstractions
                 'TITLE' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'CAPTION' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -429,8 +429,8 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function tpl_preview__hyperlink_button()
     {
-        return array(
-            lorem_globalise(do_lorem_template('HYPERLINK_BUTTON', array(
+        return [
+            lorem_globalise(do_lorem_template('HYPERLINK_BUTTON', [
                 'REL' => null,
                 'POST_DATA' => '',
                 'ACCESSKEY' => null,
@@ -438,7 +438,7 @@ class Hook_addon_registry_core_html_abstractions
                 'TITLE' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'CAPTION' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

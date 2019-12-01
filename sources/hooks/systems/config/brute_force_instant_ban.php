@@ -30,7 +30,7 @@ class Hook_config_brute_force_instant_ban
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BRUTE_FORCE_INSTANT_BAN',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_brute_force_instant_ban
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

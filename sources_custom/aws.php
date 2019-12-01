@@ -119,7 +119,7 @@ function amazon_sns_topic_handler_script()
             if (($notification_type === 'Bounce') && (addon_installed('newsletter'))) {
                 require_code('newsletter');
 
-                $bounces = array();
+                $bounces = [];
 
                 $bounce = $message_body['bounce'];
 

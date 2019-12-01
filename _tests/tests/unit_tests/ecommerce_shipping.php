@@ -45,25 +45,25 @@ class ecommerce_shipping_test_set extends cms_test_case
 
     public function testShippingSplitAddress()
     {
-        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 2) == array('123 A B', 'Foobar Area'));
+        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 2) == ['123 A B', 'Foobar Area']);
 
-        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 3, true) == array('', '123 A B', 'Foobar Area'));
+        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 3, true) == ['', '123 A B', 'Foobar Area']);
 
-        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 3) == array('123 A B', 'Foobar Area', ''));
+        $this->assertTrue(split_street_address("123 A B\nFoobar Area", 3) == ['123 A B', 'Foobar Area', '']);
 
-        $this->assertTrue(split_street_address("123 A B", 3, true) == array('', '123 A B', ''));
+        $this->assertTrue(split_street_address("123 A B", 3, true) == ['', '123 A B', '']);
 
-        $this->assertTrue(split_street_address("123 A B", 3) == array('123 A B', '', ''));
+        $this->assertTrue(split_street_address("123 A B", 3) == ['123 A B', '', '']);
 
-        $this->assertTrue(split_street_address("123 A B\nFoobar Area\nYo Yo", 3, true) == array('', '123 A B', 'Foobar Area, Yo Yo'));
+        $this->assertTrue(split_street_address("123 A B\nFoobar Area\nYo Yo", 3, true) == ['', '123 A B', 'Foobar Area, Yo Yo']);
 
-        $this->assertTrue(split_street_address("123 A B\nFoobar Area\nYo Yo", 3) == array('123 A B', 'Foobar Area', 'Yo Yo'));
+        $this->assertTrue(split_street_address("123 A B\nFoobar Area\nYo Yo", 3) == ['123 A B', 'Foobar Area', 'Yo Yo']);
 
-        $this->assertTrue(split_street_address("Foo Corps\n123 A B", 3, true) == array('Foo Corps', '123 A B', ''));
+        $this->assertTrue(split_street_address("Foo Corps\n123 A B", 3, true) == ['Foo Corps', '123 A B', '']);
 
-        $this->assertTrue(split_street_address("Foo Corps\n123 A B", 2) == array('Foo Corps', '123 A B'));
+        $this->assertTrue(split_street_address("Foo Corps\n123 A B", 2) == ['Foo Corps', '123 A B']);
 
-        $this->assertTrue(split_street_address("Foo Corps\n123 A B\nFoobar Area", 3, true) == array('Foo Corps', '123 A B', 'Foobar Area'));
+        $this->assertTrue(split_street_address("Foo Corps\n123 A B\nFoobar Area", 3, true) == ['Foo Corps', '123 A B', 'Foobar Area']);
     }
 
     public function testShippingNormalisation()

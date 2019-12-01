@@ -34,7 +34,7 @@ class Hook_import_icalendar
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['product'] = 'iCalendar file';
         $info['hook_type'] = 'redirect';
         $info['import_module'] = 'cms_calendar';

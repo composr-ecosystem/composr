@@ -52,7 +52,7 @@ function chat_logs_script()
     $start_date_seed = getdate($start);
     $finish_date_seed = getdate($finish);
 
-    $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('id', 'is_im', 'allow_list', 'allow_list_groups', 'disallow_list', 'disallow_list_groups', 'room_owner'), array('id' => $room), '', 1);
+    $room_check = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['id', 'is_im', 'allow_list', 'allow_list_groups', 'disallow_list', 'disallow_list_groups', 'room_owner'], ['id' => $room], '', 1);
     if (!array_key_exists(0, $room_check)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
     }
@@ -71,7 +71,7 @@ function chat_logs_script()
     // Build the text file
     $message_contents = new Tempcode();
     foreach ($messages as $_message) {
-        $message_contents->attach(do_template('CHAT_MESSAGE', array(
+        $message_contents->attach(do_template('CHAT_MESSAGE', [
             '_GUID' => 'ff22f181850feaba2a062b7edf71e332',
             'STAFF' => false,
             'OLD_MESSAGES' => true,
@@ -84,7 +84,7 @@ function chat_logs_script()
             '_TIME' => strval($_message['date_and_time']),
             'FONT_COLOUR' => $_message['text_colour'],
             'FONT_FACE' => $_message['font_name'],
-        )));
+        ]));
     }
 
     // Send header
@@ -100,11 +100,11 @@ function chat_logs_script()
         return;
     }
 
-    $message_contents = do_template('BASIC_HTML_WRAP', array(
+    $message_contents = do_template('BASIC_HTML_WRAP', [
         '_GUID' => 'ff052ede2357f894a219c27a3ec75642',
-        'TITLE' => do_lang('CHAT_LOGS', escape_html(get_site_name()), escape_html($room_name), array(escape_html($start_date), escape_html($finish_date))),
+        'TITLE' => do_lang('CHAT_LOGS', escape_html(get_site_name()), escape_html($room_name), [escape_html($start_date), escape_html($finish_date)]),
         'CONTENT' => $message_contents,
-    ));
+    ]);
 
     echo $message_contents->evaluate();
 }

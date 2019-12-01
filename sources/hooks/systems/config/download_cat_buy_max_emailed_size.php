@@ -30,7 +30,7 @@ class Hook_config_download_cat_buy_max_emailed_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DOWNLOAD_CAT_BUY_MAX_EMAILED_SIZE',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_download_cat_buy_max_emailed_size
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

@@ -40,7 +40,7 @@ class Hook_whatsnew_downloads
         require_code('downloads');
         $cats = create_selection_list_download_category_tree(null, false, false, $updated_since);
 
-        return array($cats, do_lang('SECTION_DOWNLOADS'));
+        return [$cats, do_lang('SECTION_DOWNLOADS')];
     }
 
     /**
@@ -54,7 +54,7 @@ class Hook_whatsnew_downloads
     public function run($cutoff_time, $lang, $filter)
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
         require_lang('downloads');
@@ -76,19 +76,19 @@ class Hook_whatsnew_downloads
         $rows = $GLOBALS['SITE_DB']->query('SELECT name,description,id,add_date,submitter FROM ' . get_table_prefix() . 'download_downloads r' . $privacy_join . ' WHERE validated=1 AND add_date>' . strval($cutoff_time) . ' AND (' . $or_list . ')' . $privacy_where . ' ORDER BY add_date DESC', $max);
 
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
 
         foreach ($rows as $row) {
             $id = $row['id'];
-            $_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $row['id']), get_module_zone('downloads'), array(), false, false, true);
+            $_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $row['id']], get_module_zone('downloads'), [], false, false, true);
             $url = $_url->evaluate();
             $name = get_translated_text($row['name'], null, $lang);
             $description = get_translated_text($row['the_description'], null, $lang);
             $member_id = (is_guest($row['submitter'])) ? null : strval($row['submitter']);
             $thumb_url = null;
             if (addon_installed('galleries')) {
-                $thumbnail = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'thumb_url', array('cat' => 'download_' . strval($row['id'])), 'ORDER BY add_date ASC');
+                $thumbnail = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'thumb_url', ['cat' => 'download_' . strval($row['id'])], 'ORDER BY add_date ASC');
                 if ($thumbnail !== null) {
                     if ($thumbnail != '') {
                         if (url_is_local($thumbnail)) {
@@ -99,11 +99,11 @@ class Hook_whatsnew_downloads
                     }
                 }
             }
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => 'bbd85ed54500b9d6df998e3c835b45e9', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'download', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'bbd85ed54500b9d6df998e3c835b45e9', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'CONTENT_TYPE' => 'download', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
-        return array($new, do_lang('SECTION_DOWNLOADS', '', '', '', $lang));
+        return [$new, do_lang('SECTION_DOWNLOADS', '', '', '', $lang)];
     }
 }

@@ -30,11 +30,11 @@ class Hook_ecommerce_gambling
      */
     public function get_product_category()
     {
-        return array(
+        return [
             'category_name' => do_lang('GAMBLING'),
             'category_description' => do_lang_tempcode('GAMBLING_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/features'),
-        );
+        ];
     }
 
     /**
@@ -48,7 +48,7 @@ class Hook_ecommerce_gambling
      */
     public function get_products($search = null)
     {
-        $products = array();
+        $products = [];
 
         $min = intval(get_option('minimum_gamble_amount'));
         $max = intval(get_option('maximum_gamble_amount'));
@@ -58,7 +58,7 @@ class Hook_ecommerce_gambling
             $max = $_min;
         }
         $spread = intval(round(floatval($max - $min) / 4.0));
-        $amounts = array();
+        $amounts = [];
         $amounts[] = $min;
         $amounts[] = $min + $spread * 1;
         $amounts[] = $min + $spread * 2;
@@ -67,13 +67,13 @@ class Hook_ecommerce_gambling
         $amounts = array_unique($amounts);
 
         foreach ($amounts as $amount) {
-            $products['GAMBLING_' . strval($amount)] = array(
+            $products['GAMBLING_' . strval($amount)] = [
                 'item_name' => do_lang('GAMBLE_THIS', integer_format($amount)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -88,7 +88,7 @@ class Hook_ecommerce_gambling
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
         }
 
         return $products;
@@ -186,7 +186,7 @@ class Hook_ecommerce_gambling
             $winnings = mt_rand(0, intval(round($average_gamble_multiplier * $amount)));
         }
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('GAMBLING', null, null, null, get_site_default_lang()), 'details2' => strval($amount) . ' --> ' . strval($winnings), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('GAMBLING', null, null, null, get_site_default_lang()), 'details2' => strval($amount) . ' --> ' . strval($winnings), 'txn_id' => $details['TXN_ID']]);
 
         // Actuate
         require_code('points2');

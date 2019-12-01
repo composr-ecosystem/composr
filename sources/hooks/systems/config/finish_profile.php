@@ -30,7 +30,7 @@ class Hook_config_finish_profile
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENSURE_FINISH_PROFILE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_finish_profile
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

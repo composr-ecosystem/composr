@@ -30,7 +30,7 @@ class Hook_config_cns_show_profile_link
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MY_PROFILE_LINK',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_cns_show_profile_link
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

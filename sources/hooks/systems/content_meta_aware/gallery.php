@@ -36,7 +36,7 @@ class Hook_content_meta_aware_gallery
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'galleries:GALLERY',
@@ -113,7 +113,7 @@ class Hook_content_meta_aware_gallery
             'support_spam_heuristics' => 'the_description',
 
             'actionlog_regexp' => '\w+_GALLERY',
-        );
+        ];
     }
 
     /**

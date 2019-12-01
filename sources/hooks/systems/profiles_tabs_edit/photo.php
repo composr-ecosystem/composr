@@ -133,14 +133,14 @@ class Hook_profiles_tabs_edit_photo
             $text->attach(get_maximum_upload_message($max));
         }
 
-        $text = do_template('CNS_EDIT_PHOTO_TAB', array(
+        $text = do_template('CNS_EDIT_PHOTO_TAB', [
             '_GUID' => 'ae0eb6d27bc8b576b326b54a9a792554',
             'TEXT' => $text,
             'MEMBER_ID' => strval($member_id_of),
             'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id_of),
             'PHOTO' => $GLOBALS['FORUM_DRIVER']->get_member_photo_url($member_id_of),
-        ));
+        ]);
 
-        return array($title, $fields, $text, null, $order, $hidden, 'tabs/member_account/edit/photo', function_exists('imagetypes'));
+        return [$title, $fields, $text, null, $order, $hidden, 'tabs/member_account/edit/photo', function_exists('imagetypes')];
     }
 }

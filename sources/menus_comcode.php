@@ -32,13 +32,13 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
     // Reset
     $level = -1;
     $expanded = true;
-    $expander = array();
+    $expander = [];
     $expander[0] = -1;
 
     // Loop
     $i = 0;
     $lines = explode("\n", $comcode);
-    $stack = array(); // Stores the previous level(s) if we are jumping down to a further one
+    $stack = []; // Stores the previous level(s) if we are jumping down to a further one
     $root = _get_menu_root_wrapper();
     $root['content_id'] = $menu;
     $current_level = $root;
@@ -50,21 +50,21 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
     foreach ($lines as $line) {
         if (trim($line) == '') {
             if (($i != 0) && ($i < count($lines) - 2)) {
-                $current = array(
+                $current = [
                     'title' => '',
                     'content_type' => 'spacer',
                     'content_id' => null,
-                    'modifiers' => array(),
+                    'modifiers' => [],
                     'only_on_page' => '',
                     'page_link' => null,
                     'url' => null,
-                    'extra_meta' => array(
+                    'extra_meta' => [
                         'description' => null,
                         'image' => null,
-                    ),
+                    ],
                     'has_possible_children' => true,
-                    'children' => array(),
-                );
+                    'children' => [],
+                ];
 
                 $current_level[] = $current;
             }
@@ -84,7 +84,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
 
         if ($level > $last_level + 1) {
             require_code('comcode_renderer');
-            comcode_parse_error_exit(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
+            comcode_parse_error_exit(false, ['CCP_MENU_JUMPYNESS'], $i, $comcode);
         }
         if (($last_level - $level == 0) && ($current_level['content_type'] == 'comcode_drawer_branch') && (strpos($line, '=') === false)) { // little hack to make case of branch having no children work
             $last_level++;
@@ -92,7 +92,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
         for ($x = 0; $x < $last_level - $level; $x++) {
             if (strpos($line, '=') !== false) {
                 require_code('comcode_renderer');
-                comcode_parse_error_exit(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
+                comcode_parse_error_exit(false, ['CCP_MENU_JUMPYNESS'], $i, $comcode);
             }
 
             $this_level = $current_level;
@@ -124,7 +124,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
             $caption = rtrim(substr($line, $level, $pos - $level));
         }
 
-        $modifiers = array();
+        $modifiers = [];
         if ($caption[0] == '@') {
             $caption = substr($caption, 1);
         }
@@ -137,7 +137,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
             }
 
             array_push($stack, $current_level);
-            $current_level = array(
+            $current_level = [
                 'title' => make_string_tempcode($caption),
                 'content_type' => 'comcode_drawer_branch',
                 'content_id' => null,
@@ -145,13 +145,13 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
                 'only_on_page' => '',
                 'page_link' => null,
                 'url' => '',
-                'extra_meta' => array(
+                'extra_meta' => [
                     'description' => null,
                     'image' => null,
-                ),
+                ],
                 'has_possible_children' => true,
-                'children' => array(),
-            );
+                'children' => [],
+            ];
         } else { // For simple link branches
             $url = ltrim(substr($line, $pos + 1));
             if (substr($url, 0, 1) == '~') {
@@ -164,7 +164,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
                     $modifers['check_perms'] = true;
             }*/
 
-            $current_level['children'][] = array(
+            $current_level['children'][] = [
                 'title' => make_string_tempcode($caption),
                 'content_type' => 'comcode_end_branch',
                 'content_id' => null,
@@ -172,13 +172,13 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
                 'only_on_page' => '',
                 'page_link' => null,
                 'url' => @html_entity_decode($url, ENT_QUOTES),
-                'extra_meta' => array(
+                'extra_meta' => [
                     'description' => null,
                     'image' => null,
-                ),
+                ],
                 'has_possible_children' => true,
-                'children' => array(),
-            );
+                'children' => [],
+            ];
         }
 
         $i++;

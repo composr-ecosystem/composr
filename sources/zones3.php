@@ -30,10 +30,10 @@ function expand_wildcarded_page_links($wildcarded_page_link)
 {
     $wildcarded_page_link = str_replace('_WILD', '*', $wildcarded_page_link);
 
-    $page_links = array();
+    $page_links = [];
 
     $parts = explode(':', $wildcarded_page_link, 3);
-    $page_links = array();
+    $page_links = [];
     foreach ($parts as $i => $part) {
         switch ($i) {
             case 0: // Zone
@@ -55,7 +55,7 @@ function expand_wildcarded_page_links($wildcarded_page_link)
                 break;
             case 1: // Page
                 if ((strpos($part, '*') !== false) || (strpos($part, '?') !== false)) {
-                    $_page_links = array();
+                    $_page_links = [];
                     foreach ($page_links as &$page_link) {
                         $pages = find_all_pages_wrap($page_link, false, false, FIND_ALL_PAGES__ALL);
                         foreach (array_keys($pages) as $page) {
@@ -136,17 +136,17 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
 
         if (is_numeric($page)) {
             $page = $_structure;
-            $_structure = array();
+            $_structure = [];
         }
 
         if (!$overwrite_all) {
-            $GLOBALS['SITE_DB']->query_delete('comcode_pages', array(
+            $GLOBALS['SITE_DB']->query_delete('comcode_pages', [
                 'the_zone' => $zone,
                 'the_page' => $page,
-            ), '', 1);
+            ], '', 1);
         }
 
-        $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+        $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
             'the_zone' => $zone,
             'the_page' => $page,
             'p_parent_page' => $parent,
@@ -156,7 +156,7 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
             'p_submitter' => $admin_user,
             'p_show_as_edit' => 0,
             'p_order' => $i,
-        ));
+        ]);
 
         define_comcode_page_structure($_structure, $zone, $page);
 
@@ -190,21 +190,21 @@ function define_redirects($redirects, $zone = '', $overwrite_all = false)
 
     foreach ($redirects as $old_page => $new_page) {
         if (!$overwrite_all) {
-            $GLOBALS['SITE_DB']->query_delete('redirects', array(
+            $GLOBALS['SITE_DB']->query_delete('redirects', [
                 'r_from_page' => $old_page,
                 'r_from_zone' => $zone,
                 'r_to_page' => $new_page,
                 'r_to_zone' => $zone,
-            ), '', 1);
+            ], '', 1);
         }
 
-        $GLOBALS['SITE_DB']->query_insert('redirects', array(
+        $GLOBALS['SITE_DB']->query_insert('redirects', [
             'r_from_page' => $old_page,
             'r_from_zone' => $zone,
             'r_to_page' => $new_page,
             'r_to_zone' => $zone,
             'r_is_transparent' => 0,
-        ));
+        ]);
     }
 }
 
@@ -236,7 +236,7 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
         }
 
         // Check doesn't already exist
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', array('zone_name' => $new_zone));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $new_zone]);
         if ($test !== null) {
             if ($uniqify) {
                 $new_zone .= '_' . uniqid('', false);
@@ -247,28 +247,28 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
 
         require_code('abstract_file_manager');
         if (!$skip_afm) {
-            force_have_afm_details(array('', $zone));
+            force_have_afm_details(['', $zone]);
         }
         afm_move($zone, $new_zone);
     }
 
-    $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', array('zone_name' => $zone));
-    $_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', array('zone_name' => $zone));
+    $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => $zone]);
+    $_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => $zone]);
 
-    $map = array(
+    $map = [
         'zone_name' => $new_zone,
         'zone_default_page' => $default_page,
         'zone_theme' => $theme,
         'zone_require_session' => $require_session,
-    );
+    ];
     $map += lang_remap('zone_title', $_title, $title);
     $map += lang_remap('zone_header_text', $_header_text, $header_text);
-    $GLOBALS['SITE_DB']->query_update('zones', $map, array('zone_name' => $zone), '', 1);
+    $GLOBALS['SITE_DB']->query_update('zones', $map, ['zone_name' => $zone], '', 1);
 
     if ($new_zone != $zone) {
         actual_rename_zone_lite($zone, $new_zone, true);
 
-        $GLOBALS['SITE_DB']->query_update('menu_items', array('i_url' => $new_zone), array('i_url' => $zone), '', 1);
+        $GLOBALS['SITE_DB']->query_update('menu_items', ['i_url' => $new_zone], ['i_url' => $zone], '', 1);
     }
 
     // If we're in this zone, update the theme
@@ -278,7 +278,7 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
     }
 
     delete_cache_entry('menu');
-    persistent_cache_delete(array('ZONE', $zone));
+    persistent_cache_delete(['ZONE', $zone]);
     persistent_cache_delete('ALL_ZONES');
 
     require_code('zones2');
@@ -304,20 +304,20 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
 function actual_rename_zone_lite($zone, $new_zone, $dont_bother_with_main_row = false)
 {
     if (!$dont_bother_with_main_row) {
-        $GLOBALS['SITE_DB']->query_update('zones', array('zone_name' => $new_zone), array('zone_name' => $zone), '', 1);
-        $GLOBALS['SITE_DB']->query_update('group_zone_access', array('zone_name' => $new_zone), array('zone_name' => $zone));
-        $GLOBALS['SITE_DB']->query_update('member_zone_access', array('zone_name' => $new_zone), array('zone_name' => $zone));
+        $GLOBALS['SITE_DB']->query_update('zones', ['zone_name' => $new_zone], ['zone_name' => $zone], '', 1);
+        $GLOBALS['SITE_DB']->query_update('group_zone_access', ['zone_name' => $new_zone], ['zone_name' => $zone]);
+        $GLOBALS['SITE_DB']->query_update('member_zone_access', ['zone_name' => $new_zone], ['zone_name' => $zone]);
     } else {
-        $GLOBALS['SITE_DB']->query_delete('zones', array('zone_name' => $zone), '', 1);
-        $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('zone_name' => $zone));
-        $GLOBALS['SITE_DB']->query_delete('member_zone_access', array('zone_name' => $zone));
+        $GLOBALS['SITE_DB']->query_delete('zones', ['zone_name' => $zone], '', 1);
+        $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone]);
+        $GLOBALS['SITE_DB']->query_delete('member_zone_access', ['zone_name' => $zone]);
     }
-    $GLOBALS['SITE_DB']->query_update('group_page_access', array('zone_name' => $new_zone), array('zone_name' => $zone));
-    $GLOBALS['SITE_DB']->query_update('member_page_access', array('zone_name' => $new_zone), array('zone_name' => $zone));
-    $GLOBALS['SITE_DB']->query_update('comcode_pages', array('the_zone' => $new_zone), array('the_zone' => $zone));
+    $GLOBALS['SITE_DB']->query_update('group_page_access', ['zone_name' => $new_zone], ['zone_name' => $zone]);
+    $GLOBALS['SITE_DB']->query_update('member_page_access', ['zone_name' => $new_zone], ['zone_name' => $zone]);
+    $GLOBALS['SITE_DB']->query_update('comcode_pages', ['the_zone' => $new_zone], ['the_zone' => $zone]);
     if (addon_installed('redirects_editor')) {
-        $GLOBALS['SITE_DB']->query_update('redirects', array('r_from_zone' => $new_zone), array('r_from_zone' => $zone));
-        $GLOBALS['SITE_DB']->query_update('redirects', array('r_to_zone' => $new_zone), array('r_to_zone' => $zone));
+        $GLOBALS['SITE_DB']->query_update('redirects', ['r_from_zone' => $new_zone], ['r_from_zone' => $zone]);
+        $GLOBALS['SITE_DB']->query_update('redirects', ['r_to_zone' => $new_zone], ['r_to_zone' => $zone]);
     }
 
     // Copy logo theme images if needed
@@ -327,8 +327,8 @@ function actual_rename_zone_lite($zone, $new_zone, $dont_bother_with_main_row = 
         $zone_logo_img = find_theme_image('logo/' . $zone . '-logo', true, true, $theme);
         $zone_logo_img_new = find_theme_image('logo/' . $new_zone . '-logo', true, true, $theme);
         if (($zone_logo_img != '') && ($zone_logo_img_new == '')) {
-            $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'lang' => get_site_default_lang()), '', 1);
-            $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'url' => $zone_logo_img, 'lang' => get_site_default_lang()));
+            $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'lang' => get_site_default_lang()], '', 1);
+            $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => 'logo/' . $new_zone . '-logo', 'theme' => $theme, 'url' => $zone_logo_img, 'lang' => get_site_default_lang()]);
         }
     }
 
@@ -358,7 +358,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
 
     require_code('abstract_file_manager');
     if (!$skip_afm) {
-        force_have_afm_details(array($zone));
+        force_have_afm_details([$zone]);
     }
 
     if (!$force) {
@@ -366,7 +366,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
         disable_php_memory_limit();
 
         $pages = find_all_pages_wrap($zone, false, false, FIND_ALL_PAGES__ALL);
-        $bad = array();
+        $bad = [];
         foreach (array_keys($pages) as $page) {
             if ((substr($page, 0, 6) != 'panel_') && ($page != DEFAULT_ZONE_PAGE_NAME)) {
                 $bad[] = $page;
@@ -375,7 +375,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
 
         cms_set_time_limit($old_limit);
 
-        if ($bad != array()) {
+        if ($bad != []) {
             require_lang('zones');
             warn_exit(do_lang_tempcode('DELETE_ZONE_ERROR', '<kbd>' . implode('</kbd>, <kbd>', $bad) . '</kbd>'));
         }
@@ -395,30 +395,30 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
  */
 function actual_delete_zone_lite($zone)
 {
-    $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', array('zone_name' => $zone));
+    $zone_header_text = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
     if ($zone_header_text === null) {
         return;
     }
-    $zone_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', array('zone_name' => $zone));
+    $zone_title = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => $zone]);
     $_zone_title = get_translated_text($zone_title);
     delete_lang($zone_header_text);
     delete_lang($zone_title);
 
-    $GLOBALS['SITE_DB']->query_delete('zones', array('zone_name' => $zone), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('zone_name' => $zone));
-    $GLOBALS['SITE_DB']->query_delete('group_page_access', array('zone_name' => $zone));
-    $GLOBALS['SITE_DB']->query_delete('comcode_pages', array('the_zone' => $zone), '', null, 0, true); // May fail because the table might not exist when this is called
+    $GLOBALS['SITE_DB']->query_delete('zones', ['zone_name' => $zone], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => $zone]);
+    $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone]);
+    $GLOBALS['SITE_DB']->query_delete('comcode_pages', ['the_zone' => $zone], '', null, 0, true); // May fail because the table might not exist when this is called
     if (addon_installed('redirects_editor')) {
-        $GLOBALS['SITE_DB']->query_delete('redirects', array('r_from_zone' => $zone));
-        $GLOBALS['SITE_DB']->query_delete('redirects', array('r_to_zone' => $zone));
+        $GLOBALS['SITE_DB']->query_delete('redirects', ['r_from_zone' => $zone]);
+        $GLOBALS['SITE_DB']->query_delete('redirects', ['r_to_zone' => $zone]);
     }
-    $GLOBALS['SITE_DB']->query_delete('menu_items', array('i_url' => $zone . ':'));
+    $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':']);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('zone', $zone, '');
     }
 
-    persistent_cache_delete(array('ZONE', $zone));
+    persistent_cache_delete(['ZONE', $zone]);
     persistent_cache_delete('ALL_ZONES');
 
     delete_cache_entry('menu');
@@ -456,23 +456,23 @@ function sitemap_do_next_manager($title, $page, $zone, $completion_text)
     }
 
     require_code('templates_donext');
-    $special = array(
-        array('admin/add', array('cms_comcode_pages', array('type' => 'browse'), get_module_zone('cms_comcode_pages')), do_lang('COMCODE_PAGE_ADD')),
-        array('menu/cms/comcode_page_edit', array('cms_comcode_pages', array('type' => 'browse'), get_module_zone('cms_comcode_pages')), do_lang_tempcode('COMCODE_PAGE_EDIT')),
-    );
+    $special = [
+        ['admin/add', ['cms_comcode_pages', ['type' => 'browse'], get_module_zone('cms_comcode_pages')], do_lang('COMCODE_PAGE_ADD')],
+        ['menu/cms/comcode_page_edit', ['cms_comcode_pages', ['type' => 'browse'], get_module_zone('cms_comcode_pages')], do_lang_tempcode('COMCODE_PAGE_EDIT')],
+    ];
     if ($page !== null) {
-        $special = array_merge($special, array(
-            array('admin/edit_this', array('_SELF', array('type' => '_edit', 'page_link' => $zone . ':' . $page), '_SELF'), do_lang('COMCODE_PAGE_EDIT_THIS')),
-            array('admin/view_this', array($page, array(), $zone), do_lang('COMCODE_PAGE_VIEW_THIS')),
-        ));
+        $special = array_merge($special, [
+            ['admin/edit_this', ['_SELF', ['type' => '_edit', 'page_link' => $zone . ':' . $page], '_SELF'], do_lang('COMCODE_PAGE_EDIT_THIS')],
+            ['admin/view_this', [$page, [], $zone], do_lang('COMCODE_PAGE_VIEW_THIS')],
+        ]);
     }
     if (addon_installed('redirects_editor')) {
         require_lang('redirects');
-        $special[] = array('menu/adminzone/structure/redirects', array('admin_redirects', array('type' => 'browse'), get_module_zone('admin_redirects')), do_lang_tempcode('REDIRECTS'));
+        $special[] = ['menu/adminzone/structure/redirects', ['admin_redirects', ['type' => 'browse'], get_module_zone('admin_redirects')], do_lang_tempcode('REDIRECTS')];
     }
-    $special = array_merge($special, array(
-        array('menu/adminzone/structure/sitemap/sitemap_editor', array('admin_sitemap', array('type' => 'browse'), get_module_zone('admin_sitemap')), do_lang_tempcode('SITEMAP_EDITOR')),
-    ));
+    $special = array_merge($special, [
+        ['menu/adminzone/structure/sitemap/sitemap_editor', ['admin_sitemap', ['type' => 'browse'], get_module_zone('admin_sitemap')], do_lang_tempcode('SITEMAP_EDITOR')],
+    ]);
     return do_next_manager(
         $title,
         $completion_text,
@@ -500,7 +500,7 @@ function sitemap_do_next_manager($title, $page, $zone, $completion_text)
  * @param  ?TIME $updated_since Time from which content must be updated (null: no limit)
  * @return Tempcode The list
  */
-function create_selection_list_zones($sel = null, $no_go = array(), $reorder = null, $updated_since = null)
+function create_selection_list_zones($sel = null, $no_go = [], $reorder = null, $updated_since = null)
 {
     if (($sel === 'site') && (get_option('single_public_zone') == '1')) {
         $sel = '';
@@ -508,17 +508,17 @@ function create_selection_list_zones($sel = null, $no_go = array(), $reorder = n
 
     if ($updated_since !== null) {
         $rows = $GLOBALS['SITE_DB']->query('SELECT zone_name,zone_title FROM ' . get_table_prefix() . 'zones z WHERE EXISTS (SELECT * FROM ' . get_table_prefix() . 'comcode_pages c WHERE z.zone_name=c.the_zone AND p_add_date>' . strval($updated_since) . ') ORDER BY zone_name');
-        $zones = array();
+        $zones = [];
         foreach ($rows as $row) {
-            $zones[] = array($row['zone_name'], get_translated_text($row['zone_title']));
+            $zones[] = [$row['zone_name'], get_translated_text($row['zone_title'])];
         }
     } else {
         $zones = find_all_zones(false, true);
     }
     $content = new Tempcode();
     if ($reorder !== null) {
-        $_zones_a = array();
-        $_zones_b = array();
+        $_zones_a = [];
+        $_zones_b = [];
         foreach ($zones as $_zone) {
             list($zone, ) = $_zone;
             if (in_array($zone, $reorder)) {
@@ -568,12 +568,12 @@ function get_templates_list()
 {
     require_code('zones2');
 
-    $templates_dirs = array();
+    $templates_dirs = [];
     if (get_value('page_template_restrict_to_custom', '0', true) !== '1') {
         $templates_dirs[] = get_file_base() . '/data/modules/cms_comcode_pages/' . fallback_lang() . '/';
     }
     $templates_dirs[] = get_file_base() . '/data_custom/modules/cms_comcode_pages/' . fallback_lang() . '/';
-    $templates = array();
+    $templates = [];
     foreach ($templates_dirs as $templates_dir) {
         if (($handle = @opendir($templates_dir)) !== false) {
             $unknown_count = 0;
@@ -665,22 +665,22 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
     }
 
     if ($add_time === null) {
-        $add_time = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_add_date', array('the_zone' => $zone, 'the_page' => $file));
+        $add_time = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_add_date', ['the_zone' => $zone, 'the_page' => $file]);
         if ($add_time === null) {
             $add_time = time();
         }
     }
     if ($order === null) {
-        $order = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_order', array('the_zone' => $zone, 'the_page' => $file));
+        $order = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_order', ['the_zone' => $zone, 'the_page' => $file]);
         if ($order === null) {
             $order = 0;
         }
         if ($parent_page === null) {
-            $parent_page = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', array('the_zone' => $zone, 'the_page' => $file));
+            $parent_page = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_parent_page', ['the_zone' => $zone, 'the_page' => $file]);
         }
     }
     if ($validated === null) {
-        $validated = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_validated', array('the_zone' => $zone, 'the_page' => $file));
+        $validated = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_validated', ['the_zone' => $zone, 'the_page' => $file]);
         if ($validated === null) {
             $validated = 1;
         }
@@ -702,7 +702,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
     if ($renaming_page) {
         // Got to rename against multiple possible languages
         $langs = find_all_langs(true);
-        $rename_map = array();
+        $rename_map = [];
         foreach (array_keys($langs) as $lang) {
             $old_path = zone_black_magic_filterer(filter_naughty($zone) . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/' . $file . '.txt', true);
             if (file_exists(get_file_base() . '/' . $old_path)) {
@@ -729,22 +729,22 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
     if ($meta_keywords !== null) {
         require_code('content2');
         if (($meta_keywords == '') && ($meta_description == '')) {
-            seo_meta_set_for_implicit('comcode_page', $zone . ':' . $new_file, array($text), $text);
+            seo_meta_set_for_implicit('comcode_page', $zone . ':' . $new_file, [$text], $text);
         } else {
             seo_meta_set_for_explicit('comcode_page', $zone . ':' . $new_file, $meta_keywords, $meta_description);
         }
     }
 
     // Store in DB
-    $GLOBALS['SITE_DB']->query_delete('comcode_pages', array( // To support rename
+    $GLOBALS['SITE_DB']->query_delete('comcode_pages', [ // To support rename
         'the_zone' => $zone,
         'the_page' => $file,
-    ));
-    $GLOBALS['SITE_DB']->query_delete('comcode_pages', array( // To stop conflicts
+    ]);
+    $GLOBALS['SITE_DB']->query_delete('comcode_pages', [ // To stop conflicts
         'the_zone' => $zone,
         'the_page' => $new_file,
-    ));
-    $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
+    ]);
+    $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
         'the_zone' => $zone,
         'the_page' => $new_file,
         'p_parent_page' => $parent_page,
@@ -754,7 +754,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
         'p_submitter' => $submitter,
         'p_show_as_edit' => $show_as_edit,
         'p_order' => $order,
-    ));
+    ]);
 
     // Find file
     $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang) . '/' . filter_naughty($new_file) . '.txt');
@@ -783,12 +783,12 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
     //persistent_cache_delete(array('PAGE_INFO')); Already erases above
     delete_cache_entry('main_comcode_page_children');
     delete_cache_entry('menu');
-    $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('string_index'), array('the_zone' => $zone, 'the_page' => $file));
-    $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_zone' => $zone, 'the_page' => $file));
+    $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], ['the_zone' => $zone, 'the_page' => $file]);
+    $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_zone' => $zone, 'the_page' => $file]);
     foreach ($caches as $cache) {
         delete_lang($cache['string_index']);
     }
-    $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
+    $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
 
     // Log
     log_it('COMCODE_PAGE_EDIT', $new_file, $zone);
@@ -819,46 +819,46 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
  */
 function rename_live_comcode_page($zone, $file, $new_zone, $new_file, $create_redirect = false)
 {
-    $GLOBALS['SITE_DB']->query_update('attachment_refs', array('r_referer_id' => $new_zone . ':' . $new_file), array('r_referer_id' => $zone . ':' . $file, 'r_referer_type' => 'comcode_page'));
+    $GLOBALS['SITE_DB']->query_update('attachment_refs', ['r_referer_id' => $new_zone . ':' . $new_file], ['r_referer_id' => $zone . ':' . $file, 'r_referer_type' => 'comcode_page']);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('comcode_page', $zone . ':' . $file, $new_zone . ':' . $new_file);
     }
 
     if (addon_installed('awards')) {
-        $types = $GLOBALS['SITE_DB']->query_select('award_types', array('id'), array('a_content_type' => 'comcode_page'));
+        $types = $GLOBALS['SITE_DB']->query_select('award_types', ['id'], ['a_content_type' => 'comcode_page']);
         foreach ($types as $type) {
-            $GLOBALS['SITE_DB']->query_update('award_archive', array('content_id' => $new_zone . ':' . $new_file), array('content_id' => $zone . ':' . $file, 'a_type_id' => $type['id']));
+            $GLOBALS['SITE_DB']->query_update('award_archive', ['content_id' => $new_zone . ':' . $new_file], ['content_id' => $zone . ':' . $file, 'a_type_id' => $type['id']]);
         }
     }
 
-    $GLOBALS['SITE_DB']->query_update('seo_meta', array('meta_for_id' => $new_zone . ':' . $new_file), array('meta_for_id' => $zone . ':' . $file, 'meta_for_type' => 'comcode_page'), '', 1);
-    $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', array('meta_for_id' => $new_zone . ':' . $new_file), array('meta_for_id' => $zone . ':' . $file, 'meta_for_type' => 'comcode_page'));
+    $GLOBALS['SITE_DB']->query_update('seo_meta', ['meta_for_id' => $new_zone . ':' . $new_file], ['meta_for_id' => $zone . ':' . $file, 'meta_for_type' => 'comcode_page'], '', 1);
+    $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', ['meta_for_id' => $new_zone . ':' . $new_file], ['meta_for_id' => $zone . ':' . $file, 'meta_for_type' => 'comcode_page']);
 
-    $GLOBALS['SITE_DB']->query_update('catalogue_entry_linkage', array('content_id' => $new_zone . ':' . $new_file), array('content_id' => $zone . ':' . $file, 'content_type' => 'comcode_page'), '', 1);
+    $GLOBALS['SITE_DB']->query_update('catalogue_entry_linkage', ['content_id' => $new_zone . ':' . $new_file], ['content_id' => $zone . ':' . $file, 'content_type' => 'comcode_page'], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_resource_page' => $new_file, 'm_resource_id' => $new_zone), array('m_resource_page' => $file, 'm_resource_id' => $zone), '', 1);
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_resource_page' => $new_file, 'm_resource_id' => $new_zone], ['m_resource_page' => $file, 'm_resource_id' => $zone], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('comcode_pages', array('p_parent_page' => $new_file), array('the_zone' => $zone, 'p_parent_page' => $file));
+    $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_parent_page' => $new_file], ['the_zone' => $zone, 'p_parent_page' => $file]);
 
-    $GLOBALS['SITE_DB']->query_update('comcode_pages', array('the_zone' => $new_zone, 'the_page' => $new_file), array('the_zone' => $zone, 'the_page' => $file), '', 1);
+    $GLOBALS['SITE_DB']->query_update('comcode_pages', ['the_zone' => $new_zone, 'the_page' => $new_file], ['the_zone' => $zone, 'the_page' => $file], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('cached_comcode_pages', array('the_zone' => $new_zone, 'the_page' => $new_file), array('the_zone' => $zone, 'the_page' => $file), '', 1);
+    $GLOBALS['SITE_DB']->query_update('cached_comcode_pages', ['the_zone' => $new_zone, 'the_page' => $new_file], ['the_zone' => $zone, 'the_page' => $file], '', 1);
 
-    $GLOBALS['SITE_DB']->query_update('sitemap_cache', array('page_link' => $new_zone . ':' . $new_file), array('page_link' => $zone . ':' . $file), '', 1);
+    $GLOBALS['SITE_DB']->query_update('sitemap_cache', ['page_link' => $new_zone . ':' . $new_file], ['page_link' => $zone . ':' . $file], '', 1);
 
     if ($create_redirect) {
-        $GLOBALS['SITE_DB']->query_delete('redirects', array(
+        $GLOBALS['SITE_DB']->query_delete('redirects', [
             'r_from_page' => $file,
             'r_from_zone' => $zone,
-        ), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('redirects', array(
+        ], '', 1);
+        $GLOBALS['SITE_DB']->query_insert('redirects', [
             'r_from_page' => $file,
             'r_from_zone' => $zone,
             'r_to_page' => $new_file,
             'r_to_zone' => $zone,
             'r_is_transparent' => 0,
-        ));
+        ]);
     }
 }
 
@@ -900,7 +900,7 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
 
     $_page = $page . '.' . get_page_type_file_extension($type);
 
-    $GLOBALS['SITE_DB']->query_delete('menu_items', array('i_url' => $zone . ':' . $page));
+    $GLOBALS['SITE_DB']->query_delete('menu_items', ['i_url' => $zone . ':' . $page]);
     delete_cache_entry('menu');
 
     if ((substr($type, 0, 7) == 'comcode') || (substr($type, 0, 4) == 'html')) {
@@ -935,9 +935,9 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
             require_code('attachments2');
             require_code('attachments3');
             delete_comcode_attachments('comcode_page', $zone . ':' . $page);
-            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('the_page' => $page, 'the_zone' => $zone));
-            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = array();
-            $GLOBALS['SITE_DB']->query_delete('comcode_pages', array('the_page' => $page, 'the_zone' => $zone));
+            $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_page' => $page, 'the_zone' => $zone]);
+            $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
+            $GLOBALS['SITE_DB']->query_delete('comcode_pages', ['the_page' => $page, 'the_zone' => $zone]);
             erase_persistent_cache();
             delete_cache_entry('main_comcode_page_children');
 
@@ -957,13 +957,13 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
         }
     }
 
-    $GLOBALS['SITE_DB']->query_delete('https_pages', array('https_page_name' => $zone . ':' . $page), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $zone . ':' . $page], '', 1);
 
     if (addon_installed('catalogues')) {
         update_catalogue_content_ref('comcode_page', $page, '');
     }
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => $page, 'm_resource_type' => '', 'm_resource_id' => $zone]);
 
     log_it('DELETE_PAGES', $zone . ':' . $page);
 

@@ -30,7 +30,7 @@ class Hook_config_max_personal_gallery_videos_high
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_VIDEO_LIMIT_HIGH',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_max_personal_gallery_videos_high
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

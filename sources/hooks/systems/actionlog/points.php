@@ -31,22 +31,22 @@ class Hook_actionlog_points extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('points')) {
-            return array();
+            return [];
         }
 
         require_lang('points');
 
-        return array(
-            'UNDO_CHARGE' => array(
+        return [
+            'UNDO_CHARGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'GIFT_TRANSACTIONS' => '_SEARCH:admin_points',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

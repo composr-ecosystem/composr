@@ -16,11 +16,11 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('idolisr')) {
-    return do_template('RED_ALERT', array('_GUID' => 'g4l3co9a92o8mbdsq1luqo3mqdftv7x8', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))));
+    return do_template('RED_ALERT', ['_GUID' => 'g4l3co9a92o8mbdsq1luqo3mqdftv7x8', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('idolisr'))]);
 }
 
 if (!addon_installed('points')) {
-    return do_template('RED_ALERT', array('_GUID' => 'zm4ccp3vsxc8wj32w3e4ejtrkn35705x', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))));
+    return do_template('RED_ALERT', ['_GUID' => 'zm4ccp3vsxc8wj32w3e4ejtrkn35705x', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
 
 require_code('cns_groups');
@@ -29,16 +29,16 @@ require_lang('cns');
 
 $block_id = get_block_id($map);
 
-$stars = array();
+$stars = [];
 
 $sql = 'SELECT gift_to,SUM(amount) as cnt FROM ' . get_table_prefix() . 'gifts g WHERE ';
 $sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_encode_like($map['param'] . ': %') . '\' AND gift_from<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
 $sql .= ' GROUP BY gift_to ORDER BY cnt DESC';
-$gifts = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, array('reason' => 'SHORT_TRANS'));
+$gifts = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, ['reason' => 'SHORT_TRANS']);
 
 if (empty($gifts) && $GLOBALS['DEV_MODE']) {
-    $gifts[] = array('gift_to' => 2, 'cnt' => 123);
-    $gifts[] = array('gift_to' => 3, 'cnt' => 7334);
+    $gifts[] = ['gift_to' => 2, 'cnt' => 123];
+    $gifts[] = ['gift_to' => 3, 'cnt' => 7334];
 }
 
 $count = 0;
@@ -48,12 +48,12 @@ foreach ($gifts as $gift) {
     if ($username !== null) {
         $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id);
-        $just_member_row = db_map_restrict($GLOBALS['FORUM_DRIVER']->get_member_row($member_id), array('id', 'm_signature'));
+        $just_member_row = db_map_restrict($GLOBALS['FORUM_DRIVER']->get_member_row($member_id), ['id', 'm_signature']);
         $signature = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
         $points = $gift['cnt'];
         $rank = get_translated_text(cns_get_group_property(cns_get_member_primary_group($member_id), 'name'), $GLOBALS['FORUM_DB']);
 
-        $stars[] = array(
+        $stars[] = [
             'MEMBER_ID' => strval($member_id),
             'USERNAME' => $username,
             'URL' => $url,
@@ -61,14 +61,14 @@ foreach ($gifts as $gift) {
             'POINTS' => integer_format($points),
             'RANK' => $rank,
             'SIGNATURE' => $signature,
-        );
+        ];
 
         $count++;
     }
 }
 
-return do_template('BLOCK_MAIN_STARS', array(
+return do_template('BLOCK_MAIN_STARS', [
     '_GUID' => '298e81f1062087de02e30d77ff61305d',
     'BLOCK_ID' => $block_id,
     'STARS' => $stars,
-));
+]);

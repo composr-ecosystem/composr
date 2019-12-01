@@ -25,7 +25,7 @@ class Hook_config_after_edit_mark_unread
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_AFTER_EDIT_MARK_UNREAD',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_after_edit_mark_unread
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

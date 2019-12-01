@@ -31,12 +31,12 @@ class Hook_symbol_MARK_READ
             return ''; // Guests can't be tracked
         }
 
-        $GLOBALS['SITE_DB']->query_insert('content_read', array(
+        $GLOBALS['SITE_DB']->query_insert('content_read', [
             'r_content_type' => $param[0],
             'r_content_id' => $param[1],
             'r_member_id' => get_member(),
             'r_time' => time(),
-        ), false, true);
+        ], false, true);
 
         // Cleanup stale data
         $cleanup_days = (!empty($param[2])) ? intval($param[2]) : 0;

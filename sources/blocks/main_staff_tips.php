@@ -30,14 +30,14 @@ class Block_main_staff_tips
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -57,10 +57,10 @@ class Block_main_staff_tips
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
-        $GLOBALS['SITE_DB']->create_table('staff_tips_dismissed', array(
+        $GLOBALS['SITE_DB']->create_table('staff_tips_dismissed', [
             't_member' => '*MEMBER',
             't_tip' => '*ID_TEXT',
-        ));
+        ]);
     }
 
     /**
@@ -79,29 +79,29 @@ class Block_main_staff_tips
         // Anything to dismiss?
         $dismiss = get_param_string('staff_tips_dismiss', '');
         if ($dismiss != '') {
-            $GLOBALS['SITE_DB']->query_delete('staff_tips_dismissed', array('t_tip' => $dismiss, 't_member' => get_member()), '', 1);
-            $GLOBALS['SITE_DB']->query_insert('staff_tips_dismissed', array('t_tip' => $dismiss, 't_member' => get_member()));
+            $GLOBALS['SITE_DB']->query_delete('staff_tips_dismissed', ['t_tip' => $dismiss, 't_member' => get_member()], '', 1);
+            $GLOBALS['SITE_DB']->query_insert('staff_tips_dismissed', ['t_tip' => $dismiss, 't_member' => get_member()]);
         }
 
         // What tips have been permanently dismissed by the current member?
-        $read = collapse_1d_complexity('t_tip', $GLOBALS['SITE_DB']->query_select('staff_tips_dismissed', array('t_tip'), array('t_member' => get_member())));
+        $read = collapse_1d_complexity('t_tip', $GLOBALS['SITE_DB']->query_select('staff_tips_dismissed', ['t_tip'], ['t_member' => get_member()]));
 
-        $esc_free_support = escape_html(get_brand_page_url(array('page' => 'contact', 'type' => 'free'), ''));
+        $esc_free_support = escape_html(get_brand_page_url(['page' => 'contact', 'type' => 'free'], ''));
         $esc_brand_name = escape_html(brand_name());
-        $remaining_tip_params = array(
-            escape_html(get_brand_page_url(array('page' => 'professional_support'), ''/*is site, except runs with single public zone*/)),
-            escape_html(get_brand_page_url(array('page' => ''), 'forum')),
+        $remaining_tip_params = [
+            escape_html(get_brand_page_url(['page' => 'professional_support'], ''/*is site, except runs with single public zone*/)),
+            escape_html(get_brand_page_url(['page' => ''], 'forum')),
             escape_html(get_tutorial_url('tutorials')),
             escape_html(get_tutorial_url(null)),
             escape_html(get_tutorial_url('tut_do')),
-        );
+        ];
 
         // Load up tips by searching for the correctly named language files; also choose level
-        $tips = array();
+        $tips = [];
         $level = 0;
-        $letters = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
         for ($i = 0; $i < 5; $i++) {
-            $tips[$i] = array();
+            $tips[$i] = [];
             foreach ($letters as $j) {
                 $tip_id = strval($i) . $j;
                 if (!in_array($tip_id, $read)) {
@@ -132,7 +132,7 @@ class Block_main_staff_tips
             $tip_code = $tip_keys[$choose_id];
         }
 
-        return do_template('BLOCK_MAIN_STAFF_TIPS', array(
+        return do_template('BLOCK_MAIN_STAFF_TIPS', [
             '_GUID' => 'c2cffc480b7bd9beef7f78a8ee7b7359',
             'BLOCK_ID' => $block_id,
             'BLOCK_PARAMS' => block_params_arr_to_str($map),
@@ -140,6 +140,6 @@ class Block_main_staff_tips
             'TIP_CODE' => $tip_code,
             'LEVEL' => integer_format($level),
             'COUNT' => integer_format($count),
-        ));
+        ]);
     }
 }

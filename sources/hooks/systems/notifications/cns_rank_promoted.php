@@ -32,11 +32,11 @@ class Hook_notification_cns_rank_promoted extends Hook_Notification
     public function list_handled_codes()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['cns_promotion'] = array(do_lang('USERGROUPS'), do_lang('NOTIFICATION_TYPE_cns_rank_promoted'));
+        $list = [];
+        $list['cns_promotion'] = [do_lang('USERGROUPS'), do_lang('NOTIFICATION_TYPE_cns_rank_promoted')];
         return $list;
     }
 }

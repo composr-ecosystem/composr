@@ -30,7 +30,7 @@ class Hook_config_reported_times
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REPORTED_TIMES',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_reported_times
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

@@ -40,11 +40,11 @@ function get_activity_querying_sql($viewer_member, $mode, $member_ids)
     if (addon_installed('chat')) {
         if (!$is_guest) { // If not a guest, get all blocks
             // Grabbing who you're blocked-by
-            $_blocked_by = $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocker'), array('member_blocked' => $viewer_member));
+            $_blocked_by = $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocker'], ['member_blocked' => $viewer_member]);
             $blocked_by = implode(',', collapse_1d_complexity('member_blocker', $_blocked_by));
 
             // Grabbing who you've blocked
-            $_blocking = $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocked'), array('member_blocker' => $viewer_member));
+            $_blocking = $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocked'], ['member_blocker' => $viewer_member]);
             $blocking = implode(',', array_map('strval', collapse_1d_complexity('member_blocked', $_blocking)));
         }
     }
@@ -166,7 +166,7 @@ function get_activity_querying_sql($viewer_member, $mode, $member_ids)
                 }
 
                 $view_private = $GLOBALS['SITE_DB']->query('SELECT member_likes FROM ' . get_table_prefix() . 'chat_friends WHERE ' . $friends_check_where);
-                $view_private[] = array('member_likes' => $viewer_member);
+                $view_private[] = ['member_likes' => $viewer_member];
                 foreach ($view_private as $v_p) {
                     if ($vp != '') {
                         $vp .= ',';
@@ -187,7 +187,7 @@ function get_activity_querying_sql($viewer_member, $mode, $member_ids)
             break;
     }
 
-    return array($proceed_selection, $where_clause);
+    return [$proceed_selection, $where_clause];
 }
 
 /**
@@ -216,8 +216,8 @@ function render_activity($row, $use_inside_cms = true)
     }
 
     // Convert our parameters and links to Tempcode
-    $label = array();
-    $link = array();
+    $label = [];
+    $link = [];
     for ($i = 1; $i <= 3; $i++) {
         $label[$i] = comcode_to_tempcode($row['a_label_' . strval($i)], $guest_id, false);
         $link[$i] = ($row['a_page_link_' . strval($i)] == '') ? new Tempcode() : page_link_to_tempcode($row['a_page_link_' . strval($i)], !$use_inside_cms);
@@ -227,12 +227,12 @@ function render_activity($row, $use_inside_cms = true)
     }
 
     // Render primary language string
-    $extra_lang_string_params = array(
+    $extra_lang_string_params = [
         $label[3],
-        symbol_tempcode('ESCAPE', array($link[1])),
-        symbol_tempcode('ESCAPE', array($link[2])),
-        symbol_tempcode('ESCAPE', array($link[3])),
-    );
+        symbol_tempcode('ESCAPE', [$link[1]]),
+        symbol_tempcode('ESCAPE', [$link[2]]),
+        symbol_tempcode('ESCAPE', [$link[3]]),
+    ];
     if ($row['a_also_involving'] !== null) {
         $_username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_also_involving'], true);
         $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($row['a_also_involving'], $use_inside_cms);
@@ -258,7 +258,7 @@ function render_activity($row, $use_inside_cms = true)
         }
     }
 
-    return array($message, $member_avatar, $timestamp, $member_url, $row['a_language_string_code'], $row['a_is_public'] == 1);
+    return [$message, $member_avatar, $timestamp, $member_url, $row['a_language_string_code'], $row['a_is_public'] == 1];
 }
 
 /**
@@ -272,5 +272,5 @@ function page_link_to_tempcode($page_link, $external = false)
 {
     list($zone, $map, $hash) = page_link_decode($page_link);
 
-    return build_url($map, $zone, array(), false, false, $external, $hash);
+    return build_url($map, $zone, [], false, false, $external, $hash);
 }

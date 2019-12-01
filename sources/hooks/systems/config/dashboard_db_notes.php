@@ -30,7 +30,7 @@ class Hook_config_dashboard_db_notes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DASHBOARD_DB_NOTES',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_dashboard_db_notes
             'required' => true,
             'public' => false,
             'addon' => 'core_adminzone_dashboard',
-        );
+        ];
     }
 
     /**

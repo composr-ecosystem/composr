@@ -30,14 +30,14 @@ class Block_main_bottom_bar
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -55,7 +55,7 @@ class Block_main_bottom_bar
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => '0tcc11s4mxymww9ubl49vqig0m8y72wh', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => '0tcc11s4mxymww9ubl49vqig0m8y72wh', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_code('cns_general');
@@ -74,7 +74,7 @@ class Block_main_bottom_bar
         $count = 0;
         require_code('users2');
         $members = get_users_online(false, null, $count);
-        $groups_seen = array();
+        $groups_seen = [];
         $num_members = 0;
         $num_guests = 0;
         if ($members !== null) {
@@ -103,9 +103,9 @@ class Block_main_bottom_bar
                 if (get_option('enable_user_online_groups') == '0') {
                     $usergroup = null;
                     $col = null;
-                    $groups_seen = array();
+                    $groups_seen = [];
                 }
-                $users_online->attach(do_template('CNS_USER_MEMBER', array('_GUID' => 'a9cb1af2a04b14edd70749c944495bff', 'FIRST' => $users_online->is_empty(), 'COLOUR' => $col, 'PROFILE_URL' => $url, 'USERNAME' => $username, 'USERGROUP' => $usergroup)));
+                $users_online->attach(do_template('CNS_USER_MEMBER', ['_GUID' => 'a9cb1af2a04b14edd70749c944495bff', 'FIRST' => $users_online->is_empty(), 'COLOUR' => $col, 'PROFILE_URL' => $url, 'USERNAME' => $username, 'USERGROUP' => $usergroup]));
                 $num_members++;
             }
             if ($num_guests != 0) {
@@ -117,34 +117,34 @@ class Block_main_bottom_bar
         }
 
         // Birthdays
-        $birthdays = array();
+        $birthdays = [];
         if (get_option('enable_birthdays') != '0') {
             $_birthdays = cns_find_birthdays();
             foreach ($_birthdays as $_birthday) {
-                $birthday_url = build_url(array('page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']), get_module_zone('topics'));
-                $birthdays[] = array(
+                $birthday_url = build_url(['page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']], get_module_zone('topics'));
+                $birthdays[] = [
                     'AGE' => array_key_exists('age', $_birthday) ? integer_format($_birthday['age']) : null,
                     'PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($_birthday['id'], true),
                     'USERNAME' => $_birthday['username'],
                     'MEMBER_ID' => strval($_birthday['id']),
                     'BIRTHDAY_URL' => $birthday_url,
-                );
+                ];
             }
         }
 
         // Usergroup keys
-        $groups = array();
-        $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, false, false, array(), null, true);
+        $groups = [];
+        $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, false, false, [], null, true);
         foreach ($all_groups as $gid => $gtitle) {
             if ($gid == db_get_first_id()) {
                 continue; // Throw out the first, guest
             }
             if (array_key_exists($gid, $groups_seen)) {
-                $groups[] = array('GCOLOUR' => get_group_colour($gid), 'GID' => strval($gid), 'GTITLE' => $gtitle);
+                $groups[] = ['GCOLOUR' => get_group_colour($gid), 'GID' => strval($gid), 'GTITLE' => $gtitle];
             }
         }
 
-        return do_template('BLOCK_MAIN_BOTTOM_BAR', array(
+        return do_template('BLOCK_MAIN_BOTTOM_BAR', [
             '_GUID' => 'sdflkdlfd303frksdf',
             'BLOCK_ID' => $block_id,
             'NEWEST_MEMBER_PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($stats['newest_member_id'], true),
@@ -154,10 +154,10 @@ class Block_main_bottom_bar
             'NUM_POSTS' => integer_format($stats['num_posts']),
             'BIRTHDAYS' => $birthdays,
             'USERS_ONLINE' => $users_online,
-            'USERS_ONLINE_URL' => has_actual_page_access(get_member(), 'users_online') ? build_url(array('page' => 'users_online'), get_module_zone('users_online')) : new Tempcode(),
+            'USERS_ONLINE_URL' => has_actual_page_access(get_member(), 'users_online') ? build_url(['page' => 'users_online'], get_module_zone('users_online')) : new Tempcode(),
             'GROUPS' => $groups,
             '_NUM_GUESTS' => strval($num_guests),
             '_NUM_MEMBERS' => strval($num_members),
-        ));
+        ]);
     }
 }

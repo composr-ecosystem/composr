@@ -57,10 +57,10 @@ class Hook_notification_content_reviews extends Hook_notification__Staff
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('content_reviews')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
         $_hooks = find_all_hooks('systems', 'content_meta_aware');
         foreach (array_keys($_hooks) as $content_type) {
@@ -79,10 +79,10 @@ class Hook_notification_content_reviews extends Hook_notification__Staff
                 continue;
             }
 
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $content_type,
                 'title' => $lang,
-            );
+            ];
         }
 
         sort_maps_by($page_links, 'title', false, true);
@@ -99,12 +99,12 @@ class Hook_notification_content_reviews extends Hook_notification__Staff
     public function list_handled_codes()
     {
         if (!addon_installed('content_reviews')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['content_reviews'] = array(do_lang('CONTENT'), do_lang('content_reviews:NOTIFICATION_TYPE_content_reviews'));
-        $list['content_reviews__own'] = array(do_lang('CONTENT'), do_lang('content_reviews:NOTIFICATION_TYPE_content_reviews__own'));
+        $list = [];
+        $list['content_reviews'] = [do_lang('CONTENT'), do_lang('content_reviews:NOTIFICATION_TYPE_content_reviews')];
+        $list['content_reviews__own'] = [do_lang('CONTENT'), do_lang('content_reviews:NOTIFICATION_TYPE_content_reviews__own')];
         return $list;
     }
 }

@@ -36,19 +36,19 @@ function enter_chat_lobby()
     chat_room_prune(null);
 
     if ((!array_key_exists(get_member(), get_chatters_in_room(null))) && (!is_invisible())) {
-        $GLOBALS['SITE_DB']->query_insert('chat_active', array('member_id' => get_member(), 'date_and_time' => time(), 'room_id' => null));
+        $GLOBALS['SITE_DB']->query_insert('chat_active', ['member_id' => get_member(), 'date_and_time' => time(), 'room_id' => null]);
 
         // Remove old active/inactive events for this member
-        $GLOBALS['SITE_DB']->query_delete('chat_events', array('e_member_id' => get_member(), 'e_type_code' => 'BECOME_ACTIVE', 'e_room_id' => null));
-        $GLOBALS['SITE_DB']->query_delete('chat_events', array('e_member_id' => get_member(), 'e_type_code' => 'BECOME_INACTIVE', 'e_room_id' => null));
+        $GLOBALS['SITE_DB']->query_delete('chat_events', ['e_member_id' => get_member(), 'e_type_code' => 'BECOME_ACTIVE', 'e_room_id' => null]);
+        $GLOBALS['SITE_DB']->query_delete('chat_events', ['e_member_id' => get_member(), 'e_type_code' => 'BECOME_INACTIVE', 'e_room_id' => null]);
 
         // Create new BECOME_ACTIVE event
-        $GLOBALS['SITE_DB']->query_insert('chat_events', array(
+        $GLOBALS['SITE_DB']->query_insert('chat_events', [
             'e_type_code' => 'BECOME_ACTIVE',
             'e_member_id' => get_member(),
             'e_room_id' => null,
             'e_date_and_time' => time(),
-        ));
+        ]);
     }
 }
 
@@ -77,9 +77,9 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
     $can_im = has_privilege(get_member(), 'start_im');
 
     $online_url = $GLOBALS['FORUM_DRIVER']->users_online_url();
-    $friends_offline = array();
-    $friends_online = array();
-    $friend_rows = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => $member_id), 'ORDER BY date_and_time', intval(get_option('general_safety_listing_limit')));
+    $friends_offline = [];
+    $friends_online = [];
+    $friend_rows = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => $member_id], 'ORDER BY date_and_time', intval(get_option('general_safety_listing_limit')));
     $friend_active = get_chatters_in_room(null);
     $users_online_time_seconds = CHAT_ACTIVITY_PRUNE;
     foreach ($friend_rows as $friend) {
@@ -95,7 +95,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
         if ($username !== null) {
             $member_profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($friend['member_liked'], true);
 
-            $friend = array(
+            $friend = [
                 /*
                 'DATE_RAW' => strval($friend['date_and_time']),
                 'DATE' => get_timezoned_date($friend['date_and_time']),
@@ -105,7 +105,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
                 'USERNAME' => $username,
                 'ONLINE_TEXT' => $online_text,
                 'ONLINE' => $online,
-            );
+            ];
 
             if ($online) {
                 $friends_online[] = $friend;
@@ -121,7 +121,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
         $friends = array_merge($friends_offline, $friends_online);
     }
 
-    return do_template('CHAT_FRIENDS', array(
+    return do_template('CHAT_FRIENDS', [
         '_GUID' => '57397daa0c000ea589e3a7a5fd323110',
         'FRIENDS' => $friends,
         'FRIENDS_ONLINE' => $friends_online,
@@ -129,7 +129,7 @@ function show_im_contacts($member_id = null, $simpler = false, $max = null)
         'CAN_IM' => $can_im,
         'ONLINE_URL' => $online_url,
         'SIMPLER' => $simpler,
-    ));
+    ]);
 }
 
 /**
@@ -146,12 +146,12 @@ function handle_chatroom_pruning($row)
     }
     if (($row['allow_list'] != '') || ($row['room_owner'] !== null)) {
         // As this is a private chatroom, we need to delete it if it has been idle for too long ;-)
-        $message = $GLOBALS['SITE_DB']->query_select('chat_messages', array('date_and_time'), array('room_id' => $row['id']), 'ORDER BY date_and_time DESC', 1);
+        $message = $GLOBALS['SITE_DB']->query_select('chat_messages', ['date_and_time'], ['room_id' => $row['id']], 'ORDER BY date_and_time DESC', 1);
         if ((isset($message[0])) && (($message[0]['date_and_time'] + ($deletion_time * 60)) <= time())) {
             // Delete the room and its messages
-            $GLOBALS['SITE_DB']->query_delete('chat_rooms', array('id' => $row['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('chat_rooms', ['id' => $row['id']], '', 1);
             require_code('chat2');
-            delete_chat_messages(array('room_id' => $row['id']));
+            delete_chat_messages(['room_id' => $row['id']]);
             return true;
         }
     }

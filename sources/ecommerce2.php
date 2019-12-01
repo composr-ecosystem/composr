@@ -38,14 +38,14 @@
  * @param  array $mails Other e-mails to send
  * @return AUTO_LINK The ID
  */
-function add_usergroup_subscription($title, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh, $mails = array())
+function add_usergroup_subscription($title, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh, $mails = [])
 {
     require_code('global4');
     prevent_double_submit('ADD_USERGROUP_SUBSCRIPTION', null, $title);
 
     $db = get_db_for('f_usergroup_subs');
 
-    $map = array(
+    $map = [
         's_price' => $price,
         's_tax_code' => $tax_code,
         's_length' => $length,
@@ -54,7 +54,7 @@ function add_usergroup_subscription($title, $description, $price, $tax_code, $le
         's_group_id' => $group_id,
         's_uses_primary' => $uses_primary,
         's_enabled' => $enabled,
-    );
+    ];
     $map += insert_lang('s_title', $title, 2, $db);
     $map += insert_lang_comcode('s_description', $description, 2, $db);
     $map += insert_lang('s_mail_start', $mail_start, 2, $db);
@@ -63,11 +63,11 @@ function add_usergroup_subscription($title, $description, $price, $tax_code, $le
     $id = $db->query_insert('f_usergroup_subs', $map, true);
 
     foreach ($mails as $mail) {
-        $map = array(
+        $map = [
             'm_usergroup_sub_id' => $id,
             'm_ref_point' => $mail['ref_point'],
             'm_ref_point_offset' => $mail['ref_point_offset'],
-        );
+        ];
         $map += insert_lang('m_subject', $mail['subject'], 2, $db);
         $map += insert_lang('m_body', $mail['body'], 2, $db);
         $db->query_insert('f_usergroup_sub_mails', $map);
@@ -107,7 +107,7 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
 {
     $db = get_db_for('f_usergroup_subs');
 
-    $rows = $db->query_select('f_usergroup_subs', array('*'), array('id' => $id), '', 1);
+    $rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'usergroup_subscription'));
     }
@@ -118,7 +118,7 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
         require_code('cns_groups_action');
         require_code('cns_groups_action2');
         $type_code = 'USERGROUP' . strval($id);
-        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', array('*'), array('s_type_code' => $type_code));
+        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], ['s_type_code' => $type_code]);
         foreach ($subscriptions as $sub) {
             $member_id = $sub['s_member_id'];
             if ((get_value('unofficial_ecommerce') === '1') && (get_forum_type() != 'cns')) {
@@ -127,7 +127,7 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
                     $GLOBALS['FORUM_DRIVER']->add_member_to_group($member_id, $group_id);
                 }
             } else {
-                $db->query_delete('f_group_members', array('gm_group_id' => $group_id, 'gm_member_id' => $member_id), '', 1);
+                $db->query_delete('f_group_members', ['gm_group_id' => $group_id, 'gm_member_id' => $member_id], '', 1);
                 cns_add_member_to_group($member_id, $group_id);
             }
         }
@@ -139,7 +139,7 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
     $_mail_end = $myrow['s_mail_end'];
     $_mail_uhoh = $myrow['s_mail_uhoh'];
 
-    $map = array(
+    $map = [
         's_price' => $price,
         's_tax_code' => $tax_code,
         's_length' => $length,
@@ -148,44 +148,44 @@ function edit_usergroup_subscription($id, $title, $description, $price, $tax_cod
         's_group_id' => $group_id,
         's_uses_primary' => $uses_primary,
         's_enabled' => $enabled,
-    );
+    ];
     $map += lang_remap('s_title', $_title, $title, $db);
     $map += lang_remap_comcode('s_description', $_description, $description, $db);
     $map += lang_remap('s_mail_start', $_mail_start, $mail_start, $db);
     $map += lang_remap('s_mail_end', $_mail_end, $mail_end, $db);
     $map += lang_remap('s_mail_uhoh', $_mail_uhoh, $mail_uhoh, $db);
-    $db->query_update('f_usergroup_subs', $map, array('id' => $id), '', 1);
+    $db->query_update('f_usergroup_subs', $map, ['id' => $id], '', 1);
 
     // Handle extra mails. Add/edit/delete as required
     if ($mails !== null) {
-        $existing_mails = array();
-        $_mails = $db->query_select('f_usergroup_sub_mails', array('*'), array('m_usergroup_sub_id' => $id), 'ORDER BY id');
+        $existing_mails = [];
+        $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => $id], 'ORDER BY id');
         foreach ($_mails as $_mail) {
-            $existing_mails[] = array($_mail['id'], $_mail['m_subject'], $_mail['m_body']);
+            $existing_mails[] = [$_mail['id'], $_mail['m_subject'], $_mail['m_body']];
         }
         foreach ($mails as $i => $mail) {
             if (isset($existing_mails[$i])) {
-                $map = array(
+                $map = [
                     'm_usergroup_sub_id' => $id,
                     'm_ref_point' => $mail['ref_point'],
                     'm_ref_point_offset' => $mail['ref_point_offset'],
-                );
+                ];
                 $map += lang_remap('m_subject', $existing_mails[$i][1], $mail['subject'], $db);
                 $map += lang_remap('m_body', $existing_mails[$i][2], $mail['body'], $db);
-                $db->query_update('f_usergroup_sub_mails', $map, array('id' => $existing_mails[$i][0]), '', 1);
+                $db->query_update('f_usergroup_sub_mails', $map, ['id' => $existing_mails[$i][0]], '', 1);
             } else {
-                $map = array(
+                $map = [
                     'm_usergroup_sub_id' => $id,
                     'm_ref_point' => $mail['ref_point'],
                     'm_ref_point_offset' => $mail['ref_point_offset'],
-                );
+                ];
                 $map += insert_lang('m_subject', $mail['subject'], 2, $db);
                 $map += insert_lang('m_body', $mail['body'], 2, $db);
                 $db->query_insert('f_usergroup_sub_mails', $map);
             }
         }
         for ($i = count($mails); $i < count($existing_mails); $i++) {
-            $db->query_delete('f_usergroup_sub_mails', array('id' => $existing_mails[$i][0]), '', 1);
+            $db->query_delete('f_usergroup_sub_mails', ['id' => $existing_mails[$i][0]], '', 1);
             delete_lang($existing_mails[$i][1], $db);
             delete_lang($existing_mails[$i][2], $db);
         }
@@ -209,7 +209,7 @@ function delete_usergroup_subscription($id, $uhoh_mail = '')
 {
     $db = get_db_for('f_usergroup_subs');
 
-    $rows = $db->query_select('f_usergroup_subs', array('*'), array('id' => $id), '', 1);
+    $rows = $db->query_select('f_usergroup_subs', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'usergroup_subscription'));
     }
@@ -218,20 +218,20 @@ function delete_usergroup_subscription($id, $uhoh_mail = '')
 
     // Remove benefits
     $type_code = 'USERGROUP' . strval($id);
-    $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', array('*'), array('s_type_code' => $type_code));
-    $to_members = array();
+    $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], ['s_type_code' => $type_code]);
+    $to_members = [];
     foreach ($subscriptions as $sub) {
         $member_id = $sub['s_member_id'];
 
         $test = in_array($new_group, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id));
         if ($test) {
-            if ($db->query_select_value_if_there('f_group_member_timeouts', 'member_id', array('member_id' => $member_id, 'group_id' => $new_group)) === null) {
+            if ($db->query_select_value_if_there('f_group_member_timeouts', 'member_id', ['member_id' => $member_id, 'group_id' => $new_group]) === null) {
                 // Remove them from the group
 
                 if ((method_exists($GLOBALS['FORUM_DRIVER'], 'remove_member_from_group')) && (get_value('unofficial_ecommerce') === '1') && (get_forum_type() != 'cns')) {
                     $GLOBALS['FORUM_DRIVER']->remove_member_from_group($member_id, $new_group);
                 } else {
-                    $db->query_delete('f_group_members', array('gm_group_id' => $new_group, 'gm_member_id' => $member_id), '', 1);
+                    $db->query_delete('f_group_members', ['gm_group_id' => $new_group, 'gm_member_id' => $member_id], '', 1);
                 }
                 $to_members[] = $member_id;
             }
@@ -249,14 +249,14 @@ function delete_usergroup_subscription($id, $uhoh_mail = '')
     $_mail_end = $myrow['s_mail_end'];
     $_mail_uhoh = $myrow['s_mail_uhoh'];
 
-    $db->query_delete('f_usergroup_subs', array('id' => $id), '', 1);
+    $db->query_delete('f_usergroup_subs', ['id' => $id], '', 1);
     delete_lang($_title, $db);
     delete_lang($_description, $db);
     delete_lang($_mail_start, $db);
     delete_lang($_mail_end, $db);
     delete_lang($_mail_uhoh, $db);
 
-    $_mails = $db->query_select('f_usergroup_sub_mails', array('*'), array('m_usergroup_sub_id' => $id));
+    $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => $id]);
     foreach ($_mails as $_mail) {
         delete_lang($_mail['m_subject'], $db);
         delete_lang($_mail['m_body'], $db);

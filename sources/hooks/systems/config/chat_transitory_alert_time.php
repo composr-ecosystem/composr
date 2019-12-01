@@ -30,7 +30,7 @@ class Hook_config_chat_transitory_alert_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_TRANSITORY_ALERT_TIME',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_transitory_alert_time
             'public' => true,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

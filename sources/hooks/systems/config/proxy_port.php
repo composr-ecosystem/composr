@@ -30,7 +30,7 @@ class Hook_config_proxy_port
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PROXY_PORT',
             'type' => 'integer',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_proxy_port
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

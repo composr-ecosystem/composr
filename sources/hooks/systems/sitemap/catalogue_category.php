@@ -27,8 +27,8 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
     protected $screen_type = 'category';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('catalogue_entry');
-    protected $entry_sitetree_hook = array('catalogue_entry');
+    protected $entry_content_type = ['catalogue_entry'];
+    protected $entry_sitetree_hook = ['catalogue_entry'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -82,16 +82,16 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
             $sitemap_priority = SITEMAP_IMPORTANCE_LOW;
         }
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => $sitemap_priority,
             'sitemap_refreshfreq' => 'weekly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_catalogues', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_catalogues')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_catalogues', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_catalogues')),
+        ] + $partial_struct;
 
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', array('c_name' => $content_id)) == 1) {
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_is_tree', ['c_name' => $content_id]) == 1) {
             $struct['extra_meta']['is_a_category_tree_root'] = true;
         }
 
@@ -101,7 +101,7 @@ class Hook_sitemap_catalogue_category extends Hook_sitemap_content
 
         // Sometimes page groupings link direct to catalogue categories, so search for an icon
         $row_x = $this->_load_row_from_page_groupings(null, $zone, 'catalogues', 'category', $content_id);
-        if ($row_x != array()) {
+        if ($row_x != []) {
             if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) == 0) {
                 $struct['title'] = null;
             }

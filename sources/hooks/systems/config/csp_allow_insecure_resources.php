@@ -30,7 +30,7 @@ class Hook_config_csp_allow_insecure_resources
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_ALLOW_INSECURE_RESOURCES',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_csp_allow_insecure_resources
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

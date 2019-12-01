@@ -25,7 +25,7 @@ class Hook_config_gallery_sync_orphaned_handling
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_SYNC_ORPHANED_HANDLING',
             'type' => 'list',
             'category' => 'GALLERY',
@@ -38,7 +38,7 @@ class Hook_config_gallery_sync_orphaned_handling
             'public' => false,
 
             'addon' => 'gallery_syndication',
-        );
+        ];
     }
 
     /**

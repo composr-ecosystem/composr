@@ -26,7 +26,7 @@ class Hook_addon_registry_classified_ads
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_classified_ads
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Icon by Andrey Kem',
-        );
+        ];
     }
 
     /**
@@ -120,7 +120,7 @@ This addon does not itself handle the transaction to purchase what is being adve
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -130,15 +130,15 @@ This addon does not itself handle the transaction to purchase what is being adve
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'catalogues',
                 'ecommerce',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -158,7 +158,7 @@ This addon does not itself handle the transaction to purchase what is being adve
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/classified_ads.php',
             'adminzone/pages/minimodules_custom/admin_classifieds.php',
             'lang_custom/EN/classifieds.ini',
@@ -176,6 +176,6 @@ This addon does not itself handle the transaction to purchase what is being adve
             'themes/default/templates_custom/CLASSIFIEDS.tpl',
             'sources_custom/hooks/systems/config/max_classified_listings_per_page.php',
             'sources_custom/hooks/systems/actionlog/classified_ads.php',
-        );
+        ];
     }
 }

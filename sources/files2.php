@@ -130,7 +130,7 @@ function cms_get_temp_dir()
     $server_path = rtrim(sys_get_temp_dir(), '/\\');
     $problem_saving = ((get_option('force_local_temp_dir') == '1') || ((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)' . preg_quote($server_path, '#') . '($|:|;|/)#', ini_get('open_basedir')) == 0)));
     $path = ($problem_saving ? $local_path : $server_path);
-    return array($path, $problem_saving, $server_path, $local_path);
+    return [$path, $problem_saving, $server_path, $local_path];
 }
 
 /**
@@ -172,10 +172,10 @@ function is_temp_file($path)
     $path = realpath($path);
 
     $_temp_dir = cms_get_temp_dir();
-    $temp_dirs = array(
+    $temp_dirs = [
         realpath($_temp_dir[0]),
         get_custom_file_base() . '/temp',
-    );
+    ];
 
     foreach ($temp_dirs as $temp_dir) {
         if (substr($path, 0, strlen($temp_dir) + 1) == $temp_dir . '/') {
@@ -289,11 +289,11 @@ function _deldir_contents($dir, $default_preserve = false, $delete_dir_also = fa
     }
 
     while (($file = readdir($dh)) !== false) {
-        if (in_array($file, array('.', '..'))) {
+        if (in_array($file, ['.', '..'])) {
             continue;
         }
 
-        if (($default_preserve) && (in_array($file, array('index.html', '.htaccess')))) {
+        if (($default_preserve) && (in_array($file, ['index.html', '.htaccess']))) {
             continue;
         }
 
@@ -336,7 +336,7 @@ function _deldir_contents($dir, $default_preserve = false, $delete_dir_also = fa
  */
 function find_php_path($cgi = false)
 {
-    $search_dirs = array(
+    $search_dirs = [
         '/bin',
         '/usr/bin',
         '/usr/local/bin',
@@ -352,8 +352,8 @@ function find_php_path($cgi = false)
         'c:\\progra~1\\php',
         'c:\\progra~1\\php5',
         'c:\\progra~1\\php7',
-    );
-    $filenames = array(
+    ];
+    $filenames = [
         'php.dSYM',
         'php',
         'php5',
@@ -367,7 +367,7 @@ function find_php_path($cgi = false)
         'php5-cgi',
         'php7-cgi',
         'php-win.exe',
-    );
+    ];
     foreach ($search_dirs as $dir) {
         foreach ($filenames as $file) {
             if ((!$cgi) || (strpos($file, 'cgi') !== false)) {
@@ -399,17 +399,17 @@ function find_php_path($cgi = false)
  */
 function get_directory_contents($path, $rel_path = '', $bitmask = IGNORE_ACCESS_CONTROLLERS, $recurse = true, $files_wanted = true, $file_extensions = null)
 {
-    if (($files_wanted) && ($file_extensions === array())) {
-        return array(); // Optimisation
+    if (($files_wanted) && ($file_extensions === [])) {
+        return []; // Optimisation
     }
 
-    $out = array();
+    $out = [];
 
     require_code('files');
 
     $dh = @opendir($path);
     if ($dh === false) {
-        return array();
+        return [];
     }
     while (($file = readdir($dh)) !== false) {
         if ($file == '_meta_tree') { // Very special case, directory can get huge
@@ -496,7 +496,7 @@ function get_upload_limit_config_url()
 {
     $config_url = null;
     if (has_actual_page_access(get_member(), 'admin_config')) {
-        $_config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'), get_module_zone('admin_config'));
+        $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'));
         $config_url = $_config_url->evaluate();
         $config_url .= '#group_UPLOAD';
     }
@@ -513,7 +513,7 @@ function get_upload_limit_config_url()
  */
 function get_max_file_size($source_member = null, $db = null, $consider_php_limits = true)
 {
-    $possibilities = array();
+    $possibilities = [];
 
     require_code('files');
     $a = php_return_bytes(ini_get('upload_max_filesize'));
@@ -580,7 +580,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
     ksort($types);
     if (!$skip_server_side_security_check) {
         if (!has_privilege($member_id, 'use_very_dangerous_comcode')) {
-            $dangerous_markup_types = array(
+            $dangerous_markup_types = [
                 'js',
                 'json',
                 'html',
@@ -594,7 +594,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
                 'xsl',
                 'css',
                 'woff',
-            );
+            ];
             foreach ($dangerous_markup_types as $type) {
                 unset($types[$type]);
             }
@@ -611,7 +611,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
     }
 
     if (!$skip_server_side_security_check) {
-        $dangerous_code_types = array(
+        $dangerous_code_types = [
             'py',
             'dll',
             'cfm',
@@ -639,7 +639,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
             'sh',
             'cgi',
             'fcgi',
-        );
+        ];
         if ((in_array($ext, $dangerous_code_types)) || (strtolower($name) == '.htaccess')) {
             if ($file_to_delete !== null) {
                 unlink($file_to_delete);
@@ -663,7 +663,7 @@ function check_extension($name, $skip_server_side_security_check = false, $file_
         }
         $message = do_lang_tempcode('INVALID_FILE_TYPE', escape_html($ext), escape_html(str_replace(',', ', ', $_types)));
         if (has_actual_page_access(get_member(), 'admin_config')) {
-            $_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'), get_module_zone('admin_config'));
+            $_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SECURITY'], get_module_zone('admin_config'));
             $url = $_url->evaluate();
             $url .= '#group_UPLOAD';
             $message = do_lang_tempcode('INVALID_FILE_TYPE_ADMIN', escape_html($ext), escape_html(str_replace(',', ', ', $_types)), escape_html($url));
@@ -695,7 +695,7 @@ function delete_upload($upload_path, $table, $field, $id_field, $id, $new_url = 
 {
     // Try and delete the file
     if ((has_actual_page_access(get_member(), 'admin_cleanup')) || (get_option('cleanup_files') == '1')) { // This isn't really a permission - more a failsafe in case there is a security hole. Staff can cleanup leftover files from the Cleanup module anyway. NB: Also repeated in cms_galleries.php.
-        $where = is_array($id_field) ? $id_field : array($id_field => $id);
+        $where = is_array($id_field) ? $id_field : [$id_field => $id];
         $url = $GLOBALS['SITE_DB']->query_select_value_if_there($table, filter_naughty_harsh($field), $where);
         if (empty($url)) {
             return;
@@ -703,7 +703,7 @@ function delete_upload($upload_path, $table, $field, $id_field, $id, $new_url = 
 
         if (($new_url === null) || ((($url != $new_url) && (rawurldecode($url) != rawurldecode($new_url))) && ($new_url != STRING_MAGIC_NULL))) {
             if ((url_is_local($url)) && (substr($url, 0, strlen($upload_path) + 1) == $upload_path . '/')) {
-                $count = $GLOBALS['SITE_DB']->query_select_value($table, 'COUNT(*)', array($field => $url));
+                $count = $GLOBALS['SITE_DB']->query_select_value($table, 'COUNT(*)', [$field => $url]);
 
                 if ($count <= 1) {
                     @unlink(get_custom_file_base() . '/' . rawurldecode($url));

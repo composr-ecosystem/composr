@@ -44,7 +44,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
         $this->process_checks_section('testDirectorySize', 'Directory size', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testLogSize', 'Log size', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             return;
         }
 
-        $tables = array(
+        $tables = [
             'autosave' => 100000,
             'cache' => 1000000,
             'cached_comcode_pages' => 10000,
@@ -85,7 +85,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             'temp_block_permissions' => 10000000,
             'url_title_cache' => 100000,
             'urls_checked' => 100000,
-        );
+        ];
 
         foreach ($tables as $table => $max_threshold) {
             if ($GLOBALS['SITE_DB']->table_exists($table)) {
@@ -153,7 +153,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
         require_code('files2');
 
         $mb = 1024 * 1024;
-        $directories = array(
+        $directories = [
             'caches/guest_pages' => 5000,
             'caches/lang' => 200,
             'caches/persistent' => 500,
@@ -161,7 +161,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             'uploads/incoming' => 500,
             'uploads/captcha' => 5000,
             'temp' => 500,
-        );
+        ];
         foreach (array_keys(find_all_langs()) as $lang) {
             $directories['themes/' . $GLOBALS['FORUM_DRIVER']->get_theme('') . '/templates_cached/' . $lang] = 20;
         }
@@ -172,11 +172,11 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             }
         }
 
-        $directories = array(
+        $directories = [
             'uploads/incoming' => 50,
             'temp' => 50,
             'data_custom' => 100,
-        );
+        ];
         foreach ($directories as $dir => $max_contents_threshold) {
             if (file_exists(get_file_base() . '/' . $dir)) {
                 $count = count(get_directory_contents(get_file_base() . '/' . $dir, '', IGNORE_ACCESS_CONTROLLERS, false));
@@ -208,12 +208,12 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
 
         $log_threshold = 1000000;
 
-        $log_files = array();
+        $log_files = [];
 
         $log_files[] = 'error_log'; // PHP may auto-create these at startup
 
         $path = get_file_base();
-        foreach (array_merge(find_all_zones(), array('data_custom', 'data')) as $dir) {
+        foreach (array_merge(find_all_zones(), ['data_custom', 'data']) as $dir) {
             $dh = @opendir($path . '/' . $dir);
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {

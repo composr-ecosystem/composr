@@ -33,7 +33,7 @@ function init__spelling()
     }
 
     global $SPELL_LINKS;
-    $SPELL_LINKS = array();
+    $SPELL_LINKS = [];
 }
 
 /**
@@ -69,7 +69,7 @@ function clean_html_for_spellcheck($html)
  */
 function clean_comcode_for_spellcheck($comcode)
 {
-    foreach (array('tt', 'code', 'codebox') as $tag) { // Strip whole tags
+    foreach (['tt', 'code', 'codebox'] as $tag) { // Strip whole tags
         $comcode = preg_replace('#\[' . $tag . '[^\[\]]*\].*\[/' . $tag . '\]#Us', '', $comcode);
     }
 
@@ -121,12 +121,12 @@ function run_spellcheck($text, $lang = null, $skip_known_words_in_db = true, $pr
     $spell_checker = _find_spell_checker();
 
     if ($spell_checker === null) {
-        return array();
+        return [];
     }
 
     $words = _find_words($text, $unicode_accepted);
     if (empty($words)) {
-        return array();
+        return [];
     }
 
     return run_spellcheck__words($words, $lang, $skip_known_words_in_db, $provide_corrections, $unicode_accepted);
@@ -147,24 +147,24 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
     $spell_checker = _find_spell_checker();
 
     if ($spell_checker === null) {
-        return array();
+        return [];
     }
 
-    $errors = array();
+    $errors = [];
 
     // Initialise
     $spell_link = spellcheck_initialise($lang);
     if ($spell_link === null) {
-        return array();
+        return [];
     }
     if ($skip_known_words_in_db) {
-        $okay_words = array(
+        $okay_words = [
             // Some common Composr terms that should not be corrected
             'comcode',
             'tempcode',
             'selectcode',
             'filtercode',
-        );
+        ];
 
         $or_list = '';
         foreach ($words as $word) {
@@ -229,7 +229,7 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
             list($broker, $dict, $personal_dict) = $spell_link;
             foreach ($words as $word) {
                 if ($provide_corrections) {
-                    $corrections = array();
+                    $corrections = [];
                     if ((!enchant_dict_quick_check($dict, $word, $corrections)) && (!enchant_dict_quick_check($personal_dict, $word, $corrections))) {
                         $errors[$word] = $corrections;
                     }
@@ -245,7 +245,7 @@ function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = t
         case 'mock':
             foreach ($words as $word) {
                 if (!in_array($word, $spell_link)) {
-                    $errors[$word] = $provide_corrections ? array() : null;
+                    $errors[$word] = $provide_corrections ? [] : null;
                 }
             }
             break;
@@ -267,13 +267,13 @@ function _find_words($text, $unicode_accepted = true)
 
     $text = preg_replace('#\w+://[^\s\'",;>\[\])]*#', '', $text); // Strip URLs
 
-    $words = array();
+    $words = [];
 
     if (function_exists('fix_bad_unicode')) {
         $text = fix_bad_unicode($text);
     }
 
-    $_words = array();
+    $_words = [];
     $is_unicode = ((get_charset() == 'utf-8') && ($unicode_accepted));
     $regexp = $is_unicode ? WORD_REGEXP_UNICODE : WORD_REGEXP;
     $num_matches = preg_match_all($regexp, $text, $_words);
@@ -398,12 +398,12 @@ function spellcheck_initialise($lang = null)
 
             $dict = enchant_broker_request_dict($broker, $lang);
 
-            $spell_link = array($broker, $dict, $personal_dict);
+            $spell_link = [$broker, $dict, $personal_dict];
 
             break;
 
         case 'mock':
-            $spell_link = array();
+            $spell_link = [];
             break;
     }
 

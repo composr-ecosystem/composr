@@ -31,7 +31,7 @@ class Hook_preview_poll
     public function applies()
     {
         $applies = (addon_installed('polls')) && (get_page_name() == 'cms_polls');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -50,7 +50,7 @@ class Hook_preview_poll
                 $answer = comcode_to_tempcode($answer_plain);
                 $votes = 0;
                 $width = 0;
-                $tpl->attach(do_template('POLL_ANSWER_RESULT', array('_GUID' => '0412b038bb359ce84e5732dec8a09b12', 'PID' => '', 'I' => strval($i), 'VOTE_URL' => '', 'ANSWER' => $answer, 'ANSWER_PLAIN' => $answer_plain, 'WIDTH' => strval($width), 'VOTES' => integer_format($votes))));
+                $tpl->attach(do_template('POLL_ANSWER_RESULT', ['_GUID' => '0412b038bb359ce84e5732dec8a09b12', 'PID' => '', 'I' => strval($i), 'VOTE_URL' => '', 'ANSWER' => $answer, 'ANSWER_PLAIN' => $answer_plain, 'WIDTH' => strval($width), 'VOTES' => integer_format($votes)]));
                 $i++;
             }
         } while ($answer_plain != '');
@@ -60,8 +60,8 @@ class Hook_preview_poll
         // Do our final template
         $question_plain = post_param_string('question');
         $question = comcode_to_tempcode($question_plain);
-        $archive_url = build_url(array('page' => 'polls', 'type' => 'browse'), get_module_zone('polls'));
-        $map2 = array(
+        $archive_url = build_url(['page' => 'polls', 'type' => 'browse'], get_module_zone('polls'));
+        $map2 = [
             'VOTE_URL' => '',
             'SUBMITTER' => strval(get_member()),
             'PID' => '',
@@ -75,9 +75,9 @@ class Hook_preview_poll
             'RESULT_URL' => '',
             'ZONE' => '',
             'GIVE_CONTEXT' => false,
-        );
+        ];
         $output = do_template('POLL_BOX', $map2);
 
-        return array($output, null);
+        return [$output, null];
     }
 }

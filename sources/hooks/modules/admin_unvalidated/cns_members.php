@@ -36,7 +36,7 @@ class Hook_unvalidated_cns_members
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'f_members';
         $info['db_identifier'] = 'id';
         $info['db_validated'] = 'm_validated';

@@ -53,7 +53,7 @@ class Hook_profiles_tabs_comments
         $order = 25;
 
         if ($leave_to_ajax_if_possible && !has_interesting_post_fields()) {
-            return array($title, null, $order, 'feedback/comment');
+            return [$title, null, $order, 'feedback/comment'];
         }
 
         $forum_name = get_option('member_comments_forum_name');
@@ -62,21 +62,21 @@ class Hook_profiles_tabs_comments
         // The member who 'owns' the tab should be receiving notifications
         require_code('notifications');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
-        $main_map = array(
+        $main_map = [
             'l_member_id' => $member_id_of,
             'l_notification_code' => 'comment_posted',
             'l_code_category' => 'block_main_comments_' . $username . '_member',
-        );
+        ];
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('notifications_enabled', 'id', $main_map);
         if ($test === null) {
-            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', array(
+            $GLOBALS['SITE_DB']->query_insert('notifications_enabled', [
                 'l_setting' => _find_member_statistical_notification_type($member_id_of, 'comment_posted'),
-            ) + $main_map);
+            ] + $main_map);
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_COMMENTS', array('_GUID' => '5ce1949e4fa0d247631f52f48698df4e', 'MEMBER_ID' => strval($member_id_of), 'FORUM_ID' => strval($forum_id)));
+        $content = do_template('CNS_MEMBER_PROFILE_COMMENTS', ['_GUID' => '5ce1949e4fa0d247631f52f48698df4e', 'MEMBER_ID' => strval($member_id_of), 'FORUM_ID' => strval($forum_id)]);
         $content->handle_symbol_preprocessing();
 
-        return array($title, $content, $order, 'feedback/comment');
+        return [$title, $content, $order, 'feedback/comment'];
     }
 }

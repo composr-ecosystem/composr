@@ -30,7 +30,7 @@ class Hook_config_allow_own_rate
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_OWN_RATE',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_allow_own_rate
             'required' => true,
             'public' => false,
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

@@ -52,22 +52,22 @@ class Hook_search_download_categories extends FieldsSearchHook
 
         require_lang('downloads');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('DOWNLOAD_CATEGORIES');
         $info['default'] = (get_option('search_download_categories') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_download_category');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('downloads'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('downloads'),
                 'page_name' => 'downloads',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -122,19 +122,19 @@ class Hook_search_download_categories extends FieldsSearchHook
 
         // Calculate our where clause (search)
         if ($author != '') {
-            return array();
+            return [];
         }
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
         $table = 'download_categories r';
-        $trans_fields = array('r.category' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['r.category' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_download_category', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows('downloads_category', 'id', $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields, 'downloads', 'id');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

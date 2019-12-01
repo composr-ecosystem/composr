@@ -86,7 +86,7 @@ function get_first_admin_user()
  */
 function handle_active_login($username)
 {
-    $result = array();
+    $result = [];
 
     $member_cookie_name = get_member_cookie();
     $colon_pos = strpos($member_cookie_name, ':');
@@ -180,11 +180,11 @@ function handle_active_login($username)
 
         enforce_temporary_passwords($member_id);
     } else {
-        $GLOBALS['SITE_DB']->query_insert('failedlogins', array(
+        $GLOBALS['SITE_DB']->query_insert('failedlogins', [
             'failed_account' => cms_mb_substr(trim(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES)), 0, 80),
             'date_and_time' => time(),
             'ip' => get_ip_address(),
-        ));
+        ]);
 
         $brute_force_login_minutes = intval(get_option('brute_force_login_minutes'));
         $brute_force_threshold = intval(get_option('brute_force_threshold'));
@@ -248,7 +248,7 @@ function _enforce_temporary_passwords($member_id)
                 require_lang('password_rules');
                 $force_change_message = do_lang_tempcode('PASSWORD_EXPIRED', escape_html($username), escape_html(integer_format(intval(get_option('password_expiry_days')))));
                 require_code('urls');
-                $redirect_url = build_url(array('page' => 'lost_password', 'username' => $username), '');
+                $redirect_url = build_url(['page' => 'lost_password', 'username' => $username], '');
             }
         }
 
@@ -257,7 +257,7 @@ function _enforce_temporary_passwords($member_id)
             require_lang('cns');
             $force_change_message = do_lang_tempcode('YOU_HAVE_TEMPORARY_PASSWORD', escape_html($username));
             require_code('urls');
-            $redirect_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, false, 'tab--edit--settings');
+            $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
         } // Too old?
         elseif (intval(get_option('password_change_days')) > 0) {
             require_code('password_rules');
@@ -265,7 +265,7 @@ function _enforce_temporary_passwords($member_id)
                 require_lang('password_rules');
                 $force_change_message = do_lang_tempcode('PASSWORD_TOO_OLD', escape_html($username), escape_html(integer_format(intval(get_option('password_change_days')))));
                 require_code('urls');
-                $redirect_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $member_id), get_module_zone('members'), array(), false, false, false, 'tab--edit--settings');
+                $redirect_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], false, false, false, 'tab--edit--settings');
             }
         }
 
@@ -291,7 +291,7 @@ function delete_session($session)
     require_code('users_inactive_occasionals');
     set_session_id('');
 
-    $GLOBALS['SITE_DB']->query_delete('sessions', array('the_session' => $session), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('sessions', ['the_session' => $session], '', 1);
 
     global $SESSION_CACHE;
     unset($SESSION_CACHE[$session]);
@@ -307,7 +307,7 @@ function delete_session($session)
  */
 function set_invisibility($make_invisible = true)
 {
-    $GLOBALS['SITE_DB']->query_update('sessions', array('session_invisible' => $make_invisible ? 1 : 0), array('member_id' => get_member(), 'the_session' => get_session_id()), '', 1);
+    $GLOBALS['SITE_DB']->query_update('sessions', ['session_invisible' => $make_invisible ? 1 : 0], ['member_id' => get_member(), 'the_session' => get_session_id()], '', 1);
     global $SESSION_CACHE;
     if ($SESSION_CACHE[get_session_id()]['member_id'] == get_member()) { // A little security
         $SESSION_CACHE[get_session_id()]['session_invisible'] = $make_invisible ? 1 : 0;
@@ -346,8 +346,8 @@ function cms_setcookie($name, $value, $session = false, $httponly = false, $days
         return true;
     }*/
 
-    static $cache = array();
-    $sz = serialize(array($name, $value, $session, $httponly));
+    static $cache = [];
+    $sz = serialize([$name, $value, $session, $httponly]);
     if (isset($cache[$sz])) {
         return $cache[$sz];
     }
@@ -373,20 +373,20 @@ function cms_setcookie($name, $value, $session = false, $httponly = false, $days
     $secure = (substr(get_base_url(null), 0, 7) === 'https://');
 
     if (version_compare(PHP_VERSION, '7.3.0', '>=')) { // LEGACY
-        $options = array(
+        $options = [
             'expires' => $expires,
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
             'httponly' => $httponly,
-        );
+        ];
         if ($session) {
             // Stops HTTP POSTs from external sites inheriting cookie value.
             //  Note that Lax is not necessarily the same as setting no value.
             //  That said for Chrome 80+ all are Lax by default.
             $options['samesite'] = 'Lax';
         }
-        $output = @call_user_func_array('setcookie', array($name, $value, $options));
+        $output = @call_user_func_array('setcookie', [$name, $value, $options]);
     } else {
         $output = @setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
     }

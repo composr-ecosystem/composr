@@ -30,7 +30,7 @@ class Hook_config_site_scope
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITE_SCOPE',
             'type' => 'transline',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_site_scope
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

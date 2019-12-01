@@ -36,7 +36,7 @@ class Hook_content_meta_aware_catalogue
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'catalogues:CATALOGUE',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_catalogue
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CATALOGUE',
-        );
+        ];
     }
 
     /**

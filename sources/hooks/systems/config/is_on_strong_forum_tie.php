@@ -30,7 +30,7 @@ class Hook_config_is_on_strong_forum_tie
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STRONG_FORUM_TIE',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_is_on_strong_forum_tie
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

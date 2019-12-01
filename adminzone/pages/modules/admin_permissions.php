@@ -30,7 +30,7 @@ class Module_admin_permissions
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -76,51 +76,51 @@ class Module_admin_permissions
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('match_key_messages', array(
+            $GLOBALS['SITE_DB']->create_table('match_key_messages', [
                 'id' => '*AUTO',
                 'k_message' => 'LONG_TRANS__COMCODE',
                 'k_match_key' => 'SHORT_TEXT',
-            ));
+            ]);
 
             // What usergroups may enter this zone
-            $GLOBALS['SITE_DB']->create_table('group_zone_access', array(
+            $GLOBALS['SITE_DB']->create_table('group_zone_access', [
                 'zone_name' => '*ID_TEXT',
                 'group_id' => '*GROUP',
-            ));
-            $GLOBALS['SITE_DB']->create_index('group_zone_access', 'group_id', array('group_id'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('group_zone_access', 'group_id', ['group_id']);
 
             // Some defaults
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             $admin_groups = array_unique(array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups()));
             $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
             foreach (array_keys($usergroups) as $id) {
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => '', 'group_id' => $id));
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'forum', 'group_id' => $id));
+                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => '', 'group_id' => $id]);
+                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'forum', 'group_id' => $id]);
                 if ($id != $guest_groups[0] || get_forum_type() == 'none') {
-                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'site', 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'site', 'group_id' => $id]);
                 }
                 if ($id != $guest_groups[0]) {
-                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'cms', 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'cms', 'group_id' => $id]);
                 }
             }
             foreach ($admin_groups as $admin_group) {
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'adminzone', 'group_id' => $admin_group));
+                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'adminzone', 'group_id' => $admin_group]);
             }
 
             // What usergroups may NOT view this page (default is that any page may be viewed if a user can access its zone)
-            $GLOBALS['SITE_DB']->create_table('group_page_access', array(
+            $GLOBALS['SITE_DB']->create_table('group_page_access', [
                 'page_name' => '*ID_TEXT',
                 'zone_name' => '*ID_TEXT',
                 'group_id' => '*GROUP',
-            ));
+            ]);
             foreach (array_keys($usergroups) as $id) {
                 if ((get_forum_type() == 'cns') && (!is_guest($id))) {
-                    $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'join', 'zone_name' => get_module_zone('join'), 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'join', 'zone_name' => get_module_zone('join'), 'group_id' => $id]);
                 }
 
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'admin_redirects', 'zone_name' => 'adminzone', 'group_id' => $id)); // We don't want people to redirect themselves passed the page/zone security unless they are admins already
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'admin_addons', 'zone_name' => 'adminzone', 'group_id' => $id)); // We don't want people installing new code
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'admin_email_log', 'zone_name' => 'adminzone', 'group_id' => $id)); // We don't want people snooping on admin e-mails (e.g. password reset)
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_redirects', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people to redirect themselves passed the page/zone security unless they are admins already
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_addons', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people installing new code
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_email_log', 'zone_name' => 'adminzone', 'group_id' => $id]); // We don't want people snooping on admin e-mails (e.g. password reset)
             }
 
             // False privileges
@@ -150,7 +150,7 @@ class Module_admin_permissions
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_index('group_page_access', 'group_id', array('group_id'));
+            $GLOBALS['SITE_DB']->create_index('group_page_access', 'group_id', ['group_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
@@ -163,9 +163,9 @@ class Module_admin_permissions
 
             delete_privilege('avoid_simplified_adminzone_look');
 
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('p_section' => 'GENERAL_SETTINGS'), array('the_name' => 'may_enable_staff_notifications'), '', 1);
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('the_default' => 0), array('the_name' => 'have_personal_category'), '', 1);
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('p_section' => 'VOTE'), array('the_name' => 'vote_in_polls'), '', 1);
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'GENERAL_SETTINGS'], ['the_name' => 'may_enable_staff_notifications'], '', 1);
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 0], ['the_name' => 'have_personal_category'], '', 1);
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'VOTE'], ['the_name' => 'vote_in_polls'], '', 1);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY
@@ -191,15 +191,15 @@ class Module_admin_permissions
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        $ret = array(
-            'browse' => array('PERMISSIONS_TREE', 'menu/adminzone/security/permissions/permission_tree_editor'),
-        );
+        $ret = [
+            'browse' => ['PERMISSIONS_TREE', 'menu/adminzone/security/permissions/permission_tree_editor'],
+        ];
 
         if (!$be_deferential) {
-            $ret['privileges'] = array('PRIVILEGES', 'menu/adminzone/security/permissions/privileges');
+            $ret['privileges'] = ['PRIVILEGES', 'menu/adminzone/security/permissions/privileges'];
 
             if (addon_installed('match_key_permissions')) {
-                $ret['match_keys'] = array('MATCH_KEYS', 'menu/adminzone/security/permissions/match_keys');
+                $ret['match_keys'] = ['MATCH_KEYS', 'menu/adminzone/security/permissions/match_keys'];
             }
         }
 
@@ -242,10 +242,10 @@ class Module_admin_permissions
             if (empty($p_section)) {
                 $this->title = get_screen_title('PRIVILEGES');
             } else {
-                breadcrumb_set_parents(array(array('_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES'))));
+                breadcrumb_set_parents([['_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES')]]);
                 breadcrumb_set_self(do_lang_tempcode($p_section));
 
-                $this->title = get_screen_title('_PRIVILEGES', true, array(do_lang_tempcode($p_section)));
+                $this->title = get_screen_title('_PRIVILEGES', true, [do_lang_tempcode($p_section)]);
             }
         }
 
@@ -255,19 +255,19 @@ class Module_admin_permissions
                 set_helper_panel_tutorial('tut_permissions');
             }
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES')]]);
             breadcrumb_set_self(do_lang_tempcode($p_section));
 
             $this->title = get_screen_title('PRIVILEGES');
         }
 
         if ($type == '_absorb') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:absorb', do_lang_tempcode('ABSORB_PERMISSIONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:absorb', do_lang_tempcode('ABSORB_PERMISSIONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == '_match_keys') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:match_keys', do_lang_tempcode('PAGE_MATCH_KEY_ACCESS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:match_keys', do_lang_tempcode('PAGE_MATCH_KEY_ACCESS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -332,7 +332,7 @@ class Module_admin_permissions
      */
     public function absorb()
     {
-        $groups_without = array();
+        $groups_without = [];
         $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $list1 = new Tempcode();
         $list2 = new Tempcode();
@@ -343,7 +343,7 @@ class Module_admin_permissions
                 continue;
             }
 
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_privileges', 'group_id', array('group_id' => $id));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_privileges', 'group_id', ['group_id' => $id]);
             if ($test === null) {
                 $groups_without[$id] = $name;
             }
@@ -361,13 +361,13 @@ class Module_admin_permissions
         $text = do_lang_tempcode('USERGROUPS_WITH_NO_PERMISSIONS', $_groups_without);
 
         $submit_name = do_lang_tempcode('ABSORB_PERMISSIONS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_absorb'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_absorb'], '_SELF');
 
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('FROM'), do_lang_tempcode('PERMISSIONS_FROM'), 'from', $list1));
         $fields->attach(form_input_list(do_lang_tempcode('TO'), do_lang_tempcode('PERMISSIONS_TO'), 'to', $list2));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '9e20011006a26b240fc898279338875c',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
@@ -377,7 +377,7 @@ class Module_admin_permissions
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -398,7 +398,7 @@ class Module_admin_permissions
         require_code('cns_groups_action2');
         cns_group_absorb_privileges_of($to, $from);
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'absorb'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'absorb'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -432,9 +432,9 @@ class Module_admin_permissions
         // Standard editing matrix
         // NB: For permissions tree editor, default access is shown as -1 in editor for clarity (because the parent permissions are easily findable which implies the default access would mean something else which would confuse [+ this would be hard to do due to the dynamicness of the interface])
         require_code('permissions2');
-        $editor = get_permissions_matrix('', array(), array(), array(), array(), false);
+        $editor = get_permissions_matrix('', [], [], [], [], false);
 
-        return do_template('PERMISSIONS_TREE_EDITOR_SCREEN', array(
+        return do_template('PERMISSIONS_TREE_EDITOR_SCREEN', [
             '_GUID' => '08bb679a7cfab45c0c29b5393666dd57',
             'USERGROUPS' => $all_groups,
             'TITLE' => $this->title,
@@ -442,7 +442,7 @@ class Module_admin_permissions
             'COLOR' => $color,
             'GROUPS' => $groups,
             'EDITOR' => $editor,
-        ));
+        ]);
     }
 
     /**
@@ -467,10 +467,10 @@ class Module_admin_permissions
                 continue;
             }
 
-            $header_cells->attach(do_template('PERMISSION_HEADER_CELL', array('_GUID' => 'c77bd5d8d9dedb6a3e61c477910a06b7', 'COLOR' => $color, 'GROUP' => $name)));
+            $header_cells->attach(do_template('PERMISSION_HEADER_CELL', ['_GUID' => 'c77bd5d8d9dedb6a3e61c477910a06b7', 'COLOR' => $color, 'GROUP' => $name]));
         }
 
-        $header_cells->attach(do_template('PERMISSION_HEADER_CELL', array('_GUID' => '33fde6c008293f20bb3a51e912748c67', 'COLOR' => $color, 'GROUP' => '+/-')));
+        $header_cells->attach(do_template('PERMISSION_HEADER_CELL', ['_GUID' => '33fde6c008293f20bb3a51e912748c67', 'COLOR' => $color, 'GROUP' => '+/-']));
 
         return $header_cells;
     }
@@ -487,12 +487,12 @@ class Module_admin_permissions
         require_lang('zones');
 
         require_code('zones3');
-        $zones = create_selection_list_zones(null, array(), array('', 'site'));
+        $zones = create_selection_list_zones(null, [], ['', 'site']);
         $fields->attach(form_input_huge_list(do_lang_tempcode('ZONE'), '', 'zone', $zones, null, true));
 
-        $post_url = get_self_url(false, false, array(), false, true);
+        $post_url = get_self_url(false, false, [], false, true);
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '457a5b8200991996b383bf75515382ab',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -503,7 +503,7 @@ class Module_admin_permissions
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => '',
-        ));
+        ]);
     }
 
     /**
@@ -515,7 +515,7 @@ class Module_admin_permissions
     {
         require_css('permissions_editor');
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_match_keys'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_match_keys'], '_SELF');
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -531,18 +531,18 @@ class Module_admin_permissions
         }
 
         // Match-key permissions
-        $p_rows = $GLOBALS['SITE_DB']->query_select('group_page_access', array('DISTINCT page_name'), array('zone_name' => '/'), 'ORDER BY page_name');
-        $p_rows[] = array('page_name' => '');
-        $p_rows[] = array('page_name' => '');
-        $p_rows[] = array('page_name' => '');
-        $p_rows[] = array('page_name' => '');
-        $p_rows[] = array('page_name' => '');
+        $p_rows = $GLOBALS['SITE_DB']->query_select('group_page_access', ['DISTINCT page_name'], ['zone_name' => '/'], 'ORDER BY page_name');
+        $p_rows[] = ['page_name' => ''];
+        $p_rows[] = ['page_name' => ''];
+        $p_rows[] = ['page_name' => ''];
+        $p_rows[] = ['page_name' => ''];
+        $p_rows[] = ['page_name' => ''];
         $rows = new Tempcode();
         foreach ($p_rows as $id => $page) {
             $cells = new Tempcode();
             $code = '';
 
-            $access_rows = collapse_1d_complexity('group_id', $GLOBALS['SITE_DB']->query_select('group_page_access', array('group_id'), array('page_name' => $page['page_name'])));
+            $access_rows = collapse_1d_complexity('group_id', $GLOBALS['SITE_DB']->query_select('group_page_access', ['group_id'], ['page_name' => $page['page_name']]));
 
             foreach ($groups as $gid => $g_name) {
                 if (in_array($gid, $admin_groups)) {
@@ -551,20 +551,20 @@ class Module_admin_permissions
 
                 $has_not_restriction = !in_array($gid, $access_rows);
 
-                $cells->attach(do_template('PERMISSION_CELL', array('_GUID' => '3d5fe8c61007d9665111fc9536f6ddf0', 'CHECKED' => !$has_not_restriction, 'HUMAN' => do_lang_tempcode('RESTRICTION_CELL', /*$zone.'__'.*/escape_html($page['page_name']), escape_html($g_name)), 'NAME' => 'p_' . strval($id) . '__' . strval($gid))));
+                $cells->attach(do_template('PERMISSION_CELL', ['_GUID' => '3d5fe8c61007d9665111fc9536f6ddf0', 'CHECKED' => !$has_not_restriction, 'HUMAN' => do_lang_tempcode('RESTRICTION_CELL', /*$zone.'__'.*/escape_html($page['page_name']), escape_html($g_name)), 'NAME' => 'p_' . strval($id) . '__' . strval($gid)]));
                 $code .= 'form.elements[\'' . 'p_' . strval($id) . '__' . strval($gid) . '\'].checked=this.value==\'+\';';
             }
 
-            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', array('_GUID' => 'dd692175fe246c130126ece7bd30ffb1', 'ALL_OFF' => empty($access_rows), 'KEY' => $page['page_name'], 'UID' => strval($id), 'CODE' => $code, 'CELLS' => $cells)));
+            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', ['_GUID' => 'dd692175fe246c130126ece7bd30ffb1', 'ALL_OFF' => empty($access_rows), 'KEY' => $page['page_name'], 'UID' => strval($id), 'CODE' => $code, 'CELLS' => $cells]));
         }
 
         // Match-key messages
-        $m_rows = $GLOBALS['SITE_DB']->query_select('match_key_messages', array('*'), array(), 'ORDER BY k_match_key');
-        $m_rows[] = array('id' => 'new_1', 'k_message' => '', 'k_match_key' => '');
-        $m_rows[] = array('id' => 'new_2', 'k_message' => '', 'k_match_key' => '');
-        $m_rows[] = array('id' => 'new_3', 'k_message' => '', 'k_match_key' => '');
-        $m_rows[] = array('id' => 'new_4', 'k_message' => '', 'k_match_key' => '');
-        $m_rows[] = array('id' => 'new_5', 'k_message' => '', 'k_match_key' => '');
+        $m_rows = $GLOBALS['SITE_DB']->query_select('match_key_messages', ['*'], [], 'ORDER BY k_match_key');
+        $m_rows[] = ['id' => 'new_1', 'k_message' => '', 'k_match_key' => ''];
+        $m_rows[] = ['id' => 'new_2', 'k_message' => '', 'k_match_key' => ''];
+        $m_rows[] = ['id' => 'new_3', 'k_message' => '', 'k_match_key' => ''];
+        $m_rows[] = ['id' => 'new_4', 'k_message' => '', 'k_match_key' => ''];
+        $m_rows[] = ['id' => 'new_5', 'k_message' => '', 'k_match_key' => ''];
         $rows2 = new Tempcode();
         foreach ($m_rows as $row) {
             if ($row['k_message'] === '') {
@@ -572,10 +572,10 @@ class Module_admin_permissions
             } else {
                 $msg = get_translated_text($row['k_message']);
             }
-            $rows2->attach(do_template('PERMISSION_KEYS_MESSAGE_ROW', array('_GUID' => 'bf52d4ac938ce5c495b89d06a4cb9e5e', 'KEY' => $row['k_match_key'], 'MSG' => $msg, 'UID' => is_integer($row['id']) ? strval($row['id']) : $row['id'])));
+            $rows2->attach(do_template('PERMISSION_KEYS_MESSAGE_ROW', ['_GUID' => 'bf52d4ac938ce5c495b89d06a4cb9e5e', 'KEY' => $row['k_match_key'], 'MSG' => $msg, 'UID' => is_integer($row['id']) ? strval($row['id']) : $row['id']]));
         }
 
-        return do_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', array(
+        return do_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', [
             '_GUID' => '61a702db2df67adb2702ae6c7081b4ab',
             'TITLE' => $this->title,
             'COLS' => $cols,
@@ -583,7 +583,7 @@ class Module_admin_permissions
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
             'ROWS2' => $rows2,
-        ));
+        ]);
     }
 
     /**
@@ -595,7 +595,7 @@ class Module_admin_permissions
     {
         // Delete to cleanup
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'group_page_access WHERE ' . db_string_equal_to('zone_name', '/'));
-        $mkeylang = collapse_2d_complexity('id', 'k_message', $GLOBALS['SITE_DB']->query_select('match_key_messages', array('id', 'k_message')));
+        $mkeylang = collapse_2d_complexity('id', 'k_message', $GLOBALS['SITE_DB']->query_select('match_key_messages', ['id', 'k_message']));
         $GLOBALS['SITE_DB']->query_delete('match_key_messages');
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
@@ -609,8 +609,8 @@ class Module_admin_permissions
             if ((substr($key, 0, 4) == 'key_') && ($val != '')) {
                 foreach (array_keys($groups) as $gid) {
                     if (post_param_integer('p_' . substr($key, 4) . '__' . strval($gid), 0) == 1) {
-                        $GLOBALS['SITE_DB']->query_delete('group_page_access', array('zone_name' => '/', 'page_name' => $val, 'group_id' => $gid), '', 1); // In case of row duplication in UI
-                        $GLOBALS['SITE_DB']->query_insert('group_page_access', array('zone_name' => '/', 'page_name' => $val, 'group_id' => $gid));
+                        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => '/', 'page_name' => $val, 'group_id' => $gid], '', 1); // In case of row duplication in UI
+                        $GLOBALS['SITE_DB']->query_insert('group_page_access', ['zone_name' => '/', 'page_name' => $val, 'group_id' => $gid]);
                     }
                 }
             }
@@ -618,13 +618,13 @@ class Module_admin_permissions
             if ((substr($key, 0, 5) == 'mkey_') && ($val != '')) {
                 $id = substr($key, 5);
                 if ((substr($id, 0, 4) == 'new_') || (!array_key_exists(intval($id), $mkeylang))) {
-                    $GLOBALS['SITE_DB']->query_insert('match_key_messages', array(
+                    $GLOBALS['SITE_DB']->query_insert('match_key_messages', [
                         'k_match_key' => $val,
-                    ) + insert_lang_comcode('k_message', post_param_string('msg_' . $id), 2));
+                    ] + insert_lang_comcode('k_message', post_param_string('msg_' . $id), 2));
                 } else {
-                    $map = array(
+                    $map = [
                         'k_match_key' => $val,
-                    );
+                    ];
                     $map += lang_remap_comcode('k_message', $mkeylang[intval($id)], post_param_string('msg_' . $id));
                     $GLOBALS['SITE_DB']->query_insert('match_key_messages', $map);
                     unset($mkeylang[intval($id)]);
@@ -640,7 +640,7 @@ class Module_admin_permissions
         log_it('PAGE_MATCH_KEY_ACCESS');
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'match_keys'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'match_keys'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -651,13 +651,13 @@ class Module_admin_permissions
      */
     public function _get_ordered_sections()
     {
-        $_sections = list_to_map('p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', array('DISTINCT p_section')));
+        $_sections = list_to_map('p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['DISTINCT p_section']));
         foreach ($_sections as $i => $s) {
             $_sections[$i]['trans'] = do_lang($s['p_section']);
         }
         sort_maps_by($_sections, 'trans', false, true);
-        $orderings = array('SUBMISSION', 'GENERAL_SETTINGS', 'FORUMS_AND_MEMBERS', 'STAFF_ACTIONS', '_COMCODE', '_FEEDBACK', 'POINTS');
-        $_sections_prior = array();
+        $orderings = ['SUBMISSION', 'GENERAL_SETTINGS', 'FORUMS_AND_MEMBERS', 'STAFF_ACTIONS', '_COMCODE', '_FEEDBACK', 'POINTS'];
+        $_sections_prior = [];
         foreach ($orderings as $ordering) {
             if (array_key_exists($ordering, $_sections)) {
                 $x = $_sections[$ordering];
@@ -712,9 +712,9 @@ class Module_admin_permissions
             $sections->attach(form_input_list_group(do_lang_tempcode('OTHER'), $sections_uncommon));
             $fields->attach(form_input_huge_list(do_lang_tempcode('SECTION'), '', 'id', $sections, null, true));
 
-            $post_url = get_self_url(false, false, array(), false, true);
+            $post_url = get_self_url(false, false, [], false, true);
 
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => 'e5d457a49a76706afebc92da3d846e74',
                 'GET' => true,
                 'SKIP_WEBSTANDARDS' => true,
@@ -725,10 +725,10 @@ class Module_admin_permissions
                 'FIELDS' => $fields,
                 'URL' => $post_url,
                 'TEXT' => '',
-            ));
+            ]);
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_privileges', 'id' => $p_section), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_privileges', 'id' => $p_section], '_SELF');
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $moderator_groups = $GLOBALS['FORUM_DRIVER']->get_moderator_groups();
@@ -745,50 +745,50 @@ class Module_admin_permissions
         }
 
         // Find all module privilege overrides
-        $all_module_overrides = array();
+        $all_module_overrides = [];
         foreach (find_all_zones() as $zone) {
-            $all_modules = array();
+            $all_modules = [];
             $all_modules += find_all_pages($zone, 'modules_custom', 'php', false);
             $all_modules += find_all_pages($zone, 'modules', 'php', false);
 
             foreach ($all_modules as $module => $module_type) {
                 $path = zone_black_magic_filterer(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $module_type . '/' . $module . '.php');
-                $functions = extract_module_functions($path, array('get_privilege_overrides'));
+                $functions = extract_module_functions($path, ['get_privilege_overrides']);
                 if ($functions[0] !== null) {
                     $overrides = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $path);
                     foreach (array_keys($overrides) as $override) {
                         if (!array_key_exists($override, $all_module_overrides)) {
-                            $all_module_overrides[$override] = array();
+                            $all_module_overrides[$override] = [];
                         }
                         $all_module_overrides[$override][] = $module;
                     }
                 }
             }
         }
-        $all_page_privilege_overridding = $GLOBALS['SITE_DB']->query_select('group_privileges', array('the_page', 'privilege'), array('category_name' => ''));
+        $all_page_privilege_overridding = $GLOBALS['SITE_DB']->query_select('group_privileges', ['the_page', 'privilege'], ['category_name' => '']);
 
         // Rows (pages)
         $rows = new Tempcode();
-        $where = array('p_section' => $p_section); // Added in because it was eating up too much memory
-        $_privileges = collapse_2d_complexity('the_name', 'p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', array('p_section', 'the_name'), $where, 'ORDER BY p_section,the_name'));
-        $access_rows = $GLOBALS['SITE_DB']->query_select('group_privileges', array('privilege', 'group_id'), array('the_page' => '', 'module_the_name' => '', 'category_name' => ''));
+        $where = ['p_section' => $p_section]; // Added in because it was eating up too much memory
+        $_privileges = collapse_2d_complexity('the_name', 'p_section', $GLOBALS['SITE_DB']->query_select('privilege_list', ['p_section', 'the_name'], $where, 'ORDER BY p_section,the_name'));
+        $access_rows = $GLOBALS['SITE_DB']->query_select('group_privileges', ['privilege', 'group_id'], ['the_page' => '', 'module_the_name' => '', 'category_name' => '']);
         $current_section = '';
         $sections = new Tempcode();
-        $_false = do_template('PERMISSION_CELL', array('_GUID' => '61aa7fa739e19caa1efb3695a5e2ab5d', 'CHECKED' => false, 'HUMAN' => '__human__', 'NAME' => '__name__'));
-        $_true = do_template('PERMISSION_CELL', array('_GUID' => '44a888b40d7a34aed6ed2bf8ff47f1de', 'CHECKED' => true, 'HUMAN' => '__human__', 'NAME' => '__name__'));
+        $_false = do_template('PERMISSION_CELL', ['_GUID' => '61aa7fa739e19caa1efb3695a5e2ab5d', 'CHECKED' => false, 'HUMAN' => '__human__', 'NAME' => '__name__']);
+        $_true = do_template('PERMISSION_CELL', ['_GUID' => '44a888b40d7a34aed6ed2bf8ff47f1de', 'CHECKED' => true, 'HUMAN' => '__human__', 'NAME' => '__name__']);
         $true = $_true->evaluate();
         $false = $_false->evaluate();
 
         // Ad-hoc sorting?
-        $orderings = array(
+        $orderings = [
             'submit_low', 'edit_own_low', 'edit_low', 'delete_own_low', 'delete_low', 'bypass_validation_low',
             'submit_mid', 'edit_own_mid', 'edit_mid', 'delete_own_mid', 'delete_mid', 'bypass_validation_mid',
             'submit_high', 'edit_own_high', 'edit_high', 'delete_own_high', 'delete_high', 'bypass_validation_high',
             'submit_cat_low', 'edit_own_cat_low', 'edit_cat_low', 'delete_own_cat_low', 'delete_cat_low', 'bypass_cat_validation_low',
             'submit_cat_mid', 'edit_own_cat_mid', 'edit_cat_mid', 'delete_own_cat_mid', 'delete_cat_mid', 'bypass_cat_validation_mid',
             'submit_cat_high', 'edit_own_cat_high', 'edit_cat_high', 'delete_own_cat_high', 'delete_cat_high', 'bypass_cat_validation_high',
-        );
-        $privileges_first = array();
+        ];
+        $privileges_first = [];
         foreach ($orderings as $stub) {
             foreach ($_privileges as $privilege => $section) {
                 if (substr($privilege, 0, strlen($stub)) == $stub) {
@@ -800,11 +800,11 @@ class Module_admin_permissions
         $_privileges = array_merge($privileges_first, $_privileges);
 
         // Sort
-        $__privileges = array();
+        $__privileges = [];
         foreach ($_privileges as $privilege => $section) {
             $privilege_text = do_lang('PRIVILEGE_' . $privilege, null, null, null, null, false);
             if ($privilege_text !== null) {
-                $__privileges[$privilege] = array($section, $privilege_text);
+                $__privileges[$privilege] = [$section, $privilege_text];
             }
         }
         sort_maps_by($__privileges, 1);
@@ -814,7 +814,7 @@ class Module_admin_permissions
             list($section, $privilege_text) = $bits;
 
             if (($section != $current_section) && ($current_section != '')) {
-                $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', array('_GUID' => '36bc9dfbeb7ee3d91f2a18057cd30551', 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section))));
+                $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', ['_GUID' => '36bc9dfbeb7ee3d91f2a18057cd30551', 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section)]));
                 $rows = new Tempcode();
             }
 
@@ -850,7 +850,7 @@ class Module_admin_permissions
                 ocp_mark_as_escaped($cells);
             }
 
-            $tpl_map = array('_GUID' => '075f8855f0fed36b0d0f9c61108dd3de', 'HAS' => $has, 'ABBR' => $privilege, 'PERMISSION' => $privilege_text, 'CELLS' => $cells, 'CODE' => $code);
+            $tpl_map = ['_GUID' => '075f8855f0fed36b0d0f9c61108dd3de', 'HAS' => $has, 'ABBR' => $privilege, 'PERMISSION' => $privilege_text, 'CELLS' => $cells, 'CODE' => $code];
 
             // See if any modules can override this
             if (array_key_exists($privilege, $all_module_overrides)) {
@@ -890,9 +890,9 @@ class Module_admin_permissions
 
             $current_section = $section;
         }
-        $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', array('_GUID' => 'c75a07373f54c0fa31d18e360fcf26f6', 'COLS' => $cols, 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section))));
+        $sections->attach(do_template('PERMISSION_PRIVILEGES_SECTION', ['_GUID' => 'c75a07373f54c0fa31d18e360fcf26f6', 'COLS' => $cols, 'HEADER_CELLS' => $header_cells, 'SECTION' => $rows, 'CURRENT_SECTION' => do_lang_tempcode($current_section)]));
 
-        return do_template('PERMISSION_PRIVILEGES_SCREEN', array('_GUID' => '11974f0a137266a625991d3611b8e587', 'TITLE' => $this->title, 'URL' => $url, 'SECTIONS' => $sections));
+        return do_template('PERMISSION_PRIVILEGES_SCREEN', ['_GUID' => '11974f0a137266a625991d3611b8e587', 'TITLE' => $this->title, 'URL' => $url, 'SECTIONS' => $sections]);
     }
 
     /**
@@ -926,7 +926,7 @@ class Module_admin_permissions
         }
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
-        $privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', array('the_name'), array('p_section' => $p_section)));
+        $privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name'], ['p_section' => $p_section]));
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         foreach ($privileges as $privilege) {
             foreach (array_keys($groups) as $id) {
@@ -937,10 +937,10 @@ class Module_admin_permissions
                 $val = post_param_integer($privilege . '__' . strval($id), 0);
 
                 // Delete to cleanup
-                $GLOBALS['SITE_DB']->query_delete('group_privileges', array('privilege' => $privilege, 'group_id' => $id, 'the_page' => '', 'module_the_name' => '', 'category_name' => ''), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('group_privileges', ['privilege' => $privilege, 'group_id' => $id, 'the_page' => '', 'module_the_name' => '', 'category_name' => ''], '', 1);
 
                 if ($val == 1) {
-                    $GLOBALS['SITE_DB']->query_insert('group_privileges', array('privilege' => $privilege, 'group_id' => $id, 'the_page' => '', 'module_the_name' => '', 'category_name' => '', 'the_value' => 1));
+                    $GLOBALS['SITE_DB']->query_insert('group_privileges', ['privilege' => $privilege, 'group_id' => $id, 'the_page' => '', 'module_the_name' => '', 'category_name' => '', 'the_value' => 1]);
                 }
             }
         }
@@ -953,7 +953,7 @@ class Module_admin_permissions
         log_it('PRIVILEGES');
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'privileges', 'id' => $next_section), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'privileges', 'id' => $next_section], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS_NOW_NEXT_SCREEN'));
     }
 }

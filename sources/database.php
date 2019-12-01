@@ -31,13 +31,13 @@ function init__database()
     $HAS_MULTI_LANG_CONTENT = null;
 
     global $QUERY_LIST, $QUERY_COUNT, $QUERY_LIMITING, $DB_SCOPE_CHECK, $QUERY_FILE_LOG, $SITE_INFO, $DB_STATIC_OBJECT;
-    $QUERY_LIST = array();
+    $QUERY_LIST = [];
     $QUERY_COUNT = 0;
-    $QUERY_LIMITING = array(array(true, 0));
+    $QUERY_LIMITING = [[true, 0]];
     if (!defined('DEV_MODE_QUERY_LIMIT')) {
         define('DEV_MODE_QUERY_LIMIT', 4000);
     }
-    $DB_SCOPE_CHECK = array(true);
+    $DB_SCOPE_CHECK = [true];
     if (((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) && (is_file(get_custom_file_base() . '/data_custom/queries.log'))) {
         require_code('files');
         $QUERY_FILE_LOG = cms_fopen_text_write(get_custom_file_base() . '/data_custom/queries.log', false, 'ab');
@@ -55,7 +55,7 @@ function init__database()
     // Create our main database objects
     global $SITE_DB, $TABLE_LANG_FIELDS_CACHE;
     $SITE_DB = null;
-    $TABLE_LANG_FIELDS_CACHE = array();
+    $TABLE_LANG_FIELDS_CACHE = [];
     if ((!empty($SITE_INFO['db_site'])) || (!empty($SITE_INFO['db_site_user']))) {
         /** The connector to the active site database.
          *
@@ -76,7 +76,7 @@ function init__database()
 function push_query_limiting($setting)
 {
     global $QUERY_LIMITING;
-    array_push($QUERY_LIMITING, array($setting, 0));
+    array_push($QUERY_LIMITING, [$setting, 0]);
 }
 
 /**
@@ -175,7 +175,7 @@ function reload_lang_fields($full = false, $only_table = null)
 {
     global $TABLE_LANG_FIELDS_CACHE;
     if ($only_table === null) {
-        $TABLE_LANG_FIELDS_CACHE = array();
+        $TABLE_LANG_FIELDS_CACHE = [];
     } else {
         unset($TABLE_LANG_FIELDS_CACHE[$only_table]);
     }
@@ -194,7 +194,7 @@ function reload_lang_fields($full = false, $only_table = null)
         $sql .= ' AND ' . db_string_equal_to('m_table', $only_table);
     }
     if (($msn_running) && (substr($only_table, 0, 2) === 'f_')) {
-        $_table_lang_fields = array();
+        $_table_lang_fields = [];
     } else {
         $_table_lang_fields = $GLOBALS['SITE_DB']->query($sql, null, 0, true); // Suppress errors in case table does not exist yet
     }
@@ -202,7 +202,7 @@ function reload_lang_fields($full = false, $only_table = null)
         // Load in our data
         foreach ($_table_lang_fields as $lang_field) {
             if (!isset($TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']])) {
-                $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']] = array();
+                $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']] = [];
             }
 
             $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']][$lang_field['m_name']] = $lang_field['m_type'];
@@ -222,7 +222,7 @@ function reload_lang_fields($full = false, $only_table = null)
                 // Load in our data
                 foreach ($_table_lang_fields_forum as $lang_field) {
                     if (!isset($TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']])) {
-                        $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']] = array();
+                        $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']] = [];
                     }
 
                     $TABLE_LANG_FIELDS_CACHE[$lang_field['m_table']][$lang_field['m_name']] = $lang_field['m_type'];
@@ -317,7 +317,7 @@ function db_escape_string($string)
  * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
  * @return string SQL fragment
  */
-function db_function($function, $args = array())
+function db_function($function, $args = [])
 {
     return $GLOBALS['DB_STATIC_OBJECT']->db_function($function, $args);
 }
@@ -330,9 +330,9 @@ function db_function($function, $args = array())
  * @param  array $remap Remapping of fields, if we need to do some kind of substitution as well (usually this will be because the row came from a join and we had to rename fields)
  * @return array Map of fields
  */
-function db_map_restrict($row, $fields, $remap = array())
+function db_map_restrict($row, $fields, $remap = [])
 {
-    $out = array();
+    $out = [];
     foreach ($fields as $field) {
         $out[$field] = $row[(array_key_exists($field, $remap) && array_key_exists($remap[$field], $row)) ? $remap[$field] : $field];
         if (isset($row[$field . '__text_parsed'])) {
@@ -585,10 +585,10 @@ class DatabaseDriver
     public function drop_table_if_exists($table, $connection)
     {
         if ($this->supports_drop_table_if_exists()) {
-            return array('DROP TABLE IF EXISTS ' . $table);
+            return ['DROP TABLE IF EXISTS ' . $table];
         }
 
-        return array('DROP TABLE ' . $table);
+        return ['DROP TABLE ' . $table];
     }
 
     /**
@@ -927,7 +927,7 @@ class DatabaseDriver
      * @param  array $args List of string arguments, assumed already quoted/escaped correctly for the particular database
      * @return string SQL fragment
      */
-    public function db_function($function, $args = array())
+    public function db_function($function, $args = [])
     {
         $args = @array_map('strval', $args);
 
@@ -1129,19 +1129,19 @@ class DatabaseConnector
      */
     public function __construct($db_name, $db_host, $db_user, $db_password, $table_prefix, $fail_ok = false, $static = null)
     {
-        $this->text_lookup_original_cache = array();
-        $this->text_lookup_cache = array();
-        $this->table_exists_cache = array();
-        $this->table_exists_real_cache = array();
+        $this->text_lookup_original_cache = [];
+        $this->text_lookup_cache = [];
+        $this->table_exists_cache = [];
+        $this->table_exists_real_cache = [];
 
         $servers = explode(',', $db_host);
         if (count($servers) == 1) {
-            $this->connection_write = array(get_use_persistent(), $db_name, $db_host, $db_user, $db_password, $fail_ok);
+            $this->connection_write = [get_use_persistent(), $db_name, $db_host, $db_user, $db_password, $fail_ok];
             $this->connection_read = $this->connection_write;
         } else {
-            $this->connection_write = array(get_use_persistent(), $db_name, $servers[0], $db_user, $db_password, $fail_ok);
+            $this->connection_write = [get_use_persistent(), $db_name, $servers[0], $db_user, $db_password, $fail_ok];
             $min = (count($servers) == 2) ? 0 : 1;
-            $this->connection_read = array(get_use_persistent(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok);
+            $this->connection_read = [get_use_persistent(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok];
         }
         $this->table_prefix = $table_prefix;
 
@@ -1158,9 +1158,9 @@ class DatabaseConnector
     public function ensure_connected()
     {
         if ((is_array($this->connection_read)) && (isset($this->connection_read[4]))) { // Okay, we can't be lazy anymore
-            $this->connection_read = call_user_func_array(array($this->static_ob, 'get_connection'), $this->connection_read);
+            $this->connection_read = call_user_func_array([$this->static_ob, 'get_connection'], $this->connection_read);
             if ((is_array($this->connection_write)) && (isset($this->connection_write[4]))) { // Okay, we can't be lazy anymore
-                $this->connection_write = call_user_func_array(array($this->static_ob, 'get_connection'), $this->connection_write);
+                $this->connection_write = call_user_func_array([$this->static_ob, 'get_connection'], $this->connection_write);
             }
             if (isset($GLOBALS['SITE_DB']) && $this === $GLOBALS['SITE_DB']) {
                 _general_db_init();
@@ -1187,12 +1187,12 @@ class DatabaseConnector
      * @param  string $end Additional stuff to tack onto the query
      * @return string SQL query
      */
-    protected function _get_where_expand($table, $select_map = null, $where_map = array(), $end = '')
+    protected function _get_where_expand($table, $select_map = null, $where_map = [], $end = '')
     {
         global $DEV_MODE;
 
         if ($select_map === null) {
-            $select_map = array('*');
+            $select_map = ['*'];
         }
 
         $select = '';
@@ -1207,7 +1207,7 @@ class DatabaseConnector
         }
 
         $where = '';
-        if ($where_map != array()) {
+        if ($where_map != []) {
             foreach ($where_map as $key => $value) {
                 if ($DEV_MODE) {
                     if (!is_string($key)) {
@@ -1257,14 +1257,14 @@ class DatabaseConnector
      * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return mixed The first value of the first row returned
      */
-    public function query_select_value($table, $selected_value, $where_map = array(), $end = '', $fail_ok = false, $lang_fields = null)
+    public function query_select_value($table, $selected_value, $where_map = [], $end = '', $fail_ok = false, $lang_fields = null)
     {
-        $values = $this->query_select($table, array($selected_value), $where_map, $end, 1, 0, $fail_ok, $lang_fields);
+        $values = $this->query_select($table, [$selected_value], $where_map, $end, 1, 0, $fail_ok, $lang_fields);
         if ($values === null) {
             return null; // error
         }
         if (!array_key_exists(0, $values)) {
-            $this->static_ob->failed_query_exit(do_lang_tempcode('QUERY_NULL', escape_html($this->_get_where_expand($this->table_prefix . $table, array($selected_value), $where_map, $end)))); // No result found
+            $this->static_ob->failed_query_exit(do_lang_tempcode('QUERY_NULL', escape_html($this->_get_where_expand($this->table_prefix . $table, [$selected_value], $where_map, $end)))); // No result found
         }
         return $this->_query_select_value($values);
     }
@@ -1296,9 +1296,9 @@ class DatabaseConnector
      * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return ?mixed The first value of the first row returned (null: nothing found, or null value found)
      */
-    public function query_select_value_if_there($table, $select, $where_map = array(), $end = '', $fail_ok = false, $lang_fields = null)
+    public function query_select_value_if_there($table, $select, $where_map = [], $end = '', $fail_ok = false, $lang_fields = null)
     {
-        $values = $this->query_select($table, array($select), $where_map, $end, 1, 0, $fail_ok, $lang_fields);
+        $values = $this->query_select($table, [$select], $where_map, $end, 1, 0, $fail_ok, $lang_fields);
         if ($values === null) {
             return null; // error
         }
@@ -1357,7 +1357,7 @@ class DatabaseConnector
      * @param  ?array $lang_fields Extra language fields to join in for cache pre-filling. You only need to send this if you are doing a JOIN and carefully craft your query so table field names won't conflict (null: auto-detect, if not a join)
      * @return array The results (empty array: empty result set)
      */
-    public function query_select($table, $select = array('*'), $where_map = array(), $end = '', $max = null, $start = 0, $fail_ok = false, $lang_fields = null)
+    public function query_select($table, $select = ['*'], $where_map = [], $end = '', $max = null, $start = 0, $fail_ok = false, $lang_fields = null)
     {
         $full_table = $this->table_prefix . $table;
 
@@ -1390,15 +1390,15 @@ class DatabaseConnector
                 ($this->table_prefix === $GLOBALS['SITE_DB']->table_prefix) || (get_forum_type() === 'cns'))
             ) {
                 global $TABLE_LANG_FIELDS_CACHE;
-                $lang_fields_provisional = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : array();
-                $lang_fields = array();
+                $lang_fields_provisional = isset($TABLE_LANG_FIELDS_CACHE[$table]) ? $TABLE_LANG_FIELDS_CACHE[$table] : [];
+                $lang_fields = [];
 
-                if ($lang_fields_provisional !== array()) {
+                if ($lang_fields_provisional !== []) {
                     $full_table .= ' main';
 
                     foreach ($select as $i => $s) {
                         if (!is_string($s)) {
-                            $lang_fields_provisional = array();
+                            $lang_fields_provisional = [];
                             break; // Bad API call, but we'll let it fail naturally
                         }
 
@@ -1410,7 +1410,7 @@ class DatabaseConnector
                     if (is_array($where_map)) {
                         foreach ($where_map as $i => $s) {
                             if (!is_string($i)) {
-                                $lang_fields_provisional = array();
+                                $lang_fields_provisional = [];
                                 break; // Bad API call, but we'll let it fail naturally
                             }
 
@@ -1470,7 +1470,7 @@ class DatabaseConnector
             warn_exit('prefix is a reserved parameter, you should not set it.');
         }
 
-        $parameters += array('prefix' => $this->get_table_prefix());
+        $parameters += ['prefix' => $this->get_table_prefix()];
         foreach ($parameters as $key => $val) {
             if (!is_string($val)) {
                 $val = strval($val);
@@ -1613,7 +1613,7 @@ class DatabaseConnector
         }
 
         // Optimisation: Load language fields in advance so we don't need to do additional details when calling get_translated_* functions
-        $lang_strings_expecting = array();
+        $lang_strings_expecting = [];
         if ($lang_fields !== null) {
             if (multi_lang_content()) {
                 if ((strpos($query, 'text_original') !== false) || (function_exists('user_lang')) && ($start < 200)) {
@@ -1665,7 +1665,7 @@ class DatabaseConnector
 
                             $query = $before_from . ',' . $original . ',' . $parsed . substr($query, $from_pos);
 
-                            $lang_strings_expecting[] = array($field, 't_' . $field_stripped . '__text_original', 't_' . $field_stripped . '__text_parsed');
+                            $lang_strings_expecting[] = [$field, 't_' . $field_stripped . '__text_original', 't_' . $field_stripped . '__text_parsed'];
                         }
                     }
                 }
@@ -1752,7 +1752,7 @@ class DatabaseConnector
         if ($QUERY_LOG) {
             $after = microtime(true);
             $text = ($max !== null) ? ($query . ' (' . strval($start) . '-' . strval($start + $max) . ')') : $query;
-            $out = array('time' => ($after - $before), 'text' => $text, 'rows' => is_array($ret) ? count($ret) : null);
+            $out = ['time' => ($after - $before), 'text' => $text, 'rows' => is_array($ret) ? count($ret) : null];
             $QUERY_LIST[] = $out;
         }
         /*  Generally one would use MySQL's own slow query log, which will impact Composr performance less
@@ -1888,11 +1888,11 @@ class DatabaseConnector
      */
     public function bulk_insert_flip($maps)
     {
-        $data = array();
+        $data = [];
         foreach ($maps as $map) {
             foreach ($map as $key => $val) {
                 if (!isset($data[$key])) {
-                    $data[$key] = array();
+                    $data[$key] = [];
                 }
                 $data[$key][] = $val;
             }
@@ -1937,7 +1937,7 @@ class DatabaseConnector
     public function query_insert($table, $map, $ret = false, $fail_ok = false, $save_as_volatile = false)
     {
         $keys = '';
-        $all_values = array(); // will usually only have a single entry; for bulk-inserts it will have as many as there are inserts
+        $all_values = []; // will usually only have a single entry; for bulk-inserts it will have as many as there are inserts
 
         $eis = $this->static_ob->empty_is_null();
 
@@ -1947,7 +1947,7 @@ class DatabaseConnector
             }
             $keys .= $key;
 
-            $_value = (!is_array($value)) ? array($value) : $value;
+            $_value = (!is_array($value)) ? [$value] : $value;
 
             $v = mixed();
             foreach ($_value as $i => $v) {
@@ -1986,7 +1986,7 @@ class DatabaseConnector
         }
 
         if (count($all_values) === 1) { // usually $all_values only has length of 1
-            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, array('stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'/*FUDGE: Ideally we would define this list via database_relations.php, but performance matters*/))) && (substr(get_db_type(), 0, 5) === 'mysql')) {
+            if ((function_exists('get_value')) && (get_value('enable_delayed_inserts') === '1') && (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'/*FUDGE: Ideally we would define this list via database_relations.php, but performance matters*/])) && (substr(get_db_type(), 0, 5) === 'mysql')) {
                 $query = 'INSERT DELAYED INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')'; // This is a very MySQL-specific optimisation (MyISAM). Other DBs don't do table-level locking!
             } else {
                 $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')';
@@ -2022,7 +2022,7 @@ class DatabaseConnector
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @return ?integer The number of touched records (null: hasn't been asked / error)
      */
-    public function query_update($table, $update_map, $where_map = array(), $end = '', $max = null, $start = 0, $num_touched = false, $fail_ok = false)
+    public function query_update($table, $update_map, $where_map = [], $end = '', $max = null, $start = 0, $num_touched = false, $fail_ok = false)
     {
         $where = '';
         $update = '';
@@ -2095,9 +2095,9 @@ class DatabaseConnector
      * @param  integer $start The starting row to delete
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      */
-    public function query_delete($table, $where_map = array(), $end = '', $max = null, $start = 0, $fail_ok = false)
+    public function query_delete($table, $where_map = [], $end = '', $max = null, $start = 0, $fail_ok = false)
     {
-        if ($where_map === array()) {
+        if ($where_map === []) {
             if (($end === '') && ($max === null) && ($start == 0) && ($this->static_ob->supports_truncate_table($GLOBALS['SITE_DB']->connection_read))) {
                 $this->_query('TRUNCATE ' . $this->table_prefix . $table, null, 0, $fail_ok);
             } else {
@@ -2171,7 +2171,7 @@ class DatabaseConnector
             }
         }
 
-        $rows = $this->query_select('db_meta', array('DISTINCT m_table'));
+        $rows = $this->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($rows as $row) {
             $this->table_exists_cache[$row['m_table']] = true;
         }
@@ -2321,14 +2321,14 @@ class DatabaseConnector
      */
     public function prefer_index($table, $index, $do_check_first = true)
     {
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$table][$index])) {
             return $cache[$table][$index];
         }
 
         $ret = '';
         if (strpos(get_db_type(), 'mysql') !== false) {
-            if ((!$do_check_first) || ($GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', array('i_table' => $table, 'i_name' => $index)) !== null)) {
+            if ((!$do_check_first) || ($GLOBALS['SITE_DB']->query_select_value_if_there('db_meta_indices', 'i_fields', ['i_table' => $table, 'i_name' => $index]) !== null)) {
                 $ret = ' FORCE INDEX (' . filter_naughty_harsh($index) . ')';
             }
         }
@@ -2401,7 +2401,7 @@ class DatabaseConnector
      * @param  ?string $where_clause WHERE clauses if it will help get a more reliable number when we're not approximating in SQL form (null: none)
      * @return ?integer The count (null: do it normally)
      */
-    public function get_table_count_approx($table, $where = array(), $where_clause = null)
+    public function get_table_count_approx($table, $where = [], $where_clause = null)
     {
         if (method_exists($this->static_ob, 'get_table_count_approx')) {
             $ret = $this->static_ob->get_table_count_approx($this->get_table_prefix() . $table, $this->connection_read);
@@ -2421,7 +2421,7 @@ class DatabaseConnector
      */
     public function table_is_locked($table)
     {
-        if (in_array($table, array('stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'))) {
+        if (in_array($table, ['stats', 'banner_clicks', 'member_tracking', 'usersonline_track', 'download_logging'])) {
             return false; // Actually, we have delayed insert for these so locking is not an issue
         }
 
@@ -2429,7 +2429,7 @@ class DatabaseConnector
             return false;
         }
 
-        static $cache = array();
+        static $cache = [];
         if (isset($cache[$table])) {
             return $cache[$table];
         }

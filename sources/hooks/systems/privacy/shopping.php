@@ -36,60 +36,60 @@ class Hook_privacy_shopping extends Hook_privacy_base
 
         require_lang('shopping');
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-                array(
+            'general' => [
+                [
                     'heading' => do_lang('INFORMATION_STORAGE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_shopping_sessions'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_shopping_sessions'),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-                'shopping_logging' => array(
+            'database_records' => [
+                'shopping_logging' => [
                     'timestamp_field' => 'l_date_and_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('l_member_id'),
-                    'ip_address_fields' => array('l_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['l_member_id'],
+                    'ip_address_fields' => ['l_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'shopping_cart' => array(
+                ],
+                'shopping_cart' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('ordered_by'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['ordered_by'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'shopping_orders' => array(
+                ],
+                'shopping_orders' => [
                     'timestamp_field' => 'add_date',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => db_string_not_equal_to('order_status', 'payment_received') . ' AND ' . db_string_not_equal_to('order_status', 'onhold'),
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -105,10 +105,10 @@ class Hook_privacy_shopping extends Hook_privacy_base
 
         switch ($table_name) {
             case 'shopping_orders':
-                $ret += array(
-                    'details' => $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $row['id'])),
-                    'addresses' => $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', array('*'), array('a_txn_id' => $row['txn_id'])),
-                );
+                $ret += [
+                    'details' => $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $row['id']]),
+                    'addresses' => $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_txn_id' => $row['txn_id']]),
+                ];
                 break;
         }
 
@@ -125,8 +125,8 @@ class Hook_privacy_shopping extends Hook_privacy_base
     {
         switch ($table_name) {
             case 'shopping_orders':
-                $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('p_order_id' => $row['id']));
-                $GLOBALS['SITE_DB']->query_delete('shopping_orders', array('id' => $row['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('shopping_order_details', ['p_order_id' => $row['id']]);
+                $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $row['id']], '', 1);
                 break;
 
             default:

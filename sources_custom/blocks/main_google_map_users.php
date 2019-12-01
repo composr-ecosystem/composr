@@ -25,14 +25,14 @@ class Block_main_google_map_users
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Kamen / Chris Graham / temp1024';
         $info['organisation'] = 'Miscellaneous';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('title', 'region', 'cluster', 'filter_usergroup', 'filter_term', 'geolocate_user', 'username_prefix', 'latitude', 'longitude', 'width', 'height', 'zoom', 'center');
+        $info['parameters'] = ['title', 'region', 'cluster', 'filter_usergroup', 'filter_term', 'geolocate_user', 'username_prefix', 'latitude', 'longitude', 'width', 'height', 'zoom', 'center'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_google_map_users
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         $map
 PHP;
@@ -80,7 +80,7 @@ PHP;
         }
 
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => 'rly9gj7499putj5n2emik09qx1h3w1kg', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => 'rly9gj7499putj5n2emik09qx1h3w1kg', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         require_lang('google_map_users');
@@ -118,14 +118,14 @@ PHP;
         $cluster = array_key_exists('cluster', $map) ? $map['cluster'] : '0';
 
         // Ensure installed
-        $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude'));
-        $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude'));
+        $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude']);
+        $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude']);
         if (($longitude_cpf_id === null) || ($latitude_cpf_id === null)) {
             require_code('zones2');
             reinstall_block('main_google_map_users');
 
-            $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude'));
-            $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude'));
+            $latitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_latitude']);
+            $longitude_cpf_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => 'cms_longitude']);
             //return paragraph('The maps block has not been installed correctly, the CPFs are missing.', 'grx928jzf3z913gzacyeo16e0ov0lq6l', 'red-alert');
         }
 
@@ -185,7 +185,7 @@ PHP;
             $set_coord_url = '';
         }
 
-        return do_template('BLOCK_MAIN_GOOGLE_MAP_USERS', array(
+        return do_template('BLOCK_MAIN_GOOGLE_MAP_USERS', [
             '_GUID' => '4c80efbd5d31183196ea0f6265f07921',
             'BLOCK_ID' => $block_id,
             'TITLE' => $map['title'],
@@ -201,6 +201,6 @@ PHP;
             'LONGITUDE' => $map['longitude'],
             'ZOOM' => $set_zoom,
             'CENTER' => $set_center,
-        ));
+        ]);
     }
 }

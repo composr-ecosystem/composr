@@ -30,7 +30,7 @@ class Hook_config_poll_update_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POLL_REGULARITY',
             'type' => 'integer',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_poll_update_time
             'public' => false,
 
             'addon' => 'polls',
-        );
+        ];
     }
 
     /**

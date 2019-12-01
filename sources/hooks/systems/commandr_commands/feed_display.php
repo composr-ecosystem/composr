@@ -34,7 +34,7 @@ class Hook_commandr_command_feed_display
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('syndication_blocks')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         if (!addon_installed('news')) {
@@ -44,10 +44,10 @@ class Hook_commandr_command_feed_display
         require_code('crypt');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('feed_display', array('h', 'm'), array(true)), '', '');
+            return ['', do_command_help('feed_display', ['h', 'm'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'feed_display'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'feed_display')];
             }
 
             require_lang('news');
@@ -56,7 +56,7 @@ class Hook_commandr_command_feed_display
 
             $rss = new CMS_RSS($parameters[0]);
             if ($rss->error !== null) {
-                return array('', '', '', $rss->error);
+                return ['', '', '', $rss->error];
             }
 
             if (!array_key_exists('title', $rss->gleamed_feed)) {
@@ -87,7 +87,7 @@ class Hook_commandr_command_feed_display
 
             // Now for the actual stream contents
             $max = (array_key_exists('max', $options)) ? intval($options['max']) : 5;
-            $content = array();
+            $content = [];
             require_code('xhtml');
             foreach ($rss->gleamed_items as $i => $item) {
                 if ($i >= $max) {
@@ -107,10 +107,10 @@ class Hook_commandr_command_feed_display
                 $_title = $item['title'];
                 $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_time($item['clean_add_date']) : (array_key_exists('add_date', $item) ? $item['add_date'] : '');
 
-                $content[] = array('FULL_URL' => $full_url, 'NEWS_TITLE' => $_title, 'DATE' => $date, 'SUMMARY' => xhtmlise_html($item['news']));
+                $content[] = ['FULL_URL' => $full_url, 'NEWS_TITLE' => $_title, 'DATE' => $date, 'SUMMARY' => xhtmlise_html($item['news'])];
             }
 
-            return array('', do_template('COMMANDR_RSS', array('_GUID' => 'c01334f868079f9e0c2dba751550aa40', 'TITLE' => $rss->gleamed_feed['title'], 'CONTENT' => $content)), '', '');
+            return ['', do_template('COMMANDR_RSS', ['_GUID' => 'c01334f868079f9e0c2dba751550aa40', 'TITLE' => $rss->gleamed_feed['title'], 'CONTENT' => $content]), '', ''];
         }
     }
 }

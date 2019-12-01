@@ -30,7 +30,7 @@ class Hook_config_sms_api_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'API_ID',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -46,7 +46,7 @@ class Hook_config_sms_api_id
             'addon' => 'sms',
 
             'maintenance_code' => 'sms',
-        );
+        ];
     }
 
     /**

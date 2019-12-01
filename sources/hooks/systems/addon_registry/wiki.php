@@ -31,7 +31,7 @@ class Hook_addon_registry_wiki
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_wiki
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_wiki',
             'tut_information',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_wiki
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_wiki
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/wiki.php',
             'themes/default/images/icons/menu/rich_content/wiki.svg',
             'themes/default/images/icons/menu/rich_content/wiki/random_page.svg',
@@ -153,7 +153,7 @@ class Hook_addon_registry_wiki
             'sources/hooks/systems/config/search_wiki_posts.php',
             'themes/default/javascript/wiki.js',
             'sources/hooks/systems/actionlog/wiki.php',
-        );
+        ];
     }
 
     /**
@@ -163,14 +163,14 @@ class Hook_addon_registry_wiki
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/WIKI_MANAGE_TREE_SCREEN.tpl' => 'administrative__wiki_manage_tree_screen',
             'templates/WIKI_POST.tpl' => 'wiki_page_screen',
             'templates/WIKI_PAGE_SCREEN.tpl' => 'wiki_page_screen',
             'templates/WIKI_RATING.tpl' => 'wiki_page_screen',
             'templates/WIKI_POSTING_SCREEN.tpl' => 'wiki_posting_screen',
             'templates/WIKI_RATING_FORM.tpl' => 'wiki_page_screen',
-        );
+        ];
     }
 
     /**
@@ -182,16 +182,16 @@ class Hook_addon_registry_wiki
      */
     public function tpl_preview__administrative__wiki_manage_tree_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('WIKI_MANAGE_TREE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('WIKI_MANAGE_TREE_SCREEN', [
                 'PAGE_TITLE' => lorem_phrase(),
                 'PING_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
                 'TITLE' => lorem_title(),
                 'FORM' => placeholder_form(),
                 'WIKI_TREE' => placeholder_options(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -206,31 +206,31 @@ class Hook_addon_registry_wiki
         require_lang('cns');
 
         $extra = new Tempcode();
-        $extra = do_lorem_template('BUTTON_SCREEN_ITEM', array(
+        $extra = do_lorem_template('BUTTON_SCREEN_ITEM', [
             'REL' => 'edit',
             'IMMEDIATE' => false,
             'URL' => placeholder_url(),
             'TITLE' => do_lang_tempcode('EDIT'),
             'FULL_TITLE' => do_lang_tempcode('EDIT'),
             'IMG' => 'admin/edit',
-        ));
-        $extra->attach(do_lorem_template('BUTTON_SCREEN_ITEM', array(
+        ]);
+        $extra->attach(do_lorem_template('BUTTON_SCREEN_ITEM', [
             'REL' => 'move',
             'IMMEDIATE' => false,
             'URL' => placeholder_url(),
             'TITLE' => do_lang_tempcode('MOVE'),
             'FULL_TITLE' => do_lang_tempcode('MOVE'),
             'IMG' => 'admin/move',
-        )));
+        ]));
 
-        $all_rating_criteria = array();
-        $all_rating_criteria[] = array(
+        $all_rating_criteria = [];
+        $all_rating_criteria[] = [
             'TITLE' => lorem_word(),
             'RATING' => make_string_tempcode('6'),
             'NUM_RATINGS' => placeholder_number(),
             'TYPE' => lorem_word(),
-        );
-        $rating_inside = do_lorem_template('WIKI_RATING_FORM', array(
+        ];
+        $rating_inside = do_lorem_template('WIKI_RATING_FORM', [
             'LIKES' => true,
             'CONTENT_TYPE' => 'wiki',
             'ID' => placeholder_id(),
@@ -241,16 +241,16 @@ class Hook_addon_registry_wiki
             'HAS_RATINGS' => true,
             'SIMPLISTIC' => true,
             'ERROR' => '',
-        ));
+        ]);
 
-        $rating_details = do_lorem_template('WIKI_RATING', array(
+        $rating_details = do_lorem_template('WIKI_RATING', [
             'OVERALL_NUM_RATINGS' => placeholder_number(),
             'RATING_FORM' => $rating_inside,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
             'HAS_RATINGS' => true,
-        ));
+        ]);
 
-        $posts = do_lorem_template('WIKI_POST', array(
+        $posts = do_lorem_template('WIKI_POST', [
             'INCLUDE_EXPANSION' => lorem_phrase(),
             'UNVALIDATED' => do_lang('UNVALIDATED'),
             'STAFF_ACCESS' => lorem_phrase(),
@@ -264,19 +264,19 @@ class Hook_addon_registry_wiki
             'POST_DATE' => placeholder_date(),
             'POST' => lorem_phrase(),
             'BUTTONS' => $extra,
-        ));
+        ]);
 
-        $children = array();
-        $children[] = array(
+        $children = [];
+        $children[] = [
             'URL' => placeholder_url(),
             'MY_CHILD_POSTS' => placeholder_number(),
             'MY_CHILD_CHILDREN' => placeholder_number(),
             'CHILD' => lorem_phrase(),
             'BODY_CONTENT' => placeholder_number(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('WIKI_PAGE_SCREEN', [
                 'TAGS' => lorem_word_html(),
                 'SHOW_POSTS' => placeholder_id(),
                 'ID' => placeholder_id(),
@@ -289,8 +289,8 @@ class Hook_addon_registry_wiki
                 'POSTS' => $posts,
                 'NUM_POSTS' => placeholder_number(),
                 'BUTTONS' => placeholder_button(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -307,7 +307,7 @@ class Hook_addon_registry_wiki
 
         require_css('forms');
 
-        $posting_form = do_lorem_template('POSTING_FORM', array(
+        $posting_form = do_lorem_template('POSTING_FORM', [
             'TABINDEX_PF' => placeholder_number(),
             'PREVIEW' => lorem_phrase(),
             'COMCODE_EDITOR' => lorem_phrase(),
@@ -329,17 +329,17 @@ class Hook_addon_registry_wiki
             'SPECIALISATION2' => '',
             'REQUIRED' => true,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('WIKI_POSTING_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('WIKI_POSTING_SCREEN', [
                 'PING_URL' => '',
                 'WARNING_DETAILS' => '',
                 'TEXT' => lorem_phrase(),
                 'TITLE' => lorem_title(),
                 'POSTING_FORM' => $posting_form,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -350,16 +350,16 @@ class Hook_addon_registry_wiki
         require_code('wiki');
         require_lang('wiki');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase() . ' 1'));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase() . ' 1']);
         foreach ($to_delete as $record) {
             wiki_delete_page($record['id']);
         }
-        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase() . ' 2'));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => lorem_phrase() . ' 2']);
         foreach ($to_delete as $record) {
             wiki_delete_page($record['id']);
         }
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('the_message') => lorem_paragraph()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('the_message') => lorem_paragraph()]);
         foreach ($to_delete as $record) {
             wiki_delete_post($record['id']);
         }
@@ -378,8 +378,8 @@ class Hook_addon_registry_wiki
         require_code('permissions2');
         set_global_category_access('wiki_page', $page_a);
         set_global_category_access('wiki_page', $page_b);
-        $GLOBALS['SITE_DB']->query_insert('wiki_children', array('child_id' => $page_a, 'parent_id' => db_get_first_id(), 'the_order' => 1, 'title' => lorem_phrase() . ' 1'));
-        $GLOBALS['SITE_DB']->query_insert('wiki_children', array('child_id' => $page_b, 'parent_id' => db_get_first_id(), 'the_order' => 2, 'title' => lorem_phrase() . ' 2'));
+        $GLOBALS['SITE_DB']->query_insert('wiki_children', ['child_id' => $page_a, 'parent_id' => db_get_first_id(), 'the_order' => 1, 'title' => lorem_phrase() . ' 1']);
+        $GLOBALS['SITE_DB']->query_insert('wiki_children', ['child_id' => $page_b, 'parent_id' => db_get_first_id(), 'the_order' => 2, 'title' => lorem_phrase() . ' 2']);
 
         wiki_add_post($page_a, lorem_paragraph());
         wiki_add_post($page_b, lorem_paragraph());

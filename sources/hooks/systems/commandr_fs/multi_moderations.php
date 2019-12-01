@@ -47,8 +47,8 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('id'), array($GLOBALS['FORUM_DB']->translate_field_ref('mm_name') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], [$GLOBALS['FORUM_DB']->translate_field_ref('mm_name') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -116,13 +116,13 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['mm_name'], $GLOBALS['FORUM_DB']),
             'post_text' => $row['mm_post_text'],
             'move_to' => $row['mm_move_to'],
@@ -130,7 +130,7 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
             'open_state' => $row['mm_open_state'],
             'forum_multi_code' => $row['mm_forum_multi_code'],
             'title_suffix' => $row['mm_title_suffix'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

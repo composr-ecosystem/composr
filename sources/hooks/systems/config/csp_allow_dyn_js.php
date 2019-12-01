@@ -30,7 +30,7 @@ class Hook_config_csp_allow_dyn_js
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_ALLOW_DYN_JS',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_csp_allow_dyn_js
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

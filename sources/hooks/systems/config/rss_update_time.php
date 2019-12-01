@@ -30,7 +30,7 @@ class Hook_config_rss_update_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'UPDATE_TIME',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_rss_update_time
             'public' => false,
 
             'addon' => 'syndication_blocks',
-        );
+        ];
     }
 
     /**

@@ -56,7 +56,7 @@ class Hook_rss_calendar
 
         $content = new Tempcode();
 
-        $_categories = $GLOBALS['SITE_DB']->query('SELECT c.id,c.t_title FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_types c WHERE ' . $filters, null, 0, false, true, array('t_title' => 'SHORT_TRANS__COMCODE'));
+        $_categories = $GLOBALS['SITE_DB']->query('SELECT c.id,c.t_title FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'calendar_types c WHERE ' . $filters, null, 0, false, true, ['t_title' => 'SHORT_TRANS__COMCODE']);
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_t_title'] = get_translated_text($_category['t_title']);
         }
@@ -105,7 +105,7 @@ class Hook_rss_calendar
             // The edit date'll be the latest of add/edit
             $edit_date = ($row['e_edit_date'] === null) ? date($date_string, $row['e_add_date']) : date($date_string, $row['e_edit_date']);
 
-            $just_event_row = db_map_restrict($row, array('id', 'e_content'));
+            $just_event_row = db_map_restrict($row, ['id', 'e_content']);
 
             $news_title = xmlentities(escape_html(get_translated_text($row['e_title'])));
             $_summary = get_translated_tempcode('calendar_events', $just_event_row, 'e_content');
@@ -115,21 +115,21 @@ class Hook_rss_calendar
             $category = array_key_exists($row['e_type'], $categories) ? $categories[$row['e_type']] : '';
             $category_raw = strval($row['e_type']);
 
-            $view_url = build_url(array('page' => 'calendar', 'type' => 'view', 'id' => $_row[0]), get_module_zone('calendar'), array(), false, false, true);
+            $view_url = build_url(['page' => 'calendar', 'type' => 'view', 'id' => $_row[0]], get_module_zone('calendar'), [], false, false, true);
 
             if (!array_key_exists('allow_comments', $row)) {
                 $row['allow_comments'] = 1;
             }
             if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '202a32693ce54d9ce960b72e66714df0', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '202a32693ce54d9ce960b72e66714df0', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('calendar');
-        return array($content, do_lang('CALENDAR'));
+        return [$content, do_lang('CALENDAR')];
     }
 }

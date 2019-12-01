@@ -73,12 +73,12 @@ class Hook_syndication_facebook
         $code = get_param_string('code', '', INPUT_FILTER_GET_COMPLEX);
 
         if ($code == '') {
-            $scope = array('publish_actions');
+            $scope = ['publish_actions'];
             if ($member_id === null) {
                 $scope[] = 'manage_pages';
                 $scope[] = 'publish_pages';
             }
-            $oauth_redir_url = $FACEBOOK_CONNECT->getLoginUrl(array('redirect_uri' => $oauth_url->evaluate(), 'scope' => $scope));
+            $oauth_redir_url = $FACEBOOK_CONNECT->getLoginUrl(['redirect_uri' => $oauth_url->evaluate(), 'scope' => $scope]);
             require_code('site2');
             redirect_exit($oauth_redir_url);
         }
@@ -212,10 +212,10 @@ class Hook_syndication_facebook
         // Send message
         $appid = get_option('facebook_appid');
         $appsecret = get_option('facebook_secret_code');
-        $fb = new Facebook(array('appId' => $appid, 'secret' => $appsecret));
+        $fb = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
         $fb->setAccessToken($token);
 
-        $attachment = array('description' => $message);
+        $attachment = ['description' => $message];
         if (($name != '') && ($name != $message)) {
             $attachment['name'] = $name;
         }
@@ -223,7 +223,7 @@ class Hook_syndication_facebook
             $attachment['link'] = $link;
         }
         if (count($attachment) == 1) {
-            $attachment = array('message' => $message);
+            $attachment = ['message' => $message];
         }
 
         if ($post_to_uid == 'me') {

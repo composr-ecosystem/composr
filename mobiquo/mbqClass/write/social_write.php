@@ -36,7 +36,7 @@ class CMSSocialWrite
         }
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
         if (!isset($post_rows[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }
@@ -129,7 +129,7 @@ class CMSSocialWrite
     protected function set_post_rating($post_id, $rating)
     {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t ON t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
         if (!isset($post_rows[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
         }

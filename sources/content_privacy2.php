@@ -42,7 +42,7 @@ function get_privacy_form_fields($content_type, $content_id = null, $show_header
     require_code('form_templates');
 
     if ($content_id !== null) {
-        $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', array('*'), array('content_type' => $content_type, 'content_id' => $content_id));
+        $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $content_id]);
         if (empty($rows)) {
             $view_by_guests = true;
             $view_by_members = true;
@@ -52,8 +52,8 @@ function get_privacy_form_fields($content_type, $content_id = null, $show_header
             $view_by_members = ($rows[0]['member_view'] == 1);
             $view_by_friends = ($rows[0]['friend_view'] == 1);
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('content_privacy__members', array('*'), array('content_type' => $content_type, 'content_id' => $content_id));
-        $additional_access = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['*'], ['content_type' => $content_type, 'content_id' => $content_id]);
+        $additional_access = [];
         foreach ($rows as $row) {
             $additional_access[] = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id'], false, USERNAME_DEFAULT_BLANK);
         }
@@ -63,32 +63,32 @@ function get_privacy_form_fields($content_type, $content_id = null, $show_header
             $view_by_members = true;
             $view_by_friends = true;
         } else {
-            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(guest_view)', array('content_type' => $content_type));
+            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(guest_view)', ['content_type' => $content_type]);
             if ($test === null) {
                 $view_by_guests = true;
             } else {
                 $view_by_guests = (@intval($test) == 1);
             }
-            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(member_view)', array('content_type' => $content_type));
+            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(member_view)', ['content_type' => $content_type]);
             if ($test === null) {
                 $view_by_members = true;
             } else {
                 $view_by_members = (@intval($test) == 1);
             }
-            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(friend_view)', array('content_type' => $content_type));
+            $test = ($content_type === null) ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('content_privacy', 'AVG(friend_view)', ['content_type' => $content_type]);
             if ($test === null) {
                 $view_by_friends = true;
             } else {
                 $view_by_friends = (@intval($test) == 1);
             }
         }
-        $additional_access = array();
+        $additional_access = [];
     }
 
     $fields = new Tempcode();
 
     if ($show_header) {
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '3f3bf4190c8f4973382f264e2a892044', 'SECTION_HIDDEN' => $view_by_guests, 'TITLE' => do_lang_tempcode('PRIVACY_SETTINGS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3f3bf4190c8f4973382f264e2a892044', 'SECTION_HIDDEN' => $view_by_guests, 'TITLE' => do_lang_tempcode('PRIVACY_SETTINGS')]));
     }
 
     $privacy_options = new Tempcode();
@@ -113,7 +113,7 @@ function read_privacy_fields($prefix = '')
 {
     $privacy_level = post_param_string($prefix . 'privacy_level', '');
 
-    $additional_access = array();
+    $additional_access = [];
     foreach ($_POST as $key => $value) {
         if (strpos($key, $prefix . 'privacy_friends_list_') === 0) {
             if ($value != '') {
@@ -122,7 +122,7 @@ function read_privacy_fields($prefix = '')
         }
     }
 
-    return array($privacy_level, $additional_access);
+    return [$privacy_level, $additional_access];
 }
 
 /**
@@ -176,36 +176,36 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
             $guest_view = 1;
             break;
     }
-    $GLOBALS['SITE_DB']->query_delete('content_privacy', array(
+    $GLOBALS['SITE_DB']->query_delete('content_privacy', [
         'content_type' => $content_type,
         'content_id' => $content_id,
-    ));
-    $GLOBALS['SITE_DB']->query_insert('content_privacy', array(
+    ]);
+    $GLOBALS['SITE_DB']->query_insert('content_privacy', [
         'content_type' => $content_type,
         'content_id' => $content_id,
         'guest_view' => $guest_view,
         'member_view' => $member_view,
         'friend_view' => $friend_view,
-    ));
+    ]);
 
-    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy__members', array('member_id'), array('content_type' => $content_type, 'content_id' => $content_id));
-    $currently_invited_members = array();
+    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['member_id'], ['content_type' => $content_type, 'content_id' => $content_id]);
+    $currently_invited_members = [];
     foreach ($rows as $value) {
         $currently_invited_members[] = $value['member_id'];
     }
 
-    $GLOBALS['SITE_DB']->query_delete('content_privacy__members', array('content_type' => $content_type, 'content_id' => $content_id));
+    $GLOBALS['SITE_DB']->query_delete('content_privacy__members', ['content_type' => $content_type, 'content_id' => $content_id]);
 
     if (!empty($additional_access)) {
-        $invited_members = array();
+        $invited_members = [];
         foreach ($additional_access as $member) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member);
             if ($member_id !== null) {
-                $GLOBALS['SITE_DB']->query_insert('content_privacy__members', array(
+                $GLOBALS['SITE_DB']->query_insert('content_privacy__members', [
                     'member_id' => $member_id,
                     'content_type' => $content_type,
                     'content_id' => $content_id,
-                ));
+                ]);
                 if (!in_array($member_id, $currently_invited_members)) {
                     $invited_members[] = $member_id;
                 }
@@ -221,7 +221,7 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
             $content_type_label = do_lang($cma_info['content_type_label']);
 
             $subject = do_lang('NOTIFICATION_SUBJECT_invited_content', comcode_escape($content_submitter_username));
-            $mail = do_notification_lang('NOTIFICATION_BODY_invited_content', comcode_escape($content_submitter_username), strtolower(comcode_escape($content_type_label)), array(comcode_escape($content_title), $content_url->evaluate(), comcode_escape($content_type_label)));
+            $mail = do_notification_lang('NOTIFICATION_BODY_invited_content', comcode_escape($content_submitter_username), strtolower(comcode_escape($content_type_label)), [comcode_escape($content_title), $content_url->evaluate(), comcode_escape($content_type_label)]);
             dispatch_notification('invited_content', null, $subject, $mail, $invited_members);
         }
     }
@@ -242,8 +242,8 @@ function delete_privacy_form_fields($content_type, $content_id)
         return false;
     }
 
-    $GLOBALS['SITE_DB']->query_delete('content_privacy', array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('content_privacy__members', array('content_type' => $content_type, 'content_id' => $content_id));
+    $GLOBALS['SITE_DB']->query_delete('content_privacy', ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('content_privacy__members', ['content_type' => $content_type, 'content_id' => $content_id]);
 
     return true;
 }

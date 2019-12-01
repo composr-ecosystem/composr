@@ -25,7 +25,7 @@ class Hook_config_bookings_max_ahead_months
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BOOKINGS_MAX_AHEAD_MONTHS',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_bookings_max_ahead_months
             'public' => false,
 
             'addon' => 'booking',
-        );
+        ];
     }
 
     /**

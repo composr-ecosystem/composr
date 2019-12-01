@@ -30,7 +30,7 @@ class Hook_config_filedump_show_stats_count_total_files
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FILEDUMP_COUNT_FILES',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_filedump_show_stats_count_total_files
             'public' => false,
 
             'addon' => 'filedump',
-        );
+        ];
     }
 
     /**

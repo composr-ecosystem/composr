@@ -37,7 +37,7 @@ class ssl_test_set extends cms_test_case
         if (is_local_machine()) {
             set_value('disable_ssl_for__' . get_base_url_hostname(), '1');
         }
-        $test = http_get_contents('https://' . get_base_url_hostname(), array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0));
+        $test = http_get_contents('https://' . get_base_url_hostname(), ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
         if ($test === null) {
             $this->assertTrue(false, 'SSL not running on this machine');
             return;
@@ -57,19 +57,19 @@ class ssl_test_set extends cms_test_case
         }
 
         // HTTPS (SSL) version
-        $GLOBALS['SITE_DB']->query_insert('https_pages', array('https_page_name' => $page_link), false, true/*in case previous test didn't finish*/);
+        $GLOBALS['SITE_DB']->query_insert('https_pages', ['https_page_name' => $page_link], false, true/*in case previous test didn't finish*/);
         $HTTPS_PAGES_CACHE = null;
         erase_persistent_cache();
-        $url = build_url(array('page' => $page), get_module_zone($page));
-        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => $session_id), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
+        $url = build_url(['page' => $page], get_module_zone($page));
+        $c = http_get_contents($url->evaluate(), ['cookies' => [get_session_cookie() => $session_id], 'convert_to_internal_encoding' => true, 'timeout' => 20.0]);
         $this->assertTrue(strpos($c, 'src="http://') === false, 'HTTPS version failed (HTTP embed [e.g. image] found) on ' . $url->evaluate());
 
         // HTTP version
-        $GLOBALS['SITE_DB']->query_delete('https_pages', array('https_page_name' => $page_link));
+        $GLOBALS['SITE_DB']->query_delete('https_pages', ['https_page_name' => $page_link]);
         $HTTPS_PAGES_CACHE = null;
         erase_persistent_cache();
-        $url = build_url(array('page' => $page), get_module_zone($page));
-        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => $session_id), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
+        $url = build_url(['page' => $page], get_module_zone($page));
+        $c = http_get_contents($url->evaluate(), ['cookies' => [get_session_cookie() => $session_id], 'convert_to_internal_encoding' => true, 'timeout' => 20.0]);
         $this->assertTrue(strpos($c, 'src="https://') === false, 'HTTP version failed (HTTPS embed [e.g. image] found) on ' . $url->evaluate());
     }
 

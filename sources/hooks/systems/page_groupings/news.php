@@ -33,16 +33,16 @@ class Hook_page_groupings_news
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
         $cnt = intval($GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)'));
-        $cnt_blogs = $cnt - intval($GLOBALS['SITE_DB']->query_select_value('news n LEFT JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category', 'COUNT(*)', array('nc_owner' => null)));
+        $cnt_blogs = $cnt - intval($GLOBALS['SITE_DB']->query_select_value('news n LEFT JOIN ' . get_table_prefix() . 'news_categories c ON c.id=n.news_category', 'COUNT(*)', ['nc_owner' => null]));
 
-        return array(
-            array('cms', 'menu/rich_content/news', array('cms_news', array('type' => 'browse'), get_module_zone('cms_news')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('NEWS'), make_string_tempcode(escape_html(integer_format($cnt)))), 'news:DOC_NEWS'),
-            (get_option('separate_blogs') == '0') ? null : array('cms', 'menu/cms/blog', array('cms_blogs', array('type' => 'browse'), get_module_zone('cms_blogs')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('news:BLOGS'), make_string_tempcode(escape_html(integer_format($cnt_blogs)))), 'news:DOC_BLOGS'),
-            array('rich_content', 'menu/rich_content/news', array('news', array(), get_module_zone('news')), do_lang_tempcode('NEWS')),
-        );
+        return [
+            ['cms', 'menu/rich_content/news', ['cms_news', ['type' => 'browse'], get_module_zone('cms_news')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('NEWS'), make_string_tempcode(escape_html(integer_format($cnt)))), 'news:DOC_NEWS'],
+            (get_option('separate_blogs') == '0') ? null : ['cms', 'menu/cms/blog', ['cms_blogs', ['type' => 'browse'], get_module_zone('cms_blogs')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('news:BLOGS'), make_string_tempcode(escape_html(integer_format($cnt_blogs)))), 'news:DOC_BLOGS'],
+            ['rich_content', 'menu/rich_content/news', ['news', [], get_module_zone('news')], do_lang_tempcode('NEWS')],
+        ];
     }
 }

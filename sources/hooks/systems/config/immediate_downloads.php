@@ -30,7 +30,7 @@ class Hook_config_immediate_downloads
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IMMEDIATE_DOWNLOADS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_immediate_downloads
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

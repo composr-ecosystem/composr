@@ -30,7 +30,7 @@ class Hook_config_threaded_buttons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'THREADED_BUTTONS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_threaded_buttons
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

@@ -31,9 +31,9 @@ class Hook_sw_downloads
     public function get_blocks()
     {
         if (!addon_installed('downloads')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_awards' => array('YES_CELL', 'NO')), array());
+        return [['main_awards' => ['YES_CELL', 'NO']], []];
     }
 }

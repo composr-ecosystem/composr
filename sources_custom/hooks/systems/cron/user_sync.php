@@ -43,11 +43,11 @@ class Hook_cron_user_sync
             return null;
         }
 
-        return array(
+        return [
             'label' => 'User synchronisation',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**

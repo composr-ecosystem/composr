@@ -37,18 +37,18 @@ function add_news_category($title, $img = 'icons/news/general', $notes = '', $ow
     require_code('global4');
     prevent_double_submit('ADD_NEWS_CATEGORY', null, $title);
 
-    $map = array(
+    $map = [
         'nc_img' => $img,
         'notes' => $notes,
         'nc_owner' => $owner,
-    );
+    ];
     $map += insert_lang('nc_title', $title, 1);
     if ($id !== null) {
         $map['id'] = $id;
     }
     $id = $GLOBALS['SITE_DB']->query_insert('news_categories', $map, true);
 
-    reorganise_uploads__news_categories(array('id' => $id));
+    reorganise_uploads__news_categories(['id' => $id]);
 
     log_it('ADD_NEWS_CATEGORY', strval($id), $title);
 
@@ -79,7 +79,7 @@ function add_news_category($title, $img = 'icons/news/general', $notes = '', $ow
  */
 function edit_news_category($id, $title, $img, $notes, $owner)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('nc_title', 'nc_img', 'notes'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title', 'nc_img', 'notes'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news_category'));
     }
@@ -96,7 +96,7 @@ function edit_news_category($id, $title, $img, $notes, $owner)
         $sql .= db_string_equal_to('meta_for_type', 'news');
         $meta_keywords_field = $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword');
         $sql .= ' AND ' . db_string_equal_to($meta_keywords_field, $old_title);
-        $affected_news = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, array('meta_keyword' => 'SHORT_TRANS'));
+        $affected_news = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
         foreach ($affected_news as $af_row) {
             $GLOBALS['SITE_DB']->query_update('seo_meta_keywords', lang_remap('meta_keyword', $af_row['meta_keyword'], $title), $af_row);
         }
@@ -112,19 +112,19 @@ function edit_news_category($id, $title, $img, $notes, $owner)
         $notes = $myrow['notes'];
     }
 
-    $update_map = array(
+    $update_map = [
         'nc_img' => $img,
         'notes' => $notes,
-    );
+    ];
     $update_map += lang_remap('nc_title', $myrow['nc_title'], $title);
     $update_map['nc_owner'] = $owner;
 
-    $GLOBALS['SITE_DB']->query_update('news_categories', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('news_categories', $update_map, ['id' => $id], '', 1);
 
     require_code('themes2');
     tidy_theme_img_code($img, $myrow['nc_img'], 'news_categories', 'nc_img');
 
-    reorganise_uploads__news_categories(array('id' => $id));
+    reorganise_uploads__news_categories(['id' => $id]);
 
     log_it('EDIT_NEWS_CATEGORY', strval($id), $title);
 
@@ -151,13 +151,13 @@ function edit_news_category($id, $title, $img, $notes, $owner)
  */
 function delete_news_category($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('nc_title', 'nc_img'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['nc_title', 'nc_img'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news_category'));
     }
     $myrow = $rows[0];
 
-    $min = $GLOBALS['SITE_DB']->query_value_if_there('SELECT c.id FROM ' . get_table_prefix() . 'news_categories c WHERE c.id<>' . strval($id) . ' AND ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('nc_title'), do_lang('news:NC_general')), false, false, array('nc_title' => 'SHORT_TRANS'));
+    $min = $GLOBALS['SITE_DB']->query_value_if_there('SELECT c.id FROM ' . get_table_prefix() . 'news_categories c WHERE c.id<>' . strval($id) . ' AND ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('nc_title'), do_lang('news:NC_general')), false, false, ['nc_title' => 'SHORT_TRANS']);
     if ($min === null) {
         $min = $GLOBALS['SITE_DB']->query_value_if_there('SELECT MIN(id) FROM ' . get_table_prefix() . 'news_categories WHERE id<>' . strval($id));
     }
@@ -173,19 +173,19 @@ function delete_news_category($id)
 
     delete_lang($myrow['nc_title']);
 
-    $GLOBALS['SITE_DB']->query_update('news', array('news_category' => $min), array('news_category' => $id));
-    $GLOBALS['SITE_DB']->query_delete('news_categories', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('news_category_entries', array('news_entry_category' => $id));
+    $GLOBALS['SITE_DB']->query_update('news', ['news_category' => $min], ['news_category' => $id]);
+    $GLOBALS['SITE_DB']->query_delete('news_categories', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('news_category_entries', ['news_entry_category' => $id]);
 
-    $GLOBALS['SITE_DB']->query_delete('group_category_access', array('module_the_name' => 'news', 'category_name' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('group_privileges', array('module_the_name' => 'news', 'category_name' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('group_category_access', ['module_the_name' => 'news', 'category_name' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('group_privileges', ['module_the_name' => 'news', 'category_name' => strval($id)]);
 
     require_code('themes2');
     tidy_theme_img_code(null, $myrow['nc_img'], 'news_categories', 'nc_img');
 
     delete_cache_entry('side_news_categories');
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'news', 'm_resource_type' => 'browse', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'news', 'm_resource_type' => 'browse', 'm_resource_id' => strval($id)]);
 
     require_code('uploads2');
     clean_empty_upload_directories('uploads/repimages');
@@ -198,9 +198,9 @@ function delete_news_category($id)
         $sql .= db_string_equal_to('meta_for_type', 'news');
         $meta_keywords_field = $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword');
         $sql .= ' AND ' . db_string_equal_to($meta_keywords_field, $old_title);
-        $affected_news = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, array('meta_keyword' => 'SHORT_TRANS'));
+        $affected_news = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['meta_keyword' => 'SHORT_TRANS']);
         foreach ($affected_news as $af_row) {
-            $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', array('id' => $af_row['id']), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['id' => $af_row['id']], '', 1);
         }
     }
 
@@ -243,7 +243,7 @@ function delete_news_category($id)
  * @param  array $regions The regions (empty: not region-limited)
  * @return AUTO_LINK The ID of the news just added
  */
-function add_news($title, $news, $author = null, $validated = 1, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $news_article = '', $main_news_category = null, $news_categories = array(), $time = null, $submitter = null, $views = 0, $edit_date = null, $id = null, $image = '', $meta_keywords = '', $meta_description = '', $regions = array())
+function add_news($title, $news, $author = null, $validated = 1, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '', $news_article = '', $main_news_category = null, $news_categories = [], $time = null, $submitter = null, $views = 0, $edit_date = null, $id = null, $image = '', $meta_keywords = '', $meta_description = '', $regions = [])
 {
     if ($author === null) {
         $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -263,17 +263,17 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
     prevent_double_submit('ADD_NEWS', null, $title);
 
     if ($main_news_category === null) {
-        $main_news_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', array('nc_owner' => $submitter));
+        $main_news_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', ['nc_owner' => $submitter]);
         if ($main_news_category_id === null) {
             if ((!has_privilege(get_member(), 'have_personal_category', 'cms_news')) && (!running_script('stress_test_loader'))) {
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
             }
 
-            $map = array(
+            $map = [
                 'nc_img' => 'icons/news/community',
                 'notes' => '',
                 'nc_owner' => $submitter,
-            );
+            ];
             $map += insert_lang('nc_title', do_lang('MEMBER_CATEGORY', $GLOBALS['FORUM_DRIVER']->get_username($submitter, true)), 2);
 
             $main_news_category_id = $GLOBALS['SITE_DB']->query_insert('news_categories', $map, true);
@@ -289,7 +289,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
     if (!addon_installed('unvalidated')) {
         $validated = 1;
     }
-    $map = array(
+    $map = [
         'news_image' => $image,
         'edit_date' => $edit_date,
         'news_category' => $main_news_category_id,
@@ -302,7 +302,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         'validated' => $validated,
         'date_and_time' => $time,
         'author' => cms_mb_substr($author, 0, 80),
-    );
+    ];
     if (multi_lang_content()) {
         $map['news_article'] = 0;
     } else {
@@ -321,11 +321,11 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         $news_categories = array_unique($news_categories);
         foreach ($news_categories as $i => $value) {
             if (($value === null) && (!$already_created_personal_category)) {
-                $map = array(
+                $map = [
                     'nc_img' => 'icons/news/community',
                     'notes' => '',
                     'nc_owner' => $submitter,
-                );
+                ];
                 $map += insert_lang('nc_title', do_lang('MEMBER_CATEGORY', $GLOBALS['FORUM_DRIVER']->get_username($submitter, true)), 2);
                 $news_category_id = $GLOBALS['SITE_DB']->query_insert('news_categories', $map, true);
 
@@ -339,17 +339,17 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
                 continue; // Double selected
             }
 
-            $GLOBALS['SITE_DB']->query_insert('news_category_entries', array('news_entry' => $id, 'news_entry_category' => $news_category_id));
+            $GLOBALS['SITE_DB']->query_insert('news_category_entries', ['news_entry' => $id, 'news_entry_category' => $news_category_id]);
 
             $news_categories[$i] = $news_category_id;
         }
     }
 
     require_code('attachments2');
-    $GLOBALS['SITE_DB']->query_update('news', insert_lang_comcode_attachments('news_article', 2, $news_article, 'news', strval($id)), array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('news', insert_lang_comcode_attachments('news_article', 2, $news_article, 'news', strval($id)), ['id' => $id], '', 1);
 
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'news', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'news', 'content_id' => strval($id), 'region' => $region]);
     }
 
     log_it('ADD_NEWS', strval($id), $title);
@@ -372,7 +372,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         do {
             send_http_output_ping();
 
-            $listeners = $GLOBALS['SITE_DB']->query_select('news_rss_cloud', array('*'), array(), '', 100, $start);
+            $listeners = $GLOBALS['SITE_DB']->query_select('news_rss_cloud', ['*'], [], '', 100, $start);
             foreach ($listeners as $listener) {
                 $data = $listener['watching_channel'];
                 if ($listener['rem_protocol'] == 'xml-rpc') {
@@ -389,16 +389,16 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
     require_code('content2');
     if (get_option('enable_seo_fields') === '0') {
         $meta_keywords = '';
-        foreach (array_unique(array_merge(($news_categories === null) ? array() : $news_categories, array($main_news_category_id))) as $news_category_id) {
+        foreach (array_unique(array_merge(($news_categories === null) ? [] : $news_categories, [$main_news_category_id])) as $news_category_id) {
             if ($meta_keywords != '') {
                 $meta_keywords .= ',';
             }
-            $meta_keywords .= get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $news_category_id)));
+            $meta_keywords .= get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $news_category_id]));
         }
     }
     if (($meta_keywords == '') && ($meta_description == '')) {
         $meta_description = ($news == '') ? $news_article : $news;
-        seo_meta_set_for_implicit('news', strval($id), array($title, $meta_description/*, $news_article*/), $meta_description); // News article could be used, but it's probably better to go for the summary only to avoid crap
+        seo_meta_set_for_implicit('news', strval($id), [$title, $meta_description/*, $news_article*/], $meta_description); // News article could be used, but it's probably better to go for the summary only to avoid crap
     } else {
         seo_meta_set_for_explicit('news', strval($id), $meta_keywords, $meta_description);
     }
@@ -449,7 +449,7 @@ function send_rss_ping($show_errors = false)
     foreach ($ping_urls as $ping_url) {
         $ping_url = trim($ping_url);
         if ($ping_url != '') {
-            $out .= http_get_contents($ping_url, array('convert_to_internal_encoding' => true, 'trigger_error' => $show_errors, 'timeout' => 1.0));
+            $out .= http_get_contents($ping_url, ['convert_to_internal_encoding' => true, 'trigger_error' => $show_errors, 'timeout' => 1.0]);
         }
     }
 
@@ -484,13 +484,13 @@ function send_rss_ping($show_errors = false)
  * @param  array $regions The regions (empty: not region-limited)
  * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null'
  */
-function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_categories, $meta_keywords, $meta_description, $image, $add_time = null, $edit_time = null, $views = null, $submitter = null, $regions = array(), $null_is_literal = false)
+function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_categories, $meta_keywords, $meta_description, $image, $add_time = null, $edit_time = null, $views = null, $submitter = null, $regions = [], $null_is_literal = false)
 {
     if ($edit_time === null) {
         $edit_time = $null_is_literal ? null : time();
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news'));
     }
@@ -516,7 +516,7 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
         send_content_validated_notification('news', strval($id));
     }
 
-    $update_map = array(
+    $update_map = [
         'news_category' => $main_news_category,
         'allow_rating' => $allow_rating,
         'allow_comments' => $allow_comments,
@@ -524,7 +524,7 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
         'notes' => $notes,
         'validated' => $validated,
         'author' => cms_mb_substr($author, 0, 80),
-    );
+    ];
     $update_map += update_lang_comcode_attachments('news_article', $_news_article, $news_article, 'news', strval($id), null, $rows[0]['submitter']);
     $update_map += lang_remap_comcode('title', $_title, $title);
     $update_map += lang_remap_comcode('news', $_news, $news);
@@ -547,16 +547,16 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
     }
 
     if ($news_categories !== null) {
-        $GLOBALS['SITE_DB']->query_delete('news_category_entries', array('news_entry' => $id));
+        $GLOBALS['SITE_DB']->query_delete('news_category_entries', ['news_entry' => $id]);
 
         foreach ($news_categories as $value) {
-            $GLOBALS['SITE_DB']->query_insert('news_category_entries', array('news_entry' => $id, 'news_entry_category' => $value));
+            $GLOBALS['SITE_DB']->query_insert('news_category_entries', ['news_entry' => $id, 'news_entry_category' => $value]);
         }
     }
 
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'news', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'news', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
-        $GLOBALS['SITE_DB']->query_insert('content_regions', array('content_type' => 'news', 'content_id' => strval($id), 'region' => $region));
+        $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'news', 'content_id' => strval($id), 'region' => $region]);
     }
 
     log_it('EDIT_NEWS', strval($id), $title);
@@ -566,9 +566,9 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
         generate_resource_fs_moniker('news', strval($id));
     }
 
-    $GLOBALS['SITE_DB']->query_update('news', $update_map, array('id' => $id), '', 1);
+    $GLOBALS['SITE_DB']->query_update('news', $update_map, ['id' => $id], '', 1);
 
-    $self_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id), get_module_zone('news'), array(), false, false, true);
+    $self_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id], get_module_zone('news'), [], false, false, true);
 
     if ($just_validated) {
         dispatch_news_notification($id, $title, $main_news_category);
@@ -578,11 +578,11 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
     if (get_option('enable_seo_fields') === '0') {
         $meta_description = ($news == '') ? $news_article : $news;
         $meta_keywords = '';
-        foreach (array_unique(array_merge(($news_categories === null) ? array() : $news_categories, array($main_news_category))) as $news_category_id) {
+        foreach (array_unique(array_merge(($news_categories === null) ? [] : $news_categories, [$main_news_category])) as $news_category_id) {
             if ($meta_keywords != '') {
                 $meta_keywords .= ',';
             }
-            $meta_keywords .= get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $news_category_id)));
+            $meta_keywords .= get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $news_category_id]));
         }
     }
     seo_meta_set_for_explicit('news', strval($id), $meta_keywords, $meta_description);
@@ -625,26 +625,26 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
  */
 function dispatch_news_notification($id, $title, $main_news_category)
 {
-    $self_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id), get_module_zone('news'), array(), false, false, true);
+    $self_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id], get_module_zone('news'), [], false, false, true);
 
-    $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', array('id' => $main_news_category)) !== null);
+    $is_blog = ($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => $main_news_category]) !== null);
 
     if (addon_installed('content_privacy')) {
         require_code('content_privacy');
         $privacy_limits = privacy_limits_for('news', strval($id));
     } else {
-        $privacy_limits = array();
+        $privacy_limits = [];
     }
 
     require_code('notifications');
     require_lang('news');
     if ($is_blog) {
         $subject = do_lang('BLOG_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $title);
-        $mail = do_notification_lang('BLOG_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array($self_url->evaluate()));
+        $mail = do_notification_lang('BLOG_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [$self_url->evaluate()]);
         dispatch_notification('news_entry', strval($main_news_category), $subject, $mail, $privacy_limits);
     } else {
         $subject = do_lang('NEWS_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $title);
-        $mail = do_notification_lang('NEWS_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), array($self_url->evaluate()));
+        $mail = do_notification_lang('NEWS_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($title), [$self_url->evaluate()]);
         dispatch_notification('news_entry', strval($main_news_category), $subject, $mail, $privacy_limits);
     }
 }
@@ -656,7 +656,7 @@ function dispatch_news_notification($id, $title, $main_news_category)
  */
 function delete_news($id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('id' => $id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'news'));
     }
@@ -669,12 +669,12 @@ function delete_news($id)
     require_code('files2');
     delete_upload('uploads/repimages', 'news', 'news_image', 'id', $id);
 
-    $GLOBALS['SITE_DB']->query_delete('news', array('id' => $id), '', 1);
-    $GLOBALS['SITE_DB']->query_delete('news_category_entries', array('news_entry' => $id));
+    $GLOBALS['SITE_DB']->query_delete('news', ['id' => $id], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('news_category_entries', ['news_entry' => $id]);
 
-    $GLOBALS['SITE_DB']->query_delete('rating', array('rating_for_type' => 'news', 'rating_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('trackbacks', array('trackback_for_type' => 'news', 'trackback_for_id' => strval($id)));
-    $GLOBALS['SITE_DB']->query_delete('content_regions', array('content_type' => 'news', 'content_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_delete('rating', ['rating_for_type' => 'news', 'rating_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('trackbacks', ['trackback_for_type' => 'news', 'trackback_for_id' => strval($id)]);
+    $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'news', 'content_id' => strval($id)]);
     require_code('notifications');
     delete_all_notifications_on('comment_posted', 'news_' . strval($id));
 
@@ -700,7 +700,7 @@ function delete_news($id)
         update_catalogue_content_ref('news', strval($id), '');
     }
 
-    $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_deprecated' => 1), array('m_resource_page' => 'news', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)));
+    $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_deprecated' => 1], ['m_resource_page' => 'news', 'm_resource_type' => 'view', 'm_resource_id' => strval($id)]);
 
     log_it('DELETE_NEWS', strval($id), $_title);
 
@@ -734,7 +734,7 @@ function import_rss_fields($import_to_blog)
 
     $fields->attach(alternate_fields_set__end($set_name, $set_title, do_lang_tempcode('DESCRIPTION_RSS_FEED'), $field_set, $required));
 
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '56ae4f6ded172f27ca37e86f4f6df8ef', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '56ae4f6ded172f27ca37e86f4f6df8ef', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
     $fields->attach(form_input_tick(do_lang_tempcode('IMPORT_BLOG_COMMENTS'), do_lang_tempcode('DESCRIPTION_IMPORT_BLOG_COMMENTS'), 'import_blog_comments', true));
     if (addon_installed('unvalidated')) {
@@ -777,12 +777,12 @@ function _get_wordpress_db_data()
     // Create database connector
     $db = new DatabaseConnector($db_name, $host_name, $db_user, $db_passwrod, $db_table_prefix);
 
-    $users = $db->query_select('users', array('*'), array(), '', null, 0, true);
+    $users = $db->query_select('users', ['*'], [], '', null, 0, true);
     if ($users === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $data = array();
+    $data = [];
     foreach ($users as $user) {
         $user_id = $user['ID'];
         $data[$user_id] = $user;
@@ -795,13 +795,13 @@ function _get_wordpress_db_data()
             $data[$user_id]['POSTS'][$post_id] = $post;
 
             // Get categories
-            $categories = $db->query_select('terms t1 JOIN ' . $db_table_prefix . 'term_taxonomy t2 ON t1.term_id=t2.term_id JOIN ' . $db_table_prefix . 'term_relationships t3 ON t2.term_taxonomy_id=t3.term_taxonomy_id', array('t1.slug', 't1.name'), array('t3.object_id' => $post_id), 'ORDER BY t3.term_order');
+            $categories = $db->query_select('terms t1 JOIN ' . $db_table_prefix . 'term_taxonomy t2 ON t1.term_id=t2.term_id JOIN ' . $db_table_prefix . 'term_relationships t3 ON t2.term_taxonomy_id=t3.term_taxonomy_id', ['t1.slug', 't1.name'], ['t3.object_id' => $post_id], 'ORDER BY t3.term_order');
             foreach ($categories as $category) {
                 $data[$user_id]['POSTS'][$post_id]['category'][$category['slug']] = $category['name'];
             }
 
             // Comments
-            $comments = $db->query_select('comments', array('*'), array('comment_post_ID' => $post_id), 'ORDER BY comment_date_gmt');
+            $comments = $db->query_select('comments', ['*'], ['comment_post_ID' => $post_id], 'ORDER BY comment_date_gmt');
             foreach ($comments as $comment) {
                 $comment_id = $comment['comment_ID'];
                 $comment['author_ip'] = $comment['comment_author_IP']; // Consistency with XML feed
@@ -831,7 +831,7 @@ function import_foreign_news_html($html, $force_linebreaks = false)
     }
 
     // Wordpress images
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#\[caption id="(\w+)" align="align(left|right|center|none)" width="(\d+)"\](.*)\[/caption\]#Us', $html, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
         $test = strpos($matches[4][$i], ' /></a> ');
@@ -866,7 +866,7 @@ function import_foreign_news_html($html, $force_linebreaks = false)
  */
 function _news_import_grab_images_and_fix_links($download_images, &$data, $imported_news)
 {
-    $matches = array();
+    $matches = [];
     if ($download_images) {
         $num_matches = preg_match_all('#<img[^<>]*\ssrc=["\']([^\'"]*)["\']#i', $data, $matches); // If there's an <a> to the same URL, this will be replaced too
         for ($i = 0; $i < $num_matches; $i++) {
@@ -890,7 +890,7 @@ function _news_import_grab_images_and_fix_links($download_images, &$data, $impor
                 if (($matches[1][$i] == '') && ($matches[2][$i] == '') && (strpos($data, '[html]') === false)) {
                     $data = str_replace($matches[0][$i], '[page="_SEARCH:news:view:' . strval($item['import_id']) . '"]' . $matches[3][$i] . '[/page]', $data);
                 } else {
-                    $new_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $item['import_id']), get_module_zone('news'), array(), false, false, true);
+                    $new_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $item['import_id']], get_module_zone('news'), [], false, false, true);
                     $data = str_replace($matches[0][$i], '<a ' . $matches[1][$i] . 'href="' . escape_html($new_url->evaluate()) . '"' . $matches[2][$i] . '>' . $matches[3][$i] . '</a>', $data);
                 }
             }
@@ -927,7 +927,7 @@ function _news_import_grab_image(&$data, $url)
 
     $target_handle = fopen($target_path, 'wb') or intelligent_write_error($target_path);
     flock($target_handle, LOCK_EX);
-    $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $target_handle));
+    $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $target_handle]);
     flock($target_handle, LOCK_UN);
     fclose($target_handle);
     sync_file($target_path);
@@ -946,7 +946,7 @@ function _news_import_grab_image(&$data, $url)
  * @param  array $where Limit reorganisation to rows matching this WHERE map
  * @param  boolean $tolerate_errors Whether to tolerate missing files (false = give an error)
  */
-function reorganise_uploads__news_categories($where = array(), $tolerate_errors = false)
+function reorganise_uploads__news_categories($where = [], $tolerate_errors = false)
 {
     require_code('uploads2');
     reorganise_uploads('news_category', 'uploads/repimages', 'nc_img', $where, null, true, $tolerate_errors);

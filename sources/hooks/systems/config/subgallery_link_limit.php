@@ -30,7 +30,7 @@ class Hook_config_subgallery_link_limit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUBGALLERY_LINK_LIMIT',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_subgallery_link_limit
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

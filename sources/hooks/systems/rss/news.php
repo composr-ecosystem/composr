@@ -64,7 +64,7 @@ class Hook_rss_news
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY p.id' : '') . ' ORDER BY date_and_time DESC', $max);
         $rows = remove_duplicate_rows($rows, 'id');
-        $_categories = $GLOBALS['SITE_DB']->query_select('news_categories', array('id', 'nc_title'), array('nc_owner' => null));
+        $_categories = $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title'], ['nc_owner' => null]);
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_title'] = get_translated_text($_category['nc_title']);
         }
@@ -79,7 +79,7 @@ class Hook_rss_news
                 $news_date = date($date_string, $row['date_and_time']);
                 $edit_date = ($row['edit_date'] === null) ? '' : date($date_string, $row['edit_date']);
 
-                $just_news_row = db_map_restrict($row, array('id', 'title', 'news', 'news_article'));
+                $just_news_row = db_map_restrict($row, ['id', 'title', 'news', 'news_article']);
 
                 $_title = get_translated_tempcode('news', $just_news_row, 'title');
                 $news_title = xmlentities($_title->evaluate());
@@ -101,23 +101,23 @@ class Hook_rss_news
                 }
 
                 if (!array_key_exists($row['news_category'], $categories)) {
-                    $categories[$row['news_category']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', array('id' => $row['news_category'])));
+                    $categories[$row['news_category']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_title', ['id' => $row['news_category']]));
                 }
                 $category = $categories[$row['news_category']];
                 $category_raw = strval($row['news_category']);
 
-                $view_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $row['id']), get_module_zone('news'), array(), false, false, true);
+                $view_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $row['id']], get_module_zone('news'), [], false, false, true);
 
                 if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => 'b4f25f5cf68304f8d402bb06851489d6', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => 'b4f25f5cf68304f8d402bb06851489d6', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
-        return array($content, do_lang('NEWS'));
+        return [$content, do_lang('NEWS')];
     }
 }

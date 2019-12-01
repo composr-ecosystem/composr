@@ -31,7 +31,7 @@ class Hook_ecommerce_email
     public function config()
     {
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_prods_prices WHERE name LIKE \'' . db_encode_like('forw\_%') . '\'');
-        $out_forw = array();
+        $out_forw = [];
         foreach ($rows as $i => $row) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
@@ -43,13 +43,13 @@ class Hook_ecommerce_email
             if (addon_installed('points')) {
                 $fields->attach(form_input_integer(do_lang_tempcode('MAIL_PRICE_POINTS'), do_lang_tempcode('DESCRIPTION_MAIL_PRICE_POINTS', escape_html('forw'), escape_html($domain)), 'forw_' . strval($i) . '_price_points', $row['price_points'], false));
             }
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '34f5212a96f58fa1b0575a99ca0509e7', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '34f5212a96f58fa1b0575a99ca0509e7', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete_forw_' . strval($i), false));
-            $out_forw[] = array($fields, $hidden, do_lang_tempcode('_EDIT_FORWARDING_DOMAIN', escape_html($domain)));
+            $out_forw[] = [$fields, $hidden, do_lang_tempcode('_EDIT_FORWARDING_DOMAIN', escape_html($domain))];
         }
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_prods_prices WHERE name LIKE \'' . db_encode_like('pop3\_%') . '\'');
-        $out_pop3 = array();
+        $out_pop3 = [];
         foreach ($rows as $i => $row) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
@@ -61,15 +61,15 @@ class Hook_ecommerce_email
             if (addon_installed('points')) {
                 $fields->attach(form_input_integer(do_lang_tempcode('MAIL_PRICE_POINTS'), do_lang_tempcode('DESCRIPTION_MAIL_PRICE_POINTS', escape_html('pop3'), escape_html($domain)), 'pop3_' . strval($i) . '_price_points', $row['price_points'], false));
             }
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '9e37f41f134eecae630bfbf32da7b9ec', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9e37f41f134eecae630bfbf32da7b9ec', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete_pop3_' . strval($i), false));
-            $out_pop3[] = array($fields, $hidden, do_lang_tempcode('_EDIT_POP3_DOMAIN', escape_html($domain)));
+            $out_pop3[] = [$fields, $hidden, do_lang_tempcode('_EDIT_POP3_DOMAIN', escape_html($domain))];
         }
 
-        return array(
-            array($out_forw, do_lang_tempcode('ADD_NEW_FORWARDING_DOMAIN'), $this->_get_fields_forw(), do_lang_tempcode('FORWARDING_DESCRIPTION')),
-            array($out_pop3, do_lang_tempcode('ADD_NEW_POP3_DOMAIN'), $this->_get_fields_pop3(), do_lang_tempcode('POP3_DESCRIPTION')),
-        );
+        return [
+            [$out_forw, do_lang_tempcode('ADD_NEW_FORWARDING_DOMAIN'), $this->_get_fields_forw(), do_lang_tempcode('FORWARDING_DESCRIPTION')],
+            [$out_pop3, do_lang_tempcode('ADD_NEW_POP3_DOMAIN'), $this->_get_fields_pop3(), do_lang_tempcode('POP3_DESCRIPTION')],
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ class Hook_ecommerce_email
         if (($price !== null) || ($price_points !== null)) {
             $dforw = post_param_string('dforw');
 
-            $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', array('name' => 'forw_' . $dforw, 'price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points));
+            $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', ['name' => 'forw_' . $dforw, 'price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points]);
 
             log_it('ECOM_PRODUCTS_ADD_MAIL_FORWARDER', $dforw);
         }
@@ -165,9 +165,9 @@ class Hook_ecommerce_email
             $name_new = 'forw_' . post_param_string('ndforw_' . strval($i));
 
             if (post_param_integer('delete_forw_' . strval($i), 0) == 1) {
-                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', array('name' => $name), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', ['name' => $name], '', 1);
             } else {
-                $GLOBALS['SITE_DB']->query_update('ecom_prods_prices', array('price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points, 'name' => $name_new), array('name' => $name), '', 1);
+                $GLOBALS['SITE_DB']->query_update('ecom_prods_prices', ['price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points, 'name' => $name_new], ['name' => $name], '', 1);
             }
 
             $i++;
@@ -193,7 +193,7 @@ class Hook_ecommerce_email
         if (($price !== null) || ($price_points !== null)) {
             $dpop3 = post_param_string('dpop3');
 
-            $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', array('name' => 'pop3_' . $dpop3, 'price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points));
+            $GLOBALS['SITE_DB']->query_insert('ecom_prods_prices', ['name' => 'pop3_' . $dpop3, 'price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points]);
 
             log_it('ECOM_PRODUCTS_ADD_MAIL_POP3', $dpop3);
         }
@@ -221,9 +221,9 @@ class Hook_ecommerce_email
             $name_new = 'pop3_' . post_param_string('ndpop3_' . strval($i));
 
             if (post_param_integer('delete_pop3_' . strval($i), 0) == 1) {
-                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', array('name' => $name), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_prods_prices', ['name' => $name], '', 1);
             } else {
-                $GLOBALS['SITE_DB']->query_update('ecom_prods_prices', array('price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points, 'name' => $name_new), array('name' => $name), '', 1);
+                $GLOBALS['SITE_DB']->query_update('ecom_prods_prices', ['price' => $price, 'tax_code' => $tax_code, 'price_points' => $price_points, 'name' => $name_new], ['name' => $name], '', 1);
             }
 
             $i++;
@@ -237,11 +237,11 @@ class Hook_ecommerce_email
      */
     public function get_product_category()
     {
-        return array(
+        return [
             'category_name' => do_lang('EMAIL_ACCOUNTS', integer_format(intval(get_option('initial_quota')))),
             'category_description' => do_lang_tempcode('EMAIL_TYPES_DESCRIPTION', escape_html(integer_format(intval(get_option('initial_quota'))))),
             'category_image_url' => find_theme_image('icons/contact_methods/email'),
-        );
+        ];
     }
 
     /**
@@ -255,14 +255,14 @@ class Hook_ecommerce_email
      */
     public function get_products($search = null)
     {
-        $products = array();
+        $products = [];
 
         $initial_quota = intval(get_option('initial_quota'));
         $max_quota = intval(get_option('max_quota'));
 
         // It's slightly naughty for us to use get_member(), but it's only for something going into item_description so safe
         $current_amount = $initial_quota;
-        $quota_increase_rows = $GLOBALS['SITE_DB']->query_select('ecom_sales', array('details2'), array('member_id' => get_member(), 'details' => do_lang('QUOTA', null, null, null, get_site_default_lang())));
+        $quota_increase_rows = $GLOBALS['SITE_DB']->query_select('ecom_sales', ['details2'], ['member_id' => get_member(), 'details' => do_lang('QUOTA', null, null, null, get_site_default_lang())]);
         foreach ($quota_increase_rows as $quota_increase_row) {
             $current_amount += intval($quota_increase_row['details2']);
         }
@@ -270,18 +270,18 @@ class Hook_ecommerce_email
         $pop3_domain_count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'ecom_prods_prices WHERE name LIKE \'pop3\_%\'');
         if ($pop3_domain_count > 0) {
             $price_points = get_option('quota_price_points');
-            foreach (array(100, 1000, 2000, 5000, 10000) as $amount) {
+            foreach ([100, 1000, 2000, 5000, 10000] as $amount) {
                 if ($max_quota < $amount) {
                     continue;
                 }
 
-                $products['QUOTA_' . strval($amount)] = automatic_discount_calculation(array(
+                $products['QUOTA_' . strval($amount)] = automatic_discount_calculation([
                     'item_name' => do_lang('PURCHASE_QUOTA', integer_format($amount), integer_format($current_amount), integer_format($current_amount + $amount)),
                     'item_description' => do_lang_tempcode('PURCHASE_QUOTA_DESCRIPTION', escape_html(integer_format($amount)), escape_html(integer_format($current_amount)), escape_html(integer_format($current_amount + $amount))),
                     'item_image_url' => find_theme_image('icons/admin/add_to_category'),
 
                     'type' => PRODUCT_PURCHASE,
-                    'type_special_details' => array(),
+                    'type_special_details' => [],
 
                     'price' => (get_option('quota_price') == '') ? null : (floatval(get_option('quota_price')) * $amount),
                     'currency' => get_option('currency'),
@@ -296,11 +296,11 @@ class Hook_ecommerce_email
                     'product_width' => null,
                     'product_height' => null,
                     'needs_shipping_address' => false,
-                ));
+                ]);
             }
         }
 
-        foreach (array('pop3' => 'POP3', 'forw' => 'FORWARDING') as $protocol => $protocol_label) {
+        foreach (['pop3' => 'POP3', 'forw' => 'FORWARDING'] as $protocol => $protocol_label) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_prods_prices WHERE name LIKE \'' . db_encode_like($protocol . '\_%') . '\'');
             foreach ($rows as $row) {
                 $domain = substr($row['name'], strlen($protocol . '_'));
@@ -318,13 +318,13 @@ class Hook_ecommerce_email
                         $image_url = '';
                 }
 
-                $products[$protocol_label . '_' . $domain] = automatic_discount_calculation(array(
+                $products[$protocol_label . '_' . $domain] = automatic_discount_calculation([
                     'item_name' => do_lang('NEW' . $protocol_label . '_TITLE', $domain, integer_format($initial_quota)),
                     'item_description' => do_lang_tempcode('NEW' . $protocol_label . '_DESCRIPTION', escape_html($domain), escape_html(integer_format($initial_quota))),
                     'item_image_url' => $image_url,
 
                     'type' => PRODUCT_PURCHASE,
-                    'type_special_details' => array(),
+                    'type_special_details' => [],
 
                     'price' => $row['price'],
                     'currency' => get_option('currency'),
@@ -339,7 +339,7 @@ class Hook_ecommerce_email
                     'product_width' => null,
                     'product_height' => null,
                     'needs_shipping_address' => false,
-                ));
+                ]);
             }
         }
 
@@ -371,7 +371,7 @@ class Hook_ecommerce_email
                     return ECOMMERCE_PRODUCT_MISSING;
                 }
 
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', array('member_id' => $member_id), ' AND t_type_code LIKE \'POP3%\'');
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', ['member_id' => $member_id], ' AND t_type_code LIKE \'POP3%\'');
                 if ($test !== null) {
                     return ECOMMERCE_PRODUCT_ALREADY_HAS;
                 }
@@ -379,7 +379,7 @@ class Hook_ecommerce_email
                 break;
 
             case 'QUOTA':
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', array('member_id' => $member_id), ' AND t_type_code LIKE \'POP3%\'');
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', ['member_id' => $member_id], ' AND t_type_code LIKE \'POP3%\'');
                 if ($test === null) {
                     return ECOMMERCE_PRODUCT_PROHIBITED;
                 }
@@ -447,7 +447,7 @@ class Hook_ecommerce_email
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array($fields, $text, $js_function_calls);
+        return [$fields, $text, $js_function_calls];
     }
 
     /**
@@ -468,7 +468,7 @@ class Hook_ecommerce_email
 
                 $prefix = post_param_string('email_prefix', $from_admin ? '' : false);
                 if ($prefix == '') {
-                    return array('', null); // Default is blank
+                    return ['', null]; // Default is blank
                 }
                 $pass1 = post_param_string('pass1');
                 $pass2 = post_param_string('pass2');
@@ -485,19 +485,19 @@ class Hook_ecommerce_email
 
                 $this->_ecom_product_handle_error_taken($prefix, $suffix);
 
-                $e_details = json_encode(array($member_id, $prefix, $pass1));
+                $e_details = json_encode([$member_id, $prefix, $pass1]);
 
                 break;
 
             case 'QUOTA':
-                return array(strval(get_member()), null);
+                return [strval(get_member()), null];
 
             case 'FORWARDING':
                 $suffix = preg_replace('#^FORWARDING_#', '', $type_code);
 
                 $email = post_param_string('email', $from_admin ? '' : false);
                 if ($email == '') {
-                    return array('', null); // Default is blank
+                    return ['', null]; // Default is blank
                 }
                 $prefix = post_param_string('email_prefix');
 
@@ -514,13 +514,13 @@ class Hook_ecommerce_email
 
                 $this->_ecom_product_handle_error_taken($prefix, $suffix);
 
-                $e_details = json_encode(array($member_id, $email, $prefix));
+                $e_details = json_encode([$member_id, $email, $prefix]);
 
                 break;
         }
 
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', array('e_details' => $e_details, 'e_time' => time()), true));
-        return array($purchase_id, null);
+        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', ['e_details' => $e_details, 'e_time' => time()], true));
+        return [$purchase_id, null];
     }
 
     /**
@@ -532,7 +532,7 @@ class Hook_ecommerce_email
     protected function _ecom_product_handle_error_taken($prefix, $suffix)
     {
         // Has this e-mail address been taken?
-        $taken = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', array('details' => $prefix, 'details2' => '@' . $suffix), ' AND (t_type_code LIKE \'POP3%\' OR t_type_code LIKE \'FORW%\')');
+        $taken = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'details', ['details' => $prefix, 'details2' => '@' . $suffix], ' AND (t_type_code LIKE \'POP3%\' OR t_type_code LIKE \'FORW%\')');
         if ($taken !== null) {
             warn_exit(do_lang_tempcode('EMAIL_TAKEN'));
         }
@@ -556,12 +556,12 @@ class Hook_ecommerce_email
             case 'POP3':
                 $suffix = preg_replace('#^POP3_#', '', $type_code);
 
-                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
                 list($member_id, $prefix, $password) = json_decode($e_details);
 
                 $this->_ecom_product_handle_error_taken($prefix, $suffix);
 
-                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $prefix, 'details2' => '@' . $suffix, 'txn_id' => $details['TXN_ID']), true);
+                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $prefix, 'details2' => '@' . $suffix, 'txn_id' => $details['TXN_ID']], true);
 
                 // Notification to staff
                 $mail_server = get_option('mail_server');
@@ -572,7 +572,7 @@ class Hook_ecommerce_email
                 $encoded_reason = do_lang('NEWPOP3_TITLE');
                 require_code('notifications');
                 $subject = do_lang('MAIL_REQUEST_POP3', null, null, null, get_site_default_lang());
-                $body = do_notification_template('ECOM_PRODUCT_POP3_MAIL', array(
+                $body = do_notification_template('ECOM_PRODUCT_POP3_MAIL', [
                     '_GUID' => '19022c49d0bdde39735245850d04fca7',
                     'EMAIL' => $email,
                     'ENCODED_REASON' => $encoded_reason,
@@ -583,15 +583,15 @@ class Hook_ecommerce_email
                     'PREFIX' => $prefix,
                     'SUFFIX' => $suffix,
                     'POP3_URL' => $pop3_url,
-                ), null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_pop3', 'pop3_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, array('create_ticket' => true, 'use_real_from' => true));
+                ], null, false, null, '.txt', 'text');
+                dispatch_notification('ecom_product_request_pop3', 'pop3_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
 
             case 'QUOTA':
                 $member_id = intval($purchase_id);
 
-                $pop3_details = $GLOBALS['SITE_DB']->query_select('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', array('details', 'details2'), array('member_id' => $member_id), ' AND t_type_code LIKE \'POP3%\'', 1);
+                $pop3_details = $GLOBALS['SITE_DB']->query_select('ecom_sales s JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['details', 'details2'], ['member_id' => $member_id], ' AND t_type_code LIKE \'POP3%\'', 1);
                 if (!array_key_exists(0, $pop3_details)) {
                     warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
@@ -601,48 +601,48 @@ class Hook_ecommerce_email
 
                 $quota = intval(preg_replace('#^QUOTA_#', '', $type_code));
 
-                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('QUOTA', null, null, null, get_site_default_lang()), 'details2' => strval($quota), 'txn_id' => $details['TXN_ID']), true);
+                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('QUOTA', null, null, null, get_site_default_lang()), 'details2' => strval($quota), 'txn_id' => $details['TXN_ID']], true);
 
                 // Notification to staff
                 $quota_url = get_option('quota_url');
                 $encoded_reason = do_lang('TITLE_QUOTA');
                 require_code('notifications');
                 $subject = do_lang('MAIL_REQUEST_QUOTA', null, null, null, get_site_default_lang());
-                $body = do_notification_template('ECOM_PRODUCT_QUOTA_MAIL', array(
+                $body = do_notification_template('ECOM_PRODUCT_QUOTA_MAIL', [
                     '_GUID' => '5a4e0bb5e53e6ccf8e57581c377557f4',
                     'ENCODED_REASON' => $encoded_reason,
                     'QUOTA' => integer_format($quota),
                     'EMAIL' => $prefix . $suffix,
                     'QUOTA_URL' => $quota_url,
-                ), null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_quota', 'quota_' . uniqid('', true), $subject, $body->evaluate(get_site_default_lang()), null, null, array('create_ticket' => true, 'use_real_from' => true));
+                ], null, false, null, '.txt', 'text');
+                dispatch_notification('ecom_product_request_quota', 'quota_' . uniqid('', true), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
 
             case 'FORWARDING':
                 $suffix = preg_replace('#^FORWARDING_#', '', $type_code);
 
-                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
                 list($member_id, $email, $prefix) = json_decode($e_details);
 
                 $this->_ecom_product_handle_error_taken($prefix, $suffix);
 
-                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $prefix, 'details2' => '@' . $suffix, 'txn_id' => $details['TXN_ID']), true);
+                $sale_id = $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $prefix, 'details2' => '@' . $suffix, 'txn_id' => $details['TXN_ID']], true);
 
                 // Notification to staff
                 $forw_url = get_option('forw_url');
                 require_code('notifications');
                 $encoded_reason = do_lang('NEWFORWARDING_TITLE');
                 $subject = do_lang('MAIL_REQUEST_FORWARDING', null, null, null, get_site_default_lang());
-                $body = do_notification_template('ECOM_PRODUCT_FORWARDER_MAIL', array(
+                $body = do_notification_template('ECOM_PRODUCT_FORWARDER_MAIL', [
                     '_GUID' => 'a09dba8b440baa5cd48d462ebfafd15f',
                     'ENCODED_REASON' => $encoded_reason,
                     'EMAIL' => $email,
                     'PREFIX' => $prefix,
                     'SUFFIX' => $suffix,
                     'FORW_URL' => $forw_url,
-                ), null, false, null, '.txt', 'text');
-                dispatch_notification('ecom_product_request_forwarding', 'forw_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, array('create_ticket' => true, 'use_real_from' => true));
+                ], null, false, null, '.txt', 'text');
+                dispatch_notification('ecom_product_request_forwarding', 'forw_' . strval($sale_id), $subject, $body->evaluate(get_site_default_lang()), null, null, ['create_ticket' => true, 'use_real_from' => true]);
 
                 break;
         }
@@ -662,7 +662,7 @@ class Hook_ecommerce_email
         switch (preg_replace('#_.*$#', '', $type_code)) {
             case 'POP3':
             case 'FORWARDING':
-                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+                $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
                 list($member_id) = json_decode($e_details);
                 return $member_id;
 

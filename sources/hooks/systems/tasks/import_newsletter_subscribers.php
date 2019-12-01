@@ -83,7 +83,7 @@ class Hook_task_import_newsletter_subscribers
                 $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
                 if ($forename == $email_address) {
                     $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
-                    if (in_array($forename, array('Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'))) {
+                    if (in_array($forename, ['Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'])) {
                         $forename = '';
                     }
                 }
@@ -109,7 +109,7 @@ class Hook_task_import_newsletter_subscribers
                 }
 
                 if ($newsletter_id == -1) {
-                    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $email_address));
+                    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_email_address' => $email_address]);
                     if ($test === null) {
                         if ($subscribe) {
                             if (!$done_special_notice) {
@@ -119,14 +119,14 @@ class Hook_task_import_newsletter_subscribers
                         }
                     } else {
                         if ($subscribe) {
-                            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 1), array('m_email_address' => $email_address), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails_from_staff' => 1], ['m_email_address' => $email_address], '', 1);
                         } else {
-                            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 0), array('m_email_address' => $email_address), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_members', ['m_allow_emails_from_staff' => 0], ['m_email_address' => $email_address], '', 1);
                             $count++;
                         }
                     }
                 } else {
-                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', array('email' => $email_address));
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', ['email' => $email_address]);
                     if ($test === null) {
                         add_newsletter_subscriber($email_address, $join_time, $code_confirm, $hash, $salt, $language, $forename, $surname);
 
@@ -144,15 +144,15 @@ class Hook_task_import_newsletter_subscribers
                     }
 
                     // In case $email is already a subscriber, we delete first
-                    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array(
+                    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', [
                         'newsletter_id' => $newsletter_id,
                         'email' => $email_address,
-                    ), '', 1);
+                    ], '', 1);
                     if ($subscribe) {
-                        $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', array(
+                        $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', [
                             'newsletter_id' => $newsletter_id,
                             'email' => $email_address,
-                        ), false, true/*in case already exists*/);
+                        ], false, true/*in case already exists*/);
                     }
                 }
 
@@ -171,6 +171,6 @@ class Hook_task_import_newsletter_subscribers
         }
 
         @unlink($path);
-        return array('text/html', $message);
+        return ['text/html', $message];
     }
 }

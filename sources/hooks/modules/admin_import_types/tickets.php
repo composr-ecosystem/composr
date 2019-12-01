@@ -31,11 +31,11 @@ class Hook_admin_import_types_tickets
     public function run()
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'support_tickets' => 'SUPPORT_TICKETS',
-        );
+        ];
     }
 }

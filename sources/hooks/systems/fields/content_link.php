@@ -36,7 +36,7 @@ class Hook_fields_content_link
         }
 
         $hooks = find_all_hooks('systems', 'content_meta_aware');
-        $ret = array();
+        $ret = [];
         foreach (array_keys($hooks) as $hook) {
             if ($hook != 'catalogue_entry'/*got a better field hook specifically for catalogue entries*/) {
                 if ((is_file(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . $hook . '.php')) || (is_file(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . $hook . '.php'))) {
@@ -89,7 +89,7 @@ class Hook_fields_content_link
      */
     public function get_field_value_row_bits($field, $required = null, $default = null)
     {
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -139,7 +139,7 @@ class Hook_fields_content_link
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
-        $options = array();
+        $options = [];
         $type = substr($field['cf_type'], 3);
 
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
@@ -160,14 +160,14 @@ class Hook_fields_content_link
             return new Tempcode();
         }
         $db = get_db_for($info['table']);
-        $select = array();
+        $select = [];
         append_content_select_for_id($select, $info);
         if ($info['title_field'] !== null) {
             $select[] = $info['title_field'];
         }
-        $rows = $db->query_select($info['table'], $select, array(), ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
+        $rows = $db->query_select($info['table'], $select, [], ($info['add_time_field'] === null) ? '' : ('ORDER BY ' . $info['add_time_field'] . ' DESC'), 2000/*reasonable limit*/);
 
-        $_list = array();
+        $_list = [];
         foreach ($rows as $row) {
             $id = extract_content_str_id_from_data($row, $info);
             if ($info['title_field'] === null) {

@@ -78,8 +78,8 @@ function check_for_spam($username, $email, $page_level)
         }
     }
 
-    static $done_for = array();
-    $sz = serialize(array($username, $email, $page_level));
+    static $done_for = [];
+    $sz = serialize([$username, $email, $page_level]);
     if (isset($done_for[$sz])) {
         return;
     }
@@ -169,13 +169,13 @@ function check_rbls($page_level = false, $user_ip = null)
 function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_level = false)
 {
     if (ip_address_is_local($user_ip)) {
-        return array(ANTISPAM_RESPONSE_UNLISTED, null);
+        return [ANTISPAM_RESPONSE_UNLISTED, null];
     }
 
     // Blocking based on dnsbl.tornevall.org settings (used by default because stopforumspam syndicates to this and ask us to check this first, for performance)
     // http://dnsbl.tornevall.org/?do=usage
     if (strpos($rbl, 'tornevall.org') !== false) {
-        $block = array(
+        $block = [
             'tornevall_abuse' => true,              // TornevallRBL: Block on 'abuse'
             'tornevall_anonymous' => true,          // TornevallRBL: Block on anonymous access (anonymizers, TOR, etc)
             'tornevall_blitzed' => false,           // TornevallRBL: Block if host are found in the Blitzed RBL (R.I.P)
@@ -184,8 +184,8 @@ function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_leve
             'tornevall_error' => false,             // TornevallRBL: Block proxies that has been tested but failed
             'tornevall_timeout' => false,           // TornevallRBL: Block proxies that has been tested but timed out
             'tornevall_working' => true,            // TornevallRBL: Block proxies that has been tested and works
-        );
-        $rtornevall = array(
+        ];
+        $rtornevall = [
             'tornevall_checked' => 1,
             'tornevall_working' => 2,
             'tornevall_blitzed' => 4,
@@ -194,56 +194,56 @@ function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_leve
             'tornevall_elite' => 32,
             'tornevall_abuse' => 64,
             'tornevall_anonymous' => 128,
-        );
+        ];
 
         if ($we_have_a_result_already) {
-            return array(ANTISPAM_RESPONSE_SKIP, null); // We know better than this RBL can tell us, so stick with what we know
+            return [ANTISPAM_RESPONSE_SKIP, null]; // We know better than this RBL can tell us, so stick with what we know
         }
         $rbl_response = rbl_resolve($user_ip, $rbl, $page_level);
         if ($rbl_response === null) {
-            return array(ANTISPAM_RESPONSE_ERROR, null); // Error
+            return [ANTISPAM_RESPONSE_ERROR, null]; // Error
         }
 
         foreach ($rtornevall as $rbl_t => $rbl_tc) {
             if ((($rbl_response[3] & $rbl_tc) != 0) && ($block[$rbl_t])) {
-                return array(ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null);
+                return [ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null];
             }
         }
-        return array(ANTISPAM_RESPONSE_UNLISTED, null); // Not listed / Not listed with a threat status
+        return [ANTISPAM_RESPONSE_UNLISTED, null]; // Not listed / Not listed with a threat status
     }
 
     // Blocking based on efnet.org settings (not used by default)
     // http://efnetrbl.org/
     if (strpos($rbl, 'efnet.org') !== false) {
-        $block = array(
+        $block = [
             'efnet_openproxy' => true,              // EFNet: Block open proxies registered at rbl.efnet.org
             'efnet_spamtrap50' => false,            // EFNet: Block trojan spreading client (IRC-based)
             'efnet_spamtrap666' => false,           // EFNet: Block known trojan infected/spreading client (IRC-based)
             'efnet_tor' => true,                    // EFNet: Block TOR Proxies
             'efnet_drones' => false,                // EFNet: Drones/Flooding (IRC-based)
-        );
-        $refnet = array(
+        ];
+        $refnet = [
             'efnet_openproxy' => 1,
             'efnet_spamtrap666' => 2,
             'efnet_spamtrap50' => 3,
             'efnet_tor' => 4,
             'efnet_drones' => 5,
-        );
+        ];
 
         if ($we_have_a_result_already) {
-            return array(ANTISPAM_RESPONSE_SKIP, null); // We know better than this RBL can tell us, so stick with what we know
+            return [ANTISPAM_RESPONSE_SKIP, null]; // We know better than this RBL can tell us, so stick with what we know
         }
         $rbl_response = rbl_resolve($user_ip, $rbl, $page_level);
         if ($rbl_response === null) {
-            return array(ANTISPAM_RESPONSE_ERROR, null); // Error
+            return [ANTISPAM_RESPONSE_ERROR, null]; // Error
         }
 
         foreach ($refnet as $efcheck => $value) {
             if (($rbl_response[3] == $value) && ($block[$efcheck])) {
-                return array(ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null);
+                return [ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null];
             }
         }
-        return array(ANTISPAM_RESPONSE_UNLISTED, null); // Not listed / Not listed with a threat status
+        return [ANTISPAM_RESPONSE_UNLISTED, null]; // Not listed / Not listed with a threat status
     }
 
     // Blocking based on HTTP:BL settings (not used by default, because it requires getting a key)
@@ -254,7 +254,7 @@ function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_leve
         }
         $rbl_response = rbl_resolve($user_ip, $rbl, $page_level);
         if ($rbl_response === null) {
-            return array(ANTISPAM_RESPONSE_ERROR, null); // Error
+            return [ANTISPAM_RESPONSE_ERROR, null]; // Error
         }
 
         $_confidence_level = floatval($rbl_response[2]) / 255.0;
@@ -264,30 +264,30 @@ function check_rbl($rbl, $user_ip, $we_have_a_result_already = false, $page_leve
                 $spam_stale_threshold = intval(get_option('spam_stale_threshold'));
 
                 if (intval($rbl_response[1]) > $spam_stale_threshold) {
-                    return array(ANTISPAM_RESPONSE_STALE, null); // We know this IP is stale now so don't check other RBLs as no others support stale checks
+                    return [ANTISPAM_RESPONSE_STALE, null]; // We know this IP is stale now so don't check other RBLs as no others support stale checks
                 }
 
                 $confidence_level = $_confidence_level * 4.0; // Actually, this is a threat level, not a confidence level. We have a fudge factor to try and normalise it, seeing that Google was actually reported with a threat level.
-                return array(ANTISPAM_RESPONSE_ACTIVE, $confidence_level);
+                return [ANTISPAM_RESPONSE_ACTIVE, $confidence_level];
             }
         }
-        return array(ANTISPAM_RESPONSE_UNLISTED, null); // Not listed / Not listed with a threat status
+        return [ANTISPAM_RESPONSE_UNLISTED, null]; // Not listed / Not listed with a threat status
     }
 
     // Unknown RBL, basic support only
     $rbl_response = rbl_resolve($user_ip, $rbl, $page_level);
     if ($rbl_response[3] != 0) {
         if ($we_have_a_result_already) {
-            return array(ANTISPAM_RESPONSE_SKIP, null); // We know better than this RBL can tell us, so stick with what we know
+            return [ANTISPAM_RESPONSE_SKIP, null]; // We know better than this RBL can tell us, so stick with what we know
         }
         $rbl_response = rbl_resolve($user_ip, $rbl, $page_level);
         if ($rbl_response === null) {
-            return array(ANTISPAM_RESPONSE_ERROR, null); // Error
+            return [ANTISPAM_RESPONSE_ERROR, null]; // Error
         }
 
-        return array(ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null);
+        return [ANTISPAM_RESPONSE_ACTIVE_UNKNOWN_STALE, null];
     }
-    return array(ANTISPAM_RESPONSE_UNLISTED, null); // Not listed / Not listed with a threat status
+    return [ANTISPAM_RESPONSE_UNLISTED, null]; // Not listed / Not listed with a threat status
 }
 
 /**
@@ -461,12 +461,12 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
     if ($key != '') {
         $url .= '&api_key=' . urlencode($key); // Key not needed for read requests, but give it as a courtesy
     }
-    $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+    $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
 
     $result = @json_decode($_result, true);
     if ($result !== false) {
         if ($result['success']) {
-            foreach (array('username', 'email', 'ip') as $criterion) {
+            foreach (['username', 'email', 'ip'] as $criterion) {
                 if (array_key_exists($criterion, $result)) {
                     $c = $result[$criterion];
                     if ($c['appears'] == 1) {
@@ -497,16 +497,16 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
             require_code('failure');
             $error = do_lang('_ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $result['error'], $user_ip);
             relay_error_notification($error, false, 'error_occurred');
-            return array(ANTISPAM_RESPONSE_ERROR, $confidence_level);
+            return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
         }
     } else {
         require_code('failure');
         $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $user_ip);
         relay_error_notification($error, false, 'error_occurred');
-        return array(ANTISPAM_RESPONSE_ERROR, $confidence_level);
+        return [ANTISPAM_RESPONSE_ERROR, $confidence_level];
     }
 
-    return array($status, $confidence_level);
+    return [$status, $confidence_level];
 }
 
 /**
@@ -556,5 +556,5 @@ function calculation_internal_heuristic_confidence()
         }
     }
 
-    return array($confidence_level / 100.0, $scoring);
+    return [$confidence_level / 100.0, $scoring];
 }

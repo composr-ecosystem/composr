@@ -27,16 +27,16 @@ class Hook_notification_classifieds extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('classified_ads')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $catalogues = $GLOBALS['SITE_DB']->query_select('ecom_classifieds_prices', array('DISTINCT c_catalogue_name'));
+        $list = [];
+        $catalogues = $GLOBALS['SITE_DB']->query_select('ecom_classifieds_prices', ['DISTINCT c_catalogue_name']);
         if ($catalogues === null) {
-            return array();
+            return [];
         }
         foreach ($catalogues as $catalogue) {
-            $list['classifieds__' . $catalogue['c_catalogue_name']] = array(do_lang('GENERAL'), do_lang('classifieds:NOTIFICATION_TYPE_classifieds'));
+            $list['classifieds__' . $catalogue['c_catalogue_name']] = [do_lang('GENERAL'), do_lang('classifieds:NOTIFICATION_TYPE_classifieds')];
         }
         return $list;
     }

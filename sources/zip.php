@@ -33,7 +33,7 @@ function zip_scan_folder($path, $subpath = '')
     if ($_full == '') {
         $_full = '.';
     }
-    $info = array();
+    $info = [];
     $dh = @opendir($_full);
     if ($dh !== false) {
         while (($entry = readdir($dh)) !== false) {
@@ -48,7 +48,7 @@ function zip_scan_folder($path, $subpath = '')
                     $info = array_merge($info, $info2);
                 } else {
                     $mtime = filemtime($full);
-                    $info[] = array('full_path' => $full, 'name' => $_subpath, 'time' => $mtime);
+                    $info[] = ['full_path' => $full, 'name' => $_subpath, 'time' => $mtime];
                 }
             }
         }
@@ -120,8 +120,8 @@ function create_zip_file($outfile_path, $file_array)
     @flock($outfile, LOCK_EX);
 
     $offset = 0;
-    $offsets = array();
-    $sizes = array();
+    $offsets = [];
+    $sizes = [];
 
     // Write files
     foreach ($file_array as $i => $file) {

@@ -76,7 +76,7 @@ class Hook_media_rendering_video_cnn extends Media_renderer_with_fallback
      */
     public function get_video_thumbnail($src_url)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^https?://(edition\.|www\.)?cnn\.com/.*/video/(.*)\.html#', $src_url, $matches) != 0) {
             return 'http://i.cdn.turner.com/cnn/video/' . $matches[3] . '.214x122.jpg';
         }
@@ -104,6 +104,6 @@ class Hook_media_rendering_video_cnn extends Media_renderer_with_fallback
             $url = $url->evaluate();
         }
         $attributes['remote_id'] = preg_replace('#^https?://(edition\.|www\.)?cnn\.com/.*/video/(.*)\.html#', '${2}', $url);
-        return do_template('MEDIA_VIDEO_CNN', array('_GUID' => '9b6a695ff7556a955a17a07fc4b77bf6', 'HOOK' => 'video_cnn') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_VIDEO_CNN', ['_GUID' => '9b6a695ff7556a955a17a07fc4b77bf6', 'HOOK' => 'video_cnn'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

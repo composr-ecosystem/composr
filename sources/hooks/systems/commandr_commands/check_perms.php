@@ -34,7 +34,7 @@ class Hook_commandr_command_check_perms
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('check_perms', array('h'), array()), '', '');
+            return ['', do_command_help('check_perms', ['h'], []), '', ''];
         } else {
             require_code('upgrade_perms');
             $result = upgrader_check_perms_screen();
@@ -42,7 +42,7 @@ class Hook_commandr_command_check_perms
                 $result = do_lang('NO_ACTION_REQUIRED');
             }
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

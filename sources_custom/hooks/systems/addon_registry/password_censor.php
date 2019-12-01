@@ -26,7 +26,7 @@ class Hook_addon_registry_password_censor
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_password_censor
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -99,7 +99,7 @@ This is a system scheduler script that regularly censors anything looking like a
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,11 +109,11 @@ This is a system scheduler script that regularly censors anything looking like a
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -133,7 +133,7 @@ This is a system scheduler script that regularly censors anything looking like a
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/password_censor.php',
             'data_custom/password_censor.php',
             'sources_custom/password_censor.php',
@@ -146,6 +146,6 @@ This is a system scheduler script that regularly censors anything looking like a
             'themes/default/templates_custom/COMCODE_ENCRYPT.tpl',
             'themes/default/templates_custom/COMCODE_SELF_DESTRUCT.tpl',
             'themes/default/javascript_custom/password_censor.js',
-        );
+        ];
     }
 }

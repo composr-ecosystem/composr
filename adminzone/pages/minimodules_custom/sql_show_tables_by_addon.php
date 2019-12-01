@@ -47,7 +47,7 @@ foreach ($tables_by as $t => $ts) {
             echo ' &ndash; <span style="color: green">' . $table_descriptions[$table] . '</span>';
         }
         echo '<ul>';
-        $fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table));
+        $fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]);
         foreach ($fields as $field) {
             $type = str_replace('?', '', str_replace('*', '', $field['m_type']));
             $extra = '';

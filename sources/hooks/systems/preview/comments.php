@@ -31,7 +31,7 @@ class Hook_preview_comments
     public function applies()
     {
         $applies = ((addon_installed('cns_forum')) && (get_page_name() != 'topicview') && (post_param_integer('_comment_form_post', 0) == 1) && (post_param_string('hid_file_id_file0', null) === null) && (post_param_string('file0', null) === null));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -42,13 +42,13 @@ class Hook_preview_comments
     public function run()
     {
         // Find review, if there is one
-        $individual_review_ratings = array();
+        $individual_review_ratings = [];
         $review_rating = post_param_string('review_rating', '');
         if ($review_rating != '') {
-            $individual_review_ratings[''] = array(
+            $individual_review_ratings[''] = [
                 'REVIEW_TITLE' => '',
                 'REVIEW_RATING' => $review_rating,
-            );
+            ];
         }
 
         $poster_name = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
@@ -61,19 +61,19 @@ class Hook_preview_comments
 
         // Conversr renderings of poster
         require_code('cns_members2');
-        $poster_details = render_member_box(get_member(), false, false, array(), false);
+        $poster_details = render_member_box(get_member(), false, false, [], false);
         if (addon_installed('cns_forum')) {
             if (is_guest()) {
-                $poster = do_template('CNS_POSTER_MEMBER', array(
+                $poster = do_template('CNS_POSTER_MEMBER', [
                     '_GUID' => 'adbfe268015ca904c3f61020a7b0adde',
                     'ONLINE' => true,
                     'ID' => strval(get_member()),
                     'POSTER_DETAILS' => $poster_details,
                     'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url(get_member(), true),
                     'POSTER_USERNAME' => $poster_name,
-                ));
+                ]);
             } else {
-                $poster = do_template('CNS_POSTER_GUEST', array('_GUID' => '3992f4e69ac72a5b57289e5e802f5f48', 'IP_LINK' => '', 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_name));
+                $poster = do_template('CNS_POSTER_GUEST', ['_GUID' => '3992f4e69ac72a5b57289e5e802f5f48', 'IP_LINK' => '', 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_name]);
             }
         } else {
             $poster = make_string_tempcode(escape_html($poster_name)); // Should never happen actually, as applies discounts hook from even running
@@ -84,7 +84,7 @@ class Hook_preview_comments
         $time = get_timezoned_date_time(time());
         $poster_url = $GLOBALS['FORUM_DRIVER']->member_profile_url(get_member(), true);
         $title = post_param_string('title', '');
-        $tpl = do_template('POST', array(
+        $tpl = do_template('POST', [
             '_GUID' => 'fe6913829896c0f0a615ecdb11fc5271',
             'INDIVIDUAL_REVIEW_RATINGS' => $individual_review_ratings,
             'HIGHLIGHT' => $highlight,
@@ -114,7 +114,7 @@ class Hook_preview_comments
             'SIGNATURE' => '',
             'IS_UNREAD' => false,
             'IS_THREADED' => false,
-        ));
-        return array($tpl, null);
+        ]);
+        return [$tpl, null];
     }
 }

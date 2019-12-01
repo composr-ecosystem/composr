@@ -34,7 +34,7 @@ class specsettings_documented_test_set extends cms_test_case
 
         $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^            case \'([A-Z_]+)\':#m', $directives_file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $directive = $matches[1][$i];
@@ -49,12 +49,12 @@ class specsettings_documented_test_set extends cms_test_case
 
         $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^function ecv2?_(\w+)\(\$lang, \$escaped, \$param\)#m', $symbols_file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $symbol = $matches[1][$i];
 
-            if (in_array($symbol, array('TERNARY'))) {
+            if (in_array($symbol, ['TERNARY'])) {
                 continue;
             }
 
@@ -68,12 +68,12 @@ class specsettings_documented_test_set extends cms_test_case
 
         $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\{\$(\w+)#', $tempcode_tutorial, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $symbol = $matches[1][$i];
 
-            if (in_array($symbol, array('SYMBOL', 'F'))) {
+            if (in_array($symbol, ['SYMBOL', 'F'])) {
                 continue;
             }
 
@@ -85,11 +85,11 @@ class specsettings_documented_test_set extends cms_test_case
     {
         $config_editor_code = cms_file_get_contents_safe(get_file_base() . '/config_editor.php', FILE_READ_LOCK);
 
-        $found = array();
+        $found = [];
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         foreach ($files as $path) {
             if (basename($path) == 'shared_installs.php') {
                 continue;
@@ -99,7 +99,7 @@ class specsettings_documented_test_set extends cms_test_case
             $all_code .= $c;
         }
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#(\$SITE_INFO|\$GLOBALS\[\'SITE_INFO\'\])\[\'([^\'"]+)\'\]#', $all_code, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $var = $matches[2][$i];
@@ -107,7 +107,7 @@ class specsettings_documented_test_set extends cms_test_case
                 (/*Can't just flip so simply*/$var != 'multi_lang_content') &&
                 (/*string replace array*/$var != 'reps') &&
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
-                (/*Testing Platform*/!in_array($var, array('ci_password', 'gitlab_personal_token'))) &&
+                (/*Testing Platform*/!in_array($var, ['ci_password', 'gitlab_personal_token'])) &&
                 (/*Demonstratr*/strpos($var, 'throttle_') === false) &&
                 (/*Demonstratr*/strpos($var, 'custom_') === false) &&
                 (/*Demonstratr*/$var != 'mysql_demonstratr_password') &&
@@ -116,7 +116,7 @@ class specsettings_documented_test_set extends cms_test_case
                 (/*Legacy password name*/$var != 'admin_password') &&
                 (/*XML dev environment*/strpos($var, '_chain') === false) &&
                 (/*LEGACY*/$var != 'board_prefix') &&
-                (/*forum-driver-specific*/!in_array($var, array('aef_table_prefix', 'bb_forum_number', 'ipb_table_prefix', 'mybb_table_prefix', 'phpbb_table_prefix', 'smf_table_prefix', 'stronghold_cookies', 'vb_table_prefix', 'vb_unique_id', 'vb_version', 'wowbb_table_prefix')))
+                (/*forum-driver-specific*/!in_array($var, ['aef_table_prefix', 'bb_forum_number', 'ipb_table_prefix', 'mybb_table_prefix', 'phpbb_table_prefix', 'smf_table_prefix', 'stronghold_cookies', 'vb_table_prefix', 'vb_unique_id', 'vb_version', 'wowbb_table_prefix']))
             ) {
                 $found[$var] = true;
             }
@@ -131,12 +131,12 @@ class specsettings_documented_test_set extends cms_test_case
 
         // Test the reverse too...
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^        \'(\w+)\' => \'#m', $config_editor_code, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $install_option = $matches[1][$i];
 
-            if (in_array($install_option, array('gae_application', 'gae_bucket_name'))) {
+            if (in_array($install_option, ['gae_application', 'gae_bucket_name'])) {
                 continue;
             }
 
@@ -148,7 +148,7 @@ class specsettings_documented_test_set extends cms_test_case
 
         $config = '<' . '?php' . "\n" . 'global $SITE_INFO;' . "\n";
         foreach ($found as $key) {
-            if (in_array($key, array('dev_mode'))) { // Exceptions
+            if (in_array($key, ['dev_mode'])) { // Exceptions
                 continue;
             }
 
@@ -168,11 +168,11 @@ class specsettings_documented_test_set extends cms_test_case
     {
         $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-        $found = array();
+        $found = [];
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('php', 'tpl', 'js'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl', 'js']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if (($path == 'sources/upgrade.php') || ($path == 'sources/shared_installs.php') || ($path == 'sources_custom/phpstub.php')) {
@@ -183,12 +183,12 @@ class specsettings_documented_test_set extends cms_test_case
             $all_code .= $c;
         }
 
-        $regexps = array(
+        $regexps = [
             '#get\_value\(\'([^\']+)\'\)#',
             '#\{\$VALUE_OPTION[*;/\#]*,([^{},]+)\}#',
-        );
+        ];
         foreach ($regexps as $regexp) {
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all($regexp, $all_code, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $var = $matches[1][$i];
@@ -207,12 +207,12 @@ class specsettings_documented_test_set extends cms_test_case
 
         // Test the reverse too...
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^  - \[tt\](\w+)\[/tt\] -- #m', $codebook_text, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $value_option = $matches[1][$i];
 
-            if (in_array($value_option, array('webdav_root'))) {
+            if (in_array($value_option, ['webdav_root'])) {
                 continue;
             }
 
@@ -225,11 +225,11 @@ class specsettings_documented_test_set extends cms_test_case
     {
         $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-        $found = array();
+        $found = [];
 
         $all_code = '';
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('php', 'tpl'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['php', 'tpl']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if ((basename($path) == 'shared_installs.php') || (strpos($path, 'sources/forum/') !== false) || (basename($path) == 'phpstub.php')) {
@@ -240,7 +240,7 @@ class specsettings_documented_test_set extends cms_test_case
             $all_code .= $c;
         }
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#get\_param(\_integer)?\(\'(keep_[^\']+)\'[,\)]#', $all_code, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $var = $matches[2][$i];
@@ -261,7 +261,7 @@ class specsettings_documented_test_set extends cms_test_case
 
         // Test the reverse too...
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^ - \[tt\](keep_\w+)\[/tt\]#m', $codebook_text, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $keep_setting = $matches[1][$i];

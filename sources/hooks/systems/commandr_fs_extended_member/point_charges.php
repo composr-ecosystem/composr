@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__point_charges
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('chargelog', array('id'), array('member_id' => $member_id));
+        return table_to_portable_rows('chargelog', ['id'], ['member_id' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__point_charges
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('chargelog', $data, array('member_id' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('chargelog', $data, ['member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

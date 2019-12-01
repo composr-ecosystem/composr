@@ -26,54 +26,54 @@ class Hook_actionlog_iotds extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('iotds')) {
-            return array();
+            return [];
         }
 
         require_lang('iotds');
 
-        return array(
-            'ADD_IOTD' => array(
+        return [
+            'ADD_IOTD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'iotd',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:iotds:view:{ID}',
                     'EDIT_THIS_IOTD' => '_SEARCH:cms_iotds:_edit:{ID}',
                     'ADD_IOTD' => '_SEARCH:cms_iotds:add',
-                ),
-            ),
-            'EDIT_IOTD' => array(
+                ],
+            ],
+            'EDIT_IOTD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'iotd',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:iotds:view:{ID}',
                     'EDIT_THIS_IOTD' => '_SEARCH:cms_iotds:_edit:{ID}',
                     'ADD_IOTD' => '_SEARCH:cms_iotds:add',
-                ),
-            ),
-            'CHOOSE_IOTD' => array(
+                ],
+            ],
+            'CHOOSE_IOTD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'iotd',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:iotds:view:{ID}',
                     'EDIT_THIS_IOTD' => '_SEARCH:cms_iotds:_edit:{ID}',
                     'ADD_IOTD' => '_SEARCH:cms_iotds:add',
-                ),
-            ),
-            'DELETE_IOTD' => array(
+                ],
+            ],
+            'DELETE_IOTD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'iotd',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_IOTD' => '_SEARCH:cms_iotds:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

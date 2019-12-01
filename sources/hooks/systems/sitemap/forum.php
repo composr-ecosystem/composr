@@ -27,8 +27,8 @@ class Hook_sitemap_forum extends Hook_sitemap_content
     protected $screen_type = 'browse';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('topic');
-    protected $entry_sitetree_hook = array('topic');
+    protected $entry_content_type = ['topic'];
+    protected $entry_sitetree_hook = ['topic'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -61,7 +61,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
      */
     public function handles_page_link($page_link, $options)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]*)#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -104,10 +104,10 @@ class Hook_sitemap_forum extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -125,19 +125,19 @@ class Hook_sitemap_forum extends Hook_sitemap_content
             $topicview_zone = get_module_zone('topicview');
 
             if ((is_guest(get_member())) || (($options & SITEMAP_GEN_AS_GUEST) != 0)) {
-                $entry_points = array(
+                $entry_points = [
                     $vforums_zone . ':vforums:browse',
                     $vforums_zone . ':vforums:unanswered',
-                );
+                ];
             } else {
-                $entry_points = array(
+                $entry_points = [
                     $vforums_zone . ':vforums:browse',
                     $vforums_zone . ':vforums:unread',
                     $vforums_zone . ':vforums:recently_read',
                     $vforums_zone . ':vforums:unanswered',
                     $vforums_zone . ':vforums:involved',
                     $topicview_zone . ':topicview',
-                );
+                ];
             }
 
             foreach ($entry_points as $entry_point) {
@@ -153,7 +153,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
         $parent = (($options & SITEMAP_GEN_KEEP_FULL_STRUCTURE) == 0) ? db_get_first_id() : null;
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', array('f_parent_forum' => $parent));
+            $count = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)', ['f_parent_forum' => $parent]);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
@@ -161,7 +161,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('*'), array('f_parent_forum' => $parent), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', ['*'], ['f_parent_forum' => $parent], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -228,18 +228,18 @@ class Hook_sitemap_forum extends Hook_sitemap_content
             }
         }
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => $sitemap_priority,
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'admin_cns_forums', 'type' => '_edit', 'id' => $content_id), get_module_zone('admin_cns_forums')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'admin_cns_forums', 'type' => '_edit', 'id' => $content_id], get_module_zone('admin_cns_forums')),
+        ] + $partial_struct;
 
-        $struct['extra_meta'] = array(
+        $struct['extra_meta'] = [
             'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/menu/social/forum/forums') : null,
-        ) + $struct['extra_meta'];
+        ] + $struct['extra_meta'];
 
 
         $struct['extra_meta']['is_a_category_tree_root'] = true;
@@ -266,7 +266,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
         $meta_gather |= SITEMAP_GATHER_DB_ROW;
         $children = $this->_get_children_nodes($content_id, $page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row, '', $explicit_order_by_entries, $explicit_order_by_categories);
         if ($children !== null) {
-            $children2 = array();
+            $children2 = [];
             foreach ($children as $child) {
                 $child_row = $child['extra_meta']['db_row'];
                 if ($child['content_type'] == 'topic') {
@@ -280,7 +280,7 @@ class Hook_sitemap_forum extends Hook_sitemap_content
                         if ($i != 0) {
                             $paginated_page_link .= ':forum_start=' . strval($i);
                         }
-                        $children2[] = array('page_link' => $paginated_page_link) + $child;
+                        $children2[] = ['page_link' => $paginated_page_link] + $child;
                     }
                 } else {
                     $children2[] = $child;

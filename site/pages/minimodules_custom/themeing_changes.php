@@ -55,7 +55,7 @@ $title->evaluate_echo();
 echo '
 <p>
     This auto-generated page shows default theme changes made between versions. You can also look at changes in
-    <a href="' . escape_html(static_evaluate_tempcode(build_url(array('page' => '_SELF', 'show_all' => 1), '_SELF'))) . '">all files</a>.
+    <a href="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'show_all' => 1], '_SELF'))) . '">all files</a>.
 </p>';
 
 // Scope selector
@@ -65,19 +65,19 @@ $first_version = key($releases);
 $last_release = end($releases);
 $last_version = key($releases);
 
-$special_file_types = array(
-    'Language files' => array('lang/' . fallback_lang(), 'ini'),
-    'CSS files' => array('themes/default/css', 'css'),
-    'Templates' => array('themes/default/templates', 'tpl'),
+$special_file_types = [
+    'Language files' => ['lang/' . fallback_lang(), 'ini'],
+    'CSS files' => ['themes/default/css', 'css'],
+    'Templates' => ['themes/default/templates', 'tpl'],
     //Excessive 'XML files' => array('', 'xml'),
-    'Text templates' => array('themes/default/text', 'txt'),
-    'JavaScript' => array('themes/default/javascript', 'js'),
-    'Other' => array('', null),
-);
+    'Text templates' => ['themes/default/text', 'txt'],
+    'JavaScript' => ['themes/default/javascript', 'js'],
+    'Other' => ['', null],
+];
 
 // Read defaults
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
-    $files_to_show = array();
+    $files_to_show = [];
     $i = 0;
     foreach ($special_file_types as $label => $_search) {
         if (isset($_POST['file_selector_' . strval($i)])) {
@@ -88,19 +88,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
 } elseif (isset($_GET['files'])) { // By URL
     $files_to_show = explode(',', $_GET['files']);
 } else { // Hard-coded defaults
-    $files_to_show = array(
+    $files_to_show = [
         'themes/default/css/global.css',
         'themes/default/css/cns.css',
         'themes/default/templates/HTML_HEAD.tpl',
         'themes/default/templates/GLOBAL_HTML_WRAP.tpl',
-    );
+    ];
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { // From form
-    $versions_interested_in = isset($_POST['releases']) ? $_POST['releases'] : array();
+    $versions_interested_in = isset($_POST['releases']) ? $_POST['releases'] : [];
 } elseif (isset($_GET['releases'])) { // By URL
     $versions_interested_in = explode(',', $_GET['releases']);
 } else { // Hard-coded defaults
-    $versions_interested_in = array($first_version, $last_version);
+    $versions_interested_in = [$first_version, $last_version];
 }
 
 require_javascript('jquery');
@@ -108,12 +108,12 @@ require_javascript('select2');
 require_css('widget_select2');
 
 echo '<div class="clearfix">';
-echo '<form action="' . escape_html(static_evaluate_tempcode(build_url(array('page' => '_SELF', 'show_all' => get_param_integer('show_all', 0)), '_SELF'))) . '" method="post">';
+echo '<form action="' . escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'show_all' => get_param_integer('show_all', 0)], '_SELF'))) . '" method="post">';
 echo static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
 
 // Output file selectors
 $i = 0;
-$all_files_processed = array();
+$all_files_processed = [];
 foreach ($special_file_types as $label => $_search) {
     list($search_path, $search_ext) = $_search;
 
@@ -121,7 +121,7 @@ foreach ($special_file_types as $label => $_search) {
     $deep_path = $path . (($search_path == '') ? '' : ('/' . $search_path));
 
     $_files = get_directory_contents($deep_path);
-    $files = array();
+    $files = [];
     foreach ($_files as $f) {
         if (should_ignore_file((($search_path == '') ? '' : ($search_path . '/')) . $f, IGNORE_HIDDEN_FILES | IGNORE_ACCESS_CONTROLLERS | IGNORE_SHIPPED_VOLATILE)) {
             continue;
@@ -148,7 +148,7 @@ foreach ($special_file_types as $label => $_search) {
     foreach ($files as $file) {
         // Filter out excess
         $ext = get_file_extension($file);
-        if ((in_array($ext, array('php', 'png', 'gif', 'jpg'))) && (get_param_integer('show_all', 0) == 0)) {
+        if ((in_array($ext, ['php', 'png', 'gif', 'jpg'])) && (get_param_integer('show_all', 0) == 0)) {
             continue;
         }
         if (preg_match('#^(data/ckeditor/|data/editarea/|data/sounds/|data/fonts/)#', $file) != 0) {
@@ -193,7 +193,7 @@ foreach (array_reverse($releases) as $version => $release_details) {
 echo '</select>';
 echo '</div>';
 
-$proceed_icon = do_template('ICON', array('_GUID' => '6ab410da5e85d43d82ca34af8ce0b44f', 'NAME' => 'buttons/proceed'));
+$proceed_icon = do_template('ICON', ['_GUID' => '6ab410da5e85d43d82ca34af8ce0b44f', 'NAME' => 'buttons/proceed']);
 echo '<button style="margin-left: 8px; margin-top: 15px" type="submit" class="btn btn-primary btn-scr buttons--proceed">' . $proceed_icon->evaluate() . ' Filter</button>';
 echo '</form>';
 echo '</div>';

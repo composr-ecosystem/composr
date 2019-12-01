@@ -38,7 +38,7 @@ function shorten_urlencoded_filename($filename, $length = 226)
     // (maxUploadDirSize is LEN('uploads') + LEN('/') + LEN(maxUploadSubdirSize) + LEN('/')
     // Suffixing leeway is so we can have up to ~99999 different files with the same base filename, varying by auto-generated suffixes
 
-    $matches = array();
+    $matches = [];
     if (preg_match('#^(.*)\.(.*)$#', $filename, $matches) != 0) {
         $filename_suffix = $matches[2];
         $_filename_stem = $matches[1];
@@ -108,7 +108,7 @@ class HarmlessURLCoder
      */
     public function __construct()
     {
-        foreach (array(
+        foreach ([
             chr(0),
             chr(1),
             chr(2),
@@ -133,7 +133,7 @@ class HarmlessURLCoder
             ';', // Separating GET parameters (alternate)
             '#', // Search specifier
             // Reserved but don't truly need encoding: ! * ' ( ) @ $ , [ ]
-        ) as $char) {
+        ] as $char) {
             $this->protected_chars[rawurlencode($char)] = $char;
         }
     }

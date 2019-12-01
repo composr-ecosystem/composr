@@ -31,9 +31,9 @@ class Hook_sw_leader_board
     public function get_blocks()
     {
         if (!addon_installed('points')) {
-            return array();
+            return [];
         }
 
-        return array(array('main_leader_board' => array('NO', 'YES')), array());
+        return [['main_leader_board' => ['NO', 'YES']], []];
     }
 }

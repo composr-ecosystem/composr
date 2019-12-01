@@ -30,7 +30,7 @@ class Hook_config_one_per_email_address
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ONE_PER_EMAIL_ADDRESS',
             'type' => 'list',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_one_per_email_address
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

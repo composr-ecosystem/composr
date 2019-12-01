@@ -60,10 +60,10 @@ function create_message_func($raw_params)
 
     $first_new_post_id = $pm_object->create_message($user_name_list, $subject, $message, $action, $post_id);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'msg_id' => mobiquo_val($first_new_post_id, 'string'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -83,28 +83,28 @@ function get_box_info_func($raw_params)
     $pm_object = new CMSPmRead();
     $details = $pm_object->get_box_info();
 
-    $list = array();
+    $list = [];
 
-    $list[] = mobiquo_val(array(
+    $list[] = mobiquo_val([
         'box_id' => mobiquo_val(strval(TAPATALK_MESSAGE_BOX_INBOX), 'string'),
         'box_name' => mobiquo_val('INBOX', 'base64'),
         'msg_count' => mobiquo_val($details['inbox_total'], 'int'),
         'unread_count' => mobiquo_val($details['inbox_unread_total'], 'int'),
         'box_type' => mobiquo_val('INBOX', 'string'),
-    ), 'struct');
+    ], 'struct');
 
-    $list[] = mobiquo_val(array(
+    $list[] = mobiquo_val([
         'box_id' => mobiquo_val(strval(TAPATALK_MESSAGE_BOX_SENT), 'string'),
         'box_name' => mobiquo_val('SENT', 'base64'),
         'msg_count' => mobiquo_val($details['sent_total'], 'int'),
         'unread_count' => mobiquo_val($details['sent_unread_total'], 'int'),
         'box_type' => mobiquo_val('SENT', 'string'),
-    ), 'struct');
+    ], 'struct');
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'list' => mobiquo_val($list, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -127,9 +127,9 @@ function get_box_func($raw_params)
     $pm_object = new CMSPmRead();
     $box = $pm_object->get_box($box_id, $start, $max);
 
-    $posts = array();
+    $posts = [];
     foreach ($box['posts'] as $post) {
-        $posts[] = mobiquo_val(array(
+        $posts[] = mobiquo_val([
             'msg_id' => mobiquo_val(strval($post['msg_id']), 'string'),
             'msg_state' => mobiquo_val($post['msg_state'], 'int'),
             'sent_date' => mobiquo_val($post['sent_date'], 'dateTime.iso8601'),
@@ -140,31 +140,31 @@ function get_box_func($raw_params)
             'msg_subject' => mobiquo_val($post['msg_subject'], 'base64'),
             'short_content' => mobiquo_val($post['short_content'], 'base64'),
             'is_online' => mobiquo_val($post['is_online'], 'boolean'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $msg_to = array();
+    $msg_to = [];
     foreach ($box['msg_to'] as $msg) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($msg['user_id']), 'string'),
             'username' => mobiquo_val($msg['username'], 'base64'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($msg['user_id'], true);
         if ($display_text != $msg['username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $msg_to[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'total_message_count' => mobiquo_val($box['total_message_count'], 'int'),
         'total_unread_count' => mobiquo_val($box['total_unread_count'], 'int'),
         'list' => mobiquo_val($posts, 'array'),
         'msg_to' => mobiquo_val($msg_to, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -187,22 +187,22 @@ function get_message_func($raw_params)
     $pm_object = new CMSPmRead();
     $details = $pm_object->get_message($post_id, $return_html);
 
-    $msg_to = array();
+    $msg_to = [];
     foreach ($details['msg_to'] as $_msg_to) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($_msg_to['user_id']), 'string'),
             'username' => mobiquo_val($_msg_to['username'], 'base64'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($_msg_to['user_id'], true);
         if ($display_text != $_msg_to['username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $msg_to[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'msg_from_id' => mobiquo_val(strval($details['msg_from_id']), 'string'),
         'msg_from' => mobiquo_val($details['msg_from'], 'base64'),
@@ -212,7 +212,7 @@ function get_message_func($raw_params)
         'text_body' => mobiquo_val($details['text_body'], 'base64'),
         'msg_to' => mobiquo_val($msg_to, 'array'),
         'attachments' => mobiquo_val(render_tapatalk_attachments($details['attachments']), 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -234,12 +234,12 @@ function get_quote_pm_func($raw_params)
     $pm_object = new CMSPmRead();
     list($quote_title, $quote_content) = $pm_object->get_quote_pm($post_id);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'msg_id' => mobiquo_val(strval($post_id), 'string'),
         'msg_subject' => mobiquo_val($quote_title, 'base64'),
         'text_body' => mobiquo_val($quote_content, 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 

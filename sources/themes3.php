@@ -28,12 +28,12 @@ function compile_all_templates()
 
     cms_disable_time_limit();
 
-    $themes = array(
+    $themes = [
         'admin',
         $GLOBALS['FORUM_DRIVER']->get_theme(''),
-    );
+    ];
 
-    $directories = array(
+    $directories = [
         'css' => 'css',
         'javascript' => 'js',
         'templates' => 'tpl',
@@ -44,7 +44,7 @@ function compile_all_templates()
         'templates_custom' => 'tpl',
         'text_custom' => 'txt',
         'xml_custom' => 'xml',
-    );
+    ];
 
     $base_path = get_file_base() . '/themes';
 
@@ -72,7 +72,7 @@ function compile_all_templates()
                     $tcp_path = $base_path . '/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.' . $suffix . '.tcp';
 
                     if (!is_file($tcp_path)) {
-                        do_template($codename, array(), $lang, true, null, '.' . $suffix, $directory, $theme);
+                        do_template($codename, [], $lang, true, null, '.' . $suffix, $directory, $theme);
 
                         switch ($directory) {
                             case 'javascript':
@@ -115,10 +115,10 @@ function actual_add_theme($name)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details(array('themes'));
+    force_have_afm_details(['themes']);
 
     // Create directories
-    $dir_list = array(
+    $dir_list = [
         '',
         'images',
         'images/logo',
@@ -134,12 +134,12 @@ function actual_add_theme($name)
         'templates_cached',
         'css',
         'css_custom',
-    );
+    ];
     $langs = find_all_langs(true);
     foreach (array_keys($langs) as $lang) {
         $dir_list[] = 'templates_cached/' . $lang;
     }
-    $dir_list_access = array('', 'images', 'images_custom', 'css');
+    $dir_list_access = ['', 'images', 'images_custom', 'css'];
     foreach ($dir_list as $dir) {
         $path = 'themes/' . $name . '/' . $dir;
         afm_make_directory($path, true);
@@ -157,11 +157,11 @@ function actual_add_theme($name)
     // Copy image references from default
     $start = 0;
     do {
-        $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', array('*'), array('theme' => 'default'), '', 100, $start);
+        $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', ['*'], ['theme' => 'default'], '', 100, $start);
         foreach ($theme_images as $theme_image) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', array('theme' => $name, 'id' => $theme_image['id'], 'lang' => $theme_image['lang']));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['theme' => $name, 'id' => $theme_image['id'], 'lang' => $theme_image['lang']]);
             if ($test === null) {
-                $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $theme_image['id'], 'theme' => $name, 'url' => $theme_image['url'], 'lang' => $theme_image['lang']));
+                $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $theme_image['id'], 'theme' => $name, 'url' => $theme_image['url'], 'lang' => $theme_image['lang']]);
             }
         }
         $start += 100;
@@ -194,19 +194,19 @@ function actual_rename_theme($theme, $to)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details(array('themes', 'themes/' . $theme));
+    force_have_afm_details(['themes', 'themes/' . $theme]);
     afm_move('themes/' . $theme, 'themes/' . $to);
 
-    $GLOBALS['SITE_DB']->query_update('theme_images', array('theme' => $to), array('theme' => $theme));
+    $GLOBALS['SITE_DB']->query_update('theme_images', ['theme' => $to], ['theme' => $theme]);
     $theme_images = $GLOBALS['SITE_DB']->query('SELECT url FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'theme_images WHERE url LIKE \'themes/' . db_encode_like($theme) . '/%\'');
     foreach ($theme_images as $image) {
         $new_url = str_replace('themes/' . $theme . '/', 'themes/' . $to . '/', $image['url']);
-        $GLOBALS['SITE_DB']->query_update('theme_images', array('url' => $new_url), array('url' => $image['url']), '', 1);
+        $GLOBALS['SITE_DB']->query_update('theme_images', ['url' => $new_url], ['url' => $image['url']], '', 1);
     }
     if (get_forum_type() == 'cns') {
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_theme' => $to), array('m_theme' => $theme));
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_theme' => $to], ['m_theme' => $theme]);
     }
-    $GLOBALS['SITE_DB']->query_update('zones', array('zone_theme' => $to), array('zone_theme' => $theme));
+    $GLOBALS['SITE_DB']->query_update('zones', ['zone_theme' => $to], ['zone_theme' => $theme]);
     log_it('RENAME_THEME', $theme, $to);
 }
 
@@ -228,13 +228,13 @@ function actual_copy_theme($theme, $to)
 
     require_code('abstract_file_manager');
     require_code('files2');
-    force_have_afm_details(array('themes'));
+    force_have_afm_details(['themes']);
     $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
     foreach ($contents as $c) {
         afm_make_directory(dirname('themes/' . $to . '/' . $c), true, true);
         afm_copy('themes/' . $theme . '/' . $c, 'themes/' . $to . '/' . $c, true);
     }
-    $needed = array(
+    $needed = [
         'css',
         'css_custom',
         'images',
@@ -245,12 +245,12 @@ function actual_copy_theme($theme, $to)
         'javascript_custom',
         'xml_custom',
         'text_custom',
-    );
+    ];
     foreach ($needed as $n) {
         afm_make_directory(dirname('themes/' . $to . '/' . $n), true, true);
     }
 
-    $images = $GLOBALS['SITE_DB']->query_select('theme_images', array('*'), array('theme' => $theme));
+    $images = $GLOBALS['SITE_DB']->query_select('theme_images', ['*'], ['theme' => $theme]);
     foreach ($images as $i) {
         $i['theme'] = $to;
         $i['url'] = str_replace('themes/' . $theme . '/', 'themes/' . $to . '/', $i['url']);
@@ -279,10 +279,10 @@ function actual_delete_theme($theme)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details(array('themes/' . $theme));
+    force_have_afm_details(['themes/' . $theme]);
     afm_delete_directory('themes/' . $theme, true);
 
-    $GLOBALS['SITE_DB']->query_delete('theme_images', array('theme' => $theme));
+    $GLOBALS['SITE_DB']->query_delete('theme_images', ['theme' => $theme]);
     log_it('DELETE_THEME', $theme);
 }
 
@@ -307,7 +307,7 @@ function tempcode_tester_script()
 
     $tempcode = post_param_string('tempcode');
 
-    $params = array();
+    $params = [];
     foreach ($_POST as $key => $val) {
         if ((substr($key, 0, 4) == 'key_') && ($val != '')) {
             $_key = str_replace('}', '', str_replace('{', '', post_param_string($key, '')));
@@ -338,7 +338,7 @@ function tempcode_tester_script()
  */
 function actual_add_theme_image($theme, $lang, $id, $url, $fail_ok = false)
 {
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', array('id' => $id, 'theme' => $theme, 'lang' => $lang));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['id' => $id, 'theme' => $theme, 'lang' => $lang]);
     if ($test !== null) {
         if ($fail_ok) {
             return;
@@ -346,7 +346,7 @@ function actual_add_theme_image($theme, $lang, $id, $url, $fail_ok = false)
         warn_exit(do_lang_tempcode('ALREADY_EXISTS', escape_html($id)));
     }
 
-    $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $id, 'theme' => $theme, 'url' => $url, 'lang' => $lang));
+    $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $id, 'theme' => $theme, 'url' => $url, 'lang' => $lang]);
 
     log_it('ADD_THEME_IMAGE', $id, $theme);
 
@@ -371,7 +371,7 @@ function actual_add_theme_image($theme, $lang, $id, $url, $fail_ok = false)
 function actual_edit_theme_image($old_id, $theme, $lang, $id, $url, $quick = false)
 {
     if ($old_id != $id) {
-        $where_map = array('theme' => $theme, 'id' => $id);
+        $where_map = ['theme' => $theme, 'id' => $id];
         if ($lang != '') {
             $where_map['lang'] = $lang;
         }
@@ -386,7 +386,7 @@ function actual_edit_theme_image($old_id, $theme, $lang, $id, $url, $quick = fal
 
         if (($old_url != $url) && ($old_url != '')) {
             if (($theme == 'default') || (strpos($old_url, 'themes/default/') === false)) {
-                $where_map = array('theme' => $theme, 'id' => $id);
+                $where_map = ['theme' => $theme, 'id' => $id];
                 if ($lang != '') {
                     $where_map['lang'] = $lang;
                 }
@@ -400,17 +400,17 @@ function actual_edit_theme_image($old_id, $theme, $lang, $id, $url, $quick = fal
     if ($lang == '') {
         $langs = array_keys(find_all_langs());
     } else {
-        $langs = array($lang);
+        $langs = [$lang];
     }
 
-    $where_map = array('theme' => $theme, 'id' => $id);
+    $where_map = ['theme' => $theme, 'id' => $id];
     if ($lang != '') {
         $where_map['lang'] = $lang;
     }
     $GLOBALS['SITE_DB']->query_delete('theme_images', $where_map);
 
     foreach ($langs as $lang) {
-        $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $id, 'theme' => $theme, 'url' => $url, 'lang' => $lang), false, true); // errors suppressed in case already there
+        $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $id, 'theme' => $theme, 'url' => $url, 'lang' => $lang], false, true); // errors suppressed in case already there
     }
 
     if (!$quick) {
@@ -435,18 +435,18 @@ function actual_delete_theme_image($id, $theme = null, $lang = null)
     if ($theme !== null) {
         $old_url = find_theme_image($id, true, true, $theme, $lang);
 
-        $where_map = array('theme' => $theme, 'id' => $id);
+        $where_map = ['theme' => $theme, 'id' => $id];
         if (($lang != '') && ($lang !== null)) {
             $where_map['lang'] = $lang;
         }
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'url', $where_map);
         if ($test !== null) {
-            $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $id, 'url' => $test));
+            $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $id, 'url' => $test]);
         }
     } else {
         $old_url = find_theme_image($id, true, true);
 
-        $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $id));
+        $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $id]);
     }
 
     if ($old_url != '') {
@@ -467,7 +467,7 @@ function export_theme_images()
     require_code('tar');
     require_code('files');
     $my_tar = tar_open('php://stdout', 'wb');
-    $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', array('DISTINCT id'));
+    $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', ['DISTINCT id']);
     foreach ($theme_images as $theme_image) {
         $path = rawurldecode(find_theme_image($theme_image['id'], true, true));
         if (($path != '') && (substr($path, 0, strlen('themes/default/images/')) != 'themes/default/images/')) {
@@ -498,8 +498,8 @@ function regen_theme_images($theme, $langs = null, $target_theme = null)
     $images = array_merge(find_images_do_dir($theme, 'images/', $langs), find_images_do_dir($theme, 'images_custom/', $langs));
 
     foreach (array_keys($langs) as $lang) {
-        $where = array('lang' => $lang, 'theme' => $target_theme);
-        $existing = $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), $where);
+        $where = ['lang' => $lang, 'theme' => $target_theme];
+        $existing = $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], $where);
 
         // Cleanup broken references
         foreach ($existing as $e) {
@@ -521,7 +521,7 @@ function regen_theme_images($theme, $langs = null, $target_theme = null)
             if (!$found) {
                 push_query_limiting(false);
                 $correct_url = find_theme_image($id, false, true, $theme, $lang);
-                $GLOBALS['SITE_DB']->query_insert('theme_images', array('id' => $id, 'lang' => $lang, 'theme' => $target_theme, 'url' => $correct_url), false, true); // race conditions
+                $GLOBALS['SITE_DB']->query_insert('theme_images', ['id' => $id, 'lang' => $lang, 'theme' => $target_theme, 'url' => $correct_url], false, true); // race conditions
                 pop_query_limiting();
 
                 $made_change = false;
@@ -532,7 +532,7 @@ function regen_theme_images($theme, $langs = null, $target_theme = null)
     if ($made_change) {
         // Reset this so they can all load in in one go
         global $THEME_IMAGES_CACHE, $THEME_IMAGES_SMART_CACHE_LOAD;
-        $THEME_IMAGES_CACHE = array();
+        $THEME_IMAGES_CACHE = [];
         $THEME_IMAGES_SMART_CACHE_LOAD = 1;
     }
 
@@ -546,7 +546,7 @@ function regen_theme_images($theme, $langs = null, $target_theme = null)
  */
 function cleanup_theme_images($old_url)
 {
-    $files_referenced = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('theme_images', array('DISTINCT url')));
+    $files_referenced = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('theme_images', ['DISTINCT url']));
 
     $themes = find_all_themes();
     foreach (array_keys($themes) as $theme) {

@@ -25,63 +25,63 @@
  */
 function get_false_permissions()
 {
-    return array(
-        array('_COMCODE', 'allow_html'),
-        array('_COMCODE', 'comcode_dangerous'),
-        array('_COMCODE', 'comcode_nuisance'),
-        array('_COMCODE', 'use_very_dangerous_comcode'),
-        array('STAFF_ACTIONS', 'access_closed_site'),
-        array('STAFF_ACTIONS', 'bypass_bandwidth_restriction'),
-        array('STAFF_ACTIONS', 'see_stack_trace'),
-        array('STAFF_ACTIONS', 'view_profiling_modes'),
-        array('STAFF_ACTIONS', 'access_overrun_site'),
-        array('SUBMISSION', 'feature'),
-        array('SUBMISSION', 'bypass_validation_highrange_content'),
-        array('SUBMISSION', 'bypass_validation_midrange_content'),
-        array('SUBMISSION', 'edit_highrange_content'),
-        array('SUBMISSION', 'edit_midrange_content'),
-        array('SUBMISSION', 'edit_lowrange_content'),
-        array('SUBMISSION', 'edit_own_highrange_content'),
-        array('SUBMISSION', 'edit_own_midrange_content'),
-        array('SUBMISSION', 'delete_highrange_content'),
-        array('SUBMISSION', 'delete_midrange_content'),
-        array('SUBMISSION', 'delete_lowrange_content'),
-        array('SUBMISSION', 'delete_own_highrange_content'),
-        array('SUBMISSION', 'delete_own_midrange_content'),
-        array('SUBMISSION', 'delete_own_lowrange_content'),
-        array('SUBMISSION', 'can_submit_to_others_categories'),
-        array('SUBMISSION', 'search_engine_links'),
-        array('SUBMISSION', 'submit_cat_highrange_content'),
-        array('SUBMISSION', 'submit_cat_midrange_content'),
-        array('SUBMISSION', 'submit_cat_lowrange_content'),
-        array('SUBMISSION', 'edit_cat_highrange_content'),
-        array('SUBMISSION', 'edit_cat_midrange_content'),
-        array('SUBMISSION', 'edit_cat_lowrange_content'),
-        array('SUBMISSION', 'delete_cat_highrange_content'),
-        array('SUBMISSION', 'delete_cat_midrange_content'),
-        array('SUBMISSION', 'delete_cat_lowrange_content'),
-        array('SUBMISSION', 'edit_own_cat_highrange_content'),
-        array('SUBMISSION', 'edit_own_cat_midrange_content'),
-        array('SUBMISSION', 'edit_own_cat_lowrange_content'),
-        array('SUBMISSION', 'delete_own_cat_highrange_content'),
-        array('SUBMISSION', 'delete_own_cat_midrange_content'),
-        array('SUBMISSION', 'delete_own_cat_lowrange_content'),
-        array('SUBMISSION', 'mass_import'),
-        array('SUBMISSION', 'scheduled_publication_times'),
-        array('SUBMISSION', 'mass_delete_from_ip'),
-        array('SUBMISSION', 'exceed_filesize_limit'),
-        array('SUBMISSION', 'draw_to_server'),
-        array('GENERAL_SETTINGS', 'open_virtual_roots'),
-        array('GENERAL_SETTINGS', 'sees_javascript_error_alerts'),
-        array('GENERAL_SETTINGS', 'see_software_docs'),
-        array('GENERAL_SETTINGS', 'see_unvalidated'),
-        array('GENERAL_SETTINGS', 'may_enable_staff_notifications'),
-        array('GENERAL_SETTINGS', 'bypass_flood_control'),
-        array('GENERAL_SETTINGS', 'remove_page_split'),
-        array('GENERAL_SETTINGS', 'bypass_wordfilter'),
-        array('SUBMISSION', 'perform_keyword_check'),
-        array('SUBMISSION', 'have_personal_category'),
-    );
+    return [
+        ['_COMCODE', 'allow_html'],
+        ['_COMCODE', 'comcode_dangerous'],
+        ['_COMCODE', 'comcode_nuisance'],
+        ['_COMCODE', 'use_very_dangerous_comcode'],
+        ['STAFF_ACTIONS', 'access_closed_site'],
+        ['STAFF_ACTIONS', 'bypass_bandwidth_restriction'],
+        ['STAFF_ACTIONS', 'see_stack_trace'],
+        ['STAFF_ACTIONS', 'view_profiling_modes'],
+        ['STAFF_ACTIONS', 'access_overrun_site'],
+        ['SUBMISSION', 'feature'],
+        ['SUBMISSION', 'bypass_validation_highrange_content'],
+        ['SUBMISSION', 'bypass_validation_midrange_content'],
+        ['SUBMISSION', 'edit_highrange_content'],
+        ['SUBMISSION', 'edit_midrange_content'],
+        ['SUBMISSION', 'edit_lowrange_content'],
+        ['SUBMISSION', 'edit_own_highrange_content'],
+        ['SUBMISSION', 'edit_own_midrange_content'],
+        ['SUBMISSION', 'delete_highrange_content'],
+        ['SUBMISSION', 'delete_midrange_content'],
+        ['SUBMISSION', 'delete_lowrange_content'],
+        ['SUBMISSION', 'delete_own_highrange_content'],
+        ['SUBMISSION', 'delete_own_midrange_content'],
+        ['SUBMISSION', 'delete_own_lowrange_content'],
+        ['SUBMISSION', 'can_submit_to_others_categories'],
+        ['SUBMISSION', 'search_engine_links'],
+        ['SUBMISSION', 'submit_cat_highrange_content'],
+        ['SUBMISSION', 'submit_cat_midrange_content'],
+        ['SUBMISSION', 'submit_cat_lowrange_content'],
+        ['SUBMISSION', 'edit_cat_highrange_content'],
+        ['SUBMISSION', 'edit_cat_midrange_content'],
+        ['SUBMISSION', 'edit_cat_lowrange_content'],
+        ['SUBMISSION', 'delete_cat_highrange_content'],
+        ['SUBMISSION', 'delete_cat_midrange_content'],
+        ['SUBMISSION', 'delete_cat_lowrange_content'],
+        ['SUBMISSION', 'edit_own_cat_highrange_content'],
+        ['SUBMISSION', 'edit_own_cat_midrange_content'],
+        ['SUBMISSION', 'edit_own_cat_lowrange_content'],
+        ['SUBMISSION', 'delete_own_cat_highrange_content'],
+        ['SUBMISSION', 'delete_own_cat_midrange_content'],
+        ['SUBMISSION', 'delete_own_cat_lowrange_content'],
+        ['SUBMISSION', 'mass_import'],
+        ['SUBMISSION', 'scheduled_publication_times'],
+        ['SUBMISSION', 'mass_delete_from_ip'],
+        ['SUBMISSION', 'exceed_filesize_limit'],
+        ['SUBMISSION', 'draw_to_server'],
+        ['GENERAL_SETTINGS', 'open_virtual_roots'],
+        ['GENERAL_SETTINGS', 'sees_javascript_error_alerts'],
+        ['GENERAL_SETTINGS', 'see_software_docs'],
+        ['GENERAL_SETTINGS', 'see_unvalidated'],
+        ['GENERAL_SETTINGS', 'may_enable_staff_notifications'],
+        ['GENERAL_SETTINGS', 'bypass_flood_control'],
+        ['GENERAL_SETTINGS', 'remove_page_split'],
+        ['GENERAL_SETTINGS', 'bypass_wordfilter'],
+        ['SUBMISSION', 'perform_keyword_check'],
+        ['SUBMISSION', 'have_personal_category'],
+    ];
 }
 
 /**
@@ -91,19 +91,19 @@ function get_false_permissions()
  */
 function get_true_permissions()
 {
-    return array(
-        array('SUBMISSION', 'edit_own_lowrange_content'),
-        array('SUBMISSION', 'submit_highrange_content'),
-        array('SUBMISSION', 'submit_midrange_content'),
-        array('SUBMISSION', 'submit_lowrange_content'),
-        array('SUBMISSION', 'bypass_validation_lowrange_content'),
-        array('_FEEDBACK', 'rate'),
-        array('_FEEDBACK', 'comment'),
-        array('VOTE', 'vote_in_polls'),
-        array('GENERAL_SETTINGS', 'jump_to_unvalidated'),
-        array('_COMCODE', 'reuse_others_attachments'),
-        array('GENERAL_SETTINGS', 'see_php_errors'),
-    );
+    return [
+        ['SUBMISSION', 'edit_own_lowrange_content'],
+        ['SUBMISSION', 'submit_highrange_content'],
+        ['SUBMISSION', 'submit_midrange_content'],
+        ['SUBMISSION', 'submit_lowrange_content'],
+        ['SUBMISSION', 'bypass_validation_lowrange_content'],
+        ['_FEEDBACK', 'rate'],
+        ['_FEEDBACK', 'comment'],
+        ['VOTE', 'vote_in_polls'],
+        ['GENERAL_SETTINGS', 'jump_to_unvalidated'],
+        ['_COMCODE', 'reuse_others_attachments'],
+        ['GENERAL_SETTINGS', 'see_php_errors'],
+    ];
 }
 
 /**
@@ -114,7 +114,7 @@ function get_true_permissions()
  */
 function privilege_exists($name)
 {
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('privilege_list', 'the_name', array('the_name' => $name));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('privilege_list', 'the_name', ['the_name' => $name]);
     return $test !== null;
 }
 
@@ -137,12 +137,12 @@ function add_privilege($section, $name, $default = false, $not_even_mods = false
     }
 
     // We do bulk inserts, for performance reasons
-    $ins_privilege = array();
-    $ins_group_id = array();
-    $ins_the_page = array();
-    $ins_module_the_name = array();
-    $ins_category_name = array();
-    $ins_the_value = array();
+    $ins_privilege = [];
+    $ins_group_id = [];
+    $ins_the_page = [];
+    $ins_module_the_name = [];
+    $ins_category_name = [];
+    $ins_the_value = [];
 
     $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
     $admin_groups = array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups());
@@ -157,16 +157,16 @@ function add_privilege($section, $name, $default = false, $not_even_mods = false
         }
     }
 
-    $GLOBALS['SITE_DB']->query_insert('group_privileges', array(
+    $GLOBALS['SITE_DB']->query_insert('group_privileges', [
         'privilege' => $ins_privilege,
         'group_id' => $ins_group_id,
         'the_page' => $ins_the_page,
         'module_the_name' => $ins_module_the_name,
         'category_name' => $ins_category_name,
         'the_value' => $ins_the_value,
-    ));
+    ]);
 
-    $GLOBALS['SITE_DB']->query_insert('privilege_list', array('p_section' => $section, 'the_name' => $name, 'the_default' => ($default ? 1 : 0)));
+    $GLOBALS['SITE_DB']->query_insert('privilege_list', ['p_section' => $section, 'the_name' => $name, 'the_default' => ($default ? 1 : 0)]);
 }
 
 /**
@@ -193,11 +193,11 @@ function set_privilege($group_id, $permission, $value, $page = null, $category_t
 
     $db = $GLOBALS[((($category_type == 'forums') || ($category_type == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-    $db->query_delete('group_privileges', array('privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name), '', 1);
-    $db->query_insert('group_privileges', array('privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name, 'the_value' => $value ? 1 : 0));
+    $db->query_delete('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name], '', 1);
+    $db->query_insert('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $category_type, 'category_name' => $category_name, 'the_value' => $value ? 1 : 0]);
 
     global $PRIVILEGE_CACHE;
-    $PRIVILEGE_CACHE = array();
+    $PRIVILEGE_CACHE = [];
 }
 
 /**
@@ -208,9 +208,9 @@ function set_privilege($group_id, $permission, $value, $page = null, $category_t
  */
 function rename_privilege($old, $new)
 {
-    $GLOBALS['SITE_DB']->query_update('privilege_list', array('the_name' => $new), array('the_name' => $old), '', 1);
-    $GLOBALS['SITE_DB']->query_update('group_privileges', array('privilege' => $new), array('privilege' => $old), '', 1);
-    $GLOBALS['SITE_DB']->query_update('member_privileges', array('privilege' => $new), array('privilege' => $old), '', 1);
+    $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_name' => $new], ['the_name' => $old], '', 1);
+    $GLOBALS['SITE_DB']->query_update('group_privileges', ['privilege' => $new], ['privilege' => $old], '', 1);
+    $GLOBALS['SITE_DB']->query_update('member_privileges', ['privilege' => $new], ['privilege' => $old], '', 1);
 }
 
 /**
@@ -220,6 +220,6 @@ function rename_privilege($old, $new)
  */
 function delete_privilege($name)
 {
-    $GLOBALS['SITE_DB']->query_delete('privilege_list', array('the_name' => $name), '', 1);
+    $GLOBALS['SITE_DB']->query_delete('privilege_list', ['the_name' => $name], '', 1);
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'group_privileges WHERE ' . db_string_equal_to('privilege', $name));
 }

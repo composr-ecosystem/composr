@@ -36,7 +36,7 @@ class Hook_content_meta_aware_quiz
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'quiz:QUIZ',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_quiz
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_QUIZ',
-        );
+        ];
     }
 
     /**

@@ -45,7 +45,7 @@ class Hook_fields_date
             $type .= '_RANGE';
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -114,7 +114,7 @@ class Hook_fields_date
                 $default = date('Y-m-d', utctime_to_usertime());
             }
         }
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**
@@ -165,7 +165,7 @@ class Hook_fields_date
     {
         $fo = option_value_from_field_array($field, $type, '');
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^Y([\-+]\d+)$#i', $fo, $matches) != 0) {
             return intval(date('Y')) + intval($matches[1]);
         }
@@ -211,7 +211,7 @@ class Hook_fields_date
                 $date_bits[2] = date('Y');
             }
 
-            $time = array(0, 0, intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
+            $time = [0, 0, intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0])];
         }
 
         $min_year = $this->find_year_range_limiter($field, 'min_year');

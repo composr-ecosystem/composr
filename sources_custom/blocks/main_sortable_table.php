@@ -25,14 +25,14 @@ class Block_main_sortable_table
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'guid', 'transform', 'stylings', 'classes');
+        $info['parameters'] = ['param', 'default_sort_column', 'max', 'labels', 'labels_tooltip', 'columns_display', 'columns_tooltip', 'guid', 'transform', 'stylings', 'classes'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_sortable_table
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         $map
 PHP;
@@ -73,7 +73,7 @@ PHP;
 
         disable_php_memory_limit();
 
-        $letters = array(
+        $letters = [
             'A',
             'B',
             'C',
@@ -100,8 +100,8 @@ PHP;
             'X',
             'Y',
             'Z',
-        );
-        $numbers = array(
+        ];
+        $numbers = [
             '1',
             '2',
             '3',
@@ -128,7 +128,7 @@ PHP;
             '24',
             '25',
             '26',
-        );
+        ];
         if (!@cms_empty_safe($map['columns_display'])) {
             $map['columns_display'] = str_replace($letters, $numbers, $map['columns_display']);
         }
@@ -136,16 +136,16 @@ PHP;
             $map['columns_tooltip'] = str_replace($letters, $numbers, $map['columns_tooltip']);
         }
 
-        $labels = @cms_empty_safe($map['labels']) ? array() : array_map('trim', explode(',', $map['labels']));
-        $labels_tooltip = @cms_empty_safe($map['labels_tooltip']) ? array() : array_map('trim', explode(',', $map['labels_tooltip']));
-        $columns_display = @cms_empty_safe($map['columns_display']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_display'])));
-        $columns_tooltip = @cms_empty_safe($map['columns_tooltip']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_tooltip'])));
+        $labels = @cms_empty_safe($map['labels']) ? [] : array_map('trim', explode(',', $map['labels']));
+        $labels_tooltip = @cms_empty_safe($map['labels_tooltip']) ? [] : array_map('trim', explode(',', $map['labels_tooltip']));
+        $columns_display = @cms_empty_safe($map['columns_display']) ? [] : array_map('intval', array_map('trim', explode(',', $map['columns_display'])));
+        $columns_tooltip = @cms_empty_safe($map['columns_tooltip']) ? [] : array_map('intval', array_map('trim', explode(',', $map['columns_tooltip'])));
 
-        $stylings = empty($map['stylings']) ? array() : array_map('trim', explode(',', $map['stylings']));
-        $classes = empty($map['classes']) ? array() : array_map('trim', explode(',', $map['classes']));
+        $stylings = empty($map['stylings']) ? [] : array_map('trim', explode(',', $map['stylings']));
+        $classes = empty($map['classes']) ? [] : array_map('trim', explode(',', $map['classes']));
 
         if (empty($map['transform'])) {
-            $transform = array();
+            $transform = [];
         } else {
             $transform = array_map('trim', explode(',', $map['transform']));
         }
@@ -155,11 +155,11 @@ PHP;
         // What will we be reading?
         $file = empty($map['param']) ? 'example.csv' : $map['param'];
 
-        $headers = array();
-        $_rows = array();
-        $tooltip_headers = array();
-        $_rows_tooltip = array();
-        $_rows_raw = array();
+        $headers = [];
+        $_rows = [];
+        $tooltip_headers = [];
+        $_rows_tooltip = [];
+        $_rows_raw = [];
 
         // Spreadsheet file
         if (strpos($file, '.') !== false) {
@@ -167,7 +167,7 @@ PHP;
 
             // Find/validate path
             if (!is_spreadsheet_readable($file)) {
-                return do_template('RED_ALERT', array('_GUID' => '9kalmcrafmbg3hi4162gursqzdf6q43j', 'TEXT' => 'We only accept spreadsheet files, for security reasons.'));
+                return do_template('RED_ALERT', ['_GUID' => '9kalmcrafmbg3hi4162gursqzdf6q43j', 'TEXT' => 'We only accept spreadsheet files, for security reasons.']);
             }
             $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             if (!is_file($path)) {
@@ -192,7 +192,7 @@ PHP;
                     }
 
                     // Get tooltip columns
-                    $row_tooltip = array();
+                    $row_tooltip = [];
                     foreach ($columns_tooltip as $pos) {
                         if (isset($row[$pos - 1])) {
                             $row_tooltip[] = $row[$pos - 1];
@@ -210,8 +210,8 @@ PHP;
                 }
 
                 // Filter to displayed table columns
-                if ($columns_display != array() || $columns_tooltip != array()) {
-                    if ($columns_display == array()) {
+                if ($columns_display != [] || $columns_tooltip != []) {
+                    if ($columns_display == []) {
                         foreach ($row as $key => $val) {
                             if (in_array($key + 1, $columns_tooltip)) {
                                 unset($row[$key]);
@@ -219,7 +219,7 @@ PHP;
                         }
                         $row = array_values($row);
                     } else {
-                        $row_new = array();
+                        $row_new = [];
                         foreach ($columns_display as $pos) {
                             if (isset($row[$pos - 1])) {
                                 $row_new[] = $row[$pos - 1];
@@ -260,20 +260,20 @@ PHP;
                 $header_row = array_shift($_rows);
 
                 if (count($header_row) < 2) {
-                    return do_template('RED_ALERT', array('_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.'));
+                    return do_template('RED_ALERT', ['_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.']);
                 }
             } else {
-                return do_template('RED_ALERT', array('_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty spreadsheet file.'));
+                return do_template('RED_ALERT', ['_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty spreadsheet file.']);
             }
 
             // Prepare initial header templating
             foreach ($header_row as $j => $_header) {
-                $headers[] = array(
+                $headers[] = [
                     'LABEL' => isset($labels[$j]) ? $labels[$j] : $_header,
                     'SORTABLE_TYPE' => null,
                     'FILTERABLE' => null,
                     'SEARCHABLE' => null,
-                );
+                ];
             }
             foreach ($columns_tooltip as $j => $pos) {
                 if (isset($full_header_row[$pos - 1])) {
@@ -284,17 +284,17 @@ PHP;
             // Database table...
 
             if (stripos($file, 'f_members') !== false) {
-                return do_template('RED_ALERT', array('_GUID' => '71d6xnfv3fnomqo2jo4xqlm8n98xngwk', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.'));
+                return do_template('RED_ALERT', ['_GUID' => '71d6xnfv3fnomqo2jo4xqlm8n98xngwk', 'TEXT' => 'Security filter disallows display of the ' . escape_html($file) . ' table.']);
             }
 
-            $records = $GLOBALS['SITE_DB']->query_select($file, array('*'));
+            $records = $GLOBALS['SITE_DB']->query_select($file, ['*']);
             if (empty($records)) {
                 return paragraph(do_lang('NO_ENTRIES'), 'et1gqf521gjjz8yaz1ecu1x7of4nt16m', 'nothing-here');
             }
-            $header_row = array();
+            $header_row = [];
             foreach ($records as $i => $record) {
                 // Get tooltip columns
-                $row_tooltip = array();
+                $row_tooltip = [];
                 $j = 0;
                 $keys = array_keys($record);
                 $values = array_values($record);
@@ -308,15 +308,15 @@ PHP;
                 $_rows_raw[] = $record;
 
                 // Filter to displayed table columns
-                if ($columns_display != array() || $columns_tooltip != array()) {
-                    if ($columns_display == array()) {
+                if ($columns_display != [] || $columns_tooltip != []) {
+                    if ($columns_display == []) {
                         foreach (array_keys($record) as $j => $key) {
                             if (in_array($j + 1, $columns_tooltip)) {
                                 unset($record[$key]);
                             }
                         }
                     } else {
-                        $record_new = array();
+                        $record_new = [];
                         foreach ($columns_display as $pos) {
                             if (isset($values[$pos - 1])) {
                                 $record_new[$keys[$pos - 1]] = $values[$pos - 1];
@@ -330,7 +330,7 @@ PHP;
                 $_rows[] = @array_map('strval', array_values($record));
 
                 if ($i == 0) {
-                    $prefixes = array();
+                    $prefixes = [];
                     foreach (array_keys($record) as $key) {
                         $prefixes[] = (strpos($key, '_') === false) ? '' : (preg_replace('#_.*$#s', '', $key) . '_');
                     }
@@ -342,12 +342,12 @@ PHP;
                     }
 
                     foreach (array_keys($record) as $j => $key) {
-                        $headers[] = array(
+                        $headers[] = [
                             'LABEL' => isset($labels[$j]) ? $labels[$j] : titleify(preg_replace('#^' . preg_quote($prefix, '#') . '#', '', $key)),
                             'SORTABLE_TYPE' => null,
                             'FILTERABLE' => null,
                             'SEARCHABLE' => null,
-                        );
+                        ];
                     }
 
                     foreach (array_keys($row_tooltip) as $j => $key) {
@@ -372,7 +372,7 @@ PHP;
                 continue; // Already known
             }
 
-            $values = array();
+            $values = [];
             foreach ($_rows as &$row) {
                 $values[] = $row[$j];
             }
@@ -382,13 +382,13 @@ PHP;
                 $values[$i] = $this->apply_formatting($values[$i], $headers[$j]['SORTABLE_TYPE']);
             }
             $too_much_to_filter = (count($values) > 20);
-            $header['FILTERABLE'] = ($too_much_to_filter) ? array() : $values;
+            $header['FILTERABLE'] = ($too_much_to_filter) ? [] : $values;
             $header['SEARCHABLE'] = ($too_much_to_filter) && ($header['SORTABLE_TYPE'] == 'alphanumeric');
         }
 
         // Create template-ready data
         $rows = new Tempcode();
-        $tooltip_headers_sortable = array();
+        $tooltip_headers_sortable = [];
         foreach (array_keys($tooltip_headers) as $j) {
             $field_type = $this->determine_field_type($_rows_tooltip, $j);
             $tooltip_headers_sortable[] = $field_type;
@@ -398,12 +398,12 @@ PHP;
                 $value = $this->apply_formatting($value, $headers[$j]['SORTABLE_TYPE']);
             }
 
-            $tooltip_values = array();
+            $tooltip_values = [];
             foreach ($tooltip_headers as $j => &$header) {
                 $tooltip_values[$header] = $this->apply_formatting($_rows_tooltip[$i][$j], $tooltip_headers_sortable[$j]);
             }
 
-            $rows->attach(do_template('SORTABLE_TABLE_ROW', array(
+            $rows->attach(do_template('SORTABLE_TABLE_ROW', [
                 '_GUID' => $guid,
                 'HEADERS' => $headers,
                 'VALUES' => $row,
@@ -411,7 +411,7 @@ PHP;
                 'CLASSES' => $classes,
                 'TOOLTIP_VALUES' => $tooltip_values,
                 'RAW_DATA' => json_encode($_rows_raw[$i]),
-            )));
+            ]));
         }
 
         // Final render...
@@ -419,13 +419,13 @@ PHP;
         $id = (preg_match('#^[\w_]+$#', $guid) != 0) ? $guid : uniqid('', false);
 
         $_default_sort_column = max(0, empty($map['default_sort_column']) ? 0 : (intval(str_replace($letters, $numbers, $map['default_sort_column'])) - 1));
-        $default_sort_column = ($columns_display == array()) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
+        $default_sort_column = ($columns_display == []) ? $_default_sort_column : array_search($_default_sort_column + 1, $columns_display);
         if ($default_sort_column === false) {
             $default_sort_column = 0;
         }
         $max = empty($map['max']) ? 20 : intval($map['max']);
 
-        return do_template('SORTABLE_TABLE', array(
+        return do_template('SORTABLE_TABLE', [
             '_GUID' => $guid,
             'ID' => $id,
             'DEFAULT_SORT_COLUMN' => strval($default_sort_column),
@@ -433,7 +433,7 @@ PHP;
             'HEADERS' => $headers,
             'ROWS' => $rows,
             'NUM_ROWS' => strval(count($_rows)),
-        ));
+        ]);
     }
 
     /**

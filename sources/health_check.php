@@ -44,9 +44,9 @@ function init__health_check()
     $HEALTH_CHECK_LOG_FILE = null;
 
     global $HEALTH_CHECK_PAGE_RESPONSE_CACHE, $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE, $HEALTH_CHECK_PAGE_URLS_CACHE;
-    $HEALTH_CHECK_PAGE_RESPONSE_CACHE = array();
-    $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE = array();
-    $HEALTH_CHECK_PAGE_URLS_CACHE = array();
+    $HEALTH_CHECK_PAGE_RESPONSE_CACHE = [];
+    $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE = [];
+    $HEALTH_CHECK_PAGE_URLS_CACHE = [];
 }
 
 /**
@@ -81,7 +81,7 @@ function find_health_check_categories_and_sections()
 {
     $check_context = CHECK_CONTEXT__PROBING_FOR_SECTIONS;
 
-    $categories = array();
+    $categories = [];
 
     $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
     foreach ($hook_obs as $ob) {
@@ -118,9 +118,9 @@ function health_check_script()
 
     $_sections_to_run = get_param_string('sections_to_run', null);
     if ($_sections_to_run === null) {
-        $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? array() : explode(',', get_option('hc_cron_sections_to_run'));
+        $sections_to_run = (get_option('hc_cron_sections_to_run') == '') ? [] : explode(',', get_option('hc_cron_sections_to_run'));
     } else {
-        $sections_to_run = ($_sections_to_run == '') ? array() : explode(',', $_sections_to_run);
+        $sections_to_run = ($_sections_to_run == '') ? [] : explode(',', $_sections_to_run);
     }
     $passes = (get_param_integer('passes', 0) == 1);
     $skips = (get_param_integer('skips', 0) == 1);
@@ -193,24 +193,24 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
         fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  (HEALTH CHECK STARTING)' . "\n");
     }
 
-    $categories = array();
+    $categories = [];
 
     $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
     foreach ($hook_obs as $ob) {
         list($category_label, $sections) = $ob->run($sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        $_sections = array();
+        $_sections = [];
         foreach ($sections as $section_label => $results) {
             $num_fails = 0;
             $num_passes = 0;
             $num_skipped = 0;
             $num_manual = 0;
-            $_results = array();
+            $_results = [];
             foreach ($results as $_result) {
-                $result = array(
+                $result = [
                     'RESULT' => $_result[0],
                     'MESSAGE' => comcode_to_tempcode($_result[1], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
-                );
+                ];
 
                 switch ($result['RESULT']) {
                     case HEALTH_CHECK__FAIL:
@@ -246,7 +246,7 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
                 }
             };
             if (!empty($_results)) {
-                $_sections[$section_label] = array(
+                $_sections[$section_label] = [
                     'RESULTS' => $_results,
 
                     'NUM_FAILS' => integer_format($num_fails),
@@ -258,15 +258,15 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
                     '_NUM_PASSES' => strval($num_passes),
                     '_NUM_SKIPPED' => strval($num_skipped),
                     '_NUM_MANUAL' => strval($num_manual),
-                );
+                ];
             }
         }
 
         if (!empty($_sections)) {
             cms_mb_ksort($_sections, SORT_NATURAL | SORT_FLAG_CASE);
-            $categories[$category_label] = array(
+            $categories[$category_label] = [
                 'SECTIONS' => $_sections,
-            );
+            ];
         }
     }
     cms_mb_ksort($categories, SORT_NATURAL | SORT_FLAG_CASE);
@@ -289,7 +289,7 @@ abstract class Hook_Health_Check
 {
     protected $category_label = 'Unknown category';
     private $current_section_label = 'Unknown section';
-    protected $results = array();
+    protected $results = [];
 
     /*
     HEALTH CHECK BASIC API
@@ -321,7 +321,7 @@ abstract class Hook_Health_Check
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  STARTING ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
-            call_user_func(array($this, $method), $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+            call_user_func([$this, $method], $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
             if ($HEALTH_CHECK_LOG_FILE !== null) {
                 fwrite($HEALTH_CHECK_LOG_FILE, loggable_date() . '  FINISHED ' . $this->category_label . ' \\ ' . $section_label . "\n");
             }
@@ -349,12 +349,12 @@ abstract class Hook_Health_Check
     protected function assertTrue($result, $message)
     {
         if (!isset($this->results[$this->current_section_label])) {
-            $this->results[$this->current_section_label] = array();
+            $this->results[$this->current_section_label] = [];
         }
         if ($result) {
-            $this->results[$this->current_section_label][] = array(HEALTH_CHECK__PASS, $message);
+            $this->results[$this->current_section_label][] = [HEALTH_CHECK__PASS, $message];
         } else {
-            $this->results[$this->current_section_label][] = array(HEALTH_CHECK__FAIL, $message);
+            $this->results[$this->current_section_label][] = [HEALTH_CHECK__FAIL, $message];
         }
     }
 
@@ -366,9 +366,9 @@ abstract class Hook_Health_Check
     protected function stateCheckManual($message)
     {
         if (!isset($this->results[$this->current_section_label])) {
-            $this->results[$this->current_section_label] = array();
+            $this->results[$this->current_section_label] = [];
         }
-        $this->results[$this->current_section_label][] = array(HEALTH_CHECK__MANUAL, $message);
+        $this->results[$this->current_section_label][] = [HEALTH_CHECK__MANUAL, $message];
     }
 
     /**
@@ -380,9 +380,9 @@ abstract class Hook_Health_Check
     protected function stateCheckSkipped($message)
     {
         if (!isset($this->results[$this->current_section_label])) {
-            $this->results[$this->current_section_label] = array();
+            $this->results[$this->current_section_label] = [];
         }
-        $this->results[$this->current_section_label][] = array(HEALTH_CHECK__SKIP, $message);
+        $this->results[$this->current_section_label][] = [HEALTH_CHECK__SKIP, $message];
     }
 
     /*
@@ -421,7 +421,7 @@ abstract class Hook_Health_Check
         if ($_urls_or_page_links === null) {
             $__urls_or_page_links = trim(get_option('hc_scan_page_links'));
             if ($__urls_or_page_links == '') {
-                $_urls_or_page_links = array();
+                $_urls_or_page_links = [];
             } else {
                 $_urls_or_page_links = explode("\n", $__urls_or_page_links);
             }
@@ -429,7 +429,7 @@ abstract class Hook_Health_Check
 
         require_code('zones3');
 
-        $page_links = array();
+        $page_links = [];
         foreach ($_urls_or_page_links as $url_or_page_link) {
             if (looks_like_url($url_or_page_link)) {
                 $page_links[] = url_to_page_link($url_or_page_link);
@@ -451,7 +451,7 @@ abstract class Hook_Health_Check
     {
         require_code('mail');
 
-        $domains = array();
+        $domains = [];
         $addresses = find_system_email_addresses($include_all);
         foreach ($addresses as $address => $domain) {
             if (!is_local_machine($domain)) {
@@ -496,7 +496,7 @@ abstract class Hook_Health_Check
     {
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
-            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true));
+            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true]);
 
             // Server blocked to access itself
             if ($page_link == ':') {
@@ -524,7 +524,7 @@ abstract class Hook_Health_Check
             if ($path_details[2] != '') {
                 $comcode = cms_file_get_contents_safe($path_details[2], FILE_READ_LOCK | FILE_READ_BOM);
                 $html = load_comcode_page($path_details[1], $zone, $page, $path_details[0], true);
-                $ret = array($comcode, $html->evaluate(), $zone, $page);
+                $ret = [$comcode, $html->evaluate(), $zone, $page];
                 $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE[$page_link] = $ret;
                 return $ret;
             }
@@ -546,12 +546,12 @@ abstract class Hook_Health_Check
      */
     protected function get_embed_urls_from_data($data)
     {
-        $urls = array();
+        $urls = [];
 
         require_code('xhtml');
         $data = xhtmlise_html($data, true);
 
-        $matches = array();
+        $matches = [];
 
         $num_matches = preg_match_all('#<link\s[^<>]*href="([^"]*)"[^<>]*rel="stylesheet"#is', $data, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
@@ -591,12 +591,12 @@ abstract class Hook_Health_Check
      */
     protected function get_link_urls_from_data($data)
     {
-        $urls = array();
+        $urls = [];
 
         require_code('xhtml');
         $data = xhtmlise_html($data, true);
 
-        $matches = array();
+        $matches = [];
 
         $num_matches = preg_match_all('#<(a)\s[^<>]*href="([^"]*)"#is', $data, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
@@ -652,7 +652,7 @@ abstract class Hook_Health_Check
 
             $url .= '&' . $key . '=' . urlencode($val);
         }
-        return @json_decode(http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), true);
+        return @json_decode(http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]), true);
     }
 }
 

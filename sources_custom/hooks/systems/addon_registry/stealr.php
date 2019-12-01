@@ -26,7 +26,7 @@ class Hook_addon_registry_stealr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_stealr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,7 +108,7 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -118,16 +118,16 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'System scheduler',
                 'Conversr',
                 'points',
                 'ecommerce',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -147,7 +147,7 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/stealr.php',
             'lang_custom/EN/stealr.ini',
             'sources_custom/hooks/systems/cron/stealr.php',
@@ -155,6 +155,6 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
             'sources_custom/hooks/systems/config/stealr_number.php',
             'sources_custom/hooks/systems/config/stealr_points.php',
             'sources_custom/hooks/systems/config/stealr_type.php',
-        );
+        ];
     }
 }

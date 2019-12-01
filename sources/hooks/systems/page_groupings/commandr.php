@@ -33,11 +33,11 @@ class Hook_page_groupings_commandr
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('commandr')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'menu/adminzone/tools/commandr', array('admin_commandr', array('type' => 'browse'), get_module_zone('admin_commandr')), do_lang_tempcode('commandr:COMMANDR'), 'commandr:DOC_COMMANDR'),
-        );
+        return [
+            ['tools', 'menu/adminzone/tools/commandr', ['admin_commandr', ['type' => 'browse'], get_module_zone('admin_commandr')], do_lang_tempcode('commandr:COMMANDR'), 'commandr:DOC_COMMANDR'],
+        ];
     }
 }

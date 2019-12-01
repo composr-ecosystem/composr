@@ -31,7 +31,7 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_news',
             'tut_adv_news',
-        );
+        ];
     }
 
     /**
@@ -74,13 +74,13 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'news',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/notifications/error_occurred_rss.php',
             'sources/hooks/systems/config/is_on_rss.php',
             'sources/hooks/systems/config/is_rss_advertised.php',
@@ -116,7 +116,7 @@ class Hook_addon_registry_syndication_blocks
             'sources/hooks/systems/commandr_commands/feed_display.php',
             'sources/hooks/systems/addon_registry/syndication_blocks.php',
             'sources/hooks/modules/admin_setupwizard/syndication_blocks.php',
-        );
+        ];
     }
 
     /**
@@ -126,12 +126,12 @@ class Hook_addon_registry_syndication_blocks
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_RSS_SUMMARY.tpl' => 'block_side_rss',
             'templates/BLOCK_SIDE_RSS.tpl' => 'block_side_rss',
             'templates/BLOCK_MAIN_RSS_SUMMARY.tpl' => 'block_main_rss',
             'templates/BLOCK_MAIN_RSS.tpl' => 'block_main_rss',
-        );
+        ];
     }
 
     /**
@@ -145,25 +145,25 @@ class Hook_addon_registry_syndication_blocks
     {
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $content->attach(do_lorem_template('BLOCK_SIDE_RSS_SUMMARY', array(
+            $content->attach(do_lorem_template('BLOCK_SIDE_RSS_SUMMARY', [
                 'FEED_URL' => placeholder_url(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
                 'SUMMARY' => lorem_paragraph(),
                 'TICKER' => lorem_word(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_RSS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_RSS', [
                 'BLOCK_ID' => lorem_word(),
                 'FEED_URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'CONTENT' => $content,
                 'TICKER' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -180,7 +180,7 @@ class Hook_addon_registry_syndication_blocks
 
         $content = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $content->attach(do_lorem_template('BLOCK_MAIN_RSS_SUMMARY', array(
+            $content->attach(do_lorem_template('BLOCK_MAIN_RSS_SUMMARY', [
                 'NEWS_TITLE' => lorem_phrase(),
                 'FEED_URL' => placeholder_url(),
                 'DATE' => placeholder_date(),
@@ -191,18 +191,18 @@ class Hook_addon_registry_syndication_blocks
                 'FULL_URL_RAW' => placeholder_url(),
                 'NEWS' => lorem_paragraph(),
                 'NEWS_FULL' => lorem_paragraph(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_RSS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_RSS', [
                 'BLOCK_ID' => lorem_word(),
                 'FEED_URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
                 'COPYRIGHT' => lorem_phrase(),
                 'AUTHOR' => lorem_phrase(),
                 'CONTENT' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

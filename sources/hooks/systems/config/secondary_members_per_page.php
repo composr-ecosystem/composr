@@ -30,7 +30,7 @@ class Hook_config_secondary_members_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SECONDARY_MEMBERS_PER_PAGE',
             'type' => 'integer',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_secondary_members_per_page
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -27,16 +27,16 @@ if (!function_exists('do_release')) {
         if ($GLOBALS['DEV_MODE']) {
             $t = 'Composr version 1337';
 
-            $myrow = array(
+            $myrow = [
                 'd_id' => 123,
                 'num_downloads' => 321,
                 'name' => $name_suffix,
                 'file_size' => 12345,
-            );
+            ];
         } else {
             $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'downloadauthor');
             $sql .= ' WHERE ' . db_string_equal_to('author', 'ocProducts') . ' AND validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('%' . $name_suffix) . '\' ORDER BY add_date DESC';
-            $rows = $GLOBALS['SITE_DB']->query($sql, 1, 0, false, false, array('name' => 'SHORT_TRANS'));
+            $rows = $GLOBALS['SITE_DB']->query($sql, 1, 0, false, false, ['name' => 'SHORT_TRANS']);
             if (!array_key_exists(0, $rows)) {
                 return null; // Shouldn't happen, but let's avoid transitional errors
             }
@@ -71,7 +71,7 @@ if (!function_exists('do_release')) {
             }
         }
 
-        $ret = array();
+        $ret = [];
         $ret[$prefix . 'VERSION'] = $version;
         $ret[$prefix . 'NAME'] = $name_suffix;
         $ret[$prefix . 'FILESIZE'] = $filesize;
@@ -84,11 +84,11 @@ if (!function_exists('do_release')) {
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('composr_homesite')) {
-    return do_template('RED_ALERT', array('_GUID' => 'o107q0s4tzjnq3djhc3e38wwfdywx1h7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))));
+    return do_template('RED_ALERT', ['_GUID' => 'o107q0s4tzjnq3djhc3e38wwfdywx1h7', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('composr_homesite'))]);
 }
 
 if (!addon_installed('downloads')) {
-    return do_template('RED_ALERT', array('_GUID' => 'gal8hu40ptk3dlran4bwiodqrpb41jqs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))));
+    return do_template('RED_ALERT', ['_GUID' => 'gal8hu40ptk3dlran4bwiodqrpb41jqs', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
 }
 
 require_lang('composr_homesite');
@@ -100,7 +100,7 @@ $t = get_latest_version_pretty();
 if (($t === null) && ($GLOBALS['DEV_MODE'])) {
     $t = '1337';
 }
-$releases_tpl_map = array();
+$releases_tpl_map = [];
 if ($t !== null) {
     $latest = $t;
     $release_quick = do_release('Composr version ' . $latest, 'QUICK_');
@@ -121,11 +121,11 @@ if ($t !== null) {
     }
 }
 
-if ($releases_tpl_map === array()) {
+if ($releases_tpl_map === []) {
     $latest = do_lang('NA');
     $releases_tpl = paragraph(do_lang_tempcode('CMS_BETWEEN_VERSIONS'));
 } else {
     $releases_tpl = do_template('CMS_DOWNLOAD_RELEASES', $releases_tpl_map);
 }
 
-return do_template('CMS_DOWNLOAD_BLOCK', array('_GUID' => '4c4952e40ed96ab52461adce9989832d', 'RELEASES' => $releases_tpl, 'VERSION' => $latest));
+return do_template('CMS_DOWNLOAD_BLOCK', ['_GUID' => '4c4952e40ed96ab52461adce9989832d', 'RELEASES' => $releases_tpl, 'VERSION' => $latest]);

@@ -31,98 +31,98 @@ class Hook_actionlog_securitylogging extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('securitylogging')) {
-            return array();
+            return [];
         }
 
         require_lang('submitban');
         require_lang('lookup');
 
-        return array(
-            'IP_BANNED' => array(
+        return [
+            'IP_BANNED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'IP_UNBANNED' => array(
+                ],
+            ],
+            'IP_UNBANNED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'SYNDICATED_IP_BAN' => array(
+                ],
+            ],
+            'SYNDICATED_IP_BAN' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'MADE_IP_BANNABLE' => array(
+                ],
+            ],
+            'MADE_IP_BANNABLE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'MADE_IP_UNBANNABLE' => array(
+                ],
+            ],
+            'MADE_IP_UNBANNABLE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'IP_BANS' => '_SEARCH:admin_ip_ban',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'SUBMITTER_BANNED' => array(
+                ],
+            ],
+            'SUBMITTER_BANNED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'SUBMITTER_UNBANNED' => array(
+                ],
+            ],
+            'SUBMITTER_UNBANNED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'VIEW_ACTIONLOGS' => '_SEARCH:admin_actionlog',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-            'INVESTIGATE_USER' => array(
+                ],
+            ],
+            'INVESTIGATE_USER' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{0}',
                     'INVESTIGATE_USER' => '_SEARCH:admin_lookup:param={0}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

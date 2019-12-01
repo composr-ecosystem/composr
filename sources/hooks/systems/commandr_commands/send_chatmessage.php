@@ -34,17 +34,17 @@ class Hook_commandr_command_send_chatmessage
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('chat')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('send_chatmessage', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('send_chatmessage', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'send_chatmessage'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'send_chatmessage')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'send_chatmessage'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'send_chatmessage')];
             }
 
             require_code('chat');
@@ -53,18 +53,18 @@ class Hook_commandr_command_send_chatmessage
                 $chatroom = $parameters[0];
             } elseif ($parameters[0] == 'first-watched') {
                 $_chatroom = get_value('commandr_watched_chatroom');
-                $chatroom = ($_chatroom === null) ? $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'id', array(), 'ORDER BY id') : intval($_chatroom);
+                $chatroom = ($_chatroom === null) ? $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'id', [], 'ORDER BY id') : intval($_chatroom);
             } else {
                 $chatroom = get_chatroom_id($parameters[0]);
             }
 
             if ($chatroom === null) {
-                return array('', '', '', do_lang('MISSING_RESOURCE'));
+                return ['', '', '', do_lang('MISSING_RESOURCE')];
             }
 
             chat_post_message($chatroom, $parameters[1], get_option('chat_default_post_font'), get_option('chat_default_post_colour'));
 
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

@@ -30,19 +30,19 @@ class resource_closing_test_set extends cms_test_case
 
         require_code('files2');
 
-        $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $this->files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $this->files[] = 'install.php';
 
-        $exceptions = array(
+        $exceptions = [
             'sources_custom/phpstub.php',
-        );
-        $exception_stubs = array(
+        ];
+        $exception_stubs = [
             'sources_custom/aws/',
             'sources_custom/sabredav/',
             'sources_custom/spout/',
             'tracker/',
             'sources_custom/getid3/',
-        );
+        ];
 
         foreach ($this->files as $i => $path) {
             foreach ($exception_stubs as $stub) {
@@ -67,14 +67,14 @@ class resource_closing_test_set extends cms_test_case
         $rs = get_resources();
         foreach ($rs as $r) {
             $type = get_resource_type($r);
-            $ok = in_array($type, array('Unknown', 'stream-context')) || $r === STDIN || $r === STDOUT || $r === STDERR;
+            $ok = in_array($type, ['Unknown', 'stream-context']) || $r === STDIN || $r === STDOUT || $r === STDERR;
             $this->assertTrue($ok, 'Unexpected resource left open of type, ' . $type);
         }
     }
 
     public function testFclose()
     {
-        $exceptions = array(
+        $exceptions = [
             '_tests/codechecker/tests.php',
             '_tests/tests/unit_tests/http.php',
             'sources/calendar.php',
@@ -83,11 +83,11 @@ class resource_closing_test_set extends cms_test_case
             'sources/permissions.php',
             'sources/files.php',
             'sources_custom/hooks/modules/video_syndication/youtube.php',
-        );
-        $exception_stubs = array(
-        );
-        $strict_order_exceptions = array(
-        );
+        ];
+        $exception_stubs = [
+        ];
+        $strict_order_exceptions = [
+        ];
 
         foreach ($this->files as $path) {
             if (in_array($path, $exceptions)) {
@@ -108,12 +108,12 @@ class resource_closing_test_set extends cms_test_case
 
     public function testClosedir()
     {
-        $exceptions = array(
-        );
-        $exception_stubs = array(
-        );
-        $strict_order_exceptions = array(
-        );
+        $exceptions = [
+        ];
+        $exception_stubs = [
+        ];
+        $strict_order_exceptions = [
+        ];
 
         foreach ($this->files as $path) {
             if (in_array($path, $exceptions)) {
@@ -131,18 +131,18 @@ class resource_closing_test_set extends cms_test_case
 
     public function testTempnamUnlink()
     {
-        $exceptions = array(
+        $exceptions = [
             'sources/files_spreadsheets_write.php',
             'sources_custom/files_spreadsheets_write__spout.php',
-        );
-        $exception_stubs = array(
+        ];
+        $exception_stubs = [
             'sources/hooks/systems/tasks/',
-        );
-        $strict_order_exceptions = array(
+        ];
+        $strict_order_exceptions = [
             'code_editor.php',
             'sources/global3.php',
             'sources_custom/hooks/modules/video_syndication/youtube.php',
-        );
+        ];
 
         foreach ($this->files as $path) {
             if (in_array($path, $exceptions)) {

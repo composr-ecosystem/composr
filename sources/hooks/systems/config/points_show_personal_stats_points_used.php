@@ -30,7 +30,7 @@ class Hook_config_points_show_personal_stats_points_used
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_POINTS_USED',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_points_show_personal_stats_points_used
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

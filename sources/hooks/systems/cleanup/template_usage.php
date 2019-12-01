@@ -30,7 +30,7 @@ class Hook_cleanup_template_usage
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('TEMPLATE_USAGE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_TEMPLATE_USAGE');
         $info['type'] = 'cache';

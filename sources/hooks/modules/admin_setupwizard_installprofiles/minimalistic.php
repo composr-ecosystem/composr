@@ -30,9 +30,9 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      */
     public function info()
     {
-        return array(
+        return [
             'title' => do_lang('MINIMALISTIC_SITE'),
-        );
+        ];
     }
 
     /**
@@ -42,10 +42,10 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      */
     public function get_addon_list()
     {
-        return array(
-            array(),
-            array(),
-            array(
+        return [
+            [],
+            [],
+            [
                 'banners',
                 'ecommerce',
                 'shopping',
@@ -67,8 +67,8 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
                 'themewizard',
                 'users_online_block',
                 'tickets',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -78,7 +78,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '0',
             'have_default_banners_advertising' => '0',
@@ -97,7 +97,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
             'show_screen_actions' => '0',
             'have_default_wordfilter' => '0',
             'rules' => 'corporate',
-        );
+        ];
     }
 
     /**
@@ -108,17 +108,17 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
     public function default_blocks()
     {
         // Usually these won't be here (except side_personal_stats), because the addons won't have been installed -- but if they were, we do want to represent those block-driven addons
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_news',
-            ),
-            'YES_CELL' => array(),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'YES_CELL' => [],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'main_newsletter_signup',
                 'main_poll',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -128,7 +128,7 @@ class Hook_admin_setupwizard_installprofiles_minimalistic
      */
     public function block_options()
     {
-        return array();
+        return [];
     }
 
     /**

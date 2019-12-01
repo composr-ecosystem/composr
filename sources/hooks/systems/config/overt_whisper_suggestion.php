@@ -30,7 +30,7 @@ class Hook_config_overt_whisper_suggestion
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OVERT_WHISPER_SUGGESTION',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_overt_whisper_suggestion
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

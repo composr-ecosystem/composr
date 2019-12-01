@@ -30,7 +30,7 @@ class Hook_config_background_template_compilation
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BACKGROUND_TEMPLATE_COMPILATION',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_background_template_compilation
 
             'addon' => 'core_configuration',
 
-        );
+        ];
     }
 
     /**

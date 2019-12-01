@@ -30,14 +30,14 @@ class Block_side_users_online
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_users_online
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -86,11 +86,11 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        $online = array();
+        $online = [];
         $guests = 0;
         $_members = 0;
-        $done_members = array();
-        $done_ips = array();
+        $done_members = [];
+        $done_ips = [];
         foreach ($members as $_member) {
             $member_id = $_member['member_id'];
             $username = $_member['cache_username'];
@@ -106,26 +106,26 @@ PHP;
                     $colour = (get_forum_type() == 'cns') ? get_group_colour(cns_get_member_primary_group($member_id)) : null;
                     $done_members[$member_id] = true;
                     $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
-                    $online[] = array(
+                    $online[] = [
                         'URL' => $url,
                         'USERNAME' => $username,
                         'COLOUR' => $colour,
                         'MEMBER_ID' => strval($member_id),
                         'AVATAR_URL' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($member_id),
-                    );
+                    ];
                     $_members++;
                 }
             }
         }
 
         $newest = new Tempcode();
-        $birthdays = array();
+        $birthdays = [];
         if (get_forum_type() == 'cns') {
             require_lang('cns');
 
             // Show newest member
             if (get_option('usersonline_show_newest_member') == '1') {
-                $newest_member = $GLOBALS['FORUM_DB']->query_select('f_members', array('m_username', 'id'), array('m_validated' => 1), 'ORDER BY m_join_time DESC', 1);
+                $newest_member = $GLOBALS['FORUM_DB']->query_select('f_members', ['m_username', 'id'], ['m_validated' => 1], 'ORDER BY m_join_time DESC', 1);
                 $username_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($newest_member[0]['id'], $newest_member[0]['m_username']);
                 $newest->attach(paragraph(do_lang_tempcode('NEWEST_MEMBER_WELCOME', $username_link), 'gdgdfhrug'));
             }
@@ -135,19 +135,19 @@ PHP;
                 require_code('cns_members');
                 $_birthdays = cns_find_birthdays();
                 foreach ($_birthdays as $_birthday) {
-                    $birthday_url = build_url(array('page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']), get_module_zone('topics'));
-                    $birthdays[] = array(
+                    $birthday_url = build_url(['page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']], get_module_zone('topics'));
+                    $birthdays[] = [
                         'AGE' => array_key_exists('age', $_birthday) ? integer_format($_birthday['age']) : null,
                         'PROFILE_URL' => $GLOBALS['CNS_DRIVER']->member_profile_url($_birthday['id'], true),
                         'USERNAME' => $_birthday['username'],
                         'MEMBER_ID' => strval($_birthday['id']),
                         'BIRTHDAY_URL' => $birthday_url,
-                    );
+                    ];
                 }
             }
         }
 
-        return do_template('BLOCK_SIDE_USERS_ONLINE', array(
+        return do_template('BLOCK_SIDE_USERS_ONLINE', [
             '_GUID' => 'fdfa68dff479b4ea7d517585297ea6af',
             'BLOCK_ID' => $block_id,
             'ONLINE' => $online,
@@ -157,6 +157,6 @@ PHP;
             '_MEMBERS' => strval($_members),
             'BIRTHDAYS' => $birthdays,
             'NEWEST' => $newest,
-        ));
+        ]);
     }
 }

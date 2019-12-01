@@ -41,6 +41,6 @@ class Hook_snippet_realtime_rain_load
         require_lang('realtime_rain');
 
         $min_time = $GLOBALS['SITE_DB']->query_select_value('stats', 'MIN(date_and_time)');
-        return do_template('REALTIME_RAIN_OVERLAY', array('_GUID' => '1b3535932bbefcb9474fbfc2297b4d71', 'MIN_TIME' => strval($min_time)));
+        return do_template('REALTIME_RAIN_OVERLAY', ['_GUID' => '1b3535932bbefcb9474fbfc2297b4d71', 'MIN_TIME' => strval($min_time)]);
     }
 }

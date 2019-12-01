@@ -25,7 +25,7 @@ class Hook_config_max_classified_listings_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_CLASSIFIED_LISTINGS_PER_PAGE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_max_classified_listings_per_page
             'public' => false,
 
             'addon' => 'classified_ads',
-        );
+        ];
     }
 
     /**

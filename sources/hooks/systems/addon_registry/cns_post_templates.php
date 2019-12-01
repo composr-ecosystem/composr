@@ -31,7 +31,7 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_support_desk',
-        );
+        ];
     }
 
     /**
@@ -73,13 +73,13 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'cns_forum',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/forum/post_templates.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/forum/post_templates.svg',
             'sources/hooks/systems/resource_meta_aware/post_template.php',
@@ -110,7 +110,7 @@ class Hook_addon_registry_cns_post_templates
             'lang/EN/cns_post_templates.ini',
             'themes/default/javascript/cns_post_templates.js',
             'sources/hooks/systems/actionlog/cns_post_templates.php',
-        );
+        ];
     }
 
     /**
@@ -120,9 +120,9 @@ class Hook_addon_registry_cns_post_templates
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CNS_POST_TEMPLATE_SELECT.tpl' => 'cns_post_template_select',
-        );
+        ];
     }
 
     /**
@@ -139,22 +139,22 @@ class Hook_addon_registry_cns_post_templates
 
         $list = new Tempcode();
         foreach (placeholder_array() as $key => $value) {
-            $list->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array(
+            $list->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', [
                 'SELECTED' => false,
                 'DISABLED' => false,
                 'CLASS' => '',
                 'NAME' => placeholder_random_id(),
                 'TEXT' => lorem_phrase(),
-            )));
+            ]));
         }
 
-        $input = do_lorem_template('CNS_POST_TEMPLATE_SELECT', array(
+        $input = do_lorem_template('CNS_POST_TEMPLATE_SELECT', [
             'TABINDEX' => placeholder_number(),
             'LIST' => $list,
-        ));
+        ]);
 
         $fields = new Tempcode();
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array(
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
             'SKIP_LABEL' => false,
             'PRETTY_NAME' => lorem_word(),
@@ -163,10 +163,10 @@ class Hook_addon_registry_cns_post_templates
             'DESCRIPTION_SIDE' => '',
             'INPUT' => $input,
             'COMCODE' => '',
-        )));
+        ]));
 
-        return array(
-            lorem_globalise(do_lorem_template('FORM_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('FORM_SCREEN', [
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
                 'TITLE' => lorem_title(),
@@ -175,8 +175,8 @@ class Hook_addon_registry_cns_post_templates
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => lorem_phrase(),
                 'TEXT' => lorem_sentence_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -190,7 +190,7 @@ class Hook_addon_registry_cns_post_templates
 
         require_code('cns_general_action2');
 
-        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_post_templates', array('id'), array('t_title' => lorem_phrase()));
+        $to_delete = $GLOBALS['FORUM_DB']->query_select('f_post_templates', ['id'], ['t_title' => lorem_phrase()]);
         foreach ($to_delete as $record) {
             cns_delete_post_template($record['id']);
         }

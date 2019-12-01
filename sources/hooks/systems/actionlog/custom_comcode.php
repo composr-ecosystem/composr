@@ -31,41 +31,41 @@ class Hook_actionlog_custom_comcode extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('custom_comcode')) {
-            return array();
+            return [];
         }
 
         require_lang('custom_comcode');
 
-        return array(
-            'ADD_CUSTOM_COMCODE_TAG' => array(
+        return [
+            'ADD_CUSTOM_COMCODE_TAG' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'custom_comcode_tag',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_CUSTOM_COMCODE_TAG' => '_SEARCH:admin_custom_comcode:_edit:{ID}',
                     'ADD_CUSTOM_COMCODE_TAG' => '_SEARCH:admin_custom_comcode:add',
-                ),
-            ),
-            'EDIT_CUSTOM_COMCODE_TAG' => array(
+                ],
+            ],
+            'EDIT_CUSTOM_COMCODE_TAG' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'custom_comcode_tag',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_CUSTOM_COMCODE_TAG' => '_SEARCH:admin_custom_comcode:_edit:{ID}',
                     'ADD_CUSTOM_COMCODE_TAG' => '_SEARCH:admin_custom_comcode:add',
-                ),
-            ),
-            'DELETE_CUSTOM_COMCODE_TAG' => array(
+                ],
+            ],
+            'DELETE_CUSTOM_COMCODE_TAG' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'custom_comcode_tag',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CUSTOM_COMCODE_TAG' => '_SEARCH:admin_custom_comcode:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

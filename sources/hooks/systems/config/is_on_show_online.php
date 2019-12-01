@@ -30,7 +30,7 @@ class Hook_config_is_on_show_online
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_SHOW_ONLINE',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_show_online
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

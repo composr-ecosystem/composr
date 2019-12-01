@@ -30,7 +30,7 @@ class Hook_config_news_update_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'NEWS_REGULARITY',
             'type' => 'integer',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_news_update_time
             'public' => false,
 
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

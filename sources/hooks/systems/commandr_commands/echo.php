@@ -34,13 +34,13 @@ class Hook_commandr_command_echo
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('echo', array('h'), array(true)), '', '');
+            return ['', do_command_help('echo', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', '');
+                return ['', '', '', ''];
             }
 
-            return array('', '', implode(' ', $parameters), '');
+            return ['', '', implode(' ', $parameters), ''];
         }
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_bottom_show_sitemap_button
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITEMAP_LINK',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_bottom_show_sitemap_button
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

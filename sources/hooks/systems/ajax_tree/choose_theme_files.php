@@ -46,29 +46,29 @@ class Hook_ajax_tree_choose_theme_files
         require_code('files');
 
         if ($id === null) {
-            $top_level = array(
-                'templates' => array(do_lang('TEMPLATES_HTML'), 'DOC_TEMPLATES'),
-                'templates-related' => array(do_lang('TEMPLATES_HTML_RELATED'), 'DOC_TEMPLATES_RELATED'),
-                'css' => array(do_lang('TEMPLATES_CSS'), 'DOC_CSS'),
-                'css-related' => array(do_lang('TEMPLATES_CSS_RELATED'), 'DOC_TEMPLATES_RELATED'),
-                'javascript' => array(do_lang('TEMPLATES_JAVASCRIPT'), 'DOC_TEMPLATES_JAVASCRIPT'),
-                'javascript-related' => array(do_lang('TEMPLATES_JAVASCRIPT_RELATED'), 'DOC_TEMPLATES_RELATED'),
-                'xml' => array(do_lang('TEMPLATES_XML'), 'DOC_TEMPLATES_XML'),
-                'xml-related' => array(do_lang('TEMPLATES_XML_RELATED'), 'DOC_TEMPLATES_RELATED'),
-                'text' => array(do_lang('TEMPLATES_TEXT'), 'DOC_TEMPLATES_TEXT'),
-                'text-related' => array(do_lang('TEMPLATES_TEXT_RELATED'), 'DOC_TEMPLATES_RELATED'),
-                'addons' => array(do_lang('addons:ADDONS'), 'DOC_TEMPLATES_BY_ADDON'),
-            );
+            $top_level = [
+                'templates' => [do_lang('TEMPLATES_HTML'), 'DOC_TEMPLATES'],
+                'templates-related' => [do_lang('TEMPLATES_HTML_RELATED'), 'DOC_TEMPLATES_RELATED'],
+                'css' => [do_lang('TEMPLATES_CSS'), 'DOC_CSS'],
+                'css-related' => [do_lang('TEMPLATES_CSS_RELATED'), 'DOC_TEMPLATES_RELATED'],
+                'javascript' => [do_lang('TEMPLATES_JAVASCRIPT'), 'DOC_TEMPLATES_JAVASCRIPT'],
+                'javascript-related' => [do_lang('TEMPLATES_JAVASCRIPT_RELATED'), 'DOC_TEMPLATES_RELATED'],
+                'xml' => [do_lang('TEMPLATES_XML'), 'DOC_TEMPLATES_XML'],
+                'xml-related' => [do_lang('TEMPLATES_XML_RELATED'), 'DOC_TEMPLATES_RELATED'],
+                'text' => [do_lang('TEMPLATES_TEXT'), 'DOC_TEMPLATES_TEXT'],
+                'text-related' => [do_lang('TEMPLATES_TEXT_RELATED'), 'DOC_TEMPLATES_RELATED'],
+                'addons' => [do_lang('addons:ADDONS'), 'DOC_TEMPLATES_BY_ADDON'],
+            ];
 
             $test = $GLOBALS['SITE_DB']->query_select_value('theme_screen_tree', 'COUNT(*)');
             if ($test >= 0) {
-                $top_level['screens'] = array(do_lang('SCREEN_TREES'), 'DOC_TEMPLATE_EDITOR_SCREENS');
+                $top_level['screens'] = [do_lang('SCREEN_TREES'), 'DOC_TEMPLATE_EDITOR_SCREENS'];
             }
 
             $zones = find_all_zones(false, true, false, 0, 10);
             if (count($zones) < 10) {
                 foreach ($zones as $zone_details) {
-                    $top_level[$zone_details[0] . ':'] = array(do_lang('ZONE_IS', $zone_details[1]), 'DOC_TEMPLATE_EDITOR_COMCODE_PAGES');
+                    $top_level[$zone_details[0] . ':'] = [do_lang('ZONE_IS', $zone_details[1]), 'DOC_TEMPLATE_EDITOR_COMCODE_PAGES'];
                 }
             }
 
@@ -90,7 +90,7 @@ class Hook_ajax_tree_choose_theme_files
             $is_related = (substr($id, -8) == '-related');
             if ($is_related) {
                 $id = substr($id, 0, strlen($id) - 8);
-                $relations = collapse_2d_complexity('rel_a', 'cnt', $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_a', 'COUNT(*) AS cnt'), array(), 'GROUP BY rel_a'));
+                $relations = collapse_2d_complexity('rel_a', 'cnt', $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_a', 'COUNT(*) AS cnt'], [], 'GROUP BY rel_a'));
             }
 
             switch ($id) {
@@ -160,7 +160,7 @@ class Hook_ajax_tree_choose_theme_files
                     break;
 
                 case 'screens':
-                    $screens = $GLOBALS['SITE_DB']->query_select('theme_screen_tree', array('page_link'), array(), 'ORDER BY page_link');
+                    $screens = $GLOBALS['SITE_DB']->query_select('theme_screen_tree', ['page_link'], [], 'ORDER BY page_link');
                     foreach ($screens as $screen) {
                         $page_link = $screen['page_link'];
 
@@ -209,7 +209,7 @@ class Hook_ajax_tree_choose_theme_files
 
                         $action_log_times = $this->load_actionlog_times_templates($theme);
 
-                        $related = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_b'), array('rel_a' => $id), 'ORDER BY rel_b'));
+                        $related = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_b'], ['rel_a' => $id], 'ORDER BY rel_b'));
                         array_unshift($related, $id);
                         foreach ($related as $rel) {
                             $template_file_path = find_template_path(basename($rel), dirname($rel), $theme);
@@ -236,7 +236,7 @@ class Hook_ajax_tree_choose_theme_files
                     elseif (strpos(rtrim($id, ':'), ':') !== false) {
                         // Must be a screen show meta-tree...
 
-                        $json_tree = $GLOBALS['SITE_DB']->query_select_value('theme_screen_tree', 'json_tree', array('page_link' => $id));
+                        $json_tree = $GLOBALS['SITE_DB']->query_select_value('theme_screen_tree', 'json_tree', ['page_link' => $id]);
                         $tree = json_decode($json_tree, true);
                         $out .= $this->build_screen_tree($theme, $tree);
 
@@ -291,12 +291,12 @@ class Hook_ajax_tree_choose_theme_files
      */
     protected function templates_for_addons($filter_addon = null)
     {
-        static $templates_for_addons = array();
+        static $templates_for_addons = [];
         if (isset($templates_for_addons[$filter_addon])) {
             return $templates_for_addons[$filter_addon];
         }
 
-        $_templates_for_addons = array();
+        $_templates_for_addons = [];
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($addons as $addon_name => $ob) {
             if (($filter_addon !== null) && ($filter_addon != $addon_name)) {
@@ -305,7 +305,7 @@ class Hook_ajax_tree_choose_theme_files
 
             $_files = $ob->get_file_list();
 
-            foreach (array('templates', 'css', 'javascript', 'xml', 'text') as $subdir) {
+            foreach (['templates', 'css', 'javascript', 'xml', 'text'] as $subdir) {
                 $test_for = 'themes/default/' . $subdir . '/';
                 $test_for_2 = 'themes/default/' . $subdir . '_custom/';
                 foreach ($_files as $file_path) {
@@ -336,11 +336,11 @@ class Hook_ajax_tree_choose_theme_files
      */
     protected function load_actionlog_times_templates($theme, $filter = null)
     {
-        $where = array('the_type' => 'EDIT_TEMPLATE', 'param_b' => $theme);
+        $where = ['the_type' => 'EDIT_TEMPLATE', 'param_b' => $theme];
         if ($filter !== null) {
             $where['param_a'] = $filter;
         }
-        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', array('MAX(date_and_time)', 'param_a', 'member_id'), $where, 'GROUP BY param_a');
+        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a');
         $action_log_times = list_to_map('param_a', $_action_log_times);
         return $action_log_times;
     }
@@ -354,11 +354,11 @@ class Hook_ajax_tree_choose_theme_files
      */
     protected function load_actionlog_times_pages($zone, $filter = null)
     {
-        $where = array('the_type' => 'COMCODE_PAGE_EDIT', 'param_b' => $zone);
+        $where = ['the_type' => 'COMCODE_PAGE_EDIT', 'param_b' => $zone];
         if ($filter !== null) {
             $where['param_a'] = $filter;
         }
-        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', array('MAX(date_and_time)', 'param_a', 'member_id'), $where, 'GROUP BY param_a');
+        $_action_log_times = $GLOBALS['SITE_DB']->query_select('actionlogs', ['MAX(date_and_time)', 'param_a', 'member_id'], $where, 'GROUP BY param_a');
         $action_log_times = list_to_map('param_a', $_action_log_times);
         return $action_log_times;
     }
@@ -380,7 +380,7 @@ class Hook_ajax_tree_choose_theme_files
             $action_log_times = $this->load_actionlog_times_templates($theme, $template_file);
         }
 
-        return do_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', array(
+        return do_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', [
             '_GUID' => '865a7f5fe9968dce772fa4be8145e5f7',
             'FILE' => $template_file,
             'FULL_PATH' => preg_replace('#^' . preg_quote(get_custom_file_base() . '/', '#') . '#', '', $template_file_path),
@@ -388,7 +388,7 @@ class Hook_ajax_tree_choose_theme_files
             'LAST_EDITING_DATE' => (filectime($template_file_path) == filemtime($template_file_path)) ? null : get_timezoned_date_time(filemtime($template_file_path)),
             'FILE_SIZE' => clean_file_size(filesize($template_file_path)),
             'ADDON' => isset($templates_for_addons[$template_file]) ? $templates_for_addons[$template_file] : null,
-        ));
+        ]);
     }
 
     /**
@@ -406,7 +406,7 @@ class Hook_ajax_tree_choose_theme_files
             $action_log_times = $this->load_actionlog_times_pages($zone, $page);
         }
 
-        return do_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', array(
+        return do_template('THEME_TEMPLATE_EDITOR_TEMPLATE_DETAIL', [
             '_GUID' => '67be5f3d23e3c6ba4c56b10d412a8566',
             'FILE' => $zone . ':' . $page,
             'FULL_PATH' => $path,
@@ -414,7 +414,7 @@ class Hook_ajax_tree_choose_theme_files
             'LAST_EDITING_DATE' => (filectime($path) == filemtime($path)) ? null : get_timezoned_date_time(filemtime($path)),
             'FILE_SIZE' => clean_file_size(filesize($path)),
             'ADDON' => null,
-        ));
+        ]);
     }
 
     /**
@@ -520,7 +520,7 @@ class Hook_ajax_tree_choose_theme_files
 
         $template_file_shortened = basename($file, '.' . $ext);
 
-        return array($img_url, $template_file_shortened);
+        return [$img_url, $template_file_shortened];
     }
 
     /**

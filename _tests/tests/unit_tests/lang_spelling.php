@@ -32,9 +32,9 @@ class lang_spelling_test_set extends cms_test_case
 
         // Language files...
 
-        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, array('ini'));
+        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, ['ini']);
         foreach ($files as $path) {
-            $input = array();
+            $input = [];
             _get_lang_file_map($path, $input, 'strings', false, false, 'EN');
 
             foreach ($input as $key => $string) {
@@ -44,30 +44,30 @@ class lang_spelling_test_set extends cms_test_case
 
         // Text files...
 
-        $dirs = array(
+        $dirs = [
             'text',
             'text/EN',
             'pages/comcode/EN',
             'site/pages/comcode/EN',
             'docs/pages/comcode_custom/EN',
-        );
+        ];
         if ((function_exists('git_repos')) && (git_repos() == 'composr_homesite')) {
-            $dirs = array_merge($dirs, array(
+            $dirs = array_merge($dirs, [
                 'text_custom',
                 'text_custom/EN',
                 'pages/comcode_custom/EN',
                 'site/pages/comcode_custom/EN',
-            ));
+            ]);
         }
         foreach ($dirs as $dir) {
-            $files = get_directory_contents(get_file_base() . '/' . $dir, get_file_base() . '/' . $dir, null, false, true, array('txt'));
+            $files = get_directory_contents(get_file_base() . '/' . $dir, get_file_base() . '/' . $dir, null, false, true, ['txt']);
             foreach ($files as $path) {
                 // Exceptions
-                if (in_array(basename($path), array(
+                if (in_array(basename($path), [
                     'synonyms.txt',
                     'unbannable_ips.txt',
                     'sitemap.txt',
-                ))) {
+                ])) {
                     continue;
                 }
 
@@ -80,10 +80,10 @@ class lang_spelling_test_set extends cms_test_case
         // Particular files...
 
         $path = get_file_base();
-        $files = array(
+        $files = [
             'uploads/website_specific/compo.sr/errorservice.csv',
             'data/maintenance_status.csv',
-        );
+        ];
         foreach ($files as $_path) {
             $c = cms_file_get_contents_safe($path . '/' . $_path);
 
@@ -108,7 +108,7 @@ class lang_spelling_test_set extends cms_test_case
         $string = preg_replace('#\[tt.*\[/tt\]#Us', '', $string);
         $string = preg_replace('#<kbd.*</kbd>#Us', '', $string);
 
-        $matches = array();
+        $matches = [];
 
         // Support debranding
         if ($key !== null) {
@@ -116,7 +116,7 @@ class lang_spelling_test_set extends cms_test_case
                 (strpos($string, 'Composr') !== false) &&
 
                 (strpos($key, 'SETUPWIZARD') === false) &&
-                (!in_array($key, array(
+                (!in_array($key, [
                     'NO_PHP_IN_TEMPLATES',
                     'FORUM_BASE_URL_INVALID',
                     'WHAT_TO_EXPECT',
@@ -141,8 +141,8 @@ class lang_spelling_test_set extends cms_test_case
                     'CONFIG_OPTION_dashboard_tips',
                     'CONFIG_OPTION_keywords',
                     'DESCRIPTION_META_KEYWORDS',
-                ))) &&
-                (!in_array($file, array(
+                ])) &&
+                (!in_array($file, [
                     'lang.ini',
                     'version.ini',
                     'debrand.ini',
@@ -151,7 +151,7 @@ class lang_spelling_test_set extends cms_test_case
                     'upgrade.ini',
                     'commandr.ini',
                     'addons.ini',
-                )))
+                ]))
             ) {
                 $ob->assertTrue(false, 'The word \'Composr\' was used in ' . $path . ' (' . $key . '). This should probably be changed to \'the software\'.');
             }
@@ -159,7 +159,7 @@ class lang_spelling_test_set extends cms_test_case
 
         // Bad use of it's. Imperfect test, but would rather have it anyway due to the prevalence of these mistakes. People can expand contractions to workaround.
         if ($path != 'sources/notifications.php') {
-            $matches = array();
+            $matches = [];
             if (preg_match('#it\'s (own|permission|id |definition|filename|contents|run|database|parent|child|cach|interface|use |various|result|properties)#', $string, $matches) != 0) {
                 $ob->assertTrue(false, 'The phrase "' . $matches[0] . '" was used in ' . $path . '. This should be changed to "its own". There could be more infractions that we could not auto-detect.');
             }
@@ -168,7 +168,7 @@ class lang_spelling_test_set extends cms_test_case
         // Hyphen wanted (we want our canonical way)
         if (
             (preg_match('#([^\[\]\|"\'/_])email#', $string, $matches) != 0) &&
-            (!in_array($file, array('sup_facebook.txt', 'tut_fields.txt'))) &&
+            (!in_array($file, ['sup_facebook.txt', 'tut_fields.txt'])) &&
             (($key === null) || (stripos($string, '/') === false) && (stripos($string, 'codename') === false)) &&
             (stripos($string, 'Automatic code inserts after this') === false)
         ) {
@@ -213,7 +213,7 @@ class lang_spelling_test_set extends cms_test_case
         if (stripos($string, 'base-URL') !== false) {
             $ob->assertTrue(false, 'The word \'base-URL\' was used in ' . $path . '. This should be changed to \'base URL\'.');
         }
-        if (($key === null) || (!in_array($key, array('WARNING_DB_OVERWRITE')))) {
+        if (($key === null) || (!in_array($key, ['WARNING_DB_OVERWRITE']))) {
             if (stripos($string, 'upper-case') !== false) {
                 $ob->assertTrue(false, 'The word \'upper-case\' was used in ' . $path . '. This should be changed to \'upper case\'.');
             }
@@ -231,7 +231,7 @@ class lang_spelling_test_set extends cms_test_case
         // No space or hyphen wanted (we want our canonical way)
         if (
             (stripos($string, 'set-up') !== false) &&
-            (($key === null) || (!in_array($key, array('CONFIG_OPTION_taxcloud_api_key', 'CONFIG_OPTION_taxcloud_api_id'))))
+            (($key === null) || (!in_array($key, ['CONFIG_OPTION_taxcloud_api_key', 'CONFIG_OPTION_taxcloud_api_id'])))
         ) {
             $ob->assertTrue(false, 'The phrase \'set-up\' was used in ' . $path . '. This might need to be changed to \'setup\', depending on the usage.');
         }
@@ -266,13 +266,13 @@ class lang_spelling_test_set extends cms_test_case
         // Wrong way of writing proper noun (we want our canonical way)
         if (
             (stripos($string, 'unvalidated') !== false) &&
-            (!in_array($file, array('tut_addon_index.txt', 'sup_set_up_a_workflow_in_composr.txt')))
+            (!in_array($file, ['tut_addon_index.txt', 'sup_set_up_a_workflow_in_composr.txt']))
         ) {
             $ob->assertTrue(false, 'The word \'unvalidated\' was used in ' . $path . '. This should be changed to \'non-validated\'.');
         }
         if (
             (preg_match('#([^\]/A-Za-z"_<\']+)comcode([^A-Za-z"\']+)#', $string) != 0) &&
-            (!in_array($file, array('stress_test_loader.php', 'global.css', 'zones.ini')))
+            (!in_array($file, ['stress_test_loader.php', 'global.css', 'zones.ini']))
         ) {
             $ob->assertTrue(false, 'The term \'comcode\' was used in ' . $path . '. This should be changed to \'Comcode\'.');
         }
@@ -299,7 +299,7 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#([^/_\-\.A-Za-z]+)zip([^A-Za-z]+)#', $string) != 0) &&
-            (($key === null) || (!in_array($key, array('ZIP_NEEDED_FOR_USA', 'INVALID_ZIP_FOR_USA', 'CONFIG_OPTION_business_post_code'))))
+            (($key === null) || (!in_array($key, ['ZIP_NEEDED_FOR_USA', 'INVALID_ZIP_FOR_USA', 'CONFIG_OPTION_business_post_code'])))
         ) {
             $ob->assertTrue(false, 'The filetype \'zip\' was used in ' . $path . '. This should be changed to \'ZIP\'.');
         }
@@ -371,12 +371,12 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#[^s]tick [^\(]#', $string) != 0) &&
-            (!in_array($file, array('cns_install.php')))
+            (!in_array($file, ['cns_install.php']))
         ) {
             $ob->assertTrue(false, 'The word tick was used in ' . $path . ' without being followed by check in parentheses in the conventional way.');
         }
 
-        $common_spelling_mistakes = array(
+        $common_spelling_mistakes = [
             // Common spelling errors
             'cacheing' => 'caching',
             'publically' => 'publicly',
@@ -409,7 +409,7 @@ class lang_spelling_test_set extends cms_test_case
 
             // Common inconsistencies
             'stack dump' => 'stack trace',
-        );
+        ];
         if (strpos($file, 'calendar') !== false) {
             $common_spelling_mistakes['occurrence'] = 'recurrence';
         }
@@ -422,7 +422,7 @@ class lang_spelling_test_set extends cms_test_case
         // Common grammar errors
         if (
             (stripos($string, 'URL\'s') !== false) &&
-            (!in_array($file, array('tut_importer.txt', 'tut_tempcode.txt')))
+            (!in_array($file, ['tut_importer.txt', 'tut_tempcode.txt']))
         ) {
             $ob->assertTrue(false, 'The acronym \'URL\'s\' was used in ' . $path . '. This should be changed to \'URLs\'.');
         }
@@ -434,7 +434,7 @@ class lang_spelling_test_set extends cms_test_case
         }
         if (
             (preg_match('#([^\$:_A-Za-z\[\]></\']+)url([^\}\(A-Za-z=\']+)#', $string, $matches) != 0) &&
-            (!in_array($file, array('attachments3.php', 'cns_install.php', 'tut_fields.txt')))
+            (!in_array($file, ['attachments3.php', 'cns_install.php', 'tut_fields.txt']))
         ) {
             $prefix = $matches[1];
             if ($prefix != '="') {
@@ -448,7 +448,7 @@ class lang_spelling_test_set extends cms_test_case
 
         // Extra checks that give lots of false-positives
         if ($verbose) {
-            foreach (array('user' => 'member', 'color' => 'colour', 'license' => 'licence', 'center' => 'centre') as $from => $to) {
+            foreach (['user' => 'member', 'color' => 'colour', 'license' => 'licence', 'center' => 'centre'] as $from => $to) {
                 if (stripos($string, $from) !== false) {
                     $ob->assertTrue(false, 'The term \'' . $from . '\' was used in ' . $path . '. This might need to be changed to \'' . $to . '\', depending on the circumstances.');
                 }

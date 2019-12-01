@@ -30,7 +30,7 @@ class Hook_config_minimum_autocomplete_past_search
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINIMUM_AUTOCOMPLETE_PAST_SEARCH',
             'type' => 'integer',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_minimum_autocomplete_past_search
             'public' => false,
 
             'addon' => 'search',
-        );
+        ];
     }
 
     /**

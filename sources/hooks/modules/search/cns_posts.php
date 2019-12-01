@@ -56,11 +56,11 @@ class Hook_search_cns_posts extends FieldsSearchHook
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('FORUM_POSTS');
         $info['default'] = (get_option('search_cns_posts') == '1');
-        $info['special_on'] = array();
-        $info['special_off'] = array('open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED'), 'starter' => do_lang_tempcode('POST_SEARCH_STARTER'));
+        $info['special_on'] = [];
+        $info['special_off'] = ['open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED'), 'starter' => do_lang_tempcode('POST_SEARCH_STARTER')];
         if ((has_privilege($member_id, 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $info['special_off']['unvalidated'] = do_lang_tempcode('POST_SEARCH_UNVALIDATED');
         }
@@ -68,17 +68,17 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['integer_category'] = true;
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_post');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('topicview'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('topicview'),
                 'page_name' => 'topicview',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -90,7 +90,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function ajax_tree()
     {
-        return array('choose_forum', array('compound_list' => true));
+        return ['choose_forum', ['compound_list' => true]];
     }
 
     /**
@@ -128,17 +128,17 @@ class Hook_search_cns_posts extends FieldsSearchHook
      */
     public function run($content, $only_search_meta, $direction, $max, $start, $only_titles, $content_where, $author, $author_id, $cutoff, $sort, $limit_to, $boolean_operator, $where_clause, $search_under, $boolean_search)
     {
-        if (in_array($content, array(
+        if (in_array($content, [
             do_lang('POSTS_WITHIN_TOPIC'),
             do_lang('SEARCH_POSTS_WITHIN_TOPIC'),
             do_lang('SEARCH_FORUM_POSTS'),
             do_lang('_SEARCH_PRIVATE_TOPICS'),
-        ))) {
-            return array(); // Search placeholder label, not real search
+        ])) {
+            return []; // Search placeholder label, not real search
         }
 
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
         require_code('cns_forums');
         require_code('cns_posts');
@@ -160,7 +160,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('p_poster', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -198,14 +198,14 @@ class Hook_search_cns_posts extends FieldsSearchHook
         }
 
         $table = 'f_posts r JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics s ON r.p_topic_id=s.id';
-        $trans_fields = array('!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array('r.p_title'/*,'s.t_description' Performance problem due to how full text works*/);
+        $trans_fields = ['!' => '!', 'r.p_post' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = ['r.p_title'/*,'s.t_description' Performance problem due to how full text works*/];
         $this->_get_search_parameterisation_advanced_for_content_type('_post', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,t_forum_id,t_cache_first_title', $nontrans_fields, 'forums', 't_forum_id');
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -228,7 +228,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
     public function render($row)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS;
         push_lax_comcode(true);
         $summary = get_translated_text($row['p_post']);
         $text_summary_h = comcode_to_tempcode($summary, null, false, null, null, COMCODE_NORMAL, $highlight_bits);

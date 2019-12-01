@@ -30,7 +30,7 @@ class Hook_config_has_low_memory_limit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HAS_LOW_MEMORY_LIMIT',
             'type' => 'tick',
             'category' => 'SERVER',
@@ -43,7 +43,7 @@ class Hook_config_has_low_memory_limit
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

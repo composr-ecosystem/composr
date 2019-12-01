@@ -30,7 +30,7 @@ class Hook_config_error_handling_notices
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ERROR_HANDLING_NOTICES',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_error_handling_notices
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

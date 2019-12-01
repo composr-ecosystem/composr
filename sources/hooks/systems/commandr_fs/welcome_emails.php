@@ -47,8 +47,8 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', array('id'), array('w_name' => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['id'], ['w_name' => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -107,13 +107,13 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('f_welcome_emails', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['w_name'],
             'subject' => get_translated_text($row['w_subject']),
             'text' => get_translated_text($row['w_text']),
@@ -121,7 +121,7 @@ class Hook_commandr_fs_welcome_emails extends Resource_fs_base
             'newsletter' => remap_resource_id_as_portable('newsletter', $row['w_newsletter']),
             'usergroup' => remap_resource_id_as_portable('group', $row['w_usergroup']),
             'usergroup_type' => $row['w_usergroup_type'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

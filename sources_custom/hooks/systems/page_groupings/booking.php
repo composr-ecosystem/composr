@@ -28,12 +28,12 @@ class Hook_page_groupings_booking
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('booking')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('cms', 'booking/booking', array('cms_booking', array(), get_page_zone('cms_booking')), do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'),
-            array('pages', 'booking/book', array('booking', array('type' => 'browse'), get_page_zone('booking')), do_lang_tempcode('booking:BOOKINGS')),
-        );
+        return [
+            ['cms', 'booking/booking', ['cms_booking', [], get_page_zone('cms_booking')], do_lang_tempcode('booking:BOOKINGS'), 'booking:DOC_BOOKING'],
+            ['pages', 'booking/book', ['booking', ['type' => 'browse'], get_page_zone('booking')], do_lang_tempcode('booking:BOOKINGS')],
+        ];
     }
 }

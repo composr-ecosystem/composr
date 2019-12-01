@@ -25,14 +25,14 @@ class Block_main_iotd
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'zone');
+        $info['parameters'] = ['param', 'zone'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_iotd
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : 'current',
@@ -78,17 +78,17 @@ PHP;
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('iotds');
 
         if ((has_actual_page_access(null, 'cms_iotds', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_iotds'))) {
-            $submit_url = build_url(array('page' => 'cms_iotds', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_iotds'));
+            $submit_url = build_url(['page' => 'cms_iotds', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_iotds'));
         } else {
             $submit_url = new Tempcode();
         }
 
         if ($mode == 'current') {
-            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('is_current' => 1), 'ORDER BY add_date DESC', 1);
+            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['is_current' => 1], 'ORDER BY add_date DESC', 1);
         } elseif (is_numeric($mode)) {
-            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => intval($mode)), '', 1);
+            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => intval($mode)], '', 1);
             if (!array_key_exists(0, $iotd)) {
-                return do_template('BLOCK_NO_ENTRIES', array(
+                return do_template('BLOCK_NO_ENTRIES', [
                     '_GUID' => '55cff098a0ff91416e6c0e52228ca02d',
                     'BLOCK_ID' => $block_id,
                     'HIGH' => true,
@@ -96,12 +96,12 @@ PHP;
                     'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'iotd'),
                     'ADD_NAME' => do_lang_tempcode('ADD_IOTD'),
                     'SUBMIT_URL' => $submit_url,
-                ));
+                ]);
             }
         } else {
-            $cnt = $GLOBALS['SITE_DB']->query_select_value('iotd', 'COUNT(*)', array('used' => 1));
+            $cnt = $GLOBALS['SITE_DB']->query_select_value('iotd', 'COUNT(*)', ['used' => 1]);
             if ($cnt == 0) {
-                return do_template('BLOCK_NO_ENTRIES', array(
+                return do_template('BLOCK_NO_ENTRIES', [
                     '_GUID' => '3fe3dbbf8966b80cf3037f6dd914867d',
                     'BLOCK_ID' => $block_id,
                     'HIGH' => true,
@@ -109,13 +109,13 @@ PHP;
                     'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'iotd'),
                     'ADD_NAME' => do_lang_tempcode('ADD_IOTD'),
                     'SUBMIT_URL' => $submit_url,
-                ));
+                ]);
             }
             $at = mt_rand(0, $cnt - 1);
-            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('used' => 1), '', 1, $at);
+            $iotd = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['used' => 1], '', 1, $at);
         }
         if (!array_key_exists(0, $iotd)) {
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => '62baa388e068d4334f7a6c6093ead56a',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => true,
@@ -123,7 +123,7 @@ PHP;
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'iotd'),
                 'ADD_NAME' => do_lang_tempcode('ADD_IOTD'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
         $myrow = $iotd[0];
 
@@ -132,7 +132,7 @@ PHP;
             $image_url = get_custom_base_url() . '/' . $image_url;
         }
 
-        $view_url = build_url(array('page' => 'iotds', 'type' => 'view', 'id' => $myrow['id']), $zone);
+        $view_url = build_url(['page' => 'iotds', 'type' => 'view', 'id' => $myrow['id']], $zone);
 
         $i_title = get_translated_tempcode('iotd', $myrow, 'i_title');
         $caption = get_translated_tempcode('iotd', $myrow, 'caption');
@@ -141,9 +141,9 @@ PHP;
         $thumb_url = ensure_thumbnail($myrow['url'], $myrow['thumb_url'], 'iotds', 'iotd', $myrow['id']);
         $image = do_image_thumb($thumb_url, do_lang('IOTD'));
 
-        $archive_url = build_url(array('page' => 'iotds', 'type' => 'browse'), $zone);
+        $archive_url = build_url(['page' => 'iotds', 'type' => 'browse'], $zone);
 
-        $map2 = array(
+        $map2 = [
             '_GUID' => 'd710da3675a1775867168ae37db02ad4',
             'BLOCK_ID' => $block_id,
             'CURRENT' => ($mode == 'current'),
@@ -158,7 +158,7 @@ PHP;
             'ARCHIVE_URL' => $archive_url,
             'SUBMIT_URL' => $submit_url,
             'GIVE_CONTEXT' => true,
-        );
+        ];
         if ((get_option('is_on_comments') == '1') && (get_forum_type() != 'none') && ($myrow['allow_comments'] >= 1)) {
             $map2['COMMENT_COUNT'] = '1';
         }

@@ -70,12 +70,12 @@ function internalise_own_screen($screen_content, $refresh_time = null, $refresh_
         $change_detection_url = '';
     }
 
-    return do_template('INTERNALISED_AJAX_SCREEN', array(
+    return do_template('INTERNALISED_AJAX_SCREEN', [
         '_GUID' => '06554eb227428fd5c648dee3c5b38185',
         'SCREEN_CONTENT' => $screen_content,
         'REFRESH_IF_CHANGED' => md5(serialize($refresh_if_changed)),
         'CHANGE_DETECTION_URL' => $change_detection_url,
         'URL' => $url,
         'REFRESH_TIME' => ($refresh_time === null) ? '' : strval($refresh_time),
-    ));
+    ]);
 }

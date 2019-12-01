@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_ticket_type
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'tickets:TICKET_TYPE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_ticket_type
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_TICKET_TYPE',
-        );
+        ];
     }
 }

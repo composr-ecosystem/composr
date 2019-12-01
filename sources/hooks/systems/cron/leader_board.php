@@ -36,11 +36,11 @@ class Hook_cron_leader_board
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Leader-board generation',
             'num_queued' => null,
             'minutes_between_runs' => 0, // Allow it to regenerate quickly
-        );
+        ];
     }
 
     /**

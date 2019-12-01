@@ -36,7 +36,7 @@ class Hook_content_meta_aware_comcode_page
             $zone = @strval(get_page_zone('sitemap', false));
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'zones:COMCODE_PAGE',
@@ -44,13 +44,13 @@ class Hook_content_meta_aware_comcode_page
 
             'db' => $GLOBALS['SITE_DB'],
             'table' => 'comcode_pages',
-            'id_field' => array('the_page', 'the_zone'),
+            'id_field' => ['the_page', 'the_zone'],
             'id_field_numeric' => false,
             'parent_category_field' => 'the_zone',
             'parent_category_meta_aware_type' => null,
             'is_category' => false,
             'is_entry' => true,
-            'category_field' => array('the_zone', 'the_page'), // For category permissions
+            'category_field' => ['the_zone', 'the_page'], // For category permissions
             'category_type' => '<page>', // For category permissions ("<page>" means use page permissions)
             'parent_spec__table_name' => null,
             'parent_spec__parent_name' => null,
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_comcode_page
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_COMCODE_PAGE',
-        );
+        ];
     }
 
     /**

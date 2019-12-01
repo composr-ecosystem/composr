@@ -32,12 +32,12 @@ class basic_code_formatting_test_set extends cms_test_case
         $this->files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_CUSTOM_THEMES);
         $this->files[] = 'install.php';
 
-        $this->text_formats = array();
+        $this->text_formats = [];
         $path = get_file_base() . '/.gitattributes';
         $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#^\*\.(\w+) text#m', $c, $matches);
-        $found = array();
+        $found = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $ext = $matches[1][$i];
             $this->text_formats[$ext] = true;
@@ -69,21 +69,21 @@ class basic_code_formatting_test_set extends cms_test_case
             return;
         }
 
-        $file_types_spaces = array(
+        $file_types_spaces = [
             'js',
             'php',
-        );
+        ];
 
-        $file_types_tabs = array(
+        $file_types_tabs = [
             'css',
             'tpl',
             'xml',
             'sh',
             'txt',
-        );
+        ];
 
         foreach ($this->files as $path) {
-            $exceptions = array(
+            $exceptions = [
                 'data_custom/sitemap',
                 'sources_custom/sabredav',
                 'docs/pages/comcode_custom/EN',
@@ -101,12 +101,12 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/programe',
                 '_tests/simpletest',
                 'data_custom/pdf_viewer',
-            );
+            ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = array(
+            $exceptions = [
                 '_tests/tests/unit_tests/tempcode.php',
                 '_tests/tests/unit_tests/xss.php',
                 '_tests/libs/mf_parse.php',
@@ -136,7 +136,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/sortable_tables.js',
                 'themes/default/javascript_custom/unslider.js',
                 'themes/default/javascript_custom/charts.js',
-            );
+            ];
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -167,7 +167,7 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         foreach ($this->files as $path) {
-            $exceptions = array(
+            $exceptions = [
                 '_tests/assets/text',
                 '_tests/assets/spreadsheets',
                 '_tests/codechecker/netbeans',
@@ -185,12 +185,12 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/sabredav',
                 'tracker',
                 'data_custom/pdf_viewer',
-            );
+            ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = array(
+            $exceptions = [
                 'text/unbannable_ips.txt',
                 'sources_custom/twitter.php',
                 'user.sql',
@@ -202,7 +202,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/confluence2.js',
                 'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
                 'data_custom/rate_limiter.php',
-            );
+            ];
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -227,7 +227,7 @@ class basic_code_formatting_test_set extends cms_test_case
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         foreach ($this->files as $path) {
-            $exceptions = array(
+            $exceptions = [
                 '_tests/assets/text',
                 '_tests/assets/spreadsheets',
                 '_tests/simpletest',
@@ -245,12 +245,12 @@ class basic_code_formatting_test_set extends cms_test_case
                 'comcode_custom/(?!EN)\w+',
                 'data_custom/pdf_viewer',
                 'data/ace',
-            );
+            ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            $exceptions = array(
+            $exceptions = [
                 'data/curl-ca-bundle.crt',
                 'lang/langs.ini',
                 'mobiquo/license_agreement.txt',
@@ -259,7 +259,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/confluence.js',
                 'themes/default/javascript_custom/confluence2.js',
                 'sources_custom/Cloudinary/cacert.pem',
-            );
+            ];
             if (in_array($path, $exceptions)) {
                 continue;
             }
@@ -304,7 +304,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
 
-            $exceptions = array(
+            $exceptions = [
                 '_tests/assets/text',
                 '_tests/assets/spreadsheets',
                 'tracker',
@@ -319,7 +319,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/aws/Aws',
                 'docs/jsdoc',
                 'data_custom/pdf_viewer',
-            );
+            ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
@@ -349,7 +349,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 //  Some templates need to be loaded with no terminating line, as white-space may cause an issue.
                 //  Composr accommodates for this with a special rule - a terminating line break is stripped from any one-line templates.
                 $expected_term_breaks = 1;
-                if (in_array($path, array())) {
+                if (in_array($path, [])) {
                     $expected_term_breaks = 0;
                 }
 

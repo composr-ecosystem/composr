@@ -136,15 +136,15 @@ function version_specific()
             @rename(get_custom_file_base() . '/data_custom/fields.xml', get_custom_file_base() . '/data_custom/xml_config/fields.xml');
             sync_file_move(get_custom_file_base() . '/data_custom/fields.xml', get_custom_file_base() . '/data_custom/xml_config/fields.xml');
 
-            $remap = array(
+            $remap = [
                 'ocf_post' => 'cns_post',
                 'ocf_signature' => 'cns_signature',
-            );
+            ];
             foreach ($remap as $from => $to) {
-                $GLOBALS['SITE_DB']->query_update('attachment_refs', array('r_referer_type' => $to), array('r_referer_type' => $from));
+                $GLOBALS['SITE_DB']->query_update('attachment_refs', ['r_referer_type' => $to], ['r_referer_type' => $from]);
             }
 
-            $remap = array(
+            $remap = [
                 'cedi' => 'wiki',
                 'contactmember' => 'contact_member',
                 'admin_occle' => 'admin_commandr',
@@ -165,10 +165,10 @@ function version_specific()
                 'admin_ocf_welcome_emails' => 'admin_cns_welcome_emails',
                 'cms_cedi' => 'cms_wiki',
                 'cms_ocf_groups' => 'cms_cns_groups',
-            );
+            ];
             foreach ($remap as $from => $to) {
-                $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $to));
-                $GLOBALS['SITE_DB']->query_update('modules', array('module_the_name' => $to), array('module_the_name' => $from), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $to]);
+                $GLOBALS['SITE_DB']->query_update('modules', ['module_the_name' => $to], ['module_the_name' => $from], '', 1);
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'' . $from . '\',\'' . $to . '\')');
             }
             /*
@@ -180,16 +180,16 @@ function version_specific()
             */
             persistent_cache_delete('MODULES');
 
-            $remap = array(
+            $remap = [
                 'side_ocf_personal_topics' => 'side_cns_private_topics',
                 'side_stored_menu' => 'menu',
                 'side_root_galleries' => 'side_galleries',
-            );
+            ];
             foreach ($remap as $from => $to) {
-                $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $to));
-                $GLOBALS['SITE_DB']->query_update('blocks', array('block_name' => $to), array('block_name' => $from), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $to]);
+                $GLOBALS['SITE_DB']->query_update('blocks', ['block_name' => $to], ['block_name' => $from], '', 1);
             }
-            $deleted_blocks = array(
+            $deleted_blocks = [
                 'main_feedback',
                 'main_sitemap',
                 'main_as_zone_access',
@@ -200,9 +200,9 @@ function version_specific()
                 'main_top_downloads',
                 'main_download_tease',
                 'main_gallery_tease',
-            );
+            ];
             foreach ($deleted_blocks as $block_name) {
-                $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block_name));
+                $GLOBALS['SITE_DB']->query_delete('blocks', ['block_name' => $block_name]);
             }
 
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'ocf_\',\'cns_\')');
@@ -210,7 +210,7 @@ function version_specific()
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values WHERE the_name LIKE \'' . db_encode_like('%cns_%') . '\'');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_name=REPLACE(the_name,\'ocf_\',\'cns_\')');
 
-            $GLOBALS['SITE_DB']->query_update('url_id_monikers', array('m_resource_type' => 'browse'), array('m_resource_type' => 'misc'), '', 1);
+            $GLOBALS['SITE_DB']->query_update('url_id_monikers', ['m_resource_type' => 'browse'], ['m_resource_type' => 'misc'], '', 1);
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=\'ocp_street_address\' WHERE text_original=\'ocp_building_name_or_number\'');
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'f_custom_fields f JOIN ' . get_table_prefix() . 'translate t ON t.id=f.cf_name SET text_original=REPLACE(text_original,\'ocp_\',\'cms_\') WHERE text_original LIKE \'ocp\_%\'');
             $GLOBALS['SITE_DB']->alter_table_field('msp', 'specific_permission', '*ID_TEXT', 'privilege');
@@ -222,16 +222,16 @@ function version_specific()
             $GLOBALS['SITE_DB']->rename_table('gsp', 'group_privileges');
             $GLOBALS['SITE_DB']->rename_table('sp_list', 'privilege_list');
             $GLOBALS['SITE_DB']->rename_table('usersubmitban_ip', 'banned_ip');
-            $GLOBALS['SITE_DB']->query_update('db_meta_indices', array('i_fields' => 'member_id'), array('i_name' => 'xas'), '', 1);
-            $GLOBALS['SITE_DB']->query_update('db_meta', array('m_type' => 'MEMBER'), array('m_type' => 'USER'));
-            $GLOBALS['SITE_DB']->query_update('db_meta', array('m_type' => '?MEMBER'), array('m_type' => '?USER'));
-            $GLOBALS['SITE_DB']->query_update('db_meta', array('m_type' => '*MEMBER'), array('m_type' => '*USER'));
+            $GLOBALS['SITE_DB']->query_update('db_meta_indices', ['i_fields' => 'member_id'], ['i_name' => 'xas'], '', 1);
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => 'MEMBER'], ['m_type' => 'USER']);
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '?MEMBER'], ['m_type' => '?USER']);
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*MEMBER'], ['m_type' => '*USER']);
             $GLOBALS['SITE_DB']->alter_table_field('actionlogs', 'the_user', 'MEMBER', 'member_id');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'the_user', 'MEMBER', 'member_id');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'the_session', '*ID_TEXT');
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('p_section' => 'FORUMS_AND_MEMBERS'), array('p_section' => 'SECTION_FORUMS'));
-            $GLOBALS['SITE_DB']->query_update('privilege_list', array('p_section' => 'BANNERS'), array('p_section' => '_BANNERS'));
-            $GLOBALS['SITE_DB']->query_delete('config', array('c_set' => 0)); // Defaults not saved in in same way in v10
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'FORUMS_AND_MEMBERS'], ['p_section' => 'SECTION_FORUMS']);
+            $GLOBALS['SITE_DB']->query_update('privilege_list', ['p_section' => 'BANNERS'], ['p_section' => '_BANNERS']);
+            $GLOBALS['SITE_DB']->query_delete('config', ['c_set' => 0]); // Defaults not saved in in same way in v10
             $GLOBALS['SITE_DB']->delete_table_field('config', 'human_name');
             $GLOBALS['SITE_DB']->delete_table_field('config', 'the_type');
             $GLOBALS['SITE_DB']->delete_table_field('config', 'eval');
@@ -247,12 +247,12 @@ function version_specific()
             foreach ($hooks as $hook => $ob) {
                 $details = $ob->get_details();
                 $needs_dereference = ($details['type'] == 'transtext' || $details['type'] == 'transline' || $details['type'] == 'comcodetext' || $details['type'] == 'comcodeline') ? 1 : 0;
-                $GLOBALS['SITE_DB']->query_update('config', array('c_needs_dereference' => $needs_dereference), array('c_name' => $hook), '', 1);
+                $GLOBALS['SITE_DB']->query_update('config', ['c_needs_dereference' => $needs_dereference], ['c_name' => $hook], '', 1);
             }
-            $GLOBALS['SITE_DB']->query_update('zones', array('zone_theme' => 'admin'), array('zone_name' => 'adminzone'), '', 1);
-            $GLOBALS['SITE_DB']->query_update('zones', array('zone_theme' => 'admin'), array('zone_name' => 'cms'), '', 1);
-            $GLOBALS['SITE_DB']->query_update('db_meta', array('m_type' => 'SHORT_TEXT'), array('m_type' => 'MD5'));
-            $GLOBALS['SITE_DB']->query_update('db_meta', array('m_type' => '*SHORT_TEXT'), array('m_type' => '*MD5'));
+            $GLOBALS['SITE_DB']->query_update('zones', ['zone_theme' => 'admin'], ['zone_name' => 'adminzone'], '', 1);
+            $GLOBALS['SITE_DB']->query_update('zones', ['zone_theme' => 'admin'], ['zone_name' => 'cms'], '', 1);
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => 'SHORT_TEXT'], ['m_type' => 'MD5']);
+            $GLOBALS['SITE_DB']->query_update('db_meta', ['m_type' => '*SHORT_TEXT'], ['m_type' => '*MD5']);
             rename_config_option('ocf_show_profile_link', 'cns_show_profile_link');
 
             delete_value('last_implicit_sync');
@@ -262,12 +262,12 @@ function version_specific()
             delete_value('last_sitemap_time_calc');
             delete_value('last_ticket_lead_time_calc');
             if (get_value('last_welcome_mail_time') !== null) {
-                $GLOBALS['SITE_DB']->query_insert('long_values', array('date_and_time' => time(), 'the_value' => get_value('last_welcome_mail_time'), 'the_name' => 'last_welcome_mail_time'));
+                $GLOBALS['SITE_DB']->query_insert('long_values', ['date_and_time' => time(), 'the_value' => get_value('last_welcome_mail_time'), 'the_name' => 'last_welcome_mail_time']);
                 delete_value('last_welcome_mail_time');
             }
 
-            foreach (array('INTEGER', 'REAL') as $bad_type) {
-                $bad_fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name'), array('m_type' => $bad_type, 'm_table' => 'f_member_custom_fields'));
+            foreach (['INTEGER', 'REAL'] as $bad_type) {
+                $bad_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name'], ['m_type' => $bad_type, 'm_table' => 'f_member_custom_fields']);
                 foreach ($bad_fields as $bad_field) {
                     $GLOBALS['SITE_DB']->alter_table_field('f_member_custom_fields', $bad_field['m_name'], '?' . $bad_type);
                 }
@@ -297,7 +297,7 @@ function version_specific()
             @unlink(get_file_base() . '/site/pages/html_custom/EN/download_tree_made.htm');
 
             // File replacements
-            $reps = array(
+            $reps = [
                 '#([^\w])cedi([^\w])#' => '$1wiki$2',
                 '#([^\w])seedy([^\w])#' => '$1wiki$2',
                 '#ocPortal#' => 'Composr',
@@ -325,7 +325,7 @@ function version_specific()
                 '#&product=#' => '&type_code=',
                 '#&amp;product=#' => '&amp;type_code=',
                 '#solidborder#' => 'results_table',
-            );
+            ];
             perform_search_replace($reps);
         }
 
@@ -335,11 +335,11 @@ function version_specific()
                 require_code('cns_forums_action2');
                 $target_forum_id = get_ticket_forum_id(null, false, true);
                 if ($target_forum_id !== null) {
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => 'Reported posts forum'));
+                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Reported posts forum']);
                     if ($forum_id !== null) {
                         cns_delete_forum($forum_id, $target_forum_id);
                     }
-                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => 'Website "Contact Us" messages'));
+                    $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => 'Website "Contact Us" messages']);
                     if ($forum_id !== null) {
                         cns_delete_forum($forum_id, $target_forum_id);
                     }

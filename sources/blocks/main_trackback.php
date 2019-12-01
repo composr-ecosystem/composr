@@ -30,14 +30,14 @@ class Block_main_trackback
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Philip Withnall';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'page', 'id');
+        $info['parameters'] = ['param', 'page', 'id'];
         return $info;
     }
 

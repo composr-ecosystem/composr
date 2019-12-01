@@ -30,14 +30,14 @@ class Block_main_comcode_page_children
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'zone');
+        $info['parameters'] = ['param', 'zone'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_comcode_page_children
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             ((array_key_exists('param', $map)) && ($map['param'] != '')) ? $map['param'] : get_page_name(),
@@ -76,21 +76,21 @@ PHP;
         if ($zone == '_SEARCH') {
             $zone = null;
         }
-        $qmap = array('p_parent_page' => $page);
+        $qmap = ['p_parent_page' => $page];
         if ($zone !== null) {
             $qmap['the_zone'] = $zone;
         }
         if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $qmap['p_validated'] = 1;
         }
-        $children = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page', 'the_zone', 'p_order'), $qmap, 'ORDER BY p_order,the_page');
+        $children = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'the_zone', 'p_order'], $qmap, 'ORDER BY p_order,the_page');
         foreach ($children as $i => $_child) {
             if (($_child['the_page'] == $page) && ($_child['the_zone'] == $zone)) {
                 unset($children[$i]);
                 continue; // Be safe
             }
 
-            $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', array('the_page' => $_child['the_page'], 'the_zone' => $_child['the_zone']));
+            $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', ['the_page' => $_child['the_page'], 'the_zone' => $_child['the_zone']]);
             if ($_title !== null) {
                 $title = get_translated_text($_title, null, null, true);
                 if ($title === null) {
@@ -103,7 +103,7 @@ PHP;
                     // Virtualised state, so that any nested main_comcode_page_children blocks execute correctly
                     require_code('urls2');
                     list($old_get, $old_zone, $old_current_script) = set_execution_context(
-                        array('page' => $_child['the_page']),
+                        ['page' => $_child['the_page']],
                         $_child['the_zone']
                     );
 
@@ -111,7 +111,7 @@ PHP;
                     push_output_state();
                     request_page($_child['the_page'], false, $_child['the_zone'], null, true);
                     restore_output_state();
-                    $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', array('the_page' => $_child['the_page'], 'the_zone' => $_child['the_zone']));
+                    $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', ['the_page' => $_child['the_page'], 'the_zone' => $_child['the_zone']]);
                     if ($_title !== null) {
                         $title = get_translated_text($_title);
                     }
@@ -130,7 +130,7 @@ PHP;
                 $title = titleify($_child['the_page']);
             }
 
-            $child = array();
+            $child = [];
             $child['TITLE'] = $title;
             $child['PAGE'] = $_child['the_page'];
             $child['ZONE'] = get_comcode_zone($_child['the_page'], false);
@@ -146,12 +146,12 @@ PHP;
 
         sort_maps_by($children, 'ORDER,TITLE');
 
-        return do_template('BLOCK_MAIN_COMCODE_PAGE_CHILDREN', array(
+        return do_template('BLOCK_MAIN_COMCODE_PAGE_CHILDREN', [
             '_GUID' => '375aa1907fc6b2ca6b23ab5b5139aaef',
             'BLOCK_ID' => $block_id,
             'CHILDREN' => $children,
             'THE_PAGE' => $page,
             'THE_ZONE' => $zone,
-        ));
+        ]);
     }
 }

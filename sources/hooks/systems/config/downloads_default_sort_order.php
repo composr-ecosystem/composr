@@ -30,7 +30,7 @@ class Hook_config_downloads_default_sort_order
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DOWNLOADS_DEFAULT_SORT_ORDER',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_downloads_default_sort_order
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

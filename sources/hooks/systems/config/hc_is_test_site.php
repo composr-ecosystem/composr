@@ -30,7 +30,7 @@ class Hook_config_hc_is_test_site
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_IS_TEST_SITE',
             'type' => 'list',
             'category' => 'HEALTH_CHECK',
@@ -43,7 +43,7 @@ class Hook_config_hc_is_test_site
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

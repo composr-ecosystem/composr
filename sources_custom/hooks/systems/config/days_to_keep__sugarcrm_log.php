@@ -25,7 +25,7 @@ class Hook_config_days_to_keep__sugarcrm_log
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DAYS_TO_KEEP__SUGARCRM_LOG',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -38,7 +38,7 @@ class Hook_config_days_to_keep__sugarcrm_log
             'public' => false,
 
             'addon' => 'sugarcrm',
-        );
+        ];
     }
 
     /**

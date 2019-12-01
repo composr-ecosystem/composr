@@ -33,11 +33,11 @@ class Hook_page_groupings_notifications
     public function run($member_id = null, $extensive_docs = false)
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'menu/adminzone/setup/notifications', array('admin_notifications', array('type' => 'browse'), get_module_zone('admin_notifications')), do_lang_tempcode('notifications:NOTIFICATIONS'), 'notifications:DOC_NOTIFICATIONS'),
-        );
+        return [
+            ['setup', 'menu/adminzone/setup/notifications', ['admin_notifications', ['type' => 'browse'], get_module_zone('admin_notifications')], do_lang_tempcode('notifications:NOTIFICATIONS'), 'notifications:DOC_NOTIFICATIONS'],
+        ];
     }
 }

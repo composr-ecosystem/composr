@@ -30,7 +30,7 @@ class Hook_config_shipping_cost_base
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHIPPING_COST_BASE',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_shipping_cost_base
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

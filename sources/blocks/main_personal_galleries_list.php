@@ -34,14 +34,14 @@ class Block_main_personal_galleries_list
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('member_id', 'max', 'start', 'check');
+        $info['parameters'] = ['member_id', 'max', 'start', 'check'];
         return $info;
     }
 
@@ -101,25 +101,25 @@ class Block_main_personal_galleries_list
         $add_video_url = new Tempcode();
         if ($member_id == get_member()) {
             if (empty($rows)) { // No gallery yet, so create via implication
-                $test = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_images', 'accept_videos', 'name'), array('is_member_synched' => 1));
+                $test = $GLOBALS['SITE_DB']->query_select('galleries', ['accept_images', 'accept_videos', 'name'], ['is_member_synched' => 1]);
                 if (array_key_exists(0, $test)) {
                     if ($test[0]['accept_images'] == 1) {
-                        $add_image_url = build_url(array('page' => 'cms_galleries', 'type' => 'add', 'cat' => 'member_' . strval($member_id) . '_' . $test[0]['name']), get_module_zone('cms_galleries'));
+                        $add_image_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => 'member_' . strval($member_id) . '_' . $test[0]['name']], get_module_zone('cms_galleries'));
                     }
                     if ($test[0]['accept_videos'] == 1) {
-                        $add_video_url = build_url(array('page' => 'cms_galleries', 'type' => 'add_other', 'cat' => 'member_' . strval($member_id) . '_' . $test[0]['name']), get_module_zone('cms_galleries'));
+                        $add_video_url = build_url(['page' => 'cms_galleries', 'type' => 'add_other', 'cat' => 'member_' . strval($member_id) . '_' . $test[0]['name']], get_module_zone('cms_galleries'));
                     }
                 }
             } else { // Or invite them to explicitly add a gallery (they can add images/videos from their existing gallery now)
                 if ((has_actual_page_access(null, 'cms_galleries', null, null)) && (has_submit_permission('cat_mid', get_member(), get_ip_address(), 'cms_galleries'))) {
-                    $add_gallery_url = build_url(array('page' => 'cms_galleries', 'type' => 'add_category', 'parent_id' => $rows[0]['name']), get_module_zone('cms_galleries'));
+                    $add_gallery_url = build_url(['page' => 'cms_galleries', 'type' => 'add_category', 'parent_id' => $rows[0]['name']], get_module_zone('cms_galleries'));
                 }
                 if (count($rows) == 1) {
                     if ($rows[0]['accept_images'] == 1) {
-                        $add_image_url = build_url(array('page' => 'cms_galleries', 'type' => 'add', 'cat' => $rows[0]['name']), get_module_zone('cms_galleries'));
+                        $add_image_url = build_url(['page' => 'cms_galleries', 'type' => 'add', 'cat' => $rows[0]['name']], get_module_zone('cms_galleries'));
                     }
                     if ($rows[0]['accept_videos'] == 1) {
-                        $add_video_url = build_url(array('page' => 'cms_galleries', 'type' => 'add_other', 'cat' => $rows[0]['name']), get_module_zone('cms_galleries'));
+                        $add_video_url = build_url(['page' => 'cms_galleries', 'type' => 'add_other', 'cat' => $rows[0]['name']], get_module_zone('cms_galleries'));
                     }
                 }
             }
@@ -128,10 +128,10 @@ class Block_main_personal_galleries_list
         require_code('templates_pagination');
         $pagination = pagination($text_id, $start, $block_id . '_start', $max, $block_id . '_max', $max_rows);
 
-        return do_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', array(
+        return do_template('BLOCK_MAIN_PERSONAL_GALLERIES_LIST', [
             '_GUID' => '90b11d3c01ff551be42a0472d27dd207',
             'BLOCK_ID' => $block_id,
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'GALLERIES' => $galleries,
             'PAGINATION' => $pagination,
             'MEMBER_ID' => strval($member_id),
@@ -144,7 +144,7 @@ class Block_main_personal_galleries_list
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
             'EXTRA_GET_PARAMS' => (get_param_integer($block_id . '_max', null) === null) ? null : ('&' . $block_id . '_max=' . urlencode(strval($max))),
-        ));
+        ]);
     }
 
     /**
@@ -158,7 +158,7 @@ class Block_main_personal_galleries_list
     protected function attach_gallery_subgalleries($gallery_name, &$galleries, $member_id, $member_id_viewing)
     {
         // Not done via main_multi_content block due to need to custom query
-        $rows = $GLOBALS['SITE_DB']->query_select('galleries', array('*'), array('parent_id' => $gallery_name), 'ORDER BY add_date DESC');
+        $rows = $GLOBALS['SITE_DB']->query_select('galleries', ['*'], ['parent_id' => $gallery_name], 'ORDER BY add_date DESC');
         foreach ($rows as $i => $row) {
             $galleries->attach(render_gallery_box($row, 'root', false, get_module_zone('galleries'), true, false, false, false));
             $this->attach_gallery_subgalleries($row['name'], $galleries, $member_id, $member_id_viewing);

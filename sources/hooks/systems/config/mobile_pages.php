@@ -30,7 +30,7 @@ class Hook_config_mobile_pages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MOBILE_PAGES',
             'type' => 'line',
             'category' => 'THEME',
@@ -45,7 +45,7 @@ class Hook_config_mobile_pages
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

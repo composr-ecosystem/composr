@@ -30,7 +30,7 @@ class Hook_config_leader_board_show_staff
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LEADER_BOARD_SHOW_STAFF',
             'type' => 'tick',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_leader_board_show_staff
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

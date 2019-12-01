@@ -26,13 +26,13 @@
 function init__hooks__modules__admin_import__smf2()
 {
     global $TOPIC_FORUM_CACHE;
-    $TOPIC_FORUM_CACHE = array();
+    $TOPIC_FORUM_CACHE = [];
 
     global $STRICT_FILE;
     $STRICT_FILE = false; // Disable this for a quicker import that is quite liable to go wrong if you don't have the files in the right place
 
     global $ADDITIONAL_DATA;
-    $ADDITIONAL_DATA = array();
+    $ADDITIONAL_DATA = [];
 }
 
 /**
@@ -47,11 +47,11 @@ class Hook_import_smf2
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'SMF 2.0.x';
         $info['prefix'] = 'smf_';
-        $info['import'] = array(
+        $info['import'] = [
             'config',
             'banners',
             'cns_remove_old_groups',
@@ -71,23 +71,23 @@ class Hook_import_smf2
             'wordfilter',
             'calendar',
             'news_and_categories',
-        );
+        ];
 
-        $info['dependencies'] = array(
+        $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
-           'banners' => array('cns_members'),
-           'news_and_categories' => array('cns_members'),
-           'cns_members' => array('cns_groups', 'cns_custom_profile_fields'),
-           'cns_member_files' => array('cns_members'),
-           'cns_forums' => array('cns_forum_groupings', 'cns_members', 'cns_groups'),
-           'cns_topics' => array('cns_forums', 'cns_members'),
-           'cns_polls_and_votes' => array('cns_topics', 'cns_members'),
-           'cns_posts' => array('cns_topics', 'cns_members'),
-           'cns_post_files' => array('cns_posts', 'cns_personal_topics'),
-           'notifications' => array('cns_topics', 'cns_members', 'cns_polls_and_votes'),
-           'cns_personal_topics' => array('cns_members'),
-        );
-        $_cleanup_url = build_url(array('page' => 'admin_cleanup'), get_module_zone('admin_cleanup'));
+           'banners' => ['cns_members'],
+           'news_and_categories' => ['cns_members'],
+           'cns_members' => ['cns_groups', 'cns_custom_profile_fields'],
+           'cns_member_files' => ['cns_members'],
+           'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups'],
+           'cns_topics' => ['cns_forums', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_posts' => ['cns_topics', 'cns_members'],
+           'cns_post_files' => ['cns_posts', 'cns_personal_topics'],
+           'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],
+           'cns_personal_topics' => ['cns_members'],
+        ];
+        $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
         $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
 
@@ -112,7 +112,7 @@ class Hook_import_smf2
         }
         require($file_base . '/Settings.php');
 
-        return array($db_name, $db_user, $db_passwd, $db_prefix, $db_server);
+        return [$db_name, $db_user, $db_passwd, $db_prefix, $db_server];
     }
 
     /**
@@ -133,7 +133,7 @@ class Hook_import_smf2
 
         $rows = $db->query_select('settings');
 
-        $config_remapping = array();
+        $config_remapping = [];
         $config_remapping['staff_address'] = $webmaster_email;
         $config_remapping['site_name'] = $mbname;
         $board_url = $boardurl;
@@ -236,13 +236,13 @@ class Hook_import_smf2
         $avatar_max_height = !empty($ADDITIONAL_DATA['avatar_max_height']) ? $ADDITIONAL_DATA['avatar_max_height'] : 100;
         $max_attachments_upload = !@cms_empty_safe($ADDITIONAL_DATA['maxattachments']) ? $ADDITIONAL_DATA['maxattachments'] : 10;
 
-        $group_leaders = array();
-        $grps = $db->query_select('group_moderators', array('*'), array(), 'ORDER BY id_group');
+        $group_leaders = [];
+        $grps = $db->query_select('group_moderators', ['*'], [], 'ORDER BY id_group');
         foreach ($grps as $grp) {
             $group_leaders[$grp['id_group']] = $grp['id_member'];
         }
 
-        $rows = $db->query_select('membergroups', array('*'), array(), 'ORDER BY id_group');
+        $rows = $db->query_select('membergroups', ['*'], [], 'ORDER BY id_group');
         foreach ($rows as $row) {
             if (import_check_if_imported('group', strval($row['id_group']))) {
                 continue;
@@ -259,7 +259,7 @@ class Hook_import_smf2
             $is_super_admin = 0;
             $is_super_moderator = 0;
 
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $group_name));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $group_name]);
             if ($id_new === null) {
                 $id_new = cns_make_group($group_name, 0, $is_super_admin, $is_super_moderator, '', '', null, null, $leader, null, null, null, $max_attachments_upload, $avatar_max_width, $avatar_max_height, null);
             }
@@ -300,7 +300,7 @@ class Hook_import_smf2
             $old_id = strval($row['id_group']);
             // Here we get the Composr ID of the group
             $id_new = import_id_remap_get('group', $old_id, true);
-            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold), array('id' => $id_new));
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $id_new]);
             // On the next run the promotion target will be this last updated group
             $promotion_target = $id_new;
             // On the next run the promotion threshold will be this last updated groups required posts
@@ -308,7 +308,7 @@ class Hook_import_smf2
         }
         // Now we've done all the groups based on posts lets check whether to update the default group
         if ($updates) {
-            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold), array('id' => $default_group));
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_promotion_target' => $promotion_target, 'g_promotion_threshold' => $promotion_threshold], ['id' => $default_group]);
         }
     }
 
@@ -322,7 +322,7 @@ class Hook_import_smf2
     public function import_cns_members($db, $table_prefix, $file_base)
     {
         $row_start = 0;
-        $rows = array();
+        $rows = [];
 
         $default_group = get_first_default_group();
 
@@ -343,7 +343,7 @@ class Hook_import_smf2
                 $language = 'EN';
 
                 $secondary = explode(',', $row['additional_groups']);
-                $secondary_groups = array();
+                $secondary_groups = [];
                 foreach ($secondary as $g) {
                     if (trim($g) != '') {
                         $g = import_id_remap_get('group', $g, true);
@@ -363,13 +363,13 @@ class Hook_import_smf2
                     $primary_group = import_id_remap_get('group', strval($primary_group));
                 }
 
-                $custom_fields = array(
+                $custom_fields = [
                     cns_make_predefined_content_field('cms_firstname') => $row['real_name'],
-                );
+                ];
                 if ($row['website_url'] != '') {
                     $custom_fields[cns_make_predefined_content_field('website')] = $row['website_url'];
                 }
-                $signature = str_replace(array('[html]', '[/html]'), array('', ''), html_to_comcode($row['signature']));
+                $signature = str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($row['signature']));
                 $signature = $this->fix_links($signature, $db, $table_prefix, $file_base);
                 $validated = 1;
                 $reveal_age = 0;
@@ -381,7 +381,7 @@ class Hook_import_smf2
                     $bday_month = empty($birthdata[1]) ? null : $birthdata[1];
                     $bday_year = empty($birthdata[2]) ? null : $birthdata[2];
                 } else {
-                    list($bday_day, $bday_month, $bday_year) = array(null, null, null);
+                    list($bday_day, $bday_month, $bday_year) = [null, null, null];
                 }
 
                 $views_signatures = 1;
@@ -446,10 +446,10 @@ class Hook_import_smf2
                 );
 
                 // CPF stuff
-                $cpf_rows = $db->query_select('custom_fields', array('id_field', 'col_name'));
+                $cpf_rows = $db->query_select('custom_fields', ['id_field', 'col_name']);
                 foreach ($cpf_rows as $cpf_row) {
                     $cpf_id = import_id_remap_get('cpf', strval($cpf_row['id_field']));
-                    $cpf_value = $db->query_select('themes', array('value'), array('id_member' => $row['id_member'], 'variable' => $cpf_row['col_name']));
+                    $cpf_value = $db->query_select('themes', ['value'], ['id_member' => $row['id_member'], 'variable' => $cpf_row['col_name']]);
                     if (!isset($cpf_value[0])) {
                         continue;
                     }
@@ -458,7 +458,7 @@ class Hook_import_smf2
                 }
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_group_leader' => $id_new), array('g_group_leader' => $row['id_member']));
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => $row['id_member']]);
 
                 import_id_remap_put('member', strval($row['id_member']), $id_new);
 
@@ -480,7 +480,7 @@ class Hook_import_smf2
      */
     public function import_cns_custom_profile_fields($db, $table_prefix)
     {
-        $rows = $db->query_select('custom_fields', array('*'));
+        $rows = $db->query_select('custom_fields', ['*']);
 
         foreach ($rows as $row) {
             if (import_check_if_imported('cpf', strval($row['id_field']))) {
@@ -488,7 +488,7 @@ class Hook_import_smf2
             }
 
             $name = $row['field_name'];
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $name));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $name]);
             if ($id_new === null) {
                 $default = $row['default_value'];
                 $options = $row['field_options'];
@@ -593,7 +593,7 @@ class Hook_import_smf2
      */
     public function cpf_options_string($default, $options)
     {
-        $temp_array = array();
+        $temp_array = [];
         $default = trim($default);
         array_push($temp_array, $default);
         $values = explode(',', $options);
@@ -626,7 +626,7 @@ class Hook_import_smf2
         require($file_base . '/Settings.php');
 
         $options = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE variable LIKE \'' . db_encode_like('%avatar%') . '\'');
-        $options_array = array();
+        $options_array = [];
 
         $homeurl = $boardurl;
 
@@ -650,7 +650,7 @@ class Hook_import_smf2
         $avatar_path = $forum_dir . '/' . $avatar_path;
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
             $query = 'SELECT id_member,avatar FROM ' . $table_prefix . 'members WHERE id_member<>-1 ORDER BY id_member';
 
@@ -707,7 +707,7 @@ class Hook_import_smf2
                     }
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_avatar_url' => $avatar_url), array('id' => $member_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url], ['id' => $member_id], '', 1);
 
                 import_id_remap_put('member_files', strval($row['id_member']), 1);
             }
@@ -729,7 +729,7 @@ class Hook_import_smf2
 
         require_code('failure');
 
-        $rows = $db->query_select('ban_groups u LEFT JOIN ' . $table_prefix . 'ban_items b ON u.id_ban_group=b.id_ban_group', array('*'));
+        $rows = $db->query_select('ban_groups u LEFT JOIN ' . $table_prefix . 'ban_items b ON u.id_ban_group=b.id_ban_group', ['*']);
 
         foreach ($rows as $row) {
             $ban_time = $row['ban_time']; // When is banned user
@@ -740,9 +740,9 @@ class Hook_import_smf2
 
                 if (($uid !== null) && ($uid != 1 && $uid != 2)) {
                     if ($ban_till === null) {
-                        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_is_perm_banned' => 1), array('id' => $uid));
+                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_is_perm_banned' => 1], ['id' => $uid]);
                     } else {
-                        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_on_probation_until' => $ban_till), array('id' => $uid));
+                        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_on_probation_until' => $ban_till], ['id' => $uid]);
                     }
 
                     if (($row['ip_low1'] >= 127) && ($ban_till === null)) {
@@ -786,7 +786,7 @@ class Hook_import_smf2
             $title = $row['name'];
             $title = @html_entity_decode($title, ENT_QUOTES);
 
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => $title));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $title]);
             if ($test !== null) {
                 import_id_remap_put('category', strval($row['id_cat']), $test);
                 continue;
@@ -809,7 +809,7 @@ class Hook_import_smf2
     {
         require_code('cns_forums_action2');
 
-        $remap_id = array();
+        $remap_id = [];
 
         $rows = $db->query_select('boards');
         foreach ($rows as $row) {
@@ -820,7 +820,7 @@ class Hook_import_smf2
 
             $name = html_entity_decode($row['name'], ENT_QUOTES);
 
-            $description = str_replace(array('[html]', '[/html]'), array('', ''), html_to_comcode($row['description']));
+            $description = str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($row['description']));
 
             $position = $row['board_order'];
             $post_count_increment = 1;
@@ -901,7 +901,7 @@ class Hook_import_smf2
         foreach ($rows as $row) {
             if (($row['id_parent'] !== null) && (isset($remap_id[$row['id_board']]))) {
                 $parent_id = array_key_exists($row['id_parent'], $remap_id) ? $remap_id[$row['id_parent']] : db_get_first_id();
-                $GLOBALS['FORUM_DB']->query_update('f_forums', array('f_parent_forum' => $parent_id), array('id' => $remap_id[$row['id_board']]), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_forums', ['f_parent_forum' => $parent_id], ['id' => $remap_id[$row['id_board']]], '', 1);
             }
         }
     }
@@ -919,7 +919,7 @@ class Hook_import_smf2
         // Get the permission profile
         $v = $this->get_role_value(0, $pid, $db, $table_prefix);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name']);
         foreach ($rows as $row) {
             $gid = $row['id'];
 
@@ -945,7 +945,7 @@ class Hook_import_smf2
         // Set default 0 as Read Only
         $v = 0;
         // Get the permission profile
-        $permissions = $db->query_select('board_permissions', array('*'), array('id_group' => $gid, 'id_profile' => $pid));
+        $permissions = $db->query_select('board_permissions', ['*'], ['id_group' => $gid, 'id_profile' => $pid]);
         // Loop it
         foreach ($permissions as $p) {
             // Close as we can guess to a Post Role
@@ -975,7 +975,7 @@ class Hook_import_smf2
     public function import_cns_topics($db, $table_prefix, $file_base)
     {
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'topics t LEFT JOIN ' . $table_prefix . 'messages m ON t.id_first_msg=m.id_msg' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY t.id_topic' : ''), 200, $row_start);
             $rows = remove_duplicate_rows($rows, 'id_topic');
@@ -1018,9 +1018,9 @@ class Hook_import_smf2
             $row_start += 200;
         } while (true);
 
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('messages p', array('*'), array(), 'ORDER BY p.id_msg', 200, $row_start);
+            $rows = $db->query_select('messages p', ['*'], [], 'ORDER BY p.id_msg', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('post', strval($row['id_msg']))) {
                     continue;
@@ -1041,7 +1041,7 @@ class Hook_import_smf2
                 $title = $row['subject'];
                 $title = @html_entity_decode($title, ENT_QUOTES);
 
-                $post_description = str_replace(array('[html]', '[/html]'), array('', ''), html_to_comcode($row['body']));
+                $post_description = str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($row['body']));
 
                 $post = $this->fix_links($post_description, $db, $table_prefix, $file_base);
 
@@ -1108,9 +1108,9 @@ class Hook_import_smf2
         require($file_base . '/Settings.php');
         $old_base_url = $boardurl;
 
-        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?topic=)(\d*)#', array($this, '_fix_links_callback_topic'), $post);
-        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?board=)(\d*)#', array($this, '_fix_links_callback_forum'), $post);
-        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?action=profile;u=)(\d*)#', array($this, '_fix_links_callback_member'), $post);
+        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?topic=)(\d*)#', [$this, '_fix_links_callback_topic'], $post);
+        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?board=)(\d*)#', [$this, '_fix_links_callback_forum'], $post);
+        $post = preg_replace_callback('#' . preg_quote($old_base_url) . '/(index\.php\?action=profile;u=)(\d*)#', [$this, '_fix_links_callback_member'], $post);
         $post = preg_replace('#:[0-9a-f]{10}#', '', $post);
         return $post;
     }
@@ -1167,7 +1167,7 @@ class Hook_import_smf2
         require_code('attachments3');
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'attachments a JOIN ' . $table_prefix . 'messages m ON a.id_msg=m.id_msg WHERE a.id_msg<>0' . ($GLOBALS['DB_STATIC_OBJECT']->can_arbitrary_groupby() ? ' GROUP BY id_attach' : ''), 200, $row_start);
             $rows = remove_duplicate_rows($rows, 'id_attach');
@@ -1181,7 +1181,7 @@ class Hook_import_smf2
 
                 $post_id = import_id_remap_get('post', strval($row['id_msg']));
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', array('p_time', 'p_poster', 'p_post'), array('id' => $post_id), '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['id_attach']), 1);
                     continue; // Orphaned post
@@ -1192,12 +1192,12 @@ class Hook_import_smf2
                 $filename = $row['id_attach'] . '_' . $row['file_hash'];
 
                 $url = $this->data_to_disk('', $filename, 'attachments', $db, $table_prefix, $row['filename'], $file_base, $row['id_attach'], $ext);
-                $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', array('a_member_id' => $member_id, 'a_file_size' => $row['size'], 'a_url' => $url, 'a_thumb_url' => $url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['poster_time'], 'a_description' => ''), true);
+                $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', ['a_member_id' => $member_id, 'a_file_size' => $row['size'], 'a_url' => $url, 'a_thumb_url' => $url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['poster_time'], 'a_description' => ''], true);
 
-                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', array('r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id));
+                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
                 $post .= "\n\n" . '[attachment]' . strval($a_id) . '[/attachment]';
 
-                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), array('id' => $post_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), ['id' => $post_id], '', 1);
 
                 import_id_remap_put('post_files', strval($row['id_attach']), 1);
             }
@@ -1215,13 +1215,13 @@ class Hook_import_smf2
      */
     public function import_cns_polls_and_votes($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('polls', array('*'));
+        $rows = $db->query_select('polls', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('poll', strval($row['id_poll']))) {
                 continue;
             }
 
-            $poll_topic_id = $db->query_select('topics', array('id_topic'), array('id_poll' => $row['id_poll']));
+            $poll_topic_id = $db->query_select('topics', ['id_topic'], ['id_poll' => $row['id_poll']]);
             if (!isset($poll_topic_id[0]['id_topic'])) {
                 continue;
             }
@@ -1235,15 +1235,15 @@ class Hook_import_smf2
 
             $is_open = ($row['expire_time'] == 0 || $row['expire_time'] > time()) ? 1 : 0;
 
-            $answers = array();
-            $poll_choices = $db->query_select('poll_choices', array('*'), array('id_poll' => $row['id_poll']));
+            $answers = [];
+            $poll_choices = $db->query_select('poll_choices', ['*'], ['id_poll' => $row['id_poll']]);
 
-            $answers_array = array();
+            $answers_array = [];
             foreach ($poll_choices as $key => $value) {
                 $answers_array[] = $value['label'];
             }
 
-            $answer_map = array();
+            $answer_map = [];
             $maximum = 0;
             foreach ($answers_array as $key => $answer) {
                 $answer_map[$key] = $poll_choices[$key]['votes'];
@@ -1251,14 +1251,14 @@ class Hook_import_smf2
                 $maximum += $poll_choices[$key]['votes'];
             }
 
-            $rows2 = $db->query_select('log_polls', array('*'), array('id_poll' => $row['id_poll']));
+            $rows2 = $db->query_select('log_polls', ['*'], ['id_poll' => $row['id_poll']]);
             foreach ($rows2 as $row2) {
                 $row2['id_member'] = import_id_remap_get('member', strval($row2['id_member']), true);
             }
 
             $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, false);
 
-            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('id'), array('pa_poll_id' => $id_new)));
+            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new]));
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['id_member'];
@@ -1269,7 +1269,7 @@ class Hook_import_smf2
 
                     $answer = $answers[strval($row2['id_choice'])];
 
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array('pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => ''));
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '']);
                 }
             }
 
@@ -1286,13 +1286,13 @@ class Hook_import_smf2
      */
     public function import_cns_personal_topics($db, $table_prefix, $old_base_dir)
     {
-        $member_rows = $db->query_select('members', array('id_member'));
+        $member_rows = $db->query_select('members', ['id_member']);
         foreach ($member_rows as $member_row) {
             $member_id = $member_row['id_member'];
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'personal_messages p LEFT JOIN ' . $table_prefix . 'pm_recipients r ON p.id_pm=r.id_pm WHERE r.id_member=' . strval($member_id) . ' OR id_member_from=' . strval($member_id) . ' ORDER BY msgtime');
 
             // Group them up into what will become topics
-            $groups = array();
+            $groups = [];
             foreach ($rows as $row) {
                 // Do some fiddling around for duplication
                 if ($row['id_member_from'] > $row['id_member']) {
@@ -1337,7 +1337,7 @@ class Hook_import_smf2
 
                     $title = @html_entity_decode($title, ENT_QUOTES);
 
-                    $post_description = str_replace(array('[html]', '[/html]'), array('', ''), html_to_comcode($_post['body']));
+                    $post_description = str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($_post['body']));
 
                     $post = $this->fix_links($post_description, $db, $table_prefix, $old_base_dir);
                     $validated = 1;
@@ -1410,7 +1410,7 @@ class Hook_import_smf2
         require_code('notifications');
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
             $rows = $db->query('SELECT * FROM ' . $table_prefix . 'log_notify WHERE id_topic<>0', 200, $row_start);
             foreach ($rows as $row) {
@@ -1446,8 +1446,8 @@ class Hook_import_smf2
     {
         $rows = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE ' . db_string_equal_to('variable', 'censor_vulgar') . ' OR ' . db_string_equal_to('variable', 'censor_proper'));
 
-        $censor_vulgar = array();
-        $censor_proper = array();
+        $censor_vulgar = [];
+        $censor_proper = [];
         foreach ($rows as $row) {
             if ($row['variable'] == 'censor_vulgar') {
                 $censor_vulgar = preg_split('/[\n\r]+/', $row['value']);
@@ -1473,7 +1473,7 @@ class Hook_import_smf2
     public function static_perm_arr($gid, $pid, $v, $r = false)
     {
         // Create the static array
-        static $st = array();
+        static $st = [];
         // Are we returning this run or not?
         if ($r) {
             // Yes we are so lets move the static array to a temp one so we can unset it
@@ -1498,7 +1498,7 @@ class Hook_import_smf2
             }
         } else {
             // No the Group ID wasn't set yet so we can set it with the Forum ID and Value
-            $st[$gid] = array($pid => $v);
+            $st[$gid] = [$pid => $v];
         }
         return $st;
     }
@@ -1516,11 +1516,11 @@ class Hook_import_smf2
         // Now Check we didn't import this already?
         if (!import_check_if_imported('forum_view', $check_import_id)) {
             // We didn't so update
-            $GLOBALS['FORUM_DB']->query_insert('group_category_access', array(
+            $GLOBALS['FORUM_DB']->query_insert('group_category_access', [
                 'module_the_name' => 'forums',
                 'category_name' => strval($fid),
                 'group_id' => $gid,
-            ));
+            ]);
             // Now we put the remap in so we know it is imported.
             import_id_remap_put('forum_view', $check_import_id, 1);
         }
@@ -1576,63 +1576,63 @@ class Hook_import_smf2
             switch ($role) {
                 // Read only
                 case 0:
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
                     break;
                 // Post
                 case 1:
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
                     break;
                 // Unvetted
                 case 2:
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0));
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 0]);
                     break;
                 // Moderate
                 case 3:
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
-                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', array('privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1));
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'submit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'bypass_validation_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_own_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'edit_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_lowrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
+                    $GLOBALS['FORUM_DB']->query_insert('group_privileges', ['privilege' => 'delete_midrange_content', 'group_id' => $group_id, 'the_page' => '', 'module_the_name' => 'forums', 'category_name' => strval($forum_id), 'the_value' => 1]);
                     break;
             }
             // Now we put the remap in so we know it is imported.
@@ -1680,11 +1680,11 @@ class Hook_import_smf2
 
             $description = '';
             if (!empty($row['id_topic'])) {
-                $atts = $db->query_select('attachments', array('*'), array('id_msg' => $row['id_topic']), 'ORDER BY id_msg ASC');
+                $atts = $db->query_select('attachments', ['*'], ['id_msg' => $row['id_topic']], 'ORDER BY id_msg ASC');
                 $attid = isset($atts[0]['id_attach']) ? $atts[0]['id_attach'] : null;
                 $att_imported = (($attid !== null) && (import_check_if_imported('post_files', strval($attid))));
-                $messages = $db->query_select('messages', array('*'), array('id_topic' => $row['id_topic']), 'ORDER BY id_topic ASC');
-                $description = empty($messages[0]['body']) ? '' : str_replace(array('[html]', '[/html]'), array('', ''), html_to_comcode($messages[0]['body']));
+                $messages = $db->query_select('messages', ['*'], ['id_topic' => $row['id_topic']], 'ORDER BY id_topic ASC');
+                $description = empty($messages[0]['body']) ? '' : str_replace(['[html]', '[/html]'], ['', ''], html_to_comcode($messages[0]['body']));
             }
             if ($att_imported) {
                 $attid_new = import_id_remap_get('post_files', strval($attid), true);
@@ -1693,12 +1693,12 @@ class Hook_import_smf2
 
             $id_new = add_calendar_event(db_get_first_id() + 1, $recurrence, $recurrences, 0, $row['title'], $description, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute, $end_year, $end_month, $end_day, 'day_of_month', $end_hour, $end_minute, null, 1, null, 1, 1, 1, 1, '', $submitter);
             if ($att_imported) {
-                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', array('r_referer_type' => 'calendar', 'r_referer_id' => strval($id_new), 'a_id' => $attid_new));
+                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'calendar', 'r_referer_id' => strval($id_new), 'a_id' => $attid_new]);
             }
             import_id_remap_put('event', strval($row['id_event']), $id_new);
         }
 
-        $rows = array();
+        $rows = [];
         $rows = $db->query_select('calendar_holidays');
         foreach ($rows as $row) {
             if (import_check_if_imported('event_holiday', strval($row['id_holiday']))) {
@@ -1731,15 +1731,15 @@ class Hook_import_smf2
         require_code('banners');
         require_code('banners2');
 
-        $rows = $db->query_select('ads', array('*'), array(), '', null, 0, true);
+        $rows = $db->query_select('ads', ['*'], [], '', null, 0, true);
         if ($rows === null) {
             return; // SMFAds addon not installed
         }
         foreach ($rows as $row) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', array('name' => $row['NAME']));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'name', ['name' => $row['NAME']]);
             if ($test === null) {
                 $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-                add_banner(fix_id($row['NAME']), '', '', $row['NAME'], stripslashes($row['CONTENT']), null, '', 1, '', BANNER_PERMANENT, null, $submitter, $row['show_topofpage'], '', array(), array(), time(), 0, $row['HITS'], 0, $row['HITS'], null);
+                add_banner(fix_id($row['NAME']), '', '', $row['NAME'], stripslashes($row['CONTENT']), null, '', 1, '', BANNER_PERMANENT, null, $submitter, $row['show_topofpage'], '', [], [], time(), 0, $row['HITS'], 0, $row['HITS'], null);
             }
         }
     }
@@ -1756,7 +1756,7 @@ class Hook_import_smf2
         require_code('news');
         require_code('news2');
 
-        $rows = $db->query_select('tp_variables', array('value1 AS title', 'id'), array('type' => 'category'), '', null, 0, true);
+        $rows = $db->query_select('tp_variables', ['value1 AS title', 'id'], ['type' => 'category'], '', null, 0, true);
         if ($rows === null) {
             return; // Not TinyPortal
         }
@@ -1780,9 +1780,9 @@ class Hook_import_smf2
         require($file_base . '/Settings.php');
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('tp_articles', array('*'), array(), '', 200, $row_start);
+            $rows = $db->query_select('tp_articles', ['*'], [], '', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('news', strval($row['id']))) {
                     continue;
@@ -1815,7 +1815,7 @@ class Hook_import_smf2
                 if ($row['illustration'] != '') {
                     list($out_path, $image) = find_unique_path('uploads/repimages', basename($row['illustration']));
                     $out_handle = fopen($out_path, 'wb');
-                    http_get_contents($boardurl . '/tp-files/tp-articles/illustrations/' . $row['illustration'], array('trigger_error' => false, 'write_to_file' => $out_handle));
+                    http_get_contents($boardurl . '/tp-files/tp-articles/illustrations/' . $row['illustration'], ['trigger_error' => false, 'write_to_file' => $out_handle]);
                     fclose($out_handle);
                 } else {
                     $image = '';
@@ -1829,10 +1829,10 @@ class Hook_import_smf2
 
                 $id_new = add_news($subject, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, '', $news_article, $main_news_category, $news_categories, $time, $submitter, $views, $edit_date, null, $image);
 
-                $content_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id_new), get_module_zone('news'));
+                $content_url = build_url(['page' => 'news', 'type' => 'view', 'id' => $id_new], get_module_zone('news'));
 
                 // Comments
-                $comments = $db->query_select('tp_variables', array('value1 AS subject', 'value2 AS post', 'value3 AS poster', 'value4 AS time'), array('type' => 'article_comment', 'value5' => $row['id']));
+                $comments = $db->query_select('tp_variables', ['value1 AS subject', 'value2 AS post', 'value3 AS poster', 'value4 AS time'], ['type' => 'article_comment', 'value5' => $row['id']]);
                 foreach ($comments as $comment) {
                     $comment['poster'] = import_id_remap_get('member', strval($comment['poster']), true);
                     if ($comment['poster'] === null) {
@@ -1869,14 +1869,14 @@ class Hook_import_smf2
                                 $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                             }
 
-                            $rating_map = array(
+                            $rating_map = [
                                 'rating_for_type' => 'news',
                                 'rating_for_id' => $id_new,
                                 'rating_member' => $member_id,
                                 'rating_ip' => '',
                                 'rating_time' => time(),
                                 'rating' => intval($rating) * 2,
-                            );
+                            ];
                             $GLOBALS['SITE_DB']->query_insert('rating', $rating_map);
                         }
                     }

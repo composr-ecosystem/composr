@@ -30,14 +30,14 @@ class Block_bottom_about_us
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Salman Abbas';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array('facebook', 'twitter', 'instagram', 'youtube');
+        $info['parameters'] = ['facebook', 'twitter', 'instagram', 'youtube'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_bottom_about_us
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             !empty($map['facebook']) ? $map['facebook'] : '',
@@ -71,10 +71,10 @@ PHP;
     {
         $site_description = get_option('description');
 
-        $parameters = array(
+        $parameters = [
             '_GUID' => '31dda95820ad401f972909931830eeac',
             'SITE_DESCRIPTION' => $site_description,
-        );
+        ];
 
         if (!empty($map['facebook'])) {
             $parameters['FACEBOOK_URL'] = 'https://facebook.com/' . $map['facebook'];

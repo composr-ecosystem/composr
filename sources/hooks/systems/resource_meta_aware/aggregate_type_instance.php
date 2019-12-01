@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_aggregate_type_instance
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'aggregate_type_instances:AGGREGATE_TYPE_INSTANCE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_aggregate_type_instance
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_AGGREGATE_TYPE_INSTANCE',
-        );
+        ];
     }
 }

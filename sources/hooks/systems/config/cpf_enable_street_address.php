@@ -30,7 +30,7 @@ class Hook_config_cpf_enable_street_address
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CPF_ENABLE_STREET_ADDRESS',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_cpf_enable_street_address
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -31,7 +31,7 @@ class Hook_addon_registry_syndication
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_syndication
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_integration',
             'tut_news',
             'tut_adv_news',
-        );
+        ];
     }
 
     /**
@@ -75,14 +75,14 @@ class Hook_addon_registry_syndication
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'syndication_blocks',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_syndication'),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_syndication'],
+        ];
     }
 
     /**
@@ -102,7 +102,7 @@ class Hook_addon_registry_syndication
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/syndication.php',
             'themes/default/templates/RSS_HEADER.tpl',
             'themes/default/xml/ATOM_ENTRY.xml',
@@ -124,7 +124,7 @@ class Hook_addon_registry_syndication
             'sources/hooks/systems/rss/index.html',
             'sources_custom/hooks/systems/rss/index.html',
             'sources/hooks/systems/non_active_urls/news_rss_cloud.php',
-        );
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class Hook_addon_registry_syndication
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/RSS_HEADER.tpl' => 'rss_header',
             'xml/RSS_ENTRY_COMMENTS.xml' => 'rss_wrapper',
             'xml/RSS_XSLT.xml' => 'rss_xslt',
@@ -147,7 +147,7 @@ class Hook_addon_registry_syndication
             'xml/RSS_WRAPPER.xml' => 'rss_wrapper',
             'xml/RSS_ENTRY.xml' => 'rss_wrapper',
             'xml/RSS_ABBR.xml' => 'rss_wrapper',
-        );
+        ];
     }
 
     /**
@@ -159,10 +159,10 @@ class Hook_addon_registry_syndication
      */
     public function tpl_preview__rss_wrapper()
     {
-        $comments = do_lorem_template('RSS_ENTRY_COMMENTS', array('COMMENT_URL' => placeholder_url(), 'ID' => placeholder_id()), null, false, null, '.xml', 'xml');
+        $comments = do_lorem_template('RSS_ENTRY_COMMENTS', ['COMMENT_URL' => placeholder_url(), 'ID' => placeholder_id()], null, false, null, '.xml', 'xml');
 
-        $content = do_lorem_template('RSS_ABBR', array(), null, false, null, '.xml', 'xml');
-        $content->attach(do_lorem_template('RSS_ENTRY', array(
+        $content = do_lorem_template('RSS_ABBR', [], null, false, null, '.xml', 'xml');
+        $content->attach(do_lorem_template('RSS_ENTRY', [
             'TITLE' => lorem_phrase(),
             'SUMMARY' => lorem_paragraph(),
             'VIEW_URL' => placeholder_url(),
@@ -170,17 +170,17 @@ class Hook_addon_registry_syndication
             'CATEGORY' => lorem_word(),
             'IF_COMMENTS' => $comments,
             'DATE' => placeholder_date(),
-        ), null, false, null, '.xml', 'xml'));
+        ], null, false, null, '.xml', 'xml'));
 
-        $cloud = do_lorem_template('RSS_CLOUD', array(
+        $cloud = do_lorem_template('RSS_CLOUD', [
             'TYPE' => 'news',
             'DOMAIN' => 'example.com',
             'PORT' => '80',
             'PATH' => '/composr',
-        ), null, false, null, '.xml', 'xml');
+        ], null, false, null, '.xml', 'xml');
 
-        return array(
-            do_lorem_template('RSS_WRAPPER', array(
+        return [
+            do_lorem_template('RSS_WRAPPER', [
                 'MODE' => 'rss',
                 'MODE_NICE' => lorem_word(),
                 'COPYRIGHT' => lorem_phrase(),
@@ -189,8 +189,8 @@ class Hook_addon_registry_syndication
                 'LOGO_URL' => placeholder_image_url(),
                 'DATE' => placeholder_date(),
                 'CONTENT' => $content,
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -202,7 +202,7 @@ class Hook_addon_registry_syndication
      */
     public function tpl_preview__atom_wrapper()
     {
-        $content = do_lorem_template('ATOM_ENTRY', array(
+        $content = do_lorem_template('ATOM_ENTRY', [
             'TITLE' => lorem_phrase(),
             'VIEW_URL' => placeholder_url(),
             'DATE' => placeholder_date(),
@@ -212,10 +212,10 @@ class Hook_addon_registry_syndication
             'AUTHOR' => lorem_word(),
             'SUMMARY' => lorem_word(),
             'NEWS' => lorem_word(),
-        ), null, false, null, '.xml', 'xml');
+        ], null, false, null, '.xml', 'xml');
 
-        return array(
-            do_lorem_template('ATOM_WRAPPER', array(
+        return [
+            do_lorem_template('ATOM_WRAPPER', [
                 'MODE' => lorem_word(),
                 'MODE_NICE' => lorem_word(),
                 'SELECT' => lorem_word_2(),
@@ -226,8 +226,8 @@ class Hook_addon_registry_syndication
                 'ABOUT' => lorem_paragraph(),
                 'VERSION' => lorem_word(),
                 'COPYRIGHT' => lorem_phrase(),
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -241,11 +241,11 @@ class Hook_addon_registry_syndication
     {
         require_lang('rss');
 
-        return array(
-            do_lorem_template('RSS_XSLT', array(
+        return [
+            do_lorem_template('RSS_XSLT', [
                 'JAVASCRIPT_XSL_MOPUP' => '',
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -259,11 +259,11 @@ class Hook_addon_registry_syndication
     {
         require_lang('rss');
 
-        return array(
-            do_lorem_template('ATOM_XSLT', array(
+        return [
+            do_lorem_template('ATOM_XSLT', [
                 'JAVASCRIPT_XSL_MOPUP' => '',
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -277,11 +277,11 @@ class Hook_addon_registry_syndication
     {
         require_lang('rss');
 
-        return array(
-            do_lorem_template('OPML_XSLT', array(
+        return [
+            do_lorem_template('OPML_XSLT', [
                 'JAVASCRIPT_XSL_MOPUP' => '',
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -295,15 +295,15 @@ class Hook_addon_registry_syndication
     {
         require_lang('rss');
 
-        return array(
-            do_lorem_template('OPML_WRAPPER', array(
+        return [
+            do_lorem_template('OPML_WRAPPER', [
                 'FEEDS' => placeholder_array(),
                 'ABOUT' => lorem_phrase(),
                 'DATE' => placeholder_date(),
                 'TITLE' => lorem_phrase(),
                 'MODE' => lorem_word(),
-            ), null, false, null, '.xml', 'xml'),
-        );
+            ], null, false, null, '.xml', 'xml'),
+        ];
     }
 
     /**
@@ -315,10 +315,10 @@ class Hook_addon_registry_syndication
      */
     public function tpl_preview__rss_header()
     {
-        return array(
-            do_lorem_template('RSS_HEADER', array(
+        return [
+            do_lorem_template('RSS_HEADER', [
                 'FEED_URL' => placeholder_url(),
-            )),
-        );
+            ]),
+        ];
     }
 }

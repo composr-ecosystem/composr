@@ -25,7 +25,7 @@ class Hook_config_facebook_allow_signups
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_ALLOW_SIGNUPS',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_allow_signups
             'required' => true,
             'public' => true,
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

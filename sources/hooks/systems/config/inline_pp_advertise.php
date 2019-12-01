@@ -30,7 +30,7 @@ class Hook_config_inline_pp_advertise
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INLINE_PP_ADVERTISE',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_inline_pp_advertise
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

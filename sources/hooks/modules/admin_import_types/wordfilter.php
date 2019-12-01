@@ -31,11 +31,11 @@ class Hook_admin_import_types_wordfilter
     public function run()
     {
         if (!addon_installed('wordfilter')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'wordfilter' => 'WORDFILTER',
-        );
+        ];
     }
 }

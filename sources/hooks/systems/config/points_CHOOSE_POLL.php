@@ -30,7 +30,7 @@ class Hook_config_points_CHOOSE_POLL
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHOOSE_POLL',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_CHOOSE_POLL
             'public' => false,
 
             'addon' => 'polls',
-        );
+        ];
     }
 
     /**

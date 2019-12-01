@@ -31,7 +31,7 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_structure',
             'tut_adv_structure',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/zones/zone_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/zones/zone_editor.svg',
             'sources/hooks/systems/resource_meta_aware/zone.php',
@@ -109,7 +109,7 @@ class Hook_addon_registry_core_zone_editor
             'themes/default/templates/ZONE_EDITOR_PANEL.tpl',
             'themes/default/javascript/core_zone_editor.js',
             'adminzone/pages/modules/admin_zones.php',
-        );
+        ];
     }
 
     /**
@@ -119,10 +119,10 @@ class Hook_addon_registry_core_zone_editor
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/ZONE_EDITOR_PANEL.tpl' => 'administrative__zone_editor_screen',
             'templates/ZONE_EDITOR_SCREEN.tpl' => 'administrative__zone_editor_screen',
-        );
+        ];
     }
 
     /**
@@ -136,17 +136,17 @@ class Hook_addon_registry_core_zone_editor
     {
         require_lang('zones');
 
-        $comcode_editor = do_lorem_template('COMCODE_EDITOR_BUTTON', array(
+        $comcode_editor = do_lorem_template('COMCODE_EDITOR_BUTTON', [
             'DIVIDER' => true,
             'FIELD_NAME' => lorem_word(),
             'TITLE' => lorem_word(),
             'B' => 'block',
             'IS_POSTING_FIELD' => false,
-        ));
+        ]);
 
-        $editor = array();
-        foreach (array('panel_left', 'panel_middle', 'panel_right') as $i => $for) {
-            $editor[$for] = do_lorem_template('ZONE_EDITOR_PANEL', array(
+        $editor = [];
+        foreach (['panel_left', 'panel_middle', 'panel_right'] as $i => $for) {
+            $editor[$for] = do_lorem_template('ZONE_EDITOR_PANEL', [
                 'CLASS' => '',
                 'ZONES' => '',
                 'CURRENT_ZONE' => '',
@@ -159,11 +159,11 @@ class Hook_addon_registry_core_zone_editor
                 'EDIT_URL' => placeholder_url(),
                 'SETTINGS' => null,
                 'COMCODE_EDITOR' => $comcode_editor,
-            ));
+            ]);
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('ZONE_EDITOR_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('ZONE_EDITOR_SCREEN', [
                 'PING_URL' => placeholder_url(),
                 'WARNING_DETAILS' => '',
                 'TITLE' => lorem_title(),
@@ -173,7 +173,7 @@ class Hook_addon_registry_core_zone_editor
                 'LEFT_EDITOR' => $editor['panel_left'],
                 'RIGHT_EDITOR' => $editor['panel_right'],
                 'MIDDLE_EDITOR' => $editor['panel_middle'],
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

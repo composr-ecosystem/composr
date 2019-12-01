@@ -30,7 +30,7 @@ class Hook_config_azure_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AZURE_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -44,7 +44,7 @@ class Hook_config_azure_api_key
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -71,5 +71,5 @@ function do_netlink($redir_url = '')
         $content = $content_temp;
     }
 
-    return do_template('NETLINK', array('_GUID' => '180321222dc5dc99a231597c803f0726', 'CONTENT' => $content));
+    return do_template('NETLINK', ['_GUID' => '180321222dc5dc99a231597c803f0726', 'CONTENT' => $content]);
 }

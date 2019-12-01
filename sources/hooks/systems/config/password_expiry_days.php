@@ -30,7 +30,7 @@ class Hook_config_password_expiry_days
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD_EXPIRY_DAYS',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_password_expiry_days
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

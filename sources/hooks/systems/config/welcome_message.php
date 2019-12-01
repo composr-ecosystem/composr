@@ -30,7 +30,7 @@ class Hook_config_welcome_message
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WELCOME_MESSAGE',
             'type' => 'comcodetext',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_welcome_message
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

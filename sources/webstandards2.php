@@ -67,39 +67,39 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
     if ($WEBSTANDARDS_CSP) {
         if (!$close) {
             if (($tag === 'script') && (empty($attributes['nonce']))) {
-                $errors[] = array('CSP_SCRIPT_TAG');
+                $errors[] = ['CSP_SCRIPT_TAG'];
             }
             if (($tag === 'style') && (empty($attributes['nonce']))) {
-                $errors[] = array('CSP_STYLE_TAG');
+                $errors[] = ['CSP_STYLE_TAG'];
             }
             if (($tag === 'link') && (empty($attributes['nonce'])) && (isset($attributes['rel'])) && ($attributes['rel'] == 'stylesheet')) {
-                $errors[] = array('CSP_STYLE_TAG');
+                $errors[] = ['CSP_STYLE_TAG'];
             }
 
             foreach (array_keys($attributes) as $attribute) {
                 if (substr($attribute, 0, 2) == 'on') {
-                    $errors[] = array('CSP_EVENT_HANDLER');
+                    $errors[] = ['CSP_EVENT_HANDLER'];
                 }
             }
         }
     }
 
     // Dodgy mouse events.
-    if ((isset($attributes['onclick'])) && (strpos($attributes['onclick'], '/*Access-note: checked*/') === false) && (strpos($attributes['onclick'], '/*Access-note: code has other activation*/') === false) && ((!isset($attributes['onmouseover'])) || (strpos($attributes['onmouseover'], 'activate_rich_semantic_tooltip') === false)) && (!isset($attributes['onkeypress'])) && (!isset($attributes['onkeydown'])) && (!isset($attributes['onkeyup'])) && (!in_array($tag, array('a', 'input', 'textarea', 'select', 'button')))) {
-        $errors[] = array('WCAG_MOUSE_EVENT_UNMATCHED', 'onclick');
+    if ((isset($attributes['onclick'])) && (strpos($attributes['onclick'], '/*Access-note: checked*/') === false) && (strpos($attributes['onclick'], '/*Access-note: code has other activation*/') === false) && ((!isset($attributes['onmouseover'])) || (strpos($attributes['onmouseover'], 'activate_rich_semantic_tooltip') === false)) && (!isset($attributes['onkeypress'])) && (!isset($attributes['onkeydown'])) && (!isset($attributes['onkeyup'])) && (!in_array($tag, ['a', 'input', 'textarea', 'select', 'button']))) {
+        $errors[] = ['WCAG_MOUSE_EVENT_UNMATCHED', 'onclick'];
     }
     if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
-        if ((isset($attributes['onmouseover'])) && (strpos($attributes['onmouseover'], '/*Access-note: checked*/') === false) && (!isset($attributes['onfocus'])) && (in_array($tag, array('a', 'area', 'button', 'input', 'label', 'select', 'textarea')))) {
-            $errors[] = array('WCAG_MOUSE_EVENT_UNMATCHED', 'onmouseover');
+        if ((isset($attributes['onmouseover'])) && (strpos($attributes['onmouseover'], '/*Access-note: checked*/') === false) && (!isset($attributes['onfocus'])) && (in_array($tag, ['a', 'area', 'button', 'input', 'label', 'select', 'textarea']))) {
+            $errors[] = ['WCAG_MOUSE_EVENT_UNMATCHED', 'onmouseover'];
         }
-        if ((isset($attributes['onmouseout'])) && (strpos($attributes['onmouseout'], '/*Access-note: checked*/') === false) && (!isset($attributes['onblur'])) && (in_array($tag, array('a', 'area', 'button', 'input', 'label', 'select', 'textarea')))) {
-            $errors[] = array('WCAG_MOUSE_EVENT_UNMATCHED', 'onmouseout');
+        if ((isset($attributes['onmouseout'])) && (strpos($attributes['onmouseout'], '/*Access-note: checked*/') === false) && (!isset($attributes['onblur'])) && (in_array($tag, ['a', 'area', 'button', 'input', 'label', 'select', 'textarea']))) {
+            $errors[] = ['WCAG_MOUSE_EVENT_UNMATCHED', 'onmouseout'];
         }
     }
 
     // Unexpected tags
     if (($EXPECTING_TAG !== null) && ($EXPECTING_TAG != $tag)) {
-        $errors[] = array('XHTML_EXPECTING', $EXPECTING_TAG);
+        $errors[] = ['XHTML_EXPECTING', $EXPECTING_TAG];
     }
     $EXPECTING_TAG = null;
 
@@ -126,7 +126,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         if ((isset($TAG_ATTRIBUTES_REQUIRED[$tag])) && (($tag != 'html') || ($XML_CONSTRAIN))) {
             $diff = array_diff($TAG_ATTRIBUTES_REQUIRED[$tag], array_keys($attributes));
             foreach ($diff as $attribute) {
-                $errors[] = array('XHTML_MISSING_ATTRIBUTE', $tag, $attribute);
+                $errors[] = ['XHTML_MISSING_ATTRIBUTE', $tag, $attribute];
             }
         }
 
@@ -141,7 +141,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         // Check our links are OK
         if (($tag == 'a') && (isset($attributes['href']))) {
             if ((substr($attributes['href'], 0, 5) == 'mailto:') && (strpos($attributes['href'], '&') === false) && (strpos($attributes['href'], 'unsubscribe') !== false)) {
-                $errors[] = array('XHTML_SPAM');
+                $errors[] = ['XHTML_SPAM'];
             }
             $tmp = _check_link_accessibility($tag, $attributes, $self_close, $close);
             if ($tmp !== null) {
@@ -170,10 +170,10 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
     if (!$close) { // Intentionally placed after labelling is checked
         if (($tag == 'input') || ($tag == 'select')) {
             if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (isset($attributes['name'])) && (stripos($GLOBALS['OUT'], 'privacy') === false)) {
-                $privacy = array('dob', 'name', 'age', 'address', 'date_of_birth', 'dateofbirth', 'email', 'e_mail', 'gender', 'salutation');
+                $privacy = ['dob', 'name', 'age', 'address', 'date_of_birth', 'dateofbirth', 'email', 'e_mail', 'gender', 'salutation'];
                 foreach ($privacy as $priv) {
                     if (stripos($attributes['name'], $priv) !== false) {
-                        $errors[] = array('MANUAL_PRIVACY');
+                        $errors[] = ['MANUAL_PRIVACY'];
                     }
                 }
             }
@@ -182,7 +182,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         switch ($tag) {
             case 'meta':
                 if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (isset($attributes['name'])) && ($attributes['name'] == 'robots')) {
-                    $errors[] = array('MANUAL_META');
+                    $errors[] = ['MANUAL_META'];
                 }
                 if ((isset($attributes['http-equiv'])) && (isset($attributes['content'])) && (strtolower($attributes['http-equiv']) == 'content-type') && ((strpos($attributes['content'], 'text/html;') !== false) || (strpos($attributes['content'], 'application/xhtml+xml;') !== false)) && (strpos($attributes['content'], 'charset=') !== false)) {
                     $GLOBALS['FOUND_CONTENTTYPE'] = true;
@@ -199,7 +199,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
 
             case 'blockquote':
                 if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
-                    $errors[] = array('MANUAL_WCAG_SEMANTIC_BLOCKQUOTE');
+                    $errors[] = ['MANUAL_WCAG_SEMANTIC_BLOCKQUOTE'];
                 }
                 break;
 
@@ -207,13 +207,13 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
             case 'ol':
             case 'dl':
                 if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
-                    $errors[] = array('MANUAL_WCAG_SEMANTIC_LIST');
+                    $errors[] = ['MANUAL_WCAG_SEMANTIC_LIST'];
                 }
                 break;
 
             case 'script':
                 if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
-                    $errors[] = array('MANUAL_WCAG_ANIMATION');
+                    $errors[] = ['MANUAL_WCAG_ANIMATION'];
                     $EXPECTING_TAG = 'noscript';
                 }
                 if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ((!isset($attributes['type'])) || ((isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || ($attributes['type'] == 'application/javascript') || (($attributes['type'] == 'application/x-javascript')))))) { // Validate CSS
@@ -256,14 +256,14 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
 
             case 'form':
                 if ((isset($attributes['action'])) && (strpos($attributes['action'], '?') !== false) && (isset($attributes['method'])) && ($attributes['method'] == 'get')) {
-                    $errors[] = array('XHTML_FORM_TYPE');
+                    $errors[] = ['XHTML_FORM_TYPE'];
                 }
                 $GLOBALS['XHTML_FORM_ENCODING'] = isset($attributes['enctype']) ? $attributes['enctype'] : 'application/x-www-form-urlencoded';
                 if ((isset($attributes['target'])) && ($attributes['target'] == '_blank') && ((!isset($attributes['title'])) || (strpos($attributes['title'], do_lang('LINK_NEW_WINDOW')) === false))) {
-                    $errors[] = array('WCAG_BLANK');
+                    $errors[] = ['WCAG_BLANK'];
                 }
                 if (($GLOBALS['XHTML_FORM_ENCODING'] == 'multipart/form-data') && (array_key_exists('method', $attributes)) && ($attributes['method'] == 'get')) {
-                    $errors[] = array('XHTML_FORM_ENCODING_2');
+                    $errors[] = ['XHTML_FORM_ENCODING_2'];
                 }
             // intentionally rolls on...
 
@@ -273,13 +273,13 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if (isset($attributes['name'])) {
                     global $ANCHORS_SEEN;
                     if (isset($ANCHORS_SEEN[$attributes['name']])) {
-                        $errors[] = array('XHTML_A_NAME', $tag);
+                        $errors[] = ['XHTML_A_NAME', $tag];
                     } else {
                         $ANCHORS_SEEN[$attributes['name']] = 1;
                     }
 
                     if ((!isset($attributes['id'])) || ((isset($attributes['id'])) && ($attributes['id'] != $attributes['name']))) {
-                        $errors[] = array('XHTML_NAME_ID_DEPRECATED');
+                        $errors[] = ['XHTML_NAME_ID_DEPRECATED'];
                     }
                 }
                 break;
@@ -289,16 +289,16 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                     // Special case for missing 'name' in form elements
                     if (($attributes['type'] != 'image') && ($attributes['type'] != 'submit') && ($attributes['type'] != 'button') && ($attributes['type'] != 'reset')) {
                         if (!isset($attributes['name'])) {
-                            $errors[] = array('XHTML_MISSING_ATTRIBUTE', $tag, 'name');
+                            $errors[] = ['XHTML_MISSING_ATTRIBUTE', $tag, 'name'];
                         }
                     }
 
                     if ((isset($attributes['size'])) && (isset($attributes['type'])) && (($attributes['type'] == 'week') || ($attributes['type'] == 'hidden')/* || ($attributes['type'] == 'color') || ($attributes['type'] == 'number') Size would apply if browser is using non-HTML5 fallback*/ || ($attributes['type'] == 'month') || ($attributes['type'] == 'range') || ($attributes['type'] == 'radio') || ($attributes['type'] == 'checkbox'))) {
-                        $errors[] = array('XHTML_NO_SIZE_FOR');
+                        $errors[] = ['XHTML_NO_SIZE_FOR'];
                     }
 
                     if (($attributes['type'] == 'image') && (!isset($attributes['alt']))) {
-                        $errors[] = array('XHTML_MISSING_ATTRIBUTE', 'input', 'alt');
+                        $errors[] = ['XHTML_MISSING_ATTRIBUTE', 'input', 'alt'];
                     }
 
                     if (($attributes['type'] == 'checkbox') && (isset($attributes['id']))) {
@@ -310,10 +310,10 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
 
                     if ($attributes['type'] == 'file') {
                         if (isset($attributes['value'])) {
-                            $errors[] = array('XHTML_FILE_VALUE');
+                            $errors[] = ['XHTML_FILE_VALUE'];
                         }
                         if (($GLOBALS['XHTML_FORM_ENCODING'] != 'multipart/form-data') && ($GLOBALS['XHTML_FORM_ENCODING'] != '')) {
-                            $errors[] = array('XHTML_FORM_ENCODING');
+                            $errors[] = ['XHTML_FORM_ENCODING'];
                         }
                     }
                 }
@@ -331,12 +331,12 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                     $content = strtolower(substr($OUT, $POS, strpos($OUT, '</table>', $POS) - $POS)); // While the </table> found may not be the closing tag to our table, we do know a <th> should occur before any such one (unless it's a really weird table layout)
                     $th_count = substr_count($content, '<th');
                     if (($th_count == 0) && (trim($content) != 'x')) {
-                        $errors[] = array('WCAG_MISSING_TH');
+                        $errors[] = ['WCAG_MISSING_TH'];
                     } else {
                         if (strpos($content, '<thead') === false) {
                             $tr_count = substr_count($content, '<tr');
                             if ($th_count > $tr_count) {
-                                $errors[] = array('WCAG_HD_SPECIAL');
+                                $errors[] = ['WCAG_HD_SPECIAL'];
                             }
                         }
                     }
@@ -376,19 +376,19 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
             case 'a':
                 // Handle empty tag check for <a> (couldn't handle with normal case due to complexity)
                 if ((!isset($attributes['id'])) && (!isset($attributes['title'])) && (substr($OUT, $POS, 4) == '</a>')) {
-                    $errors[] = array('XHTML_EMPTY_TAG', $tag);
+                    $errors[] = ['XHTML_EMPTY_TAG', $tag];
                 }
                 break;
 
             case 'img':
                 if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (!isset($attributes['width']))) {
-                    $errors[] = array('XHTML_WIDTH');
+                    $errors[] = ['XHTML_WIDTH'];
                 }
                 if ((isset($attributes['longdesc'])) && (!isset($attributes['dlink']))) {
-                    $errors[] = array('WCAG_LONGTEXT_DLINK');
+                    $errors[] = ['WCAG_LONGTEXT_DLINK'];
                 }
                 if ((isset($attributes['alt'])) && (isset($attributes['src'])) && ($attributes['alt'] != '') && ($attributes['alt'] == $attributes['src'])) {
-                    $errors[] = array('XHTML_MISSING_ATTRIBUTE', 'img', 'alt');
+                    $errors[] = ['XHTML_MISSING_ATTRIBUTE', 'img', 'alt'];
                 }
                 break;
         }
@@ -405,7 +405,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         if (isset($attributes['accesskey'])) {
             $this_href = isset($attributes['href']) ? $attributes['href'] : uniqid('', true);
             if ((isset($KEYS_SEEN[$attributes['accesskey']])) && ($KEYS_SEEN[$attributes['accesskey']] != $this_href)) {
-                $errors[] = array('WCAG_ACCESSKEY_UNIQUE');
+                $errors[] = ['WCAG_ACCESSKEY_UNIQUE'];
             }
             $KEYS_SEEN[$attributes['accesskey']] = $this_href;
         }
@@ -413,7 +413,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
             if ((in_array($attributes['tabindex'], $TABS_SEEN)) && ($attributes['tabindex'] != 'x')) {
                 $last = array_pop($TABS_SEEN);
                 if ($last != $attributes['tabindex']) { // We do allow repeating of tabindexes as long as they are next to each other
-                    $errors[] = array('WCAG_TABINDEX_UNIQUE');
+                    $errors[] = ['WCAG_TABINDEX_UNIQUE'];
                 } else {
                     array_push($TABS_SEEN, $last);
                 }
@@ -439,7 +439,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
 {
     global $THE_DOCTYPE, $BLOCK_CONSTRAIN, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $PARENT_TAG, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $UNDER_XMLNS;
 
-    $errors = array();
+    $errors = [];
 
     $dif = $close ? -1 : 1;
     if ($self_close) {
@@ -447,11 +447,11 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
     }
     if ((isset($TAGS_BLOCK[$tag])) || (isset($TAGS_BLOCK_DEPRECATED[$tag]))) {
         if (($ANCESTOR_INLINE != 0) && ($BLOCK_CONSTRAIN)) {
-            $errors[] = array('XHTML_ANCESTOR_BLOCK_INLINE', $tag);
+            $errors[] = ['XHTML_ANCESTOR_BLOCK_INLINE', $tag];
         }
         $ANCESTOR_BLOCK += $dif;
         if (isset($TAGS_BLOCK_DEPRECATED[$tag])) {
-            $errors[] = array($TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag);
+            $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif ((isset($TAGS_INLINE[$tag])) || (isset($TAGS_INLINE_DEPRECATED[$tag]))) {
         //if (($BLOCK_CONSTRAIN) && ($PARENT_TAG != 'span') && ((isset($TAGS_NORMAL[$PARENT_TAG])) || ((isset($TAGS_NORMAL_DEPRECATED[$PARENT_TAG]))))) $errors[] = array('XHTML_ANCESTOR_INLINE_NORMAL', $tag); This restriction isn't really a proper one, some checkers seem to have it but it is not used anymore (XHTML5+) and pretty silly
@@ -459,25 +459,25 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
             $ANCESTOR_INLINE += $dif;
         }
         if (isset($TAGS_INLINE_DEPRECATED[$tag])) {
-            $errors[] = array($TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag);
+            $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif ((isset($TAGS_NORMAL[$tag])) || (isset($TAGS_NORMAL_DEPRECATED[$tag]))) {
         if ($tag == 'title') {
             $ANCESTOR_BLOCK += $dif;
         }
         if (($tag == 'iframe') && (($THE_DOCTYPE == DOCTYPE_XHTML_STRICT) || ($THE_DOCTYPE == DOCTYPE_XHTML_11))) {
-            $errors[] = array('XHTML_UNKNOWN_TAG', $tag);
+            $errors[] = ['XHTML_UNKNOWN_TAG', $tag];
         }
         if (isset($TAGS_NORMAL_DEPRECATED[$tag])) {
-            $errors[] = array($TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag);
+            $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif (!$close) {
         if (!$UNDER_XMLNS) {
-            $errors[] = array('XHTML_UNKNOWN_TAG', $tag);
+            $errors[] = ['XHTML_UNKNOWN_TAG', $tag];
         }
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -494,14 +494,14 @@ function _check_attributes($tag, $attributes, $self_close, $close)
 {
     global $PSPELL_LINK, $THE_LANGUAGE, $XML_CONSTRAIN, $TAGS_DEPRECATE_ALLOW, $THE_DOCTYPE, $HYPERLINK_URLS, $CRAWLED_URLS, $EMBED_URLS, $TAGS_INLINE, $TAGS_BLOCK, $TAGS_NORMAL, $TAGS_INLINE_DEPRECATED, $TAGS_BLOCK_DEPRECATED, $TAGS_NORMAL_DEPRECATED, $TAG_ATTRIBUTES, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_ATTRIBUTES_REQUIRED;
 
-    $errors = array();
+    $errors = [];
 
     $stub = $tag . '.';
     foreach ($attributes as $attribute => $value) {
         $lattribute = strtolower($attribute);
         if ($lattribute != $attribute) {
             if ($XML_CONSTRAIN) {
-                $errors[] = array('XHTML_CASE_ATTRIBUTE', $tag, $attribute);
+                $errors[] = ['XHTML_CASE_ATTRIBUTE', $tag, $attribute];
             }
             $attribute = $lattribute;
         }
@@ -511,7 +511,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
         }
 
         if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (($value == 'TODO') || (strpos($value, 'Lorem ') !== false))) {
-            $errors[] = array('XHTML_PLACEHOLDER');
+            $errors[] = ['XHTML_PLACEHOLDER'];
         }
 
         if ((!isset($TAG_ATTRIBUTES[$stub . $attribute])) && (!isset($TAG_ATTRIBUTES['*.' . $attribute])) && (!isset($TAG_ATTRIBUTES_REQUIRED[$stub . $attribute]))) {
@@ -532,15 +532,15 @@ function _check_attributes($tag, $attributes, $self_close, $close)
                 continue;
             }
 
-            $errors[] = array('XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute);
+            $errors[] = ['XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute];
             continue;
         } else {
             if (isset($TAG_ATTRIBUTES_REQUIRED[$stub . $attribute])) {
-                $errors[] = array($TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_ATTRIBUTE' : 'XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute);
+                $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_ATTRIBUTE' : 'XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute];
             }
 
             if (($attribute == 'target') && (($THE_DOCTYPE == DOCTYPE_XHTML_STRICT) || ($THE_DOCTYPE == DOCTYPE_XHTML_11))) {
-                $errors[] = array('XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute);
+                $errors[] = ['XHTML_UNKNOWN_ATTRIBUTE', $tag, $attribute];
             }
         }
 
@@ -561,7 +561,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
         }
 
         if (($attribute == 'href') && (@strtolower(@$value[0]) == 'j') && (strtolower(substr($value, 0, 11)) == 'javascript:')) {
-            $errors[] = array('XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, 'no js href');
+            $errors[] = ['XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, 'no js href'];
         }
 
         if (isset($TAG_ATTRIBUTES[$stub . $attribute])) {
@@ -571,12 +571,12 @@ function _check_attributes($tag, $attributes, $self_close, $close)
         }
 
         if (($reg_exp != '(.|\n)*') && (preg_match('#^' . $reg_exp . '$#s', $value) == 0) && ($value != 'x')) {
-            $errors[] = array('XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, $reg_exp);
+            $errors[] = ['XHTML_BAD_ATTRIBUTE_VALUE', $attribute, $value, $reg_exp];
         }
 
         if (($attribute == 'style') && ($GLOBALS['WEBSTANDARDS_CSS'])) { // Validate CSS
             if ((!function_exists('do_template')) && (strpos($value, '{') === false) && (strpos($value, 'float:') === false) && (strpos($value, ': none') === false) && (strpos($value, ': inline') === false) && (strpos($value, ': block') === false)) {
-                $errors[] = array('CSS_INLINE_STYLES');
+                $errors[] = ['CSS_INLINE_STYLES'];
             }
 
             $css_conformance = _webstandards_css_class($value, 0);
@@ -587,13 +587,13 @@ function _check_attributes($tag, $attributes, $self_close, $close)
 
         if ($attribute == 'id') { // Check we don't have duplicate IDs
             if (isset($IDS_SO_FAR[strtolower($value)])) { // strtolower is for compatibility - in reality, IDs are not meant to be case insensitive
-                $errors[] = array('XHTML_DUPLICATED_ID', $value);
+                $errors[] = ['XHTML_DUPLICATED_ID', $value];
             }
             $IDS_SO_FAR[strtolower($value)] = 1;
         }
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -614,9 +614,9 @@ function check_spelling($value)
     $misspellings = run_spellcheck($value, $lang, false, false, false);
     spellchecker_shutdown();
 
-    $errors = array();
+    $errors = [];
     foreach (array_keys($misspellings) as $word) {
-        $errors[] = array('XHTML_SPELLING', $word);
+        $errors[] = ['XHTML_SPELLING', $word];
     }
     return $errors;
 }
@@ -642,13 +642,13 @@ function _check_externals($tag, $attributes, $self_close, $close)
 
     global $VALIDATED_ALREADY, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG;
 
-    $errors = array();
+    $errors = [];
 
     if (($tag == 'link') && ($GLOBALS['WEBSTANDARDS_CSS']) && (!$GLOBALS['NO_XHTML_LINK_FOLLOW']) && (isset($attributes['href'])) && (isset($attributes['type'])) && ($attributes['type'] == 'text/css') && (!isset($VALIDATED_ALREADY[$attributes['href']]))) { // Validate CSS
         $VALIDATED_ALREADY[$attributes['href']] = 1;
         $url = qualify_url($attributes['href'], $GLOBALS['URL_BASE']);
         if ($url != '') {
-            $sheet = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $sheet = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($sheet !== null) {
                 $css_conformance = _webstandards_css_sheet($sheet);
                 if (is_array($css_conformance)) {
@@ -662,7 +662,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if (!empty($url)) {
-            $js = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $js = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($js !== null) {
                 $VALIDATED_ALREADY[$attributes['src']] = 1;
 
@@ -681,7 +681,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if ($url != '') {
-            $iframe = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
+            $iframe = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
             if (!empty($iframe->data)) {
                 if (($iframe->download_mime_type == 'text/html') || ($iframe->download_mime_type == 'application/xhtml+xml')) {
                     global $EXTRA_CHECK;
@@ -691,7 +691,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         }
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -708,7 +708,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
 {
     global $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG, $TAG_RANGES, $WEBSTANDARDS_MANUAL;
 
-    $errors = array();
+    $errors = [];
 
     // Check captioning
     global $A_LINKS;
@@ -719,37 +719,37 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
     }
     $content = strtolower(substr($OUT, $POS, strpos($OUT, '</a>', $POS) - $POS));
     if ((isset($attributes['target'])) && ($attributes['target'] == '_blank') && (function_exists('do_lang')) && (strpos($content, do_lang('LINK_NEW_WINDOW')) === false) && (strpos($title, do_lang('LINK_NEW_WINDOW')) === false)) {
-        $errors[] = array('WCAG_BLANK');
+        $errors[] = ['WCAG_BLANK'];
     }
     if (substr($content, 0, 4) != '<img') {
         $filtered_href = str_replace('/index.php', '', $attributes['href']);
         $filtered_href = preg_replace('#&keep_session=[^&]*#', '', $filtered_href);
 
         if (($WEBSTANDARDS_MANUAL) && (isset($A_LINKS[$title])) && (isset($A_LINKS[$title][$content])) && ($A_LINKS[$title][$content] != $attributes['href']) && ($A_LINKS[$title][$content] != $filtered_href)) {
-            $errors[] = array('WCAG_DODGY_LINK', $A_LINKS[$title][$content]);
+            $errors[] = ['WCAG_DODGY_LINK', $A_LINKS[$title][$content]];
         }
-        $bad_strings = array('click'/*,'here'*/);
+        $bad_strings = ['click'/*,'here'*/];
         if (trim($content) != $content) {
-            $errors[] = array('XHTML_A_SPACES');
+            $errors[] = ['XHTML_A_SPACES'];
         }
         $_content = strip_tags($content);
         if (($_content == $content) && (strlen($content) < 12)) {
             $in_strings = str_word_count($_content, 1);
             foreach ($bad_strings as $string) {
                 if (in_array($string, $in_strings) !== false) {
-                    $errors[] = array('WCAG_DODGY_LINK_2', $string);
+                    $errors[] = ['WCAG_DODGY_LINK_2', $string];
                 }
             }
         }
         if ($title == '') {
             if (strtolower($content) == 'more') {
-                $errors[] = array('WCAG_DODGY_LINK_2', $string);
+                $errors[] = ['WCAG_DODGY_LINK_2', $string];
             }
         }
         $A_LINKS[$title][$content] = $filtered_href;
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -766,7 +766,7 @@ function _check_labelling($tag, $attributes, $self_close, $close)
 {
     global $TAG_STACK, $IDS_SO_FAR, $ANCESTOR_BLOCK, $ANCESTOR_INLINE, $EXPECTING_TAG, $OUT, $POS, $LAST_A_TAG;
 
-    $errors = array();
+    $errors = [];
 
     global $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
     if (($tag == 'td')/* || ($tag == 'div')*/) {
@@ -788,7 +788,7 @@ function _check_labelling($tag, $attributes, $self_close, $close)
                 }
 
                 if ((($attributes['type'] == 'radio') || ($attributes['type'] == 'checkbox')) && (isset($attributes['onchange'])) && ($GLOBALS['WEBSTANDARDS_COMPAT'])) {
-                    $errors[] = array('XHTML_IE_ONCHANGE');
+                    $errors[] = ['XHTML_IE_ONCHANGE'];
                 }
             }
 
@@ -797,12 +797,12 @@ function _check_labelling($tag, $attributes, $self_close, $close)
             }
 
             if ((!isset($FOR_LABEL_IDS[$attributes['id']])) && ($attributes['id'] != 'x') && (preg_match('#<label[^<>]+for="' . preg_quote($attributes['id'], '#') . '"#', $OUT) == 0)) {
-                $errors[] = array('WCAG_NO_INPUT_LABEL', $attributes['id']);
+                $errors[] = ['WCAG_NO_INPUT_LABEL', $attributes['id']];
             }
         }
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -815,9 +815,9 @@ function check_css($data)
 {
     $_errors = _webstandards_css_sheet($data);
     if ($_errors === null) {
-        $_errors = array();
+        $_errors = [];
     }
-    $errors = array();
+    $errors = [];
     global $POS, $OUT;
     global $CSS_TAG_RANGES, $CSS_VALUE_RANGES;
     $OUT = $data;
@@ -826,7 +826,7 @@ function check_css($data)
         $POS = 0;
         $errors[] = _xhtml_error($error[0], array_key_exists(1, $error) ? $error[1] : '', array_key_exists(2, $error) ? $error[2] : '', array_key_exists(3, $error) ? $error[3] : '', false, $error['pos']);
     }
-    return array('level_ranges' => null, 'tag_ranges' => $CSS_TAG_RANGES, 'value_ranges' => $CSS_VALUE_RANGES, 'errors' => $errors);
+    return ['level_ranges' => null, 'tag_ranges' => $CSS_TAG_RANGES, 'value_ranges' => $CSS_VALUE_RANGES, 'errors' => $errors];
 }
 
 /**
@@ -839,10 +839,10 @@ function check_css($data)
 function _webstandards_css_sheet($data)
 {
     global $CSS_TAG_RANGES, $CSS_VALUE_RANGES, $VALIDATED_ALREADY;
-    $CSS_TAG_RANGES = array();
-    $CSS_VALUE_RANGES = array();
+    $CSS_TAG_RANGES = [];
+    $CSS_VALUE_RANGES = [];
 
-    $errors = array();
+    $errors = [];
 
     // We don't want to write code to parse out property referencing stuff which is very irregular compared to other CSS, so let's just simplify that to something else
     $data = preg_replace('#\[([\w\-]+|)?[\w\-]+([$*~|^]?="[^;"]*")?\]#', '.foobar', $data);
@@ -881,11 +881,11 @@ function _webstandards_css_sheet($data)
                     $status = CSS_AT_RULE_BLOCK;
                     $at_rule_block = '';
                 } elseif ($next == ';') {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^(\w+)\s*$#', $at_rule, $matches) != 0) {
                         global $CSS_AT_RULES;
                         if (!in_array($matches[1], $CSS_AT_RULES)) {
-                            $errors[] = array(0 => 'CSS_UNKNOWN_AT_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i);
+                            $errors[] = [0 => 'CSS_UNKNOWN_AT_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i];
                         }
                     }
 
@@ -894,14 +894,14 @@ function _webstandards_css_sheet($data)
                         $count = substr_count($at_rule, '"');
                         $first = strpos($at_rule, '"') + 1;
                         if ($count < 2) {
-                            $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                            $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                             return $errors;
                         }
                         $at_file = substr($at_rule, $first, (strpos($at_rule, '"', $first) - 1) - $first);
                         if (!isset($VALIDATED_ALREADY[$at_file])) {
                             $at_file = qualify_url($at_file, $GLOBALS['URL_BASE']);
                             if ($at_file != '') {
-                                $data2 = http_get_contents($at_file, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+                                $data2 = http_get_contents($at_file, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
                                 if ($data2 !== null) {
                                     $css_tag_ranges_backup = $CSS_TAG_RANGES;
                                     $css_value_ranges_backup = $CSS_VALUE_RANGES;
@@ -943,11 +943,11 @@ function _webstandards_css_sheet($data)
                             }
                         } // We don't explicitly support validating other @-rules (#3928)
 
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#^(\w+)\s*$#', $at_rule, $matches) != 0) {
                             global $CSS_AT_BLOCK_RULES;
                             if (!in_array($matches[1], $CSS_AT_BLOCK_RULES)) {
-                                $errors[] = array(0 => 'CSS_UNKNOWN_AT_BLOCK_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i);
+                                $errors[] = [0 => 'CSS_UNKNOWN_AT_BLOCK_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i];
                             }
                         }
 
@@ -977,7 +977,7 @@ function _webstandards_css_sheet($data)
                     $status = CSS_IN_IDENTIFIER;
                     $class_name = '*';
                 } else {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                 }
                 break;
 
@@ -993,7 +993,7 @@ function _webstandards_css_sheet($data)
                     $status = CSS_IN_IDENTIFIER;
                     $class_name = $next;
                 } else {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                 }
                 break;
 
@@ -1024,7 +1024,7 @@ function _webstandards_css_sheet($data)
                     // Test class name
                     $cnt = substr_count($class_name, ':');
                     if ($cnt > 0) {
-                        $matches = array();
+                        $matches = [];
                         $pseudo = '';
                         $num_matches = preg_match_all('#:(:?[\w\-]+)(\([^()]*\))?#', $class_name, $matches);
                         for ($j = 0; $j < $num_matches; $j++) {
@@ -1033,7 +1033,7 @@ function _webstandards_css_sheet($data)
 
                         global $CSS_PSEUDO_CLASSES;
                         if (!in_array($pseudo, $CSS_PSEUDO_CLASSES)) {
-                            $errors[] = array(0 => 'CSS_UNKNOWN_PSEUDO', 1 => $pseudo, 2 => integer_format($line), 'pos' => $i);
+                            $errors[] = [0 => 'CSS_UNKNOWN_PSEUDO', 1 => $pseudo, 2 => integer_format($line), 'pos' => $i];
                         }
                     }
 
@@ -1047,7 +1047,7 @@ function _webstandards_css_sheet($data)
                         $class_start_i = $i;
                         $class = '';
                     } else {
-                        $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                        $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                     }
                 }
                 break;
@@ -1071,7 +1071,7 @@ function _webstandards_css_sheet($data)
                     $status = CSS_IN_IDENTIFIER;
                     $class_name = $next;
                 } else {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                 }
                 break;
 
@@ -1100,7 +1100,7 @@ function _webstandards_css_sheet($data)
                     $quoting = true;
                     $class .= $next;
                 } elseif ($next == '{') {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $i];
                     return $errors;
                 } else {
                     $class .= $next;
@@ -1116,11 +1116,11 @@ function _webstandards_css_sheet($data)
     }
 
     if ($status != CSS_NO_MANS_LAND) {
-        $errors[] = array(0 => 'CSS_UNEXPECTED_TERMINATION', 'pos' => $i);
+        $errors[] = [0 => 'CSS_UNEXPECTED_TERMINATION', 'pos' => $i];
         return $errors;
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -1134,7 +1134,7 @@ function _webstandards_css_sheet($data)
  */
 function _webstandards_css_class($data, $_i, $line = 0)
 {
-    $errors = array();
+    $errors = [];
 
     global $CSS_TAG_RANGES;
     global $CSS_VALUE_RANGES;
@@ -1156,7 +1156,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
         switch ($status) {
             case _CSS_NO_MANS_LAND:
                 if ($alpha_numeric) {
-                    $CSS_TAG_RANGES[] = array($_i + $i + 1, $_i + $i + 2);
+                    $CSS_TAG_RANGES[] = [$_i + $i + 1, $_i + $i + 2];
                     $status = _CSS_IN_PROPERTY_KEY;
                     $key = $next;
                 } elseif (($whitespace) || ($next == ';')) { // ; is unusual here, but allowed; It occurs when we substitute nothing into a part of a style attribute
@@ -1165,7 +1165,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
                     $class_before_comment = $status;
                     $status = _CSS_IN_COMMENT;
                 } else {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $_i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $_i];
                 }
                 break;
 
@@ -1189,7 +1189,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
             case _CSS_IN_PROPERTY_BETWEEN:
                 if (!$whitespace) {
                     $status = _CSS_IN_PROPERTY_VALUE;
-                    $CSS_VALUE_RANGES[] = array($_i + $i + 1, $_i + $i + 1);
+                    $CSS_VALUE_RANGES[] = [$_i + $i + 1, $_i + $i + 1];
                     $i--;
                 }
                 break;
@@ -1217,7 +1217,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
 
             case _CSS_EXPECTING_END:
                 if (!$whitespace) {
-                    $errors[] = array(0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $_i);
+                    $errors[] = [0 => 'CSS_UNEXPECTED_CHARACTER_CLASS', 1 => $next, 2 => integer_format($line), 'pos' => $_i];
                     return $errors;
                 }
                 break;
@@ -1231,7 +1231,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
     }
 
     if (($status != _CSS_NO_MANS_LAND) && ($status != _CSS_IN_PROPERTY_VALUE) && ($status != _CSS_EXPECTING_END)) {
-        $errors[] = array(0 => 'CSS_UNEXPECTED_TERMINATION_PROPERTY', 'pos' => $_i);
+        $errors[] = [0 => 'CSS_UNEXPECTED_TERMINATION_PROPERTY', 'pos' => $_i];
         return $errors;
     }
 
@@ -1242,7 +1242,7 @@ function _webstandards_css_class($data, $_i, $line = 0)
         }
     }
 
-    return ($errors == array()) ? null : $errors;
+    return ($errors == []) ? null : $errors;
 }
 
 /**
@@ -1270,7 +1270,7 @@ function _check_css_value($key, $value, $_i)
         if (substr($key, 0, 1) == '-') {
             return null;
         }
-        return array(0 => 'CSS_UNKNOWN_PROPERTY', 1 => $key, 'pos' => $_i);
+        return [0 => 'CSS_UNKNOWN_PROPERTY', 1 => $key, 'pos' => $_i];
     } else {
         $reg_exp = $CSS_PROPERTIES[$key];
     }
@@ -1284,12 +1284,12 @@ function _check_css_value($key, $value, $_i)
         (substr($value, 0, 5) != 'calc(') && // #3928
         (substr($value, 0, 4) != 'var(')
     ) {
-        return array(0 => 'CSS_BAD_PROPERTY_VALUE', 1 => $key, 2 => $value, 3 => $reg_exp, 'pos' => $_i);
+        return [0 => 'CSS_BAD_PROPERTY_VALUE', 1 => $key, 2 => $value, 3 => $reg_exp, 'pos' => $_i];
     }
 
     if (!empty($GLOBALS['PEDANTIC'])) {
         if (($key == 'font-size') && (substr($value, -2) == 'px')) {
-            return array(0 => 'CSS_PX_FONT', 'pos' => $_i);
+            return [0 => 'CSS_PX_FONT', 'pos' => $_i];
         }
     }
 

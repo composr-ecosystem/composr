@@ -50,11 +50,11 @@ class Hook_cron_ip_address_sharing
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Detect IP address sharing',
             'num_queued' => null,
             'minutes_between_runs' => 7 * 24 * 60,
-        );
+        ];
     }
 
     /**
@@ -70,10 +70,10 @@ class Hook_cron_ip_address_sharing
 
         $time_now = time();
 
-        $results = array();
+        $results = [];
 
         $table = 'f_usergroup_subs s JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=s.s_group_id';
-        $groups = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select($table, array('g.id')));
+        $groups = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select($table, ['g.id']));
         if (!empty($groups)) {
             $group_or_list_1 = '';
             $group_or_list_2 = '';
@@ -97,22 +97,22 @@ class Hook_cron_ip_address_sharing
             $members = $GLOBALS['FORUM_DB']->query($sql);
 
             foreach ($members as $member) {
-                $_ips = $GLOBALS['SITE_DB']->query_select('stats', array('ip', 'COUNT(*) AS cnt'), array('member_id' => $member['id']), ' AND date_and_time>' . strval($time_now - 60 * 60 * 24) . ' GROUP BY ip');
-                $ips = array();
+                $_ips = $GLOBALS['SITE_DB']->query_select('stats', ['ip', 'COUNT(*) AS cnt'], ['member_id' => $member['id']], ' AND date_and_time>' . strval($time_now - 60 * 60 * 24) . ' GROUP BY ip');
+                $ips = [];
                 foreach ($_ips as $ip) {
-                    $ips[] = array(
+                    $ips[] = [
                         $ip['ip'],
                         $ip['cnt'],
                         cms_gethostbyaddr($ip['ip']),
-                    );
+                    ];
                 }
 
-                $results[] = array(
+                $results[] = [
                     $member['id'],
                     $member['m_username'],
                     array_intersect($GLOBALS['FORUM_DRIVER']->get_members_groups($member['id']), $groups),
                     $ips,
-                );
+                ];
             }
         }
 

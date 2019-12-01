@@ -26,15 +26,15 @@ class news_test_set extends cms_test_case
 
         require_code('news2');
 
-        $this->news_id = add_news('Today', 'hiiiiiiiiiii', 'rolly', 1, 1, 1, 1, '', 'test article', 2, array(), 1262671781, null, 0, null, null, '');
-        $this->assertTrue('Today' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', array('id' => $this->news_id))));
+        $this->news_id = add_news('Today', 'hiiiiiiiiiii', 'rolly', 1, 1, 1, 1, '', 'test article', 2, [], 1262671781, null, 0, null, null, '');
+        $this->assertTrue('Today' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', ['id' => $this->news_id])));
     }
 
     public function testEditNews()
     {
         edit_news($this->news_id, 'Politics', 'teheyehehj ', 'rolly', 1, 1, 1, 1, 'yedd', 'test article 22222222', 2, null, '', '', '');
 
-        $this->assertTrue('Politics' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', array('id' => $this->news_id))));
+        $this->assertTrue('Politics' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', ['id' => $this->news_id])));
     }
 
     public function tearDown()

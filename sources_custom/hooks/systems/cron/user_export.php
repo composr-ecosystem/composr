@@ -37,11 +37,11 @@ class Hook_cron_user_export
             return null;
         }
 
-        return array(
+        return [
             'label' => 'User export',
             'num_queued' => null,
             'minutes_between_runs' => USER_EXPORT_MINUTES,
-        );
+        ];
     }
 
     /**

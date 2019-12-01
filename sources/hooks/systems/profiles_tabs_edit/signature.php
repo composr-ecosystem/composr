@@ -70,7 +70,7 @@ class Hook_profiles_tabs_edit_signature
         // UI
 
         $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
-        $just_member_row = db_map_restrict($member_row, array('id', 'm_signature'));
+        $just_member_row = db_map_restrict($member_row, ['id', 'm_signature']);
         $signature = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
         $signature_original = get_translated_text($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_signature'), $GLOBALS['FORUM_DB']);
 
@@ -80,8 +80,8 @@ class Hook_profiles_tabs_edit_signature
         if (addon_installed('cns_signatures')) {
             require_javascript('cns_signatures');
         }
-        $js_function_calls = array();
-        $js_function_calls[] = array('hookProfilesTabsEditSignatureRenderTab', $size);
+        $js_function_calls = [];
+        $js_function_calls[] = ['hookProfilesTabsEditSignatureRenderTab', $size];
 
         require_code('form_templates');
         $required = false;
@@ -126,7 +126,7 @@ class Hook_profiles_tabs_edit_signature
         pop_lax_comcode();
 
         $fields = new Tempcode();
-        $fields->attach(do_template('POSTING_FIELD', array(
+        $fields->attach(do_template('POSTING_FIELD', [
             '_GUID' => '0424aff8c7961ed20ac525e7de04c219',
             'PRETTY_NAME' => do_lang_tempcode('SIGNATURE'),
             'DESCRIPTION' => '',
@@ -137,7 +137,7 @@ class Hook_profiles_tabs_edit_signature
             'COMCODE_EDITOR' => $comcode_editor,
             'COMCODE_EDITOR_SMALL' => $comcode_editor_small,
             'CLASS' => $class,
-            'COMCODE_URL' => ($help_zone === null) ? new Tempcode() : build_url(array('page' => 'userguide_comcode'), $help_zone),
+            'COMCODE_URL' => ($help_zone === null) ? new Tempcode() : build_url(['page' => 'userguide_comcode'], $help_zone),
             'EXTRA' => '',
             'POST_COMMENT' => $post_comment,
             'EMOTICON_CHOOSER' => $emoticon_chooser,
@@ -145,10 +145,10 @@ class Hook_profiles_tabs_edit_signature
             'DEFAULT_PARSED' => $default_parsed,
             'CONTINUE_URL' => $continue_url,
             'ATTACHMENTS' => $attachments,
-        )));
+        ]));
 
-        $text = do_template('CNS_EDIT_SIGNATURE_TAB', array('_GUID' => 'f5f2eb2552c34840c9cf46886422401e', 'SIZE' => integer_format($size), 'SIGNATURE' => $signature, 'TITLE' => $title));
+        $text = do_template('CNS_EDIT_SIGNATURE_TAB', ['_GUID' => 'f5f2eb2552c34840c9cf46886422401e', 'SIZE' => integer_format($size), 'SIGNATURE' => $signature, 'TITLE' => $title]);
 
-        return array($title, $fields, $text, $js_function_calls, $order, null, 'tabs/member_account/edit/signature');
+        return [$title, $fields, $text, $js_function_calls, $order, null, 'tabs/member_account/edit/signature'];
     }
 }

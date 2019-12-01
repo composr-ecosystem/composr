@@ -25,7 +25,7 @@ class Hook_config_system_community_billboard
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SYSTEM_COMMUNITY_BILLBOARD',
             'type' => 'comcodeline',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_system_community_billboard
             'public' => false,
 
             'addon' => 'community_billboard',
-        );
+        ];
     }
 
     /**

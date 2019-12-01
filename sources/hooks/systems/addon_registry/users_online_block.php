@@ -31,7 +31,7 @@ class Hook_addon_registry_users_online_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_users_online_block
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_users_online_block
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,13 +97,13 @@ class Hook_addon_registry_users_online_block
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/config/usersonline_show_birthdays.php',
             'sources/hooks/systems/config/usersonline_show_newest_member.php',
             'sources/hooks/systems/addon_registry/users_online_block.php',
             'themes/default/templates/BLOCK_SIDE_USERS_ONLINE.tpl',
             'sources/blocks/side_users_online.php',
-        );
+        ];
     }
 
     /**
@@ -113,9 +113,9 @@ class Hook_addon_registry_users_online_block
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_USERS_ONLINE.tpl' => 'block_side_users_online',
-        );
+        ];
     }
 
     /**
@@ -127,31 +127,31 @@ class Hook_addon_registry_users_online_block
      */
     public function tpl_preview__block_side_users_online()
     {
-        $online = array();
+        $online = [];
         foreach (placeholder_array() as $k => $v) {
-            $online[] = array(
+            $online[] = [
                 'URL' => placeholder_url(),
                 'USERNAME' => lorem_phrase(),
                 'COLOUR' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
                 'AVATAR_URL' => placeholder_image_url(),
-            );
+            ];
         }
 
         $newest = new Tempcode();
 
-        $birthdays = array();
+        $birthdays = [];
         foreach (placeholder_array() as $k => $v) {
-            $birthdays[] = array(
+            $birthdays[] = [
                 'AGE' => placeholder_number(),
                 'PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_word(),
                 'BIRTHDAY_URL' => placeholder_url(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_USERS_ONLINE', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_USERS_ONLINE', [
                 'BLOCK_ID' => lorem_word(),
                 'ONLINE' => $online,
                 'GUESTS' => placeholder_number(),
@@ -160,7 +160,7 @@ class Hook_addon_registry_users_online_block
                 '_MEMBERS' => lorem_phrase(),
                 'BIRTHDAYS' => $birthdays,
                 'NEWEST' => $newest,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

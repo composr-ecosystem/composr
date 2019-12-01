@@ -29,10 +29,10 @@
  */
 function show_content_reviews($content_type, $content_id, $display_mode = 0)
 {
-    $content_reviews = $GLOBALS['SITE_DB']->query_select('content_reviews', array('display_review_status', 'last_reviewed_time', 'next_review_time'), array(
+    $content_reviews = $GLOBALS['SITE_DB']->query_select('content_reviews', ['display_review_status', 'last_reviewed_time', 'next_review_time'], [
         'content_type' => $content_type,
         'content_id' => $content_id,
-    ), '', 1);
+    ], '', 1);
     if (isset($content_reviews[0])) {
         if ($display_mode == 1) {
             $value = strval($content_reviews[0]['last_reviewed_time']);
@@ -40,7 +40,7 @@ function show_content_reviews($content_type, $content_id, $display_mode = 0)
             $value = strval($content_reviews[0]['next_review_time']);
         } else { // display mode 0
             require_lang('content_reviews');
-            $value = static_evaluate_tempcode(do_template('REVIEW_STATUS', array(
+            $value = static_evaluate_tempcode(do_template('REVIEW_STATUS', [
                 '_GUID' => '89fa418ac54d63c3d53c32b9314b8889',
                 'LAST_REVIEWED_DATE' => get_timezoned_date($content_reviews[0]['last_reviewed_time'], false),
                 'NEXT_REVIEW_DATE' => get_timezoned_date($content_reviews[0]['next_review_time'], false),
@@ -49,7 +49,7 @@ function show_content_reviews($content_type, $content_id, $display_mode = 0)
                 'CONTENT_TYPE' => $content_type,
                 'CONTENT_ID' => $content_id,
                 'DISPLAY' => $content_reviews[0]['display_review_status'] == 1,
-            )));
+            ]));
         }
     } else {
         $value = '';

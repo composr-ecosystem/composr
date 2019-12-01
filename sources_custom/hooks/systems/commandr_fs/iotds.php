@@ -42,8 +42,8 @@ class Hook_commandr_fs_iotds extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('iotd', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('i_title') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('iotd', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('i_title') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -106,13 +106,13 @@ class Hook_commandr_fs_iotds extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['i_title'],
             'url' => $row['url'],
             'caption' => $row['caption'],
@@ -128,7 +128,7 @@ class Hook_commandr_fs_iotds extends Resource_fs_base
             'submitter' => $row['submitter'],
             'add_date' => $row['add_date'],
             'edit_date' => $row['edit_date'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

@@ -158,7 +158,7 @@ function user_sync__inbound($since = null)
             }
 
             // Work out other data
-            $user_data = array();
+            $user_data = [];
             foreach ($native_fields as $key) {
                 $user_data[$key] = user_sync_handle_field_remap($key, null, $user, $dbh, $member_id);
             }
@@ -181,7 +181,7 @@ function user_sync__inbound($since = null)
             $join_time = $user_data['join_time'];
 
             // Collate CPFs
-            $custom_fields = array();
+            $custom_fields = [];
             foreach ($user_data as $key => $value) {
                 if (in_array($key, $native_fields)) {
                     continue;
@@ -371,13 +371,13 @@ function user_sync_handle_field_remap($field_name, $remap_scheme, $remote_data, 
                 return user_sync_get_field_default($field_name);
             }
             $remote_value = $remote_data[$remap_scheme[1]];
-            $data = array($remote_value);
+            $data = [$remote_value];
             break;
 
         case 'callback': // Callback
             $data = call_user_func($remap_scheme[1], $field_name, $remote_data, $dbh, $member_id);
             if (!is_array($data)) {
-                $data = array($data);
+                $data = [$data];
             }
             break;
 
@@ -466,7 +466,7 @@ function user_sync_get_field_default($field_name)
         case 'primary_group':
             return get_first_default_group();
         case 'groups':
-            return array();
+            return [];
         case 'dob_day':
             return null;
         case 'dob_month':
@@ -539,7 +539,7 @@ function user_sync__outbound($member_id)
 
     // Try and fetch details of remote user
     $sql = 'SELECT * FROM ' . $db_table . ' WHERE ';
-    $_username_parts = array();
+    $_username_parts = [];
     foreach ($username_fields as $i => $uf) {
         if ($i != 0) {
             $_username_parts[] = $dbh->quote(' ');
@@ -555,13 +555,13 @@ function user_sync__outbound($member_id)
         $remote_member_id = $user['id'];
     } else { // Does not exist remotely yet: Insert empty user, just with the username field(s)
         // Username fields
-        $insert_map = array();
+        $insert_map = [];
         $username_parts = explode(' ', $username);
         foreach ($username_fields as $i => $uf) {
-            $insert_map[$uf] = array(
+            $insert_map[$uf] = [
                 array_key_exists($i, $username_parts) ? $username_parts[$i] : '',
                 $username_fields_types[$i],
-            );
+            ];
         }
 
         // Go through other fields
@@ -588,10 +588,10 @@ function user_sync__outbound($member_id)
             }
 
             // Ready for insertion
-            $insert_map[$remap_scheme[1]] = array(
+            $insert_map[$remap_scheme[1]] = [
                 $data,
                 array_key_exists(4, $remap_scheme) ? $remap_scheme[4] : (is_integer($data) ? 'INTEGER' : 'VARCHAR'),
-            );
+            ];
         }
 
         // Build up SQL
@@ -662,7 +662,7 @@ function user_sync_find_native_fields()
     return $native_fields;
     */
 
-    return array(
+    return [
         'pass_hash_salted',
         'email_address',
         'groups',
@@ -681,5 +681,5 @@ function user_sync_find_native_fields()
         'join_time',
 
         'groups',
-    );
+    ];
 }

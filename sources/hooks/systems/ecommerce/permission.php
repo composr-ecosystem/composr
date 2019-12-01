@@ -31,23 +31,23 @@ class Hook_ecommerce_permission
     public function config()
     {
         $fields = new Tempcode();
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), array(), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('p_title'));
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], [], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('p_title'));
         $hidden = new Tempcode();
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $fields = new Tempcode();
             $hidden = new Tempcode();
             $hours = $row['p_hours'];
             $fields->attach($this->_get_fields('_' . strval($i), get_translated_text($row['p_title']), get_translated_text($row['p_description']), $row['p_enabled'], $row['p_price'], $row['p_tax_code'], $row['p_price_points'], $hours, $row['p_type'], $row['p_privilege'], $row['p_zone'], $row['p_page'], $row['p_module'], $row['p_category'], get_translated_text($row['p_mail_subject']), get_translated_text($row['p_mail_body'])));
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '4055cbfc1c94723f4ad72a80ede0b554', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '4055cbfc1c94723f4ad72a80ede0b554', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete_permission_' . strval($i), false));
             $hidden->attach(form_input_hidden('permission_' . strval($i), strval($row['id'])));
-            $out[] = array($fields, $hidden, do_lang_tempcode('_EDIT_PERMISSION_PRODUCT', escape_html(get_translated_text($row['p_title']))));
+            $out[] = [$fields, $hidden, do_lang_tempcode('_EDIT_PERMISSION_PRODUCT', escape_html(get_translated_text($row['p_title'])))];
         }
 
-        return array(
-            array($out, do_lang_tempcode('ADD_NEW_PERMISSION_PRODUCT'), $this->_get_fields(), do_lang_tempcode('PERMISSION_PRODUCT_DESCRIPTION')),
-        );
+        return [
+            [$out, do_lang_tempcode('ADD_NEW_PERMISSION_PRODUCT'), $this->_get_fields(), do_lang_tempcode('PERMISSION_PRODUCT_DESCRIPTION')],
+        ];
     }
 
     /**
@@ -88,21 +88,21 @@ class Hook_ecommerce_permission
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), '', 'permission_enabled' . $name_suffix, $enabled == 1));
 
         $types = new Tempcode();
-        $_types = array('member_privileges', 'member_zone_access', 'member_page_access', 'member_category_access');
+        $_types = ['member_privileges', 'member_zone_access', 'member_page_access', 'member_category_access'];
         foreach ($_types as $_type) {
             $types->attach(form_input_list_entry($_type, $type == $_type, do_lang_tempcode('PERM_TYPE_' . $_type)));
         }
         $fields->attach(form_input_list(do_lang_tempcode('PERMISSION_SCOPE_type'), do_lang_tempcode('DESCRIPTION_PERMISSION_SCOPE_type'), 'permission_type' . $name_suffix, $types));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'c1ee1d8ff171d8de6cd5ed14b5a59afb', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SETTINGS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c1ee1d8ff171d8de6cd5ed14b5a59afb', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('SETTINGS')]));
 
         require_all_lang();
 
         $privileges = new Tempcode();
         $temp = form_input_list_entry('', false, do_lang_tempcode('NA_EM'));
         $privileges->attach($temp);
-        $_privileges = $GLOBALS['SITE_DB']->query_select('privilege_list', array('*'), array(), 'ORDER BY p_section,the_name');
-        $__privileges = array();
+        $_privileges = $GLOBALS['SITE_DB']->query_select('privilege_list', ['*'], [], 'ORDER BY p_section,the_name');
+        $__privileges = [];
         foreach ($_privileges as $_privilege) {
             $_pt_name = do_lang('PRIVILEGE_' . $_privilege['the_name'], null, null, null, null, false);
             if ($_pt_name === null) {
@@ -129,7 +129,7 @@ class Hook_ecommerce_permission
         $temp = form_input_list_entry('', false, do_lang_tempcode('NA_EM'));
         $pages->attach($temp);
         $_zones = find_all_zones();
-        $_pages = array();
+        $_pages = [];
         foreach ($_zones as $_zone) {
             $_pages += find_all_pages_wrap($_zone);
         }
@@ -145,7 +145,7 @@ class Hook_ecommerce_permission
         $modules = new Tempcode();
         $temp = form_input_list_entry('', false, do_lang_tempcode('NA_EM'));
         $modules->attach($temp);
-        $_modules = array();
+        $_modules = [];
         $hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
         foreach ($hooks as $ob) {
             $info = $ob->info();
@@ -162,7 +162,7 @@ class Hook_ecommerce_permission
 
         $fields->attach(form_input_line(do_lang_tempcode('PERMISSION_SCOPE_category'), do_lang_tempcode('DESCRIPTION_PERMISSION_SCOPE_category'), 'permission_category' . $name_suffix, $category, false));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'b89804ab98762d661f4337b1dfb62d46', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PURCHASE_MAIL'), 'HELP' => do_lang_tempcode('DESCRIPTION_PURCHASE_MAIL'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'b89804ab98762d661f4337b1dfb62d46', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('PURCHASE_MAIL'), 'HELP' => do_lang_tempcode('DESCRIPTION_PURCHASE_MAIL')]));
         $fields->attach(form_input_line(do_lang_tempcode('PURCHASE_MAIL_SUBJECT'), '', 'permission_mail_subject' . $name_suffix, $mail_subject, false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('PURCHASE_MAIL_BODY'), '', 'permission_mail_body' . $name_suffix, $mail_body, false));
 
@@ -175,7 +175,7 @@ class Hook_ecommerce_permission
     public function save_config()
     {
         $i = 0;
-        $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*')));
+        $rows = list_to_map('id', $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*']));
         while (array_key_exists('permission_' . strval($i), $_POST)) {
             $id = post_param_integer('permission_' . strval($i));
             $title = post_param_string('permission_title_' . strval($i));
@@ -211,9 +211,9 @@ class Hook_ecommerce_permission
                 delete_lang($_description);
                 delete_lang($_mail_subject);
                 delete_lang($_mail_body);
-                $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', array('id' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', ['id' => $id], '', 1);
             } else {
-                $map = array(
+                $map = [
                     'p_enabled' => $enabled,
                     'p_price' => $price,
                     'p_tax_code' => $tax_code,
@@ -225,12 +225,12 @@ class Hook_ecommerce_permission
                     'p_page' => $page,
                     'p_module' => $module,
                     'p_category' => $category,
-                );
+                ];
                 $map += lang_remap('p_title', $_title, $title);
                 $map += lang_remap_comcode('p_description', $_description, $description);
                 $map += lang_remap('p_mail_subject', $_mail_subject, $mail_subject);
                 $map += lang_remap('p_mail_body', $_mail_body, $mail_body);
-                $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', $map, array('id' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', $map, ['id' => $id], '', 1);
             }
             $i++;
         }
@@ -257,7 +257,7 @@ class Hook_ecommerce_permission
             $mail_subject = post_param_string('permission_mail_subject');
             $mail_body = post_param_string('permission_mail_body');
 
-            $map = array(
+            $map = [
                 'p_enabled' => $enabled,
                 'p_price' => $price,
                 'p_tax_code' => $tax_code,
@@ -269,7 +269,7 @@ class Hook_ecommerce_permission
                 'p_page' => $page,
                 'p_module' => $module,
                 'p_category' => $category,
-            );
+            ];
             $map += insert_lang('p_title', $title, 2);
             $map += insert_lang_comcode('p_description', $description, 2);
             $map += insert_lang('p_mail_subject', $mail_subject, 2);
@@ -291,9 +291,9 @@ class Hook_ecommerce_permission
      */
     public function get_products($search = null)
     {
-        $products = array();
+        $products = [];
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), array('p_enabled' => 1));
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], ['p_enabled' => 1]);
 
         foreach ($rows as $i => $row) {
             $rows[$i]['_title'] = get_translated_text($row['p_title']);
@@ -301,7 +301,7 @@ class Hook_ecommerce_permission
         sort_maps_by($rows, '_title', false, true);
 
         foreach ($rows as $row) {
-            $just_row = db_map_restrict($row, array('id', 'p_description'));
+            $just_row = db_map_restrict($row, ['id', 'p_description']);
             $description = get_translated_tempcode('ecom_prods_permissions', $just_row, 'p_description');
             if (strpos($description->evaluate(), '<img') === false) {
                 $image_url = find_theme_image('icons/menu/adminzone/security/permissions/privileges');
@@ -314,13 +314,13 @@ class Hook_ecommerce_permission
                 $item_name = do_lang('PERMISSION_PRODUCT', $item_name);
             }
 
-            $products['PERMISSION_' . strval($row['id'])] = automatic_discount_calculation(array(
+            $products['PERMISSION_' . strval($row['id'])] = automatic_discount_calculation([
                 'item_name' => $item_name,
                 'item_description' => $description,
                 'item_image_url' => $image_url,
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => $row['p_price'],
                 'currency' => get_option('currency'),
@@ -335,7 +335,7 @@ class Hook_ecommerce_permission
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            ));
+            ]);
         }
 
         return $products;
@@ -357,7 +357,7 @@ class Hook_ecommerce_permission
         }
 
         $permission_product_id = intval(preg_replace('#^PERMISSION_#', '', $type_code));
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), array('id' => $permission_product_id, 'p_enabled' => 1), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], ['id' => $permission_product_id, 'p_enabled' => 1], '', 1);
         if (!array_key_exists(0, $rows)) {
             return ECOMMERCE_PRODUCT_MISSING;
         }
@@ -381,7 +381,7 @@ class Hook_ecommerce_permission
      */
     protected function _get_map($row, $member_id)
     {
-        $map = array('member_id' => $member_id);
+        $map = ['member_id' => $member_id];
         switch ($row['p_type']) {
             case 'member_privileges':
                 $map['privilege'] = $row['p_privilege'];
@@ -417,7 +417,7 @@ class Hook_ecommerce_permission
         $fields = null;
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array(null, null, null);
+        return [null, null, null];
     }
 
     /**
@@ -436,7 +436,7 @@ class Hook_ecommerce_permission
 
         $permission_product_id = intval(preg_replace('#^PERMISSION_#', '', $type_code));
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), array('id' => $permission_product_id, 'p_enabled' => 1), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], ['id' => $permission_product_id, 'p_enabled' => 1], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -447,7 +447,7 @@ class Hook_ecommerce_permission
 
         $member_id = intval($purchase_id);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => $p_title, 'details2' => strval($row['id']), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => $p_title, 'details2' => strval($row['id']), 'txn_id' => $details['TXN_ID']]);
 
         // Actuate
         $map = $this->_get_map($row, $member_id);
@@ -463,12 +463,12 @@ class Hook_ecommerce_permission
             $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
             $to_name = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
 
-            $attachments = array();
+            $attachments = [];
 
             if (($row['p_type'] == 'member_category_access') && ($row['p_module'] == 'downloads')) {
                 $all_attached = true;
 
-                $_download_category = $GLOBALS['SITE_DB']->query_select('download_categories', array('*'), array('id' => intval($row['p_category'])), '', 1);
+                $_download_category = $GLOBALS['SITE_DB']->query_select('download_categories', ['*'], ['id' => intval($row['p_category'])], '', 1);
                 if (!array_key_exists(0, $_download_category)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
                 }
@@ -478,9 +478,9 @@ class Hook_ecommerce_permission
                 list($content_title, , $cma_info, , , $url_safe) = content_get_details('download_category', $row['p_category']);
                 $content_type_label = do_lang($cma_info['content_type_label']);
 
-                $cnt = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)', array('category_id' => intval($row['p_category'])));
+                $cnt = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)', ['category_id' => intval($row['p_category'])]);
                 if ($cnt <= intval(get_option('download_cat_buy_max_emailed_count'))) {
-                    $downloads = $GLOBALS['SITE_DB']->query_select('download_downloads', array('url', 'file_size', 'original_filename'), array('category_id' => intval($row['p_category'])), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'));
+                    $downloads = $GLOBALS['SITE_DB']->query_select('download_downloads', ['url', 'file_size', 'original_filename'], ['category_id' => intval($row['p_category'])], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('name'));
                     foreach ($downloads as $download) {
                         if ((url_is_local($download['url'])) && ($download['file_size'] <= intval(get_option('download_cat_buy_max_emailed_size')) * 1024)) {
                             $file_path = get_custom_file_base() . '/' . $download['url'];
@@ -492,17 +492,17 @@ class Hook_ecommerce_permission
                 }
 
                 if (empty($attachments)) {
-                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY', $content_title, $content_type_label, array($url_safe, strval(count($attachments))));
+                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY', $content_title, $content_type_label, [$url_safe, strval(count($attachments))]);
                 } elseif ($all_attached) {
-                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY_ATTACHED', $content_title, $content_type_label, array($url_safe, strval(count($attachments))));
+                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY_ATTACHED', $content_title, $content_type_label, [$url_safe, strval(count($attachments))]);
                 } else {
-                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY_SOME_ATTACHED', $content_title, $content_type_label, array($url_safe, strval(count($attachments))));
+                    $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY_SOME_ATTACHED', $content_title, $content_type_label, [$url_safe, strval(count($attachments))]);
                 }
 
                 $message_raw = str_replace('{AUTOMATIC}', $message_sub, $message_raw);
             }
 
-            dispatch_mail($subject_line, $message_raw, array($email), $to_name, '', '', array('attachments' => $attachments, 'as_admin' => true));
+            dispatch_mail($subject_line, $message_raw, [$email], $to_name, '', '', ['attachments' => $attachments, 'as_admin' => true]);
         }
 
         // Cleanup

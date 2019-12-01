@@ -38,7 +38,7 @@ class Hook_cleanup_disposable_values
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('DISPOSABLE_VALUES_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_DISPOSABLE_VALUES_CACHE');
         $info['type'] = 'cache';
@@ -59,7 +59,7 @@ class Hook_cleanup_disposable_values
 
         $hooks = find_all_hooks('systems', 'disposable_values');
         foreach (array_keys($hooks) as $hook) {
-            $GLOBALS['SITE_DB']->query_delete('values', array('the_name' => $hook), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $hook], '', 1);
         }
         persistent_cache_delete('VALUES');
 

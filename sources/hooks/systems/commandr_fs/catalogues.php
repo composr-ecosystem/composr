@@ -25,7 +25,7 @@ require_code('resource_fs');
  */
 class Hook_commandr_fs_catalogues extends Resource_fs_base
 {
-    public $folder_resource_type = array('catalogue', 'catalogue_category');
+    public $folder_resource_type = ['catalogue', 'catalogue_category'];
     public $file_resource_type = 'catalogue_entry';
 
     /**
@@ -60,18 +60,18 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'catalogue_entry':
-                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('MIN(cf_order)', 'id', 'cf_type'), array(), 'GROUP BY c_name ORDER BY id');
-                $ret = array();
+                $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['MIN(cf_order)', 'id', 'cf_type'], [], 'GROUP BY c_name ORDER BY id');
+                $ret = [];
                 require_code('fields');
                 foreach ($fields as $field_bits) {
                     $ob = get_fields_hook($field_bits['cf_type']);
-                    list(, , $storage_type) = $ob->get_field_value_row_bits(array('id' => null, 'cf_type' => $field_bits['cf_type'], 'cf_default' => ''));
+                    list(, , $storage_type) = $ob->get_field_value_row_bits(['id' => null, 'cf_type' => $field_bits['cf_type'], 'cf_default' => '']);
                     if (strpos($storage_type, '_trans') !== false) {
                         $table = 'catalogue_entries a JOIN ' . get_table_prefix() . 'catalogue_efv_' . $storage_type . ' b ON a.id=b.ce_id AND b.cf_id=' . strval($field_bits['id']);
-                        $_ret = $GLOBALS['SITE_DB']->query_select($table, array('a.id'), array($GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $label), '', 1000/*reasonable search limit*/, 0, false, array('cv_value' => 'SHORT_TRANS'));
+                        $_ret = $GLOBALS['SITE_DB']->query_select($table, ['a.id'], [$GLOBALS['SITE_DB']->translate_field_ref('cv_value') => $label], '', 1000/*reasonable search limit*/, 0, false, ['cv_value' => 'SHORT_TRANS']);
                     } else {
                         $table = 'catalogue_entries a JOIN ' . get_table_prefix() . 'catalogue_efv_' . $storage_type . ' b ON a.id=b.ce_id AND b.cf_id=' . strval($field_bits['id']);
-                        $_ret = $GLOBALS['SITE_DB']->query_select($table, array('a.id'), array('b.cv_value' => $label), '', 1000/*reasonable search limit*/);
+                        $_ret = $GLOBALS['SITE_DB']->query_select($table, ['a.id'], ['b.cv_value' => $label], '', 1000/*reasonable search limit*/);
                     }
                     foreach ($_ret as $r) {
                         $ret[] = strval($r['id']);
@@ -80,18 +80,18 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 return $ret;
 
             case 'catalogue_category':
-                $_ret = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('cc_title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'catalogue':
-                $ret = $GLOBALS['SITE_DB']->query('SELECT c_name FROM ' . get_table_prefix() . 'catalogues WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('c_title'), $label) . ' OR ' . db_string_equal_to('c_name', $label), null, 0, false, false, array('c_title' => 'SHORT_TRANS'));
+                $ret = $GLOBALS['SITE_DB']->query('SELECT c_name FROM ' . get_table_prefix() . 'catalogues WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('c_title'), $label) . ' OR ' . db_string_equal_to('c_name', $label), null, 0, false, false, ['c_title' => 'SHORT_TRANS']);
                 return collapse_1d_complexity('c_name', $ret);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -120,38 +120,38 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
             case '':
                 if ($under == 'catalogue') {
                     $folder_info = $this->_get_cma_info($under);
-                    return array(
+                    return [
                         'cat_field' => null,
                         'linker_table' => null,
                         'id_field' => 'c_name',
                         'id_field_linker' => null,
                         'cat_field_numeric' => false,
-                    );
+                    ];
                 }
                 break;
             case 'catalogue':
                 if ($under == 'catalogue_category') {
                     $folder_info = $this->_get_cma_info($under);
-                    return array(
+                    return [
                         'cat_field' => 'c_name',
                         'linker_table' => 'catalogue_categories',
                         'id_field' => 'id',
                         'id_field_linker' => 'id',
                         'cat_field_numeric' => false,
-                    );
+                    ];
                 }
                 break;
             case 'catalogue_category':
                 if (($under == 'catalogue_category') || ($under == 'catalogue_entry')) {
                     $sub_info = $this->_get_cma_info($under);
                     $folder_info = $this->_get_cma_info($above);
-                    return array(
+                    return [
                         'cat_field' => $sub_info['parent_category_field'],
                         'linker_table' => ($under == 'catalogue_entry') ? null : $sub_info['parent_spec__table_name'],
                         'id_field' => $sub_info['parent_spec__field_name'],
                         'id_field_linker' => ($under == 'catalogue_entry') ? null : $sub_info['parent_spec__field_name'],
                         'cat_field_numeric' => $folder_info['id_field_numeric'],
-                    );
+                    ];
                 }
                 break;
         }
@@ -232,7 +232,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         $default_review_freq = $this->_default_property_int_null($properties, 'default_review_freq');
         $add_time = $this->_default_property_time($properties, 'add_date');
 
-        return array($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time);
+        return [$description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time];
     }
 
     /**
@@ -254,8 +254,8 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'catalogue_category');
 
             $parent_id = $this->_integer_category($category);
-            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', array('id' => $parent_id));
-            $is_tree = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_is_tree', array('c_name' => $catalogue_name));
+            $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $parent_id]);
+            $is_tree = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_is_tree', ['c_name' => $catalogue_name]);
             if ($is_tree == 0) {
                 return false;
             }
@@ -274,7 +274,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
 
-        return array($catalogue_name, $description, $notes, $parent_id, $rep_image, $move_days_lower, $move_days_higher, $move_target, $add_date, $meta_keywords, $meta_description);
+        return [$catalogue_name, $description, $notes, $parent_id, $rep_image, $move_days_lower, $move_days_higher, $move_target, $add_date, $meta_keywords, $meta_description];
     }
 
     /**
@@ -365,7 +365,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         if ($path != '') { // Category
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'catalogue_category');
 
-            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('*'), array('id' => intval($resource_id)), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['id' => intval($resource_id)], '', 1);
             if (!array_key_exists(0, $rows)) {
                 return false;
             }
@@ -373,7 +373,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             list($meta_keywords, $meta_description) = seo_meta_get_for('catalogue_category', strval($row['id']));
 
-            $properties = array(
+            $properties = [
                 'label' => get_translated_text($row['cc_title']),
                 'description' => get_translated_text($row['cc_description']),
                 'notes' => $row['cc_notes'],
@@ -384,7 +384,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 'meta_keywords' => $meta_keywords,
                 'meta_description' => $meta_description,
                 'add_date' => remap_time_as_portable($row['cc_add_date']),
-            );
+            ];
             $this->_resource_load_extend('catalogue_category', $resource_id, $properties, $filename, $path);
             return $properties;
         }
@@ -392,16 +392,16 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         // Catalogue
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'catalogue');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array('c_name' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], ['c_name' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $fields = array();
-        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $resource_id), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $fields = [];
+        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $resource_id], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         foreach ($_fields as $_field) {
-            $fields[] = array(
+            $fields[] = [
                 'field_title' => get_translated_text($_field['cf_name']),
                 'description' => get_translated_text($_field['cf_description']),
                 'type' => $_field['cf_type'],
@@ -416,10 +416,10 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                 'put_in_category' => $_field['cf_put_in_category'],
                 'put_in_search' => $_field['cf_put_in_search'],
                 'options' => $_field['cf_options'],
-            );
+            ];
         }
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['c_title']),
             'description' => get_translated_text($row['c_description']),
             'display_type' => $row['c_display_type'],
@@ -432,7 +432,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
             'default_review_freq' => $row['c_default_review_freq'],
             'fields' => $fields,
             'add_date' => remap_time_as_portable($row['c_add_date']),
-        );
+        ];
         $this->_resource_load_extend('catalogue', $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -463,7 +463,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             // How to handle the fields
             if ((array_key_exists('fields', $properties)) && ($properties['fields'] != '')) {
-                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_name', 'cf_description'), array('c_name' => $name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+                $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_name', 'cf_description'], ['c_name' => $name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
                 $fields_data = $properties['fields'];
                 foreach ($fields_data as $i => $field_data) {
@@ -574,11 +574,11 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     {
         $category_id = $this->_integer_category($category);
 
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', array('id' => $category_id));
-        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_type', 'cf_default', 'cf_name'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
+        $_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_default', 'cf_name'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
         $unique_key_num = $this->_find_unique_key_num($_fields);
-        $map = array();
-        $props_already = array();
+        $map = [];
+        $props_already = [];
         foreach ($_fields as $i => $field_bits) {
             $field_id = $field_bits['id'];
 
@@ -616,7 +616,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
 
-        return array($category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $time, $submitter, $views, $meta_keywords, $meta_description);
+        return [$category_id, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $time, $submitter, $views, $meta_keywords, $meta_description];
     }
 
     /**
@@ -663,7 +663,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -671,7 +671,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('catalogue_entry', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'validated' => $row['ce_validated'],
             'notes' => $row['notes'],
             'allow_rating' => $row['allow_rating'],
@@ -683,7 +683,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['ce_submitter']),
             'add_date' => remap_time_as_portable($row['ce_add_date']),
             'edit_date' => remap_time_as_portable($row['ce_edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
 
         require_code('catalogues');

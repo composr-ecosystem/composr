@@ -30,7 +30,7 @@ class Hook_config_filetype_icons
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FILETYPE_ICONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_filetype_icons
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

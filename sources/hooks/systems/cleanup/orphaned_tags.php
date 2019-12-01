@@ -30,7 +30,7 @@ class Hook_cleanup_orphaned_tags
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('ORPHANED_TAGS');
         $info['description'] = do_lang_tempcode('DESCRIPTION_ORPHANED_TAGS');
         $info['type'] = 'optimise';
@@ -69,14 +69,14 @@ class Hook_cleanup_orphaned_tags
                 $orphaned = $db->query($sql);
                 if (!empty($orphaned)) {
                     foreach ($orphaned as $o) {
-                        $keywords = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', array('meta_keyword'), array('meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']));
+                        $keywords = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
                         foreach ($keywords as $k) {
                             delete_lang($k['meta_keyword']);
                         }
-                        $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', array('meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']));
+                        $GLOBALS['SITE_DB']->query_delete('seo_meta_keywords', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']]);
 
                         delete_lang($o['meta_description']);
-                        $GLOBALS['SITE_DB']->query_delete('seo_meta', array('meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']), '', 1);
+                        $GLOBALS['SITE_DB']->query_delete('seo_meta', ['meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']], '', 1);
                     }
                 }
             }

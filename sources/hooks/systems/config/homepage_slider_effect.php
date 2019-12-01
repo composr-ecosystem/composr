@@ -30,7 +30,7 @@ class Hook_config_homepage_slider_effect
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EFFECT',
             'type' => 'list',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_homepage_slider_effect
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

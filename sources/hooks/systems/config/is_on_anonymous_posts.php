@@ -30,7 +30,7 @@ class Hook_config_is_on_anonymous_posts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_ANONYMOUS_POSTS_PRIVATE_TOPICS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_is_on_anonymous_posts
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

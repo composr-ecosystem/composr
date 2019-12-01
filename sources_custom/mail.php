@@ -27,7 +27,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = array())
+    public function __construct($advanced_parameters = [])
     {
         require_code('swift_mailer/lib/swift_required');
 
@@ -104,16 +104,16 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         }
 
         // Create a message and basic address it
-        $to_array = array();
+        $to_array = [];
         foreach ($to_emails as $i => $_to_email) {
             $to_array[$_to_email] = $to_names[$i];
         }
         $message = new Swift_Message($subject_wrapped);
         if ($this->sender_email !== null) {
-            $message->setFrom(array($this->sender_email => $from_name));
+            $message->setFrom([$this->sender_email => $from_name]);
         } // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
         $message
-            ->setReplyTo(array($from_email => $from_name))
+            ->setReplyTo([$from_email => $from_name])
             ->setTo($to_array)
             ->setDate(time())
             ->setPriority($this->priority)
@@ -152,7 +152,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
 
         // Send the message, and error collection
         $error = '';
-        $failures = array();
+        $failures = [];
         try {
             $result = $mailer->send($message, $failures);
         } catch (Exception $e) {
@@ -167,6 +167,6 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
             }
         }
 
-        return array($worked, $error);
+        return [$worked, $error];
     }
 }

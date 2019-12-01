@@ -30,7 +30,7 @@ class Hook_config_valid_types
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FILE_TYPES',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_valid_types
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

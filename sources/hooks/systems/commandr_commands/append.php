@@ -34,26 +34,26 @@ class Hook_commandr_command_append
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('append', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('append', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'append'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'append')];
             } else {
                 $parameters[0] = $commandr_fs->_pwd_to_array($parameters[0]);
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'append'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'append')];
             }
 
             if (!$commandr_fs->_is_file($parameters[0])) {
-                return array('', '', '', do_lang('NOT_A_FILE', '1'));
+                return ['', '', '', do_lang('NOT_A_FILE', '1')];
             }
 
             $success = $commandr_fs->append_file($parameters[0], $parameters[1]);
             if ($success) {
-                return array('', '', do_lang('SUCCESS'), '');
+                return ['', '', do_lang('SUCCESS'), ''];
             } else {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')];
             }
         }
     }

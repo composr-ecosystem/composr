@@ -18,8 +18,8 @@
  */
 class cma_hooks_test_set extends cms_test_case
 {
-    protected $all_cma_info = array();
-    protected $all_keys = array();
+    protected $all_cma_info = [];
+    protected $all_keys = [];
 
     public function setUp()
     {
@@ -27,7 +27,7 @@ class cma_hooks_test_set extends cms_test_case
 
         require_code('content');
 
-        $this->all_keys = array();
+        $this->all_keys = [];
 
         $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
         foreach (array_keys($cma_hooks) as $content_type) {
@@ -46,7 +46,7 @@ class cma_hooks_test_set extends cms_test_case
     public function testAllPropertiesDefined()
     {
         // Too specific to want to define it all for each hook
-        $may_be_unset_properties = array(
+        $may_be_unset_properties = [
             'edit_page_link_field',
             'edit_page_link_pattern_post',
             'title_field_post',
@@ -57,7 +57,7 @@ class cma_hooks_test_set extends cms_test_case
             'title_field_supports_comcode',
             'title_field__resource_fs',
             'where',
-        );
+        ];
 
         foreach ($this->all_cma_info as $content_type => $cma_info) {
             foreach ($this->all_keys as $key) {

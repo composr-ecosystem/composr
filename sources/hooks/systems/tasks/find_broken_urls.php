@@ -53,8 +53,8 @@ class Hook_task_find_broken_urls
             $i++;
         }
 
-        $ret = do_template('BROKEN_URLS', array('_GUID' => '840e203e9f2643ffd806ad3849597c3b', 'URLS' => $urls, 'DONE' => true));
+        $ret = do_template('BROKEN_URLS', ['_GUID' => '840e203e9f2643ffd806ad3849597c3b', 'URLS' => $urls, 'DONE' => true]);
 
-        return array('text/html', $ret);
+        return ['text/html', $ret];
     }
 }

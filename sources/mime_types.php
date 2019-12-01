@@ -26,7 +26,7 @@
  */
 function get_mime_types($as_admin)
 {
-    $mime_types = array(
+    $mime_types = [
         // Open office
         'odt' => 'application/vnd.oasis.opendocument.text',
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
@@ -174,7 +174,7 @@ function get_mime_types($as_admin)
         'exe' => 'application/x-msdownload',
         'iso' => 'application/x-iso9660-image',
         'php' => 'application/octet-stream',
-    );
+    ];
 
     return $mime_types;
 }

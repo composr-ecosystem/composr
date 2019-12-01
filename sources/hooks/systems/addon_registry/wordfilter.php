@@ -31,7 +31,7 @@ class Hook_addon_registry_wordfilter
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_wordfilter
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_censor',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_wordfilter
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_wordfilter'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_wordfilter'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_wordfilter
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/security/wordfilter.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/security/wordfilter.svg',
             'sources/hooks/systems/addon_registry/wordfilter.php',
@@ -110,6 +110,6 @@ class Hook_addon_registry_wordfilter
             'sources/hooks/systems/commandr_fs_extended_config/wordfilter.php',
             'sources/hooks/systems/actionlog/wordfilter.php',
             'themes/default/javascript/wordfilter.js',
-        );
+        ];
     }
 }

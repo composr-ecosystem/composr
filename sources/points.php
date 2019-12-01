@@ -26,11 +26,11 @@
 function init__points()
 {
     global $TOTAL_POINTS_CACHE;
-    $TOTAL_POINTS_CACHE = array();
+    $TOTAL_POINTS_CACHE = [];
     global $POINTS_USED_CACHE;
-    $POINTS_USED_CACHE = array();
+    $POINTS_USED_CACHE = [];
     global $POINT_INFO_CACHE;
-    $POINT_INFO_CACHE = array();
+    $POINT_INFO_CACHE = [];
 }
 
 /**
@@ -41,7 +41,7 @@ function init__points()
  */
 function get_product_price_points($item)
 {
-    return $GLOBALS['SITE_DB']->query_select_value('ecom_prods_prices', 'price_points', array('name' => $item));
+    return $GLOBALS['SITE_DB']->query_select_value('ecom_prods_prices', 'price_points', ['name' => $item]);
 }
 
 /**
@@ -178,10 +178,10 @@ function point_info($member_id)
 
     $values = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
     if ($values === null) {
-        $values = array();
+        $values = [];
     }
 
-    $POINT_INFO_CACHE[$member_id] = array();
+    $POINT_INFO_CACHE[$member_id] = [];
     foreach ($values as $key => $val) {
         if (!isset($val->codename/*faster than is_object*/)) {
             $POINT_INFO_CACHE[$member_id][$key] = @intval($val);
@@ -199,7 +199,7 @@ function point_info($member_id)
  */
 function get_gift_points_used($member_id)
 {
-    $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', array('gift_from' => $member_id));
+    $_actual_used = $GLOBALS['SITE_DB']->query_select_value_if_there('gifts', 'SUM(amount)', ['gift_from' => $member_id]);
     $actual_used = @intval($_actual_used); // Most reliable way
     $_used = point_info($member_id);
     if (!isset($_used['gift_points_used'])) { // Some kind of DB error

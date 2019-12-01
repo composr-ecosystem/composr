@@ -26,7 +26,7 @@ class Hook_addon_registry_booking
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_booking
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ You may wish to deny access to the usergroup and member directories when using t
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,15 +108,15 @@ You may wish to deny access to the usergroup and member directories when using t
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'calendar',
                 'ecommerce',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -136,7 +136,7 @@ You may wish to deny access to the usergroup and member directories when using t
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/booking.php',
             'sources_custom/hooks/systems/addon_registry/booking.php',
             'sources_custom/hooks/systems/notifications/booking_customer.php',
@@ -186,6 +186,6 @@ You may wish to deny access to the usergroup and member directories when using t
             'themes/default/images/icons_monochrome/booking/booking.svg',
             'themes/default/images/icons_monochrome/booking/supplement.svg',
             'themes/default/images/icons_monochrome/booking/index.html',
-        );
+        ];
     }
 }

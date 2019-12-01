@@ -66,7 +66,7 @@ class Hook_fields_short_trans_multi
      */
     public function get_field_value_row_bits($field, $required = null, $default = null, $db = null)
     {
-        return array('long_trans', $default, 'long_trans');
+        return ['long_trans', $default, 'long_trans'];
     }
 
     /**
@@ -82,7 +82,7 @@ class Hook_fields_short_trans_multi
             return $ev;
         }
 
-        $exploded = ($ev == '') ? array() : explode("\n", $ev);
+        $exploded = ($ev == '') ? [] : explode("\n", $ev);
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
         if ($auto_sort == 'on') {
             cms_mb_sort($exploded, SORT_NATURAL | SORT_FLAG_CASE);

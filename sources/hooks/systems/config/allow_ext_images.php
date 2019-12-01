@@ -30,7 +30,7 @@ class Hook_config_allow_ext_images
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ALLOW_EXT_IMAGES',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -43,7 +43,7 @@ class Hook_config_allow_ext_images
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -38,7 +38,7 @@ header('X-Robots-Tag: noindex');
 @header_remove('x-powered-by'); // Security
 
 $target = $_GET['url'];
-$target = str_replace(array("\r", "\n"), array('', ''), $target);
+$target = str_replace(["\r", "\n"], ['', ''], $target);
 
 // Only allows redirections from our own server
 $domain = qr_get_domain();

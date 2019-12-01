@@ -30,7 +30,7 @@ class Hook_config_spam_check_exclusions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_CHECK_EXCLUSIONS',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_check_exclusions
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

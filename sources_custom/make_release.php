@@ -24,15 +24,15 @@ function init__make_release()
 
     // Tracking
     global $MAKE_INSTALLERS__FILE_ARRAY, $MAKE_INSTALLERS__DIR_ARRAY, $MAKE_INSTALLERS__TOTAL_DIRS, $MAKE_INSTALLERS__TOTAL_FILES;
-    $MAKE_INSTALLERS__FILE_ARRAY = array();
-    $MAKE_INSTALLERS__DIR_ARRAY = array();
+    $MAKE_INSTALLERS__FILE_ARRAY = [];
+    $MAKE_INSTALLERS__DIR_ARRAY = [];
     $MAKE_INSTALLERS__TOTAL_DIRS = 0;
     $MAKE_INSTALLERS__TOTAL_FILES = 0;
 }
 
 function make_installers($skip_file_grab = false)
 {
-    foreach (array('zip', 'tar', 'gzip') as $cmd) {
+    foreach (['zip', 'tar', 'gzip'] as $cmd) {
         if (_shell_exec_bin($cmd . ' -h 2>&1') == '') {
             warn_exit('Missing command in path: ' . $cmd);
         }
@@ -112,9 +112,9 @@ function make_installers($skip_file_grab = false)
         // Write out our installer data file
         require_code('tar');
         $data_file = tar_open($builds_path . '/builds/' . $version_dotted . '/data.cms', 'wb');
-        $zip_file_array = array();
-        $offsets = array();
-        $sizes = array();
+        $zip_file_array = [];
+        $offsets = [];
+        $sizes = [];
         foreach ($MAKE_INSTALLERS__FILE_ARRAY as $path => $data) {
             $offsets[$path] = tar_add_file($data_file, $path, $data, 0644, is_file(get_file_base() . '/' . $path) ? filemtime(get_file_base() . '/' . $path) : time());
             $sizes[$path] = strlen($data);
@@ -501,8 +501,8 @@ function make_installers($skip_file_grab = false)
 
     // To stop ocProducts-PHP complaining about non-synched files
     global $_CREATED_FILES, $_MODIFIED_FILES;
-    $_CREATED_FILES = array();
-    $_MODIFIED_FILES = array();
+    $_CREATED_FILES = [];
+    $_MODIFIED_FILES = [];
 
     return $out;
 }
@@ -720,7 +720,7 @@ function make_files_manifest() // Builds files.bin, the Composr file manifest (u
         populate_build_files_list();
     }
 
-    $files = array();
+    $files = [];
     foreach ($MAKE_INSTALLERS__FILE_ARRAY as $file => $contents) {
         if ($file == 'data/files.bin') {
             continue;
@@ -730,7 +730,7 @@ function make_files_manifest() // Builds files.bin, the Composr file manifest (u
             $contents = preg_replace('/\d{10}/', '', $contents); // Not interested in differences in file time
         }
 
-        $files[$file] = array(sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', $contents))));
+        $files[$file] = [sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', $contents)))];
     }
 
     require_code('files');
@@ -760,9 +760,9 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
 
     // Work out what addons everything belongs to...
 
-    $table_addons = array();
-    $index_addons = array();
-    $privilege_addons = array();
+    $table_addons = [];
+    $index_addons = [];
+    $privilege_addons = [];
 
     require_code('files2');
     $files = get_directory_contents(get_file_base(), '', null);
@@ -773,7 +773,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
         }
 
         $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-        $matches = array();
+        $matches = [];
         if (preg_match('#@package\s+(\w+)\r?\n#', $contents, $matches) != 0) {
             $addon_name = $matches[1];
             if ($addon_name == 'installer') {
@@ -781,7 +781,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             }
 
             $table_regexp = '#->create_table\(\'(\w+)\'#';
-            $table_matches = array();
+            $table_matches = [];
             $table_num_matches = preg_match_all($table_regexp, $contents, $table_matches);
             for ($i = 0; $i < $table_num_matches; $i++) {
                 $table_name = $table_matches[1][$i];
@@ -789,7 +789,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             }
 
             $index_regexp = '#->create_index\(\'(\w+)\',\s*\'([\#\w]+)\'#';
-            $index_matches = array();
+            $index_matches = [];
             $index_num_matches = preg_match_all($index_regexp, $contents, $index_matches);
             for ($i = 0; $i < $index_num_matches; $i++) {
                 $table_name = $index_matches[1][$i];
@@ -801,11 +801,11 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             if ($file == 'sources/cns_install.php') {
                 $privilege_regexp = '#\'(\w+)\'#';
             } elseif ($file == 'sources/permissions3.php') {
-                $privilege_regexp = '#array\(\'\w+\',\s*\'(\w+)\'\)#';
+                $privilege_regexp = '#\[\'\w+\',\s*\'(\w+)\'\\#';
             } else {
                 $privilege_regexp = '#add_privilege\(\'\w+\',\s*\'(\w+)\'#';
             }
-            $privilege_matches = array();
+            $privilege_matches = [];
             $privilege_num_matches = preg_match_all($privilege_regexp, $contents, $privilege_matches);
             for ($i = 0; $i < $privilege_num_matches; $i++) {
                 $privilege_name = $privilege_matches[1][$i];
@@ -817,7 +817,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
     // Check we have found everything the database knows about...
 
     if (get_param_integer('skip_errors', 0) != 1) {
-        $all_tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', array('m_table')));
+        $all_tables = collapse_1d_complexity('m_table', $GLOBALS['SITE_DB']->query_select('db_meta', ['m_table']));
         foreach ($all_tables as $table_name) {
             if (!array_key_exists($table_name, $table_addons)) {
                 if (!table_has_purpose_flag($table_name, TABLE_PURPOSE__NON_BUNDLED | TABLE_PURPOSE__NOT_KNOWN)) {
@@ -826,7 +826,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             }
         }
 
-        $all_indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_name', 'i_table'));
+        $all_indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name', 'i_table']);
         foreach ($all_indices as $index) {
             $table_name = $index['i_table'];
             $index_name = $index['i_name'];
@@ -844,7 +844,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             }
         }
 
-        $all_privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', array('the_name')));
+        $all_privileges = collapse_1d_complexity('the_name', $GLOBALS['SITE_DB']->query_select('privilege_list', ['the_name']));
         foreach ($all_privileges as $privilege_name) {
             if (!array_key_exists($privilege_name, $privilege_addons)) {
                 attach_message('Privilege ' . $privilege_name . ' in meta database could not be sourced.', 'notice', false, true);
@@ -854,8 +854,8 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
 
     // Build up db_meta.bin structure...
 
-    $field_details = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'));
-    $tables = array();
+    $field_details = $GLOBALS['SITE_DB']->query_select('db_meta', ['*']);
+    $tables = [];
     foreach ($field_details as $field) {
         $table_name = $field['m_table'];
 
@@ -864,16 +864,16 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
         }
 
         if (!isset($tables[$table_name])) {
-            $tables[$table_name] = array(
+            $tables[$table_name] = [
                 'addon' => $table_addons[$table_name],
-                'fields' => array(),
-            );
+                'fields' => [],
+            ];
         }
         $tables[$field['m_table']]['fields'][$field['m_name']] = $field['m_type'];
     }
 
-    $index_details = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('*'));
-    $indices = array();
+    $index_details = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['*']);
+    $indices = [];
     foreach ($index_details as $index) {
         $table_name = $index['i_table'];
         $index_name = trim($index['i_name'], '#');
@@ -884,34 +884,34 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             continue;
         }
 
-        $indices[$universal_index_key] = array(
+        $indices[$universal_index_key] = [
             'addon' => $index_addons[$universal_index_key],
             'name' => $index_name,
             'table' => $table_name,
             'fields' => explode(',', preg_replace('#\([^\)]*\)#', '', $index['i_fields'])),
             'is_full_text' => (strpos($index['i_name'], '#') !== false),
-        );
+        ];
     }
 
-    $privilege_details = $GLOBALS['SITE_DB']->query_select('privilege_list', array('*'));
-    $privileges = array();
+    $privilege_details = $GLOBALS['SITE_DB']->query_select('privilege_list', ['*']);
+    $privileges = [];
     foreach ($privilege_details as $privilege) {
         if (!isset($privilege_addons[$privilege['the_name']])) {
             continue;
         }
 
-        $privileges[$privilege['the_name']] = array(
+        $privileges[$privilege['the_name']] = [
             'addon' => $privilege_addons[$privilege['the_name']],
             'section' => $privilege['p_section'],
             'default' => $privilege['the_default'],
-        );
+        ];
     }
 
-    $data = array(
+    $data = [
         'tables' => $tables,
         'indices' => $indices,
         'privileges' => $privileges,
-    );
+    ];
 
     // Save
     require_code('files');
@@ -933,7 +933,7 @@ function make_install_sql()
 
     // Build database
     require_code('install_headless');
-    $test = do_install_to($database, $username, $password, $table_prefix, true, 'cns', null, null, null, null, null, array(), false);
+    $test = do_install_to($database, $username, $password, $table_prefix, true, 'cns', null, null, null, null, null, [], false);
     if (!$test) {
         warn_exit(protect_from_escaping('Failed to execute installer, while building <kbd>install.sql</kbd>. It\'s likely that recursive write file permissions need setting.'));
     }
@@ -959,7 +959,7 @@ function make_install_sql()
     require_code('files');
     $out_path = get_file_base() . '/install.sql';
     $out_file = cms_fopen_text_write($out_path);
-    get_sql_dump($out_file, true, false, array(), null, $db);
+    get_sql_dump($out_file, true, false, [], null, $db);
     fclose($out_file);
     fix_permissions($out_path);
     sync_file($out_path);
@@ -1012,12 +1012,12 @@ function make_install_sql()
 
     // Do split...
 
-    $split_points = array(
+    $split_points = [
         '',
         'DROP TABLE IF EXISTS cms_db_meta;',
         'DROP TABLE IF EXISTS cms_f_polls;',
         'DROP TABLE IF EXISTS cms_member_privileges;',
-    );
+    ];
 
     // Check we can find split points
     $contents = cms_file_get_contents_safe(get_file_base() . '/install.sql', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
@@ -1028,7 +1028,7 @@ function make_install_sql()
             }
         }
     }
-    $froms = array();
+    $froms = [];
     foreach ($split_points as $p) {
         if ($p == '') {
             $from = 0;
@@ -1061,7 +1061,7 @@ function download_latest_data_files()
 
 function _download_latest_data_cert()
 {
-    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem', array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
+    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem', ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
     if (strpos($data, 'BEGIN CERTIFICATE') === false) {
         fatal_exit('Error with certificates');
     }
@@ -1076,7 +1076,7 @@ function _download_latest_data_ip_country()
 
     $tmp_name_gzip = cms_tempnam();
     $myfile = fopen($tmp_name_gzip, 'wb');
-    cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', array('convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0));
+    cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', ['convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0]);
     fclose($myfile);
 
     $tmp_name_csv = cms_tempnam();
@@ -1124,17 +1124,17 @@ function _download_latest_data_ip_country()
 
 function _download_latest_data_no_banning()
 {
-    $urls = array(
+    $urls = [
         'http://www.iplists.com/google.txt',
         'http://www.iplists.com/misc.txt',
         'http://www.iplists.com/non_engines.txt',
         'https://www.cloudflare.com/ips-v4',
         'https://www.cloudflare.com/ips-v6',
-    );
+    ];
 
     $data = '';
     foreach ($urls as $url) {
-        $data .= http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
+        $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
     }
 
     cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

@@ -36,7 +36,7 @@ class Hook_content_meta_aware_catalogue_category
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'catalogues:CATALOGUE_CATEGORY',
@@ -50,8 +50,8 @@ class Hook_content_meta_aware_catalogue_category
             'parent_category_meta_aware_type' => 'catalogue_category',
             'is_category' => true,
             'is_entry' => false,
-            'category_field' => array('c_name', 'id'), // For category permissions
-            'category_type' => array('catalogues_catalogue', 'cc_parent_id'), // For category permissions
+            'category_field' => ['c_name', 'id'], // For category permissions
+            'category_type' => ['catalogues_catalogue', 'cc_parent_id'], // For category permissions
             'parent_spec__table_name' => 'catalogue_categories',
             'parent_spec__parent_name' => 'cc_parent_id',
             'parent_spec__field_name' => 'id',
@@ -112,7 +112,7 @@ class Hook_content_meta_aware_catalogue_category
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CATALOGUE_CATEGORY',
-        );
+        ];
     }
 
     /**

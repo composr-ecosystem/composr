@@ -30,7 +30,7 @@ class Hook_config_thumb_width
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'THUMB_WIDTH',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_thumb_width
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

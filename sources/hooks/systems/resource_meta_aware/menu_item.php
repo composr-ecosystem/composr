@@ -32,7 +32,7 @@ class Hook_resource_meta_aware_menu_item
      */
     public function info($zone = null, $get_extended_data = false)
     {
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'menus:MENU_ITEM',
@@ -108,6 +108,6 @@ class Hook_resource_meta_aware_menu_item
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_MENU_ITEM',
-        );
+        ];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_comment_text
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMMENT_FORM_TEXT',
             'type' => 'comcodetext',
             'category' => 'USER_INTERACTION',
@@ -44,7 +44,7 @@ class Hook_config_comment_text
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

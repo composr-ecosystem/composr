@@ -39,7 +39,7 @@ class Hook_whatsnew_galleries
 
         require_code('galleries');
         $cats = create_selection_list_gallery_tree(null, null, false, false, true, false, null, false, false, $updated_since);
-        return array($cats, do_lang('GALLERIES'));
+        return [$cats, do_lang('GALLERIES')];
     }
 
     /**
@@ -53,7 +53,7 @@ class Hook_whatsnew_galleries
     public function run($cutoff_time, $lang, $filter)
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
         require_lang('galleries');
@@ -70,7 +70,7 @@ class Hook_whatsnew_galleries
             }
             $galleries = collapse_2d_complexity('name', '_fullname', $_galleries);
         } else {
-            $galleries = array();
+            $galleries = [];
         }
 
         require_code('selectcode');
@@ -91,15 +91,15 @@ class Hook_whatsnew_galleries
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff_time) . ' AND validated=1 AND (' . $or_list . ')' . $extra_where . ' ORDER BY add_date DESC', $max/*reasonable limit*/);
 
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
 
         foreach ($rows as $row) {
             $id = $row['id'];
-            $_url = build_url(array('page' => 'galleries', 'type' => 'video', 'id' => $row['id']), get_module_zone('galleries'), array(), false, false, true);
+            $_url = build_url(['page' => 'galleries', 'type' => 'video', 'id' => $row['id']], get_module_zone('galleries'), [], false, false, true);
             $url = $_url->evaluate();
             if (!array_key_exists($row['cat'], $galleries)) {
-                $galleries[$row['cat']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('galleries', 'fullname', array('name' => $row['cat'])));
+                $galleries[$row['cat']] = get_translated_text($GLOBALS['SITE_DB']->query_select_value('galleries', 'fullname', ['name' => $row['cat']]));
             }
             $name = $galleries[$row['cat']];
             $_name = get_translated_text($row['title']);
@@ -116,11 +116,11 @@ class Hook_whatsnew_galleries
             } else {
                 $thumbnail = null;
             }
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => 'dfe5850aa67c0cd00ff7d465248b87a5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'video', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => 'dfe5850aa67c0cd00ff7d465248b87a5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'NAME' => $name, 'DESCRIPTION' => $description, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'video', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
-        return array($new, do_lang('GALLERIES', '', '', '', $lang));
+        return [$new, do_lang('GALLERIES', '', '', '', $lang)];
     }
 }

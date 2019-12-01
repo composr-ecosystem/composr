@@ -30,7 +30,7 @@ class Hook_config_awarded_items_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AWARDED_ITEMS_PER_PAGE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_awarded_items_per_page
             'public' => false,
 
             'addon' => 'awards',
-        );
+        ];
     }
 
     /**

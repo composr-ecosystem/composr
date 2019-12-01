@@ -157,7 +157,7 @@ class Virtual_shell
      * @param  string $inputted_command The inputted command, unparsed
      * @param  array $parameters An array of prior parameters
      */
-    public function __construct($inputted_command, $parameters = array())
+    public function __construct($inputted_command, $parameters = [])
     {
         if (!defined('MODE_NORMAL')) {
             define('MODE_NORMAL', 0); // Not in quotes
@@ -193,8 +193,8 @@ class Virtual_shell
         $this->current_input = $inputted_command;
         $this->parsed_input = null;
         $this->parse_runtime = null;
-        $this->output = array(STREAM_STDCOMMAND => '', STREAM_STDHTML => '', STREAM_STDOUT => '', STREAM_STDERR => '');
-        $this->input_parameters = array();
+        $this->output = [STREAM_STDCOMMAND => '', STREAM_STDHTML => '', STREAM_STDOUT => '', STREAM_STDERR => ''];
+        $this->input_parameters = [];
 
         foreach ($parameters as $parameter_key => $parameter_value) {
             $this->input_parameters['{P' . $parameter_key . '}'] = $parameter_value;
@@ -339,14 +339,14 @@ class Virtual_shell
             $this->output[STREAM_STDERR] = do_lang('ERROR_NON_TERMINAL') . "\n" . $this->output[STREAM_STDERR]; // And again :-(
         }
 
-        $output = do_template('COMMANDR_COMMAND', array(
+        $output = do_template('COMMANDR_COMMAND', [
             '_GUID' => 'a05ee6b75302f8ccd5ec9f3a24207521',
             'METHOD' => $this->current_input,
             'STDOUT' => $this->output[STREAM_STDOUT],
             'STDHTML' => $this->output[STREAM_STDHTML],
             'STDCOMMAND' => $this->output[STREAM_STDCOMMAND],
             'STDERR' => $this->output[STREAM_STDERR],
-        ));
+        ]);
 
         set_value('last_commandr_command', strval(time()));
         return $output;
@@ -857,9 +857,9 @@ class Virtual_shell
         $this->parse_runtime['commandr_command'] = COMMAND_NATIVE;
 
         $this->parsed_input[SECTION_COMMAND] = null;
-        $this->parsed_input[SECTION_OPTIONS] = array();
-        $this->parsed_input[SECTION_PARAMETERS] = array();
-        $this->parsed_input[SECTION_EXTRAS] = array();
+        $this->parsed_input[SECTION_OPTIONS] = [];
+        $this->parsed_input[SECTION_PARAMETERS] = [];
+        $this->parsed_input[SECTION_EXTRAS] = [];
 
         $this->fs = object_factory('commandr_fs');
 
@@ -891,7 +891,7 @@ class Virtual_shell
 
                 if ($extra[ASSIGNMENT] == REDIRECT_PIPE) {
                     if (!isset($extra[STREAM_IDENTIFIER][0])) {
-                        $extra[STREAM_IDENTIFIER] = array(STREAM_STDOUT);
+                        $extra[STREAM_IDENTIFIER] = [STREAM_STDOUT];
                     }
                     $virtual_shell = new Virtual_shell($extra[REDIRECT_IDENTIFIER]);
                     $virtual_output = $virtual_shell->return_output();
@@ -992,7 +992,7 @@ class Virtual_shell
             pop_db_scope_check();
             if ((is_array($commandr_output)) && (count($commandr_output) > 100)) {
                 $commandr_output = $GLOBALS['SITE_DB']->query($this->parsed_input[SECTION_COMMAND], 100);
-                $commandr_output[] = array('...' => '...');
+                $commandr_output[] = ['...' => '...'];
             }
 
             $this->output[STREAM_STDCOMMAND] = '';
@@ -1023,7 +1023,7 @@ class Virtual_shell
 
         foreach ($this->parsed_input[SECTION_EXTRAS] as $extra) {
             if (!isset($extra[STREAM_IDENTIFIER][0])) {
-                $extra[STREAM_IDENTIFIER] = array(STREAM_STDOUT);
+                $extra[STREAM_IDENTIFIER] = [STREAM_STDOUT];
             }
 
             if (!isset($this->output[$extra[REDIRECT_IDENTIFIER]])) {
@@ -1078,7 +1078,7 @@ class Virtual_shell
     protected function _combine_streams($stream1, $stream2)
     {
         // Combine two streams, taking account of arrays, Tempcode and other stuff
-        $stream_identifiers = array(STREAM_STDCOMMAND, STREAM_STDHTML, STREAM_STDOUT, STREAM_STDERR);
+        $stream_identifiers = [STREAM_STDCOMMAND, STREAM_STDHTML, STREAM_STDOUT, STREAM_STDERR];
 
         foreach ($stream_identifiers as $identifier) {
             if ((is_array($stream1[$identifier])) && (is_array($stream2[$identifier]))) {
@@ -1127,15 +1127,15 @@ class Virtual_shell
     protected function _array_to_html($array)
     {
         // Convert an array to an HTML format
-        $output = array();
+        $output = [];
         $key = null;
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $value = protect_from_escaping($this->_array_to_html($value));
             }
-            $output[] = array('KEY' => is_string($key) ? $key : strval($key), 'VALUE' => is_string($value) ? $value : (($value === null) ? 'null' : (is_object($value) ? $value : strval($value))));
+            $output[] = ['KEY' => is_string($key) ? $key : strval($key), 'VALUE' => is_string($value) ? $value : (($value === null) ? 'null' : (is_object($value) ? $value : strval($value)))];
         }
-        return do_template('COMMANDR_ARRAY', array('_GUID' => 'ab75cdb77fa797d2e42185b51e34d857', 'ELEMENTS' => $output));
+        return do_template('COMMANDR_ARRAY', ['_GUID' => 'ab75cdb77fa797d2e42185b51e34d857', 'ELEMENTS' => $output]);
     }
 
     /**
@@ -1191,20 +1191,20 @@ class Virtual_shell
                 $_commandr_state_diff = base64_decode($_COOKIE['commandr_state']);
                 $commandr_state_diff = @json_decode($_commandr_state_diff, true);
                 if (!is_array($commandr_state_diff)) {
-                    $commandr_state_diff = array();
+                    $commandr_state_diff = [];
                 }
             } else {
-                $commandr_state_diff = array();
+                $commandr_state_diff = [];
             }
 
             if (array_key_exists('commandr_state_lang', $_COOKIE)) {
                 $_commandr_state_lang_diff = base64_decode($_COOKIE['commandr_state_lang']);
                 $commandr_state_lang_diff = @json_decode($_commandr_state_lang_diff, true);
                 if (!is_array($commandr_state_lang_diff)) {
-                    $commandr_state_lang_diff = array();
+                    $commandr_state_lang_diff = [];
                 }
             } else {
-                $commandr_state_lang_diff = array();
+                $commandr_state_lang_diff = [];
             }
             foreach ($commandr_state_lang_diff as $commandr_lang) {
                 if ((file_exists(get_custom_file_base() . '/lang_custom/' . fallback_lang() . '/' . $commandr_lang . '.ini')) || (file_exists(get_file_base() . '/lang/' . fallback_lang() . '/' . $commandr_lang . '.ini'))) {
@@ -1216,10 +1216,10 @@ class Virtual_shell
                 $_commandr_state_code_diff = base64_decode($_COOKIE['commandr_state_code']);
                 $commandr_state_code_diff = @json_decode($_commandr_state_code_diff, true);
                 if (!is_array($commandr_state_code_diff)) {
-                    $commandr_state_code_diff = array();
+                    $commandr_state_code_diff = [];
                 }
             } else {
-                $commandr_state_code_diff = array();
+                $commandr_state_code_diff = [];
             }
 
             $already_required = array_keys($GLOBALS['REQUIRED_CODE']);
@@ -1270,10 +1270,10 @@ class Virtual_shell
             $cookie_size = strlen(json_encode($_COOKIE));
             if ($cookie_size < 4096) { // Be careful, large cookies can block Apache requests
                 // Variables
-                $commandr_env_neglect = array('SITE_DB', 'FORUM_DB', 'FORUM_DRIVER', 'GLOBALS', '_SERVER', '_COOKIE', '_GET', '_POST', '_ENV', '_FILES', '_REQUEST', '_SESSION', 'this', 'php_errormsg'/*LEGACY*/);
+                $commandr_env_neglect = ['SITE_DB', 'FORUM_DB', 'FORUM_DRIVER', 'GLOBALS', '_SERVER', '_COOKIE', '_GET', '_POST', '_ENV', '_FILES', '_REQUEST', '_SESSION', 'this', 'php_errormsg'/*LEGACY*/];
                 $commandr_env_after = get_defined_vars();
                 $commandr_env_changes = array_diff(array_keys($commandr_env_after), $commandr_env_neglect);
-                $commandr_state_diff = array();
+                $commandr_state_diff = [];
                 foreach ($commandr_env_changes as $commandr_change) {
                     if ((substr($commandr_change, 0, 6) != 'commandr_') && (is_scalar($commandr_env_after[$commandr_change]))) {
                         $commandr_state_diff[$commandr_change] = $commandr_env_after[$commandr_change];
@@ -1377,8 +1377,8 @@ class Virtual_shell
  */
 function do_command_help($command, $options, $parameters)
 {
-    $_options = array();
-    $_parameters = array();
+    $_options = [];
+    $_parameters = [];
 
     foreach ($options as $option_name) {
         if ($option_name == 'h') {
@@ -1393,7 +1393,7 @@ function do_command_help($command, $options, $parameters)
         if ($_parameter === null) {
             continue;
         }
-        $matches = array();
+        $matches = [];
         if (preg_match('#/sources/hooks/(.*)/(.*)/#', $_parameter, $matches) != 0) {
             $hooks = find_all_hooks($matches[1], $matches[2]);
             $_parameter .= ' (';
@@ -1408,12 +1408,12 @@ function do_command_help($command, $options, $parameters)
         $_parameters[] = $_parameter;
     }
 
-    return do_template('COMMANDR_HELP', array(
+    return do_template('COMMANDR_HELP', [
                         '_GUID' => '6abdbac52ae2a63f219f5d2e44687bb9',
                         'INTRODUCTION' => do_lang_tempcode('CMD_' . strtoupper($command) . '_HELP'),
                         'OPTIONS' => $_options,
                         'PARAMETERS' => $_parameters,
-                    ));
+                    ]);
 }
 
 /**
@@ -1424,7 +1424,7 @@ function do_command_help($command, $options, $parameters)
  */
 function commandr_make_normal_html_visible($html)
 {
-    return do_template('COMMANDR_BOX', array('_GUID' => '1a77370b0230fafda432c2d325d83ef1', 'HTML' => $html));
+    return do_template('COMMANDR_BOX', ['_GUID' => '1a77370b0230fafda432c2d325d83ef1', 'HTML' => $html]);
 }
 
 /**

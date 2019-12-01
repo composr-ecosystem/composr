@@ -30,7 +30,7 @@ class Hook_config_copyright
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COPYRIGHT',
             'type' => 'transline',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_copyright
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

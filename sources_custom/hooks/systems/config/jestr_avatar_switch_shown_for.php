@@ -25,7 +25,7 @@ class Hook_config_jestr_avatar_switch_shown_for
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JESTER_AVATAR_SWITCH_SHOWN_FOR',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_jestr_avatar_switch_shown_for
             'public' => false,
 
             'addon' => 'jestr',
-        );
+        ];
     }
 
     /**

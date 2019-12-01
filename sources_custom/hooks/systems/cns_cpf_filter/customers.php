@@ -26,12 +26,12 @@ class Hook_cns_cpf_filter_customers
     public function to_enable()
     {
         if (!addon_installed('composr_homesite_support_credits')) {
-            return array();
+            return [];
         }
 
         require_lang('customers');
 
-        $cpf = array();
+        $cpf = [];
         $cpf['ftp_host'] = true;
         $cpf['ftp_path'] = true;
         $cpf['ftp_username'] = true;

@@ -31,7 +31,7 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_comcode_pages',
             'tut_adv_comcode_pages',
             'tut_information',
-        );
+        ];
     }
 
     /**
@@ -75,11 +75,11 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/cms/comcode_page_edit.svg',
             'themes/default/images/icons_monochrome/menu/cms/comcode_page_edit.svg',
             'sources/hooks/systems/config/points_COMCODE_PAGE_ADD.php',
@@ -170,7 +170,7 @@ class Hook_addon_registry_core_comcode_pages
             'themes/default/images/icons_monochrome/tiers/platinum.svg',
             'themes/default/images/icons_monochrome/tiers/silver.svg',
             'sources/hooks/systems/config/search_comcode_pages.php',
-        );
+        ];
     }
 
     /**
@@ -180,14 +180,14 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/COMCODE_PAGE_SCREEN.tpl' => 'comcode_page_screen',
             'templates/COMCODE_PAGE_EDIT_ACTIONS.tpl' => 'comcode_page_edit_actions',
             'templates/COMCODE_PAGE_BOX.tpl' => 'comcode_page_preview',
             'templates/GENERATE_PAGE_SITEMAP.tpl' => 'administrative__comcode_page_sitemap',
             'templates/GENERATE_PAGE_SITEMAP_SCREEN.tpl' => 'administrative__comcode_page_sitemap',
             'templates/COMCODE_PAGE_MANAGE_SCREEN.tpl' => 'administrative__comcode_page_manage_screen',
-        );
+        ];
     }
 
     /**
@@ -200,23 +200,23 @@ class Hook_addon_registry_core_comcode_pages
     public function tpl_preview__administrative__comcode_page_manage_screen()
     {
         require_lang('zones');
-        return array(
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('COMCODE_PAGE_MANAGE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'TABLE' => placeholder_table(),
                 'SUBMIT_NAME' => lorem_word(),
                 'POST_URL' => placeholder_url(),
                 'HIDDEN' => '',
                 'TEXT' => lorem_paragraph_html(),
-                'LINKS' => array(array(
+                'LINKS' => [[
                     'LINK_IMAGE' => placeholder_image_url(),
                     'LINK_URL' => placeholder_url(),
                     'LINK_TEXT' => lorem_phrase(),
-                )),
+                ]],
                 'FILTER' => '',
                 'HAS_PAGINATION' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -230,13 +230,13 @@ class Hook_addon_registry_core_comcode_pages
     {
         require_lang('zones');
 
-        return array(
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_EDIT_ACTIONS', array(
+        return [
+            lorem_globalise(do_lorem_template('COMCODE_PAGE_EDIT_ACTIONS', [
                 'VIEW_URL' => placeholder_url(),
                 'EDIT_URL' => placeholder_url(),
                 'CLONE_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -248,8 +248,8 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function tpl_preview__comcode_page_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('COMCODE_PAGE_SCREEN', [
                 'BEING_INCLUDED' => false,
                 'IS_PANEL' => false,
                 'SUBMITTER' => placeholder_id(),
@@ -262,8 +262,8 @@ class Hook_addon_registry_core_comcode_pages
                 'ADD_CHILD_URL' => placeholder_url(),
                 'NAME' => placeholder_id(),
                 'NATIVE_ZONE' => lorem_word(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -275,15 +275,15 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function tpl_preview__comcode_page_preview()
     {
-        return array(
-            lorem_globalise(do_lorem_template('COMCODE_PAGE_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('COMCODE_PAGE_BOX', [
                 'GIVE_CONTEXT' => true,
                 'PAGE' => lorem_phrase(),
                 'ZONE' => lorem_phrase(),
                 'URL' => placeholder_url(),
                 'SUMMARY' => lorem_paragraph_html(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -295,15 +295,15 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function tpl_preview__administrative__comcode_page_sitemap()
     {
-        $menu_paths = array();
-        $menu_paths[] = array(
+        $menu_paths = [];
+        $menu_paths[] = [
             'MENU' => lorem_phrase(),
             'MENU_URL' => placeholder_url(),
-            'MENU_PATH_COMPONENTS' => array(lorem_phrase()),
-        );
+            'MENU_PATH_COMPONENTS' => [lorem_phrase()],
+        ];
 
-        $_page_structure = array();
-        $_page_structure[] = array(
+        $_page_structure = [];
+        $_page_structure[] = [
             'EDIT_URL' => placeholder_url(),
             'ZONE_NAME' => lorem_phrase(),
             'PAGE_NAME' => lorem_phrase(),
@@ -312,19 +312,19 @@ class Hook_addon_registry_core_comcode_pages
             'TODO' => false,
             'MENU_PATHS' => $menu_paths,
             'CHILDREN' => '',
-        );
+        ];
 
-        $page_structure = do_lorem_template('GENERATE_PAGE_SITEMAP', array(
+        $page_structure = do_lorem_template('GENERATE_PAGE_SITEMAP', [
             'PAGE_STRUCTURE' => $_page_structure,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('GENERATE_PAGE_SITEMAP_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('GENERATE_PAGE_SITEMAP_SCREEN', [
                 'TITLE' => lorem_title(),
-                'ZONES' => array(lorem_phrase() => lorem_phrase()),
+                'ZONES' => [lorem_phrase() => lorem_phrase()],
                 'PAGE_STRUCTURE' => $page_structure,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -340,11 +340,11 @@ class Hook_addon_registry_core_comcode_pages
         require_code('zones3');
         require_code('abstract_file_manager');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_zone', 'the_page'), array('the_page' => 'lorem'));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page'], ['the_page' => 'lorem']);
         foreach ($to_delete as $record) {
             delete_cms_page($record['the_zone'], $record['the_page']);
         }
-        $to_delete = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_zone', 'the_page'), array('the_zone' => 'lorem'));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_zone', 'the_page'], ['the_zone' => 'lorem']);
         foreach ($to_delete as $record) {
             delete_cms_page($record['the_zone'], $record['the_page']);
         }
@@ -365,7 +365,7 @@ class Hook_addon_registry_core_comcode_pages
         require_code('zones3');
         require_code('abstract_file_manager');
 
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', array('zone_name' => 'lorem')) === null) {
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_name', ['zone_name' => 'lorem']) === null) {
             actual_add_zone('lorem', lorem_phrase(), DEFAULT_ZONE_PAGE_NAME, lorem_phrase(), 'default', 0);
         }
 

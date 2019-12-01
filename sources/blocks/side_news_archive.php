@@ -30,14 +30,14 @@ class Block_side_news_archive
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('select', 'zone', 'title');
+        $info['parameters'] = ['select', 'zone', 'title'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_news_archive
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('title', $map) ? $map['title'] : do_lang('ARCHIVES'),
@@ -75,7 +75,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'jgoer1lzlefihrpu4tank2j9e7uwmf17', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'jgoer1lzlefihrpu4tank2j9e7uwmf17', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         require_lang('news');
@@ -99,7 +99,7 @@ PHP;
         $rows = array_reverse($rows);
 
         if (empty($rows)) {
-            return do_template('RED_ALERT', array('_GUID' => '2kkpdv5vq2zbhuu4j4n6gteucgi1mee1', 'TEXT' => do_lang_tempcode('NO_ENTRIES')));
+            return do_template('RED_ALERT', ['_GUID' => '2kkpdv5vq2zbhuu4j4n6gteucgi1mee1', 'TEXT' => do_lang_tempcode('NO_ENTRIES')]);
         }
         $first = $rows[0]['date_and_time'];
         $last = $rows[count($rows) - 1]['date_and_time'];
@@ -110,8 +110,8 @@ PHP;
         $last_month = intval(date('m', utctime_to_usertime($last)));
         $last_year = intval(date('Y', utctime_to_usertime($last)));
 
-        $years = array();
-        $years[$current_year] = array('YEAR' => strval($current_year), 'TIMES' => array());
+        $years = [];
+        $years[$current_year] = ['YEAR' => strval($current_year), 'TIMES' => []];
 
         require_lang('dates');
 
@@ -175,9 +175,9 @@ PHP;
                         break;
                 }
 
-                $url = build_url(array('page' => 'news', 'type' => 'browse', 'select' => $select, 'module_start' => count($rows) - $offset - 1, 'year' => $current_year, 'month' => $current_month), $zone);
+                $url = build_url(['page' => 'news', 'type' => 'browse', 'select' => $select, 'module_start' => count($rows) - $offset - 1, 'year' => $current_year, 'month' => $current_month], $zone);
 
-                array_unshift($years[$current_year]['TIMES'], array('URL' => $url, 'MONTH' => strval($current_month), 'MONTH_STRING' => $month_string));
+                array_unshift($years[$current_year]['TIMES'], ['URL' => $url, 'MONTH' => strval($current_month), 'MONTH_STRING' => $month_string]);
             }
 
             if ($current_month != 12) {
@@ -185,7 +185,7 @@ PHP;
             } else {
                 $current_month = 1;
                 $current_year++;
-                $years[$current_year] = array('YEAR' => strval($current_year), 'TIMES' => array());
+                $years[$current_year] = ['YEAR' => strval($current_year), 'TIMES' => []];
             }
         }
 
@@ -193,11 +193,11 @@ PHP;
 
         $title = array_key_exists('title', $map) ? $map['title'] : do_lang('ARCHIVES');
 
-        return do_template('BLOCK_SIDE_NEWS_ARCHIVE', array(
+        return do_template('BLOCK_SIDE_NEWS_ARCHIVE', [
             '_GUID' => '10d6267d943ad77a4025a4e286c41ee7',
             'BLOCK_ID' => $block_id,
             'YEARS' => $years,
             'TITLE' => $title,
-        ));
+        ]);
     }
 }

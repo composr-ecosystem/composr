@@ -37,7 +37,7 @@ class Persistent_caching_xcache
         if ($this->objects_list === null) {
             $this->objects_list = xcache_get(get_file_base() . 'PERSISTENT_CACHE_OBJECTS');
             if ($this->objects_list === null) {
-                $this->objects_list = array();
+                $this->objects_list = [];
             }
         }
         return $this->objects_list;
@@ -79,7 +79,7 @@ class Persistent_caching_xcache
             xcache_set(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
         }
 
-        xcache_set($key, array(time(), $data), $expire_secs);
+        xcache_set($key, [time(), $data], $expire_secs);
     }
 
     /**
@@ -103,7 +103,7 @@ class Persistent_caching_xcache
     public function flush()
     {
         // Update list of persistent-objects
-        $this->objects_list = array();
+        $this->objects_list = [];
         xcache_set(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
 
         xcache_unset_by_prefix('');

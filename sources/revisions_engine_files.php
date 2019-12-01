@@ -140,15 +140,15 @@ class RevisionEngineFiles
     public function find_revisions($directory, $filename_id, $ext, $action = null, $revision_time = null, $max = 100, $start = 0, $limited_data = false)
     {
         if (!$this->enabled(true)) {
-            return array();
+            return [];
         }
 
         $base = get_custom_file_base() . '/' . $directory;
 
-        $times = array();
+        $times = [];
         $quick_match = @glob(get_custom_file_base() . '/' . $directory . '/' . $filename_id . '.' . $ext . '.*', GLOB_NOSORT);
         if ($quick_match === false) {
-            $quick_match = array();
+            $quick_match = [];
         }
         foreach ($quick_match as $f) {
             $_ext = get_file_extension($f);
@@ -163,34 +163,34 @@ class RevisionEngineFiles
         }
 
         rsort($times); // Sort into reverse time order
-        array_splice($times, 0, $start, array()); // Remove before start
+        array_splice($times, 0, $start, []); // Remove before start
         if ($max !== null) {
-            array_splice($times, $max, count($times), array()); // Remove after max
+            array_splice($times, $max, count($times), []); // Remove after max
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($times as $time) {
             $full_path = $base . '/' . $filename_id . '.' . $ext . '.' . strval($time);
 
             $mtime = filemtime($full_path);
 
             if ($limited_data) {
-                $ret[$time] = array(
+                $ret[$time] = [
                     'id' => $mtime,
                     'r_time' => $time,
-                );
+                ];
 
                 continue;
             }
 
             $original_text = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
 
-            $ret[$time] = array(
+            $ret[$time] = [
                 'id' => $mtime,
                 'r_original_text' => $original_text,
                 'r_time' => $time,
 
-                'revision_type' => serialize(array($directory, $filename_id, $ext)),
+                'revision_type' => serialize([$directory, $filename_id, $ext]),
 
                 'r_actionlog_id' => null,
 
@@ -201,12 +201,12 @@ class RevisionEngineFiles
                 'log_ip' => null,
                 //'log_time' => null, Same as id
                 'log_reason' => '',
-            );
+            ];
 
             if ($action !== null) {
-                $test = $GLOBALS['SITE_DB']->query_select('actionlogs', array('*'), array('date_and_time' => $mtime, 'the_type' => $action), '', 1);
+                $test = $GLOBALS['SITE_DB']->query_select('actionlogs', ['*'], ['date_and_time' => $mtime, 'the_type' => $action], '', 1);
                 if (array_key_exists(0, $test)) {
-                    $ret[$time] = array(
+                    $ret[$time] = [
                         'r_actionlog_id' => $test[0]['id'],
 
                         'log_action' => $test[0]['the_type'],
@@ -216,7 +216,7 @@ class RevisionEngineFiles
                         'log_ip' => $test[0]['ip'],
                         //'log_time' => $test[0]['date_and_time'], Same as id
                         'log_reason' => '',
-                    ) + $ret[$time];
+                    ] + $ret[$time];
                 }
             }
         }
@@ -272,7 +272,7 @@ class RevisionEngineFiles
             return null;
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', array('date_and_time', 'the_type', 'param_a', 'param_b'), array('id' => $actionlog_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('actionlogs', ['date_and_time', 'the_type', 'param_a', 'param_b'], ['id' => $actionlog_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return null;
         }
@@ -342,7 +342,7 @@ class RevisionEngineFiles
         $start = get_param_integer('revisions_start', 0);
         $max = get_param_integer('revisions_max', 5);
 
-        $sortables = array('r_time' => do_lang_tempcode('DATE'));
+        $sortables = ['r_time' => do_lang_tempcode('DATE')];
         $test = explode(' ', get_param_string('revisions_sort', 'r_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -358,13 +358,13 @@ class RevisionEngineFiles
 
         $do_actionlog = has_actual_page_access(get_member(), 'admin_actionlog');
 
-        $_header_row = array(
+        $_header_row = [
             do_lang_tempcode('DATE_TIME'),
             do_lang_tempcode('MEMBER'),
             do_lang_tempcode('SIZE_CHANGE'),
             do_lang_tempcode('CHANGE_MICRO'),
             do_lang_tempcode('UNDO'),
-        );
+        ];
         if ($do_actionlog) {
             $_header_row[] = do_lang_tempcode('LOG');
         }
@@ -384,33 +384,33 @@ class RevisionEngineFiles
 
             if (function_exists('diff_simple_2')) {
                 $rendered_diff = diff_simple_2($revision['r_original_text'], $more_recent_text);
-                $diff_icon = do_template('REVISIONS_DIFF_ICON', array('_GUID' => '9ea39609ba90f5f756b53df5269d036d', 'RENDERED_DIFF' => $rendered_diff,
-                ));
+                $diff_icon = do_template('REVISIONS_DIFF_ICON', ['_GUID' => '9ea39609ba90f5f756b53df5269d036d', 'RENDERED_DIFF' => $rendered_diff,
+                ]);
             } else {
                 $diff_icon = new Tempcode();
             }
 
             if (running_script('snippet') && get_param_string('snippet', '') == 'template_editor_load') {
-                $undo_link = do_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', array('_GUID' => '5a1466ae2d0df6804132ac63381a5f64', 'DATE' => $date, 'FILE' => get_param_string('file'), 'REVISION_ID' => strval($revision['id'])));
+                $undo_link = do_template('THEME_TEMPLATE_EDITOR_RESTORE_REVISION', ['_GUID' => '5a1466ae2d0df6804132ac63381a5f64', 'DATE' => $date, 'FILE' => get_param_string('file'), 'REVISION_ID' => strval($revision['id'])]);
             } else {
-                $undo_url = get_self_url(false, false, array('undo_revision' => $revision['id']));
+                $undo_url = get_self_url(false, false, ['undo_revision' => $revision['id']]);
                 $undo_link = hyperlink($undo_url, do_lang_tempcode('UNDO'), false, false, $date);
             }
 
             if ($revision['r_actionlog_id'] === null) {
                 $actionlog_link = do_lang_tempcode('UNKNOWN_EM');
             } else {
-                $actionlog_url = build_url(array('page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_actionlog_id'], 'mode' => 'cms'), get_module_zone('admin_actionlog'));
+                $actionlog_url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $revision['r_actionlog_id'], 'mode' => 'cms'], get_module_zone('admin_actionlog'));
                 $actionlog_link = hyperlink($actionlog_url, do_lang_tempcode('LOG'), false, false, '#' . strval($revision['r_actionlog_id']));
             }
 
-            $_revision = array(
+            $_revision = [
                 escape_html($date),
                 $member_link,
                 escape_html(clean_file_size($size_change)),
                 $diff_icon,
                 $undo_link,
-            );
+            ];
             if ($do_actionlog) {
                 $_revision[] = $actionlog_link;
             }
@@ -439,10 +439,10 @@ class RevisionEngineFiles
             'revisions_sort'
         );
 
-        $revisions_tpl = do_template('REVISIONS_WRAP', array(
+        $revisions_tpl = do_template('REVISIONS_WRAP', [
             '_GUID' => '2fc38d9d7ec57af110759352446e533d',
             'RESULTS' => $results,
-        ));
+        ]);
 
         if ($restore_from_path !== null) {
             $has_access = (dirname(filter_naughty($restore_from_path)) == $directory) || ((has_actual_page_access(get_member(), 'cms_comcode_pages')) && (strpos($restore_from_path, 'pages/comcode') !== false));

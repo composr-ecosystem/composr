@@ -30,14 +30,14 @@ class Block_side_galleries
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'depth', 'zone', 'show_empty', 'check');
+        $info['parameters'] = ['param', 'depth', 'zone', 'show_empty', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_galleries
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('depth', $map) ? intval($map['depth']) : 0,
@@ -111,29 +111,29 @@ PHP;
 
             foreach ($galleries as $gallery) {
                 if (($show_empty) || (gallery_has_content($gallery['name']))) {
-                    $subgalleries = $GLOBALS['SITE_DB']->query_select('galleries', array('name', 'fullname'), array('parent_id' => $gallery['name']), 'ORDER BY add_date', 300 /*reasonable limit*/);
+                    $subgalleries = $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'fullname'], ['parent_id' => $gallery['name']], 'ORDER BY add_date', 300 /*reasonable limit*/);
                     $nest = $this->inside($zone, $subgalleries, 'BLOCK_SIDE_GALLERIES_LINE_DEPTH', $show_empty);
                     $caption = get_translated_text($gallery['fullname']);
-                    $content->attach(do_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', array('_GUID' => 'e50b84369b5e2146c4fab4fddc84bf0a', 'ID' => $gallery['name'], 'CAPTION' => $caption, 'CONTENTS' => $nest)));
+                    $content->attach(do_template('BLOCK_SIDE_GALLERIES_LINE_CONTAINER', ['_GUID' => 'e50b84369b5e2146c4fab4fddc84bf0a', 'ID' => $gallery['name'], 'CAPTION' => $caption, 'CONTENTS' => $nest]));
                 }
             }
         }
 
-        $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', array('name' => $parent_id));
+        $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $parent_id]);
         if ($_title !== null) {
             $title = get_translated_text($_title);
         } else {
             $title = '';
         }
 
-        return do_template('BLOCK_SIDE_GALLERIES', array(
+        return do_template('BLOCK_SIDE_GALLERIES', [
             '_GUID' => 'ed420ce9d1b1dde95eb3fd8473090228',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
             'ID' => $parent_id,
             'DEPTH' => $depth != 0,
             'CONTENT' => $content,
-        ));
+        ]);
     }
 
     /**
@@ -151,8 +151,8 @@ PHP;
 
         foreach ($galleries as $gallery) {
             if (($show_empty) || (gallery_has_content($gallery['name']))) {
-                $url = build_url(array('page' => 'galleries', 'type' => 'browse', 'id' => $gallery['name']), $zone);
-                $content->attach(do_template($tpl, array('TITLE' => get_translated_text($gallery['fullname']), 'URL' => $url)));
+                $url = build_url(['page' => 'galleries', 'type' => 'browse', 'id' => $gallery['name']], $zone);
+                $content->attach(do_template($tpl, ['TITLE' => get_translated_text($gallery['fullname']), 'URL' => $url]));
             }
         }
 

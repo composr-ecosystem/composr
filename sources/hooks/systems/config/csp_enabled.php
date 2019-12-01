@@ -30,7 +30,7 @@ class Hook_config_csp_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSP_ENABLED',
             'type' => 'list',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_csp_enabled
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

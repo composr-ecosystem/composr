@@ -31,7 +31,7 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_website_health',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/cleanup.svg',
             'themes/default/images/icons/menu/adminzone/tools/broken_urls.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/cleanup.svg',
@@ -149,7 +149,7 @@ class Hook_addon_registry_core_cleanup_tools
             'sources/hooks/systems/tasks/reorganise_uploads.php',
             'sources/hooks/systems/reorganise_uploads/index.html',
             'sources/hooks/systems/reorganise_uploads/.htaccess',
-        );
+        ];
     }
 
     /**
@@ -159,13 +159,13 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/CLEANUP_COMPLETED_SCREEN.tpl' => 'administrative__cleanup_completed_screen',
             'templates/CLEANUP_ORPHANED_UPLOADS.tpl' => 'administrative__cleanup_completed_screen',
             'templates/CLEANUP_PAGE_STATS.tpl' => 'administrative__cleanup_completed_screen',
             'templates/BROKEN_URLS.tpl' => 'administrative__broken_urls_screen',
             'templates/BROKEN_CONTENT_LANG_STRINGS.tpl' => 'administrative__broken_content_lang_strings',
-        );
+        ];
     }
 
     /**
@@ -177,31 +177,31 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function tpl_preview__administrative__cleanup_completed_screen()
     {
-        $urls = array();
+        $urls = [];
         foreach (placeholder_array() as $v) {
-            $urls[] = array(
+            $urls[] = [
                 'URL' => placeholder_url(),
                 'PATH' => lorem_phrase(),
-            );
+            ];
         }
 
-        $message = do_lorem_template('CLEANUP_ORPHANED_UPLOADS', array(
+        $message = do_lorem_template('CLEANUP_ORPHANED_UPLOADS', [
             'FOUND' => $urls,
-        ));
+        ]);
 
         if (addon_installed('stats')) {
             require_lang('stats');
-            $message->attach(do_lorem_template('CLEANUP_PAGE_STATS', array(
+            $message->attach(do_lorem_template('CLEANUP_PAGE_STATS', [
                 'STATS_BACKUP_URL' => placeholder_url(),
-            )));
+            ]));
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('CLEANUP_COMPLETED_SCREEN', [
                 'TITLE' => lorem_title(),
                 'MESSAGES' => $message,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -215,24 +215,24 @@ class Hook_addon_registry_core_cleanup_tools
     {
         require_lang('cleanup');
 
-        $urls = array();
+        $urls = [];
         foreach (placeholder_array() as $value) {
-            $urls[] = array(
+            $urls[] = [
                 'FULL_URL' => placeholder_url(),
-                'TABLE_NAMES' => array(placeholder_id()),
-                'FIELD_NAMES' => array(placeholder_id()),
-                'IDENTIFIERS' => array(array('IDENTIFIER' => placeholder_id(), 'EDIT_URL' => '')),
-                'CONTENT_TYPES' => array(lorem_phrase()),
+                'TABLE_NAMES' => [placeholder_id()],
+                'FIELD_NAMES' => [placeholder_id()],
+                'IDENTIFIERS' => [['IDENTIFIER' => placeholder_id(), 'EDIT_URL' => '']],
+                'CONTENT_TYPES' => [lorem_phrase()],
                 'STATUS' => true,
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('BROKEN_URLS', array(
+        return [
+            lorem_globalise(do_lorem_template('BROKEN_URLS', [
                 'URLS' => $urls,
                 'DONE' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -246,12 +246,12 @@ class Hook_addon_registry_core_cleanup_tools
     {
         require_lang('cleanup');
 
-        return array(
-            lorem_globalise(do_lorem_template('BROKEN_CONTENT_LANG_STRINGS', array(
+        return [
+            lorem_globalise(do_lorem_template('BROKEN_CONTENT_LANG_STRINGS', [
                 'MISSING_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'FUSED_CONTENT_LANG_STRINGS' => placeholder_array(),
                 'ORPHANED_CONTENT_LANG_STRINGS' => placeholder_array(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_oembed_max_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OEMBED_MAX_SIZE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_oembed_max_size
             'public' => false,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

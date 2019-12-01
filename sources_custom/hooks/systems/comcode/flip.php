@@ -29,7 +29,7 @@ class Hook_comcode_flip
             return null;
         }
 
-        return array(
+        return [
             'tag_title' => 'Flip',
             'tag_description' => 'Provide two-sided square flip spots.',
             'tag_example' => '[flip="Back"]Front[/flip]',
@@ -39,6 +39,6 @@ class Hook_comcode_flip
             'tag_block_tag' => 0,
             'tag_textual_tag' => 1,
             'tag_dangerous_tag' => 0,
-        );
+        ];
     }
 }

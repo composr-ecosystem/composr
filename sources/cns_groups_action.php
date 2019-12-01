@@ -70,7 +70,7 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
     $gift_points_per_day = take_param_int_modeavg($gift_points_per_day, 'g_gift_points_per_day', 'f_groups', 1);
 
     if (!running_script('stress_test_loader')) {
-        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $name));
+        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $name]);
         if ($test !== null) {
             if ($uniqify) {
                 $name .= '_' . uniqid('', false);
@@ -100,7 +100,7 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
         $order = 100;
     }
 
-    $map = array(
+    $map = [
         'g_is_default' => $is_default,
         'g_is_presented_at_install' => $is_presented_at_install,
         'g_is_super_admin' => $is_super_admin,
@@ -125,7 +125,7 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
         'g_rank_image_pri_only' => $rank_image_pri_only,
         'g_open_membership' => $open_membership,
         'g_is_private_club' => $is_private_club,
-    );
+    ];
     $map += insert_lang('g_name', $name, 2, $GLOBALS['FORUM_DB']);
     $map += insert_lang('g_title', $title, 2, $GLOBALS['FORUM_DB']);
     $group_id = $GLOBALS['FORUM_DB']->query_insert('f_groups', $map, true);
@@ -137,33 +137,33 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
 
         $group_members = get_first_default_group();
 
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_privileges', array('*'), array('group_id' => $group_members));
+        $member_access = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members]);
         foreach ($member_access as &$access) {
             $access['group_id'] = $group_id;
         }
         $GLOBALS['SITE_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
         if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
-            $member_access = $GLOBALS['FORUM_DB']->query_select('group_privileges', array('*'), array('group_id' => $group_members, 'module_the_name' => 'forums'));
+            $member_access = $GLOBALS['FORUM_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
             foreach ($member_access as &$access) {
                 $access['group_id'] = $group_id;
             }
             $GLOBALS['FORUM_DB']->query_insert('group_privileges', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
         }
 
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_category_access', array('*'), array('group_id' => $group_members));
+        $member_access = $GLOBALS['SITE_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members]);
         foreach ($member_access as &$access) {
             $access['group_id'] = $group_id;
         }
         $GLOBALS['SITE_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
         if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
-            $member_access = $GLOBALS['FORUM_DB']->query_select('group_category_access', array('*'), array('group_id' => $group_members, 'module_the_name' => 'forums'));
+            $member_access = $GLOBALS['FORUM_DB']->query_select('group_category_access', ['*'], ['group_id' => $group_members, 'module_the_name' => 'forums']);
             foreach ($member_access as &$access) {
                 $access['group_id'] = $group_id;
             }
             $GLOBALS['FORUM_DB']->query_insert('group_category_access', $GLOBALS['SITE_DB']->bulk_insert_flip($member_access), false, true); // failsafe, in case we have put in some permissions for a group since deleted (can happen during install)
         }
 
-        $member_access = $GLOBALS['SITE_DB']->query_select('group_zone_access', array('*'), array('group_id' => $group_members));
+        $member_access = $GLOBALS['SITE_DB']->query_select('group_zone_access', ['*'], ['group_id' => $group_members]);
         foreach ($member_access as &$access) {
             $access['group_id'] = $group_id;
         }
@@ -181,8 +181,8 @@ function cns_make_group($name, $is_default = 0, $is_super_admin = 0, $is_super_m
     if ($is_private_club == 1) {
         require_code('notifications');
         $subject = do_lang('NEW_CLUB_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $name);
-        $view_url = build_url(array('page' => 'groups', 'type' => 'view', 'id' => $group_id), get_module_zone('groups'), array(), false, false, true);
-        $mail = do_notification_lang('NEW_CLUB_NOTIFICATION_MAIL', get_site_name(), comcode_escape($name), array(comcode_escape($view_url->evaluate())));
+        $view_url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $group_id], get_module_zone('groups'), [], false, false, true);
+        $mail = do_notification_lang('NEW_CLUB_NOTIFICATION_MAIL', get_site_name(), comcode_escape($name), [comcode_escape($view_url->evaluate())]);
         dispatch_notification('cns_club', null, $subject, $mail);
     }
 

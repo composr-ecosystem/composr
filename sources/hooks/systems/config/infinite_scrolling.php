@@ -30,7 +30,7 @@ class Hook_config_infinite_scrolling
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'INFINITE_SCROLLING',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_infinite_scrolling
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

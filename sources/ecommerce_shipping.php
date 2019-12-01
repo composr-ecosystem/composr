@@ -156,9 +156,9 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     list($company, $street_address_1, $street_address_2) = split_street_address($street_address, 3, true);
     list($business_street_address_1, $business_street_address_2) = split_street_address(get_option('business_street_address'), 2);
 
-    $request = array(
+    $request = [
         'object_purpose' => 'QUOTE',
-        'address_to' => array(
+        'address_to' => [
             'name' => trim($shipping_firstname . ' ' . $shipping_lastname),
             'company' => $company,
             'street1' => $street_address_1,
@@ -170,8 +170,8 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
             'phone' => $shipping_phone,
             'email' => $shipping_email,
             'object_purpose' => 'QUOTE',
-        ),
-        'address_from' => array(
+        ],
+        'address_from' => [
             'name' => get_option('business_name'), // This would be company name, so no need for separate company field
             'street1' => $business_street_address_1,
             'street2' => $business_street_address_2,
@@ -182,22 +182,22 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
             'phone' => get_option('pd_number'),
             'email' => get_option('pd_email'),
             'object_purpose' => 'QUOTE',
-        ),
-        'parcel' => array(
+        ],
+        'parcel' => [
             'length' => float_to_raw_string($product_length),
             'width' => float_to_raw_string($product_width),
             'height' => float_to_raw_string($product_height),
             'distance_unit' => strtolower(get_option('shipping_distance_units')),
             'weight' => float_to_raw_string($product_weight),
             'mass_unit' => strtolower(get_option('shipping_weight_units')),
-        ),
+        ],
         'async' => false,
-    );
+    ];
     $_request = json_encode($request);
     require_code('character_sets');
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
     $url = 'https://api.goshippo.com/shipments/';
-    $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => array($_request), 'timeout' => 20.0, 'raw_post' => true, 'extra_headers' => array('Authorization' => 'ShippoToken ' . $shippo_token), 'raw_content_type' => 'application/json', 'ignore_http_status' => true));
+    $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => [$_request], 'timeout' => 20.0, 'raw_post' => true, 'extra_headers' => ['Authorization' => 'ShippoToken ' . $shippo_token], 'raw_content_type' => 'application/json', 'ignore_http_status' => true]);
     $response = json_decode($_response, true);
 
     // Error handling
@@ -334,15 +334,15 @@ function get_shipping_contact_fields($shipping_email, $shipping_phone, $require_
  */
 function store_shipping_address($trans_expecting_id, $txn_id = '', $shipping_address = null)
 {
-    $field_groups = array(
-        array('a_firstname', 'a_lastname'),
-        array('a_street_address', 'a_city', 'a_county', 'a_state', 'a_post_code', 'a_country'),
-        array('a_email'),
-        array('a_phone'),
-    );
+    $field_groups = [
+        ['a_firstname', 'a_lastname'],
+        ['a_street_address', 'a_city', 'a_county', 'a_state', 'a_post_code', 'a_country'],
+        ['a_email'],
+        ['a_phone'],
+    ];
 
     if ($shipping_address === null) {
-        $shipping_address = array();
+        $shipping_address = [];
         foreach ($field_groups as $field_group) {
             foreach ($field_group as $field) {
                 $_field = substr($field, 2);
@@ -363,7 +363,7 @@ function store_shipping_address($trans_expecting_id, $txn_id = '', $shipping_add
         }
     }
 
-    $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', array('*'), array('a_trans_expecting_id' => $trans_expecting_id), '', 1);
+    $existing = $GLOBALS['SITE_DB']->query_select('ecom_trans_addresses', ['*'], ['a_trans_expecting_id' => $trans_expecting_id], '', 1);
     if (array_key_exists(0, $existing)) {
         $e = $existing[0];
 
@@ -393,12 +393,12 @@ function store_shipping_address($trans_expecting_id, $txn_id = '', $shipping_add
             }
         }
 
-        $GLOBALS['SITE_DB']->query_delete('ecom_trans_addresses', array('a_trans_expecting_id' => $trans_expecting_id), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('ecom_trans_addresses', ['a_trans_expecting_id' => $trans_expecting_id], '', 1);
     }
 
-    $more = array(
+    $more = [
         'a_trans_expecting_id' => $trans_expecting_id,
         'a_txn_id' => $txn_id,
-    );
+    ];
     return $GLOBALS['SITE_DB']->query_insert('ecom_trans_addresses', $shipping_address + $more, true);
 }

@@ -30,7 +30,7 @@ class Hook_config_hc_requests_window_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_REQUESTS_WINDOW_SIZE',
             'type' => 'integer',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_requests_window_size
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

@@ -33,10 +33,10 @@ class Hook_realtime_rain_chat
     public function run($from, $to)
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'chat')) {
             require_code('chat');
@@ -60,7 +60,7 @@ class Hook_realtime_rain_chat
                     continue;
                 }
 
-                $drops[] = rain_get_special_icons($row['ip_address'], $timestamp, null, $message) + array(
+                $drops[] = rain_get_special_icons($row['ip_address'], $timestamp, null, $message) + [
                     'TYPE' => 'chat',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -69,7 +69,7 @@ class Hook_realtime_rain_chat
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => $message,
-                    'URL' => build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points')),
+                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -77,7 +77,7 @@ class Hook_realtime_rain_chat
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'room_' . strval($row['room_id']),
-                );
+                ];
             }
         }
 

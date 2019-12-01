@@ -31,7 +31,7 @@ class Hook_addon_registry_actionlog
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_actionlog
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_censor',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_actionlog
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('actionlog'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['actionlog'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_actionlog
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/audit/actionlog.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/actionlog.svg',
             'sources/hooks/systems/notifications/actionlog.php',
@@ -123,7 +123,7 @@ class Hook_addon_registry_actionlog
             'themes/default/templates/REVISIONS_WRAP.tpl',
             'themes/default/templates/REVISIONS_DIFF_ICON.tpl',
             'themes/default/templates/REVISION_UNDO.tpl',
-        );
+        ];
     }
 
     /**
@@ -133,14 +133,14 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             // Revisions
             'templates/REVISIONS_WRAP.tpl' => 'administrative__show_revisions_wrap',
             'templates/REVISIONS_DIFF_ICON.tpl' => 'administrative__show_revision_diff_icon',
             'templates/REVISIONS_SCREEN.tpl' => 'revisions_screen',
             'templates/REVISION_UNDO.tpl' => 'revision_undo',
             'templates/ACTIONLOG_FOLLOWUP_URLS.tpl' => 'administrative__actionlog_followup_urls',
-        );
+        ];
     }
 
     /**
@@ -152,11 +152,11 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__administrative__show_revisions_wrap()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REVISIONS_WRAP', array(
+        return [
+            lorem_globalise(do_lorem_template('REVISIONS_WRAP', [
                 'RESULTS' => placeholder_table(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -168,11 +168,11 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__administrative__show_revision_diff_icon()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', array(
+        return [
+            lorem_globalise(do_lorem_template('REVISIONS_DIFF_ICON', [
                 'RENDERED_DIFF' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -184,14 +184,14 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__revisions_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REVISIONS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('REVISIONS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'RESULTS' => lorem_phrase(),
                 'INCLUDE_FILTER_FORM' => true,
-                'RESOURCE_TYPES' => array(lorem_phrase()),
-            )), null, '', true)
-        );
+                'RESOURCE_TYPES' => [lorem_phrase()],
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -203,10 +203,10 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__revision_undo()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REVISION_UNDO', array(
-            )), null, '', true)
-        );
+        return [
+            lorem_globalise(do_lorem_template('REVISION_UNDO', [
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -218,15 +218,15 @@ class Hook_addon_registry_actionlog
      */
     public function tpl_preview__administrative__actionlog_followup_urls()
     {
-        $urls = array();
+        $urls = [];
         $urls[lorem_phrase()] = placeholder_url();
         $urls[lorem_phrase() . ' 2'] = placeholder_url();
 
-        return array(
-            lorem_globalise(do_lorem_template('ACTIONLOG_FOLLOWUP_URLS', array(
+        return [
+            lorem_globalise(do_lorem_template('ACTIONLOG_FOLLOWUP_URLS', [
                 'WRITTEN_CONTEXT' => lorem_phrase(),
                 'FOLLOWUP_URLS' => $urls,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

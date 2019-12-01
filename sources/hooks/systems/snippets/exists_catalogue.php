@@ -36,7 +36,7 @@ class Hook_snippet_exists_catalogue
 
         $val = get_param_string('name');
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => $val));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', ['c_name' => $val]);
         if ($test === null) {
             return new Tempcode();
         }

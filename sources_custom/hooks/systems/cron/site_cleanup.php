@@ -44,11 +44,11 @@ class Hook_cron_site_cleanup
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Reset personal demos',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 12,
-        );
+        ];
     }
 
     /**

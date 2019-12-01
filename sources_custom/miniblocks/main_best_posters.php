@@ -16,11 +16,11 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('top_posters')) {
-    return do_template('RED_ALERT', array('_GUID' => 'p9l4c31b4jc75gl2g1jywdr6elxnyecw', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('top_posters'))));
+    return do_template('RED_ALERT', ['_GUID' => 'p9l4c31b4jc75gl2g1jywdr6elxnyecw', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('top_posters'))]);
 }
 
 if (get_forum_type() != 'cns') {
-    return do_template('RED_ALERT', array('_GUID' => 'shcpt9ntekawt1e640rsn17792io5y22', 'TEXT' => do_lang_tempcode('NO_CNS')));
+    return do_template('RED_ALERT', ['_GUID' => 'shcpt9ntekawt1e640rsn17792io5y22', 'TEXT' => do_lang_tempcode('NO_CNS')]);
 }
 
 ?>
@@ -40,9 +40,9 @@ if (get_forum_type() != 'cns') {
         $max = array_key_exists('max', $map) ? intval($map['max']) : 10;
 
         if (multi_lang_content()) {
-            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', array('text_original')) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'translate t ON t.id=p.p_post WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
+            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', ['text_original']) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'translate t ON t.id=p.p_post WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
         } else {
-            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', array('p_post')) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
+            $sql = 'SELECT m.id,AVG(' . db_function('LENGTH', ['p_post']) . ') AS avg,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.p_poster=m.id WHERE m.id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY m.id ORDER BY avg DESC';
         }
         $members = $GLOBALS['FORUM_DB']->query($sql, $max);
 

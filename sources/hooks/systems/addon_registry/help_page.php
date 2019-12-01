@@ -31,7 +31,7 @@ class Hook_addon_registry_help_page
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_help_page
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_configuration',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_help_page
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,10 +97,10 @@ class Hook_addon_registry_help_page
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/help_page.php',
             'site/pages/comcode/EN/help.txt',
             'sources/hooks/systems/page_groupings/help_page.php',
-        );
+        ];
     }
 }

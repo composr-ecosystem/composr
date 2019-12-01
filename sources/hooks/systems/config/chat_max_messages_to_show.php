@@ -30,7 +30,7 @@ class Hook_config_chat_max_messages_to_show
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_MAX_MESSAGES_TO_SHOW',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_max_messages_to_show
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

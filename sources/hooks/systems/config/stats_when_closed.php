@@ -30,7 +30,7 @@ class Hook_config_stats_when_closed
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STATS_WHEN_CLOSED',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_stats_when_closed
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

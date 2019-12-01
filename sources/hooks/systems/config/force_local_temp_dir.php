@@ -30,7 +30,7 @@ class Hook_config_force_local_temp_dir
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORCE_LOCAL_TEMP_DIR',
             'type' => 'tick',
             'category' => 'SERVER',
@@ -43,7 +43,7 @@ class Hook_config_force_local_temp_dir
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -25,7 +25,7 @@ class Hook_config_tapatalk_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_API_KEY',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_tapatalk_api_key
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

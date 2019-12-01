@@ -93,7 +93,7 @@ function init__m_zip()
 
             $bits = explode(' ', UNZIP_CMD);
             if (!@file_exists(array_shift($bits))) {
-                $_config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'), get_module_zone('admin_config'));
+                $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'SITE'], get_module_zone('admin_config'));
                 $config_url = $_config_url->evaluate();
                 $config_url .= '#group_ARCHIVES';
 
@@ -103,7 +103,7 @@ function init__m_zip()
             }
 
             $res = -1; // any nonzero value
-            $unused_array_result = array();
+            $unused_array_result = [];
             if (!php_function_allowed('shell_exec')) {
                 attach_message(do_lang_tempcode('NO_SHELL_ZIP_POSSIBLE'), 'warn', false, true);
 
@@ -121,8 +121,8 @@ function init__m_zip()
             // OTHERWISE, you still have the option of parsing $unused_array_result to find clues of errors
             // (lines starting with or "inflating" mean no error)
 
-            $m_zip_open_dirs = array(opendir($zip_dir));
-            $m_zip_dir_paths = array($zip_dir);
+            $m_zip_open_dirs = [opendir($zip_dir)];
+            $m_zip_dir_paths = [$zip_dir];
 
             $M_ZIP_DIR_HANDLES[$zip_file] = false;
             unset($M_ZIP_DIR_HANDLES[$zip_file]);
@@ -131,7 +131,7 @@ function init__m_zip()
 
             cms_set_time_limit($old_limit);
 
-            return array($zip_file, $m_zip_open_file, $m_zip_open_dirs, $m_zip_dir_paths);
+            return [$zip_file, $m_zip_open_file, $m_zip_open_dirs, $m_zip_dir_paths];
         }
 
         /**
@@ -244,7 +244,7 @@ function init__m_zip()
             $M_ZIP_DIR_HANDLES[$m_zip_original_file] = $m_zip_open_dirs;
             $M_ZIP_DIR_OPEN_PATHS[$m_zip_original_file] = $m_zip_dir_paths;
 
-            return array($entryname, _m_zip_RelPath($zip_dir, $m_zip_last_dir_path), $m_zip_last_dir_path);
+            return [$entryname, _m_zip_RelPath($zip_dir, $m_zip_last_dir_path), $m_zip_last_dir_path];
         }
 
         /**

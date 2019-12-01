@@ -30,7 +30,7 @@ class Hook_config_delete_trashed_pts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DELETE_TRASHED_PTS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_delete_trashed_pts
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

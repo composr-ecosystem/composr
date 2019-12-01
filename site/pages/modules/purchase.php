@@ -57,7 +57,7 @@ class Module_purchase
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -80,7 +80,7 @@ class Module_purchase
 
         delete_privilege('access_ecommerce_in_test_mode');
 
-        $cpf = array(
+        $cpf = [
             'currency',
             'payment_cardholder_name',
             'payment_card_type',
@@ -88,7 +88,7 @@ class Module_purchase
             'payment_card_start_date',
             'payment_card_expiry_date',
             'payment_card_issue_number',
-        );
+        ];
         foreach ($cpf as $_cpf) {
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($_cpf);
         }
@@ -110,7 +110,7 @@ class Module_purchase
         if ($upgrade_from === null) {
             add_privilege('ECOMMERCE', 'access_ecommerce_in_test_mode', false);
 
-            $GLOBALS['SITE_DB']->create_table('ecom_trans_expecting', array( // Used to lock in and track transactions as they go through the payment gateway
+            $GLOBALS['SITE_DB']->create_table('ecom_trans_expecting', [ // Used to lock in and track transactions as they go through the payment gateway
                 'id' => '*ID_TEXT', // NB: This is often different from the 'ecom_transactions.id' field
                 'e_type_code' => 'ID_TEXT',
                 'e_purchase_id' => 'ID_TEXT',
@@ -129,7 +129,7 @@ class Module_purchase
                 'e_length_units' => 'ID_TEXT',
                 'e_memo' => 'LONG_TEXT',
                 'e_invoicing_breakdown' => 'LONG_TEXT',
-            ));
+            ]);
 
             require_code('currency');
 
@@ -141,7 +141,7 @@ class Module_purchase
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_expiry_date', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'year_month', 1, 'mm/yy', '', 0, 0, '', '', '', /*autofill_type=*/'cc-exp');
             $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_issue_number', 2, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'integer', 1, '');
 
-            $GLOBALS['SITE_DB']->create_table('ecom_transactions', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_transactions', [
                 'id' => '*ID_TEXT', // Often referenced as txn_id in code
                 't_type_code' => 'ID_TEXT',
                 't_purchase_id' => 'ID_TEXT',
@@ -160,7 +160,7 @@ class Module_purchase
                 't_invoicing_breakdown' => 'LONG_TEXT',
                 't_member_id' => 'MEMBER', // Of the paying member
                 't_session_id' => 'ID_TEXT', // Of the paying user
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
@@ -188,13 +188,13 @@ class Module_purchase
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {
             // This is used to store purchase details where there's too much data not stored anywhere else to use directly as a purchase ID
-            $GLOBALS['SITE_DB']->create_table('ecom_sales_expecting', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_sales_expecting', [
                 'id' => '*AUTO', // Used as a unique purchase ID
                 'e_details' => 'LONG_TEXT', // JSON encoded data
                 'e_time' => 'TIME',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('ecom_trans_addresses', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_trans_addresses', [
                 // These are filled after an order is made (maybe via what comes back from IPN, maybe from what is set for a local payment), and presented in the admin orders UI
                 'id' => '*AUTO',
                 'a_trans_expecting_id' => 'ID_TEXT',
@@ -209,9 +209,9 @@ class Module_purchase
                 'a_country' => 'SHORT_TEXT',
                 'a_email' => 'SHORT_TEXT',
                 'a_phone' => 'SHORT_TEXT',
-            ));
-            $GLOBALS['SITE_DB']->create_index('ecom_trans_addresses', 'trans_expecting_id', array('a_trans_expecting_id'));
-            $GLOBALS['SITE_DB']->create_index('ecom_trans_addresses', 'txn_id', array('a_txn_id'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('ecom_trans_addresses', 'trans_expecting_id', ['a_trans_expecting_id']);
+            $GLOBALS['SITE_DB']->create_index('ecom_trans_addresses', 'txn_id', ['a_txn_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY
@@ -219,11 +219,11 @@ class Module_purchase
                 require_code('cns_members');
                 $cf_id = find_cms_cpf_field_id('cms_payment_card_issue_number');
                 if ($cf_id !== null) {
-                    $GLOBALS['FORUM_DB']->query_update('f_custom_fields', array('cf_type' => 'integer'), array('id' => $cf_id));
+                    $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'integer'], ['id' => $cf_id]);
                     $GLOBALS['FORUM_DB']->delete_index_if_exists('f_member_custom_fields', 'mcf_ft_' . strval($cf_id));
-                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', array('field_' . strval($cf_id) => '0'), array('field_' . strval($cf_id) => ''));
+                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', ['field_' . strval($cf_id) => '0'], ['field_' . strval($cf_id) => '']);
                     $GLOBALS['FORUM_DB']->alter_table_field('f_member_custom_fields', 'field_' . strval($cf_id), '?INTEGER');
-                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', array('field_' . strval($cf_id) => null), array('field_' . strval($cf_id) => 0));
+                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', ['field_' . strval($cf_id) => null], ['field_' . strval($cf_id) => 0]);
                 }
             }
 
@@ -275,7 +275,7 @@ class Module_purchase
                 $GLOBALS['SITE_DB']->rename_table('sales', 'ecom_sales');
                 $GLOBALS['SITE_DB']->add_table_field('ecom_sales', 'txn_id', 'ID_TEXT', '');
                 $GLOBALS['SITE_DB']->alter_table_field('ecom_sales', 'memberid', 'MEMBER', 'member_id');
-                $sales = $GLOBALS['SITE_DB']->query_select('ecom_sales', array('*'));
+                $sales = $GLOBALS['SITE_DB']->query_select('ecom_sales', ['*']);
                 foreach ($sales as $sale) {
                     $type_code = '';
                     switch ($sale['purchasetype']) {
@@ -305,7 +305,7 @@ class Module_purchase
                             break;
                     }
                     $txn_id = 'manual-' . substr(uniqid('', true), 0, 10);
-                    $GLOBALS['SITE_DB']->query_insert('ecom_transactions', array(
+                    $GLOBALS['SITE_DB']->query_insert('ecom_transactions', [
                         'id' => $txn_id,
                         't_type_code' => $type_code,
                         't_purchase_id' => strval($sale['id']),
@@ -324,8 +324,8 @@ class Module_purchase
                         't_invoicing_breakdown' => '',
                         't_member_id' => get_member(),
                         't_session_id' => get_session_id(),
-                    ), true);
-                    $GLOBALS['SITE_DB']->query_update('ecom_sales', array('txn_id' => $txn_id), array('id' => $sale['id']), '', 1);
+                    ], true);
+                    $GLOBALS['SITE_DB']->query_update('ecom_sales', ['txn_id' => $txn_id], ['id' => $sale['id']], '', 1);
                 }
                 $GLOBALS['SITE_DB']->delete_table_field('ecom_sales', 'purchasetype');
             }
@@ -333,29 +333,29 @@ class Module_purchase
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
             if ($GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) {
-                $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', array('p_hours' => null), array('p_hours' => 40000));
+                $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', ['p_hours' => null], ['p_hours' => 40000]);
             }
         }
 
         if (!$GLOBALS['SITE_DB']->table_exists('ecom_prods_prices')) { // LEGACY: Used to be in pointstore addon, hence the unusual install pattern. Now is just a part of purchase addon
-            $GLOBALS['SITE_DB']->create_table('ecom_prods_prices', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_prices', [
                 'name' => '*ID_TEXT',
                 'price' => '?REAL',
                 'tax_code' => 'ID_TEXT',
                 'price_points' => '?INTEGER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('ecom_sales', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_sales', [
                 'id' => '*AUTO',
                 'date_and_time' => 'TIME',
                 'member_id' => 'MEMBER',
                 'details' => 'SHORT_TEXT',
                 'details2' => 'SHORT_TEXT',
                 'txn_id' => 'ID_TEXT',
-            ));
+            ]);
 
             // Custom
-            $GLOBALS['SITE_DB']->create_table('ecom_prods_custom', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_custom', [
                 'id' => '*AUTO',
                 'c_title' => 'SHORT_TRANS',
                 'c_description' => 'LONG_TRANS__COMCODE',
@@ -367,9 +367,9 @@ class Module_purchase
                 'c_shipping_cost' => 'REAL',
                 'c_price_points' => '?INTEGER',
                 'c_one_per_member' => 'BINARY',
-            ));
+            ]);
             // Permissions
-            $GLOBALS['SITE_DB']->create_table('ecom_prods_permissions', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_prods_permissions', [
                 'id' => '*AUTO',
                 'p_title' => 'SHORT_TRANS',
                 'p_description' => 'LONG_TRANS__COMCODE',
@@ -386,13 +386,13 @@ class Module_purchase
                 'p_page' => 'ID_TEXT', // page and ?privilege only
                 'p_module' => 'ID_TEXT', // category and ?privilege only
                 'p_category' => 'ID_TEXT', // category and ?privilege only
-            ));
+            ]);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {
-            $GLOBALS['SITE_DB']->create_index('ecom_transactions', 't_time', array('t_time'));
-            $GLOBALS['SITE_DB']->create_index('ecom_transactions', 't_type_code', array('t_type_code'));
-            $GLOBALS['SITE_DB']->create_index('ecom_sales', 'member_id', array('member_id'));
+            $GLOBALS['SITE_DB']->create_index('ecom_transactions', 't_time', ['t_time']);
+            $GLOBALS['SITE_DB']->create_index('ecom_transactions', 't_type_code', ['t_type_code']);
+            $GLOBALS['SITE_DB']->create_index('ecom_sales', 'member_id', ['member_id']);
         }
     }
 
@@ -411,9 +411,9 @@ class Module_purchase
             return null;
         }
 
-        return array(
-            'browse' => array('PURCHASING', 'menu/rich_content/ecommerce/purchase'),
-        );
+        return [
+            'browse' => ['PURCHASING', 'menu/rich_content/ecommerce/purchase'],
+        ];
     }
 
     public $title;
@@ -438,16 +438,16 @@ class Module_purchase
             if (get_param_string('category', null) === null) {
                 breadcrumb_set_self(do_lang_tempcode('ECOM_PURCHASE_STAGE_browse'));
 
-                $this->title = get_screen_title('PURCHASING_TITLE', true, array(do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '1', '6'));
+                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '1', '6']);
             } else {
                 $hook = get_param_string('category', null);
                 require_code('hooks/systems/ecommerce/' . filter_naughty_harsh($hook));
                 $product_object = object_factory('Hook_ecommerce_' . filter_naughty_harsh($hook), true);
                 $product_category = $product_object->get_product_category();
                 breadcrumb_set_self($product_category['category_name']);
-                breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ECOM_PURCHASE_STAGE_browse'))));
+                breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ECOM_PURCHASE_STAGE_browse')]]);
 
-                $this->title = get_screen_title('PURCHASING_TITLE', true, array(do_lang_tempcode('ECOM_PURCHASE_STAGE_category'), '2', '6'));
+                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_category'), '2', '6']);
             }
         }
         if ($type == 'message') {
@@ -473,7 +473,7 @@ class Module_purchase
         if ($type != 'browse') {
             $type_code = get_param_string('type_code', null);
             if ($type_code !== null) {
-                $breadcrumbs = array();
+                $breadcrumbs = [];
                 list(, $product_object) = find_product_details($type_code);
                 $steps = get_product_purchase_steps($product_object, $type_code, true);
                 $step_at = 0;
@@ -482,13 +482,13 @@ class Module_purchase
                         $step_at = $i;
                         break;
                     }
-                    $breadcrumbs[] = array($step[0], $step[2]);
+                    $breadcrumbs[] = [$step[0], $step[2]];
                 }
                 breadcrumb_set_parents($breadcrumbs);
 
-                $this->title = get_screen_title('PURCHASING_TITLE', true, array(do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), escape_html(integer_format($step_at + 1)), escape_html(integer_format(count($steps)))));
+                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), escape_html(integer_format($step_at + 1)), escape_html(integer_format(count($steps)))]);
             } else {
-                $this->title = get_screen_title('PURCHASING_TITLE', true, array(do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '?', '6'));
+                $this->title = get_screen_title('PURCHASING_TITLE', true, [do_lang_tempcode('ECOM_PURCHASE_STAGE_' . $type), '?', '6']);
             }
         }
 
@@ -523,7 +523,7 @@ class Module_purchase
         $new_password = post_param_string('password', null);
         if (($new_username !== null) && ($new_password !== null)) {
             require_code('cns_join');
-            list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, array('email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0'));
+            list($messages) = cns_join_actual(true, false, false, true, null, null, null, null, ['email_validation_if_enabled' => '0', 'staff_validation_if_enabled' => '0', 'coppa_if_enabled' => '0']);
             if (is_guest()) {
                 if (!$messages->is_empty()) {
                     return inform_screen($this->title, $messages);
@@ -576,7 +576,7 @@ class Module_purchase
             $submit_name = do_lang_tempcode('PROCEED');
         }
 
-        return do_template('ECOM_PURCHASE_SCREEN', array(
+        return do_template('ECOM_PURCHASE_SCREEN', [
             '_GUID' => 'a32c99acc28e8ad05fd9b5e2f2cda029',
             'TITLE' => $title,
             'CONTENT' => $content,
@@ -584,7 +584,7 @@ class Module_purchase
             'URL' => $url,
             'SUBMIT_NAME' => $submit_name,
             'ICON' => $icon,
-        ));
+        ]);
     }
 
     /**
@@ -606,9 +606,9 @@ class Module_purchase
 
         $_products = find_all_products();
 
-        $products = array();
+        $products = [];
 
-        $categories_done = array();
+        $categories_done = [];
 
         foreach ($_products as $type_code => $details) {
             $product_object = $details['product_object'];
@@ -636,7 +636,7 @@ class Module_purchase
                         }
                     }
 
-                    $url = build_url(array('page' => '_SELF', 'type' => 'browse', 'category' => $this_category), '_SELF', array(), true);
+                    $url = build_url(['page' => '_SELF', 'type' => 'browse', 'category' => $this_category], '_SELF', [], true);
                     $can_purchase = false;
                     $supports_money = false;
                     $supports_points = false;
@@ -677,7 +677,7 @@ class Module_purchase
                         continue;
                     }
 
-                    $products[] = array(
+                    $products[] = [
                         'ITEM_NAME' => $product_category['category_name'],
                         'DESCRIPTION' => $product_category['category_description'],
                         'URL' => $url,
@@ -701,7 +701,7 @@ class Module_purchase
 
                         'TYPE_SPECIAL_DETAILS_LENGTH' => null,
                         'TYPE_SPECIAL_DETAILS_LENGTH_UNITS' => null,
-                    );
+                    ];
 
                     continue;
                 }
@@ -745,10 +745,10 @@ class Module_purchase
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE');
             } elseif ($discounted_price === 0.00/*discounted via points to zero*/) {
                 $_discounted_price = currency_convert_wrap(0.00, $currency);
-                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, array(escape_html(integer_format($points_for_discount))));
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FOR_FREE_WITH_POINTS', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } elseif ($discounted_price !== null/*discounted via points*/) {
                 $_discounted_price = currency_convert_wrap($discounted_price, $currency);
-                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, array(escape_html(integer_format($points_for_discount))));
+                $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_WITH_DISCOUNT', $_discounted_price, $_full_price, [escape_html(integer_format($points_for_discount))]);
             } else {
                 $_discounted_price = do_lang('NA');
                 $written_price = do_lang_tempcode('ECOMMERCE_PRODUCT_PRICING_FULL_PRICE', $_full_price);
@@ -756,7 +756,7 @@ class Module_purchase
 
             if ($can_purchase) {
                 $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'browse');
-                $url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code), '_SELF', array(), true);
+                $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code], '_SELF', [], true);
             } else {
                 $url = null;
             }
@@ -768,7 +768,7 @@ class Module_purchase
                 }
             }
 
-            $products[] = array(
+            $products[] = [
                 'ITEM_NAME' => $details['item_name'],
                 'DESCRIPTION' => $details['item_description'],
                 'URL' => $url,
@@ -792,14 +792,14 @@ class Module_purchase
 
                 'TYPE_SPECIAL_DETAILS_LENGTH' => isset($details['special_details_length']['length']) ? strval($details['special_details_length']['length']) : null,
                 'TYPE_SPECIAL_DETAILS_LENGTH_UNITS' => isset($details['special_details_length']['length_units']) ? $details['special_details_length']['length_units'] : null,
-            );
+            ];
         }
 
         if ($category === null/*we assume category products are already sorted in the way desired*/) {
             sort_maps_by($products, 'ITEM_NAME', false, true);
         }
 
-        $result = do_template('ECOM_PURCHASE_STAGE_CHOOSE', array(
+        $result = do_template('ECOM_PURCHASE_STAGE_CHOOSE', [
             '_GUID' => '47c22d48313ff50e6323f05a78342eae',
             'TITLE' => $this->title,
             'PRODUCTS' => $products,
@@ -810,7 +810,7 @@ class Module_purchase
 
             'POINTS_INVOLVED' => $points_involved,
             'MONEY_INVOLVED' => $money_involved,
-        ));
+        ]);
         return $this->_wrap($result, $this->title, null, true);
     }
 
@@ -844,7 +844,7 @@ class Module_purchase
 
         // Implicit filtering...
 
-        $purchasing_module_supported = in_array($details['type'], array(PRODUCT_PURCHASE, PRODUCT_SUBSCRIPTION, PRODUCT_CATALOGUE));
+        $purchasing_module_supported = in_array($details['type'], [PRODUCT_PURCHASE, PRODUCT_SUBSCRIPTION, PRODUCT_CATALOGUE]);
         if (!$purchasing_module_supported) {
             return true;
         }
@@ -892,7 +892,7 @@ class Module_purchase
 
         // Work out what next step is
         $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'message');
-        $url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code), '_SELF', array('include_message' => true), true);
+        $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code], '_SELF', ['include_message' => true], true);
 
         if (method_exists($product_object, 'get_message')) {
             $message = $product_object->get_message($type_code);
@@ -905,13 +905,13 @@ class Module_purchase
         }
         $text->attach($message);
 
-        $result = do_template('ECOM_PURCHASE_STAGE_MESSAGE', array(
+        $result = do_template('ECOM_PURCHASE_STAGE_MESSAGE', [
             '_GUID' => '8667b6b544c4cea645a52bb4d087f816',
             'TITLE' => $this->title,
             'ITEM_NAME' => $details['item_name'],
             'TYPE_CODE' => $type_code,
             'TEXT' => $text,
-        ));
+        ]);
         return $this->_wrap($result, $this->title, $url);
     }
 
@@ -933,7 +933,7 @@ class Module_purchase
 
         // Work out what next step is
         $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'terms');
-        $url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step, 'accepted' => 1), '_SELF', array(), true);
+        $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'accepted' => 1], '_SELF', [], true);
 
         if (method_exists($product_object, 'get_terms')) {
             $terms = $product_object->get_terms($type_code);
@@ -945,14 +945,14 @@ class Module_purchase
             return redirect_screen($this->title, $url);
         }
 
-        $result = do_template('ECOM_PURCHASE_STAGE_TERMS', array(
+        $result = do_template('ECOM_PURCHASE_STAGE_TERMS', [
             '_GUID' => '55c7bc550bb327535db1aebdac9d85f2',
             'TITLE' => $this->title,
             'ITEM_NAME' => $details['item_name'],
             'TYPE_CODE' => $type_code,
             'URL' => $url,
             'TERMS' => $terms,
-        ));
+        ]);
         return $this->_wrap($result, $this->title, null);
     }
 
@@ -978,7 +978,7 @@ class Module_purchase
 
         // Work out what next step is
         $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'details');
-        $url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step), '_SELF', array('include_message' => true), true);
+        $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step], '_SELF', ['include_message' => true], true);
 
         require_code('form_templates');
         list($fields, $text, $js_function_calls) = get_needed_fields($type_code);
@@ -998,13 +998,13 @@ class Module_purchase
         }
 
         if ($fields === null) {
-            $url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step), '_SELF', array(), true);
+            $url = build_url(['page' => '_SELF', 'type' => $next_purchase_step], '_SELF', [], true);
 
             // Ah, not even any fields to show - jump ahead
             return redirect_screen($this->title, $url);
         }
 
-        $result = do_template('ECOM_PURCHASE_STAGE_DETAILS', array(
+        $result = do_template('ECOM_PURCHASE_STAGE_DETAILS', [
             '_GUID' => '7fcbb0be5e90e52163bfec01f22f4ea0',
             'TITLE' => $this->title,
             'ITEM_NAME' => $details['item_name'],
@@ -1012,7 +1012,7 @@ class Module_purchase
             'TEXT' => $text,
             'FIELDS' => $fields,
             'JS_FUNCTION_CALLS' => $js_function_calls,
-        ));
+        ]);
         return $this->_wrap($result, $this->title, $url);
     }
 
@@ -1070,11 +1070,11 @@ class Module_purchase
 
         if ($details['type'] == PRODUCT_INVOICE) {
             // Tax details are locked in in advance for an invoice
-            $tax_details = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('i_tax_code', 'i_tax_derivation', 'i_tax'), array('id' => intval($purchase_id)), '', 1);
+            $tax_details = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['i_tax_code', 'i_tax_derivation', 'i_tax'], ['id' => intval($purchase_id)], '', 1);
             $tax_code = $tax_details[0]['i_tax_code'];
-            $tax_derivation = ($tax_details[0]['i_tax_derivation'] == '') ? array() : json_decode($tax_details[0]['i_tax_derivation'], true);
+            $tax_derivation = ($tax_details[0]['i_tax_derivation'] == '') ? [] : json_decode($tax_details[0]['i_tax_derivation'], true);
             $tax = $tax_details[0]['i_tax'];
-            $tax_tracking = ($tax_details[0]['i_tax_tracking'] == '') ? array() : json_decode($tax_details[0]['i_tax_tracking'], true);
+            $tax_tracking = ($tax_details[0]['i_tax_tracking'] == '') ? [] : json_decode($tax_details[0]['i_tax_tracking'], true);
             $shipping_tax = 0.00;
         } else {
             if ($discounted_price === null) {
@@ -1088,13 +1088,13 @@ class Module_purchase
 
         if ($details['type'] == PRODUCT_SUBSCRIPTION) {
             // For a subscription we need to add in the subscription record in advance of payment. This will become our $purchase_id
-            $_purchase_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 'id', array(
+            $_purchase_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 'id', [
                 's_type_code' => $type_code,
                 's_member_id' => get_member(),
                 's_state' => 'new',
-            ));
+            ]);
             if ($_purchase_id === null) {
-                $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_subscriptions', array(
+                $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_subscriptions', [
                     's_type_code' => $type_code,
                     's_member_id' => get_member(),
                     's_state' => 'new',
@@ -1111,7 +1111,7 @@ class Module_purchase
                     's_payment_gateway' => $payment_gateway,
                     's_length' => $details['type_special_details']['length'],
                     's_length_units' => $details['type_special_details']['length_units'],
-                ), true));
+                ], true));
             } else {
                 $purchase_id = strval($_purchase_id);
             }
@@ -1152,7 +1152,7 @@ class Module_purchase
             }
 
             // No form
-            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', array(
+            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', [
                 '_GUID' => '76ecddb8d2429ed02412943e47dff5d9',
                 'TITLE' => $this->title,
                 'ITEM_NAME' => $item_name,
@@ -1164,17 +1164,17 @@ class Module_purchase
                 'PAYMENT_PROCESSOR_LINKS' => '',
                 'TEXT' => $text,
                 'CONFIRMATION_BOX' => $confirmation_box,
-            ));
+            ]);
 
             $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
-            $finish_url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step, 'points' => 1, 'purchase_id' => $purchase_id, 'type_code' => $type_code), '_SELF', array('include_message' => null), true);
+            $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'points' => 1, 'purchase_id' => $purchase_id, 'type_code' => $type_code], '_SELF', ['include_message' => null], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
 
         } elseif (perform_local_payment()) { // Handle the transaction internally
             if ($confirmation_box === null) {
                 $_price = currency_convert_wrap($price, $currency);
                 $_tax = currency_convert_wrap($tax, $currency);
-                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, array($_tax, do_lang(get_option('tax_system'))));
+                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, [$_tax, do_lang(get_option('tax_system'))]);
             }
 
             $needs_shipping_address = !empty($details['needs_shipping_address']);
@@ -1198,7 +1198,7 @@ class Module_purchase
             );
 
             // Credit card form
-            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', array(
+            $result = do_template('ECOM_PURCHASE_STAGE_TRANSACT', [
                 '_GUID' => '15cbba9733f6ff8610968418d8ab527e',
                 'TITLE' => $this->title,
                 'ITEM_NAME' => $item_name,
@@ -1210,10 +1210,10 @@ class Module_purchase
                 'PAYMENT_PROCESSOR_LINKS' => $payment_processor_links,
                 'TEXT' => $text,
                 'CONFIRMATION_BOX' => $confirmation_box,
-            ));
+            ]);
 
             $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
-            $finish_url = build_url(array('page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code), '_SELF', array('include_message' => true), true);
+            $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code], '_SELF', ['include_message' => true], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
             $icon = 'menu/rich_content/ecommerce/purchase';
 
@@ -1221,7 +1221,7 @@ class Module_purchase
             if ($confirmation_box === null) {
                 $_price = currency_convert_wrap($price, $currency);
                 $_tax = currency_convert_wrap($tax, $currency);
-                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, array($_tax, do_lang(get_option('tax_system'))));
+                $confirmation_box = do_lang_tempcode('BUYING_FOR_MONEY_CONFIRMATION', escape_html($item_name), $_price, [$_tax, do_lang(get_option('tax_system'))]);
             }
 
             switch ($details['type']) {
@@ -1275,7 +1275,7 @@ class Module_purchase
             $payment_processor_links = method_exists($payment_gateway_object, 'get_payment_processor_links') ? $payment_gateway_object->get_payment_processor_links() : new Tempcode();
 
             // Form with pay button on
-            $result = do_template('ECOM_PURCHASE_STAGE_PAY', array(
+            $result = do_template('ECOM_PURCHASE_STAGE_PAY', [
                 '_GUID' => '1e7471ec76d3adbc0b38613edb815f3d',
                 'TITLE' => $this->title,
                 'TRANSACTION_BUTTON' => $transaction_button,
@@ -1290,7 +1290,7 @@ class Module_purchase
                 'CONFIRMATION_BOX' => $confirmation_box,
                 'LOGOS' => $logos,
                 'PAYMENT_PROCESSOR_LINKS' => $payment_processor_links,
-            ));
+            ]);
 
             $finish_url = null; // The embedded button will take the user through to the payment gateway
             $submit_name = null;
@@ -1336,13 +1336,13 @@ class Module_purchase
             delete_pending_orders_for_current_user();
 
             if ($message !== null) {
-                $result = do_template('ECOM_PURCHASE_STAGE_FINISH', array(
+                $result = do_template('ECOM_PURCHASE_STAGE_FINISH', [
                     '_GUID' => '859c31e8f0f02a2a46951be698dd22cf',
                     'TITLE' => $this->title,
                     'TYPE_CODE' => $type_code,
                     'MESSAGE' => $message,
                     'SUCCESS' => false,
-                ));
+                ]);
                 return $this->_wrap($result, $this->title, null);
             }
 
@@ -1423,13 +1423,13 @@ class Module_purchase
             return redirect_screen($this->title, $redirect, $message);
         }
 
-        $result = do_template('ECOM_PURCHASE_STAGE_FINISH', array(
+        $result = do_template('ECOM_PURCHASE_STAGE_FINISH', [
             '_GUID' => '43f706793719ea893c280604efffacfe',
             'TITLE' => $this->title,
             'TYPE_CODE' => $type_code,
             'MESSAGE' => $message,
             'SUCCESS' => true,
-        ));
+        ]);
         return $this->_wrap($result, $this->title, null);
     }
 
@@ -1482,12 +1482,12 @@ class Module_purchase
 
                 $hidden = build_keep_post_fields();
 
-                $join_screen = do_template('ECOM_PURCHASE_STAGE_GUEST', array(
+                $join_screen = do_template('ECOM_PURCHASE_STAGE_GUEST', [
                     '_GUID' => 'accf475a1457f73d7280b14d774acc6e',
                     'TEXT' => do_lang_tempcode('PURCHASE_NOT_LOGGED_IN', escape_html(get_site_name())),
                     'FORM' => $form,
                     'HIDDEN' => $hidden,
-                ));
+                ]);
 
                 return $this->_wrap($join_screen, $this->title, null);
         }

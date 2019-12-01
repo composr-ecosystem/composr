@@ -33,10 +33,10 @@ class Hook_realtime_rain_polls
     public function run($from, $to)
     {
         if (!addon_installed('polls')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'polls')) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT b.option1,b.option2,b.option3,b.option4,b.option5,b.option6,b.option7,b.option8,b.option9,b.option10,b.votes1,b.votes2,b.votes3,b.votes4,b.votes5,b.votes6,b.votes7,b.votes8,b.votes9,b.votes10,b.question,b.id,b.submitter AS member_id,a.date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll a LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll b ON a.date_and_time>b.date_and_time WHERE NOT EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll x WHERE x.id<>a.id AND x.id<>b.id AND x.date_and_time BETWEEN b.date_and_time AND a.date_and_time) AND b.date_and_time IS NOT NULL AND b.date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -62,7 +62,7 @@ class Hook_realtime_rain_polls
 
                 $ticker_text = do_lang('VOTES_ARE_IN', strip_comcode(get_translated_text($row['question'])), strip_comcode(get_translated_text($best)));
 
-                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + [
                     'TYPE' => 'polls',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -71,7 +71,7 @@ class Hook_realtime_rain_polls
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => $ticker_text,
-                    'URL' => build_url(array('page' => 'polls', 'type' => 'view', 'id' => $row[1]['id']), get_module_zone('polls')),
+                    'URL' => build_url(['page' => 'polls', 'type' => 'view', 'id' => $row[1]['id']], get_module_zone('polls')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -79,7 +79,7 @@ class Hook_realtime_rain_polls
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'poll_' . strval($row['id']),
-                );
+                ];
             }
         }
 

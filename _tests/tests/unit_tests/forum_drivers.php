@@ -22,7 +22,7 @@ class forum_drivers_test_set extends cms_test_case
     {
         // This is a hackerish way of avoiding abstract classes. Performance will be marginally better as we are checking things at test-time not run-time.
 
-        $files = array();
+        $files = [];
         $dh = opendir(get_file_base() . '/sources_custom/forum');
         while (($f = readdir($dh)) !== false) {
             if (substr($f, -4) == '.php') {
@@ -38,12 +38,12 @@ class forum_drivers_test_set extends cms_test_case
         }
         closedir($dh);
 
-        $functions = array();
+        $functions = [];
 
         foreach ($files as $file => $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $functions[$file] = array();
-            $matches = array();
+            $functions[$file] = [];
+            $matches = [];
             $num_matches = preg_match_all('#^\s*((protected|public) )?function (\w+)\(#m', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $functions[$file][] = $matches[3][$i];
@@ -57,7 +57,7 @@ class forum_drivers_test_set extends cms_test_case
             }
 
             foreach ($functions['cns'] as $func) {
-                $exceptions = array(
+                $exceptions = [
                     // Optional
                     'forum_md5',
                     'forum_create_cookie',
@@ -74,7 +74,7 @@ class forum_drivers_test_set extends cms_test_case
                     // Conversr-only
                     'init__forum__cns',
                     'cns_flood_control',
-                );
+                ];
 
                 if (in_array($func, $exceptions)) {
                     continue;

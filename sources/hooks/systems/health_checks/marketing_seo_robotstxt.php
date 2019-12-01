@@ -48,7 +48,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         $this->process_checks_section('testRobotsTxtCompleteness', 'robots.txt completeness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testRobotsTxtSitemapLinkage', 'Sitemap linkage', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -171,9 +171,9 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             $this->state_check_skipped('No robots.txt file');
         }
 
-        $scripts = array( // Really bad if these get indexed on Google
+        $scripts = [ // Really bad if these get indexed on Google
             'adminzone/',
-        );
+        ];
         foreach ($scripts as $script) {
             $url = get_base_url() . '/' . $script;
             $allowed = $this->robots_allowed($url, 'Googlebot', true);
@@ -207,7 +207,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             return;
         }
 
-        $found = array();
+        $found = [];
         foreach ($rules as $_rule) {
             list($key, $rule) = $_rule;
 
@@ -235,11 +235,11 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__TEST_SITE) {
-            $this->assertTrue($found === array(), 'Sitemap directive found in robots.txt but this is a test site and we should not have one');
+            $this->assertTrue($found === [], 'Sitemap directive found in robots.txt but this is a test site and we should not have one');
         }
 
         if ($check_context == CHECK_CONTEXT__LIVE_SITE) {
-            $this->assertTrue($found !== array(), 'No Sitemap directive found in robots.txt');
+            $this->assertTrue($found !== [], 'No Sitemap directive found in robots.txt');
         }
     }
 
@@ -311,14 +311,14 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             $agents_regexp .= '|' . preg_quote($user_agent, '#');
         }
 
-        $contents = http_get_contents($robots_url, array('trigger_error' => false));
+        $contents = http_get_contents($robots_url, ['trigger_error' => false]);
         if ($contents === null) {
             return null;
         }
         $robots_lines = explode("\n", $contents);
 
         // Go through lines
-        $rules = array();
+        $rules = [];
         $following_rules_apply = false;
         $best_following_rules_apply = 0;
         $just_did_ua_line = false;
@@ -337,7 +337,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
             }
 
             // The following rules only apply if the User-Agent matches
-            $matches = array();
+            $matches = [];
             if (preg_match('#^User-Agent:(.*)#i', $line, $matches) != 0) {
                 $agent_spec = $matches[1];
                 $_following_rules_apply = (preg_match('#(' . $agents_regexp . ')#i', $agent_spec) != 0); // It's a bit weird how "googlebot-xxx" would match but "google" would not, but that's the standard (and there's justification when you think about it)
@@ -345,7 +345,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                     if (strlen($agent_spec) >= $best_following_rules_apply) {
                         $following_rules_apply = true;
                         $best_following_rules_apply = strlen($agent_spec);
-                        $rules = array(); // Reset rules, as now this is the best scoring rules section (we don't merge sections)
+                        $rules = []; // Reset rules, as now this is the best scoring rules section (we don't merge sections)
                     }
                 } elseif (!$just_did_ua_line) {
                     $following_rules_apply = false;
@@ -365,7 +365,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                 $core_rule = ($key == 'allow') || ($key == 'disallow');
 
                 if ($error_messages) {
-                    $this->assertTrue(in_array($key, array('allow', 'disallow', 'sitemap', 'crawl-delay')), 'Unrecognised [tt]robots.txt[/tt] rule:' . $key);
+                    $this->assertTrue(in_array($key, ['allow', 'disallow', 'sitemap', 'crawl-delay']), 'Unrecognised [tt]robots.txt[/tt] rule:' . $key);
 
                     if ($core_rule) {
                         $this->assertTrue($did_some_ua_line, 'Floating [tt]' . ucwords($key) . '[/tt] outside of any User-Agent section of [tt]robots.txt[/tt]');
@@ -379,9 +379,9 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                         $rule = str_replace('*', '.*', $rule); // * wild cards are ".*" in a regexp
                         // "$" remains unchanged
 
-                        $rules[] = array($key, $rule);
+                        $rules[] = [$key, $rule];
                     } else {
-                        $rules[] = array($key, $value);
+                        $rules[] = [$key, $value];
                     }
                 }
 

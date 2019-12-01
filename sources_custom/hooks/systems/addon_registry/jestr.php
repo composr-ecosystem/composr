@@ -26,7 +26,7 @@ class Hook_addon_registry_jestr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_jestr
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Martyr2 (for piglatin)',
-        );
+        ];
     }
 
     /**
@@ -106,7 +106,7 @@ The jokes you can play are:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -116,13 +116,13 @@ The jokes you can play are:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -142,7 +142,7 @@ The jokes you can play are:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/jestr.php',
             'sources_custom/forum/cns.php',
             'lang_custom/EN/jestr.ini',
@@ -157,6 +157,6 @@ The jokes you can play are:
             'sources_custom/hooks/systems/config/jestr_string_changes.php',
             'sources_custom/hooks/systems/config/jestr_string_changes_shown_for.php',
             'themes/default/javascript_custom/jestr.js',
-        );
+        ];
     }
 }

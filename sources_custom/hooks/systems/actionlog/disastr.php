@@ -26,41 +26,41 @@ class Hook_actionlog_disastr extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('disastr')) {
-            return array();
+            return [];
         }
 
         require_lang('disastr');
 
-        return array(
-            'ADD_DISEASE' => array(
+        return [
+            'ADD_DISEASE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_DISEASE' => '_SEARCH:admin_disastr:_edit:{ID}',
                     'ADD_DISEASE' => '_SEARCH:admin_disastr:add',
-                ),
-            ),
-            'EDIT_DISEASE' => array(
+                ],
+            ],
+            'EDIT_DISEASE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_DISEASE' => '_SEARCH:admin_disastr:_edit:{ID}',
                     'ADD_DISEASE' => '_SEARCH:admin_disastr:add',
-                ),
-            ),
-            'DELETE_DISEASE' => array(
+                ],
+            ],
+            'DELETE_DISEASE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_DISEASE' => '_SEARCH:admin_disastr:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

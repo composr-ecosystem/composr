@@ -58,10 +58,10 @@ class Hook_snippet_block
             $auth_key = get_param_integer('auth_key');
 
             // Check permissions
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('temp_block_permissions', 'p_block_constraints', array('p_session_id' => get_session_id(), 'id' => $auth_key));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('temp_block_permissions', 'p_block_constraints', ['p_session_id' => get_session_id(), 'id' => $auth_key]);
             if (($test === null) || (!block_signature_check(block_params_str_to_arr($test), $map))) {
                 require_lang('permissions');
-                return do_template('RED_ALERT', array('_GUID' => 'wtoaz4b4yp5rwe4wcmyknihps8ujoguv', 'TEXT' => do_lang_tempcode('ACCESS_DENIED__ACCESS_DENIED', escape_html($map['block']))));
+                return do_template('RED_ALERT', ['_GUID' => 'wtoaz4b4yp5rwe4wcmyknihps8ujoguv', 'TEXT' => do_lang_tempcode('ACCESS_DENIED__ACCESS_DENIED', escape_html($map['block']))]);
             }
         }
 

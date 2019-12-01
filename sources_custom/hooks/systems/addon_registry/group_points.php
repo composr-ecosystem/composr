@@ -26,7 +26,7 @@ class Hook_addon_registry_group_points
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_group_points
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_group_points
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,13 +106,13 @@ class Hook_addon_registry_group_points
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'points',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ class Hook_addon_registry_group_points
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/group_points.php',
             'sources_custom/points.php',
             'sources_custom/hooks/systems/page_groupings/group_points.php',
@@ -140,7 +140,7 @@ class Hook_addon_registry_group_points
             'sources_custom/hooks/systems/symbols/POINTS_FROM_USERGROUPS.php',
             'sources_custom/hooks/systems/cron/group_points.php',
             'sources_custom/miniblocks/group_points.php',
-        );
+        ];
     }
 
     /**
@@ -159,11 +159,11 @@ class Hook_addon_registry_group_points
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('group_points', array(
+            $GLOBALS['SITE_DB']->create_table('group_points', [
                 'p_group_id' => '*GROUP',
                 'p_points_one_off' => 'INTEGER',
                 'p_points_per_month' => 'INTEGER',
-            ));
+            ]);
         }
     }
 }

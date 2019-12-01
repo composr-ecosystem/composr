@@ -30,7 +30,7 @@ class Hook_config_points_ADD_QUIZ
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ADD_QUIZ',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_ADD_QUIZ
             'public' => false,
 
             'addon' => 'quizzes',
-        );
+        ];
     }
 
     /**

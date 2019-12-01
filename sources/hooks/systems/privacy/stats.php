@@ -34,30 +34,30 @@ class Hook_privacy_stats extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'stats' => array(
+            'database_records' => [
+                'stats' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => intval(get_option('stats_store_time')),
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array('ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => ['ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

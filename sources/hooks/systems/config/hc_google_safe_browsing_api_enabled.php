@@ -30,7 +30,7 @@ class Hook_config_hc_google_safe_browsing_api_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_GOOGLE_SAFE_BROWSING_API_KEY',
             'type' => 'tick',
             'category' => 'HEALTH_CHECK',
@@ -45,7 +45,7 @@ class Hook_config_hc_google_safe_browsing_api_enabled
             'addon' => 'health_check',
 
             'maintenance_code' => 'google_safe_browsing_api',
-        );
+        ];
     }
 
     /**

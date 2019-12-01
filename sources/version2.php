@@ -51,7 +51,7 @@ function get_future_version_information()
     static $http_result = null; // Cache
     if ($http_result === null) {
         require_code('http');
-        $http_result = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
+        $http_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
     }
 
     if (is_array($http_result) && isset($http_result[0])) {
@@ -126,9 +126,9 @@ function get_version_dotted__from_anything($any_format)
     $dotted = trim($dotted);
 
     // Change dashes and spaces to dots
-    $dotted = str_replace(array('-', ' '), array('.', '.'), $dotted);
+    $dotted = str_replace(['-', ' '], ['.', '.'], $dotted);
 
-    foreach (array('alpha', 'beta', 'RC') as $qualifier) {
+    foreach (['alpha', 'beta', 'RC'] as $qualifier) {
         $dotted = preg_replace('#\.?' . preg_quote($qualifier, '#') . '\.?#i', '.' . $qualifier, $dotted);
     }
 
@@ -150,7 +150,7 @@ function get_version_components__from_dotted($dotted)
     $qualifier = null;
     $qualifier_number = null;
     $basis_dotted_number = null;
-    foreach (array('RC', 'beta', 'alpha') as $type) {
+    foreach (['RC', 'beta', 'alpha'] as $type) {
         if (strpos($dotted, '.' . $type) !== false) {
             $qualifier = $type;
             $qualifier_number = intval(substr($dotted, strrpos($dotted, '.' . $type) + strlen('.' . $type)));
@@ -171,14 +171,14 @@ function get_version_components__from_dotted($dotted)
         $long_dotted_number_with_qualifier .= '.' . $qualifier . strval($qualifier_number);
     }
 
-    return array(
+    return [
         $basis_dotted_number,
         $qualifier,
         $qualifier_number,
         $long_dotted_number,
         $general_number,
         $long_dotted_number_with_qualifier,
-    );
+    ];
 }
 
 /**
@@ -225,13 +225,13 @@ function is_php_version_supported($v)
     if ($data === null) {
         require_code('http');
         if (function_exists('set_option')) {
-            $data = cache_and_carry('http_get_contents', array('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 60 * 60 * 24 * 7);
+            $data = cache_and_carry('http_get_contents', ['https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 60 * 24 * 7);
         } else {
-            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
         }
     }
 
-    $matches = array();
+    $matches = [];
 
     // Corruption?
     if (preg_match('#\'\d+\.\d+\' => array\([^\(\)]*\'security\' => \'(\d\d\d\d-\d\d-\d\d)\'#Us', $data, $matches) == 0) {
@@ -239,14 +239,14 @@ function is_php_version_supported($v)
     }
 
     // Do we have actual data?
-    $matches = array();
+    $matches = [];
     if (preg_match('#\'' . preg_quote($v, '#') . '\' => array\([^\(\)]*\'security\' => \'(\d\d\d\d)-(\d\d)-(\d\d)\'#is', $data, $matches) != 0) {
         $eol = mktime(0, 0, 0, intval($matches[2]), intval($matches[3]), intval($matches[1]));
         return ($eol > time());
     }
 
     // Is it older than all releases provided?
-    $matches = array();
+    $matches = [];
     $min_version = null;
     $num_matches = preg_match_all('#\'(\d+\.\d+)\' => array\(#', $data, $matches);
     for ($i = 0; $i < $num_matches; $i++) {

@@ -42,20 +42,20 @@ class Hook_attachments_cns_post
 
         require_code('cns_forums');
         require_code('cns_topics');
-        $info = $GLOBALS['FORUM_DB']->query_select('f_posts', array('p_cache_forum_id', 'p_intended_solely_for', 'p_poster', 'p_topic_id'), array('id' => intval($id)), '', 1);
+        $info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_cache_forum_id', 'p_intended_solely_for', 'p_poster', 'p_topic_id'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $info)) {
             return false;
         }
         $forum_id = $info[0]['p_cache_forum_id'];
-        $forum_id_parent = ($forum_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', array('id' => $forum_id));
-        $forum_id_parent_parent = ($forum_id_parent === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', array('id' => $forum_id_parent));
+        $forum_id_parent = ($forum_id === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id]);
+        $forum_id_parent_parent = ($forum_id_parent === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_parent_forum', ['id' => $forum_id_parent]);
         $poster = $info[0]['p_poster'];
         $intended_solely_for = $info[0]['p_intended_solely_for'];
         if (($intended_solely_for !== null) && ($poster != get_member()) && ($intended_solely_for != get_member())) {
             return false;
         }
         if ($forum_id === null) {
-            $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_pt_to', 't_pt_from'), array('id' => $info[0]['p_topic_id']), '', 1);
+            $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_pt_to', 't_pt_from'], ['id' => $info[0]['p_topic_id']], '', 1);
             return (($topic_info[0]['t_pt_to'] == get_member()) || ($topic_info[0]['t_pt_from'] == get_member()) || (cns_has_special_pt_access($info[0]['p_topic_id'])));
         }
         if (addon_installed('tickets')) {
@@ -66,13 +66,13 @@ class Hook_attachments_cns_post
                 $forum2 = null;
             }
             if (($forum2 === $forum_id) || ($forum2 === $forum_id_parent) || ($forum2 === $forum_id_parent_parent)) {
-                $title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', array('id' => $info[0]['p_topic_id']));
+                $title = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_first_title', ['id' => $info[0]['p_topic_id']]);
                 if (substr($title, 0, strlen(strval(get_member())) + 1) == strval(get_member()) . '_') {
                     return true;
                 }
                 require_lang('tickets');
 
-                $description = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_description', array('id' => $info[0]['p_topic_id']));
+                $description = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_description', ['id' => $info[0]['p_topic_id']]);
                 if (substr($description, 0, strlen(do_lang('SUPPORT_TICKET') . ': #' . strval(get_member())) + 1) == do_lang('SUPPORT_TICKET') . ': #' . strval(get_member()) . '_') {
                     return true;
                 }

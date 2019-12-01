@@ -30,7 +30,7 @@ class Hook_config_pd_number
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PHONE_NUMBER',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_pd_number
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

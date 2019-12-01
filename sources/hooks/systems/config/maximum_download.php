@@ -30,7 +30,7 @@ class Hook_config_maximum_download
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAXIMUM_DOWNLOAD',
             'type' => 'integer',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_maximum_download
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

@@ -26,7 +26,7 @@ class Hook_addon_registry_user_mappr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_user_mappr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -111,7 +111,7 @@ Parameters:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -121,13 +121,13 @@ Parameters:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -147,7 +147,7 @@ Parameters:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/user_mappr.php',
             'lang_custom/EN/google_map_users.ini',
             'sources_custom/blocks/main_google_map_users.php',
@@ -159,6 +159,6 @@ Parameters:
             'data_custom/get_member_tooltip.php',
             'themes/default/javascript_custom/user_mappr.js',
             'sources_custom/hooks/systems/upon_query/google_maps_users.php',
-        );
+        ];
     }
 }

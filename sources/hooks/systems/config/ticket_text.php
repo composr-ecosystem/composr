@@ -30,7 +30,7 @@ class Hook_config_ticket_text
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAGE_TEXT',
             'type' => 'comcodetext',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_ticket_text
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

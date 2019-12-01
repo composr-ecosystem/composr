@@ -34,14 +34,14 @@ class Hook_ecommerce_wage
      */
     public function get_products($search = null)
     {
-        $products = array(
-            'WAGE' => array(
+        $products = [
+            'WAGE' => [
                 'item_name' => do_lang('ecommerce:CUSTOM_PRODUCT_WAGE'),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_OTHER,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -56,8 +56,8 @@ class Hook_ecommerce_wage
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            ),
-        );
+            ],
+        ];
         return $products;
     }
 

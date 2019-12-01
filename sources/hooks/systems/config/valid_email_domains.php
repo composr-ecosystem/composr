@@ -30,7 +30,7 @@ class Hook_config_valid_email_domains
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'VALID_EMAIL_DOMAINS',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_valid_email_domains
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

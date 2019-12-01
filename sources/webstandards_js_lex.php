@@ -26,7 +26,7 @@
 function init__webstandards_js_lex()
 {
     global $JS_ERRORS;
-    $JS_ERRORS = array();
+    $JS_ERRORS = [];
 
     // These are standalone lexer tokens: finding them doesn't affect the lexing state
     // ===============================================================================
@@ -178,10 +178,10 @@ function init__webstandards_js_lex()
 
     // These are characters that can be used to continue an identifier lexer token (any other character starts a new token).
     global $CONTINUATIONS;
-    $CONTINUATIONS = array(
+    $CONTINUATIONS = [
         'a' => '1', 'b' => '1', 'c' => '1', 'd' => '1', 'e' => '1', 'f' => '1', 'g' => '1', 'h' => '1', 'i' => '1', 'j' => '1', 'k' => '1', 'l' => '1', 'm' => '1', 'n' => '1', 'o' => '1', 'p' => '1', 'q' => '1', 'r' => '1', 's' => '1', 't' => '1', 'u' => '1', 'v' => '1', 'w' => '1', 'x' => '1', 'y' => '1', 'z' => '1',
         'A' => '1', 'B' => '1', 'C' => '1', 'D' => '1', 'E' => '1', 'F' => '1', 'G' => '1', 'H' => '1', 'I' => '1', 'J' => '1', 'K' => '1', 'L' => '1', 'M' => '1', 'N' => '1', 'O' => '1', 'P' => '1', 'Q' => '1', 'R' => '1', 'S' => '1', 'T' => '1', 'U' => '1', 'V' => '1', 'W' => '1', 'X' => '1', 'Y' => '1', 'Z' => '1',
-        '1' => '1', '2' => '1', '3' => '1', '4' => '1', '5' => '1', '6' => '1', '7' => '1', '8' => '1', '9' => '1', '0' => '1', '_' => '1', '$' => '1');
+        '1' => '1', '2' => '1', '3' => '1', '4' => '1', '5' => '1', '6' => '1', '7' => '1', '8' => '1', '9' => '1', '0' => '1', '_' => '1', '$' => '1'];
     // For non-identifier tokens, tokenisation is driven purely upon "best match".
 }
 
@@ -198,7 +198,7 @@ function webstandards_js_lex($text)
     // So that we don't have to consider end-of-file states as much.
     $JS_TEXT = $text . "\n";
 
-    $JS_LEX_TOKENS = array(); // We will be lexing into this list of tokens
+    $JS_LEX_TOKENS = []; // We will be lexing into this list of tokens
     $num_tokens_so_far = 0;
 
     $special_token_value = ''; // This will be used during special lexing modes to build up the special token value being lexed
@@ -209,8 +209,8 @@ function webstandards_js_lex($text)
     // Lex the code. Hard coded state changes occur. Understanding of tokenisation implicit. Trying to match tokens to $TOKENS, otherwise an identifier.
     $char = '';
     $i = 0;
-    $empty_array = array();
-    $numberic_chars = array('0' => true, '1' => true, '2' => true, '3' => true, '4' => true, '5' => true, '6' => true, '7' => true, '8' => true, '9' => true);
+    $empty_array = [];
+    $numberic_chars = ['0' => true, '1' => true, '2' => true, '3' => true, '4' => true, '5' => true, '6' => true, '7' => true, '8' => true, '9' => true];
     while (true) {
         switch ($lex_state) {
             case LEXER_FREE:
@@ -228,7 +228,7 @@ function webstandards_js_lex($text)
 
                 // Try and work out what token we're looking at next
                 $maybe_applicable_tokens = $TOKENS;
-                $applicable_tokens = array();
+                $applicable_tokens = [];
                 $token_so_far = '';
                 $token_length = 0;
                 while ($maybe_applicable_tokens !== $empty_array) {
@@ -260,7 +260,7 @@ function webstandards_js_lex($text)
                 if (isset($applicable_tokens['DIV_EQUAL'])) {
                     $previous = isset($JS_LEX_TOKENS[$num_tokens_so_far - 1]) ? ($JS_LEX_TOKENS[$num_tokens_so_far - 1][0]) : 'PARENTHESIS_OPEN';
                     if (($previous == 'PARENTHESIS_OPEN') || ($previous == 'COMMA')) {
-                        $applicable_tokens = array('DIVIDE'); // Actually, a regular expression
+                        $applicable_tokens = ['DIVIDE']; // Actually, a regular expression
                     }
                 }
 
@@ -279,7 +279,7 @@ function webstandards_js_lex($text)
                     } elseif ($token_found == 'COMMENT') {
                         $lex_state = LEXER_COMMENT;
                         break;
-                    } elseif (($token_found == 'DIVIDE') && (!in_array(@$JS_LEX_TOKENS[$num_tokens_so_far - 1][0], array('number_literal', 'IDENTIFIER', 'EXTRACT_CLOSE', 'PARENTHESIS_CLOSE')))) {
+                    } elseif (($token_found == 'DIVIDE') && (!in_array(@$JS_LEX_TOKENS[$num_tokens_so_far - 1][0], ['number_literal', 'IDENTIFIER', 'EXTRACT_CLOSE', 'PARENTHESIS_CLOSE']))) {
                         $lex_state = LEXER_REGEXP;
                         break;
                     } elseif ($token_found == 'DOUBLE_QUOTE') {
@@ -290,7 +290,7 @@ function webstandards_js_lex($text)
                         break;
                     }
 
-                    $JS_LEX_TOKENS[] = array($token_found, $i);
+                    $JS_LEX_TOKENS[] = [$token_found, $i];
                     $num_tokens_so_far++;
                 } else {
                     // Otherwise, we've found an identifier or numerical literal token, so extract it
@@ -302,7 +302,7 @@ function webstandards_js_lex($text)
                             break 3;
                         }
                         if (!isset($numeric)) {
-                            $numeric_chars = array('0' => 0, '1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9);
+                            $numeric_chars = ['0' => 0, '1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9];
                             $numeric = isset($numeric_chars[$char]);
                         }
                         if ((!isset($CONTINUATIONS[$char])) && (($numeric === false) || ($char != '.') || (!is_numeric($JS_TEXT[$i])))) {
@@ -315,24 +315,24 @@ function webstandards_js_lex($text)
 
                     if ($numeric) {
                         if (strpos($token_found, '.') !== false) {
-                            $JS_LEX_TOKENS[] = array('number_literal', floatval($token_found), $i);
+                            $JS_LEX_TOKENS[] = ['number_literal', floatval($token_found), $i];
                         } elseif (strpos($token_found, 'x') !== false) {
-                            $JS_LEX_TOKENS[] = array('number_literal', intval(base_convert($token_found, 16, 10)), $i);
+                            $JS_LEX_TOKENS[] = ['number_literal', intval(base_convert($token_found, 16, 10)), $i];
                         } elseif ($token_found[0] == '0') {
-                            $JS_LEX_TOKENS[] = array('number_literal', intval(base_convert($token_found, 8, 10)), $i);
+                            $JS_LEX_TOKENS[] = ['number_literal', intval(base_convert($token_found, 8, 10)), $i];
                         } else {
-                            $JS_LEX_TOKENS[] = array('number_literal', intval($token_found), $i);
+                            $JS_LEX_TOKENS[] = ['number_literal', intval($token_found), $i];
                         }
                         $num_tokens_so_far++;
 
-                        $JS_VALUE_RANGES[] = array($i - strlen($token_found), $i);
+                        $JS_VALUE_RANGES[] = [$i - strlen($token_found), $i];
                     } else {
                         if ($token_found == '') {
                             js_log_warning('LEXER', 'Bad token found', $i, true);
-                            return array();
+                            return [];
                         }
-                        $JS_LEX_TOKENS[] = array('IDENTIFIER', $token_found, $i);
-                        $JS_TAG_RANGES[] = array($i - strlen($token_found), $i);
+                        $JS_LEX_TOKENS[] = ['IDENTIFIER', $token_found, $i];
+                        $JS_TAG_RANGES[] = [$i - strlen($token_found), $i];
                         $num_tokens_so_far++;
                     }
                 }
@@ -348,7 +348,7 @@ function webstandards_js_lex($text)
                 // Exit case
                 if ($char == "\n") {
                     $lex_state = LEXER_FREE;
-                    $JS_LEX_TOKENS[] = array('comment', $special_token_value, $i);
+                    $JS_LEX_TOKENS[] = ['comment', $special_token_value, $i];
                     $special_token_value = '';
                     $i--;
                     $num_tokens_so_far++;
@@ -369,7 +369,7 @@ function webstandards_js_lex($text)
                 // Exit case
                 if ($char == '*/') {
                     $lex_state = LEXER_FREE;
-                    $JS_LEX_TOKENS[] = array('comment', $special_token_value, $i);
+                    $JS_LEX_TOKENS[] = ['comment', $special_token_value, $i];
                     $special_token_value = '';
                     $num_tokens_so_far++;
                     break;
@@ -400,12 +400,12 @@ function webstandards_js_lex($text)
                     $i--;
 
                     $lex_state = LEXER_FREE;
-                    $JS_LEX_TOKENS[] = array('NEW', $i);
-                    $JS_LEX_TOKENS[] = array('IDENTIFIER', 'RegExp', $i);
-                    $JS_LEX_TOKENS[] = array('PARENTHESIS_OPEN', $i);
-                    $JS_LEX_TOKENS[] = array('string_literal', $special_token_value, $i);
-                    $JS_LEX_TOKENS[] = array('PARENTHESIS_CLOSE', $i);
-                    $JS_VALUE_RANGES[] = array($i - strlen($special_token_value), $i);
+                    $JS_LEX_TOKENS[] = ['NEW', $i];
+                    $JS_LEX_TOKENS[] = ['IDENTIFIER', 'RegExp', $i];
+                    $JS_LEX_TOKENS[] = ['PARENTHESIS_OPEN', $i];
+                    $JS_LEX_TOKENS[] = ['string_literal', $special_token_value, $i];
+                    $JS_LEX_TOKENS[] = ['PARENTHESIS_CLOSE', $i];
+                    $JS_VALUE_RANGES[] = [$i - strlen($special_token_value), $i];
                     $special_token_value = '';
                     $num_tokens_so_far += 5;
                     break;
@@ -433,8 +433,8 @@ function webstandards_js_lex($text)
                 // Exit case
                 if (($char == '"') && (!$escape_flag)) {
                     $lex_state = LEXER_FREE;
-                    $JS_LEX_TOKENS[] = array('string_literal', $special_token_value, $i);
-                    $JS_VALUE_RANGES[] = array($i - strlen($special_token_value) - 1, $i - 1);
+                    $JS_LEX_TOKENS[] = ['string_literal', $special_token_value, $i];
+                    $JS_VALUE_RANGES[] = [$i - strlen($special_token_value) - 1, $i - 1];
                     $special_token_value = '';
                     $num_tokens_so_far++;
                     break;
@@ -478,8 +478,8 @@ function webstandards_js_lex($text)
                 // Exit case
                 if (($char == "'") && (!$escape_flag)) {
                     $lex_state = LEXER_FREE;
-                    $JS_LEX_TOKENS[] = array('string_literal', $special_token_value, $i);
-                    $JS_VALUE_RANGES[] = array($i - strlen($special_token_value) - 1, $i - 1);
+                    $JS_LEX_TOKENS[] = ['string_literal', $special_token_value, $i];
+                    $JS_VALUE_RANGES[] = [$i - strlen($special_token_value) - 1, $i - 1];
                     $special_token_value = '';
                     $num_tokens_so_far++;
                     break;
@@ -521,10 +521,10 @@ function lex__get_next_char($i)
 {
     global $JS_TEXT;
     if (!isset($JS_TEXT[$i])) {
-        return array(true, $i + 1, '');
+        return [true, $i + 1, ''];
     }
     $char = $JS_TEXT[$i];
-    return array(false, $i + 1, $char);
+    return [false, $i + 1, $char];
 }
 
 /**
@@ -538,7 +538,7 @@ function lex__get_next_chars($i, $num)
 {
     global $JS_TEXT;
     $str = substr($JS_TEXT, $i, $num);
-    return array(strlen($str) < $num, $i + $num, $str);
+    return [strlen($str) < $num, $i + $num, $str];
 }
 
 /**
@@ -555,7 +555,7 @@ function js_pos_to_line_details($i, $absolute = false)
         $i = -1;
     }
     if ($i == -1) {
-        return array(0, 0, '', 0);
+        return [0, 0, '', 0];
     }
     $j = $absolute ? $i : $JS_LEX_TOKENS[$i][count($JS_LEX_TOKENS[$i]) - 1];
     $line = substr_count(substr($JS_TEXT, 0, $j), "\n") + 1;
@@ -567,7 +567,7 @@ function js_pos_to_line_details($i, $absolute = false)
 
     $full_line = substr($JS_TEXT, $l_s, strpos($JS_TEXT, "\n", $j) - 1 - $l_s);
 
-    return array($pos, $line, $full_line, $j);
+    return [$pos, $line, $full_line, $j];
 }
 
 /**
@@ -582,7 +582,7 @@ function js_pos_to_line_details($i, $absolute = false)
  */
 function js_die_error($system, $pos, $line, $message, $i)
 {
-    $error = array('JS ERROR (' . $system . '): ' . $message, $pos, $line, $i);
+    $error = ['JS ERROR (' . $system . '): ' . $message, $pos, $line, $i];
     global $JS_ERRORS;
     $JS_ERRORS[] = $error;
     return null;
@@ -609,7 +609,7 @@ function js_log_warning($system, $warning, $i = -1, $absolute = false)
         return;
     }
 
-    $error = array('JS ERROR (' . $system . '): ' . $warning, $pos, $line, $i);
+    $error = ['JS ERROR (' . $system . '): ' . $warning, $pos, $line, $i];
     global $JS_ERRORS;
     $JS_ERRORS[] = $error;
 }

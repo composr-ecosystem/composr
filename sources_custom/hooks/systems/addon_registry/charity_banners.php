@@ -26,7 +26,7 @@ class Hook_addon_registry_charity_banners
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_charity_banners
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -116,7 +116,7 @@ You can add more banners through this section, just make sure they are 120px &ti
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -126,13 +126,13 @@ You can add more banners through this section, just make sure they are 120px &ti
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'banners',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -152,7 +152,7 @@ You can add more banners through this section, just make sure they are 120px &ti
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/charity_banners.php',
             'sources_custom/blocks/main_buttons.php',
             'data_custom/images/causes/index.html',
@@ -177,6 +177,6 @@ You can add more banners through this section, just make sure they are 120px &ti
             'themes/default/templates_custom/BLOCK_MAIN_BUTTONS.tpl',
             'sources_custom/banners3.php',
             'lang_custom/EN/buttons.ini',
-        );
+        ];
     }
 }

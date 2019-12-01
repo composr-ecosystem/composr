@@ -59,7 +59,7 @@ class Hook_rss_catalogues
             $_categories[$i]['_title'] = get_translated_text($_category['cc_title']);
         }
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries WHERE ce_add_date>' . strval(time() - $cutoff) . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND ce_validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY ce_add_date DESC', $max, 0, false, true);
-        $categories = array();
+        $categories = [];
         foreach ($_categories as $category) {
             $categories[$category['id']] = $category;
         }
@@ -77,7 +77,7 @@ class Hook_rss_catalogues
         }
         $_catalogues = $GLOBALS['SITE_DB']->query($query);
 
-        $catalogues = array();
+        $catalogues = [];
         foreach ($_catalogues as $catalogue) {
             $catalogues[$catalogue['c_name']] = $catalogue;
         }
@@ -120,19 +120,19 @@ class Hook_rss_catalogues
                 $category = $_category['_title'];
                 $category_raw = strval($row['cc_id']);
 
-                $view_url = build_url(array('page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']), get_module_zone('catalogues'), array(), false, false, true);
+                $view_url = build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']], get_module_zone('catalogues'), [], false, false, true);
 
                 if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                    $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => 'ee850d0e7f50b21f2dbe17cc49494baa', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                    $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => 'ee850d0e7f50b21f2dbe17cc49494baa', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
                 } else {
                     $if_comments = new Tempcode();
                 }
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('catalogues');
-        return array($content, do_lang('CATALOGUE_ENTRIES'));
+        return [$content, do_lang('CATALOGUE_ENTRIES')];
     }
 }

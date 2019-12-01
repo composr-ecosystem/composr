@@ -30,7 +30,7 @@ class Hook_config_honeypot_url
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HONEYPOT_URL',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -46,7 +46,7 @@ class Hook_config_honeypot_url
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'project_honeypot',
-        );
+        ];
     }
 
     /**

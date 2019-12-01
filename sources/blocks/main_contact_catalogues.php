@@ -30,14 +30,14 @@ class Block_main_contact_catalogues
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('to', 'param', 'subject', 'body_prefix', 'body_suffix', 'subject_prefix', 'subject_suffix', 'redirect', 'guid');
+        $info['parameters'] = ['to', 'param', 'subject', 'body_prefix', 'body_suffix', 'subject_prefix', 'subject_suffix', 'redirect', 'guid'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_contact_catalogues
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         (post_param_string('subject', '') != '')
         ?
@@ -104,7 +104,7 @@ PHP;
             $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_name'); // Random/arbitrary (first one that comes out of the DB)
         }
 
-        $special_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+        $special_fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['*'], ['c_name' => $catalogue_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
         $subject = array_key_exists('subject', $map) ? $map['subject'] : '';
         if ($subject == '') {
@@ -132,7 +132,7 @@ PHP;
             }
 
             // Data
-            $field_results = array();
+            $field_results = [];
             foreach ($special_fields as $field_num => $field) {
                 $ob = get_fields_hook($field['cf_type']);
                 $inputted_value = $ob->inputted_to_field_value(false, $field, null);
@@ -171,7 +171,7 @@ PHP;
             $text->attach(do_lang_tempcode('FORM_TIME_SECURITY'));
         }
 
-        $field_groups = array();
+        $field_groups = [];
 
         url_default_parameters__enable();
 
@@ -180,7 +180,7 @@ PHP;
 
             $_cf_name = get_translated_text($field['cf_name']);
             $field_cat = '';
-            $matches = array();
+            $matches = [];
             if (strpos($_cf_name, ': ') !== false) {
                 $field_cat = substr($_cf_name, 0, strpos($_cf_name, ': '));
                 if ($field_cat . ': ' == $_cf_name) {
@@ -226,7 +226,7 @@ PHP;
         if (array_key_exists('', $field_groups)) { // Blank prefix must go first
             $field_groups_blank = $field_groups[''];
             unset($field_groups['']);
-            $field_groups = array_merge(array($field_groups_blank), $field_groups);
+            $field_groups = array_merge([$field_groups_blank], $field_groups);
         }
         foreach ($field_groups as $field_group_title => $extra_fields) {
             if (is_integer($field_group_title)) {
@@ -234,7 +234,7 @@ PHP;
             }
 
             if ($field_group_title != '') {
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'c0b9f22ef5767da57a1ff65c06af96a1', 'TITLE' => $field_group_title)));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c0b9f22ef5767da57a1ff65c06af96a1', 'TITLE' => $field_group_title]));
             }
             $fields->attach($extra_fields);
         }
@@ -248,7 +248,7 @@ PHP;
 
         $guid = isset($map['guid']) ? $map['guid'] : '7dc3957edf3b47399b688d72fae54128';
 
-        return do_template('FORM', array(
+        return do_template('FORM', [
             '_GUID' => $guid,
             'FIELDS' => $fields,
             'HIDDEN' => $hidden,
@@ -258,6 +258,6 @@ PHP;
             'TEXT' => $text,
             'SECONDARY_FORM' => true,
             'ANALYTIC_EVENT_CATEGORY' => $subject,
-        ));
+        ]);
     }
 }

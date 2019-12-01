@@ -30,7 +30,7 @@ class Hook_config_urls_simplifier
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'URL_SIMPLIFIER',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_urls_simplifier
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

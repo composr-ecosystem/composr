@@ -25,7 +25,7 @@ class Hook_config_enable_guest_access
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_ENABLE_GUEST_ACCESS',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_enable_guest_access
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

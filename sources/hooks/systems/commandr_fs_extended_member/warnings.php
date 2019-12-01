@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__warnings
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('f_warnings', array(), array('w_member_id' => $member_id));
+        return table_to_portable_rows('f_warnings', [], ['w_member_id' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__warnings
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('f_warnings', $data, array('w_member_id' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('f_warnings', $data, ['w_member_id' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

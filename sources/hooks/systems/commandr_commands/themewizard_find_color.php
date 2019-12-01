@@ -34,16 +34,16 @@ class Hook_commandr_command_themewizard_find_color
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('themewizard')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         require_lang('themes');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('themewizard_find_color', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('themewizard_find_color', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_find_color'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'themewizard_find_color')];
             }
 
             $input = $parameters[0];
@@ -53,19 +53,19 @@ class Hook_commandr_command_themewizard_find_color
             if (strlen($input) == 3) {
                 $input = $input[0] . $input[0] . $input[1] . $input[1] . $input[2] . $input[2];
             }
-            list($ir, $ig, $ib) = array(hexdec(substr($input, 0, 2)), hexdec(substr($input, 2, 2)), hexdec(substr($input, 4, 2)));
+            list($ir, $ig, $ib) = [hexdec(substr($input, 0, 2)), hexdec(substr($input, 2, 2)), hexdec(substr($input, 4, 2))];
 
             $theme = array_key_exists(1, $parameters) ? $parameters[1] : 'default';
 
-            $results = array();
+            $results = [];
 
             require_code('files2');
-            $d = get_directory_contents(get_file_base() . '/themes/' . filter_naughty($theme) . '/css', '', 0, true, true, array('css'));
+            $d = get_directory_contents(get_file_base() . '/themes/' . filter_naughty($theme) . '/css', '', 0, true, true, ['css']);
             foreach ($d as $f) {
                 $c = cms_file_get_contents_safe(get_file_base() . '/themes/' . filter_naughty($theme) . '/css/' . $f, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('/#([A-Za-f\d]{6}).*\{\$,(.*)\}/', $c, $matches);
-                $matches2 = array();
+                $matches2 = [];
                 $num_matches2 = preg_match_all('/\{\$THEMEWIZARD_COLOR,\#([A-Za-f\d]{6}),(.*)\}/', $c, $matches2);
                 for ($i = 0; $i < $num_matches2; $i++) {
                     $matches[0][$num_matches] = $matches2[0][$i];
@@ -77,9 +77,9 @@ class Hook_commandr_command_themewizard_find_color
                     for ($i = 0; $i < $num_matches; $i++) {
                         $color = $matches[1][$i];
                         $equation = $matches[2][$i];
-                        list($r, $g, $b) = array(hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2)));
+                        list($r, $g, $b) = [hexdec(substr($color, 0, 2)), hexdec(substr($color, 2, 2)), hexdec(substr($color, 4, 2))];
                         $dist = sqrt(pow(floatval($r - $ir), 2.0) + pow(floatval($g - $ig), 2.0) + pow(floatval($b - $ib), 2.0));
-                        $results[] = array($color, $dist, $equation, $f, array($r, $g, $b));
+                        $results[] = [$color, $dist, $equation, $f, [$r, $g, $b]];
                     }
                 }
             }
@@ -105,7 +105,7 @@ class Hook_commandr_command_themewizard_find_color
                 $results_printed .= "\n";
             }
 
-            return array('', '', $results_printed, '');
+            return ['', '', $results_printed, ''];
         }
     }
 }

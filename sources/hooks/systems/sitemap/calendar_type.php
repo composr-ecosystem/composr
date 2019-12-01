@@ -27,8 +27,8 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
     protected $screen_type = 'browse';
 
     // If we have a different content type of entries, under this content type
-    protected $entry_content_type = array('event');
-    protected $entry_sitetree_hook = array('event');
+    protected $entry_content_type = ['event'];
+    protected $entry_sitetree_hook = ['event'];
 
     /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
@@ -60,10 +60,10 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -80,7 +80,7 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'), array(), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*'], [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if (($row['id'] != db_get_first_id()) || (((($options & SITEMAP_GEN_CHECK_PERMS) == 0) || ($GLOBALS['FORUM_DRIVER']->is_super_admin($this->get_member($options)))) && (cron_installed()))) { // Filters system commands
                     $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':int_' . strval($row['id']) . '=1';
@@ -130,7 +130,7 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'page_link' => $page_link,
 
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
@@ -138,8 +138,8 @@ class Hook_sitemap_calendar_type extends Hook_sitemap_content
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_calendar', 'type' => '_edit_category', 'id' => $content_id), get_module_zone('cms_calendar')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_calendar', 'type' => '_edit_category', 'id' => $content_id], get_module_zone('cms_calendar')),
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

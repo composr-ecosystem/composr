@@ -25,7 +25,7 @@ class Hook_config_stealr_points
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STEALR_POINTS',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -37,7 +37,7 @@ class Hook_config_stealr_points
             'public' => false,
 
             'addon' => 'stealr',
-        );
+        ];
     }
 
     /**

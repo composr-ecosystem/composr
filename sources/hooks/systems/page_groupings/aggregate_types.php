@@ -33,11 +33,11 @@ class Hook_page_groupings_aggregate_types
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('aggregate_types')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('structure', 'menu/adminzone/structure/aggregate_types', array('admin_aggregate_types', array('type' => 'browse'), get_module_zone('admin_aggregate_types')), do_lang_tempcode('aggregate_types:AGGREGATE_TYPES'), 'aggregate_types:DOC_AGGREGATE_TYPES'),
-        );
+        return [
+            ['structure', 'menu/adminzone/structure/aggregate_types', ['admin_aggregate_types', ['type' => 'browse'], get_module_zone('admin_aggregate_types')], do_lang_tempcode('aggregate_types:AGGREGATE_TYPES'), 'aggregate_types:DOC_AGGREGATE_TYPES'],
+        ];
     }
 }

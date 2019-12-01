@@ -88,8 +88,8 @@ function output_ical($headers_and_exit = true)
     echo "VERSION:2.0\r\n";
     echo "PRODID:-//ocProducts/Composr//NONSGML v1.0//EN\r\n";
     echo "CALSCALE:GREGORIAN\r\n";
-    $categories = array();
-    $_categories = $GLOBALS['SITE_DB']->query_select('calendar_types', array('*'));
+    $categories = [];
+    $_categories = $GLOBALS['SITE_DB']->query_select('calendar_types', ['*']);
     foreach ($_categories as $category) {
         $categories[$category['id']] = get_translated_text($category['t_title']);
     }
@@ -125,11 +125,11 @@ function output_ical($headers_and_exit = true)
 
             echo "SUMMARY:" . ical_escape(get_translated_text($event['e_title'])) . "\r\n";
             $description = get_translated_text($event['e_content']);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\[attachment[^\]]*\](\d+)\[/attachment\]#', $description, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $description = str_replace($matches[0], '', $description);
-                $attachments = $GLOBALS['SITE_DB']->query_select('attachments', array('*'), array('id' => intval($matches[1])));
+                $attachments = $GLOBALS['SITE_DB']->query_select('attachments', ['*'], ['id' => intval($matches[1])]);
                 if (array_key_exists(0, $attachments)) {
                     $attachment = $attachments[0];
                     require_code('mime_types');
@@ -155,7 +155,7 @@ function output_ical($headers_and_exit = true)
             echo "CLASS:" . ($public ? 'PUBLIC' : 'PRIVATE') . "\r\n";
             echo "STATUS:" . (($event['validated'] == 1) ? 'CONFIRMED' : 'TENTATIVE') . "\r\n";
             echo "UID:" . ical_escape(strval($event['id']) . '@' . get_base_url()) . "\r\n";
-            $_url = build_url(array('page' => 'calendar', 'type' => 'view', 'id' => $event['id']), get_module_zone('calendar'), array(), false, false, true);
+            $_url = build_url(['page' => 'calendar', 'type' => 'view', 'id' => $event['id']], get_module_zone('calendar'), [], false, false, true);
             $url = $_url->evaluate();
             echo "URL:" . $url . "\r\n";
 
@@ -294,9 +294,9 @@ function output_ical($headers_and_exit = true)
                 }
             }
 
-            $attendees = $GLOBALS['SITE_DB']->query_select('calendar_reminders', array('*'), array('e_id' => $event['id']), '', 5000/*reasonable limit*/);
+            $attendees = $GLOBALS['SITE_DB']->query_select('calendar_reminders', ['*'], ['e_id' => $event['id']], '', 5000/*reasonable limit*/);
             if (count($attendees) == 5000) {
-                $attendees = array();
+                $attendees = [];
             }
             foreach ($attendees as $attendee) {
                 if ($attendee['n_member_id'] != get_member()) {
@@ -353,14 +353,14 @@ function ical_import($file_path)
 
         // Pre-processing of notes
         $items = preg_replace('#(.+)\n +(.*)\r?\n#', '${1}${2}' . "\n", $items); // Merge split lines
-        $event_nodes = array();
+        $event_nodes = [];
         $nodes = explode("\n", $items);
         foreach ($nodes as $_child) {
             if (strpos($_child, ':') === false) {
                 continue;
             }
 
-            $child = array('', '');
+            $child = ['', ''];
             $in_quotes = false;
             $j = 0;
             for ($i = 0; $i < strlen($_child); $i++) {
@@ -375,7 +375,7 @@ function ical_import($file_path)
                 }
             }
 
-            $matches = array();
+            $matches = [];
             if (preg_match('#;TZID=(.*)#', $child[0], $matches)) {
                 $event_nodes['TZID'] = $matches[1];
             }
@@ -401,13 +401,13 @@ function ical_import($file_path)
         // Set privacy
         if ($is_public == 0) {
             if (addon_installed('content_privacy')) {
-                $GLOBALS['SITE_DB']->query_insert('content_privacy', array(
+                $GLOBALS['SITE_DB']->query_insert('content_privacy', [
                     'content_type' => 'event',
                     'content_id' => strval($id),
                     'guest_view' => 0,
                     'member_view' => 0,
                     'friend_view' => 0,
-                ));
+                ]);
             }
         }
     }
@@ -446,13 +446,13 @@ function get_event_data_ical($event_nodes)
     $allow_rating = 1;
     $allow_comments = 1;
     $allow_trackbacks = 1;
-    $matches = array();
+    $matches = [];
     $start_monthly_spec_type = 'day_of_month';
     $end_monthly_spec_type = $start_monthly_spec_type;
     $start_monthly_spec_type_day = null;
 
-    $rec_array = array('FREQ', 'BYDAY', 'INTERVAL', 'COUNT');
-    $rec_by_day = array('MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU');
+    $rec_array = ['FREQ', 'BYDAY', 'INTERVAL', 'COUNT'];
+    $rec_by_day = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 
     //if (array_key_exists('LOCATION', $event_nodes))
     //    $geo_position = $event_nodes['LOCATION'];      We don't support these in Composr, at least not yet
@@ -467,7 +467,7 @@ function get_event_data_ical($event_nodes)
             if (preg_match('/^((.)*(' . $value . '=))([^;]+)/i', $event_nodes['RRULE'], $matches) != 0) {
                 switch ($value) {
                     case 'BYDAY':
-                        $matches2 = array();
+                        $matches2 = [];
                         if (preg_match('#^([\+\-] )?(\d+) ?(MO|TU|WE|TH|FR|SA|SU)#', end($matches), $matches2) != 0) {
                             if ($matches2[1] == '-') {
                                 $start_monthly_spec_type = 'dow_of_month_backwards';
@@ -532,7 +532,7 @@ function get_event_data_ical($event_nodes)
     if ($type === null) {
         $type = do_lang('GENERAL');
     }
-    $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', array('id', 't_title'));
+    $rows = $GLOBALS['SITE_DB']->query_select('calendar_types', ['id', 't_title']);
     foreach ($rows as $row) {
         if (strtolower($type) == strtolower(get_translated_text($row['t_title']))) {
             $type_id = $row['id'];
@@ -631,6 +631,6 @@ function get_event_data_ical($event_nodes)
         $end_minute = null;
     }
 
-    $ret = array($url, $type_id, $type, $e_recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $is_public, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes);
+    $ret = [$url, $type_id, $type, $e_recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $is_public, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes];
     return $ret;
 }

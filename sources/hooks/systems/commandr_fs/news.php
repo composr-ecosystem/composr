@@ -57,22 +57,22 @@ class Hook_commandr_fs_news extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'news':
-                $_ret = $GLOBALS['SITE_DB']->query_select('news', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('news', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'news_category':
-                $_ret = $GLOBALS['SITE_DB']->query_select('news_categories', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('nc_title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('nc_title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -136,18 +136,18 @@ class Hook_commandr_fs_news extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news_categories', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news_categories', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['nc_title']),
             'rep_image' => remap_urlpath_as_portable($row['nc_img']),
             'notes' => $row['notes'],
             'owner' => remap_resource_id_as_portable('member', $row['nc_owner']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -239,7 +239,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
         $notes = $this->_default_property_str($properties, 'notes');
         $news_article = $this->_default_property_str($properties, 'article');
         $main_news_category = $this->_integer_category($category);
-        $news_category = array();
+        $news_category = [];
         if (!empty($properties['categories'])) {
             $news_category = $properties['categories'];
         }
@@ -250,7 +250,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
         $image = $this->_default_property_urlpath($properties, 'image');
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         $id = add_news($label, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, $time, $submitter, $views, $edit_date, null, $image, $meta_keywords, $meta_description, $regions);
 
@@ -270,7 +270,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -278,7 +278,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('news', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['title']),
             'summary' => get_translated_text($row['news']),
             'article' => get_translated_text($row['news_article']),
@@ -295,9 +295,9 @@ class Hook_commandr_fs_news extends Resource_fs_base
             'submitter' => remap_resource_id_as_portable('member', $row['submitter']),
             'add_date' => remap_time_as_portable($row['date_and_time']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'news', 'content_id' => strval($row['id'])))),
-            'categories' => collapse_1d_complexity('news_entry_category', $GLOBALS['SITE_DB']->query_select('news_category_entries', array('news_entry_category'), array('news_entry' => $row['id']))),
-        );
+            'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'news', 'content_id' => strval($row['id'])])),
+            'categories' => collapse_1d_complexity('news_entry_category', $GLOBALS['SITE_DB']->query_select('news_category_entries', ['news_entry_category'], ['news_entry' => $row['id']])),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -335,7 +335,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
         $notes = $this->_default_property_str($properties, 'notes');
         $news_article = $this->_default_property_str($properties, 'article');
         $main_news_category = $this->_integer_category($category);
-        $news_category = array();
+        $news_category = [];
         if (!empty($properties['categories'])) {
             $news_category = $properties['categories'];
         }
@@ -346,7 +346,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
         $image = $this->_default_property_urlpath($properties, 'image', true);
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
-        $regions = empty($properties['regions']) ? array() : $properties['regions'];
+        $regions = empty($properties['regions']) ? [] : $properties['regions'];
 
         edit_news(intval($resource_id), $label, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, $meta_keywords, $meta_description, $image, $add_time, $edit_time, $views, $submitter, $regions, true);
 

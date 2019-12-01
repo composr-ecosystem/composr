@@ -29,14 +29,14 @@ class ecommerce_custom_test_set extends cms_test_case
         require_code('ecommerce2');
 
         // Add custom product
-        $map = array(
+        $map = [
             'c_enabled' => 1,
             'c_price' => 10.00,
             'c_tax_code' => '0.00',
             'c_shipping_cost' => 0.00,
             'c_price_points' => 0,
             'c_one_per_member' => 0,
-        );
+        ];
         $map += insert_lang('c_title', 'TestCustomItem', 2);
         $map += insert_lang_comcode('c_description', '', 2);
         $map += insert_lang('c_mail_subject', '', 2);
@@ -63,23 +63,23 @@ class ecommerce_custom_test_set extends cms_test_case
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($test_username);
 
         // Test custom product is there
-        $url = build_url(array('page' => 'purchase', 'type' => 'browse', 'keep_su' => $test_username));
-        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => array(get_session_cookie() => $session_id)));
+        $url = build_url(['page' => 'purchase', 'type' => 'browse', 'keep_su' => $test_username]);
+        $purchase_screen = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => [get_session_cookie() => $session_id]]);
         $this->assertTrue(strpos($purchase_screen, 'TestCustomItem') !== false);
 
         // Test button generates
-        $button = make_transaction_button('CUSTOM_' . strval($this->custom_product_id), 'test', strval($member_id), 10.00, array(), 0.00, array(), 0.00, 0.00, 'USD', 0, 'paypal');
+        $button = make_transaction_button('CUSTOM_' . strval($this->custom_product_id), 'test', strval($member_id), 10.00, [], 0.00, [], 0.00, 0.00, 'USD', 0, 'paypal');
 
         // Find custom ID for transaction
-        $matches = array();
+        $matches = [];
         preg_match('#<input type="hidden" name="custom" value="([^"]*)" />#', $button->evaluate(), $matches);
         $trans_expecting_id = $matches[1];
 
         // Clear out sales
-        $GLOBALS['SITE_DB']->query_delete('ecom_sales', array('member_id' => $member_id));
+        $GLOBALS['SITE_DB']->query_delete('ecom_sales', ['member_id' => $member_id]);
 
         // Put through fake IPN response
-        $ipn_data = array(
+        $ipn_data = [
             'cmd' => '_notify-validate',
             'mc_gross' => '10.00',
             'payer_id' => uniqid('', true),
@@ -109,14 +109,14 @@ class ecommerce_custom_test_set extends cms_test_case
             'transaction_subject' => '',
             'payment_gross' => '10.88',
             'shipping' => '0.00',
-        );
-        $_POST = array(
+        ];
+        $_POST = [
             'payment_status' => 'Completed',
-        ) + $ipn_data;
+        ] + $ipn_data;
         handle_ipn_transaction_script(true, false);
 
         // Test was actioned
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales', 'member_id', array('member_id' => $member_id));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_sales', 'member_id', ['member_id' => $member_id]);
         $this->assertTrue($test !== null);
     }
 
@@ -128,7 +128,7 @@ class ecommerce_custom_test_set extends cms_test_case
         delete_lang($map['c_description']);
         delete_lang($map['c_mail_subject']);
         delete_lang($map['c_mail_body']);
-        $GLOBALS['SITE_DB']->query_delete('ecom_prods_custom', array('id' => $this->custom_product_id));
+        $GLOBALS['SITE_DB']->query_delete('ecom_prods_custom', ['id' => $this->custom_product_id]);
 
         parent::tearDown();
     }

@@ -65,13 +65,13 @@ function check_input_field_string($name, &$val, $posted, $filters)
 
     if ((($filters & INPUT_FILTER_URL_DESTINATION) != 0) && (!$posted)) { // Don't allow redirections to non-trusted sites
         if (!url_is_local($val)) {
-            $bus = array(
+            $bus = [
                 get_base_url(false) . '/',
                 get_base_url(true) . '/',
                 get_forum_base_url() . '/',
                 'https://compo.sr/',
                 'https://compo.sr/',
-            );
+            ];
             $trusted_sites = get_trusted_sites(2);
             foreach ($trusted_sites as $allowed) {
                 $bus[] = 'http://' . $allowed . '/';
@@ -86,7 +86,7 @@ function check_input_field_string($name, &$val, $posted, $filters)
             }
             if (!$ok) {
                 if (function_exists('build_url')) {
-                    $val = static_evaluate_tempcode(build_url(array('page' => ''), 'site'));
+                    $val = static_evaluate_tempcode(build_url(['page' => ''], 'site'));
                 } else {
                     $val = get_base_url(false);
                 }
@@ -161,7 +161,7 @@ function check_posted_field($name, $val, $filters)
     }
 
     if ($evil) {
-        $_POST = array(); // To stop loops
+        $_POST = []; // To stop loops
         log_hack_attack_and_exit('EVIL_POSTED_FORM_HACK', $referer);
     }
 }
@@ -198,7 +198,7 @@ function get_trusted_sites($level, $include_self = true)
             $option .= get_option('trusted_sites_2') . "\n";
         }
 
-        $trusted_sites = array();
+        $trusted_sites = [];
         foreach (explode("\n", $option) as $allowed_partner) {
             if (trim($allowed_partner) != '') {
                 $trusted_sites[] = $allowed_partner;
@@ -209,7 +209,7 @@ function get_trusted_sites($level, $include_self = true)
             }
         }
     } else {
-        $trusted_sites = array();
+        $trusted_sites = [];
     }
 
     $zl = strlen('ZONE_MAPPING_');
@@ -242,12 +242,12 @@ function get_trusted_sites($level, $include_self = true)
  */
 function hard_filter_input_data__filesystem(&$val)
 {
-    static $nastiest_path_signals = array(
+    static $nastiest_path_signals = [
         '(^|[/\\\\])_config\.php($|\0)',
         '\.\.[/\\\\]',
         '(^|[/\\\\])data_custom[/\\\\].*log.*',
-    );
-    $matches = array();
+    ];
+    $matches = [];
     foreach ($nastiest_path_signals as $signal) {
         if (preg_match('#' . $signal . '#', $val, $matches) != 0) {
             $val = str_replace($matches[0], str_replace('.', '&#46;', $matches[0]), $val); // Break the paths
@@ -327,7 +327,7 @@ function hard_filter_input_data__html(&$val, $lite = false)
     } while ($old_val != $val);
 
     // Entity vector
-    $matches = array();
+    $matches = [];
     do {
         $old_val = $val;
         $count = preg_match_all('#&\#(\d+)#i', $val, $matches); // No one would use this for an html tag unless it was malicious. The ASCII could have been put in directly.
@@ -494,7 +494,7 @@ function filter_form_field_default($name, $val, $live = false)
                             if (addon_installed('wordfilter')) {
                                 global $WORDS_TO_FILTER_CACHE;
                                 $temp_remember = $WORDS_TO_FILTER_CACHE;
-                                $WORDS_TO_FILTER_CACHE = array($attributes['embed'] => array('word' => $attributes['embed'], 'w_replacement' => '', 'w_match_type' => 'full'));
+                                $WORDS_TO_FILTER_CACHE = [$attributes['embed'] => ['word' => $attributes['embed'], 'w_replacement' => '', 'w_match_type' => 'full']];
                                 require_code('wordfilter');
                                 check_wordfilter($val, $name, true, true, false);
                                 $WORDS_TO_FILTER_CACHE = $temp_remember;
@@ -587,7 +587,7 @@ function load_field_restrictions($this_page = null, $this_type = null)
 {
     global $FIELD_RESTRICTIONS;
     if ($FIELD_RESTRICTIONS === null) {
-        $FIELD_RESTRICTIONS = array();
+        $FIELD_RESTRICTIONS = [];
         if (function_exists('xml_parser_create')) {
             $temp = new Field_restriction_loader();
             if ($this_page === null) {
@@ -630,10 +630,10 @@ class Field_restriction_loader
             return;
         }
 
-        $this->tag_stack = array();
-        $this->attribute_stack = array();
+        $this->tag_stack = [];
+        $this->attribute_stack = [];
         $this->levels_from_filtered = 0;
-        $this->field_qualification_stack = array('*');
+        $this->field_qualification_stack = ['*'];
 
         // Create and setup our parser
         if (function_exists('libxml_disable_entity_loader')) {
@@ -672,7 +672,7 @@ class Field_restriction_loader
     public function startElement($parser, $tag, $_attributes)
     {
         array_push($this->tag_stack, $tag);
-        $attributes = array();
+        $attributes = [];
         foreach ($_attributes as $key => $val) {
             $attributes[strtolower($key)] = $val;
         }
@@ -784,9 +784,9 @@ class Field_restriction_loader
                     global $FIELD_RESTRICTIONS;
                     $qualifier = array_peek($this->field_qualification_stack);
                     if (!array_key_exists($qualifier, $FIELD_RESTRICTIONS)) {
-                        $FIELD_RESTRICTIONS[$qualifier] = array();
+                        $FIELD_RESTRICTIONS[$qualifier] = [];
                     }
-                    $FIELD_RESTRICTIONS[$qualifier][] = array($tag, array_merge(array('embed' => $text), $attributes));
+                    $FIELD_RESTRICTIONS[$qualifier][] = [$tag, array_merge(['embed' => $text], $attributes)];
                 }
                 break;
         }

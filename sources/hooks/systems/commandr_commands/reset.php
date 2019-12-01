@@ -34,14 +34,14 @@ class Hook_commandr_command_reset
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('reset', array('h'), array()), '', '');
+            return ['', do_command_help('reset', ['h'], []), '', ''];
         } else {
             require_code('users_active_actions');
             cms_eatcookie('commandr_dir');
             cms_eatcookie('commandr_state');
             cms_eatcookie('commandr_state_code');
             cms_eatcookie('commandr_state_lang');
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

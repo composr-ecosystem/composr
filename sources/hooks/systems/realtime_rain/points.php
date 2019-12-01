@@ -33,10 +33,10 @@ class Hook_realtime_rain_points
     public function run($from, $to)
     {
         if (!addon_installed('points')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'points')) {
             require_lang('points');
@@ -47,7 +47,7 @@ class Hook_realtime_rain_points
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
 
-                $drops[] = rain_get_special_icons(null, $timestamp) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'point_charges',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -56,7 +56,7 @@ class Hook_realtime_rain_points
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points')),
+                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => true,
 
@@ -64,7 +64,7 @@ class Hook_realtime_rain_points
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => false,
                     'GROUP_ID' => false,
-                );
+                ];
             }
 
             $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount,gift_from AS member_id,gift_to,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'gifts WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -73,7 +73,7 @@ class Hook_realtime_rain_points
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
 
-                $drops[] = rain_get_special_icons(null, $timestamp) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
                     'TYPE' => 'point_gifts',
                     'FROM_MEMBER_ID' => ($row['anonymous'] == 1) ? null : strval($member_id),
                     'TO_MEMBER_ID' => strval($row['gift_to']),
@@ -82,7 +82,7 @@ class Hook_realtime_rain_points
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(array('page' => 'points', 'type' => 'member', 'id' => $row['gift_to']), get_module_zone('points')),
+                    'URL' => build_url(['page' => 'points', 'type' => 'member', 'id' => $row['gift_to']], get_module_zone('points')),
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -90,7 +90,7 @@ class Hook_realtime_rain_points
                     'FROM_ID' => ($row['anonymous'] == 1) ? null : ('member_' . strval($member_id)),
                     'TO_ID' => 'member_' . strval($row['gift_to']),
                     'GROUP_ID' => null,
-                );
+                ];
             }
         }
 

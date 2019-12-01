@@ -30,7 +30,7 @@ class Hook_config_moz_paid
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MOZ_PAID',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -44,7 +44,7 @@ class Hook_config_moz_paid
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

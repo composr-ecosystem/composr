@@ -54,7 +54,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $this->process_checks_section('testSELinux', 'SELinux settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testUmask', 'Umask settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -85,7 +85,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $this->assertTrue((stripos($server_software, $_server_software) === false), do_lang('WARNING_SERVER_SOFTWARE', $_server_software));
         }*/
 
-        $supported_server_software = array('LiteSpeed', 'Apache', 'Microsoft-IIS');
+        $supported_server_software = ['LiteSpeed', 'Apache', 'Microsoft-IIS'];
         $supported = false;
         foreach ($supported_server_software as $_server_software) {
             if (stripos($server_software, $_server_software) !== false) {
@@ -94,7 +94,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
         $this->assertTrue($supported, do_lang('WARNING_SERVER_SOFTWARE', $server_software));
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^Apache/([\d\.]*)#', $server_software, $matches) != 0) {
             $minimum_version = '2.4'; // LEGACY also maintain in tut_webhosting.txt
 
@@ -185,19 +185,19 @@ class Hook_health_check_install_env extends Hook_Health_Check
         if (file_exists(get_file_base() . '/data/empty.php')) {
             $test_url = get_base_url() . '/data/empty.php'; // Should normally exist, simple static URL call
         } else {
-            $test_url = static_evaluate_tempcode(build_url(array('page' => ''), '', array(), false, false, true)); // But this definitely must exist
+            $test_url = static_evaluate_tempcode(build_url(['page' => ''], '', [], false, false, true)); // But this definitely must exist
         }
 
-        $test = cms_http_request($test_url, array('byte_limit' => 1, 'trigger_error' => false, 'no_redirect' => true)); // Should return a 200 blank, not an HTTP error or a redirect; actual data would be a Composr error
+        $test = cms_http_request($test_url, ['byte_limit' => 1, 'trigger_error' => false, 'no_redirect' => true]); // Should return a 200 blank, not an HTTP error or a redirect; actual data would be a Composr error
 
         $has_www = (strpos(get_base_url(), '://www.') !== false);
         $installing = ($check_context == CHECK_CONTEXT__INSTALL);
 
-        if (in_array($test->message, array('200'))) {
+        if (in_array($test->message, ['200'])) {
             // Is okay
         }
 
-        if (in_array($test->message, array('401', '403'))) {
+        if (in_array($test->message, ['401', '403'])) {
             // Is access denied, which could happen so isn't an error from our point of view
         }
 
@@ -209,7 +209,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $a = do_lang($installing ? '_HTTP_REDIRECT_PROBLEM_INSTALLING' : '_HTTP_REDIRECT_PROBLEM_RUNNING', get_base_url() . '/config_editor.php');
         $b = do_lang($has_www ? '_WITH_WWW' : '_WITHOUT_WWW', get_base_url() . '/config_editor.php');
         $this->assertTrue(
-            !in_array($test->message, array('301', '302', '307')),
+            !in_array($test->message, ['301', '302', '307']),
             do_lang('HTTP_REDIRECT_PROBLEM', $a, $b, $test->message)
         );
 
@@ -221,7 +221,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $a = do_lang($has_ip_forwarding ? '_IP_FORWARDING_ENABLED' : '_IP_FORWARDING_DISABLED');
         }
         $this->assertTrue(
-            (!in_array($test->message, array('400', '404', '500', 'no-data', '408', '502', '503', '504'))) && ($test->data !== null),
+            (!in_array($test->message, ['400', '404', '500', 'no-data', '408', '502', '503', '504'])) && ($test->data !== null),
             do_lang('IP_FORWARDING_CHANGE', $a, do_lang('config:IP_FORWARDING'), $test->message)
         );
     }
@@ -373,7 +373,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $url = find_script('blank');
         }
 
-        $blank = (http_get_contents($url, array('trigger_error' => false, 'timeout' => 1.0)) == '');
+        $blank = (http_get_contents($url, ['trigger_error' => false, 'timeout' => 1.0]) == '');
         $this->assertTrue($blank, do_lang('INTERFERING_AD_SCRIPT'));
     }
 
@@ -395,10 +395,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
 
         // Test to see if we have any ModSecurity issue that blocks config form submissions, via posting through some perfectly legitimate things that it might be paranoid about
         $test_url = get_custom_base_url() . '/data/empty.php';
-        $test_a = cms_http_request($test_url, array('byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true));
+        $test_a = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true]);
         $message_a = $test_a->message;
         if ($message_a == '200') {
-            $test_b = cms_http_request($test_url, array('byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => array('test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>')));
+            $test_b = cms_http_request($test_url, ['byte_limit' => 0, 'trigger_error' => false, 'no_redirect' => true, 'post_params' => ['test_a' => '/usr/bin/unzip -o @_SRC_@ -x -d @_DST_@', 'test_b' => '<iframe src="http://example.com/"></iframe>', 'test_c' => '<script>console.log(document.cookie);</script>']]);
             $message_b = $test_b->message;
             if ($message_b != '200') {
                 $this->assertTrue(false, do_lang('MODSECURITY', $message_b));
@@ -458,10 +458,10 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', array('\'' . db_escape_string(hex2bin('c2a3')) . '\'')));
+        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string(hex2bin('c2a3')) . '\'']));
         $this->assertTrue($cnt == 1, 'Database connection is not encoding Unicode properly (non-latin characters, utf8)');
 
-        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', array('\'' . db_escape_string(hex2bin('f09f988e')) . '\'')));
+        $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ' . db_function('LENGTH', ['\'' . db_escape_string(hex2bin('f09f988e')) . '\'']));
         $this->assertTrue($cnt == 1, 'Database connection is not encoding Unicode properly (emojis, utf8mb4)');
     }
 
@@ -612,7 +612,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return null;
         }
 
-        $data = http_get_contents($url, array('trigger_error' => false));
+        $data = http_get_contents($url, ['trigger_error' => false]);
         $ok = (is_string($data)) && (strpos($data, 'test') !== false);
 
         $perms = fileperms($path);
@@ -624,6 +624,6 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
         @unlink($path);
 
-        return array($ok, $perms, $dir_perms);
+        return [$ok, $perms, $dir_perms];
     }
 }

@@ -57,22 +57,22 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'wiki_post':
-                $_ret = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('the_message') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('the_message') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'wiki_page':
-                $_ret = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('title') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('title') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -116,13 +116,13 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
         $meta_description = $this->_default_property_str($properties, 'meta_description');
         $id = wiki_add_page($label, $description, $notes, $show_posts, $member_id, $add_time, $views, $meta_keywords, $meta_description, $edit_date);
 
-        $the_order = $GLOBALS['SITE_DB']->query_select_value('wiki_children', 'MAX(the_order)', array('parent_id' => $parent_id));
+        $the_order = $GLOBALS['SITE_DB']->query_select_value('wiki_children', 'MAX(the_order)', ['parent_id' => $parent_id]);
         if ($the_order === null) {
             $the_order = -1;
         }
         $the_order++;
         if ($parent_id !== null) {
-            $GLOBALS['SITE_DB']->query_insert('wiki_children', array('parent_id' => $parent_id, 'child_id' => $id, 'the_order' => $the_order, 'title' => $label));
+            $GLOBALS['SITE_DB']->query_insert('wiki_children', ['parent_id' => $parent_id, 'child_id' => $id, 'the_order' => $the_order, 'title' => $label]);
         }
 
         $this->_resource_save_extend($this->folder_resource_type, strval($id), $filename, $label, $properties);
@@ -141,7 +141,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -149,7 +149,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('wiki_page', strval($row['id']));
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['title']),
             'the_description' => get_translated_text($row['the_description']),
             'notes' => $row['notes'],
@@ -160,7 +160,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
             'meta_description' => $meta_description,
             'add_date' => remap_time_as_portable($row['add_date']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -199,22 +199,22 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
 
         // Move
         $old_path = $this->search($resource_type, $resource_id, false);
-        list(, $old_category) = ($old_path == '') ? array('wiki_page', null) : $this->folder_convert_filename_to_id($old_path);
+        list(, $old_category) = ($old_path == '') ? ['wiki_page', null] : $this->folder_convert_filename_to_id($old_path);
         $old_parent_id = $this->_integer_category($old_category);
         if ($old_parent_id !== $parent_id) {
-            $the_order = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_children', 'the_order', array('child_id' => $id, 'parent_id' => $old_parent_id));
+            $the_order = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_children', 'the_order', ['child_id' => $id, 'parent_id' => $old_parent_id]);
             if ($explicit_move) {
-                $GLOBALS['SITE_DB']->query_delete('wiki_children', array('child_id' => $id, 'parent_id' => $old_parent_id));
+                $GLOBALS['SITE_DB']->query_delete('wiki_children', ['child_id' => $id, 'parent_id' => $old_parent_id]);
             }
             if (($the_order === null) || (!$explicit_move)) { // Put on end of existing children
-                $the_order = $GLOBALS['SITE_DB']->query_select_value('wiki_children', 'MAX(the_order)', array('parent_id' => $parent_id));
+                $the_order = $GLOBALS['SITE_DB']->query_select_value('wiki_children', 'MAX(the_order)', ['parent_id' => $parent_id]);
                 if ($the_order === null) {
                     $the_order = -1;
                 }
                 $the_order++;
             }
             if ($parent_id !== null) {
-                $GLOBALS['SITE_DB']->query_insert('wiki_children', array('parent_id' => $parent_id, 'child_id' => $id, 'the_order' => $the_order, 'title' => $label));
+                $GLOBALS['SITE_DB']->query_insert('wiki_children', ['parent_id' => $parent_id, 'child_id' => $id, 'the_order' => $the_order, 'title' => $label]);
             }
         }
 
@@ -286,20 +286,20 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['the_message']),
             'validated' => $row['validated'],
             'views' => $row['wiki_views'],
             'member_id' => remap_resource_id_as_portable('member', $row['member_id']),
             'add_date' => remap_time_as_portable($row['date_and_time']),
             'edit_date' => remap_time_as_portable($row['edit_date']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

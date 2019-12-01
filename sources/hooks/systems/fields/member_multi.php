@@ -53,7 +53,7 @@ class Hook_fields_member_multi
             $_member = $GLOBALS['FORUM_DRIVER']->get_member_from_username($param);
             if ($_member === null) {
                 attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($param)), 'warn');
-                return array(array(), array(), '', '', '');
+                return [[], [], '', '', ''];
             }
             $param = strval($_member);
         }
@@ -79,7 +79,7 @@ class Hook_fields_member_multi
                 $default = strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
             }
         }
-        return array('long_unescaped', $default, 'long');
+        return ['long_unescaped', $default, 'long'];
     }
 
     /**
@@ -99,8 +99,8 @@ class Hook_fields_member_multi
             return '';
         }
 
-        $out = array();
-        foreach (($ev == '') ? array() : explode("\n", $ev) as $ev) {
+        $out = [];
+        foreach (($ev == '') ? [] : explode("\n", $ev) as $ev) {
             if (is_numeric($ev)) {
                 $out[intval($ev)] = $GLOBALS['FORUM_DRIVER']->get_username(intval($ev), false, USERNAME_DEFAULT_BLANK);
             }
@@ -144,7 +144,7 @@ class Hook_fields_member_multi
                 $actual_value = strval(get_member());
             }
         }
-        $usernames = array();
+        $usernames = [];
         foreach (explode("\n", $actual_value) as $actual_value) {
             if (is_numeric($actual_value)) {
                 $usernames[] = $GLOBALS['FORUM_DRIVER']->get_username(intval($actual_value), false, USERNAME_DEFAULT_BLANK);

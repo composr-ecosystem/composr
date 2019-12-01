@@ -30,7 +30,7 @@ class Hook_config_quiz_show_stats_count_total_open
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'QUIZZES',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_quiz_show_stats_count_total_open
             'public' => false,
 
             'addon' => 'quizzes',
-        );
+        ];
     }
 
     /**

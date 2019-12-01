@@ -30,7 +30,7 @@ class Hook_config_detect_lang_browser
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DETECT_LANG_BROWSER',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_detect_lang_browser
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

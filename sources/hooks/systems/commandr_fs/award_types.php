@@ -47,8 +47,8 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('award_types', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('a_title') => $label));
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('award_types', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('a_title') => $label]);
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -103,7 +103,7 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
         $id = add_award_type($label, $description, $points, $resource_type, $show_awardee, $update_time_hours);
 
         if (isset($properties['archive'])) {
-            table_from_portable_rows('award_archive', $properties['archive'], array('a_type_id' => $id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('award_archive', $properties['archive'], ['a_type_id' => $id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
@@ -122,21 +122,21 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['a_title'],
             'description' => $row['a_description'],
             'points' => $row['a_points'],
             'resource_type' => $row['a_content_type'],
             'show_awardee' => $row['a_show_awardee'],
             'update_time_hours' => $row['a_update_time_hours'],
-            'archive' => table_to_portable_rows('award_archive', /*skip*/array(), array('a_type_id' => intval($resource_id))),
-        );
+            'archive' => table_to_portable_rows('award_archive', /*skip*/[], ['a_type_id' => intval($resource_id)]),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -169,7 +169,7 @@ class Hook_commandr_fs_award_types extends Resource_fs_base
         edit_award_type(intval($resource_id), $label, $description, $points, $resource_type, $show_awardee, $update_time_hours);
 
         if (isset($properties['archive'])) {
-            table_from_portable_rows('award_archive', $properties['archive'], array('a_type_id' => intval($resource_id)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('award_archive', $properties['archive'], ['a_type_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);

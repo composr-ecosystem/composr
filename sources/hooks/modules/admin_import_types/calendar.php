@@ -31,11 +31,11 @@ class Hook_admin_import_types_calendar
     public function run()
     {
         if (!addon_installed('calendar')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'calendar' => 'CALENDAR',
-        );
+        ];
     }
 }

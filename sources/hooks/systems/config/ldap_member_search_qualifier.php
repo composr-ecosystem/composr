@@ -30,7 +30,7 @@ class Hook_config_ldap_member_search_qualifier
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_MEMBER_SEARCH_QUALIFIER',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_member_search_qualifier
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

@@ -87,7 +87,7 @@ class _http_timeouts_test_set extends cms_test_case
         $result = curl_exec($ch);
         curl_close($ch);
 
-        return array(is_string($result), is_string($result) ? strlen($result) : 0);
+        return [is_string($result), is_string($result) ? strlen($result) : 0];
     }
 
     protected function _testURLWrappers($url, $timeout)
@@ -95,7 +95,7 @@ class _http_timeouts_test_set extends cms_test_case
         ini_set('allow_url_fopen', '1');
         ini_set('default_socket_timeout', strval(intval(ceil($timeout))));
         $result = @file_get_contents($url);
-        return array(is_string($result), is_string($result) ? strlen($result) : 0);
+        return [is_string($result), is_string($result) ? strlen($result) : 0];
     }
 
     protected function _testFSockOpen($url, $timeout)
@@ -112,7 +112,7 @@ class _http_timeouts_test_set extends cms_test_case
             $out .= "Host: " . $parsed['host'] . "\r\n";
             $out .= "Connection: Close\r\n\r\n";
             fwrite($fh, $out);
-            $_frh = array($fh);
+            $_frh = [$fh];
             $_fwh = null;
             while (!feof($fh)) {
                 if (!stream_select($_frh, $_fwh, $_fwh, intval($timeout), fmod($timeout, 1.0) / 1000000.0)) {
@@ -138,6 +138,6 @@ class _http_timeouts_test_set extends cms_test_case
             }
         }
 
-        return array(is_string($result), is_string($result) ? strlen($result) : 0);
+        return [is_string($result), is_string($result) ? strlen($result) : 0];
     }
 }

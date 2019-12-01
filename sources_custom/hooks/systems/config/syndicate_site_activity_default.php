@@ -25,7 +25,7 @@ class Hook_config_syndicate_site_activity_default
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SYNDICATE_SITE_ACTIVITY_DEFAULT',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_syndicate_site_activity_default
             'public' => false,
 
             'addon' => 'activity_feed',
-        );
+        ];
     }
 
     /**

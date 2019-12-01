@@ -52,12 +52,12 @@ function get_alexa_rank($url)
     }
 
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
-    $result = http_get_contents($_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0));
+    $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);
     if ($result === null) {
-        return array('', '');
+        return ['', ''];
     }
 
-    $matches = array();
+    $matches = [];
     if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $matches) != 0) {
         $rank = integer_format(intval(str_replace(',', '', $matches[1])));
     } else {
@@ -77,7 +77,7 @@ function get_alexa_rank($url)
         audience (i.e. what country views the site most)
      */
 
-    $ret = array($rank, $links);
+    $ret = [$rank, $links];
 
     set_value('alexa__' . md5($url), serialize($ret), true);
 

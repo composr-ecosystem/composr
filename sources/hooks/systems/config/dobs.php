@@ -30,7 +30,7 @@ class Hook_config_dobs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DOBS',
             'type' => 'list',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_dobs
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

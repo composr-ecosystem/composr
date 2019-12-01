@@ -95,7 +95,7 @@ class Hook_snippet_template_editor_save
 
             // Clear caching
             require_code('caches3');
-            erase_cached_templates(false, array($clean_file));
+            erase_cached_templates(false, [$clean_file]);
             erase_cached_templates(false, null, TEMPLATE_DECACHE_BASE);
 
             // Log

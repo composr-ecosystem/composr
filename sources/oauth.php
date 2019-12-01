@@ -50,7 +50,7 @@ function init__oauth()
  */
 function get_oauth_service_info($service_name)
 {
-    static $info_cache = array();
+    static $info_cache = [];
     if (isset($info_cache[$service_name])) {
         return $info_cache[$service_name];
     }
@@ -89,7 +89,7 @@ function get_oauth_refresh_token($service_name)
  */
 function refresh_oauth2_token($service_name, $trigger_error = true)
 {
-    static $cache = array();
+    static $cache = [];
     if (array_key_exists($service_name, $cache)) {
         return $cache[$service_name];
     }
@@ -108,14 +108,14 @@ function refresh_oauth2_token($service_name, $trigger_error = true)
 
     $endpoint = $service_info['endpoint'];
 
-    $post_params = array(
+    $post_params = [
         'client_id' => get_option($service_info['options']['client_id']),
         'client_secret' => get_option($service_info['options']['client_secret']),
         'refresh_token' => $refresh_token,
         'grant_type' => 'refresh_token',
-    );
+    ];
 
-    $result = http_get_contents($endpoint . '/token', array('trigger_error' => false, 'post_params' => $post_params));
+    $result = http_get_contents($endpoint . '/token', ['trigger_error' => false, 'post_params' => $post_params]);
     if ($result === null) {
         if (!$trigger_error) {
             return null;

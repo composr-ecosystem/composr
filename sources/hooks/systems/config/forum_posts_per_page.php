@@ -30,7 +30,7 @@ class Hook_config_forum_posts_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORUM_POSTS_PER_PAGE',
             'type' => 'integer',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_forum_posts_per_page
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

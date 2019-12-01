@@ -134,7 +134,7 @@ function _draw_key($data, $start_colour, $start_x, $start_y, $units = '')
  */
 function _get_next_colour($current_colour)
 {
-    $all_of = array_values(array_unique(array('333333', '333366', '333399', '3333CC', '3333FF', '336633', '339933', '33CC33', '33FF33', '663333', '993333', 'CC3333', 'FF3333', '663333', '663366', '663399', '6633CC', '6633FF', '666633', '669933', '66CC33', '66FF33', '993333', '993366', '93399', '9933CC', '9933FF', '996633', '999933', '99CC33', '99FF33', 'CC3333', 'CC3366', 'CC3399', 'CC33CC', 'CC33FF', 'CC6633', 'CC9933', 'CCCC33', 'CCFF33', 'FF3333', 'FF3366', 'FF3399', 'FF33CC', 'FF33FF', 'FF6633', 'FF9933', 'FFCC33', 'FFFF33', '336633', '336666', '336699', '3366CC', '3366FF', '339933', '339966', '339999', '3399CC', '3399FF', '33CC33', '33CC66', '33CC99', '33CCCC', '33CCFF', '33FF33', '33FF66', '33FF99', '33FFCC', '33FFFF')));
+    $all_of = array_values(array_unique(['333333', '333366', '333399', '3333CC', '3333FF', '336633', '339933', '33CC33', '33FF33', '663333', '993333', 'CC3333', 'FF3333', '663333', '663366', '663399', '6633CC', '6633FF', '666633', '669933', '66CC33', '66FF33', '993333', '993366', '93399', '9933CC', '9933FF', '996633', '999933', '99CC33', '99FF33', 'CC3333', 'CC3366', 'CC3399', 'CC33CC', 'CC33FF', 'CC6633', 'CC9933', 'CCCC33', 'CCFF33', 'FF3333', 'FF3366', 'FF3399', 'FF33CC', 'FF33FF', 'FF6633', 'FF9933', 'FFCC33', 'FFFF33', '336633', '336666', '336699', '3366CC', '3366FF', '339933', '339966', '339999', '3399CC', '3399FF', '33CC33', '33CC66', '33CC99', '33CCCC', '33CCFF', '33FF33', '33FF66', '33FF99', '33FFCC', '33FFFF']));
 
     $key_pos = array_search($current_colour, $all_of);
     $next_key_pos = $key_pos + 3;
@@ -419,7 +419,7 @@ function create_scatter_graph($data, $x_label = 'X Axis', $y_label = 'Y Axis', $
     $height_differential_plots = 0.0;
     $x = 0.0;
     $prev_x = 0.0;
-    $prev_value = array();
+    $prev_value = [];
     $plot = '';
     $path_data = '';
     $labels = '';
@@ -510,7 +510,7 @@ function create_pie_chart($data)
 
     $angle = 0.0;
     $colour = '333333';
-    $data2 = array();
+    $data2 = [];
     $plot = '';
     foreach ($data as $key => $value) {
         if (is_array($value)) {

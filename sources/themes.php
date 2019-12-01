@@ -26,9 +26,9 @@
 function init__themes()
 {
     global $THEME_IMAGES_CACHE, $RECORD_THEME_IMAGES_CACHE, $RECORDED_THEME_IMAGES, $THEME_IMAGES_LOAD_INTENSITY;
-    $THEME_IMAGES_CACHE = array();
+    $THEME_IMAGES_CACHE = [];
     $RECORD_THEME_IMAGES_CACHE = false;
-    $RECORDED_THEME_IMAGES = array();
+    $RECORDED_THEME_IMAGES = [];
 
     if (!defined('THEME_IMAGE_PLACE_SITE')) {
         define('THEME_IMAGE_PLACE_SITE', 0);
@@ -37,10 +37,10 @@ function init__themes()
         define('THEME_IMAGES_LOAD_INTENSITY__SMART_CACHE', 1);
         define('THEME_IMAGES_LOAD_INTENSITY__ALL', 2);
     }
-    $THEME_IMAGES_LOAD_INTENSITY = array(
+    $THEME_IMAGES_LOAD_INTENSITY = [
         THEME_IMAGE_PLACE_SITE => THEME_IMAGES_LOAD_INTENSITY__NONE,
         THEME_IMAGE_PLACE_FORUM => THEME_IMAGES_LOAD_INTENSITY__NONE,
-    );
+    ];
 }
 
 /**
@@ -129,7 +129,7 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
                 $url = $THEME_IMAGES_CACHE[$db_place][$id];
 
                 // Check it is still here
-                static $checked = array();
+                static $checked = [];
                 if (!isset($checked[$url])) {
                     if ((url_is_local($url)) && (support_smart_decaching())) {
                         if (substr($url, 0, 22) === 'themes/default/images/') {
@@ -147,11 +147,11 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
                             // Dynamic fixup possible?
                             if ($theme != 'default') {
                                 if (!file_exists(get_custom_file_base() . '/.git')) { // Do not automatically remap missing theme images if running out of git - could be that git operator is doing a re-sync between servers
-                                    $url = $db->query_select_value_if_there('theme_images', 'url', array('id' => $id, 'theme' => 'default', 'lang' => $lang));
+                                    $url = $db->query_select_value_if_there('theme_images', 'url', ['id' => $id, 'theme' => 'default', 'lang' => $lang]);
                                     if ($url !== null) {
-                                        $db->query_update('theme_images', array('url' => $url), array('id' => $id, 'theme' => $theme, 'lang' => $lang), '', 1);
+                                        $db->query_update('theme_images', ['url' => $url], ['id' => $id, 'theme' => $theme, 'lang' => $lang], '', 1);
                                     } else {
-                                        $db->query_delete('theme_images', array('id' => $id, 'theme' => $theme, 'lang' => $lang), '', 1);
+                                        $db->query_delete('theme_images', ['id' => $id, 'theme' => $theme, 'lang' => $lang], '', 1);
                                     }
                                 }
                             }
@@ -165,7 +165,7 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
             }
         } else {
             // Can't rely on caching because the cache only runs if $truism
-            $url = $db->query_select_value_if_there('theme_images', 'url', array('id' => $id, 'theme' => $theme, 'lang' => $lang));
+            $url = $db->query_select_value_if_there('theme_images', 'url', ['id' => $id, 'theme' => $theme, 'lang' => $lang]);
         }
     }
 
@@ -173,31 +173,31 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
 
     if ($url === null) {
         // Do search
-        $priorities = array();
+        $priorities = [];
         if (!$pure_only) {
-            $priorities[] = array($theme, $lang, 'images_custom');
-            $priorities[] = array($theme, '', 'images_custom');
+            $priorities[] = [$theme, $lang, 'images_custom'];
+            $priorities[] = [$theme, '', 'images_custom'];
             if ($lang !== fallback_lang()) {
-                $priorities[] = array($theme, fallback_lang(), 'images_custom');
+                $priorities[] = [$theme, fallback_lang(), 'images_custom'];
             }
         }
-        $priorities[] = array($theme, $lang, 'images');
-        $priorities[] = array($theme, '', 'images');
+        $priorities[] = [$theme, $lang, 'images'];
+        $priorities[] = [$theme, '', 'images'];
         if ($lang !== fallback_lang()) {
-            $priorities[] = array($theme, fallback_lang(), 'images');
+            $priorities[] = [$theme, fallback_lang(), 'images'];
         }
         if ($theme !== 'default') {
             if (!$pure_only) {
-                $priorities[] = array('default', $lang, 'images_custom');
-                $priorities[] = array('default', '', 'images_custom');
+                $priorities[] = ['default', $lang, 'images_custom'];
+                $priorities[] = ['default', '', 'images_custom'];
                 if ($lang !== fallback_lang()) {
-                    $priorities[] = array('default', fallback_lang(), 'images_custom');
+                    $priorities[] = ['default', fallback_lang(), 'images_custom'];
                 }
             }
-            $priorities[] = array('default', $lang, 'images');
-            $priorities[] = array('default', '', 'images');
+            $priorities[] = ['default', $lang, 'images'];
+            $priorities[] = ['default', '', 'images'];
             if ($lang !== fallback_lang()) {
-                $priorities[] = array('default', fallback_lang(), 'images');
+                $priorities[] = ['default', fallback_lang(), 'images'];
             }
         }
 
@@ -217,7 +217,7 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
         if ((!$GLOBALS['SEMI_DEV_MODE']) || ($url !== '')) { // We don't cache failure on dev-mode as we may add it later while writing code and don't want to have to keep doing cache flushes
             if (!$db->is_forum_db()) { // If guard is here because a MSN site can't code assumptions about the file system of the central site into that site's database, we rely on that site to maintain its own theme_images table for performance
                 push_query_limiting(false);
-                $db->query_insert('theme_images', array('id' => $id, 'theme' => $theme, 'lang' => $lang, 'url' => $url), false, true); // Allow for race conditions
+                $db->query_insert('theme_images', ['id' => $id, 'theme' => $theme, 'lang' => $lang, 'url' => $url], false, true); // Allow for race conditions
                 pop_query_limiting();
             }
         }
@@ -266,7 +266,7 @@ function find_theme_image($id, $silent_fail = false, $leave_local = false, $them
         if ($RECORD_THEME_IMAGES_CACHE) {
             global $RECORDED_THEME_IMAGES;
             if (!is_on_multi_site_network()) {
-                $RECORDED_THEME_IMAGES[serialize(array($id, $theme, $lang))] = true;
+                $RECORDED_THEME_IMAGES[serialize([$id, $theme, $lang])] = true;
             }
         }
     } else {
@@ -298,7 +298,7 @@ function load_theme_image_cache($db, $db_place, $true_theme, $true_lang)
                 $THEME_IMAGES_CACHE[$db_place] = $SMART_CACHE->get('theme_images_' . $true_theme . '_' . $true_lang . '_' . strval($db_place));
             }
             if ($THEME_IMAGES_CACHE[$db_place] === null) {
-                $THEME_IMAGES_CACHE[$db_place] = array();
+                $THEME_IMAGES_CACHE[$db_place] = [];
             }
 
             $THEME_IMAGES_LOAD_INTENSITY[$db_place] = THEME_IMAGES_LOAD_INTENSITY__SMART_CACHE;
@@ -306,7 +306,7 @@ function load_theme_image_cache($db, $db_place, $true_theme, $true_lang)
             break;
 
         case THEME_IMAGES_LOAD_INTENSITY__SMART_CACHE:
-            $theme_images = $db->query_select('theme_images', array('id', 'url'), array('theme' => $true_theme, 'lang' => $true_lang));
+            $theme_images = $db->query_select('theme_images', ['id', 'url'], ['theme' => $true_theme, 'lang' => $true_lang]);
             $THEME_IMAGES_CACHE[$db_place] = collapse_2d_complexity('id', 'url', $theme_images);
 
             $THEME_IMAGES_LOAD_INTENSITY[$db_place] = THEME_IMAGES_LOAD_INTENSITY__ALL;
@@ -349,7 +349,7 @@ function cdn_filter($url)
             return $url;
         }
 
-        static $cdn_consistency_check = array();
+        static $cdn_consistency_check = [];
 
         if (isset($cdn_consistency_check[$url])) {
             return $cdn_consistency_check[$url];
@@ -408,8 +408,8 @@ function cdn_filter($url)
  */
 function _search_img_file($theme, $lang, $id, $dir = 'images')
 {
-    $places = array(get_custom_file_base(), get_file_base());
-    $extensions = array('png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp');
+    $places = [get_custom_file_base(), get_file_base()];
+    $extensions = ['png', 'jpg', 'jpe', 'jpeg', 'gif', 'ico', 'cur', 'svg', 'webp', 'bmp'];
 
     foreach ($places as $_base) {
         $base = $_base . '/themes/';
@@ -483,7 +483,7 @@ function rgb_to_hsl($red, $green, $blue)
         $hue /= 6;
     }
 
-    return array($hue, $sat, $lht);
+    return [$hue, $sat, $lht];
 }
 
 /**
@@ -545,5 +545,5 @@ function hsl_to_rgb($hue, $sat, $lht)
         $b = hue_to_rgb($p, $q, $hue - (1 / 3));
     }
 
-    return array(intval(round($r * 255)), intval(round($g * 255)), intval(round($b * 255)));
+    return [intval(round($r * 255)), intval(round($g * 255)), intval(round($b * 255))];
 }

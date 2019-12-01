@@ -26,7 +26,7 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_cns_tapatalk
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Parts of the implementation are copyright to Quoord systems (the Tapatalk company). See mobiquo/license_agreement.txt',
-        );
+        ];
     }
 
     /**
@@ -227,9 +227,9 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_mobile',
-        );
+        ];
     }
 
     /**
@@ -239,14 +239,14 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'cns_forum',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -266,7 +266,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/cns_tapatalk.php',
             'sources_custom/hooks/systems/config/mark_as_edited.php',
             'sources_custom/hooks/systems/config/after_edit_mark_unread.php',
@@ -399,6 +399,6 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
             'mobiquo/tests/index.html',
             'mobiquo/mbqClass/.htaccess',
             'mobiquo/lib/.htaccess',
-        );
+        ];
     }
 }

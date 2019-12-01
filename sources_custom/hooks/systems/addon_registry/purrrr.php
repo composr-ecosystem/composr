@@ -28,7 +28,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -68,7 +68,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,13 +108,13 @@ class Hook_addon_registry_purrrr
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'iotds',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/purrrr.php',
             'data_custom/images/lolcats/index.html',
             'data_custom/images/lolcats/thumbs/index.html',
@@ -218,7 +218,7 @@ class Hook_addon_registry_purrrr
             'data_custom/images/lolcats/thumbs/funny-pictures-kittens-dispose-of-boyfriend.jpg',
             'data_custom/images/lolcats/thumbs/funny-pictures-kittens-yell-at-eachother.jpg',
             'data_custom/images/lolcats/thumbs/ridiculous_poses_moddles.jpg',
-        );
+        ];
     }
 
     /**

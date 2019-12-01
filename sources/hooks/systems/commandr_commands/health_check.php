@@ -34,16 +34,16 @@ class Hook_commandr_command_health_check
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('health_check')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         require_lang('health_check');
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('health_check', array('h'), array()), '', '');
+            return ['', do_command_help('health_check', ['h'], []), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'health_check'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'health_check')];
             }
 
             require_code('health_check');
@@ -62,7 +62,7 @@ class Hook_commandr_command_health_check
                 }
             }
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

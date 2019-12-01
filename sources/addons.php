@@ -26,7 +26,7 @@
 function init__addons()
 {
     global $ADDON_INFO_CACHE;
-    $ADDON_INFO_CACHE = array();
+    $ADDON_INFO_CACHE = [];
 }
 
 /**
@@ -36,19 +36,19 @@ function init__addons()
  */
 function get_default_addon_info()
 {
-    return array(
+    return [
         'name' => '',
         'author' => '',
         'organisation' => '',
         'version' => '1.0',
         'category' => 'Uncategorised/Alpha',
-        'copyright_attribution' => array(),
+        'copyright_attribution' => [],
         'licence' => '(Unstated)',
         'description' => '',
         'install_time' => time(),
-        'files' => array(),
-        'dependencies' => array(),
-    );
+        'files' => [],
+        'dependencies' => [],
+    ];
 }
 
 /**
@@ -66,7 +66,7 @@ function preload_all_ocproducts_addons_info()
 
     // Now fill in the 'dependencies' data
     foreach ($ADDON_INFO_CACHE as $addon_a => $addon_info_a) {
-        $ADDON_INFO_CACHE[$addon_a]['dependencies_on_this'] = array();
+        $ADDON_INFO_CACHE[$addon_a]['dependencies_on_this'] = [];
 
         foreach ($ADDON_INFO_CACHE as $addon_b => $addon_info_b) {
             if ($addon_a != $addon_b) {
@@ -109,11 +109,11 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
     }
 
     if (is_file($path)) {
-        $_hook_bits = extract_module_functions($path, array('get_dependencies', 'get_version', 'get_category', 'get_copyright_attribution', 'get_licence', 'get_description', 'get_author', 'get_organisation', 'get_file_list', 'get_default_icon'));
+        $_hook_bits = extract_module_functions($path, ['get_dependencies', 'get_version', 'get_category', 'get_copyright_attribution', 'get_licence', 'get_description', 'get_author', 'get_organisation', 'get_file_list', 'get_default_icon']);
         if ($_hook_bits[0] !== null) {
             $dep = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path, false);
         } else {
-            $dep = array();
+            $dep = [];
         }
         $defaults = get_default_addon_info();
         if ($_hook_bits[1] !== null) {
@@ -150,10 +150,10 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
         if ($_hook_bits[8] !== null) {
             $file_list = is_array($_hook_bits[8]) ? call_user_func_array($_hook_bits[8][0], $_hook_bits[8][1]) : cms_eval($_hook_bits[8], $path, false);
             if (!is_array($file_list)) {
-                $file_list = array();
+                $file_list = [];
             }
         } else {
-            $file_list = array();
+            $file_list = [];
         }
         if ($_hook_bits[9] !== null) {
             $default_icon = is_array($_hook_bits[9]) ? call_user_func_array($_hook_bits[9][0], $_hook_bits[9][1]) : cms_eval($_hook_bits[9], $path, false);
@@ -161,7 +161,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             $default_icon = null;
         }
 
-        $addon_info = array(
+        $addon_info = [
             'name' => $addon_name,
             'author' => $author,
             'organisation' => $organisation,
@@ -172,10 +172,10 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             'description' => $description,
             'install_time' => filemtime($path),
             'files' => $file_list,
-            'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : array(),
-            'incompatibilities' => array_key_exists('conflicts_with', $dep) ? $dep['conflicts_with'] : array(),
+            'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : [],
+            'incompatibilities' => array_key_exists('conflicts_with', $dep) ? $dep['conflicts_with'] : [],
             'default_icon' => $default_icon,
-        );
+        ];
         if ($get_dependencies_on_this) {
             $addon_info['dependencies_on_this'] = find_addon_dependencies_on($addon_name);
         }
@@ -193,10 +193,10 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             $version = float_to_raw_string(cms_version_number(), 2, true);
         }
 
-        $dependencies = array_key_exists('dependencies', $ini_info) ? explode(',', $ini_info['dependencies']) : array();
-        $incompatibilities = array_key_exists('incompatibilities', $ini_info) ? explode(',', $ini_info['incompatibilities']) : array();
+        $dependencies = array_key_exists('dependencies', $ini_info) ? explode(',', $ini_info['dependencies']) : [];
+        $incompatibilities = array_key_exists('incompatibilities', $ini_info) ? explode(',', $ini_info['incompatibilities']) : [];
 
-        $addon_info = array(
+        $addon_info = [
             'name' => $ini_info['name'],
             'author' => $ini_info['author'],
             'organisation' => $ini_info['organisation'],
@@ -210,7 +210,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             'dependencies' => $dependencies,
             'incompatibilities' => $incompatibilities,
             'default_icon' => null,
-        );
+        ];
         if ($get_dependencies_on_this) {
             $addon_info['dependencies_on_this'] = find_addon_dependencies_on($addon_name);
         }
@@ -223,14 +223,14 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
     // Next try what is in the database...
 
     if ($row === null) {
-        $addon_rows = $GLOBALS['SITE_DB']->query_select('addons', array('*'), array('addon_name' => $addon_name), '', 1);
+        $addon_rows = $GLOBALS['SITE_DB']->query_select('addons', ['*'], ['addon_name' => $addon_name], '', 1);
         if (array_key_exists(0, $addon_rows)) {
             $row = $addon_rows[0];
         }
     }
 
     if ($row !== null) {
-        $addon_info = array(
+        $addon_info = [
             'name' => $row['addon_name'],
             'author' => $row['addon_author'],
             'organisation' => $row['addon_organisation'],
@@ -241,11 +241,11 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             'description' => $row['addon_description'],
             'install_time' => $row['addon_install_time'],
             'default_icon' => null,
-        );
+        ];
 
-        $addon_info['files'] = array_unique(collapse_1d_complexity('filepath', $GLOBALS['SITE_DB']->query_select('addons_files', array('filepath'), array('addon_name' => $addon_name))));
-        $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon_name, 'addon_name_incompatibility' => 0)));
-        $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon_name, 'addon_name_incompatibility' => 1)));
+        $addon_info['files'] = array_unique(collapse_1d_complexity('filepath', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath'], ['addon_name' => $addon_name])));
+        $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 0]));
+        $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 1]));
         if ($get_dependencies_on_this) {
             $addon_info['dependencies_on_this'] = find_addon_dependencies_on($addon_name);
         }
@@ -268,7 +268,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
  */
 function find_addon_icon($addon_name, $pick_default = true, $tar_path = null)
 {
-    $matches = array();
+    $matches = [];
 
     if ($tar_path !== null) {
         require_code('tar');

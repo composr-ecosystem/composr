@@ -31,54 +31,54 @@ class Hook_actionlog_quizzes extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
         require_lang('quiz');
 
-        return array(
-            'ADD_QUIZ' => array(
+        return [
+            'ADD_QUIZ' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'quiz',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:quiz:do:{ID}',
                     'ADD_QUIZ' => '_SEARCH:cms_quiz:add',
                     'EDIT_THIS_QUIZ' => '_SEARCH:cms_quiz:_edit:{ID}',
-                ),
-            ),
-            'EDIT_QUIZ' => array(
+                ],
+            ],
+            'EDIT_QUIZ' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'quiz',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:quiz:do:{ID}',
                     'ADD_QUIZ' => '_SEARCH:cms_quiz:add',
                     'EDIT_THIS_QUIZ' => '_SEARCH:cms_quiz:_edit:{ID}',
-                ),
-            ),
-            'DELETE_QUIZ' => array(
+                ],
+            ],
+            'DELETE_QUIZ' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'quiz',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_QUIZ' => '_SEARCH:cms_quiz:add',
-                ),
-            ),
-            'DELETE_QUIZ_RESULTS' => array(
+                ],
+            ],
+            'DELETE_QUIZ_RESULTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'quiz',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:quiz:do:{ID}',
                     'ADD_QUIZ' => '_SEARCH:cms_quiz:add',
                     'EDIT_THIS_QUIZ' => '_SEARCH:cms_quiz:_edit:{ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

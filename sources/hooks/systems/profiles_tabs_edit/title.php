@@ -75,6 +75,6 @@ class Hook_profiles_tabs_edit_title
 
         $text = do_lang_tempcode('DESCRIPTION_MEMBER_TITLE', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true)));
 
-        return array($title, $fields, $text, '', $order, null, 'tabs/member_account/edit/title');
+        return [$title, $fields, $text, '', $order, null, 'tabs/member_account/edit/title'];
     }
 }

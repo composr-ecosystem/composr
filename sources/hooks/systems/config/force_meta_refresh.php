@@ -30,7 +30,7 @@ class Hook_config_force_meta_refresh
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORCE_META_REFRESH',
             'type' => 'tick',
             'category' => 'SERVER',
@@ -43,7 +43,7 @@ class Hook_config_force_meta_refresh
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

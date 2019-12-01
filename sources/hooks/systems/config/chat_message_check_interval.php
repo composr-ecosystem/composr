@@ -30,7 +30,7 @@ class Hook_config_chat_message_check_interval
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CHAT_MESSAGE_CHECK_INTERVAL',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_chat_message_check_interval
             'public' => true,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

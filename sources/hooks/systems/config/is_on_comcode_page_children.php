@@ -30,7 +30,7 @@ class Hook_config_is_on_comcode_page_children
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IS_ON_COMCODE_PAGE_CHILDREN',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_is_on_comcode_page_children
             'public' => false,
 
             'addon' => 'core_comcode_pages',
-        );
+        ];
     }
 
     /**

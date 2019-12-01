@@ -34,7 +34,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Generate bookmarks';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '482f08734460fc2a48ce19d19127f40f', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '482f08734460fc2a48ce19d19127f40f', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 if (get_param_integer('debug', 0) != 1) {
@@ -64,7 +64,7 @@ require_code('sitemap');
 $root = retrieve_sitemap_node(
     /*$page_link=*/'',
     /*$callback=*/null,
-    /*$valid_node_types=*/array('root', 'zone', 'page_grouping', 'page', 'comcode_page'),
+    /*$valid_node_types=*/['root', 'zone', 'page_grouping', 'page', 'comcode_page'],
     /*$child_cutoff=*/null,
     /*$max_recurse_depth=*/null,
     /*$options=*/SITEMAP_GEN_CHECK_PERMS,
@@ -81,7 +81,7 @@ function bookmarks_process_node($node)
 {
     if ($node['page_link'] !== null) {
         list($zone, $attributes, $hash) = page_link_decode($node['page_link']);
-        $url = _build_url($attributes, $zone, array(), false, false, true, $hash);
+        $url = _build_url($attributes, $zone, [], false, false, true, $hash);
     } else {
         $url = $node['url'];
     }

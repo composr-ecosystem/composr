@@ -44,7 +44,7 @@ class Hook_health_check_stability extends Hook_Health_Check
         $this->process_checks_section('testBlockIntegrity', 'Block integrity (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testErrorLog', 'Error log', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -151,7 +151,7 @@ class Hook_health_check_stability extends Hook_Health_Check
                 continue;
             }
 
-            $test = do_block($block, array());
+            $test = do_block($block, []);
             $this->assertTrue(is_object($test), 'Broken block [tt]' . $block . '[/tt]');
         }
     }
@@ -190,7 +190,7 @@ class Hook_health_check_stability extends Hook_Health_Check
             $threshold_time = time() - 60 * 60 * 24 * 1;
             $threshold_count = intval(get_option('hc_error_log_day_flood_threshold'));
 
-            $dates = array();
+            $dates = [];
             while (!feof($myfile)) {
                 $line = cms_fgets($myfile, $myfile_charset);
                 if ($line === false) {
@@ -199,7 +199,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
                 $line = trim($line);
 
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^\[([^\[\]]*)\] #', $line, $matches) != 0) {
                     $timestamp = @strtotime($matches[1]);
                     if (($timestamp !== false) && ($timestamp > $threshold_time)) {

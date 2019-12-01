@@ -54,7 +54,7 @@ class Hook_profiles_tabs_pts
         $order = 80;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'tool_buttons/inbox2');
+            return [$title, null, $order, 'tool_buttons/inbox2'];
         }
 
         require_code('cns_forumview');
@@ -79,8 +79,8 @@ class Hook_profiles_tabs_pts
 
         list($content) = cns_render_forumview($id, null, $current_filter_cat, $max, $start, $true_start, $sql_sup, $sql_sup_order_by, $sort, $keyset_clause, $keyset_field, $root, $member_id_of, new Tempcode());
 
-        $content = do_template('CNS_MEMBER_PROFILE_PTS', array('_GUID' => '5d0cae3320634a1e4eb345154c853c35', 'CONTENT' => $content));
+        $content = do_template('CNS_MEMBER_PROFILE_PTS', ['_GUID' => '5d0cae3320634a1e4eb345154c853c35', 'CONTENT' => $content]);
 
-        return array($title, $content, $order, 'tool_buttons/inbox2');
+        return [$title, $content, $order, 'tool_buttons/inbox2'];
     }
 }

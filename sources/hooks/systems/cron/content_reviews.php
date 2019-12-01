@@ -53,11 +53,11 @@ class Hook_cron_content_reviews
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send content review notifications',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**
@@ -72,7 +72,7 @@ class Hook_cron_content_reviews
             $content_id = $pending_content_review['content_id'];
 
             // Mark as handled
-            $GLOBALS['SITE_DB']->query_update('content_reviews', array('review_notification_happened' => 1), array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('content_reviews', ['review_notification_happened' => 1], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
 
             require_code('content');
 
@@ -83,7 +83,7 @@ class Hook_cron_content_reviews
             // Get title / check not deleted, cleanup if is
             list($title, $submitter) = content_get_details($content_type, $content_id);
             if ($title === null) {
-                $GLOBALS['SITE_DB']->query_delete('content_reviews', array('content_type' => $content_type, 'content_id' => $content_id), '', 1); // The actual content was deleted, I guess
+                $GLOBALS['SITE_DB']->query_delete('content_reviews', ['content_type' => $content_type, 'content_id' => $content_id], '', 1); // The actual content was deleted, I guess
                 continue;
             }
 
@@ -104,20 +104,20 @@ class Hook_cron_content_reviews
                     $attributes[$key] = $content_id;
                 }
             }
-            $edit_url = build_url($attributes + array('validated' => 1), $zone, array(), false, false, true);
+            $edit_url = build_url($attributes + ['validated' => 1], $zone, [], false, false, true);
             require_code('notifications');
             $subject = do_lang('NOTIFICATION_SUBJECT_CONTENT_REVIEWS' . (($auto_action == 'delete') ? '_delete' : ''), $title, $auto_action_str);
             $message = do_notification_lang('NOTIFICATION_BODY_CONTENT_REVIEWS' . (($auto_action == 'delete') ? '_delete' : ''), $title, $auto_action_str, $edit_url->evaluate());
-            dispatch_notification('content_reviews', $content_type, $subject, $message, null, null, array('priority' => 4));
+            dispatch_notification('content_reviews', $content_type, $subject, $message, null, null, ['priority' => 4]);
             if (($submitter !== null) && (!notifications_enabled('content_reviews', $content_type, $submitter))) {
-                dispatch_notification('content_reviews__own', $content_type, $subject, $message, array($submitter), null, array('priority' => 4));
+                dispatch_notification('content_reviews__own', $content_type, $subject, $message, [$submitter], null, ['priority' => 4]);
             }
 
             // Do auto-action
             switch ($auto_action) {
                 case 'unvalidate':
                     if ($info['validated_field'] !== null) {
-                        $info['db']->query_update($info['table'], array($info['validated_field'] => 0), get_content_where_for_str_id($content_id, $info), '', 1);
+                        $info['db']->query_update($info['table'], [$info['validated_field'] => 0], get_content_where_for_str_id($content_id, $info), '', 1);
                     }
                     break;
 

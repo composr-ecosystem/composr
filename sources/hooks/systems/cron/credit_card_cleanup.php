@@ -68,11 +68,11 @@ class Hook_cron_credit_card_cleanup
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Credit card number scrubbing',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**
@@ -84,8 +84,8 @@ class Hook_cron_credit_card_cleanup
     {
         $credit_card_cleanup_days = get_option('credit_card_cleanup_days');
 
-        $protected_field_changes = array();
-        $protected_field_names = array('payment_cardholder_name', 'payment_card_type', 'payment_card_number', 'payment_card_start_date', 'payment_card_expiry_date', 'payment_card_issue_number', 'billing_street_address', 'billing_city', 'billing_post_code', 'billing_country', 'billing_mobile_phone_number', 'billing_county', 'billing_state');
+        $protected_field_changes = [];
+        $protected_field_names = ['payment_cardholder_name', 'payment_card_type', 'payment_card_number', 'payment_card_start_date', 'payment_card_expiry_date', 'payment_card_issue_number', 'billing_street_address', 'billing_city', 'billing_post_code', 'billing_country', 'billing_mobile_phone_number', 'billing_county', 'billing_state'];
         foreach ($protected_field_names as $cpf) {
             $field_id = find_cms_cpf_field_id('cms_' . $cpf);
             if ($field_id !== null) {

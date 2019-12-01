@@ -26,7 +26,7 @@ class Hook_addon_registry_stress_test
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_stress_test
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -100,7 +100,7 @@ This script takes days to run properly.';
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -110,8 +110,8 @@ This script takes days to run properly.';
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'authors',
                 'banners',
@@ -128,10 +128,10 @@ This script takes days to run properly.';
                 'shopping',
                 'tickets',
                 'wiki',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -151,9 +151,9 @@ This script takes days to run properly.';
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/stress_test.php',
             'data_custom/stress_test_loader.php',
-        );
+        ];
     }
 }

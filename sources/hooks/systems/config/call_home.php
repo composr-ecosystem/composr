@@ -30,7 +30,7 @@ class Hook_config_call_home
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CALL_HOME',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_call_home
             'public' => false,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

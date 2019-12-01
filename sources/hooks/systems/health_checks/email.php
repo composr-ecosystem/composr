@@ -55,7 +55,7 @@ class Hook_health_check_email extends Hook_Health_Check
         $this->process_checks_section('testSpamStatus', 'Spam status', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testListUnsubscribe', 'List-Unsubscribe header', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -209,7 +209,7 @@ class Hook_health_check_email extends Hook_Health_Check
             $domains = $this->get_mail_domains(true);
 
             foreach ($domains as $domain => $email) {
-                $mail_hosts = array();
+                $mail_hosts = [];
                 $result = @getmxrr($domain, $mail_hosts);
                 $this->assertTrue($result, 'Could not look up MX records for our [tt]' . $email . '[/tt] e-mail address');
 
@@ -244,7 +244,7 @@ class Hook_health_check_email extends Hook_Health_Check
                             $data = fread($socket, 1024);
                             fclose($socket);
 
-                            $matches = array();
+                            $matches = [];
                             $has_helo = preg_match('#^250 ([^\s]*)#', $data, $matches) != 0;
                             $this->assertTrue($has_helo, 'Could not get HELO response from SMTP server for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt])');
                             if ($has_helo) {
@@ -263,7 +263,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 // What if mailbox missing? Or generally e-mail not received
                 if ($manual_checks) {
                     require_code('mail');
-                    dispatch_mail('Test', 'Test e-mail from Health Check', array($email));
+                    dispatch_mail('Test', 'Test e-mail from Health Check', [$email]);
                     $this->stateCheckManual('An e-mail was sent to ' . $email . ', confirm it was received');
                 }
             }
@@ -337,7 +337,7 @@ class Hook_health_check_email extends Hook_Health_Check
             }
             $_record = $record['txt'];
 
-            $matches = array();
+            $matches = [];
             if (preg_match('#^v=spf1 (.*)#', $_record, $matches) != 0) {
                 $passed = false;
                 $blocked = false;
@@ -347,7 +347,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 foreach ($parts as $part) {
                     // Normalise to something more manageable
                     $prefix = substr($part, 0, 1);
-                    if (in_array($prefix, array('+', '-', '#', '?'))) {
+                    if (in_array($prefix, ['+', '-', '#', '?'])) {
                         $part = substr($part, 1);
                     } else {
                         $prefix = '+';
@@ -632,7 +632,7 @@ class Hook_health_check_email extends Hook_Health_Check
 
             $uniq = uniqid('', true);
             $subject = brand_name() . ' Self-Test (' . $uniq . ')';
-            dispatch_mail($subject, 'Test', array($address), null, '', '', array('bypass_queue' => true));
+            dispatch_mail($subject, 'Test', [$address], null, '', '', ['bypass_queue' => true]);
 
             $wait_time = intval(get_option('hc_mail_wait_time'));
 
@@ -656,7 +656,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 if ($ok) {
                     $list = imap_search($mbox, 'FROM "' . get_site_name() . '"');
                     if ($list === false) {
-                        $list = array();
+                        $list = [];
                     }
                     foreach ($list as $l) {
                         $header = imap_headerinfo($mbox, $l);
@@ -712,7 +712,7 @@ class Hook_health_check_email extends Hook_Health_Check
             $domains = $this->get_mail_domains(true);
 
             foreach ($domains as $domain => $email) {
-                $mail_hosts = array();
+                $mail_hosts = [];
                 $result = @getmxrr($domain, $mail_hosts);
                 $ok = ($result !== false);
                 if (!$ok) {
@@ -722,13 +722,13 @@ class Hook_health_check_email extends Hook_Health_Check
 
                 foreach ($mail_hosts as $host) {
                     $ip = cms_gethostbyname($host);
-                    $rbls = array(
+                    $rbls = [
                         '*.dnsbl.sorbs.net',
                         '*.bl.spamcop.net',
-                    );
+                    ];
                     foreach ($rbls as $rbl) {
                         $response = rbl_resolve($ip, $rbl, true);
-                        $blocked = ($response === array('127', '0', '0', '2'));
+                        $blocked = ($response === ['127', '0', '0', '2']);
                         $this->assertTrue(!$blocked, 'The [tt]' . $host . '[/tt] SMTP server is blocked by [tt]' . $rbl . '[/tt]');
                     }
                 }
@@ -757,26 +757,26 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
-        $tpl = do_template('MAIL', array(
+        $tpl = do_template('MAIL', [
             '_GUID' => '9c6fdd592f5ba06ad079bc69860981d0',
             'CSS' => '',
             'LOGOURL' => '',
             'LANG' => get_site_default_lang(),
             'TITLE' => '',
             'CONTENT' => '',
-        ), get_site_default_lang(), false, 'MAIL', '.tpl', 'templates', $GLOBALS['FORUM_DRIVER']->get_theme(''));
+        ], get_site_default_lang(), false, 'MAIL', '.tpl', 'templates', $GLOBALS['FORUM_DRIVER']->get_theme(''));
         $html_version = $tpl->evaluate();
         $html_version_stripped = html_entity_decode(strip_tags($html_version), ENT_QUOTES);
         $html_version_stripped = trim(cms_preg_replace_safe('#[\s-]+#', ' ', $html_version_stripped));
 
-        $tpl = do_template('MAIL', array(
+        $tpl = do_template('MAIL', [
             '_GUID' => '5767b9123a0871fb11b0d9bb60e5b98e',
             'CSS' => '',
             'LOGOURL' => '',
             'LANG' => get_site_default_lang(),
             'TITLE' => '',
             'CONTENT' => '',
-        ), get_site_default_lang(), false, 'MAIL', '.txt', 'text', $GLOBALS['FORUM_DRIVER']->get_theme(''));
+        ], get_site_default_lang(), false, 'MAIL', '.txt', 'text', $GLOBALS['FORUM_DRIVER']->get_theme(''));
         $text_version = $tpl->evaluate();
         $text_version_stripped = trim(cms_preg_replace_safe('#[\s-]+#', ' ', $text_version));
 

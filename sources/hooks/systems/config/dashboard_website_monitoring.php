@@ -30,7 +30,7 @@ class Hook_config_dashboard_website_monitoring
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DASHBOARD_WEBSITE_MONITORING',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_dashboard_website_monitoring
             'required' => true,
             'public' => false,
             'addon' => 'core_adminzone_dashboard',
-        );
+        ];
     }
 
     /**

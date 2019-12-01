@@ -31,7 +31,7 @@ class Hook_addon_registry_recommend
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_recommend
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_members',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_recommend
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_recommend
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/site_meta/recommend.svg',
             'themes/default/images/icons_monochrome/menu/site_meta/recommend.svg',
             'sources/hooks/systems/config/points_RECOMMEND_SITE.php',
@@ -115,7 +115,7 @@ class Hook_addon_registry_recommend
             'sources/hooks/systems/page_groupings/recommend.php',
             'themes/default/css/recommend.css',
             'sources/hooks/systems/privacy/recommend.php',
-        );
+        ];
     }
 
     /**
@@ -125,9 +125,9 @@ class Hook_addon_registry_recommend
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_SCREEN_ACTIONS.tpl' => 'block_main_screen_actions',
-        );
+        ];
     }
 
     /**
@@ -139,14 +139,14 @@ class Hook_addon_registry_recommend
      */
     public function tpl_preview__block_main_screen_actions()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_SCREEN_ACTIONS', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_SCREEN_ACTIONS', [
                 'BLOCK_ID' => lorem_word(),
                 'PRINT_URL' => placeholder_url(),
                 'RECOMMEND_URL' => placeholder_url(),
                 'URL_ENCODED_CANONICAL_URL' => placeholder_url(),
                 'TITLE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

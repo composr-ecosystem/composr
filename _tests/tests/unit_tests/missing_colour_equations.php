@@ -22,7 +22,7 @@ class missing_colour_equations_test_set extends cms_test_case
     {
         require_code('files2');
 
-        $dont_check = array(
+        $dont_check = [
             'commandr.css',
             'install.css',
             'widget_plupload.css',
@@ -32,16 +32,16 @@ class missing_colour_equations_test_set extends cms_test_case
             'phpinfo.css',
             'jquery_ui.css',
             'mediaelementplayer.css',
-        );
+        ];
 
-        $files = get_directory_contents(get_file_base() . '/themes/default/css', get_file_base() . '/themes/default/css', null, false, true, array('css'));
+        $files = get_directory_contents(get_file_base() . '/themes/default/css', get_file_base() . '/themes/default/css', null, false, true, ['css']);
         foreach ($files as $path) {
             if (in_array(basename($path), $dont_check)) {
                 continue;
             }
 
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-            $matches = array();
+            $matches = [];
             $count = preg_match_all('/^.+(\#[0-9A-Fa-f]{3,6})(.*)$/m', $c, $matches);
             for ($i = 0; $i < $count; $i++) {
                 if (strpos($matches[0][$i], '{$') === false) {

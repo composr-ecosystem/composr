@@ -38,15 +38,15 @@ class Hook_preview_cns_welcome_email
             require_code('mail');
 
             $subject_line = post_param_string('subject');
-            $message_raw = do_template('NEWSLETTER_DEFAULT_FCOMCODE', array('_GUID' => 'e065391099b1c7273ca1de940a1acb66', 'CONTENT' => post_param_string('text'), 'LANG' => get_site_default_lang()), null, false, null, '.txt', 'text');
+            $message_raw = do_template('NEWSLETTER_DEFAULT_FCOMCODE', ['_GUID' => 'e065391099b1c7273ca1de940a1acb66', 'CONTENT' => post_param_string('text'), 'LANG' => get_site_default_lang()], null, false, null, '.txt', 'text');
 
             $to = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
             if ($to == '') {
                 $to = get_option('staff_address');
             }
-            dispatch_mail($subject_line, $message_raw->evaluate(get_site_default_lang()), array($to), $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), '', '', array('as' => get_member(), 'as_admin' => true));
+            dispatch_mail($subject_line, $message_raw->evaluate(get_site_default_lang()), [$to], $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), '', '', ['as' => get_member(), 'as_admin' => true]);
         }
-        return array($applies, null);
+        return [$applies, null];
     }
 
     /**
@@ -59,6 +59,6 @@ class Hook_preview_cns_welcome_email
         $preview = new Tempcode();
         $preview->attach(comcode_to_tempcode(post_param_string('text'), get_member()));
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

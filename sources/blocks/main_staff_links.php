@@ -30,14 +30,14 @@ class Block_main_staff_links
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Jack Franklin';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         $info['update_require_upgrade'] = true;
         return $info;
     }
@@ -57,7 +57,7 @@ class Block_main_staff_links
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         // No cache on POST as this is when we save text data
         $info['cache_on'] = <<<'PHP'
         (count($_POST) > 0)
@@ -80,23 +80,23 @@ PHP;
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
-            $GLOBALS['SITE_DB']->create_table('staff_links', array(
+            $GLOBALS['SITE_DB']->create_table('staff_links', [
                 'id' => '*AUTO',
                 'link' => 'URLPATH',
                 'link_title' => 'SHORT_TEXT',
                 'link_desc' => 'LONG_TEXT',
-            ));
+            ]);
 
-            $default_links = array(
+            $default_links = [
                 'compo.sr' => 'https://compo.sr/',
-                'compo.sr (topics with unread posts)' => get_brand_page_url(array('page' => 'vforums', 'type' => 'unread'), 'forum'),
-            );
+                'compo.sr (topics with unread posts)' => get_brand_page_url(['page' => 'vforums', 'type' => 'unread'], 'forum'),
+            ];
             foreach ($default_links as $link_title => $url) {
-                $GLOBALS['SITE_DB']->query_insert('staff_links', array(
+                $GLOBALS['SITE_DB']->query_insert('staff_links', [
                     'link' => $url,
                     'link_title' => $link_title,
                     'link_desc' => $link_title,
-                ));
+                ]);
             }
         }
     }
@@ -124,7 +124,7 @@ PHP;
                     $bits = explode('=', $q);
                     if (count($bits) >= 2) {
                         $last_bit = array_pop($bits);
-                        $bits = array(implode('=', $bits), $last_bit);
+                        $bits = [implode('=', $bits), $last_bit];
                         $link = $bits[0];
                     } else {
                         $link = $q;
@@ -139,11 +139,11 @@ PHP;
                     } else {
                         $link_desc = $link_title;
                     }
-                    $GLOBALS['SITE_DB']->query_insert('staff_links', array(
+                    $GLOBALS['SITE_DB']->query_insert('staff_links', [
                         'link' => substr($link, 0, 255),
                         'link_title' => $link_title,
                         'link_desc' => $link_desc,
-                    ));
+                    ]);
                 }
             }
 
@@ -152,9 +152,9 @@ PHP;
             log_it('STAFF_LINKS');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('staff_links', array('*'));
-        $formatted_staff_links = array();
-        $unformatted_staff_links = array();
+        $rows = $GLOBALS['SITE_DB']->query_select('staff_links', ['*']);
+        $formatted_staff_links = [];
+        $unformatted_staff_links = [];
         foreach ($rows as $r) {
             if ($r['link_title'] == '') {
                 $r['link_title'] = $r['link_desc'];
@@ -163,16 +163,16 @@ PHP;
                 $r['link_title'] = $r['link_desc'];
             }
 
-            $formatted_staff_links[] = array(
+            $formatted_staff_links[] = [
                 'URL' => $r['link'],
                 'TITLE' => $r['link_title'],
                 'DESC' => ($r['link_title'] == $r['link_desc']) ? '' : $r['link_desc'],
-            );
-            $unformatted_staff_links[] = array('LINKS' => $r['link'] . '=' . $r['link_desc']);
+            ];
+            $unformatted_staff_links[] = ['LINKS' => $r['link'] . '=' . $r['link_desc']];
         }
 
         $map_comcode = get_block_ajax_submit_map($map);
-        return do_template('BLOCK_MAIN_STAFF_LINKS', array(
+        return do_template('BLOCK_MAIN_STAFF_LINKS', [
             '_GUID' => '555150e7f1626ae0689158b1ecc1d85b',
             'BLOCK_ID' => $block_id,
             'URL' => get_self_url(),
@@ -180,6 +180,6 @@ PHP;
             'MAP' => $map_comcode,
             'FORMATTED_LINKS' => $formatted_staff_links,
             'UNFORMATTED_LINKS' => $unformatted_staff_links,
-        ));
+        ]);
     }
 }

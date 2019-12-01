@@ -46,7 +46,7 @@ function add_custom_comcode_tag($tag, $title, $description, $replace, $example, 
     init_valid_comcode_tags();
 
     global $VALID_COMCODE_TAGS;
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', array('tag_tag' => $tag));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $tag]);
     if ((array_key_exists($tag, $VALID_COMCODE_TAGS)) || ($test !== null)) {
         if ($uniqify) {
             $tag .= '_' . uniqid('', false);
@@ -55,7 +55,7 @@ function add_custom_comcode_tag($tag, $title, $description, $replace, $example, 
         }
     }
 
-    $map = array(
+    $map = [
         'tag_tag' => $tag,
         'tag_replace' => $replace,
         'tag_example' => $example,
@@ -64,7 +64,7 @@ function add_custom_comcode_tag($tag, $title, $description, $replace, $example, 
         'tag_dangerous_tag' => $dangerous_tag,
         'tag_block_tag' => $block_tag,
         'tag_textual_tag' => $textual_tag,
-    );
+    ];
     if (is_array($title)) {
         $map += $title;
     } else {
@@ -106,7 +106,7 @@ function add_custom_comcode_tag($tag, $title, $description, $replace, $example, 
  */
 function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace, $example, $parameters, $enabled, $dangerous_tag, $block_tag, $textual_tag, $uniqify = false)
 {
-    $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_title', 'tag_description'), array('tag_tag' => $old_tag), '', 1);
+    $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description'], ['tag_tag' => $old_tag], '', 1);
     if (!array_key_exists(0, $old)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'custom_comcode_tag'));
     }
@@ -123,7 +123,7 @@ function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace,
     init_valid_comcode_tags();
 
     global $VALID_COMCODE_TAGS;
-    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', array('tag_tag' => $tag));
+    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $tag]);
     if ($old_tag == $tag) {
         $test = null;
     }
@@ -135,7 +135,7 @@ function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace,
         }
     }
 
-    $map = array(
+    $map = [
         'tag_tag' => $tag,
         'tag_replace' => $replace,
         'tag_example' => $example,
@@ -144,10 +144,10 @@ function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace,
         'tag_dangerous_tag' => $dangerous_tag,
         'tag_block_tag' => $block_tag,
         'tag_textual_tag' => $textual_tag,
-    );
+    ];
     $map += lang_remap('tag_title', $_title, $title);
     $map += lang_remap('tag_description', $_description, $description);
-    $GLOBALS['SITE_DB']->query_update('custom_comcode', $map, array('tag_tag' => $old_tag), '', 1);
+    $GLOBALS['SITE_DB']->query_update('custom_comcode', $map, ['tag_tag' => $old_tag], '', 1);
 
     log_it('EDIT_CUSTOM_COMCODE_TAG', $tag, $old_tag);
 
@@ -166,7 +166,7 @@ function edit_custom_comcode_tag($old_tag, $tag, $title, $description, $replace,
  */
 function delete_custom_comcode_tag($tag)
 {
-    $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', array('tag_title', 'tag_description'), array('tag_tag' => $tag), '', 1);
+    $old = $GLOBALS['SITE_DB']->query_select('custom_comcode', ['tag_title', 'tag_description'], ['tag_tag' => $tag], '', 1);
     if (!array_key_exists(0, $old)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'custom_comcode_tag'));
     }
@@ -175,9 +175,9 @@ function delete_custom_comcode_tag($tag)
     delete_lang($_title);
     delete_lang($_description);
 
-    $GLOBALS['SITE_DB']->query_delete('custom_comcode', array(
+    $GLOBALS['SITE_DB']->query_delete('custom_comcode', [
         'tag_tag' => $tag,
-    ), '', 1);
+    ], '', 1);
 
     log_it('DELETE_CUSTOM_COMCODE_TAG', $tag);
 

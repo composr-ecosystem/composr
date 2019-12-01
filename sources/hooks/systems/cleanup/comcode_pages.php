@@ -32,7 +32,7 @@ class Hook_cleanup_comcode_pages
     {
         require_lang('zones');
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('COMCODE_PAGES');
         $info['description'] = do_lang_tempcode('DESCRIPTION_COMCODE_PAGES_CACHE');
         $info['type'] = 'cache';

@@ -76,7 +76,7 @@ class Hook_chat_bot_trickstr
             return null; // Messes up shoutbox
         }
 
-        $is_im = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'is_im', array('id' => $room_id));
+        $is_im = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'is_im', ['id' => $room_id]);
         if ($is_im == 1) {
             return null;
         }
@@ -224,7 +224,7 @@ class Hook_chat_bot_trickstr
 
                 $templatesinserted = 0;
 
-                $depth = array();
+                $depth = [];
                 $whaton = '';
 
                 $pattern = '';
@@ -233,11 +233,11 @@ class Hook_chat_bot_trickstr
                 $template = '';
 
                 $startupwhich = '';
-                $splitterarray = array();
-                $inputarray = array();
-                $genderarray = array();
-                $personarray = array();
-                $person2array = array();
+                $splitterarray = [];
+                $inputarray = [];
+                $genderarray = [];
+                $personarray = [];
+                $person2array = [];
 
                 require_code('programe/botloaderfuncs');
 
@@ -263,11 +263,11 @@ class Hook_chat_bot_trickstr
         // Eliza...
 
         // setup initial variables and values
-        $kwarray = array();
-        $vararray = array();
-        $resparray = array();
-        $priarray = array();
-        $wordarray = array();
+        $kwarray = [];
+        $vararray = [];
+        $resparray = [];
+        $priarray = [];
+        $wordarray = [];
         $kwcount = 0;
         $varcount = 0;
         $respcount = 0;

@@ -28,16 +28,16 @@ class Hook_page_groupings_buildr
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('buildr')) {
-            return array();
+            return [];
         }
 
         $zone = get_module_zone('buildr');
         if ($zone === null) {
-            return array(); // Zone not installed yet
+            return []; // Zone not installed yet
         }
 
-        return array(
-            array('rich_content', 'spare/world', array('buildr', array(), $zone), do_lang_tempcode('buildr:BUILDR')),
-        );
+        return [
+            ['rich_content', 'spare/world', ['buildr', [], $zone], do_lang_tempcode('buildr:BUILDR')],
+        ];
     }
 }

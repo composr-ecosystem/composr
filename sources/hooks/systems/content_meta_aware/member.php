@@ -36,7 +36,7 @@ class Hook_content_meta_aware_member
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'global:MEMBER',
@@ -117,8 +117,8 @@ class Hook_content_meta_aware_member
             'actionlog_regexp' => '\w+_MEMBER',
 
             'filtercode' => 'cns_members2::_members_filtercode',
-            'filtercode_protected_fields' => array('m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code'), // These are ones even some staff should never know
-        );
+            'filtercode_protected_fields' => ['m_pass_hash_salted', 'm_pass_salt', 'm_password_change_code'], // These are ones even some staff should never know
+        ];
     }
 
     /**
@@ -140,6 +140,6 @@ class Hook_content_meta_aware_member
 
         $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED[$row['id']] = $row;
 
-        return render_member_box($row['id'], false, true, array(), $give_context, $guid);
+        return render_member_box($row['id'], false, true, [], $give_context, $guid);
     }
 }

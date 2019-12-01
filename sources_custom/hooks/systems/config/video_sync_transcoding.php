@@ -25,7 +25,7 @@ class Hook_config_video_sync_transcoding
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'VIDEO_SYNC_TRANSCODING',
             'type' => 'special',
             'category' => 'GALLERY',
@@ -38,7 +38,7 @@ class Hook_config_video_sync_transcoding
             'public' => false,
 
             'addon' => 'gallery_syndication',
-        );
+        ];
     }
 
     /**

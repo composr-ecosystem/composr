@@ -30,7 +30,7 @@ class Hook_config_tornevall_api_password
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TORNEVALL_API_PASSWORD',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_tornevall_api_password
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

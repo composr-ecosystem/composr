@@ -95,7 +95,7 @@ function create_robots_txt($robots_txt = null, &$msg = '', $overwrite = false)
         $msg = do_lang('ROBOTS_TXT_CREATED');
 
         if ($path != get_file_base() . '/robots.txt') {
-            if (http_get_contents($domain_base_url . '/robots.txt', array('trigger_error' => false)) !== $robots_txt) {
+            if (http_get_contents($domain_base_url . '/robots.txt', ['trigger_error' => false]) !== $robots_txt) {
                 $msg = do_lang('ROBOTS_TXT_NOT_MAPPED');
                 @unlink($path);
             }

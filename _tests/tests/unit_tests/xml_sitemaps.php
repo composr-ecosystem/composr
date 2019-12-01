@@ -30,7 +30,7 @@ class xml_sitemaps_test_set extends cms_test_case
     {
         $id = add_news_category('Test' . uniqid('', true));
         $page_link = get_module_zone('news') . ':news:browse:' . strval($id);
-        $last_updated = $GLOBALS['SITE_DB']->query_select_value('sitemap_cache', 'last_updated', array('page_link' => $page_link));
+        $last_updated = $GLOBALS['SITE_DB']->query_select_value('sitemap_cache', 'last_updated', ['page_link' => $page_link]);
         $this->assertTrue($last_updated >= time() - 3);
     }
 
@@ -43,7 +43,7 @@ class xml_sitemaps_test_set extends cms_test_case
 
     public function testSitemapValidate()
     {
-        $files = array('index.xml', 'set_0.xml');
+        $files = ['index.xml', 'set_0.xml'];
         foreach ($files as $file) {
             $c = cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/sitemaps/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 

@@ -43,7 +43,7 @@ class Hook_attachments_calendar
             }
         }
 
-        $info = $db->query_select('calendar_events', array('e_submitter', 'e_type'), array('id' => intval($id)), '', 1);
+        $info = $db->query_select('calendar_events', ['e_submitter', 'e_type'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $info)) {
             return false;
         }

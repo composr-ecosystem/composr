@@ -30,7 +30,7 @@ class Hook_config_max_download_size
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_SIZE',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_max_download_size
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

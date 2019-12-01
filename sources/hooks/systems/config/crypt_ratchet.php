@@ -30,7 +30,7 @@ class Hook_config_crypt_ratchet
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CRYPT_RATCHET',
             'type' => 'list',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_crypt_ratchet
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

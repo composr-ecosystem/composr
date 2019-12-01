@@ -45,20 +45,20 @@ class Hook_notification_catalogue_entry extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         require_code('catalogues');
 
         $name = substr($notification_code, strlen('catalogue_entry__'));
 
-        $total = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $name));
+        $total = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $name]);
         if ($total > intval(get_option('general_safety_listing_limit'))/*reasonable limit*/) {
             return parent::create_category_tree($notification_code, $id); // Too many, so just allow removing UI
         }
 
         $page_links = get_catalogue_category_tree($name, ($id === null) ? null : intval($id), '', null, ($id === null) ? 0 : 1);
-        $filtered = array();
+        $filtered = [];
         foreach ($page_links as $p) {
             if (strval($p['id']) !== $id) {
                 $filtered[] = $p;
@@ -88,10 +88,10 @@ class Hook_notification_catalogue_entry extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
-        $list = array();
+        $list = [];
         $catalogues = $GLOBALS['SITE_DB']->query('SELECT c_name,c_title FROM ' . get_table_prefix() . 'catalogues WHERE c_name NOT LIKE \'\_%\'');
         foreach ($catalogues as $catalogue) {
             $catalogue_name = $catalogue['c_name'];
@@ -99,7 +99,7 @@ class Hook_notification_catalogue_entry extends Hook_Notification
             if ($nl === null) {
                 $nl = do_lang('catalogues:NOTIFICATION_TYPE_catalogue_entry', get_translated_text($catalogue['c_title']));
             }
-            $list['catalogue_entry__' . $catalogue_name] = array(do_lang('CONTENT'), $nl);
+            $list['catalogue_entry__' . $catalogue_name] = [do_lang('CONTENT'), $nl];
         }
         return $list;
     }
@@ -120,7 +120,7 @@ class Hook_notification_catalogue_entry extends Hook_Notification
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
         $members = $this->_all_members_who_have_enabled_with_page_access($members, 'catalogues', $notification_code, $category, $to_member_ids, $start, $max);
         $catalogue_category_id = intval($category);
-        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', array('id' => $catalogue_category_id));
+        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $catalogue_category_id]);
         $members = $this->_all_members_who_have_enabled_with_category_access($members, 'catalogues_catalogue', $notification_code, $catalogue_name, $to_member_ids, $start, $max);
         if (get_value('disable_cat_cat_perms') !== '1') {
             $members = $this->_all_members_who_have_enabled_with_category_access($members, 'catalogues_category', $notification_code, strval($catalogue_category_id), $to_member_ids, $start, $max);

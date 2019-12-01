@@ -25,14 +25,14 @@ class Block_main_buttons
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'extra', 'max');
+        $info['parameters'] = ['param', 'extra', 'max'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_main_buttons
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : '',
@@ -71,16 +71,16 @@ PHP;
         $max_file_size = 70;
         $comcode_inline = 0;
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banner_types', 'id', array('id' => $id));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('banner_types', 'id', ['id' => $id]);
         if ($test === null) {
-            $GLOBALS['SITE_DB']->query_insert('banner_types', array(
+            $GLOBALS['SITE_DB']->query_insert('banner_types', [
                 'id' => $id,
                 't_is_textual' => $is_textual,
                 't_image_width' => $image_width,
                 't_image_height' => $image_height,
                 't_max_file_size' => $max_file_size,
                 't_comcode_inline' => $comcode_inline,
-            ));
+            ]);
 
             log_it('ADD_BANNER_TYPE', $id);
         }
@@ -126,7 +126,7 @@ PHP;
         }
 
         if (!addon_installed('banners')) {
-            return do_template('RED_ALERT', array('_GUID' => 'j05vou1q81t19l4untjdfy6v9wcib4ig', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('banners'))));
+            return do_template('RED_ALERT', ['_GUID' => 'j05vou1q81t19l4untjdfy6v9wcib4ig', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('banners'))]);
         }
 
         require_css('banners');
@@ -165,10 +165,10 @@ PHP;
         foreach ($banners as $i => $banner) {
             $bd = show_banner($banner['name'], $banner['title_text'], get_translated_tempcode('banners', $banner, 'caption'), $banner['direct_code'], $banner['img_url'], '', $banner['site_url'], $banner['b_type'], $banner['submitter']);
             $more_coming = ($i < count($banners) - 1);
-            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP_CUSTOM', array('_GUID' => 'b7d22f954147f0d012cb6eaeaf721e8f', 'EXTRA' => $map['extra'], 'TYPE' => $map['param'], 'BANNER' => $bd, 'MORE_COMING' => $more_coming)));
+            $assemble->attach(do_template('BLOCK_MAIN_BANNER_WAVE_BWRAP_CUSTOM', ['_GUID' => 'b7d22f954147f0d012cb6eaeaf721e8f', 'EXTRA' => $map['extra'], 'TYPE' => $map['param'], 'BANNER' => $bd, 'MORE_COMING' => $more_coming]));
         }
 
-        return do_template('BLOCK_MAIN_BUTTONS', array(
+        return do_template('BLOCK_MAIN_BUTTONS', [
             '_GUID' => 'b78228b68ce7f275c6cbb6055e37081e',
             'BLOCK_ID' => $block_id,
             'EXTRA' => $map['extra'],
@@ -176,6 +176,6 @@ PHP;
             'ASSEMBLE' => $assemble,
             'TITLE' => $map['title'],
             'SET_HEIGHT' => $set_height,
-        ));
+        ]);
     }
 }

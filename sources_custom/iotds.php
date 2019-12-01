@@ -33,16 +33,16 @@ function render_iotd_box($myrow, $zone = '_SEARCH', $include_manage_links = fals
     require_code('images');
 
     if ($include_manage_links) {
-        $choose_url = build_url(array('page' => 'cms_iotds', 'type' => '_choose'), get_module_zone('cms_iotds'));
-        $delete_url = build_url(array('page' => 'cms_iotds', 'type' => '_delete'), get_module_zone('cms_iotds'));
-        $edit_url = build_url(array('page' => 'cms_iotds', 'type' => '_edit', 'id' => $myrow['id']), get_module_zone('cms_iotds'));
+        $choose_url = build_url(['page' => 'cms_iotds', 'type' => '_choose'], get_module_zone('cms_iotds'));
+        $delete_url = build_url(['page' => 'cms_iotds', 'type' => '_delete'], get_module_zone('cms_iotds'));
+        $edit_url = build_url(['page' => 'cms_iotds', 'type' => '_edit', 'id' => $myrow['id']], get_module_zone('cms_iotds'));
     } else {
         $choose_url = null;
         $delete_url = null;
         $edit_url = null;
     }
 
-    $just_iotd_row = db_map_restrict($myrow, array('id', 'i_title', 'caption'));
+    $just_iotd_row = db_map_restrict($myrow, ['id', 'i_title', 'caption']);
 
     $i_title = get_translated_tempcode('iotd', $just_iotd_row, 'i_title');
     $caption = get_translated_tempcode('iotd', $just_iotd_row, 'caption');
@@ -55,9 +55,9 @@ function render_iotd_box($myrow, $zone = '_SEARCH', $include_manage_links = fals
     $image_url = url_is_local($myrow['url']) ? (get_custom_base_url() . '/' . $myrow['url']) : $myrow['url'];
     $thumb = do_image_thumb($thumb_url, '');
 
-    $view_url = build_url(array('page' => 'iotds', 'type' => 'view', 'id' => $myrow['id']), $zone);
+    $view_url = build_url(['page' => 'iotds', 'type' => 'view', 'id' => $myrow['id']], $zone);
 
-    return do_template('IOTD_BOX', array(
+    return do_template('IOTD_BOX', [
         '_GUID' => ($guid != '') ? $guid : '01162a9cc9bb6c4d0e79715f30aa141e',
         'VIEWS' => integer_format($myrow['iotd_views']),
         'THUMB' => $thumb,
@@ -75,5 +75,5 @@ function render_iotd_box($myrow, $zone = '_SEARCH', $include_manage_links = fals
         'SUBMITTER' => strval($submitter),
         'USERNAME' => $username,
         'GIVE_CONTEXT' => $give_context,
-    ));
+    ]);
 }

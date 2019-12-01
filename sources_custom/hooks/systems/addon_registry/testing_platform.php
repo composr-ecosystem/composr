@@ -26,7 +26,7 @@ class Hook_addon_registry_testing_platform
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_testing_platform
      */
     public function get_copyright_attribution()
     {
-        return array('Marcus Baker', 'Jason Sweat', 'Travis Swicegood', 'Perrick Penet', 'Edward Z. Yang', 'ocProducts');
+        return ['Marcus Baker', 'Jason Sweat', 'Travis Swicegood', 'Perrick Penet', 'Edward Z. Yang', 'ocProducts'];
     }
 
     /**
@@ -136,9 +136,9 @@ We hope other users will appreciate your efforts and give you some gift points t
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'codebook',
-        );
+        ];
     }
 
     /**
@@ -148,13 +148,13 @@ We hope other users will appreciate your efforts and give you some gift points t
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array( // Actually, it's all
+        return [
+            'requires' => [ // Actually, it's all
                 'meta_toolkit',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -174,7 +174,7 @@ We hope other users will appreciate your efforts and give you some gift points t
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/testing_platform.php',
             '_tests/libs/mf_parse.php',
             '_tests/libs/index.html',
@@ -772,6 +772,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/codechecker/java_src/index.html',
             '_tests/html_dump/forum_test_set/index.html',
             '_tests/codechecker/java_src/.htaccess',
-        );
+        ];
     }
 }

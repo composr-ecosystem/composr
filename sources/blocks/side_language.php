@@ -30,14 +30,14 @@ class Block_side_language
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_language
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             user_lang()
@@ -75,10 +75,10 @@ PHP;
 
         $langs = create_selection_list_langs(user_lang());
 
-        return do_template('BLOCK_SIDE_LANGUAGE', array(
+        return do_template('BLOCK_SIDE_LANGUAGE', [
             '_GUID' => '5dd7dd434722d7fd958773bd08e838c7',
             'BLOCK_ID' => $block_id,
             'LANGS' => $langs,
-        ));
+        ]);
     }
 }

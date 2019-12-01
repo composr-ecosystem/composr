@@ -37,10 +37,10 @@ class Hook_admin_stats_google_analytics
             return null;
         }
 
-        return array(
-            array('demographics' => array('_GOOGLE_ANALYTICS', 'buttons/search'),),
-            array('buttons/search', array('_SELF', array('type' => 'google_analytics'), '_SELF'), do_lang('_GOOGLE_ANALYTICS'), 'DOC_GOOGLE_ANALYTICS'),
-        );
+        return [
+            ['demographics' => ['_GOOGLE_ANALYTICS', 'buttons/search'],],
+            ['buttons/search', ['_SELF', ['type' => 'google_analytics'], '_SELF'], do_lang('_GOOGLE_ANALYTICS'), 'DOC_GOOGLE_ANALYTICS'],
+        ];
     }
 
     /**
@@ -58,10 +58,10 @@ class Hook_admin_stats_google_analytics
         set_helper_panel_text(comcode_lang_string('DOC_GOOGLE_ANALYTICS'));
 
         $ga = render_google_analytics(get_param_string('id', '*'));
-        return do_template('PAGINATION_SCREEN', array(
+        return do_template('PAGINATION_SCREEN', [
             '_GUID' => '48dedd8da83a0ebbf1a9e050d5cf6ac5',
             'TITLE' => get_screen_title('_GOOGLE_ANALYTICS'),
             'CONTENT' => $ga,
-        ));
+        ]);
     }
 }

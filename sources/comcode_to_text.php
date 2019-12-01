@@ -27,7 +27,7 @@
  * @param  boolean $include_urls Whether to include URLs in the text version
  * @return string Clean text
  */
-function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), $include_urls = false)
+function _strip_comcode($in, $for_extract = false, $tags_to_preserve = [], $include_urls = false)
 {
     $text = $in;
 
@@ -50,14 +50,14 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
 
     // If it is just HTML encapsulated in Comcode, force our best HTML to text conversion first
     if (stripos($text, 'html]') !== false) {
-        $match = array();
+        $match = [];
         if ((substr($text, 0, 10) == '[semihtml]') && (substr(trim($text), -11) == '[/semihtml]')) {
             require_code('comcode_from_html');
-            $text = comcode_preg_replace('semihtml', '#^\[semihtml\](.*)\[\/semihtml\]$#si', array('_semihtml_to_comcode_callback'), $text);
+            $text = comcode_preg_replace('semihtml', '#^\[semihtml\](.*)\[\/semihtml\]$#si', ['_semihtml_to_comcode_callback'], $text);
         }
         if ((substr($text, 0, 6) == '[html]') && (substr(trim($text), -7) == '[/html]')) {
             require_code('comcode_from_html');
-            $text = comcode_preg_replace('html', '#^\[html\](.*)\[\/html\]$#si', array('_semihtml_to_comcode_callback'), $text);
+            $text = comcode_preg_replace('html', '#^\[html\](.*)\[\/html\]$#si', ['_semihtml_to_comcode_callback'], $text);
         }
     }
 
@@ -92,16 +92,16 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
         }
     }
 
-    $match = array();
+    $match = [];
 
     if (stripos($text, 'html]') !== false) {
         if (!in_array('semihtml', $tags_to_preserve)) {
             require_code('comcode_from_html');
-            $text = comcode_preg_replace('semihtml', '#^\[semihtml\](.*)\[\/semihtml\]$#si', array('_semihtml_to_comcode_callback'), $text);
+            $text = comcode_preg_replace('semihtml', '#^\[semihtml\](.*)\[\/semihtml\]$#si', ['_semihtml_to_comcode_callback'], $text);
         }
         if (!in_array('html', $tags_to_preserve)) {
             require_code('comcode_from_html');
-            $text = comcode_preg_replace('html', '#^\[html\](.*)\[\/html\]$#si', array('_semihtml_to_comcode_callback'), $text);
+            $text = comcode_preg_replace('html', '#^\[html\](.*)\[\/html\]$#si', ['_semihtml_to_comcode_callback'], $text);
         }
     }
 
@@ -220,7 +220,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
         }
     }
 
-    $tags_to_strip_entirely = array_diff(array(
+    $tags_to_strip_entirely = array_diff([
         'snapback',
         'post',
         'thread',
@@ -237,7 +237,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
         // These are handled earlier for normal attachments, this strips what may be left
         'attachment',
         'attachment_safe',
-    ), $tags_to_preserve);
+    ], $tags_to_preserve);
     if ($include_urls) {
         $tags_to_strip_entirely[] = 'media';
         $tags_to_strip_entirely[] = 'url';
@@ -261,7 +261,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
         }
     }
 
-    $tags_to_strip_just_tags = array_diff(array(
+    $tags_to_strip_just_tags = array_diff([
         'surround',
         'ticker',
         'right',
@@ -304,47 +304,47 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
         //'s',
         //'del',
         //'dfn',
-    ), $tags_to_preserve);
+    ], $tags_to_preserve);
     foreach ($tags_to_strip_just_tags as $s) {
         if (stripos($text, '[' . $s) !== false) {
             $text = preg_replace('#\[' . $s . '[^\]]*\](.*)\[/' . $s . '\]#U', '\1', $text);
         }
     }
 
-    $reps = array();
+    $reps = [];
     if (!in_array('list', $tags_to_preserve)) {
-        $reps += array(
+        $reps += [
             '[/*]' => '',
             '[*]' => ' - ',
             "[list]\n" => '',
             "\n[/list]" => '',
             '[list]' => '',
             '[/list]' => '',
-        );
+        ];
     }
     if (!in_array('b', $tags_to_preserve)) {
-        $reps += array(
+        $reps += [
             '[b]' => '**',
             '[/b]' => '**',
-        );
+        ];
     }
     if (!in_array('i', $tags_to_preserve)) {
-        $reps += array(
+        $reps += [
             '[i]' => '*',
             '[/i]' => '*',
-        );
+        ];
     }
     if (!in_array('u', $tags_to_preserve)) {
-        $reps += array(
+        $reps += [
             '[u]' => '__',
             '[/u]' => '__',
-        );
+        ];
     }
     if (!in_array('highlight', $tags_to_preserve)) {
-        $reps += array(
+        $reps += [
             '[highlight]' => '***',
             '[/highlight]' => '***',
-        );
+        ];
     }
     $text = str_replace(array_keys($reps), array_values($reps), $text);
     if (!in_array('list', $tags_to_preserve)) {
@@ -361,7 +361,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
 
     if (strpos($text, '&') !== false) {
         if (get_charset() != 'utf-8') {
-            $text = str_replace(array('&ndash;', '&mdash;', '&hellip;', '&middot;', '&ldquo;', '&rdquo;', '&lsquo;', '&rsquo;'), array('-', '-', '...', '|', '"', '"', "'", "'"), $text);
+            $text = str_replace(['&ndash;', '&mdash;', '&hellip;', '&middot;', '&ldquo;', '&rdquo;', '&lsquo;', '&rsquo;'], ['-', '-', '...', '|', '"', '"', "'", "'"], $text);
         }
         $text = @html_entity_decode($text, ENT_QUOTES);
     }
@@ -369,7 +369,7 @@ function _strip_comcode($in, $for_extract = false, $tags_to_preserve = array(), 
     if (!in_array('html', $tags_to_preserve)) {
         $text = strip_html($text);
 
-        foreach (array('html', 'semihtml') as $s) {
+        foreach (['html', 'semihtml'] as $s) {
             if (stripos($text, '[' . $s) !== false) {
                 $text = preg_replace('#\[/?' . $s . '[^\]]*\]#U', '', $text);
             }
@@ -439,7 +439,7 @@ function _box_callback($matches)
 function _page_callback($matches)
 {
     list($zone, $attributes, $hash) = page_link_decode($matches[1]);
-    $url = static_evaluate_tempcode(build_url($attributes, $zone, array(), false, false, true, $hash));
+    $url = static_evaluate_tempcode(build_url($attributes, $zone, [], false, false, true, $hash));
     return '[url="' . addslashes($url) . '"]' . $matches[2] . '[/url]';
 }
 
@@ -453,7 +453,7 @@ function _page_callback($matches)
  */
 function _random_callback($matches)
 {
-    $parts = array();
+    $parts = [];
     $num_parts = preg_match_all('# [^=]*="([^"]*)"#', $matches[1], $parts);
     return $parts[1][mt_rand(0, $num_parts - 1)];
 }
@@ -468,7 +468,7 @@ function _random_callback($matches)
  */
 function _shocker_callback($matches)
 {
-    $parts = array();
+    $parts = [];
     $num_parts = preg_match_all('# [^=]*="([^"]*)"#', $matches[1], $parts);
     $out = '';
     for ($i = 0; $i < $num_parts; $i++) {

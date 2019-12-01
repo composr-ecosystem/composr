@@ -45,7 +45,7 @@ class Hook_notification_gallery_entry extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
         require_code('galleries');
@@ -56,7 +56,7 @@ class Hook_notification_gallery_entry extends Hook_Notification
         }
 
         $page_links = get_gallery_tree($id, '', null, false, null, false, false, true, false, ($id === null) ? 0 : 1);
-        $filtered = array();
+        $filtered = [];
         foreach ($page_links as $p) {
             $filtered[] = $p;
         }
@@ -85,11 +85,11 @@ class Hook_notification_gallery_entry extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('galleries')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['gallery_entry'] = array(do_lang('CONTENT'), do_lang('galleries:NOTIFICATION_TYPE_gallery_entry'));
+        $list = [];
+        $list['gallery_entry'] = [do_lang('CONTENT'), do_lang('galleries:NOTIFICATION_TYPE_gallery_entry')];
         return $list;
     }
 

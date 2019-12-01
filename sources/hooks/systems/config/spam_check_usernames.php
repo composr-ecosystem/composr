@@ -30,7 +30,7 @@ class Hook_config_spam_check_usernames
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_CHECK_USERNAMES',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_spam_check_usernames
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

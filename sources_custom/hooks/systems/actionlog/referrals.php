@@ -26,21 +26,21 @@ class Hook_actionlog_referrals extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('referrals')) {
-            return array();
+            return [];
         }
 
         require_lang('referrals');
 
-        return array(
-            '_MANUALLY_ADJUST_SCHEME_SETTINGS' => array(
+        return [
+            '_MANUALLY_ADJUST_SCHEME_SETTINGS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'REFERRALS' => '_SEARCH:admin_referrals',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

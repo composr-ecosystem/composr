@@ -37,7 +37,7 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
 {
     require_code('cns_forum_driver_helper_auth');
 
-    $out = array();
+    $out = [];
     $out['id'] = null;
 
     require_code('cns_members');
@@ -62,12 +62,12 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
 
     if ($user_id === null) {
         if (get_option('one_per_email_address') == '2') {
-            $rows = array();
+            $rows = [];
         } else {
-            $rows = $this_ref->db->query_select('f_members', array('*'), array('m_username' => $username), '', 1);
+            $rows = $this_ref->db->query_select('f_members', ['*'], ['m_username' => $username], '', 1);
         }
         if ((!array_key_exists(0, $rows)) && (get_option('one_per_email_address') != '0')) {
-            $rows = $this_ref->db->query_select('f_members', array('*'), array('m_email_address' => $username), 'ORDER BY m_join_time ASC', 1);
+            $rows = $this_ref->db->query_select('f_members', ['*'], ['m_email_address' => $username], 'ORDER BY m_join_time ASC', 1);
         }
         if (array_key_exists(0, $rows)) {
             $this_ref->MEMBER_ROWS_CACHED[$rows[0]['id']] = $rows[0];
@@ -217,7 +217,7 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
                     $path = get_file_base() . '/sources/hooks/systems/cns_auth/' . $password_compatibility_scheme . '.php';
                 }
                 if (!file_exists($path)) {
-                    $reset_url = build_url(array('page' => 'lost_password'), get_module_zone('lost_password'));
+                    $reset_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
                     $out['error'] = do_lang_tempcode('UNKNOWN_AUTH_SCHEME_IN_DB', escape_html($reset_url->evaluate()));
                     return $out;
                 }
@@ -236,26 +236,26 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
     if ((cns_get_best_group_property($this_ref->get_members_groups($row['id']), 'enquire_on_new_ips') == 1)) { // High security usergroup membership
         global $SENT_OUT_VALIDATE_NOTICE, $IN_SELF_ROUTING_SCRIPT;
         $ip = get_ip_address(3);
-        $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', array('i_member_id' => $row['id'], 'i_ip' => $ip));
+        $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_member_id' => $row['id'], 'i_ip' => $ip]);
         if ((($test2 === null) || ($test2 != '')) && (!compare_ip_address($ip, $row['m_ip_address']))) {
             if (!$SENT_OUT_VALIDATE_NOTICE) {
                 if ($test2 !== null) { // Tidy up
-                    $this_ref->db->query_delete('f_member_known_login_ips', array('i_member_id' => $row['id'], 'i_ip' => $ip), '', 1);
+                    $this_ref->db->query_delete('f_member_known_login_ips', ['i_member_id' => $row['id'], 'i_ip' => $ip], '', 1);
                 }
 
                 require_code('crypt');
                 $code = ($test2 !== null) ? $test2 : get_secure_random_string();
-                $this_ref->db->query_insert('f_member_known_login_ips', array('i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()), false, true); // errors suppressed in case of race condition
+                $this_ref->db->query_insert('f_member_known_login_ips', ['i_val_code' => $code, 'i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()], false, true); // errors suppressed in case of race condition
                 $url = find_script('approve_ip') . '?code=' . urlencode($code);
                 $url_simple = find_script('approve_ip');
                 require_code('comcode');
-                $mail = do_lang('IP_VERIFY_MAIL', comcode_escape($url), comcode_escape(get_ip_address()), array($url_simple, $code), get_lang($row['id']));
+                $mail = do_lang('IP_VERIFY_MAIL', comcode_escape($url), comcode_escape(get_ip_address()), [$url_simple, $code], get_lang($row['id']));
                 $email_address = $row['m_email_address'];
                 if ($email_address == '') {
                     $email_address = get_option('staff_address');
                 }
                 if ($IN_SELF_ROUTING_SCRIPT) {
-                    dispatch_mail(do_lang('IP_VERIFY_MAIL_SUBJECT', null, null, null, get_lang($row['id'])), $mail, array($email_address), $row['m_username'], '', '', array('priority' => 1, 'require_recipient_valid_since' => $row['m_join_time']));
+                    dispatch_mail(do_lang('IP_VERIFY_MAIL_SUBJECT', null, null, null, get_lang($row['id'])), $mail, [$email_address], $row['m_username'], '', '', ['priority' => 1, 'require_recipient_valid_since' => $row['m_join_time']]);
                 }
 
                 $SENT_OUT_VALIDATE_NOTICE = true;
@@ -264,7 +264,7 @@ function _forum_authorise_login($this_ref, $username, $user_id, $password_hashed
             $out['error'] = do_lang_tempcode('REQUIRES_IP_VALIDATION');
             return $out;
         }
-        $this_ref->db->query_update('f_member_known_login_ips', array('i_time' => time()), array('i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()), '', 1);
+        $this_ref->db->query_update('f_member_known_login_ips', ['i_time' => time()], ['i_member_id' => $row['id'], 'i_ip' => $ip, 'i_time' => time()], '', 1);
     }
 
     $this_ref->cns_flood_control($row['id']);

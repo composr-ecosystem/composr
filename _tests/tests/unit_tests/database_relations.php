@@ -29,11 +29,11 @@ class database_relations_test_set extends cms_test_case
     {
         $table_purposes = get_table_purpose_flags();
 
-        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($all_tables as $_table) {
             $table = $_table['m_table'];
 
-            if (in_array($table, array('testy_test_test', 'testy_test_test_2', 'temp_test', 'temp_test_linked'))) {
+            if (in_array($table, ['testy_test_test', 'testy_test_test_2', 'temp_test', 'temp_test_linked'])) {
                 continue;
             }
 
@@ -112,7 +112,7 @@ class database_relations_test_set extends cms_test_case
 
     public function testMetaAwareDefined() // Composr's equivalent of "entities"
     {
-        $tables_in_hooks = array();
+        $tables_in_hooks = [];
 
         require_code('content');
 
@@ -127,11 +127,11 @@ class database_relations_test_set extends cms_test_case
 
         $skip_flags = TABLE_PURPOSE__NON_BUNDLED | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__NO_STAGING_COPY | TABLE_PURPOSE__MISC_NO_MERGE | TABLE_PURPOSE__AUTOGEN_STATIC | TABLE_PURPOSE__SUBDATA | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG;
 
-        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($all_tables as $_table) {
             $table = $_table['m_table'];
 
-            if (in_array($table, array('testy_test_test', 'testy_test_test_2', 'temp_test', 'temp_test_linked'))) {
+            if (in_array($table, ['testy_test_test', 'testy_test_test_2', 'temp_test', 'temp_test_linked'])) {
                 continue;
             }
 

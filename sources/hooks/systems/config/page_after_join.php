@@ -30,7 +30,7 @@ class Hook_config_page_after_join
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAGE_AFTER_JOIN',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_page_after_join
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

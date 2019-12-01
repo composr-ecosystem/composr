@@ -26,7 +26,7 @@ class Hook_addon_registry_locations_catalogues
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_locations_catalogues
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_locations_catalogues
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_locations_catalogues
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_locations_catalogues
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/locations_catalogues.php',
             'data_custom/locations/index.html',
             'data_custom/locations/sources.zip',
@@ -138,7 +138,7 @@ class Hook_addon_registry_locations_catalogues
             'sources_custom/locations_catalogues_install.php',
             'sources_custom/locations_catalogues_geopositioning.php',
             'data_custom/locations_catalogues_geoposition.php',
-        );
+        ];
     }
 
     /**
@@ -157,7 +157,7 @@ class Hook_addon_registry_locations_catalogues
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('locations', array(
+            $GLOBALS['SITE_DB']->create_table('locations', [
                 'id' => '*AUTO',
                 'l_place' => 'SHORT_TEXT',
                 'l_type' => 'ID_TEXT',
@@ -170,11 +170,11 @@ class Hook_addon_registry_locations_catalogues
                 'l_latitude' => '?REAL',
                 'l_longitude' => '?REAL',
                 //'l_postcode' => 'ID_TEXT',   Actually often many postcodes per location and/or poor alignment
-            ));
-            $GLOBALS['SITE_DB']->create_index('locations', 'l_place', array('l_place'));
-            $GLOBALS['SITE_DB']->create_index('locations', 'l_country', array('l_country'));
-            $GLOBALS['SITE_DB']->create_index('locations', 'l_latitude', array('l_latitude'));
-            $GLOBALS['SITE_DB']->create_index('locations', 'l_longitude', array('l_longitude'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('locations', 'l_place', ['l_place']);
+            $GLOBALS['SITE_DB']->create_index('locations', 'l_country', ['l_country']);
+            $GLOBALS['SITE_DB']->create_index('locations', 'l_latitude', ['l_latitude']);
+            $GLOBALS['SITE_DB']->create_index('locations', 'l_longitude', ['l_longitude']);
             //$GLOBALS['SITE_DB']->create_index('locations', 'l_postcode', array('l_postcode'));
         }
     }

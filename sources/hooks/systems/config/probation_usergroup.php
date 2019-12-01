@@ -30,7 +30,7 @@ class Hook_config_probation_usergroup
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PROBATION_USERGROUP',
             'type' => 'usergroup',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_probation_usergroup
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

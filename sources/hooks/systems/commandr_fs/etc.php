@@ -45,7 +45,7 @@ class Hook_commandr_fs_etc
         $query = 'SELECT param_a,MAX(date_and_time) AS date_and_time FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('the_type', 'CONFIGURATION') . ' GROUP BY param_a';
         $modification_times = collapse_2d_complexity('param_a', 'date_and_time', $GLOBALS['SITE_DB']->query($query));
 
-        $listing = array();
+        $listing = [];
         $hooks = find_all_hooks('systems', 'config');
         foreach (array_keys($hooks) as $option) {
             $value = get_option($option);
@@ -55,12 +55,12 @@ class Hook_commandr_fs_etc
 
             $modification_time = array_key_exists($option, $modification_times) ? $modification_times[$option] : null;
 
-            $listing[] = array(
+            $listing[] = [
                 $option,
                 COMMANDR_FS_FILE,
                 strlen($value),
                 $modification_time,
-            );
+            ];
         }
 
         require_code('resource_fs');
@@ -72,12 +72,12 @@ class Hook_commandr_fs_etc
 
             $modification_time = $ob->get_edit_date();
 
-            $listing[] = array(
+            $listing[] = [
                 '_' . $hook . 's' . '.' . RESOURCE_FS_DEFAULT_EXTENSION,
                 COMMANDR_FS_FILE,
                 null/*don't calculate a filesize*/,
                 $modification_time,
-            );
+            ];
         }
 
         return $listing;

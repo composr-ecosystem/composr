@@ -30,7 +30,7 @@ class Hook_config_show_docs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_DOCS',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_show_docs
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

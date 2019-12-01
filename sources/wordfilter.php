@@ -30,11 +30,11 @@ function init__wordfilter()
         define('WORDFILTER_MATCH_TYPE_SUBSTRING', 'substring');
         define('WORDFILTER_MATCH_TYPE_PREFIX', 'prefix');
 
-        define('WORDFILTER_MATCH_TYPES', array(
+        define('WORDFILTER_MATCH_TYPES', [
             WORDFILTER_MATCH_TYPE_FULL,
             WORDFILTER_MATCH_TYPE_SUBSTRING,
             WORDFILTER_MATCH_TYPE_PREFIX,
-        ));
+        ]);
 
         define('WORDFILTER_REPLACEMENT_GRAWLIXES', '%GRAWLIXES%');
         // A special value for the `wordfilter.w_replacement` column to replace matching words with grawlixes
@@ -74,9 +74,9 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
     // Load filter
     global $WORDS_TO_FILTER_CACHE;
     if ($WORDS_TO_FILTER_CACHE === null) {
-        $WORDS_TO_FILTER_CACHE = array();
+        $WORDS_TO_FILTER_CACHE = [];
         if (addon_installed('wordfilter')) {
-            $rows = $GLOBALS['SITE_DB']->query_select('wordfilter', array('*'));
+            $rows = $GLOBALS['SITE_DB']->query_select('wordfilter', ['*']);
             if ($rows !== null) {
                 foreach ($rows as $i => $r) {
                     if (($i == 0) && (!array_key_exists('w_replacement', $r))) {
@@ -91,11 +91,11 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
     // Find words
     $words = str_word_count($a, 2);
     if ($words === null) {
-        $words = array(); // HPHP issue #113
+        $words = []; // HPHP issue #113
     }
 
     // Apply filter for complete blocked words
-    $changes = array();
+    $changes = [];
     foreach ($words as $pos => $word) {
         $w = isset($WORDS_TO_FILTER_CACHE[strtolower($word)]) ? $WORDS_TO_FILTER_CACHE[strtolower($word)] : null;
 
@@ -103,7 +103,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
             if (($w['w_replacement'] == '') && ($exit)) {
                 warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
             } else {
-                $changes[] = array($pos, $word, $w['w_replacement']);
+                $changes[] = [$pos, $word, $w['w_replacement']];
             }
         }
 
@@ -113,14 +113,14 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
                     if (($w2['w_replacement'] == '') && ($exit)) {
                         warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
                     } else {
-                        $changes[] = array($pos, $word, $w2['w_replacement']);
+                        $changes[] = [$pos, $word, $w2['w_replacement']];
                     }
                 }
             } elseif ($try_patterns && ($w2['w_match_type'] === WORDFILTER_MATCH_TYPE_FULL) && (simulated_wildcard_match($word, $word2, true))) {
                 if (($w2['w_replacement'] == '') && ($exit)) {
                     warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you
                 } else {
-                    $changes[] = array($pos, $word, $w2['w_replacement']);
+                    $changes[] = [$pos, $word, $w2['w_replacement']];
                 }
             }
         }
@@ -181,7 +181,7 @@ function warn_exit_wordfilter($name, $message)
 
     // Output our error / correction form
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
-    $hidden = build_keep_post_fields(array($name));
+    $hidden = build_keep_post_fields([$name]);
     require_code('form_templates');
     $value = post_param_string($name);
     if (strpos($value, "\n") === false) {
@@ -190,7 +190,7 @@ function warn_exit_wordfilter($name, $message)
         $fields = form_input_text(do_lang_tempcode('CHANGE'), '', $name, $value, true);
     }
     $post_url = get_self_url();
-    $output = do_template('FORM_SCREEN', array(
+    $output = do_template('FORM_SCREEN', [
         '_GUID' => 'e644c444027b244ebc382eae66ae23fc',
         'TITLE' => get_screen_title('ERROR_OCCURRED'),
         'TEXT' => $message,
@@ -199,7 +199,7 @@ function warn_exit_wordfilter($name, $message)
         'FIELDS' => $fields,
         'SUBMIT_ICON' => 'buttons/proceed',
         'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
-    ));
+    ]);
     $echo = globalise($output, null, '', true);
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
@@ -214,7 +214,7 @@ function warn_exit_wordfilter($name, $message)
  */
 function generate_grawlixes($length)
 {
-    $symbols = array('!', '@', '#', '$', '%', '&', '*');
+    $symbols = ['!', '@', '#', '$', '%', '&', '*'];
 
     $str = '';
 

@@ -30,7 +30,7 @@ class Hook_config_enable_keyword_density_check
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_KEYWORD_DENSITY_CHECK',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_enable_keyword_density_check
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

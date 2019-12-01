@@ -34,7 +34,7 @@ class Hook_commandr_command_phpinfo
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('phpinfo', array('h'), array()), '', '');
+            return ['', do_command_help('phpinfo', ['h'], []), '', ''];
         } else {
             ob_start();
             if (php_function_allowed('phpinfo')) {
@@ -58,7 +58,7 @@ class Hook_commandr_command_phpinfo
             require_code('xhtml');
 
             $out = preg_replace('#<!DOCTYPE[^>]*>#s', '', preg_replace('#</body[^>]*>#', '', preg_replace('#<body[^>]*>#', '', preg_replace('#</html[^>]*>#', '', preg_replace('#<html[^>]*>#', '', $out)))));
-            $matches = array();
+            $matches = [];
             if (preg_match('#<style[^>]*>#', $out, $matches) != 0) {
                 $offset = strpos($out, $matches[0]) + strlen($matches[0]);
                 $end = strpos($out, '</style>', $offset);
@@ -76,7 +76,7 @@ class Hook_commandr_command_phpinfo
             $out = cms_preg_replace_safe('#([^\s<>"\']{95})#', '${1}<br />', $out);
             $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html(get_base_url_hostname()) . '/', $out);
 
-            return array('', xhtmlise_html($out, true), '', '');
+            return ['', xhtmlise_html($out, true), '', ''];
         }
     }
 }

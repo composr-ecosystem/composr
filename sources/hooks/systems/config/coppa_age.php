@@ -30,7 +30,7 @@ class Hook_config_coppa_age
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COPPA_AGE',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_coppa_age
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -32,11 +32,11 @@ class Hook_cron_privacy_purging
      */
     public function info($last_run, $calculate_num_queued)
     {
-        return array(
+        return [
             'label' => 'Privacy purging (database)',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**

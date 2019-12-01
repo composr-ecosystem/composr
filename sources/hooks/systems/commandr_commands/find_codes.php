@@ -34,14 +34,14 @@ class Hook_commandr_command_find_codes
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('find_codes', array('h'), array(true)), '', '');
+            return ['', do_command_help('find_codes', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'find_codes'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_codes')];
             }
 
             $path = get_custom_file_base() . '/sources/';
-            $files = array();
+            $files = [];
 
             if (is_dir($path)) {
                 $dh = opendir($path);
@@ -58,9 +58,9 @@ class Hook_commandr_command_find_codes
                 }
                 closedir($dh);
 
-                return array('', do_template('COMMANDR_FIND_CODES', array('_GUID' => '3374d1a80727aecc271722f2184743d0', 'FILES' => $files)), '', '');
+                return ['', do_template('COMMANDR_FIND_CODES', ['_GUID' => '3374d1a80727aecc271722f2184743d0', 'FILES' => $files]), '', ''];
             } else {
-                return array('', '', '', do_lang('INCOMPLETE_ERROR')); // Directory doesn't exist
+                return ['', '', '', do_lang('INCOMPLETE_ERROR')]; // Directory doesn't exist
             }
         }
     }

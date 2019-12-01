@@ -25,7 +25,7 @@ class Hook_config_tapatalk_promote_from_website
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_PROMOTE_FROM_WEBSITE',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_tapatalk_promote_from_website
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

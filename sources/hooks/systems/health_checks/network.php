@@ -44,7 +44,7 @@ class Hook_health_check_network extends Hook_Health_Check
         $this->process_checks_section('testTransferLatency', 'Transfer latency', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testTransferSpeed', 'Transfer speed', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -69,7 +69,7 @@ class Hook_health_check_network extends Hook_Health_Check
 
         $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=http_status_check&url=' . urlencode($this->get_page_url());
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
-            $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
 
             if ($data !== null) {
                 break;
@@ -109,7 +109,7 @@ class Hook_health_check_network extends Hook_Health_Check
             }
             $data = shell_exec($cmd);
 
-            $matches = array();
+            $matches = [];
             if (preg_match('# (\d(\.\d+)?%) packet loss#', $data, $matches) != 0) {
                 $this->assertTrue(floatval($matches[1]) == 0.0, 'Unreliable Internet connection on server');
             } else {
@@ -144,7 +144,7 @@ class Hook_health_check_network extends Hook_Health_Check
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
             $time_before = microtime(true);
 
-            $data = http_get_contents('http://www.google.com/', array('trigger_error' => false)); // Somewhere with very high availability
+            $data = http_get_contents('http://www.google.com/', ['trigger_error' => false]); // Somewhere with very high availability
 
             if ($data === null) {
                 $ok = false;
@@ -196,7 +196,7 @@ class Hook_health_check_network extends Hook_Health_Check
         $test_file_path = get_file_base() . '/data/curl-ca-bundle.crt';
 
         $data_to_send = str_repeat(cms_file_get_contents_safe($test_file_path, FILE_READ_LOCK), 5);
-        $post_params = array('test_data' => $data_to_send);
+        $post_params = ['test_data' => $data_to_send];
 
         $ok = false;
         $megabits_per_second = null;
@@ -204,7 +204,7 @@ class Hook_health_check_network extends Hook_Health_Check
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
             $time_before = microtime(true);
 
-            $data = http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=test_upload', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params));
+            $data = http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=test_upload', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post_params]);
 
             if ($data === null) {
                 $ok = false;

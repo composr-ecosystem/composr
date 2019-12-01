@@ -39,19 +39,19 @@ class Hook_commandr_command_help
             $hook_return = null;
             foreach ($hooks as $hook => $object) {
                 if ($hook == $parameters[0]) {
-                    $hook_return = $object->run(array('help' => null), array(), $commandr_fs);
+                    $hook_return = $object->run(['help' => null], [], $commandr_fs);
                     break;
                 }
             }
 
             if ($hook_return !== null) {
-                return array($hook_return[0], $hook_return[1], $hook_return[2], $hook_return[3]);
+                return [$hook_return[0], $hook_return[1], $hook_return[2], $hook_return[3]];
             } else {
-                return array('', '', '', do_lang('NO_HELP'));
+                return ['', '', '', do_lang('NO_HELP')];
             }
         } else {
             // Output a standard "how to use Commandr" help page
-            return array('window.open(\'' . addslashes(get_tutorial_url('tut_commandr')) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), '');
+            return ['window.open(\'' . addslashes(get_tutorial_url('tut_commandr')) . '\',\'commandr_window1\',\'\');', '', do_lang('SUCCESS'), ''];
         }
     }
 }

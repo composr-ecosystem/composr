@@ -31,7 +31,7 @@ class Hook_addon_registry_redirects_editor
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_redirects_editor
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_subcom',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_redirects_editor
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_redirects_editor'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_redirects_editor'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_redirects_editor
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/redirects.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/redirects.svg',
             'sources/hooks/systems/addon_registry/redirects_editor.php',
@@ -112,7 +112,7 @@ class Hook_addon_registry_redirects_editor
             'themes/default/css/redirects_editor.css',
             'themes/default/javascript/redirects_editor.js',
             'sources/hooks/systems/actionlog/redirects_editor.php',
-        );
+        ];
     }
 
     /**
@@ -122,12 +122,12 @@ class Hook_addon_registry_redirects_editor
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/PAGE_REDIRECT_ROW.tpl' => 'administrative__page_redirect_screen',
             'templates/PAGE_REDIRECT_SCREEN.tpl' => 'administrative__page_redirect_screen',
             'templates/URL_REDIRECT_ROW.tpl' => 'administrative__url_redirect_screen',
             'templates/URL_REDIRECT_SCREEN.tpl' => 'administrative__url_redirect_screen',
-        );
+        ];
     }
 
     /**
@@ -141,26 +141,26 @@ class Hook_addon_registry_redirects_editor
     {
         $existing = new Tempcode();
         foreach (placeholder_array() as $i => $row) {
-            $existing->attach(do_lorem_template('PAGE_REDIRECT_ROW', array(
+            $existing->attach(do_lorem_template('PAGE_REDIRECT_ROW', [
                 'I' => strval($i),
                 'TO_ZONES' => placeholder_options(),
                 'FROM_ZONES' => placeholder_options(),
                 'FROM_PAGE' => lorem_word(),
                 'TO_PAGE' => lorem_word_2(),
                 'IS_TRANSPARENT' => true,
-            )));
+            ]));
         }
 
-        $new = do_lorem_template('PAGE_REDIRECT_ROW', array(
+        $new = do_lorem_template('PAGE_REDIRECT_ROW', [
             'I' => 'new',
             'TO_ZONES' => placeholder_options(),
             'FROM_ZONES' => placeholder_options(),
             'FROM_PAGE' => '',
             'TO_PAGE' => '',
             'IS_TRANSPARENT' => false,
-        ));
+        ]);
 
-        $out = do_lorem_template('PAGE_REDIRECT_SCREEN', array(
+        $out = do_lorem_template('PAGE_REDIRECT_SCREEN', [
             'NOTES' => '',
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
@@ -168,11 +168,11 @@ class Hook_addon_registry_redirects_editor
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -186,24 +186,24 @@ class Hook_addon_registry_redirects_editor
     {
         $existing = new Tempcode();
         foreach (placeholder_array() as $i => $row) {
-            $existing->attach(do_lorem_template('URL_REDIRECT_ROW', array(
+            $existing->attach(do_lorem_template('URL_REDIRECT_ROW', [
                 'I' => strval($i),
                 'FROM' => placeholder_url(),
                 'TO' => placeholder_url(),
                 'NOTE' => lorem_phrase(),
                 'TYPE' => 'full',
-            )));
+            ]));
         }
 
-        $new = do_lorem_template('URL_REDIRECT_ROW', array(
+        $new = do_lorem_template('URL_REDIRECT_ROW', [
             'I' => 'new',
             'FROM' => placeholder_url(),
             'TO' => placeholder_url(),
             'NOTE' => lorem_phrase(),
             'TYPE' => 'full',
-        ));
+        ]);
 
-        $out = do_lorem_template('URL_REDIRECT_SCREEN', array(
+        $out = do_lorem_template('URL_REDIRECT_SCREEN', [
             'NOTES' => '',
             'PING_URL' => placeholder_url(),
             'WARNING_DETAILS' => '',
@@ -211,10 +211,10 @@ class Hook_addon_registry_redirects_editor
             'EXISTING' => $existing,
             'NEW' => $new,
             'URL' => placeholder_url(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($out, null, '', true)
-        );
+        ];
     }
 }

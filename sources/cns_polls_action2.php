@@ -36,52 +36,52 @@ function cns_edit_poll($poll_id, $question, $is_private, $is_open, $minimum_sele
 {
     require_code('cns_polls');
 
-    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('t_poll_id' => $poll_id), '', 1);
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['t_poll_id' => $poll_id], '', 1);
     if (!cns_may_edit_poll_by($topic_info[0]['t_forum_id'], $topic_info[0]['t_cache_first_member_id'])) {
         access_denied('I_ERROR');
     }
     $topic_id = $topic_info[0]['id'];
-    $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', array('*'), array('id' => $poll_id), '', 1);
+    $poll_info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['*'], ['id' => $poll_id], '', 1);
 
     if ((!has_privilege(get_member(), 'may_unblind_own_poll')) && ($is_private == 0) && ($poll_info[0]['po_is_private'] == 1)) {
         access_denied('PRIVILEGE', 'may_unblind_own_poll');
     }
 
-    $GLOBALS['FORUM_DB']->query_update('f_polls', array(
+    $GLOBALS['FORUM_DB']->query_update('f_polls', [
         'po_question' => $question,
         'po_is_private' => $is_private,
         'po_is_open' => $is_open,
         'po_minimum_selections' => $minimum_selections,
         'po_maximum_selections' => $maximum_selections,
         'po_requires_reply' => $requires_reply,
-    ), array('id' => $poll_id), '', 1);
+    ], ['id' => $poll_id], '', 1);
 
-    $current_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('*'), array('pa_poll_id' => $poll_id));
+    $current_answers = $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['*'], ['pa_poll_id' => $poll_id]);
     $total_after = count($answers);
     foreach ($current_answers as $i => $current_answer) {
         if ($i < $total_after) {
             $new_answer = $answers[$i];
-            $update = array('pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer);
+            $update = ['pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer];
             if (is_array($new_answer)) {
                 $update['pa_cache_num_votes'] = $new_answer[1];
             }
-            $GLOBALS['FORUM_DB']->query_update('f_poll_answers', $update, array('id' => $current_answer['id']), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_poll_answers', $update, ['id' => $current_answer['id']], '', 1);
         } else {
-            $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', array('id' => $current_answer['id']), '', 1);
-            $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', array('pv_answer_id' => $current_answer['id']), '', 1);
+            $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['id' => $current_answer['id']], '', 1);
+            $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_answer_id' => $current_answer['id']], '', 1);
         }
     }
     $i++;
     for (; $i < $total_after; $i++) {
         $new_answer = $answers[$i];
-        $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', array(
+        $GLOBALS['FORUM_DB']->query_insert('f_poll_answers', [
             'pa_poll_id' => $poll_id,
             'pa_answer' => is_array($new_answer) ? $new_answer[0] : $new_answer,
             'pa_cache_num_votes' => is_array($new_answer) ? $new_answer[1] : 0,
-        ));
+        ]);
     }
 
-    $name = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', array('id' => $poll_id));
+    $name = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', ['id' => $poll_id]);
     require_code('cns_general_action2');
     cns_mod_log_it('EDIT_TOPIC_POLL', strval($poll_id), $name, $reason);
 
@@ -100,12 +100,12 @@ function cns_delete_poll($poll_id, $reason = '', $check_perms = true)
 {
     require_code('cns_polls');
 
-    $info = $GLOBALS['FORUM_DB']->query_select('f_polls', array('id'), array('id' => $poll_id), '', 1);
+    $info = $GLOBALS['FORUM_DB']->query_select('f_polls', ['id'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('t_poll_id' => $poll_id), '', 1);
+    $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['t_poll_id' => $poll_id], '', 1);
     if (!array_key_exists(0, $topic_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
     }
@@ -116,13 +116,13 @@ function cns_delete_poll($poll_id, $reason = '', $check_perms = true)
     }
     $topic_id = $topic_info[0]['id'];
 
-    $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_poll_id' => null), array('t_poll_id' => $poll_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_poll_id' => null], ['t_poll_id' => $poll_id], '', 1);
 
-    $name = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', array('id' => $poll_id));
+    $name = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_question', ['id' => $poll_id]);
 
-    $GLOBALS['FORUM_DB']->query_delete('f_polls', array('id' => $poll_id), '', 1);
-    $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', array('pa_poll_id' => $poll_id));
-    $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', array('pv_poll_id' => $poll_id));
+    $GLOBALS['FORUM_DB']->query_delete('f_polls', ['id' => $poll_id], '', 1);
+    $GLOBALS['FORUM_DB']->query_delete('f_poll_answers', ['pa_poll_id' => $poll_id]);
+    $GLOBALS['FORUM_DB']->query_delete('f_poll_votes', ['pv_poll_id' => $poll_id]);
 
     require_code('cns_general_action2');
     cns_mod_log_it('DELETE_TOPIC_POLL', strval($topic_id) . ':' . strval($poll_id), $name, $reason);
@@ -150,7 +150,7 @@ function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = nul
         warn_exit(do_lang_tempcode('VOTE_DENIED'));
     }
     if ($topic_info === null) {
-        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('id', 't_forum_id'), array('t_poll_id' => $poll_id), '', 1);
+        $topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_poll_id' => $poll_id], '', 1);
     }
     if (!array_key_exists(0, $topic_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
@@ -161,9 +161,9 @@ function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = nul
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
     if (is_guest($member_id)) {
-        $voted_already_map = array('pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address());
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_ip' => get_ip_address()];
     } else {
-        $voted_already_map = array('pv_poll_id' => $poll_id, 'pv_member_id' => $member_id);
+        $voted_already_map = ['pv_poll_id' => $poll_id, 'pv_member_id' => $member_id];
     }
     $voted_already = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_poll_votes', 'pv_member_id', $voted_already_map);
     if ($voted_already !== null) {
@@ -171,14 +171,14 @@ function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = nul
     }
 
     // Check their vote is valid
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', array('po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private'), array('id' => $poll_id), '', 1);
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_polls', ['po_is_open', 'po_minimum_selections', 'po_maximum_selections', 'po_requires_reply', 'po_question', 'po_is_private'], ['id' => $poll_id], '', 1);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     if ((count($votes) < $rows[0]['po_minimum_selections']) || (count($votes) > $rows[0]['po_maximum_selections']) || ($rows[0]['po_is_open'] == 0)) {
         warn_exit(do_lang_tempcode('VOTE_CHEAT'));
     }
-    $answers = collapse_2d_complexity('id', 'pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('id', 'pa_answer'), array('pa_poll_id' => $poll_id)));
+    $answers = collapse_2d_complexity('id', 'pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id', 'pa_answer'], ['pa_poll_id' => $poll_id]));
     if (($rows[0]['po_requires_reply'] == 1) && (!cns_has_replied_topic($topic_id, $member_id))) {
         warn_exit(do_lang_tempcode('POLL_REQUIRES_REPLY'));
     }
@@ -190,12 +190,12 @@ function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = nul
             warn_exit(do_lang_tempcode('VOTE_CHEAT'));
         }
 
-        $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array(
+        $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', [
             'pv_poll_id' => $poll_id,
             'pv_member_id' => $member_id,
             'pv_answer_id' => $vote,
             'pv_ip' => get_ip_address(),
-        ));
+        ]);
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_cache_num_votes=(pa_cache_num_votes+1) WHERE id=' . strval($vote), 1);
 
@@ -212,9 +212,9 @@ function cns_vote_in_poll($poll_id, $votes, $member_id = null, $topic_info = nul
         $topic_title = $topic_info[0]['t_cache_first_title'];
         $topic_url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id);
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        $subject = do_lang('POLL_VOTE_MAIL_SUBJECT', $username, $answer, array($poll_title, $topic_title, $topic_url), get_lang($member_id));
-        $mail = do_lang('POLL_VOTE_MAIL_BODY', $username, $answer, array($poll_title, $topic_title, $topic_url), get_lang($member_id));
+        $subject = do_lang('POLL_VOTE_MAIL_SUBJECT', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));
+        $mail = do_lang('POLL_VOTE_MAIL_BODY', $username, $answer, [$poll_title, $topic_title, $topic_url], get_lang($member_id));
         require_code('notifications');
-        dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, array($member_id));
+        dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, [$member_id]);
     }
 }

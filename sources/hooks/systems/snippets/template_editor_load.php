@@ -117,19 +117,19 @@ class Hook_snippet_template_editor_load
 
             $guids = find_template_guids($file, $active_guid);
             if (!empty($guids)) {
-                $guids = array();
+                $guids = [];
             }
 
-            $related = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_b'), array('rel_a' => $file), 'ORDER BY rel_b', 50));
+            $related = collapse_1d_complexity('rel_b', $GLOBALS['SITE_DB']->query_select('theme_template_relations', ['rel_b'], ['rel_a' => $file], 'ORDER BY rel_b', 50));
             if (count($related) == 50) {
-                $related = array();
+                $related = [];
             }
 
             $editing_toolbar_dropdowns = $this->get_tempcode_editing_toolbar_dropdowns($file, $file_id);
 
             $all_previews = find_all_previews__by_template();
             if (array_key_exists($file, $all_previews)) {
-                $url_map = array(
+                $url_map = [
                     'page' => 'admin_themes',
                     'type' => 'screen_preview',
                     'id' => $file,
@@ -140,7 +140,7 @@ class Hook_snippet_template_editor_load
                     'keep_theme' => $theme,
                     'keep_wide_high' => 1,
                     // NB: The 'template_preview_op' POST parameter will be set, which causes the live preview
-                );
+                ];
                 $screen_preview_url = build_url($url_map, get_module_zone('admin_themes'));
             }
         } else {
@@ -175,19 +175,19 @@ class Hook_snippet_template_editor_load
                 }
             }
 
-            $guids = array();
+            $guids = [];
 
-            $related = array();
+            $related = [];
 
             $editing_toolbar_dropdowns = $this->get_tempcode_editing_toolbar_dropdowns(null, $file_id);
 
             if ($live_preview_url === null) {
-                $url_map = array(
+                $url_map = [
                     'page' => $page,
                     'cache_blocks' => 0,
                     'keep_theme' => $theme,
                     // NB: The 'template_preview_op' POST parameter will be set, which causes the live preview
-                );
+                ];
                 $live_preview_url = build_url($url_map, $zone);
             }
         }
@@ -202,7 +202,7 @@ class Hook_snippet_template_editor_load
             make_missing_directory(dirname($custom_path));
         }
 
-        return do_template('THEME_TEMPLATE_EDITOR_TAB', array(
+        return do_template('THEME_TEMPLATE_EDITOR_TAB', [
             '_GUID' => 'd4b022ce1d71666c1c7f5f5bd5a9dbb3',
             'THEME' => $theme,
             'FILE' => $file,
@@ -226,7 +226,7 @@ class Hook_snippet_template_editor_load
             'LOGICAL_SYMBOLS' => $logical_symbols,
 
             'INCLUDE_CSS_EDITING' => $include_css_editing,
-        ));
+        ]);
     }
 
     /**
@@ -244,129 +244,129 @@ class Hook_snippet_template_editor_load
             foreach ($_parameters as $parameter) {
                 $parameters->attach(form_input_list_entry($parameter . '__0', false, $parameter));
             }
-            $parameters = do_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', array(
+            $parameters = do_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', [
                 '_GUID' => '50f31c49c99b864c1719fb51ed426274',
                 'FILE_ID' => $file_id,
                 'PARAMETERS' => $parameters,
                 'STUB' => 'parameter',
                 'LANG' => do_lang_tempcode('INSERT_PARAMETER'),
-            ));
+            ]);
         }
 
-        $_directives = array(
-            array('BOX', '1'),
-            array('IF_NON_EMPTY', '1'),
-            array('IF_EMPTY', '1'),
-            array('IF_PASSED', '1'),
-            array('IF_NON_PASSED', '1'),
-            array('IF', '1'),
-            array('SET', '1'),
-            array('LOOP', '1'), // To simplify things, we won't throw all options at the user
-        );
+        $_directives = [
+            ['BOX', '1'],
+            ['IF_NON_EMPTY', '1'],
+            ['IF_EMPTY', '1'],
+            ['IF_PASSED', '1'],
+            ['IF_NON_PASSED', '1'],
+            ['IF', '1'],
+            ['SET', '1'],
+            ['LOOP', '1'], // To simplify things, we won't throw all options at the user
+        ];
         $directives = $this->generate_dropdown_from($_directives, 'DIRECTIVE', $file_id);
 
-        $_misc_symbols = array(
-            array('THEME', '0'),
-            array('LANG', '0'),
-            array('BASE_URL', '0'),
-            array('MOBILE', '0'),
-            array('DESKTOP', '0'),
-            array('LTR', '0'),
-            array('RTL', '0'),
-            array('SITE_NAME', '0'),
-            array('STAFF_ADDRESS', '0'),
-            array('MEMBER', '0'),
-            array('AVATAR', '0-1'),
-            array('PHOTO', '0-1'),
-            array('DATE_TIME', '0'),
-            array('DATE', '0'),
-            array('TIME', '0'),
-            array('ZONE', '0'),
-            array('PAGE', '0'),
-            array('_GET', '1'),
-            array('JS_ON', '0'),
-            array('USERNAME', '0-1'),
-            array('DISPLAYED_USERNAME', '1'),
-            array('MATCH_KEY_MATCH', '1'),
-            array('BROWSER_MATCHES', '1'),
-            array('REQUIRE_CSS', '1'),
-            array('REQUIRE_JAVASCRIPT', '1'),
-        );
+        $_misc_symbols = [
+            ['THEME', '0'],
+            ['LANG', '0'],
+            ['BASE_URL', '0'],
+            ['MOBILE', '0'],
+            ['DESKTOP', '0'],
+            ['LTR', '0'],
+            ['RTL', '0'],
+            ['SITE_NAME', '0'],
+            ['STAFF_ADDRESS', '0'],
+            ['MEMBER', '0'],
+            ['AVATAR', '0-1'],
+            ['PHOTO', '0-1'],
+            ['DATE_TIME', '0'],
+            ['DATE', '0'],
+            ['TIME', '0'],
+            ['ZONE', '0'],
+            ['PAGE', '0'],
+            ['_GET', '1'],
+            ['JS_ON', '0'],
+            ['USERNAME', '0-1'],
+            ['DISPLAYED_USERNAME', '1'],
+            ['MATCH_KEY_MATCH', '1'],
+            ['BROWSER_MATCHES', '1'],
+            ['REQUIRE_CSS', '1'],
+            ['REQUIRE_JAVASCRIPT', '1'],
+        ];
         $misc_symbols = $this->generate_dropdown_from($_misc_symbols, 'MISC_SYMBOL', $file_id);
 
-        $_programmatic_symbols = array(
-            array('RAND', '0'),
-            array('SET_RAND', '0+'),
-            array('CYCLE', '1+'),
-            array('INIT', '1'),
-            array('SET', '2'),
-            array('GET', '1'),
-            array('INC', '1'),
-            array('DEC', '1'),
-        );
+        $_programmatic_symbols = [
+            ['RAND', '0'],
+            ['SET_RAND', '0+'],
+            ['CYCLE', '1+'],
+            ['INIT', '1'],
+            ['SET', '2'],
+            ['GET', '1'],
+            ['INC', '1'],
+            ['DEC', '1'],
+        ];
         $programmatic_symbols = $this->generate_dropdown_from($_programmatic_symbols, 'PROGRAMMATIC_SYMBOL', $file_id);
 
-        $_abstraction_symbols = array(
-            array('IMG', '1'),
-            array('PAGE_LINK', '1'),
-            array('SELF_URL', '0'),
-            array('MEMBER_PROFILE_URL', '0-1'),
-            array('MAILTO', '0'),
-            array('BLOCK', '2'),
-            array('METADATA', '1'),
-            array('THUMBNAIL', '2'),
-            array('LOAD_PAGE', '1'),
-            array('LOAD_PANEL', '1'),
-            array('HAS_ZONE_ACCESS', '1-2'),
-            array('HAS_ACTUAL_PAGE_ACCESS', '1-2'),
-            array('HAS_PRIVILEGE', '1-2'),
-            array('IS_ADMIN', '0-1'),
-            array('IS_STAFF', '0-1'),
-            array('IS_GUEST', '0'),
-            array('IS_IN_GROUP', '1'),
-        );
+        $_abstraction_symbols = [
+            ['IMG', '1'],
+            ['PAGE_LINK', '1'],
+            ['SELF_URL', '0'],
+            ['MEMBER_PROFILE_URL', '0-1'],
+            ['MAILTO', '0'],
+            ['BLOCK', '2'],
+            ['METADATA', '1'],
+            ['THUMBNAIL', '2'],
+            ['LOAD_PAGE', '1'],
+            ['LOAD_PANEL', '1'],
+            ['HAS_ZONE_ACCESS', '1-2'],
+            ['HAS_ACTUAL_PAGE_ACCESS', '1-2'],
+            ['HAS_PRIVILEGE', '1-2'],
+            ['IS_ADMIN', '0-1'],
+            ['IS_STAFF', '0-1'],
+            ['IS_GUEST', '0'],
+            ['IS_IN_GROUP', '1'],
+        ];
         $abstraction_symbols = $this->generate_dropdown_from($_abstraction_symbols, 'ABSTRACTION_SYMBOL', $file_id);
 
-        $_arithmetical_symbols = array(
-            array('MAX', '2'),
-            array('MIN', '2'),
-            array('REM', '2'),
-            array('DIV', '2'),
-            array('SUBTRACT', '2'),
-            array('ADD', '2'),
-            array('ROUND', '2'),
-            array('MULT', '2'),
-        );
+        $_arithmetical_symbols = [
+            ['MAX', '2'],
+            ['MIN', '2'],
+            ['REM', '2'],
+            ['DIV', '2'],
+            ['SUBTRACT', '2'],
+            ['ADD', '2'],
+            ['ROUND', '2'],
+            ['MULT', '2'],
+        ];
         $arithmetical_symbols = $this->generate_dropdown_from($_arithmetical_symbols, 'ARITHMETICAL_SYMBOL', $file_id);
 
-        $_formatting_symbols = array(
-            array('WCASE', '1'),
-            array('LCASE', '1'),
-            array('UCASE', '1'),
-            array('REPLACE', '3'),
-            array('AT', '2'),
-            array('SUBSTR', '3'),
-            array('IN_STR', '2'),
-            array('LENGTH', '1'),
-            array('TRIM', '1'),
-            array('STRIP_TAGS', '1'),
-            array('TRUNCATE_LEFT', '2'),
-            array('TRUNCATE_SPREAD', '2'),
-        );
+        $_formatting_symbols = [
+            ['WCASE', '1'],
+            ['LCASE', '1'],
+            ['UCASE', '1'],
+            ['REPLACE', '3'],
+            ['AT', '2'],
+            ['SUBSTR', '3'],
+            ['IN_STR', '2'],
+            ['LENGTH', '1'],
+            ['TRIM', '1'],
+            ['STRIP_TAGS', '1'],
+            ['TRUNCATE_LEFT', '2'],
+            ['TRUNCATE_SPREAD', '2'],
+        ];
         $formatting_symbols = $this->generate_dropdown_from($_formatting_symbols, 'FORMATTING_SYMBOL', $file_id);
 
-        $_logical_symbols = array(
-            array('NOT', '1'),
-            array('OR', '2'),
-            array('AND', '2'),
-            array('EQ', '2'),
-            array('NEQ', '2'),
-            array('LT', '2'),
-            array('GT', '2'),
-        );
+        $_logical_symbols = [
+            ['NOT', '1'],
+            ['OR', '2'],
+            ['AND', '2'],
+            ['EQ', '2'],
+            ['NEQ', '2'],
+            ['LT', '2'],
+            ['GT', '2'],
+        ];
         $logical_symbols = $this->generate_dropdown_from($_logical_symbols, 'LOGICAL_SYMBOL', $file_id);
 
-        return array($parameters, $directives, $misc_symbols, $programmatic_symbols, $abstraction_symbols, $arithmetical_symbols, $formatting_symbols, $logical_symbols);
+        return [$parameters, $directives, $misc_symbols, $programmatic_symbols, $abstraction_symbols, $arithmetical_symbols, $formatting_symbols, $logical_symbols];
     }
 
     /**
@@ -385,12 +385,12 @@ class Hook_snippet_template_editor_load
             $lang = do_lang_tempcode($stub . '__' . $op);
             $out->attach(form_input_list_entry($op . '__' . $arity, false, $lang));
         }
-        return do_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', array(
+        return do_template('THEME_TEMPLATE_EDITOR_TEMPCODE_DROPDOWN', [
             '_GUID' => 'c6d24f278ec874a4b6abff8c359f80ba',
             'FILE_ID' => $file_id,
             'PARAMETERS' => $out,
             'STUB' => $stub,
             'LANG' => do_lang_tempcode('INSERT_' . $stub),
-        ));
+        ]);
     }
 }

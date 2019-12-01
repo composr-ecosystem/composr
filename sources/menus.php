@@ -49,7 +49,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         $root = _build_sitemap_menu($menu_id);
 
         if ($root === null) {
-            return array(new Tempcode(), array());
+            return [new Tempcode(), []];
         }
     } else {
         $root = _build_stored_menu($menu_id);
@@ -57,15 +57,15 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         // Empty?
         if (empty($root['children'])) {
             if ($silent_failure) {
-                return array(new Tempcode(), array());
+                return [new Tempcode(), []];
             }
 
             $redirect = get_self_url(true, true);
-            $_add_url = build_url(array('page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => $type, 'redirect' => protect_url_parameter($redirect)), 'adminzone');
+            $_add_url = build_url(['page' => 'admin_menus', 'type' => 'edit', 'id' => $menu_id, 'menu_type' => $type, 'redirect' => protect_url_parameter($redirect)], 'adminzone');
             $add_url = $_add_url->evaluate();
 
-            $content = do_template('INLINE_WIP_MESSAGE', array('_GUID' => '276e6600571b8b4717ca742b6e9da17a', 'MESSAGE' => do_lang_tempcode('MISSING_MENU', escape_html($menu_id), escape_html($add_url))));
-            return array($content, array());
+            $content = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '276e6600571b8b4717ca742b6e9da17a', 'MESSAGE' => do_lang_tempcode('MISSING_MENU', escape_html($menu_id), escape_html($add_url))]);
+            return [$content, []];
         }
     }
 
@@ -89,24 +89,24 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         $page_link .= ':menu_type=' . urlencode($type);
         $page_link .= ':redirect=';
         $_page_link = make_string_tempcode($page_link);
-        $self_url = symbol_tempcode('SELF_URL', array('1'));
-        $self_url = build_closure_tempcode(TC_LANGUAGE_REFERENCE, 'dont_escape_trick', array($self_url), array(UL_ESCAPED));
+        $self_url = symbol_tempcode('SELF_URL', ['1']);
+        $self_url = build_closure_tempcode(TC_LANGUAGE_REFERENCE, 'dont_escape_trick', [$self_url], [UL_ESCAPED]);
         $_page_link->attach($self_url);
 
-        $url = symbol_tempcode('PAGE_LINK', array($_page_link, '0', '0', '0'));
+        $url = symbol_tempcode('PAGE_LINK', [$_page_link, '0', '0', '0']);
 
         $_content = new Tempcode(); // Done to preserve tree structure with $RECORD_TEMPLATES_USED=true
         $_content->attach($content);
-        $_content->attach(do_template('MENU_STAFF_LINK', array(
+        $_content->attach(do_template('MENU_STAFF_LINK', [
             '_GUID' => 'a5209ec65425bed1207e2f667d9116f6',
             'TYPE' => $type,
             'EDIT_URL' => $url,
             'NAME' => $is_sitemap_menu ? '' : $menu_id,
-        )));
+        ]));
         $content = $_content;
     }
 
-    return array($content, $root);
+    return [$content, $root];
 }
 
 /**
@@ -120,9 +120,9 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
 function _build_stored_menu($menu_id)
 {
     // Load items
-    $root = persistent_cache_get(array('MENU', $menu_id));
+    $root = persistent_cache_get(['MENU', $menu_id]);
     if ($root === null) {
-        $items = $GLOBALS['SITE_DB']->query_select('menu_items', array('*'), array('i_menu' => $menu_id), 'ORDER BY i_order');
+        $items = $GLOBALS['SITE_DB']->query_select('menu_items', ['*'], ['i_menu' => $menu_id], 'ORDER BY i_order');
 
         // Search for top-level items, to build root branch
         $root = _get_menu_root_wrapper();
@@ -133,7 +133,7 @@ function _build_stored_menu($menu_id)
             }
         }
 
-        persistent_cache_set(array('MENU', $menu_id, user_lang()), $root);
+        persistent_cache_set(['MENU', $menu_id, user_lang()], $root);
     }
     return $root;
 }
@@ -147,7 +147,7 @@ function _build_stored_menu($menu_id)
  */
 function _build_sitemap_menu($menu_id)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$menu_id])) {
         return $cache[$menu_id];
     }
@@ -258,7 +258,7 @@ function _build_sitemap_menu($menu_id)
 
         switch ($include) {
             case 'children':
-                $root['children'] = array_merge(($root['children'] === null) ? array() : $root['children'], ($node['children'] === null) ? array() : $node['children']);
+                $root['children'] = array_merge(($root['children'] === null) ? [] : $root['children'], ($node['children'] === null) ? [] : $node['children']);
                 break;
 
             case 'node':
@@ -281,21 +281,21 @@ function _build_sitemap_menu($menu_id)
  */
 function _get_menu_root_wrapper()
 {
-    return array(
+    return [
         'title' => '',
         'content_type' => 'root',
         'content_id' => null,
-        'modifiers' => array(),
+        'modifiers' => [],
         'only_on_page' => '',
         'page_link' => null,
         'url' => null,
-        'extra_meta' => array(
+        'extra_meta' => [
             'description' => null,
             'image' => null,
-        ),
+        ],
         'has_possible_children' => true,
-        'children' => array(),
-    );
+        'children' => [],
+    ];
 }
 
 /**
@@ -313,7 +313,7 @@ function _build_stored_menu_branch($item, $items)
 
     $title = get_translated_tempcode('menu_items', $item, 'i_caption');
 
-    $modifiers = array();
+    $modifiers = [];
     if ($item['i_new_window'] == 1) {
         $modifiers['new_window'] = true;
     }
@@ -324,7 +324,7 @@ function _build_stored_menu_branch($item, $items)
         $modifiers['expanded'] = 1;
     }
 
-    $branch = array(
+    $branch = [
         'title' => $title,
         'content_type' => ($title->is_empty()) ? 'spacer' : 'stored_branch',
         'content_id' => null,
@@ -332,13 +332,13 @@ function _build_stored_menu_branch($item, $items)
         'only_on_page' => $item['i_page_only'],
         'page_link' => $is_page_link ? (($item['i_include_sitemap'] == INCLUDE_SITEMAP_NO) ? $item['i_url'] : preg_replace('#,.*$#', '', $item['i_url'])) : null,
         'url' => $is_page_link ? null : $item['i_url'],
-        'extra_meta' => array(
+        'extra_meta' => [
             'description' => get_translated_tempcode('menu_items', $item, 'i_caption_long'),
             'image' => ($item['i_theme_img_code'] == '') ? null : find_theme_image($item['i_theme_img_code']),
-        ),
+        ],
         'has_possible_children' => true,
-        'children' => array(),
-    );
+        'children' => [],
+    ];
 
     foreach ($items as $_item) {
         if (($_item['i_parent'] == $item['id']) && ($_item['id'] != $item['id']/*Don't let DB errors cause crashes*/)) {
@@ -346,7 +346,7 @@ function _build_stored_menu_branch($item, $items)
         }
     }
 
-    $branches = array(&$branch);
+    $branches = [&$branch];
 
     if ($is_page_link) {
         // TODO: Category permissions? #140 on tracker
@@ -375,7 +375,7 @@ function _build_stored_menu_branch($item, $items)
                         break;
 
                     case INCLUDE_SITEMAP_UNDER:
-                        $known_existing_page_links = array();
+                        $known_existing_page_links = [];
                         _find_child_page_links($branch['children'], $known_existing_page_links);
                         foreach ($extra_branch['children'] as $child) {
                             if (!isset($known_existing_page_links[$child['page_link']])) {
@@ -452,7 +452,7 @@ function _render_menu($menu, $source_member, $type, $as_admin = false, $apply_hi
     }
 
     // Pre-process to calculate the true number of rendered items
-    $new_children = array();
+    $new_children = [];
     if (isset($menu['children'])) {
         foreach ($menu['children'] as $child) {
             $branch = _render_menu_branch($child, $codename, $source_member, 0, $type, $as_admin, $menu['children'], $apply_highlighting, 1);
@@ -470,23 +470,23 @@ function _render_menu($menu, $source_member, $type, $as_admin = false, $apply_hi
         if (is_object($child)) {
             $content->attach($child);
         } else {
-            $content->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + array(
+            $content->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + [
                 '_GUID' => 'b5209ec65425bed1207e2f667d9116f6',
                 'POSITION' => strval($i),
                 'FIRST' => $i == 0,
                 'LAST' => $i == $num - 1,
                 'SIBLINGS' => strval($num),
                 'MENU' => $codename,
-            ), null, false, 'MENU_BRANCH_tree'));
+            ], null, false, 'MENU_BRANCH_tree'));
         }
     }
 
-    return do_template('MENU_' . filter_naughty_harsh($type, true), array(
+    return do_template('MENU_' . filter_naughty_harsh($type, true), [
         'CONTENT' => $content,
         'MENU' => $codename,
         'JAVASCRIPT_HIGHLIGHTING' => !$apply_highlighting,
         'NUM_BRANCHES' => strval($num),
-    ), null, false, 'MENU_tree');
+    ], null, false, 'MENU_tree');
 }
 
 /**
@@ -513,29 +513,29 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             $branch['only_on_page'] = static_evaluate_tempcode(template_to_tempcode($branch['only_on_page']));
         }
         if (($branch['only_on_page'] != '') && (!match_key_match($branch['only_on_page']))) {
-            return array(null, false); // We are not allowed to render this on this page
+            return [null, false]; // We are not allowed to render this on this page
         }
     }
 
     // Spacers
     if ($branch['content_type'] == 'spacer') {
-        return array(
+        return [
             do_template(
                 'MENU_SPACER_' . filter_naughty_harsh($type, true),
-                array(
+                [
                     '_GUID' => 'c5209ec65425bed1207e2f667d9116f6',
 
                     // Useful contextual information
                     'MENU' => $codename,
                     'TOP_LEVEL' => $the_level == 1,
                     'THE_LEVEL' => strval($the_level),
-                ),
+                ],
                 null,
                 false,
                 'MENU_SPACER_tree'
             ),
             false
-        );
+        ];
     }
 
     // Normal branches...
@@ -566,14 +566,14 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
         // If we need to check access
         if (isset($branch['modifiers']['check_perms'])) {
             if (!function_exists('get_member')) {
-                return array(null, false); // Some kind of startup issue
+                return [null, false]; // Some kind of startup issue
             }
             require_code('permissions');
             if (!has_zone_access(get_member(), $zone_name)) {
-                return array(null, false);
+                return [null, false];
             }
             if (!has_page_access(get_member(), $map['page'], $zone_name)) {
-                return array(null, false);
+                return [null, false];
             }
         }
 
@@ -585,12 +585,12 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             }
         }
 
-        $url = build_url($map, $zone_name, array(), false, false, false, $hash);
+        $url = build_url($map, $zone_name, [], false, false, false, $hash);
 
         // See if this is current page
         if ($apply_highlighting) {
             $somewhere_definite = false;
-            $_parts = array();
+            $_parts = [];
             foreach ($all_branches as $_branch) {
                 if (($_branch['page_link'] !== null) && (preg_match('#([' . URL_CONTENT_REGEXP . ']*):([' . URL_CONTENT_REGEXP . ']+|[^/]|$)((:(.*))*)#', $_branch['page_link'], $_parts) != 0)) {
                     if ($_parts[1] == $users_current_zone) {
@@ -654,7 +654,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
     }
 
     // Pre-process to calculate the true number of rendered items
-    $new_children = array();
+    $new_children = [];
     $expand_this = false;
     if (isset($branch['children'])) {
         foreach ($branch['children'] as $child) {
@@ -675,18 +675,18 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
         if (is_object($child)) {
             $children->attach($child);
         } else {
-            $children->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + array(
+            $children->attach(do_template('MENU_BRANCH_' . filter_naughty_harsh($type, true), $child + [
                 '_GUID' => 'd5209ec65425bed1207e2f667d9116f6',
                 'POSITION' => strval($i),
                 'FIRST' => $i == 0,
                 'LAST' => $i == $num - 1,
                 'SIBLINGS' => strval($num),
                 'MENU' => $codename,
-            ), null, false, 'MENU_BRANCH_tree'));
+            ], null, false, 'MENU_BRANCH_tree'));
         }
     }
     if (($children->is_empty()) && ($url->is_empty())) {
-        return array(null, false); // Nothing here!
+        return [null, false]; // Nothing here!
     }
 
     // Caption and tooltip
@@ -718,7 +718,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
     $img = isset($branch['extra_meta']['image']) ? $branch['extra_meta']['image'] : '';
 
     // Render!
-    $rendered_branch = array(
+    $rendered_branch = [
         // Basic properties
         'CAPTION' => $caption,
         'IMG' => $img,
@@ -743,7 +743,7 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
         // Hints for current-page rendering
         'CURRENT' => $current_page,
         'CURRENT_ZONE' => $current_zone,
-    );
+    ];
 
-    return array($rendered_branch, $current_page || $expand_this);
+    return [$rendered_branch, $current_page || $expand_this];
 }

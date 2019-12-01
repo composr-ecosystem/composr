@@ -30,7 +30,7 @@ class Hook_config_news_show_stats_count_total_posts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TOTAL_NEWS_ENTRIES',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_news_show_stats_count_total_posts
             'public' => false,
 
             'addon' => 'news',
-        );
+        ];
     }
 
     /**

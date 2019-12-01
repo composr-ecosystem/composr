@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_custom_comcode_tag
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'custom_comcode:CUSTOM_COMCODE',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_custom_comcode_tag
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CUSTOM_COMCODE_TAG',
-        );
+        ];
     }
 }

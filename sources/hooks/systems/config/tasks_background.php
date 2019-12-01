@@ -30,7 +30,7 @@ class Hook_config_tasks_background
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TASKS_BACKGROUND',
             'type' => 'tick',
             'category' => 'PERFORMANCE',
@@ -43,7 +43,7 @@ class Hook_config_tasks_background
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

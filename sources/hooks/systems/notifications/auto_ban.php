@@ -43,8 +43,8 @@ class Hook_notification_auto_ban extends Hook_notification__Staff
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['auto_ban'] = array(do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_auto_ban'));
+        $list = [];
+        $list['auto_ban'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_auto_ban')];
         return $list;
     }
 }

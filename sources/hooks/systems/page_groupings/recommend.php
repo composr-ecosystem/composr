@@ -33,11 +33,11 @@ class Hook_page_groupings_recommend
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('recommend')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('site_meta', 'menu/site_meta/recommend', array('recommend', array(), get_module_zone('recommend')), do_lang_tempcode('recommend:RECOMMEND_SITE')),
-        );
+        return [
+            ['site_meta', 'menu/site_meta/recommend', ['recommend', [], get_module_zone('recommend')], do_lang_tempcode('recommend:RECOMMEND_SITE')],
+        ];
     }
 }

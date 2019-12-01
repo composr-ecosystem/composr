@@ -29,7 +29,7 @@ function rebuild_indices($only_trans = false)
 
     push_db_scope_check(false);
 
-    $indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('*'));
+    $indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['*']);
     foreach ($indices as $index) {
         $fields = explode(',', $index['i_fields']);
         $ok = false;
@@ -76,9 +76,9 @@ function disable_content_translation()
         }
 
         // Add new implied fields for holding extra Comcode details, and new field to hold main Comcode
-        $to_add = array('new' => 'LONG_TEXT');
+        $to_add = ['new' => 'LONG_TEXT'];
         if (strpos($field['m_type'], '__COMCODE') !== false) {
-            $to_add += array('text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER');
+            $to_add += ['text_parsed' => 'LONG_TEXT', 'source_user' => 'MEMBER'];
         }
         foreach ($to_add as $sub_name => $sub_type) {
             $sub_name = $field['m_name'] . '__' . $sub_name;
@@ -96,9 +96,9 @@ function disable_content_translation()
 
         // Copy from translate table
         $query = 'UPDATE ' . $db->table_prefix . $field['m_table'] . ' a SET ';
-        $query .= 'a.' . $field['m_name'] . '__new=' . db_function('COALESCE', array('(SELECT b.text_original FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', '\'\''));
+        $query .= 'a.' . $field['m_name'] . '__new=' . db_function('COALESCE', ['(SELECT b.text_original FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', '\'\'']);
         if (strpos($field['m_type'], '__COMCODE') !== false) {
-            $query .= ', a.' . $field['m_name'] . '__source_user=' . db_function('COALESCE', array('(SELECT b.source_user FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', strval(db_get_first_id())));
+            $query .= ', a.' . $field['m_name'] . '__source_user=' . db_function('COALESCE', ['(SELECT b.source_user FROM ' . $db->table_prefix . 'translate b WHERE b.id=a.' . $field['m_name'] . ' ORDER BY broken)', strval(db_get_first_id())]);
             $query .= ', a.' . $field['m_name'] . '__text_parsed=\'\'';
         }
         $db->_query($query);
@@ -112,7 +112,7 @@ function disable_content_translation()
         $db->_query($query);
 
         // Create fulltext search index
-        $GLOBALS['SITE_DB']->create_index($field['m_table'], '#' . $field['m_name'], array($field['m_name']));
+        $GLOBALS['SITE_DB']->create_index($field['m_table'], '#' . $field['m_name'], [$field['m_name']]);
 
         reload_lang_fields(true, $field['m_table']);
     }
@@ -191,38 +191,38 @@ function enable_content_translation()
         // Copy to translate table
         $start = 0;
         do {
-            $trans = $db->query_select($field['m_table'], array('*'), array(), '', 100, $start, false, array()/*Needs to disable auto-field-grabbing as DB state is currently inconsistent*/);
+            $trans = $db->query_select($field['m_table'], ['*'], [], '', 100, $start, false, []/*Needs to disable auto-field-grabbing as DB state is currently inconsistent*/);
             foreach ($trans as $t) {
                 $lang_id = null;
                 $lock = false;
                 table_id_locking_start($db, $lang_id, $lock);
 
-                $insert_map = array(
+                $insert_map = [
                     'language' => get_site_default_lang(),
                     'importance_level' => 3,
                     'text_original' => $t[$field['m_name'] . '__old'],
                     'text_parsed' => $has_comcode ? $t[$field['m_name'] . '__text_parsed'] : '',
                     'broken' => 0,
                     'source_user' => $has_comcode ? $t[$field['m_name'] . '__source_user'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                );
+                ];
                 if ($lang_id === null) {
                     $lang_id = $db->query_insert('translate', $insert_map, true);
                 } else {
-                    $db->query_insert('translate', array('id' => $lang_id) + $insert_map);
+                    $db->query_insert('translate', ['id' => $lang_id] + $insert_map);
                 }
 
                 table_id_locking_end($db, $lang_id, $lock);
 
-                $GLOBALS['SITE_DB']->query_update($field['m_table'], array($field['m_name'] => $lang_id), $t, '', 1);
+                $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $lang_id], $t, '', 1);
             }
             $start += 100;
         } while (!empty($trans));
 
         // Delete old fields
-        $to_delete = array('old');
+        $to_delete = ['old'];
         if ($has_comcode) {
             // Delete old implied fields for holding extra Comcode details
-            $to_delete = array_merge($to_delete, array('text_parsed', 'source_user'));
+            $to_delete = array_merge($to_delete, ['text_parsed', 'source_user']);
         }
         foreach ($to_delete as $sub_name) {
             $sub_name = $field['m_name'] . '__' . $sub_name;

@@ -31,21 +31,21 @@ class Hook_actionlog_debrand extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('debrand')) {
-            return array();
+            return [];
         }
 
         require_lang('debrand');
 
-        return array(
-            'SUPER_DEBRAND' => array(
+        return [
+            'SUPER_DEBRAND' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'SUPER_DEBRAND' => '_SEARCH:admin_debrand',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

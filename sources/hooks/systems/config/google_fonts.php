@@ -30,7 +30,7 @@ class Hook_config_google_fonts
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_FONTS',
             'type' => 'line',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_google_fonts
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

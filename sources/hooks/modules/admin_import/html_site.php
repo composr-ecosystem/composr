@@ -54,12 +54,12 @@ class Hook_import_html_site
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'HTML website (page extraction and basic themeing)';
-        $info['import'] = array(
+        $info['import'] = [
             'pages',
-        );
+        ];
         return $info;
     }
 
@@ -71,7 +71,7 @@ class Hook_import_html_site
      */
     public function probe_db_access($file_base)
     {
-        return array(null, null, null, null); // No database connector needed
+        return [null, null, null, null]; // No database connector needed
     }
 
     /**
@@ -136,7 +136,7 @@ class Hook_import_html_site
         }
 
         // Find all htm/html/php files
-        $content_files = array();
+        $content_files = [];
         foreach ($files as $i => $file) {
             if ((strtolower(substr($file, -4)) == '.htm') || (strtolower(substr($file, -5)) == '.html') || (strtolower(substr($file, -4)) == '.php')) {
                 $content_files[] = $file;
@@ -149,7 +149,7 @@ class Hook_import_html_site
 
         // Discern new zones needed
         //  Note: files in directories in a deep path will be considered in a zone name changed so underscores replace slashes
-        $new_zones = array();
+        $new_zones = [];
         $current_zones = find_all_zones();
         foreach ($content_files as $file) {
             $zone = str_replace('/', '_', dirname($file));
@@ -165,7 +165,7 @@ class Hook_import_html_site
         // (Maybe AFM needed here - if zones have to be created, and possibly .htaccess changed to incorporate zone names in the redirects)
         if (!empty($new_zones)) {
             require_code('abstract_file_manager');
-            force_have_afm_details(array(''));
+            force_have_afm_details(['']);
 
             // Create new zones as needed (and set them to our chosen theme too)
             require_code('zones2');
@@ -177,17 +177,17 @@ class Hook_import_html_site
         }
 
         // Discern cruft in htm/html via looking for best levenshtein to length ratio over a few pages; scan by tag, not by byte
-        $compare_file_contents = array();
+        $compare_file_contents = [];
         shuffle($content_files);
         for ($i = 0; $i < min(2 /* We would like this to be 5 so we can remove the problem of outliers, but performance is an issue */, count($content_files)); $i++) {
             $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_files[$i], FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $compare_file_contents[$content_files[$i]] = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
         }
-        $cruft = array();
+        $cruft = [];
 
         if (count($compare_file_contents) > 1) {
-            $to_find = array();
+            $to_find = [];
             if (file_exists($file_base . '/header.txt')) {
                 $cruft['HEADER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/header.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), $fix_html, $base_url, $files, $file_base);
             } else {
@@ -199,7 +199,7 @@ class Hook_import_html_site
                 $to_find[] = 'FOOTER';
             }
             foreach ($to_find as $template_wanted) {
-                $best_ratios = array();
+                $best_ratios = [];
                 foreach ($compare_file_contents as $i => $reference_file) { // We have to try using each as a reference point (it is this that will form the template text), as we may get unlucky if we chose a reference point file that was completely different.
                     if ($template_wanted == 'HEADER') {
                         $last_pos = strpos($reference_file, '<body');
@@ -212,7 +212,7 @@ class Hook_import_html_site
                         $last_pos = strlen($reference_file) - 1;
                     }
                     $best_av_ratios = null;
-                    $ratios = array();
+                    $ratios = [];
                     while ($last_pos !== false) {
                         //@print('!' . (strlen($reference_file) - $last_pos) . ' ' . $lv . ' ' . $ratio . '<br />' . "\n");flush();if (@$dd++ == 180) @exit('fini'); // Useful for debugging
                         if ($template_wanted == 'HEADER') {
@@ -226,7 +226,7 @@ class Hook_import_html_site
                             } else {
                                 $up_to = substr($reference_file, $next_pos);
                             }
-                            $all_ratios_for_pos = array();
+                            $all_ratios_for_pos = [];
                             foreach ($compare_file_contents as $j => $other_file) {
                                 if ($i != $j) {
                                     if ($template_wanted == 'HEADER') {
@@ -262,7 +262,7 @@ class Hook_import_html_site
 
                     asort($ratios);
                     $best_by_pos = array_keys($ratios);
-                    $best_ratios[] = array($best_by_pos[0], $ratios[$best_by_pos[0]], $reference_file);
+                    $best_ratios[] = [$best_by_pos[0], $ratios[$best_by_pos[0]], $reference_file];
                 }
                 $best = null;
                 $best_pos = null;
@@ -290,7 +290,7 @@ class Hook_import_html_site
         // Extract header from cruft (<body> and before); SAVE
         $header = $cruft['HEADER'];
         // special cases of something with ID or class of header/top going through too
-        $header_cases = array('<div id="header"', '<div id="page_header"', '<div class="header"', '<div class="page_header"');
+        $header_cases = ['<div id="header"', '<div id="page_header"', '<div class="header"', '<div class="page_header"'];
         foreach ($header_cases as $header_case) {
             $header_start_pos = strpos($header, $header_case);
             if ($header_start_pos !== false) {
@@ -329,7 +329,7 @@ class Hook_import_html_site
         // Extract footer from cruft (</body> and below); SAVE
         $footer = $cruft['FOOTER'];
         // special cases of something with ID or class of footer/bottom going through too
-        $footer_cases = array('<div id="footer"', '<div id="page_footer"', '<div class="footer"', '<div class="page_footer"');
+        $footer_cases = ['<div id="footer"', '<div id="page_footer"', '<div class="footer"', '<div class="page_footer"'];
         foreach ($footer_cases as $footer_case) {
             $footer_start_pos = strpos($footer, $footer_case);
             if ($footer_start_pos !== false) {
@@ -358,9 +358,9 @@ class Hook_import_html_site
         // Extract site name from <title> tag, based on common consistency (largest common substring)
         $site_name = get_site_name();
         if (count($compare_file_contents) > 1) {
-            $titles_in_reference_files = array();
+            $titles_in_reference_files = [];
             foreach ($compare_file_contents as $reference_file) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#<title>(.*)</title>#', $reference_file, $matches) != 0) {
                     $titles_in_reference_files[] = $matches[1];
                 }
@@ -420,7 +420,7 @@ class Hook_import_html_site
                 $filtered = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
 
                 // Try and work out page title from <title> tag
-                $matches = array();
+                $matches = [];
                 $page_title = null;
                 if (preg_match('#<title>(.*)</title>#', $filtered, $matches) != 0) {
                     $regexp = '#( [\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . '( [\|\-' . ((get_charset() == 'utf-8') ? (hex2bin('e28093') . hex2bin('e28094')) : '') . '] )?' . preg_quote($site_name) . '] )?#';
@@ -486,8 +486,8 @@ class Hook_import_html_site
 
         // Set the panels to be blank
         require_code('files');
-        foreach (array('site/', '') as $zone) {
-            $panels = array('panel_left', 'panel_right');
+        foreach (['site/', ''] as $zone) {
+            $panels = ['panel_left', 'panel_right'];
             foreach ($panels as $panel) {
                 $path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . 'pages/comcode_custom/' . filter_naughty(fallback_lang()) . '/' . filter_naughty($panel) . '.txt');
                 cms_file_put_contents_safe($path, '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
@@ -520,7 +520,7 @@ class Hook_import_html_site
         }
 
         // Extra sense for rewriting local URLs in templates to image links and page-links
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('# (src|href)="([^"]*)"#', $file_contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $this_url = $matches[2][$i];
@@ -599,7 +599,7 @@ class Hook_import_html_site
 
         // Find all tag start/end positions (comparison reference points), loading them into the search list, ordered by position
         $up_to = min(strlen($subject), intval(floatval(strlen($to_strip)) * 1.5));
-        $positions = array();
+        $positions = [];
         for (; $i < $up_to; $i++) {
             if ($i != 0) {
                 if ($backwards) {
@@ -621,7 +621,7 @@ class Hook_import_html_site
             }
             $lev = null;
             //$lev = fake_levenshtein($backwards ? substr($subject, -$i) : substr($subject, 0, $i), $to_strip);    For efficiency the next loop has a more intelligent searching algorithm, to narrow down on the peak
-            $positions[] = array($i, $lev);
+            $positions[] = [$i, $lev];
         }
 
         do {

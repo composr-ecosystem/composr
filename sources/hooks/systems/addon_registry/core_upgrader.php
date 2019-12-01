@@ -31,7 +31,7 @@ class Hook_addon_registry_core_upgrader
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_core_upgrader
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_upgrade',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_core_upgrader
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_installation_uninstallation'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_installation_uninstallation'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_upgrader
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/tools/upgrade.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/tools/upgrade.svg',
             'sources/hooks/systems/addon_registry/core_upgrader.php',
@@ -116,6 +116,6 @@ class Hook_addon_registry_core_upgrader
             'data/upgrader2.php',
             'themes/default/images/icons/admin/upgrade.svg',
             'themes/default/images/icons_monochrome/admin/upgrade.svg',
-        );
+        ];
     }
 }

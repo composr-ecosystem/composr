@@ -36,7 +36,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             return SITEMAP_NODE_HANDLED;
         }
 
-        $matches = array();
+        $matches = [];
         if (preg_match('#^([^:]*):([^:]*):([^:]*)$#', $page_link, $matches) != 0) {
             $zone = $matches[1];
             $page = $matches[2];
@@ -49,12 +49,12 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                 if ($details[0] == 'MODULES' || $details[0] == 'MODULES_CUSTOM') {
                     require_all_lang();
 
-                    $functions = extract_module_functions(get_file_base() . '/' . $path, array('get_entry_points', 'get_wrapper_icon'), array(
+                    $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
                         false, // $check_perms
                         $this->get_member($options), // $member_id
                         true, // $support_crosslinks
                         true, // $be_deferential
-                    ));
+                    ]);
                     if ($functions[0] !== null) {
                         $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], get_file_base() . '/' . $path);
 
@@ -94,7 +94,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
      */
     public function get_node($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $row = null, $return_anyway = false)
     {
-        $matches = array();
+        $matches = [];
         preg_match('#^([^:]*):([^:]*)(:([^:]*)(:.*|$))?#', $page_link, $matches);
         $page = $matches[2];
         if (!isset($matches[3])) {
@@ -138,12 +138,12 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             $entry_point = $entry_points['_SEARCH:cms_catalogues:add_catalogue:_' . $content_type];
         } else {
             if ($row === null) {
-                $functions = extract_module_functions(get_file_base() . '/' . $path, array('get_entry_points', 'get_wrapper_icon'), array(
+                $functions = extract_module_functions(get_file_base() . '/' . $path, ['get_entry_points', 'get_wrapper_icon'], [
                     true, // $check_perms
                     $this->get_member($options), // $member_id
                     false, //$support_crosslinks   Must be false so that things known to be cross-linked from elsewhere are not skipped
                     false, //$be_deferential
-                ));
+                ]);
 
                 $entry_points = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], get_file_base() . '/' . $path);
 
@@ -155,7 +155,7 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                     if (isset($entry_points[$orig_page_link])) {
                         $entry_point = $entry_points[$orig_page_link];
                     } else {
-                        $entry_point = array(null, null);
+                        $entry_point = [null, null];
 
                         // Not actually an entry-point, so maybe something else handles it directly?
                         // Technically this would be better code to have in page_grouping.php, but we don't want to do a scan for entry-points that are easy to find.
@@ -196,15 +196,15 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             }
         }
 
-        $struct = array(
+        $struct = [
             'title' => $title,
             'content_type' => 'page',
             'content_id' => $zone,
-            'modifiers' => array(),
+            'modifiers' => [],
             'only_on_page' => '',
             'page_link' => $page_link,
             'url' => null,
-            'extra_meta' => array(
+            'extra_meta' => [
                 'description' => null,
                 'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
                 'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $path) : null,
@@ -217,20 +217,20 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                 'categories' => null,
                 'validated' => null,
                 'db_row' => null,
-            ),
-            'permissions' => array(
-                array(
+            ],
+            'permissions' => [
+                [
                     'type' => 'zone',
                     'zone_name' => $zone,
                     'is_owned_at_this_level' => false,
-                ),
-                array(
+                ],
+                [
                     'type' => 'page',
                     'zone_name' => $zone,
                     'page_name' => $page,
                     'is_owned_at_this_level' => false,
-                ),
-            ),
+                ],
+            ],
             'children' => null,
             'has_possible_children' => false,
 
@@ -239,14 +239,14 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => null,
-        );
+        ];
 
         if (($options & SITEMAP_GEN_LABEL_CONTENT_TYPES) != 0) {
             $struct['title'] = make_string_tempcode(do_lang('ENTRY_POINT') . ': ' . $title->evaluate());
         }
 
         $row_x = $this->_load_row_from_page_groupings(null, $zone, $page, $type, $id);
-        if ($row_x != array()) {
+        if ($row_x != []) {
             if ($_title !== null) {
                 $row_x[0] = null; // We have a better title
             }
@@ -270,11 +270,11 @@ class Hook_sitemap_entry_point extends Hook_sitemap_base
                         $struct['has_possible_children'] = true;
 
                         if (($max_recurse_depth === null) || ($recurse_level < $max_recurse_depth)) {
-                            $children = array();
+                            $children = [];
 
                             $virtual_child_nodes = $ob->get_virtual_nodes($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level + 1, $options, $zone, $meta_gather, true);
                             if ($virtual_child_nodes === null) {
-                                $virtual_child_nodes = array();
+                                $virtual_child_nodes = [];
                             }
                             foreach ($virtual_child_nodes as $child_node) {
                                 if ($callback === null) {

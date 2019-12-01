@@ -85,7 +85,7 @@ function cleanup()
 
     $password = post_param_string('password', null, INPUT_FILTER_NONE);
     if ($password === null) {
-        @exit('<form action="#" method="post"><label>Master password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', array('_GUID' => '57a3cb1a0e4ea819fdc934eb2f123c82', 'NAME' => 'admin/delete3'))->evaluate() . ' Delete programmed data</button></form>');
+        @exit('<form action="#" method="post"><label>Master password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', ['_GUID' => '57a3cb1a0e4ea819fdc934eb2f123c82', 'NAME' => 'admin/delete3'])->evaluate() . ' Delete programmed data</button></form>');
     }
     require_code('crypt_master');
     if (!check_master_password($password)) {
@@ -93,7 +93,7 @@ function cleanup()
     }
 
     /* Customise this. This is the list of delete functions needed */
-    $purge = array(
+    $purge = [
         /*'delete_calendar_event',
         'delete_news_category',
         'delete_news',
@@ -102,7 +102,7 @@ function cleanup()
         'cns_delete_forum_grouping',
         'cns_delete_group',
         'cns_delete_member',*/
-    );
+    ];
 
     $log_cache_wip_cleanup = true;
     $aggressive_cleanup = true;
@@ -114,110 +114,110 @@ function cleanup()
 
     $GLOBALS['SITE_INFO']['no_email_output'] = '1';
 
-    $purgeable = array(
-        array(
+    $purgeable = [
+        [
             'delete_author',
             'authors',
             'authors',
             'author',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_award_type',
             'awards',
             'award_types',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_event_type',
             'calendar2',
             'calendar_types',
             'id',
-            array(db_get_first_id(), db_get_first_id() + 1),
-        ),
+            [db_get_first_id(), db_get_first_id() + 1],
+        ],
 
-        array(
+        [
             'delete_calendar_event',
             'calendar2',
             'calendar_events',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_chatroom',
             'chat2',
             'chat_rooms',
             'room_name',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_download',
             'downloads2',
             'download_downloads',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_download_licence',
             'downloads2',
             'download_licences',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_download_category',
             'downloads2',
             'download_categories',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'delete_usergroup_subscription',
             'ecommerce',
             'f_usergroup_subs',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_flagrant',
             'flagrant',
             'text',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_image',
             'galleries2',
             'images',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_video',
             'galleries2',
             'videos',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_gallery',
             'galleries2',
             'galleries',
             'name',
-            array('root'),
-        ),
+            ['root'],
+        ],
 
         /*array( Probably unwanted
             'delete_menu_item',
@@ -226,62 +226,62 @@ function cleanup()
             'id',
         ),*/
 
-        array(
+        [
             'delete_news_category',
             'news',
             'news_categories',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'delete_news',
             'news',
             'news',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_newsletter',
             'newsletter',
             'newsletters',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'cns_delete_topic',
             'cns_topics_action2',
             'f_topics',
             'id',
-            array(),
-            array('', null, false),
-        ),
+            [],
+            ['', null, false],
+        ],
 
-        array(
+        [
             'cns_delete_forum',
             'cns_forums_action2',
             'f_forums',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'cns_delete_forum_grouping',
             'cns_forums_action2',
             'f_categories',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'cns_delete_post_template',
             'cns_general_action2',
             'f_post_templates',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
         /*array(  Probably not wanted
             'cns_delete_emoticon',
@@ -291,29 +291,29 @@ function cleanup()
             array(),
         ),*/
 
-        array(
+        [
             'cns_delete_welcome_email',
             'cns_general_action2',
             'f_welcome_emails',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'cns_delete_group',
             'cns_groups_action2',
             'f_groups',
             'id',
-            array(db_get_first_id(), db_get_first_id() + 1, db_get_first_id() + 2, db_get_first_id() + 3, db_get_first_id() + 4, db_get_first_id() + 5, db_get_first_id() + 6, db_get_first_id() + 7, db_get_first_id() + 8),
-        ),
+            [db_get_first_id(), db_get_first_id() + 1, db_get_first_id() + 2, db_get_first_id() + 3, db_get_first_id() + 4, db_get_first_id() + 5, db_get_first_id() + 6, db_get_first_id() + 7, db_get_first_id() + 8],
+        ],
 
-        array(
+        [
             'cns_delete_member',
             'cns_members_action2',
             'f_members',
             'id',
-            array(db_get_first_id(), db_get_first_id() + 1),
-        ),
+            [db_get_first_id(), db_get_first_id() + 1],
+        ],
 
         /*array(  Probably not wanted
             'cns_delete_custom_field',
@@ -323,69 +323,69 @@ function cleanup()
             array(),
         ),*/
 
-        array(
+        [
             'cns_delete_warning',
             'cns_moderation_action2',
             'f_warnings',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'cns_delete_multi_moderation',
             'cns_moderation_action2',
             'f_multi_moderations',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'delete_poll',
             'polls',
             'f_polls',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_quiz',
             'quiz',
             'quizzes',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'delete_ticket_type',
             'tickets2',
             'ticket_types',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
-        array(
+        [
             'actual_delete_catalogue',
             'catalogues2',
             'catalogues',
             'c_name',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'actual_delete_catalogue_category',
             'catalogues2',
             'catalogue_categories',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'actual_delete_catalogue_entry',
             'catalogues2',
             'catalogue_entries',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
         /*array(  Probably not wanted
             'actual_delete_zone',
@@ -428,49 +428,49 @@ function cleanup()
             ),
         ),*/
 
-        array(
+        [
             'wiki_delete_post',
             'wiki',
             'wiki_posts',
             'id',
-            array(),
-        ),
+            [],
+        ],
 
-        array(
+        [
             'wiki_delete_page',
             'wiki',
             'wiki_pages',
             'id',
-            array(db_get_first_id()),
-        ),
+            [db_get_first_id()],
+        ],
 
         /*wordfilter - not really wanted */
-    );
+    ];
 
     push_db_scope_check(false);
 
     foreach ($purgeable as $p) {
         list($function, $codefile, $table, $id_field, $skip) = $p;
-        $extra_params = array_key_exists(5, $p) ? $p[5] : array();
+        $extra_params = array_key_exists(5, $p) ? $p[5] : [];
         if (in_array($function, $purge)) {
             require_code($codefile);
 
             $start = 0;
             do {
-                $select = is_array($id_field) ? $id_field : array($id_field);
+                $select = is_array($id_field) ? $id_field : [$id_field];
                 if ($function == 'actual_delete_catalogue_category') {
                     $select[] = 'cc_parent_id';
                     $select[] = 'c_name';
                 }
-                $rows = $GLOBALS['SITE_DB']->query_select($table, $select, array(), '', 100, $start);
+                $rows = $GLOBALS['SITE_DB']->query_select($table, $select, [], '', 100, $start);
                 foreach ($rows as $i => $row) {
-                    if (($function == 'actual_delete_catalogue_category') && ($row['cc_parent_id'] === null) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_catalogues', 'c_is_tree', array('c_name' => $row['c_name'])) == 1)) {
+                    if (($function == 'actual_delete_catalogue_category') && ($row['cc_parent_id'] === null) && ($GLOBALS['SITE_DB']->query_select_value('catalogue_catalogues', 'c_is_tree', ['c_name' => $row['c_name']]) == 1)) {
                         unset($rows[$i]);
                         continue;
                     }
 
                     if (($function == 'cns_delete_member') && ($GLOBALS['FORUM_DRIVER']->is_super_admin($row['id']))) {
-                        $GLOBALS['SITE_DB']->query_update('comcode_pages', array('p_submitter' => 2), array('p_submitter' => $row['id']));
+                        $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_submitter' => 2], ['p_submitter' => $row['id']]);
                     }
 
                     if (in_array(is_array($id_field) ? $row : $row[$id_field], $skip)) {
@@ -514,7 +514,7 @@ function cleanup()
 
         $hooks = find_all_hooks('systems', 'disposable_values');
         foreach (array_keys($hooks) as $hook) {
-            $GLOBALS['SITE_DB']->query_delete('values', array('the_name' => $hook), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $hook], '', 1);
         }
         persistent_cache_delete('VALUES');
     }

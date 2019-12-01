@@ -57,7 +57,7 @@ class Hook_sitemap_member extends Hook_sitemap_content
      */
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -84,7 +84,7 @@ class Hook_sitemap_member extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), $consider_validation ? array('m_validated' => 1) : array(), 'ORDER BY m_username', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], $consider_validation ? ['m_validated' => 1] : [], 'ORDER BY m_username', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 if ($row['id'] == db_get_first_id()) {
                     continue;
@@ -126,12 +126,12 @@ class Hook_sitemap_member extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_LOW,
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => null,
-        ) + $partial_struct;
+        ] + $partial_struct;
 
         if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
             if (empty($struct['extra_meta']['image'])) {

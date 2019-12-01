@@ -54,7 +54,7 @@ function permission_product_form($resource_type, $category_id = null)
     $section_hidden = true;
     if ($category_id !== null) {
         $map = _get_permission_product_save_map($resource_type, $category_id);
-        $existing_rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), $map, '', 1);
+        $existing_rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], $map, '', 1);
         if (array_key_exists(0, $existing_rows)) {
             $existing_row = $existing_rows[0];
 
@@ -69,7 +69,7 @@ function permission_product_form($resource_type, $category_id = null)
 
     $fields = new Tempcode();
 
-    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '096274e977e4cd99ef20eb4b1c2174e3', 'TITLE' => do_lang_tempcode('SELL_CATEGORY_ACCESS'), 'HELP' => do_lang_tempcode('DESCRIPTION_SELL_CATEGORY_ACCESS'), 'SECTION_HIDDEN' => $section_hidden)));
+    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '096274e977e4cd99ef20eb4b1c2174e3', 'TITLE' => do_lang_tempcode('SELL_CATEGORY_ACCESS'), 'HELP' => do_lang_tempcode('DESCRIPTION_SELL_CATEGORY_ACCESS'), 'SECTION_HIDDEN' => $section_hidden]));
 
     $fields->attach(form_input_float(do_lang_tempcode('PRICE'), do_lang_tempcode('DESCRIPTION_PRICE'), 'permission_product__price', $price, false));
     $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'permission_product__tax_code', $tax_code, false));
@@ -93,7 +93,7 @@ function _get_permission_product_save_map($resource_type, $category_id)
     require_code('content');
     $module = convert_composr_type_codes('content_type', $resource_type, 'module');
 
-    return array(
+    return [
         'p_enabled' => 1,
         'p_type' => 'member_category_access',
         'p_privilege' => '',
@@ -101,7 +101,7 @@ function _get_permission_product_save_map($resource_type, $category_id)
         'p_page' => '',
         'p_module' => $module,
         'p_category' => $category_id,
-    );
+    ];
 }
 
 /**
@@ -135,7 +135,7 @@ function permission_product_save($resource_type, $old_category_id, $new_category
     $map_old = _get_permission_product_save_map($resource_type, $old_category_id);
     $map_new = _get_permission_product_save_map($resource_type, $new_category_id);
 
-    $existing_rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), $map_old, '', 1);
+    $existing_rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], $map_old, '', 1);
     if (array_key_exists(0, $existing_rows)) {
         $existing_row = $existing_rows[0];
         $id = $existing_row['id'];
@@ -204,12 +204,12 @@ function permission_product_save($resource_type, $old_category_id, $new_category
     switch ($operation) {
         case 'add':
             $map = $map_new;
-            $map += array(
+            $map += [
                 'p_price' => $price,
                 'p_tax_code' => $tax_code,
                 'p_price_points' => $price_points,
                 'p_hours' => $hours,
-            );
+            ];
             $map += insert_lang('p_title', $title, 2);
             $map += insert_lang_comcode('p_description', $description, 2);
             $map += insert_lang('p_mail_subject', $mail_subject, 2);
@@ -219,15 +219,15 @@ function permission_product_save($resource_type, $old_category_id, $new_category
 
         case 'edit':
             $map = $map_new;
-            $map += array(
+            $map += [
                 'p_price' => $price,
                 'p_tax_code' => $tax_code,
                 'p_price_points' => $price_points,
                 'p_hours' => $hours,
-            );
+            ];
             $map += lang_remap('p_title', $existing_row['p_title'], $title);
             $map += lang_remap_comcode('p_description', $existing_row['p_description'], $description);
-            $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', $map, array('id' => $id), '', 1);
+            $GLOBALS['SITE_DB']->query_update('ecom_prods_permissions', $map, ['id' => $id], '', 1);
             break;
 
         case 'delete':
@@ -235,7 +235,7 @@ function permission_product_save($resource_type, $old_category_id, $new_category
             delete_lang($existing_row['p_description']);
             delete_lang($existing_row['p_mail_subject']);
             delete_lang($existing_row['p_mail_body']);
-            $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', array('id' => $id), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', ['id' => $id], '', 1);
             break;
     }
 }
@@ -248,7 +248,7 @@ function permission_product_save($resource_type, $old_category_id, $new_category
  */
 function delete_prod_permission($module, $category_id)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', array('*'), array('p_module' => $module, 'p_category' => $category_id));
+    $rows = $GLOBALS['SITE_DB']->query_select('ecom_prods_permissions', ['*'], ['p_module' => $module, 'p_category' => $category_id]);
 
     foreach ($rows as $row) {
         $_title = $row['p_title'];
@@ -262,5 +262,5 @@ function delete_prod_permission($module, $category_id)
         delete_lang($_mail_body);
     }
 
-    $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', array('p_module' => $module, 'p_category' => $category_id));
+    $GLOBALS['SITE_DB']->query_delete('ecom_prods_permissions', ['p_module' => $module, 'p_category' => $category_id]);
 }

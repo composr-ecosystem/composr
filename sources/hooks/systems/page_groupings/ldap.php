@@ -33,11 +33,11 @@ class Hook_page_groupings_ldap
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('ldap')) {
-            return array();
+            return [];
         }
 
-        return array(
-            (get_forum_type() != 'cns') ? null : array('security', 'menu/adminzone/security/ldap', array('admin_cns_ldap', array('type' => 'browse'), get_module_zone('admin_cns_ldap')), do_lang_tempcode('cns:LDAP'), 'ldap:DOC_LDAP'),
-        );
+        return [
+            (get_forum_type() != 'cns') ? null : ['security', 'menu/adminzone/security/ldap', ['admin_cns_ldap', ['type' => 'browse'], get_module_zone('admin_cns_ldap')], do_lang_tempcode('cns:LDAP'), 'ldap:DOC_LDAP'],
+        ];
     }
 }

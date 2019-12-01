@@ -84,7 +84,7 @@ abstract class EmailIntegration
             $from_email = $sender_email;
         }
 
-        dispatch_mail($subject, $message, array($to_email), $to_displayname, $from_email, $from_displayname, array('mail_template' => 'MAIL_RAW', 'sender_email' => $sender_email, 'plain_subject' => true, 'no_cc' => true));
+        dispatch_mail($subject, $message, [$to_email], $to_displayname, $from_email, $from_displayname, ['mail_template' => 'MAIL_RAW', 'sender_email' => $sender_email, 'plain_subject' => true, 'no_cc' => true]);
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class EmailIntegration
      */
     protected function get_sender_email()
     {
-        foreach (array('website_email', 'staff_address') as $address) {
+        foreach (['website_email', 'staff_address'] as $address) {
             if (get_option($address) != '') {
                 return get_option($address);
             }
@@ -166,7 +166,7 @@ abstract class EmailIntegration
             $reprocess = (get_param_integer('test', 0) == 1 && $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()));
             $list = imap_search($mbox, $reprocess ? '' : 'UNSEEN');
             if ($list === false) {
-                $list = array();
+                $list = [];
             }
             foreach ($list as $l) {
                 $header = imap_headerinfo($mbox, $l);
@@ -180,13 +180,13 @@ abstract class EmailIntegration
 
                 // Find overall character set
                 $input_charset = 'ISO-8859-1';
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^Content-Type:.*;\s*charset=([\s\w\-]+)$#im', $full_header, $matches) != 0) {
                     $input_charset = trim($matches[1], " \t\"'");
                 }
 
                 // Find body parts and attachments
-                $attachments = array();
+                $attachments = [];
                 $attachment_size_total = 0;
                 $_body_text = $this->_imap_get_part($mbox, $l, 'TEXT/PLAIN', $attachments, $attachment_size_total, $input_charset);
                 $_body_html = $this->_imap_get_part($mbox, $l, 'TEXT/HTML', $attachments, $attachment_size_total, $input_charset);
@@ -202,7 +202,7 @@ abstract class EmailIntegration
                 // Find from details (preferencing Reply-To)
                 $from_email = null;
                 $from_name = null;
-                foreach (array($header->reply_toaddress, $header->fromaddress) as $from_header) {
+                foreach ([$header->reply_toaddress, $header->fromaddress] as $from_header) {
                     if (!empty($from_header)) {
                         $test = $this->get_email_address_from_header($from_header);
                         if ($test !== null) {
@@ -245,7 +245,7 @@ abstract class EmailIntegration
                 $cutoff = time() - 60 * 60 * 24 * intval($mail_delete_after);
                 $list = imap_search($mbox, 'SEEN BEFORE "' . date('j-M-Y', $cutoff) . '"');
                 if ($list === false) {
-                    $list = array();
+                    $list = [];
                 }
                 foreach ($list as $l) {
                     if ((!empty($header->udate)) && ($header->udate < $cutoff)) {
@@ -283,11 +283,11 @@ abstract class EmailIntegration
     {
         $email_bounce_to = $from_email;
 
-        $_body_types = array(&$_body_text, &$_body_html);
+        $_body_types = [&$_body_text, &$_body_html];
 
         // De-forward
         $forwarded = false;
-        foreach (array('fwd: ', 'fw: ') as $prefix) {
+        foreach (['fwd: ', 'fw: '] as $prefix) {
             if (substr(strtolower($subject), 0, strlen($prefix)) == $prefix) {
                 $subject = substr($subject, strlen($prefix));
                 $forwarded = true;
@@ -302,8 +302,8 @@ abstract class EmailIntegration
         }
         if ($forwarded) {
             if ($this->find_member_id($from_email) === null) {
-                foreach (array('Reply-To', 'From') as $from_header_type) {
-                    $matches = array();
+                foreach (['Reply-To', 'From'] as $from_header_type) {
+                    $matches = [];
 
                     foreach ($_body_types as &$_body_type) {
                         if (preg_match('#' . $from_header_type . ':(.*)#is', $_body_type, $matches) != 0) {
@@ -357,7 +357,7 @@ abstract class EmailIntegration
      */
     protected function _imap_get_mime_type($structure)
     {
-        $primary_mime_type = array('TEXT', 'MULTIPART', 'MESSAGE', 'APPLICATION', 'AUDIO', 'IMAGE', 'VIDEO', 'OTHER');
+        $primary_mime_type = ['TEXT', 'MULTIPART', 'MESSAGE', 'APPLICATION', 'AUDIO', 'IMAGE', 'VIDEO', 'OTHER'];
         if ($structure->subtype) {
             return $primary_mime_type[intval($structure->type)] . '/' . strtoupper($structure->subtype);
         }
@@ -408,7 +408,7 @@ abstract class EmailIntegration
 
         $part_mime_type = $this->_imap_get_mime_type($structure);
 
-        $always_skipped = array('TEXT/X-VCARD', 'APPLICATION/PGP-SIGNATURE');
+        $always_skipped = ['TEXT/X-VCARD', 'APPLICATION/PGP-SIGNATURE'];
 
         // Anything 'attachment' will be considered as 'application/octet-stream' so long as it is not plain text or HTML
         if ($needed_mime_type == 'APPLICATION/OCTET-STREAM') {
@@ -419,7 +419,7 @@ abstract class EmailIntegration
                     ($disposition == 'ATTACHMENT') ||
                     (
                         ($structure->type != 2) &&
-                        (!in_array($part_mime_type, array_merge($always_skipped, array('TEXT/PLAIN', 'TEXT/HTML'))))
+                        (!in_array($part_mime_type, array_merge($always_skipped, ['TEXT/PLAIN', 'TEXT/HTML'])))
                     )
                 )
             ) {
@@ -430,13 +430,13 @@ abstract class EmailIntegration
                 // Check it's a reasonable file-size
                 if ($attachment_size_total + $structure->bytes >= 1024 * 1024 * 20/*20MB is quite enough, thank you*/) {
                     $new_filename = 'errors-' . $filename . '.txt';
-                    $attachments[$new_filename] = array(
+                    $attachments[$new_filename] = [
                         'error' => '20MB filesize limit exceeded',
                         'data' => null,
                         'cid' => isset($structure->id) ? $structure->id : null,
                         'cid_referenced' => false,
                         'composr_id' => null,
-                    );
+                    ];
                     return null;
                 }
 
@@ -448,13 +448,13 @@ abstract class EmailIntegration
                     $data = imap_qprint($data);
                 }
 
-                $attachments[$filename] = array(
+                $attachments[$filename] = [
                     'error' => null,
                     'data' => $data,
                     'cid' => isset($structure->id) ? trim($structure->id, '<>') : null,
                     'cid_referenced' => false,
                     'composr_id' => null,
-                );
+                ];
 
                 $attachment_size_total += $structure->bytes;
             } else {
@@ -494,12 +494,12 @@ abstract class EmailIntegration
 
             // Handle character set
             $full_header = imap_fetchmime($stream, $msg_number, $part_number);
-            $matches = array();
+            $matches = [];
             if (preg_match('#^Content-(Type|Disposition):.*;\s*charset=([\s\w\-]+)$#im', $full_header, $matches) != 0) {
                 $input_charset = trim($matches[2], " \t\"'");
             }
             if ($structure->ifparameters == 1) {
-                $parameters = array();
+                $parameters = [];
                 foreach ($structure->parameters as $param) {
                     $parameters[strtolower($param->attribute)] = $param->value;
                 }
@@ -552,7 +552,7 @@ abstract class EmailIntegration
                 $i = 1;
                 $_username = preg_replace('#@.*$#', '', $from_email);
                 $username = $_username;
-                while ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_username' => $username)) !== null) {
+                while ($GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username]) !== null) {
                     $username = $_username . strval($i);
                     $i++;
 
@@ -581,8 +581,8 @@ abstract class EmailIntegration
                 }
 
                 // Send creation e-mail
-                $system_subject = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_SUBJECT', $subject, $from_email, array(get_site_name(), $username), get_site_default_lang());
-                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, array($subject, get_site_name(), $username, $password), get_site_default_lang());
+                $system_subject = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_SUBJECT', $subject, $from_email, [get_site_name(), $username], get_site_default_lang());
+                $system_message = do_lang('MAIL_INTEGRATION_AUTOMATIC_ACCOUNT_MAIL', strip_comcode($body), $from_email, [$subject, get_site_name(), $username, $password], get_site_default_lang());
                 $this->send_system_email($system_subject, $system_message, $from_email, $email_bounce_to);
 
                 break;
@@ -640,7 +640,7 @@ abstract class EmailIntegration
 
         $max_download_size = intval(get_option('max_download_size')) * 1024;
 
-        $errors = array();
+        $errors = [];
 
         $num_attachments_handed = 0;
         foreach ($attachments as $filename => &$attachment) {
@@ -674,12 +674,12 @@ abstract class EmailIntegration
             list($new_path, $new_url, $new_filename) = find_unique_path('uploads/attachments', $new_filename);
             cms_file_put_contents_safe($new_path, $filedata, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-            $urls = array(cms_rawurlrecode('uploads/attachments/' . rawurlencode($new_filename)), '');
+            $urls = [cms_rawurlrecode('uploads/attachments/' . rawurlencode($new_filename)), ''];
 
             require_code('upload_syndication');
             $urls[0] = handle_upload_syndication('', '', '', $urls[0], $filename, true);
 
-            $attachment_id = $GLOBALS['SITE_DB']->query_insert('attachments', array(
+            $attachment_id = $GLOBALS['SITE_DB']->query_insert('attachments', [
                 'a_member_id' => $member_id,
                 'a_file_size' => strlen($filedata),
                 'a_url' => $urls[0],
@@ -689,8 +689,8 @@ abstract class EmailIntegration
                 'a_last_downloaded_time' => time(),
                 'a_description' => '',
                 'a_add_time' => time(),
-            ), true);
-            $GLOBALS['SITE_DB']->query_insert('attachment_refs', array('r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_id));
+            ], true);
+            $GLOBALS['SITE_DB']->query_insert('attachment_refs', ['r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_id]);
 
             $num_attachments_handed++;
 
@@ -718,7 +718,7 @@ abstract class EmailIntegration
      */
     protected function substitute_cid_attachments(&$attachments, &$body)
     {
-        $matches = array();
+        $matches = [];
 
         $num_matches = preg_match_all('#\[cid:([^\[\]]+)\]#', $body, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
@@ -767,16 +767,16 @@ abstract class EmailIntegration
         $body = preg_replace('#</body>.*#is', '', $body);
 
         // Cleanup unwanted tags
-        foreach (array('base', 'link', 'meta') as $tag) {
+        foreach (['base', 'link', 'meta'] as $tag) {
             $body = preg_replace('#</?' . $tag . '(\s[^<>]*)?' . '>#i', '', $body);
         }
-        foreach (array('title', 'style', 'script') as $tag) {
+        foreach (['title', 'style', 'script'] as $tag) {
             $body = preg_replace('#<' . $tag . '(\s[^<>]*)?' . '>.*</' . $tag . '>#Uis', '', $body);
         }
 
         // Cleanup some junk
-        $body = str_replace(array('<<', '>>'), array('&lt;<', '>&gt;'), $body);
-        $body = str_replace(array(' class="Apple-interchange-newline"', ' style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px;"', ' apple-width="yes" apple-height="yes"', '<br clear="all">', ' class="gmail_extra"', ' class="gmail_quote"', ' style="word-wrap:break-word"', ' style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; "'), array('', '', '', '<br />', '', '', '', ''), $body);
+        $body = str_replace(['<<', '>>'], ['&lt;<', '>&gt;'], $body);
+        $body = str_replace([' class="Apple-interchange-newline"', ' style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px;"', ' apple-width="yes" apple-height="yes"', '<br clear="all">', ' class="gmail_extra"', ' class="gmail_quote"', ' style="word-wrap:break-word"', ' style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; "'], ['', '', '', '<br />', '', '', '', ''], $body);
         $body = preg_replace('# style="text-indent:0px.*"#U', '', $body); // Apple Mail long list of styles
         $body = preg_replace('#<div(\s[^<>]*)style="[^"<>]{50,}"#Us', '<div$1', $body); // Apple Mail long list of styles
         $body = str_replace(' class=""', '', $body);
@@ -844,7 +844,7 @@ abstract class EmailIntegration
     {
         $body = unixify_line_format($body);
 
-        $body = preg_replace_callback('#(\n> .*)+#', array($this, '_convert_text_quote_to_comcode'), $body);
+        $body = preg_replace_callback('#(\n> .*)+#', [$this, '_convert_text_quote_to_comcode'], $body);
 
         // Tidy up the body
         $this->strip_system_code($body, self::STRIP_TEXT);
@@ -900,7 +900,7 @@ abstract class EmailIntegration
             return true;
         }
 
-        $junk_strings = array(
+        $junk_strings = [
             'Delivery Status Notification',
             'Delivery Notification',
             'Returned mail',
@@ -910,7 +910,7 @@ abstract class EmailIntegration
             'Delivery Failure',
             'Nondeliverable',
             'Undeliverable',
-        );
+        ];
         foreach ($junk_strings as $j) {
             if (
                 (stripos($subject, $j) !== false) ||
@@ -938,7 +938,7 @@ abstract class EmailIntegration
             return null;
         }
 
-        return array($addresses[0]->mailbox . '@' . $addresses[0]->host, isset($addresses[0]->personal) ? $addresses[0]->personal : 'localhost');
+        return [$addresses[0]->mailbox . '@' . $addresses[0]->host, isset($addresses[0]->personal) ? $addresses[0]->personal : 'localhost'];
     }
 
     /**
@@ -964,8 +964,8 @@ abstract class EmailIntegration
      */
     protected function send_bounce_email__attachment_errors($subject, $body, $email, $email_bounce_to, $errors, $url)
     {
-        $extended_subject = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_SUBJECT', $subject, $email, array(get_site_name()), get_site_default_lang());
-        $extended_message = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_MAIL', strip_comcode($body), $email, array($subject, get_site_name(), implode("\n", $errors), $url), get_site_default_lang());
+        $extended_subject = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_SUBJECT', $subject, $email, [get_site_name()], get_site_default_lang());
+        $extended_message = do_lang('MAIL_INTEGRATION_ATTACHMENT_ERRORS_MAIL', strip_comcode($body), $email, [$subject, get_site_name(), implode("\n", $errors), $url], get_site_default_lang());
 
         $this->send_system_email($extended_subject, $extended_message, $email, $email_bounce_to);
     }
@@ -994,6 +994,6 @@ abstract class EmailIntegration
         $from_email = $this->get_system_email();
 
         require_code('mail');
-        dispatch_mail($subject, $body, array($email_bounce_to), null, $from_email, '', array('priority' => 2));
+        dispatch_mail($subject, $body, [$email_bounce_to], null, $from_email, '', ['priority' => 2]);
     }
 }

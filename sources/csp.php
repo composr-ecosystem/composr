@@ -98,14 +98,14 @@ function init__csp()
     $CSP_ENABLED = false;
 
     if (!defined('CSP_PRETTY_STRICT')) {
-        define('CSP_PRETTY_STRICT', serialize(array(
+        define('CSP_PRETTY_STRICT', serialize([
             'csp_enabled' => '1',
             'csp_whitelisted_plugins' => '',
 
             'csp_allow_inline_js' => '0',
-        )));
+        ]));
 
-        define('CSP_VERY_STRICT', serialize(array(
+        define('CSP_VERY_STRICT', serialize([
             'csp_enabled' => '1',
             'csp_exceptions' => '',
             'csp_whitelisted_plugins' => '',
@@ -118,7 +118,7 @@ function init__csp()
 
             // Not usually configurable but may be forced
             'csp_allow_inline_js' => '0',
-        )));
+        ]));
     }
 }
 
@@ -140,7 +140,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     }
 
     if ($options === null) { // Full clean state from configuration
-        $options = array(
+        $options = [
             'csp_enabled' => get_option('csp_enabled'),
             'csp_exceptions' => get_option('csp_exceptions'),
             'csp_whitelisted_plugins' => get_option('csp_whitelisted_plugins'),
@@ -152,7 +152,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
             'csp_allow_insecure_resources' => get_option('csp_allow_insecure_resources'),
 
             'csp_allow_inline_js' => '0', // Not used
-        );
+        ];
     } else {
         $options = $options + $previous_state; // Merge new state with previous state
     }
@@ -182,7 +182,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     if (is_string($csp_exceptions) && ($csp_exceptions !== '')) {
         require_code('global3');
         $current_page_name = get_page_name();
-        $matches = array();
+        $matches = [];
         if (preg_match('/' . $csp_exceptions . '/', $current_page_name, $matches)) {
             $csp_enabled = false;
         }
@@ -198,7 +198,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
 
     // Now build the CSP header clauses for sources...
 
-    $clauses = array();
+    $clauses = [];
 
     // default-src
     $_sources_list = _csp_extract_sources_list(2);
@@ -229,7 +229,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     // frame-src
     $_sources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_descendants);
     if ($_sources_list === null) {
-        $_sources_list = array();
+        $_sources_list = [];
         $_sources_list[] = '*';
     }
     $_sources_list[] = "'nonce-{$CSP_NONCE}'"; // In case W3C start supporting it for iframe elements
@@ -244,28 +244,28 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     $clauses[] = 'connect-src ' . implode(' ', $_sources_list);
 
     // font-src (unlimited)
-    $_sources_list = array();
+    $_sources_list = [];
     $_sources_list[] = '*';
     $clauses[] = 'font-src ' . implode(' ', $_sources_list);
 
     // object-src (unlimited)
-    $_sources_list = array();
+    $_sources_list = [];
     $_sources_list[] = ($csp_whitelisted_plugins !== 'none') ? '*' : "'none'";
     $clauses[] = 'object-src ' . implode(' ', $_sources_list);
 
     // img-src (unlimited)
-    $_sources_list = array();
+    $_sources_list = [];
     $_sources_list[] = '*';
     $_sources_list[] = 'data:';
     $clauses[] = 'img-src ' . implode(' ', $_sources_list);
 
     // media-src (unlimited)
-    $_sources_list = array();
+    $_sources_list = [];
     $_sources_list[] = '*';
     $clauses[] = 'media-src ' . implode(' ', $_sources_list);
 
     // manifest-src (disabled)
-    $_sources_list = array();
+    $_sources_list = [];
     $_sources_list[] = "'none'";
     $clauses[] = 'manifest-src ' . implode(' ', $_sources_list);
 
@@ -286,7 +286,7 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     // frame-ancestors
     $_sources_list = _csp_extract_sources_list(2, $csp_allowed_iframe_ancestors);
     if ($_sources_list === null) {
-        $_sources_list = array();
+        $_sources_list = [];
         $_sources_list[] = '*';
     }
     $clauses[] = 'frame-ancestors ' . implode(' ', $_sources_list);
@@ -346,7 +346,7 @@ function _csp_extract_sources_list($level, $sources_csp = '', $include_self = tr
         return null;
     }
 
-    $sources_list = array();
+    $sources_list = [];
 
     if ($include_self) {
         $sources_list[] = "'self'";
@@ -354,13 +354,13 @@ function _csp_extract_sources_list($level, $sources_csp = '', $include_self = tr
 
     require_code('input_filter');
     $_trusted_sites = get_trusted_sites($level, $include_self);
-    if ($_trusted_sites == array()) {
+    if ($_trusted_sites == []) {
         foreach ($_trusted_sites as $partner) {
             $sources_list[] = $partner;
         }
     }
 
-    $sources = ($sources_csp == '') ? array() : preg_split('#[, \n]#', $sources_csp);
+    $sources = ($sources_csp == '') ? [] : preg_split('#[, \n]#', $sources_csp);
     foreach ($sources as $_source) {
         $source = _csp_clean_source($_source);
         if ($source !== null) {
@@ -430,7 +430,7 @@ function _csp_clean_source($_source)
  */
 function set_no_clickjacking_csp()
 {
-    load_csp(array('csp_allowed_iframe_ancestors' => '')); // Overrides possible '*' setting
+    load_csp(['csp_allowed_iframe_ancestors' => '']); // Overrides possible '*' setting
 }
 
 /**

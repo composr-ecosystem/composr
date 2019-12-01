@@ -30,7 +30,7 @@ class Hook_config_enable_seo_fields
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_SEO_FIELDS',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_enable_seo_fields
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

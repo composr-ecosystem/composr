@@ -31,20 +31,20 @@ class Hook_actionlog_actionlog extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('actionlog')) {
-            return array();
+            return [];
         }
 
         require_lang('actionlog');
 
-        return array(
-            'DELETE_REVISION' => array(
+        return [
+            'DELETE_REVISION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                ),
-            ),
-        );
+                'followup_page_links' => [
+                ],
+            ],
+        ];
     }
 }

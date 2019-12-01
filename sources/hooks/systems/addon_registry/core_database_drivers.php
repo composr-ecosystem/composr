@@ -31,7 +31,7 @@ class Hook_addon_registry_core_database_drivers
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,14 +61,14 @@ class Hook_addon_registry_core_database_drivers
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_install',
             'tut_install_linux',
             'tut_webhosting',
             'tut_sqlserver',
             'tut_postgresql',
             'tut_sql',
-        );
+        ];
     }
 
     /**
@@ -78,11 +78,11 @@ class Hook_addon_registry_core_database_drivers
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -102,7 +102,7 @@ class Hook_addon_registry_core_database_drivers
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_database_drivers.php',
             'sources/database/shared/.htaccess',
             'sources/database/shared/index.html',
@@ -121,6 +121,6 @@ class Hook_addon_registry_core_database_drivers
             'sources/database/sqlserver.php',
             'sources/database/sqlserver_odbc.php',
             'sources/hooks/systems/cron/oracle.php',
-        );
+        ];
     }
 }

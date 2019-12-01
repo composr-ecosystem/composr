@@ -28,13 +28,13 @@ class Hook_page_groupings_theme_debug
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('theme_debug')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('site_meta', 'admin/tool', array('theme_debug', array(), get_page_zone('theme_debug')), make_string_tempcode('Theme testing / fixup tools')),
-            array('style', 'admin/tool', array('fix_partial_themewizard_css', array(), get_page_zone('fix_partial_themewizard_css')), make_string_tempcode('Fixup themewizard themes')),
-            array('style', 'admin/tool', array('css_check', array(), get_page_zone('css_check')), make_string_tempcode('Look for unused CSS')),
-        );
+        return [
+            ['site_meta', 'admin/tool', ['theme_debug', [], get_page_zone('theme_debug')], make_string_tempcode('Theme testing / fixup tools')],
+            ['style', 'admin/tool', ['fix_partial_themewizard_css', [], get_page_zone('fix_partial_themewizard_css')], make_string_tempcode('Fixup themewizard themes')],
+            ['style', 'admin/tool', ['css_check', [], get_page_zone('css_check')], make_string_tempcode('Look for unused CSS')],
+        ];
     }
 }

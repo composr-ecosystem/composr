@@ -35,12 +35,12 @@ class css_beta_test_set extends cms_test_case
                 continue;
             }
 
-            $directories = array(
+            $directories = [
                  get_file_base() . '/themes/' . $theme . '/css_custom',
                  get_file_base() . '/themes/' . $theme . '/css',
-            );
+            ];
 
-            $in_beta = array(
+            $in_beta = [
                 'user-select:',
                 'text-size-adjust:',
                 'touch-action:',
@@ -50,23 +50,23 @@ class css_beta_test_set extends cms_test_case
 
                 // For specific properties
                 'display: flex',
-            );
+            ];
             // ^ Also keep in sync with BETA_CSS_PROPERTY.php comment
 
             foreach ($directories as $dir) {
                 $files = get_directory_contents($dir);
                 foreach ($files as $e) {
-                    if (in_array($e, array( // Exceptions
+                    if (in_array($e, [ // Exceptions
                         'confluence.css',
                         'mediaelementplayer.css',
-                    ))) {
+                    ])) {
                         continue;
                     }
 
                     if (substr($e, -4) == '.css') {
                         $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-                        $matches = array();
+                        $matches = [];
                         $found = preg_match_all('#\{\$BETA_CSS_PROPERTY,(.*)\}#i', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
                             $property_line = $matches[1][$i];

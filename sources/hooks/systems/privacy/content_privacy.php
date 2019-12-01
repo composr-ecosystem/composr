@@ -39,35 +39,35 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
 
         require_lang('content_privacy');
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-                array(
+            'positive' => [
+                [
                     'heading' => do_lang('INFORMATION_STORAGE'),
-                    'explanation' => do_lang_tempcode('PRIVACY_SETTINGS_EXPLANATION', build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), array(), false, false, false, 'tab__edit__privacy')),
-                ),
-            ),
+                    'explanation' => do_lang_tempcode('PRIVACY_SETTINGS_EXPLANATION', build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab__edit__privacy')),
+                ],
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'content_privacy__members' => array(
+            'database_records' => [
+                'content_privacy__members' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -85,9 +85,9 @@ class Hook_privacy_content_privacy extends Hook_privacy_base
             case 'content_privacy__members':
                 require_code('content');
                 list($title) = content_get_details($row['content_type'], $row['content_id']);
-                $ret += array(
+                $ret += [
                     'content_title__dereferenced' => $title,
-                );
+                ];
                 break;
         }
 

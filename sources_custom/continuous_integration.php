@@ -30,7 +30,7 @@ function init__continuous_integration()
         define('COMPOSR_GITLAB_PROJECT_ID', '14182874');
 
         $status = cms_version_branch_status();
-        define('CI_BLACKLISTED_TESTS', array(
+        define('CI_BLACKLISTED_TESTS', [
             // Will be added back to run first
             'unit_tests/_cqc__function_sigs',
 
@@ -75,7 +75,7 @@ function init__continuous_integration()
             'unit_tests/ssl',
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_copyright' : null,
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
-        ));
+        ]);
 
         define('CI_COMMIT_QUEUE_PATH', get_custom_file_base() . '/data_custom/ci_queue.json');
     }
@@ -173,10 +173,10 @@ function authenticate_ci_request()
 
 function load_ci_queue()
 {
-    $blank_queue = array(
-        'queue' => array(),
+    $blank_queue = [
+        'queue' => [],
         'lock_timestamp' => null,
-    );
+    ];
 
     if (is_file(CI_COMMIT_QUEUE_PATH)) {
         $commit_queue = @json_decode(cms_file_get_contents_safe(CI_COMMIT_QUEUE_PATH, FILE_READ_LOCK), true);
@@ -194,7 +194,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
     $commit_queue = load_ci_queue();
 
     // Write to queue
-    $queue_item = array('commit_id' => $commit_id, 'verbose' => $verbose, 'dry_run' => $dry_run, 'limit_to' => $limit_to, 'context' => $context);
+    $queue_item = ['commit_id' => $commit_id, 'verbose' => $verbose, 'dry_run' => $dry_run, 'limit_to' => $limit_to, 'context' => $context];
     $commit_queue['queue'][] = $queue_item;
     cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
 
@@ -282,8 +282,8 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
     chdir(get_file_base());
 
-    $successes = array();
-    $fails = array();
+    $successes = [];
+    $fails = [];
 
     $_before = microtime(true);
 
@@ -295,7 +295,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
         $time = $after - $before;
 
         $success = (strpos($result, 'Failures: 0, Exceptions: 0') !== false);
-        $details = array('result' => $result, 'time' => $time, 'stub' => ' [time = ' . float_format($time) . ' seconds]');
+        $details = ['result' => $result, 'time' => $time, 'stub' => ' [time = ' . float_format($time) . ' seconds]'];
         if ($success) {
             $successes[$test] = $details;
         } else {
@@ -355,8 +355,8 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
 function find_all_applicable_tests($limit_to = null)
 {
-    $_tests = array();
-    $tests = get_directory_contents(get_file_base() . '/_tests/tests', '', 0, true, true, array('php'));
+    $_tests = [];
+    $tests = get_directory_contents(get_file_base() . '/_tests/tests', '', 0, true, true, ['php']);
     foreach ($tests as $test) {
         $_test = preg_replace('#\.php$#', '', $test);
         if ((!@in_array($_test, CI_BLACKLISTED_TESTS)) && (($limit_to === null) || (in_array($_test, $limit_to)))) {
@@ -364,7 +364,7 @@ function find_all_applicable_tests($limit_to = null)
         }
     }
     sort($_tests);
-    $_tests = array_merge(array('unit_tests/_cqc__function_sigs')/*Must run first*/, $_tests);
+    $_tests = array_merge(['unit_tests/_cqc__function_sigs']/*Must run first*/, $_tests);
     return $_tests;
 }
 
@@ -380,7 +380,7 @@ function post_results_to_commit($commit_id, $note)
     }
     $token = $SITE_INFO['gitlab_personal_token'];
 
-    $result = cms_http_request($url, array('timeout' => 100.0, 'trigger_errors' => false, 'extra_headers' => array('Private-Token' => $token), 'post_params' => array('note' => $note)));
+    $result = cms_http_request($url, ['timeout' => 100.0, 'trigger_errors' => false, 'extra_headers' => ['Private-Token' => $token], 'post_params' => ['note' => $note]]);
     if (substr($result->message, 0, 1) != '2') {
         throw new Exception($result->data);
     }

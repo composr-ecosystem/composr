@@ -69,7 +69,7 @@ class Hook_fields_codename
         if (($default !== null) && (strtoupper($default) === 'RANDOM') && ($field !== null) && ($field['id'] !== null)) { // We need to calculate a default even if not required, because the defaults are programmatic
             $default = $this->get_field_random($field['id'], $default);
         }
-        return array('short_text', $default, 'short');
+        return ['short_text', $default, 'short'];
     }
 
     /**
@@ -113,7 +113,7 @@ class Hook_fields_codename
         }
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_codename($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, 40, array(), null, $autocomplete);
+        return form_input_codename($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, 40, [], null, $autocomplete);
     }
 
     /**
@@ -179,7 +179,7 @@ class Hook_fields_codename
             if (!addon_installed('catalogues')) {
                 break;
             }
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'ce_id', array('cv_value' => $value, 'cf_id' => $field_id));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'ce_id', ['cv_value' => $value, 'cf_id' => $field_id]);
         } while ($test !== null);
 
         return $value;

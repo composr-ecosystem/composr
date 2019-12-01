@@ -143,7 +143,7 @@ class tutorials_all_linked_test_set extends cms_test_case
                 }
 
                 if ($see_also_pos !== false) {
-                    $matches = array();
+                    $matches = [];
                     if (get_param_integer('full', 0) == 1) {
                         $regexp = '#^\[page="_SEARCH:(\w+)"\](.*)\[/page\]#';
                     } else {
@@ -157,7 +157,7 @@ class tutorials_all_linked_test_set extends cms_test_case
 
                         $c2 = cms_file_get_contents_safe($path . '/' . $page_name . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                         $regexp = '\[title sub="[^"]*"\]([^:]*: )?([^\[\]]*)\[/title\]';
-                        $matches2 = array();
+                        $matches2 = [];
                         if (preg_match('#' . $regexp . '#', $c2, $matches2) != 0) {
                             $tutorial_title = $matches2[2];
                             $correct = ($tutorial_title == $title);

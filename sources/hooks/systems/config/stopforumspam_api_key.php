@@ -30,7 +30,7 @@ class Hook_config_stopforumspam_api_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STOPFORUMSPAM_API_KEY',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -46,7 +46,7 @@ class Hook_config_stopforumspam_api_key
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'stop_forum_spam',
-        );
+        ];
     }
 
     /**

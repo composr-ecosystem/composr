@@ -30,7 +30,7 @@ class Hook_config_recaptcha_server_key
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'RECAPTCHA_SERVER_KEY',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_recaptcha_server_key
             'public' => false,
 
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

@@ -29,7 +29,7 @@
  */
 function do_next_manager_hooked($title, $text, $type, $main_title = null)
 {
-    $links = array();
+    $links = [];
 
     if ($main_title === null) {
         $main_title = $title;
@@ -51,7 +51,7 @@ function do_next_manager_hooked($title, $text, $type, $main_title = null)
                     if (!isset($link[2][1]['type'])) {
                         continue;
                     }
-                    if (in_array($link[2][1]['type'], array('site_meta', 'pages', 'social', 'rich_content'))) {
+                    if (in_array($link[2][1]['type'], ['site_meta', 'pages', 'social', 'rich_content'])) {
                         continue;
                     }
                 }
@@ -117,7 +117,7 @@ function has_simplified_donext()
  * @param  ?string $category_content_type Category content type (null: unknown)
  * @return Tempcode The do next manager
  */
-function do_next_manager($title, $text, $main = array(), $main_title = null, $url_add_one = null, $url_edit_this = null, $url_edit_one = null, $url_view_this = null, $url_view_archive = null, $url_add_one_category = null, $url_edit_one_category = null, $url_edit_this_category = null, $url_view_this_category = null, $entry_extras = array(), $category_extras = array(), $additional_extras = array(), $additional_title = null, $intro = null, $entries_title = null, $categories_title = null, $entry_content_type = null, $category_content_type = null)
+function do_next_manager($title, $text, $main = [], $main_title = null, $url_add_one = null, $url_edit_this = null, $url_edit_one = null, $url_view_this = null, $url_view_archive = null, $url_add_one_category = null, $url_edit_one_category = null, $url_edit_this_category = null, $url_view_this_category = null, $entry_extras = [], $category_extras = [], $additional_extras = [], $additional_title = null, $intro = null, $entries_title = null, $categories_title = null, $entry_content_type = null, $category_content_type = null)
 {
     require_code('site_adminzone');
     adminzone_common_pages_code();
@@ -147,14 +147,14 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
     $current_page_type = get_param_string('type', '');
 
     // Entry stuff
-    $entry_passed = array(
+    $entry_passed = [
         'admin/add',
         'admin/edit_this',
         'admin/edit',
         'admin/view_this',
         'admin/view_archive',
-    );
-    $entry_passed_2 = array();
+    ];
+    $entry_passed_2 = [];
     foreach ($entry_passed as $option) {
         $x = null;
         $auto_add = null;
@@ -164,7 +164,7 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
                 if (($current_page_type == '_add') || ($current_page_type == '_add_entry')) {
                     if (get_param_integer('auto__add_one', 0) == 1) {
                         $x[1]['auto__add_one'] = '1';
-                        $_url_redirect = build_url(array_merge(array('page' => $x[0]), $x[1]), $x[2]);
+                        $_url_redirect = build_url(array_merge(['page' => $x[0]], $x[1]), $x[2]);
                         return redirect_screen($title, $_url_redirect, $text);
                     }
                     $auto_add = 'auto__add_one';
@@ -180,7 +180,7 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
                 $x = $url_view_this;
                 if ($x !== null) {
                     if ($simplified) {
-                        $_url_redirect = build_url(array_merge(array('page' => $x[0]), $x[1]), $x[2]);
+                        $_url_redirect = build_url(array_merge(['page' => $x[0]], $x[1]), $x[2]);
                         return redirect_screen($title, $_url_redirect, $text);
                     }
                 }
@@ -191,9 +191,9 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
         }
         if ($x !== null) {
             if (array_key_exists(3, $x)) {
-                $map = array($option, array($x[0], $x[1], $x[2]), $x[3]);
+                $map = [$option, [$x[0], $x[1], $x[2]], $x[3]];
             } else {
-                $map = array($option, $x);
+                $map = [$option, $x];
             }
             if ($auto_add !== null) {
                 $map[5] = $auto_add;
@@ -205,13 +205,13 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
     $sections->attach(_do_next_section($entry_passed_2, ($entries_title === null) ? do_lang_tempcode('ENTRIES') : (is_object($entries_title) ? $entries_title : make_string_tempcode($entries_title)), $entry_content_type, $category_content_type));
 
     // Category stuff
-    $category_passed = array(
+    $category_passed = [
         'admin/add_one_category',
         'admin/edit_one_category',
         'admin/edit_this_category',
         'admin/view_this_category',
-    );
-    $category_passed_2 = array();
+    ];
+    $category_passed_2 = [];
     foreach ($category_passed as $option) {
         $x = null;
         $auto_add = null;
@@ -221,7 +221,7 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
                 if (($current_page_type == '_add_category') || ($current_page_type == '_add_category')) {
                     if (get_param_integer('auto__add_one_category', 0) == 1) {
                         $x[1]['auto__add_one_category'] = '1';
-                        $_url_redirect = build_url(array_merge(array('page' => $x[0]), $x[1]), $x[2]);
+                        $_url_redirect = build_url(array_merge(['page' => $x[0]], $x[1]), $x[2]);
                         return redirect_screen($title, $_url_redirect, $text);
                     }
                     $auto_add = 'auto__add_one_category';
@@ -240,15 +240,15 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
         if ($x !== null) {
             if ($option == 'view_this' || $option == 'view_archive') {
                 if ($simplified) {
-                    $_url_redirect = build_url(array_merge(array('page' => $x[0]), $x[1]), $x[2]);
+                    $_url_redirect = build_url(array_merge(['page' => $x[0]], $x[1]), $x[2]);
                     return redirect_screen($title, $_url_redirect, $text);
                 }
             }
 
             if (array_key_exists(3, $x)) {
-                $map = array($option, array($x[0], $x[1], $x[2]), $x[3]);
+                $map = [$option, [$x[0], $x[1], $x[2]], $x[3]];
             } else {
-                $map = array($option, $x);
+                $map = [$option, $x];
             }
             if ($auto_add !== null) {
                 $map[5] = $auto_add;
@@ -266,11 +266,11 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
 
     if (($main === null) && (get_option('global_donext_icons') == '1')) { // What-next
         // These go on a new row
-        $disjunct_items = array(
-            array('menu/' . DEFAULT_ZONE_PAGE_NAME, array(null, array(), '')),
-            array('menu/cms/cms', array(null, array(), 'cms')),
-            array('menu/adminzone/adminzone', array(null, array(), 'adminzone')),
-        );
+        $disjunct_items = [
+            ['menu/' . DEFAULT_ZONE_PAGE_NAME, [null, [], '']],
+            ['menu/cms/cms', [null, [], 'cms']],
+            ['menu/adminzone/adminzone', [null, [], 'adminzone']],
+        ];
         $sections->attach(_do_next_section($disjunct_items, do_lang_tempcode('GLOBAL_NAVIGATION'), $entry_content_type, $category_content_type));
         $question = do_lang_tempcode('WHERE_NEXT');
     } else { // Where-next
@@ -286,14 +286,14 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
         return $sections;
     }
 
-    return do_template('DO_NEXT_SCREEN', array(
+    return do_template('DO_NEXT_SCREEN', [
         '_GUID' => 'a00e89bece6b7ce870ad5096930d5a94',
         'INTRO' => $intro,
         'TEXT' => $text,
         'QUESTION' => $question,
         'TITLE' => $title,
         'SECTIONS' => $sections,
-    ));
+    ]);
 }
 
 /**
@@ -352,7 +352,7 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
         } else {
             $description = do_lang_tempcode('NEXT_ITEM_' . basename($option), (strpos($option, 'category') !== false) ? $category_content_type : $entry_content_type);
         }
-        $url = ($page === null) ? build_url(array_merge($url_map[1], array('page' => '')), $zone) : build_url(array_merge(array('page' => $page), $url_map[1]), $zone);
+        $url = ($page === null) ? build_url(array_merge($url_map[1], ['page' => '']), $zone) : build_url(array_merge(['page' => $page], $url_map[1]), $zone);
         $doc = array_key_exists(3, $_option) ? $_option[3] : '';
         if ((is_string($doc)) && ($doc != '')) {
             if (preg_match('#^[:\w]+$#', $doc) == 0) {
@@ -367,7 +367,7 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
             $auto_add = null;
         }
 
-        $next_items->attach(do_template('DO_NEXT_ITEM', array(
+        $next_items->attach(do_template('DO_NEXT_ITEM', [
             '_GUID' => 'f39b6055d1127edb452595e7eeaf2f01',
             'AUTO_ADD' => $auto_add,
             'I' => strval($i),
@@ -378,7 +378,7 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
             'URL' => $url,
             'DOC' => $doc,
             'WARNING' => array_key_exists(3, $url) ? $url[3] : '',
-        )));
+        ]));
         $i++;
     }
 
@@ -386,10 +386,10 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
         return new Tempcode();
     }
 
-    return do_template('DO_NEXT_SECTION', array(
+    return do_template('DO_NEXT_SECTION', [
         '_GUID' => '18589e9e8ec1971f692cb76d71f33ec1',
         'I' => strval($i),
         'TITLE' => $title,
         'CONTENT' => $next_items,
-    ));
+    ]);
 }

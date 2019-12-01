@@ -53,7 +53,7 @@ class Hook_task_import_members
 
         require_code('cns_members_action2');
         $headings = member_get_spreadsheet_headings();
-        $all_cpfs = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array(), 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name'));
+        $all_cpfs = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['*'], [], 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name'));
         foreach ($all_cpfs as $i => $c) { // CPFs take precedence over normal fields of the same name
             $c['_cf_name'] = get_translated_text($c['cf_name'], $GLOBALS['FORUM_DB']);
 
@@ -66,10 +66,10 @@ class Hook_task_import_members
         }
         $_all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true);
         $all_groups = array_flip($_all_groups);
-        $all_members = collapse_2d_complexity('id', 'm_username', $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username')));
+        $all_members = collapse_2d_complexity('id', 'm_username', $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_username']));
         $all_members_flipped = array_flip($all_members);
 
-        $_spreadsheet_data = array();
+        $_spreadsheet_data = [];
 
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read($path, $filename);
@@ -169,9 +169,9 @@ class Hook_task_import_members
 
             // If it's an edited member, add in their existing spreadsheet details, so that if it's a partial merge it'll still work without deleting anything!
             if (!$new_member) {
-                $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', array('gm_member_id', 'gm_group_id'), array('gm_validated' => 1, 'gm_member_id' => $linked_id));
-                $member_cpfs = list_to_map('mf_member_id', $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', array('*'), array('mf_member_id' => $linked_id), '', 1));
-                $this_record = $download_ob->_get_spreadsheet_member_record($member_cpfs + $GLOBALS['FORUM_DRIVER']->get_member_row($linked_id), $_all_groups, $headings, $all_cpfs, $member_groups, array()); // Remember "+" in PHP won't overwrite existing keys
+                $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', ['gm_member_id', 'gm_group_id'], ['gm_validated' => 1, 'gm_member_id' => $linked_id]);
+                $member_cpfs = list_to_map('mf_member_id', $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', ['*'], ['mf_member_id' => $linked_id], '', 1));
+                $this_record = $download_ob->_get_spreadsheet_member_record($member_cpfs + $GLOBALS['FORUM_DRIVER']->get_member_row($linked_id), $_all_groups, $headings, $all_cpfs, $member_groups, []); // Remember "+" in PHP won't overwrite existing keys
                 if (!array_key_exists($email_address_key, $line)) {
                     unset($this_record['E-mail address']);
                 }
@@ -192,7 +192,7 @@ class Hook_task_import_members
                 $salt = null;
                 $password_compatibility_scheme = null;
             }
-            $matches = array();
+            $matches = [];
             if (array_key_exists($email_address_key, $line)) {
                 $email_address = $line[$email_address_key];
             } else {
@@ -266,14 +266,14 @@ class Hook_task_import_members
                         require_code('cns_groups_action');
                         $g_id = cns_make_group($p, 0, 0, 0, '');
                         $all_groups[$p] = $g_id;
-                        $_group_edit_url = build_url(array('page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $g_id), get_module_zone('admin_cns_groups'));
+                        $_group_edit_url = build_url(['page' => 'admin_cns_groups', 'type' => '_edit', 'id' => $g_id], get_module_zone('admin_cns_groups'));
                         $group_edit_url = $_group_edit_url->evaluate();
                         $outputted_messages->attach(do_lang_tempcode('MEMBER_IMPORT_GROUP_ADDED', escape_html($p), escape_html($group_edit_url)));
                     }
                 }
                 $primary_group = $all_groups[$parts[0]];
                 unset($parts[0]);
-                $groups = array();
+                $groups = [];
                 foreach ($parts as $p) {
                     $groups[] = $all_groups[$p];
                 }
@@ -290,7 +290,7 @@ class Hook_task_import_members
             } else {
                 $photo_thumb_url = '';
             }
-            $custom_fields = array();
+            $custom_fields = [];
             foreach ($all_cpfs as $cpf) {
                 $custom_fields[$cpf['id']] = array_key_exists($cpf['_cf_name'], $line) ? $line[$cpf['_cf_name']] : $cpf['cf_default'];
 
@@ -305,7 +305,7 @@ class Hook_task_import_members
                 } elseif ($cpf['cf_type'] == 'float') {
                     if (preg_match('#^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\n(\d\d\d\d)$#', $custom_fields[$cpf['id']]) != 0) { // Convert to float based date
                         $parts = explode("\n", $custom_fields[$cpf['id']], 2);
-                        $month_lookup = array(
+                        $month_lookup = [
                             'Jan' => 0.1,
                             'Feb' => 0.2,
                             'Mar' => 0.3,
@@ -318,7 +318,7 @@ class Hook_task_import_members
                             'Oct' => 0.10,
                             'Nov' => 0.11,
                             'Dec' => 0.12,
-                        );
+                        ];
                         $custom_fields[$cpf['id']] = floatval($parts[1]) + $month_lookup[$parts[0]];
                     } else {
                         $custom_fields[$cpf['id']] = ($custom_fields[$cpf['id']] === null) ? null : @floatval($custom_fields[$cpf['id']]);
@@ -333,11 +333,11 @@ class Hook_task_import_members
             unset($line[$dob_key]);
             foreach ($line as $h => $f) { // New CPFs
                 $cf_id = cns_make_custom_field($h, 0, '', '', 0, 0, 0, 0, 'long_text');
-                $_cpf_edit_url = build_url(array('page' => 'admin_cns_customprofilefields', 'type' => '_edit', 'id' => $cf_id), get_module_zone('admin_cns_customprofilefields'));
+                $_cpf_edit_url = build_url(['page' => 'admin_cns_customprofilefields', 'type' => '_edit', 'id' => $cf_id], get_module_zone('admin_cns_customprofilefields'));
                 $cpf_edit_url = $_cpf_edit_url->evaluate();
                 $outputted_messages->attach(do_lang_tempcode('MEMBER_IMPORT_CPF_ADDED', escape_html($h), escape_html($cpf_edit_url)));
                 $custom_fields[$cf_id] = $f;
-                $all_cpfs[] = array('id' => $cf_id, 'cf_default' => '', '_cf_name' => $h, 'cf_type' => 'short_line');
+                $all_cpfs[] = ['id' => $cf_id, 'cf_default' => '', '_cf_name' => $h, 'cf_type' => 'short_line'];
             }
             if ($new_member) {
                 if ($password === null) {
@@ -457,12 +457,12 @@ class Hook_task_import_members
                 );
                 if ($groups !== null) {
                     foreach ($groups as $g_id) {
-                        $GLOBALS['FORUM_DB']->query_delete('f_group_members', array('gm_member_id' => $linked_id, 'gm_group_id' => $g_id), '', 1);
-                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', array(
+                        $GLOBALS['FORUM_DB']->query_delete('f_group_members', ['gm_member_id' => $linked_id, 'gm_group_id' => $g_id], '', 1);
+                        $GLOBALS['FORUM_DB']->query_insert('f_group_members', [
                             'gm_group_id' => $g_id,
                             'gm_member_id' => $linked_id,
                             'gm_validated' => 1,
-                        ), false, true);
+                        ], false, true);
                     }
                 }
                 $num_edited++;
@@ -475,7 +475,7 @@ class Hook_task_import_members
         if ($done == 0) {
             @unlink($path);
             sync_file($path);
-            return array(null, do_lang_tempcode('NO_DATA_IMPORTED'));
+            return [null, do_lang_tempcode('NO_DATA_IMPORTED')];
         }
 
         $outputted_messages->attach(do_lang_tempcode('NUM_MEMBERS_IMPORTED', escape_html(integer_format($num_added)), escape_html(integer_format($num_edited))));
@@ -487,6 +487,6 @@ class Hook_task_import_members
 
         @unlink($path);
         sync_file($path);
-        return array('text/html', $outputted_messages);
+        return ['text/html', $outputted_messages];
     }
 }

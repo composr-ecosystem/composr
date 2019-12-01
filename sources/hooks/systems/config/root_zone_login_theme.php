@@ -30,7 +30,7 @@ class Hook_config_root_zone_login_theme
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ROOT_ZONE_LOGIN_THEME',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_root_zone_login_theme
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

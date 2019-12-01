@@ -59,9 +59,9 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array(do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('MULTI_MODERATIONS'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/multi_moderations'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => [do_lang_tempcode('menus:ITEMS_HERE', do_lang_tempcode('MULTI_MODERATIONS'), make_string_tempcode(escape_html(integer_format($GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'COUNT(*)'))))), 'menu/adminzone/structure/forum/multi_moderations'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -96,14 +96,14 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_moderation');
 
-        breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+        breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
 
         if ($type == 'import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')]]);
         }
 
         if ($type == '_import') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')), array('_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES'))));
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('MULTI_MODERATIONS')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_STOCK_RESPONSES')]]);
         }
 
         if ($type == 'import' || $type == '_import') {
@@ -154,11 +154,11 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MULTI_MODERATIONS'),
             comcode_lang_string('DOC_MULTI_MODERATIONS'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_MULTI_MODERATION')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_MULTI_MODERATION')),
-                array('admin/import', array('_SELF', array('type' => 'import'), '_SELF'), do_lang('IMPORT_STOCK_RESPONSES')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_MULTI_MODERATION')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_MULTI_MODERATION')],
+                ['admin/import', ['_SELF', ['type' => 'import'], '_SELF'], do_lang('IMPORT_STOCK_RESPONSES')],
+            ],
             do_lang('MULTI_MODERATIONS')
         );
     }
@@ -170,7 +170,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
      */
     public function import()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import', 'uploading' => 1), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_import', 'uploading' => 1], '_SELF');
 
         $fields = new Tempcode();
 
@@ -191,7 +191,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         $text = paragraph(do_lang_tempcode('DESCRIPTION_IMPORT_STOCK_RESPONSES'));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'bd30d8b0077567e3caf9239ed64204e5',
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -200,7 +200,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => '',
-        ));
+        ]);
     }
 
     /**
@@ -224,7 +224,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
         $target_forum = read_multi_code('forum_multi_code');
 
-        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('id'), array('mm_move_to' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum));
+        $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
         require_code('cns_moderation_action2');
         foreach ($multi_mods as $multi_mod) {
             cns_delete_multi_moderation($multi_mod['id']);
@@ -328,7 +328,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     {
         require_code('cns_moderation_action');
 
-        $name = do_lang('STOCK_RESPONSE', ucwords(str_replace(array('/', '\\'), array(': ', ': '), preg_replace('#\.txt$#', '', $path))));
+        $name = do_lang('STOCK_RESPONSE', ucwords(str_replace(['/', '\\'], [': ', ': '], preg_replace('#\.txt$#', '', $path))));
 
         $data = fix_bad_unicode($data);
 
@@ -354,7 +354,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $fields = new Tempcode();
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), do_lang_tempcode('DESCRIPTION_NAME'), 'multi_moderation_name', $name, true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('FORUM_POST'), do_lang_tempcode('DESCRIPTION_MULTI_MODERATION_POST'), 'post_text', $post_text, false));
-        $fields->attach(form_input_tree_list(do_lang_tempcode('DESTINATION'), do_lang_tempcode('DESCRIPTION_DESTINATION_FORUM'), 'move_to', null, 'choose_forum', array(), false, ($move_to === null) ? null : strval($move_to)));
+        $fields->attach(form_input_tree_list(do_lang_tempcode('DESTINATION'), do_lang_tempcode('DESCRIPTION_DESTINATION_FORUM'), 'move_to', null, 'choose_forum', [], false, ($move_to === null) ? null : strval($move_to)));
         $pin_state_list = new Tempcode();
         $pin_state_list->attach(form_input_radio_entry('pin_state', '', ($pin_state === null), do_lang_tempcode('NA_EM')));
         $pin_state_list->attach(form_input_radio_entry('pin_state', '0', $pin_state === 0, do_lang_tempcode('UNPIN_TOPIC')));
@@ -368,7 +368,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $fields->attach(cns_get_forum_multi_code_field($forum_multi_code));
         $fields->attach(form_input_line(do_lang_tempcode('TITLE_SUFFIX'), do_lang_tempcode('DESCRIPTION_TITLE_SUFFIX'), 'title_suffix', $title_suffix, false));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -386,22 +386,22 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'mm_name' => do_lang_tempcode('NAME'),
             'mm_pin_state' => do_lang_tempcode('PIN_STATE'),
             'mm_open_state' => do_lang_tempcode('OPEN_STATE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('NAME'),
             do_lang_tempcode('DESTINATION'),
             do_lang_tempcode('PIN_STATE'),
             do_lang_tempcode('OPEN_STATE'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
@@ -430,17 +430,17 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                 }
             }
 
-            $destination = ($row['mm_move_to'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['mm_move_to']));
+            $destination = ($row['mm_move_to'] === null) ? null : $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['mm_move_to']]);
             if ($destination === null) {
                 $destination = do_lang_tempcode('NA_EM');
             }
 
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $result_entries->attach(results_entry(array(get_translated_text($row['mm_name'], $GLOBALS['FORUM_DB']), $destination, $pin_state, $open_state, protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))), true));
+            $result_entries->attach(results_entry([get_translated_text($row['mm_name'], $GLOBALS['FORUM_DB']), $destination, $pin_state, $open_state, protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -450,7 +450,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('id', 'mm_name'));
+        $_m = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id', 'mm_name']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['mm_name'], $GLOBALS['FORUM_DB'])));
@@ -467,7 +467,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('*'), array('id' => intval($id)), '', 1);
+        $m = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'multi_moderation'));
         }

@@ -25,7 +25,7 @@ class Hook_config_facebook_secret_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_SECRET',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_secret_code
             'public' => false,
 
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

@@ -34,20 +34,20 @@ class Hook_commandr_command_give
     public function run($options, $parameters, &$commandr_fs)
     {
         if (!addon_installed('points')) {
-            return array('', '', '', do_lang('INTERNAL_ERROR'));
+            return ['', '', '', do_lang('INTERNAL_ERROR')];
         }
 
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('give', array('h', 'a'), array(true, true, true)), '', '');
+            return ['', do_command_help('give', ['h', 'a'], [true, true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'give'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'give')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'give'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'give')];
             }
             if (!array_key_exists(2, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '3', 'give'));
+                return ['', '', '', do_lang('MISSING_PARAM', '3', 'give')];
             }
 
             require_code('points2');
@@ -55,7 +55,7 @@ class Hook_commandr_command_give
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
 
             give_points($parameters[1], $member_id, get_member(), $parameters[2], ((array_key_exists('a', $options)) || (array_key_exists('anonymous', $options))));
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

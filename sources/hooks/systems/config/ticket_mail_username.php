@@ -30,7 +30,7 @@ class Hook_config_ticket_mail_username
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USERNAME',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_ticket_mail_username
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_cpf
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'cns:CUSTOM_PROFILE_FIELD',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_cpf
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_CUSTOM_PROFILE_FIELD',
-        );
+        ];
     }
 }

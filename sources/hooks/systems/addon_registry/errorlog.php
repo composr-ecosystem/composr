@@ -31,7 +31,7 @@ class Hook_addon_registry_errorlog
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_errorlog
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_adminzone',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_errorlog
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_errorlog
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/audit/errorlog.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/errorlog.svg',
             'themes/default/css/errorlog.css',
@@ -106,7 +106,7 @@ class Hook_addon_registry_errorlog
             'data_custom/errorlog.php',
             'adminzone/pages/modules/admin_errorlog.php',
             'themes/default/templates/ERRORLOG_SCREEN.tpl',
-        );
+        ];
     }
 
     /**
@@ -116,9 +116,9 @@ class Hook_addon_registry_errorlog
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/ERRORLOG_SCREEN.tpl' => 'administrative__errorlog_screen',
-        );
+        ];
     }
 
     /**
@@ -130,22 +130,22 @@ class Hook_addon_registry_errorlog
      */
     public function tpl_preview__administrative__errorlog_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('ERRORLOG_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('ERRORLOG_SCREEN', [
                 'TITLE' => lorem_title(),
                 'ERRORS' => lorem_chunk_html(),
                 'CLEAR_URL' => placeholder_url(),
-                'LOGS' => array(
-                    lorem_phrase() => array(
+                'LOGS' => [
+                    lorem_phrase() => [
                         'LOG' => lorem_chunk(),
                         'DOWNLOAD_URL' => placeholder_url(),
                         'CLEAR_URL' => placeholder_url(),
                         'DELETE_URL' => placeholder_url(),
                         'ADD_URL' => placeholder_url(),
                         'ADDITIONAL' => lorem_paragraph_html(),
-                    ),
-                ),
-            )), null, '', true)
-        );
+                    ],
+                ],
+            ]), null, '', true)
+        ];
     }
 }

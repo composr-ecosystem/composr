@@ -43,8 +43,8 @@ class Hook_notification_error_occurred_missing_reference_important extends Hook_
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['error_occurred_missing_reference_important'] = array(do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_reference_important'));
+        $list = [];
+        $list['error_occurred_missing_reference_important'] = [do_lang('ERRORS'), do_lang('NOTIFICATION_TYPE_error_occurred_missing_reference_important')];
         return $list;
     }
 }

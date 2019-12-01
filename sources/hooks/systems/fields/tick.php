@@ -35,14 +35,14 @@ class Hook_fields_tick
      */
     public function get_search_inputter($field)
     {
-        $fields = array();
+        $fields = [];
         $type = '_LIST';
         $special = new Tempcode();
         $special->attach(form_input_list_entry('', get_param_string('option_' . strval($field['id']), '') == '', do_lang_tempcode('NA_EM')));
         $special->attach(form_input_list_entry('0', get_param_string('option_' . strval($field['id']), '') == '0', do_lang_tempcode('NO')));
         $special->attach(form_input_list_entry('1', get_param_string('option_' . strval($field['id']), '') == '1', do_lang_tempcode('YES')));
         $display = array_key_exists('trans_name', $field) ? $field['trans_name'] : get_translated_text($field['cf_name']); // 'trans_name' may have been set in CPF retrieval API, might not correspond to DB lookup if is an internal field
-        return array('NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']), 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -77,7 +77,7 @@ class Hook_fields_tick
                 $default = '0';
             }
         }
-        return array('integer_unescaped', $default, 'integer');
+        return ['integer_unescaped', $default, 'integer'];
     }
 
     /**

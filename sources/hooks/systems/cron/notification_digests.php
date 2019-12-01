@@ -32,11 +32,11 @@ class Hook_cron_notification_digests
      */
     public function info($last_run, $calculate_num_queued)
     {
-        return array(
+        return [
             'label' => 'Send notification digests',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('digestives_tin', 'COUNT(*)') : null, // Not quite accurate, as not everything ready to send, but an indication
             'minutes_between_runs' => 60 * 12,
-        );
+        ];
     }
 
     /**
@@ -51,11 +51,11 @@ class Hook_cron_notification_digests
         }
 
         require_code('notifications');
-        foreach (array(
+        foreach ([
             A_DAILY_EMAIL_DIGEST => 60 * 60 * 24,
             A_WEEKLY_EMAIL_DIGEST => 60 * 60 * 24 * 7,
             A_MONTHLY_EMAIL_DIGEST => 60 * 60 * 24 * 31,
-        ) as $frequency => $time_span) {
+        ] as $frequency => $time_span) {
             $start = 0;
             do {
                 // Find where not tint-in-tin
@@ -72,16 +72,16 @@ class Hook_cron_notification_digests
                     $to_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($to_member_id);
                     $join_time = $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($to_member_id);
 
-                    $messages = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('d_subject', 'd_message', 'd_date_and_time', 'd_read'), array(
+                    $messages = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['d_subject', 'd_message', 'd_date_and_time', 'd_read'], [
                         'd_to_member_id' => $to_member_id,
                         'd_frequency' => $frequency,
-                    ), 'ORDER BY d_date_and_time');
+                    ], 'ORDER BY d_date_and_time');
 
                     if (!empty($messages)) {
-                        $GLOBALS['SITE_DB']->query_delete('digestives_tin', array(
+                        $GLOBALS['SITE_DB']->query_delete('digestives_tin', [
                             'd_to_member_id' => $to_member_id,
                             'd_frequency' => $frequency,
-                        ));
+                        ]);
 
                         $_message = '';
                         foreach ($messages as $message) {
@@ -90,9 +90,9 @@ class Hook_cron_notification_digests
                                     $_message .= "\n";
                                 }
                                 if (strlen($_message) + strlen($message['d_message']) < MAXIMUM_DIGEST_LENGTH) {
-                                    $_message .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), array(comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])));
+                                    $_message .= do_lang('DIGEST_EMAIL_INDIVIDUAL_MESSAGE_WRAP', comcode_escape($message['d_subject']), get_translated_text($message['d_message']), [comcode_escape(get_site_name()), get_timezoned_date_time($message['d_date_and_time'])]);
                                 } else {
-                                    $_message .= do_lang('DIGEST_ITEM_OMITTED', comcode_escape($message['d_subject']), get_timezoned_date_time($message['d_date_and_time']), array(comcode_escape(get_site_name())));
+                                    $_message .= do_lang('DIGEST_ITEM_OMITTED', comcode_escape($message['d_subject']), get_timezoned_date_time($message['d_date_and_time']), [comcode_escape(get_site_name())]);
                                 }
                             }
                             delete_lang($message['d_message']);
@@ -102,18 +102,18 @@ class Hook_cron_notification_digests
                             $wrapped_message = do_lang('DIGEST_EMAIL_MESSAGE_WRAP', $_message, comcode_escape(get_site_name()));
 
                             require_code('mail');
-                            dispatch_mail($wrapped_subject, $wrapped_message, array($to_email), $to_name, get_option('staff_address'), get_site_name(), array('as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time));
+                            dispatch_mail($wrapped_subject, $wrapped_message, [$to_email], $to_name, get_option('staff_address'), get_site_name(), ['as' => A_FROM_SYSTEM_UNPRIVILEGED, 'require_recipient_valid_since' => $join_time]);
                         }
 
                         delete_cache_entry('_get_notifications', null, $to_member_id);
                     }
 
-                    $GLOBALS['SITE_DB']->query_update('digestives_consumed', array(
+                    $GLOBALS['SITE_DB']->query_update('digestives_consumed', [
                         'c_time' => time(),
-                    ), array(
+                    ], [
                         'c_member_id' => $to_member_id,
                         'c_frequency' => $frequency,
-                    ), '', 1);
+                    ], '', 1);
                 }
 
                 $start += 100;

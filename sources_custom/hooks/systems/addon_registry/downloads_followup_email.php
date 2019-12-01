@@ -26,7 +26,7 @@ class Hook_addon_registry_downloads_followup_email
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_downloads_followup_email
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -102,7 +102,7 @@ Admins can force the follow-up emails and/or private topics and prevent the memb
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,13 +112,13 @@ Admins can force the follow-up emails and/or private topics and prevent the memb
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'downloads',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -138,13 +138,13 @@ Admins can force the follow-up emails and/or private topics and prevent the memb
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/downloads_followup_email.php',
             'lang_custom/EN/downloads_followup_email.ini',
             'sources_custom/hooks/systems/cron/downloads_followup_email.php',
             'sources_custom/hooks/systems/notifications/downloads_followup_email.php',
             'themes/default/templates_custom/DOWNLOADS_FOLLOWUP_EMAIL.tpl',
             'themes/default/templates_custom/DOWNLOADS_FOLLOWUP_EMAIL_DOWNLOAD_LIST.tpl',
-        );
+        ];
     }
 }

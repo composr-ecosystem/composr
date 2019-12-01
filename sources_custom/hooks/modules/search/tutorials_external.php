@@ -47,12 +47,12 @@ class Hook_search_tutorials_external extends FieldsSearchHook
 
         require_lang('tutorials');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('TUTORIALS_EXTERNAL');
         $info['default'] = true;
         $info['integer_category'] = true;
 
-        $info['permissions'] = array();
+        $info['permissions'] = [];
 
         return $info;
     }
@@ -97,20 +97,20 @@ class Hook_search_tutorials_external extends FieldsSearchHook
 
         $sq = build_search_submitter_clauses('t_submitter', $author_id, $author, 't_author');
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
 
         $table = 'tutorials_external r';
-        $trans_fields = array();
-        $nontrans_fields = array('r.t_title', 'r.t_summary');
+        $trans_fields = [];
+        $nontrans_fields = ['r.t_title', 'r.t_summary'];
         $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*,' . tutorial_sql_rating(db_cast('r.id', 'CHAR')) . ',' . tutorial_sql_rating_recent(db_cast('r.id', 'CHAR')) . ',' . tutorial_sql_likes(db_cast('r.id', 'CHAR')) . ',' . tutorial_sql_likes_recent(db_cast('r.id', 'CHAR')), $nontrans_fields);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -132,7 +132,7 @@ class Hook_search_tutorials_external extends FieldsSearchHook
      */
     public function render($row)
     {
-        $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', array('t_tag'), array('t_id' => $row['id'])));
+        $tags = collapse_1d_complexity('t_tag', $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', ['t_tag'], ['t_id' => $row['id']]));
         $metadata = get_tutorial_metadata(strval($row['id']), $row, $tags);
         return do_template('TUTORIAL_BOX', templatify_tutorial($metadata));
     }

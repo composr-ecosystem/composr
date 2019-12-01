@@ -43,8 +43,8 @@ class Hook_notification_spam_check_block extends Hook_notification__Staff
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['spam_check_block'] = array(do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_spam_check_block'));
+        $list = [];
+        $list['spam_check_block'] = [do_lang('SECURITY'), do_lang('NOTIFICATION_TYPE_spam_check_block')];
         return $list;
     }
 }

@@ -36,7 +36,7 @@ class Hook_cleanup_page_stats
 
         require_lang('stats');
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('PAGE_STATS_DELETE');
         $num_records = $GLOBALS['SITE_DB']->query_select_value('stats', 'COUNT(*)');
         $info['description'] = do_lang_tempcode('DESCRIPTION_PAGE_STATS_DELETE', escape_html(integer_format($num_records)), escape_html(integer_format(intval(get_option('stats_store_time')))));
@@ -67,12 +67,12 @@ class Hook_cleanup_page_stats
                 $fields->attach(form_input_tick(do_lang_tempcode('DELETE_SEARCH_STATS'), do_lang_tempcode('DESCRIPTION_DELETE_SEARCH_STATS'), 'search_stats', false));
             }
 
-            $post_url = get_self_url(false, false, array(), false, true);
+            $post_url = get_self_url(false, false, [], false, true);
             $submit_name = do_lang_tempcode('DELETE');
             $hidden = build_keep_post_fields();
 
             $title = get_screen_title('PAGE_STATS_DELETE');
-            $tpl = do_template('FORM_SCREEN', array(
+            $tpl = do_template('FORM_SCREEN', [
                 '_GUID' => '9fdb5fcf1cd0f5651d00b9e08d19d62a',
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => $hidden,
@@ -82,7 +82,7 @@ class Hook_cleanup_page_stats
                 'FIELDS' => $fields,
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
             $echo = globalise($tpl, null, '', true);
             $echo->evaluate_echo();
             exit();
@@ -136,7 +136,7 @@ class Hook_cleanup_page_stats
             if ($or_list != '') {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE ' . $or_list, null, 0, false, true);
             }
-        } while ($data != array());
+        } while ($data != []);
 
         fwrite($tmpfile, substr($_install_php_file, $place + strlen($look_for)));
 
@@ -160,6 +160,6 @@ class Hook_cleanup_page_stats
 
         cms_set_time_limit($old_limit);
 
-        return do_template('CLEANUP_PAGE_STATS', array('_GUID' => '1df213eee7c5c6b97168e5a34e92d3b0', 'STATS_BACKUP_URL' => $stats_backup_url));
+        return do_template('CLEANUP_PAGE_STATS', ['_GUID' => '1df213eee7c5c6b97168e5a34e92d3b0', 'STATS_BACKUP_URL' => $stats_backup_url]);
     }
 }

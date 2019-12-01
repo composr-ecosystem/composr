@@ -34,7 +34,7 @@ class Block_main_join
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -42,7 +42,7 @@ class Block_main_join
         $info['version'] = 2;
         $info['locked'] = false;
 
-        $info['parameters'] = array('subject', 'path', 'to', 'captcha', 'dobs', 'member_email_receipt_configurability', 'staff_email_receipt_configurability', 'enable_timezones', 'enable_language_selection', 'guid');
+        $info['parameters'] = ['subject', 'path', 'to', 'captcha', 'dobs', 'member_email_receipt_configurability', 'staff_email_receipt_configurability', 'enable_timezones', 'enable_language_selection', 'guid'];
         // ^ You can also pass in field_<id> to make a CPF onto the join form or not.
         // Also you can set is_on_invites, spam_check_level, email_confirm_join, require_new_member_validation, is_on_coppa, valid_email_domains, one_per_email_address
 
@@ -58,7 +58,7 @@ class Block_main_join
     public function run($map)
     {
         if (get_forum_type() != 'cns') {
-            return do_template('RED_ALERT', array('_GUID' => 'm0f7is0vysmap7v6uiz8po92kg5ek1bd', 'TEXT' => do_lang_tempcode('NO_CNS')));
+            return do_template('RED_ALERT', ['_GUID' => 'm0f7is0vysmap7v6uiz8po92kg5ek1bd', 'TEXT' => do_lang_tempcode('NO_CNS')]);
         }
 
         cns_require_all_forum_stuff();
@@ -75,14 +75,14 @@ class Block_main_join
             $map['path'] = 'uploads/website_specific/join.txt';
         }
 
-        $options_overridden_as_binary = array(
+        $options_overridden_as_binary = [
             'dobs',
             'member_email_receipt_configurability',
             'staff_email_receipt_configurability',
             'enable_timezones',
             'enable_language_selection',
-        );
-        $adjusted_config_options = array();
+        ];
+        $adjusted_config_options = [];
         foreach ($map as $key => $val) {
             if ($val != '') {
                 if ((in_array($key, $options_overridden_as_binary)) && ($val == '1')) {
@@ -103,14 +103,14 @@ class Block_main_join
                 $email_sent = false;
             }
 
-            return do_template('BLOCK_MAIN_JOIN_DONE', array(
+            return do_template('BLOCK_MAIN_JOIN_DONE', [
                 '_GUID' => $guid,
                 'MESSAGE' => null,
                 'LOGGED_IN' => true,
                 'HAS_EMAIL_TO_SEND' => $this->has_email_to_send($map),
                 'EMAIL_ADDRESS' => $email_address,
                 'EMAIL_SENT' => $email_sent,
-            ));
+            ]);
         }
 
         // Joining now?
@@ -126,25 +126,25 @@ class Block_main_join
                 $message = null; // No message required
             }
 
-            return do_template('BLOCK_MAIN_JOIN_DONE', array(
+            return do_template('BLOCK_MAIN_JOIN_DONE', [
                 '_GUID' => $guid,
                 'MESSAGE' => $message,
                 'LOGGED_IN' => $ready,
                 'HAS_EMAIL_TO_SEND' => $this->has_email_to_send($map),
                 'EMAIL_ADDRESS' => $email_address,
                 'EMAIL_SENT' => $email_sent,
-            ));
+            ]);
         }
 
         // Join form
         $post_url = get_self_url();
         $form = cns_join_form($post_url, $captcha_if_enabled, false, true, $adjusted_config_options);
-        return do_template('BLOCK_MAIN_JOIN', array(
+        return do_template('BLOCK_MAIN_JOIN', [
             '_GUID' => $guid,
             'FORM' => $form,
             'HAS_EMAIL_TO_SEND' => $this->has_email_to_send($map),
             'BLOCK_PARAMS' => block_params_arr_to_str($map),
-        ));
+        ]);
     }
 
     /**
@@ -172,14 +172,14 @@ class Block_main_join
                 require_code('character_sets');
                 $url = (url_is_local($map['path']) ? (get_custom_base_url() . '/') : '') . $map['path'];
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
-                $body = http_get_contents($url, array('convert_to_internal_encoding' => true));
+                $body = http_get_contents($url, ['convert_to_internal_encoding' => true]);
                 foreach ($_POST as $key => $val) {
                     if (is_string($val)) {
                         $body = str_replace('{' . $key . '}', $val, $body);
                     }
                 }
                 require_code('mail');
-                dispatch_mail($subject, $body, array($email_address), array_key_exists('to', $map) ? $map['to'] : '', '', '', array('as_admin' => true));
+                dispatch_mail($subject, $body, [$email_address], array_key_exists('to', $map) ? $map['to'] : '', '', '', ['as_admin' => true]);
 
                 return true;
             }

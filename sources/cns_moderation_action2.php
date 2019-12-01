@@ -36,18 +36,18 @@ function cns_edit_multi_moderation($id, $name, $post_text, $move_to, $pin_state,
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
     }
 
-    $_name = $GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'mm_name', array('id' => $id));
+    $_name = $GLOBALS['FORUM_DB']->query_select_value('f_multi_moderations', 'mm_name', ['id' => $id]);
 
-    $map = array(
+    $map = [
         'mm_post_text' => $post_text,
         'mm_move_to' => $move_to,
         'mm_pin_state' => $pin_state,
         'mm_open_state' => $open_state,
         'mm_forum_multi_code' => $forum_multi_code,
         'mm_title_suffix' => $title_suffix,
-    );
+    ];
     $map += lang_remap('mm_name', $_name, $name, $GLOBALS['FORUM_DB']);
-    $GLOBALS['FORUM_DB']->query_update('f_multi_moderations', $map, array('id' => $id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_multi_moderations', $map, ['id' => $id], '', 1);
 
     log_it('EDIT_MULTI_MODERATION', strval($id), $name);
 
@@ -68,12 +68,12 @@ function cns_delete_multi_moderation($id)
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
     }
 
-    $_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_multi_moderations', 'mm_name', array('id' => $id));
+    $_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_multi_moderations', 'mm_name', ['id' => $id]);
     if ($_name === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $name = get_translated_text($_name, $GLOBALS['FORUM_DB']);
-    $GLOBALS['FORUM_DB']->query_delete('f_multi_moderations', array('id' => $id), '', 1);
+    $GLOBALS['FORUM_DB']->query_delete('f_multi_moderations', ['id' => $id], '', 1);
     delete_lang($_name, $GLOBALS['FORUM_DB']);
 
     log_it('DELETE_MULTI_MODERATION', strval($id), $name);
@@ -100,7 +100,7 @@ function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', 
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
     }
 
-    $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_cache_first_title', 't_cache_first_post_id'), array('id' => $topic_id), '', 1);
+    $topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_cache_first_title', 't_cache_first_post_id'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $topic_details)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'multi_moderation'));
     }
@@ -109,7 +109,7 @@ function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', 
         access_denied('I_ERROR');
     }
 
-    $mm = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('*'), array('id' => $id), '', 1);
+    $mm = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['*'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $mm)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'multi_moderation'));
     }
@@ -125,7 +125,7 @@ function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', 
     $move_to = $mm[0]['mm_move_to'];
     $title_suffix = $mm[0]['mm_title_suffix'];
     //$post_text = $mm[0]['mm_post_text']; We'll allow user to specify the post_text, with this as a default
-    $update_array = array();
+    $update_array = [];
     if ($pin_state !== null) {
         $update_array['t_pinned'] = $pin_state;
     }
@@ -135,17 +135,17 @@ function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', 
     if ($title_suffix != '') {
         $new_title = $topic_details[0]['t_cache_first_title'] . ' [' . $title_suffix . ']';
         $update_array['t_cache_first_title'] = $new_title;
-        $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_title' => $new_title), array('id' => $topic_details[0]['t_cache_first_post_id']), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_title' => $new_title], ['id' => $topic_details[0]['t_cache_first_post_id']], '', 1);
     }
 
     if (!empty($update_array)) {
-        $GLOBALS['FORUM_DB']->query_update('f_topics', $update_array, array('id' => $topic_id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_topics', $update_array, ['id' => $topic_id], '', 1);
     }
 
     if ($move_to !== null) {
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
-        cns_move_topics($from, $move_to, array($topic_id));
+        cns_move_topics($from, $move_to, [$topic_id]);
     }
 
     if ($post_text != '') {
@@ -191,9 +191,9 @@ function warnings_script()
 
     if ($type == 'delete') { // Delete a saved warning
         $_title = post_param_string('title');
-        $GLOBALS['FORUM_DB']->query_delete('f_saved_warnings', array('s_title' => $_title), '', 1);
+        $GLOBALS['FORUM_DB']->query_delete('f_saved_warnings', ['s_title' => $_title], '', 1);
         $content = paragraph(do_lang_tempcode('SUCCESS'));
-        $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => 'dc97492788a5049e697a296ca10a0390', 'TITLE' => do_lang_tempcode('DELETE_SAVED_WARNING'), 'POPUP' => true, 'CONTENT' => $content));
+        $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'dc97492788a5049e697a296ca10a0390', 'TITLE' => do_lang_tempcode('DELETE_SAVED_WARNING'), 'POPUP' => true, 'CONTENT' => $content]);
         $echo->evaluate_echo();
         return;
     }
@@ -202,25 +202,25 @@ function warnings_script()
     // ---------------------------
 
     $content = new Tempcode();
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_saved_warnings', array('*'), array(), 'ORDER BY s_title');
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_saved_warnings', ['*'], [], 'ORDER BY s_title');
     $keep = symbol_tempcode('KEEP');
     $url = find_script('warnings_browse') . '?type=delete' . $keep->evaluate();
     foreach ($rows as $myrow) {
         $delete_link = hyperlink($url, do_lang_tempcode('DELETE'), false, false, '', null, form_input_hidden('title', $myrow['s_title']));
-        $content->attach(do_template('CNS_SAVED_WARNING', array(
+        $content->attach(do_template('CNS_SAVED_WARNING', [
             '_GUID' => '537a5e28bfdc3f2d2cb6c06b0a939b51',
             'MESSAGE' => $myrow['s_message'],
             'MESSAGE_HTML' => comcode_to_tempcode($myrow['s_message'], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
             'EXPLANATION' => $myrow['s_explanation'],
             'TITLE' => $myrow['s_title'],
             'DELETE_LINK' => $delete_link,
-        )));
+        ]));
     }
     if ($content->is_empty()) {
         $content = paragraph(do_lang_tempcode('NO_ENTRIES'), 'rfdsfsdf3t45', 'nothing-here');
     }
 
-    $echo = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '90c86490760cee23a8d5b8a5d14122e9', 'TITLE' => do_lang_tempcode('CHOOSE_SAVED_WARNING'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content));
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '90c86490760cee23a8d5b8a5d14122e9', 'TITLE' => do_lang_tempcode('CHOOSE_SAVED_WARNING'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);
     $echo->evaluate_echo();
 }
 
@@ -262,7 +262,7 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_cache_warnings=(m_cache_warnings+1) WHERE id=' . strval($member_id), 1);
     }
 
-    $id = $GLOBALS['FORUM_DB']->query_insert('f_warnings', array(
+    $id = $GLOBALS['FORUM_DB']->query_insert('f_warnings', [
         'w_member_id' => $member_id,
         'w_time' => $time,
         'w_explanation' => $explanation,
@@ -275,7 +275,7 @@ function cns_make_warning($member_id, $explanation, $by = null, $time = null, $i
         'p_charged_points' => $charged_points,
         'p_banned_member' => $banned_member,
         'p_changed_usergroup_from' => $changed_usergroup_from,
-    ), true);
+    ], true);
 
     require_code('cns_general_action2');
     cns_mod_log_it('ADD_WARNING', strval($id), strval($member_id));
@@ -301,17 +301,17 @@ function cns_edit_warning($warning_id, $explanation, $is_warning = 1)
         access_denied('PRIVILEGE', 'warn_members');
     }
 
-    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', array('id' => $warning_id));
+    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $warning_id]);
     if ($member_id === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $GLOBALS['FORUM_DB']->query_update('f_warnings', array('w_explanation' => $explanation, 'w_is_warning' => $is_warning), array('id' => $warning_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_warnings', ['w_explanation' => $explanation, 'w_is_warning' => $is_warning], ['id' => $warning_id], '', 1);
 
-    $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', array('id' => $warning_id));
-    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', array('w_is_warning' => 1, 'w_member_id' => $member_id));
+    $member_id = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_member_id', ['id' => $warning_id]);
+    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_is_warning' => 1, 'w_member_id' => $member_id]);
 
-    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_cache_warnings' => $num_warnings), array('id' => $member_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => $num_warnings], ['id' => $member_id], '', 1);
 
     require_code('cns_general_action2');
     cns_mod_log_it('EDIT_WARNING', strval($warning_id), strval($member_id));
@@ -335,15 +335,15 @@ function cns_delete_warning($warning_id)
         access_denied('PRIVILEGE', 'warn_members');
     }
 
-    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', array('id' => $warning_id));
+    $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'w_member_id', ['id' => $warning_id]);
     if ($member_id === null) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
 
-    $GLOBALS['FORUM_DB']->query_delete('f_warnings', array('id' => $warning_id), '', 1);
+    $GLOBALS['FORUM_DB']->query_delete('f_warnings', ['id' => $warning_id], '', 1);
 
-    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', array('w_is_warning' => 1, 'w_member_id' => $member_id));
-    $GLOBALS['FORUM_DB']->query_update('f_members', array('m_cache_warnings' => $num_warnings), array('id' => $member_id), '', 1);
+    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_is_warning' => 1, 'w_member_id' => $member_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => $num_warnings], ['id' => $member_id], '', 1);
 
     require_code('cns_general_action2');
     cns_mod_log_it('DELETE_WARNING', strval($warning_id), strval($member_id));

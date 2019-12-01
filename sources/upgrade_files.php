@@ -44,9 +44,9 @@ function upgrader_file_upgrade_screen()
     }
 
     require_code('files2');
-    $found_upgraders = array();
-    foreach (array('/data_custom', '') as $upgrader_place) {
-        $files = get_directory_contents(get_file_base() . $upgrader_place, get_file_base() . $upgrader_place, null, false, true, array('cms', 'gz', 'zip'));
+    $found_upgraders = [];
+    foreach (['/data_custom', ''] as $upgrader_place) {
+        $files = get_directory_contents(get_file_base() . $upgrader_place, get_file_base() . $upgrader_place, null, false, true, ['cms', 'gz', 'zip']);
         foreach ($files as $file_path) {
             if (preg_match('#^.*/(omni-)?upgrade-' . preg_quote(get_version_dotted(), '#') . '-[^/]*\.(cms(\.gz)?|zip)$#', $file_path) != 0) {
                 $found_upgraders[get_base_url() . $upgrader_place . '/' . basename($file_path)] = filemtime($file_path);
@@ -73,7 +73,7 @@ function upgrader_file_upgrade_screen()
         $out .= '<p><label for="upload">' . do_lang('ALT_FIELD', do_lang('UPLOAD')) . '</label> <input type="file" id="upload" name="upload" /></p>';
         $out .= '<script ' . csp_nonce_html() . '>var url=document.getElementById(\'url\'); url.addEventListener(\'change\', function() { document.getElementById(\'upload\').disabled=url.value!=\'\'; });</script>';
     }
-    $proceed_icon = do_template('ICON', array('_GUID' => '7a84502d5457fd3960d8e5056ee1cb49', 'NAME' => 'buttons/proceed'));
+    $proceed_icon = do_template('ICON', ['_GUID' => '7a84502d5457fd3960d8e5056ee1cb49', 'NAME' => 'buttons/proceed']);
     $out .= '<p><button class="btn btn-primary btn-scr buttons--proceed" type="submit">' . $proceed_icon->evaluate() . ' ' . do_lang('PROCEED') . '</button></p>';
     $out .= '</form>';
 
@@ -129,7 +129,7 @@ function _upgrader_file_upgrade_screen()
         } else {
             $upgrade_path = cms_tempnam();
             $upgrade_path_handle = fopen($upgrade_path, 'wb');
-            $request = cms_http_request($url, array('write_to_file' => $upgrade_path_handle));
+            $request = cms_http_request($url, ['write_to_file' => $upgrade_path_handle]);
             fclose($upgrade_path_handle);
             $original_filename = $request->filename;
             $retrieval_method = FILE_RETRIEVAL_HTTP;
@@ -157,13 +157,13 @@ function _upgrader_file_upgrade_screen()
     // Hopefully $popup_simple_extract will be true (i.e. suEXEC mode), as it is safer
     $popup_simple_extract = (_ftp_info() === false);
     if ($popup_simple_extract) {
-        $metadata = array('todo' => array());
+        $metadata = ['todo' => []];
     } else {
         $out .= '<p>' . do_lang('EXTRACTING_MESSAGE') . '</p>';
     }
 
     // Find addons
-    $addon_contents = array();
+    $addon_contents = [];
     foreach ($directory as $upgrade_file2) {
         // See if we can find an addon registry file in our upgrade file
         if ((strpos($upgrade_file2['path'], '/addon_registry/') !== false) && (substr($upgrade_file2['path'], -4) == '.php')) {
@@ -171,7 +171,7 @@ function _upgrader_file_upgrade_screen()
             $addon_contents[basename($upgrade_file2['path'], '.php')] = $file_data['data'];
         }
     }
-    $files_for_tar_updating = array();
+    $files_for_tar_updating = [];
 
     // Process files
     $i = 0;
@@ -209,7 +209,7 @@ function _upgrader_file_upgrade_screen()
             // Addon registry file, for installed addon...
 
             if (!$is_directory) {
-                $metadata['todo'][] = array($upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0);
+                $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
 
                 if (!$popup_simple_extract) {
                     $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
@@ -243,7 +243,7 @@ function _upgrader_file_upgrade_screen()
                         afm_make_directory($upgrade_file['path'], false, true);
                     }
                 } else {
-                    $metadata['todo'][] = array($upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0);
+                    $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
 
                     if (!$popup_simple_extract) {
                         $file_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
@@ -262,7 +262,7 @@ function _upgrader_file_upgrade_screen()
             // Record to copy it into our archived addon so that addon is kept up-to-date
             if (!$is_directory) {
                 if (($found !== null) && (file_exists(get_file_base() . '/imports/addons/' . $found . '.tar'))) {
-                    $files_for_tar_updating[$found][$upgrade_file['path']] = array($upgrade_file['mode'], $upgrade_file['mtime']);
+                    $files_for_tar_updating[$found][$upgrade_file['path']] = [$upgrade_file['mode'], $upgrade_file['mtime']];
                 }
             }
         }

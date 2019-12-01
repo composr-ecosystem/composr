@@ -31,7 +31,7 @@ class Hook_preview_newsletter_whatsnew
     public function applies()
     {
         $applies = (addon_installed('newsletter')) && (get_page_name() == 'admin_newsletter') && ((get_param_string('type', 'browse') == 'whatsnew') || (get_param_string('type', 'browse') == 'whatsnew_2'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -50,7 +50,7 @@ class Hook_preview_newsletter_whatsnew
             $cutoff_time = post_param_date('cutoff');
             $chosen_categories = newsletter_get_category_choices($cutoff_time, $lang);
 
-            $output = do_template('WITH_WHITESPACE', array('_GUID' => '162abca1c073fab71f13c1de2bd5cd98', 'CONTENT' => $chosen_categories));
+            $output = do_template('WITH_WHITESPACE', ['_GUID' => '162abca1c073fab71f13c1de2bd5cd98', 'CONTENT' => $chosen_categories]);
         } else {
             $cutoff_time = post_param_date('cutoff');
             $in_full = post_param_integer('in_full', 0);
@@ -59,9 +59,9 @@ class Hook_preview_newsletter_whatsnew
             list($message) = get_full_newsletter_code($_message, $lang, do_lang('EXAMPLE'));
 
             list($_output) = newsletter_preview($message, do_lang('EXAMPLE'), true, do_lang('SAMPLE_FORENAME'), do_lang('SAMPLE_SURNAME'), do_lang('SAMPLE_NAME'), do_lang('SAMPLE_ADDRESS'));
-            $output = do_template('NEWSLETTER_PREVIEW', array('_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $_output));
+            $output = do_template('NEWSLETTER_PREVIEW', ['_GUID' => '3790bb2b050e0c8c4339db54a063579a', 'HTML_PREVIEW' => $_output]);
         }
 
-        return array($output, null, false);
+        return [$output, null, false];
     }
 }

@@ -33,8 +33,8 @@ class web_platform_test_set extends cms_test_case
     public function testNoDuplicateNames()
     {
         $c = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK);
-        $matches = array();
-        $names = array();
+        $matches = [];
+        $names = [];
         $num_matches = preg_match_all('#name="([^"]*)"#', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $names[] = $matches[1][$i];

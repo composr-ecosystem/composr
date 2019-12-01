@@ -27,25 +27,25 @@ class Hook_members_filedump
     public function run($member_id)
     {
         if (!addon_installed('member_filedumps')) {
-            return array();
+            return [];
         }
 
         if (!addon_installed('filedump')) {
-            return array();
+            return [];
         }
 
         $zone = get_page_zone('filedump', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
         if (!has_zone_access(get_member(), $zone)) {
-            return array();
+            return [];
         }
 
         require_lang('filedump');
 
         $path = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-        return array(array('content', do_lang_tempcode('FILEDUMP'), build_url(array('page' => 'filedump', 'type' => 'browse', 'subpath' => '/' . $path . '/'), $zone), 'menu/cms/filedump'));
+        return [['content', do_lang_tempcode('FILEDUMP'), build_url(['page' => 'filedump', 'type' => 'browse', 'subpath' => '/' . $path . '/'], $zone), 'menu/cms/filedump']];
     }
 }

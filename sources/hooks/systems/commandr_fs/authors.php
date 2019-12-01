@@ -47,7 +47,7 @@ class Hook_commandr_fs_authors extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $ret = $GLOBALS['SITE_DB']->query_select('authors', array('author'), array('author' => $label));
+        $ret = $GLOBALS['SITE_DB']->query_select('authors', ['author'], ['author' => $label]);
         return collapse_1d_complexity('author', $ret);
     }
 
@@ -112,7 +112,7 @@ class Hook_commandr_fs_authors extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('authors', array('*'), array('author' => $resource_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('authors', ['*'], ['author' => $resource_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
@@ -120,7 +120,7 @@ class Hook_commandr_fs_authors extends Resource_fs_base
 
         list($meta_keywords, $meta_description) = seo_meta_get_for('authors', $row['author']);
 
-        $properties = array(
+        $properties = [
             'label' => $row['author'],
             'url' => $row['url'],
             'member_id' => remap_resource_id_as_portable('member', $row['member_id']),
@@ -128,7 +128,7 @@ class Hook_commandr_fs_authors extends Resource_fs_base
             'skills' => $row['skills'],
             'meta_keywords' => $meta_keywords,
             'meta_description' => $meta_description,
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

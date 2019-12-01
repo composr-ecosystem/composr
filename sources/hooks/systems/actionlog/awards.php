@@ -31,51 +31,51 @@ class Hook_actionlog_awards extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('awards')) {
-            return array();
+            return [];
         }
 
         require_lang('awards');
 
-        return array(
-            'ADD_AWARD_TYPE' => array(
+        return [
+            'ADD_AWARD_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'award_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_AWARD_TYPE' => '_SEARCH:admin_awards:_edit:{ID}',
                     'ADD_AWARD_TYPE' => '_SEARCH:admin_awards:add',
-                ),
-            ),
-            'EDIT_AWARD_TYPE' => array(
+                ],
+            ],
+            'EDIT_AWARD_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'award_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_AWARD_TYPE' => '_SEARCH:admin_awards:_edit:{ID}',
                     'ADD_AWARD_TYPE' => '_SEARCH:admin_awards:add',
-                ),
-            ),
-            'DELETE_AWARD_TYPE' => array(
+                ],
+            ],
+            'DELETE_AWARD_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'award_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_AWARD_TYPE' => '_SEARCH:admin_awards:add',
-                ),
-            ),
-            'GIVE_AWARD' => array(
+                ],
+            ],
+            'GIVE_AWARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'award_type',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PAST_WINNERS' => '_SEARCH:awards:award:{ID}',
                     'EDIT_THIS_AWARD_TYPE' => '_SEARCH:admin_awards:_edit:{ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

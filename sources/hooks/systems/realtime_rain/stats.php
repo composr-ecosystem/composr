@@ -33,10 +33,10 @@ class Hook_realtime_rain_stats
     public function run($from, $to)
     {
         if (!addon_installed('stats')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_stats')) {
             require_lang('stats');
@@ -72,7 +72,7 @@ class Hook_realtime_rain_stats
                     }
                 }
 
-                $drops[] = rain_get_special_icons($row['ip'], $timestamp, $row['browser']) + array(
+                $drops[] = rain_get_special_icons($row['ip'], $timestamp, $row['browser']) + [
                     'TYPE' => 'stats',
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
@@ -81,7 +81,7 @@ class Hook_realtime_rain_stats
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => (addon_installed('securitylogging')) ? build_url(array('page' => 'admin_lookup', 'id' => $row['ip']), get_module_zone('admin_lookup')) : null,
+                    'URL' => (addon_installed('securitylogging')) ? build_url(['page' => 'admin_lookup', 'id' => $row['ip']], get_module_zone('admin_lookup')) : null,
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
@@ -89,7 +89,7 @@ class Hook_realtime_rain_stats
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'page_' . $page_link,
-                );
+                ];
             }
         }
 

@@ -46,7 +46,7 @@ class Hook_implicit_usergroups_antispam_question
         global $ANTISPAM_QUESTION_FIELD_ID;
         if (!isset($ANTISPAM_QUESTION_FIELD_ID)) {
             $ANTISPAM_QUESTION_FIELD_ID = mixed();
-            $ANTISPAM_QUESTION_FIELD_ID = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $this->field_name));
+            $ANTISPAM_QUESTION_FIELD_ID = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $this->field_name]);
             if ($ANTISPAM_QUESTION_FIELD_ID === null) {
                 $ANTISPAM_QUESTION_FIELD_ID = false;
             }
@@ -62,7 +62,7 @@ class Hook_implicit_usergroups_antispam_question
      */
     public function get_bound_group_ids()
     {
-        return array(db_get_first_id() + 9); // Probation on standard install; customise as required
+        return [db_get_first_id() + 9]; // Probation on standard install; customise as required
     }
 
     protected function _where()
@@ -87,11 +87,11 @@ class Hook_implicit_usergroups_antispam_question
     public function get_member_list($group_id)
     {
         if ($this->field_id === null) {
-            return array();
+            return [];
         }
 
         if (!addon_installed('antispam_question')) {
-            return array();
+            return [];
         }
 
         return list_to_map('id', $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . $this->_where()));

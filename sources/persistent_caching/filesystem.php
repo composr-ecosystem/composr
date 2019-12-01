@@ -31,7 +31,7 @@ class Persistent_caching_filesystem
         require_code('files');
 
         global $PC_FC_CACHE;
-        $PC_FC_CACHE = array();
+        $PC_FC_CACHE = [];
     }
 
     /**
@@ -52,7 +52,7 @@ class Persistent_caching_filesystem
 
         $objects_list = $this->get('PERSISTENT_CACHE_OBJECTS');
         if (!is_array($objects_list)) {
-            $objects_list = array();
+            $objects_list = [];
         }
         return $objects_list;
     }
@@ -153,7 +153,7 @@ class Persistent_caching_filesystem
     public function flush()
     {
         // Update list of persistent-objects
-        $objects_list = array();
+        $objects_list = [];
         $this->set('PERSISTENT_CACHE_OBJECTS', $objects_list);
 
         $d = opendir(get_custom_file_base() . '/caches/persistent');
@@ -166,6 +166,6 @@ class Persistent_caching_filesystem
         closedir($d);
 
         global $PC_FC_CACHE;
-        $PC_FC_CACHE = array();
+        $PC_FC_CACHE = [];
     }
 }

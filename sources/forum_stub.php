@@ -45,7 +45,7 @@ class Forum_driver_base
 {
     public $db;
 
-    public $MEMBER_ROWS_CACHED = array();
+    public $MEMBER_ROWS_CACHED = [];
 
     public $EMOTICON_CACHE = null;
 
@@ -93,7 +93,7 @@ class Forum_driver_base
             $url = make_string_tempcode($url);
         }
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
-            $url = build_url(array('page' => 'forums', 'url' => protect_url_parameter($url)), get_module_zone('forums'));
+            $url = build_url(['page' => 'forums', 'url' => protect_url_parameter($url)], get_module_zone('forums'));
             if (!$tempcode_okay) {
                 $url = $url->evaluate();
             }
@@ -132,7 +132,7 @@ class Forum_driver_base
     {
         $url = $this->_join_url($tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
-            $url = build_url(array('page' => 'forums', 'url' => protect_url_parameter($url)), get_module_zone('forums'));
+            $url = build_url(['page' => 'forums', 'url' => protect_url_parameter($url)], get_module_zone('forums'));
             if (!$tempcode_okay) {
                 $url = $url->evaluate();
             }
@@ -150,7 +150,7 @@ class Forum_driver_base
     {
         $url = $this->_users_online_url($tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
-            $url = build_url(array('page' => 'forums', 'url' => protect_url_parameter($url)), get_module_zone('forums'));
+            $url = build_url(['page' => 'forums', 'url' => protect_url_parameter($url)], get_module_zone('forums'));
         }
         return $url;
     }
@@ -166,7 +166,7 @@ class Forum_driver_base
     {
         $url = $this->_member_pm_url($id, $tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
-            $url = build_url(array('page' => 'forums', 'url' => protect_url_parameter($url)), get_module_zone('forums'));
+            $url = build_url(['page' => 'forums', 'url' => protect_url_parameter($url)], get_module_zone('forums'));
         }
         return $url;
     }
@@ -182,7 +182,7 @@ class Forum_driver_base
     {
         $url = $this->_forum_url($id, $tempcode_okay);
         if ((get_forum_type() != 'none') && (get_forum_type() != 'cns') && (get_option('forum_in_portal') == '1')) {
-            $url = build_url(array('page' => 'forums', 'url' => protect_url_parameter($url)), get_module_zone('forums'));
+            $url = build_url(['page' => 'forums', 'url' => protect_url_parameter($url)], get_module_zone('forums'));
         }
         return $url;
     }
@@ -279,7 +279,7 @@ class Forum_driver_base
      */
     public function get_member_email_address($id)
     {
-        static $member_email_cache = array();
+        static $member_email_cache = [];
         if (array_key_exists($id, $member_email_cache)) {
             return $member_email_cache[$id];
         }
@@ -301,7 +301,7 @@ class Forum_driver_base
             return false;
         }
 
-        static $is_staff_cache = array();
+        static $is_staff_cache = [];
         if (isset($is_staff_cache[$id])) {
             return $is_staff_cache[$id];
         }
@@ -318,7 +318,7 @@ class Forum_driver_base
      */
     public function is_super_admin($id)
     {
-        static $is_super_admin_cache = array();
+        static $is_super_admin_cache = [];
         if (isset($is_super_admin_cache[$id])) {
             return $is_super_admin_cache[$id];
         }
@@ -378,7 +378,7 @@ class Forum_driver_base
      * @param  boolean $skip_hidden Whether to completely skip hidden usergroups
      * @return array The map
      */
-    public function get_usergroup_list($hide_hidden = false, $only_permissive = false, $force_show_all = false, $force_find = array(), $for_member = null, $skip_hidden = false)
+    public function get_usergroup_list($hide_hidden = false, $only_permissive = false, $force_show_all = false, $force_find = [], $for_member = null, $skip_hidden = false)
     {
         static $usergroup_list_cache = null;
         if (($usergroup_list_cache !== null) && (isset($usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden]))) {
@@ -387,7 +387,7 @@ class Forum_driver_base
 
         $ret = $this->_get_usergroup_list($hide_hidden, $only_permissive, $force_show_all, $force_find, $for_member, $skip_hidden);
         if ($usergroup_list_cache === null) {
-            $usergroup_list_cache = array();
+            $usergroup_list_cache = [];
         }
         $usergroup_list_cache[$hide_hidden][$only_permissive][$force_show_all][serialize($force_find)][$for_member][$skip_hidden] = $ret;
         return $ret;
@@ -406,7 +406,7 @@ class Forum_driver_base
         if ((is_guest($id)) && (get_forum_type() == 'cns')) {
             static $ret = null;
             if ($ret === null) {
-                $ret = array(db_get_first_id());
+                $ret = [db_get_first_id()];
             }
             return $ret;
         }
@@ -457,7 +457,7 @@ class Forum_driver_base
         $theme = $is_current_member ? filter_naughty(get_param_string('keep_theme', get_param_string('utheme', '-1'))) : '-1';
         if ($theme != '-1') {
             if ((is_dir(get_file_base() . '/themes/' . $theme)) || (is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
-                $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', array('zone_name' => $zone_for)) : $ZONE['zone_theme'];
+                $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => $zone_for]) : $ZONE['zone_theme'];
 
                 require_code('permissions');
                 if ($member_id === null) {
@@ -473,8 +473,8 @@ class Forum_driver_base
         }
 
         // Try hardcoded in Composr zone settings
-        $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', array('zone_name' => $zone_for)) : $ZONE['zone_theme'];
-        $default_theme = ((get_page_name() == 'login') && (get_option('root_zone_login_theme') == '1') && ($zone_for != '')) ? $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', array('zone_name' => '')) : $zone_theme;
+        $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', ['zone_name' => $zone_for]) : $ZONE['zone_theme'];
+        $default_theme = ((get_page_name() == 'login') && (get_option('root_zone_login_theme') == '1') && ($zone_for != '')) ? $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']) : $zone_theme;
         if (empty($default_theme)) { // Cleanup bad data
             $default_theme = '-1';
         }
@@ -552,6 +552,6 @@ class Forum_driver_base
      */
     public function get_post_remaining_details($topic_id, $post_ids)
     {
-        return array();
+        return [];
     }
 }

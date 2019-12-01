@@ -39,13 +39,13 @@ class Hook_commandr_command_fs_search
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('fs_search', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('fs_search', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'fs_search'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'fs_search')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'fs_search'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'fs_search')];
             }
 
             $search = $parameters[0];
@@ -54,9 +54,9 @@ class Hook_commandr_command_fs_search
 
             // Do search...
 
-            $sql_for = array();
+            $sql_for = [];
             $out = '';
-            $matched_files = array();
+            $matched_files = [];
 
             require_code('files2');
             $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
@@ -101,7 +101,7 @@ class Hook_commandr_command_fs_search
 
             // ---
 
-            return array('', $out, '', '');
+            return ['', $out, '', ''];
         }
     }
 
@@ -115,12 +115,12 @@ class Hook_commandr_command_fs_search
     {
         if (preg_match('#^[A-Z_]+$#', $field_type) != 0) {
             $more_fields = array_merge(
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => $field_type)),
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => '?' . $field_type)),
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => '*' . $field_type))
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => $field_type]),
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => '?' . $field_type]),
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => '*' . $field_type])
             );
         } else {
-            $more_fields = array();
+            $more_fields = [];
         }
         return $more_fields;
     }

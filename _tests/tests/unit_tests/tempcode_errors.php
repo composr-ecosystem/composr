@@ -24,10 +24,10 @@ class tempcode_errors_test_set extends cms_test_case
 
         disable_php_memory_limit();
 
-        $paths = array(
+        $paths = [
             get_file_base() . '/themes/default/templates',
             get_file_base() . '/themes/default/templates_custom',
-        );
+        ];
         foreach ($paths as $path) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {

@@ -30,14 +30,14 @@ class Block_side_network
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_side_network
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -76,19 +76,19 @@ PHP;
         if (strlen($netlinks) > 0) {
             require_code('character_sets');
 
-            $http_result = cms_http_request($netlinks, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+            $http_result = cms_http_request($netlinks, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
             if ($http_result->data === null) {
                 $if_network = ($http_result->message_b === null) ? $http_result->message : $http_result->message_b;
             } else {
                 $if_network = $http_result->data;
             }
-            return do_template('BLOCK_SIDE_NETWORK', array(
+            return do_template('BLOCK_SIDE_NETWORK', [
                 '_GUID' => '5fe8867b9f69670ad61e6c78b956fab2',
                 'BLOCK_ID' => $block_id,
                 'CONTENT' => $if_network,
-            ));
+            ]);
         }
 
-        return do_template('RED_ALERT', array('_GUID' => '9gqq7bq3o09zkpt1i81x7exwo4ny6lve', 'TEXT' => do_lang_tempcode('NO_OF_THIS', escape_html('config:NETWORK_LINKS'))));
+        return do_template('RED_ALERT', ['_GUID' => '9gqq7bq3o09zkpt1i81x7exwo4ny6lve', 'TEXT' => do_lang_tempcode('NO_OF_THIS', escape_html('config:NETWORK_LINKS'))]);
     }
 }

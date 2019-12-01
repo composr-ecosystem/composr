@@ -27,22 +27,22 @@
 function cns_list_multi_moderations($forum_id)
 {
     if (!addon_installed('cns_multi_moderations')) {
-        return array();
+        return [];
     }
 
     if ($forum_id === null) {
-        return array();
+        return [];
     }
 
-    $rows = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', array('*'), array(), 'ORDER BY ' . $GLOBALS['FORUM_DB']->translate_field_ref('mm_name'));
-    $out = array();
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['*'], [], 'ORDER BY ' . $GLOBALS['FORUM_DB']->translate_field_ref('mm_name'));
+    $out = [];
     if (empty($rows)) {
         return $out;
     }
 
     $lots_of_forums = $GLOBALS['FORUM_DB']->query_select_value('f_forums', 'COUNT(*)') > 200;
     if (!$lots_of_forums) {
-        $all_forums = collapse_2d_complexity('id', 'f_parent_forum', $GLOBALS['FORUM_DB']->query_select('f_forums', array('id', 'f_parent_forum')));
+        $all_forums = collapse_2d_complexity('id', 'f_parent_forum', $GLOBALS['FORUM_DB']->query_select('f_forums', ['id', 'f_parent_forum']));
     }
     foreach ($rows as $row) {
         $row['_mm_name'] = get_translated_text($row['mm_name'], $GLOBALS['FORUM_DB']);
@@ -112,8 +112,8 @@ function cns_may_warn_members($member_id = null)
 function cns_get_warnings($member_id)
 {
     if (!addon_installed('cns_warnings')) {
-        return array();
+        return [];
     }
 
-    return $GLOBALS['FORUM_DB']->query_select('f_warnings', array('*'), array('w_member_id' => $member_id, 'w_is_warning' => 1), 'ORDER BY w_time');
+    return $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id, 'w_is_warning' => 1], 'ORDER BY w_time');
 }

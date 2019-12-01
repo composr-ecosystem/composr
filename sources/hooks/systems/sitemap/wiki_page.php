@@ -60,10 +60,10 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -72,13 +72,13 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
         $page = $this->_make_zone_concrete($zone, $page_link);
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)', array('id' => db_get_first_id()));
+            $count = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)', ['id' => db_get_first_id()]);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', array('*'), array('id' => db_get_first_id()), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('wiki_pages', ['*'], ['id' => db_get_first_id()], '', 1);
         if (isset($rows[0])) {
             $row = $rows[0];
             $child_page_link = $zone . ':' . $page . ':' . $this->screen_type;
@@ -129,14 +129,14 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => ($content_id == strval(db_get_first_id())) ? SITEMAP_IMPORTANCE_HIGH : SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'weekly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_wiki', 'type' => '_edit_page', 'id' => $content_id), get_module_zone('cms_wiki')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_wiki', 'type' => '_edit_page', 'id' => $content_id], get_module_zone('cms_wiki')),
+        ] + $partial_struct;
 
         $struct['extra_meta']['is_a_category_tree_root'] = true;
 
@@ -151,7 +151,7 @@ class Hook_sitemap_wiki_page extends Hook_sitemap_content
         // Categories done after node callback, to ensure sensible ordering
         $children = $this->_get_children_nodes($content_id, $longer_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
         if ($recurse_level > 10) {
-            $children = array(); // We really need to cutoff loops at some point
+            $children = []; // We really need to cutoff loops at some point
         }
         $struct['children'] = $children;
 

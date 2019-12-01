@@ -32,8 +32,8 @@ function init__mail()
 
     global $SENDING_MAIL, $EMAIL_ATTACHMENTS, $SMTP_SOCKET;
     $SENDING_MAIL = false;
-    $EMAIL_ATTACHMENTS = array();
-    $SMTP_SOCKET = array();
+    $EMAIL_ATTACHMENTS = [];
+    $SMTP_SOCKET = [];
     register_shutdown_function('_close_smtp_sockets');
 }
 
@@ -62,7 +62,7 @@ function _close_smtp_sockets()
  */
 function find_system_email_addresses($include_all = true)
 {
-    $addresses = array();
+    $addresses = [];
     $addresses[get_option('website_email')] = true;
     if ($include_all) {
         $addresses[get_option('staff_address')] = true;
@@ -70,7 +70,7 @@ function find_system_email_addresses($include_all = true)
             $addresses[get_option('ticket_mail_email_address')] = true;
         }
         if (addon_installed('cns_forum')) {
-            $rows = $GLOBALS['SITE_DB']->query_select('f_forums', array('f_mail_email_address'));
+            $rows = $GLOBALS['SITE_DB']->query_select('f_forums', ['f_mail_email_address']);
             foreach ($rows as $row) {
                 $addresses[$row['f_mail_email_address']] = true;
             }
@@ -79,7 +79,7 @@ function find_system_email_addresses($include_all = true)
 
     unset($addresses['']); // None-set values should not carry through
 
-    $_addresses = array();
+    $_addresses = [];
     foreach (array_keys($addresses) as $address) {
         $domain = preg_replace('#^.*@#', '', $address);
         $_addresses[$address] = $domain;
@@ -114,7 +114,7 @@ http://people.dsv.su.se/~jpalme/ietf/ietf-mail-attributes.html
  * @param  array $advanced_parameters A map of additional parameters. See comments within this function implementation to know what can be sent.
  * @return object Our dispatcher object, which may contain some result data
  */
-function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '', $advanced_parameters = array())
+function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names = null, $from_email = '', $from_name = '', $advanced_parameters = [])
 {
     $dispatcher = null;
 
@@ -169,7 +169,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = array())
+    public function __construct($advanced_parameters = [])
     {
         // Line termination is tricky. SMTP requires \r\n (PHP uses SMTP on Windows), while CLI interface must use \n.
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
@@ -249,7 +249,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
             }
         }
 
-        return array($worked, $error);
+        return [$worked, $error];
     }
 }
 
@@ -272,7 +272,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = array())
+    public function __construct($advanced_parameters = [])
     {
         $this->smtp_sockets_use = true;
         $this->smtp_sockets_host = get_option('smtp_sockets_host');
@@ -497,7 +497,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
             }
         }
 
-        return array($worked, $error);
+        return [$worked, $error];
     }
 }
 
@@ -510,7 +510,7 @@ abstract class Mail_dispatcher_base
 {
     // Extended settings
     public $priority = 3;
-    public $attachments = array();
+    public $attachments = [];
     public $no_cc = false;
     public $as = null;
     public $as_admin = false;
@@ -518,8 +518,8 @@ abstract class Mail_dispatcher_base
     public $bypass_queue = false;
     public $coming_out_of_queue = false;
     public $mail_template = 'MAIL';
-    public $extra_cc_addresses = array();
-    public $extra_bcc_addresses = array();
+    public $extra_cc_addresses = [];
+    public $extra_bcc_addresses = [];
     public $require_recipient_valid_since = null;
     public $is_bulk = false;
     public $sender_email = null;
@@ -533,11 +533,11 @@ abstract class Mail_dispatcher_base
 
     // Internal settings
     protected $line_term = "\r\n";
-    public $cc_addresses = array();
-    public $bcc_addresses = array();
-    public $real_attachments = array();
-    public $cid_attachments_url_mapping = array();
-    public $cid_attachments = array();
+    public $cc_addresses = [];
+    public $bcc_addresses = [];
+    public $real_attachments = [];
+    public $cid_attachments_url_mapping = [];
+    public $cid_attachments = [];
     protected $_sender_email = null;
 
     // For analysis of process from outside
@@ -552,7 +552,7 @@ abstract class Mail_dispatcher_base
      *
      * @param  array $advanced_parameters List of advanced parameters
      */
-    public function __construct($advanced_parameters = array())
+    public function __construct($advanced_parameters = [])
     {
         require_code('site');
         require_code('mime_types');
@@ -583,7 +583,7 @@ abstract class Mail_dispatcher_base
         }
 
         $this->priority = isset($advanced_parameters['priority']) ? $advanced_parameters['priority'] : 3; // The message priority (1=urgent, 3=normal, 5=low)
-        $this->attachments = isset($advanced_parameters['attachments']) ? $advanced_parameters['attachments'] : array(); // A list of attachments (each attachment being a map, absolute path=>filename) (null: none)
+        $this->attachments = isset($advanced_parameters['attachments']) ? $advanced_parameters['attachments'] : []; // A list of attachments (each attachment being a map, absolute path=>filename) (null: none)
         $this->no_cc = isset($advanced_parameters['no_cc']) ? $advanced_parameters['no_cc'] : false; // Whether to CC to the CC address
         $this->as = isset($advanced_parameters['as']) ? $advanced_parameters['as'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(); // Convert Comcode->tempcode as this member (a privilege thing: we don't want people being able to use admin rights by default!) (null: guest)
         $this->as_admin = isset($advanced_parameters['as_admin']) ? $advanced_parameters['as_admin'] : false; // Replace above with arbitrary admin
@@ -596,8 +596,8 @@ abstract class Mail_dispatcher_base
         $this->sender_email = isset($advanced_parameters['sender_email']) ? $advanced_parameters['sender_email'] : null; // E-mail address to use as a sender address (null: default)
         $this->plain_subject = isset($advanced_parameters['plain_subject']) ? $advanced_parameters['plain_subject'] : false; // Avoid templating the subject to have an additional prefix/suffix
 
-        $this->extra_cc_addresses = isset($advanced_parameters['extra_cc_addresses']) ? $advanced_parameters['extra_cc_addresses'] : array(); // Extra CC addresses to use (null: none)
-        $this->extra_bcc_addresses = isset($advanced_parameters['extra_bcc_addresses']) ? $advanced_parameters['extra_bcc_addresses'] : array(); // Extra BCC addresses to use (null: none)
+        $this->extra_cc_addresses = isset($advanced_parameters['extra_cc_addresses']) ? $advanced_parameters['extra_cc_addresses'] : []; // Extra CC addresses to use (null: none)
+        $this->extra_bcc_addresses = isset($advanced_parameters['extra_bcc_addresses']) ? $advanced_parameters['extra_bcc_addresses'] : []; // Extra BCC addresses to use (null: none)
         $this->cc_addresses = $this->extra_cc_addresses;
         $this->bcc_addresses = $this->extra_bcc_addresses;
         $cc_address = $this->no_cc ? '' : get_option('cc_address');
@@ -627,7 +627,7 @@ abstract class Mail_dispatcher_base
     {
         // Attachments monitored for injection from the Comcode rendering system
         global $EMAIL_ATTACHMENTS;
-        $EMAIL_ATTACHMENTS = array();
+        $EMAIL_ATTACHMENTS = [];
 
         // May not be enabled for various reasons
         if (!$this->is_enabled()) {
@@ -638,15 +638,15 @@ abstract class Mail_dispatcher_base
         }
 
         // Cleanup from last send
-        $this->real_attachments = array();
-        $this->cid_attachments_url_mapping = array();
-        $this->cid_attachments = array();
+        $this->real_attachments = [];
+        $this->cid_attachments_url_mapping = [];
+        $this->cid_attachments = [];
 
         // Normalise/check input
         $lang = get_site_default_lang(); // Returned by reference if we want something else
         $theme = 'default'; // Returned by reference if we want something else
         $this->tidy_parameters($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme);
-        if ($to_emails == array()) {
+        if ($to_emails == []) {
             require_code('files2');
             clean_temporary_mail_attachments($this->attachments);
 
@@ -722,7 +722,7 @@ abstract class Mail_dispatcher_base
         require_code('files2');
         clean_temporary_mail_attachments($this->attachments);
 
-        return array($worked, $error);
+        return [$worked, $error];
     }
 
     /**
@@ -764,7 +764,7 @@ abstract class Mail_dispatcher_base
         if ($this->plain_subject) {
             $subject_wrapped = $subject_line;
         } else {
-            $_subject_wrapped = do_template('MAIL_SUBJECT', array('_GUID' => '44a57c666bb00f96723256e26aade9e5', 'SUBJECT_LINE' => $subject_line), $lang, false, null, '.txt', 'text', $theme);
+            $_subject_wrapped = do_template('MAIL_SUBJECT', ['_GUID' => '44a57c666bb00f96723256e26aade9e5', 'SUBJECT_LINE' => $subject_line], $lang, false, null, '.txt', 'text', $theme);
             $subject_wrapped = trim($_subject_wrapped->evaluate($lang));
         }
 
@@ -785,15 +785,15 @@ abstract class Mail_dispatcher_base
 
         // Evaluate message. Needs doing early so we know if we have any headers
         if (!$this->in_html) {
-            $cache_sig = serialize(array(
+            $cache_sig = serialize([
                 $lang,
                 $this->mail_template,
                 $subject_wrapped,
                 $theme,
                 crc32($message_raw),
-            ));
+            ]);
 
-            static $html_content_cache = array();
+            static $html_content_cache = [];
             if (isset($html_content_cache[$cache_sig])) {
                 list($html_evaluated, $message_plain, $EMAIL_ATTACHMENTS) = $html_content_cache[$cache_sig];
             } else {
@@ -814,21 +814,21 @@ abstract class Mail_dispatcher_base
                     $html_evaluated = $_html_content;
                     $derive_css = (strpos($_html_content, '{CSS') !== false);
                 } else {
-                    $message_html = do_template($this->mail_template, array(
+                    $message_html = do_template($this->mail_template, [
                         '_GUID' => 'b23069c20202aa59b7450ebf8d49cde1',
                         'CSS' => '{CSS}',
                         'LOGOURL' => get_logo_url(''),
                         'LANG' => $lang,
                         'TITLE' => $subject_wrapped,
                         'CONTENT' => $_html_content,
-                    ), $lang, false, 'MAIL', '.tpl', 'templates', $theme);
+                    ], $lang, false, 'MAIL', '.tpl', 'templates', $theme);
                 }
                 if ($derive_css) {
                     require_css('email');
                     $css = css_tempcode(true, false, ($message_html === null) ? null : $message_html->evaluate($lang), $theme);
                     $_css = $css->evaluate($lang);
                     if (!$this->allow_ext_images) {
-                        $_css = preg_replace_callback('#url\(["\']?(https?://[^"]*)["\']?\)#U', array($this, 'mail_css_rep_callback'), $_css);
+                        $_css = preg_replace_callback('#url\(["\']?(https?://[^"]*)["\']?\)#U', [$this, 'mail_css_rep_callback'], $_css);
                     }
                     if ($message_html !== null) {
                         $message_html->singular_bind('CSS', $_css);
@@ -838,16 +838,16 @@ abstract class Mail_dispatcher_base
 
                 // Cleanup the Comcode a bit
                 $message_plain = strip_comcode($message_raw);
-                $message_plain = static_evaluate_tempcode(do_template($this->mail_template, array(
+                $message_plain = static_evaluate_tempcode(do_template($this->mail_template, [
                      '_GUID' => 'a23069c20202aa59b7450ebf8d49cde1',
                      'CSS' => '{CSS}',
                      'LOGOURL' => get_logo_url(''),
                      'LANG' => $lang,
                      'TITLE' => $subject_wrapped,
                      'CONTENT' => $message_plain,
-                 ), $lang, false, 'MAIL', '.txt', 'text', $theme));
+                 ], $lang, false, 'MAIL', '.txt', 'text', $theme));
 
-                $html_content_cache[$cache_sig] = array($html_evaluated, $message_plain, $EMAIL_ATTACHMENTS);
+                $html_content_cache[$cache_sig] = [$html_evaluated, $message_plain, $EMAIL_ATTACHMENTS];
 
                 pop_media_mode();
             }
@@ -865,7 +865,7 @@ abstract class Mail_dispatcher_base
             $headers .= 'X-Sender: <' . $this->_sender_email . '>' . $this->line_term;
         } // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
         $headers .= 'Reply-To: <' . $from_email . '>' . $this->line_term;
-        if ($this->cc_addresses !== array()) {
+        if ($this->cc_addresses !== []) {
             $headers .= 'Cc: ';
             foreach ($this->cc_addresses as $i => $cc_address) {
                 if ($i != 0) {
@@ -875,7 +875,7 @@ abstract class Mail_dispatcher_base
             }
             $headers .= $this->line_term;
         }
-        if ($this->bcc_addresses !== array()) {
+        if ($this->bcc_addresses !== []) {
             $headers .= 'Bcc: ';
             foreach ($this->bcc_addresses as $i => $bcc_address) {
                 if ($i != 0) {
@@ -937,13 +937,13 @@ abstract class Mail_dispatcher_base
         $sending_message .= 'Content-Type: text/html; charset=' . ((preg_match($regexp, $html_evaluated) == 0) ? $charset : 'us-ascii') . $this->line_term; // .'; name="message.html"'. Outlook doesn't like: makes it think it's an attachment
         if (!$this->allow_ext_images) {
             $cid_before = array_keys($this->cid_attachments_url_mapping);
-            $html_evaluated = preg_replace_callback('#<img\s([^>]*)src="(https?://[^"]*)"#U', array($this, 'mail_img_rep_callback'), $html_evaluated);
+            $html_evaluated = preg_replace_callback('#<img\s([^>]*)src="(https?://[^"]*)"#U', [$this, 'mail_img_rep_callback'], $html_evaluated);
             $cid_just_html = array_diff(array_keys($this->cid_attachments_url_mapping), $cid_before);
-            $matches = array();
-            foreach (array('#<([^"<>]*\s)style="([^"]*)"#', '#<style( [^<>]*)?' . '>(.*)</style>#Us') as $over) {
+            $matches = [];
+            foreach (['#<([^"<>]*\s)style="([^"]*)"#', '#<style( [^<>]*)?' . '>(.*)</style>#Us'] as $over) {
                 $num_matches = preg_match_all($over, $html_evaluated, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
-                    $altered_inner = preg_replace_callback('#url\(["\']?(https?://[^"]*)["\']?\)#U', array($this, 'mail_css_rep_callback'), $matches[2][$i]);
+                    $altered_inner = preg_replace_callback('#url\(["\']?(https?://[^"]*)["\']?\)#U', [$this, 'mail_css_rep_callback'], $matches[2][$i]);
                     if ($matches[2][$i] != $altered_inner) {
                         $altered_outer = str_replace($matches[2][$i], $altered_inner, $matches[0][$i]);
                         $html_evaluated = str_replace($matches[0][$i], $altered_outer, $html_evaluated);
@@ -978,13 +978,13 @@ abstract class Mail_dispatcher_base
                 $sending_message .= chunk_split(base64_encode($file_contents), 76, $this->line_term);
             }
 
-            $cid_attachment = array(
+            $cid_attachment = [
                 'mime' => $mime_type,
                 'filename' => $filename,
                 'contents' => $file_contents,
                 'temp' => false,
                 'cid' => $id,
-            );
+            ];
             $this->cid_attachments[] = $cid_attachment;
         }
         $sending_message .= $this->line_term . '--' . $boundary3 . '--' . $this->line_term;
@@ -992,7 +992,7 @@ abstract class Mail_dispatcher_base
         $sending_message .= $this->line_term . '--' . $boundary2 . '--' . $this->line_term;
 
         // Attachments
-        $this->real_attachments = array();
+        $this->real_attachments = [];
         foreach ($this->attachments as $path => $filename) {
             $mime_type = get_mime_type(get_file_extension($filename), has_privilege($this->as, 'comcode_dangerous'));
 
@@ -1002,14 +1002,14 @@ abstract class Mail_dispatcher_base
                 }
                 $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
-                $real_attachment = array(
+                $real_attachment = [
                     'mime' => $mime_type,
                     'filename' => $filename,
                     'path' => $path,
                     'temp' => false,
-                );
+                ];
             } else {
-                $result = cms_http_request($path, array('trigger_error' => false));
+                $result = cms_http_request($path, ['trigger_error' => false]);
                 if ($result->data === null) {
                     continue;
                 }
@@ -1017,12 +1017,12 @@ abstract class Mail_dispatcher_base
                     $mime_type = $result->download_mime_type;
                 }
 
-                $real_attachment = array(
+                $real_attachment = [
                     'mime' => $mime_type,
                     'filename' => $filename,
                     'contents' => $result->data,
                     'temp' => false,
-                );
+                ];
             }
 
             $sending_message .= '--' . $boundary . $this->line_term;
@@ -1048,7 +1048,7 @@ abstract class Mail_dispatcher_base
         $this->mime_data = $this->assemble_full_mime_message($to_emails, $to_names, 0, $subject_wrapped, $headers, $sending_message, $to_line);
 
         // Return what we need
-        return array($to_emails, $to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
+        return [$to_emails, $to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain];
     }
 
     /**
@@ -1119,9 +1119,9 @@ abstract class Mail_dispatcher_base
 
         // To e-mail (an array)
         if ($to_emails === null) {
-            $to_emails = array($staff_address);
+            $to_emails = [$staff_address];
         }
-        $to_emails_new = array();
+        $to_emails_new = [];
         foreach ($to_emails as $_to_email) {
             escape_header($_to_email);
             if ($_to_email != '') {
@@ -1131,9 +1131,9 @@ abstract class Mail_dispatcher_base
         $to_emails = $to_emails_new;
 
         // To name (an array)
-        if ($to_names === null || $to_names === array() || $to_names === '') {
+        if ($to_names === null || $to_names === [] || $to_names === '') {
             if ($to_emails[0] == $staff_address) {
-                $to_names = array();
+                $to_names = [];
                 for ($i = 0; $i < count($to_emails); $i++) {
                     $to_names[] = get_site_name();
                 }
@@ -1142,7 +1142,7 @@ abstract class Mail_dispatcher_base
             }
         } else {
             if (!is_array($to_names)) {
-                $to_names = array($to_names);
+                $to_names = [$to_names];
             }
         }
         for ($i = count($to_names); $i < count($to_emails); $i++) {
@@ -1219,7 +1219,7 @@ abstract class Mail_dispatcher_base
             });
         }
 
-        $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', array(
+        $GLOBALS['SITE_DB']->query_insert('logged_mail_messages', [
             'm_subject' => cms_mb_substr($subject_line, 0, 255),
             'm_message' => $message_raw,
             'm_to_email' => serialize($to_emails),
@@ -1242,7 +1242,7 @@ abstract class Mail_dispatcher_base
             'm_template' => $this->mail_template,
             'm_sender_email' => ($this->sender_email === null) ? '' : $this->sender_email,
             'm_plain_subject' => $this->plain_subject ? 1 : 0,
-        ), false, !$queued); // No errors if we don't NEED this to work
+        ], false, !$queued); // No errors if we don't NEED this to work
     }
 
     /**
@@ -1314,10 +1314,10 @@ abstract class Mail_dispatcher_base
             $file_contents = @cms_file_get_contents_safe($file_path_stub, FILE_READ_LOCK);
         } else {
             $file_contents = null;
-            $matches = array();
+            $matches = [];
             require_code('attachments');
             if ((preg_match('#^' . preg_quote(find_script('attachment'), '#') . '\?id=(\d+)&amp;thumb=(0|1)#', $img, $matches) != 0) && (strpos($img, 'forum_db=1') === false)) {
-                $rows = $GLOBALS['SITE_DB']->query_select('attachments', array('*'), array('id' => intval($matches[1])), 'ORDER BY a_add_time DESC');
+                $rows = $GLOBALS['SITE_DB']->query_select('attachments', ['*'], ['id' => intval($matches[1])], 'ORDER BY a_add_time DESC');
                 require_code('attachments');
                 if ((array_key_exists(0, $rows)) && (has_attachment_access($as, intval($matches[1])))) {
                     $myrow = $rows[0];
@@ -1344,7 +1344,7 @@ abstract class Mail_dispatcher_base
                 }
             }
             if ($file_contents === null) {
-                $http_result = cms_http_request($img, array('trigger_error' => false, 'byte_limit' => 1024 * 1024 * 5));
+                $http_result = cms_http_request($img, ['trigger_error' => false, 'byte_limit' => 1024 * 1024 * 5]);
                 $file_contents = $http_result->data;
                 if ($file_contents === null) {
                     return null;
@@ -1362,7 +1362,7 @@ abstract class Mail_dispatcher_base
             }
         }
 
-        return array($mime_type, $filename, $file_contents);
+        return [$mime_type, $filename, $file_contents];
     }
 
     /**
@@ -1431,26 +1431,26 @@ function filter_css($c, $theme, $context)
     }
 
     // Reduce input parameters to critical components, and cache on - saves a lot of time if multiple e-mails sent by script
-    static $cache = array();
+    static $cache = [];
     $simple_sig = preg_replace('#\s+(?!class)(?!id)[\w\-]+="[^"<>]*"#', '', preg_replace('#[^<>]*(<[^<>]+>)[^<>]*#s', '${1}', $context));
     $simple_sig .= $c . $theme;
     if (isset($cache[$simple_sig])) {
         return $cache[$simple_sig];
     }
 
-    $_css = do_template($c, array(), user_lang(), true/*can't fail on this error because it could be an e-mail from queue, with different addon state*/, null, '.css', 'css', $theme);
+    $_css = do_template($c, [], user_lang(), true/*can't fail on this error because it could be an e-mail from queue, with different addon state*/, null, '.css', 'css', $theme);
     $css = $_css->evaluate();
 
     // Find out all our IDs
-    $ids = array();
-    $matches = array();
+    $ids = [];
+    $matches = [];
     $count = preg_match_all('#\sid=["\']([^"\']*)["\']#', $context, $matches);
     for ($i = 0; $i < $count; $i++) {
         $ids[$matches[1][$i]] = true;
     }
 
     // Find out all our classes
-    $classes = array();
+    $classes = [];
     $count = preg_match_all('#\sclass=["\']([^"\']*)["\']#', $context, $matches);
     for ($i = 0; $i < $count; $i++) {
         if ($matches[1][$i] == '') {
@@ -1461,7 +1461,7 @@ function filter_css($c, $theme, $context)
     $classes = array_flip($classes);
 
     // Find all our XHTML tags
-    $tags = array();
+    $tags = [];
     $count = preg_match_all('#<(\w+)([^\w])#', $context, $matches);
     for ($i = 0; $i < $count; $i++) {
         $tags[$matches[1][$i]] = true;
@@ -1475,7 +1475,7 @@ function filter_css($c, $theme, $context)
     $css = preg_replace('#@media[^\{\}]*\{(' . $middle_regexp . ')*\}#s', '', $css);
 
     // Find and process each CSS selector block
-    $stack = array();
+    $stack = [];
     $css_new = '';
     $last_pos = 0;
     do {
@@ -1506,7 +1506,7 @@ function filter_css($c, $theme, $context)
                             continue;
                         }
 
-                        $matches = array();
+                        $matches = [];
 
                         // ID selectors
                         $num_matches = preg_match_all('#\#(\w+)#', $selector, $matches);

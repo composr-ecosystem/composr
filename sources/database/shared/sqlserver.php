@@ -41,7 +41,7 @@ class Database_super_sqlserver extends DatabaseDriver
             $query = ltrim($query);
 
             // Unfortunately we can't apply to DELETE FROM and update :(. But its not too important, LIMIT'ing them was unnecessarily anyway
-            $prefixes_recognised = array(
+            $prefixes_recognised = [
                 'SELECT DISTINCT TOP' => false,
                 'SELECT DISTINCT' => true,
                 'SELECT TOP' => false,
@@ -50,7 +50,7 @@ class Database_super_sqlserver extends DatabaseDriver
                 '(SELECT DISTINCT' => true,
                 '(SELECT TOP' => false,
                 '(SELECT' => true,
-            );
+            ];
             foreach ($prefixes_recognised as $prefix => $use) {
                 if (strtoupper(substr($query, 0, strlen($prefix) + 1)) == $prefix . ' ') {
                     if ($use) {
@@ -139,7 +139,7 @@ class Database_super_sqlserver extends DatabaseDriver
      */
     public function get_type_remap($for_alter = false)
     {
-        $type_remap = array(
+        $type_remap = [
             'AUTO' => 'integer identity',
             'AUTO_LINK' => 'integer',
             'INTEGER' => 'integer',
@@ -161,7 +161,7 @@ class Database_super_sqlserver extends DatabaseDriver
             'IP' => 'nvarchar(40)',
             'LANGUAGE_NAME' => 'nvarchar(5)',
             'URLPATH' => 'nvarchar(255)',
-        );
+        ];
         return $type_remap;
     }
 
@@ -209,7 +209,7 @@ class Database_super_sqlserver extends DatabaseDriver
         }
 
         $query_create = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
-        $ret = array($query_create);
+        $ret = [$query_create];
 
         if (running_script('commandr')) {
             if (in_array('*AUTO', $fields)) {
@@ -252,12 +252,12 @@ class Database_super_sqlserver extends DatabaseDriver
     public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
     {
         if ($index_name[0] == '#') {
-            $ret = array();
+            $ret = [];
             if ($this->has_full_text($connection)) {
                 $index_name = substr($index_name, 1);
 
                 // Only allowed one index per table, so we need to merge in any existing indices
-                $existing_index_fields = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_name', 'i_fields'), array('i_table' => $raw_table_name));
+                $existing_index_fields = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name', 'i_fields'], ['i_table' => $raw_table_name]);
                 foreach ($existing_index_fields as $existing_index_field) {
                     if (substr($existing_index_field['i_name'], 0, 1) == '#') {
                         $_fields .= ',' . $existing_index_field['i_fields'];
@@ -297,11 +297,11 @@ class Database_super_sqlserver extends DatabaseDriver
             if ((strpos($field_type, 'LONG') !== false) || ((!multi_lang_content()) && (strpos($field_type, 'SHORT_TRANS') !== false))) {
                 // We can't support this in SQL Server https://blogs.msdn.microsoft.com/bartd/2011/01/06/living-with-sqls-900-byte-index-key-length-limit/.
                 // We assume shorter numbers than 250 are only being used on short columns anyway, which will index perfectly fine without any constraint.
-                return array();
+                return [];
             }
         }
 
-        return array('CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')');
+        return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')'];
     }
 
     /**
@@ -313,7 +313,7 @@ class Database_super_sqlserver extends DatabaseDriver
      */
     public function drop_table_if_exists($table)
     {
-        return array('IF EXISTS (SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table);
+        return ['IF EXISTS (SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
     }
 
     /**

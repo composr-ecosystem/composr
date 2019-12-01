@@ -31,7 +31,7 @@ class Hook_addon_registry_sms
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_sms
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_notifications',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_sms
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_sms
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/sms.php',
             'sources/hooks/systems/addon_registry/sms.php',
             'sources/sms.php',
@@ -111,7 +111,7 @@ class Hook_addon_registry_sms
             'sources/hooks/systems/config/sms_api_id.php',
             'sources/hooks/systems/cns_cpf_filter/sms.php',
             'data/sms.php',
-        );
+        ];
     }
 
     /**
@@ -135,14 +135,14 @@ class Hook_addon_registry_sms
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('sms_log', array(
+            $GLOBALS['SITE_DB']->create_table('sms_log', [
                 'id' => '*AUTO',
                 's_member_id' => 'MEMBER',
                 's_time' => 'TIME',
                 's_trigger_ip' => 'IP',
-            ));
-            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_log_for', array('s_member_id', 's_time'));
-            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_trigger_ip', array('s_trigger_ip'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_log_for', ['s_member_id', 's_time']);
+            $GLOBALS['SITE_DB']->create_index('sms_log', 'sms_trigger_ip', ['s_trigger_ip']);
             add_privilege('GENERAL_SETTINGS', 'use_sms', false);
             add_privilege('GENERAL_SETTINGS', 'sms_higher_limit', false);
             add_privilege('GENERAL_SETTINGS', 'sms_higher_trigger_limit', false);

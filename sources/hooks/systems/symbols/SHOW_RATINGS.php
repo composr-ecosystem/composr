@@ -38,32 +38,32 @@ class Hook_symbol_SHOW_RATINGS
             $rating_id = $param[1];
             $max = (!empty($param[2])) ? intval($param[2]) : 30;
 
-            $ratings = array();
-            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', array('rating_member', 'rating_ip', 'rating_time', 'rating'), array('rating_for_type' => $rating_type, 'rating_for_id' => $rating_id), 'ORDER BY rating_time DESC', $max);
+            $ratings = [];
+            $_ratings = $GLOBALS['SITE_DB']->query_select('rating', ['rating_member', 'rating_ip', 'rating_time', 'rating'], ['rating_for_type' => $rating_type, 'rating_for_id' => $rating_id], 'ORDER BY rating_time DESC', $max);
             foreach ($_ratings as $rating) {
-                $ratings[] = array(
+                $ratings[] = [
                     'RATING_MEMBER' => strval($rating['rating_member']),
                     'RATING_USERNAME' => is_guest($rating['rating_member']) ? '' : $GLOBALS['FORUM_DRIVER']->get_username($rating['rating_member'], false, USERNAME_DEFAULT_BLANK),
                     'RATING_IP' => $rating['rating_ip'],
                     'RATING_TIME' => strval($rating['rating_time']),
                     'RATING_TIME_FORMATTED' => get_timezoned_date_time($rating['rating_time']),
                     'RATING' => strval($rating['rating']),
-                );
+                ];
             }
             if (count($_ratings) < $max) {
                 $cnt = count($_ratings);
             } else {
-                $cnt = $GLOBALS['SITE_DB']->query_select_value('rating', 'COUNT(*)', array('rating_for_type' => $rating_type, 'rating_for_id' => $rating_id));
+                $cnt = $GLOBALS['SITE_DB']->query_select_value('rating', 'COUNT(*)', ['rating_for_type' => $rating_type, 'rating_for_id' => $rating_id]);
             }
 
-            $_value = do_template('RATINGS_SHOW', array(
+            $_value = do_template('RATINGS_SHOW', [
                 '_GUID' => 'fda94aa20508a071853e56e14c13fe3c',
                 'RATINGS' => $ratings,
                 'HAS_MORE' => $cnt > count($_ratings),
                 'MAX' => strval($max),
                 'CNT' => strval($cnt),
                 'CNT_REMAINING' => strval($cnt - count($ratings)),
-            ));
+            ]);
             $value = static_evaluate_tempcode($_value);
         }
 

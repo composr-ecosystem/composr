@@ -38,7 +38,7 @@ function autofill_geo_cpfs($member_id = null)
     $start = 0;
     $max = 100;
     do {
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields f JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m ON m.id=f.mf_member_id', array('f.*', 'm.id', 'm_ip_address'), $where, 'ORDER BY mf_member_id', $max, $start);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields f JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m ON m.id=f.mf_member_id', ['f.*', 'm.id', 'm_ip_address'], $where, 'ORDER BY mf_member_id', $max, $start);
         foreach ($rows as $row) {
             _autofill_geo_cpfs($row);
         }
@@ -83,12 +83,12 @@ function _autofill_geo_cpfs($row)
     $has_gps = $has_latitude && $has_longitude;
     $has_ip = !empty($row['m_ip_address']);
 
-    $changes = array();
+    $changes = [];
 
     // GPS from address
     if ((!$has_latitude || !$has_longitude) && (isset($latitude_field)) && (isset($longitude_field))) {
         if ($has_address) {
-            $address_components = array();
+            $address_components = [];
             if ($has_street_address) {
                 $address_components[] = $row['field_' . strval($street_address_field)];
             }
@@ -154,6 +154,6 @@ function _autofill_geo_cpfs($row)
 
     // Save
     if (!empty($changes)) {
-        $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => $row['mf_member_id']), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, ['mf_member_id' => $row['mf_member_id']], '', 1);
     }
 }

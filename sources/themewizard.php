@@ -26,12 +26,12 @@
 function init__themewizard()
 {
     global $THEMEWIZARD_IMAGES_CACHE, $THEME_DARK_CACHE;
-    $THEMEWIZARD_IMAGES_CACHE = array();
-    $THEME_DARK_CACHE = array();
+    $THEMEWIZARD_IMAGES_CACHE = [];
+    $THEME_DARK_CACHE = [];
 
     global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD;
-    $THEMEWIZARD_IMAGES = array('');
-    $THEMEWIZARD_IMAGES_NO_WILD = array();
+    $THEMEWIZARD_IMAGES = [''];
+    $THEMEWIZARD_IMAGES_NO_WILD = [];
 
     $hooks = find_all_hook_obs('modules', 'admin_themewizard', 'Hook_admin_themewizard_');
     foreach ($hooks as $ob) {
@@ -81,7 +81,7 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
                     $css_path = get_file_base() . '/themes/default/css/' . $sheet;
                 }
                 $css_file = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\{\$IMG[;\#]?,([\w\-]+)\}#', $css_file, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     if ((preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*no-repeat#', $css_file) == 0) || (preg_match('#' . preg_quote($matches[0][$i]) . '[\'"]?\)[^\n]*width:\s*\d\d\d+px#', $css_file) != 0) || (preg_match('#width:\s*\d\d\d+px;[^\n]*' . preg_quote($matches[0][$i]) . '[\'"]?\)#', $css_file) != 0)) {
@@ -128,7 +128,7 @@ function find_theme_dark($theme)
         return false;
     }
     $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-    $matches = array();
+    $matches = [];
     if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
         $THEME_DARK_CACHE[$theme] = (strtoupper($matches[1]) != 'FFFFFF');
     } else {
@@ -174,7 +174,7 @@ function find_theme_image_themewizard_preview($id, $silent_fail = false)
     if (!in_array($id, $THEMEWIZARD_IMAGES_NO_WILD)) {
         foreach ($THEMEWIZARD_IMAGES as $expression) {
             if (($expression == $id) || ((substr($expression, -1) == '*') && (substr($id, 0, strlen($expression) - 1) . '*' == $expression))) {
-                $keep = keep_symbol(array());
+                $keep = keep_symbol([]);
                 return find_script('themewizard') . '?type=image&show=' . urlencode($id) . $keep;
             }
         }
@@ -206,18 +206,18 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
     require_code('themes2');
 
     if ($theme === null) {
-        $theme = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', array('zone_name' => ''));
+        $theme = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']);
         if (($theme == '') || ($theme == '-1')) {
             $theme = 'default';
         }
     }
 
-    if (!in_array($logo_type, array('large', 'standalone', 'small', 'small_white'))) {
+    if (!in_array($logo_type, ['large', 'standalone', 'small', 'small_white'])) {
         // Invalid value for provided for `$logo_type`
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    $logowizard_details = array(
+    $logowizard_details = [
         'logo_x_offset' => get_theme_option('logo_x_offset'),
         'logo_y_offset' => get_theme_option('logo_y_offset'),
         'site_name_colour' => get_theme_option('site_name_colour'),
@@ -232,7 +232,7 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
         'site_name_x_offset' => get_theme_option('site_name_x_offset'),
         'site_name_y_offset' => get_theme_option('site_name_y_offset'),
         'site_name_y_offset_small' => get_theme_option('site_name_y_offset_small'),
-    );
+    ];
 
     // Find font details
     require_code('fonts');
@@ -279,7 +279,7 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
             // Make the logo icon/image white:
             $im_logo_width = imagesx($im_logo);
             $im_logo_height = imagesy($im_logo);
-            $white_colors_by_alpha = array();
+            $white_colors_by_alpha = [];
             for ($x = 0; $x < $im_logo_width; $x++) {
                 for ($y = 0; $y < $im_logo_height; $y++) {
                     $alpha = imagecolorat($im_logo, $x, $y) >> 24;
@@ -314,14 +314,14 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
         } else {
             $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         }
-        $matches = array();
+        $matches = [];
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9]),site_name_text_color,#i', $css_file, $matches) != 0) {
             $text_colour = imagecolorallocate($im_canvas, hexdec($matches[1]), hexdec($matches[2]), hexdec($matches[3]));
         }
     }
 
     // Write text onto the canvas
-    $do = array();
+    $do = [];
     if (($font_width > intval($logowizard_details['site_name_split'])) && (strpos($name, ' ') !== false)) { // Split in two
         if (has_ttf()) {
             list(, , , , , , , $small_font_height) = imagettfbbox(floatval($logowizard_details['site_name_font_size_small']), 0.0, $font_path, convert_to_html_encoding($name));
@@ -337,16 +337,16 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
                 $text_line_2 .= $bit . ' ';
             }
         }
-        $do[] = array($text_line_1, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset_small']) + $small_font_height, intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour);
-        $do[] = array($text_line_2, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset_small']) + $small_font_height * 2 + intval($logowizard_details['site_name_split_gap']), intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour);
+        $do[] = [$text_line_1, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset_small']) + $small_font_height, intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour];
+        $do[] = [$text_line_2, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset_small']) + $small_font_height * 2 + intval($logowizard_details['site_name_split_gap']), intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour];
     } elseif ($font_width > intval($logowizard_details['site_name_split'])) { // Smaller font
         if (has_ttf()) {
             list(, , , , , , , $font_height) = imagettfbbox(floatval($logowizard_details['site_name_font_size_small']), 0.0, $font_path, convert_to_html_encoding($name));
             $font_height = max($font_height, -$font_height);
         }
-        $do[] = array($name, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset']) + $font_height, intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour);
+        $do[] = [$name, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset']) + $font_height, intval($logowizard_details['site_name_font_size_small']), $font_path, $text_colour];
     } else { // Show normally
-        $do[] = array($name, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset']) + $font_height, floatval($logowizard_details['site_name_font_size']), $font_path, $text_colour);
+        $do[] = [$name, intval($logowizard_details['site_name_x_offset']), intval($logowizard_details['site_name_y_offset']) + $font_height, floatval($logowizard_details['site_name_font_size']), $font_path, $text_colour];
     }
     foreach ($do as $i => $doing) {
         if (has_ttf()) {
@@ -432,7 +432,7 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
 
     if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
         require_code('abstract_file_manager');
-        force_have_afm_details(array('themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*'));
+        force_have_afm_details(['themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*']);
         $extending_existing = true;
     } else {
         // The below operations will also activate the AFM
@@ -451,7 +451,7 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
         global $THEMEWIZARD_IMAGES, $THEMEWIZARD_IMAGES_NO_WILD, $THEME_IMAGES_CACHE;
         if (function_exists('imagecolorallocatealpha')) {
             require_code('themes2');
-            $full_img_set = array();
+            $full_img_set = [];
             foreach ($THEMEWIZARD_IMAGES as $expression) {
                 if (substr($expression, -1) == '*') {
                     $expression = substr($expression, 0, strlen($expression) - 2); // remove "/*"
@@ -463,9 +463,9 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
             }
 
             if ($extending_existing) {
-                $temp_all_ids = collapse_2d_complexity('id', 'url', $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), array('theme' => $theme_name)));
+                $temp_all_ids = collapse_2d_complexity('id', 'url', $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $theme_name]));
             } else {
-                $temp_all_ids = array();
+                $temp_all_ids = [];
             }
 
             $_langs = find_all_langs(true);
@@ -498,7 +498,7 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
 
                         // Wipe out ones that might have been copied from source theme
                         if (($source_theme != 'default') && (strpos($orig_url, 'images_custom') !== false)) {
-                            foreach (array('png', 'jpg', 'gif', 'jpeg') as $ext) {
+                            foreach (['png', 'jpg', 'gif', 'jpeg'] as $ext) {
                                 $old_delete_path = str_replace('/images/', '/images_custom/', basename($saveat, '.png')) . '.' . $ext;
                                 @unlink($old_delete_path);
                                 sync_file($old_delete_path);
@@ -607,7 +607,7 @@ function themewizard_script()
     $dark = ($_dark === null) ? null : ($_dark == 1);
     if ($type == 'preview') {
         $_tpl = do_template('THEMEWIZARD_2_PREVIEW');
-        $tpl = do_template('STANDALONE_HTML_WRAP', array('_GUID' => '652b7df378b36714cb9dfa146490cbb8', 'TITLE' => do_lang_tempcode('PREVIEW'), 'CONTENT' => $_tpl, 'FRAME' => true));
+        $tpl = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '652b7df378b36714cb9dfa146490cbb8', 'TITLE' => do_lang_tempcode('PREVIEW'), 'CONTENT' => $_tpl, 'FRAME' => true]);
         $tpl->evaluate_echo();
     }
     if ($type == 'css' || $type == 'css_raw') {
@@ -730,7 +730,7 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
     }
 
     if (($landscape === null) || ($colours === null)) {
-        $colours = array(
+        $colours = [
             // Hints for computation
             'dark' => ($light_dark == 'dark') ? '1' : '0',
             'red' => strval($red),
@@ -744,16 +744,16 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
             'seed' => $seed,
             'WB' => $wb,
             'BW' => $awb,
-        );
+        ];
         if ($algorithm == 'equations') {
             list($colours, $landscape) = calculate_dynamic_css_colours($colours, $source_theme);
         } else {
-            $landscape = array();
+            $landscape = [];
         }
     }
 
     if ($show === 'colours') {// Whether to just calculate colours
-        return array($colours, $landscape);
+        return [$colours, $landscape];
     }
 
     /* Calculate image */
@@ -783,7 +783,7 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
             $img = re_hue_image($path, $seed, $source_theme, true);
         } else {
             if ($source_theme == 'default') {
-                $needed = array('washed_out', 'area_background', 'lgrad', 'dgrad', 'dark_border', 'comcode_quote_left', 'comcode_quote_right', 'a.link', 'a.hover', 'a.link__dark', 'a.hover__dark', 'special_borderer', 'cns_redirect_indicator', 'cns_post_indicator', 'slightly_seeded_text', 'special_middle',);
+                $needed = ['washed_out', 'area_background', 'lgrad', 'dgrad', 'dark_border', 'comcode_quote_left', 'comcode_quote_right', 'a.link', 'a.hover', 'a.link__dark', 'a.hover__dark', 'special_borderer', 'cns_redirect_indicator', 'cns_post_indicator', 'slightly_seeded_text', 'special_middle',];
                 foreach ($needed as $colour_needed) {
                     if (!array_key_exists($colour_needed, $colours)) {
                         warn_exit(do_lang_tempcode('UNRESOLVABLE_COLOURS', escape_html($colour_needed)), false, true);
@@ -812,9 +812,9 @@ function calculate_theme($seed, $source_theme, $algorithm, $show = 'colours', $d
                     $img = generate_recoloured_image($path, '#12467A', $colours['a.link'], '#0A223D', $colours['a.link__dark']);
                 } elseif ($show == 'icons/arrow_box/arrow_box_hover') {
                     $img = generate_recoloured_image($path, '#12467A', $colours['a.hover'], '#0A223D', $colours['a.hover__dark']);
-                } elseif (in_array($show, array('icons/cns_general/no_new_posts_redirect', 'icons/cns_general/new_posts_redirect'))) {
+                } elseif (in_array($show, ['icons/cns_general/no_new_posts_redirect', 'icons/cns_general/new_posts_redirect'])) {
                     $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#549B8C', $colours['cns_redirect_indicator']);
-                } elseif (in_array($show, array('icons/cns_general/redirect', 'icons/cns_general/redirect', 'icons/cns_general/no_new_posts', 'icons/cns_general/new_posts'))) {
+                } elseif (in_array($show, ['icons/cns_general/redirect', 'icons/cns_general/redirect', 'icons/cns_general/no_new_posts', 'icons/cns_general/new_posts'])) {
                     $img = generate_recoloured_image($path, '#FFFFFF', '#FFFFFF', '#5A84C4', $colours['cns_post_indicator']);
                 } else { // These are less special... we just change the hue
                     $img = re_hue_image($path, $seed, $source_theme);
@@ -844,15 +844,15 @@ function calculate_dynamic_css_colours($colours, $source_theme)
     require_lang('themes');
 
     // Initialise landscape
-    $landscape = array();
+    $landscape = [];
     foreach ($colours as $key => $val) {
         if (preg_match('#^[0-9a-f]{6}$#i', $val) != 0) {
-            $landscape[$key] = array(
+            $landscape[$key] = [
                 $key, // Colour name
                 null, // Parsed expression
                 null, // Full match string
                 $val, // Final colour
-            );
+            ];
         }
     }
 
@@ -862,24 +862,24 @@ function calculate_dynamic_css_colours($colours, $source_theme)
             $path = get_file_base() . '/themes/' . $theme . '/' . $css_dir . '/' . $sheet;
             $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
 
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\{\$THEMEWIZARD_COLOR,(.*),(.*),(.*)\}#', $contents, $matches);
 
             for ($i = 0; $i < $num_matches; $i++) {
                 // Skip over our little stored hints (not intended for calculation, comes with new seed)
-                if (in_array($matches[2][$i], array('seed', 'WB', 'BW'))) {
+                if (in_array($matches[2][$i], ['seed', 'WB', 'BW'])) {
                     continue;
                 }
 
                 // A one we're really interested in
                 $parsed = parse_css_colour_expression($matches[3][$i]);
                 if ($parsed !== null) {
-                    $landscape[] = array(
+                    $landscape[] = [
                         $matches[2][$i], // Colour name
                         $parsed, // Parsed expression
                         $matches[0][$i], // Full match string
                         null, // Final colour
-                    );
+                    ];
                 }
             }
         }
@@ -888,7 +888,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
     closedir($dh);
 
     // Then we resolve our expressions
-    $resolved_landscaped = array();
+    $resolved_landscaped = [];
     $safety_count = 0;
     while (!empty($landscape)) {
         foreach ($landscape as $i => $peak) {
@@ -918,7 +918,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
         }
     }
 
-    return array($colours, $resolved_landscaped);
+    return [$colours, $resolved_landscaped];
 }
 
 /**
@@ -954,12 +954,12 @@ function _parse_css_colour_expression($tokens)
 {
     // We now scan through, structuring into an evaluation-order tree (but not an expression tree  at the level we're operating on)
     // Parentheses
-    $new_tokens = array();
+    $new_tokens = [];
     for ($i = 0; $i < count($tokens); $i++) {
         if ($tokens[$i] === '(') {
             // Find matching closing token
             $extra_opened = 0;
-            $sub_tokens = array();
+            $sub_tokens = [];
             for ($i = $i + 1; $i < count($tokens); $i++) {
                 if ($tokens[$i] == '(') {
                     $extra_opened++;
@@ -979,7 +979,7 @@ function _parse_css_colour_expression($tokens)
     // Additions. Each addition is a pivot.
     for ($i = 0; $i < count($tokens); $i++) {
         if ($tokens[$i] === '+') {
-            return array('+', _parse_css_colour_expression(array_slice($tokens, 0, $i)), _parse_css_colour_expression(array_slice($tokens, $i + 1)));
+            return ['+', _parse_css_colour_expression(array_slice($tokens, 0, $i)), _parse_css_colour_expression(array_slice($tokens, $i + 1))];
         }
     }
 
@@ -990,14 +990,14 @@ function _parse_css_colour_expression($tokens)
 
     // Or we have a length of more than 3 tokens, in which case we pivot
     if (count($tokens) > 3) {
-        return array($tokens[1], $tokens[0], _parse_css_colour_expression(array_slice($tokens, 2)));
+        return [$tokens[1], $tokens[0], _parse_css_colour_expression(array_slice($tokens, 2))];
     }
 
     // Or we have just 3 tokens, a single operation
     if (!array_key_exists(2, $tokens)) {
         return null;
     }
-    return array($tokens[1], $tokens[0], $tokens[2]);
+    return [$tokens[1], $tokens[0], $tokens[2]];
 }
 
 /**
@@ -1227,7 +1227,7 @@ function rgb_to_hsv($rgb)
         }
     }
 
-    return array(intval(round($h * 255)), intval(round($s * 255)), intval(round($v * 255)));
+    return [intval(round($h * 255)), intval(round($s * 255)), intval(round($v * 255))];
 }
 
 /**
@@ -1348,12 +1348,12 @@ function themewizard_colours_to_css($contents, $landscape, $source_theme, $algor
         $sat_dif = 0;//$desired_s-$composr_s;     Actually causes weirdness
         $val_dif = $desired_v - $composr_v;
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\#([A-Fa-f0-9]{3,6})([^A-Fa-f0-9])#', $contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             list($h, $s, $v) = rgb_to_hsv((strlen($matches[1][$i]) == 3) ? ($matches[1][$i][0] . $matches[1][$i][0] . $matches[1][$i][1] . $matches[1][$i][1] . $matches[1][$i][2] . $matches[1][$i][2]) : $matches[1][$i]);
             $new_colour = hsv_to_rgb(floatval(fix_colour($h + $hue_dif, true)), floatval(fix_colour($s + $sat_dif)), floatval(fix_colour($v + $val_dif)));
-            $contents = str_replace(array(strtolower($matches[0][$i]), strtoupper($matches[0][$i])), array('#' . $new_colour . $matches[2][$i], '#' . $new_colour . $matches[2][$i]), $contents);
+            $contents = str_replace([strtolower($matches[0][$i]), strtoupper($matches[0][$i])], ['#' . $new_colour . $matches[2][$i], '#' . $new_colour . $matches[2][$i]], $contents);
         }
 
         return $contents;

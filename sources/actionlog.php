@@ -69,16 +69,16 @@ abstract class Hook_actionlog
                 return false;
             }
 
-            $bindings = array(
+            $bindings = [
                 'ID' => $identifier,
                 '0' => ($actionlog_row['param_a'] == '') ? null : $actionlog_row['param_a'],
                 '1' => ($actionlog_row['param_b'] == '') ? null : $actionlog_row['param_b'],
                 '0__EVEN_EMPTY' => $actionlog_row['param_a'],
                 '1__EVEN_EMPTY' => $actionlog_row['param_b'],
-            );
+            ];
             $this->get_extended_actionlog_bindings($actionlog_row, $identifier, $written_context, $bindings);
 
-            $followup_urls = array();
+            $followup_urls = [];
             $followup_page_links = $handler_data['followup_page_links'];
             foreach ($followup_page_links as $caption => $page_link) {
                 if ($page_link !== null) {
@@ -119,11 +119,11 @@ abstract class Hook_actionlog
                 }
             }
 
-            return array(
+            return [
                 'flags' => $handler_data['flags'],
                 'written_context' => $written_context,
                 'followup_urls' => $followup_urls,
-            );
+            ];
         }
 
         return null;
@@ -233,7 +233,7 @@ abstract class Hook_actionlog
      */
     public function get_handlers()
     {
-        return array();
+        return [];
     }
 }
 
@@ -288,13 +288,13 @@ function actionlog_linkage($actionlog_row, $crop_length_a = null, $crop_length_b
             } else {
                 $_written_context = tpl_crop_text_mouse_over($extended_data['written_context'], $crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/);
             }
-            $_a = do_template('ACTIONLOG_FOLLOWUP_URLS', array(
+            $_a = do_template('ACTIONLOG_FOLLOWUP_URLS', [
                 '_GUID' => 'd6d634cca4fdf5ff4e8c57a1190fca5d',
                 'WRITTEN_CONTEXT' => $_written_context,
                 'FOLLOWUP_URLS' => $extended_data['followup_urls'],
-            ));
+            ]);
             $_b = null;
-            return array($_a, $_b, $extended_data['flags'], $extended_data['followup_urls']);
+            return [$_a, $_b, $extended_data['flags'], $extended_data['followup_urls']];
         }
     }
 

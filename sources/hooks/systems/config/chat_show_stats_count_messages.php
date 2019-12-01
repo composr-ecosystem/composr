@@ -30,7 +30,7 @@ class Hook_config_chat_show_stats_count_messages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_CHATPOSTS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_chat_show_stats_count_messages
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

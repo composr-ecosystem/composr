@@ -30,7 +30,7 @@ class Hook_config_auto_submit_sitemap
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'AUTO_SUBMIT_SITEMAP',
             'type' => 'tick',
             'category' => 'SITE',
@@ -45,7 +45,7 @@ class Hook_config_auto_submit_sitemap
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'sitemap_submit',
-        );
+        ];
     }
 
     /**

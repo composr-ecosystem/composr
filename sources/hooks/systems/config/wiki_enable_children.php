@@ -30,7 +30,7 @@ class Hook_config_wiki_enable_children
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WIKI_ENABLE_CHILDREN',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_wiki_enable_children
             'public' => false,
 
             'addon' => 'wiki',
-        );
+        ];
     }
 
     /**

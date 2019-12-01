@@ -31,21 +31,21 @@ class Hook_actionlog_setupwizard extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('setupwizard')) {
-            return array();
+            return [];
         }
 
         require_lang('actionlog');
 
-        return array(
-            'SETUPWIZARD' => array(
+        return [
+            'SETUPWIZARD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'SETUPWIZARD' => '_SEARCH:admin_setupwizard',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

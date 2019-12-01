@@ -31,7 +31,7 @@ class Hook_preview_menu
     public function applies()
     {
         $applies = (get_page_name() == 'admin_menus');
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -45,9 +45,9 @@ class Hook_preview_menu
         require_code('menus2');
 
         $menu_type = get_param_string('menu_type', '');
-        $menu_types = array();
+        $menu_types = [];
         if ($menu_type == '') {
-            $matches = array();
+            $matches = [];
             $dh = opendir(get_file_base() . '/themes/default/templates/');
             while (($file = readdir($dh)) !== false) {
                 if (preg_match('^MENU\_([a-z]+)\.tpl$^', $file, $matches) != 0) {
@@ -71,7 +71,7 @@ class Hook_preview_menu
 
         delete_menu($menu_id);
 
-        $old_ids = array();
+        $old_ids = [];
 
         // Now, process everything on the root
         $ids = menu_items_being_saved();
@@ -100,6 +100,6 @@ class Hook_preview_menu
 
         delete_menu($menu_id);
 
-        return array($output, null);
+        return [$output, null];
     }
 }

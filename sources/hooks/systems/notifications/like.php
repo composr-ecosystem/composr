@@ -31,8 +31,8 @@ class Hook_notification_like extends Hook_Notification
      */
     public function list_handled_codes()
     {
-        $list = array();
-        $list['like'] = array(do_lang('ACTIVITY'), do_lang('NOTIFICATION_TYPE_like'));
+        $list = [];
+        $list['like'] = [do_lang('ACTIVITY'), do_lang('NOTIFICATION_TYPE_like')];
         return $list;
     }
 }

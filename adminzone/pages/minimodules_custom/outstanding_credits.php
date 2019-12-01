@@ -68,7 +68,7 @@ if ($field_id !== null) {
     $ujoin = do_lang_tempcode('JOIN_DATE');
     $ulast = do_lang_tempcode('LAST_VISIT_TIME');
 
-    $sortables = array('username' => $uname, 'credits' => $ucredits, 'join_date' => $ujoin, 'last_visit' => $ulast);
+    $sortables = ['username' => $uname, 'credits' => $ucredits, 'join_date' => $ujoin, 'last_visit' => $ulast];
     $test = explode(' ', get_param_string('sort', 'username DESC', INPUT_FILTER_GET_COMPLEX), 2);
     if (count($test) == 1) {
         $test[1] = 'DESC';
@@ -96,7 +96,7 @@ if ($field_id !== null) {
     }
 
     require_code('templates_results_table');
-    $header_row = results_header_row(array($uname, $ucredits, $ujoin, $ulast), $sortables, 'sort', $sortable . ' ' . $sort_order);
+    $header_row = results_header_row([$uname, $ucredits, $ujoin, $ulast], $sortables, 'sort', $sortable . ' ' . $sort_order);
     $fields_values = new Tempcode();
 
     $sql = 'SELECT a.m_username AS m_username, a.m_join_time AS m_join_time, a.m_last_visit_time AS m_last_visit_time, b.mf_member_id AS mf_member_id, field_' . $field_id . ' FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields b JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members a ON a.id=b.mf_member_id WHERE field_' . strval($field_id) . '>0 ORDER BY ' . $orderby . ' ' . $sort_order;
@@ -116,21 +116,21 @@ if ($field_id !== null) {
         $member_visit_date = get_timezoned_date_time($member['m_last_visit_time']);
 
         if ($spreadsheet) {
-            $spreadsheet_data = array();
+            $spreadsheet_data = [];
             $sname = do_lang('USERNAME');
             $scredits = do_lang('CREDITS');
             $sjoin = do_lang('JOIN_DATE');
             $slast = do_lang('LAST_VISIT_TIME');
-            $spreadsheet_data[] = array(
+            $spreadsheet_data[] = [
                 $sname => $member_name,
                 $scredits => $credits,
                 $sjoin => $member_join_date,
                 $slast => $member_visit_date,
-            );
+            ];
         }
 
         $member_linked = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($member_id, '', false);
-        $fields_values->attach(results_entry(array($member_linked, integer_format($credits), $member_join_date, $member_visit_date, true), true));
+        $fields_values->attach(results_entry([$member_linked, integer_format($credits), $member_join_date, $member_visit_date, true], true));
         $total += $credits;
         $i++;
     }
@@ -144,7 +144,7 @@ if ($field_id !== null) {
     $msg = do_lang_tempcode('TOTAL_UNSPENT_SUPPORT_CREDITS', strval($total));
     $list = results_table(do_lang_tempcode('UNSPENT_SUPPORT_CREDITS'), $start, 'start', $max, 'max', $i, $header_row, $fields_values, $sortables, $sortable, $sort_order, 'sort', $msg);
 
-    $tpl = do_template('SUPPORT_CREDITS_OUTSTANDING_SCREEN', array('_GUID' => '71dadee5485e17a56907d45fa2c53f23', 'TITLE' => $title, 'DATA' => $list));
+    $tpl = do_template('SUPPORT_CREDITS_OUTSTANDING_SCREEN', ['_GUID' => '71dadee5485e17a56907d45fa2c53f23', 'TITLE' => $title, 'DATA' => $list]);
     $tpl->evaluate_echo();
 } else {
     $msg_tpl = warn_screen($title, do_lang_tempcode('INVALID_FIELD_ID'));

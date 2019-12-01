@@ -31,10 +31,10 @@ class Hook_fields_author
     public function get_field_types()
     {
         if (!addon_installed('authors')) {
-            return array();
+            return [];
         }
 
-        return array('author' => do_lang_tempcode('FIELD_TYPE_author'));
+        return ['author' => do_lang_tempcode('FIELD_TYPE_author')];
     }
 
     // ==============
@@ -84,7 +84,7 @@ class Hook_fields_author
                 $default = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
             }
         }
-        return array('short_text', $default, 'short');
+        return ['short_text', $default, 'short'];
     }
 
     /**
@@ -104,7 +104,7 @@ class Hook_fields_author
             return '';
         }
 
-        return hyperlink(build_url(array('page' => 'authors', 'type' => 'browse', 'id' => $ev), get_module_zone('authors')), $ev, false, true);
+        return hyperlink(build_url(['page' => 'authors', 'type' => 'browse', 'id' => $ev], get_module_zone('authors')), $ev, false, true);
     }
 
     // ======================

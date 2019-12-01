@@ -20,7 +20,7 @@ if (!addon_installed__messaged('confluence', $error_msg)) {
     return $error_msg;
 }
 
-load_csp(array('csp_enabled' => '0'));
+load_csp(['csp_enabled' => '0']);
 
 require_code('confluence');
 require_css('confluence');
@@ -34,7 +34,7 @@ $CONFLUENCE_SPACE = 'EXAMPLE';
 
 // Special index, useful for debugging
 if (get_param_string('type', '') == 'index') {
-    return do_block('menu', array('type' => 'sitemap', 'param' => get_zone_name() . ':docs'));
+    return do_block('menu', ['type' => 'sitemap', 'param' => get_zone_name() . ':docs']);
 }
 
 list($content_type, $id, $posting_day) = confluence_current_page_id();
@@ -62,7 +62,7 @@ if ($content_type == 'page') {
         $sub = do_lang('BLOG_POST_BY', $full['results'][0]['history']['createdBy']['username']);
     }
 
-    $title = get_screen_title($full['results'][0]['title'], false, array(), null, array(), true, $sub);
+    $title = get_screen_title($full['results'][0]['title'], false, [], null, [], true, $sub);
 }
 
 
@@ -75,10 +75,10 @@ if ($breadcrumbs !== null) {
     breadcrumb_set_parents($breadcrumbs);
 }
 
-return do_template('CONFLUENCE_SCREEN', array(
+return do_template('CONFLUENCE_SCREEN', [
     '_GUID' => '33a65e7f6832fac49cbb1f8e77a9c7b0',
     'TITLE' => $title,
     'HTML' => $html,
     'ROOT_ID' => strval($root_id),
     'BREADCRUMBS' => ($breadcrumbs === null) ? new Tempcode() : breadcrumb_segments_to_tempcode($breadcrumbs),
-));
+]);

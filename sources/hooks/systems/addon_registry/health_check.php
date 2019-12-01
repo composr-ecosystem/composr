@@ -31,7 +31,7 @@ class Hook_addon_registry_health_check
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -71,7 +71,7 @@ class Hook_addon_registry_health_check
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -101,9 +101,9 @@ class Hook_addon_registry_health_check
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_website_health',
-        );
+        ];
     }
 
     /**
@@ -113,11 +113,11 @@ class Hook_addon_registry_health_check
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array()
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => []
+        ];
     }
 
     /**
@@ -137,7 +137,7 @@ class Hook_addon_registry_health_check
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/health_check.php',
             'sources/hooks/systems/logs/health_check.php',
             'sources/hooks/systems/config/days_to_keep__health_check_log.php',
@@ -215,7 +215,7 @@ class Hook_addon_registry_health_check
             'sources_custom/hooks/systems/health_checks/.htaccess',
             'sources_custom/hooks/systems/health_checks/index.html',
             'sources/hooks/systems/config/hc_webstandards_whitelist.php',
-        );
+        ];
     }
 
     /**
@@ -225,10 +225,10 @@ class Hook_addon_registry_health_check
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/HEALTH_CHECK_RESULTS.tpl' => 'health_check_screen',
             'templates/HEALTH_CHECK_SCREEN.tpl' => 'health_check_screen',
-        );
+        ];
     }
 
     /**
@@ -240,20 +240,20 @@ class Hook_addon_registry_health_check
      */
     public function tpl_preview__health_check_screen()
     {
-        $categories = array(
-            lorem_phrase() => array(
-                'SECTIONS' => array(
-                    lorem_phrase() . ' 1' => array(
-                        'RESULTS' => array(
-                            array(
+        $categories = [
+            lorem_phrase() => [
+                'SECTIONS' => [
+                    lorem_phrase() . ' 1' => [
+                        'RESULTS' => [
+                            [
                                 'RESULT' => 'PASS',
                                 'MESSAGE' => lorem_sentence_html(),
-                            ),
-                            array(
+                            ],
+                            [
                                 'RESULT' => 'MANUAL',
                                 'MESSAGE' => lorem_sentence_html(),
-                            ),
-                        ),
+                            ],
+                        ],
                         'NUM_FAILS' => placeholder_number(),
                         'NUM_PASSES' => placeholder_number(),
                         'NUM_SKIPPED' => placeholder_number(),
@@ -262,14 +262,14 @@ class Hook_addon_registry_health_check
                         '_NUM_PASSES' => '1',
                         '_NUM_SKIPPED' => '1',
                         '_NUM_MANUAL' => '1',
-                    ),
-                    lorem_phrase() . ' 2' => array(
-                        'RESULTS' => array(
-                            array(
+                    ],
+                    lorem_phrase() . ' 2' => [
+                        'RESULTS' => [
+                            [
                                 'RESULT' => 'FAIL',
                                 'MESSAGE' => lorem_sentence_html(),
-                            ),
-                        ),
+                            ],
+                        ],
                         'NUM_FAILS' => placeholder_number(),
                         'NUM_PASSES' => placeholder_number(),
                         'NUM_SKIPPED' => placeholder_number(),
@@ -278,14 +278,14 @@ class Hook_addon_registry_health_check
                         '_NUM_PASSES' => '1',
                         '_NUM_SKIPPED' => '1',
                         '_NUM_MANUAL' => '1',
-                    ),
-                    lorem_phrase() . ' 3' => array(
-                        'RESULTS' => array(
-                            array(
+                    ],
+                    lorem_phrase() . ' 3' => [
+                        'RESULTS' => [
+                            [
                                 'RESULT' => 'SKIP',
                                 'MESSAGE' => lorem_sentence_html(),
-                            ),
-                        ),
+                            ],
+                        ],
                         'NUM_FAILS' => placeholder_number(),
                         'NUM_PASSES' => placeholder_number(),
                         'NUM_SKIPPED' => placeholder_number(),
@@ -294,21 +294,21 @@ class Hook_addon_registry_health_check
                         '_NUM_PASSES' => '1',
                         '_NUM_SKIPPED' => '1',
                         '_NUM_MANUAL' => '1',
-                    ),
-                ),
-            ),
-        );
-        $results = do_lorem_template('HEALTH_CHECK_RESULTS', array('CATEGORIES' => $categories));
+                    ],
+                ],
+            ],
+        ];
+        $results = do_lorem_template('HEALTH_CHECK_RESULTS', ['CATEGORIES' => $categories]);
 
-        return array(
-            lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('HEALTH_CHECK_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SECTIONS' => placeholder_options(),
                 'PASSES' => true,
                 'SKIPS' => true,
                 'MANUAL_CHECKS' => true,
                 'RESULTS' => $results,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

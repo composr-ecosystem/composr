@@ -30,7 +30,7 @@ class Hook_config_complex_privacy_options
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMPLEX_PRIVACY_OPTIONS',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_complex_privacy_options
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

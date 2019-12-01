@@ -31,142 +31,142 @@ class Hook_actionlog_chat extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
         require_lang('chat');
 
-        return array(
-            'ADD_CHATROOM' => array(
+        return [
+            'ADD_CHATROOM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHATROOM' => '_SEARCH:chat:room:{ID}',
                     'EDIT_THIS_CHATROOM' => '_SEARCH:admin_chat:_edit:{ID}',
                     'ADD_CHATROOM' => '_SEARCH:admin_chat:add',
-                ),
-            ),
-            'EDIT_CHATROOM' => array(
+                ],
+            ],
+            'EDIT_CHATROOM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHATROOM' => '_SEARCH:chat:room:{ID}',
                     'EDIT_THIS_CHATROOM' => '_SEARCH:admin_chat:_edit:{ID}',
                     'ADD_CHATROOM' => '_SEARCH:admin_chat:add',
-                ),
-            ),
-            'DELETE_CHATROOM' => array(
+                ],
+            ],
+            'DELETE_CHATROOM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CHATROOM' => '_SEARCH:admin_chat:add',
-                ),
-            ),
-            'DELETE_ALL_CHATROOMS' => array(
+                ],
+            ],
+            'DELETE_ALL_CHATROOMS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CHATROOM' => '_SEARCH:admin_chat:add',
-                ),
-            ),
-            'EDIT_MESSAGE' => array(
+                ],
+            ],
+            'EDIT_MESSAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHAT_MODERATION' => '_SEARCH:cms_chat',
-                ),
-            ),
-            'DELETE_MESSAGE' => array(
+                ],
+            ],
+            'DELETE_MESSAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHAT_MODERATION' => '_SEARCH:cms_chat',
-                ),
-            ),
-            'DELETE_ALL_MESSAGES' => array(
+                ],
+            ],
+            'DELETE_ALL_MESSAGES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHATROOM' => '_SEARCH:chat:room:{ID}',
                     'EDIT_THIS_CHATROOM' => '_SEARCH:admin_chat:_edit:{ID}',
                     'ADD_CHATROOM' => '_SEARCH:admin_chat:add',
-                ),
-            ),
-            'CHAT_BAN' => array(
+                ],
+            ],
+            'CHAT_BAN' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHATROOM' => '_SEARCH:chat:room:{ID}',
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-            'CHAT_UNBAN' => array(
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+            'CHAT_UNBAN' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'chat',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CHATROOM' => '_SEARCH:chat:room:{ID}',
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-            'BLOCK_MEMBER' => array(
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+            'BLOCK_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'SUBMITTER' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
-                    'TARGET' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-            'UNBLOCK_MEMBER' => array(
+                'followup_page_links' => [
+                    'SUBMITTER' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
+                    'TARGET' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+            'UNBLOCK_MEMBER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'SUBMITTER' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
-                    'TARGET' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-            'MAKE_FRIEND' => array(
+                'followup_page_links' => [
+                    'SUBMITTER' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
+                    'TARGET' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+            'MAKE_FRIEND' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'SUBMITTER' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
-                    'TARGET' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-            'DUMP_FRIEND' => array(
+                'followup_page_links' => [
+                    'SUBMITTER' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
+                    'TARGET' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+            'DUMP_FRIEND' => [
                 'flags' => ACTIONLOG_FLAGS_NONE | ACTIONLOG_FLAG__USER_ACTION,
                 'cma_hook' => 'member',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'SUBMITTER' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
-                    'TARGET' => array('FORUM_DRIVER__PROFILE_URL', '{1}'),
-                ),
-            ),
-        );
+                'followup_page_links' => [
+                    'SUBMITTER' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
+                    'TARGET' => ['FORUM_DRIVER__PROFILE_URL', '{1}'],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -187,7 +187,7 @@ class Hook_actionlog_chat extends Hook_actionlog
                     $username = '#' . $actionlog_row['param_b'];
                 }
 
-                $room_name = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'room_name', array('id' => intval($actionlog_row['param_a'])));
+                $room_name = $GLOBALS['SITE_DB']->query_select_value_if_there('chat_rooms', 'room_name', ['id' => intval($actionlog_row['param_a'])]);
                 if ($room_name === null) {
                     $room_name = '#' . $actionlog_row['param_a'];
                 }

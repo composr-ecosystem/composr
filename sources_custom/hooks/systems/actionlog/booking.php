@@ -26,103 +26,103 @@ class Hook_actionlog_booking extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('booking')) {
-            return array();
+            return [];
         }
 
         require_lang('booking');
 
-        return array(
-            'ADD_BOOKABLE' => array(
+        return [
+            'ADD_BOOKABLE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE' => '_SEARCH:cms_booking:_edit:{ID}',
                     'ADD_BOOKABLE' => '_SEARCH:cms_booking:add',
                     'ADD_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:add_category',
                     'ADD_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:add_other',
-                ),
-            ),
-            'EDIT_BOOKABLE' => array(
+                ],
+            ],
+            'EDIT_BOOKABLE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE' => '_SEARCH:cms_booking:_edit:{ID}',
                     'ADD_BOOKABLE' => '_SEARCH:cms_booking:add',
                     'ADD_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:add_category',
                     'ADD_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:add_other',
-                ),
-            ),
-            'DELETE_BOOKABLE' => array(
+                ],
+            ],
+            'DELETE_BOOKABLE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_BOOKABLE' => '_SEARCH:cms_booking:add',
-                ),
-            ),
-            'ADD_BOOKABLE_BLACKED' => array(
+                ],
+            ],
+            'ADD_BOOKABLE_BLACKED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:_edit_other:{ID}',
                     'ADD_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:add_other',
-                ),
-            ),
-            'EDIT_BOOKABLE_BLACKED' => array(
+                ],
+            ],
+            'EDIT_BOOKABLE_BLACKED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:_edit_other:{ID}',
                     'ADD_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:add_other',
-                ),
-            ),
-            'DELETE_BOOKABLE_BLACKED' => array(
+                ],
+            ],
+            'DELETE_BOOKABLE_BLACKED' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_BOOKABLE_BLACKED' => '_SEARCH:cms_booking:add_other',
-                ),
-            ),
-            'ADD_BOOKABLE_SUPPLEMENT' => array(
+                ],
+            ],
+            'ADD_BOOKABLE_SUPPLEMENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:_edit_category:{ID}',
                     'ADD_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:add_category',
-                ),
-            ),
-            'EDIT_BOOKABLE_SUPPLEMENT' => array(
+                ],
+            ],
+            'EDIT_BOOKABLE_SUPPLEMENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:_edit_category:{ID}',
                     'ADD_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:add_category',
-                ),
-            ),
-            'DELETE_BOOKABLE_SUPPLEMENT' => array(
+                ],
+            ],
+            'DELETE_BOOKABLE_SUPPLEMENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_BOOKABLE_SUPPLEMENT' => '_SEARCH:cms_booking:add_category',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

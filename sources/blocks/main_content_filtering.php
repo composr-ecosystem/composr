@@ -30,14 +30,14 @@ class Block_main_content_filtering
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'content_type', 'labels', 'types', 'links',);
+        $info['parameters'] = ['param', 'content_type', 'labels', 'types', 'links',];
         return $info;
     }
 
@@ -67,7 +67,7 @@ class Block_main_content_filtering
             $content_type = $map['content_type'];
 
             if ((!file_exists(get_file_base() . '/sources/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type) . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/content_meta_aware/' . filter_naughty_harsh($content_type) . '.php'))) {
-                return do_template('RED_ALERT', array('_GUID' => 'ljl05pjv55kfvezcsdjqeumi2299wysq', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))));
+                return do_template('RED_ALERT', ['_GUID' => 'ljl05pjv55kfvezcsdjqeumi2299wysq', 'TEXT' => do_lang_tempcode('NO_SUCH_CONTENT_TYPE', escape_html($content_type))]);
             }
         }
 
@@ -78,19 +78,19 @@ class Block_main_content_filtering
         // Filter links (different from form fields, works by overlaying)
         $_links2 = $this->interpret_pairs_from_string($links, '|');
         $_links = array_merge($_links, $_links2);
-        $links = array();
+        $links = [];
         foreach ($_links as $link_title => $_link_filter) {
-            $links[] = prepare_filtercode_merger_link($_link_filter) + array('TITLE' => $link_title);
+            $links[] = prepare_filtercode_merger_link($_link_filter) + ['TITLE' => $link_title];
         }
 
-        return do_template('BLOCK_MAIN_CONTENT_FILTERING', array(
+        return do_template('BLOCK_MAIN_CONTENT_FILTERING', [
             '_GUID' => '6cdeed216dfac854672a16db39a6807f',
             'BLOCK_ID' => $block_id,
             'FIELDS' => $fields,
             'ACTIVE_FILTER' => $filter,
             'LINKS' => $links,
             'SUBMIT_ICON' => 'buttons/filter',
-        ));
+        ]);
     }
 
     /**
@@ -102,8 +102,8 @@ class Block_main_content_filtering
      */
     protected function interpret_pairs_from_string($str, $separator = ',')
     {
-        $pairs = array();
-        $matches = array();
+        $pairs = [];
+        $matches = [];
         $num_matches = preg_match_all('#([^=]+)=(?U)(.+)(?-U)' . preg_quote($separator, '#') . '#', $str . $separator, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $pairs[$matches[1][$i]] = $matches[2][$i];

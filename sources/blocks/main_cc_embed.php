@@ -30,14 +30,14 @@ class Block_main_cc_embed
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('select', 'param', 'filter', 'template_set', 'display_type', 'sorting', 'sort', 'max', 'start', 'pagination', 'root', 'as_guest', 'check');
+        $info['parameters'] = ['select', 'param', 'filter', 'template_set', 'display_type', 'sorting', 'sort', 'max', 'start', 'pagination', 'root', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_cc_embed
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         (preg_match('#<\w+>#', (array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
         ?
@@ -97,7 +97,7 @@ PHP;
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         if (@cms_empty_safe($map['param'])) {
-            $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', array(), 'GROUP BY cc_id ORDER BY COUNT(*) DESC');
+            $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', [], 'GROUP BY cc_id ORDER BY COUNT(*) DESC');
             if ($category_id === null) {
                 $category_id = db_get_first_id();
             }
@@ -120,7 +120,7 @@ PHP;
         }
 
         // Pick up details about category
-        $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('*'), array('id' => $category_id), '', 1);
+        $categories = $GLOBALS['SITE_DB']->query_select('catalogue_categories', ['*'], ['id' => $category_id], '', 1);
         if (!array_key_exists(0, $categories)) {
             return do_lang_tempcode('MISSING_RESOURCE', 'catalogue_category');
         }
@@ -200,16 +200,16 @@ PHP;
         $is_ecommerce = is_ecommerce_catalogue($catalogue_name, $catalogue);
         if ($is_ecommerce) {
             if (get_forum_type() != 'cns') {
-                return do_template('RED_ALERT', array('_GUID' => '9k0v50crqhabzsxv9l2pq3dcxjketh6a', 'TEXT' => do_lang_tempcode('NO_CNS')));
+                return do_template('RED_ALERT', ['_GUID' => '9k0v50crqhabzsxv9l2pq3dcxjketh6a', 'TEXT' => do_lang_tempcode('NO_CNS')]);
             }
         }
 
         $entry_buildup = apply_quick_caching($entry_buildup);
 
         // Render
-        return do_template('CATALOGUE_' . $tpl_set . '_CATEGORY_EMBED', array(
+        return do_template('CATALOGUE_' . $tpl_set . '_CATEGORY_EMBED', [
             '_GUID' => 'dfdsfdsfsd3ffsdfsd',
-            'BLOCK_PARAMS' => block_params_arr_to_str(array('block_id' => $block_id) + $map),
+            'BLOCK_PARAMS' => block_params_arr_to_str(['block_id' => $block_id] + $map),
             'DISPLAY_TYPE' => $display_type_str,
             'ROOT' => ($root === null) ? '' : strval($root),
             'CATALOGUE' => $catalogue_name,
@@ -221,6 +221,6 @@ PHP;
             'MAX' => strval($max),
             'START_PARAM' => $block_id . '_start',
             'MAX_PARAM' => $block_id . '_max',
-        ), null, false, 'CATALOGUE_DEFAULT_CATEGORY_EMBED');
+        ], null, false, 'CATALOGUE_DEFAULT_CATEGORY_EMBED');
     }
 }

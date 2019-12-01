@@ -31,73 +31,73 @@ class Hook_actionlog_banners extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('banners')) {
-            return array();
+            return [];
         }
 
         require_lang('banners');
 
-        return array(
-            'ADD_BANNER_TYPE' => array(
+        return [
+            'ADD_BANNER_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner_type',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BANNER_TYPE' => '_SEARCH:cms_banners:_edit_category:{ID}',
                     'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={ID}',
-                ),
-            ),
-            'EDIT_BANNER_TYPE' => array(
+                ],
+            ],
+            'EDIT_BANNER_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner_type',
                 'identifier_index' => 1,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_BANNER_TYPE' => '_SEARCH:cms_banners:_edit_category:{ID}',
                     'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={ID}',
-                ),
-            ),
-            'DELETE_BANNER_TYPE' => array(
+                ],
+            ],
+            'DELETE_BANNER_TYPE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner_type',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_BANNER_TYPE' => '_SEARCH:cms_banners:add_category',
-                ),
-            ),
-            'ADD_BANNER' => array(
+                ],
+            ],
+            'ADD_BANNER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:banners:view:source={ID}',
                     'EDIT_THIS_BANNER_TYPE' => '_SEARCH:cms_banners:_edit_category:{ID}',
                     'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={CAT,OPTIONAL}',
-                ),
-            ),
-            'EDIT_BANNER' => array(
+                ],
+            ],
+            'EDIT_BANNER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:banners:view:source={ID}',
                     'EDIT_THIS_BANNER' => '_SEARCH:cms_banners:_edit:{ID}',
                     'ADD_BANNER' => '_SEARCH:cms_banners:add:b_type={CAT,OPTIONAL}',
-                ),
-            ),
-            'DELETE_BANNER' => array(
+                ],
+            ],
+            'DELETE_BANNER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'banner',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_BANNER' => '_SEARCH:cms_banners:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -113,11 +113,11 @@ class Hook_actionlog_banners extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_BANNER':
             case 'EDIT_BANNER':
-                $b_type = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'b_type', array('name' => $identifier));
+                $b_type = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'b_type', ['name' => $identifier]);
                 if ($b_type !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => $b_type,
-                    );
+                    ];
                 }
                 break;
         }

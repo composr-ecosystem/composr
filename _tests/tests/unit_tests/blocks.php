@@ -28,7 +28,7 @@ class blocks_test_set extends cms_test_case
     public function testBlockCacheSignatureParsing()
     {
         $blocks = find_all_blocks();
-        $map = array();
+        $map = [];
         foreach (array_keys($blocks) as $codename) {
             list($object) = do_block_hunt_file($codename, $map);
             if ((is_object($object)) && (method_exists($object, 'caching_environment'))) {

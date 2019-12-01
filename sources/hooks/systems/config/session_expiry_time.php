@@ -30,7 +30,7 @@ class Hook_config_session_expiry_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SESSION_EXPIRY_TIME',
             'type' => 'float',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_session_expiry_time
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

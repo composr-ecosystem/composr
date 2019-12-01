@@ -165,7 +165,7 @@ class Database_super_mysql extends DatabaseDriver
             return $query;
         }
         $new_query = '';
-        $tokens_to_escape = array_flip(array('description', 'groups', 'path'));
+        $tokens_to_escape = array_flip(['description', 'groups', 'path']);
         $tokens = $this->tokenise_query($query);
         foreach ($tokens as $i => $token) {
             if (isset($tokens_to_escape[strtolower($token)])) {
@@ -187,13 +187,13 @@ class Database_super_mysql extends DatabaseDriver
     {
         static $symbolic_tokens = null;
         if ($symbolic_tokens === null) {
-            $symbolic_tokens = array_flip(array("\t", ' ', "\n", '+', '-', '*', '/', '<>', '>', '<', '>=', '<=', '=', '(', ')', ','));
+            $symbolic_tokens = array_flip(["\t", ' ', "\n", '+', '-', '*', '/', '<>', '>', '<', '>=', '<=', '=', '(', ')', ',']);
         }
 
         $i = 0;
         $query .= ' '; // Cheat so that we do not have to handle the end state differently
         $len = strlen($query);
-        $tokens = array();
+        $tokens = [];
         $current_token = '';
         $doing_symbol_delimiter = true;
         while ($i < $len) {
@@ -282,7 +282,7 @@ class Database_super_mysql extends DatabaseDriver
             $SITE_INFO['database_charset'] = (get_charset() == 'utf-8') ? 'utf8mb4' : 'latin1';
         }
 
-        $queries = array();
+        $queries = [];
 
         $queries[] = 'SET wait_timeout=28800';
         $queries[] = 'SET sql_big_selects=1';
@@ -379,7 +379,7 @@ class Database_super_mysql extends DatabaseDriver
             ocp_mark_as_escaped($err);
         }
         if ((!running_script('upgrader')) && ((!get_mass_import_mode()) || (get_param_integer('keep_fatalistic', 0) != 0)) && (strpos($err, 'Duplicate entry') === false)) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#/(\w+)\' is marked as crashed and should be repaired#U', $err, $matches) !== 0) {
                 $this->query('REPAIR TABLE ' . $matches[1], $connection);
             }
@@ -401,7 +401,7 @@ class Database_super_mysql extends DatabaseDriver
      */
     public function get_type_remap($for_alter = false)
     {
-        $type_remap = array(
+        $type_remap = [
             'AUTO' => $for_alter ? 'integer unsigned PRIMARY KEY auto_increment' : 'integer unsigned auto_increment',
             'AUTO_LINK' => 'integer', // not unsigned because it's useful to have -ve for temporary usage while importing (NB: *_TRANS is signed, so trans fields are not perfectly AUTO_LINK compatible and can have double the positive range -- in the real world it will not matter though)
             'INTEGER' => 'integer',
@@ -423,7 +423,7 @@ class Database_super_mysql extends DatabaseDriver
             'IP' => 'varchar(40)', // 15 for ip4, but we now support ip6
             'LANGUAGE_NAME' => 'varchar(5)',
             'URLPATH' => 'varchar(255) BINARY',
-        );
+        ];
         return $type_remap;
     }
 
@@ -493,7 +493,7 @@ class Database_super_mysql extends DatabaseDriver
 
         $query .= ' ' . $type_key . '=' . $table_type;
 
-        return array($query);
+        return [$query];
     }
 
     /**
@@ -581,7 +581,7 @@ class Database_super_mysql extends DatabaseDriver
         } else {
             $type = 'INDEX';
         }
-        return array('ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')');
+        return ['ALTER TABLE ' . $table_name . ' ADD ' . $type . ' ' . $index_name . ' (' . $_fields . ')'];
     }
 
     /**
@@ -700,7 +700,7 @@ class Database_super_mysql extends DatabaseDriver
         }
 
         // These risk parse errors during full-text natural search and aren't supported for Composr searching
-        $content = str_replace(array('>', '<', '(', ')', '~', '?', '@'), array('', '', '', '', '', '', ''), $content); // Risks parse error and not supported
+        $content = str_replace(['>', '<', '(', ')', '~', '?', '@'], ['', '', '', '', '', '', ''], $content); // Risks parse error and not supported
         $content = preg_replace('#([\-+*])[\-+*]+#', '$1', $content); // Parse error if repeated on some servers
         $content = cms_preg_replace_safe('#[\-+]($|\s)#', '$1', $content); // Parse error if on end on some servers
         $content = cms_preg_replace_safe('#(^|\s)\*#', '$1', $content); // Parse error if on start on some servers
@@ -714,7 +714,7 @@ class Database_super_mysql extends DatabaseDriver
      */
     public function close_connections()
     {
-        $this->cache_db = array();
+        $this->cache_db = [];
         $this->last_select_db = null;
     }
 }

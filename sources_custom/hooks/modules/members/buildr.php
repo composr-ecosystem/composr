@@ -27,22 +27,22 @@ class Hook_members_buildr
     public function run($member_id)
     {
         if (!addon_installed('buildr')) {
-            return array();
+            return [];
         }
 
         $zone = get_page_zone('buildr', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
         if (!has_zone_access(get_member(), $zone)) {
-            return array();
+            return [];
         }
 
-        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('w_members', 'id', array('id' => $member_id));
+        $id = $GLOBALS['SITE_DB']->query_select_value_if_there('w_members', 'id', ['id' => $member_id]);
         if ($id !== null) {
             require_lang('buildr');
-            return array(array('audit', do_lang_tempcode('BUILDR'), build_url(array('page' => 'buildr', 'type' => 'inventory', 'member' => $member_id), get_module_zone('buildr')), 'spare/world'));
+            return [['audit', do_lang_tempcode('BUILDR'), build_url(['page' => 'buildr', 'type' => 'inventory', 'member' => $member_id], get_module_zone('buildr')), 'spare/world']];
         }
-        return array();
+        return [];
     }
 }

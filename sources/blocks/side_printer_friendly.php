@@ -30,14 +30,14 @@ class Block_side_printer_friendly
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -56,12 +56,12 @@ class Block_side_printer_friendly
 
         $block_id = get_block_id($map);
 
-        $url = get_self_url(true, false, array('wide_print' => 1));
+        $url = get_self_url(true, false, ['wide_print' => 1]);
 
-        return do_template('BLOCK_SIDE_PRINTER_FRIENDLY', array(
+        return do_template('BLOCK_SIDE_PRINTER_FRIENDLY', [
             '_GUID' => 'db1d2db67f07a3d6bd130f4cef4c5e9d',
             'BLOCK_ID' => $block_id,
             'URL' => $url,
-        ));
+        ]);
     }
 }

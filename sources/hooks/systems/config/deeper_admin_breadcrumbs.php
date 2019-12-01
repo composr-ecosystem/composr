@@ -30,7 +30,7 @@ class Hook_config_deeper_admin_breadcrumbs
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEEPER_ADMIN_BREADCRUMBS',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_deeper_admin_breadcrumbs
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

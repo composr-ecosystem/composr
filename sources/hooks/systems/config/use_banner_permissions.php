@@ -30,7 +30,7 @@ class Hook_config_use_banner_permissions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PERMISSIONS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_use_banner_permissions
             'public' => false,
 
             'addon' => 'banners',
-        );
+        ];
     }
 
     /**

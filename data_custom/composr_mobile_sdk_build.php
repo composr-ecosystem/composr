@@ -114,7 +114,7 @@ class Composr_mobile_sdk_tools
             exit('Theme ' . $theme . ' does not exist' . "\n");
         }
 
-        $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), array('theme' => $theme, 'lang' => $lang));
+        $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $theme, 'lang' => $lang]);
         foreach ($theme_images as $theme_image) {
             $ext = get_file_extension($theme_image['url']);
             $file = basename($theme_image['id']) . '.' . $ext;

@@ -34,79 +34,79 @@ class Hook_privacy_newsletter extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'newsletter_subscribe' => array(
+            'database_records' => [
+                'newsletter_subscribe' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('email'),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['email'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'newsletter_subscribers' => array(
+                ],
+                'newsletter_subscribers' => [
                     'timestamp_field' => 'join_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('email'),
-                    'additional_anonymise_fields' => array('n_forename', 'n_surname'),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['email'],
+                    'additional_anonymise_fields' => ['n_forename', 'n_surname'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'newsletter_drip_send' => array(
+                ],
+                'newsletter_drip_send' => [
                     'timestamp_field' => 'd_inject_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('d_to_email'),
-                    'additional_anonymise_fields' => array('d_to_name'),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['d_to_email'],
+                    'additional_anonymise_fields' => ['d_to_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'newsletter_archive' => array(
+                ],
+                'newsletter_archive' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('from_email'),
-                    'additional_anonymise_fields' => array('from_name'),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['from_email'],
+                    'additional_anonymise_fields' => ['from_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'newsletter_periodic' => array(
+                ],
+                'newsletter_periodic' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('np_from_email'),
-                    'additional_anonymise_fields' => array('np_from_name'),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['np_from_email'],
+                    'additional_anonymise_fields' => ['np_from_name'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -122,11 +122,11 @@ class Hook_privacy_newsletter extends Hook_privacy_base
 
         switch ($table_name) {
             case 'newsletter_subscribe':
-                $title = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletters', 'title', array('id' => $row['newsletter_id']));
+                $title = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletters', 'title', ['id' => $row['newsletter_id']]);
                 if ($title !== null) {
-                    $ret += array(
+                    $ret += [
                         'newsletter_id__dereferenced' => get_translated_text($title),
-                    );
+                    ];
                 }
                 break;
         }
@@ -144,7 +144,7 @@ class Hook_privacy_newsletter extends Hook_privacy_base
     {
         switch ($table_name) {
             case 'newsletter_subscribers':
-                $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array('email' => $row['email']));
+                $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', ['email' => $row['email']]);
                 parent::delete($table_name, $row);
                 break;
 

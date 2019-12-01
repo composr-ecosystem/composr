@@ -30,7 +30,7 @@ class Hook_config_points_per_daily_visit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POINTS_PER_DAILY_VISIT',
             'type' => 'integer',
             'category' => 'POINTS',
@@ -43,7 +43,7 @@ class Hook_config_points_per_daily_visit
             'public' => false,
 
             'addon' => 'points',
-        );
+        ];
     }
 
     /**

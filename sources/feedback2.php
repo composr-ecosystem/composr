@@ -59,10 +59,10 @@ function set_comment_forum_for($feedback_code, $category_id, $forum_id)
         $cma_ob = object_factory('Hook_content_meta_aware_' . filter_naughty_harsh($cma_hook, true));
         $info = $cma_ob->info();
         $category_is_string = (isset($info['category_is_string']) && $info['category_is_string']);
-        $topics = array();
+        $topics = [];
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select($info['table'], array($info['id_field']), array($info['parent_category_field'] => $category_is_string ? $category_id : intval($category_id)), '', 100, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select($info['table'], [$info['id_field']], [$info['parent_category_field'] => $category_is_string ? $category_id : intval($category_id)], '', 100, $start);
             foreach ($rows as $row) {
                 $id = $row[$info['id_field']];
                 $feedback_id = $feedback_code . '_' . (is_string($id) ? $id : strval($id));
@@ -128,13 +128,13 @@ function trackback_script()
         $output = actualise_post_trackback($allow_trackbacks, $page, strval($id));
 
         if ($output) {
-            $xml = do_template('TRACKBACK_XML_NO_ERROR', array(), null, false, null, '.xml', 'xml');
+            $xml = do_template('TRACKBACK_XML_NO_ERROR', [], null, false, null, '.xml', 'xml');
         } else {
-            $xml = do_template('TRACKBACK_XML_ERROR', array('_GUID' => 'ac5e34aeabf92712607e62e062407861', 'TRACKBACK_ERROR' => do_lang_tempcode('TRACKBACK_ERROR')), null, false, null, '.xml', 'xml');
+            $xml = do_template('TRACKBACK_XML_ERROR', ['_GUID' => 'ac5e34aeabf92712607e62e062407861', 'TRACKBACK_ERROR' => do_lang_tempcode('TRACKBACK_ERROR')], null, false, null, '.xml', 'xml');
         }
     }
 
-    $echo = do_template('TRACKBACK_XML_WRAPPER', array('_GUID' => 'cd8d057328569803a6cca9f8d37a0ac8', 'XML' => $xml), null, false, null, '.xml', 'xml');
+    $echo = do_template('TRACKBACK_XML_WRAPPER', ['_GUID' => 'cd8d057328569803a6cca9f8d37a0ac8', 'XML' => $xml], null, false, null, '.xml', 'xml');
     $echo->evaluate_echo();
 }
 
@@ -202,11 +202,11 @@ function feedback_fields($content_type, $allow_rating, $allow_comments, $allow_t
             } else {
                 $section_hidden = $notes == '' && $allow_comments && (($allow_trackbacks === null) || $allow_trackbacks || (get_option('is_on_trackbacks') == '0')) && $allow_rating;
             }
-            $_fields = do_template('FORM_SCREEN_FIELD_SPACER', array(
+            $_fields = do_template('FORM_SCREEN_FIELD_SPACER', [
                 '_GUID' => '95864784029fd6d46a8b2ebbca9d81eb',
                 'SECTION_HIDDEN' => $section_hidden,
                 'TITLE' => do_lang_tempcode((get_option('enable_staff_notes') == '1') ? 'FEEDBACK_AND_NOTES' : '_FEEDBACK'),
-            ));
+            ]);
             $_fields->attach($fields);
             $fields = $_fields;
         }
@@ -229,13 +229,13 @@ function send_trackbacks($_urls, $title, $excerpt)
         return true;
     }
 
-    $post_params = array('url' => get_custom_base_url(), 'title' => $title, 'blog_name' => convert_to_internal_encoding(get_site_name(), get_charset(), 'utf-8'), 'excerpt' => $excerpt);
+    $post_params = ['url' => get_custom_base_url(), 'title' => $title, 'blog_name' => convert_to_internal_encoding(get_site_name(), get_charset(), 'utf-8'), 'excerpt' => $excerpt];
 
     $urls = explode(',', $_urls);
     foreach ($urls as $url) {
         $url = trim($url);
         require_code('character_sets');
-        http_get_contents($url, array('trigger_error' => false, 'post_params' => $post_params));
+        http_get_contents($url, ['trigger_error' => false, 'post_params' => $post_params]);
     }
 
     return true;

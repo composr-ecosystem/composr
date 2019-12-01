@@ -34,7 +34,7 @@ class Hook_commandr_command_alien_check
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('alien_check', array('h'), array()), '', '');
+            return ['', do_command_help('alien_check', ['h'], []), '', ''];
         } else {
             require_code('upgrade_integrity_scan');
             list($result,) = check_alien(get_file_base() . '/', '', true);
@@ -44,7 +44,7 @@ class Hook_commandr_command_alien_check
                 $result .= do_lang('RM_HINT');
             }
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 }

@@ -30,7 +30,7 @@ class Hook_cleanpu_url_metadata_cache
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('URL_METADATA_CACHE');
         $info['description'] = do_lang_tempcode('DESCRIPTION_URL_METADATA_CACHE');
         $info['type'] = 'cache';

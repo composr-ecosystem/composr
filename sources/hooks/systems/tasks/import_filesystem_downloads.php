@@ -49,7 +49,7 @@ class Hook_task_import_filesystem_downloads
         $base_url = get_custom_base_url() . '/' . $server_path;
 
         if (!file_exists($base_path)) {
-            return array(null, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($server_path)));
+            return [null, do_lang_tempcode('DIRECTORY_NOT_FOUND', escape_html($server_path))];
         }
 
         /*  Needless because it's relative to Composr directory anyway
@@ -66,7 +66,7 @@ class Hook_task_import_filesystem_downloads
         $num_added = $this->filesystem_recursive_downloads_scan($base_path, $base_url, $destination, $subfolders);
 
         $ret = do_lang_tempcode('SUCCESS_ADDED_DOWNLOADS', escape_html(integer_format($num_added)));
-        return array('text/html', $ret);
+        return ['text/html', $ret];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_task_import_filesystem_downloads
                     if (is_dir($full_path)) {
                         if ($make_subfolders) {
                             // Do we need to make new category, or is it already existent?
-                            $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => $dest_cat, $GLOBALS['SITE_DB']->translate_field_ref('category') => $entry));
+                            $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $dest_cat, $GLOBALS['SITE_DB']->translate_field_ref('category') => $entry]);
                             if ($category_id === null) {
                                 // Add the directory
                                 $category_id = add_download_category(titleify($entry), $dest_cat, '', '', '');
@@ -111,7 +111,7 @@ class Hook_task_import_filesystem_downloads
                         }
                     } elseif (!is_link($full_path)) {
                         // Test to see if the file is already in our database
-                        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', array('url' => $full_url));
+                        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'url', ['url' => $full_url]);
                         if ($test === null) {
                             // First let's see if we are allowed to add this (accessible by URL already)
                             $myfile = @fopen($full_path, 'rb');
@@ -121,7 +121,7 @@ class Hook_task_import_filesystem_downloads
                             } else {
                                 $shouldbe = null;
                             }
-                            $actuallyis = cms_http_request($full_url, array('trigger_error' => false, 'byte_limit' => 8000));
+                            $actuallyis = cms_http_request($full_url, ['trigger_error' => false, 'byte_limit' => 8000]);
                             if (($actuallyis->message == '200') && ($shouldbe !== null) && (strcmp($shouldbe, $actuallyis->data) == 0)) {
                                 // Ok, add it
                                 $filesize = filesize($full_path);

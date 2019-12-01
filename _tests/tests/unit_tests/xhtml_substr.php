@@ -174,7 +174,7 @@ class xhtml_substr_test_set extends cms_test_case
         require_code('lorem');
         require_code('files');
 
-        $tpl = do_template('MEDIA_IMAGE_WEBSAFE', array(
+        $tpl = do_template('MEDIA_IMAGE_WEBSAFE', [
             '_GUID' => '54bb099d48cbae06decc3b479d9e1eaa',
             'URL' => placeholder_url(),
             'REMOTE_ID' => placeholder_id(),
@@ -196,7 +196,7 @@ class xhtml_substr_test_set extends cms_test_case
             'WYSIWYG_EDITABLE' => true,
             'NUM_DOWNLOADS' => placeholder_number(),
             'DESCRIPTION' => '',
-        ));
+        ]);
 
         $before = $tpl->evaluate();
         $after = xhtml_substr($before, 0, 5, false, false, 0.0);

@@ -39,7 +39,7 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
 
     if ((($consider_deferring) || ($num_local_videos > 1000)) && (cron_installed()) && ($local_id !== null) && (count($local_videos) == 1)) {
         foreach ($local_videos as $local_video) {
-            $GLOBALS['SITE_DB']->query_insert('video_transcoding', array(
+            $GLOBALS['SITE_DB']->query_insert('video_transcoding', [
                 't_id' => 'sync_defer_' . strval($local_id) . ($new_upload ? '__new_upload' : '') . ($reupload ? '__reupload' : ''),
                 't_local_id' => $local_id,
                 't_local_id_field' => 'id',
@@ -51,7 +51,7 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
                 't_width_field' => 'video_width',
                 't_height_field' => 'video_height',
                 't_output_filename' => '',
-            ), false, true);
+            ], false, true);
         }
         if ($consider_deferring) {
             return;
@@ -61,11 +61,11 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
     $services = find_all_hook_obs('modules', 'video_syndication', 'Hook_video_syndication_');
 
     foreach ($services as $ob) {
-        $exists_remote = array();
+        $exists_remote = [];
 
         if ($ob->is_active()) {
             // What is already on remote server
-            $remote_videos = $new_upload ? /*no remote search needed*/array() : $ob->get_remote_videos($local_id);
+            $remote_videos = $new_upload ? /*no remote search needed*/[] : $ob->get_remote_videos($local_id);
 
             foreach ($remote_videos as $video) {
                 if (!$GLOBALS['DEV_MODE']) {
@@ -111,9 +111,9 @@ function sync_video_syndication($local_id = null, $new_upload = false, $reupload
     }
 
     if ($local_id !== null) {
-        $GLOBALS['SITE_DB']->query_delete('video_transcoding', array(
+        $GLOBALS['SITE_DB']->query_delete('video_transcoding', [
             't_id' => 'sync_defer_' . strval($local_id) . ($new_upload ? '__new_upload' : '') . ($reupload ? '__reupload' : ''),
-        ));
+        ]);
     }
 }
 
@@ -131,8 +131,8 @@ function get_local_videos($local_id = null)
         $where .= ' AND v.id=' . strval($local_id);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query('SELECT v.* FROM ' . get_table_prefix() . 'videos v WHERE ' . $where, null, 0, false, true, array('title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS'));
-    $videos = array();
+    $rows = $GLOBALS['SITE_DB']->query('SELECT v.* FROM ' . get_table_prefix() . 'videos v WHERE ' . $where, null, 0, false, true, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS']);
+    $videos = [];
     foreach ($rows as $row) {
         $videos[$row['id']] = _get_local_video($row);
     }
@@ -146,20 +146,20 @@ function _get_local_video($row)
     if ($tree === null) {
         $num_galleries = $GLOBALS['SITE_DB']->query_select_value('galleries', 'COUNT(*)');
         if ($num_galleries < 500) {
-            $tree = collapse_2d_complexity('name', 'parent_id', $GLOBALS['SITE_DB']->query_select('galleries', array('name', 'parent_id')));
+            $tree = collapse_2d_complexity('name', 'parent_id', $GLOBALS['SITE_DB']->query_select('galleries', ['name', 'parent_id']));
         } else {
-            $tree = array(); // Pull in dynamically via individual queries
+            $tree = []; // Pull in dynamically via individual queries
         }
     }
 
-    $categories = array();
+    $categories = [];
     $parent_id = $row['cat'];
     while ($parent_id != '') {
         array_push($categories, $parent_id);
         if (array_key_exists($parent_id, $tree)) {
             $parent_id = $tree[$parent_id];
         } else {
-            $parent_id = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $parent_id));
+            $parent_id = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', ['name' => $parent_id]);
             $tree[$parent_id] = $parent_id;
         }
     }
@@ -176,7 +176,7 @@ function _get_local_video($row)
         $tags = array_unique(array_merge($tags, array_map('trim', explode(',', $keywords))));
     }
 
-    return array(
+    return [
         'local_id' => $row['id'],
         'title' => get_translated_text($row['title']),
         'description' => strip_comcode(get_translated_text($row['the_description'])),
@@ -188,7 +188,7 @@ function _get_local_video($row)
         'allow_rating' => ($row['allow_rating'] == 1),
         'allow_comments' => ($row['allow_comments'] >= 1),
         'validated' => ($row['validated'] == 1),
-    );
+    ];
 }
 
 function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reupload, $services)
@@ -197,8 +197,8 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
         $local_video = $local_videos[$video['bound_to_local_id']];
 
         // Handle changes
-        $changes = array();
-        foreach (array('title', 'description', 'tags', 'allow_rating', 'allow_comments', 'validated') as $property) {
+        $changes = [];
+        foreach (['title', 'description', 'tags', 'allow_rating', 'allow_comments', 'validated'] as $property) {
             if (($video[$property] !== null) && ($video[$property] != $local_video[$property])) {
                 $changes[$property] = $local_video[$property];
             }
@@ -210,10 +210,10 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
                 }
             }
             if ($reupload) {
-                $changes += array('url' => $local_video['url']);
+                $changes += ['url' => $local_video['url']];
             }
         }
-        if ($changes != array()) {
+        if ($changes != []) {
             $ob->change_remote_video($video + $local_video, $changes);
         }
     } else {
@@ -225,7 +225,7 @@ function _sync_remote_video($ob, $video, $local_videos, $orphaned_handling, $reu
 
             case SYNDICATION_ORPHANS__UNVALIDATE:
                 $ob->unbind_remote_video($video);
-                $ob->change_remote_video($video, array('validated' => false));
+                $ob->change_remote_video($video, ['validated' => false]);
                 break;
 
             case SYNDICATION_ORPHANS__DELETE:
@@ -245,12 +245,12 @@ function _sync_onlylocal_video($ob, $local_video)
     $service_name = preg_replace('#^video_syndication_#', '', get_class($ob));
     $service_title = $ob->get_service_title();
 
-    $local_video_url = build_url(array('page' => 'galleries', 'type' => 'video', 'id' => $local_video['local_id']), get_module_zone('galleries'), array(), false, false, true);
+    $local_video_url = build_url(['page' => 'galleries', 'type' => 'video', 'id' => $local_video['local_id']], get_module_zone('galleries'), [], false, false, true);
     $_local_video_url = $local_video_url->evaluate();
     $_local_video_url_cleaned = preg_replace('#^http://#', '', $_local_video_url); // Useful if URLs are not permitted
 
     require_lang('gallery_syndication');
-    $comment = do_lang('VIDEO_SYNC_INITIAL_COMMENT', $service_title, get_site_name(), array($_local_video_url, $_local_video_url_cleaned));
+    $comment = do_lang('VIDEO_SYNC_INITIAL_COMMENT', $service_title, get_site_name(), [$_local_video_url, $_local_video_url_cleaned]);
 
     if ($comment != '') {
         $ob->leave_comment($remote_video, $comment);
@@ -258,7 +258,7 @@ function _sync_onlylocal_video($ob, $local_video)
 
     // Store the DB mapping for the transcoding
     $transcoding_id = $service_name . '_' . $remote_video['remote_id'];
-    $GLOBALS['SITE_DB']->query_insert('video_transcoding', array(
+    $GLOBALS['SITE_DB']->query_insert('video_transcoding', [
         't_id' => $transcoding_id,
         't_local_id' => $local_video['local_id'],
         't_local_id_field' => 'id',
@@ -270,7 +270,7 @@ function _sync_onlylocal_video($ob, $local_video)
         't_width_field' => 'video_width',
         't_height_field' => 'video_height',
         't_output_filename' => '',
-    ));
+    ]);
 
     if (get_option('video_sync_transcoding') == $service_name) {
         require_lang('galleries');
@@ -283,7 +283,7 @@ function _sync_onlylocal_video($ob, $local_video)
         if ((find_theme_image('video_thumb', true) === $local_video['thumb_url']) || ($local_video['thumb_url'] == '')) { // Is currently on default thumb (i.e. none explicitly chosen)
             require_code('galleries2');
             $thumb_url = create_video_thumb($remote_video['url']);
-            $GLOBALS['SITE_DB']->query_update('videos', array('thumb_url' => $thumb_url), array('id' => $local_video['local_id']), '', 1);
+            $GLOBALS['SITE_DB']->query_update('videos', ['thumb_url' => $thumb_url], ['id' => $local_video['local_id']], '', 1);
         }
     }
 }
@@ -297,16 +297,16 @@ function _sync_onlylocal_video($ob, $local_video)
 function store_transcoding_success($transcoder_id, $new_url)
 {
     // Stuff about the transcoding
-    $descript_rows = $GLOBALS['SITE_DB']->query_select('video_transcoding', array('*'), array(
+    $descript_rows = $GLOBALS['SITE_DB']->query_select('video_transcoding', ['*'], [
         't_id' => $transcoder_id,
-    ), '', 1);
+    ], '', 1);
     if (!array_key_exists(0, $descript_rows)) {
         return; // No match
     }
     $descript_row = $descript_rows[0];
 
     // The database for for what has been transcoded
-    $rows = $GLOBALS['SITE_DB']->query_select($descript_row['t_table'], array('*'), array($descript_row['t_url_field'] => $descript_row['t_url']), '', 1, 0, false, array());
+    $rows = $GLOBALS['SITE_DB']->query_select($descript_row['t_table'], ['*'], [$descript_row['t_url_field'] => $descript_row['t_url']], '', 1, 0, false, []);
     if (!array_key_exists(0, $rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
@@ -355,6 +355,6 @@ function store_transcoding_success($transcoder_id, $new_url)
 
     // Update record to point to new file
     if ($descript_row['t_local_id_field'] !== null) {
-        $GLOBALS['SITE_DB']->query_update($descript_row['t_table'], $row, array($descript_row['t_local_id_field'] => $descript_row['t_local_id']), '', 1);
+        $GLOBALS['SITE_DB']->query_update($descript_row['t_table'], $row, [$descript_row['t_local_id_field'] => $descript_row['t_local_id']], '', 1);
     }
 }

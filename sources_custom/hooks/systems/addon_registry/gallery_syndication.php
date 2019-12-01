@@ -26,7 +26,7 @@ class Hook_addon_registry_gallery_syndication
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_gallery_syndication
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -104,7 +104,7 @@ For YouTube syndication you must first:
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -114,14 +114,14 @@ For YouTube syndication you must first:
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP curl extension',
                 'galleries',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -141,7 +141,7 @@ For YouTube syndication you must first:
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/gallery_syndication.php',
             'sources_custom/hooks/systems/oauth/index.html',
             'sources_custom/hooks/systems/oauth/.htaccess',
@@ -155,6 +155,6 @@ For YouTube syndication you must first:
             'sources_custom/hooks/systems/config/gallery_sync_selectcode.php',
             'sources_custom/hooks/systems/config/gallery_sync_orphaned_handling.php',
             'sources_custom/hooks/systems/config/video_sync_transcoding.php',
-        );
+        ];
     }
 }

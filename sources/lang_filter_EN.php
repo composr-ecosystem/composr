@@ -38,7 +38,7 @@ class LangFilter_EN extends LangFilter
      */
     public function __construct()
     {
-        $this->vowels = array('a' => true, 'e' => true, 'i' => true, 'o' => true, 'u' => true);
+        $this->vowels = ['a' => true, 'e' => true, 'i' => true, 'o' => true, 'u' => true];
     }
 
     /**
@@ -58,7 +58,7 @@ class LangFilter_EN extends LangFilter
         // Broken into sets. We don't need to include "d"/"s"/"r" suffixes because the base word is a stem of that. But "ing" suffixes mean removing a letter so are needed. Some completely standard long stem transfers are done as universal replaces elsewhere.
         // All words are stem bound, but not tail bound.
         if ($this->make_uncle_sam_happy === null) {
-            $this->make_uncle_sam_happy = array(
+            $this->make_uncle_sam_happy = [
                 // Spelling...
 
                 'analyse' => 'analyze',
@@ -204,18 +204,18 @@ class LangFilter_EN extends LangFilter
                 'ticking (checking)' => 'checking',
                 'unticking (unchecking)' => 'unchecking',
                 //'bill' => 'invoice', not needed and likely to be substring
-            );
+            ];
 
-            $this->the_sun_never_sets_on_the_british_empire = array( // Tally ho
+            $this->the_sun_never_sets_on_the_british_empire = [ // Tally ho
                 'tick (check)' => 'tick',
                 'untick (uncheck)' => 'untick',
                 'ticked (checked)' => 'ticked',
                 'unticked (unchecked)' => 'unticked',
                 'ticking (checking)' => 'ticking',
                 'unticking (unchecking)' => 'unticking',
-            ); // pip pip
+            ]; // pip pip
 
-            $remapping = array();
+            $remapping = [];
 
             // Put in correct brand name
             if ($key !== null) {
@@ -298,7 +298,7 @@ class LangFilter_EN extends LangFilter
 
         // Strip out Conversr notes
         if ((get_forum_type() == 'cns') && (get_base_url_hostname() != 'compo.sr')) {
-            $value = str_replace(array(' (Conversr only)', ' Note that most checks only work if running Conversr.'), array('', ''), $value);
+            $value = str_replace([' (Conversr only)', ' Note that most checks only work if running Conversr.'], ['', ''], $value);
         }
 
         // Better labelling for eCommerce config
@@ -379,9 +379,9 @@ class LangFilter_EN extends LangFilter
     {
         $flags = explode('|', $flag);
 
-        $matches = array();
+        $matches = [];
 
-        $preserved = array();
+        $preserved = [];
 
         foreach ($flags as $flag_i => $flag) {
             if ($flag[0] == 'p' && preg_match('#^preserve=(.*)$#', $flag, $matches) != 0) {
@@ -438,43 +438,43 @@ class LangFilter_EN extends LangFilter
 
                     switch ($type) {
                         case 'resource':
-                            $reps = array(
+                            $reps = [
                                 'a resource' => $article_word . ' ' . $specific,
                                 'A resource' => ucfirst($article_word) . ' ' . $specific,
                                 'resources' => $specific_plural,
                                 'resource' => $specific,
-                            );
+                            ];
                             break;
 
                         case 'category':
-                            $reps = array(
+                            $reps = [
                                 'a category' => $article_word . ' ' . $specific,
                                 'A category' => ucfirst($article_word) . ' ' . $specific,
                                 'categories' => $specific_plural,
                                 'category' => $specific,
-                            );
+                            ];
                             break;
 
                         case 'entry':
-                            $reps = array(
+                            $reps = [
                                 'an entry' => $article_word . ' ' . $specific,
                                 'An entry' => ucfirst($article_word) . ' ' . $specific,
                                 'entries' => $specific_plural,
                                 'entry' => $specific,
-                            );
+                            ];
                             break;
 
                         case 'content_type_module':
-                            $reps = array(
+                            $reps = [
                                 'a content-type' => $article_word . ' ' . $specific . ' module',
                                 'A content-type' => ucfirst($article_word) . ' ' . $specific . ' module',
                                 'content-types' => $specific_plural . ' module',
                                 'content-type' => $specific . ' module',
-                            );
+                            ];
                             break;
 
                         default:
-                            $reps = array();
+                            $reps = [];
                             break;
                     }
 

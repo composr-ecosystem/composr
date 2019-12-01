@@ -33,12 +33,12 @@ class Hook_page_groupings_cns_forum
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('cns_forum')) {
-            return array();
+            return [];
         }
 
-        return array(
-            (get_forum_type() != 'cns') ? null : array('structure', 'menu/social/forum/forums', array('admin_cns_forums', array('type' => 'browse'), get_module_zone('admin_cns_forums')), do_lang_tempcode('SECTION_FORUMS'), 'cns:DOC_FORUMS'),
-            array('social', 'menu/social/forum/forums', array('forumview', array(), get_module_zone('forumview')), do_lang_tempcode('SECTION_FORUMS')),
-        );
+        return [
+            (get_forum_type() != 'cns') ? null : ['structure', 'menu/social/forum/forums', ['admin_cns_forums', ['type' => 'browse'], get_module_zone('admin_cns_forums')], do_lang_tempcode('SECTION_FORUMS'), 'cns:DOC_FORUMS'],
+            ['social', 'menu/social/forum/forums', ['forumview', [], get_module_zone('forumview')], do_lang_tempcode('SECTION_FORUMS')],
+        ];
     }
 }

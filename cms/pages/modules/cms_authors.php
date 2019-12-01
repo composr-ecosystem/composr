@@ -30,7 +30,7 @@ class Module_cms_authors
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,11 +55,11 @@ class Module_cms_authors
             return null;
         }
 
-        $ret = array(
-            'browse' => array('AUTHOR_MANAGE', 'menu/rich_content/authors'),
-            '_add' => array('EDIT_MY_AUTHOR_PROFILE', 'menu/cms/author_set_own_profile'),
-            'edit' => array('EDIT_MERGE_AUTHORS', 'admin/edit'),
-        );
+        $ret = [
+            'browse' => ['AUTHOR_MANAGE', 'menu/rich_content/authors'],
+            '_add' => ['EDIT_MY_AUTHOR_PROFILE', 'menu/cms/author_set_own_profile'],
+            'edit' => ['EDIT_MERGE_AUTHORS', 'admin/edit'],
+        ];
 
         if ($support_crosslinks) {
             require_code('fields');
@@ -77,7 +77,7 @@ class Module_cms_authors
     public function get_privilege_overrides()
     {
         require_lang('authors');
-        return array('submit_midrange_content' => array(0, 'ADD_AUTHOR'), 'edit_own_midrange_content' => array(0, 'EDIT_OWN_AUTHOR'), 'edit_midrange_content' => array(0, 'EDIT_MERGE_AUTHORS'), 'delete_own_midrange_content' => array(0, 'DELETE_OWN_AUTHOR'), 'delete_midrange_content' => array(0, 'DELETE_AUTHOR'));
+        return ['submit_midrange_content' => [0, 'ADD_AUTHOR'], 'edit_own_midrange_content' => [0, 'EDIT_OWN_AUTHOR'], 'edit_midrange_content' => [0, 'EDIT_MERGE_AUTHORS'], 'delete_own_midrange_content' => [0, 'DELETE_OWN_AUTHOR'], 'delete_midrange_content' => [0, 'DELETE_AUTHOR']];
     }
 
     public $title;
@@ -100,34 +100,34 @@ class Module_cms_authors
         require_lang('authors');
 
         if ($type == '_add') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE')]]);
 
             $author = get_param_string('id', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
             if (get_param_string('id', null) === null) {
                 $this->title = get_screen_title('DEFINE_AUTHOR');
             } else {
-                $this->title = get_screen_title('_DEFINE_AUTHOR', true, array(escape_html($author)));
+                $this->title = get_screen_title('_DEFINE_AUTHOR', true, [escape_html($author)]);
             }
 
             $this->author = $author;
         }
 
         if ($type == '__add') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('DEFINE_AUTHOR');
         }
 
         if ($type == '_merge') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('MERGE_AUTHORS');
         }
 
         if ($type == 'edit') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('AUTHOR_MANAGE')]]);
 
             $this->title = get_screen_title('EDIT_MERGE_AUTHORS');
         }
@@ -180,11 +180,11 @@ class Module_cms_authors
         return do_next_manager(
             get_screen_title('AUTHOR_MANAGE'),
             comcode_lang_string('DOC_AUTHORS'),
-            array_merge(array(
-                has_privilege(get_member(), 'set_own_author_profile') ? array('menu/cms/author_set_own_profile', array('_SELF', array('type' => '_add'), '_SELF'), do_lang('EDIT_MY_AUTHOR_PROFILE')) : null,
-                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('admin/add', array('_SELF', array('type' => '_add'), '_SELF'), do_lang('ADD_AUTHOR')) : null,
-                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_MERGE_AUTHORS')) : null,
-            ), manage_custom_fields_donext_link('author')),
+            array_merge([
+                has_privilege(get_member(), 'set_own_author_profile') ? ['menu/cms/author_set_own_profile', ['_SELF', ['type' => '_add'], '_SELF'], do_lang('EDIT_MY_AUTHOR_PROFILE')] : null,
+                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['admin/add', ['_SELF', ['type' => '_add'], '_SELF'], do_lang('ADD_AUTHOR')] : null,
+                has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_MERGE_AUTHORS')] : null,
+            ], manage_custom_fields_donext_link('author')),
             do_lang('AUTHOR_MANAGE')
         );
     }
@@ -208,7 +208,7 @@ class Module_cms_authors
             access_denied('PRIVILEGE', 'edit_midrange_content');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('authors', array('the_description', 'url', 'skills', 'member_id'), array('author' => $author), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('authors', ['the_description', 'url', 'skills', 'member_id'], ['author' => $author], '', 1);
         if (array_key_exists(0, $rows)) {
             $myrow = $rows[0];
             $description = get_translated_text($myrow['the_description']);
@@ -245,7 +245,7 @@ class Module_cms_authors
             }
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '__add', 'author' => $author), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '__add', 'author' => $author], '_SELF');
         $submit_name = do_lang_tempcode('SAVE');
 
         $fields = new Tempcode();
@@ -260,7 +260,7 @@ class Module_cms_authors
         $specialisation2 = new Tempcode();
 
         if (has_privilege(get_member(), 'edit_midrange_content', 'cms_authors')) {
-            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'b18ab131f72a024039eaa92814f0f4a9', 'SECTION_HIDDEN' => $handle !== null, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'b18ab131f72a024039eaa92814f0f4a9', 'SECTION_HIDDEN' => $handle !== null, 'TITLE' => do_lang_tempcode('ADVANCED')]));
             $specialisation2->attach(form_input_username(do_lang_tempcode('MEMBER'), do_lang_tempcode('DESCRIPTION_MEMBER_AUTHOR'), 'member_id', ($handle === null) ? '' : $GLOBALS['FORUM_DRIVER']->get_username(intval($handle), false, USERNAME_DEFAULT_BLANK), false));
         } else {
             $hidden->attach(form_input_hidden('member_id', strval($handle)));
@@ -286,15 +286,15 @@ class Module_cms_authors
         }
 
         if ($may_delete) {
-            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '8a83b3253a6452c90e92699d629b9d03', 'TITLE' => do_lang_tempcode('ACTIONS'))));
+            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '8a83b3253a6452c90e92699d629b9d03', 'TITLE' => do_lang_tempcode('ACTIONS')]));
             $specialisation2->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
         }
 
         url_default_parameters__disable();
 
-        $posting_form = get_posting_form($submit_name, 'buttons/save', $description, $post_url, $hidden, $fields, do_lang_tempcode('DESCRIPTION'), '', $specialisation2, null, array(), null, false, true, true, true, false, do_lang_tempcode('DESCRIPTION_MEMBER_DESCRIPTION'));
+        $posting_form = get_posting_form($submit_name, 'buttons/save', $description, $post_url, $hidden, $fields, do_lang_tempcode('DESCRIPTION'), '', $specialisation2, null, [], null, false, true, true, true, false, do_lang_tempcode('DESCRIPTION_MEMBER_DESCRIPTION'));
 
-        return do_template('POSTING_SCREEN', array('_GUID' => '1d71c934e3e23fe394f5611191089630', 'TITLE' => $this->title, 'POSTING_FORM' => $posting_form));
+        return do_template('POSTING_SCREEN', ['_GUID' => '1d71c934e3e23fe394f5611191089630', 'TITLE' => $this->title, 'POSTING_FORM' => $posting_form]);
     }
 
     /**
@@ -381,24 +381,24 @@ class Module_cms_authors
         return do_next_manager(
             $title,
             $description,
-            array(),
+            [],
             null,
             /* TYPED-ORDERED LIST OF 'LINKS' */
-            has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('_SELF', array('type' => '_add'), '_SELF') : null, // Add one
-            ($author === null) ? null : array('_SELF', array('type' => '_add', 'id' => $author), '_SELF'), // Edit this
-            has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? array('_SELF', array('type' => 'edit'), '_SELF') : null, // Edit one
-            ($author === null) ? null : array('authors', array('type' => 'browse', 'id' => $author), get_module_zone('authors')), // View this
+            has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['_SELF', ['type' => '_add'], '_SELF'] : null, // Add one
+            ($author === null) ? null : ['_SELF', ['type' => '_add', 'id' => $author], '_SELF'], // Edit this
+            has_privilege(get_member(), 'edit_midrange_content', 'cms_authors') ? ['_SELF', ['type' => 'edit'], '_SELF'] : null, // Edit one
+            ($author === null) ? null : ['authors', ['type' => 'browse', 'id' => $author], get_module_zone('authors')], // View this
             null, // View archive
             null, // Add one category
             null, // Edit one category
             null, // Edit this category
             null, // View this category
             /* SPECIALLY TYPED 'LINKS' */
-            array(
-                has_privilege(get_member(), 'delete_midrange_content', 'cms_authors') ? array('admin/merge', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('MERGE_AUTHORS')) : null,
-            ),
-            array(),
-            array(),
+            [
+                has_privilege(get_member(), 'delete_midrange_content', 'cms_authors') ? ['admin/merge', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('MERGE_AUTHORS')] : null,
+            ],
+            [],
+            [],
             null,
             null,
             null,
@@ -421,9 +421,9 @@ class Module_cms_authors
 
         require_code('form_templates');
         $fields = form_input_huge_list(do_lang_tempcode('NAME'), '', 'author', $authors, null, true);
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_add'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
         $submit_name = do_lang_tempcode('SETUP');
-        $define_form = do_template('FORM', array(
+        $define_form = do_template('FORM', [
             '_GUID' => '1109c0cfdd598bf87134de1838709c39',
             'TABINDEX' => strval(get_form_field_tabindex()),
             'HIDDEN' => '',
@@ -434,15 +434,15 @@ class Module_cms_authors
             'SUBMIT_ICON' => 'admin/edit_this',
             'SUBMIT_NAME' => $submit_name,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
 
         if (has_privilege(get_member(), 'delete_midrange_content')) {
             $fields = new Tempcode();
             $fields->attach(form_input_list(do_lang_tempcode('PARAMETER_A'), '', 'mauthor', $authors));
             $fields->attach(form_input_list(do_lang_tempcode('PARAMETER_B'), do_lang_tempcode('DESCRIPTION_NAME'), 'mauthor2', $authors));
-            $post_url = build_url(array('page' => '_SELF', 'type' => '_merge'), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => '_merge'], '_SELF');
             $submit_name = do_lang_tempcode('MERGE_AUTHORS');
-            $merge_form = do_template('FORM', array(
+            $merge_form = do_template('FORM', [
                 '_GUID' => 'd0dd075a54b72cfe47d3c2d9fe987c89',
                 'TABINDEX' => strval(get_form_field_tabindex()),
                 'SECONDARY_FORM' => true,
@@ -452,12 +452,12 @@ class Module_cms_authors
                 'URL' => $post_url,
                 'SUBMIT_ICON' => 'admin/merge',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         } else {
             $merge_form = new Tempcode();
         }
 
-        return do_template('AUTHOR_MANAGE_SCREEN', array('_GUID' => '84f8de5d53090d138cb653bb861f2f70', 'TITLE' => $this->title, 'MERGE_FORM' => $merge_form, 'DEFINE_FORM' => $define_form));
+        return do_template('AUTHOR_MANAGE_SCREEN', ['_GUID' => '84f8de5d53090d138cb653bb861f2f70', 'TITLE' => $this->title, 'MERGE_FORM' => $merge_form, 'DEFINE_FORM' => $define_form]);
     }
 
     /**
@@ -486,7 +486,7 @@ class Module_cms_authors
     public function create_selection_list_authors($it = null)
     {
         $author_fields = $GLOBALS['SITE_DB']->query('SELECT m_name,m_table FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'db_meta WHERE m_name LIKE \'' . db_encode_like('%author') . '\'');
-        $authors = array();
+        $authors = [];
         foreach ($author_fields as $field) {
             if (($field['m_table'] != 'modules') && ($field['m_table'] != 'blocks') && ($field['m_table'] != 'addons')) {
                 $rows_new = $GLOBALS['SITE_DB']->query('SELECT DISTINCT ' . $field['m_name'] . ' FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . $field['m_table'] . ' WHERE ' . db_string_not_equal_to($field['m_name'], '') . ' ORDER BY ' . $field['m_name']);

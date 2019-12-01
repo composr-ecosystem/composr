@@ -68,7 +68,7 @@ foreach ($files as $file) {
         }
 
         // Find override data
-        $matches = array();
+        $matches = [];
         $file_data = cms_file_get_contents_safe($file, FILE_READ_LOCK);
         $true_file_data = $file_data;
         if (preg_match('#\#PRIOR TO COMPILED>>>(.*)\#<<<PRIOR TO COMPILED#s', $file_data, $matches) != 0) { // Must work back to what it was before compilation
@@ -101,7 +101,7 @@ foreach ($files as $file) {
 
             if (file_exists($file_orig)) {
                 $true_orig = cms_file_get_contents_safe($file_orig, FILE_READ_LOCK);
-                $orig = str_replace(array('?' . '>', '<' . '?php'), array('', ''), $true_orig);
+                $orig = str_replace(['?' . '>', '<' . '?php'], ['', ''], $true_orig);
 
                 $codename = $file;
                 if (substr($codename, 0, 8) == 'sources/') {
@@ -150,7 +150,7 @@ foreach ($files as $file) {
                 $doing_code_modifier_init = function_exists($init_func);
                 $done_code_modifier_init = false;
                 if ($doing_code_modifier_init) {
-                    $test = call_user_func_array($init_func, array($orig));
+                    $test = call_user_func_array($init_func, [$orig]);
                     if (is_string($test)) {
                         $orig = $test;
                         $done_code_modifier_init = true;
@@ -196,7 +196,7 @@ echo 'DONE';
 
 function get_directory_contents($path, $rel_path = '')
 {
-    $out = array();
+    $out = [];
 
     $d = opendir($path);
     while (($file = readdir($d)) !== false) {

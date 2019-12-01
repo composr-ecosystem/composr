@@ -30,7 +30,7 @@ class Hook_config_tax_country_regexp
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAX_COUNTRY_REGEXP',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_tax_country_regexp
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

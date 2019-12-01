@@ -30,7 +30,7 @@ class Module_admin_trackbacks
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -57,9 +57,9 @@ class Module_admin_trackbacks
             }
         }
 
-        return array(
-            'browse' => array('MANAGE_TRACKBACKS', 'menu/adminzone/audit/trackbacks'),
-        );
+        return [
+            'browse' => ['MANAGE_TRACKBACKS', 'menu/adminzone/audit/trackbacks'],
+        ];
     }
 
     public $title;
@@ -114,11 +114,11 @@ class Module_admin_trackbacks
      */
     public function choose()
     {
-        $trackback_rows = $GLOBALS['SITE_DB']->query_select('trackbacks', array('*'), array(), 'ORDER BY trackback_time DESC,id DESC', 1000);
+        $trackback_rows = $GLOBALS['SITE_DB']->query_select('trackbacks', ['*'], [], 'ORDER BY trackback_time DESC,id DESC', 1000);
 
         $trackbacks = '';
         foreach ($trackback_rows as $value) {
-            $trackbacks .= static_evaluate_tempcode(do_template('TRACKBACK', array(
+            $trackbacks .= static_evaluate_tempcode(do_template('TRACKBACK', [
                 '_GUID' => 'eb005ff4cf387e4c18cbc862c38555e3',
                 'ID' => strval($value['id']),
                 '_DATE' => strval($value['trackback_time']),
@@ -127,10 +127,10 @@ class Module_admin_trackbacks
                 'TITLE' => $value['trackback_title'],
                 'EXCERPT' => $value['trackback_excerpt'],
                 'NAME' => $value['trackback_name'],
-            )));
+            ]));
         }
 
-        return do_template('TRACKBACK_DELETE_SCREEN', array('_GUID' => '51f7e4c1976bcaf120758d2c86771289', 'TITLE' => $this->title, 'TRACKBACKS' => $trackbacks, 'LOTS' => count($trackback_rows) == 1000));
+        return do_template('TRACKBACK_DELETE_SCREEN', ['_GUID' => '51f7e4c1976bcaf120758d2c86771289', 'TITLE' => $this->title, 'TRACKBACKS' => $trackbacks, 'LOTS' => count($trackback_rows) == 1000]);
     }
 
     /**
@@ -150,7 +150,7 @@ class Module_admin_trackbacks
                 switch ($val) {
                     case '2':
                         if (addon_installed('securitylogging')) {
-                            $trackback_ip = $GLOBALS['SITE_DB']->query_select_value_if_there('trackbacks', 'trackback_ip', array('id' => $id));
+                            $trackback_ip = $GLOBALS['SITE_DB']->query_select_value_if_there('trackbacks', 'trackback_ip', ['id' => $id]);
                             if ($trackback_ip === null) {
                                 break;
                             }
@@ -161,7 +161,7 @@ class Module_admin_trackbacks
                         }
                     // Intentionally no 'break' line below
                     case '1':
-                        $GLOBALS['SITE_DB']->query_delete('trackbacks', array('id' => $id), '', 1);
+                        $GLOBALS['SITE_DB']->query_delete('trackbacks', ['id' => $id], '', 1);
                         break;
                     // (zero is do nothing)
                 }
@@ -174,7 +174,7 @@ class Module_admin_trackbacks
         $text = do_lang_tempcode('SUCCESS');
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+            $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, $text);

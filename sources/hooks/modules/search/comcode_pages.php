@@ -38,14 +38,14 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         require_lang('zones');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('PAGES');
         $info['default'] = (get_option('search_comcode_pages') == '1');
         $info['category'] = 'the_zone';
         $info['integer_category'] = false;
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_comcode_page');
 
-        $info['permissions'] = array();
+        $info['permissions'] = [];
 
         return $info;
     }
@@ -111,7 +111,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -138,9 +138,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         $g_or = get_permission_where_clause_groups(get_member(), false);
 
         $table = 'cached_comcode_pages r LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'comcode_pages q ON (q.the_zone=r.the_zone AND q.the_page=r.the_page)';
-        $trans_fields = array('r.cc_page_title' => 'SHORT_TRANS', 'r.string_index' => 'LONG_TRANS__COMCODE');
-        $nontrans_fields = array();
-        $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', array('r.the_zone', 'r.the_page')));
+        $trans_fields = ['r.cc_page_title' => 'SHORT_TRANS', 'r.string_index' => 'LONG_TRANS__COMCODE'];
+        $nontrans_fields = [];
+        $this->_get_search_parameterisation_advanced_for_content_type('_comcode_page', $table, $where_clause, $trans_fields, $nontrans_fields, db_function('CONCAT', ['r.the_zone', 'r.the_page']));
 
         // Calculate and perform query
         if ($g_or == '') {
@@ -150,13 +150,13 @@ class Hook_search_comcode_pages extends FieldsSearchHook
         }
 
         if (addon_installed('redirects_editor')) {
-            $redirects = $GLOBALS['SITE_DB']->query_select('redirects', array('*'));
+            $redirects = $GLOBALS['SITE_DB']->query_select('redirects', ['*']);
         } else {
-            $redirects = array();
+            $redirects = [];
         }
 
-        $out = array();
-        $pages_found = array();
+        $out = [];
+        $pages_found = [];
         foreach ($rows as $i => $row) {
             foreach ($redirects as $redirect) {
                 if (($redirect['r_from_page'] == $row['the_page']) && ($redirect['r_from_zone'] == $row['the_zone'])) {
@@ -171,7 +171,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 continue;
             }
             $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
-            $out[$i]['data'] = $row + array('extra' => array($row['the_zone'], $row['the_page'], $limit_to));
+            $out[$i]['data'] = $row + ['extra' => [$row['the_zone'], $row['the_page'], $limit_to]];
             if (($remapped_orderer != '') && (array_key_exists($remapped_orderer, $row))) {
                 $out[$i]['orderer'] = $row[$remapped_orderer];
             } elseif (strpos($remapped_orderer, '_rating:') !== false) {
@@ -185,7 +185,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         if ($author == '') {
             // Make sure we record that for all cached Comcode pages, we know of them (only those not cached would not have been under the scope of the current search)
-            $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('the_zone', 'the_page'));
+            $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page']);
             foreach ($all_pages as $row) {
                 $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
             }
@@ -194,7 +194,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $zones = find_all_zones();
             $i = count($out);
             if (($search_under !== null) && ($search_under != '!')) {
-                $zones = array($search_under);
+                $zones = [$search_under];
             }
             foreach ($zones as $zone) {
                 if (!has_zone_access(get_member(), $zone)) {
@@ -236,8 +236,8 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                             $contents = preg_replace('#^.*\[title(="1")?\](.*)\[/title\].*$#Us', '${2}', $contents);
                         }
 
-                        if (in_memory_search_match(array('content' => $content, 'conjunctive_operator' => $boolean_operator), $contents)) {
-                            $out[$i]['data'] = array('the_zone' => $zone, 'the_page' => $page) + array('extra' => array($zone, $page, $limit_to));
+                        if (in_memory_search_match(['content' => $content, 'conjunctive_operator' => $boolean_operator], $contents)) {
+                            $out[$i]['data'] = ['the_zone' => $zone, 'the_page' => $page] + ['extra' => [$zone, $page, $limit_to]];
                             if ($remapped_orderer == 'the_page') {
                                 $out[$i]['orderer'] = $page;
                             } elseif ($remapped_orderer == 'the_zone') {
@@ -289,7 +289,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         require_code('xhtml');
 
-        $url = build_url(array('page' => $page), $zone);
+        $url = build_url(['page' => $page], $zone);
 
         $_summary = seo_meta_get_for('comcode_page', $zone . ':' . $page);
         $summary = $_summary[1];
@@ -339,9 +339,9 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                 pop_lax_comcode();
                 $_temp_summary = $temp_summary->evaluate();
                 global $PAGES_CACHE;
-                $PAGES_CACHE = array(); // Decache this, or we'll eat up a tonne of RAM
+                $PAGES_CACHE = []; // Decache this, or we'll eat up a tonne of RAM
 
-                $summary = generate_text_summary($_temp_summary, ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS);
+                $summary = generate_text_summary($_temp_summary, ($SEARCH__CONTENT_BITS === null) ? [] : $SEARCH__CONTENT_BITS);
 
                 $GLOBALS['TEMPCODE_SETGET']['no_comcode_page_edit_links'] = '0';
             }
@@ -357,7 +357,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
 
         cms_set_time_limit($old_limit);
 
-        return do_template('COMCODE_PAGE_BOX', array(
+        return do_template('COMCODE_PAGE_BOX', [
             '_GUID' => '79cd9e7d0b63ee916c4cd74b26c2f652',
             'TITLE' => $title,
             'BREADCRUMBS' => $breadcrumbs,
@@ -366,6 +366,6 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             'URL' => $url,
             'SUMMARY' => $summary,
             'GIVE_CONTEXT' => true,
-        ));
+        ]);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_seq_post_ids
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SEQ_POST_IDS',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_seq_post_ids
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

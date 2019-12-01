@@ -22,9 +22,9 @@ class missing_block_params_test_set extends cms_test_case
     {
         require_code('files2');
 
-        $need = array();
+        $need = [];
 
-        $files = get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, array('php'));
+        $files = get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, ['php']);
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe($path);
 
@@ -32,9 +32,9 @@ class missing_block_params_test_set extends cms_test_case
             $need[] = 'BLOCK_' . basename($path, '.php') . '_DESCRIPTION';
             $need[] = 'BLOCK_' . basename($path, '.php') . '_USE';
 
-            $matches = array();
+            $matches = [];
             $count = preg_match_all('/\$map\[\'([^\']+)\'\]/', $c, $matches);
-            $params = array();
+            $params = [];
             for ($i = 0; $i < $count; $i++) {
                 if ($matches[1][$i] == 'block') {
                     continue;
@@ -48,7 +48,7 @@ class missing_block_params_test_set extends cms_test_case
 
             foreach ($params as $param) {
                 // Check param defined in block definition
-                if ((preg_match('/\$info\[\'parameters\'\]\s*=\s*array\([^\)]*\'' . preg_quote($param) . '\'[^\)]*\);/', $c) == 0)) {
+                if ((preg_match('/\$info\[\'parameters\'\]\s*=\s*\[[^\]]*\'' . preg_quote($param) . '\'[^\]]*];/', $c) == 0)) {
                     $this->assertTrue(false, 'Missing block param... ' . basename($path, '.php') . ': ' . $param);
                 }
 
@@ -63,8 +63,8 @@ class missing_block_params_test_set extends cms_test_case
                     (strpos($c, '$info[\'cache_on\'] = \'$map\';') === false) && /* Doesn't just cache all parameters together */
                     (strpos($c, '$info[\'cache_on\'] = \'(count($_POST)==0) ? $map : null\';') === false) /* " */
                 ) {
-                    $pattern_1 = '#\$info\[\'cache_on\'\] = \'[^;]*array\([^;]*\\\\\'' . preg_quote($param) . '\\\\\'#';
-                    $pattern_2 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*array\([^;]*\'' . preg_quote($param) . '\'#s';
+                    $pattern_1 = '#\$info\[\'cache_on\'\] = \'[^;]*\[[^;]*\\\\\'' . preg_quote($param) . '\\\\\'#';
+                    $pattern_2 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*\[[^;]*\'' . preg_quote($param) . '\'#s';
                     $pattern_3 = '#\$info\[\'cache_on\'\] = \'[^;]*[^;]* \$map\n#';
                     $pattern_4 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*[^;]* \$map\n#s';
                     if ((preg_match($pattern_1, $c) == 0) && (preg_match($pattern_2, $c) == 0) && (preg_match($pattern_3, $c) == 0) && (preg_match($pattern_4, $c) == 0)) {
@@ -76,7 +76,7 @@ class missing_block_params_test_set extends cms_test_case
 
         $need = array_unique($need);
 
-        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, array('ini'));
+        $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, ['ini']);
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
 

@@ -76,7 +76,7 @@ class Hook_profiles_tabs_edit_delete
         if ($member_id_of != $member_id_viewing) {
             $alternate_actions = new Tempcode();
 
-            $merge_url = build_url(array('page' => 'admin_cns_merge_members', 'from' => $username, 'to' => $GLOBALS['FORUM_DRIVER']->get_username(get_member())), get_module_zone('admin_cns_merge_members'));
+            $merge_url = build_url(['page' => 'admin_cns_merge_members', 'from' => $username, 'to' => $GLOBALS['FORUM_DRIVER']->get_username(get_member())], get_module_zone('admin_cns_merge_members'));
 
             if (has_privilege($member_id_of, 'comcode_dangerous')) {
                 $text->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_ADMIN', escape_html($merge_url->evaluate()))));
@@ -85,23 +85,23 @@ class Hook_profiles_tabs_edit_delete
             $alternate_actions->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_MERGE', escape_html($merge_url->evaluate()))));
 
             if (addon_installed('search')) {
-                $search_url = build_url(array('page' => 'search', 'type' => 'results', 'author' => $username), get_module_zone('search'));
+                $search_url = build_url(['page' => 'search', 'type' => 'results', 'author' => $username], get_module_zone('search'));
                 $alternate_actions->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_SEARCH', escape_html($search_url->evaluate()))));
             }
 
             if (addon_installed('cns_warnings')) {
-                $warn_url = build_url(array('page' => 'warnings', 'member_id' => $member_id_of), get_module_zone('warnings'));
+                $warn_url = build_url(['page' => 'warnings', 'member_id' => $member_id_of], get_module_zone('warnings'));
                 $alternate_actions->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_WARNING', escape_html($warn_url->evaluate()))));
             }
 
-            $privacy_url = build_url(array('page' => 'admin_privacy', 'type' => 'browse', 'member_id' => $member_id_of), get_module_zone('admin_privacy'));
+            $privacy_url = build_url(['page' => 'admin_privacy', 'type' => 'browse', 'member_id' => $member_id_of], get_module_zone('admin_privacy'));
             $alternate_actions->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_PRIVACY_PURGE', escape_html($privacy_url->evaluate()))));
 
             $text->attach(put_in_standard_box($alternate_actions, do_lang_tempcode('ALTERNATE_ACTIONS')));
         }
 
         if (addon_installed('ecommerce')) {
-            $subscriptions_count = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', array('s_member_id' => $member_id_of, 's_state' => 'active'));
+            $subscriptions_count = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', ['s_member_id' => $member_id_of, 's_state' => 'active']);
             if ($subscriptions_count > 0) {
                 $text->attach(paragraph(do_lang_tempcode('MEMBER_HAS_SUBSCRIPTIONS', escape_html($username))));
             }
@@ -112,8 +112,8 @@ class Hook_profiles_tabs_edit_delete
         $fields->attach(form_input_tick(do_lang_tempcode(($member_id_of != $member_id_viewing) ? 'DELETE_WITHOUT_MERGING' : 'DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
 
         require_javascript('core_cns');
-        $js_function_calls = array('hookProfilesTabsEditDeleteRenderTab');
+        $js_function_calls = ['hookProfilesTabsEditDeleteRenderTab'];
 
-        return array($title, $fields, $text, $js_function_calls, $order, null, 'tabs/member_account/edit/delete');
+        return [$title, $fields, $text, $js_function_calls, $order, null, 'tabs/member_account/edit/delete'];
     }
 }

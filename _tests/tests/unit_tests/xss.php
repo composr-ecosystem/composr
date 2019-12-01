@@ -115,7 +115,7 @@ class xss_test_set extends cms_test_case
     public function testXSSDetectorOnAndWorking()
     {
         $this->found_error = null;
-        $temp = set_error_handler(array($this, '_temp_handler'));
+        $temp = set_error_handler([$this, '_temp_handler']);
 
         cms_ini_set('ocproducts.xss_detect', '1');
 
@@ -136,12 +136,12 @@ class xss_test_set extends cms_test_case
     public function testXSSDetectorOnAndWorkingComplex1()
     {
         $this->found_error = null;
-        $temp = set_error_handler(array($this, '_temp_handler'));
+        $temp = set_error_handler([$this, '_temp_handler']);
 
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
-        $tpl = do_template('PARAGRAPH', array('_GUID' => '8bca69a1088b0ca260321cd3117aabbe', 'TEXT' => get_param_string('id', DEFAULT_PARAM)));
+        $tpl = do_template('PARAGRAPH', ['_GUID' => '8bca69a1088b0ca260321cd3117aabbe', 'TEXT' => get_param_string('id', DEFAULT_PARAM)]);
         @$tpl->evaluate_echo();
         ob_end_clean();
 
@@ -158,13 +158,13 @@ class xss_test_set extends cms_test_case
     public function testXSSDetectorOnAndWorkingComplex2()
     {
         $this->found_error = null;
-        $temp = set_error_handler(array($this, '_temp_handler'));
+        $temp = set_error_handler([$this, '_temp_handler']);
 
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
-        $_tpl = do_template('PARAGRAPH', array('_GUID' => '809e41570771a797998d59f8e3dc7a0b', 'TEXT' => get_param_string('id', DEFAULT_PARAM)));
-        $tpl = do_template('PARAGRAPH', array('_GUID' => '89dd3a60565dab73c2796c8a754095ba', 'TEXT' => $_tpl));
+        $_tpl = do_template('PARAGRAPH', ['_GUID' => '809e41570771a797998d59f8e3dc7a0b', 'TEXT' => get_param_string('id', DEFAULT_PARAM)]);
+        $tpl = do_template('PARAGRAPH', ['_GUID' => '89dd3a60565dab73c2796c8a754095ba', 'TEXT' => $_tpl]);
         @$tpl->evaluate_echo();
         ob_end_clean();
 
@@ -181,14 +181,14 @@ class xss_test_set extends cms_test_case
     public function testXSSDetectorOnAndWorkingComplex3()
     {
         $this->found_error = null;
-        $temp = set_error_handler(array($this, '_temp_handler'));
+        $temp = set_error_handler([$this, '_temp_handler']);
 
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
         $_tpl = new Tempcode();
-        $_tpl->attach(do_template('PARAGRAPH', array('_GUID' => 'a9e8285ac5ef71d93eedaaf6b81f4384', 'TEXT' => get_param_string('id', DEFAULT_PARAM))));
-        $tpl = do_template('PARAGRAPH', array('_GUID' => 'd2e942317451ffed9a5d75c13c85a350', 'TEXT' => $_tpl));
+        $_tpl->attach(do_template('PARAGRAPH', ['_GUID' => 'a9e8285ac5ef71d93eedaaf6b81f4384', 'TEXT' => get_param_string('id', DEFAULT_PARAM)]));
+        $tpl = do_template('PARAGRAPH', ['_GUID' => 'd2e942317451ffed9a5d75c13c85a350', 'TEXT' => $_tpl]);
         @$tpl->evaluate_echo();
         ob_end_clean();
 

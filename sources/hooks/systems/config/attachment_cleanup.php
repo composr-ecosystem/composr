@@ -30,7 +30,7 @@ class Hook_config_attachment_cleanup
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ATTACHMENT_CLEANUP',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_attachment_cleanup
             'required' => true,
             'public' => false,
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

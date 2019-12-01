@@ -48,7 +48,7 @@ class members_test_set extends cms_test_case
             10, // dob_day
             1, // dob_month
             1980, // dob_year
-            array(), // custom_fields
+            [], // custom_fields
             null, // timezone
             '', // language
             '', // theme
@@ -77,7 +77,7 @@ class members_test_set extends cms_test_case
             true // check_correctness
         );
 
-        $this->assertTrue('testmember' == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', array('id' => $this->member_id)));
+        $this->assertTrue('testmember' == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', ['id' => $this->member_id]));
     }
 
     public function testEditMember()
@@ -94,7 +94,7 @@ class members_test_set extends cms_test_case
             null // primary_group
         );
 
-        $this->assertTrue('testing123@example.com' == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_email_address', array('id' => $this->member_id)));
+        $this->assertTrue('testing123@example.com' == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_email_address', ['id' => $this->member_id]));
     }
 
     public function tearDown()

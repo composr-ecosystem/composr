@@ -34,14 +34,14 @@ class Hook_commandr_command_ban_member
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('ban_member', array('h', 'u'), array(true, true)), '', '');
+            return ['', do_command_help('ban_member', ['h', 'u'], [true, true]), '', ''];
         } else {
             if (get_forum_type() != 'cns') {
-                return array('', '', '', do_lang('NO_CNS'));
+                return ['', '', '', do_lang('NO_CNS')];
             }
 
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'ban_member'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'ban_member')];
             }
 
             require_code('cns_members_action');
@@ -51,7 +51,7 @@ class Hook_commandr_command_ban_member
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($parameters[0]);
 
             if ($member_id === null) {
-                return array('', '', '', do_lang('_MEMBER_NO_EXIST', $parameters[0]));
+                return ['', '', '', do_lang('_MEMBER_NO_EXIST', $parameters[0])];
             }
 
             if ((array_key_exists('u', $options)) || (array_key_exists('unban', $options))) {
@@ -59,7 +59,7 @@ class Hook_commandr_command_ban_member
             } else {
                 cns_ban_member($member_id);
             }
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         }
     }
 }

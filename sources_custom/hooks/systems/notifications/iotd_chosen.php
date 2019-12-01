@@ -39,11 +39,11 @@ class Hook_notification_iotd_chosen extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('iotds')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['iotd_chosen'] = array(do_lang('CONTENT'), do_lang('iotds:NOTIFICATION_TYPE_iotd_chosen'));
+        $list = [];
+        $list['iotd_chosen'] = [do_lang('CONTENT'), do_lang('iotds:NOTIFICATION_TYPE_iotd_chosen')];
         return $list;
     }
 

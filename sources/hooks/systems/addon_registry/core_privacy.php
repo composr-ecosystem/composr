@@ -31,7 +31,7 @@ class Hook_addon_registry_core_privacy
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_core_privacy
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_legal',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_core_privacy
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array('content_privacy', 'cns_cpfs'),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => ['content_privacy', 'cns_cpfs'],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_core_privacy
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_privacy.php',
             'sources/hooks/systems/cron/privacy_purging.php',
             'adminzone/pages/modules/admin_privacy.php',
@@ -133,7 +133,7 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/privacy/.htaccess',
             'sources_custom/hooks/systems/logs/.htaccess',
             'sources_custom/hooks/systems/privacy/.htaccess',
-        );
+        ];
     }
 
     /**
@@ -143,9 +143,9 @@ class Hook_addon_registry_core_privacy
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_PRIVACY_POLICY_AUTO.tpl' => 'block_main_privacy_policy_auto_screen',
-        );
+        ];
     }
 
     /**
@@ -157,36 +157,36 @@ class Hook_addon_registry_core_privacy
      */
     public function tpl_preview__block_main_privacy_policy_auto_screen()
     {
-        $cookies = array();
-        $cookies[] = array(
+        $cookies = [];
+        $cookies[] = [
             'NAME' => lorem_word(),
             'REASON' => lorem_phrase(),
-        );
+        ];
 
-        $sections = array();
+        $sections = [];
 
-        $positive = array();
-        $positive[] = array(
+        $positive = [];
+        $positive[] = [
             'EXPLANATION' => lorem_phrase(),
-        );
+        ];
 
-        $general = array();
-        $general[] = array(
+        $general = [];
+        $general[] = [
             'ACTION' => lorem_phrase(),
             'REASON' => lorem_phrase(),
-        );
+        ];
 
-        $sections[] = array(
+        $sections[] = [
             'HEADING' => do_lang('COOKIES'),
             'POSITIVE' => $positive,
             'GENERAL' => $general,
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_PRIVACY_POLICY_AUTO', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_PRIVACY_POLICY_AUTO', [
                 'SECTIONS' => $sections,
                 'COOKIES' => $cookies,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

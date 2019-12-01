@@ -38,9 +38,9 @@ function init__global3()
 
     // Heavily optimised string escaping data
     global $PHP_REP_FROM, $PHP_REP_TO, $PHP_REP_TO_TWICE;
-    $PHP_REP_FROM = array('\\', "\n", '$', '"', "\0");
-    $PHP_REP_TO = array('\\\\', '\n', '\$', '\\"', '\0');
-    $PHP_REP_TO_TWICE = array('\\\\\\\\', '\\\\n', '\\\\\\$', '\\\\\"', '\\\\0');
+    $PHP_REP_FROM = ['\\', "\n", '$', '"', "\0"];
+    $PHP_REP_TO = ['\\\\', '\n', '\$', '\\"', '\0'];
+    $PHP_REP_TO_TWICE = ['\\\\\\\\', '\\\\n', '\\\\\\$', '\\\\\"', '\\\\0'];
 
     global $BOT_MAP_CACHE, $BOT_TYPE_CACHE;
     $BOT_MAP_CACHE = null;
@@ -61,21 +61,21 @@ function init__global3()
     }
 
     global $ZONE_DEFAULT_PAGES_CACHE;
-    $ZONE_DEFAULT_PAGES_CACHE = array();
+    $ZONE_DEFAULT_PAGES_CACHE = [];
 
     global $IS_WIDE_CACHE, $IS_WIDE_HIGH_CACHE;
     $IS_WIDE_CACHE = null;
     $IS_WIDE_HIGH_CACHE = null;
 
     global $ADDON_INSTALLED_CACHE;
-    $ADDON_INSTALLED_CACHE = array();
+    $ADDON_INSTALLED_CACHE = [];
 
     global $OUTPUT_STATE_STACK;
-    $OUTPUT_STATE_STACK = array();
+    $OUTPUT_STATE_STACK = [];
 
     // Registry of output state globals
     global $OUTPUT_STATE_VARS;
-    $OUTPUT_STATE_VARS = array(
+    $OUTPUT_STATE_VARS = [
         'HTTP_STATUS_CODE',
         'METADATA',
         'ATTACHED_MESSAGES',
@@ -107,7 +107,7 @@ function init__global3()
         'CYCLES',
         'TEMPCODE_SETGET',
         'COMCODE_PARSE_TITLE',
-    );
+    ];
     _load_blank_output_state();
 
     global $MASS_IMPORT_HAPPENING;
@@ -133,8 +133,8 @@ function init__global3()
     }
 
     global $ESCAPE_HTML_OUTPUT, $KNOWN_TRUE_HTML; // Used to track what is already escaped in kid-gloves modes
-    $ESCAPE_HTML_OUTPUT = array();
-    $KNOWN_TRUE_HTML = array();
+    $ESCAPE_HTML_OUTPUT = [];
+    $KNOWN_TRUE_HTML = [];
 
     if (!defined('WYSIWYG_COMCODE__BUTTON')) {
         // Would normally put these in sources/comcode.php, but some of our templating references these constants
@@ -192,7 +192,7 @@ function get_brand_base_url()
  */
 function get_tutorial_url($tutorial)
 {
-    $ret = get_brand_page_url(array('page' => ($tutorial === null) ? 'abcdef' : $tutorial), 'docs' . strval(cms_version()));
+    $ret = get_brand_page_url(['page' => ($tutorial === null) ? 'abcdef' : $tutorial], 'docs' . strval(cms_version()));
     if ($tutorial === null) {
         $ret = str_replace('abcdef.htm', '', $ret);
     }
@@ -377,12 +377,12 @@ function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
  */
 function _get_boms()
 {
-    return array(
+    return [
         'utf-32' => hex2bin('fffe0000'),
         'utf-16' => hex2bin('fffe'),
         'utf-8' => hex2bin('efbbbf') ,
         'GB-18030' => hex2bin('84319533'),
-    );
+    ];
 }
 
 /**
@@ -445,7 +445,7 @@ function detect_string_bom($contents)
         }
     }
 
-    return array($file_charset, $bom_found);
+    return [$file_charset, $bom_found];
 }
 
 /**
@@ -455,7 +455,7 @@ function detect_string_bom($contents)
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return ?string The data downloaded (null: error)
  */
-function http_get_contents($url, $options = array())
+function http_get_contents($url, $options = [])
 {
     cms_profile_start_for('http_get_contents');
     $ob = cms_http_request($url, $options);
@@ -471,7 +471,7 @@ function http_get_contents($url, $options = array())
  * @param  array $options Map of options (see the properties of the HttpDownloader class for what you may set)
  * @return object HttpDownloader object, which can be checked for return data
  */
-function cms_http_request($url, $options = array())
+function cms_http_request($url, $options = [])
 {
     require_code('http');
     return _cms_http_request($url, $options);
@@ -565,7 +565,7 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
         $HTTP_STATUS_CODE = 200;
 
         global $METADATA;
-        $METADATA = array();
+        $METADATA = [];
 
         global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES;
         $ATTACHED_MESSAGES = null;
@@ -575,7 +575,7 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
          *
          * @global ?array $ATTACHED_MESSAGES_RAW
          */
-        $ATTACHED_MESSAGES_RAW = array();
+        $ATTACHED_MESSAGES_RAW = [];
         $LATE_ATTACHED_MESSAGES = null;
 
         global $SEO_KEYWORDS, $SEO_DESCRIPTION, $SHORT_TITLE;
@@ -591,7 +591,7 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
 
         global $BREADCRUMBS, $BREADCRUMB_SET_PARENTS, $DISPLAYED_TITLE, $FORCE_SET_TITLE, $BREADCRUMB_SET_SELF;
         $BREADCRUMBS = null;
-        $BREADCRUMB_SET_PARENTS = array();
+        $BREADCRUMB_SET_PARENTS = [];
         /** The screen title that was set (i.e. <h1>).
          *
          * @sets_output_state
@@ -629,14 +629,14 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
          *
          * @global ?array $JAVASCRIPTS
          */
-        $JAVASCRIPTS = $true_blank ? array() : $JAVASCRIPTS_DEFAULT;
+        $JAVASCRIPTS = $true_blank ? [] : $JAVASCRIPTS_DEFAULT;
         /** List of required CSS files.
          *
          * @sets_output_state
          *
          * @global ?array $CSSS
          */
-        $CSSS = $true_blank ? array() : array('no_cache' => true, 'global' => true);
+        $CSSS = $true_blank ? [] : ['no_cache' => true, 'global' => true];
     }
 
     global $CYCLES, $TEMPCODE_SETGET;
@@ -646,14 +646,14 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
      *
      * @global array $CYCLE
      */
-    $CYCLES = array();
+    $CYCLES = [];
     /** Stores Tempcode variable values during execution.
      *
      * @sets_output_state
      *
      * @global array $TEMPCODE_SETGET
      */
-    $TEMPCODE_SETGET = array();
+    $TEMPCODE_SETGET = [];
 }
 
 /**
@@ -667,7 +667,7 @@ function _load_blank_output_state($just_tempcode = false, $true_blank = false)
 function push_output_state($just_tempcode = false, $true_blank = false)
 {
     global $OUTPUT_STATE_STACK, $OUTPUT_STATE_VARS;
-    $current_state = array();
+    $current_state = [];
     foreach ($OUTPUT_STATE_VARS as $var) {
         $current_state[$var] = isset($GLOBALS[$var]) ? $GLOBALS[$var] : null;
     }
@@ -684,12 +684,12 @@ function push_output_state($just_tempcode = false, $true_blank = false)
  * @param  boolean $merge_current Whether to merge the current output state in
  * @param  array $keep Settings to keep / merge if possible
  */
-function restore_output_state($just_tempcode = false, $merge_current = false, $keep = array())
+function restore_output_state($just_tempcode = false, $merge_current = false, $keep = [])
 {
     global $OUTPUT_STATE_STACK;
 
-    $mergeable_arrays = array('METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true);
-    $mergeable_tempcode = array('EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true);
+    $mergeable_arrays = ['METADATA' => true, 'JAVASCRIPTS' => true, 'CSSS' => true, 'TEMPCODE_SETGET' => true, 'CYCLES' => true];
+    $mergeable_tempcode = ['EXTRA_HEAD' => true, 'EXTRA_FOOT' => true, 'JAVASCRIPT' => true];
 
     $old_state = array_pop($OUTPUT_STATE_STACK);
     if ($old_state === null) {
@@ -700,10 +700,10 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                 $merge_array = (($merge_current) && (is_array($val)) && (isset($mergeable_arrays[$var])));
                 $merge_tempcode = (($merge_current) && (isset($val->codename/*faster than is_object*/)) && (isset($mergeable_tempcode[$var])));
                 $mergeable = $merge_array || $merge_tempcode;
-                if (($keep === array()) || (!in_array($var, $keep)) || ($mergeable)) {
+                if (($keep === []) || (!in_array($var, $keep)) || ($mergeable)) {
                     if ($merge_array) {
                         if ($GLOBALS[$var] === null) {
-                            $GLOBALS[$var] = array();
+                            $GLOBALS[$var] = [];
                         }
                         $GLOBALS[$var] = array_merge($val, $GLOBALS[$var]);
                     } elseif ($merge_tempcode) {
@@ -711,7 +711,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                             $GLOBALS[$var] = new Tempcode();
                         }
                         $GLOBALS[$var]->attach($val);
-                    } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === array() || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
+                    } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === [] || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
                         $GLOBALS[$var] = $val;
                     }
                 }
@@ -750,13 +750,13 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
 
     $show_border = (get_param_integer('show_border', $show_border ? 1 : 0) == 1);
     if (!$show_border && !running_script('index') && $middle !== null) {
-        $global = do_template('STANDALONE_HTML_WRAP', array(
+        $global = do_template('STANDALONE_HTML_WRAP', [
             '_GUID' => 'fe818a6fb0870f0b211e8e52adb23f26',
             'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
             'FRAME' => running_script('iframe'),
             'TARGET' => '_self',
             'CONTENT' => $middle,
-        ));
+        ]);
         if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
             $global->handle_symbol_preprocessing();
         }
@@ -773,18 +773,18 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
     } else {
         global $DOING_OUTPUT_PINGS;
         if (headers_sent() && !$DOING_OUTPUT_PINGS && $middle !== null) {
-            $global = do_template('STANDALONE_HTML_WRAP', array(
+            $global = do_template('STANDALONE_HTML_WRAP', [
                 '_GUID' => 'd579b62182a0f815e0ead1daa5904793',
                 'TITLE' => ($GLOBALS['DISPLAYED_TITLE'] === null) ? do_lang_tempcode('NA') : $GLOBALS['DISPLAYED_TITLE'],
                 'FRAME' => false,
                 'TARGET' => '_self',
                 'CONTENT' => $middle,
-            ));
+            ]);
         } else {
-            $global = do_template('GLOBAL_HTML_WRAP', array(
+            $global = do_template('GLOBAL_HTML_WRAP', [
                 '_GUID' => '592faa2c0e8bf2dc3492de2c11ca7131',
                 'MIDDLE' => $middle,
-            ));
+            ]);
         }
         if ($GLOBALS['OUTPUT_STREAMING'] || $middle !== null) {
             $global->handle_symbol_preprocessing();
@@ -867,7 +867,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
     if (($row !== null) && ($content_type !== null)) {
         // Add in generic data...
 
-        $cma_mappings = array(
+        $cma_mappings = [
             'created' => 'add_time_field',
             'creator' => isset($cma_info['author_field']) ? 'author_field' : 'submitter_field',
             'publisher' => 'submitter_field',
@@ -877,7 +877,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
             'views' => 'views_field',
             'validated' => 'validated_field',
             'type' => 'content_type_universal_label',
-        );
+        ];
 
         foreach ($cma_mappings as $meta_type => $cma_field) {
             if (!isset($METADATA[$meta_type])) {
@@ -967,7 +967,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
             $image_url = '';
             if ($cma_info['thumb_field'] !== null) {
                 if ((strpos($cma_info['thumb_field'], 'CALL:') !== false) && ($content_id !== null)) {
-                    $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), $row);
+                    $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), ['id' => $content_id], $row);
                 } else {
                     if ($content_type === 'image') {
                         $image_url = $row['url']; // FUDGE
@@ -1074,8 +1074,8 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
 {
     global $FILE_ARRAY, $CURRENT_SHARE_USER;
 
-    static $tp_cache = array();
-    $sz = serialize(array($codename, $lang, $theme, $suffix, $directory, $non_custom_only));
+    static $tp_cache = [];
+    $sz = serialize([$codename, $lang, $theme, $suffix, $directory, $non_custom_only]);
     if (isset($tp_cache[$sz])) {
         return $tp_cache[$sz];
     }
@@ -1093,21 +1093,21 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
 
     if (!isset($FILE_ARRAY)) {
         if ((is_file($prefix . $theme . '/' . $directory . '_custom/' . $codename . $suffix)) && (!in_safe_mode()) && (!$non_custom_only)) {
-            $place = array($theme, '/' . $directory . '_custom/', $suffix);
+            $place = [$theme, '/' . $directory . '_custom/', $suffix];
         } elseif (is_file($prefix . $theme . '/' . $directory . '/' . $codename . $suffix)) {
-            $place = array($theme, '/' . $directory . '/', $suffix);
+            $place = [$theme, '/' . $directory . '/', $suffix];
         } elseif (($CURRENT_SHARE_USER !== null) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '_custom/' . $codename . $suffix)) && (!$non_custom_only)) {
-            $place = array($theme, '/' . $directory . '_custom/', $suffix);
+            $place = [$theme, '/' . $directory . '_custom/', $suffix];
         } elseif (($CURRENT_SHARE_USER !== null) && ($theme !== 'default') && (is_file(get_file_base() . '/themes/' . $theme . '/' . $directory . '/' . $codename . $suffix))) {
-            $place = array($theme, '/' . $directory . '/', $suffix);
+            $place = [$theme, '/' . $directory . '/', $suffix];
         } elseif (($CURRENT_SHARE_USER !== null) && (is_file(get_custom_file_base() . '/themes/default/' . $directory . '_custom/' . $codename . $suffix)) && (!$non_custom_only)) {
-            $place = array('default', '/' . $directory . '_custom/', $suffix);
+            $place = ['default', '/' . $directory . '_custom/', $suffix];
         } elseif (($CURRENT_SHARE_USER !== null) && (is_file(get_custom_file_base() . '/themes/default/' . $directory . '/' . $codename . $suffix))) {
-            $place = array('default', '/' . $directory . '/', $suffix);
+            $place = ['default', '/' . $directory . '/', $suffix];
         } elseif ((is_file($prefix_default . 'default' . '/' . $directory . '_custom/' . $codename . $suffix)) && (!in_safe_mode()) && (!$non_custom_only)) {
-            $place = array('default', '/' . $directory . '_custom/', $suffix);
+            $place = ['default', '/' . $directory . '_custom/', $suffix];
         } elseif (is_file($prefix_default . 'default' . '/' . $directory . '/' . $codename . $suffix)) {
-            $place = array('default', '/' . $directory . '/', $suffix);
+            $place = ['default', '/' . $directory . '/', $suffix];
         } else {
             $place = null;
         }
@@ -1118,7 +1118,7 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
                 if (($possible_theme[0] !== '.') && ($possible_theme !== 'default') && ($possible_theme !== $theme) && ($possible_theme !== 'map.ini') && ($possible_theme !== 'index.html')) {
                     $full_path = get_custom_file_base() . '/themes/' . $possible_theme . '/' . $directory . '_custom/' . $codename . $suffix;
                     if (is_file($full_path)) {
-                        $place = array($possible_theme, '/' . $directory . '_custom/', $suffix);
+                        $place = [$possible_theme, '/' . $directory . '_custom/', $suffix];
                         break;
                     }
                 }
@@ -1126,7 +1126,7 @@ function find_template_place($codename, $lang, $theme, $suffix, $directory, $non
             closedir($dh);
         }
     } else {
-        $place = array('default', '/' . $directory . '/', $suffix);
+        $place = ['default', '/' . $directory . '/', $suffix];
     }
 
     $tp_cache[$sz] = $place;
@@ -1588,7 +1588,7 @@ function has_no_forum()
 function addon_installed($addon_name, $check_hookless = false, $deep_scan = true, $disabled_scan = true)
 {
     global $ADDON_INSTALLED_CACHE;
-    if ($ADDON_INSTALLED_CACHE == array()) {
+    if ($ADDON_INSTALLED_CACHE == []) {
         if (!in_safe_mode()) {
             if (function_exists('persistent_cache_get')) {
                 $ADDON_INSTALLED_CACHE = persistent_cache_get('ADDONS_INSTALLED');
@@ -1611,7 +1611,7 @@ function addon_installed($addon_name, $check_hookless = false, $deep_scan = true
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', array('addon_name' => $addon_name));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $addon_name]);
             if ($test !== null) {
                 $answer = true;
             }
@@ -1667,7 +1667,7 @@ function addon_installed__messaged($addon_name, &$error_msg)
 {
     if (!addon_installed($addon_name)) {
         $_error_msg = do_lang('MISSING_ADDON', escape_html($addon_name));
-        $addon_manage_url = build_url(array('page' => 'admin_addons'), 'adminzone');
+        $addon_manage_url = build_url(['page' => 'admin_addons'], 'adminzone');
         $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
 
         return false;
@@ -1927,8 +1927,8 @@ function match_key_match($match_keys, $support_post = false, $current_params = n
         $current_page_name = get_page_name();
     }
 
-    static $cache = array();
-    $sz_key = serialize(array($match_keys, $support_post, $current_params, $current_zone_name, $current_page_name));
+    static $cache = [];
+    $sz_key = serialize([$match_keys, $support_post, $current_params, $current_zone_name, $current_page_name]);
     if (isset($cache[$sz_key])) {
         return $cache[$sz_key];
     }
@@ -1968,7 +1968,7 @@ function match_key_match($match_keys, $support_post = false, $current_params = n
                     $bad = true;
                     continue;
                 }
-                $env_val = ($current_params === null) ? call_user_func_array($req_func, array($subparts[0], null)) : (isset($current_params[$subparts[0]]) ? $current_params[$subparts[0]] : null);
+                $env_val = ($current_params === null) ? call_user_func_array($req_func, [$subparts[0], null]) : (isset($current_params[$subparts[0]]) ? $current_params[$subparts[0]] : null);
                 if ($subparts[1] == '_WILD') {
                     if ($env_val !== null) {
                         $subparts[1] = $env_val; // null won't match to a wildcard
@@ -2114,7 +2114,7 @@ function list_to_map($map_value, $list)
 {
     $i = 0;
 
-    $new_map = array();
+    $new_map = [];
 
     foreach ($list as $map) {
         $key = $map[$map_value];
@@ -2126,7 +2126,7 @@ function list_to_map($map_value, $list)
     if ($i > 0) {
         return $new_map;
     }
-    return array();
+    return [];
 }
 
 /**
@@ -2155,7 +2155,7 @@ function collapse_1d_complexity($key, $list)
         return array_column($list, $key); // Faster
     }
 
-    $new_array = array();
+    $new_array = [];
     foreach ($list as $map) {
         if ($key === null) {
             $new_array[] = array_shift($map);
@@ -2196,8 +2196,8 @@ function flatten_slashed_array($array, $already_stripped = false)
  */
 function remove_duplicate_rows($rows, $id_field = 'id')
 {
-    $ids_seen = array();
-    $rows2 = array();
+    $ids_seen = [];
+    $rows2 = [];
     foreach ($rows as $row) {
         if (!array_key_exists($row[$id_field], $ids_seen)) {
             $rows2[] = $row;
@@ -2266,7 +2266,7 @@ function _strlen_sort($a, $b)
  */
 function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $natural = false)
 {
-    if ($rows == array()) {
+    if ($rows == []) {
         return;
     }
 
@@ -2284,7 +2284,7 @@ function sort_maps_by(&$rows, $sort_keys, $preserve_order_if_possible = false, $
         }
 
         $first_key = key($rows);
-        if ((is_integer($first_key)) && (array_unique(array_map('is_integer', array_keys($rows))) === array(true))) {
+        if ((is_integer($first_key)) && (array_unique(array_map('is_integer', array_keys($rows))) === [true])) {
             usort($rows, '_multi_sort');
         } else {
             uasort($rows, '_multi_sort');
@@ -2326,7 +2326,7 @@ function merge_sort(&$array, $cmp_function = 'cms_mb_strcasecmp')
     }
 
     // Merge the two sorted arrays into a single sorted array
-    $array = array();
+    $array = [];
     reset($array1);
     reset($array2);
     $ptr1 = 0;
@@ -2501,7 +2501,7 @@ function is_valid_ip($ip)
     if ($ip == '') {
         return false;
     }
-    $parts = array();
+    $parts = [];
     if ((strpos($ip, '.') !== false) && (preg_match('#^(\d+)\.(\d+)\.(\d+)\.(\d+)$#', $ip, $parts) != 0)) {
         if (intval($parts[1]) > 255) {
             return false;
@@ -2564,7 +2564,7 @@ function normalise_ip_address($ip, $amount = null)
 {
     $raw_ip = $ip;
 
-    static $ip_cache = array();
+    static $ip_cache = [];
     if (isset($ip_cache[$raw_ip][$amount])) {
         return $ip_cache[$raw_ip][$amount];
     }
@@ -2627,11 +2627,11 @@ function normalise_ip_address($ip, $amount = null)
  */
 function get_localhost_ips()
 {
-    return array(
+    return [
         '0000:0000:0000:0000:0000:0000:0000:0001',
         '::1',
         '127.0.0.1',
-    );
+    ];
 }
 
 /**
@@ -2642,9 +2642,9 @@ function get_localhost_ips()
  */
 function get_localhost_names()
 {
-    return array(
+    return [
         'localhost',
-    );
+    ];
 }
 
 /**
@@ -2714,7 +2714,7 @@ function get_server_ips($local_interface_only = false)
     static $arr = null;
 
     if ($arr === null) {
-        $arr = array();
+        $arr = [];
 
         if (!empty($_SERVER['SERVER_ADDR'])) {
             $arr[] = $_SERVER['SERVER_ADDR'];
@@ -2752,7 +2752,7 @@ function get_server_ips($local_interface_only = false)
  */
 function get_server_names($include_non_web_names = true, $include_equivalents = true)
 {
-    $arr = array();
+    $arr = [];
     if ($include_non_web_names) {
         if ($_SERVER['SERVER_NAME'] != '') {
             $arr[] = $_SERVER['SERVER_NAME'];
@@ -2792,7 +2792,7 @@ function get_server_names($include_non_web_names = true, $include_equivalents = 
 
     $arr = array_unique($arr);
 
-    $arr2 = array();
+    $arr2 = [];
     foreach ($arr as $domain) {
         $arr2[] = $domain;
 
@@ -2875,7 +2875,7 @@ function get_os_string()
     } elseif ($_SERVER['HTTP_USER_AGENT'] != '') {
         // E.g. Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)
         // We need to get the stuff in the parentheses
-        $matches = array();
+        $matches = [];
         if (preg_match('#\(([^\)]*)\)#', $_SERVER['HTTP_USER_AGENT'], $matches) != 0) {
             $ret = $matches[1];
             $ret = preg_replace('#^compatible; (MSIE[^;]*; )?#', '', $ret);
@@ -2978,7 +2978,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
 {
     // NB: This function will make the first query called, so we will be a bit smarter, checking for errors
 
-    static $cache = array();
+    static $cache = [];
     if ($handle_uncertainties) {
         if (array_key_exists($ip, $cache)) {
             return $cache[$ip];
@@ -3003,18 +3003,18 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
 
     global $SITE_INFO;
     if ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess')))) {
-        $bans = array();
+        $bans = [];
         $ban_count = preg_match_all('#\n(Require not ip) (.*)#i', cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK), $bans);
-        $ip_bans = array();
+        $ip_bans = [];
         for ($i = 0; $i < $ban_count; $i++) {
-            $ip_bans[$bans[1][$i]] = array('ip' => $bans[1][$i]);
+            $ip_bans[$bans[1][$i]] = ['ip' => $bans[1][$i]];
         }
     } else {
         $ip_bans = function_exists('persistent_cache_get') ? persistent_cache_get('IP_BANS') : null;
         if ($ip_bans === null) {
-            $ip_bans = $GLOBALS['SITE_DB']->query_select('banned_ip', array('*'), array(), '', null, 0, true);
+            $ip_bans = $GLOBALS['SITE_DB']->query_select('banned_ip', ['*'], [], '', null, 0, true);
             if (!is_array($ip_bans)) { // LEGACY
-                $ip_bans = $GLOBALS['SITE_DB']->query_select('usersubmitban_ip', array('*'), array(), '', null, 0, true);
+                $ip_bans = $GLOBALS['SITE_DB']->query_select('usersubmitban_ip', ['*'], [], '', null, 0, true);
             }
             if ($ip_bans !== null) {
                 persistent_cache_set('IP_BANS', $ip_bans);
@@ -3126,15 +3126,15 @@ function member_tracking_update($page, $type, $id)
     }
 
     cms_register_shutdown_function_safe(function() use ($page, $type, $id) {
-        $GLOBALS['SITE_DB']->query_insert_or_replace('member_tracking', array(
+        $GLOBALS['SITE_DB']->query_insert_or_replace('member_tracking', [
             'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
             'mt_time' => time(),
-        ), array(
+        ], [
             'mt_member_id' => get_member(),
             'mt_page' => $page,
             'mt_type' => $type,
             'mt_id' => $id,
-        ));
+        ]);
     });
 }
 
@@ -3191,7 +3191,7 @@ function get_num_users_site()
         }
         if (intval($NUM_USERS_SITE_CACHE) > intval($PEAK_USERS_EVER_CACHE)) {
             // New record
-            $GLOBALS['SITE_DB']->query_insert_or_replace('usersonline_track', array('peak' => intval($NUM_USERS_SITE_CACHE)), array('date_and_time' => time()));
+            $GLOBALS['SITE_DB']->query_insert_or_replace('usersonline_track', ['peak' => intval($NUM_USERS_SITE_CACHE)], ['date_and_time' => time()]);
             if (!$GLOBALS['SITE_DB']->table_is_locked('values')) {
                 set_value('user_peak', $NUM_USERS_SITE_CACHE);
             }
@@ -3211,7 +3211,7 @@ function get_num_users_site()
 
             // Set record for week
             set_value('user_peak_week', $PEAK_USERS_WEEK_CACHE);
-            $GLOBALS['SITE_DB']->query_insert('usersonline_track', array('date_and_time' => time(), 'peak' => intval($PEAK_USERS_WEEK_CACHE)), false, true); // errors suppressed in case of race condition
+            $GLOBALS['SITE_DB']->query_insert('usersonline_track', ['date_and_time' => time(), 'peak' => intval($PEAK_USERS_WEEK_CACHE)], false, true); // errors suppressed in case of race condition
         }
     }
     return intval($NUM_USERS_SITE_CACHE);
@@ -3273,7 +3273,7 @@ function escape_html($string)
  */
 function browser_matches($code, $comcode = null)
 {
-    static $browser_matches_cache = array();
+    static $browser_matches_cache = [];
     if (isset($browser_matches_cache[$code])) {
         return $browser_matches_cache[$code];
     }
@@ -3412,7 +3412,7 @@ function is_mobile($user_agent = null, $truth = false)
     }
 
     // The set of browsers (also change in static_cache.php)
-    $browsers = array(
+    $browsers = [
         // Implication by technology claims
         'WML',
         'WAP',
@@ -3434,11 +3434,11 @@ function is_mobile($user_agent = null, $truth = false)
         'BlackBerry',
         'Windows Phone',
         'nook browser', // Barnes and Noble
-    );
+    ];
 
-    $exceptions = array(
+    $exceptions = [
         'iPad',
-    );
+    ];
 
     if (((!isset($SITE_INFO['no_extra_mobiles'])) || ($SITE_INFO['no_extra_mobiles'] != '1')) && (is_file(get_file_base() . '/text_custom/mobile_devices.txt'))) {
         require_code('files');
@@ -3504,7 +3504,7 @@ function get_bot_type($agent = null)
             require_code('files');
             $BOT_MAP_CACHE = cms_parse_ini_file_fast(get_file_base() . '/text_custom/bots.txt');
         } else {
-            $BOT_MAP_CACHE = array(
+            $BOT_MAP_CACHE = [
                 'zyborg' => 'Looksmart',
                 'googlebot' => 'Google',
                 'mediapartners-google' => 'Google Adsense',
@@ -3526,7 +3526,7 @@ function get_bot_type($agent = null)
                 'mj12bot' => 'Majestic-12',
                 'blexbot' => 'webmeup',
                 'duckduckbot' => 'DuckDuckGo',
-            );
+            ];
         }
     }
     foreach ($BOT_MAP_CACHE as $id => $name) {
@@ -3658,16 +3658,16 @@ function mixed()
  */
 function seo_meta_get_for($type, $id)
 {
-    $cache = function_exists('persistent_cache_get') ? persistent_cache_get(array('seo', $type, $id)) : null;
+    $cache = function_exists('persistent_cache_get') ? persistent_cache_get(['seo', $type, $id]) : null;
     if ($cache !== null) {
         return $cache;
     }
 
-    $where = array('meta_for_type' => $type, 'meta_for_id' => $id);
+    $where = ['meta_for_type' => $type, 'meta_for_id' => $id];
 
-    $cache = array('', '');
+    $cache = ['', ''];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', array('meta_keyword'), $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', ['meta_keyword'], $where, (get_db_type() == 'xml') ? ('ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('meta_keyword')) : 'ORDER BY id');
     foreach ($rows as $row) {
         if ($cache[0] != '') {
             $cache[0] .= ',';
@@ -3675,12 +3675,12 @@ function seo_meta_get_for($type, $id)
         $cache[0] .= get_translated_text($row['meta_keyword']);
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', array('meta_description'), $where, '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('seo_meta', ['meta_description'], $where, '', 1);
     if (array_key_exists(0, $rows)) {
         $cache[1] = get_translated_text($rows[0]['meta_description']);
     }
 
-    persistent_cache_set(array('seo', $type, $id), $cache);
+    persistent_cache_set(['seo', $type, $id], $cache);
 
     return $cache;
 }
@@ -3733,16 +3733,16 @@ function get_loaded_tags($limit_to = null, $the_tags = null)
         $the_tags = $SEO_KEYWORDS;
     }
 
-    $tags = array();
+    $tags = [];
     if ($the_tags !== null) {
-        $search_limiter_no = array('all_defaults' => '1');
+        $search_limiter_no = ['all_defaults' => '1'];
         if ($limit_to !== null) {
             $search_limiter_no['search_' . $limit_to] = '1';
             $search_limiter_no['all_defaults'] = '0';
         }
 
         if ($limit_to !== null) {
-            $search_limiter_yes = array();
+            $search_limiter_yes = [];
             $search_limiter_yes['search_' . $limit_to] = '1';
             $search_limiter_yes['all_defaults'] = '0';
         } else {
@@ -3755,15 +3755,15 @@ function get_loaded_tags($limit_to = null, $the_tags = null)
                 continue;
             }
 
-            $tags[] = array(
+            $tags[] = [
                 'TAG' => $tag,
-                'LINK_LIMITEDSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1') + $search_limiter_yes, get_module_zone('search')),
-                'LINK_FULLSCOPE' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1') + $search_limiter_no, get_module_zone('search')),
-            );
+                'LINK_LIMITEDSCOPE' => build_url(['page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1'] + $search_limiter_yes, get_module_zone('search')),
+                'LINK_FULLSCOPE' => build_url(['page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'only_search_meta' => '1'] + $search_limiter_no, get_module_zone('search')),
+            ];
         }
     }
 
-    return do_template('TAGS', array('_GUID' => '2cd542a245bc7d1c3f10e858e8fc5159', 'TAGS' => $tags, 'TYPE' => ($limit_to === null) ? '' : $limit_to));
+    return do_template('TAGS', ['_GUID' => '2cd542a245bc7d1c3f10e858e8fc5159', 'TAGS' => $tags, 'TYPE' => ($limit_to === null) ? '' : $limit_to]);
 }
 
 /**
@@ -3796,15 +3796,15 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
             if (function_exists('persistent_cache_get')) {
                 $temp = persistent_cache_get('ALL_ZONES_TITLED');
                 if ($temp !== null) {
-                    $_zone_default_page = array();
+                    $_zone_default_page = [];
                     foreach ($temp as $_temp) {
                         list($_zone_name, , $zone_default_page) = $_temp;
-                        $_zone_default_page[] = array('zone_name' => $_zone_name, 'zone_default_page' => $zone_default_page);
+                        $_zone_default_page[] = ['zone_name' => $_zone_name, 'zone_default_page' => $zone_default_page];
                     }
                 }
             }
             if ($_zone_default_page === null) {
-                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', array('zone_name', 'zone_default_page'), array()/*Load multiple so we can cache for performance array('zone_name' => $zone_name)*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
+                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page'], []/*Load multiple so we can cache for performance array('zone_name' => $zone_name)*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
             }
             foreach ($_zone_default_page as $zone_row) {
                 $ZONE_DEFAULT_PAGES_CACHE[$zone_row['zone_name']] = $zone_row['zone_default_page'];
@@ -3835,7 +3835,7 @@ function titleify($boring)
 
     $ret = ucwords(trim(str_replace('_', ' ', $ret)));
 
-    $acronyms = array(
+    $acronyms = [
         'CMS',
         'CPF',
         'CSV',
@@ -3853,7 +3853,7 @@ function titleify($boring)
         'CSS',
         'SEO',
         'JavaScript',
-    );
+    ];
     foreach ($acronyms as $acronym) {
         if (stripos($ret, $acronym) !== false) {
             $ret = cms_preg_replace_safe('#(^|\s)' . preg_quote($acronym, '#') . '(\s|$)#i', '$1' . $acronym . '$2', $ret);
@@ -3895,7 +3895,7 @@ function titleify($boring)
 function propagate_filtercode($prefix = '')
 {
     $active_filter = either_param_string(($prefix == '') ? 'active_filter' : ($prefix . '_active_filter'), '');
-    $map = array();
+    $map = [];
     if ($active_filter != '') {
         $map['active_filter'] = $active_filter;
         foreach (array_keys($_GET + $_POST) as $key) {
@@ -3936,7 +3936,7 @@ function make_fractionable_editable($content_type, $id, $title)
     $ob = get_content_object($content_type);
     $info = $ob->info();
 
-    $parameters = array(
+    $parameters = [
         is_object($title) ? $title->evaluate() : $title,
         array_key_exists('edit_page_link_field', $info) ? $info['edit_page_link_field'] : preg_replace('#^\w\w?_#', '',
         array_key_exists('title_field_post', $info) ? $info['title_field_post'] : $info['title_field']),
@@ -3944,7 +3944,7 @@ function make_fractionable_editable($content_type, $id, $title)
         $info['edit_page_link_pattern_post']) : preg_replace('#:_(.*)#', ':__${1}', str_replace('_WILD',
         is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern'])),
         (array_key_exists('title_field_supports_comcode', $info) && $info['title_field_supports_comcode']) ? '1' : '0',
-    );
+    ];
     return directive_tempcode('FRACTIONAL_EDITABLE', is_object($title) ? $title : escape_html($title), $parameters);
 }
 
@@ -3977,16 +3977,16 @@ function strip_html($in)
     $text = cms_preg_replace_safe('#(<br(\s[^<>]*)?' . '>)#i', '$1' . "\n", $text);
 
     // Special stuff to strip
-    $search = array(
+    $search = [
         '#<script[^>]*?' . '>.*?</script>#si',  // Strip out JavaScript
         '#<style[^>]*?' . '>.*?</style>#siU',   // Strip style tags properly
         '#<![\s\S]*?--[ \t\n\r]*>#',            // Strip multi-line comments including CDATA
-    );
+    ];
     $text = preg_replace($search, '', $text);
 
     // ASCII conversion
     if (get_charset() != 'utf-8') {
-        $text = str_replace(array('&ndash;', '&mdash;', '&hellip;', '&middot;', '&ldquo;', '&rdquo;', '&lsquo;', '&rsquo;'), array('-', '-', '...', '|', '"', '"', "'", "'"), $text);
+        $text = str_replace(['&ndash;', '&mdash;', '&hellip;', '&middot;', '&ldquo;', '&rdquo;', '&lsquo;', '&rsquo;'], ['-', '-', '...', '|', '"', '"', "'", "'"], $text);
     }
 
     require_code('webstandards');
@@ -4022,11 +4022,11 @@ function convert_guids_to_ids($text)
         return $text;
     }
 
-    $matches = array();
+    $matches = [];
     $num_matches = preg_match_all('#^{?([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}}?$#', $text, $matches);
     if ($num_matches != 0) {
         require_code('resource_fs');
-        $guids = array();
+        $guids = [];
         for ($i = 0; $i < $num_matches; $i++) {
             $guids[] = $matches[0][$i];
         }
@@ -4147,11 +4147,11 @@ function appengine_live_guard()
 function update_catalogue_content_ref($type, $from, $to)
 {
     if ($GLOBALS['DB_STATIC_OBJECT']->has_update_joins()) {
-        $GLOBALS['SITE_DB']->query_update('catalogue_fields f JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short v ON v.cf_id=f.id', array('cv_value' => $to), array('cv_value' => $from, 'cf_type' => $type));
+        $GLOBALS['SITE_DB']->query_update('catalogue_fields f JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_efv_short v ON v.cf_id=f.id', ['cv_value' => $to], ['cv_value' => $from, 'cf_type' => $type]);
     } else {
-        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id'), array('cf_type' => $type));
+        $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id'], ['cf_type' => $type]);
         foreach ($fields as $field) {
-            $GLOBALS['SITE_DB']->query_update('catalogue_efv_short', array('cv_value' => $to), array('cv_value' => $from, 'cf_id' => $field['id']));
+            $GLOBALS['SITE_DB']->query_update('catalogue_efv_short', ['cv_value' => $to], ['cv_value' => $from, 'cf_id' => $field['id']]);
         }
     }
 }
@@ -4190,7 +4190,7 @@ function cms_profile_end_for($identifier, $specifics = null)
  */
 function get_dynamic_file_parameter($file)
 {
-    return str_replace(array('/', ':', '.'), array('__', '__', '__'), $file);
+    return str_replace(['/', ':', '.'], ['__', '__', '__'], $file);
 }
 
 /**
@@ -4225,7 +4225,7 @@ function support_smart_decaching($support_temporary_disable = false)
         static $has_temporary = null;
         if ($has_temporary === null) {
             $has_temporary = false;
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(\d+):(.*)$#', $SITE_INFO['disable_smart_decaching'], $matches) != 0) {
                 $time = intval($matches[1]);
                 $path = $matches[2];
@@ -4273,11 +4273,11 @@ function has_interesting_post_fields()
  * @param  array $extra_boring_fields Additional boring fields to skip
  * @return boolean If it's a control field
  */
-function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = array())
+function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [])
 {
     // NB: Keep this function synced with the copy of it in static_export.php
 
-    $boring_fields = array(
+    $boring_fields = [
         // Passed through metadata
         'id',
 
@@ -4321,24 +4321,24 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
 
         // Data relaying for Suhosin workaround
         'post_data',
-    );
+    ];
     if ($include_email_metafields) {
-        $boring_fields = array_merge($boring_fields, array(
+        $boring_fields = array_merge($boring_fields, [
             'subject',
             'title',
             'name',
             'email',
             'to_members_email',
             'to_written_name',
-        ));
+        ]);
     }
     if ($include_login_fields) {
-        $boring_fields = array_merge($boring_fields, array(
+        $boring_fields = array_merge($boring_fields, [
             'username',
             'password',
             'remember_me',
             'login_invisible',
-        ));
+        ]);
     }
     if (in_array($field_name, $boring_fields)) {
         return true;
@@ -4348,7 +4348,7 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         return true;
     }
 
-    $prefixes = array(
+    $prefixes = [
         // Standard hidden-fields convention
         '_',
 
@@ -4370,11 +4370,11 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
 
         // Relating to permissions setting
         'access_',
-    );
+    ];
     if ($include_email_metafields) {
-        $prefixes = array_merge($prefixes, array(
+        $prefixes = array_merge($prefixes, [
             'field_tagged__',
-        ));
+        ]);
     }
     foreach ($prefixes as $prefix) {
         if (substr($field_name, 0, strlen($prefix)) == $prefix) {
@@ -4382,21 +4382,21 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         }
     }
 
-    $suffixes = array(
+    $suffixes = [
         // Relating to posting form/WYSIWYG
         '_parsed',
         '__is_wysiwyg',
-    );
+    ];
     foreach ($suffixes as $suffix) {
         if (substr($field_name, -strlen($suffix)) == $suffix) {
             return true;
         }
     }
 
-    $substrings = array(
+    $substrings = [
         // Passed through metadata
         'confirm',
-    );
+    ];
     foreach ($substrings as $substring) {
         if (strpos($field_name, $substring) !== false) {
             return true;
@@ -4422,7 +4422,7 @@ function escape_header($str, $within_quotes = false)
     if ($within_quotes) {
         $str = addslashes($str);
     }
-    return str_replace(array("\r", "\n"), array('', ''), $str);
+    return str_replace(["\r", "\n"], ['', ''], $str);
 }
 
 /**
@@ -4449,18 +4449,18 @@ function get_login_url()
     }
 
     if (has_interesting_post_fields() || (get_page_name() == 'join') || (get_page_name() == 'login') || (get_page_name() == 'lost_password')) {
-        $_this_url = build_url(array('page' => ''), '_SELF', array('keep_session' => true));
+        $_this_url = build_url(['page' => ''], '_SELF', ['keep_session' => true]);
     } else {
-        $_this_url = build_url(array('page' => '_SELF'), '_SELF', array('keep_session' => true, 'redirect' => true), true);
+        $_this_url = build_url(['page' => '_SELF'], '_SELF', ['keep_session' => true, 'redirect' => true], true);
     }
 
-    $url_map = array('page' => 'login', 'type' => 'browse');
+    $url_map = ['page' => 'login', 'type' => 'browse'];
     if ((has_interesting_post_fields()) || (get_option('page_after_login') == '')) {
         $url_map['redirect'] = protect_url_parameter($_this_url);
     }
     $full_url = build_url($url_map, get_module_zone('login'));
 
-    $url_map = array('page' => 'login', 'type' => 'login');
+    $url_map = ['page' => 'login', 'type' => 'login'];
     if ((has_interesting_post_fields()) || (get_option('page_after_login') == '')) {
         $url_map['redirect'] = protect_url_parameter($_this_url);
     }
@@ -4469,7 +4469,7 @@ function get_login_url()
     $join_url = null;
     switch (get_forum_type()) {
         case 'cns':
-            $join_url = build_url(array('page' => 'join', '_lead_source_description' => $_lead_source_description, 'redirect' => protect_url_parameter($_this_url)), get_module_zone('join'));
+            $join_url = build_url(['page' => 'join', '_lead_source_description' => $_lead_source_description, 'redirect' => protect_url_parameter($_this_url)], get_module_zone('join'));
             break;
 
         case 'none':
@@ -4484,7 +4484,7 @@ function get_login_url()
             break;
     }
 
-    return array($full_url, $login_url, $join_url);
+    return [$full_url, $login_url, $join_url];
 }
 
 /**
@@ -4525,8 +4525,8 @@ function website_creation_time()
  */
 function is_maintained($code)
 {
-    static $cache = array();
-    if ($cache === array()) {
+    static $cache = [];
+    if ($cache === []) {
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');
@@ -4585,10 +4585,10 @@ function is_spacer_post($post)
     foreach (array_keys($langs) as $lang) {
         $matcher = do_lang('SPACER_POST_MATCHER', null, null, null, $lang);
         if (substr($post, 0, strlen($matcher)) == $matcher) {
-            return array(true, $lang);
+            return [true, $lang];
         }
     }
-    return array(false, get_site_default_lang());
+    return [false, get_site_default_lang()];
 }
 
 /**
@@ -4602,7 +4602,7 @@ function cms_escapeshellarg($arg)
     if (php_function_allowed('escapeshellarg')) {
         return escapeshellarg($arg);
     }
-    return "'" . addslashes(str_replace(array(chr(0), "'"), array('', "'\"'\"'"), $arg)) . "'";
+    return "'" . addslashes(str_replace([chr(0), "'"], ['', "'\"'\"'"], $arg)) . "'";
 }
 
 /**
@@ -4927,7 +4927,7 @@ function cms_extend_time_limit($secs)
 function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null)
 {
     if (get_value('avoid_register_shutdown_function') === '1') {
-        $args = array($param_a, $param_b, $param_c, $param_d);
+        $args = [$param_a, $param_b, $param_c, $param_d];
         while ((!empty($args)) && (end($args) === null)) {
             array_pop($args);
         }
@@ -4936,7 +4936,7 @@ function cms_register_shutdown_function_safe($callback, $param_a = null, $param_
         return false;
     }
 
-    $args = array($callback, $param_a, $param_b, $param_c, $param_d);
+    $args = [$callback, $param_a, $param_b, $param_c, $param_d];
     while ((!empty($args)) && (end($args) === null)) {
         array_pop($args);
     }

@@ -53,18 +53,18 @@ function put_in_standard_box($content, $title = '', $type = 'default', $width = 
         $type = 'default';
     }
 
-    $_meta = array();
+    $_meta = [];
     if ($meta != '') {
         $meta_bits = explode('|', $meta);
         if (count($meta_bits) % 2 == 1) {
             unset($meta_bits[count($meta_bits) - 1]);
         }
         for ($i = 0; $i < count($meta_bits); $i += 2) {
-            $_meta[] = array('KEY' => $meta_bits[$i + 0], 'VALUE' => $meta_bits[$i + 1]);
+            $_meta[] = ['KEY' => $meta_bits[$i + 0], 'VALUE' => $meta_bits[$i + 1]];
         }
     }
 
-    $_links = array();
+    $_links = [];
     if ($links != '') {
         $_links = explode('|', $links);
         if ($_links[count($_links) - 1] == '') {
@@ -85,7 +85,7 @@ function put_in_standard_box($content, $title = '', $type = 'default', $width = 
         $class = null;
     }
 
-    return do_template('STANDARDBOX_' . filter_naughty($type), array('WIDTH' => $width, 'CONTENT' => $content, 'LINKS' => $_links, 'META' => $_meta, 'OPTIONS' => $_options, 'TITLE' => $title, 'TOP_LINKS' => $top_links, 'CLASS' => $class), null, true);
+    return do_template('STANDARDBOX_' . filter_naughty($type), ['WIDTH' => $width, 'CONTENT' => $content, 'LINKS' => $_links, 'META' => $_meta, 'OPTIONS' => $_options, 'TITLE' => $title, 'TOP_LINKS' => $top_links, 'CLASS' => $class], null, true);
 }
 
 /**
@@ -102,7 +102,7 @@ function put_in_standard_box($content, $title = '', $type = 'default', $width = 
  * @param  ?mixed $sub Sub-title (null: none)
  * @return Tempcode The title Tempcode
  */
-function get_screen_title($title, $dereference_lang = true, $params = array(), $user_online_title = null, $awards = array(), $save_as_metadata = true, $sub = null)
+function get_screen_title($title, $dereference_lang = true, $params = [], $user_online_title = null, $awards = [], $save_as_metadata = true, $sub = null)
 {
     global $TITLE_CALLED;
     $TITLE_CALLED = true;
@@ -125,19 +125,19 @@ function get_screen_title($title, $dereference_lang = true, $params = array(), $
     if ((function_exists('get_session_id')) && (get_bot_type() === null) && ((!$GLOBALS['SESSION_IS_NEW']) || (!is_guest()))/*We don't bother tracking 'the_title' for new guest users, due to bot overhead*/) {
         if (get_value('disable_member_tracking') !== '1') {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
-                $change_map = array(
+                $change_map = [
                     'last_activity' => time(),
                     'the_title' => ($user_online_title === null) ? cms_mb_substr($_title->evaluate(), 0, 255) : $user_online_title->evaluate(),
                     'the_zone' => get_zone_name(),
                     'the_page' => cms_mb_substr(get_page_name(), 0, 80),
                     'the_type' => cms_mb_substr(get_param_string('type', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
                     'the_id' => cms_mb_substr(get_param_string('id', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
-                );
+                ];
 
                 $session_id = get_session_id();
                 global $SESSION_CACHE;
                 if ((get_value('disable_user_online_counting') !== '1') || (get_option('session_prudence') == '0') || (!isset($SESSION_CACHE[$session_id])) || ($SESSION_CACHE[$session_id]['last_activity'] < time() - 60 * 60 * 5)) {
-                    $GLOBALS['SITE_DB']->query_update('sessions', $change_map, array('the_session' => $session_id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+                    $GLOBALS['SITE_DB']->query_update('sessions', $change_map, ['the_session' => $session_id], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
 
                     if (get_option('session_prudence') == '0' && isset($SESSION_CACHE[$session_id]/*if not logging out?*/)) {
                         $SESSION_CACHE[$session_id] = $change_map + $SESSION_CACHE[$session_id];
@@ -153,7 +153,7 @@ function get_screen_title($title, $dereference_lang = true, $params = array(), $
         $DISPLAYED_TITLE = $_title;
     }
 
-    return do_template('SCREEN_TITLE', array('_GUID' => '847ffbe4823eca6d2d5eac42828ee552', 'AWARDS' => $awards, 'TITLE' => $_title, 'SUB' => $sub));
+    return do_template('SCREEN_TITLE', ['_GUID' => '847ffbe4823eca6d2d5eac42828ee552', 'AWARDS' => $awards, 'TITLE' => $_title, 'SUB' => $sub]);
 }
 
 /**
@@ -181,7 +181,7 @@ function hyperlink($url, $caption, $external, $escape, $title = '', $accesskey =
     } else {
         $tpl = 'HYPERLINK';
     }
-    return do_template($tpl, array('OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $escape ? escape_html($caption) : $caption));
+    return do_template($tpl, ['OVERLAY' => $overlay, 'REL' => $rel, 'POST_DATA' => $post_data, 'ACCESSKEY' => $accesskey, 'NEW_WINDOW' => $external, 'TITLE' => $title, 'URL' => $url, 'CAPTION' => $escape ? escape_html($caption) : $caption]);
 }
 
 /**
@@ -194,7 +194,7 @@ function hyperlink($url, $caption, $external, $escape, $title = '', $accesskey =
  */
 function div($tempcode, $guid = '', $class = null)
 {
-    return do_template('DIV', array('_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class));
+    return do_template('DIV', ['_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class]);
 }
 
 /**
@@ -207,7 +207,7 @@ function div($tempcode, $guid = '', $class = null)
  */
 function span($tempcode, $guid = '', $class = null)
 {
-    return do_template('SPAN', array('_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class));
+    return do_template('SPAN', ['_GUID' => $guid, 'TEMPCODE' => $tempcode, 'CLASS' => $class]);
 }
 
 /**
@@ -220,7 +220,7 @@ function span($tempcode, $guid = '', $class = null)
  */
 function paragraph($text, $guid = '', $class = null)
 {
-    return do_template('PARAGRAPH', array('_GUID' => $guid, 'TEXT' => $text, 'CLASS' => $class));
+    return do_template('PARAGRAPH', ['_GUID' => $guid, 'TEXT' => $text, 'CLASS' => $class]);
 }
 
 /**
@@ -242,7 +242,7 @@ function inform_screen($title, $text, $support_match_key_messages = false, $back
         $text = $tmp;
     }
 
-    return do_template('INFORM_SCREEN', array('_GUID' => '6e0aec9eb8a1daca60f322f213ddd2ee', 'TITLE' => $title, 'TEXT' => $text, 'BACK_URL' => $back_url, 'FIELDS' => $fields));
+    return do_template('INFORM_SCREEN', ['_GUID' => '6e0aec9eb8a1daca60f322f213ddd2ee', 'TITLE' => $title, 'TEXT' => $text, 'BACK_URL' => $back_url, 'FIELDS' => $fields]);
 }
 
 /**
@@ -269,7 +269,7 @@ function warn_screen($title, $text, $provide_back = true, $support_match_key_mes
  */
 function form_input_hidden($name, $value)
 {
-    return do_template('FORM_SCREEN_INPUT_HIDDEN' . ((strpos($value, "\n") !== false) ? '_2' : ''), array('_GUID' => '1b39e13d1a09573c67522e2f3b7ebf14', 'NAME' => $name, 'VALUE' => $value));
+    return do_template('FORM_SCREEN_INPUT_HIDDEN' . ((strpos($value, "\n") !== false) ? '_2' : ''), ['_GUID' => '1b39e13d1a09573c67522e2f3b7ebf14', 'NAME' => $name, 'VALUE' => $value]);
 }
 
 /**
@@ -288,7 +288,7 @@ function form_input_list_group($title, $entries)
         return $entries2;
     }
 
-    return do_template('FORM_SCREEN_INPUT_LIST_GROUP', array('_GUID' => 'dx76a2685d0fba5f819ef160b0816d03', 'TITLE' => $title, 'ENTRIES' => $entries));
+    return do_template('FORM_SCREEN_INPUT_LIST_GROUP', ['_GUID' => 'dx76a2685d0fba5f819ef160b0816d03', 'TITLE' => $title, 'ENTRIES' => $entries]);
 }
 
 /**
@@ -314,7 +314,7 @@ function form_input_list_entry($value, $selected = false, $text = '', $red = fal
     }
     */
 
-    return do_template('FORM_SCREEN_INPUT_LIST_ENTRY', array(
+    return do_template('FORM_SCREEN_INPUT_LIST_ENTRY', [
         '_GUID' => 'dd76a2685d0fba5f819ef160b0816d03',
         'SELECTED' => $selected,
         'DISABLED' => $disabled,
@@ -322,7 +322,7 @@ function form_input_list_entry($value, $selected = false, $text = '', $red = fal
         'NAME' => is_integer($value) ? strval($value) : $value,
         'TEXT' => $text,
         'TITLE' => ($title == '') ? null : $title,
-    ));
+    ]);
 }
 
 /**
@@ -337,7 +337,7 @@ function with_whitespace($in, $using_textarea = false)
     if ($in == '') {
         return new Tempcode();
     }
-    return do_template('WITH_WHITESPACE', array('_GUID' => 'be3b74901d5522d4e67ff6313ad61643', 'CONTENT' => $in, 'USING_TEXTAREA' => $using_textarea));
+    return do_template('WITH_WHITESPACE', ['_GUID' => 'be3b74901d5522d4e67ff6313ad61643', 'CONTENT' => $in, 'USING_TEXTAREA' => $using_textarea]);
 }
 
 /**

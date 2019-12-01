@@ -30,7 +30,7 @@ class Hook_config_list_unsubscribe_target
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LIST_UNSUBSCRIBE_TARGET',
             'type' => 'tick',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_list_unsubscribe_target
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

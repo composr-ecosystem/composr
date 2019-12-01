@@ -30,7 +30,7 @@ class Hook_config_complex_lists
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COMPLEX_LISTS',
             'type' => 'tick',
             'category' => 'ACCESSIBILITY',
@@ -43,7 +43,7 @@ class Hook_config_complex_lists
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

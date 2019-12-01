@@ -117,7 +117,7 @@ function object_factory($class)
 
 function find_all_hooks($type, $entry)
 {
-    $out = array();
+    $out = [];
 
     if (strpos($type, '..') !== false) {
         $type = filter_naughty($type);
@@ -155,13 +155,13 @@ function get_charset()
     return 'utf-8';
 }
 
-function do_dir($dir, $enable_custom = true, $orig_priority = false, $avoid = array(), $filter = array(), $filter_avoid = array())
+function do_dir($dir, $enable_custom = true, $orig_priority = false, $avoid = [], $filter = [], $filter_avoid = [])
 {
     global $COMPOSR_PATH;
     require_once($COMPOSR_PATH . '/sources/files.php');
     init__files();
 
-    $out = array();
+    $out = [];
     $_dir = ($dir == '') ? '.' : $dir;
     $dh = opendir($_dir);
     if ($dh) {
@@ -273,7 +273,7 @@ function pos_to_line_details($i, $absolute = false)
         $i = -1;
     }
     if ($i == -1) {
-        return array(0, 0, '');
+        return [0, 0, ''];
     }
     $j = $absolute ? $i : $TOKENS[$i][count($TOKENS[$i]) - 1];
     $line = substr_count(substr($TEXT, 0, $j), "\n") + 1;
@@ -284,7 +284,7 @@ function pos_to_line_details($i, $absolute = false)
     }
     $full_line = @strval(htmlentities(substr($TEXT, $l_s, strpos($TEXT, "\n", $j) - 1 - $l_s)));
 
-    return array($pos, $line, $full_line);
+    return [$pos, $line, $full_line];
 }
 
 function log_warning($warning, $i = -1, $absolute = false)
@@ -341,7 +341,7 @@ function do_lang_tempcode($x, $a = null, $b = null, $c = null)
     if (!isset($PARSED)) {
         $temp = file_get_contents(__DIR__ . '/../../lang_custom/EN/phpdoc.ini') . file_get_contents(__DIR__ . '/../../lang/EN/webstandards.ini') . file_get_contents(__DIR__ . '/../../lang/EN/global.ini');
         $temp_2 = explode("\n", $temp);
-        $PARSED = array();
+        $PARSED = [];
         foreach ($temp_2 as $p) {
             $pos = strpos($p, '=');
             if ($pos !== false) {

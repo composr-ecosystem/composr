@@ -20,9 +20,9 @@ class phpdoc_test_set extends cms_test_case
 {
     public function testForCopyAndPastedDescriptions()
     {
-        $phpdoc_to_functions = array();
+        $phpdoc_to_functions = [];
 
-        $exceptions = array(
+        $exceptions = [
             'Convert a field value to something renderable.',
             'Get details of action log entry types handled by this hook.',
             'Find the e-mail address for system e-mails (Reply-To header).',
@@ -76,13 +76,13 @@ class phpdoc_test_set extends cms_test_case
             'Spreadsheet reader.',
             'Read spreadsheet row.',
             'Write spreadsheet row.',
-        );
+        ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
 
         foreach ($files as $file) {
             if (preg_match('#^(tracker|_tests|sources_custom/photobucket|sources_custom/ILess|sources_custom/swift_mailer|sources_custom/spout|sources_custom/sabredav|sources_custom/aws|mobiquo/lib)/#', $file) != 0) {
@@ -96,7 +96,7 @@ class phpdoc_test_set extends cms_test_case
 
             $c = preg_replace('#\n\/\*\*.*\n \*\/\n\n#Us', '', $c);
 
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\/\*\*\n\s+\* (.*)\n\s+\*\/\n(\s*)((public|protected|private) )?function &?(\w+)\(#Us', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $phpdoc = $matches[1][$i];
@@ -109,14 +109,14 @@ class phpdoc_test_set extends cms_test_case
                 }
 
                 if (!isset($phpdoc_to_functions[$phpdoc])) {
-                    $phpdoc_to_functions[$phpdoc] = array();
+                    $phpdoc_to_functions[$phpdoc] = [];
                 }
                 $phpdoc_to_functions[$phpdoc][] = $function_name;
             }
         }
 
         foreach ($phpdoc_to_functions as $phpdoc => $functions) {
-            $rationalised_functions = array();
+            $rationalised_functions = [];
             foreach ($functions as $function_name) {
                 $rationalised_function_name = ltrim($function_name, '_');
                 $rationalised_functions[$rationalised_function_name] = true;

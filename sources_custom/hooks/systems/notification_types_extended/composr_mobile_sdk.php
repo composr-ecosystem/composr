@@ -47,16 +47,16 @@ class Hook_notification_types_extended_composr_mobile_sdk
     public function _get_available_notification_types($member_id_of)
     {
         if (!addon_installed('composr_mobile_sdk')) {
-            return array();
+            return [];
         }
 
         require_lang('composr_mobile_sdk');
 
-        $__notification_types = array(
+        $__notification_types = [
             A_INSTANT_IOS => 'NOTIFICATIONS_INSTANT_IOS',
             A_INSTANT_ANDROID => 'NOTIFICATIONS_INSTANT_ANDROID',
-        );
-        $_notification_types = array();
+        ];
+        $_notification_types = [];
         foreach ($__notification_types as $possible => $ntype) {
             if (_notification_setting_available($possible, $member_id_of)) {
                 $_notification_types[$possible] = $ntype;
@@ -80,7 +80,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
         }
 
         $_notification_codes_for_mobile = get_option('notification_codes_for_mobile');
-        $notification_codes_for_mobile = ($_notification_codes_for_mobile == '') ? array() : explode(',', $_notification_codes_for_mobile);
+        $notification_codes_for_mobile = ($_notification_codes_for_mobile == '') ? [] : explode(',', $_notification_codes_for_mobile);
         if ($aggressive_pre_search && !in_array($notification_code, $notification_codes_for_mobile)) {
             return null;
         }
@@ -115,7 +115,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
             case A_INSTANT_IOS:
                 if (get_option('enable_notifications_instant_ios') === '1') {
                     $system_wide = true;
-                    $token = $GLOBALS['SITE_DB']->query_select_value_if_there('device_token_details', 'device_token', array('member_id' => $member_id, 'token_type' => 'ios'));
+                    $token = $GLOBALS['SITE_DB']->query_select_value_if_there('device_token_details', 'device_token', ['member_id' => $member_id, 'token_type' => 'ios']);
                     if ($system_wide && $token !== null) {
                         $for_member = true;
                     }
@@ -125,7 +125,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
             case A_INSTANT_ANDROID:
                 if (get_option('enable_notifications_instant_android') != '') {
                     $system_wide = true;
-                    $token = $GLOBALS['SITE_DB']->query_select_value_if_there('device_token_details', 'device_token', array('member_id' => $member_id, 'token_type' => 'android'));
+                    $token = $GLOBALS['SITE_DB']->query_select_value_if_there('device_token_details', 'device_token', ['member_id' => $member_id, 'token_type' => 'android']);
                     if ($system_wide && $token !== null) {
                         $for_member = true;
                     }
@@ -159,9 +159,9 @@ class Hook_notification_types_extended_composr_mobile_sdk
                 $properties = $this->improve_message_for_mobile($message);
 
                 require_code('tasks');
-                $args = array($to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from);
+                $args = [$to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from];
                 require_lang('composr_mobile_sdk');
-                call_user_func_array__long_task(do_lang('NOTIFICATIONS_INSTANT_ANDROID'), get_screen_title('NOTIFICATIONS_INSTANT_ANDROID', true, array(), null, array(), false), 'ios_notification', $args, false, false, false);
+                call_user_func_array__long_task(do_lang('NOTIFICATIONS_INSTANT_ANDROID'), get_screen_title('NOTIFICATIONS_INSTANT_ANDROID', true, [], null, [], false), 'ios_notification', $args, false, false, false);
             }
         }
 
@@ -171,9 +171,9 @@ class Hook_notification_types_extended_composr_mobile_sdk
                 $properties = $this->improve_message_for_mobile($message);
 
                 require_code('tasks');
-                $args = array($to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from);
+                $args = [$to_member_id, $notification_code, $code_category, $subject, $message, $properties, $from_member_id, $priority, $no_cc, $attachments, $use_real_from];
                 require_lang('composr_mobile_sdk');
-                call_user_func_array__long_task(do_lang('NOTIFICATIONS_INSTANT_IOS'), get_screen_title('NOTIFICATIONS_INSTANT_IOS', true, array(), null, array(), false), 'android_notification', $args, false, false, false);
+                call_user_func_array__long_task(do_lang('NOTIFICATIONS_INSTANT_IOS'), get_screen_title('NOTIFICATIONS_INSTANT_IOS', true, [], null, [], false), 'android_notification', $args, false, false, false);
             }
         }
 
@@ -188,7 +188,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
      */
     protected function improve_message_for_mobile(&$message)
     {
-        $properties = array();
+        $properties = [];
 
         // Re-processing of language string for iOS specifically (we can customise it so long as do_notification_lang was used).
         global $LAST_NOTIFICATION_LANG_CALL;

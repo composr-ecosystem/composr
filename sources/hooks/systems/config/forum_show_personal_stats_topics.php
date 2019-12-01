@@ -30,7 +30,7 @@ class Hook_config_forum_show_personal_stats_topics
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_TOPICSCOUNT',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_forum_show_personal_stats_topics
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

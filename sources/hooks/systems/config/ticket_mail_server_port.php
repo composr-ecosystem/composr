@@ -30,7 +30,7 @@ class Hook_config_ticket_mail_server_port
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PORT',
             'type' => 'integer',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_ticket_mail_server_port
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

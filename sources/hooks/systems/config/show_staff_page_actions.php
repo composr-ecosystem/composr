@@ -30,7 +30,7 @@ class Hook_config_show_staff_page_actions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAGE_ACTIONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_show_staff_page_actions
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

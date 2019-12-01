@@ -43,11 +43,11 @@ class Hook_cron_calendar
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send calendar reminders',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**
@@ -92,7 +92,7 @@ class Hook_cron_calendar
                     $job_text = get_translated_text($job['e_content']);
                     if (substr($job_text, 0, 7) == 'http://' || substr($job_text, 0, 8) == 'https://') { // It's a URL
                         require_code('character_sets');
-                        echo http_get_contents($job_text, array('convert_to_internal_encoding' => true));
+                        echo http_get_contents($job_text, ['convert_to_internal_encoding' => true]);
                     } elseif (addon_installed('commandr')) { // It's code
                         if ($GLOBALS['CURRENT_SHARE_USER'] === null) {
                             // Backwards-compatibility for pure PHP code (if its creation date was before the time of writing this comment [Wednesday 22nd Match, 14:58])
@@ -125,21 +125,21 @@ class Hook_cron_calendar
                     $title = get_translated_text($job['e_title']);
                     $timestamp = array_key_exists(0, $recurrences) ? usertime_to_utctime($recurrences[0][0]) : mktime($_start_hour, $_start_minute, 0, $job['e_start_month'], $start_day_of_month, $job['e_start_year']);
                     $date = get_timezoned_date_time($timestamp, true, false, $job['n_member_id']);
-                    $_url = build_url(array('page' => 'calendar', 'type' => 'view', 'id' => $job['j_event_id']), get_module_zone('calendar'), array(), false, false, true);
+                    $_url = build_url(['page' => 'calendar', 'type' => 'view', 'id' => $job['j_event_id']], get_module_zone('calendar'), [], false, false, true);
                     $url = $_url->evaluate();
                     $subject_line = do_lang('EVENT_REMINDER_SUBJECT', $title, null, null, get_lang($job['n_member_id']));
                     $message_raw = do_notification_lang('EVENT_REMINDER_CONTENT', comcode_escape($date), comcode_escape($url), get_translated_text($job['e_content']), get_lang($job['n_member_id']));
-                    dispatch_notification('calendar_reminder', strval($job['e_type']), $subject_line, $message_raw, array($job['n_member_id']), $job['e_submitter']);
+                    dispatch_notification('calendar_reminder', strval($job['e_type']), $subject_line, $message_raw, [$job['n_member_id']], $job['e_submitter']);
                 }
 
                 // Recreate job for when next reminder due (if appropriate)
                 if (array_key_exists(1, $recurrences)) {
-                    $GLOBALS['SITE_DB']->query_insert('calendar_jobs', array(
+                    $GLOBALS['SITE_DB']->query_insert('calendar_jobs', [
                         'j_time' => usertime_to_utctime($recurrences[1][0]) - $job['n_seconds_before'],
                         'j_reminder_id' => $job['j_reminder_id'],
                         'j_member_id' => $job['j_member_id'],
                         'j_event_id' => $job['j_event_id'],
-                    ));
+                    ]);
                 }
             }
 

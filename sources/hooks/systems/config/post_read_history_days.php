@@ -30,7 +30,7 @@ class Hook_config_post_read_history_days
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'POST_READ_HISTORY_DAYS',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_post_read_history_days
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Hook_config_club_forum_parent_forum_grouping
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CLUB_FORUM_PARENT_FORUM_GROUPING',
             'type' => 'forum_grouping',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_club_forum_parent_forum_grouping
             'public' => false,
 
             'addon' => 'cns_clubs',
-        );
+        ];
     }
 
     /**

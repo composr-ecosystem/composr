@@ -26,7 +26,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -104,7 +104,7 @@ The documentation is primarily maintained on our website, and this archive is on
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -114,17 +114,17 @@ The documentation is primarily maintained on our website, and this archive is on
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'all_icons',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'composr_homesite',
                 'composr_homesite_support_credits',
                 'composr_release_build',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -144,7 +144,7 @@ The documentation is primarily maintained on our website, and this archive is on
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/composr_tutorials.php',
             'sources_custom/hooks/systems/addon_registry/composr_tutorials.php',
             'sources_custom/tutorials.php',
@@ -1767,6 +1767,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/making_a_theme.pdf',
 
             'themes/default/css_custom/tutorials.css',
-        );
+        ];
     }
 }

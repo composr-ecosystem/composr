@@ -31,7 +31,7 @@ The code quality checker automatically parses and uses this file, to build up th
  */
 function array_column($input, $column_key, $index_key = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -92,7 +92,7 @@ function password_needs_rehash($hash, $algo, $options = null)
  */
 function password_get_info($hash)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -126,7 +126,7 @@ function fmod($x, $y)
  */
 function array_count_values($input)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -139,7 +139,7 @@ function array_count_values($input)
  */
 function array_diff($array1, $array2, $array3 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -152,7 +152,7 @@ function array_diff($array1, $array2, $array3 = null)
  */
 function array_diff_assoc($array1, $array2, $array3 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -163,7 +163,7 @@ function array_diff_assoc($array1, $array2, $array3 = null)
  */
 function array_flip($trans)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -187,7 +187,7 @@ function array_key_exists($key, $search)
  */
 function array_keys($input, $search_value = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -200,7 +200,7 @@ function array_keys($input, $search_value = null)
  */
 function array_intersect($array1, $array2, $array3 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -213,7 +213,7 @@ function array_intersect($array1, $array2, $array3 = null)
  */
 function array_intersect_key($array1, $array2, $array3 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -226,7 +226,7 @@ function array_intersect_key($array1, $array2, $array3 = null)
  */
 function array_intersect_assoc($array1, $array2, $array3 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -237,7 +237,7 @@ function array_intersect_assoc($array1, $array2, $array3 = null)
  */
 function array_merge(...$arrays)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -272,7 +272,7 @@ function array_push(&$array, ...$vars)
  */
 function array_reverse($array, $preserve_keys = false)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -308,7 +308,7 @@ function array_shift(&$array)
  */
 function array_slice($array, $offset, $length = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -322,7 +322,7 @@ function array_slice($array, $offset, $length = null)
  */
 function array_splice(&$input, $offset, $length = null, $replacement = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -334,7 +334,7 @@ function array_splice(&$input, $offset, $length = null, $replacement = null)
  */
 function array_unique($array, $compare_flags = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -345,7 +345,7 @@ function array_unique($array, $compare_flags = 0)
  */
 function array_values($array)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -653,7 +653,7 @@ function exit($message = '')
  */
 function explode($separator, $string, $limit = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -712,7 +712,7 @@ function fgets($handle, $length = null)
  */
 function file($filename, $flags = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -821,7 +821,7 @@ function floor($value)
  */
 function get_defined_vars()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -831,7 +831,7 @@ function get_defined_vars()
  */
 function get_declared_classes()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -841,7 +841,7 @@ function get_declared_classes()
  */
 function get_defined_functions()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -855,7 +855,7 @@ function get_defined_functions()
  */
 function fopen($filename, $mode, $use_include_path = false, $context = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -937,7 +937,7 @@ function fwrite($handle, $string, $length = null)
  */
 function gd_info()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -961,7 +961,7 @@ function get_class($obj)
  */
 function get_html_translation_table($table, $quote_style = ENT_COMPAT, $charset = 'utf-8')
 {
-    return array();
+    return [];
 }
 
 /**
@@ -982,7 +982,7 @@ function getcwd()
  */
 function getdate($timestamp = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1204,7 +1204,7 @@ function imagecopyresized($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $dst
  */
 function imagecreate($width, $height)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1215,7 +1215,7 @@ function imagecreate($width, $height)
  */
 function imagecreatefromstring($image)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1226,7 +1226,7 @@ function imagecreatefromstring($image)
  */
 function imagecreatefrompng($path)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1237,7 +1237,7 @@ function imagecreatefrompng($path)
  */
 function imagecreatefromgif($path)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1248,7 +1248,7 @@ function imagecreatefromgif($path)
  */
 function imagecreatefromjpeg($path)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1282,7 +1282,7 @@ function imagepalettetotruecolor(&$image)
  */
 function imagecreatetruecolor($x, $y)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1307,7 +1307,7 @@ function imagecolorat($image, $x, $y)
  */
 function imagecolorsforindex($image, $color)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1474,7 +1474,7 @@ function imagestringup($image, $font, $x, $y, $s, $col)
  */
 function imagettfbbox($size, $angle, $fontfile, $text)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1492,7 +1492,7 @@ function imagettfbbox($size, $angle, $fontfile, $text)
  */
 function imagettftext($handle, $size, $angle, $x, $y, $colour, $fontfile, $text)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -1955,7 +1955,7 @@ function isset(&$path)
  */
 function localeconv()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -2286,7 +2286,7 @@ function octdec($octal_string)
  */
 function opendir($path, $context = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -2321,7 +2321,7 @@ function pack($format, ...$args)
  */
 function parse_url($url, $component = -1)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -2332,7 +2332,7 @@ function parse_url($url, $component = -1)
  */
 function pathinfo($path)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -2374,7 +2374,7 @@ function preg_match_all($pattern, $subject, &$matches = null, $flags = 0)
  */
 function preg_grep($pattern, $subject, $flags = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -2416,7 +2416,7 @@ function preg_replace_callback($pattern, $callback, $subject, $limit = -1)
  */
 function preg_split($pattern, $subject, $max_splits = null, $mode = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -3602,7 +3602,7 @@ function json_encode($value, $options = 0)
  */
 function json_decode($json, $assoc = false, $depth = 512)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -3671,7 +3671,7 @@ function rad2deg($number)
  */
 function range($from, $to, $step = 1)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -3877,7 +3877,7 @@ function tan($arg)
  */
 function unpack($format, $data)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4031,7 +4031,7 @@ function lcg_value()
  */
 function localtime($timestamp, $associative = false)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4055,7 +4055,7 @@ function addcslashes($str, $charlist)
  */
 function array_filter($input, $callback = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4067,7 +4067,7 @@ function array_filter($input, $callback = null)
  */
 function array_map($callback, $array)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4078,7 +4078,7 @@ function array_map($callback, $array)
  */
 function array_sum($array)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4094,7 +4094,7 @@ function array_sum($array)
  */
 function array_merge_recursive($array1, $array2, $array3 = null, $array4 = null, $array5 = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4106,7 +4106,7 @@ function array_merge_recursive($array1, $array2, $array3 = null, $array4 = null,
  */
 function array_multisort($array, ...$args)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4209,7 +4209,7 @@ function ksort(&$array, $sort_flags = 0)
  */
 function array_pad($input, $pad_size, $pad_value)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4271,7 +4271,7 @@ function fgetc($handle)
  */
 function fgetcsv($handle, $length = null, $delimiter = ',', $enclosure = '"', $escape = '\\')
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4285,7 +4285,7 @@ function fgetcsv($handle, $length = null, $delimiter = ',', $enclosure = '"', $e
  */
 function str_getcsv($input, $delimiter = ',', $enclosure = '"', $escape = '\\')
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4310,7 +4310,7 @@ function fgetss($handle, $length = null, $allowable_tags = '')
  */
 function fscanf($handle, $format)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4321,7 +4321,7 @@ function fscanf($handle, $format)
  */
 function stat($path)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4332,7 +4332,7 @@ function stat($path)
  */
 function fstat($handle)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4365,7 +4365,7 @@ function func_get_arg($arg_num)
  */
 function func_get_args()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4388,7 +4388,7 @@ function func_num_args()
  */
 function parse_ini_file($filename, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4401,7 +4401,7 @@ function parse_ini_file($filename, $process_sections = false, $scanner_mode = IN
  */
 function parse_ini_string($string, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4491,7 +4491,7 @@ function http_response_code($response_code = null)
  */
 function getimagesize($filename, $image_info = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4503,7 +4503,7 @@ function getimagesize($filename, $image_info = null)
  */
 function getimagesizefromstring($imagedata, $image_info = null)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4524,7 +4524,7 @@ function getlastmod()
  */
 function gettimeofday($return_float = false)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4587,7 +4587,7 @@ function file_get_contents($filename, $use_include_path = false, $context = null
  */
 function str_word_count($input, $format = 0, $chars = '')
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4612,7 +4612,7 @@ function html_entity_decode($input, $quote_style, $charset = null)
  */
 function array_combine($keys, $values)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4637,7 +4637,7 @@ function array_walk_recursive($input, $funcname, $userdata = null)
  */
 function str_split($str, $split_length = 1)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4690,7 +4690,7 @@ function file_put_contents($filename, $data, $flags = 0, $context = null)
  */
 function get_headers($url, $parse = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4700,7 +4700,7 @@ function get_headers($url, $parse = 0)
  */
 function headers_list()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4722,7 +4722,7 @@ function http_build_query($query_data)
  */
 function scandir($directory)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4753,7 +4753,7 @@ function sys_get_temp_dir()
  */
 function error_get_last()
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4765,7 +4765,7 @@ function error_get_last()
  */
 function glob($pattern, $flags = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4777,7 +4777,7 @@ function glob($pattern, $flags = 0)
  */
 function debug_backtrace($provide_object = true, $limit = 0)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4820,7 +4820,7 @@ function date_default_timezone_get()
  */
 function array_diff_key($array1, $array2)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4916,7 +4916,7 @@ function is_infinite($val)
  */
 function array_chunk($input, $size, $preserve_keys = false)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4929,7 +4929,7 @@ function array_chunk($input, $size, $preserve_keys = false)
  */
 function array_fill($start_index, $num, $value)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4941,7 +4941,7 @@ function array_fill($start_index, $num, $value)
  */
 function array_fill_keys($keys, $value)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4953,7 +4953,7 @@ function array_fill_keys($keys, $value)
  */
 function array_change_key_case($input, $case)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -4975,9 +4975,9 @@ function var_export($expression, $return = false)
  * @param  array $params Parameters. Usually options is used, parameters not needed and refers to standard parameters for all context types.
  * @return resource Stream context
  */
-function stream_context_create($options = array(), $params = array())
+function stream_context_create($options = [], $params = [])
 {
-    return array();
+    return [];
 }
 
 /**
@@ -5010,7 +5010,7 @@ function memory_get_peak_usage($real_usage = false)
  */
 function iptcparse($iptcblock)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -5046,7 +5046,7 @@ function gzclose($handle)
  */
 function gzopen($filename, $mode)
 {
-    return array();
+    return [];
 }
 
 /**
@@ -5129,7 +5129,7 @@ function gzdecode($data)
  */
 function gzfile($filename)
 {
-    return array();
+    return [];
 }
 
 /**

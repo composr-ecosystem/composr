@@ -30,7 +30,7 @@ class Hook_config_enable_highlight_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_HIGHLIGHT_NAME',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_enable_highlight_name
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

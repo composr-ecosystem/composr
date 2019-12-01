@@ -26,7 +26,7 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'John Dyer',
-        );
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -108,11 +108,11 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,7 +132,7 @@ class Hook_addon_registry_core_mediaelement
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/core_mediaelement.php',
             'data/mediaelement/index.html',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',
@@ -144,6 +144,6 @@ class Hook_addon_registry_core_mediaelement
             'themes/default/images/mediaelement/index.html',
             'themes/default/images/mediaelement/mejs-controls.svg',
             'themes/default/javascript/mediaelement-and-player.js',
-        );
+        ];
     }
 }

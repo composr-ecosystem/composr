@@ -36,7 +36,7 @@ class Hook_content_meta_aware_video
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => ((function_exists('get_option')) && (get_option('allow_audio_videos') == '2')) ? 'galleries:MULTIMEDIA_FILE' : 'global:VIDEO',
@@ -113,7 +113,7 @@ class Hook_content_meta_aware_video
             'support_spam_heuristics' => 'the_description',
 
             'actionlog_regexp' => '\w+_VIDEO',
-        );
+        ];
     }
 
     /**

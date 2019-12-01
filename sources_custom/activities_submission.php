@@ -47,13 +47,13 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
         return null;
     }
 
-    $go = array(
+    $go = [
         'a_language_string_code' => $a_language_string_code,
         'a_label_1' => $a_label_1,
         'a_label_2' => $a_label_2,
         'a_label_3' => $a_label_3,
         'a_is_public' => $a_is_public,
-    );
+    ];
 
     $stored_id = null;
 
@@ -61,7 +61,7 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
     $test = $GLOBALS['SITE_DB']->query('SELECT a_language_string_code,a_label_1,a_label_2,a_label_3,a_is_public FROM ' . get_table_prefix() . 'activities WHERE a_member_id=' . strval($a_member_id) . ' AND a_time>' . strval(time() - 600) . ' AND a_time<=' . strval(time()), 1);
     if ((!array_key_exists(0, $test)) || ($test[0] != $go) || (running_script('execute_temp')) || ($GLOBALS['SEMI_DEV_MODE'])) {
         // Log the activity
-        $row = $go + array(
+        $row = $go + [
                 'a_member_id' => $a_member_id,
                 'a_also_involving' => $a_also_involving,
                 'a_page_link_1' => $a_page_link_1,
@@ -69,7 +69,7 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
                 'a_page_link_3' => $a_page_link_3,
                 'a_time' => time(),
                 'a_addon' => $a_addon,
-            );
+            ];
         $stored_id = $GLOBALS['SITE_DB']->query_insert('activities', $row, true);
 
         // Update the latest activity file
@@ -91,7 +91,7 @@ function activities_addon_syndicate_described_activity($a_language_string_code =
         $username = $GLOBALS['FORUM_DRIVER']->get_username($a_member_id);
         $displayname = $GLOBALS['FORUM_DRIVER']->get_username($a_member_id, true);
         $subject = do_lang('ACTIVITY_NOTIFICATION_MAIL_SUBJECT', get_site_name(), $username, strip_html($message->evaluate()));
-        $mail = do_notification_lang('ACTIVITY_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($username), array('[semihtml]' . $message->evaluate() . '[/semihtml]', $displayname));
+        $mail = do_notification_lang('ACTIVITY_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($username), ['[semihtml]' . $message->evaluate() . '[/semihtml]', $displayname]);
         dispatch_notification('activity', strval($a_member_id), $subject, $mail);
     }
 
@@ -114,7 +114,7 @@ function activities_handler_script()
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
     $response .= '<response><content>';
 
-    $map = array();
+    $map = [];
 
     $guest_id = intval($GLOBALS['FORUM_DRIVER']->get_guest_id());
 
@@ -131,7 +131,7 @@ function activities_handler_script()
                 if ($help_zone === null) {
                     $response .= '<success>0</success><feedback><![CDATA[No HTML allowed. Use Comcode.]]></feedback>';
                 } else {
-                    $cc_guide = build_url(array('page' => 'userguide_comcode'), $help_zone);
+                    $cc_guide = build_url(['page' => 'userguide_comcode'], $help_zone);
                     $response .= '<success>0</success><feedback><![CDATA[No HTML allowed. See <a href="' . escape_html($cc_guide->evaluate()) . '">Comcode Help</a> for info on the alternative.]]></feedback>';
                 }
             } else {
@@ -177,9 +177,9 @@ function activities_updater_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('activity_feed')));
     }
 
-    $map = array();
+    $map = [];
 
-    $map['max'] = $GLOBALS['SITE_DB']->query_select_value_if_there('values', 'the_value', array('the_name' => get_zone_name() . '_' . get_page_name() . '_update_max'));
+    $map['max'] = $GLOBALS['SITE_DB']->query_select_value_if_there('values', 'the_value', ['the_name' => get_zone_name() . '_' . get_page_name() . '_update_max']);
 
     if ($map['max'] === null) {
         $map['max'] = '10';
@@ -222,7 +222,7 @@ function activities_updater_script()
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($row['a_member_id']);
 
-                $list_item = do_template('BLOCK_MAIN_ACTIVITIES_XML', array(
+                $list_item = do_template('BLOCK_MAIN_ACTIVITIES_XML', [
                     '_GUID' => '02dfa8b02040f56d76b783ddb8fb382f',
                     'LANG_STRING' => 'RAW_DUMP',
                     'ADDON' => $row['a_addon'],
@@ -236,7 +236,7 @@ function activities_updater_script()
                     'LIID' => strval($row['id']),
                     'ALLOW_REMOVE' => (($row['a_member_id'] == $viewer_id) || $can_remove_others),
                     'IS_PUBLIC' => $is_public,
-                ));
+                ]);
 
                 // We dump our response in CDATA, since that lets us work around the fact that our list elements aren't actually in a list, etc.
                 // However, we allow Comcode but some tags make use of CDATA. Since CDATA can't be nested (as it's a form of comment), we take this
@@ -283,14 +283,14 @@ function activities_removal_script()
     $response .= '<response>';
 
     $stat_id = post_param_integer('removal_id');
-    $stat_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('activities', 'a_member_id', array('id' => $stat_id));
+    $stat_owner = $GLOBALS['SITE_DB']->query_select_value_if_there('activities', 'a_member_id', ['id' => $stat_id]);
 
     if (($is_guest !== true) && ($stat_owner !== null)) {
         if (($stat_owner != $viewer_id) && ($can_remove_others !== true)) {
             $response .= '<success>0</success><err>perms</err>';
             $response .= '<feedback>You do not have permission to remove this status message.</feedback><status_id>' . strval($stat_id) . '</status_id>';
         } else { // I suppose we can proceed now.
-            $GLOBALS['SITE_DB']->query_delete('activities', array('id' => $stat_id), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('activities', ['id' => $stat_id], '', 1);
 
             $response .= '<success>1</success><feedback>Message deleted.</feedback><status_id>' . strval($stat_id) . '</status_id>';
         }

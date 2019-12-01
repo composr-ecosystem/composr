@@ -30,7 +30,7 @@ class Hook_config_currency
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CURRENCY',
             'type' => 'special',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_currency
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

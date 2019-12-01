@@ -33,10 +33,10 @@ class Hook_realtime_rain_ecommerce
     public function run($from, $to)
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $drops = array();
+        $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_ecommerce')) {
             $rows = $GLOBALS['SITE_DB']->query('SELECT t_amount,t_type_code,t_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ecom_transactions WHERE t_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -55,7 +55,7 @@ class Hook_realtime_rain_ecommerce
 
                 $ticker_text = do_lang('KA_CHING', ecommerce_get_currency_symbol($row['t_currency']), $row['t_amount'], $row['t_currency']);
 
-                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + array(
+                $drops[] = rain_get_special_icons(null, $timestamp, null, $ticker_text) + [
                     'TYPE' => 'ecommerce',
                     'FROM_MEMBER_ID' => null,
                     'TO_MEMBER_ID' => null,
@@ -72,7 +72,7 @@ class Hook_realtime_rain_ecommerce
                     'FROM_ID' => null,
                     'TO_ID' => null,
                     'GROUP_ID' => 'product_' . $row['t_type_code'],
-                );
+                ];
             }
         }
 

@@ -31,7 +31,7 @@ class Hook_addon_registry_language_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_language_block
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_intl',
             'tut_intl_users',
             'tut_intl_maintenance',
-        );
+        ];
     }
 
     /**
@@ -75,11 +75,11 @@ class Hook_addon_registry_language_block
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_language_block
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/language_block.php',
             'themes/default/templates/BLOCK_SIDE_LANGUAGE.tpl',
             'themes/default/templates/BLOCK_TOP_LANGUAGE.tpl',
@@ -359,7 +359,7 @@ class Hook_addon_registry_language_block
             'themes/default/images/flags_large/za.svg',
             'themes/default/images/flags_large/zm.svg',
             'themes/default/images/flags_large/zw.svg',
-        );
+        ];
     }
 
     /**
@@ -369,10 +369,10 @@ class Hook_addon_registry_language_block
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_LANGUAGE.tpl' => 'block_side_language',
             'templates/BLOCK_TOP_LANGUAGE.tpl' => 'block_top_language',
-        );
+        ];
     }
 
     /**
@@ -384,12 +384,12 @@ class Hook_addon_registry_language_block
      */
     public function tpl_preview__block_side_language()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_LANGUAGE', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_LANGUAGE', [
                 'BLOCK_ID' => lorem_word(),
                 'LANGS' => placeholder_options(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -401,16 +401,16 @@ class Hook_addon_registry_language_block
      */
     public function tpl_preview__block_top_language()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_TOP_LANGUAGE', array(
-                'LANGS' => array(
-                    'FR' => array('FULL_NAME' => 'French', 'COUNTRY_FLAG' => 'fr'),
-                    'DE' => array('FULL_NAME' => 'German', 'COUNTRY_FLAG' => 'de'),
-                ),
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_TOP_LANGUAGE', [
+                'LANGS' => [
+                    'FR' => ['FULL_NAME' => 'French', 'COUNTRY_FLAG' => 'fr'],
+                    'DE' => ['FULL_NAME' => 'German', 'COUNTRY_FLAG' => 'de'],
+                ],
                 'CURRENT_LANG_FULL_NAME' => 'English',
                 'CURRENT_LANG_COUNTRY_FLAG' => 'gb',
                 'CURRENT_LANG' => 'EN',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -56,7 +56,7 @@ class Hook_profiles_tabs_ecommerce_logs
         $order = 50;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/rich_content/ecommerce/purchase');
+            return [$title, null, $order, 'menu/rich_content/ecommerce/purchase'];
         }
 
         $sales_table = new Tempcode();
@@ -70,8 +70,8 @@ class Hook_profiles_tabs_ecommerce_logs
             $pagination = $tmp[1];
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', array('_GUID' => 'e490d230b9521415616be0c610434d93', 'CONTENT' => $sales_table, 'PAGINATION' => $pagination));
+        $content = do_template('CNS_MEMBER_PROFILE_ECOMMERCE_LOGS', ['_GUID' => 'e490d230b9521415616be0c610434d93', 'CONTENT' => $sales_table, 'PAGINATION' => $pagination]);
 
-        return array($title, $content, $order, 'menu/rich_content/ecommerce/purchase');
+        return [$title, $content, $order, 'menu/rich_content/ecommerce/purchase'];
     }
 }

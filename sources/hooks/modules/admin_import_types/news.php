@@ -31,11 +31,11 @@ class Hook_admin_import_types_news
     public function run()
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'news_and_categories' => 'NEWS_ARCHIVE',
-        );
+        ];
     }
 }

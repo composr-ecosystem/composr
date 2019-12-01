@@ -26,7 +26,7 @@ if (post_param_integer('confirm', 0) == 0) {
     $preview = 'Generate SQL schema';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
-    return do_template('CONFIRM_SCREEN', array('_GUID' => '1ee815cdaffe1ffe8a805cb6a8947e90', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url));
+    return do_template('CONFIRM_SCREEN', ['_GUID' => '1ee815cdaffe1ffe8a805cb6a8947e90', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
 }
 
 $intended_db_type = get_param_string('type', get_db_type());
@@ -50,7 +50,7 @@ if (!$done) {
 
     require_code('files');
     $out_file = cms_fopen_text_write($out_file_path);
-    get_sql_dump($out_file, true, false, array(), null, null, $intended_db_type);
+    get_sql_dump($out_file, true, false, [], null, null, $intended_db_type);
     fclose($out_file);
 }
 

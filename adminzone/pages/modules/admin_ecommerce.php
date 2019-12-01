@@ -36,7 +36,7 @@ class Module_admin_ecommerce extends Standard_crud_module
     protected $donext_entry_content_type = 'usergroup_subscription';
     protected $donext_category_content_type = null;
 
-    public $js_function_calls = array('moduleAdminEcommerce');
+    public $js_function_calls = ['moduleAdminEcommerce'];
 
     /**
      * Find details of the module.
@@ -45,7 +45,7 @@ class Module_admin_ecommerce extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -76,13 +76,13 @@ class Module_admin_ecommerce extends Standard_crud_module
             }
         }
 
-        $ret = array(
-            'browse' => array('CUSTOM_PRODUCT_USERGROUP', 'menu/adminzone/audit/ecommerce/subscriptions'),
-        );
+        $ret = [
+            'browse' => ['CUSTOM_PRODUCT_USERGROUP', 'menu/adminzone/audit/ecommerce/subscriptions'],
+        ];
         if (!$be_deferential) {
-            $ret += array(
-                'prices' => array('ECOM_PRODUCTS_MANAGE_INVENTORY', 'menu/adminzone/setup/ecommerce_products'),
-            );
+            $ret += [
+                'prices' => ['ECOM_PRODUCTS_MANAGE_INVENTORY', 'menu/adminzone/setup/ecommerce_products'],
+            ];
         }
         $ret += parent::get_entry_points();
         return $ret;
@@ -118,7 +118,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             set_helper_panel_text(comcode_lang_string('DOC_USERGROUP_SUBSCRIPTION'));
 
             if (get_forum_type() == 'cns') {
-                breadcrumb_set_parents(array(array('_SEARCH:admin:setup', do_lang_tempcode('SETUP')), array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
+                breadcrumb_set_parents([['_SEARCH:admin:setup', do_lang_tempcode('SETUP')], ['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
             }
         }
 
@@ -177,11 +177,11 @@ class Module_admin_ecommerce extends Standard_crud_module
         return do_next_manager(
             $this->title,
             comcode_lang_string('DOC_ECOMMERCE'),
-            array(
-                ((get_forum_type() != 'cns') && (get_value('unofficial_ecommerce') !== '1')) ? null : array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_USERGROUP_SUBSCRIPTION')),
-                ((get_forum_type() != 'cns') && (get_value('unofficial_ecommerce') !== '1')) ? null : array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_USERGROUP_SUBSCRIPTION')),
-                array('menu/adminzone/setup/ecommerce_products', array('_SELF', array('type' => 'prices'), '_SELF'), do_lang('ECOM_PRODUCTS_MANAGE_INVENTORY')),
-            ),
+            [
+                ((get_forum_type() != 'cns') && (get_value('unofficial_ecommerce') !== '1')) ? null : ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_USERGROUP_SUBSCRIPTION')],
+                ((get_forum_type() != 'cns') && (get_value('unofficial_ecommerce') !== '1')) ? null : ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_USERGROUP_SUBSCRIPTION')],
+                ['menu/adminzone/setup/ecommerce_products', ['_SELF', ['type' => 'prices'], '_SELF'], do_lang('ECOM_PRODUCTS_MANAGE_INVENTORY')],
+            ],
             do_lang('CUSTOM_PRODUCT_USERGROUP')
         );
     }
@@ -207,10 +207,10 @@ class Module_admin_ecommerce extends Standard_crud_module
      * @param  ?AUTO_LINK $id ID of existing subscription (null: new)
      * @return array Tuple: The input fields, The hidden fields, The delete fields
      */
-    public function get_form_fields($title = '', $description = '', $price = 9.99, $tax_code = '0%', $length = 12, $length_units = 'm', $auto_recur = 1, $group_id = null, $uses_primary = 0, $enabled = 1, $mail_start = null, $mail_end = null, $mail_uhoh = null, $mails = array(), $id = null)
+    public function get_form_fields($title = '', $description = '', $price = 9.99, $tax_code = '0%', $length = 12, $length_units = 'm', $auto_recur = 1, $group_id = null, $uses_primary = 0, $enabled = 1, $mail_start = null, $mail_end = null, $mail_uhoh = null, $mails = [], $id = null)
     {
         if (($title == '') && (get_forum_type() == 'cns')) {
-            $add_usergroup_url = build_url(array('page' => 'admin_cns_groups', 'type' => 'add'), get_module_zone('admin_cns_groups'));
+            $add_usergroup_url = build_url(['page' => 'admin_cns_groups', 'type' => 'add'], get_module_zone('admin_cns_groups'));
             attach_message(do_lang_tempcode('ADD_USER_GROUP_FIRST', escape_html($add_usergroup_url->evaluate())), 'inform', true);
         }
 
@@ -223,7 +223,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             $mail_start = do_lang('_PAID_SUBSCRIPTION_STARTED', get_option('site_name'));
         }
         if ($mail_end === null) {
-            $_purchase_url = build_url(array('page' => 'purchase'), get_module_zone('purchase'), array(), false, false, true);
+            $_purchase_url = build_url(['page' => 'purchase'], get_module_zone('purchase'), [], false, false, true);
             $purchase_url = $_purchase_url->evaluate();
             $mail_end = do_lang('_PAID_SUBSCRIPTION_ENDED', get_option('site_name'), $purchase_url);
         }
@@ -238,7 +238,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         $fields->attach(form_input_tax_code(do_lang_tempcode(get_option('tax_system')), do_lang_tempcode('DESCRIPTION_TAX_CODE'), 'tax_code', $tax_code, true));
 
         $list = new Tempcode();
-        foreach (array('d', 'w', 'm', 'y') as $unit) {
+        foreach (['d', 'w', 'm', 'y'] as $unit) {
             $list->attach(form_input_list_entry($unit, $unit == $length_units, do_lang_tempcode('LENGTH_UNIT_' . $unit)));
         }
         $fields->attach(form_input_list(do_lang_tempcode('LENGTH_UNITS'), do_lang_tempcode('DESCRIPTION_LENGTH_UNITS'), 'length_units', $list));
@@ -272,7 +272,7 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $fields->attach(form_input_tick(do_lang_tempcode('ENABLED'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_ENABLED'), 'enabled', $enabled == 1));
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'a03ec5b2afe5be764bd10694fc401fex', 'TITLE' => do_lang_tempcode('SUBSCRIPTION_EVENT_EMAILS'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'a03ec5b2afe5be764bd10694fc401fex', 'TITLE' => do_lang_tempcode('SUBSCRIPTION_EVENT_EMAILS')]));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_START'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_START'), 'mail_start', $mail_start, true, null, true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_END'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_END'), 'mail_end', $mail_end, true, null, true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAIL_UHOH'), do_lang_tempcode('DESCRIPTION_USERGROUP_SUBSCRIPTION_MAIL_UHOH'), 'mail_uhoh', $mail_uhoh, false, null, true));
@@ -285,11 +285,11 @@ class Module_admin_ecommerce extends Standard_crud_module
                 $ref_point = isset($mails[$i]) ? $mails[$i]['ref_point'] : 'start';
                 $ref_point_offset = isset($mails[$i]) ? $mails[$i]['ref_point_offset'] : 0;
 
-                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '18f5d62292d76cc0364463fb6de1faa3', 'TITLE' => do_lang_tempcode('EXTRA_SUBSCRIPTION_MAIL', escape_html(integer_format($i + 1))), 'SECTION_HIDDEN' => ($subject == ''))));
+                $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '18f5d62292d76cc0364463fb6de1faa3', 'TITLE' => do_lang_tempcode('EXTRA_SUBSCRIPTION_MAIL', escape_html(integer_format($i + 1))), 'SECTION_HIDDEN' => ($subject == '')]));
                 $fields->attach(form_input_line_comcode(do_lang_tempcode('SUBJECT'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_SUBJECT'), 'subject_' . strval($i), $subject, false));
                 $fields->attach(form_input_text_comcode(do_lang_tempcode('BODY'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_BODY'), 'body_' . strval($i), $body, false, null, true));
                 $radios = new Tempcode();
-                foreach (array('start', 'term_start', 'term_end', 'expiry') as $ref_point_type) {
+                foreach (['start', 'term_start', 'term_end', 'expiry'] as $ref_point_type) {
                     $radios->attach(form_input_radio_entry('ref_point_' . strval($i), $ref_point_type, $ref_point == $ref_point_type, do_lang_tempcode('_SUBSCRIPTION_' . strtoupper($ref_point_type) . '_TIME')));
                 }
                 $fields->attach(form_input_radio(do_lang_tempcode('SUBSCRIPTION_REF_POINT'), do_lang_tempcode('DESCRIPTION_SUBSCRIPTION_REF_POINT'), 'ref_point_' . strval($i), $radios, true));
@@ -298,12 +298,12 @@ class Module_admin_ecommerce extends Standard_crud_module
         }
 
         $delete_fields = null;
-        if ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', array('s_type_code' => 'USERGROUP' . strval($id))) > 0) {
+        if ($GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', ['s_type_code' => 'USERGROUP' . strval($id)]) > 0) {
             $delete_fields = new Tempcode();
             $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_USERGROUP_SUB_DANGER'), 'delete', false));
         }
 
-        return array($fields, $hidden, $delete_fields, null, $delete_fields !== null);
+        return [$fields, $hidden, $delete_fields, null, $delete_fields !== null];
     }
 
     /**
@@ -323,36 +323,36 @@ class Module_admin_ecommerce extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             's_title' => do_lang_tempcode('TITLE'),
             's_price' => do_lang_tempcode('PRICE'),
             's_length' => do_lang_tempcode('SUBSCRIPTION_LENGTH'),
             's_group_id' => do_lang_tempcode('USERGROUP'),
             's_enabled' => do_lang('ENABLED'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('PRICE'),
             do_lang_tempcode('SUBSCRIPTION_LENGTH'),
             do_lang_tempcode('USERGROUP'),
             do_lang('ENABLED'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, null, get_forum_type() != 'cns');
         foreach ($rows as $r) {
-            $edit_url = build_url($url_map + array('id' => $r['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $r['id']], '_SELF');
 
-            $result_entries->attach(results_entry(array(get_translated_text($r['s_title'], $db), $r['s_price'], do_lang_tempcode('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length'])), cns_get_group_name($r['s_group_id']), ($r['s_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . strval($r['id'])))), true));
+            $result_entries->attach(results_entry([get_translated_text($r['s_title'], $db), $r['s_price'], do_lang_tempcode('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length'])), cns_get_group_name($r['s_group_id']), ($r['s_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . strval($r['id'])))], true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -364,7 +364,7 @@ class Module_admin_ecommerce extends Standard_crud_module
     {
         $db = get_db_for('f_usergroup_subs');
 
-        $_m = $db->query_select('f_usergroup_subs', array('*'));
+        $_m = $db->query_select('f_usergroup_subs', ['*']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['s_title'], $db)));
@@ -383,21 +383,21 @@ class Module_admin_ecommerce extends Standard_crud_module
     {
         $db = get_db_for('f_usergroup_subs');
 
-        $m = $db->query_select('f_usergroup_subs', array('*'), array('id' => intval($id)), '', 1);
+        $m = $db->query_select('f_usergroup_subs', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $r = $m[0];
 
-        $_mails = $db->query_select('f_usergroup_sub_mails', array('*'), array('m_usergroup_sub_id' => intval($id)), 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('m_subject'));
-        $mails = array();
+        $_mails = $db->query_select('f_usergroup_sub_mails', ['*'], ['m_usergroup_sub_id' => intval($id)], 'ORDER BY ' . $GLOBALS['SITE_DB']->translate_field_ref('m_subject'));
+        $mails = [];
         foreach ($_mails as $_mail) {
-            $mails[] = array(
+            $mails[] = [
                 'subject' => get_translated_text($_mail['m_subject'], $db),
                 'body' => get_translated_text($_mail['m_body'], $db),
                 'ref_point' => $_mail['m_ref_point'],
                 'ref_point_offset' => $_mail['m_ref_point_offset'],
-            );
+            ];
         }
 
         $fields = $this->get_form_fields(
@@ -428,9 +428,9 @@ class Module_admin_ecommerce extends Standard_crud_module
      */
     public function _mails()
     {
-        $mails = array();
+        $mails = [];
         foreach (array_keys($_POST) as $key) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^subject_(\d+)$#', $key, $matches) != 0) {
                 $subject = post_param_string('subject_' . $matches[1], '');
                 $body = post_param_string('body_' . $matches[1], '');
@@ -441,12 +441,12 @@ class Module_admin_ecommerce extends Standard_crud_module
                     attach_message(do_lang_tempcode('SUBSCRIPTION_REF_POINT_OFFSET_NEGATIVE_ERROR'), 'warn');
                 }
                 if ($subject != '' && $body != '') {
-                    $mails[] = array(
+                    $mails[] = [
                         'subject' => $subject,
                         'body' => $body,
                         'ref_point' => $ref_point,
                         'ref_point_offset' => $ref_point_offset,
-                    );
+                    ];
                 }
             }
         }
@@ -461,7 +461,7 @@ class Module_admin_ecommerce extends Standard_crud_module
     public function add_actualisation()
     {
         if (has_actual_page_access(get_member(), 'admin_config')) {
-            $_config_url = build_url(array('page' => 'admin_config', 'type' => 'category', 'id' => 'ECOMMERCE'), get_module_zone('admin_config'));
+            $_config_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => 'ECOMMERCE'], get_module_zone('admin_config'));
             $config_url = $_config_url->evaluate();
             $config_url .= '#group_ECOMMERCE';
 
@@ -481,7 +481,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             $text = null;
         }
 
-        return array(strval($id), $text);
+        return [strval($id), $text];
     }
 
     /**
@@ -533,15 +533,15 @@ class Module_admin_ecommerce extends Standard_crud_module
                 $fgs = $object->config();
                 foreach ($fgs as $fg) {
                     foreach ($fg[0] as $__fg) {
-                        $_fg = do_template('FORM_GROUP', array('_GUID' => '58a0948313f0e8e69c06ee01fb7ee48a', 'FIELDS' => $__fg[0], 'HIDDEN' => $__fg[1]));
-                        $field_groups->attach(do_template('ECOM_PRODUCTS_PRICES_FORM_WRAP', array('_GUID' => '938143162b418de982cdb6ce8d8a92ee', 'TITLE' => $__fg[2], 'FORM' => $_fg)));
+                        $_fg = do_template('FORM_GROUP', ['_GUID' => '58a0948313f0e8e69c06ee01fb7ee48a', 'FIELDS' => $__fg[0], 'HIDDEN' => $__fg[1]]);
+                        $field_groups->attach(do_template('ECOM_PRODUCTS_PRICES_FORM_WRAP', ['_GUID' => '938143162b418de982cdb6ce8d8a92ee', 'TITLE' => $__fg[2], 'FORM' => $_fg]));
                     }
                     if (!$fg[2]->is_empty()) {
                         $submit_name = do_lang_tempcode('ADD');
 
-                        $post_url = build_url(array('page' => '_SELF', 'type' => '_prices'), '_SELF');
+                        $post_url = build_url(['page' => '_SELF', 'type' => '_prices'], '_SELF');
 
-                        $fg[2] = do_template('FORM', array(
+                        $fg[2] = do_template('FORM', [
                             '_GUID' => 'e98141bc0a2a54abcca59a5c947a6738',
                             'SECONDARY_FORM' => true,
                             'TABINDEX' => strval(get_form_field_tabindex(null)),
@@ -553,8 +553,8 @@ class Module_admin_ecommerce extends Standard_crud_module
                             'SUBMIT_NAME' => $submit_name,
                             'URL' => $post_url,
                             'SUPPORT_AUTOSAVE' => true,
-                        ));
-                        $add_forms->attach(do_template('ECOM_PRODUCTS_PRICES_FORM_WRAP', array('_GUID' => '3956550ebff14bbb923b57c8341b0862', 'TITLE' => $fg[1], 'FORM' => $fg[2])));
+                        ]);
+                        $add_forms->attach(do_template('ECOM_PRODUCTS_PRICES_FORM_WRAP', ['_GUID' => '3956550ebff14bbb923b57c8341b0862', 'TITLE' => $fg[1], 'FORM' => $fg[2]]));
                     }
                 }
             }
@@ -562,12 +562,12 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $submit_name = do_lang_tempcode('SAVE_ALL');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_prices'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_prices'], '_SELF');
 
         if ($field_groups->is_empty()) {
             $edit_form = new Tempcode();
         } else {
-            $edit_form = do_template('FORM_GROUPED', array(
+            $edit_form = do_template('FORM_GROUPED', [
                 '_GUID' => 'bf025026dcfc86cfd0a8ef3728bbf6d8',
                 'TEXT' => '',
                 'FIELD_GROUPS' => $field_groups,
@@ -577,19 +577,19 @@ class Module_admin_ecommerce extends Standard_crud_module
                 'URL' => $post_url,
                 'SUPPORT_AUTOSAVE' => true,
                 'MODSECURITY_WORKAROUND' => true,
-            ));
+            ]);
         }
 
         list($warning_details, $ping_url) = handle_conflict_resolution();
 
-        return do_template('ECOM_PRODUCT_PRICE_SCREEN', array(
+        return do_template('ECOM_PRODUCT_PRICE_SCREEN', [
             '_GUID' => '278c8244c7f1743370198dfc437b7bbf',
             'PING_URL' => $ping_url,
             'WARNING_DETAILS' => $warning_details,
             'TITLE' => $this->title,
             'EDIT_FORM' => $edit_form,
             'ADD_FORMS' => $add_forms,
-        ));
+        ]);
     }
 
     /**
@@ -615,7 +615,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         log_it('ECOM_PRODUCT_CHANGED_PRICES');
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'prices'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'prices'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

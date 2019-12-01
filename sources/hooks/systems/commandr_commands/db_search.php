@@ -38,17 +38,17 @@ class Hook_commandr_command_db_search
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('db_search', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('db_search', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'db_search'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'db_search')];
             }
 
             $search = $parameters[0];
 
             // Discern $fields and $replace...
 
-            $fields = array();
+            $fields = [];
             $replace = null;
 
             $i = 1;
@@ -69,7 +69,7 @@ class Hook_commandr_command_db_search
             // Could not find any fields, revert to default types...
 
             if (empty($fields)) {
-                $field_types = array(
+                $field_types = [
                     'LONG_TRANS',
                     'SHORT_TRANS',
                     'LONG_TRANS__COMCODE',
@@ -81,7 +81,7 @@ class Hook_commandr_command_db_search
                     'IP',
                     'LANGUAGE_NAME',
                     'URLPATH' ,
-                );
+                ];
                 foreach ($field_types as $field_type) {
                     $fields = array_merge($fields, $this->find_fields_of($field_type));
                 }
@@ -89,12 +89,12 @@ class Hook_commandr_command_db_search
 
             // Do search...
 
-            $sql_for = array();
+            $sql_for = [];
             $out = '';
 
             foreach ($fields as $field) {
                 $db = get_db_for($field['m_table']);
-                $ofs = $db->query_select($field['m_table'], array('*'), array($field['m_name'] => $search));
+                $ofs = $db->query_select($field['m_table'], ['*'], [$field['m_name'] => $search]);
 
                 if (!empty($ofs)) {
                     $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
@@ -111,7 +111,7 @@ class Hook_commandr_command_db_search
                         $out .= '</table>';
                     }
 
-                    $sql_for[] = array($db->get_table_prefix() . $field['m_table'], $field['m_name']);
+                    $sql_for[] = [$db->get_table_prefix() . $field['m_table'], $field['m_name']];
                 }
             }
 
@@ -124,14 +124,14 @@ class Hook_commandr_command_db_search
             if (($replace !== null) && (!empty($sql_for))) {
                 $_out = '';
                 foreach ($sql_for as $table_bits) {
-                    $_out .= escape_html('UPDATE ' . $table_bits[0] . ' SET ' . $table_bits[1] . '=' . db_function('REPLACE', array($table_bits[1], "'" . db_escape_string($search) . "'", "'" . db_escape_string($replace) . "'")) . ';') . '<br />';
+                    $_out .= escape_html('UPDATE ' . $table_bits[0] . ' SET ' . $table_bits[1] . '=' . db_function('REPLACE', [$table_bits[1], "'" . db_escape_string($search) . "'", "'" . db_escape_string($replace) . "'"]) . ';') . '<br />';
                 }
                 $out .= '<br /><br />' . do_lang('DATABASE_UPDATE_QUERY', $_out);
             }
 
             // ---
 
-            return array('', $out, '', '');
+            return ['', $out, '', ''];
         }
     }
 
@@ -145,12 +145,12 @@ class Hook_commandr_command_db_search
     {
         if (preg_match('#^[A-Z_]+$#', $field_type) != 0) {
             $more_fields = array_merge(
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => $field_type)),
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => '?' . $field_type)),
-                $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_table'), array('m_type' => '*' . $field_type))
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => $field_type]),
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => '?' . $field_type]),
+                $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_table'], ['m_type' => '*' . $field_type])
             );
         } else {
-            $more_fields = array();
+            $more_fields = [];
         }
         return $more_fields;
     }

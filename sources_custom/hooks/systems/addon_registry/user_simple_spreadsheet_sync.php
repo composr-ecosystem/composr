@@ -26,7 +26,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/user_simple_spreadsheet_sync.php',
             'data_custom/modules/user_export/in.csv',
             'data_custom/user_export.php',
@@ -141,6 +141,6 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
             'sources_custom/user_export.php',
             'sources_custom/user_import.php',
             'data_custom/modules/user_export/index.html',
-        );
+        ];
     }
 }

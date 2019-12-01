@@ -45,17 +45,17 @@ class Hook_notification_ticket_new_staff extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
-        $types = $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'ticket_type_name'));
+        $types = $GLOBALS['SITE_DB']->query_select('ticket_types', ['id', 'ticket_type_name']);
         foreach ($types as $type) {
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $type['id'],
                 'title' => get_translated_text($type['ticket_type_name']),
-            );
+            ];
         }
         sort_maps_by($page_links, 'title', false, true);
 
@@ -71,11 +71,11 @@ class Hook_notification_ticket_new_staff extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['ticket_new_staff'] = array(do_lang('MESSAGES'), do_lang('tickets:NOTIFICATION_TYPE_ticket_new_staff'));
+        $list = [];
+        $list['ticket_new_staff'] = [do_lang('MESSAGES'), do_lang('tickets:NOTIFICATION_TYPE_ticket_new_staff')];
         return $list;
     }
 

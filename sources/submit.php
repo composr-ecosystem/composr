@@ -54,8 +54,8 @@ function send_content_validated_notification($content_type, $content_id)
         require_code('notifications');
         require_lang('unvalidated');
         $subject = do_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL_SUBJECT', $content_title, get_site_name());
-        $mail = do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($content_title), array($content_url_safe->evaluate()));
-        dispatch_notification('content_validated', null, $subject, $mail, array($submitter_id));
+        $mail = do_notification_lang('CONTENT_VALIDATED_NOTIFICATION_MAIL', comcode_escape(get_site_name()), comcode_escape($content_title), [$content_url_safe->evaluate()]);
+        dispatch_notification('content_validated', null, $subject, $mail, [$submitter_id]);
     }
 }
 
@@ -121,11 +121,11 @@ function send_validation_request($type, $table, $non_integer_id, $id, $url, $mem
 
     require_code('notifications');
 
-    $comcode = do_notification_template('VALIDATION_REQUEST_MAIL', array('_GUID' => '1885be371b2ff7810287715ef2f7b948', 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id), 'TYPE' => $type, 'ID' => $id, 'URL' => $url), get_site_default_lang(), false, null, '.txt', 'text');
+    $comcode = do_notification_template('VALIDATION_REQUEST_MAIL', ['_GUID' => '1885be371b2ff7810287715ef2f7b948', 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id), 'TYPE' => $type, 'ID' => $id, 'URL' => $url], get_site_default_lang(), false, null, '.txt', 'text');
 
     $subject = do_lang('UNVALIDATED_TITLE', $title, '', '', get_site_default_lang());
     $message = $comcode->evaluate(get_site_default_lang());
-    dispatch_notification('needs_validation', null, $subject, $message, null, $member_id, array('use_real_from' => true));
+    dispatch_notification('needs_validation', null, $subject, $message, null, $member_id, ['use_real_from' => true]);
 }
 
 /**
@@ -163,10 +163,10 @@ function wrap_probe_ip($ip)
     if (strpos($ip, '*') !== false) {
         $a = $GLOBALS['SITE_DB']->query('SELECT DISTINCT member_id AS id FROM ' . get_table_prefix() . 'actionlogs WHERE ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'');
     } else {
-        $a = $GLOBALS['SITE_DB']->query_select('actionlogs', array('DISTINCT member_id AS id'), array('ip' => $ip));
+        $a = $GLOBALS['SITE_DB']->query_select('actionlogs', ['DISTINCT member_id AS id'], ['ip' => $ip]);
     }
     $b = $GLOBALS['FORUM_DRIVER']->probe_ip($ip);
-    $r = array();
+    $r = [];
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
     foreach ($a as $x) {
         if ((!in_array($x, $r)) && ($x['id'] != $guest_id)) {

@@ -30,7 +30,7 @@ class Hook_config_edit_under
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EDIT_UNDER',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_edit_under
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

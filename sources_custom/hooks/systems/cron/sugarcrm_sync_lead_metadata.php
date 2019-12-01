@@ -36,11 +36,11 @@ class Hook_cron_sugarcrm_sync_lead_metadata
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Send SugarCRM lead metadata',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 24,
-        );
+        ];
     }
 
     /**
@@ -51,6 +51,6 @@ class Hook_cron_sugarcrm_sync_lead_metadata
         require_lang('sugarcrm');
         require_code('tasks');
         $_title = do_lang('SUGARCRM_MEMBER_SYNC');
-        call_user_func_array__long_task($_title, null, 'sugarcrm_sync_lead_metadata', array(), false, false, false);
+        call_user_func_array__long_task($_title, null, 'sugarcrm_sync_lead_metadata', [], false, false, false);
     }
 }

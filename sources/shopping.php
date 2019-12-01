@@ -32,12 +32,12 @@
  */
 function find_shopping_catalogue_fields($catalogue_name = 'products')
 {
-    static $fields_maps = array();
+    static $fields_maps = [];
     if (isset($fields_maps[$catalogue_name])) {
         return $fields_maps[$catalogue_name];
     }
 
-    $fields_maps[$catalogue_name] = array( // Defaults
+    $fields_maps[$catalogue_name] = [ // Defaults
         'product_title' => null,
         'sku' => null,
         'price' => null,
@@ -51,14 +51,14 @@ function find_shopping_catalogue_fields($catalogue_name = 'products')
         'width' => null,
         'height' => null,
         'description' => null,
-    );
+    ];
 
     $fields_map = &$fields_maps[$catalogue_name];
 
     require_code('fields');
 
     // By tagging
-    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_type', 'cf_options'), array('c_name' => $catalogue_name), 'ORDER BY cf_order');
+    $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type', 'cf_options'], ['c_name' => $catalogue_name], 'ORDER BY cf_order');
     foreach ($fields as $i => $field) {
         $options = parse_field_options($field['cf_options']);
 
@@ -125,7 +125,7 @@ function find_shopping_catalogue_fields($catalogue_name = 'products')
                         break;
 
                     case 'description':
-                        if ((in_array($field['cf_type'], array('long_trans', 'long_text', 'posting_field'))) || (get_translated_text($field['cf_name']) == do_lang('ECOM_CAT_' . $key))) {
+                        if ((in_array($field['cf_type'], ['long_trans', 'long_text', 'posting_field'])) || (get_translated_text($field['cf_name']) == do_lang('ECOM_CAT_' . $key))) {
                             $fields_map[$key] = $i;
                             continue 2;
                         }
@@ -156,13 +156,13 @@ FOR CART MANAGEMENT
  */
 function find_products_in_cart()
 {
-    $where = array();
+    $where = [];
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
         $where['ordered_by'] = get_member();
     }
-    return $GLOBALS['SITE_DB']->query_select('shopping_cart', array('*'), $where, 'ORDER BY id');
+    return $GLOBALS['SITE_DB']->query_select('shopping_cart', ['*'], $where, 'ORDER BY id');
 }
 
 /**
@@ -181,25 +181,25 @@ function add_to_cart($type_code, $purchase_id = '', $quantity = 1)
         warn_exit(do_lang_tempcode('PRODUCT_UNAVAILABLE_WARNING', escape_html($details['item_name'])));
     }
 
-    $where = array('type_code' => $type_code);
+    $where = ['type_code' => $type_code];
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
         $where['ordered_by'] = get_member();
     }
-    $existing_rows = $GLOBALS['SITE_DB']->query_select('shopping_cart', array('id', 'quantity'), $where, '', 1);
+    $existing_rows = $GLOBALS['SITE_DB']->query_select('shopping_cart', ['id', 'quantity'], $where, '', 1);
 
     if (!array_key_exists(0, $existing_rows)) {
-        $cart_map = array(
+        $cart_map = [
             'session_id' => get_session_id(),
             'ordered_by' => get_member(),
             'type_code' => $type_code,
             'purchase_id' => $purchase_id,
             'quantity' => $quantity,
-        );
+        ];
         $id = $GLOBALS['SITE_DB']->query_insert('shopping_cart', $cart_map, true);
     } else {
-        $GLOBALS['SITE_DB']->query_update('shopping_cart', array('quantity' => ($existing_rows[0]['quantity'] + $quantity)), $where, '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_cart', ['quantity' => ($existing_rows[0]['quantity'] + $quantity)], $where, '', 1);
     }
 }
 
@@ -213,7 +213,7 @@ function update_cart($products_in_cart)
     foreach ($products_in_cart as $_product) {
         list($type_code, $quantity) = $_product;
 
-        $where = array('type_code' => $type_code);
+        $where = ['type_code' => $type_code];
         if (is_guest()) {
             $where['session_id'] = get_session_id();
         } else {
@@ -221,7 +221,7 @@ function update_cart($products_in_cart)
         }
 
         if ($quantity > 0) {
-            $GLOBALS['SITE_DB']->query_update('shopping_cart', array('quantity' => $quantity), $where, '', 1);
+            $GLOBALS['SITE_DB']->query_update('shopping_cart', ['quantity' => $quantity], $where, '', 1);
         } else {
             $GLOBALS['SITE_DB']->query_delete('shopping_cart', $where, '', 1);
         }
@@ -236,7 +236,7 @@ function update_cart($products_in_cart)
 function remove_from_cart($products_to_remove)
 {
     foreach ($products_to_remove as $type_code) {
-        $where = array('type_code' => $type_code);
+        $where = ['type_code' => $type_code];
         if (is_guest()) {
             $where['session_id'] = get_session_id();
         } else {
@@ -252,7 +252,7 @@ function remove_from_cart($products_to_remove)
  */
 function empty_cart()
 {
-    $where = array();
+    $where = [];
     if (is_guest()) {
         $where['session_id'] = get_session_id();
     } else {
@@ -269,13 +269,13 @@ function empty_cart()
  */
 function log_cart_actions($action)
 {
-    $GLOBALS['SITE_DB']->query_insert('shopping_logging', array(
+    $GLOBALS['SITE_DB']->query_insert('shopping_logging', [
         'l_member_id' => get_member(),
         'l_session_id' => get_session_id(),
         'l_ip' => get_ip_address(),
         'l_last_action' => $action,
         'l_date_and_time' => time(),
-    ));
+    ]);
 }
 
 /*
@@ -308,7 +308,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
     }
 
     // Work out shipping cost etc
-    $shipped_products = array();
+    $shipped_products = [];
     $total_product_weight = 0.0;
     $total_product_length = 0.0;
     $total_product_width = 0.0;
@@ -328,7 +328,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
         $total_product_height += $details['product_height'] * $quantity;
         $total_product_volume += $details['product_length'] * $details['product_width'] * $details['product_height'] * $quantity;
 
-        $shipped_products[] = array($item, $quantity);
+        $shipped_products[] = [$item, $quantity];
     }
     if ($total_quantity > 1) {
         // We obviously can't actually gallery length/width/height, so we'll have to work out using volume
@@ -349,8 +349,8 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
     }
 
     // Split into TaxCloud and non-TaxCloud
-    $taxcloud_items = array();
-    $non_taxcloud_items = array();
+    $taxcloud_items = [];
+    $non_taxcloud_items = [];
     foreach ($shopping_cart_rows as $i => $item) {
         $type_code = $item[$field_name_prefix . 'type_code'];
         list($details) = find_product_details($type_code);
@@ -359,21 +359,21 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
 
         $usa_tic = (preg_match('#^TIC:#', $tax_code) != 0);
         if ($usa_tic) {
-            $taxcloud_items[$i] = array($item, $details);
+            $taxcloud_items[$i] = [$item, $details];
         } else {
-            $non_taxcloud_items[$i] = array($item, $details);
+            $non_taxcloud_items[$i] = [$item, $details];
         }
     }
 
     // Taxes will be put in here
-    $total_tax_derivation = array();
+    $total_tax_derivation = [];
     $total_tax = 0.00;
     $total_tax_tracking = '';
-    $shopping_cart_rows_taxes = array();
-    $shipping_tax_derivation = array();
+    $shopping_cart_rows_taxes = [];
+    $shipping_tax_derivation = [];
     $shipping_tax = 0.00;
-    $shipping_tax_tracking = array();
-    $total_shipping_tax_derivation = array();
+    $shipping_tax_tracking = [];
+    $total_shipping_tax_derivation = [];
     $total_shipping_tax = 0.0;
 
     // Do TaxCloud call
@@ -385,7 +385,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
         foreach ($taxcloud_items as $i => $parts) {
             list($item, $details, $tax_derivation, $tax, $tax_tracking) = $parts;
 
-            $shopping_cart_rows_taxes[$i] = array($tax_derivation, $tax, $tax_tracking);
+            $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
 
             $total_tax += $tax;
 
@@ -417,7 +417,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
             list($tax_derivation, $tax, $tax_tracking, $shipping_tax) = calculate_tax_due($item, $tax_code, $price, 0.0, null, $quantity);
             unset($shipping_tax); // Meaningless
 
-            $shopping_cart_rows_taxes[$i] = array($tax_derivation, $tax, $tax_tracking);
+            $shopping_cart_rows_taxes[$i] = [$tax_derivation, $tax, $tax_tracking];
 
             $total_tax += $tax;
 
@@ -443,7 +443,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
     }
 
     // Return
-    return array($total_price, $total_tax_derivation, $total_tax, $total_tax_tracking, $shopping_cart_rows_taxes, $total_shipping_cost, $total_shipping_tax, $total_product_weight, $total_product_length, $total_product_width, $total_product_height);
+    return [$total_price, $total_tax_derivation, $total_tax, $total_tax_tracking, $shopping_cart_rows_taxes, $total_shipping_cost, $total_shipping_tax, $total_product_weight, $total_product_length, $total_product_width, $total_product_height];
 }
 
 /**
@@ -463,7 +463,7 @@ function copy_shopping_cart_to_order()
 
     list($total_price, $total_tax_derivation, $total_tax, $total_tax_tracking, $shopping_cart_rows_taxes, $total_shipping_cost, $total_shipping_tax, $total_product_weight, $total_product_length, $total_product_width, $total_product_height) = derive_cart_amounts($shopping_cart_rows);
 
-    $shopping_order = array(
+    $shopping_order = [
         'member_id' => get_member(),
         'session_id' => get_session_id(),
         'total_price' => $total_price,
@@ -481,9 +481,9 @@ function copy_shopping_cart_to_order()
         'notes' => '',
         'purchase_through' => 'cart',
         'txn_id' => '',
-    );
+    ];
 
-    $shopping_order_details = array();
+    $shopping_order_details = [];
     foreach ($shopping_cart_rows as $i => $item) {
         $type_code = $item['type_code'];
 
@@ -511,7 +511,7 @@ function copy_shopping_cart_to_order()
             unset($shipping_tax); // Meaningless
         }
 
-        $shopping_order_details[] = array(
+        $shopping_order_details[] = [
             'p_type_code' => $type_code,
             'p_purchase_id' => $purchase_id,
             'p_name' => $details['item_name'],
@@ -521,14 +521,14 @@ function copy_shopping_cart_to_order()
             'p_tax_code' => $details['tax_code'],
             'p_tax' => $tax,
             'p_dispatch_status' => 'ORDER_STATUS_awaiting_payment',
-        );
+        ];
     }
 
     // See if it matches an existing unpaid order...
 
-    $orders = $GLOBALS['SITE_DB']->query_select('shopping_orders', array('id'), $shopping_order);
+    $orders = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['id'], $shopping_order);
     foreach ($orders as $order) {
-        $_shopping_order_details = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order['id']), 'ORDER BY p_name');
+        $_shopping_order_details = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order['id']], 'ORDER BY p_name');
         foreach ($_shopping_order_details as &$_map) {
             unset($_map['id']);
             unset($_map['p_order_id']);
@@ -540,9 +540,9 @@ function copy_shopping_cart_to_order()
 
     // Insert order...
 
-    $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', $shopping_order + array('add_date' => time()), true);
+    $order_id = $GLOBALS['SITE_DB']->query_insert('shopping_orders', $shopping_order + ['add_date' => time()], true);
     foreach ($shopping_order_details as $map) {
-        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', $map + array('p_order_id' => $order_id));
+        $GLOBALS['SITE_DB']->query_insert('shopping_order_details', $map + ['p_order_id' => $order_id]);
     }
 
     // Clear out any previous unpaid & empty cart orders...
@@ -564,33 +564,33 @@ function make_cart_payment_button($order_id, $currency, $price_points = 0)
 {
     require_css('shopping');
 
-    $order_rows = $GLOBALS['SITE_DB']->query_select('shopping_orders', array('*'), array('id' => $order_id), '', 1);
+    $order_rows = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['*'], ['id' => $order_id], '', 1);
     if (!array_key_exists(0, $order_rows)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
     }
     $order_row = $order_rows[0];
 
     $price = $order_row['total_price'];
-    $tax_derivation = ($order_row['total_tax_derivation'] == '') ? array() : json_decode($order_row['total_tax_derivation'], true);
+    $tax_derivation = ($order_row['total_tax_derivation'] == '') ? [] : json_decode($order_row['total_tax_derivation'], true);
     $tax = $order_row['total_tax'];
-    $tax_tracking = ($order_row['total_tax_tracking'] == '') ? array() : json_decode($order_row['total_tax_tracking'], true);
+    $tax_tracking = ($order_row['total_tax_tracking'] == '') ? [] : json_decode($order_row['total_tax_tracking'], true);
     $shipping_cost = $order_row['total_shipping_cost'];
     $shipping_tax = $order_row['total_shipping_tax'];
 
     $type_code = 'CART_ORDER_' . strval($order_id);
     $item_name = do_lang('CART_ORDER', strval($order_id));
 
-    $_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order_id));
-    $items = array();
+    $_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id]);
+    $items = [];
     foreach ($_items as $_item) {
-        $items[] = array(
+        $items[] = [
             'PRODUCT_NAME' => $_item['p_name'],
             'TYPE_CODE' => $_item['p_type_code'],
             'PRICE' => float_to_raw_string($_item['p_price']),
             'TAX' => float_to_raw_string($_item['p_tax']),
             'AMOUNT' => float_to_raw_string($_item['p_price'] + $_item['p_tax']),
             'QUANTITY' => strval($_item['p_quantity']),
-        );
+        ];
     }
 
     $invoicing_breakdown = generate_invoicing_breakdown($type_code, $item_name, strval($order_id), $price, $tax, $shipping_cost, $shipping_tax);
@@ -604,7 +604,7 @@ function make_cart_payment_button($order_id, $currency, $price_points = 0)
     }
 
     $trans_expecting_id = $payment_gateway_object->generate_trans_id();
-    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', array(
+    $GLOBALS['SITE_DB']->query_insert('ecom_trans_expecting', [
         'id' => $trans_expecting_id,
         'e_type_code' => $type_code,
         'e_purchase_id' => strval($order_id),
@@ -623,7 +623,7 @@ function make_cart_payment_button($order_id, $currency, $price_points = 0)
         'e_length_units' => '',
         'e_memo' => post_param_string('memo', ''),
         'e_invoicing_breakdown' => json_encode($invoicing_breakdown, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
-    ));
+    ]);
 
     return $payment_gateway_object->make_cart_transaction_button($trans_expecting_id, $items, $shipping_cost, $currency, $order_id);
 }
@@ -635,16 +635,16 @@ function make_cart_payment_button($order_id, $currency, $price_points = 0)
  */
 function send_shopping_order_purchased_staff_mail($order_id)
 {
-    $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', array('id' => $order_id));
+    $member_id = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'member_id', ['id' => $order_id]);
     $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);
     $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-    $order_details_url = build_url(array('page' => 'admin_shopping', 'type' => 'order_details', 'id' => $order_id), get_module_zone('admin_shopping'), array(), false, false, true);
+    $order_details_url = build_url(['page' => 'admin_shopping', 'type' => 'order_details', 'id' => $order_id], get_module_zone('admin_shopping'), [], false, false, true);
 
     require_code('notifications');
 
-    $subject = do_lang('ORDER_PLACED_MAIL_SUBJECT', get_site_name(), strval($order_id), array($displayname, $username), get_site_default_lang());
-    $message = do_notification_lang('ORDER_PLACED_MAIL_MESSAGE', comcode_escape(get_site_name()), comcode_escape($displayname), array(strval($order_id), strval($member_id), comcode_escape($username), $order_details_url->evaluate()), get_site_default_lang());
+    $subject = do_lang('ORDER_PLACED_MAIL_SUBJECT', get_site_name(), strval($order_id), [$displayname, $username], get_site_default_lang());
+    $message = do_notification_lang('ORDER_PLACED_MAIL_MESSAGE', comcode_escape(get_site_name()), comcode_escape($displayname), [strval($order_id), strval($member_id), comcode_escape($username), $order_details_url->evaluate()], get_site_default_lang());
 
     dispatch_notification('new_order', null, $subject, $message);
 }
@@ -662,8 +662,8 @@ function delete_incomplete_orders()
     $sql = 'SELECT id FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where;
     $order_rows = $GLOBALS['SITE_DB']->query($sql);
     foreach ($order_rows as $order_row) {
-        $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('p_order_id' => $order_row['id']));
-        $GLOBALS['SITE_DB']->query_delete('shopping_orders', array('id' => $order_row['id']), '', 1);
+        $GLOBALS['SITE_DB']->query_delete('shopping_order_details', ['p_order_id' => $order_row['id']]);
+        $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $order_row['id']], '', 1);
     }
 }
 
@@ -675,9 +675,9 @@ function delete_incomplete_orders()
  */
 function delete_pending_orders_for_current_user($keep_order_id = null, $purchase_through = null)
 {
-    $where = array(
+    $where = [
         'order_status' => 'ORDER_STATUS_awaiting_payment',
-    );
+    ];
     if ($purchase_through !== null) {
         $where['purchase_through'] = $purchase_through;
     }
@@ -688,17 +688,17 @@ function delete_pending_orders_for_current_user($keep_order_id = null, $purchase
     }
 
     $extra = ' AND add_date<' . strval(time() - 60 * 60 * 24 * 7); // If a week old, as otherwise a transaction may still come through
-    $order_rows = $GLOBALS['SITE_DB']->query_select('shopping_orders', array('id', 'notes'), $where, $extra);
+    $order_rows = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['id', 'notes'], $where, $extra);
 
     foreach ($order_rows as $order_row) {
         if ($order_row['id'] !== $keep_order_id) {
             if ($order_row['notes'] == '') {
-                $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('order_id' => $order_row['id']));
-                $GLOBALS['SITE_DB']->query_delete('shopping_orders', array('id' => $order_row['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('shopping_order_details', ['order_id' => $order_row['id']]);
+                $GLOBALS['SITE_DB']->query_delete('shopping_orders', ['id' => $order_row['id']], '', 1);
             } else {
                 // Set to cancelled, as there are some notes on this order to be preserved
-                $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('order_status' => 'ORDER_STATUS_cancelled'), array('order_id' => $order_row['id']));
-                $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => 'ORDER_STATUS_cancelled'), array('id' => $order_row['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['order_status' => 'ORDER_STATUS_cancelled'], ['order_id' => $order_row['id']]);
+                $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_cancelled'], ['id' => $order_row['id']], '', 1);
             }
         }
     }
@@ -711,11 +711,11 @@ function delete_pending_orders_for_current_user($keep_order_id = null, $purchase
  */
 function recalculate_order_costs($order_id)
 {
-    $product_rows = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order_id));
+    $product_rows = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id]);
 
     list($total_price, $total_tax_derivation, $total_tax, $total_tax_tracking, $shopping_cart_rows_taxes, $total_shipping_cost, $total_shipping_tax, $total_product_weight, $total_product_length, $total_product_width, $total_product_height) = derive_cart_amounts($product_rows, 'p_');
 
-    $GLOBALS['SITE_DB']->query_update('shopping_orders', array(
+    $GLOBALS['SITE_DB']->query_update('shopping_orders', [
         'total_price' => $total_price,
         'total_tax_derivation' => json_encode($total_tax_derivation, defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0),
         'total_tax' => $total_tax,
@@ -726,7 +726,7 @@ function recalculate_order_costs($order_id)
         'total_product_length' => $total_product_length,
         'total_product_width' => $total_product_width,
         'total_product_height' => $total_product_height,
-    ), array('id' => $order_id, 'order_status' => 'ORDER_STATUS_awaiting_payment'), '', 1);
+    ], ['id' => $order_id, 'order_status' => 'ORDER_STATUS_awaiting_payment'], '', 1);
 }
 
 /**
@@ -736,14 +736,14 @@ function recalculate_order_costs($order_id)
  */
 function get_order_status_list()
 {
-    $status = array(
+    $status = [
         'ORDER_STATUS_awaiting_payment' => do_lang_tempcode('ORDER_STATUS_awaiting_payment'),
         'ORDER_STATUS_payment_received' => do_lang_tempcode('ORDER_STATUS_payment_received'),
         'ORDER_STATUS_dispatched' => do_lang_tempcode('ORDER_STATUS_dispatched'),
         'ORDER_STATUS_onhold' => do_lang_tempcode('ORDER_STATUS_onhold'),
         'ORDER_STATUS_cancelled' => do_lang_tempcode('ORDER_STATUS_cancelled'),
         'ORDER_STATUS_returned' => do_lang_tempcode('ORDER_STATUS_returned'),
-    );
+    ];
 
     $status_list = new Tempcode();
 
@@ -763,9 +763,9 @@ function get_order_status_list()
  */
 function get_ordered_product_list_string($order_id)
 {
-    $product_list = array();
+    $product_list = [];
 
-    $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', array('*'), array('p_order_id' => $order_id), 'ORDER BY p_name');
+    $ordered_items = $GLOBALS['SITE_DB']->query_select('shopping_order_details', ['*'], ['p_order_id' => $order_id], 'ORDER BY p_name');
     foreach ($ordered_items as $ordered_item) {
         $product_list[] = $ordered_item['p_name'] . ' x ' . integer_format($ordered_item['p_quantity']) . ' @ ' . do_lang('PRICE') . '=' . float_format($ordered_item['p_price']);
     }

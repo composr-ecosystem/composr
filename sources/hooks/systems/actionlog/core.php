@@ -45,451 +45,451 @@ class Hook_actionlog_core extends Hook_actionlog
         require_lang('trackbacks');
         require_lang('privacy');
 
-        return array(
-            'ADD_ZONE' => array(
+        return [
+            'ADD_ZONE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'zone',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '{ID}:',
                     'EDIT_THIS_ZONE' => '_SEARCH:admin_zones:_edit:{ID}',
                     'ZONE_EDITOR' => '_SEARCH:admin_zones:_editor:{ID}',
                     'ADD_ZONE' => '_SEARCH:admin_zones:add',
-                ),
-            ),
-            'EDIT_ZONE' => array(
+                ],
+            ],
+            'EDIT_ZONE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'zone',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '{ID}:',
                     'EDIT_THIS_ZONE' => '_SEARCH:admin_zones:_edit:{ID}',
                     'ZONE_EDITOR' => '_SEARCH:admin_zones:_editor:{ID}',
                     'ADD_ZONE' => '_SEARCH:admin_zones:add',
-                ),
-            ),
-            'DELETE_ZONE' => array(
+                ],
+            ],
+            'DELETE_ZONE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'zone',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_ZONE' => '_SEARCH:admin_zones:add',
-                ),
-            ),
-            'COMCODE_PAGE_EDIT' => array(
+                ],
+            ],
+            'COMCODE_PAGE_EDIT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'comcode_page',
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '{1}:{0}',
                     'COMCODE_PAGE_EDIT_THIS' => '_SEARCH:cms_comcode_pages:_edit:page_link={1__EVEN_EMPTY}%3A{0__EVEN_EMPTY}:lang=' . get_site_default_lang(),
                     'COMCODE_PAGE_MANAGEMENT' => '_SEARCH:cms_comcode_pages',
-                ),
-            ),
-            'MOVE_PAGES' => array(
+                ],
+            ],
+            'MOVE_PAGES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                ),
-            ),
-            'DELETE_PAGES' => array(
+                'followup_page_links' => [
+                ],
+            ],
+            'DELETE_PAGES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'COMCODE_PAGE_MANAGEMENT' => '_SEARCH:cms_comcode_pages',
-                ),
-            ),
-            'EXPORT_ADDON' => array(
+                ],
+            ],
+            'EXPORT_ADDON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADDONS' => '_SEARCH:admin_addons',
-                ),
-            ),
-            'INSTALL_ADDON' => array(
+                ],
+            ],
+            'INSTALL_ADDON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADDONS' => '_SEARCH:admin_addons',
-                ),
-            ),
-            'UNINSTALL_ADDON' => array(
+                ],
+            ],
+            'UNINSTALL_ADDON' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADDONS' => '_SEARCH:admin_addons',
-                ),
-            ),
-            'CHECK_LIST_ADD' => array(
+                ],
+            ],
+            'CHECK_LIST_ADD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'CHECK_LIST_DELETE' => array(
+                ],
+            ],
+            'CHECK_LIST_DELETE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'CHECK_LIST_MARK_DONE' => array(
+                ],
+            ],
+            'CHECK_LIST_MARK_DONE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'CHECK_LIST_MARK_UNDONE' => array(
+                ],
+            ],
+            'CHECK_LIST_MARK_UNDONE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'STAFF_LINKS' => array(
+                ],
+            ],
+            'STAFF_LINKS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'SITE_WATCHLIST' => array(
+                ],
+            ],
+            'SITE_WATCHLIST' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'NOTES' => array(
+                ],
+            ],
+            'NOTES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'DASHBOARD' => 'adminzone:',
-                ),
-            ),
-            'CLEANUP_TOOLS' => array(
+                ],
+            ],
+            'CLEANUP_TOOLS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'CLEANUP_TOOLS' => '_SEARCH:admin_cleanup',
-                ),
-            ),
-            'CONFIGURATION' => array(
+                ],
+            ],
+            'CONFIGURATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_LINK' => '{CONFIG_URL}',
                     'OPTION_CATEGORIES' => '_SEARCH:admin_config',
-                ),
-            ),
-            'TRANSLATE_CODE' => array(
+                ],
+            ],
+            'TRANSLATE_CODE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'TRANSLATE_CODE' => '_SEARCH:admin_lang',
-                ),
-            ),
-            'TRANSLATE_CONTENT' => array(
+                ],
+            ],
+            'TRANSLATE_CONTENT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'TRANSLATE_CONTENT' => multi_lang_content() ? '_SEARCH:admin_lang:content' : null,
-                ),
-            ),
-            'ADD_MENU' => array(
+                ],
+            ],
+            'ADD_MENU' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_MENU' => '_SEARCH:admin_menus:edit:{ID}',
-                ),
-            ),
-            'EDIT_MENU' => array(
+                ],
+            ],
+            'EDIT_MENU' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_MENU' => '_SEARCH:admin_menus:edit:{ID}',
-                ),
-            ),
-            'DELETE_MENU' => array(
+                ],
+            ],
+            'DELETE_MENU' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MENU_MANAGEMENT' => '_SEARCH:admin_menus',
-                ),
-            ),
-            'ADD_MENU_ITEM' => array(
+                ],
+            ],
+            'ADD_MENU_ITEM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu_item',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_MENU' => '_SEARCH:admin_menus:edit:{MENU}',
-                ),
-            ),
-            'EDIT_MENU_ITEM' => array(
+                ],
+            ],
+            'EDIT_MENU_ITEM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu_item',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_MENU' => '_SEARCH:admin_menus:edit:{MENU}',
-                ),
-            ),
-            'DELETE_MENU_ITEM' => array(
+                ],
+            ],
+            'DELETE_MENU_ITEM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'menu_item',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_MENU' => '_SEARCH:admin_menus',
-                ),
-            ),
-            'NOTIFICATIONS_LOCKDOWN' => array(
+                ],
+            ],
+            'NOTIFICATIONS_LOCKDOWN' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'NOTIFICATIONS_LOCKDOWN' => '_SEARCH:admin_notifications:lockdown',
-                ),
-            ),
-            'NOTIFICATIONS_DEFAULT' => array(
+                ],
+            ],
+            'NOTIFICATIONS_DEFAULT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'NOTIFICATIONS_DEFAULT' => '_SEARCH:admin_notifications:default',
-                ),
-            ),
-            'PRIVILEGES' => array(
+                ],
+            ],
+            'PRIVILEGES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'PRIVILEGES' => '_SEARCH:admin_permissions:privileges',
                     'PERMISSIONS_TREE' => '_SEARCH:admin_permissions',
-                ),
-            ),
-            'PAGE_ACCESS' => array(
+                ],
+            ],
+            'PAGE_ACCESS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'PAGE_ACCESS' => '_SEARCH:admin_permissions:page',
                     'PERMISSIONS_TREE' => '_SEARCH:admin_permissions',
-                ),
-            ),
-            'ADD_THEME' => array(
+                ],
+            ],
+            'ADD_THEME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME' => '_SEARCH:admin_themes:edit_theme:theme={ID}',
                     'THEMEWIZARD' => '_SEARCH:admin_themewizard',
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'EDIT_THEME' => array(
+                ],
+            ],
+            'EDIT_THEME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME' => '_SEARCH:admin_themes:edit_theme:theme={ID}',
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'DELETE_THEME' => array(
+                ],
+            ],
+            'DELETE_THEME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'COPY_THEME' => array(
+                ],
+            ],
+            'COPY_THEME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME' => '_SEARCH:admin_themes:edit_theme:theme={ID}',
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'RENAME_THEME' => array(
+                ],
+            ],
+            'RENAME_THEME' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME' => '_SEARCH:admin_themes:edit_theme:theme={ID}',
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'EDIT_TEMPLATES' => array(
+                ],
+            ],
+            'EDIT_TEMPLATES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_TEMPLATE' => '_SEARCH:admin_themes:edit_template:f0file={0}:theme={1}',
                     'MANAGE_THEMES' => '_SEARCH:admin_themes',
-                ),
-            ),
-            'ADD_THEME_IMAGE' => array(
+                ],
+            ],
+            'ADD_THEME_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME_IMAGE' => '_SEARCH:admin_themes:edit_image:{ID}:theme={1}:lang=' . get_site_default_lang(),
                     'ADD_THEME_IMAGE' => '_SEARCH:admin_themes:add_image:theme={1}',
-                ),
-            ),
-            'EDIT_THEME_IMAGE' => array(
+                ],
+            ],
+            'EDIT_THEME_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THEME_IMAGE' => '_SEARCH:admin_themes:edit_image:{ID}:theme={1}:lang=' . get_site_default_lang(),
                     'ADD_THEME_IMAGE' => '_SEARCH:admin_themes:add_image:theme={1}',
-                ),
-            ),
-            'DELETE_THEME_IMAGE' => array(
+                ],
+            ],
+            'DELETE_THEME_IMAGE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_THEME_IMAGE' => '_SEARCH:admin_themes:add_image:theme={1}',
-                ),
-            ),
-            'DELETE_TRACKBACKS' => array(
+                ],
+            ],
+            'DELETE_TRACKBACKS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_TRACKBACKS' => '_SEARCH:admin_trackbacks',
-                ),
-            ),
-            'GROUP_MEMBER_TIMEOUTS' => array(
+                ],
+            ],
+            'GROUP_MEMBER_TIMEOUTS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'GROUP_MEMBER_TIMEOUTS' => '_SEARCH:admin_group_member_timeouts',
-                ),
-            ),
-            'UPGRADER_OPEN_SITE' => array(
+                ],
+            ],
+            'UPGRADER_OPEN_SITE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'UPGRADER_UPGRADER_TITLE' => '_SEARCH:admin_config:upgrader',
-                ),
-            ),
-            'UPGRADER_CLOSE_SITE' => array(
+                ],
+            ],
+            'UPGRADER_CLOSE_SITE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'UPGRADER_UPGRADER_TITLE' => '_SEARCH:admin_config:upgrader',
-                ),
-            ),
-            'UPGRADER_DOWNLOAD' => array(
+                ],
+            ],
+            'UPGRADER_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'UPGRADER_UPGRADER_TITLE' => '_SEARCH:admin_config:upgrader',
-                ),
-            ),
-            'UPGRADER_DATABASE_UPGRADE' => array(
+                ],
+            ],
+            'UPGRADER_DATABASE_UPGRADE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'UPGRADER_UPGRADER_TITLE' => '_SEARCH:admin_config:upgrader',
-                ),
-            ),
-            'PERSONAL_DATA_DOWNLOAD' => array(
+                ],
+            ],
+            'PERSONAL_DATA_DOWNLOAD' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-            'PERSONAL_DATA_PURGING' => array(
+                ],
+            ],
+            'PERSONAL_DATA_PURGING' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -596,18 +596,18 @@ class Hook_actionlog_core extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'CONFIGURATION':
                 require_code('config2');
-                $bindings += array(
+                $bindings += [
                     'CONFIG_URL' => config_option_url($identifier),
-                );
+                ];
                 break;
 
             case 'ADD_MENU_ITEM':
             case 'EDIT_MENU_ITEM':
-                $menu = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', array('id' => intval($identifier)));
+                $menu = $GLOBALS['SITE_DB']->query_select_value_if_there('menu_items', 'i_menu', ['id' => intval($identifier)]);
                 if ($menu !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'MENU' => $menu,
-                    );
+                    ];
                 }
                 break;
         }

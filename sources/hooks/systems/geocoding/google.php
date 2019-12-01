@@ -78,7 +78,7 @@ class Hook_geocoding_google
             $sw_longitude = $longitude;
         }
 
-        return array($latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$latitude, $longitude, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -157,7 +157,7 @@ class Hook_geocoding_google
         $sw_latitude = $r['geometry']['bounds']['southwest']['lat'];
         $sw_longitude = $r['geometry']['bounds']['southwest']['lng'];
 
-        return array($location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude);
+        return [$location, $street_address, $city, $county, $state, $postal_code, $country, $ne_latitude, $ne_longitude, $sw_latitude, $sw_longitude];
     }
 
     /**
@@ -193,7 +193,7 @@ class Hook_geocoding_google
         }
         $url .= $url_params;
 
-        $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false));
+        $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false]);
 
         if (empty($_result)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

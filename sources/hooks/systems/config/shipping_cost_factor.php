@@ -30,7 +30,7 @@ class Hook_config_shipping_cost_factor
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHIPPING_COST_FACTOR',
             'type' => 'float',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_shipping_cost_factor
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

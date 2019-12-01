@@ -82,7 +82,7 @@ class auth_test_set extends cms_test_case
     public function testAdminZoneDoesFail()
     {
         require_code('files');
-        $http_result = cms_http_request(static_evaluate_tempcode(build_url(array('page' => '', 'keep_su' => 'Guest'), 'adminzone', array(), false, false, true)), array('trigger_error' => false));
+        $http_result = cms_http_request(static_evaluate_tempcode(build_url(['page' => '', 'keep_su' => 'Guest'], 'adminzone', [], false, false, true)), ['trigger_error' => false]);
         $this->assertTrue($http_result->message == '401', 'Expected 401 HTTP status but got ' . $http_result->message);
     }
 
@@ -90,15 +90,15 @@ class auth_test_set extends cms_test_case
     {
         $fake_session_id = '1234543';
 
-        $ips = array();
+        $ips = [];
         $ips[get_ip_address(3, get_server_external_looparound_ip())] = true;
         $ips[get_ip_address(3, '1.2.3.4')] = false;
 
         foreach ($ips as $ip => $pass_expected) { // We actually test both pass and fail, to help ensure our test is actually not somehow getting a failure from something else
             // Clean up
-            $GLOBALS['SITE_DB']->query_delete('sessions', array('the_session' => $fake_session_id));
+            $GLOBALS['SITE_DB']->query_delete('sessions', ['the_session' => $fake_session_id]);
 
-            $new_session_row = array(
+            $new_session_row = [
                 'the_session' => $fake_session_id,
                 'last_activity' => time(),
                 'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id() + 1,
@@ -111,13 +111,13 @@ class auth_test_set extends cms_test_case
                 'the_page' => '',
                 'the_type' => '',
                 'the_id' => '',
-            );
+            ];
             $GLOBALS['SITE_DB']->query_insert('sessions', $new_session_row);
             persistent_cache_delete('SESSION_CACHE');
 
             require_code('files');
-            $url = static_evaluate_tempcode(build_url(array('page' => ''), 'adminzone', array(), false, false, true));
-            $http_result = cms_http_request($url, array('trigger_error' => false, 'cookies' => array(get_session_cookie() => $fake_session_id)));
+            $url = static_evaluate_tempcode(build_url(['page' => ''], 'adminzone', [], false, false, true));
+            $http_result = cms_http_request($url, ['trigger_error' => false, 'cookies' => [get_session_cookie() => $fake_session_id]]);
 
             if ($pass_expected) {
                 $this->assertTrue($http_result->message != '401', 'No access when expected for ' . $ip);

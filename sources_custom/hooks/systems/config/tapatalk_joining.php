@@ -25,7 +25,7 @@ class Hook_config_tapatalk_joining
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TAPATALK_JOINING',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_tapatalk_joining
             'public' => false,
 
             'addon' => 'cns_tapatalk',
-        );
+        ];
     }
 
     /**

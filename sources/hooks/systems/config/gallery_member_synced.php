@@ -30,7 +30,7 @@ class Hook_config_gallery_member_synced
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_MEMBER_SYNCED',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_member_synced
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

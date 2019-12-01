@@ -31,11 +31,11 @@ class Hook_admin_import_types_awards
     public function run()
     {
         if (!addon_installed('awards')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'awards' => 'AWARDS',
-        );
+        ];
     }
 }

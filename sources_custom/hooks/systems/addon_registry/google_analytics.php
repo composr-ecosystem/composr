@@ -26,7 +26,7 @@ class Hook_addon_registry_google_analytics
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_google_analytics
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -115,7 +115,7 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -125,13 +125,13 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'stats',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -151,7 +151,7 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/google_analytics.php',
             'lang_custom/EN/google_analytics.ini',
             'sources_custom/google_analytics.php',
@@ -163,6 +163,6 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
             'themes/default/templates_custom/GOOGLE_SEARCH_CONSOLE_KEYWORDS.tpl',
             'themes/default/templates_custom/_GOOGLE_TIME_PERIODS.tpl',
             'themes/default/javascript_custom/google_analytics.js',
-        );
+        ];
     }
 }

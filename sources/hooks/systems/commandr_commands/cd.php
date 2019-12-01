@@ -34,7 +34,7 @@ class Hook_commandr_command_cd
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('cd', array('h'), array(true)), '', '');
+            return ['', do_command_help('cd', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
                 $pwd = $commandr_fs->print_working_directory(true);
@@ -48,11 +48,11 @@ class Hook_commandr_command_cd
             }
 
             if (!$commandr_fs->_is_dir($parameters[0])) {
-                return array('', '', '', do_lang('NOT_A_DIR', '1'));
+                return ['', '', '', do_lang('NOT_A_DIR', '1')];
             }
 
             $commandr_fs->change_directory($parameters[0]);
-            return array('', '', $commandr_fs->print_working_directory(), '');
+            return ['', '', $commandr_fs->print_working_directory(), ''];
         }
     }
 }

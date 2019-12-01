@@ -30,29 +30,29 @@ function init__feedback()
     define('RATING_TYPE_like_dislike', 1);
 
     global $RATINGS_STRUCTURE;
-    $RATINGS_STRUCTURE = array(
-        'catalogues__links' => array(
+    $RATINGS_STRUCTURE = [
+        'catalogues__links' => [
             RATING_TYPE_like_dislike,
-            array(
+            [
                 '' => '',
-            ),
-        ),
-        'images' => array(
+            ],
+        ],
+        'images' => [
             RATING_TYPE_star_choice,
-            array(
+            [
                 '' => 'General',
                 'scenery' => 'Scenery',
                 'quality' => 'Quality',
                 'art' => 'Artiness',
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 
     global $REVIEWS_STRUCTURE;
-    $REVIEWS_STRUCTURE = array(
-        'news' => array(
+    $REVIEWS_STRUCTURE = [
+        'news' => [
             'Informative',
             'Insightful',
-        ),
-    );
+        ],
+    ];
 }

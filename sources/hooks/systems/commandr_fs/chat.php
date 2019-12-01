@@ -47,8 +47,8 @@ class Hook_commandr_fs_chat extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('id'), array('room_name' => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['id'], ['room_name' => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -90,7 +90,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
 
         $room_owner = $this->_default_property_member_null($properties, 'room_owner');
 
-        $_allow = array();
+        $_allow = [];
         if (!empty($properties['allow'])) {
             foreach ($properties['allow'] as $x) {
                 if (get_forum_type() == 'cns') {
@@ -105,7 +105,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
         $allow = implode(',', array_map('strval', $_allow));
 
-        $_allow_groups = array();
+        $_allow_groups = [];
         if (!empty($properties['allow_groups'])) {
             foreach ($properties['allow_groups'] as $x) {
                 if (get_forum_type() == 'cns') {
@@ -120,7 +120,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
         $allow_groups = implode(',', array_map('strval', $_allow_groups));
 
-        $_disallow = array();
+        $_disallow = [];
         if (!empty($properties['disallow'])) {
             foreach ($properties['disallow'] as $x) {
                 if (get_forum_type() == 'cns') {
@@ -135,7 +135,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
         $disallow = implode(',', array_map('strval', $_disallow));
 
-        $_disallow_groups = array();
+        $_disallow_groups = [];
         if (!empty($properties['disallow_groups'])) {
             foreach ($properties['disallow_groups'] as $x) {
                 if (get_forum_type() == 'cns') {
@@ -157,7 +157,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
 
         $is_im = $this->_default_property_int($properties, 'is_im');
 
-        return array($welcome, $room_owner, $allow, $allow_groups, $disallow, $disallow_groups, $roomlang, $is_im);
+        return [$welcome, $room_owner, $allow, $allow_groups, $disallow, $disallow_groups, $roomlang, $is_im];
     }
 
     /**
@@ -194,13 +194,13 @@ class Hook_commandr_fs_chat extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $allow = array();
+        $allow = [];
         if (!cms_empty_safe($row['allow_list'])) {
             foreach (explode(',', $row['allow_list']) as $x) {
                 $_x = remap_resource_id_as_portable('member', intval($x));
@@ -210,7 +210,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
             }
         }
 
-        $allow_groups = array();
+        $allow_groups = [];
         if (!cms_empty_safe($row['allow_list_groups'])) {
             foreach (explode(',', $row['allow_list_groups']) as $x) {
                 $_x = remap_resource_id_as_portable('group', intval($x));
@@ -220,7 +220,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
             }
         }
 
-        $disallow = array();
+        $disallow = [];
         if (!cms_empty_safe($row['disallow_list'])) {
             foreach (explode(',', $row['disallow_list']) as $x) {
                 $_x = remap_resource_id_as_portable('member', intval($x));
@@ -230,7 +230,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
             }
         }
 
-        $disallow_groups = array();
+        $disallow_groups = [];
         if (!cms_empty_safe($row['disallow_list_groups'])) {
             foreach (explode(',', $row['disallow_list_groups']) as $x) {
                 $_x = remap_resource_id_as_portable('group', intval($x));
@@ -240,7 +240,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
             }
         }
 
-        $properties = array(
+        $properties = [
             'label' => $row['room_name'],
             'welcome_message' => $row['c_welcome'],
             'room_owner' => remap_resource_id_as_portable('member', $row['room_owner']),
@@ -250,7 +250,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
             'disallow_groups' => $disallow_groups,
             'room_lang' => $row['room_language'],
             'is_im' => $row['is_im'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

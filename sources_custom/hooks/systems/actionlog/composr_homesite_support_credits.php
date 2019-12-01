@@ -26,23 +26,23 @@ class Hook_actionlog_composr_homesite_support_credits extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('composr_homesite_support_credits')) {
-            return array();
+            return [];
         }
 
         require_lang('customers');
 
-        return array(
-            'CHARGE_CUSTOMER' => array(
+        return [
+            'CHARGE_CUSTOMER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                    'VIEW_PROFILE' => array('FORUM_DRIVER__PROFILE_URL', '{ID}'),
+                'followup_page_links' => [
+                    'VIEW_PROFILE' => ['FORUM_DRIVER__PROFILE_URL', '{ID}'],
                     'CHARGE_CUSTOMER' => '_SEARCH:admin_customers:charge:member_id={ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**

@@ -52,98 +52,98 @@ function init__webstandards_js_lint()
 
     // These are default prototypes. More may be added dynamically, but we can't check against those for consistency.
     global $JS_PROTOTYPES; // Note that '!' prefixed methods are static (only belong to the prototype). All objects also have a constructor, which is what is called when they are called as a function.
-    $JS_PROTOTYPES = array(
+    $JS_PROTOTYPES = [
         // Each entry is a pair: inherit-from, properties array. Each property is a list: type, name, [function-return-type]. Types prefixed with ! are "this type or anything inherited from it"
 
         /* ECMA */
-        'Object' => array(null, array(array('!', 'prototype'),/*array('String', 'Value'), array('function', 'Get', '!Object'), array('function', 'Put'), array('function', 'CanPut', 'Boolean'), array('function', 'HasProperty', 'Boolean'), array('function', 'Delete'), array('String', 'DefaultValue'), array('function', 'Construct', '!Object'), array('function', 'Match', 'Boolean'),*/ array('function', '!constructor', '!Object'), array('function', '!toString', 'String'), array('function', '!toLocaleString', 'String'), array('function', '!valueOf', '!Object'), array('function', '!hasOwnProperty', 'Boolean'), array('function', '!isPrototypeOf', 'Boolean'), array('function', '!propertyIsEnumerable', 'Boolean'),)),
-        'function' => array('Object', array(array('arguments', 'arguments'), array('function', 'Call', '!Object'), array('function', 'HasInstance', 'Boolean'),)), // Has special language support
-        'Function' => array('function', array()),
-        'Array' => array('Object', array(array('Number', 'length'), array('function', 'concat', 'Array'), array('function', 'join', 'String'), array('function', 'pop', '!Object'), array('function', 'push', 'Number'), array('function', 'reverse'), array('function', 'shift', '!Object'), array('function', 'slice', 'Array'), array('function', 'sort'), array('function', 'splice', 'Array'), array('function', 'unshift', 'Number'),)), // Has special language support
-        'String' => array('Object', array(array('Number', 'length'), array('function', '!fromCharCode', 'String'), array('function', 'charAt', 'String'), array('function', 'charCodeAt', 'String'), array('function', 'concat', 'String'), array('function', 'indexOf', 'Number'), array('function', 'lastIndexOf', 'Number'), array('function', 'localeCompare', 'Boolean'), array('function', 'match', 'Boolean'), array('function', 'replace', 'String'), array('function', 'search', 'Boolean'), array('function', 'slice', 'String'), array('function', 'split', 'StringArray'), array('function', 'substr', 'String'), array('function', 'substring', 'String'), array('function', 'toLowerCase', 'String'), array('function', 'toUpperCase', 'String'), array('function', 'toLocaleLowerCase', 'String'), array('function', 'toLocaleUpperCase', 'String'),)), // Has special language support
-        'Boolean' => array('Object', array(array('function', 'toString', 'String'),)), // Has special language support
-        'Number' => array('Object', array(array('Number', '!MAX_VALUE'), array('Number', '!MIN_VALUE'), array('Number', '!NaN'), array('Number', '!NEGATIVE_INFINITY'), array('Number', '!POSITIVE_INFINITY'), array('function', 'toString', 'String'), array('function', 'toLocaleString', 'String'), array('function', 'toFixed', 'String'), array('function', 'toExponential', 'String'), array('function', 'toPrecision', 'String'),)), // Has special language support
-        'Math' => array('Object', array(array('Number', '!E'), array('Number', '!LN10'), array('Number', '!LN2'), array('Number', '!LOG2E'), array('Number', '!LOG10E'), array('Number', '!PI'), array('Number', '!SQRT1_2'), array('Number', '!SQRT2'), array('function', '!abs', 'Number'), array('function', '!acos', 'Number'), array('function', '!asin', 'Number'), array('function', '!atan', 'Number'), array('function', '!atan2', 'Number'), array('function', '!ceil', 'Number'), array('function', '!cos', 'Number'), array('function', '!exp', 'Number'), array('function', '!floor', 'Number'), array('function', '!log', 'Number'), array('function', '!max', 'Number'), array('function', '!min', 'Number'), array('function', '!pox', 'Number'), array('function', '!random', 'Number'), array('function', '!round', 'Number'), array('function', '!sin', 'Number'), array('function', '!sqrt', 'Number'), array('function', '!tan', 'Number'),)),
-        'Date' => array('Object', array(array('function', '!parse', 'Number'), array('function', '!UTC', 'Number'), array('function', 'toDateString', 'String'), array('function', 'toTimeString', 'String'), array('function', 'toLocaleString', 'String'), array('function', 'toLocaleDateString', 'String'), array('function', 'toLocaleTimeString', 'String'), array('function', 'getTime', 'Number'), array('function', 'getFullYear', 'Number'), array('function', 'getUTCFullYear', 'Number'), array('function', 'getMonth', 'Number'), array('function', 'getUTCMonth', 'Number'), array('function', 'getDate', 'Number'), array('function', 'getUTCDate', 'Number'), array('function', 'getDay', 'Number'), array('function', 'getUTCDay', 'Number'), array('function', 'getHours', 'Number'), array('function', 'getUTCHours', 'Number'), array('function', 'getMinutes', 'Number'), array('function', 'getUTCMinutes', 'Number'), array('function', 'getSeconds', 'Number'), array('function', 'getUTCSeconds', 'Number'), array('function', 'getMilliseconds', 'Number'), array('function', 'getUTCMilliseconds', 'Number'), array('function', 'getTimezoneOffset', 'Number'), array('function', 'setTime'), array('function', 'setMilliseconds'), array('function', 'setUTCMilliseconds'), array('function', 'setSeconds'), array('function', 'setUTCSeconds'), array('function', 'setMinutes'), array('function', 'setUTCMinutes'), array('function', 'setHours'), array('function', 'setUTCHours'), array('function', 'setDate'), array('function', 'setUTCDate'), array('function', 'setMonth'), array('function', 'setUTCMonth'), array('function', 'setFullYear'), array('function', 'setUTCFullYear'), array('function', 'toUTCString', 'String'),)),
-        'RegExp' => array('Object', array(array('String', '$1'),/*array('function', 'compile'),*/ array('String', '$2'), array('String', '$3'), array('String', '$4'), array('String', '$5'), array('function', 'exec', 'Boolean'), array('function', 'test', 'Boolean'), array('String', 'source'), array('Boolean', 'global'), array('Boolean', 'ignoreCase'), array('Boolean', 'multiline'), array('Number', 'lastIndex'),)), // Has special language support
-        'Error' => array('Object', array(array('String', '!name'), array('String', '!message'),)),
-        'EvalError' => array('Error', array()),
-        'RangeError' => array('Error', array()),
-        'ReferenceError' => array('Error', array()),
-        'SyntaxError' => array('Error', array()),
-        'TypeError' => array('Error', array()),
-        'URIError' => array('Error', array()),
-        'Null' => array('Object', array()),
-        'Infinity' => array('Object', array()),
-        'Undefined' => array('Object', array()),
-        'Promise' => array('Object', array(array('function', 'all', 'Promise'), array('function', 'race', 'Promise'), array('function', 'reject', 'Promise'), array('function', 'resolve', 'Promise'), array('function', 'then', 'Promise'), array('function', 'catch', 'Promise'))),
+        'Object' => [null, [['!', 'prototype'],/*array('String', 'Value'), array('function', 'Get', '!Object'), array('function', 'Put'), array('function', 'CanPut', 'Boolean'), array('function', 'HasProperty', 'Boolean'), array('function', 'Delete'), array('String', 'DefaultValue'), array('function', 'Construct', '!Object'), array('function', 'Match', 'Boolean'),*/ ['function', '!constructor', '!Object'], ['function', '!toString', 'String'], ['function', '!toLocaleString', 'String'], ['function', '!valueOf', '!Object'], ['function', '!hasOwnProperty', 'Boolean'], ['function', '!isPrototypeOf', 'Boolean'], ['function', '!propertyIsEnumerable', 'Boolean'],]],
+        'function' => ['Object', [['arguments', 'arguments'], ['function', 'Call', '!Object'], ['function', 'HasInstance', 'Boolean'],]], // Has special language support
+        'Function' => ['function', []],
+        'Array' => ['Object', [['Number', 'length'], ['function', 'concat', 'Array'], ['function', 'join', 'String'], ['function', 'pop', '!Object'], ['function', 'push', 'Number'], ['function', 'reverse'], ['function', 'shift', '!Object'], ['function', 'slice', 'Array'], ['function', 'sort'], ['function', 'splice', 'Array'], ['function', 'unshift', 'Number'],]], // Has special language support
+        'String' => ['Object', [['Number', 'length'], ['function', '!fromCharCode', 'String'], ['function', 'charAt', 'String'], ['function', 'charCodeAt', 'String'], ['function', 'concat', 'String'], ['function', 'indexOf', 'Number'], ['function', 'lastIndexOf', 'Number'], ['function', 'localeCompare', 'Boolean'], ['function', 'match', 'Boolean'], ['function', 'replace', 'String'], ['function', 'search', 'Boolean'], ['function', 'slice', 'String'], ['function', 'split', 'StringArray'], ['function', 'substr', 'String'], ['function', 'substring', 'String'], ['function', 'toLowerCase', 'String'], ['function', 'toUpperCase', 'String'], ['function', 'toLocaleLowerCase', 'String'], ['function', 'toLocaleUpperCase', 'String'],]], // Has special language support
+        'Boolean' => ['Object', [['function', 'toString', 'String'],]], // Has special language support
+        'Number' => ['Object', [['Number', '!MAX_VALUE'], ['Number', '!MIN_VALUE'], ['Number', '!NaN'], ['Number', '!NEGATIVE_INFINITY'], ['Number', '!POSITIVE_INFINITY'], ['function', 'toString', 'String'], ['function', 'toLocaleString', 'String'], ['function', 'toFixed', 'String'], ['function', 'toExponential', 'String'], ['function', 'toPrecision', 'String'],]], // Has special language support
+        'Math' => ['Object', [['Number', '!E'], ['Number', '!LN10'], ['Number', '!LN2'], ['Number', '!LOG2E'], ['Number', '!LOG10E'], ['Number', '!PI'], ['Number', '!SQRT1_2'], ['Number', '!SQRT2'], ['function', '!abs', 'Number'], ['function', '!acos', 'Number'], ['function', '!asin', 'Number'], ['function', '!atan', 'Number'], ['function', '!atan2', 'Number'], ['function', '!ceil', 'Number'], ['function', '!cos', 'Number'], ['function', '!exp', 'Number'], ['function', '!floor', 'Number'], ['function', '!log', 'Number'], ['function', '!max', 'Number'], ['function', '!min', 'Number'], ['function', '!pox', 'Number'], ['function', '!random', 'Number'], ['function', '!round', 'Number'], ['function', '!sin', 'Number'], ['function', '!sqrt', 'Number'], ['function', '!tan', 'Number'],]],
+        'Date' => ['Object', [['function', '!parse', 'Number'], ['function', '!UTC', 'Number'], ['function', 'toDateString', 'String'], ['function', 'toTimeString', 'String'], ['function', 'toLocaleString', 'String'], ['function', 'toLocaleDateString', 'String'], ['function', 'toLocaleTimeString', 'String'], ['function', 'getTime', 'Number'], ['function', 'getFullYear', 'Number'], ['function', 'getUTCFullYear', 'Number'], ['function', 'getMonth', 'Number'], ['function', 'getUTCMonth', 'Number'], ['function', 'getDate', 'Number'], ['function', 'getUTCDate', 'Number'], ['function', 'getDay', 'Number'], ['function', 'getUTCDay', 'Number'], ['function', 'getHours', 'Number'], ['function', 'getUTCHours', 'Number'], ['function', 'getMinutes', 'Number'], ['function', 'getUTCMinutes', 'Number'], ['function', 'getSeconds', 'Number'], ['function', 'getUTCSeconds', 'Number'], ['function', 'getMilliseconds', 'Number'], ['function', 'getUTCMilliseconds', 'Number'], ['function', 'getTimezoneOffset', 'Number'], ['function', 'setTime'], ['function', 'setMilliseconds'], ['function', 'setUTCMilliseconds'], ['function', 'setSeconds'], ['function', 'setUTCSeconds'], ['function', 'setMinutes'], ['function', 'setUTCMinutes'], ['function', 'setHours'], ['function', 'setUTCHours'], ['function', 'setDate'], ['function', 'setUTCDate'], ['function', 'setMonth'], ['function', 'setUTCMonth'], ['function', 'setFullYear'], ['function', 'setUTCFullYear'], ['function', 'toUTCString', 'String'],]],
+        'RegExp' => ['Object', [['String', '$1'],/*array('function', 'compile'),*/ ['String', '$2'], ['String', '$3'], ['String', '$4'], ['String', '$5'], ['function', 'exec', 'Boolean'], ['function', 'test', 'Boolean'], ['String', 'source'], ['Boolean', 'global'], ['Boolean', 'ignoreCase'], ['Boolean', 'multiline'], ['Number', 'lastIndex'],]], // Has special language support
+        'Error' => ['Object', [['String', '!name'], ['String', '!message'],]],
+        'EvalError' => ['Error', []],
+        'RangeError' => ['Error', []],
+        'ReferenceError' => ['Error', []],
+        'SyntaxError' => ['Error', []],
+        'TypeError' => ['Error', []],
+        'URIError' => ['Error', []],
+        'Null' => ['Object', []],
+        'Infinity' => ['Object', []],
+        'Undefined' => ['Object', []],
+        'Promise' => ['Object', [['function', 'all', 'Promise'], ['function', 'race', 'Promise'], ['function', 'reject', 'Promise'], ['function', 'resolve', 'Promise'], ['function', 'then', 'Promise'], ['function', 'catch', 'Promise']]],
 
         /* Browser-Library / DOM */
-        'Node' => array('Object', array(array('String', 'nodeName'), array('Number', 'nodeType'), array('String', 'nodeValue'), array('NodeArray', 'childNodes'), array('!Node', 'firstChild'), array('!Node', 'lastChild'), array('!Node', 'nextSibling'), array('!Node', 'parentNode'), array('!Node', 'previousSibling'), array('!XMLDocument', 'ownerDocument'), array('function', 'appendChild', '!Node'), array('function', 'cloneNode', '!Node'), array('function', 'insertBefore', '!Node'), array('function', 'removeChild', '!Node'), array('function', 'replaceChild', '!Node'), array('function', 'hasChildNodes', 'Boolean'),)), // nodeType: 1=Element,2=Attribute,3=Text,9=Document
-        'XMLDocument' => array('Node', array(array('Implementation', 'implementation'), array('function', 'createElement', '!Element'), array('function', 'createTextNode', 'TextNode'), array('function', 'getElementById', '!Element'), array('function', 'createAttribute', 'Attribute'), array('HTML', 'documentElement'), array('Boolean', 'async'), array('function', 'load'), array('function', 'loadXML'), array('function', 'importNode', '!Node'), array('function', 'cloneNode', '!Node'),)),
-        'Document' => array('XMLDocument', array(array('String', 'referrer'), array('String', 'title'), array('String', 'URL'), array('String', 'cookie'), array('Body', 'body'), array('function', 'getElementsByName', 'ElementArray'), array('function', 'getElementsByTagName', 'ElementArray'), array('ElementArray', 'images'), array('ElementArray', 'links'), array('FormArray', 'forms'), array('Selection', 'selection'), array('function', 'createRange', 'Range'), array('function', 'open'), array('function', 'write'), array('function', 'close'), array('Boolean', 'designMode'), array('function', 'execCommand', 'Boolean'), array('function', 'queryCommandEnabled', 'Boolean'), array('function', 'queryCommandState', 'Boolean'), array('function', 'queryCommandValue', '!Object'),)),
-        'Element' => array('Node', array(array('function', 'addEventListener', 'Boolean'), array('function', 'attachEvent', 'Boolean'), array('function', 'getElementsByTagName', 'ElementArray'), array('function', 'setAttribute'), array('function', 'getAttribute'), array('function', 'Attribute'), array('Array', 'attributes'), array('function', 'onresize'), array('function', 'onmouseup'), array('function', 'onmouseover'), array('function', 'onmouseout'), array('function', 'onmousemove'), array('function', 'onmousedown'), array('function', 'onkeyup'), array('function', 'onkeypress'), array('function', 'onkeydown'), array('function', 'ondblclick'), array('function', 'onclick'), array('Number', 'selectionStart'), array('Number', 'selectionEnd'), array('String', 'className'), array('String', 'id'), array('String', 'innerHTML'), array('String', 'innerText'), array('!Object', 'style'), array('Number', 'selectionStart'), array('Number', 'selectionEnd'), array('Number', 'offsetWidth'), array('Number', 'offsetHeight'), array('Number', 'offsetLeft'), array('Number', 'offsetTop'), array('String', 'role'), array('!Element', 'offsetParent'),)),
-        'TextNode' => array('Node', array(array('function', 'appendData'), array('function', 'deleteData'), array('function', 'insertData'), array('function', 'replaceData'), array('function', 'substringData', 'String'), array('function', 'splitText', 'TextNode'), array('String', 'data'),)),
-        'Attribute' => array('Object', array(array('String', 'name'), array('String', 'value'),)),
-        'Body' => array('Element', array(array('function', 'onmousewheel'), array('function', 'onpagehide'), array('function', 'onpageshow'), array('function', 'onunload'), array('function', 'onload'), array('Number', 'offsetWidth'), array('Number', 'offsetHeight'), array('Number', 'scrollWidth'), array('Number', 'scrollHeight'), array('Number', 'scrollTop'), array('Number', 'scrollLeft'),)),
-        'Caption' => array('Element', array()),
-        'HTML' => array('Element', array(array('Number', 'clientWidth'), array('Number', 'clientHeight'), array('Number', 'scrollWidth'), array('Number', 'scrollHeight'), array('Number', 'scrollTop'), array('Number', 'scrollLeft'),)),
-        'Form' => array('Element', array(array('String', 'method'), array('String', 'action'), array('String', 'title'), array('Array', 'elements'), array('function', 'submit'), array('function', 'reset'),)),
-        'Img' => array('Element', array(array('String', 'alt'), array('String', 'title'), array('String', 'src'), array('Boolean', 'complete'), array('Number', 'naturalWidth'), array('Number', 'naturalHeight'),)),
-        'FormField' => array('Element', array(array('Form', 'form'), array('function', 'focus'), array('function', 'onfocus'), array('function', 'onchange'), array('function', 'onblur'), array('Boolean', 'disabled'), array('String', 'name'),)),
-        'Select' => array('FormField', array(array('function', 'onselect'), array('function', 'select'), array('Number', 'selectedIndex'), array('Boolean', 'multiple'), array('Array', 'options'),)),
-        'Option' => array('FormField', array(array('String', 'value'), array('Boolean', 'defaultSelected'), array('Boolean', 'selected'),)),
-        'Checkbox' => array('FormField', array(array('String', 'value'), array('Boolean', 'defaultChecked'), array('Boolean', 'checked'),)),
-        'InputRadio' => array('FormField', array(array('String', 'value'), array('Boolean', 'defaultChecked'), array('Boolean', 'checked'),)),
-        'InputText' => array('FormField', array(array('String', 'value'), array('Boolean', 'readOnly'),)),
-        'TextArea' => array('FormField', array(array('String', 'value'), array('Number', 'scrollWidth'), array('Number', 'scrollHeight'), array('Number', 'scrollTop'), array('Number', 'scrollLeft'),)),
-        'Frame' => array('Element', array(array('HTML', 'contentDocument'), array('Window', 'contentWindow'),)),
-        'Table' => array('Element', array(array('TableRowArray', 'rows'), array('TableRowArray', 'tBodies'), array('TableFooter', 'tFoot'), array('TableHeader', 'tHead'), array('function', 'createCaption', 'Caption'), array('function', 'createTFoot', 'TableFooter'), array('function', 'createTHead', 'TableHeader'), array('function', 'insertRow', 'TableRow'), array('function', 'deleteCaption'), array('function', 'deleteRow'), array('function', 'deleteTFoot'), array('function', 'deleteTHead'),)),
-        'TableRow' => array('Element', array(array('ElementArray', 'cells'), array('Number', 'sectionRowIndex'), array('Number', 'rowIndex'), array('function', 'insertCell', 'TableData'), array('function', 'deleteCell'),)),
-        'Self' => array('Window', array(array('Number', 'outerHeight'), array('Number', 'outerWidth'), array('Number', 'screenTop'), array('Number', 'screenLeft'), array('Number', 'screenX'), array('Number', 'screenY'),)),
-        'Screen' => array('Object', array(array('Number', 'availWidth'), array('Number', 'availHeight'), array('Number', 'colorDepth'), array('Number', 'width'), array('Number', 'height'),)),
-        'Window' => array('Object', array(array('JSON', 'JSON'), array('Console', 'console'), array('Storage', 'sessionStorage'), array('Storage', 'localStorage'), array('function', 'onmousewheel'), array('function', 'onpagehide'), array('function', 'onpageshow'), array('function', 'onunload'), array('function', 'onload'), array('History', 'history'), array('Event', 'event'), array('String', 'status'), array('Document', 'document'), array('WindowArray', 'frames'), array('Navigator', 'navigator'), array('Location', 'location'), array('Screen', 'screen'), array('Boolean', 'closed'), array('Window', 'opener'), array('Window', 'parent'), array('Self', 'self'), array('Window', 'top')/*, array('function', 'alert')*/, array('function', 'blur'), array('function', 'focus'), array('function', 'clearInterval'), array('function', 'clearTimeout'), array('function', 'close')/*, array('function', 'confirm', 'Boolean')*/, array('function', 'moveBy'), array('function', 'open', 'Window'), array('function', 'print')/*, array('function', 'prompt', '!Object')*/, array('function', 'scrollBy'), array('function', 'scrollTo'), array('function', 'setInterval', 'Number'), array('function', 'setTimeout', 'Number'), array('function', 'encodeURIComponent', 'String'), array('function', 'encodeURI', 'String'), array('function', 'decodeURIComponent', 'String'), array('function', 'decodeURI', 'String'), array('function', 'isFinite', 'Boolean'), array('function', 'isNaN', 'Boolean'), array('function', 'parseFloat', 'Number'), array('function', 'parseInt', 'Number'), array('function', 'eval', '!Object'), array('function', 'void', 'undefined'),)),
-        'Event' => array('Object', array(array('function', 'stopPropagation'), array('Boolean', 'cancelBubble'), array('!Element', 'target'), array('!Element', 'srcElement'), array('!Element', 'fromElement'), array('!Element', 'relatedTarget'), array('Number', 'clientX'), array('Number', 'clientY'), array('Number', 'offsetX'), array('Number', 'offsetY'), array('Number', 'pageX'), array('Number', 'pageY'), array('Number', 'screenX'), array('Number', 'screenY'), array('Boolean', 'altKey'), array('Boolean', 'metaKey'), array('Boolean', 'ctrlKey'), array('Boolean', 'shiftKey'), array('Number', 'keyCode'), array('Number', 'which'), array('Number', 'charCode'), array('Number', 'button'), array('String', 'type'),)),
-        'History' => array('Object', array(array('Number', 'length'), array('function', 'back'), array('function', 'forward'), array('function', 'go'),)),
-        'Location' => array('Object', array(array('String', 'hash'), array('String', 'host'), array('String', 'hostname'), array('String', 'href'), array('String', 'pathname'), array('Number', 'port'), array('String', 'protocol'), array('String', 'search'), array('function', 'assign'), array('function', 'reload'), array('function', 'replace'),)),
-        'Navigator' => array('Object', array(array('String', 'appCodeName'), array('String', 'appName'), array('Number', 'appVersion'), array('Boolean', 'cookieEnabled'), array('String', 'platform'), array('String', 'userAgent'), array('function', 'javaEnabled', 'Boolean'), array('StringArray', 'plugins'),)),
-        'XMLHttpRequest' => array('Object', array(array('function', 'abort'), array('function', 'getAllResponseHeaders', 'String'), array('function', 'getResponseHeader', 'String'), array('function', 'open'), array('function', 'send'), array('function', 'setRequestHeader'), array('Function', 'onreadystatechange'), array('Number', 'readyState'), array('String', 'responseText'), array('XMLDocument', 'responseXML'), array('Number', 'status'), array('String', 'statusText'),)),
-        'ActiveXObject' => array('Object', array()),
-        'DOMParser' => array('Object', array(array('function', 'parseFromString', 'String'))),
-        'Range' => array('Object', array(array('Number', 'endOffset'), array('Number', 'startOffset'), array('function', 'setStart'), array('function', 'setEnd'), array('function', 'collapse'), array('Boolean', 'collapsed'),)),
-        'Implementation' => array('Object', array(array('function', 'createDocument', 'XMLDocument'),)),
-        'EmbedLiveAudioOrActiveMovie' => array('Object', array(array('function', 'play'), array('function', 'pause'), array('function', 'stop'),)),
-        'EmbedActiveXFlash' => array('Object', array(array('Number', 'ReadyState'), array('Number', 'TotalFrames'), array('Number', 'FrameNum'), array('Boolean', 'Playing'), array('String', 'Quality'), array('Number', 'ScaleMode'), array('Number', 'AlignMode'), array('String', 'Backgroundcolor'), array('Boolean', 'Loop'), array('String', 'Movie'), array('function', 'Play'), array('function', 'Stop'), array('function', 'Back'), array('function', 'Forward'), array('function', 'Rewind'),)),
-        'EmbedLiveConnectFlash' => array('Object', array(array('function', 'LoadMovie'), array('function', 'GetVariable', '!Object'), array('function', 'Play'), array('function', 'StopPlay'), array('function', 'IsPlaying', 'Boolean'), array('function', 'GotoFrame'), array('function', 'TotalFrames', 'Number'), array('function', 'Rewind'), array('function', 'SetZoomRect'), array('function', 'Zoom'), array('function', 'Pan'), array('function', 'PercentLoaded', 'Number'),)),
-        'DomException' => array('Error', array(array('Number', 'code'), array('Number', '!INDEX_SIZE_ERR'), array('Number', '!DOMSTRING_SIZE_ERR'), array('Number', '!HIERARCHY_REQUEST_ERR'), array('Number', '!WRONG_DOCUMENT_ERR'), array('Number', '!INVALID_CHARACTER_ERR'), array('Number', '!NO_DATA_ALLOWED_ERR'), array('Number', '!NO_MODIFICATION_ALLOWED_ERR'), array('Number', '!NOT_FOUND_ERR'), array('Number', '!NOT_SUPPORTED_ERR'), array('Number', '!INUSE_ATTRIBUTE_ERR'), array('Number', '!INVALID_STATE_ERR'), array('Number', '!SYNTAX_ERR'), array('Number', '!INVALID_MODIFICATION_ERR'), array('Number', '!NAMESPACE_ERR'), array('Number', '!INVALID_ACCESS_ERR'), array('Number', '!WEBSTANDARDS_ERR'), array('Number', '!TYPE_MISMATCH_ERR'),)),
-        'Storage' => array('Object', array(array('Number', 'length'), array('function', 'getItem', 'Object'), array('function', 'setItem'), array('function', 'removeItem'), array('function', 'clear'))),
-        'Console' => array('Object', array(array('function', 'log'))),
-        'JSON' => array('Object', array(array('function', 'parse', 'Object'), array('function', 'stringify', 'String'))),
+        'Node' => ['Object', [['String', 'nodeName'], ['Number', 'nodeType'], ['String', 'nodeValue'], ['NodeArray', 'childNodes'], ['!Node', 'firstChild'], ['!Node', 'lastChild'], ['!Node', 'nextSibling'], ['!Node', 'parentNode'], ['!Node', 'previousSibling'], ['!XMLDocument', 'ownerDocument'], ['function', 'appendChild', '!Node'], ['function', 'cloneNode', '!Node'], ['function', 'insertBefore', '!Node'], ['function', 'removeChild', '!Node'], ['function', 'replaceChild', '!Node'], ['function', 'hasChildNodes', 'Boolean'],]], // nodeType: 1=Element,2=Attribute,3=Text,9=Document
+        'XMLDocument' => ['Node', [['Implementation', 'implementation'], ['function', 'createElement', '!Element'], ['function', 'createTextNode', 'TextNode'], ['function', 'getElementById', '!Element'], ['function', 'createAttribute', 'Attribute'], ['HTML', 'documentElement'], ['Boolean', 'async'], ['function', 'load'], ['function', 'loadXML'], ['function', 'importNode', '!Node'], ['function', 'cloneNode', '!Node'],]],
+        'Document' => ['XMLDocument', [['String', 'referrer'], ['String', 'title'], ['String', 'URL'], ['String', 'cookie'], ['Body', 'body'], ['function', 'getElementsByName', 'ElementArray'], ['function', 'getElementsByTagName', 'ElementArray'], ['ElementArray', 'images'], ['ElementArray', 'links'], ['FormArray', 'forms'], ['Selection', 'selection'], ['function', 'createRange', 'Range'], ['function', 'open'], ['function', 'write'], ['function', 'close'], ['Boolean', 'designMode'], ['function', 'execCommand', 'Boolean'], ['function', 'queryCommandEnabled', 'Boolean'], ['function', 'queryCommandState', 'Boolean'], ['function', 'queryCommandValue', '!Object'],]],
+        'Element' => ['Node', [['function', 'addEventListener', 'Boolean'], ['function', 'attachEvent', 'Boolean'], ['function', 'getElementsByTagName', 'ElementArray'], ['function', 'setAttribute'], ['function', 'getAttribute'], ['function', 'Attribute'], ['Array', 'attributes'], ['function', 'onresize'], ['function', 'onmouseup'], ['function', 'onmouseover'], ['function', 'onmouseout'], ['function', 'onmousemove'], ['function', 'onmousedown'], ['function', 'onkeyup'], ['function', 'onkeypress'], ['function', 'onkeydown'], ['function', 'ondblclick'], ['function', 'onclick'], ['Number', 'selectionStart'], ['Number', 'selectionEnd'], ['String', 'className'], ['String', 'id'], ['String', 'innerHTML'], ['String', 'innerText'], ['!Object', 'style'], ['Number', 'selectionStart'], ['Number', 'selectionEnd'], ['Number', 'offsetWidth'], ['Number', 'offsetHeight'], ['Number', 'offsetLeft'], ['Number', 'offsetTop'], ['String', 'role'], ['!Element', 'offsetParent'],]],
+        'TextNode' => ['Node', [['function', 'appendData'], ['function', 'deleteData'], ['function', 'insertData'], ['function', 'replaceData'], ['function', 'substringData', 'String'], ['function', 'splitText', 'TextNode'], ['String', 'data'],]],
+        'Attribute' => ['Object', [['String', 'name'], ['String', 'value'],]],
+        'Body' => ['Element', [['function', 'onmousewheel'], ['function', 'onpagehide'], ['function', 'onpageshow'], ['function', 'onunload'], ['function', 'onload'], ['Number', 'offsetWidth'], ['Number', 'offsetHeight'], ['Number', 'scrollWidth'], ['Number', 'scrollHeight'], ['Number', 'scrollTop'], ['Number', 'scrollLeft'],]],
+        'Caption' => ['Element', []],
+        'HTML' => ['Element', [['Number', 'clientWidth'], ['Number', 'clientHeight'], ['Number', 'scrollWidth'], ['Number', 'scrollHeight'], ['Number', 'scrollTop'], ['Number', 'scrollLeft'],]],
+        'Form' => ['Element', [['String', 'method'], ['String', 'action'], ['String', 'title'], ['Array', 'elements'], ['function', 'submit'], ['function', 'reset'],]],
+        'Img' => ['Element', [['String', 'alt'], ['String', 'title'], ['String', 'src'], ['Boolean', 'complete'], ['Number', 'naturalWidth'], ['Number', 'naturalHeight'],]],
+        'FormField' => ['Element', [['Form', 'form'], ['function', 'focus'], ['function', 'onfocus'], ['function', 'onchange'], ['function', 'onblur'], ['Boolean', 'disabled'], ['String', 'name'],]],
+        'Select' => ['FormField', [['function', 'onselect'], ['function', 'select'], ['Number', 'selectedIndex'], ['Boolean', 'multiple'], ['Array', 'options'],]],
+        'Option' => ['FormField', [['String', 'value'], ['Boolean', 'defaultSelected'], ['Boolean', 'selected'],]],
+        'Checkbox' => ['FormField', [['String', 'value'], ['Boolean', 'defaultChecked'], ['Boolean', 'checked'],]],
+        'InputRadio' => ['FormField', [['String', 'value'], ['Boolean', 'defaultChecked'], ['Boolean', 'checked'],]],
+        'InputText' => ['FormField', [['String', 'value'], ['Boolean', 'readOnly'],]],
+        'TextArea' => ['FormField', [['String', 'value'], ['Number', 'scrollWidth'], ['Number', 'scrollHeight'], ['Number', 'scrollTop'], ['Number', 'scrollLeft'],]],
+        'Frame' => ['Element', [['HTML', 'contentDocument'], ['Window', 'contentWindow'],]],
+        'Table' => ['Element', [['TableRowArray', 'rows'], ['TableRowArray', 'tBodies'], ['TableFooter', 'tFoot'], ['TableHeader', 'tHead'], ['function', 'createCaption', 'Caption'], ['function', 'createTFoot', 'TableFooter'], ['function', 'createTHead', 'TableHeader'], ['function', 'insertRow', 'TableRow'], ['function', 'deleteCaption'], ['function', 'deleteRow'], ['function', 'deleteTFoot'], ['function', 'deleteTHead'],]],
+        'TableRow' => ['Element', [['ElementArray', 'cells'], ['Number', 'sectionRowIndex'], ['Number', 'rowIndex'], ['function', 'insertCell', 'TableData'], ['function', 'deleteCell'],]],
+        'Self' => ['Window', [['Number', 'outerHeight'], ['Number', 'outerWidth'], ['Number', 'screenTop'], ['Number', 'screenLeft'], ['Number', 'screenX'], ['Number', 'screenY'],]],
+        'Screen' => ['Object', [['Number', 'availWidth'], ['Number', 'availHeight'], ['Number', 'colorDepth'], ['Number', 'width'], ['Number', 'height'],]],
+        'Window' => ['Object', [['JSON', 'JSON'], ['Console', 'console'], ['Storage', 'sessionStorage'], ['Storage', 'localStorage'], ['function', 'onmousewheel'], ['function', 'onpagehide'], ['function', 'onpageshow'], ['function', 'onunload'], ['function', 'onload'], ['History', 'history'], ['Event', 'event'], ['String', 'status'], ['Document', 'document'], ['WindowArray', 'frames'], ['Navigator', 'navigator'], ['Location', 'location'], ['Screen', 'screen'], ['Boolean', 'closed'], ['Window', 'opener'], ['Window', 'parent'], ['Self', 'self'], ['Window', 'top']/*, array('function', 'alert')*/, ['function', 'blur'], ['function', 'focus'], ['function', 'clearInterval'], ['function', 'clearTimeout'], ['function', 'close']/*, array('function', 'confirm', 'Boolean')*/, ['function', 'moveBy'], ['function', 'open', 'Window'], ['function', 'print']/*, array('function', 'prompt', '!Object')*/, ['function', 'scrollBy'], ['function', 'scrollTo'], ['function', 'setInterval', 'Number'], ['function', 'setTimeout', 'Number'], ['function', 'encodeURIComponent', 'String'], ['function', 'encodeURI', 'String'], ['function', 'decodeURIComponent', 'String'], ['function', 'decodeURI', 'String'], ['function', 'isFinite', 'Boolean'], ['function', 'isNaN', 'Boolean'], ['function', 'parseFloat', 'Number'], ['function', 'parseInt', 'Number'], ['function', 'eval', '!Object'], ['function', 'void', 'undefined'],]],
+        'Event' => ['Object', [['function', 'stopPropagation'], ['Boolean', 'cancelBubble'], ['!Element', 'target'], ['!Element', 'srcElement'], ['!Element', 'fromElement'], ['!Element', 'relatedTarget'], ['Number', 'clientX'], ['Number', 'clientY'], ['Number', 'offsetX'], ['Number', 'offsetY'], ['Number', 'pageX'], ['Number', 'pageY'], ['Number', 'screenX'], ['Number', 'screenY'], ['Boolean', 'altKey'], ['Boolean', 'metaKey'], ['Boolean', 'ctrlKey'], ['Boolean', 'shiftKey'], ['Number', 'keyCode'], ['Number', 'which'], ['Number', 'charCode'], ['Number', 'button'], ['String', 'type'],]],
+        'History' => ['Object', [['Number', 'length'], ['function', 'back'], ['function', 'forward'], ['function', 'go'],]],
+        'Location' => ['Object', [['String', 'hash'], ['String', 'host'], ['String', 'hostname'], ['String', 'href'], ['String', 'pathname'], ['Number', 'port'], ['String', 'protocol'], ['String', 'search'], ['function', 'assign'], ['function', 'reload'], ['function', 'replace'],]],
+        'Navigator' => ['Object', [['String', 'appCodeName'], ['String', 'appName'], ['Number', 'appVersion'], ['Boolean', 'cookieEnabled'], ['String', 'platform'], ['String', 'userAgent'], ['function', 'javaEnabled', 'Boolean'], ['StringArray', 'plugins'],]],
+        'XMLHttpRequest' => ['Object', [['function', 'abort'], ['function', 'getAllResponseHeaders', 'String'], ['function', 'getResponseHeader', 'String'], ['function', 'open'], ['function', 'send'], ['function', 'setRequestHeader'], ['Function', 'onreadystatechange'], ['Number', 'readyState'], ['String', 'responseText'], ['XMLDocument', 'responseXML'], ['Number', 'status'], ['String', 'statusText'],]],
+        'ActiveXObject' => ['Object', []],
+        'DOMParser' => ['Object', [['function', 'parseFromString', 'String']]],
+        'Range' => ['Object', [['Number', 'endOffset'], ['Number', 'startOffset'], ['function', 'setStart'], ['function', 'setEnd'], ['function', 'collapse'], ['Boolean', 'collapsed'],]],
+        'Implementation' => ['Object', [['function', 'createDocument', 'XMLDocument'],]],
+        'EmbedLiveAudioOrActiveMovie' => ['Object', [['function', 'play'], ['function', 'pause'], ['function', 'stop'],]],
+        'EmbedActiveXFlash' => ['Object', [['Number', 'ReadyState'], ['Number', 'TotalFrames'], ['Number', 'FrameNum'], ['Boolean', 'Playing'], ['String', 'Quality'], ['Number', 'ScaleMode'], ['Number', 'AlignMode'], ['String', 'Backgroundcolor'], ['Boolean', 'Loop'], ['String', 'Movie'], ['function', 'Play'], ['function', 'Stop'], ['function', 'Back'], ['function', 'Forward'], ['function', 'Rewind'],]],
+        'EmbedLiveConnectFlash' => ['Object', [['function', 'LoadMovie'], ['function', 'GetVariable', '!Object'], ['function', 'Play'], ['function', 'StopPlay'], ['function', 'IsPlaying', 'Boolean'], ['function', 'GotoFrame'], ['function', 'TotalFrames', 'Number'], ['function', 'Rewind'], ['function', 'SetZoomRect'], ['function', 'Zoom'], ['function', 'Pan'], ['function', 'PercentLoaded', 'Number'],]],
+        'DomException' => ['Error', [['Number', 'code'], ['Number', '!INDEX_SIZE_ERR'], ['Number', '!DOMSTRING_SIZE_ERR'], ['Number', '!HIERARCHY_REQUEST_ERR'], ['Number', '!WRONG_DOCUMENT_ERR'], ['Number', '!INVALID_CHARACTER_ERR'], ['Number', '!NO_DATA_ALLOWED_ERR'], ['Number', '!NO_MODIFICATION_ALLOWED_ERR'], ['Number', '!NOT_FOUND_ERR'], ['Number', '!NOT_SUPPORTED_ERR'], ['Number', '!INUSE_ATTRIBUTE_ERR'], ['Number', '!INVALID_STATE_ERR'], ['Number', '!SYNTAX_ERR'], ['Number', '!INVALID_MODIFICATION_ERR'], ['Number', '!NAMESPACE_ERR'], ['Number', '!INVALID_ACCESS_ERR'], ['Number', '!WEBSTANDARDS_ERR'], ['Number', '!TYPE_MISMATCH_ERR'],]],
+        'Storage' => ['Object', [['Number', 'length'], ['function', 'getItem', 'Object'], ['function', 'setItem'], ['function', 'removeItem'], ['function', 'clear']]],
+        'Console' => ['Object', [['function', 'log']]],
+        'JSON' => ['Object', [['function', 'parse', 'Object'], ['function', 'stringify', 'String']]],
 
         /* Some aggregate types */
-        'StringArray' => array('Array', array()),
-        'NodeArray' => array('Array', array()),
-        'ElementArray' => array('Array', array()),
-        'FormArray' => array('Array', array()),
-        'TableRowArray' => array('Array', array()),
-        'WindowArray' => array('Array', array()),
+        'StringArray' => ['Array', []],
+        'NodeArray' => ['Array', []],
+        'ElementArray' => ['Array', []],
+        'FormArray' => ['Array', []],
+        'TableRowArray' => ['Array', []],
+        'WindowArray' => ['Array', []],
 
         /* Composr-specific */
-        '$cms' => array('Object', array()),
-        '$dom' => array('Object', array()),
-        'strVal' => array('function', array()),
-        'objVal' => array('function', array()),
-        'arrayVal' => array('function', array()),
-        'boolVal' => array('function', array()),
-        'intVal' => array('function', array()),
-        'numVal' => array('function', array()),
+        '$cms' => ['Object', []],
+        '$dom' => ['Object', []],
+        'strVal' => ['function', []],
+        'objVal' => ['function', []],
+        'arrayVal' => ['function', []],
+        'boolVal' => ['function', []],
+        'intVal' => ['function', []],
+        'numVal' => ['function', []],
 
         /* De facto-standard */
-        'jQuery' => array('Object', array()),
+        'jQuery' => ['Object', []],
 
         // Future things coming, but not currently here (may not be added, not strictly needed as we ignore missing properties/methods, and the API scope has mushroomed since 'HTML5'):
         //  Audio, Video, Canvas, File, WebRTC, SVG, WebGL, Crypto, HTML5 DOM APIs, Device, devicePixelRatio, Web Workers, Web Sockets
-    );
+    ];
 
     // Hard-code all the inheritance
     $found_one = false;
@@ -152,12 +152,12 @@ function init__webstandards_js_lint()
         foreach ($JS_PROTOTYPES as $prototype => $details) {
             if (($details[0] !== null) && ($details[0] != '')) {
                 if (!array_key_exists(2, $JS_PROTOTYPES[$details[0]])) {
-                    $JS_PROTOTYPES[$details[0]][2] = array(); // This is an inverse-list of all the classes inheriting from self
+                    $JS_PROTOTYPES[$details[0]][2] = []; // This is an inverse-list of all the classes inheriting from self
                 }
 
                 $t = $details[0];
                 do {
-                    $JS_PROTOTYPES[$t][2] += array($prototype => true);
+                    $JS_PROTOTYPES[$t][2] += [$prototype => true];
                     $t = isset($JS_PROTOTYPES[$t][3]) ? $JS_PROTOTYPES[$t][3] : $JS_PROTOTYPES[$t][0];
                 } while ($t !== null);
                 $details[1] = array_merge($JS_PROTOTYPES[$details[0]][1], $details[1]);
@@ -181,15 +181,15 @@ function reset_js_global_variables()
 {
     // These are the global JavaScript objects (static prototypes like 'Math') are also used but those are difference because they can be instantiated, and because some, like Array, can act like functions). In actual fact, everything is "window.", but we don't want to force qualifying into window because it would block our detection
     global $JS_GLOBAL_VARIABLES;
-    $JS_GLOBAL_VARIABLES = array(
-        'window' => array('function_return' => null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => array('Window')),
-    );
+    $JS_GLOBAL_VARIABLES = [
+        'window' => ['function_return' => null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => ['Window']],
+    ];
     global $JS_PROTOTYPES;
     foreach (array_keys($JS_PROTOTYPES) as $name) {
-        $JS_GLOBAL_VARIABLES[$name] = array('function_return' => null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => array($name));
+        $JS_GLOBAL_VARIABLES[$name] = ['function_return' => null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => [$name]];
     }
     foreach ($JS_PROTOTYPES['Window'][1] as $t) {
-        $JS_GLOBAL_VARIABLES[$t[1]] = array('function_return' => isset($t[2]) ? $t[2] : null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => array($t[0]));
+        $JS_GLOBAL_VARIABLES[$t[1]] = ['function_return' => isset($t[2]) ? $t[2] : null, 'unused_value' => null, 'first_mention' => 0, 'is_global' => true, 'types' => [$t[0]]];
     }
 }
 
@@ -203,9 +203,9 @@ function reset_js_global_variables()
 function check_js($data, $raw_errors = false)
 {
     global $JS_ERRORS, $JS_TAG_RANGES, $JS_VALUE_RANGES;
-    $JS_ERRORS = array();
-    $JS_TAG_RANGES = array();
-    $JS_VALUE_RANGES = array();
+    $JS_ERRORS = [];
+    $JS_TAG_RANGES = [];
+    $JS_VALUE_RANGES = [];
     $lexed = webstandards_js_lex($data);
     if ($lexed !== null) {
         $parsed = webstandards_js_parse();
@@ -216,17 +216,17 @@ function check_js($data, $raw_errors = false)
 
     unset($GLOBALS['JS_LEX_TOKENS']);
 
-    $errors = array();
+    $errors = [];
     if ($raw_errors) {
         foreach ($JS_ERRORS as $error) {
-            $out = array(0 => $error[0], 'raw' => true, 'pos' => $error[3]);
+            $out = [0 => $error[0], 'raw' => true, 'pos' => $error[3]];
             $errors[] = $out;
         }
         unset($GLOBALS['JS_ERRORS']);
         return $errors;
     }
     foreach ($JS_ERRORS as $error) {
-        $out = array();
+        $out = [];
         $out['line'] = $error[2];
         $out['pos'] = $error[1];
         $out['global_pos'] = $error[3];
@@ -234,7 +234,7 @@ function check_js($data, $raw_errors = false)
         $errors[] = $out;
     }
     unset($GLOBALS['JS_ERRORS']);
-    return array('level_ranges' => null, 'tag_ranges' => $JS_TAG_RANGES, 'value_ranges' => $JS_VALUE_RANGES, 'errors' => $errors);
+    return ['level_ranges' => null, 'tag_ranges' => $JS_TAG_RANGES, 'value_ranges' => $JS_VALUE_RANGES, 'errors' => $errors];
 }
 
 /**
@@ -250,7 +250,7 @@ function _check_js($structure)
 
     // Put all functions in as local variables
     foreach ($structure['functions'] as $function) {
-        $JS_GLOBAL_VARIABLES[$function['name']] = array('function_return' => '!Object', 'is_global' => true, 'types' => array('function'), 'unused_value' => null, 'first_mention' => $function['offset']);
+        $JS_GLOBAL_VARIABLES[$function['name']] = ['function_return' => '!Object', 'is_global' => true, 'types' => ['function'], 'unused_value' => null, 'first_mention' => $function['offset']];
     }
 
     // Check global commands
@@ -348,8 +348,8 @@ function js_check_variable_list($JS_LOCAL_VARIABLES)
 
                 $_t1 = ($t1[0] == '!') ? substr($t1, 1) : $t1;
                 $_t2 = ($t2[0] == '!') ? substr($t2, 1) : $t2;
-                $potentials1 = array($_t1 => true);
-                $potentials2 = array($_t2 => true);
+                $potentials1 = [$_t1 => true];
+                $potentials2 = [$_t2 => true];
                 if (($t1[0] == '!') && (isset($JS_PROTOTYPES[substr($t1, 1)][2]))) {
                     $potentials1 += $JS_PROTOTYPES[substr($t1, 1)][2];
                 }
@@ -365,13 +365,13 @@ function js_check_variable_list($JS_LOCAL_VARIABLES)
             $a = implode(',', array_unique($v['types']));
             $both = array_unique($v['types']);
             sort($both);
-            if (($both != array('ActiveXObject', 'XMLHttpRequest')) && ($both != array('ActiveXObject', 'XMLDocument'))) {
+            if (($both != ['ActiveXObject', 'XMLHttpRequest']) && ($both != ['ActiveXObject', 'XMLDocument'])) {
                 js_log_warning('CHECKER', 'Type conflict for variable: ' . $name . ' (' . $a . ')', $v['first_mention']);
             }
         }
 
         // Check for non-used variables
-        if (($v['unused_value']) && ($name != '__return') && ($name != '_') && (!$v['is_global']) && (!in_array($name, array('this', 'arguments', 'event')))) {
+        if (($v['unused_value']) && ($name != '__return') && ($name != '_') && (!$v['is_global']) && (!in_array($name, ['this', 'arguments', 'event']))) {
             //js_log_warning('CHECKER', 'Non-used ' . ($v['unused_value'] ? 'value' : 'variable') . ' (\'' . $name . '\')', $v['first_mention']);   Annoying error, unneeded, inaccurate
         }
     }
@@ -393,7 +393,7 @@ function js_check_command($command, $depth)
 
     // Need to load up functions in advance
     foreach ($command as $i => $c) {
-        if ($c == array()) {
+        if ($c == []) {
             continue;
         }
 
@@ -413,7 +413,7 @@ function js_check_command($command, $depth)
 
     // Scan rest of commands
     foreach ($command as $i => $c) {
-        if ($c == array()) {
+        if ($c == []) {
             continue;
         }
 
@@ -434,7 +434,7 @@ function js_check_command($command, $depth)
                 js_add_variable_reference('__return', $c_pos, false, true);
                 js_set_composr_type('__return', $ret_type);
                 if (!isset($JS_LOCAL_VARIABLES['__return']['mentions'])) {
-                    $JS_LOCAL_VARIABLES['__return']['mentions'] = array();
+                    $JS_LOCAL_VARIABLES['__return']['mentions'] = [];
                 }
                 $JS_LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
                 if (count($command) - 1 > $i) {
@@ -494,15 +494,15 @@ function js_check_command($command, $depth)
             case 'FOR':
                 if ($c[1] !== null) {
                     foreach ($c[1] as $init_command) {
-                        js_check_command(array($init_command), $depth + 1);
+                        js_check_command([$init_command], $depth + 1);
                     }
                 }
                 if ($c[3] !== null) {
                     foreach ($c[3] as $control_command) {
-                        js_check_command(array($control_command), $depth + 1);
+                        js_check_command([$control_command], $depth + 1);
                     }
                 }
-                $passes = js_ensure_type(array('Boolean'), js_check_expression($c[2]), $c_pos, 'Loop conditionals must be Boolean (for)');
+                $passes = js_ensure_type(['Boolean'], js_check_expression($c[2]), $c_pos, 'Loop conditionals must be Boolean (for)');
                 //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $c[2]);
                 if ($c[4] !== null) {
                     js_check_command($c[4], $depth + 1);
@@ -510,11 +510,11 @@ function js_check_command($command, $depth)
                 break;
             case 'DO':
                 js_check_command($c[2], $depth + 1);
-                $passes = js_ensure_type(array('Boolean'), js_check_expression($c[1]), $c_pos, 'Loop conditionals must be Boolean (do)');
+                $passes = js_ensure_type(['Boolean'], js_check_expression($c[1]), $c_pos, 'Loop conditionals must be Boolean (do)');
                 //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $c[1]);
                 break;
             case 'WHILE':
-                $passes = js_ensure_type(array('Boolean'), js_check_expression($c[1]), $c_pos, 'Loop conditionals must be Boolean (while)');
+                $passes = js_ensure_type(['Boolean'], js_check_expression($c[1]), $c_pos, 'Loop conditionals must be Boolean (while)');
                 //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $c[1]);
                 js_check_command($c[2], $depth + 1);
                 $rem = $GLOBALS['JS_PARSING_CONDITIONAL'];
@@ -557,7 +557,7 @@ function js_check_command($command, $depth)
         }
 
         if ($or) {
-            js_check_command(array($c[count($c) - 1]), $depth);
+            js_check_command([$c[count($c) - 1]], $depth);
         }
     }
 }
@@ -576,18 +576,18 @@ function js_check_assignment($c, $c_pos)
     $target = $c[2];
 
     // Special assignment operational checks
-    if (in_array($op, array('PLUS_EQUAL'))) {
-        js_ensure_type(array('Array', 'Number', 'String'), $e_type, $c_pos, 'Can only perform addition to strings or arrays or numbers (not ' . $e_type . ')');
+    if (in_array($op, ['PLUS_EQUAL'])) {
+        js_ensure_type(['Array', 'Number', 'String'], $e_type, $c_pos, 'Can only perform addition to strings or arrays or numbers (not ' . $e_type . ')');
         if ($target[0] == 'VARIABLE') {
             $v_type = js_get_variable_type($target);
-            js_ensure_type(array('Array', 'Number', 'String'), $v_type, $c_pos, 'Can only perform addition to strings or arrays or numbers (not ' . $v_type . ')');
+            js_ensure_type(['Array', 'Number', 'String'], $v_type, $c_pos, 'Can only perform addition to strings or arrays or numbers (not ' . $v_type . ')');
         }
     }
-    if (in_array($op, array('DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'))) {
-        js_ensure_type(array('Number'), $e_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $e_type . ')');
+    if (in_array($op, ['DIV_EQUAL', 'MUL_EQUAL', 'SUBTRACT_EQUAL', 'SL_EQUAL', 'SR_EQUAL', 'ZSR_EQUAL', 'BW_AND_EQUAL', 'BW_OR_EQUAL'])) {
+        js_ensure_type(['Number'], $e_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $e_type . ')');
         if ($target[0] == 'VARIABLE') {
             $v_type = js_get_variable_type($target);
-            js_ensure_type(array('Number'), $v_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $v_type . ')');
+            js_ensure_type(['Number'], $v_type, $c_pos, 'Can only perform relative arithmetic with numbers (not ' . $v_type . ')');
         }
     }
 
@@ -644,7 +644,7 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
         }*/
         return $type_a;
     }
-    if (in_array($e[0], array('BOOLEAN_AND', 'BOOLEAN_OR'))) {
+    if (in_array($e[0], ['BOOLEAN_AND', 'BOOLEAN_OR'])) {
         $exp = js_check_expression($e[1], false, $is_guarded);
         //$passes = js_ensure_type(array('Boolean'), $exp, $c_pos - 1, 'Can only use Boolean combinators with Booleans');    We are not so type-strict in JS
         //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $e[1]);
@@ -653,63 +653,63 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
         //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $e[2]);
         return '!Object'; // JS is weird, ORing actually returns the first "truey" element
     }
-    if (in_array($e[0], array('BW_XOR', 'BW_AND', 'BW_OR', 'SL', 'SR', 'ZSR', 'REMAINDER'))) {
-        $passes = js_ensure_type(array('Number'), js_check_expression($e[1], false, $is_guarded), $c_pos - 1, 'Can only use integer combinators with Numbers');
+    if (in_array($e[0], ['BW_XOR', 'BW_AND', 'BW_OR', 'SL', 'SR', 'ZSR', 'REMAINDER'])) {
+        $passes = js_ensure_type(['Number'], js_check_expression($e[1], false, $is_guarded), $c_pos - 1, 'Can only use integer combinators with Numbers');
         //if ($passes) js_infer_expression_type_to_variable_type('Number', $e[1]);
-        $passes = js_ensure_type(array('Number'), js_check_expression($e[2]), $c_pos, 'Can only use integer combinators with Numbers');
+        $passes = js_ensure_type(['Number'], js_check_expression($e[2]), $c_pos, 'Can only use integer combinators with Numbers');
         //if ($passes) js_infer_expression_type_to_variable_type('Number', $e[2]);
         return 'Number';
     }
-    if (in_array($e[0], array('CONC'))) {
+    if (in_array($e[0], ['CONC'])) {
         $type_a = js_check_expression($e[1], false, $is_guarded);
         $type_b = js_check_expression($e[2]);
-        $passes = js_ensure_type(array('String'), $type_a, $c_pos - 1, 'Can only use string combinators with Strings (1) (not ' . $type_a . ')');
+        $passes = js_ensure_type(['String'], $type_a, $c_pos - 1, 'Can only use string combinators with Strings (1) (not ' . $type_a . ')');
         //if ($passes) js_infer_expression_type_to_variable_type('String', $e[1]);
-        $passes = js_ensure_type(array('String'), $type_b, $c_pos, 'Can only use string combinators with Strings (2) (not ' . $type_b . ')');
+        $passes = js_ensure_type(['String'], $type_b, $c_pos, 'Can only use string combinators with Strings (2) (not ' . $type_b . ')');
         //if ($passes) js_infer_expression_type_to_variable_type('String', $e[2]);
         return 'String';
     }
-    if (in_array($e[0], array('SUBTRACT', 'MULTIPLY', 'DIVIDE'))) {
+    if (in_array($e[0], ['SUBTRACT', 'MULTIPLY', 'DIVIDE'])) {
         $type_a = js_check_expression($e[1], false, $is_guarded);
         $t = js_check_expression($e[2]);
-        js_ensure_type(array('Number', 'Date'), $type_a, $c_pos - 1, 'Can only use arithmetical combinators with Numbers (1) (not ' . $type_a . ')');
-        js_ensure_type(array('Number', 'Date'), $t, $c_pos, 'Can only use arithmetical combinators with Numbers (2) (not ' . $t . ')');
+        js_ensure_type(['Number', 'Date'], $type_a, $c_pos - 1, 'Can only use arithmetical combinators with Numbers (1) (not ' . $type_a . ')');
+        js_ensure_type(['Number', 'Date'], $t, $c_pos, 'Can only use arithmetical combinators with Numbers (2) (not ' . $t . ')');
         return ($e[0] == 'DIVIDE') ? 'Number' : $type_a;
     }
-    if (in_array($e[0], array('ADD'))) {
+    if (in_array($e[0], ['ADD'])) {
         $type_a = js_check_expression($e[1], false, $is_guarded);
         $t = js_check_expression($e[2]);
-        js_ensure_type(array('Number', 'Array', 'String', 'Date', 'Location'), $type_a, $c_pos - 1, 'Can only use + combinator with Strings/Numbers/Arrays (1) (not ' . $type_a . ')');
-        js_ensure_type(array('Number', 'Array', 'String', 'Date', 'Location'), $t, $c_pos, 'Can only use + combinator with Strings/Numbers/Arrays (2) (not ' . $t . ')');
+        js_ensure_type(['Number', 'Array', 'String', 'Date', 'Location'], $type_a, $c_pos - 1, 'Can only use + combinator with Strings/Numbers/Arrays (1) (not ' . $type_a . ')');
+        js_ensure_type(['Number', 'Array', 'String', 'Date', 'Location'], $t, $c_pos, 'Can only use + combinator with Strings/Numbers/Arrays (2) (not ' . $t . ')');
         if ($type_a == 'Location') {
             $type_a = 'String';
         }
         return $type_a;
     }
-    if (in_array($e[0], array('IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'))) {
+    if (in_array($e[0], ['IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'])) {
         $type_a = js_check_expression($e[1], false, $is_guarded);
         $type_b = js_check_expression($e[2]);
-        js_ensure_type(array('Number', 'String', 'Date'), $type_a, $c_pos - 1, 'Can only use arithmetical comparators with Numbers or Strings (not ' . $type_a . ')');
-        js_ensure_type(array('Number', 'String', 'Date'), $type_b, $c_pos, 'Can only use arithmetical comparators with Numbers or Strings (not ' . $type_b . ')');
-        js_ensure_type(array($type_a), $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
+        js_ensure_type(['Number', 'String', 'Date'], $type_a, $c_pos - 1, 'Can only use arithmetical comparators with Numbers or Strings (not ' . $type_a . ')');
+        js_ensure_type(['Number', 'String', 'Date'], $type_b, $c_pos, 'Can only use arithmetical comparators with Numbers or Strings (not ' . $type_b . ')');
+        js_ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
         return 'Boolean';
     }
-    if (in_array($e[0], array('IS_IDENTICAL', 'IS_NOT_IDENTICAL'))) {
+    if (in_array($e[0], ['IS_IDENTICAL', 'IS_NOT_IDENTICAL'])) {
         return 'Boolean';
     }
-    if (in_array($e[0], array('IS_EQUAL', 'IS_NOT_EQUAL'))) {
+    if (in_array($e[0], ['IS_EQUAL', 'IS_NOT_EQUAL'])) {
         $type_a = js_check_expression($e[1], false, $is_guarded);
         $type_b = js_check_expression($e[2]);
         if (($e[0] == 'IS_EQUAL') && ($e[2][0] == 'LITERAL') && ($e[2][1][0] == 'Boolean')) {
             js_log_warning('CHECKER', 'It\'s redundant to equate to truths', $c_pos);
         }
-        $passes = js_ensure_type(array($type_a), $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
+        $passes = js_ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
         //if ($passes) js_infer_expression_type_to_variable_type($type_a, $e[2]);
         return 'Boolean';
     }
     if (($e[0] == 'INSTANCEOF') || ($e[0] == 'IN')) {
         if (($e[0] == 'IN') && ($e[1][0] == 'LITERAL')) {
-            js_ensure_type(array('String'), js_check_expression($e[1], false, $is_guarded), $c_pos, 'Can only use \'in\' on strings');
+            js_ensure_type(['String'], js_check_expression($e[1], false, $is_guarded), $c_pos, 'Can only use \'in\' on strings');
         } else {
             js_check_variable($e[1], false, $is_guarded);
         }
@@ -718,16 +718,16 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
     $inner = $e;
     switch ($inner[0]) {
         case 'PRE_DEC':
-            js_ensure_type(array('Number'), js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only decrement numbers');
+            js_ensure_type(['Number'], js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only decrement numbers');
             break;
         case 'PRE_INC':
-            js_ensure_type(array('Number'), js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only increment numbers');
+            js_ensure_type(['Number'], js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only increment numbers');
             break;
         case 'DEC':
-            js_ensure_type(array('Number'), js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only decrement numbers');
+            js_ensure_type(['Number'], js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only decrement numbers');
             break;
         case 'INC':
-            js_ensure_type(array('Number'), js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only increment numbers');
+            js_ensure_type(['Number'], js_check_variable($inner[1], false, $is_guarded), $c_pos, 'Can only increment numbers');
             break;
         case 'ASSIGNMENT':
             $ret = js_check_assignment($inner, $c_pos);
@@ -776,11 +776,11 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
             return 'String';
         case 'BW_NOT':
             $type = js_check_expression($inner[1], false, $is_guarded);
-            js_ensure_type(array('Number'), $type, $c_pos, 'Can only negate a Number');
+            js_ensure_type(['Number'], $type, $c_pos, 'Can only negate a Number');
             return $type;
         case 'NEGATE':
             $type = js_check_expression($inner[1], false, $is_guarded);
-            js_ensure_type(array('Number'), $type, $c_pos, 'Can only negate a Number');
+            js_ensure_type(['Number'], $type, $c_pos, 'Can only negate a Number');
             return $type;
         case 'LITERAL':
             $type = $inner[1][0];
@@ -793,7 +793,7 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
                 js_check_expression($param);
             }
             if (!empty($inner[2])) {
-                js_check_call(array('CALL', array('VARIABLE', $inner[1], array(), $c_pos), $inner[2]), $c_pos, $inner[1]);
+                js_check_call(['CALL', ['VARIABLE', $inner[1], [], $c_pos], $inner[2]], $c_pos, $inner[1]);
             }
             if ($inner[1] == 'Array') {
                 return '!Array';
@@ -880,7 +880,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
                     if (($class == 'Window') || ($class == 'Self')) {
                         //js_add_variable_reference($identifier, $variable[count($variable) - 1], true, false, null, true); Causes confusion
                     }
-                    $JS_PROTOTYPES[$class][1][] = array('!Object', $identifier); // Could be any type
+                    $JS_PROTOTYPES[$class][1][] = ['!Object', $identifier]; // Could be any type
                 }
             }
             if ($found === null) {
@@ -894,21 +894,21 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
                     }
                 }
                 if ($function_duality) {
-                    return array('!Object', '!Object');
+                    return ['!Object', '!Object'];
                 }
                 return '!Object';
             } else {
                 $_class = $found[0];
                 if (empty($variable[2])) {
                     if ($function_duality) {
-                        return array($found[0], isset($found[2]) ? $found[2] : null);
+                        return [$found[0], isset($found[2]) ? $found[2] : null];
                     }
                     return $found[0];
                 }
             }
         } else {
             if ($function_duality) {
-                return array('!Object', '!Object');
+                return ['!Object', '!Object'];
             }
             return '!Object';
         }
@@ -916,13 +916,13 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
 
     if (!empty($variable[2])) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index expressions
         // Further depth to scan extractive expressions for?
-        if ((in_array($variable[2][0], array('ARRAY_AT', 'OBJECT_OPERATOR'))) && (!empty($variable[2][2]))) {
+        if ((in_array($variable[2][0], ['ARRAY_AT', 'OBJECT_OPERATOR'])) && (!empty($variable[2][2]))) {
             js_scan_extractive_expressions($variable[2][2]);
         }
 
         if ($variable[2][0] == 'ARRAY_AT') {
             js_check_expression($variable[2][1]);
-            $exp_type = js_check_variable(array('VARIABLE', $identifier, array(), $variable[count($variable) - 1]), true, false, $class);
+            $exp_type = js_check_variable(['VARIABLE', $identifier, [], $variable[count($variable) - 1]], true, false, $class);
 
             $pos = strpos($exp_type, 'Array');
             if ($pos !== false) {
@@ -934,24 +934,24 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
                 $exp_type = '!Object';
             }
             if (!empty($variable[2][2])) {
-                return js_check_variable(array('VARIABLE', $exp_type, $variable[2][2], $variable[count($variable) - 1]), true, $function_duality, $exp_type, true);
+                return js_check_variable(['VARIABLE', $exp_type, $variable[2][2], $variable[count($variable) - 1]], true, $function_duality, $exp_type, true);
             }
             if ($function_duality) {
-                return array($exp_type, '!Object');
+                return [$exp_type, '!Object'];
             }
             return $exp_type;
         }
         if ($variable[2][0] == 'OBJECT_OPERATOR') {
             if (!empty($variable[2][1][2])) {
                 if ($function_duality) {
-                    return array('!Object', '!Object');
+                    return ['!Object', '!Object'];
                 }
                 return '!Object';
             }
             if ($_class === null) {
-                $_class = js_check_variable(array('VARIABLE', $identifier, array(), $variable[count($variable) - 1]));
+                $_class = js_check_variable(['VARIABLE', $identifier, [], $variable[count($variable) - 1]]);
             }
-            return js_check_variable(array('VARIABLE', $variable[2][1][1], $variable[2][2], $variable[count($variable) - 1]), $reference, $function_duality, $_class, $_class == $identifier);
+            return js_check_variable(['VARIABLE', $variable[2][1][1], $variable[2][2], $variable[count($variable) - 1]], $reference, $function_duality, $_class, $_class == $identifier);
         }
         if ($variable[2][0] == 'CALL') {
             $ret = js_check_call($variable[2], $variable[3], js_get_variable_type($variable));
@@ -974,7 +974,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
         }
     }
     if ($function_duality) {
-        return array(js_get_variable_type($variable), $function_return);
+        return [js_get_variable_type($variable), $function_return];
     }
     return js_get_variable_type($variable);
 }
@@ -1019,7 +1019,7 @@ function js_get_variable_type($variable)
         return '!Object'; // There is a problem, but it will be identified elsewhere.
     }
 
-    $temp = array_unique(array_values(array_diff($JS_LOCAL_VARIABLES[$identifier]['types'], array('Null', 'Undefined'))));
+    $temp = array_unique(array_values(array_diff($JS_LOCAL_VARIABLES[$identifier]['types'], ['Null', 'Undefined'])));
     if (!empty($temp)) {
         return $temp[0]; // We'll assume the first set type is the actual type
     }
@@ -1070,7 +1070,7 @@ function js_add_variable_reference($identifier, $first_mention, $instantiation =
 
     global $JS_LOCAL_VARIABLES;
     if (!isset($JS_LOCAL_VARIABLES[$identifier])) {
-        $JS_LOCAL_VARIABLES[$identifier] = array('function_return' => $function_return, 'is_global' => false, 'types' => array(), 'unused_value' => !$reference && !$instantiation, 'first_mention' => $first_mention);
+        $JS_LOCAL_VARIABLES[$identifier] = ['function_return' => $function_return, 'is_global' => false, 'types' => [], 'unused_value' => !$reference && !$instantiation, 'first_mention' => $first_mention];
     } else {
         $JS_LOCAL_VARIABLES[$identifier]['unused_value'] = !$reference && !$instantiation;
     }
@@ -1110,7 +1110,7 @@ function js_ensure_type($_allowed_types, $actual_type, $pos, $alt_error = null)
     global $JS_PROTOTYPES;
 
     // Tidy up our allow list to be a nice map
-    $allowed_types = array('Undefined' => true, 'Null' => true, 'Infinity' => true);
+    $allowed_types = ['Undefined' => true, 'Null' => true, 'Infinity' => true];
     foreach ($_allowed_types as $type) {
         if ($type == '') {
             continue; // Weird

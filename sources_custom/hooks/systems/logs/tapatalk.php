@@ -26,12 +26,12 @@ class Hook_logs_tapatalk
     public function enumerate_logs()
     {
         if (!addon_installed('cns_tapatalk')) {
-            return array(
-            );
+            return [
+            ];
         }
 
-        return array(
-            'tapatalk.log' => array('days_to_keep' => (get_option('days_to_keep__tapatalk_log') == '') ? null : intval(get_option('days_to_keep__tapatalk_log'))),
-        );
+        return [
+            'tapatalk.log' => ['days_to_keep' => (get_option('days_to_keep__tapatalk_log') == '') ? null : intval(get_option('days_to_keep__tapatalk_log'))],
+        ];
     }
 }

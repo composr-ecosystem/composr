@@ -26,7 +26,7 @@ class Hook_addon_registry_mentorr
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_mentorr
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -102,7 +102,7 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,14 +112,14 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'Conversr',
                 'chat',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -129,13 +129,13 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/mentorr.php',
             'sources_custom/points2.php',
             'sources_custom/hooks/systems/upon_query/add_mentor.php',
             'lang_custom/EN/mentorr.ini',
             'sources_custom/hooks/systems/config/mentor_usergroup.php',
-        );
+        ];
     }
 
     /**
@@ -164,11 +164,11 @@ New users should then be assigned a mentor/buddy who will receive an equal amoun
     public function install($upgrade_from = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('members_mentors', array(
+            $GLOBALS['SITE_DB']->create_table('members_mentors', [
                 'id' => '*AUTO',
                 'member_id' => '*INTEGER',
                 'mentor_id' => '*INTEGER',
-            ));
+            ]);
         }
     }
 }

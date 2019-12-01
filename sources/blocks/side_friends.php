@@ -30,14 +30,14 @@ class Block_side_friends
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('max');
+        $info['parameters'] = ['max'];
         return $info;
     }
 
@@ -74,10 +74,10 @@ class Block_side_friends
 
         $friends = show_im_contacts(null, true, $max);
 
-        return do_template('BLOCK_SIDE_FRIENDS', array(
+        return do_template('BLOCK_SIDE_FRIENDS', [
             '_GUID' => 'ce94db14f9a212f38d0fce1658866e2c',
             'BLOCK_ID' => $block_id,
             'FRIENDS' => $friends,
-        ));
+        ]);
     }
 }

@@ -42,7 +42,7 @@ function update_lang_comcode_attachments($field_name, $lang_id, $text, $type, $i
     }
 
     if ($text === STRING_MAGIC_NULL) {
-        return array();
+        return [];
     }
 
     if ($db === null) {
@@ -77,29 +77,29 @@ function update_lang_comcode_attachments($field_name, $lang_id, $text, $type, $i
     $text_parsed = ''; // Actually we'll let it regenerate with the correct permissions ($member_id, not $for_member) $_info['tempcode']->to_assembly();
 
     if (multi_lang_content()) {
-        $remap = array(
+        $remap = [
             'text_original' => $_info['comcode'],
             'text_parsed' => $text_parsed,
             'source_user' => $source_user,
-        );
+        ];
 
-        $test = $db->query_select_value_if_there('translate', 'text_original', array('id' => $lang_id, 'language' => $lang));
+        $test = $db->query_select_value_if_there('translate', 'text_original', ['id' => $lang_id, 'language' => $lang]);
         if ($test !== null) { // Good, we save into our own language, as we have a translation for the lang entry setup properly
-            $db->query_update('translate', $remap, array('id' => $lang_id, 'language' => $lang));
+            $db->query_update('translate', $remap, ['id' => $lang_id, 'language' => $lang]);
         } else { // Darn, we'll have to save over whatever we did load from
-            $db->query_update('translate', $remap, array('id' => $lang_id));
+            $db->query_update('translate', $remap, ['id' => $lang_id]);
         }
     } else {
-        $ret = array();
+        $ret = [];
         $ret[$field_name] = $_info['comcode'];
         $ret[$field_name . '__text_parsed'] = $text_parsed;
         $ret[$field_name . '__source_user'] = $source_user;
         return $ret;
     }
 
-    return array(
+    return [
         $field_name => $lang_id,
-    );
+    ];
 }
 
 /**
@@ -122,13 +122,13 @@ function delete_attachments($type, $db = null)
     require_code('attachments3');
 
     // Clear any de-referenced attachments
-    $before = $db->query_select('attachment_refs', array('a_id', 'id'), array('r_referer_type' => $type));
+    $before = $db->query_select('attachment_refs', ['a_id', 'id'], ['r_referer_type' => $type]);
     foreach ($before as $ref) {
         // Delete reference (as it's not actually in the new Comcode!)
-        $db->query_delete('attachment_refs', array('id' => $ref['id']), '', 1);
+        $db->query_delete('attachment_refs', ['id' => $ref['id']], '', 1);
 
         // Was that the last reference to this attachment? (if so -- delete attachment)
-        $test = $db->query_select_value_if_there('attachment_refs', 'id', array('a_id' => $ref['a_id']));
+        $test = $db->query_select_value_if_there('attachment_refs', 'id', ['a_id' => $ref['a_id']]);
         if ($test === null) {
             _delete_attachment($ref['a_id'], $db);
         }
@@ -146,10 +146,10 @@ function delete_attachments($type, $db = null)
  */
 function _delete_attachment($id, $db)
 {
-    $db->query_delete('attachment_refs', array('a_id' => $id));
+    $db->query_delete('attachment_refs', ['a_id' => $id]);
 
     // Get attachment details
-    $_attachment_info = $db->query_select('attachments', array('a_url', 'a_thumb_url'), array('id' => $id), '', 1);
+    $_attachment_info = $db->query_select('attachments', ['a_url', 'a_thumb_url'], ['id' => $id], '', 1);
     if (!array_key_exists(0, $_attachment_info)) {
         return; // Already gone
     }
@@ -168,7 +168,7 @@ function _delete_attachment($id, $db)
     }
 
     // Delete attachment
-    $db->query_delete('attachments', array('id' => $id), '', 1);
+    $db->query_delete('attachments', ['id' => $id], '', 1);
 }
 
 /**
@@ -191,11 +191,11 @@ function delete_comcode_attachments($type, $id, $db = null, $force = false)
 
     require_lang('comcode');
 
-    $refs = $db->query_select('attachment_refs', array('a_id', 'id'), array('r_referer_type' => $type, 'r_referer_id' => $id));
-    $db->query_delete('attachment_refs', array('r_referer_type' => $type, 'r_referer_id' => $id));
+    $refs = $db->query_select('attachment_refs', ['a_id', 'id'], ['r_referer_type' => $type, 'r_referer_id' => $id]);
+    $db->query_delete('attachment_refs', ['r_referer_type' => $type, 'r_referer_id' => $id]);
     foreach ($refs as $ref) {
         // Was that the last reference to this attachment? (if so -- delete attachment)
-        $test = $db->query_select_value_if_there('attachment_refs', 'id', array('a_id' => $ref['a_id']));
+        $test = $db->query_select_value_if_there('attachment_refs', 'id', ['a_id' => $ref['a_id']]);
         if ($test === null) {
             _delete_attachment($ref['a_id'], $db);
         }
@@ -219,6 +219,6 @@ function delete_lang_comcode_attachments($lang_id, $type, $id, $db = null)
     delete_comcode_attachments($type, $id, $db);
 
     if (multi_lang_content()) {
-        $db->query_delete('translate', array('id' => $lang_id), '', 1);
+        $db->query_delete('translate', ['id' => $lang_id], '', 1);
     }
 }

@@ -26,7 +26,7 @@ class Hook_addon_registry_activity_feed
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,9 +66,9 @@ class Hook_addon_registry_activity_feed
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'base64.js is from http://www.webtoolkit.info'
-        );
+        ];
     }
 
     /**
@@ -112,9 +112,9 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'sup_facebook',
-        );
+        ];
     }
 
     /**
@@ -124,13 +124,13 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -150,7 +150,7 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/privacy/activity_feed.php',
             'sources_custom/hooks/systems/addon_registry/activity_feed.php',
             'sources_custom/hooks/systems/notifications/activity.php',
@@ -178,6 +178,6 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
             'themes/default/javascript_custom/activity_feed.js',
             'sources_custom/hooks/systems/syndication/.htaccess',
             'sources_custom/hooks/systems/syndication/index.html',
-        );
+        ];
     }
 }

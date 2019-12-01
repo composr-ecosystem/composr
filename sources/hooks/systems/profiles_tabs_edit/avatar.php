@@ -65,7 +65,7 @@ class Hook_profiles_tabs_edit_avatar
                         $urls[0] = get_custom_base_url() . '/' . $urls[0];
                     }
                 } else { // No upload -> URL or stock or none
-                    $urls = array();
+                    $urls = [];
                     $stock = post_param_string('avatar_alt_url', '', INPUT_FILTER_URL_GENERAL);
                     if ($stock == '') { // No URL -> Stock or none
                         $stock = post_param_string('avatar_stock', null);
@@ -76,7 +76,7 @@ class Hook_profiles_tabs_edit_avatar
                         }
                     } else {
                         if ((url_is_local($stock)) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin($member_id_viewing))) {
-                            $old = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_avatar_url', array('id' => $member_id_of));
+                            $old = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_avatar_url', ['id' => $member_id_of]);
                             if ($old != $stock) {
                                 access_denied('ASSOCIATE_EXISTING_FILE');
                             }
@@ -154,7 +154,7 @@ class Hook_profiles_tabs_edit_avatar
             if (url_is_local($avatar_url)) {
                 $avatar_url = get_complex_base_url($avatar_url) . '/' . $avatar_url;
             }
-            $avatar = do_template('CNS_TOPIC_POST_AVATAR', array('_GUID' => '50a5902f3ab7e384d9cf99577b222cc8', 'AVATAR' => $avatar_url));
+            $avatar = do_template('CNS_TOPIC_POST_AVATAR', ['_GUID' => '50a5902f3ab7e384d9cf99577b222cc8', 'AVATAR' => $avatar_url]);
         } else {
             $avatar = do_lang_tempcode('NONE_EM');
         }
@@ -162,17 +162,17 @@ class Hook_profiles_tabs_edit_avatar
         $width = cns_get_member_best_group_property($member_id_of, 'max_avatar_width');
         $height = cns_get_member_best_group_property($member_id_of, 'max_avatar_height');
 
-        $text = do_template('CNS_EDIT_AVATAR_TAB', array(
+        $text = do_template('CNS_EDIT_AVATAR_TAB', [
             '_GUID' => 'dbdac6ca3bc752b54d2a24a4c6e69c7c',
             'MEMBER_ID' => strval($member_id_of),
             'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($member_id_of),
             'AVATAR' => $avatar,
             'WIDTH' => integer_format($width),
             'HEIGHT' => integer_format($height),
-        ));
+        ]);
 
         $hidden->attach(form_input_hidden('submitting_avatar_tab', '1'));
 
-        return array($title, $fields, $text, '', $order, $hidden, 'tabs/member_account/edit/avatar', true);
+        return [$title, $fields, $text, '', $order, $hidden, 'tabs/member_account/edit/avatar', true];
     }
 }

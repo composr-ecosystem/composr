@@ -64,7 +64,7 @@ header('X-Robots-Tag: noindex');
 
 $password = post_param_string('password', null, INPUT_FILTER_NONE);
 if ($password === null) {
-    @exit('<form action="#" method="post"><label>Master password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', array('_GUID' => '7904bb84e51bd2ae7c3d9bd0e480406d', 'NAME' => 'admin/delete3'))->evaluate() . ' Delete programmed data</button></form>');
+    @exit('<form action="#" method="post"><label>Master password <input type="password" name="password" value="" /></label><button class="btn btn-danger btn-scr" type="submit">' . do_template('ICON', ['_GUID' => '7904bb84e51bd2ae7c3d9bd0e480406d', 'NAME' => 'admin/delete3'])->evaluate() . ' Delete programmed data</button></form>');
 }
 require_code('crypt_master');
 if (!check_master_password($password)) {
@@ -82,7 +82,7 @@ if ($mode == 'unbundle') {
     $files = $ob->get_file_list();
     foreach ($files as $file) {
         $new_file = null;
-        $matches = array();
+        $matches = [];
 
         if (preg_match('#^themes/default/images/(.*)$#', $file, $matches) != 0) {
             $new_file = 'themes/default/images_custom/' . $matches[1];

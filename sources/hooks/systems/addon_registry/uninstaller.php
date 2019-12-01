@@ -31,7 +31,7 @@ class Hook_addon_registry_uninstaller
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_uninstaller
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_uninstall',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_uninstaller
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,11 +97,11 @@ class Hook_addon_registry_uninstaller
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/uninstaller.php',
             'uninstall.php',
             'themes/default/templates/UNINSTALL_SCREEN.tpl',
-        );
+        ];
     }
 
     /**
@@ -111,9 +111,9 @@ class Hook_addon_registry_uninstaller
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/UNINSTALL_SCREEN.tpl' => 'administrative__uninstall_screen',
-        );
+        ];
     }
 
     /**
@@ -125,8 +125,8 @@ class Hook_addon_registry_uninstaller
      */
     public function tpl_preview__administrative__uninstall_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('UNINSTALL_SCREEN', array()), null, '', true)
-        );
+        return [
+            lorem_globalise(do_lorem_template('UNINSTALL_SCREEN', []), null, '', true)
+        ];
     }
 }

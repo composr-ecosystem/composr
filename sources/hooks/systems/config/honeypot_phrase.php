@@ -30,7 +30,7 @@ class Hook_config_honeypot_phrase
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HONEYPOT_PHRASE',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_honeypot_phrase
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

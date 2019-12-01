@@ -45,19 +45,19 @@ class Hook_notification_member_entered_chatroom extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
         require_code('chat');
-        $types = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('is_im' => 0));
+        $types = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0]);
         foreach ($types as $type) {
             if (check_chatroom_access($type, true)) {
-                $page_links[] = array(
+                $page_links[] = [
                     'id' => $type['id'],
                     'title' => $type['room_name'],
-                );
+                ];
             }
         }
         sort_maps_by($page_links, 'title', false, true);
@@ -86,11 +86,11 @@ class Hook_notification_member_entered_chatroom extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('chat')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['member_entered_chatroom'] = array(do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_member_entered_chatroom'));
+        $list = [];
+        $list['member_entered_chatroom'] = [do_lang('ACTIVITY'), do_lang('chat:NOTIFICATION_TYPE_member_entered_chatroom')];
         return $list;
     }
 

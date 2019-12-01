@@ -25,9 +25,9 @@ if (!function_exists('apache_request_headers')) {
      */
     function apache_request_headers()
     {
-        $headers = array();
+        $headers = [];
         foreach ($_SERVER as $h => $v) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^HTTP_(.+)$#', $h, $matches) != 0) {
                 $headers[$matches[1]] = $v;
             }
@@ -51,7 +51,7 @@ function initialise_composr()
     $EXTERNAL_CALL = true;
 
     if (!is_file($FILE_BASE . '/sources/global.php')) {
-        exit(json_encode(array('status' => 'Required system file is missing')));
+        exit(json_encode(['status' => 'Required system file is missing']));
     }
     require_once($FILE_BASE . '/sources/global.php');
 
@@ -100,7 +100,7 @@ function get_pagination_positions($params, $start_param_num, $end_param_num, $de
         warn_exit('Out-of-range');
     }
 
-    return array($start, $max);
+    return [$start, $max];
 }
 
 /**
@@ -127,7 +127,7 @@ function get_pagination_positions__by_page($params, $page_param_num, $max_param_
         warn_exit('Out-of-range');
     }
 
-    return array($start, $max);
+    return [$start, $max];
 }
 
 /**
@@ -141,21 +141,21 @@ function get_tapatalk_to_composr_emoticon_map($set)
 {
     $GLOBALS['FORUM_DRIVER']->find_emoticons(); // Fill cache
 
-    $ret = array();
+    $ret = [];
 
     if ($set != 'perfect_matches') {
-        $ret += array(
+        $ret += [
             ':eek:' => 'O_o',
             ':confused:' => ':|',
             ':thumbup:' => ':thumbs:',
             ':thumbdown:' => ':shake:',
             ':mad:' => ':@',
             ':p' => ':P',
-        );
+        ];
     }
 
     if ($set != 'missing_from_composr') {
-        $ret += array(
+        $ret += [
             ':D' => ':D',
             ':(' => ':(',
             ':)' => ':)',
@@ -163,7 +163,7 @@ function get_tapatalk_to_composr_emoticon_map($set)
             ':cool:' => ':cool:',
             ':o' => ':o',
             ':rolleyes:' => ':rolleyes:',
-        );
+        ];
     }
 
     // Check really are in our code (as this is user-editable)
@@ -194,7 +194,7 @@ function add_attachments_from_comcode($comcode, $attachment_ids)
     $comcode = check_wordfilter($comcode);
 
     // Map BBCode that we do not support, to Comcode
-    $comcode = str_ireplace(array('[spoiler', '[/spoiler'), array('[hide', '[/hide'), $comcode);
+    $comcode = str_ireplace(['[spoiler', '[/spoiler'], ['[hide', '[/hide'], $comcode);
     $comcode = preg_replace('#(\[\w+=)([^"\[\]]*)(\])#', '\1"\2"]', $comcode); // So strip_comcode works better
 
     // Add attachments
@@ -221,10 +221,10 @@ function strip_attachments_from_comcode($comcode, $inline_image_substitutions = 
     }
 
     if ($inline_image_substitutions) {
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\[attachment(_safe)?( description="([^"]*)")?[^\]]*\](\d+)\[/attachment(_safe)?\]#', $comcode, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
-            $attachment_details = $GLOBALS['FORUM_DB']->query_select('attachments', array('*'), array('id' => intval($matches[4][$i])), '', 1);
+            $attachment_details = $GLOBALS['FORUM_DB']->query_select('attachments', ['*'], ['id' => intval($matches[4][$i])], '', 1);
             require_code('images');
             if ((isset($attachment_details[0])) && (is_image($attachment_details[0]['a_original_filename'], IMAGE_CRITERIA_WEBSAFE, has_privilege($attachment_details[0]['a_member_id'], 'comcode_dangerous')))) {
                 $comcode = str_replace($matches[0][$i], '[img="' . $matches[3][$i] . '"]' . find_script('attachment') . '?id=' . urlencode($matches[4][$i]) . '[/img]', $comcode);
@@ -266,7 +266,7 @@ function tapatalk_strip_comcode($data)
 
     // Shortcuts
     $data = html_entity_decode($data, ENT_QUOTES);
-    $shortcuts = array('(EUR-)' => '&euro;', '{f.}' => '&fnof;', '-|-' => '&dagger;', '=|=' => '&Dagger;', '{%o}' => '&permil;', '{~S}' => '&Scaron;', '{~Z}' => '&#x17D;', '(TM)' => '&trade;', '{~s}' => '&scaron;', '{~z}' => '&#x17E;', '{.Y.}' => '&Yuml;', '(c)' => '&copy;', '(r)' => '&reg;', '---' => '&mdash;', '--' => '&ndash;', '...' => '&hellip;', '-->' => '&rarr;', '<--' => '&larr;');
+    $shortcuts = ['(EUR-)' => '&euro;', '{f.}' => '&fnof;', '-|-' => '&dagger;', '=|=' => '&Dagger;', '{%o}' => '&permil;', '{~S}' => '&Scaron;', '{~Z}' => '&#x17D;', '(TM)' => '&trade;', '{~s}' => '&scaron;', '{~z}' => '&#x17E;', '{.Y.}' => '&Yuml;', '(c)' => '&copy;', '(r)' => '&reg;', '---' => '&mdash;', '--' => '&ndash;', '...' => '&hellip;', '-->' => '&rarr;', '<--' => '&larr;'];
     $data = strtr($data, array_flip($shortcuts));
 
     // Emoticons
@@ -280,11 +280,11 @@ function tapatalk_strip_comcode($data)
     // Map Composr ones back to Tapatalk ones
     $emoticon_map = get_tapatalk_to_composr_emoticon_map('missing_from_composr');
     $data = str_replace(array_values($emoticon_map), array_keys($emoticon_map), $data);
-    $GLOBALS['FORUM_DRIVER']->EMOTICON_CACHE = array(); // DISABLE ALL EMOTICON TO IMAGE RENDERING FOR NOW ACTUALLY, LOOKS AWFUL ON WINDOWS MOBILE VERSION
+    $GLOBALS['FORUM_DRIVER']->EMOTICON_CACHE = []; // DISABLE ALL EMOTICON TO IMAGE RENDERING FOR NOW ACTUALLY, LOOKS AWFUL ON WINDOWS MOBILE VERSION
     // Apply remaining ones in Composr as BBCode img tags
     $_smilies = $GLOBALS['FORUM_DRIVER']->find_emoticons(); // Sorted in descending length order
     // Pre-check, optimisation
-    $smilies = array();
+    $smilies = [];
     foreach ($_smilies as $code => $imgcode) {
         if (strpos($data, $code) !== false) {
             $smilies[$code] = $imgcode;
@@ -346,7 +346,7 @@ function tapatalk_strip_comcode($data)
     } while ($data != $old_data);
 
     // Strip most Comcode
-    $protected_tags = array(
+    $protected_tags = [
         'url',
         'img',
         'quote',
@@ -356,7 +356,7 @@ function tapatalk_strip_comcode($data)
         'b',
         'i',
         'color', // Not officially supported in text mode, but hopefully clients will strip it. We substitute to HTML for HTML mode
-    );
+    ];
     require_code('mail');
     $data = strip_comcode($data, false, $protected_tags);
 

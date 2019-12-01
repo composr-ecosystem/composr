@@ -30,7 +30,7 @@ class Hook_config_minimum_password_strength
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MINIMUM_PASSWORD_STRENGTH',
             'type' => 'list',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_minimum_password_strength
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

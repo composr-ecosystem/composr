@@ -31,7 +31,7 @@ class Hook_addon_registry_polls
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_polls
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_feedback',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_polls
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_polls
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/polls.php',
             'themes/default/images/icons/menu/social/polls.svg',
             'themes/default/images/icons_monochrome/menu/social/polls.svg',
@@ -136,7 +136,7 @@ class Hook_addon_registry_polls
             'sources/hooks/systems/config/search_polls.php',
             'themes/default/javascript/polls.js',
             'sources/hooks/systems/actionlog/polls.php',
-        );
+        ];
     }
 
     /**
@@ -146,7 +146,7 @@ class Hook_addon_registry_polls
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_POLL.tpl' => 'block_main_poll',
             'templates/POLL_RSS_SUMMARY.tpl' => 'poll_rss_summary',
             'templates/POLL_ANSWER.tpl' => 'poll_answer',
@@ -154,7 +154,7 @@ class Hook_addon_registry_polls
             'templates/POLL_BOX.tpl' => 'poll_answer',
             'templates/POLL_LIST_LINE.tpl' => 'poll_list_line',
             'templates/POLL_SCREEN.tpl' => 'poll_screen',
-        );
+        ];
     }
 
     /**
@@ -166,13 +166,13 @@ class Hook_addon_registry_polls
      */
     public function tpl_preview__block_main_poll()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_POLL', [
                 'BLOCK_ID' => lorem_word(),
                 'CONTENT' => $this->poll('poll'),
                 'BLOCK_PARAMS' => '',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -186,18 +186,18 @@ class Hook_addon_registry_polls
     {
         require_code('xml');
 
-        $_summary = do_lorem_template('POLL_RSS_SUMMARY', array(
+        $_summary = do_lorem_template('POLL_RSS_SUMMARY', [
             'ANSWERS' => placeholder_array(),
-        ));
+        ]);
         $summary = xmlentities($_summary->evaluate());
 
-        $if_comments = do_lorem_template('RSS_ENTRY_COMMENTS', array(
+        $if_comments = do_lorem_template('RSS_ENTRY_COMMENTS', [
             'COMMENT_URL' => placeholder_url(),
             'ID' => placeholder_id(),
-        ), null, false, null, '.xml', 'xml');
+        ], null, false, null, '.xml', 'xml');
 
-        return array(
-            lorem_globalise(do_lorem_template('RSS_ENTRY', array(
+        return [
+            lorem_globalise(do_lorem_template('RSS_ENTRY', [
                 'VIEW_URL' => placeholder_url(),
                 'SUMMARY' => $summary,
                 'EDIT_DATE' => placeholder_date(),
@@ -209,8 +209,8 @@ class Hook_addon_registry_polls
                 'ID' => placeholder_id(),
                 'NEWS' => lorem_paragraph(),
                 'DATE' => placeholder_date(),
-            ), null, false, null, '.xml', 'xml'), null, '', true)
-        );
+            ], null, false, null, '.xml', 'xml'), null, '', true)
+        ];
     }
 
     /**
@@ -251,20 +251,20 @@ class Hook_addon_registry_polls
         switch ($section) {
             case 'poll':
                 foreach (placeholder_array() as $k => $v) {
-                    $tpl->attach(do_lorem_template('POLL_ANSWER', array(
+                    $tpl->attach(do_lorem_template('POLL_ANSWER', [
                         'PID' => placeholder_id(),
                         'I' => strval($k),
                         'CAST' => strval($k),
                         'VOTE_URL' => placeholder_url(),
                         'ANSWER' => lorem_phrase(),
                         'ANSWER_PLAIN' => lorem_phrase(),
-                    )));
+                    ]));
                 }
                 break;
 
             case 'result':
                 foreach (placeholder_array() as $k => $v) {
-                    $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', array(
+                    $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', [
                         'PID' => placeholder_id(),
                         'I' => strval($k),
                         'VOTE_URL' => placeholder_url(),
@@ -272,23 +272,23 @@ class Hook_addon_registry_polls
                         'ANSWER_PLAIN' => lorem_phrase(),
                         'WIDTH' => strval($k),
                         'VOTES' => placeholder_number(),
-                    )));
+                    ]));
                 }
                 break;
 
             default:
                 foreach (placeholder_array() as $k => $v) {
-                    $tpl->attach(do_lorem_template('POLL_ANSWER', array(
+                    $tpl->attach(do_lorem_template('POLL_ANSWER', [
                         'PID' => placeholder_id(),
                         'I' => strval($k),
                         'CAST' => strval($k),
                         'VOTE_URL' => placeholder_url(),
                         'ANSWER' => lorem_phrase(),
                         'ANSWER_PLAIN' => lorem_phrase(),
-                    )));
+                    ]));
                 }
                 foreach (placeholder_array() as $k => $v) {
-                    $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', array(
+                    $tpl->attach(do_lorem_template('POLL_ANSWER_RESULT', [
                         'PID' => placeholder_id(),
                         'I' => strval($k),
                         'VOTE_URL' => placeholder_url(),
@@ -298,11 +298,11 @@ class Hook_addon_registry_polls
                         'VOTES' => placeholder_number(),
                         '_VOTES' => placeholder_number(),
                         'TOTAL_VOTES' => placeholder_number(),
-                    )));
+                    ]));
                 }
         }
 
-        $wrap_content = do_lorem_template('POLL_BOX', array(
+        $wrap_content = do_lorem_template('POLL_BOX', [
             '_GUID' => '4c6b026f7ed96f0b5b8408eb5e5affb5',
             'VOTE_URL' => placeholder_url(),
             'GIVE_CONTEXT' => true,
@@ -317,11 +317,11 @@ class Hook_addon_registry_polls
             'CONTENT' => $tpl,
             'FULL_URL' => placeholder_url(),
             'TOTAL_VOTES' => placeholder_number(),
-        ));
+        ]);
 
-        return array(
+        return [
             lorem_globalise($wrap_content, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -333,12 +333,12 @@ class Hook_addon_registry_polls
      */
     public function tpl_preview__poll_list_line()
     {
-        return array(
-            lorem_globalise(do_lorem_template('POLL_LIST_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('POLL_LIST_LINE', [
                 'QUESTION' => lorem_phrase(),
                 'STATUS' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -354,7 +354,7 @@ class Hook_addon_registry_polls
 
         $trackbacks = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
-            $trackbacks->attach(do_lorem_template('TRACKBACK', array(
+            $trackbacks->attach(do_lorem_template('TRACKBACK', [
                 'ID' => placeholder_id(),
                 '_DATE' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
@@ -362,31 +362,31 @@ class Hook_addon_registry_polls
                 'TITLE' => lorem_phrase(),
                 'EXCERPT' => lorem_paragraph(),
                 'NAME' => placeholder_id(),
-            )));
+            ]));
         }
-        $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', array(
+        $trackback_details = do_lorem_template('TRACKBACK_WRAPPER', [
             'TRACKBACKS' => $trackbacks,
             'TRACKBACK_PAGE' => placeholder_id(),
             'TRACKBACK_ID' => placeholder_id(),
             'TRACKBACK_TITLE' => lorem_phrase(),
-        ));
+        ]);
 
         $rating_details = '';
         $comments = '';
-        $comment_details = do_lorem_template('COMMENTS_WRAPPER', array(
+        $comment_details = do_lorem_template('COMMENTS_WRAPPER', [
             'TYPE' => lorem_word(),
             'ID' => placeholder_id(),
-            'REVIEW_RATING_CRITERIA' => array(),
+            'REVIEW_RATING_CRITERIA' => [],
             'AUTHORISED_FORUM_URL' => placeholder_url(),
             'FORM' => placeholder_form(),
             'COMMENTS' => $comments,
             'SORT' => 'relevance',
-        ));
+        ]);
 
         $poll_details = $this->poll('poll');
 
-        return array(
-            lorem_globalise(do_lorem_template('POLL_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('POLL_SCREEN', [
                 'TITLE' => lorem_title(),
                 'DATE_RAW' => placeholder_date_raw(),
                 'ADD_DATE_RAW' => placeholder_date_raw(),
@@ -402,8 +402,8 @@ class Hook_addon_registry_polls
                 'POLL_DETAILS' => $poll_details,
                 'SUBMITTER' => placeholder_id(),
                 'ID' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -413,7 +413,7 @@ class Hook_addon_registry_polls
     {
         require_code('polls2');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('poll', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('question') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('poll', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('question') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_poll($record['id']);
         }

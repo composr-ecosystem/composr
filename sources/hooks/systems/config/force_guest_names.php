@@ -30,7 +30,7 @@ class Hook_config_force_guest_names
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FORCE_GUEST_NAMES',
             'type' => 'tick',
             'category' => 'FORUMS',
@@ -43,7 +43,7 @@ class Hook_config_force_guest_names
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

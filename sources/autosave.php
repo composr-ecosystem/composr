@@ -38,13 +38,13 @@ function store_autosave_script()
     foreach (array_keys($_POST) as $key) {
         $value = post_param_string($key);
 
-        $GLOBALS['SITE_DB']->query_insert('autosave', array(
+        $GLOBALS['SITE_DB']->query_insert('autosave', [
             // Will duplicate against a_member_id/a_key, but DB space is not an issue - better to have the back-archive of it
             'a_member_id' => $member_id,
             'a_key' => $key,
             'a_value' => $value,
             'a_time' => $time,
-        ));
+        ]);
     }
 
     exit(); // So auto_append_file cannot run and corrupt our output
@@ -75,12 +75,12 @@ function retrieve_autosave_script()
 
     $rows = $GLOBALS['SITE_DB']->query_select(
         'autosave',
-        array('a_key', 'a_value'),
-        array('a_member_id' => $member_id),
+        ['a_key', 'a_value'],
+        ['a_member_id' => $member_id],
         'AND a_key LIKE \'' . db_encode_like($stem) . '%\' ORDER BY a_time DESC'
     );
 
-    $done = array();
+    $done = [];
     foreach ($rows as $row) {
         if (isset($done[$row['a_key']])) {
             continue;

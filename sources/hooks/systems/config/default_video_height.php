@@ -30,7 +30,7 @@ class Hook_config_default_video_height
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_VIDEO_HEIGHT',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -44,7 +44,7 @@ class Hook_config_default_video_height
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

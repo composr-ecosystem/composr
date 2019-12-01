@@ -30,14 +30,14 @@ class Block_bottom_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'select', 'select_and', 'zone', 'blogs', 'as_guest', 'check');
+        $info['parameters'] = ['param', 'select', 'select_and', 'zone', 'blogs', 'as_guest', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_bottom_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
@@ -82,7 +82,7 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'rb4lxn1kphbwlth5e0fo50pfp1bey2o1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'rb4lxn1kphbwlth5e0fo50pfp1bey2o1', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         $block_id = get_block_id($map);
@@ -152,10 +152,10 @@ PHP;
 
         $news = $GLOBALS['SITE_DB']->query('SELECT p.* FROM ' . get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $join . ' WHERE ' . $q_filter . ' AND validated=1 ORDER BY date_and_time DESC', $max, 0, false, true);
 
-        $_postdetailss = array();
+        $_postdetailss = [];
 
         foreach ($news as $item) {
-            $url_map = array('page' => 'news', 'type' => 'view', 'id' => $item['id']);
+            $url_map = ['page' => 'news', 'type' => 'view', 'id' => $item['id']];
             if ($select != '*') {
                 $url_map['select'] = $select;
             }
@@ -167,18 +167,18 @@ PHP;
             }
             $full_url = build_url($url_map, $zone);
 
-            $just_news_row = db_map_restrict($item, array('id', 'title', 'news', 'news_article'));
+            $just_news_row = db_map_restrict($item, ['id', 'title', 'news', 'news_article']);
             $_title = get_translated_tempcode('news', $just_news_row, 'title');
             $date = get_timezoned_date_tempcode($item['date_and_time']);
 
-            $_postdetailss[] = array('DATE' => $date, 'FULL_URL' => $full_url, 'NEWS_TITLE' => $_title);
+            $_postdetailss[] = ['DATE' => $date, 'FULL_URL' => $full_url, 'NEWS_TITLE' => $_title];
         }
 
-        return do_template('BLOCK_BOTTOM_NEWS', array(
+        return do_template('BLOCK_BOTTOM_NEWS', [
             '_GUID' => 'a2076520b171bdf36e5369f0541f92c5',
             'BLOCK_ID' => $block_id,
             'BLOG' => $blogs === 1,
             'POSTS' => $_postdetailss,
-        ));
+        ]);
     }
 }

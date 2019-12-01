@@ -53,7 +53,7 @@ function find_reported_content_ticket_type()
 {
     static $ticket_type_id = null;
     if ($ticket_type_id === null) {
-        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types t', 't.id', array($GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => do_lang('TT_REPORTED_CONTENT')));
+        $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types t', 't.id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => do_lang('TT_REPORTED_CONTENT')]);
         if ($ticket_type_id === null) {
             $ticket_type_id = post_param_integer('ticket_type_id', null);
         }
@@ -95,19 +95,19 @@ function report_content_form($title, $content_type, $content_id)
     $hidden_fields = build_keep_form_fields('', true);
     $specialisation = report_content_form_fields($hidden_fields);
 
-    $post_url = build_url(array('page' => 'report_content', 'type' => 'actual'), get_page_zone('report_content'));
+    $post_url = build_url(['page' => 'report_content', 'type' => 'actual'], get_page_zone('report_content'));
 
-    $posting_form = get_posting_form(do_lang('REPORT_CONTENT'), 'buttons/send', $report_post, $post_url, $hidden_fields, $specialisation, '', '', null, null, array(), null, true, false, false);
+    $posting_form = get_posting_form(do_lang('REPORT_CONTENT'), 'buttons/send', $report_post, $post_url, $hidden_fields, $specialisation, '', '', null, null, [], null, true, false, false);
 
     url_default_parameters__disable();
 
-    return do_template('POSTING_SCREEN', array(
+    return do_template('POSTING_SCREEN', [
         '_GUID' => '92a0a35a7c07edd0d3f8a960710de608',
         'TITLE' => $title,
-        'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? array(captcha_ajax_check_function()) : array(),
+        'JS_FUNCTION_CALLS' => ((function_exists('captcha_ajax_check_function')) && (captcha_ajax_check_function() != '')) ? [captcha_ajax_check_function()] : [],
         'TEXT' => $text,
         'POSTING_FORM' => $posting_form,
-    ));
+    ]);
 }
 
 /**
@@ -124,7 +124,7 @@ function report_post_form($title, $post_id, $js_function_calls, &$topic_info = n
 {
     check_report_content_access();
 
-    $_post_info = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => $post_id), '', 1);
+    $_post_info = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $post_id], '', 1);
     if (!array_key_exists(0, $_post_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }
@@ -132,7 +132,7 @@ function report_post_form($title, $post_id, $js_function_calls, &$topic_info = n
 
     $topic_id = $post_info['p_topic_id'];
 
-    $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('*'), array('id' => $topic_id), '', 1);
+    $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
     if (!array_key_exists(0, $_topic_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
     }
@@ -162,9 +162,9 @@ function report_post_form($title, $post_id, $js_function_calls, &$topic_info = n
 
     $hidden->attach(form_input_hidden('post_id', strval($post_id)));
 
-    $post_url = build_url(array('page' => 'topics', 'type' => '_report_post'), get_page_zone('topics'));
+    $post_url = build_url(['page' => 'topics', 'type' => '_report_post'], get_page_zone('topics'));
 
-    $posting_form = get_posting_form(do_lang('REPORT_POST'), 'buttons/report', $report_post, $post_url, $hidden, $specialisation, '', '', null, null, array(), null, true, false, false);
+    $posting_form = get_posting_form(do_lang('REPORT_POST'), 'buttons/report', $report_post, $post_url, $hidden, $specialisation, '', '', null, null, [], null, true, false, false);
 
     url_default_parameters__disable();
 
@@ -172,13 +172,13 @@ function report_post_form($title, $post_id, $js_function_calls, &$topic_info = n
         $js_function_calls[] = captcha_ajax_check_function();
     }
 
-    return do_template('POSTING_SCREEN', array(
+    return do_template('POSTING_SCREEN', [
         '_GUID' => 'eee64757e66fed702f74fecf8d595260',
         'TITLE' => $title,
         'JS_FUNCTION_CALLS' => $js_function_calls,
         'TEXT' => $text,
         'POSTING_FORM' => $posting_form,
-    ));
+    ]);
 }
 
 /**
@@ -226,8 +226,8 @@ function report_content_form_fields(&$hidden)
     }
 
     if ((!is_guest()) && (ticket_allow_anonymous_posts())) {
-        $options = array();
-        $options[] = array(do_lang_tempcode('REPORT_ANONYMOUS'), 'anonymous', false, do_lang_tempcode('DESCRIPTION_REPORT_ANONYMOUS'));
+        $options = [];
+        $options[] = [do_lang_tempcode('REPORT_ANONYMOUS'), 'anonymous', false, do_lang_tempcode('DESCRIPTION_REPORT_ANONYMOUS')];
         $field = form_input_various_ticks($options, '');
         $specialisation->attach($field);
     }
@@ -274,7 +274,7 @@ function report_content_append_text(&$text, $ticket_id)
     }
 
     if (addon_installed('points')) {
-        $login_url = build_url(array('page' => 'login', 'type' => 'browse', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('login'));
+        $login_url = build_url(['page' => 'login', 'type' => 'browse', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('login'));
         $_login_url = escape_html($login_url->evaluate());
         if ((is_guest()) && ((get_forum_type() != 'cns') || (has_actual_page_access(get_member(), 'join')))) {
             $text->attach(paragraph(do_lang_tempcode('NOT_LOGGED_IN_NO_CREDIT', $_login_url)));
@@ -316,7 +316,7 @@ function report_content($content_type, $content_id, $report_post, $anonymous = 0
         $content_member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($content_member_id, $content_member, true, false);
 
         // Post will have extra information added around it
-        $_report_post = static_evaluate_tempcode(do_template('REPORTED_CONTENT_FCOMCODE', array(
+        $_report_post = static_evaluate_tempcode(do_template('REPORTED_CONTENT_FCOMCODE', [
             '_GUID' => 'cb40aa1900eefcd24a0786b9d980fef6',
             'CONTENT_URL' => $content_url,
             'CONTENT_TYPE' => $content_type,
@@ -327,7 +327,7 @@ function report_content($content_type, $content_id, $report_post, $anonymous = 0
             'CONTENT_TITLE' => $content_title,
             'CONTENT_RENDERED' => $content_rendered,
             'REPORT_POST' => $report_post,
-        ), null, false, null, '.txt', 'text'));
+        ], null, false, null, '.txt', 'text'));
     }
 
     $email = trim(post_param_string('email', ''));
@@ -352,7 +352,7 @@ function report_post($post_id, $report_post, $anonymous = 0, $open = 1, $time = 
     check_report_content_access();
 
     $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-    $_post_info = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', array('*', 'p.id AS post_id', 't.id AS topic_id'), array('p.id' => $post_id), '', 1);
+    $_post_info = $GLOBALS['FORUM_DB']->query_select('f_posts p JOIN ' . $table_prefix . 'f_topics t on t.id=p.p_topic_id', ['*', 'p.id AS post_id', 't.id AS topic_id'], ['p.id' => $post_id], '', 1);
     if (!array_key_exists(0, $_post_info)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
     }
@@ -370,7 +370,7 @@ function report_post($post_id, $report_post, $anonymous = 0, $open = 1, $time = 
         $_report_post = do_lang('REPORTED_CONTENT_EXTRA', $report_post);
     } else {
         $post = preg_replace('#\[staff_note\].*\[/staff_note\]#Us', '', get_translated_text($post_info['p_post'], $GLOBALS['FORUM_DB']));
-        $_report_post = static_evaluate_tempcode(do_template('CNS_REPORTED_POST_FCOMCODE', array(
+        $_report_post = static_evaluate_tempcode(do_template('CNS_REPORTED_POST_FCOMCODE', [
             '_GUID' => '6e9a43a3503c357b52b724e11d3d4eef',
             'POST_ID' => strval($post_id),
             'POST_MEMBER' => $content_member,
@@ -378,7 +378,7 @@ function report_post($post_id, $report_post, $anonymous = 0, $open = 1, $time = 
             'TOPIC_TITLE' => $topic_title,
             'POST' => $post,
             'REPORT_POST' => $report_post,
-        ), null, false, null, '.txt', 'text'));
+        ], null, false, null, '.txt', 'text'));
     }
 
     $_title = $post_info['p_title'];
@@ -447,7 +447,7 @@ function _report_content($content_type, $content_id, $report_title, $report_post
 
     if (get_forum_type() == 'cns') {
         if ($anonymous == 1) {
-            $post_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_last_post_id', array('id' => $topic_id));
+            $post_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_last_post_id', ['id' => $topic_id]);
             log_it('MAKE_ANONYMOUS_POST', strval($post_id), $report_title);
         }
     }
@@ -459,46 +459,46 @@ function _report_content($content_type, $content_id, $report_title, $report_post
     if (get_forum_type() == 'cns') {
         $topic_id = null;
         if (ticket_exists($ticket_id, $topic_id)) {
-            if ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_is_open', array('id' => $topic_id)) == 0) {
+            if ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_is_open', ['id' => $topic_id]) == 0) {
                 $counts_for_unvalidation = false;
             }
         }
     }
 
     // Add to reported_content table
-    $GLOBALS['SITE_DB']->query_delete('reported_content', array(
+    $GLOBALS['SITE_DB']->query_delete('reported_content', [
         'r_session_id' => get_session_id(),
         'r_content_type' => $content_type,
         'r_content_id' => $content_id,
-    ), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('reported_content', array(
+    ], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('reported_content', [
         'r_session_id' => get_session_id(),
         'r_content_type' => $content_type,
         'r_content_id' => $content_id,
         'r_counts' => ($counts_for_unvalidation ? 1 : 0),
-    ));
+    ]);
 
     require_code('content');
     list(, , $cma_info, , $content_url) = content_get_details($content_type, $content_id);
 
     // If hit threshold, mark down r_counts and non-validate the content
-    $count = $GLOBALS['SITE_DB']->query_select_value('reported_content', 'COUNT(*)', array(
+    $count = $GLOBALS['SITE_DB']->query_select_value('reported_content', 'COUNT(*)', [
         'r_content_type' => $content_type,
         'r_content_id' => $content_id,
         'r_counts' => 1, // All those not already counted to a de-validation
-    ));
+    ]);
     if ($count >= intval(get_option('reported_times'))) {
         // Mark as non-validated
         if (($cma_info['validated_field'] !== null) && (strpos($cma_info['table'], '(') === false)) {
             $db = get_db_for($cma_info['table']);
-            $db->query_update($cma_info['table'], array($cma_info['validated_field'] => 0), get_content_where_for_str_id($content_id, $cma_info));
+            $db->query_update($cma_info['table'], [$cma_info['validated_field'] => 0], get_content_where_for_str_id($content_id, $cma_info));
         }
 
         // Reset all those that made it non-validated
-        $GLOBALS['SITE_DB']->query_update('reported_content', array('r_counts' => 0), array(
+        $GLOBALS['SITE_DB']->query_update('reported_content', ['r_counts' => 0], [
             'r_content_type' => $content_type,
             'r_content_id' => $content_id,
-        ));
+        ]);
     }
 
     return $content_url;

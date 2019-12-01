@@ -33,11 +33,11 @@ class Hook_page_groupings_unvalidated
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('unvalidated')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('audit', 'menu/adminzone/audit/unvalidated', array('admin_unvalidated', array(), get_module_zone('admin_unvalidated')), do_lang_tempcode('unvalidated:UNVALIDATED_RESOURCES'), 'unvalidated:DOC_UNVALIDATED'),
-        );
+        return [
+            ['audit', 'menu/adminzone/audit/unvalidated', ['admin_unvalidated', [], get_module_zone('admin_unvalidated')], do_lang_tempcode('unvalidated:UNVALIDATED_RESOURCES'), 'unvalidated:DOC_UNVALIDATED'],
+        ];
     }
 }

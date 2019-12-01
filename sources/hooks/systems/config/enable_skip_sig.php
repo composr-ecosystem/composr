@@ -30,7 +30,7 @@ class Hook_config_enable_skip_sig
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_SKIP_SIG',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_enable_skip_sig
             'public' => false,
 
             'addon' => 'cns_signatures',
-        );
+        ];
     }
 
     /**

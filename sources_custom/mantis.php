@@ -16,7 +16,7 @@
 function get_tracker_issue_titles($ids, $version = null)
 {
     if ((empty($ids)) && ($version === null)) {
-        return array();
+        return [];
     }
 
     $sql = 'SELECT id,summary,view_state,(SELECT name FROM mantis_category_table c WHERE c.id=m.category_id) AS category FROM mantis_bug_table m WHERE ';
@@ -30,7 +30,7 @@ function get_tracker_issue_titles($ids, $version = null)
         $sql .= ' OR ' . $where_version;
     }
 
-    $issue_titles = array();
+    $issue_titles = [];
     $issues = $GLOBALS['SITE_DB']->query($sql);
     foreach ($issues as $issue) {
         $summary = $issue['summary'];
@@ -39,13 +39,13 @@ function get_tracker_issue_titles($ids, $version = null)
             $summary .= ' [*private issue*]';
         }
         if (!array_key_exists($issue['category'], $issue_titles)) {
-            $issue_titles[$issue['category']] = array();
+            $issue_titles[$issue['category']] = [];
         }
         $issue_titles[$issue['category']][$issue['id']] = $summary;
     }
     ksort($issue_titles);
 
-    $_issue_titles = array();
+    $_issue_titles = [];
     foreach ($issue_titles as $category_id => $issues) {
         foreach ($issues as $issue_id => $summary) {
             $_issue_titles['_' . strval($issue_id)] = $summary;
@@ -280,7 +280,7 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
             $join_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($m['user_id'], 'm_join_time');
 
             require_code('mail');
-            dispatch_mail('Tracker issue updated', 'A tracker issue you are monitoring has been updated (' . get_base_url() . '/tracker/view.php?id=' . strval($tracker_id) . ').', array($to_email), $to_name, '', '', array('require_recipient_valid_since' => $join_time));
+            dispatch_mail('Tracker issue updated', 'A tracker issue you are monitoring has been updated (' . get_base_url() . '/tracker/view.php?id=' . strval($tracker_id) . ').', [$to_email], $to_name, '', '', ['require_recipient_valid_since' => $join_time]);
         }
     }
 

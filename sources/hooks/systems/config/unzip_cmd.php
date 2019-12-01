@@ -30,7 +30,7 @@ class Hook_config_unzip_cmd
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'UNZIP_CMD',
             'type' => 'line',
             'category' => 'SERVER',
@@ -43,7 +43,7 @@ class Hook_config_unzip_cmd
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -50,7 +50,7 @@ class Hook_ajax_tree_choose_download_category
         $options['levels_to_expand'] = max(0, $levels_to_expand - 1);
 
         if (!has_actual_page_access(null, 'downloads')) {
-            $tree = $compound_list ? array(array(), '') : array();
+            $tree = $compound_list ? [[], ''] : [];
         }
 
         $out = '';
@@ -88,7 +88,7 @@ class Hook_ajax_tree_choose_download_category
             $cat = intval($default);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'parent_id', array('id' => $cat));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'parent_id', ['id' => $cat]);
             }
         }
 

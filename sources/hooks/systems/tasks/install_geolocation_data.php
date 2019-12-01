@@ -52,7 +52,7 @@ class Hook_task_install_geolocation_data
             warn_exit(do_lang_tempcode('READ_ERROR', escape_html($path)), false, true);
         }
         $i = 0;
-        $to_insert = array('begin_num' => array(), 'end_num' => array(), 'country' => array());
+        $to_insert = ['begin_num' => [], 'end_num' => [], 'country' => []];
         while (!feof($file)) {
             $data = cms_fgets($file, $file_charset);
             if ($data === false) {
@@ -75,7 +75,7 @@ class Hook_task_install_geolocation_data
 
                 if (count($to_insert['begin_num']) == 100) { // Batches of 100
                     $GLOBALS['SITE_DB']->query_insert('ip_country', $to_insert);
-                    $to_insert = array('begin_num' => array(), 'end_num' => array(), 'country' => array());
+                    $to_insert = ['begin_num' => [], 'end_num' => [], 'country' => []];
                 }
             }
 

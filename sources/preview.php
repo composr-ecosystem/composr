@@ -83,7 +83,7 @@ function build_preview($multi_return = false)
 
             if ($supports_comcode) {
                 $temp = $_FILES;
-                $_FILES = array();
+                $_FILES = [];
                 $valt = comcode_to_tempcode($val);
                 $_FILES = $temp;
 
@@ -112,7 +112,7 @@ function build_preview($multi_return = false)
     // Process all the POSTed data...
 
     $db = $forum_db ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB'];
-    $map_table_map = array();
+    $map_table_map = [];
     require_code('templates_map_table');
     $attachment_field = 'post';
     foreach ($_POST as $key => $val) {
@@ -157,76 +157,76 @@ function build_preview($multi_return = false)
         switch ('_WILD:' . get_page_name() . ':' . get_param_string('type', 'browse')) {
             case '_WILD:warnings:add':
             case '_WILD:warnings:_edit':
-                $fields_filter = array('explanation', 'message');
+                $fields_filter = ['explanation', 'message'];
                 break;
 
             case '_WILD:cms_galleries:add_category':
             case '_WILD:cms_galleries:_edit_category':
-                $fields_filter = array('fullname', 'name', 'description');
+                $fields_filter = ['fullname', 'name', 'description'];
                 break;
 
             case '_WILD:cms_downloads:add_category':
             case '_WILD:cms_downloads:_edit_category':
-                $fields_filter = array('category', 'description');
+                $fields_filter = ['category', 'description'];
                 break;
 
             case '_WILD:cms_catalogues:add_catalogue':
             case '_WILD:cms_catalogues:_edit_catalogue':
-                $fields_filter = array('title', 'description');
+                $fields_filter = ['title', 'description'];
                 break;
 
             case '_WILD:cms_catalogues:add_category':
             case '_WILD:cms_catalogues:_edit_category':
-                $fields_filter = array('title', 'description');
+                $fields_filter = ['title', 'description'];
                 break;
 
             case '_WILD:cms_calendar:add':
             case '_WILD:cms_calendar:_edit':
-                $fields_filter = array('title', 'post');
+                $fields_filter = ['title', 'post'];
                 break;
 
             case '_WILD:admin_ecommerce:add':
             case '_WILD:admin_ecommerce:_edit':
-                $fields_filter = array('title', 'description', 'mail_start', 'mail_end', 'mail_uhoh');
+                $fields_filter = ['title', 'description', 'mail_start', 'mail_end', 'mail_uhoh'];
                 if (post_param_string('subject_0', '') != '') {
-                    $fields_filter = array_merge($fields_filter, array('subject_0', 'body_0'));
+                    $fields_filter = array_merge($fields_filter, ['subject_0', 'body_0']);
                 }
                 if (post_param_string('subject_1', '') != '') {
-                    $fields_filter = array_merge($fields_filter, array('subject_1', 'body_1'));
+                    $fields_filter = array_merge($fields_filter, ['subject_1', 'body_1']);
                 }
                 if (post_param_string('subject_2', '') != '') {
-                    $fields_filter = array_merge($fields_filter, array('subject_2', 'body_2'));
+                    $fields_filter = array_merge($fields_filter, ['subject_2', 'body_2']);
                 }
                 break;
 
             case '_WILD:admin_cns_post_templates:add':
             case '_WILD:admin_cns_post_templates:_edit':
-                $fields_filter = array('title', 'text');
+                $fields_filter = ['title', 'text'];
                 break;
 
             case '_WILD:admin_cns_multi_moderations:add':
             case '_WILD:admin_cns_multi_moderations:_edit':
-                $fields_filter = array('name', 'post_text');
+                $fields_filter = ['name', 'post_text'];
                 break;
 
             case '_WILD:admin_cns_customprofilefields:add':
             case '_WILD:admin_cns_customprofilefields:_edit':
-                $fields_filter = array('name', 'description');
+                $fields_filter = ['name', 'description'];
                 break;
 
             case '_WILD:admin_chat:add':
             case '_WILD:admin_chat:_edit':
-                $fields_filter = array('room_name', 'c_welcome');
+                $fields_filter = ['room_name', 'c_welcome'];
                 break;
 
             case '_WILD:admin_awards:add':
             case '_WILD:admin_awards:_edit':
-                $fields_filter = array('title', 'description');
+                $fields_filter = ['title', 'description'];
                 break;
         }
         switch ('_WILD:' . get_page_name()) {
             case '_WILD:recommend':
-                $fields_filter = array('subject', 'message');
+                $fields_filter = ['subject', 'message'];
                 break;
         }
         if (($fields_filter !== null) && (!in_array($key, $fields_filter))) {
@@ -256,17 +256,17 @@ function build_preview($multi_return = false)
             if ($spellcheck) {
                 require_code('comcode_from_html');
                 $mispellings = run_spellcheck(clean_html_for_spellcheck($val), null, false);
-                $_misspellings = array();
+                $_misspellings = [];
                 foreach ($mispellings as $word_bad => $words_good) {
-                    $_misspellings[] = array('WORD' => $word_bad, 'CORRECTIONS' => implode(', ', $words_good));
+                    $_misspellings[] = ['WORD' => $word_bad, 'CORRECTIONS' => implode(', ', $words_good)];
                 }
                 if (!empty($_misspellings)) {
-                    $spelling->attach(do_template('PREVIEW_SCRIPT_SPELLING', array('_GUID' => '9649572982c01995a8f47c58d16fda39', 'FIELD' => $key_nice, 'MISSPELLINGS' => $_misspellings)));
+                    $spelling->attach(do_template('PREVIEW_SCRIPT_SPELLING', ['_GUID' => '9649572982c01995a8f47c58d16fda39', 'FIELD' => $key_nice, 'MISSPELLINGS' => $_misspellings]));
                 }
             }
             if (($keywordcheck) && ((strpos($val, ' ') !== false) || ($key == 'title'))) {
                 $keyword_explode = explode(',', $meta_keywords);
-                $keywords = array();
+                $keywords = [];
                 $word_count = str_word_count($val);
                 if ($word_count != 0) {
                     foreach ($keyword_explode as $meta_keyword) {
@@ -274,7 +274,7 @@ function build_preview($multi_return = false)
                         if ($meta_keyword != '') {
                             $density = substr_count($val, $meta_keyword) / $word_count;
                             $ideal_density = 1.0 / (9.0 * count($keyword_explode)); // Pretty rough -- common sense is needed
-                            $keywords[] = array('sort' => $ideal_density, 'KEYWORD' => $meta_keyword, 'IDEAL_DENSITY' => strval(intval(round($ideal_density * 100))), 'DENSITY' => strval(intval(round($density * 100))));
+                            $keywords[] = ['sort' => $ideal_density, 'KEYWORD' => $meta_keyword, 'IDEAL_DENSITY' => strval(intval(round($ideal_density * 100))), 'DENSITY' => strval(intval(round($density * 100)))];
                         }
                     }
                     sort_maps_by($keywords, 'sort');
@@ -282,7 +282,7 @@ function build_preview($multi_return = false)
                         unset($keywords[$ti]['sort']);
                     }
                     if (!empty($keywords)) {
-                        $keyword_density->attach(do_template('PREVIEW_SCRIPT_KEYWORD_DENSITY', array('_GUID' => '4fa05e9f52023958a3594d1610b00747', 'FIELD' => $key_nice, 'KEYWORDS' => $keywords)));
+                        $keyword_density->attach(do_template('PREVIEW_SCRIPT_KEYWORD_DENSITY', ['_GUID' => '4fa05e9f52023958a3594d1610b00747', 'FIELD' => $key_nice, 'KEYWORDS' => $keywords]));
                     }
                 }
             }
@@ -295,7 +295,7 @@ function build_preview($multi_return = false)
             if (($attachment_type !== null) && ($key == 'post')) {
                 $attachment_supporting_field = true;
                 $attachment_field = $key;
-            } elseif ((in_array($key, array('post', 'description'))) && (strpos($val, '[attachment') !== false)) {
+            } elseif ((in_array($key, ['post', 'description'])) && (strpos($val, '[attachment') !== false)) {
                 $attachment_supporting_field = true;
                 if (!isset($_POST['post'])) {
                     $attachment_field = $key;
@@ -356,7 +356,7 @@ function build_preview($multi_return = false)
     if ($posting_ref_id !== null) {
         if (array_key_exists(strval(-$posting_ref_id), $COMCODE_ATTACHMENTS)) {
             foreach ($COMCODE_ATTACHMENTS[strval(-$posting_ref_id)] as $attachment) {
-                $db->query_insert_or_replace('attachment_refs', array(), array('r_referer_type' => 'null', 'r_referer_id' => strval(-$posting_ref_id), 'a_id' => $attachment['id']));
+                $db->query_insert_or_replace('attachment_refs', [], ['r_referer_type' => 'null', 'r_referer_id' => strval(-$posting_ref_id), 'a_id' => $attachment['id']]);
             }
         }
     }
@@ -371,7 +371,7 @@ function build_preview($multi_return = false)
             foreach ($map_table_map as $key => $val) {
                 $map_table_fields->attach(map_table_field($key, $val, true));
             }
-            $output = do_template('MAP_TABLE', array('_GUID' => '3f548883b9eb37054c500d1088d9efa3', 'FIELDS' => $map_table_fields));
+            $output = do_template('MAP_TABLE', ['_GUID' => '3f548883b9eb37054c500d1088d9efa3', 'FIELDS' => $map_table_fields]);
         }
     }
 
@@ -390,16 +390,16 @@ function build_preview($multi_return = false)
         $new_post_value_html = wysiwygify_media_set($_new_post_value_html->evaluate());
 
         if (strpos($new_post_value_html, '<!-- CC-error -->') === false) {
-            $output->attach(do_template('PREVIEW_SCRIPT_CODE', array('_GUID' => 'bc7432af91e1eaf212dc210f3bf2f756', 'ATTACHMENT_FIELD' => $attachment_field, 'NEW_POST_VALUE_HTML' => $new_post_value_html, 'NEW_POST_VALUE' => $new_post_value)));
+            $output->attach(do_template('PREVIEW_SCRIPT_CODE', ['_GUID' => 'bc7432af91e1eaf212dc210f3bf2f756', 'ATTACHMENT_FIELD' => $attachment_field, 'NEW_POST_VALUE_HTML' => $new_post_value_html, 'NEW_POST_VALUE' => $new_post_value]));
         }
     }
 
     // Health Check
-    $health_check = array();
+    $health_check = [];
     if ((addon_installed('health_check')) && ($new_post_value !== null)) {
         require_code('health_check');
         $has_fails = false;
-        $categories = run_health_check($has_fails, null, false, false, false, false, null, array(), array(do_lang('PREVIEW') => $new_post_value), CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
+        $categories = run_health_check($has_fails, null, false, false, false, false, null, [], [do_lang('PREVIEW') => $new_post_value], CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
         foreach ($categories as $category_label => $sections) {
             foreach ($sections['SECTIONS'] as $section_label => $results) {
                 foreach ($results['RESULTS'] as $result) {
@@ -416,7 +416,7 @@ function build_preview($multi_return = false)
     }
 
     if ($multi_return) {
-        return array($output, $webstandards, $keyword_density, $spelling, $health_check, $has_device_preview_modes);
+        return [$output, $webstandards, $keyword_density, $spelling, $health_check, $has_device_preview_modes];
     }
     return $output;
 }

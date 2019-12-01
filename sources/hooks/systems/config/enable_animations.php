@@ -30,7 +30,7 @@ class Hook_config_enable_animations
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_ANIMATIONS',
             'type' => 'tick',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_enable_animations
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

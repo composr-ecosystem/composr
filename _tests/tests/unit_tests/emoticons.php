@@ -32,7 +32,7 @@ class emoticons_test_set extends cms_test_case
 
         cns_make_emoticon('X:)', 'image/em.jpg', 1, 1, 0);
 
-        $this->assertTrue('X:)' == $GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'e_code', array('e_code' => 'X:)')));
+        $this->assertTrue('X:)' == $GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'e_code', ['e_code' => 'X:)']));
     }
 
     public function testEditemoticon()
@@ -43,7 +43,7 @@ class emoticons_test_set extends cms_test_case
 
         cns_edit_emoticon('X:)', 'Z:D', 'images/smile.jpg', 2, 0, 0);
 
-        $this->assertTrue('Z:D' == $GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'e_code', array('e_code' => 'Z:D')));
+        $this->assertTrue('Z:D' == $GLOBALS['FORUM_DB']->query_select_value('f_emoticons', 'e_code', ['e_code' => 'Z:D']));
     }
 
     public function tearDown()

@@ -41,7 +41,7 @@ function password_censor($auto = false, $display = true, $days_ago = 30)
     $sql .= ' WHERE (' . $GLOBALS['FORUM_DB']->translate_field_ref('p_post') . ' LIKE \'%password%\' OR ' . $GLOBALS['FORUM_DB']->translate_field_ref('p_post') . ' LIKE \'%Password%\')';
     $sql .= ' AND (p_cache_forum_id=' . strval($forum_id) . ' OR p_cache_forum_id IS NULL OR p_intended_solely_for IS NOT NULL)';
     $sql .= ' AND p_time<=' . strval(time() - 60 * 60 * 24 * $days_ago);
-    $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, array('p_post' => 'LONG_TRANS__COMCODE'));
+    $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
     if ($display) {
         header('Content-type: text/plain; charset=' . get_charset());
     }
@@ -73,14 +73,14 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
 
     if (($explicit_only) || (strpos($text, '[self_destruct') !== false) || (strpos($text, '[encrypt') !== false)) { // Explicit control, Comcode writer knows what they're doing
         if ($scan_type != PASSWORD_CENSOR__PRE_SCAN) {
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\[self_destruct[^\]]*\](.*)\[/self_destruct\]#Us', $text, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $text = str_replace($matches[0][$i], ($scan_type == PASSWORD_CENSOR__INTERACTIVE_SCAN) ? '(auto-censored)' : '(self-destructed)', $text);
             }
         }
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\[encrypt[^\]]*\](.*)\[/encrypt\]#Us', $text, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             if ($scan_type != PASSWORD_CENSOR__PRE_SCAN) {
@@ -96,7 +96,7 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
         }
     } else { // Try and detect things to censor
         if ($scan_type != PASSWORD_CENSOR__PRE_SCAN) {
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#(^|[^\w])([^\s"\'=]{5,30})#', $text, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $m = $matches[2][$i];

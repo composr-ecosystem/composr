@@ -100,7 +100,7 @@ abstract class CMS_Spreadsheet_Reader
         } else {
             $row = $this->read_row();
             if ($row === false) {
-                $row = array();
+                $row = [];
             }
             $this->fields = $row;
         }
@@ -130,7 +130,7 @@ abstract class CMS_Spreadsheet_Reader
             }
         }
 
-        if (array_unique($row) == array('')) { // Skip to next for any blank row
+        if (array_unique($row) == ['']) { // Skip to next for any blank row
             return $this->read_row();
         }
 
@@ -149,7 +149,7 @@ abstract class CMS_Spreadsheet_Reader
                     break;
 
                 case self::ALGORITHM_NAMED_FIELDS:
-                    $_row = array();
+                    $_row = [];
                     foreach ($this->fields as $i => $f) {
                         $_row[$f] = (array_key_exists($i, $row) ? $row[$i] : '');
                     }

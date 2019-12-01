@@ -30,7 +30,7 @@ class Hook_config_site_message_status_level
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SITE_MESSAGE_STATUS_LEVEL',
             'type' => 'list',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_site_message_status_level
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

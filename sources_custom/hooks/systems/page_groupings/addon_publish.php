@@ -28,13 +28,13 @@ class Hook_page_groupings_addon_publish
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('addon_publish')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('tools', 'admin/tool', array('admin_generate_adhoc_upgrade', array(), get_page_zone('admin_generate_adhoc_upgrade')), make_string_tempcode('Release tools: Create ad hoc-upgrade-TAR/guidance')),
-            array('tools', 'admin/tool', array('build_addons', array(), get_page_zone('build_addons')), make_string_tempcode('Release tools: Build non-bundled addon TARs')),
-            array('tools', 'admin/tool', array('publish_addons_as_downloads', array(), get_page_zone('publish_addons_as_downloads')), make_string_tempcode('compo.sr: Publish non-bundled addons')),
-        );
+        return [
+            ['tools', 'admin/tool', ['admin_generate_adhoc_upgrade', [], get_page_zone('admin_generate_adhoc_upgrade')], make_string_tempcode('Release tools: Create ad hoc-upgrade-TAR/guidance')],
+            ['tools', 'admin/tool', ['build_addons', [], get_page_zone('build_addons')], make_string_tempcode('Release tools: Build non-bundled addon TARs')],
+            ['tools', 'admin/tool', ['publish_addons_as_downloads', [], get_page_zone('publish_addons_as_downloads')], make_string_tempcode('compo.sr: Publish non-bundled addons')],
+        ];
     }
 }

@@ -45,7 +45,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#require_code\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -54,7 +54,7 @@ class broken_includes_test_set extends cms_test_case
                     continue;
                 }
 
-                if (in_array($dependency, array('user_sync__customise'))) { // Exceptions
+                if (in_array($dependency, ['user_sync__customise'])) { // Exceptions
                     continue;
                 }
 
@@ -72,7 +72,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#require_lang\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -90,7 +90,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#do_lang(_tempcode)?\(\'([^\']+):([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[2][$i];
@@ -108,7 +108,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\{\!(\w+):(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -126,7 +126,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#require_css\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -144,7 +144,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\{\$REQUIRE_CSS,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -162,7 +162,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#require_javascript\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];
@@ -180,7 +180,7 @@ class broken_includes_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#\{\$REQUIRE_JAVASCRIPT,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $dependency = $matches[1][$i];

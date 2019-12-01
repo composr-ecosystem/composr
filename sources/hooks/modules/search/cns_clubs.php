@@ -50,28 +50,28 @@ class Hook_search_cns_clubs extends FieldsSearchHook
             }
         }
 
-        if ($GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', array('g_is_private_club' => 1)) == 0) {
+        if ($GLOBALS['FORUM_DB']->query_select_value('f_groups', 'COUNT(*)', ['g_is_private_club' => 1]) == 0) {
             return null;
         }
 
         require_lang('cns');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('CLUBS');
         $info['default'] = (get_option('search_cns_clubs') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_group');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('groups'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('groups'),
                 'page_name' => 'groups',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -123,7 +123,7 @@ class Hook_search_cns_clubs extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('g_group_leader', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
@@ -132,14 +132,14 @@ class Hook_search_cns_clubs extends FieldsSearchHook
         $where_clause .= 'g_hidden=0 AND g_is_private_club=1';
 
         $table = 'f_groups r';
-        $trans_fields = array('r.g_name' => 'SHORT_TRANS', 'r.g_title' => 'SHORT_TRANS');
-        $nontrans_fields = array();
+        $trans_fields = ['r.g_name' => 'SHORT_TRANS', 'r.g_title' => 'SHORT_TRANS'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_group', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);
@@ -171,15 +171,15 @@ class Hook_search_cns_clubs extends FieldsSearchHook
 
         $summary = do_lang_tempcode(($row['g_open_membership'] == 1) ? 'CLUB_WITH_MEMBERS_OPEN' : 'CLUB_WITH_MEMBERS_APPROVAL', escape_html($group_name), escape_html(integer_format($num_members)), $leader);
 
-        $url = build_url(array('page' => 'groups', 'type' => 'view', 'id' => $row['id']), get_module_zone('groups'));
+        $url = build_url(['page' => 'groups', 'type' => 'view', 'id' => $row['id']], get_module_zone('groups'));
 
-        return do_template('SIMPLE_PREVIEW_BOX', array(
+        return do_template('SIMPLE_PREVIEW_BOX', [
             '_GUID' => '2f7814a2e1f868d2ac73fba69f3aeee1',
             'ID' => strval($row['id']),
             'TITLE' => $title,
             'SUMMARY' => $summary,
             'URL' => $url,
             'RESOURCE_TYPE' => 'group',
-        ));
+        ]);
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_error_handling_database_strict
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ERROR_HANDLING_DATABASE_STRICT',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_error_handling_database_strict
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

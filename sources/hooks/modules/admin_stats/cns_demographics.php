@@ -36,10 +36,10 @@ class Hook_admin_stats_cns_demographics
 
         require_lang('stats');
 
-        return array(
-            array('demographics' => array('DEMOGRAPHICS', 'menu/adminzone/audit/statistics/demographics'),),
-            array('menu/adminzone/audit/statistics/demographics', array('_SELF', array('type' => 'demographics'), '_SELF'), do_lang('DEMOGRAPHICS'), 'DESCRIPTION_DEMOGRAPHICS'),
-        );
+        return [
+            ['demographics' => ['DEMOGRAPHICS', 'menu/adminzone/audit/statistics/demographics'],],
+            ['menu/adminzone/audit/statistics/demographics', ['_SELF', ['type' => 'demographics'], '_SELF'], do_lang('DEMOGRAPHICS'), 'DESCRIPTION_DEMOGRAPHICS'],
+        ];
     }
 
     /**
@@ -69,7 +69,7 @@ class Hook_admin_stats_cns_demographics
         }
 
         if (($time_start === null) && ($time_end === null)) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('m_dob_year', 'COUNT(*) AS cnt', array(), 'GROUP BY m_dob_year'));
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['m_dob_year', 'COUNT(*) AS cnt', [], 'GROUP BY m_dob_year']);
         } else {
             if ($time_start === null) {
                 $time_start = 0;
@@ -78,7 +78,7 @@ class Hook_admin_stats_cns_demographics
                 $time_end = time();
             }
 
-            $title = get_screen_title('SECTION_DEMOGRAPHICS_RANGE', true, array(escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))));
+            $title = get_screen_title('SECTION_DEMOGRAPHICS_RANGE', true, [escape_html(get_timezoned_date($time_start, false)), escape_html(get_timezoned_date($time_end, false))]);
 
             $rows = $GLOBALS['FORUM_DB']->query('SELECT m_dob_year,COUNT(*) AS cnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE m_join_time>' . strval($time_start) . ' AND m_join_time<' . strval($time_end) . ' GROUP BY m_dob_year');
         }
@@ -88,7 +88,7 @@ class Hook_admin_stats_cns_demographics
         }
 
         // Gather data
-        $demographics = array();
+        $demographics = [];
         $demographics[do_lang('UNKNOWN')] = 0;
         for ($i = 0; $i < 30; $i++) {
             $demographics[strval($i)] = 0;
@@ -124,10 +124,10 @@ class Hook_admin_stats_cns_demographics
 
         $start = 0;
         $max = 1000; // Little trick, as we want all to fit
-        $sortables = array();
+        $sortables = [];
 
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('AGE'), do_lang_tempcode('COUNT_TOTAL')), $sortables);
+        $header_row = results_header_row([do_lang_tempcode('AGE'), do_lang_tempcode('COUNT_TOTAL')], $sortables);
         $result_entries = new Tempcode();
         $i = 0;
         foreach ($demographics as $_age => $value) {
@@ -135,7 +135,7 @@ class Hook_admin_stats_cns_demographics
                 $_age = strval($_age);
             }
             $percent = round(100.0 * floatval($value) / floatval(count($rows)), 2);
-            $result_entries->attach(results_entry(array($_age, integer_format($value) . ' (' . float_format($percent) . '%)'), true));
+            $result_entries->attach(results_entry([$_age, integer_format($value) . ' (' . float_format($percent) . '%)'], true));
             $i++;
         }
         $list = results_table(do_lang_tempcode('DEMOGRAPHICS'), $start, 'start', $max, 'max', count($demographics), $header_row, $result_entries, $sortables, '', '', 'sort', new Tempcode());
@@ -143,14 +143,14 @@ class Hook_admin_stats_cns_demographics
         $output = create_bar_chart($demographics, do_lang('AGE'), do_lang('COUNT_TOTAL'), '', '');
         $ob->save_graph('Global-Demographics', $output);
 
-        $graph = do_template('STATS_GRAPH', array(
+        $graph = do_template('STATS_GRAPH', [
             '_GUID' => 'ae6e151806c83a6ac6df84b645de3f69',
             'GRAPH' => $ob->get_stats_url('Global-Demographics'),
             'TITLE' => do_lang_tempcode('DEMOGRAPHICS'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_DEMOGRAPHICS'),
-        ));
+        ]);
 
-        $tpl = do_template('STATS_SCREEN', array('_GUID' => 'f60cb424d07969f1e74eb10bb6a5eeda', 'TITLE' => $title, 'NO_SPREADSHEET' => '1', 'GRAPH' => $graph, 'STATS' => $list));
+        $tpl = do_template('STATS_SCREEN', ['_GUID' => 'f60cb424d07969f1e74eb10bb6a5eeda', 'TITLE' => $title, 'NO_SPREADSHEET' => '1', 'GRAPH' => $graph, 'STATS' => $list]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

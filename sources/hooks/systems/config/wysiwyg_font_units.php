@@ -30,7 +30,7 @@ class Hook_config_wysiwyg_font_units
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WYSIWYG_FONT_UNITS',
             'type' => 'list',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_wysiwyg_font_units
             'public' => true,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

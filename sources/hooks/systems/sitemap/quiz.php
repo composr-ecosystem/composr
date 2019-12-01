@@ -60,10 +60,10 @@ class Hook_sitemap_quiz extends Hook_sitemap_content
     public function get_virtual_nodes($page_link, $callback = null, $valid_node_types = null, $child_cutoff = null, $max_recurse_depth = null, $recurse_level = 0, $options = 0, $zone = '_SEARCH', $meta_gather = 0, $return_anyway = false)
     {
         if (!addon_installed('quizzes')) {
-            return array();
+            return [];
         }
 
-        $nodes = ($callback === null || $return_anyway) ? array() : null;
+        $nodes = ($callback === null || $return_anyway) ? [] : null;
 
         if (($valid_node_types !== null) && (!in_array($this->content_type, $valid_node_types))) {
             return $nodes;
@@ -74,7 +74,7 @@ class Hook_sitemap_quiz extends Hook_sitemap_content
         $consider_validation = (($options & SITEMAP_GEN_CONSIDER_VALIDATION) != 0);
 
         if ($child_cutoff !== null) {
-            $count = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)', $consider_validation ? array('q_validated' => 1) : array());
+            $count = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'COUNT(*)', $consider_validation ? ['q_validated' => 1] : []);
             if ($count > $child_cutoff) {
                 return $nodes;
             }
@@ -82,7 +82,7 @@ class Hook_sitemap_quiz extends Hook_sitemap_content
 
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), $consider_validation ? array('q_validated' => 1) : array(), '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], $consider_validation ? ['q_validated' => 1] : [], '', SITEMAP_MAX_ROWS_PER_LOOP, $start);
             foreach ($rows as $row) {
                 $child_page_link = $zone . ':' . $page . ':' . $this->screen_type . ':' . strval($row['id']);
                 $node = $this->get_node($child_page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
@@ -129,14 +129,14 @@ class Hook_sitemap_quiz extends Hook_sitemap_content
         }
         list($content_id, $row, $partial_struct) = $_;
 
-        $struct = array(
+        $struct = [
             'sitemap_priority' => SITEMAP_IMPORTANCE_MEDIUM,
             'sitemap_refreshfreq' => 'monthly',
 
             'privilege_page' => $this->get_privilege_page($page_link),
 
-            'edit_url' => build_url(array('page' => 'cms_quiz', 'type' => '_edit', 'id' => $content_id), get_module_zone('cms_quiz')),
-        ) + $partial_struct;
+            'edit_url' => build_url(['page' => 'cms_quiz', 'type' => '_edit', 'id' => $content_id], get_module_zone('cms_quiz')),
+        ] + $partial_struct;
 
         if (!$this->_check_node_permissions($struct, $options)) {
             return null;

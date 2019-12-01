@@ -53,7 +53,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
         flock($myfile, LOCK_SH);
     }
 
-    $resource = array();
+    $resource = [];
     $resource['new'] = !$exists;
     $resource['mode'] = $mode;
     $resource['myfile'] = $myfile;
@@ -66,7 +66,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
                 warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
             }
         }
-        $resource['directory'] = array();
+        $resource['directory'] = [];
         $resource['end'] = 0;
     }
     return $resource;
@@ -89,7 +89,7 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
     $finished = false;
     rewind($myfile);
     $resource['already_at_end'] = false;
-    $directory = array();
+    $directory = [];
     $next_name = null;
 
     $chr_0 = chr(0);
@@ -160,7 +160,7 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
                 fseek($myfile, $block_size - $size, SEEK_CUR);
             } else {
                 if ((strpos($path, '._')  === false) && (substr(basename($path), 0, 2) != '._')) {
-                    $directory[$offset] = array('path' => $path, 'mode' => $mode, 'size' => $size, 'mtime' => $mtime);
+                    $directory[$offset] = ['path' => $path, 'mode' => $mode, 'size' => $size, 'mtime' => $mtime];
                 }
                 $next_name = null;
                 fseek($myfile, $block_size, SEEK_CUR);
@@ -211,10 +211,10 @@ function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $m
     }
 
     if ($callback !== null) {
-        call_user_func_array($callback, array('TARing files from ' . $_full));
+        call_user_func_array($callback, ['TARing files from ' . $_full]);
     }
 
-    $info = array();
+    $info = [];
     if ($log_file !== null) {
         $dh = @opendir($_full);
         if ($dh === false) {
@@ -265,7 +265,7 @@ function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $m
                         }
                         */
                         $perms = fileperms($full);
-                        $info[] = array(
+                        $info[] = [
                             'path' => $full,
                             'size' => filesize($full),
                             /*'owner' => $owner,
@@ -273,7 +273,7 @@ function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $m
                             'perms' => $perms,
                             'ctime' => $ctime,
                             'mtime' => $mtime,
-                        );
+                        ];
                     }
                 }
             }
@@ -297,7 +297,7 @@ function tar_add_folder_incremental(&$resource, $log_file, $path, $threshold, $m
  * @param  ?integer $ignore_bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants) (null: don't ignore anything)
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function tar_add_folder(&$resource, $log_file, $path, $max_size = null, $subpath = '', $avoid_backing_up = array(), $root_only_dirs = null, $tick = false, $ignore_bitmask = 0, $callback = null) // Note we cannot modify $resource unless we pass it by reference
+function tar_add_folder(&$resource, $log_file, $path, $max_size = null, $subpath = '', $avoid_backing_up = [], $root_only_dirs = null, $tick = false, $ignore_bitmask = 0, $callback = null) // Note we cannot modify $resource unless we pass it by reference
 {
     require_code('files');
 
@@ -308,7 +308,7 @@ function tar_add_folder(&$resource, $log_file, $path, $max_size = null, $subpath
     }
 
     if ($callback !== null) {
-        call_user_func_array($callback, array('TARing files from ' . $_full));
+        call_user_func_array($callback, ['TARing files from ' . $_full]);
     }
 
     if ($log_file !== null) {
@@ -439,7 +439,7 @@ function tar_extract_to_folder(&$resource, $path, $use_afm = false, $files = nul
             if (($path == '/') && ($comcode_backups) && (get_param_integer('keep_theme_test', 0) == 1) && (preg_match('#^[' . URL_CONTENT_REGEXP . ']+\.txt$#', basename($file['path'])) != 0)) {
                 $theme = null;
                 foreach ($directory as $file2) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^themes/([' . URL_CONTENT_REGEXP . ']+)/#', $file2['path'], $matches) != 0) {
                         $theme = $matches[1];
                         break;
@@ -541,7 +541,7 @@ function tar_get_file(&$resource, $path, $tolerate_errors = false, $write_data_t
                 sync_file($path);
             }
 
-            return array('data' => &$data, 'size' => $stuff['size'], 'mode' => $stuff['mode'], 'mtime' => $stuff['mtime']);
+            return ['data' => &$data, 'size' => $stuff['size'], 'mode' => $stuff['mode'], 'mtime' => $stuff['mtime']];
         }
     }
     return null;
@@ -606,7 +606,7 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
     $resource['already_at_end'] = true;
     //}
     $offset = $resource['end'];
-    $resource['directory'][$resource['end']] = array('path' => $target_path, 'mode' => $_mode, 'size' => $data_is_path ? filesize($data) : strlen($data));
+    $resource['directory'][$resource['end']] = ['path' => $target_path, 'mode' => $_mode, 'size' => $data_is_path ? filesize($data) : strlen($data)];
 
     if (strlen($target_path) > 100) {
         $slash_pos = strpos(substr($target_path, strlen($target_path) - 100), '/');

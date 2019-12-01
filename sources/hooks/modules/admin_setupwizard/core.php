@@ -30,7 +30,7 @@ class Hook_sw_core
      */
     public function get_current_settings()
     {
-        $settings = array();
+        $settings = [];
 
         $settings['show_content_tagging'] = (get_theme_option('show_content_tagging', null, post_param_string('source_theme', 'default')) == '1') ? '1' : '0';
         $settings['show_content_tagging_inline'] = (get_theme_option('show_content_tagging_inline', null, post_param_string('source_theme', 'default')) == '1') ? '1' : '0';
@@ -71,7 +71,7 @@ class Hook_sw_core
             $hidden->attach(form_input_hidden('show_screen_actions', get_theme_option('show_screen_actions', null, post_param_string('source_theme', 'default'))));
         }
 
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '1f8970c551c886532158e16596f9c9b8', 'TITLE' => do_lang_tempcode('menus:STRUCTURE'), 'HELP' => do_lang_tempcode('SETUPWIZARD_5x_DESCRIBE'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '1f8970c551c886532158e16596f9c9b8', 'TITLE' => do_lang_tempcode('menus:STRUCTURE'), 'HELP' => do_lang_tempcode('SETUPWIZARD_5x_DESCRIBE')]));
 
         if (get_theme_option('setupwizard__lock_single_public_zone', null, post_param_string('source_theme', 'default')) == '1') {
             $fields->attach(form_input_tick(do_lang_tempcode('SINGLE_PUBLIC_ZONE'), do_lang_tempcode('CONFIG_OPTION_single_public_zone'), 'single_public_zone', $field_defaults['single_public_zone'] == '1'));
@@ -81,7 +81,7 @@ class Hook_sw_core
         $fields->attach(form_input_tick(do_lang_tempcode('GUEST_ZONE_ACCESS'), do_lang_tempcode('DESCRIPTION_GUEST_ZONE_ACCESS'), 'guest_zone_access', $field_defaults['guest_zone_access'] == '1'));
         $fields->attach(form_input_tick(do_lang_tempcode('ACCEPT_USER_SUBMISSIONS'), do_lang_tempcode('DESCRIPTION_ACCEPT_USER_SUBMISSIONS'), 'accept_user_submissions', $field_defaults['accept_user_submissions'] == '1'));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -100,27 +100,27 @@ class Hook_sw_core
 
         $guest_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (post_param_integer('guest_zone_access', 0) == 1) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_zone_access', 'zone_name', array('zone_name' => 'site', 'group_id' => $guest_groups[0]));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_zone_access', 'zone_name', ['zone_name' => 'site', 'group_id' => $guest_groups[0]]);
             if ($test === null) {
-                $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'site', 'group_id' => $guest_groups[0]));
+                $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'site', 'group_id' => $guest_groups[0]]);
             }
         } else {
-            $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('zone_name' => 'site', 'group_id' => $guest_groups[0]), '', 1);
+            $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => 'site', 'group_id' => $guest_groups[0]], '', 1);
         }
 
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         $admin_groups = array_unique(array_merge($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), $GLOBALS['FORUM_DRIVER']->get_moderator_groups()));
         if (post_param_integer('accept_user_submissions', 0) == 1) {
             foreach (array_keys($usergroups) as $id) {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_zone_access', 'zone_name', array('zone_name' => 'cms', 'group_id' => $id));
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('group_zone_access', 'zone_name', ['zone_name' => 'cms', 'group_id' => $id]);
                 if ($test === null) {
-                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('zone_name' => 'cms', 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_zone_access', ['zone_name' => 'cms', 'group_id' => $id]);
                 }
             }
         } else {
             foreach (array_keys($usergroups) as $id) {
                 if (!in_array($id, $admin_groups)) {
-                    $GLOBALS['SITE_DB']->query_delete('group_zone_access', array('zone_name' => 'cms', 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_delete('group_zone_access', ['zone_name' => 'cms', 'group_id' => $id]);
                 }
             }
         }

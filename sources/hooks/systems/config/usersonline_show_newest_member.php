@@ -30,7 +30,7 @@ class Hook_config_usersonline_show_newest_member
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_NEWEST_MEMBER',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_usersonline_show_newest_member
             'public' => false,
 
             'addon' => 'users_online_block',
-        );
+        ];
     }
 
     /**

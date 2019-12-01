@@ -28,31 +28,31 @@ class CMSSubscriptionRead
         cms_verify_parameters_phpdoc();
 
         if (is_guest()) {
-            return array();
+            return [];
         }
 
         $member_id = get_member();
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $table = 'notifications_enabled JOIN ' . $table_prefix . 'f_forums f ON l_code_category=' . db_function('CONCAT', array('\'forum:\'', 'f.id'));
+        $table = 'notifications_enabled JOIN ' . $table_prefix . 'f_forums f ON l_code_category=' . db_function('CONCAT', ['\'forum:\'', 'f.id']);
 
-        $select = array('f.id', 'f_name');
+        $select = ['f.id', 'f_name'];
 
-        $where = array('l_member_id' => $member_id, 'l_notification_code' => 'cns_topic');
+        $where = ['l_member_id' => $member_id, 'l_notification_code' => 'cns_topic'];
 
         $extra = 'AND f.id IN (' . get_allowed_forum_sql() . ')';
 
-        $rows = (get_allowed_forum_sql() == '') ? array() : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra);
+        $rows = (get_allowed_forum_sql() == '') ? [] : $GLOBALS['FORUM_DB']->query_select($table, $select, $where, $extra);
 
-        $forums = array();
+        $forums = [];
         foreach ($rows as $forum) {
-            $forums[] = array(
+            $forums[] = [
                 'forum_id' => $forum['id'],
                 'forum_name' => $forum['f_name'],
                 'icon_url' => '',
                 'is_protected' => false,
                 'new_post' => is_forum_unread($forum['id']),
-            );
+            ];
         }
         return $forums;
     }
@@ -69,18 +69,18 @@ class CMSSubscriptionRead
         cms_verify_parameters_phpdoc();
 
         if (is_guest()) {
-            return array(0, array());
+            return [0, []];
         }
 
         $member_id = get_member();
 
         $notification_code = 'cns_topic';
 
-        $where = array('l_member_id' => $member_id, 'l_notification_code' => $notification_code);
+        $where = ['l_member_id' => $member_id, 'l_notification_code' => $notification_code];
 
         $_notifications = $GLOBALS['FORUM_DB']->query_select(
             'notifications_enabled',
-            array('l_code_category'),
+            ['l_code_category'],
             $where,
             ' AND l_code_category NOT LIKE \'forum:%\' ORDER BY l_code_category ASC',
             $max,
@@ -108,17 +108,17 @@ class CMSSubscriptionRead
 
             $total = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $sql);
         } else {
-            $_topics = array();
+            $_topics = [];
 
             $total = 0;
         }
 
-        $topics = array();
+        $topics = [];
         foreach ($_topics as $topic) {
             $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME);
         }
 
-        return array($total, $topics);
+        return [$total, $topics];
     }
 
     /**
@@ -135,8 +135,8 @@ class CMSSubscriptionRead
 
         $notification_code = 'cns_topic';
 
-        $ret = array();
-        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_member_id' => $member_id, 'l_notification_code' => $notification_code), ' AND l_code_category LIKE \'forum:%\'');
+        $ret = [];
+        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_member_id' => $member_id, 'l_notification_code' => $notification_code], ' AND l_code_category LIKE \'forum:%\'');
         foreach ($_x as $x) {
             $ret[] = mobiquo_val(intval(substr($x['l_code_category'], 6)), 'int');
         }
@@ -157,8 +157,8 @@ class CMSSubscriptionRead
 
         $notification_code = 'cns_topic';
 
-        $ret = array();
-        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_member_id' => $member_id, 'l_notification_code' => $notification_code), ' AND l_code_category NOT LIKE \'forum:%\' ORDER BY id DESC');
+        $ret = [];
+        $_x = $GLOBALS['FORUM_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_member_id' => $member_id, 'l_notification_code' => $notification_code], ' AND l_code_category NOT LIKE \'forum:%\' ORDER BY id DESC');
         foreach ($_x as $x) {
             $ret[] = mobiquo_val(intval($x['l_code_category']), 'int');
         }

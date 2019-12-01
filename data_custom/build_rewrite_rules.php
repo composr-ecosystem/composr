@@ -35,7 +35,7 @@ if (basename(getcwd()) != 'data_custom') {
 
 header('Content-type: text/plain; charset=utf-8');
 
-$zones = array('', 'site', 'forum', 'adminzone', 'cms');
+$zones = ['', 'site', 'forum', 'adminzone', 'cms'];
 
 $zone_list = '';
 foreach ($zones as $zone) {
@@ -50,98 +50,98 @@ foreach ($zones as $zone) {
 
 // Define our rules
 
-$rewrite_rules = array(
-    array(
+$rewrite_rules = [
+    [
         'Redirect away from modules called directly by URL. Helpful as it allows you to "run" a module file in a debugger and still see it running.',
-        array(
-            array('^([^=]*)pages/(modules|modules_custom)/([^/]*)\.php$', '$1index.php\?page=$3', array('L', 'QSA', 'R'), true),
-        ),
-    ),
+        [
+            ['^([^=]*)pages/(modules|modules_custom)/([^/]*)\.php$', '$1index.php\?page=$3', ['L', 'QSA', 'R'], true],
+        ],
+    ],
 
     // Traditional Composr form, /pg/
 
-    array(
+    [
         'PG STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
-        array(
-            array('^([^=]*)pg/s/([^\&\?]*)/index\.php$', '$1index.php\?page=wiki&id=$2', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^([^=]*)pg/s/([^\&\?]*)/index\.php$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+        ],
+    ],
 
-    array(
+    [
         'PG STYLE: These are standard patterns',
-        array(
-            array('^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3&id=$4$5', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3$4', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2$3', array('L', 'QSA'), true),
-            array('^([^=]*)pg/index\.php(.*)$', '$1index.php\?page=$2', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3&id=$4$5', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2&type=$3$4', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)/index\.php(.*)$', '$1index.php\?page=$2$3', ['L', 'QSA'], true],
+            ['^([^=]*)pg/index\.php(.*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
+        ],
+    ],
 
-    array(
+    [
         'PG STYLE: Now the same as the above sets, but without any additional parameters (and thus no index.php)',
-        array(
-            array('^([^=]*)pg/s/([^\&\?]*)$', '$1index.php\?page=wiki&id=$2', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/$', '$1index.php\?page=$2&type=$3&id=$4', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)$', '$1index.php\?page=$2&type=$3&id=$4', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)$', '$1index.php\?page=$2&type=$3', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?]*)$', '$1index.php\?page=$2', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^([^=]*)pg/s/([^\&\?]*)$', '$1index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)/$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)/([^\&\?]*)$', '$1index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)/([^/\&\?]*)$', '$1index.php\?page=$2&type=$3', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?]*)$', '$1index.php\?page=$2', ['L', 'QSA'], true],
+        ],
+    ],
 
-    array(
+    [
         'PG STYLE: And these for those nasty situations where index.php was missing and we couldn\'t do anything about it (usually due to keep_session creeping into a semi-cached URL)',
-        array(
-            array('^([^=]*)pg/s/([^\&\?\.]*)&(.*)$', '$1index.php\?$3&page=wiki&id=$2', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$5&page=$2&type=$3&id=$4', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$4&page=$2&type=$3', array('L', 'QSA'), true),
-            array('^([^=]*)pg/([^/\&\?\.]*)&(.*)$', '$1index.php\?$3&page=$2', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^([^=]*)pg/s/([^\&\?\.]*)&(.*)$', '$1index.php\?$3&page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$5&page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?\.]*)/([^/\&\?\.]*)&(.*)$', '$1index.php\?$4&page=$2&type=$3', ['L', 'QSA'], true],
+            ['^([^=]*)pg/([^/\&\?\.]*)&(.*)$', '$1index.php\?$3&page=$2', ['L', 'QSA'], true],
+        ],
+    ],
 
     // New-style Composr form, .htm
 
-    array(
+    [
         'HTM STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
-        array(
-            array('^(' . $zone_list . ')/s/([^\&\?]*)\.htm$', '$1/index.php\?page=wiki&id=$2', array('L', 'QSA'), true),
-            array('^s/([^\&\?]*)\.htm$', 'index\.php\?page=wiki&id=$1', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^(' . $zone_list . ')/s/([^\&\?]*)\.htm$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], true],
+            ['^s/([^\&\?]*)\.htm$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], true],
+        ],
+    ],
 
-    array(
+    [
         'HTM STYLE: These are standard patterns',
-        array(
-            array('^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3&id=$4', array('L', 'QSA'), true),
-            array('^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3', array('L', 'QSA'), true),
-            array('^(' . $zone_list . ')/([^/\&\?]+)\.htm$', '$1/index.php\?page=$2', array('L', 'QSA'), true),
-            array('^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', 'index.php\?page=$1&type=$2&id=$3', array('L', 'QSA'), true),
-            array('^([^/\&\?]+)/([^/\&\?]*)\.htm$', 'index.php\?page=$1&type=$2', array('L', 'QSA'), true),
-            array('^([^/\&\?]+)\.htm$', 'index.php\?page=$1', array('L', 'QSA'), true),
-        ),
-    ),
+        [
+            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], true],
+            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)\.htm$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], true],
+            ['^(' . $zone_list . ')/([^/\&\?]+)\.htm$', '$1/index.php\?page=$2', ['L', 'QSA'], true],
+            ['^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)\.htm$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], true],
+            ['^([^/\&\?]+)/([^/\&\?]*)\.htm$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], true],
+            ['^([^/\&\?]+)\.htm$', 'index.php\?page=$1', ['L', 'QSA'], true],
+        ],
+    ],
 
     // New-style Composr form, simple
 
-    array(
+    [
         'SIMPLE STYLE: These have a specially reduced form (no need to make it too explicit that these are Wiki+). We shouldn\'t shorten them too much, or the actual zone or base URL might conflict',
-        array(
-            array('^(' . $zone_list . ')/s/([^\&\?]*)$', '$1/index.php\?page=wiki&id=$2', array('L', 'QSA'), false),
-            array('^s/([^\&\?]*)$', 'index\.php\?page=wiki&id=$1', array('L', 'QSA'), false),
-        ),
-    ),
+        [
+            ['^(' . $zone_list . ')/s/([^\&\?]*)$', '$1/index.php\?page=wiki&id=$2', ['L', 'QSA'], false],
+            ['^s/([^\&\?]*)$', 'index\.php\?page=wiki&id=$1', ['L', 'QSA'], false],
+        ],
+    ],
 
-    array(
+    [
         'SIMPLE STYLE: These are standard patterns',
-        array(
-            array('^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', '$1/index.php\?page=$2&type=$3&id=$4', array('L', 'QSA'), false),
-            array('^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)$', '$1/index.php\?page=$2&type=$3', array('L', 'QSA'), false),
-            array('^(' . $zone_list . ')/([^/\&\?]+)$', '$1/index.php\?page=$2', array('L', 'QSA'), false),
-            array('^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', 'index.php\?page=$1&type=$2&id=$3', array('L', 'QSA'), false),
-            array('^([^/\&\?]+)/([^/\&\?]*)$', 'index.php\?page=$1&type=$2', array('L', 'QSA'), false),
-            array('^([^/\&\?]+)$', 'index.php\?page=$1', array('L', 'QSA'), false),
-        ),
-    ),
-);
+        [
+            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', '$1/index.php\?page=$2&type=$3&id=$4', ['L', 'QSA'], false],
+            ['^(' . $zone_list . ')/([^/\&\?]+)/([^/\&\?]*)$', '$1/index.php\?page=$2&type=$3', ['L', 'QSA'], false],
+            ['^(' . $zone_list . ')/([^/\&\?]+)$', '$1/index.php\?page=$2', ['L', 'QSA'], false],
+            ['^([^/\&\?]+)/([^/\&\?]*)/([^\&\?]*)$', 'index.php\?page=$1&type=$2&id=$3', ['L', 'QSA'], false],
+            ['^([^/\&\?]+)/([^/\&\?]*)$', 'index.php\?page=$1&type=$2', ['L', 'QSA'], false],
+            ['^([^/\&\?]+)$', 'index.php\?page=$1', ['L', 'QSA'], false],
+        ],
+    ],
+];
 
 // Write rules to google_appengine.php and app.yaml (Google App Engine)
 write_to('sources/google_appengine.php', 'GAE1', "\t" . '// RULES START', "\t// RULES END", 1, $rewrite_rules);
@@ -330,7 +330,7 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
 
                     $rules_txt .=
                         ($enabled ? '' : '#') . '- url: /' . $rule . "\n" .
-                        ($enabled ? '' : '#') . '  script: ' . preg_replace('#\?.*$#', '', str_replace(array('\\', '$'), array('', '\\'), $to)) . "\n";
+                        ($enabled ? '' : '#') . '  script: ' . preg_replace('#\?.*$#', '', str_replace(['\\', '$'], ['', '\\'], $to)) . "\n";
                 }
             }
             $rules_txt = preg_replace('#^\t*#m', str_repeat("\t", $indent_level), $rules_txt);

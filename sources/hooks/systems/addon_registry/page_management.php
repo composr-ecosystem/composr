@@ -31,7 +31,7 @@ class Hook_addon_registry_page_management
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_page_management
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_structure',
             'tut_adv_structure',
-        );
+        ];
     }
 
     /**
@@ -74,12 +74,12 @@ class Hook_addon_registry_page_management
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_page_management'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_page_management'],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_page_management
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/structure/sitemap/sitemap_editor.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/structure/sitemap/sitemap_editor.svg',
             'sources/hooks/systems/addon_registry/page_management.php',
@@ -108,7 +108,7 @@ class Hook_addon_registry_page_management
             'adminzone/pages/modules/admin_sitemap.php',
             'themes/default/templates/SITEMAP_EDITOR_SCREEN.tpl',
             'themes/default/javascript/page_management.js',
-        );
+        ];
     }
 
     /**
@@ -118,11 +118,11 @@ class Hook_addon_registry_page_management
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/SITEMAP_EDITOR_SCREEN.tpl' => 'administrative__sitemap_editor_screen',
             'templates/WEBSTANDARDS_CHECK_SCREEN.tpl' => 'administrative__webstandards_check_screen',
             'templates/WEBSTANDARDS_CHECK_ERROR.tpl' => 'administrative__webstandards_check_screen',
-        );
+        ];
     }
 
     /**
@@ -138,11 +138,11 @@ class Hook_addon_registry_page_management
 
         require_lang('zones');
 
-        return array(
-            lorem_globalise(do_lorem_template('SITEMAP_EDITOR_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SITEMAP_EDITOR_SCREEN', [
                 'TITLE' => lorem_title(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -158,16 +158,16 @@ class Hook_addon_registry_page_management
 
         $content = new Tempcode();
         foreach (placeholder_array() as $val) {
-            $content->attach(do_lorem_template('WEBSTANDARDS_CHECK_ERROR', array(
+            $content->attach(do_lorem_template('WEBSTANDARDS_CHECK_ERROR', [
                 'URL' => placeholder_url(),
                 'POINT' => lorem_phrase(),
-            )));
+            ]));
         }
-        return array(
-            lorem_globalise(do_lorem_template('WEBSTANDARDS_CHECK_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('WEBSTANDARDS_CHECK_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENTS' => $content,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

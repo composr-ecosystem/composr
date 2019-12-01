@@ -30,7 +30,7 @@ class Hook_config_website_activity_store_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'WEBSITE_ACTIVITY_STORE_TIME',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_website_activity_store_time
             'public' => false,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

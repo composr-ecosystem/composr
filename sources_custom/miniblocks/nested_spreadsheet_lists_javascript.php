@@ -16,14 +16,14 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('nested_cpf_spreadsheet_lists')) {
-    return do_template('RED_ALERT', array('_GUID' => 'u31142oyccwcex2ojn8a35yy2k04j98i', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('nested_cpf_spreadsheet_lists'))));
+    return do_template('RED_ALERT', ['_GUID' => 'u31142oyccwcex2ojn8a35yy2k04j98i', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('nested_cpf_spreadsheet_lists'))]);
 }
 
 require_code('nested_spreadsheet');
 $spreadsheet_structure = get_nested_spreadsheet_structure();
 
 // Sanitisation to protect any data not destined to be available in the form
-$spreadsheet_headings_used = array();
+$spreadsheet_headings_used = [];
 foreach ($spreadsheet_structure['cpf_fields'] as $spreadsheet_field) {
     $spreadsheet_headings_used[$spreadsheet_field['spreadsheet_heading']] = 1;
     $spreadsheet_headings_used[$spreadsheet_field['spreadsheet_parent_heading']] = 1;

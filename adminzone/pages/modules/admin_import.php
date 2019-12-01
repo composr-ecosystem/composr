@@ -34,7 +34,7 @@ class Module_admin_import
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -54,7 +54,7 @@ class Module_admin_import
         $GLOBALS['SITE_DB']->drop_table_if_exists('import_session');
         $GLOBALS['SITE_DB']->drop_table_if_exists('import_parts_done');
 
-        $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => 'admin_import'));
+        $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => 'admin_import']);
     }
 
     /**
@@ -88,13 +88,13 @@ class Module_admin_import
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
-            $GLOBALS['SITE_DB']->create_table('import_parts_done', array(
+            $GLOBALS['SITE_DB']->create_table('import_parts_done', [
                 'id' => '*AUTO',
                 'imp_id' => 'SHORT_TEXT',
                 'imp_session' => 'ID_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('import_session', array(
+            $GLOBALS['SITE_DB']->create_table('import_session', [
                 'imp_session' => '*ID_TEXT',
                 'imp_old_base_dir' => 'SHORT_TEXT',
                 'imp_db_host' => 'ID_TEXT',
@@ -103,19 +103,19 @@ class Module_admin_import
                 'imp_db_table_prefix' => 'ID_TEXT',
                 'imp_hook' => 'ID_TEXT',
                 'imp_refresh_time' => 'INTEGER',
-            ));
+            ]);
 
             $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
             foreach (array_keys($usergroups) as $id) {
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => 'admin_import', 'zone_name' => 'adminzone', 'group_id' => $id)); // Import very dangerous
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => 'admin_import', 'zone_name' => 'adminzone', 'group_id' => $id]); // Import very dangerous
             }
 
-            $GLOBALS['SITE_DB']->create_table('import_id_remap', array(
+            $GLOBALS['SITE_DB']->create_table('import_id_remap', [
                 'id_old' => '*ID_TEXT',
                 'id_new' => 'AUTO_LINK',
                 'id_type' => '*ID_TEXT',
                 'id_session' => '*ID_TEXT',
-            ));
+            ]);
         }
     }
 
@@ -138,9 +138,9 @@ class Module_admin_import
             return null;
         }
 
-        return array(
-            'browse' => array('IMPORT', 'admin/import'),
-        );
+        return [
+            'browse' => ['IMPORT', 'admin/import'],
+        ];
     }
 
     public $title;
@@ -168,22 +168,22 @@ class Module_admin_import
         }
 
         if ($type == 'session') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IMPORT'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('IMPORT')]]);
             breadcrumb_set_self(do_lang_tempcode('IMPORT_SESSION'));
         }
 
         if ($type == 'session2') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IMPORT')), array('_SELF:_SELF:session:session=' . get_session_id(), do_lang_tempcode('IMPORT_SESSION'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('IMPORT')], ['_SELF:_SELF:session:session=' . get_session_id(), do_lang_tempcode('IMPORT_SESSION')]]);
         }
 
         if ($type == 'hook') {
             $importer = filter_naughty(get_param_string('importer'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IMPORT')), array('_SELF:_SELF:session:session=' . get_session_id() . ':importer=' . $importer, do_lang_tempcode('IMPORT_SESSION'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('IMPORT')], ['_SELF:_SELF:session:session=' . get_session_id() . ':importer=' . $importer, do_lang_tempcode('IMPORT_SESSION')]]);
         }
 
         if ($type == 'import') {
             $importer = filter_naughty(get_param_string('importer'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IMPORT')), array('_SELF:_SELF:session:session=' . get_session_id() . ':importer=' . $importer, do_lang_tempcode('IMPORT_SESSION'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('IMPORT')], ['_SELF:_SELF:session:session=' . get_session_id() . ':importer=' . $importer, do_lang_tempcode('IMPORT_SESSION')]]);
             breadcrumb_set_self(do_lang_tempcode('ACTIONS'));
         }
 
@@ -245,7 +245,7 @@ class Module_admin_import
     {
         $hooks = new Tempcode();
         $_hooks = find_all_hook_obs('modules', 'admin_import', 'Hook_import_');
-        $__hooks = array();
+        $__hooks = [];
         require_code('form_templates');
         foreach ($_hooks as $hook => $object) {
             $info = $object->info();
@@ -260,9 +260,9 @@ class Module_admin_import
         }
         $fields = form_input_huge_list(do_lang_tempcode('IMPORTER'), do_lang_tempcode('DESCRIPTION_IMPORTER'), 'importer', $hooks, null, true);
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'session'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'session'], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '02416e5e9d6cb64248adeb9d2e6f2402',
             'GET' => true,
             'HIDDEN' => '',
@@ -273,7 +273,7 @@ class Module_admin_import
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => '',
-        ));
+        ]);
     }
 
     /**
@@ -292,13 +292,13 @@ class Module_admin_import
         // Code to detect redirect hooks for import
         if (array_key_exists('hook_type', $info)) {
             // Right - not a real importer, just a link over to some module's native import implementation
-            $redirect_url = build_url(array('page' => $info['import_module'], 'type' => $info['import_method_name']), get_module_zone($info['import_module']));
+            $redirect_url = build_url(['page' => $info['import_module'], 'type' => $info['import_method_name']], get_module_zone($info['import_module']));
             return redirect_screen($this->title, $redirect_url, do_lang_tempcode('REDIRECTED_TO_CACHE_MODULES'));
         }
 
         // List of sessions
         $sessions = new Tempcode();
-        $_sessions = $GLOBALS['SITE_DB']->query_select('import_session', array('*'));
+        $_sessions = $GLOBALS['SITE_DB']->query_select('import_session', ['*']);
         require_code('form_templates');
         foreach ($_sessions as $session) {
             if ($session['imp_session'] == get_session_id()) {
@@ -316,9 +316,9 @@ class Module_admin_import
         }
         $fields = form_input_huge_list(do_lang_tempcode('IMPORT_SESSION'), do_lang_tempcode('DESCRIPTION_IMPORT_SESSION'), 'session', $sessions, null, true);
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'session2', 'importer' => get_param_string('importer')), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'session2', 'importer' => get_param_string('importer')], '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'f474980f7263f2def2ff75e7ee40be33',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => form_input_hidden('importer', get_param_string('importer')),
@@ -328,7 +328,7 @@ class Module_admin_import
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => '',
-        ));
+        ]);
     }
 
     /**
@@ -366,7 +366,7 @@ class Module_admin_import
         $info = $object->info();
 
         // Load in preexisting settings, or defaults (although if probing is supported we'll never use these)
-        $session_row = $GLOBALS['SITE_DB']->query_select('import_session', array('*'), array('imp_session' => get_session_id()), '', 1);
+        $session_row = $GLOBALS['SITE_DB']->query_select('import_session', ['*'], ['imp_session' => get_session_id()], '', 1);
         if (array_key_exists(0, $session_row)) {
             $old_base_dir = $session_row[0]['imp_old_base_dir'];
             $db_host = $session_row[0]['imp_db_host'];
@@ -400,10 +400,10 @@ class Module_admin_import
             $fields->attach($object->get_extra_fields());
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'hook', 'session' => $session, 'importer' => $importer), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'hook', 'session' => $session, 'importer' => $importer], '_SELF');
         $message = array_key_exists('message', $info) ? $info['message'] : '';
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '15f2c855acf0d365a2e6329bec692dc8',
             'MODSECURITY_WORKAROUND' => true,
             'TEXT' => $message,
@@ -413,7 +413,7 @@ class Module_admin_import
             'HIDDEN' => '',
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
-        ));
+        ]);
     }
 
     /**
@@ -488,8 +488,8 @@ class Module_admin_import
 
         // Save data from choose_session2 step
         $refresh_time = either_param_integer('refresh_time', 0); // Shouldn't default, but reported on some systems to do so
-        $GLOBALS['SITE_DB']->query_delete('import_session', array('imp_session' => get_session_id()), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('import_session', array(
+        $GLOBALS['SITE_DB']->query_delete('import_session', ['imp_session' => get_session_id()], '', 1);
+        $GLOBALS['SITE_DB']->query_insert('import_session', [
             'imp_hook' => $importer,
             'imp_old_base_dir' => $old_base_dir,
             'imp_db_host' => $db_host,
@@ -498,10 +498,10 @@ class Module_admin_import
             'imp_db_table_prefix' => $db_table_prefix,
             'imp_refresh_time' => $refresh_time,
             'imp_session' => get_session_id(),
-        ));
+        ]);
 
         // Build master list of input types to select from
-        $lang_array = array();
+        $lang_array = [];
         $hooks = find_all_hook_obs('modules', 'admin_import_types', 'Hook_admin_import_types_');
         foreach ($hooks as $_hook) {
             $lang_array += $_hook->run();
@@ -509,7 +509,7 @@ class Module_admin_import
 
         // Build importer-specific list of input types to select from
         $_import_list = $info['import'];
-        $_import_list_2 = array();
+        $_import_list_2 = [];
         foreach ($_import_list as $import) {
             if ($import === null) {
                 continue;
@@ -531,27 +531,27 @@ class Module_admin_import
         //asort($_import_list_2); Let's preserve order here
         $just = get_param_string('just', null);
         $first = true;
-        $skip_hidden = array();
-        $parts_done = collapse_2d_complexity('imp_id', 'imp_session', $GLOBALS['SITE_DB']->query_select('import_parts_done', array('imp_id', 'imp_session'), array('imp_session' => get_session_id())));
+        $skip_hidden = [];
+        $parts_done = collapse_2d_complexity('imp_id', 'imp_session', $GLOBALS['SITE_DB']->query_select('import_parts_done', ['imp_id', 'imp_session'], ['imp_session' => get_session_id()]));
         foreach ($_import_list_2 as $import => $text) {
             if (array_key_exists($import, $parts_done)) {
-                $import_list->attach(do_template('IMPORT_ACTION_LINE', array(
+                $import_list->attach(do_template('IMPORT_ACTION_LINE', [
                     '_GUID' => '887770aad4269b74fdf11d09f4ab4fa3',
                     'CHECKED' => false,
                     'DISABLED' => true,
                     'NAME' => 'import_' . $import,
                     'TEXT' => $text,
-                    'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(array('page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer), '_SELF') : new Tempcode(),
-                )));
+                    'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(['page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer], '_SELF') : new Tempcode(),
+                ]));
             } else {
                 $checked = ($just === null) && ($first);
-                $import_list->attach(do_template('IMPORT_ACTION_LINE', array(
+                $import_list->attach(do_template('IMPORT_ACTION_LINE', [
                     '_GUID' => 'f2215115f920200a0a1ba6bc776ad945',
                     'CHECKED' => $checked,
                     'NAME' => 'import_' . $import,
                     'TEXT' => $text,
-                    'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(array('page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer), '_SELF') : new Tempcode(),
-                )));
+                    'ADVANCED_URL' => $info['supports_advanced_import'] ? build_url(['page' => '_SELF', 'type' => 'advanced_hook', 'session' => $session, 'content_type' => $import, 'importer' => $importer], '_SELF') : new Tempcode(),
+                ]));
             }
             if ($just == $import) {
                 $first = true;
@@ -569,14 +569,14 @@ class Module_admin_import
             inform_exit(do_lang_tempcode(($message === '') ? '_IMPORT_ALL_FINISHED' : 'IMPORT_ALL_FINISHED', $message));
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'import', 'session' => $session, 'importer' => $importer), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'import', 'session' => $session, 'importer' => $importer], '_SELF');
 
         $hidden = new Tempcode();
         $hidden->attach(build_keep_post_fields($skip_hidden));
-        $hidden->attach(build_keep_form_fields('', true, array('type', 'label_for__old_base_dir', 'require__old_base_dir', 'label_for__refresh_time', 'require__refresh_time')));
+        $hidden->attach(build_keep_form_fields('', true, ['type', 'label_for__old_base_dir', 'require__old_base_dir', 'label_for__refresh_time', 'require__refresh_time']));
         $hidden->attach(form_input_hidden('db_password', $db_password));
 
-        return do_template('IMPORT_ACTION_SCREEN', array(
+        return do_template('IMPORT_ACTION_SCREEN', [
             '_GUID' => 'a3a69637e541923ad76e9e7e6ec7e1af',
             'EXTRA' => $extra,
             'MESSAGE' => $message,
@@ -586,7 +586,7 @@ class Module_admin_import
             'IMPORTER' => $importer,
             'IMPORT_LIST' => $import_list,
             'URL' => $url,
-        ));
+        ]);
     }
 
     /**
@@ -611,7 +611,7 @@ class Module_admin_import
         $info = $object->info();
 
         // Protection from if things take too long
-        $refresh_url = get_self_url(true, false, array('type' => 'import'), false, true);
+        $refresh_url = get_self_url(true, false, ['type' => 'import'], false, true);
         $refresh_time = either_param_integer('refresh_time', 0); // Shouldn't default, but reported on some systems to do so
         cms_set_time_limit($refresh_time);
         send_http_output_ping();
@@ -627,7 +627,7 @@ class Module_admin_import
         cms_ini_set('log_errors', '0');
 
         // Get data from session
-        $session_row = $GLOBALS['SITE_DB']->query_select('import_session', array('*'), array('imp_session' => get_session_id()), '', 1);
+        $session_row = $GLOBALS['SITE_DB']->query_select('import_session', ['*'], ['imp_session' => get_session_id()], '', 1);
         if (!array_key_exists(0, $session_row)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
@@ -637,7 +637,7 @@ class Module_admin_import
         $db_user = $session_row[0]['imp_db_user'];
         $db_password = post_param_string('db_password', '', INPUT_FILTER_NONE);
         $db_table_prefix = $session_row[0]['imp_db_table_prefix'];
-        $parts_done = collapse_2d_complexity('imp_id', 'imp_session', $GLOBALS['SITE_DB']->query_select('import_parts_done', array('imp_id', 'imp_session'), array('imp_session' => get_session_id())));
+        $parts_done = collapse_2d_complexity('imp_id', 'imp_session', $GLOBALS['SITE_DB']->query_select('import_parts_done', ['imp_id', 'imp_session'], ['imp_session' => get_session_id()]));
 
         // Load database connection
         $import_source = ($db_name === null) ? null : new DatabaseConnector($db_name, $db_host, $db_user, $db_password, $db_table_prefix);
@@ -656,11 +656,11 @@ class Module_admin_import
             require_code('forum/cns');
             $GLOBALS['CNS_DRIVER'] = new Forum_driver_cns();
             $GLOBALS['CNS_DRIVER']->db = $GLOBALS['SITE_DB'];
-            $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED = array();
+            $GLOBALS['CNS_DRIVER']->MEMBER_ROWS_CACHED = [];
         }
 
         // Build master list of input types selected from
-        $lang_array = array();
+        $lang_array = [];
         $hooks = find_all_hook_obs('modules', 'admin_import_types', 'Hook_admin_import_types_');
         foreach ($hooks as $_hook) {
             $lang_array += $_hook->run();
@@ -687,7 +687,7 @@ class Module_admin_import
                     }
                 }
                 if ($dependency !== null) {
-                    $out->attach(do_template('IMPORT_MESSAGE', array('_GUID' => 'b2a853f5fb93beada51a3eb8fbd1575f', 'MESSAGE' => do_lang_tempcode('IMPORT_OF_SKIPPED', escape_html($import), escape_html($dependency)))));
+                    $out->attach(do_template('IMPORT_MESSAGE', ['_GUID' => 'b2a853f5fb93beada51a3eb8fbd1575f', 'MESSAGE' => do_lang_tempcode('IMPORT_OF_SKIPPED', escape_html($import), escape_html($dependency))]));
                     continue;
                 }
 
@@ -697,7 +697,7 @@ class Module_admin_import
                 } else {
                     $function_name = 'import_' . $import;
                     cns_over_local();
-                    $func_output = call_user_func_array(array($object, $function_name), array($import_source, $db_table_prefix, $old_base_dir));
+                    $func_output = call_user_func_array([$object, $function_name], [$import_source, $db_table_prefix, $old_base_dir]);
                     if ($func_output !== null) {
                         $out->attach($func_output);
                     }
@@ -710,8 +710,8 @@ class Module_admin_import
                 $all_skipped = false;
 
                 // Mark done
-                $GLOBALS['SITE_DB']->query_delete('import_parts_done', array('imp_id' => $import, 'imp_session' => get_session_id()), '', 1);
-                $GLOBALS['SITE_DB']->query_insert('import_parts_done', array('imp_id' => $import, 'imp_session' => get_session_id()));
+                $GLOBALS['SITE_DB']->query_delete('import_parts_done', ['imp_id' => $import, 'imp_session' => get_session_id()], '', 1);
+                $GLOBALS['SITE_DB']->query_insert('import_parts_done', ['imp_id' => $import, 'imp_session' => get_session_id()]);
 
                 // Logging
                 log_it('IMPORT', $import);
@@ -726,7 +726,7 @@ class Module_admin_import
                     $lang_code = 'SOME_ERRORS_OCCURRED';
                 }
             }
-            $out->attach(do_template('IMPORT_MESSAGE', array('_GUID' => '4c4860d021814ffd1df6e21e712c7b44', 'MESSAGE' => do_lang_tempcode($lang_code))));
+            $out->attach(do_template('IMPORT_MESSAGE', ['_GUID' => '4c4860d021814ffd1df6e21e712c7b44', 'MESSAGE' => do_lang_tempcode($lang_code)]));
         }
 
         // Cleanup
@@ -747,7 +747,7 @@ class Module_admin_import
     {
         $out = new Tempcode();
 
-        $todos = array('MEMBER' => array('member', db_get_first_id(), null), 'GROUP' => array('group', null, 'group_id'));
+        $todos = ['MEMBER' => ['member', db_get_first_id(), null], 'GROUP' => ['group', null, 'group_id']];
         foreach ($todos as $db_abstraction => $definition) {
             list($import_code, $default_id, $field_name_also) = $definition;
 
@@ -762,7 +762,7 @@ class Module_admin_import
 
                 //echo '(working) ' . $field['m_table'] . '/' . $field['m_name'] . '<br />';
 
-                $values = $GLOBALS['SITE_DB']->query_select($field['m_table'], array('*'));
+                $values = $GLOBALS['SITE_DB']->query_select($field['m_table'], ['*']);
                 foreach ($values as $value) {
                     $current = $value[$field['m_name']];
                     $remapped = import_id_remap_get($import_code, $current, true);
@@ -811,12 +811,12 @@ class Module_admin_import
         $out->attach(paragraph(do_lang_tempcode('CNS_CONVERTED_INFO')));
 
         // Add zone formally
-        $map = array(
+        $map = [
             'zone_name' => 'forum',
             'zone_default_page' => 'forumview',
             'zone_theme' => '-1',
             'zone_require_session' => 0,
-        );
+        ];
         $map += insert_lang('zone_title', do_lang('SECTION_FORUMS'), 1);
         $map += insert_lang('zone_header_text', do_lang('FORUM'), 1);
         $GLOBALS['SITE_DB']->query_insert('zones', $map);
@@ -833,12 +833,12 @@ class Module_admin_import
     {
         if ($session != get_session_id()) {
             // Remap given to current
-            $GLOBALS['SITE_DB']->query_delete('import_session', array('imp_session' => get_session_id()), '', 1);
-            $GLOBALS['SITE_DB']->query_delete('import_parts_done', array('imp_session' => get_session_id()));
-            $GLOBALS['SITE_DB']->query_delete('import_id_remap', array('id_session' => get_session_id()));
-            $GLOBALS['SITE_DB']->query_update('import_session', array('imp_session' => get_session_id()), array('imp_session' => $session), '', 1);
-            $GLOBALS['SITE_DB']->query_update('import_parts_done', array('imp_session' => get_session_id()), array('imp_session' => $session));
-            $GLOBALS['SITE_DB']->query_update('import_id_remap', array('id_session' => get_session_id()), array('id_session' => $session));
+            $GLOBALS['SITE_DB']->query_delete('import_session', ['imp_session' => get_session_id()], '', 1);
+            $GLOBALS['SITE_DB']->query_delete('import_parts_done', ['imp_session' => get_session_id()]);
+            $GLOBALS['SITE_DB']->query_delete('import_id_remap', ['id_session' => get_session_id()]);
+            $GLOBALS['SITE_DB']->query_update('import_session', ['imp_session' => get_session_id()], ['imp_session' => $session], '', 1);
+            $GLOBALS['SITE_DB']->query_update('import_parts_done', ['imp_session' => get_session_id()], ['imp_session' => $session]);
+            $GLOBALS['SITE_DB']->query_update('import_id_remap', ['id_session' => get_session_id()], ['id_session' => $session]);
 
             $session = get_session_id();
         }

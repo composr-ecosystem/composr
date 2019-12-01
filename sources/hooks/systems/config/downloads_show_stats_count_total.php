@@ -30,7 +30,7 @@ class Hook_config_downloads_show_stats_count_total
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => '_SECTION_DOWNLOADS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_downloads_show_stats_count_total
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

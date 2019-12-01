@@ -44,7 +44,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         $this->process_checks_section('testFailedLogins', 'Failed logins', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testRateLimitSpike', 'Rate-limit spiking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -83,8 +83,8 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
                     $id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
                     $username = $GLOBALS['FORUM_DRIVER']->mrow_username($member);
 
-                    $countries = array();
-                    $rows = $GLOBALS['SITE_DB']->query_select('stats', array('DISTINCT ip'), array('member_id' => $id), 'AND date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
+                    $countries = [];
+                    $rows = $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT ip'], ['member_id' => $id], 'AND date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
                     foreach ($rows as $row) {
                         $country = geolocate_ip($row['ip']);
                         if ($country !== null) {
@@ -167,7 +167,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         }
 
         global $RATE_LIMITING_DATA;
-        $RATE_LIMITING_DATA = array();
+        $RATE_LIMITING_DATA = [];
 
         $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
         if (is_file($rate_limiter_path)) {
@@ -194,7 +194,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             global $SITE_INFO;
             $rate_limit_time_window = empty($SITE_INFO['rate_limit_time_window']) ? 10 : intval($SITE_INFO['rate_limit_time_window']);
 
-            $times_compound = array();
+            $times_compound = [];
 
             foreach ($RATE_LIMITING_DATA as $ip => $times) {
                 $requests_per_second = floatval(count($times)) / floatval($rate_limit_time_window);

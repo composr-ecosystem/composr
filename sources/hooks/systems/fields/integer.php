@@ -47,7 +47,7 @@ class Hook_fields_integer
             $special = get_param_string('option_' . strval($field['id']), '');
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -91,7 +91,7 @@ class Hook_fields_integer
                 }
             }
         }
-        return array('integer_unescaped', $default, 'integer');
+        return ['integer_unescaped', $default, 'integer'];
     }
 
     /**
@@ -191,7 +191,7 @@ class Hook_fields_integer
     public function get_field_auto_increment($field_id, $default = '')
     {
         // Get most recent value, to start with- we will iterate forward on it
-        $value = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'cv_value', array('cf_id' => $field_id), 'ORDER BY ce_id DESC');
+        $value = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'cv_value', ['cf_id' => $field_id], 'ORDER BY ce_id DESC');
         if ($value === null) {
             $value = intval($default) - 1;
         }
@@ -200,7 +200,7 @@ class Hook_fields_integer
         do {
             $value++;
 
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'ce_id', array('cv_value' => $value, 'cf_id' => $field_id));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'ce_id', ['cv_value' => $value, 'cf_id' => $field_id]);
         } while ($test !== null);
 
         return strval($value);

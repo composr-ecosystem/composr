@@ -42,8 +42,8 @@ class CMSTopicWrite
         require_code('cns_posts_action');
         $new_post_id = cns_make_post($new_topic_id, $title, $post, 0, true, null, 0, null, null, null, null, null, null, null, true, true, $forum_id); // NB: Checks perms implicitly
 
-        $validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', array('id' => $new_topic_id));
+        $validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', ['id' => $new_topic_id]);
 
-        return array($new_topic_id, $validated);
+        return [$new_topic_id, $validated];
     }
 }

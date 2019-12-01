@@ -63,7 +63,7 @@ if ($to_version_dotted === null) {
 $from_version_dotted = get_param_string('from', null);
 
 // LEGACY
-$addon_name_remap = array(
+$addon_name_remap = [
     'cedi' => 'wiki',
     'occle' => 'commandr',
     'ocf_avatars' => 'cns_avatars',
@@ -81,9 +81,9 @@ $addon_name_remap = array(
     'ocf_signatures' => 'cns_signatures',
     'ocf_thematic_avatars' => 'cns_thematic_avatars',
     'ocf_warnings' => 'cns_warnings',
-);
+];
 
-$addons = array();
+$addons = [];
 foreach (array_keys($_GET) as $key) {
     if (substr($key, 0, 6) == 'addon_') {
         $addon_name = substr($key, 6);

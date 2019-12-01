@@ -30,7 +30,7 @@ class Hook_config_banner_autosize
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BANNER_AUTOSIZE',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_banner_autosize
             'public' => false,
 
             'addon' => 'banners',
-        );
+        ];
     }
 
     /**

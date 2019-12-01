@@ -99,6 +99,6 @@ class Hook_media_rendering_audio_microsoft extends Media_renderer_with_fallback
             $attributes['height'] = '30';
         }
 
-        return do_template('MEDIA_VIDEO_GENERAL', array('_GUID' => 'f283bf03e092b6e649c661080a598666', 'HOOK' => 'audio_microsoft') + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
+        return do_template('MEDIA_VIDEO_GENERAL', ['_GUID' => 'f283bf03e092b6e649c661080a598666', 'HOOK' => 'audio_microsoft'] + _create_media_template_parameters($url, $attributes, $as_admin, $source_member));
     }
 }

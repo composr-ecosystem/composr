@@ -31,130 +31,130 @@ class Hook_actionlog_catalogues extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         require_lang('catalogues');
 
-        return array(
-            'ADD_CATALOGUE' => array(
+        return [
+            'ADD_CATALOGUE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
                     'EDIT_THIS_CATALOGUE' => '_SEARCH:cms_catalogues:_edit_catalogue:{ID}',
                     'ADD_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:add_category:catalogue_name={ID}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:catalogue_name={ID}',
-                ),
-            ),
-            'EDIT_CATALOGUE' => array(
+                ],
+            ],
+            'EDIT_CATALOGUE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
                     'EDIT_THIS_CATALOGUE' => '_SEARCH:cms_catalogues:_edit_catalogue:{ID}',
                     'ADD_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:add_category:catalogue_name={ID}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:catalogue_name={ID}',
-                ),
-            ),
-            'DELETE_CATALOGUE' => array(
+                ],
+            ],
+            'DELETE_CATALOGUE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_catalogue',
-                ),
-            ),
-            'ADD_CATALOGUE_CATEGORY' => array(
+                ],
+            ],
+            'ADD_CATALOGUE_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
                     'EDIT_THIS_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:_edit_category:{ID}',
                     'ADD_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:add_category:catalogue_name={CATALOGUE_NAME}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={ID}',
-                ),
-            ),
-            'EDIT_CATALOGUE_CATEGORY' => array(
+                ],
+            ],
+            'EDIT_CATALOGUE_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
                     'EDIT_THIS_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:_edit_category:{ID}',
                     'ADD_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:add_category:catalogue_name={CATALOGUE_NAME}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={ID}',
-                ),
-            ),
-            'DELETE_CATALOGUE_CATEGORY' => array(
+                ],
+            ],
+            'DELETE_CATALOGUE_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CATALOGUE_CATEGORY' => '_SEARCH:cms_catalogues:add_category',
-                ),
-            ),
-            'ADD_CATALOGUE_ENTRY' => array(
+                ],
+            ],
+            'ADD_CATALOGUE_ENTRY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_entry',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:entry:{ID}',
                     'EDIT_THIS_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:_edit_entry:{ID}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={CAT}',
-                ),
-            ),
-            'EDIT_CATALOGUE_ENTRY' => array(
+                ],
+            ],
+            'EDIT_CATALOGUE_ENTRY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_entry',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:catalogues:entry:{ID}',
                     'EDIT_THIS_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:_edit_entry:{ID}',
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry:category_id={CAT}',
-                ),
-            ),
-            'DELETE_CATALOGUE_ENTRY' => array(
+                ],
+            ],
+            'DELETE_CATALOGUE_ENTRY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue_entry',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CATALOGUE_ENTRY' => '_SEARCH:cms_catalogues:add_entry',
-                ),
-            ),
-            'IMPORT_CATALOGUE_ENTRIES' => array(
+                ],
+            ],
+            'IMPORT_CATALOGUE_ENTRIES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_CATALOGUES' => '_SEARCH:cms_catalogues',
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
-                ),
-            ),
-            'EXPORT_CATALOGUE_ENTRIES' => array(
+                ],
+            ],
+            'EXPORT_CATALOGUE_ENTRIES' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'catalogue',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_CATALOGUES' => '_SEARCH:cms_catalogues',
                     'VIEW' => '_SEARCH:catalogues:index:{ID}',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -170,21 +170,21 @@ class Hook_actionlog_catalogues extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_CATALOGUE_CATEGORY':
             case 'EDIT_CATALOGUE_CATEGORY':
-                $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', array('id' => intval($identifier)));
+                $catalogue_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => intval($identifier)]);
                 if ($catalogue_name !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CATALOGUE_NAME' => $catalogue_name,
-                    );
+                    ];
                 }
                 break;
 
             case 'ADD_CATALOGUE_ENTRY':
             case 'EDIT_CATALOGUE_ENTRY':
-                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', array('id' => intval($identifier)));
+                $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', ['id' => intval($identifier)]);
                 if ($cat !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => strval($cat),
-                    );
+                    ];
                 }
                 break;
         }

@@ -30,7 +30,7 @@ class Module_admin_addons
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -52,12 +52,12 @@ class Module_admin_addons
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        return array(
-            'browse' => array('ADDONS', 'menu/adminzone/structure/addons'),
-            'modules' => array('MODULE_MANAGEMENT', 'admin/component'),
-            'addon_import' => array('IMPORT_ADDON', 'admin/import'),
-            'addon_export' => array('EXPORT_ADDON', 'admin/export'),
-        );
+        return [
+            'browse' => ['ADDONS', 'menu/adminzone/structure/addons'],
+            'modules' => ['MODULE_MANAGEMENT', 'admin/component'],
+            'addon_import' => ['IMPORT_ADDON', 'admin/import'],
+            'addon_export' => ['EXPORT_ADDON', 'admin/export'],
+        ];
     }
 
     /**
@@ -84,7 +84,7 @@ class Module_admin_addons
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('addons', array(
+            $GLOBALS['SITE_DB']->create_table('addons', [
                 'addon_name' => '*SHORT_TEXT',
                 'addon_author' => 'SHORT_TEXT',
                 'addon_organisation' => 'SHORT_TEXT',
@@ -94,20 +94,20 @@ class Module_admin_addons
                 'addon_licence' => 'SHORT_TEXT',
                 'addon_description' => 'LONG_TEXT',
                 'addon_install_time' => 'TIME',
-            ), false, false, true);
+            ], false, false, true);
 
-            $GLOBALS['SITE_DB']->create_table('addons_files', array(
+            $GLOBALS['SITE_DB']->create_table('addons_files', [
                 'id' => '*AUTO', // Because two SHORT_TEXT's as keys exceeds the 500 mysql key limit
                 'addon_name' => 'SHORT_TEXT',
                 'filepath' => 'SHORT_TEXT',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_table('addons_dependencies', array(
+            $GLOBALS['SITE_DB']->create_table('addons_dependencies', [
                 'id' => '*AUTO', // Because two SHORT_TEXT's as keys exceeds the 500 mysql key limit
                 'addon_name' => 'SHORT_TEXT',
                 'addon_name_dependant_upon' => 'SHORT_TEXT',
                 'addon_name_incompatibility' => 'BINARY', // 0=dependency,1=incompatibility
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
@@ -143,7 +143,7 @@ class Module_admin_addons
         }
 
         if ($type == 'addon_export') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('EXPORT_ADDON');
         }
@@ -154,113 +154,113 @@ class Module_admin_addons
                 set_helper_panel_tutorial('tut_releasing_themes');
             }
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS')), array('_SELF:_SELF:browse', do_lang_tempcode('EXPORT_ADDON'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')], ['_SELF:_SELF:browse', do_lang_tempcode('EXPORT_ADDON')]]);
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
 
             $this->title = get_screen_title('EXPORT_ADDON');
         }
 
         if ($type == '__addon_export') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('EXPORT_ADDON');
         }
 
         if ($type == 'addon_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('IMPORT_ADDON');
         }
 
         if ($type == '_addon_import') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('IMPORT_ADDON');
         }
 
         if ($type == 'addon_install') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('INSTALL_ADDON');
         }
 
         if ($type == '_addon_install') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('INSTALL_ADDON');
         }
 
         if ($type == 'addon_tar_delete') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('DELETE_ADDON_TAR');
         }
 
         if ($type == '_addon_tar_delete') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('DELETE_ADDON_TAR');
         }
 
         if ($type == 'addon_uninstall') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('UNINSTALL_ADDON');
         }
 
         if ($type == '_addon_uninstall') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('UNINSTALL_ADDON');
         }
 
         if ($type == 'multi_action') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('INSTALL_AND_UNINSTALL');
         }
 
         if ($type == '_multi_action') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('INSTALL_AND_UNINSTALL');
         }
 
         if ($type == 'reinstall') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('REINSTALL_MODULE');
         }
 
         if ($type == 'uninstall') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('UNINSTALL_MODULE');
         }
 
         if ($type == 'upgrade') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
 
             $this->title = get_screen_title('UPGRADE_MODULE');
         }
 
         if ($type == 'modules') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')]]);
 
             $this->title = get_screen_title('MODULE_MANAGEMENT');
         }
 
         if ($type == 'view') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('ADDONS')), array('_SELF:_SELF:modules', do_lang_tempcode('MODULE_MANAGEMENT'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('ADDONS')], ['_SELF:_SELF:modules', do_lang_tempcode('MODULE_MANAGEMENT')]]);
             $zone = get_param_string('id');
             breadcrumb_set_self(($zone == '') ? do_lang('_WELCOME') : $zone);
 
@@ -366,7 +366,7 @@ class Module_admin_addons
         $addons_installed = find_installed_addons(false, false); // addon name => addon details
         $addons_available_for_installation = find_available_addons(false); // filename => addon details
 
-        $_tpl_addons = array('red' => array(), 'green' => array());
+        $_tpl_addons = ['red' => [], 'green' => []];
 
         $updated_addons_arr = find_updated_addons();
         $updated_addons = '';
@@ -402,22 +402,22 @@ class Module_admin_addons
                 }
 
                 $actions = new Tempcode();
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '5a65c9aa87291ecfe46f75e9b2949246',
                     'NAME' => $addon_name,
-                    'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_uninstall', 'name' => $addon_name), '_SELF'),
+                    'URL' => build_url(['page' => '_SELF', 'type' => 'addon_uninstall', 'name' => $addon_name], '_SELF'),
                     'ACTION_TITLE' => do_lang_tempcode('UNINSTALL'),
                     'ICON' => 'admin/delete2',
                     'GET' => true,
-                )));
+                ]));
                 $updated = array_key_exists($addon_name, $updated_addons_arr);
                 $status = do_lang_tempcode($updated ? 'STATUS_OUTOFDATE' : 'STATUS_INSTALLED');
                 $colour = $updated ? 'red' : 'green';
                 $description = $row['description'];
                 $file_list = $row['files'];
-                $pretty_name = do_template('ADDON_NAME', array('_GUID' => '86b940f63744eb0690059efd69c1d58c', 'IMAGE_URL' => find_addon_icon($addon_name, false, null), 'NAME' => $addon_name));
+                $pretty_name = do_template('ADDON_NAME', ['_GUID' => '86b940f63744eb0690059efd69c1d58c', 'IMAGE_URL' => find_addon_icon($addon_name, false, null), 'NAME' => $addon_name]);
 
-                $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', array(
+                $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                     '_GUID' => '9a06f5a9c9e3085c10ab7fb17c3efcd1',
                     'UPDATED_ADDONS' => $updated,
                     'DESCRIPTION' => $description,
@@ -437,11 +437,11 @@ class Module_admin_addons
                     'ACTIONS' => $actions,
                     'TYPE' => 'uninstall',
                     'PASSTHROUGH' => $addon_name,
-                )));
+                ]));
 
                 if ($do_caching) {
                     require_code('caches2');
-                    set_cache_entry('_addon_installed_tpl', 60 * 24, $cache_identifier, array($colour, $addon_tpl));
+                    set_cache_entry('_addon_installed_tpl', 60 * 24, $cache_identifier, [$colour, $addon_tpl]);
                 }
             }
 
@@ -464,30 +464,30 @@ class Module_admin_addons
 
                 if ($addon_tpl === null) {
                     $actions = new Tempcode();
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => 'e6e2bdac62c0d3afcd5251b3d525a1c9',
                         'NAME' => $addon_info['name'],
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_install', 'file' => $filename), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'addon_install', 'file' => $filename], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('INSTALL'),
                         'ICON' => 'admin/install',
                         'GET' => true,
-                    )));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array('_GUID' => '657b47e4039d573b98417add3c3a3f11',
+                    ]));
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', ['_GUID' => '657b47e4039d573b98417add3c3a3f11',
                         'NAME' => $addon_info['name'],
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'addon_tar_delete', 'file' => $filename), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'addon_tar_delete', 'file' => $filename], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('DELETE'),
                         'ICON' => 'admin/delete',
                         'GET' => true,
-                    )));
+                    ]));
                     $status = do_lang_tempcode('STATUS_NOT_INSTALLED');
                     $description = $addon_info['description'];
                     $file_list = $addon_info['files'];
                     if ($addon_info['version'] == '(version-synched)') {
                         $addon_info['version'] = float_to_raw_string(cms_version_number());
                     }
-                    $pretty_name = do_template('ADDON_NAME', array('_GUID' => '4802523382da01432bf04120ad01c677', 'IMAGE_URL' => find_addon_icon($addon_info['name'], false, $addon_info['tar_path']), 'NAME' => $addon_info['name']));
+                    $pretty_name = do_template('ADDON_NAME', ['_GUID' => '4802523382da01432bf04120ad01c677', 'IMAGE_URL' => find_addon_icon($addon_info['name'], false, $addon_info['tar_path']), 'NAME' => $addon_info['name']]);
 
-                    $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', array(
+                    $addon_tpl = static_evaluate_tempcode(do_template('ADDON_SCREEN_ADDON', [
                         '_GUID' => 'cb61bdb9ce0cef5cd520440c5f62008f',
                         'UPDATED_ADDONS' => false,
                         'DESCRIPTION' => $description,
@@ -507,11 +507,11 @@ class Module_admin_addons
                         'ACTIONS' => $actions,
                         'TYPE' => 'install',
                         'PASSTHROUGH' => $filename,
-                    )));
+                    ]));
 
                     if ($do_caching) {
                         require_code('caches2');
-                        set_cache_entry('_addon_available_tpl', 60 * 24, $cache_identifier, array($colour, $addon_tpl));
+                        set_cache_entry('_addon_available_tpl', 60 * 24, $cache_identifier, [$colour, $addon_tpl]);
                     }
                 }
 
@@ -528,15 +528,15 @@ class Module_admin_addons
             }
         }
 
-        $multi_action = build_url(array('page' => '_SELF', 'type' => 'multi_action'), '_SELF');
+        $multi_action = build_url(['page' => '_SELF', 'type' => 'multi_action'], '_SELF');
 
-        return do_template('ADDON_SCREEN', array(
+        return do_template('ADDON_SCREEN', [
             '_GUID' => 'ed6c80c29fcae333323ef03619954b6b',
             'TITLE' => $this->title,
             'ADDONS' => $tpl_addons,
             'MULTI_ACTION' => $multi_action,
             'UPDATED_ADDONS' => $updated_addons,
-        ));
+        ]);
     }
 
     /**
@@ -556,7 +556,7 @@ class Module_admin_addons
 
         $to_import = get_param_string('to_import', null);
 
-        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_COMPOSR_HOMESITE', escape_html(get_brand_page_url(array('page' => 'community'), 'site'))), 'url', null, 'choose_composr_homesite_addon', array(), false, $to_import, false, null, true));
+        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_COMPOSR_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_composr_homesite_addon', [], false, $to_import, false, null, true));
 
         $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), 'file', false, null, null, true, 'tar'));
 
@@ -567,7 +567,7 @@ class Module_admin_addons
 
         $submit_name = do_lang_tempcode('IMPORT_ADDON');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_addon_import', 'uploading' => 1), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_addon_import', 'uploading' => 1], '_SELF');
 
         $text = new Tempcode();
         $text->attach(paragraph(do_lang_tempcode('HELP_IMPORTING_ADDON')));
@@ -578,7 +578,7 @@ class Module_admin_addons
             $text->attach(get_maximum_upload_message($max));
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '7f50130c5a46e0f6e8a95e936ce7bf47',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
@@ -588,7 +588,7 @@ class Module_admin_addons
             'FIELDS' => $fields,
             'TEXT' => $text,
             'URL' => $post_url,
-        ));
+        ]);
     }
 
     /**
@@ -602,7 +602,7 @@ class Module_admin_addons
 
         require_code('uploads');
 
-        $url_map = array('page' => '_SELF', 'type' => 'multi_action');
+        $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
 
         $__url = post_param_string('url', '', INPUT_FILTER_URL_GENERAL);
         foreach (explode(',', $__url) as $i => $url) {
@@ -640,8 +640,8 @@ class Module_admin_addons
         $install_files = new Tempcode();
         $uninstall_files = new Tempcode();
 
-        $installing = array();
-        $uninstalling = array();
+        $installing = [];
+        $uninstalling = [];
 
         $hidden = new Tempcode();
 
@@ -673,9 +673,9 @@ class Module_admin_addons
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_multi_action'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_multi_action'], '_SELF');
 
-        return do_template('ADDON_MULTI_CONFIRM_SCREEN', array(
+        return do_template('ADDON_MULTI_CONFIRM_SCREEN', [
             '_GUID' => 'bd6b7e012825bb0c873a76a9f4b19cf1',
             'TITLE' => $this->title,
             'HIDDEN' => $hidden,
@@ -683,7 +683,7 @@ class Module_admin_addons
             'INSTALL_FILES' => $install_files,
             'UNINSTALL_FILES' => $uninstall_files,
             'WARNINGS' => $warnings,
-        ));
+        ]);
     }
 
     /**
@@ -698,7 +698,7 @@ class Module_admin_addons
         cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
 
         require_code('abstract_file_manager');
-        $writable_paths = array();
+        $writable_paths = [];
         foreach ($_POST as $key => $passed) {
             if (substr($key, 0, 8) == 'install_') {
                 $writable_paths = array_merge($writable_paths, get_addon_install_writable_paths($passed));
@@ -712,7 +712,7 @@ class Module_admin_addons
         }
         force_have_afm_details($writable_paths);
 
-        $addons_to_remove = array();
+        $addons_to_remove = [];
 
         foreach ($_POST as $key => $passed) {
             if (substr($key, 0, 8) == 'install_') {
@@ -773,7 +773,7 @@ class Module_admin_addons
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -789,14 +789,14 @@ class Module_admin_addons
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
         list($warnings, $files, $info) = inform_about_addon_install($file);
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_install'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_install'], '_SELF');
 
         $_description = comcode_to_tempcode($info['description'], $GLOBALS['FORUM_DRIVER']->get_guest_id());
         if ($info['version'] == '(version-synched)') {
             $info['version'] = float_to_raw_string(cms_version_number());
         }
 
-        return do_template('ADDON_INSTALL_CONFIRM_SCREEN', array(
+        return do_template('ADDON_INSTALL_CONFIRM_SCREEN', [
             '_GUID' => '79b8c0e900a498cfb166392163295a07',
             'TITLE' => $this->title,
             'FILE' => $file,
@@ -811,7 +811,7 @@ class Module_admin_addons
             'COPYRIGHT_ATTRIBUTION' => implode("\n", $info['copyright_attribution']),
             'LICENCE' => $info['licence'],
             'DESCRIPTION' => $_description,
-        ));
+        ]);
     }
 
     /**
@@ -830,13 +830,13 @@ class Module_admin_addons
 
         $theme = null;
 
-        $files = array();
+        $files = [];
         foreach (array_keys($_POST) as $key) {
             if (substr($key, 0, 5) == 'file_') {
                 $value = post_param_string($key);
                 $files[] = $value;
 
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^themes/([^/]+)/#', $value, $matches) != 0) {
                     $theme = $matches[1];
                 }
@@ -847,10 +847,10 @@ class Module_admin_addons
 
         // Show it worked / Refresh
         if (($theme !== null) && ($theme != 'default')) {
-            $url = build_url(array('page' => 'admin_themes', 'type' => 'edit_theme', 'theme' => $theme), 'adminzone');
+            $url = build_url(['page' => 'admin_themes', 'type' => 'edit_theme', 'theme' => $theme], 'adminzone');
             return redirect_screen($this->title, $url, do_lang_tempcode('INSTALL_THEME_SUCCESS'));
         }
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -866,7 +866,7 @@ class Module_admin_addons
         $file = get_param_string('file', false, INPUT_FILTER_GET_COMPLEX);
         $full = get_custom_file_base() . '/imports/addons/' . $file;
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_tar_delete'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_tar_delete'], '_SELF');
 
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('file', $file));
@@ -886,14 +886,14 @@ class Module_admin_addons
         list($warnings, $files, $info) = inform_about_addon_install($file);
         $_description = comcode_to_tempcode($info['description'], $GLOBALS['FORUM_DRIVER']->get_guest_id());
 
-        return do_template('CONFIRM_SCREEN', array(
+        return do_template('CONFIRM_SCREEN', [
             '_GUID' => 'f081efb0c257d8f3e3c9cd93da06e7f4',
             'TITLE' => $this->title,
             'FIELDS' => '',
             'HIDDEN' => $hidden,
             'URL' => $url,
             'TEXT' => do_lang_tempcode('DESCRIPTION_DELETE_ADDON_TAR', $text),
-        ));
+        ]);
     }
 
     /**
@@ -910,7 +910,7 @@ class Module_admin_addons
 
         unlink($full) or intelligent_write_error($full);
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -927,9 +927,9 @@ class Module_admin_addons
 
         list($warnings, $files) = inform_about_addon_uninstall($addon_name);
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_uninstall'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_uninstall'], '_SELF');
 
-        return do_template('ADDON_UNINSTALL_CONFIRM_SCREEN', array('_GUID' => 'fe96098c1f09d091fc10785134803135', 'TITLE' => $this->title, 'URL' => $url, 'NAME' => $addon_name, 'WARNINGS' => $warnings, 'FILES' => $files));
+        return do_template('ADDON_UNINSTALL_CONFIRM_SCREEN', ['_GUID' => 'fe96098c1f09d091fc10785134803135', 'TITLE' => $this->title, 'URL' => $url, 'NAME' => $addon_name, 'WARNINGS' => $warnings, 'FILES' => $files]);
     }
 
     /**
@@ -951,7 +951,7 @@ class Module_admin_addons
         // Archive it off to exports/addons
         $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $addon_name)) . '.tar';
 
-        $new_addon_files = array();
+        $new_addon_files = [];
         foreach ($addon_info['files'] as $_file) {
             if (substr($_file, -9) != '.editfrom') { // This would have been added back in automatically
                 $new_addon_files[] = $_file;
@@ -985,7 +985,7 @@ class Module_admin_addons
         erase_cached_templates(false, null, TEMPLATE_DECACHE_WITH_ADDON);
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -1001,7 +1001,7 @@ class Module_admin_addons
         require_code('files');
 
         // Lang packs
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_export', 'exp' => 'lang'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_export', 'exp' => 'lang'], '_SELF');
         $all_langs = find_all_langs();
         ksort($all_langs);
         $i = 0;
@@ -1017,13 +1017,13 @@ class Module_admin_addons
                     $nice_name = array_key_exists($lang, $lang_file_map) ? $lang_file_map[$lang] : $lang;
                     $frm_langs = new Tempcode();
                     $frm_langs->attach(form_input_hidden('lang', $lang));
-                    $tpl_langs->attach(do_template('ADDON_EXPORT_LINE', array('_GUID' => '4e2f56799bdb3c4930396315236e2383', 'NAME' => $nice_name, 'URL' => $url, 'FILES' => $frm_langs)));
+                    $tpl_langs->attach(do_template('ADDON_EXPORT_LINE', ['_GUID' => '4e2f56799bdb3c4930396315236e2383', 'NAME' => $nice_name, 'URL' => $url, 'FILES' => $frm_langs]));
                 }
             }
         }
 
         // Theme packs
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_export', 'exp' => 'theme'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_export', 'exp' => 'theme'], '_SELF');
         require_code('themes2');
         $all_themes = find_all_themes();
         cms_mb_ksort($all_themes, SORT_NATURAL | SORT_FLAG_CASE);
@@ -1033,12 +1033,12 @@ class Module_admin_addons
             if ($theme != 'default' && $theme != 'admin' || get_param_integer('test', 0) == 1) {
                 $frm_themes = new Tempcode();
                 $frm_themes->attach(form_input_hidden('theme', $theme));
-                $tpl_themes->attach(do_template('ADDON_EXPORT_LINE', array('_GUID' => '9c1dab6d6e6c13b5e01c86c83c3acde1', 'NAME' => $theme_title, 'URL' => $url, 'FILES' => $frm_themes)));
+                $tpl_themes->attach(do_template('ADDON_EXPORT_LINE', ['_GUID' => '9c1dab6d6e6c13b5e01c86c83c3acde1', 'NAME' => $theme_title, 'URL' => $url, 'FILES' => $frm_themes]));
             }
         }
 
         // Files for choice export
-        $url = build_url(array('page' => '_SELF', 'type' => '_addon_export', 'exp' => 'custom'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_addon_export', 'exp' => 'custom'], '_SELF');
         $files = $this->do_dir('');
         ksort($files);
         $frm_files = new Tempcode();
@@ -1048,18 +1048,18 @@ class Module_admin_addons
                 $file = strval($file);
             }
 
-            $frm_files->attach(do_template('ADDON_EXPORT_FILE_CHOICE', array('_GUID' => '77a91b947259c5e0cc7b5240b24425ca', 'ID' => strval($i), 'PATH' => $file)));
+            $frm_files->attach(do_template('ADDON_EXPORT_FILE_CHOICE', ['_GUID' => '77a91b947259c5e0cc7b5240b24425ca', 'ID' => strval($i), 'PATH' => $file]));
             $i++;
         }
 
-        return do_template('ADDON_EXPORT_SCREEN', array(
+        return do_template('ADDON_EXPORT_SCREEN', [
                 '_GUID' => 'd89367c0bbc3d6b8bd19f736d9474dfa',
                 'TITLE' => $this->title,
                 'LANGUAGES' => $tpl_langs,
                 'URL' => $url,
                 'FILES' => $frm_files,
                 'THEMES' => $tpl_themes,
-            ));
+            ]);
     }
 
     /**
@@ -1071,7 +1071,7 @@ class Module_admin_addons
     protected function do_dir($dir)
     {
         $full = get_file_base() . '/' . (($dir == '') ? '' : ($dir . '/'));
-        $temp = array();
+        $temp = [];
         $_dir = @opendir($full);
         if ($_dir !== false) {
             require_code('files');
@@ -1084,7 +1084,7 @@ class Module_admin_addons
             closedir($_dir);
         }
 
-        $out = array();
+        $out = [];
         foreach (array_keys($temp) as $file) {
             if (is_integer($file)) {
                 $file = strval($file);
@@ -1161,17 +1161,17 @@ class Module_admin_addons
         $field = form_input_line(do_lang_tempcode('VERSION'), do_lang_tempcode('DESCRIPTION_VERSION'), 'version', $version, true);
         $fields .= $field->evaluate();
         if ($theme !== null) {
-            $categories = array(
+            $categories = [
                 'Themes',
-            );
+            ];
             $category = 'Themes';
         } elseif ($is_lang) {
-            $categories = array(
+            $categories = [
                 'Translations',
-            );
+            ];
             $category = 'Translations';
         } else {
-            $categories = array(
+            $categories = [
                 'Admin Utilities',
                 'Development',
                 'Fun and Games',
@@ -1180,7 +1180,7 @@ class Module_admin_addons
                 'New Features',
                 'Third Party Integration',
                 'Uncategorised/Alpha',
-            );
+            ];
             $category = 'Uncategorised/Alpha';
         }
         $_categories = new Tempcode();
@@ -1202,9 +1202,9 @@ class Module_admin_addons
 
         if (($is_theme && ($theme !== null)) || ($is_lang && ($lang !== null))) {
             // Option for selecting exactly what files are used
-            $field = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '40cf0d0d5b6fee74fbd476e720a59675', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('COUNT_FILES')));
+            $field = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '40cf0d0d5b6fee74fbd476e720a59675', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('COUNT_FILES')]);
             $fields .= $field->evaluate();
-            $files = array();
+            $files = [];
             if ($is_lang && ($lang !== null)) {
                 $files = $this->do_dir('lang_custom/' . $lang);
                 ksort($files);
@@ -1248,7 +1248,7 @@ class Module_admin_addons
                     }
 
                     if ((substr($file, -4) == '.txt') && (strpos($file, '/comcode_custom/') !== false)) {
-                        $matches = array();
+                        $matches = [];
                         if ((preg_match('#^/((\w+)/)?pages/comcode_custom/[^/]*/(\w+)\.txt$#', $file, $matches) != 0) && ($matches[1] != 'docs')) {
                             $auto_ticked = false;
                             if ($matches[1] == '') {
@@ -1266,12 +1266,12 @@ class Module_admin_addons
                     }
                 }
                 if ($_fields != '' || $fields_after != '') {
-                    $field = do_template('FORM_SCREEN_FIELD_SPACER', array(
+                    $field = do_template('FORM_SCREEN_FIELD_SPACER', [
                         '_GUID' => 'e3f8c43ac243a7666a318319e8b6dd60',
                         'SECTION_HIDDEN' => false,
                         'TITLE' => do_lang_tempcode('PAGES'),
                         'HELP' => do_lang_tempcode('THEME_ALSO_INCLUDE_PAGES'),
-                    ));
+                    ]);
                     $fields .= $field->evaluate();
                     $fields .= $_fields;
                     $fields .= $fields_after;
@@ -1281,15 +1281,15 @@ class Module_admin_addons
 
         $submit_name = do_lang_tempcode('EXPORT_ADDON');
 
-        $map = array('page' => '_SELF', 'type' => '__addon_export');
+        $map = ['page' => '_SELF', 'type' => '__addon_export'];
         if ($theme !== null) {
-            $_redirect = build_url(array('page' => 'admin_themes', 'type' => 'browse'), 'adminzone');
+            $_redirect = build_url(['page' => 'admin_themes', 'type' => 'browse'], 'adminzone');
             $map['redirect'] = protect_url_parameter($_redirect);
             $map['theme'] = $theme;
         }
         $post_url = build_url($map, '_SELF');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'dd8bea111b0dfc7df7ddc7e2246f0ef9',
             'HIDDEN' => $hidden,
             'TITLE' => $this->title,
@@ -1298,7 +1298,7 @@ class Module_admin_addons
             'TEXT' => '',
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -1312,7 +1312,7 @@ class Module_admin_addons
 
         $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', post_param_string('addon_name'))) . date('-dmY-Hi', time()) . '.tar';
 
-        $files = array();
+        $files = [];
         foreach ($_POST as $key => $val) {
             if (!is_string($val)) {
                 continue;
@@ -1343,7 +1343,7 @@ class Module_admin_addons
         log_it('EXPORT_ADDON', $file);
 
         // Show it worked / Refresh
-        $_url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+        $_url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
         $url = $_url->evaluate();
         $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
         return redirect_screen($this->title, $url, do_lang_tempcode('ADDON_CREATED', escape_html($download_url)));
@@ -1361,11 +1361,11 @@ class Module_admin_addons
         $list = create_selection_list_zones();
         $list->attach(form_input_list_entry('_block', false, do_lang_tempcode('BLOCKS')));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'view'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF', [], false, true);
         $fields = form_input_huge_list(do_lang_tempcode('ZONE_OR_BLOCKS'), '', 'id', $list, null, true);
         $submit_name = do_lang_tempcode('PROCEED');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '43cc3d9031a3094b62e78461eb99fb5d',
             'GET' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -1376,7 +1376,7 @@ class Module_admin_addons
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -1387,15 +1387,15 @@ class Module_admin_addons
     public function modules_view()
     {
         $zone = get_param_string('id');
-        $tpl_modules = array();
+        $tpl_modules = [];
 
         require_code('templates_columned_table');
         require_code('zones2');
 
         if ($zone != '_block') {
-            $module_rows = list_to_map('module_the_name', $GLOBALS['SITE_DB']->query_select('modules', array('*')));
+            $module_rows = list_to_map('module_the_name', $GLOBALS['SITE_DB']->query_select('modules', ['*']));
         } else {
-            $module_rows = list_to_map('block_name', $GLOBALS['SITE_DB']->query_select('blocks', array('*')));
+            $module_rows = list_to_map('block_name', $GLOBALS['SITE_DB']->query_select('blocks', ['*']));
         }
 
         if ($zone == '_block') {
@@ -1437,44 +1437,44 @@ class Module_admin_addons
                     $hidden = new Tempcode();
                     $hidden->attach(form_input_hidden('zone', $zone));
                     $hidden->attach(form_input_hidden('module', $module));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => '331afd26f5e62a6a4cdc4e2c520a4114',
                         'HIDDEN' => $hidden,
                         'NAME' => $module,
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'uninstall'), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'uninstall'], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('UNINSTALL'),
                         'ICON' => 'admin/delete2',
                         'GET' => false,
-                    )));
+                    ]));
                 }
                 if ($row[$prefix . '_version'] < $version) {
                     $status = do_lang_tempcode('STATUS_TO_UPGRADE');
                     $hidden = new Tempcode();
                     $hidden->attach(form_input_hidden('zone', $zone));
                     $hidden->attach(form_input_hidden('module', $module));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => 'e5d012cb8c839e0e869f1edfa008dacd',
                         'HIDDEN' => $hidden,
                         'NAME' => $module,
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'upgrade'), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'upgrade'], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('UPGRADE'),
                         'ICON' => 'admin/upgrade',
                         'GET' => false,
-                    )));
+                    ]));
                 } elseif (($hack_version !== null) && ($row[$prefix . '_hack_version'] < $hack_version)) {
                     $status = do_lang_tempcode('STATUS_TO_HACK');
                     $hidden = new Tempcode();
                     $hidden->attach(form_input_hidden('zone', $zone));
                     $hidden->attach(form_input_hidden('module', $module));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => '42c4473bf31dfd329e921e443ccc2ec3',
                         'HIDDEN' => $hidden,
                         'NAME' => $module,
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'upgrade'), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'upgrade'], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('UPGRADE'),
                         'ICON' => 'admin/upgrade',
                         'GET' => false,
-                    )));
+                    ]));
                 } else {
                     $status = do_lang_tempcode('STATUS_CURRENT');
                 }
@@ -1482,29 +1482,29 @@ class Module_admin_addons
                     $hidden = new Tempcode();
                     $hidden->attach(form_input_hidden('zone', $zone));
                     $hidden->attach(form_input_hidden('module', $module));
-                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                    $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                         '_GUID' => 'c2d820af4b9a2f8633f6f5a4e3de76bc',
                         'HIDDEN' => $hidden,
                         'NAME' => $module,
-                        'URL' => build_url(array('page' => '_SELF', 'type' => 'reinstall'), '_SELF'),
+                        'URL' => build_url(['page' => '_SELF', 'type' => 'reinstall'], '_SELF'),
                         'ACTION_TITLE' => do_lang_tempcode('REINSTALL'),
                         'ICON' => 'admin/reinstall',
                         'GET' => false,
-                    )));
+                    ]));
                 }
             } else {
                 $hidden = new Tempcode();
                 $hidden->attach(form_input_hidden('zone', $zone));
                 $hidden->attach(form_input_hidden('module', $module));
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '6b438e07cfe154afc21439479fd76978',
                     'HIDDEN' => $hidden,
                     'NAME' => $module,
-                    'URL' => build_url(array('page' => '_SELF', 'type' => 'reinstall'), '_SELF'),
+                    'URL' => build_url(['page' => '_SELF', 'type' => 'reinstall'], '_SELF'),
                     'ACTION_TITLE' => do_lang_tempcode('INSTALL'),
                     'ICON' => 'admin/install',
                     'GET' => false,
-                )));
+                ]));
             }
 
             if ($hacked_by === null) {
@@ -1513,10 +1513,10 @@ class Module_admin_addons
             if ($hack_version === null) {
                 $hack_version = do_lang_tempcode('NA_EM');
             }
-            $tpl_modules[] = array('STATUS' => $status, 'NAME' => $module, 'AUTHOR' => $author, 'ORGANISATION' => $organisation, 'VERSION' => strval($version), 'HACKED_BY' => $hacked_by, 'HACK_VERSION' => $hack_version, 'ACTIONS' => $actions);
+            $tpl_modules[] = ['STATUS' => $status, 'NAME' => $module, 'AUTHOR' => $author, 'ORGANISATION' => $organisation, 'VERSION' => strval($version), 'HACKED_BY' => $hacked_by, 'HACK_VERSION' => $hack_version, 'ACTIONS' => $actions];
         }
 
-        return do_template('MODULE_SCREEN', array('_GUID' => '132b23107b49a23e0b11db862de1dd56', 'TITLE' => $this->title, 'MODULES' => $tpl_modules));
+        return do_template('MODULE_SCREEN', ['_GUID' => '132b23107b49a23e0b11db862de1dd56', 'TITLE' => $this->title, 'MODULES' => $tpl_modules]);
     }
 
     /**
@@ -1538,7 +1538,7 @@ class Module_admin_addons
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'view', 'id' => $zone), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $zone], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -1561,7 +1561,7 @@ class Module_admin_addons
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'view', 'id' => $zone), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $zone], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -1584,7 +1584,7 @@ class Module_admin_addons
         }
 
         // Show it worked / Refresh
-        $url = build_url(array('page' => '_SELF', 'type' => 'view', 'id' => $zone), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $zone], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 }

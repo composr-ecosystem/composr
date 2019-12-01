@@ -57,16 +57,16 @@ class Hook_commandr_fs_extended_config__privileges
     {
         require_code('resource_fs');
 
-        $tables = array(
-            'group_privileges' => array('category_name' => ''),
-            'member_privileges' => array('category_name' => ''),
-            'group_page_access' => array(),
-            'member_page_access' => array(),
-        );
+        $tables = [
+            'group_privileges' => ['category_name' => ''],
+            'member_privileges' => ['category_name' => ''],
+            'group_page_access' => [],
+            'member_page_access' => [],
+        ];
 
-        $all = array();
+        $all = [];
         foreach ($tables as $table => $map) {
-            $all[$table] = table_to_portable_rows($table, array(), $map);
+            $all[$table] = table_to_portable_rows($table, [], $map);
         }
         return json_encode($all);
     }
@@ -88,12 +88,12 @@ class Hook_commandr_fs_extended_config__privileges
             return false;
         }
 
-        $tables = array(
-            'group_privileges' => array('category_name' => ''),
-            'member_privileges' => array('category_name' => ''),
-            'group_page_access' => array(),
-            'member_page_access' => array(),
-        );
+        $tables = [
+            'group_privileges' => ['category_name' => ''],
+            'member_privileges' => ['category_name' => ''],
+            'group_page_access' => [],
+            'member_page_access' => [],
+        ];
 
         $ret = true;
         foreach ($all as $table => $rows) {

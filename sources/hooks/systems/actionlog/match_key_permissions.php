@@ -31,21 +31,21 @@ class Hook_actionlog_match_key_permissions extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('match_key_permissions')) {
-            return array();
+            return [];
         }
 
         require_lang('permissions');
 
-        return array(
-            'PAGE_MATCH_KEY_ACCESS' => array(
+        return [
+            'PAGE_MATCH_KEY_ACCESS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'PAGE_MATCH_KEY_ACCESS' => '_SEARCH:admin_permissions:match_keys',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

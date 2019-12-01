@@ -31,7 +31,7 @@ class Hook_addon_registry_content_reviews
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_content_reviews
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_adminzone',
-        );
+        ];
     }
 
     /**
@@ -73,14 +73,14 @@ class Hook_addon_registry_content_reviews
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'unvalidated',
                 'commandr',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -100,7 +100,7 @@ class Hook_addon_registry_content_reviews
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/addon_registry/content_reviews.php',
             'sources/hooks/systems/cron/content_reviews.php',
             'sources/hooks/blocks/main_staff_checklist/content_reviews.php',
@@ -112,7 +112,7 @@ class Hook_addon_registry_content_reviews
             'themes/default/templates/REVIEW_STATUS.tpl',
             'themes/default/images/icons/menu/adminzone/audit/content_reviews.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/content_reviews.svg',
-        );
+        ];
     }
 
     /**
@@ -122,9 +122,9 @@ class Hook_addon_registry_content_reviews
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/REVIEW_STATUS.tpl' => 'review_status',
-        );
+        ];
     }
 
     /**
@@ -136,8 +136,8 @@ class Hook_addon_registry_content_reviews
      */
     public function tpl_preview__review_status()
     {
-        return array(
-            lorem_globalise(do_lorem_template('REVIEW_STATUS', array(
+        return [
+            lorem_globalise(do_lorem_template('REVIEW_STATUS', [
                 'LAST_REVIEWED_DATE' => placeholder_date(),
                 'NEXT_REVIEW_DATE' => placeholder_date(),
                 '_LAST_REVIEWED_TIME' => placeholder_date_raw(),
@@ -145,7 +145,7 @@ class Hook_addon_registry_content_reviews
                 'CONTENT_TYPE' => placeholder_id(),
                 'CONTENT_ID' => placeholder_id(),
                 'DISPLAY' => true,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

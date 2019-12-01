@@ -30,7 +30,7 @@ class Hook_config_max_chat_lobby_friends
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MAX_CHAT_LOBBY_FRIENDS',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_max_chat_lobby_friends
             'public' => false,
 
             'addon' => 'chat',
-        );
+        ];
     }
 
     /**

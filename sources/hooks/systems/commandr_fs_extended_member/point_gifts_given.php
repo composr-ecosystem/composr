@@ -41,7 +41,7 @@ class Hook_commandr_fs_extended_member__point_gifts_given
      */
     public function read_property($member_id)
     {
-        return table_to_portable_rows('gifts', array('id'), array('gift_from' => $member_id));
+        return table_to_portable_rows('gifts', ['id'], ['gift_from' => $member_id]);
     }
 
     /**
@@ -52,6 +52,6 @@ class Hook_commandr_fs_extended_member__point_gifts_given
      */
     public function write_property($member_id, $data)
     {
-        table_from_portable_rows('gifts', $data, array('gift_from' => $member_id), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+        table_from_portable_rows('gifts', $data, ['gift_from' => $member_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
     }
 }

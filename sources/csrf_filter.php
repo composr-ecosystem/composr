@@ -35,7 +35,7 @@ function csrf_filter_active()
     }
 
     $security_token_exceptions = get_option('security_token_exceptions');
-    $_security_token_exceptions = ($security_token_exceptions == '') ? array() : explode("\n", $security_token_exceptions);
+    $_security_token_exceptions = ($security_token_exceptions == '') ? [] : explode("\n", $security_token_exceptions);
     return !in_array(get_page_name(), $_security_token_exceptions) && !in_array(get_zone_name(), $_security_token_exceptions);
 }
 
@@ -52,14 +52,14 @@ function generate_csrf_token()
         require_code('crypt');
         $token = get_secure_random_string();
 
-        $GLOBALS['SITE_DB']->query_insert('post_tokens', array(
+        $GLOBALS['SITE_DB']->query_insert('post_tokens', [
             'token' => $token,
             'generation_time' => time(),
             'member_id' => get_member(),
             'session_id' => get_session_id(),
             'ip_address' => get_ip_address(),
             'usage_tally' => 0,
-        ));
+        ]);
     }
 
     return $token;
@@ -86,7 +86,7 @@ function check_csrf_token($token)
         return;
     }
 
-    $token_rows = $GLOBALS['SITE_DB']->query_select('post_tokens', array('*'), array('token' => $token), '', 1);
+    $token_rows = $GLOBALS['SITE_DB']->query_select('post_tokens', ['*'], ['token' => $token], '', 1);
     if (isset($token_rows[0])) {
         $token_row = $token_rows[0];
 
@@ -106,7 +106,7 @@ function check_csrf_token($token)
         }
 
         if (!$member_match && !$session_match && !$ip_match) { // Multiple checks means safe if login status changed, session changed, or networks changed - but not all 3; also allows it to work well for both guests and members
-            $GLOBALS['SITE_DB']->query_delete('post_tokens', array('token' => $token), '', 1); // Kill the token, in case a hacker has stolen it and this was a mis-targeting that preempts a successful future targeting
+            $GLOBALS['SITE_DB']->query_delete('post_tokens', ['token' => $token], '', 1); // Kill the token, in case a hacker has stolen it and this was a mis-targeting that preempts a successful future targeting
 
             warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_MISMATCHED_TOKEN_HACK'));
         }
@@ -120,7 +120,7 @@ function check_csrf_token($token)
             warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK'));
         }
 
-        $GLOBALS['SITE_DB']->query_update('post_tokens', array('usage_tally' => $token_row['usage_tally'] + 1), array('token' => $token), '', 1);
+        $GLOBALS['SITE_DB']->query_update('post_tokens', ['usage_tally' => $token_row['usage_tally'] + 1], ['token' => $token], '', 1);
     } else {
         warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK'));
     }

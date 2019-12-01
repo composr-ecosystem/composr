@@ -31,7 +31,7 @@ class Hook_addon_registry_quizzes
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_quizzes
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_quizzes',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_quizzes
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_quizzes
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/quizzes.php',
             'themes/default/images/icons/menu/cms/quiz/find_winners.svg',
             'themes/default/images/icons/menu/cms/quiz/quiz_results.svg',
@@ -143,7 +143,7 @@ class Hook_addon_registry_quizzes
             'sources/hooks/systems/config/search_quiz.php',
             'themes/default/javascript/quizzes.js',
             'sources/hooks/systems/actionlog/quizzes.php',
-        );
+        ];
     }
 
     /**
@@ -153,7 +153,7 @@ class Hook_addon_registry_quizzes
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/QUIZ_RESULTS_SCREEN.tpl' => 'administrative__quiz_results_screen',
             'templates/QUIZ_RESULT_SCREEN.tpl' => 'administrative__quiz_result_screen',
             'templates/QUIZ_RESULTS.tpl' => 'quiz_results',
@@ -164,7 +164,7 @@ class Hook_addon_registry_quizzes
             'text/QUIZ_TEST_ANSWERS_MAIL.txt' => 'quiz_test_answers_mail',
             'templates/QUIZ_DONE_SCREEN.tpl' => 'quiz_done_screen',
             'templates/MEMBER_QUIZ_ENTRIES.tpl' => 'member_quiz_entries',
-        );
+        ];
     }
 
     /**
@@ -178,24 +178,24 @@ class Hook_addon_registry_quizzes
     {
         $fields = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $fields->attach(do_lorem_template('MAP_TABLE_FIELD', array(
+            $fields->attach(do_lorem_template('MAP_TABLE_FIELD', [
                 'ABBR' => '',
                 'NAME' => lorem_phrase(),
                 'VALUE' => lorem_phrase(),
-            )));
+            ]));
         }
-        $summary = do_lorem_template('MAP_TABLE', array(
+        $summary = do_lorem_template('MAP_TABLE', [
             'WIDTH' => placeholder_number(),
             'FIELDS' => $fields,
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_RESULTS_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_RESULTS_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SUMMARY' => $summary,
                 'RESULTS' => placeholder_table(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -207,19 +207,19 @@ class Hook_addon_registry_quizzes
      */
     public function tpl_preview__administrative__quiz_result_screen()
     {
-        $given_answers_arr = array();
-        foreach (array(true, false, null) as $was_correct) {
-            $given_answers_arr[] = array(
+        $given_answers_arr = [];
+        foreach ([true, false, null] as $was_correct) {
+            $given_answers_arr[] = [
                 'QUESTION' => lorem_phrase(),
                 'GIVEN_ANSWER' => lorem_phrase(),
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => lorem_phrase(),
                 'CORRECT_EXPLANATION' => lorem_paragraph_html(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_RESULT_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_RESULT_SCREEN', [
                 'TITLE' => lorem_title(),
                 'USERNAME' => lorem_phrase(),
                 'MEMBER_URL' => placeholder_url(),
@@ -236,8 +236,8 @@ class Hook_addon_registry_quizzes
                 'OUT_OF' => placeholder_number(),
                 'MARKS_RANGE' => placeholder_number(),
                 'PERCENTAGE_RANGE' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -249,22 +249,22 @@ class Hook_addon_registry_quizzes
      */
     public function tpl_preview__quiz_results()
     {
-        $given_answers_arr = array();
-        foreach (array(true, false, null) as $was_correct) {
-            $given_answers_arr[] = array(
+        $given_answers_arr = [];
+        foreach ([true, false, null] as $was_correct) {
+            $given_answers_arr[] = [
                 'QUESTION' => lorem_phrase(),
                 'GIVEN_ANSWER' => lorem_phrase(),
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => lorem_phrase(),
                 'CORRECT_EXPLANATION' => lorem_paragraph_html(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_RESULTS', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_RESULTS', [
                 'GIVEN_ANSWERS_ARR' => $given_answers_arr,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -280,7 +280,7 @@ class Hook_addon_registry_quizzes
         $content_competitions = new Tempcode();
         $content_surveys = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $link = do_lorem_template('QUIZ_BOX', array(
+            $link = do_lorem_template('QUIZ_BOX', [
                 'TYPE' => lorem_word(),
                 'DATE' => placeholder_date(),
                 'URL' => placeholder_url(),
@@ -291,21 +291,21 @@ class Hook_addon_registry_quizzes
                 '_TYPE' => lorem_word(),
                 'POINTS' => placeholder_id(),
                 'GIVE_CONTEXT' => true,
-            ));
+            ]);
         }
         $content_surveys->attach($link);
         $content_tests->attach($link);
         $content_competitions->attach($link);
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_ARCHIVE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_ARCHIVE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'CONTENT_SURVEYS' => $content_surveys,
                 'CONTENT_COMPETITIONS' => $content_competitions,
                 'CONTENT_TESTS' => $content_tests,
                 'PAGINATION' => placeholder_pagination(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -318,12 +318,12 @@ class Hook_addon_registry_quizzes
     public function tpl_preview__quiz_screen()
     {
         // This is for getting the $cms.doAjaxRequest() javascript function.
-        $warning_details = do_lorem_template('WARNING_BOX', array(
+        $warning_details = do_lorem_template('WARNING_BOX', [
             'WARNING' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_SCREEN', [
                 'TAGS' => lorem_word_html(),
                 'ID' => placeholder_id(),
                 'WARNING_DETAILS' => $warning_details,
@@ -334,8 +334,8 @@ class Hook_addon_registry_quizzes
                 'TIMEOUT' => '5',
                 'EDIT_URL' => placeholder_url(),
                 'ALL_REQUIRED' => false,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -352,19 +352,19 @@ class Hook_addon_registry_quizzes
             $given_answers->attach(lorem_phrase());
         }
 
-        $given_answers_arr = array();
-        foreach (array(true, false, null) as $was_correct) {
-            $given_answers_arr[] = array(
+        $given_answers_arr = [];
+        foreach ([true, false, null] as $was_correct) {
+            $given_answers_arr[] = [
                 'QUESTION' => lorem_phrase(),
                 'GIVEN_ANSWER' => lorem_phrase(),
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => lorem_phrase(),
                 'CORRECT_EXPLANATION' => lorem_paragraph_html(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_SURVEY_ANSWERS_MAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_SURVEY_ANSWERS_MAIL', [
                 'ENTRY_ID' => placeholder_id(),
                 'QUIZ_NAME' => lorem_phrase(),
                 'GIVEN_ANSWERS_ARR' => $given_answers_arr,
@@ -372,8 +372,8 @@ class Hook_addon_registry_quizzes
                 'MEMBER_PROFILE_URL' => placeholder_url(),
                 'USERNAME' => lorem_phrase(),
                 'FORUM_DRIVER' => null,
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -400,19 +400,19 @@ class Hook_addon_registry_quizzes
             $given_answers->attach(lorem_phrase());
         }
 
-        $given_answers_arr = array();
-        foreach (array(true, false, null) as $was_correct) {
-            $given_answers_arr[] = array(
+        $given_answers_arr = [];
+        foreach ([true, false, null] as $was_correct) {
+            $given_answers_arr[] = [
                 'QUESTION' => lorem_phrase(),
                 'GIVEN_ANSWER' => lorem_phrase(),
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => lorem_phrase(),
                 'CORRECT_EXPLANATION' => lorem_paragraph_html(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_TEST_ANSWERS_MAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_TEST_ANSWERS_MAIL', [
                 'ENTRY_ID' => placeholder_id(),
                 'QUIZ_NAME' => lorem_phrase(),
                 'GIVEN_ANSWERS_ARR' => $given_answers_arr,
@@ -421,8 +421,8 @@ class Hook_addon_registry_quizzes
                 'CORRECTIONS' => $corrections,
                 'RESULT' => lorem_phrase(),
                 'USERNAME' => lorem_phrase(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -434,19 +434,19 @@ class Hook_addon_registry_quizzes
      */
     public function tpl_preview__quiz_done_screen()
     {
-        $given_answers_arr = array();
-        foreach (array(true, false, null) as $was_correct) {
-            $given_answers_arr[] = array(
+        $given_answers_arr = [];
+        foreach ([true, false, null] as $was_correct) {
+            $given_answers_arr[] = [
                 'QUESTION' => lorem_phrase(),
                 'GIVEN_ANSWER' => lorem_phrase(),
                 'WAS_CORRECT' => $was_correct,
                 'CORRECT_ANSWER' => lorem_phrase(),
                 'CORRECT_EXPLANATION' => lorem_paragraph_html(),
-            );
+            ];
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('QUIZ_DONE_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('QUIZ_DONE_SCREEN', [
                 'TITLE' => lorem_title(),
                 'ENTRY_ID' => placeholder_id(),
                 'QUIZ_NAME' => lorem_phrase(),
@@ -464,8 +464,8 @@ class Hook_addon_registry_quizzes
                 'OUT_OF' => placeholder_number(),
                 'MARKS_RANGE' => placeholder_number(),
                 'PERCENTAGE_RANGE' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -477,17 +477,17 @@ class Hook_addon_registry_quizzes
      */
     public function tpl_preview__member_quiz_entries()
     {
-        $categories = array();
-        $categories[do_lang('OTHER')] = array(
-            'QUIZZES' => array(),
+        $categories = [];
+        $categories[do_lang('OTHER')] = [
+            'QUIZZES' => [],
             'RUNNING_MARKS' => placeholder_number(),
             'RUNNING_OUT_OF' => placeholder_number(),
             'RUNNING_PERCENTAGE' => placeholder_number(),
             'RUNNING_MARKS__CREDIT' => placeholder_number(),
             'RUNNING_OUT_OF__CREDIT' => placeholder_number(),
             'RUNNING_PERCENTAGE__CREDIT' => placeholder_number(),
-        );
-        $categories[do_lang('OTHER')]['QUIZZES'][] = array(
+        ];
+        $categories[do_lang('OTHER')]['QUIZZES'][] = [
             'QUIZ_NAME' => lorem_phrase(),
             'QUIZ_START_TEXT' => lorem_paragraph_html(),
             'QUIZ_ID' => placeholder_id(),
@@ -500,16 +500,16 @@ class Hook_addon_registry_quizzes
             'PERCENTAGE_RANGE' => placeholder_number(),
             'PASSED' => true,
             'POINTS' => placeholder_number(),
-        );
+        ];
 
-        return array(
-            lorem_globalise(do_lorem_template('MEMBER_QUIZ_ENTRIES', array(
+        return [
+            lorem_globalise(do_lorem_template('MEMBER_QUIZ_ENTRIES', [
                 'CATEGORIES' => $categories,
                 'MEMBER_ID' => placeholder_id(),
                 'SORTING' => placeholder_table(),
                 'DELETE_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -519,7 +519,7 @@ class Hook_addon_registry_quizzes
     {
         require_code('quiz2');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('quizzes', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('q_name') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('quizzes', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('q_name') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_quiz($record['id']);
         }

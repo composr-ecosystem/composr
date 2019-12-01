@@ -30,7 +30,7 @@ class Hook_config_show_first_join_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_FIRST_JOIN_PAGE',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_show_first_join_page
             'required' => true,
             'public' => false,
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

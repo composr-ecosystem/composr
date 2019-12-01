@@ -45,7 +45,7 @@ class Hook_fields_year_month
             $type .= '_RANGE';
         }
 
-        return array('NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special);
+        return ['NAME' => strval($field['id']) . $extra, 'DISPLAY' => $display, 'TYPE' => $type, 'SPECIAL' => $special];
     }
 
     /**
@@ -113,7 +113,7 @@ class Hook_fields_year_month
                 $default = date('Y-m-d H:i', utctime_to_usertime());
             }
         }
-        return array('short_unescaped', $default, 'short');
+        return ['short_unescaped', $default, 'short'];
     }
 
     /**

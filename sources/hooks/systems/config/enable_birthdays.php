@@ -30,7 +30,7 @@ class Hook_config_enable_birthdays
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_BIRTHDAYS',
             'type' => 'integer',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_enable_birthdays
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

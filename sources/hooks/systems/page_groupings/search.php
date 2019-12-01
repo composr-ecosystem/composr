@@ -33,11 +33,11 @@ class Hook_page_groupings_search
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('search')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('site_meta', 'buttons/search', array('search', array(), get_module_zone('search')), do_lang_tempcode('SEARCH')),
-        );
+        return [
+            ['site_meta', 'buttons/search', ['search', [], get_module_zone('search')], do_lang_tempcode('SEARCH')],
+        ];
     }
 }

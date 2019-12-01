@@ -30,7 +30,7 @@ class Hook_config_downloads_show_stats_count_archive
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TOTAL_DOWNLOADS_IN_ARCHIVE',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_downloads_show_stats_count_archive
             'public' => false,
 
             'addon' => 'downloads',
-        );
+        ];
     }
 
     /**

@@ -29,43 +29,43 @@ class Hook_privacy_booking extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-            ),
+            'general' => [
+            ],
 
-            'database_records' => array(
-                'bookable' => array(
+            'database_records' => [
+                'bookable' => [
                     'timestamp_field' => 'add_date',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('submitter'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['submitter'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'booking' => array(
+                ],
+                'booking' => [
                     'timestamp_field' => 'booked_at',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('customer_email'),
-                    'additional_anonymise_fields' => array('customer_name', 'customer_mobile', 'customer_phone'),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['customer_email'],
+                    'additional_anonymise_fields' => ['customer_name', 'customer_mobile', 'customer_phone'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -81,11 +81,11 @@ class Hook_privacy_booking extends Hook_privacy_base
 
         switch ($table_name) {
             case 'booking':
-                $title = $GLOBALS['SITE_DB']->query_select_value_if_there('bookable', 'title', array('id' => $row['bookable_id']));
+                $title = $GLOBALS['SITE_DB']->query_select_value_if_there('bookable', 'title', ['id' => $row['bookable_id']]);
                 if ($title !== null) {
-                    $ret += array(
+                    $ret += [
                         'bookable_id__dereferenced' => get_translated_text($title),
-                    );
+                    ];
                 }
                 break;
         }

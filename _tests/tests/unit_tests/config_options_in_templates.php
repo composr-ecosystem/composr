@@ -22,14 +22,14 @@ class config_options_in_templates_test_set extends cms_test_case
     {
         global $GFILE_ARRAY;
 
-        $addon_data = array();
+        $addon_data = [];
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $hook => $ob) {
             $files = $ob->get_file_list();
 
             foreach ($files as $path) {
                 if (preg_match('#^themes/default/.*/.*\.(tpl|txt|css|xml|js)$#', $path) != 0) {
-                    if (in_array($path, array(
+                    if (in_array($path, [
                         'themes/default/templates_custom/BOOKING_START_SCREEN.tpl',
                         'themes/default/templates_custom/LOGIN_SCREEN.tpl',
                         'themes/default/templates_custom/BLOCK_MAIN_GOOGLE_MAP_USERS.tpl',
@@ -40,14 +40,14 @@ class config_options_in_templates_test_set extends cms_test_case
                         'themes/default/templates/CATALOGUE_products_GRID_ENTRY_WRAP.tpl',
                         'themes/default/templates/ECOM_SHOPPING_CART_SCREEN.tpl',
                         'themes/default/javascript_custom/shoutr.js',
-                    ))) {
+                    ])) {
                         continue;
                     }
 
                     $path = get_file_base() . '/' . $path;
                     $c = cms_file_get_contents_safe($path);
 
-                    $matches = array();
+                    $matches = [];
                     $num_matches = preg_match_all('#\{\$CONFIG_OPTION,([^\{\},]*)\}#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $option = $matches[1][$i];

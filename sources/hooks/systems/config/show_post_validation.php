@@ -30,7 +30,7 @@ class Hook_config_show_post_validation
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SHOW_POST_VALIDATION',
             'type' => 'tick',
             'category' => 'ADMIN',
@@ -43,7 +43,7 @@ class Hook_config_show_post_validation
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

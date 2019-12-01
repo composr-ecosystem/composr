@@ -31,10 +31,10 @@ class Hook_checklist_translations
     public function run()
     {
         if (!multi_lang()) {
-            return array();
+            return [];
         }
         if (!multi_lang_content()) {
-            return array();
+            return [];
         }
 
         $langs = find_all_langs();
@@ -42,22 +42,22 @@ class Hook_checklist_translations
         $cnt = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM (SELECT id FROM ' . get_table_prefix() . 'translate WHERE broken=0 AND importance_level<=3 GROUP BY id HAVING COUNT(*)<' . strval($num_langs) . ') t');
 
         if ($cnt > 0) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', array('_GUID' => 'k578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'k578142633c6f3d37776e82a869deb91']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', array('_GUID' => 'l578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'l578142633c6f3d37776e82a869deb91']);
         }
 
-        $url = build_url(array('page' => 'admin_lang', 'type' => 'content'), get_module_zone('admin_lang'));
+        $url = build_url(['page' => 'admin_lang', 'type' => 'content'], get_module_zone('admin_lang'));
 
         require_lang('lang');
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => 'aacf866e2ea104ac41685a8756e182f8',
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('TRANSLATE_CONTENT'),
             'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($cnt))),
-        ));
-        return array(array($tpl, null, $cnt, null));
+        ]);
+        return [[$tpl, null, $cnt, null]];
     }
 }

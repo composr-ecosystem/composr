@@ -42,7 +42,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
             $rating_type = isset($param[3]) ? $param[3] : ''; // If non empty, it will get the highest rated first
             $field_id = ((isset($param[4])) && (is_numeric($param[4]))) ? intval($param[4]) : null; // Limit to a particular field ID
 
-            static $cache = array();
+            static $cache = [];
             $cache_key = serialize($param);
             if (isset($cache[$cache_key])) {
                 return $cache[$cache_key];
@@ -53,7 +53,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
             if ($field_id !== null) {
                 $table .= ' AND f.id=' . strval($field_id);
             }
-            $select = array('ce_id');
+            $select = ['ce_id'];
             $order_by = '';
             if ($resolve != '') {
                 $table .= ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage ON ' . db_string_equal_to('content_type', $resolve) . ' AND catalogue_entry_id=ce_id';
@@ -64,8 +64,8 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
                     $order_by = 'ORDER BY average_rating DESC';
                 }
             }
-            $results = $GLOBALS['SITE_DB']->query_select($table, $select, array('cv_value' => $param[0]), $order_by);
-            $_results = array();
+            $results = $GLOBALS['SITE_DB']->query_select($table, $select, ['cv_value' => $param[0]], $order_by);
+            $_results = [];
             foreach ($results as $result) {
                 if ($resolve != '') {
                     $_results[] = $result['content_id'];

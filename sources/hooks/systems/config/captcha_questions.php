@@ -30,7 +30,7 @@ class Hook_config_captcha_questions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CAPTCHA_QUESTIONS',
             'type' => 'text',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_captcha_questions
             'required' => false,
             'public' => false,
             'addon' => 'captcha',
-        );
+        ];
     }
 
     /**

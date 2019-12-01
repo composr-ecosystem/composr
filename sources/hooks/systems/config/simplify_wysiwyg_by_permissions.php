@@ -30,7 +30,7 @@ class Hook_config_simplify_wysiwyg_by_permissions
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SIMPLIFY_WYSIWYG_BY_PERMISSIONS',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_simplify_wysiwyg_by_permissions
             'required' => true,
             'public' => false,
             'addon' => 'core_feedback_features',
-        );
+        ];
     }
 
     /**

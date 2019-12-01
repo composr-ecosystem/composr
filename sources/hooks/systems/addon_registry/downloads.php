@@ -31,7 +31,7 @@ class Hook_addon_registry_downloads
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,11 +61,11 @@ class Hook_addon_registry_downloads
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_downloads',
             'tut_adv_downloads',
             'tut_information',
-        );
+        ];
     }
 
     /**
@@ -75,11 +75,11 @@ class Hook_addon_registry_downloads
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_downloads
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources/hooks/systems/privacy/downloads.php',
             'themes/default/images/icons/menu/rich_content/downloads.svg',
             'themes/default/images/icons/menu/cms/downloads/add_one_licence.svg',
@@ -183,7 +183,7 @@ class Hook_addon_registry_downloads
             'themes/default/javascript/downloads.js',
             'sources/hooks/systems/config/download_cat_access_late.php',
             'sources/hooks/systems/actionlog/downloads.php',
-        );
+        ];
     }
 
     /**
@@ -193,7 +193,7 @@ class Hook_addon_registry_downloads
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/DOWNLOAD_LIST_LINE.tpl' => 'download_list_line',
             'templates/DOWNLOAD_LIST_LINE_2.tpl' => 'download_list_line_2',
             'templates/DOWNLOAD_BOX.tpl' => 'download_category_screen',
@@ -206,7 +206,7 @@ class Hook_addon_registry_downloads
             'templates/DOWNLOAD_SCREEN.tpl' => 'download_screen',
             'templates/RED_ALERT.tpl' => 'download_screen',
             'templates/DOWNLOAD_GATEWAY_SCREEN.tpl' => 'download_gateway_screen',
-        );
+        ];
     }
 
     /**
@@ -218,12 +218,12 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_and_images_simple_box()
     {
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', [
                 'DESCRIPTION' => lorem_paragraph_html(),
                 'IMAGES' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -235,12 +235,12 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_list_line()
     {
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE', [
                 'BREADCRUMBS' => lorem_word(),
                 'DOWNLOAD' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -252,12 +252,12 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_list_line_2()
     {
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE_2', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_LIST_LINE_2', [
                 'BREADCRUMBS' => lorem_phrase(),
                 'FILECOUNT' => placeholder_number(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -272,7 +272,7 @@ class Hook_addon_registry_downloads
         $subcategories = lorem_paragraph_html();
 
         $downloads = new Tempcode();
-        $map = array(
+        $map = [
             'ORIGINAL_FILENAME' => lorem_phrase(),
             'AUTHOR' => lorem_phrase(),
             'ID' => placeholder_id(),
@@ -291,12 +291,12 @@ class Hook_addon_registry_downloads
             'GIVE_CONTEXT' => false,
             'MAY_DOWNLOAD' => true,
             'DOWNLOAD_URL' => placeholder_url(),
-        );
+        ];
         $tpl = do_lorem_template('DOWNLOAD_BOX', $map);
         $downloads->attach($tpl);
 
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_CATEGORY_SCREEN', [
                 'TAGS' => lorem_word_html(),
                 'TITLE' => lorem_title(),
                 'WARNING_DETAILS' => '',
@@ -309,8 +309,8 @@ class Hook_addon_registry_downloads
                 'DOWNLOADS' => $downloads,
                 'SORTING' => lorem_phrase(),
                 'ID' => placeholder_id(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -322,10 +322,10 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_all_screen()
     {
-        $subcats = array();
+        $subcats = [];
         foreach (placeholder_array() as $cat) {
             $downloads = new Tempcode();
-            $map = array(
+            $map = [
                 'ORIGINAL_FILENAME' => lorem_phrase(),
                 'AUTHOR' => lorem_phrase(),
                 'ID' => placeholder_id(),
@@ -344,24 +344,24 @@ class Hook_addon_registry_downloads
                 'GIVE_CONTEXT' => false,
                 'MAY_DOWNLOAD' => true,
                 'DOWNLOAD_URL' => placeholder_url(),
-            );
+            ];
             $tpl = do_lorem_template('DOWNLOAD_BOX', $map);
             $downloads->attach($tpl);
 
-            $data = array('LETTER' => lorem_word(), 'DOWNLOADS' => $downloads);
+            $data = ['LETTER' => lorem_word(), 'DOWNLOADS' => $downloads];
             $subcats[] = $data;
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_ALL_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_ALL_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SUBMIT_URL' => placeholder_url(),
                 'ADD_CAT_URL' => placeholder_url(),
                 'ADD_CAT_TITLE' => do_lang_tempcode('ADD_DOWNLOAD_CATEGORY'),
                 'EDIT_CAT_URL' => placeholder_url(),
                 'SUB_CATEGORIES' => $subcats,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -377,26 +377,26 @@ class Hook_addon_registry_downloads
         if (addon_installed('galleries')) {
             require_lang('galleries');
             foreach (placeholder_array() as $row) {
-                $image = do_lorem_template('DOWNLOAD_SCREEN_IMAGE', array(
+                $image = do_lorem_template('DOWNLOAD_SCREEN_IMAGE', [
                     'ID' => placeholder_id(),
                     'VIEW_URL' => placeholder_url(),
                     'EDIT_URL' => placeholder_url(),
                     'THUMB' => placeholder_image(),
                     'DESCRIPTION' => lorem_phrase(),
-                ));
+                ]);
 
-                $cell = do_lorem_template('DOWNLOAD_GALLERY_IMAGE_CELL', array(
+                $cell = do_lorem_template('DOWNLOAD_GALLERY_IMAGE_CELL', [
                     'CONTENT' => $image,
-                ));
+                ]);
 
-                $images_details->attach(do_lorem_template('DOWNLOAD_GALLERY_ROW', array(
+                $images_details->attach(do_lorem_template('DOWNLOAD_GALLERY_ROW', [
                     'CELLS' => $cell,
-                )));
+                ]));
             }
         }
 
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_SCREEN', [
                 'ORIGINAL_FILENAME' => lorem_phrase(),
                 'TAGS' => lorem_word_html(),
                 'LICENCE' => lorem_phrase(),
@@ -429,8 +429,8 @@ class Hook_addon_registry_downloads
                 'NUM_IMAGES' => '3',
                 'CAT' => placeholder_id(),
                 'DOWNLOAD_URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -442,14 +442,14 @@ class Hook_addon_registry_downloads
      */
     public function tpl_preview__download_gateway_screen()
     {
-        return array(
-            lorem_globalise(do_lorem_template('DOWNLOAD_GATEWAY_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('DOWNLOAD_GATEWAY_SCREEN', [
                 'TITLE' => lorem_title(),
                 'NAME' => lorem_phrase(),
                 'DOWNLOAD_URL' => placeholder_url(),
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -459,17 +459,17 @@ class Hook_addon_registry_downloads
     {
         require_code('downloads2');
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('download_downloads', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('name') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('name') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_download($record['id']);
         }
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('download_licences', array('id'), array('l_title' => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('download_licences', ['id'], ['l_title' => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_download_licence($record['id']);
         }
 
-        $to_delete = $GLOBALS['SITE_DB']->query_select('download_categories', array('id'), array($GLOBALS['SITE_DB']->translate_field_ref('category') => lorem_phrase()));
+        $to_delete = $GLOBALS['SITE_DB']->query_select('download_categories', ['id'], [$GLOBALS['SITE_DB']->translate_field_ref('category') => lorem_phrase()]);
         foreach ($to_delete as $record) {
             delete_download_category($record['id']);
         }
@@ -498,15 +498,15 @@ class Hook_addon_registry_downloads
         }
 
         if (addon_installed('awards')) {
-            if ($GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_content_type', array('id' => db_get_first_id())) === 'download') {
+            if ($GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_content_type', ['id' => db_get_first_id()]) === 'download') {
                 require_code('awards');
                 give_award(db_get_first_id(), strval($download_id));
             }
         }
 
         $content_id = strval($download_id);
-        $content_url = build_url(array('page' => 'downloads', 'type' => 'entry', 'id' => $content_id), 'site');
-        $GLOBALS['SITE_DB']->query_insert('trackbacks', array(
+        $content_url = build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $content_id], 'site');
+        $GLOBALS['SITE_DB']->query_insert('trackbacks', [
             'trackback_for_type' => 'downloads',
             'trackback_for_id' => $content_id,
             'trackback_ip' => '',
@@ -515,15 +515,15 @@ class Hook_addon_registry_downloads
             'trackback_title' => lorem_phrase(),
             'trackback_excerpt' => lorem_paragraph(),
             'trackback_name' => lorem_phrase(),
-        ));
-        $GLOBALS['SITE_DB']->query_insert('rating', array(
+        ]);
+        $GLOBALS['SITE_DB']->query_insert('rating', [
             'rating_for_type' => 'downloads',
             'rating_for_id' => $content_id,
             'rating_member' => get_member(),
             'rating_ip' => '',
             'rating_time' => time(),
             'rating' => 3,
-        ));
+        ]);
         set_mass_import_mode(false); // Needed for $update_caching
         $GLOBALS['FORUM_DRIVER']->make_post_forum_topic(
             get_option('comments_forum_name'),
@@ -540,13 +540,13 @@ class Hook_addon_registry_downloads
             1
         );
         set_mass_import_mode(true);
-        $GLOBALS['SITE_DB']->query_insert('review_supplement', array(
+        $GLOBALS['SITE_DB']->query_insert('review_supplement', [
             'r_rating' => 3,
             'r_rating_for_type' => 'downloads',
             'r_rating_for_id' => $content_id,
             'r_rating_type' => '',
             'r_topic_id' => $GLOBALS['LAST_TOPIC_ID'],
             'r_post_id' => $GLOBALS['LAST_POST_ID'],
-        ));
+        ]);
     }
 }

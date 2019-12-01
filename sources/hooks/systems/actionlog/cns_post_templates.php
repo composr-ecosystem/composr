@@ -31,54 +31,54 @@ class Hook_actionlog_cns_post_templates extends Hook_actionlog
     public function get_handlers()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_post_templates')) {
-            return array();
+            return [];
         }
 
         require_lang('cns_post_templates');
 
-        return array(
-            'ADD_POST_TEMPLATE' => array(
+        return [
+            'ADD_POST_TEMPLATE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post_template',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_POST_TEMPLATE' => '_SEARCH:admin_cns_post_templates:_edit:{ID}',
                     'ADD_POST_TEMPLATE' => '_SEARCH:admin_cns_post_templates:add',
-                ),
-            ),
-            'EDIT_POST_TEMPLATE' => array(
+                ],
+            ],
+            'EDIT_POST_TEMPLATE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post_template',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_POST_TEMPLATE' => '_SEARCH:admin_cns_post_templates:_edit:{ID}',
                     'ADD_POST_TEMPLATE' => '_SEARCH:admin_cns_post_templates:add',
-                ),
-            ),
-            'DELETE_POST_TEMPLATE' => array(
+                ],
+            ],
+            'DELETE_POST_TEMPLATE' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'post_template',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_POST_TEMPLATE' => '_SEARCH:admin_cns_post_templates:add',
-                ),
-            ),
-            'IMPORT_STOCK_RESPONSES_PT' => array(
+                ],
+            ],
+            'IMPORT_STOCK_RESPONSES_PT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'POST_TEMPLATES' => '_SEARCH:admin_cns_post_templates',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

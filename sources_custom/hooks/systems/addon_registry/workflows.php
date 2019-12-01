@@ -26,7 +26,7 @@ class Hook_addon_registry_workflows
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_workflows
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -100,7 +100,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -110,15 +110,15 @@ Note that this addon only affects galleries at the moment, and it requires the "
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'unvalidated',
                 'galleries',
                 'all_icons',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -138,7 +138,7 @@ Note that this addon only affects galleries at the moment, and it requires the "
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/workflows.php',
             'sources_custom/hooks/systems/privacy/workflows.php',
             'sources_custom/hooks/systems/notifications/workflow_step.php',
@@ -158,6 +158,6 @@ Note that this addon only affects galleries at the moment, and it requires the "
             'themes/default/templates_custom/WORKFLOW_BOX.tpl',
             'themes/default/javascript_custom/workflows.js',
             'sources_custom/hooks/systems/actionlog/workflows.php',
-        );
+        ];
     }
 }

@@ -43,7 +43,7 @@ class Hook_content_meta_aware_topic
             }
         }
 
-        return array(
+        return [
             'support_custom_fields' => true,
 
             'content_type_label' => 'cns:FORUM_TOPIC',
@@ -125,7 +125,7 @@ class Hook_content_meta_aware_topic
             'support_spam_heuristics' => false,
 
             'actionlog_regexp' => '\w+_TOPIC',
-        );
+        ];
     }
 
     /**

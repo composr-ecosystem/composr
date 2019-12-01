@@ -30,7 +30,7 @@ class Hook_config_catalogues_subcat_narrowin
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CATALOGUES_SUBCAT_NARROWIN',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_catalogues_subcat_narrowin
             'public' => false,
 
             'addon' => 'catalogues',
-        );
+        ];
     }
 
     /**

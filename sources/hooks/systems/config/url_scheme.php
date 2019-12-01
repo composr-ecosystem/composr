@@ -30,7 +30,7 @@ class Hook_config_url_scheme
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'URL_SCHEME',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_url_scheme
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**
@@ -71,7 +71,7 @@ class Hook_config_url_scheme
     public function presave_handler($new_value, $old_value)
     {
         // Make sure we haven't locked ourselves out due to absent URL Scheme support
-        $http_result = cms_http_request(get_base_url() . '/pg/keymap', array('trigger_error' => false, 'no_redirect' => true));
+        $http_result = cms_http_request(get_base_url() . '/pg/keymap', ['trigger_error' => false, 'no_redirect' => true]);
         if (($http_result->data != '') && ($http_result->message == '404')) {
             attach_message(do_lang_tempcode('BEFORE_MOD_REWRITE'), 'warn');
             return false;

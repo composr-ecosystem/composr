@@ -40,7 +40,7 @@ class Module_invoices
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -68,7 +68,7 @@ class Module_invoices
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('ecom_invoices', array(
+            $GLOBALS['SITE_DB']->create_table('ecom_invoices', [
                 'id' => '*AUTO',
                 'i_type_code' => 'ID_TEXT',
                 'i_member_id' => 'MEMBER',
@@ -82,7 +82,7 @@ class Module_invoices
                 'i_special' => 'SHORT_TEXT', // depending on i_type_code, would trigger something special such as a key upgrade
                 'i_time' => 'TIME',
                 'i_note' => 'LONG_TEXT',
-            ));
+            ]);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) {
@@ -96,7 +96,7 @@ class Module_invoices
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
-            $GLOBALS['SITE_DB']->create_index('ecom_invoices', 'i_member_id', array('i_member_id'));
+            $GLOBALS['SITE_DB']->create_index('ecom_invoices', 'i_member_id', ['i_member_id']);
         }
     }
 
@@ -119,12 +119,12 @@ class Module_invoices
             $member_id = get_member();
         }
 
-        if ((!$check_perms || !is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', array('i_member_id' => $member_id)) > 0)) {
-            return array(
-                'browse' => array('MY_INVOICES', 'menu/adminzone/audit/ecommerce/invoices'),
-            );
+        if ((!$check_perms || !is_guest($member_id)) && ($GLOBALS['SITE_DB']->query_select_value('ecom_invoices', 'COUNT(*)', ['i_member_id' => $member_id]) > 0)) {
+            return [
+                'browse' => ['MY_INVOICES', 'menu/adminzone/audit/ecommerce/invoices'],
+            ];
         }
-        return array();
+        return [];
     }
 
     public $title;
@@ -197,8 +197,8 @@ class Module_invoices
             $member_id = get_param_integer('id', $member_id);
         }
 
-        $invoices = array();
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('*'), array('i_member_id' => $member_id), 'ORDER BY i_time');
+        $invoices = [];
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['i_member_id' => $member_id], 'ORDER BY i_time');
         foreach ($rows as $row) {
             $type_code = $row['i_type_code'];
             list($details) = find_product_details($type_code);
@@ -213,22 +213,22 @@ class Module_invoices
             $state = do_lang('PAYMENT_STATE_' . $row['i_state']);
             $currency = isset($details['currency']) ? $details['currency'] : get_option('currency');
             if (perform_local_payment()) {
-                $transaction_button = hyperlink(build_url(array('page' => '_SELF', 'type' => 'pay', 'id' => $row['id']), '_SELF'), do_lang_tempcode('MAKE_PAYMENT'), false, false);
+                $transaction_button = hyperlink(build_url(['page' => '_SELF', 'type' => 'pay', 'id' => $row['id']], '_SELF'), do_lang_tempcode('MAKE_PAYMENT'), false, false);
             } else {
                 $transaction_button = make_transaction_button(
                     $type_code,
                     $invoice_title,
                     strval($row['id']),
                     $row['i_amount'],
-                    ($row['i_tax_derivation'] == '') ? array() : json_decode($row['i_tax_derivation'], true),
+                    ($row['i_tax_derivation'] == '') ? [] : json_decode($row['i_tax_derivation'], true),
                     $row['i_tax'],
-                    ($row['i_tax_tracking'] == '') ? array() : json_decode($row['i_tax_tracking'], true),
+                    ($row['i_tax_tracking'] == '') ? [] : json_decode($row['i_tax_tracking'], true),
                     0.00,
                     0.00,
                     $currency
                 );
             }
-            $invoices[] = array(
+            $invoices[] = [
                 'TRANSACTION_BUTTON' => $transaction_button,
                 'INVOICE_TITLE' => $invoice_title,
                 'INVOICE_ID' => strval($row['id']),
@@ -241,13 +241,13 @@ class Module_invoices
                 'PAYABLE' => $payable,
                 'NOTE' => $row['i_note'],
                 'TYPE_CODE' => $row['i_type_code'],
-            );
+            ];
         }
         if (empty($invoices)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        return do_template('ECOM_INVOICES_SCREEN', array('_GUID' => '144a893d93090c105eecc48fa58921a7', 'TITLE' => $this->title, 'INVOICES' => $invoices));
+        return do_template('ECOM_INVOICES_SCREEN', ['_GUID' => '144a893d93090c105eecc48fa58921a7', 'TITLE' => $this->title, 'INVOICES' => $invoices]);
     }
 
     /**
@@ -259,7 +259,7 @@ class Module_invoices
     {
         $id = get_param_integer('id');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', array('*'), array('id' => $id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -272,7 +272,7 @@ class Module_invoices
 
         $invoice_title = $details['item_name'];
 
-        $post_url = build_url(array('page' => 'purchase', 'type' => 'finish', 'type_code' => $type_code), get_module_zone('purchase'));
+        $post_url = build_url(['page' => 'purchase', 'type' => 'finish', 'type_code' => $type_code], get_module_zone('purchase'));
 
         $needs_shipping_address = !empty($details['needs_shipping_address']);
 
@@ -281,9 +281,9 @@ class Module_invoices
             $invoice_title,
             strval($id),
             $row['i_amount'],
-            ($row['i_tax_derivation'] == '') ? array() : json_decode($row['i_tax_derivation'], true),
+            ($row['i_tax_derivation'] == '') ? [] : json_decode($row['i_tax_derivation'], true),
             $row['i_tax'],
-            ($row['i_tax_tracking'] == '') ? array() : json_decode($row['i_tax_tracking'], true),
+            ($row['i_tax_tracking'] == '') ? [] : json_decode($row['i_tax_tracking'], true),
             0.00,
             0.00,
             $currency,
@@ -296,7 +296,7 @@ class Module_invoices
 
         $text = do_lang_tempcode('TRANSACT_INFO');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e90a4019b37c8bf5bcb64086416bcfb3',
             'TITLE' => $this->title,
             'SKIP_WEBSTANDARDS' => '1',
@@ -306,6 +306,6 @@ class Module_invoices
             'HIDDEN' => $hidden,
             'SUBMIT_ICON' => 'menu/rich_content/ecommerce/purchase',
             'SUBMIT_NAME' => do_lang_tempcode('MAKE_PAYMENT'),
-        ));
+        ]);
     }
 }

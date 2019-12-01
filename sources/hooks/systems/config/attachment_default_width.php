@@ -30,7 +30,7 @@ class Hook_config_attachment_default_width
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_VIDEO_WIDTH',
             'type' => 'integer',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_attachment_default_width
             'public' => false,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

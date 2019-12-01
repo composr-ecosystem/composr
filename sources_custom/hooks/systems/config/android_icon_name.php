@@ -25,7 +25,7 @@ class Hook_config_android_icon_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ANDROID_ICON_NAME',
             'type' => 'line',
             'category' => 'COMPOSR_APIS',
@@ -37,7 +37,7 @@ class Hook_config_android_icon_name
             'public' => false,
 
             'addon' => 'composr_mobile_sdk',
-        );
+        ];
     }
 
     /**

@@ -30,7 +30,7 @@ class Module_admin_svg_sprites
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Salman Abbas';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -69,11 +69,11 @@ class Module_admin_svg_sprites
      */
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
-        $ret = array(
-            'browse' => array('SVG_SPRITES', 'admin/tool'),
-            'preview_svg_sprite' => array('PREVIEW_SVG_SPRITE', 'admin/view_this'),
-            'generate_svg_sprite' => array('GENERATE_SVG_SPRITE', 'admin/tool'),
-        );
+        $ret = [
+            'browse' => ['SVG_SPRITES', 'admin/tool'],
+            'preview_svg_sprite' => ['PREVIEW_SVG_SPRITE', 'admin/view_this'],
+            'generate_svg_sprite' => ['GENERATE_SVG_SPRITE', 'admin/tool'],
+        ];
 
         return $ret;
     }
@@ -153,10 +153,10 @@ class Module_admin_svg_sprites
         return do_next_manager(
             get_screen_title('SVG_SPRITES'),
             make_string_tempcode(''),
-            array(
-                array('admin/view_this', array('_SELF', array('type' => 'preview_svg_sprite'), '_SELF'), do_lang('themes:PREVIEW_SVG_SPRITE')),
-                array('admin/tool', array('_SELF', array('type' => 'generate_svg_sprite'), '_SELF'), do_lang('themes:GENERATE_SVG_SPRITE')),
-            ),
+            [
+                ['admin/view_this', ['_SELF', ['type' => 'preview_svg_sprite'], '_SELF'], do_lang('themes:PREVIEW_SVG_SPRITE')],
+                ['admin/tool', ['_SELF', ['type' => 'generate_svg_sprite'], '_SELF'], do_lang('themes:GENERATE_SVG_SPRITE')],
+            ],
             do_lang('SVG_SPRITES')
         );
     }
@@ -178,11 +178,11 @@ class Module_admin_svg_sprites
         $fields->attach($theme_field);
         $fields->attach($monochrome_field);
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_preview_svg_sprite'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_preview_svg_sprite'], '_SELF');
         $submit_name = do_lang_tempcode('PREVIEW_SPRITE');
         $text = paragraph(do_lang_tempcode('PREVIEW_SVG_SPRITE'));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '2887f783aea9475bb0955a9ee985e36e',
             'HIDDEN' => '',
             'SUBMIT_ICON' => 'admin/view_this',
@@ -192,7 +192,7 @@ class Module_admin_svg_sprites
             'URL' => $post_url,
             'TEXT' => $text,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -223,19 +223,19 @@ class Module_admin_svg_sprites
                 continue;
             }
             $symbol_id = strval($symbol[1]['id']);
-            $icons->attach(do_template('PREVIEW_SVG_SPRITE_ICON', array(
+            $icons->attach(do_template('PREVIEW_SVG_SPRITE_ICON', [
                 '_GUID' => 'c1e00e30fa5d4d77bee4b974dc66c926',
                 'SPRITE_URL' => $sprite_url,
                 'SYMBOL_ID' => $symbol_id,
-            )));
+            ]));
         }
 
-        return do_template('PREVIEW_SVG_SPRITE_SCREEN', array(
+        return do_template('PREVIEW_SVG_SPRITE_SCREEN', [
             '_GUID' => '0772b3d967df4000ae58ffd42aef358f',
             'TITLE' => $this->title,
             'SPRITE_PATH' => $sprite_path,
             'ICONS' => $icons,
-        ));
+        ]);
     }
 
     /**
@@ -255,11 +255,11 @@ class Module_admin_svg_sprites
         $fields->attach($theme_field);
         $fields->attach($monochrome_field);
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_generate_svg_sprite'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_generate_svg_sprite'], '_SELF');
         $submit_name = do_lang_tempcode('GENERATE_SPRITE');
         $text = paragraph(do_lang_tempcode('GENERATE_SVG_SPRITE'));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '2887f783aea9475bb0955a9ee985e36e',
             'HIDDEN' => '',
             'SUBMIT_ICON' => 'menu/adminzone/style/themes/css',
@@ -269,7 +269,7 @@ class Module_admin_svg_sprites
             'URL' => $post_url,
             'TEXT' => $text,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -283,7 +283,7 @@ class Module_admin_svg_sprites
         $theme = post_param_string('theme');
         $monochrome = post_param_integer('monochrome', 0);
 
-        $icon_paths = array();
+        $icon_paths = [];
 
         $default_theme_icons_dir = get_file_base() . '/themes/default/images/icons' . (($monochrome === 1) ? '_monochrome' : '');
         $default_theme_custom_icons_dir = get_file_base() . '/themes/default/images_custom/icons' . (($monochrome === 1) ? '_monochrome' : '');
@@ -292,22 +292,22 @@ class Module_admin_svg_sprites
         $theme_custom_icons_dir = get_file_base() . '/themes/' . $theme . '/images_custom/icons' . (($monochrome === 1) ? '_monochrome' : '');
 
         if (file_exists($default_theme_icons_dir)) {
-            $icon_paths = get_directory_contents($default_theme_icons_dir, $default_theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, array('svg'));
+            $icon_paths = get_directory_contents($default_theme_icons_dir, $default_theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
         }
 
         if (file_exists($default_theme_custom_icons_dir)) {
-            $_icon_paths = get_directory_contents($default_theme_custom_icons_dir, $default_theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, array('svg'));
+            $_icon_paths = get_directory_contents($default_theme_custom_icons_dir, $default_theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
             $icon_paths = $this->_override_icon_paths($icon_paths, $_icon_paths);
         }
 
         if ($theme !== 'default') {
             if (file_exists($theme_icons_dir)) {
-                $_icon_paths = get_directory_contents($theme_icons_dir, $theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, array('svg'));
+                $_icon_paths = get_directory_contents($theme_icons_dir, $theme_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
                 $icon_paths = $this->_override_icon_paths($icon_paths, $_icon_paths);
             }
 
             if (file_exists($theme_custom_icons_dir)) {
-                $_icon_paths = get_directory_contents($theme_custom_icons_dir, $theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, array('svg'));
+                $_icon_paths = get_directory_contents($theme_custom_icons_dir, $theme_custom_icons_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['svg']);
                 $icon_paths = $this->_override_icon_paths($icon_paths, $_icon_paths);
             }
         }
@@ -315,7 +315,7 @@ class Module_admin_svg_sprites
         $base_path_regex = '^' . preg_quote(get_file_base(), '#') . '/themes/[\w\-]+/images(_custom)?/icons(_monochrome)?/';
 
         $old_icon_paths = $icon_paths;
-        $icon_paths = array();
+        $icon_paths = [];
         foreach ($old_icon_paths as $icon_path) {
             $icon_name = substr(preg_replace('#' . $base_path_regex . '#', '', $icon_path), 0, -4);
             $icon_paths[$icon_name] = $icon_path;
@@ -334,7 +334,7 @@ class Module_admin_svg_sprites
                     // whitespace?
                     continue;
                 }
-                $child_xml = $xml->pull_together(array($child), array('' => 'http://www.w3.org/2000/svg', 'xlink:' => 'http://www.w3.org/1999/xlink')) . "\n";
+                $child_xml = $xml->pull_together([$child], ['' => 'http://www.w3.org/2000/svg', 'xlink:' => 'http://www.w3.org/1999/xlink']) . "\n";
 
                 if (preg_replace('/\s/', '', $child_xml) === '<defs></defs>') {
                     continue; // Skip empty <defs> elements
@@ -352,12 +352,12 @@ class Module_admin_svg_sprites
 
         cms_file_put_contents_safe($sprite_path, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
-        return do_template('GENERATE_SVG_SPRITE_SCREEN', array(
+        return do_template('GENERATE_SVG_SPRITE_SCREEN', [
             '_GUID' => '1318e8d111ee4715aae471976f495ccd',
             'TITLE' => $this->title,
             'SPRITE_PATH' => $sprite_path,
             'ICONS_ADDED' => $icons_added,
-        ));
+        ]);
     }
 
     /**

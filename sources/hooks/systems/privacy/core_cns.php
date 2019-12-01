@@ -34,281 +34,281 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             return null;
         }
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-                ((get_option('is_on_coppa') == '0') || (get_option('dobs') == '0')) ? null : array(
+            'positive' => [
+                ((get_option('is_on_coppa') == '0') || (get_option('dobs') == '0')) ? null : [
                     'heading' => do_lang('CHILD_PROTECTION'),
                     'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_COPPA', escape_html(get_option('coppa_age'))),
-                ),
-                array(
+                ],
+                [
                     'heading' => do_lang('COOKIES'),
                     'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_COOKIES'),
-                ),
-                array(
+                ],
+                [
                     'heading' => do_lang('INFORMATION_DISCLOSURE'),
                     'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_NON_DISCLOSURE'),
-                ),
-            ),
+                ],
+            ],
 
-            'general' => array(
-                array(
+            'general' => [
+                [
                     'heading' => do_lang('INFORMATION_DISCLOSURE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_PROFILE_DISCLOSURE'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_PROFILE_DISCLOSURE'),
-                ),
-                array(
+                ],
+                [
                     'heading' => do_lang('INFORMATION_DISCLOSURE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_PRIVATE_TOPICS'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_PRIVATE_TOPICS'),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-                'f_moderator_logs' => array(
+            'database_records' => [
+                'f_moderator_logs' => [
                     'timestamp_field' => 'l_date_and_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('l_by'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['l_by'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'f_member_known_login_ips' => array(
+                ],
+                'f_member_known_login_ips' => [
                     'timestamp_field' => 'i_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('i_member_id'),
-                    'ip_address_fields' => array('i_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['i_member_id'],
+                    'ip_address_fields' => ['i_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_group_join_log' => array(
+                ],
+                'f_group_join_log' => [
                     'timestamp_field' => 'join_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_invites' => array(
+                ],
+                'f_invites' => [
                     'timestamp_field' => 'i_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('i_inviter'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array('i_email_address'),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['i_inviter'],
+                    'ip_address_fields' => [],
+                    'email_fields' => ['i_email_address'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_warnings' => array(
+                ],
+                'f_warnings' => [
                     'timestamp_field' => 'w_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('w_member_id', 'w_by'),
-                    'ip_address_fields' => array('p_banned_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['w_member_id', 'w_by'],
+                    'ip_address_fields' => ['p_banned_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_members' => array(
+                ],
+                'f_members' => [
                     'timestamp_field' => 'm_join_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('id'),
-                    'ip_address_fields' => array('m_ip_address'),
-                    'email_fields' => array('m_email_address'),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['id'],
+                    'ip_address_fields' => ['m_ip_address'],
+                    'email_fields' => ['m_email_address'],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_posts' => array(
+                ],
+                'f_posts' => [
                     'timestamp_field' => 'p_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('p_poster', 'p_intended_solely_for', 'p_last_edit_by'),
-                    'ip_address_fields' => array('p_ip_address'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array('p_poster_name_if_guest'),
+                    'member_id_fields' => ['p_poster', 'p_intended_solely_for', 'p_last_edit_by'],
+                    'ip_address_fields' => ['p_ip_address'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => ['p_poster_name_if_guest'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'f_password_history' => array(
+                ],
+                'f_password_history' => [
                     'timestamp_field' => 'p_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('p_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['p_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_member_custom_fields' => array(
+                ],
+                'f_member_custom_fields' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('mf_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['mf_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_member_cpf_perms' => array(
+                ],
+                'f_member_cpf_perms' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_group_members' => array(
+                ],
+                'f_group_members' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('gm_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['gm_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_groups' => array(
+                ],
+                'f_groups' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('g_group_leader'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['g_group_leader'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'f_forums' => array(
+                ],
+                'f_forums' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('f_cache_last_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array('f_cache_last_username'),
+                    'member_id_fields' => ['f_cache_last_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => ['f_cache_last_username'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise,
-                ),
-                'f_topics' => array(
+                ],
+                'f_topics' => [
                     'timestamp_field' => 't_cache_first_time',
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('t_pt_from', 't_pt_to', 't_cache_first_member_id', 't_cache_last_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array('t_cache_first_username', 't_cache_last_username'),
+                    'member_id_fields' => ['t_pt_from', 't_pt_to', 't_cache_first_member_id', 't_cache_last_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => ['t_cache_first_username', 't_cache_last_username'],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'f_special_pt_access' => array(
+                ],
+                'f_special_pt_access' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('s_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['s_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_poll_votes' => array(
+                ],
+                'f_poll_votes' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('pv_member_id'),
-                    'ip_address_fields' => array('pv_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['pv_member_id'],
+                    'ip_address_fields' => ['pv_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
                     'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
-                ),
-                'f_read_logs' => array(
+                ],
+                'f_read_logs' => [
                     'timestamp_field' => 'l_time',
                     'retention_days' => intval(get_option('post_read_history_days')),
                     'retention_handle_method' => PRIVACY_METHOD_delete,
-                    'member_id_fields' => array('l_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['l_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_group_member_timeouts' => array(
+                ],
+                'f_group_member_timeouts' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_forum_intro_ip' => array(
+                ],
+                'f_forum_intro_ip' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array(),
-                    'ip_address_fields' => array('i_ip'),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => [],
+                    'ip_address_fields' => ['i_ip'],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-                'f_forum_intro_member' => array(
+                ],
+                'f_forum_intro_member' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
                     'retention_handle_method' => PRIVACY_METHOD_leave,
-                    'member_id_fields' => array('i_member_id'),
-                    'ip_address_fields' => array(),
-                    'email_fields' => array(),
-                    'additional_anonymise_fields' => array(),
+                    'member_id_fields' => ['i_member_id'],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'additional_anonymise_fields' => [],
                     'extra_where' => null,
                     'removal_default_handle_method' => PRIVACY_METHOD_delete,
                     'allowed_handle_methods' => PRIVACY_METHOD_delete,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -325,60 +325,60 @@ class Hook_privacy_core_cns extends Hook_privacy_base
         switch ($table_name) {
             case 'f_group_join_log':
                 if ($row['usergroup_id'] !== null) {
-                    $g_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => $row['usergroup_id']));
+                    $g_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => $row['usergroup_id']]);
                     if ($g_name !== null) {
-                        $ret += array(
+                        $ret += [
                             'usergroup_id__dereferenced' => get_translated_text($g_name, $GLOBALS['FORUM_DB']),
-                        );
+                        ];
                     }
                 }
                 break;
 
             case 'f_warnings':
-                $ret += array(
+                $ret += [
                     'w_member_id__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['w_member_id']),
                     'w_by__dereferenced' => $GLOBALS['FORUM_DRIVER']->get_username($row['w_by']),
-                );
+                ];
                 if ($row['p_silence_from_topic'] !== null) {
-                    $ret += array(
-                        'p_silence_from_topic__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $row['p_silence_from_topic'])),
-                    );
+                    $ret += [
+                        'p_silence_from_topic__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_silence_from_topic']]),
+                    ];
                 }
                 if ($row['p_silence_from_forum'] !== null) {
-                    $ret += array(
-                        'p_silence_from_forum__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['p_silence_from_forum'])),
-                    );
+                    $ret += [
+                        'p_silence_from_forum__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['p_silence_from_forum']]),
+                    ];
                 }
                 break;
 
             case 'f_members':
-                $name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => $row['m_primary_group']));
+                $name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => $row['m_primary_group']]);
                 if ($name !== null) {
-                    $ret += array(
+                    $ret += [
                         'm_primary_group__dereferenced' => get_translated_text($name, $GLOBALS['FORUM_DB']),
-                    );
+                    ];
                 }
                 unset($ret['m_pass_hash_salted']);
                 unset($ret['m_pass_salt']);
                 break;
 
             case 'f_posts':
-                $ret += array(
-                    'p_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $row['p_topic_id'])),
-                    'p_cache_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['p_cache_forum_id'])),
-                );
+                $ret += [
+                    'p_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['p_topic_id']]),
+                    'p_cache_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['p_cache_forum_id']]),
+                ];
                 break;
 
             case 'f_member_cpf_perms':
-                $ret += array(
-                    'field_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'cf_name', array('id' => $row['field_id'])),
-                );
+                $ret += [
+                    'field_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'cf_name', ['id' => $row['field_id']]),
+                ];
                 break;
 
             case 'f_group_members':
-                $ret += array(
-                    'gm_group_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => $row['gm_group_id'])),
-                );
+                $ret += [
+                    'gm_group_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => $row['gm_group_id']]),
+                ];
                 break;
 
             case 'f_forums':
@@ -386,48 +386,48 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                 break;
 
             case 'f_topics':
-                $ret += array(
-                    'f_name__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['t_forum_id'])),
+                $ret += [
+                    'f_name__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['t_forum_id']]),
                     't_pt_from__dereferenced' => ($row['t_pt_from'] === null) ? null : $GLOBALS['FORUM_DRIVER']->get_username($row['t_pt_from']),
                     't_pt_to__dereferenced' => ($row['t_pt_to'] === null) ? null : $GLOBALS['FORUM_DRIVER']->get_username($row['t_pt_to']),
-                    't_poll_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_polls', 'po_question', array('id' => $row['t_poll_id'])),
-                );
+                    't_poll_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_polls', 'po_question', ['id' => $row['t_poll_id']]),
+                ];
                 break;
 
             case 'f_special_pt_access':
-                $ret += array(
-                    's_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $row['s_topic_id'])),
-                );
+                $ret += [
+                    's_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['s_topic_id']]),
+                ];
                 break;
 
             case 'f_poll_votes':
-                $ret += array(
-                    'pv_poll_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_polls', 'po_question', array('id' => $row['pv_poll_id'])),
-                );
+                $ret += [
+                    'pv_poll_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_polls', 'po_question', ['id' => $row['pv_poll_id']]),
+                ];
                 break;
 
             case 'f_read_logs':
-                $ret += array(
-                    'l_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $row['l_topic_id'])),
-                );
+                $ret += [
+                    'l_topic_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => $row['l_topic_id']]),
+                ];
                 break;
 
             case 'f_group_member_timeouts':
-                $ret += array(
-                    'group_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => $row['group_id'])),
-                );
+                $ret += [
+                    'group_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', ['id' => $row['group_id']]),
+                ];
                 break;
 
             case 'f_forum_intro_ip':
-                $ret += array(
-                    'i_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['i_forum_id'])),
-                );
+                $ret += [
+                    'i_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['i_forum_id']]),
+                ];
                 break;
 
             case 'f_forum_intro_member':
-                $ret += array(
-                    'i_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => $row['i_forum_id'])),
-                );
+                $ret += [
+                    'i_forum_id__dereferenced' => $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => $row['i_forum_id']]),
+                ];
                 break;
         }
 
@@ -456,8 +456,8 @@ class Hook_privacy_core_cns extends Hook_privacy_base
 
             case 'f_posts':
                 require_code('cns_posts_action3');
-                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $row['id']));
-                cns_delete_posts_topic($topic_id, array($row['id']), '', false, true, false);
+                $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', ['id' => $row['id']]);
+                cns_delete_posts_topic($topic_id, [$row['id']], '', false, true, false);
                 break;
 
             case 'f_groups':

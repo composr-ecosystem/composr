@@ -74,7 +74,7 @@ function find_default_font($mono = false)
 {
     // We have some knowledge of fonts we like, even though we don't bundle them all (for file-size and licensing reasons)
     if ($mono) {
-        $precedence = array(
+        $precedence = [
             'Courier New Bold', // Microsoft (preferred, de facto standard)
             'Courier New', // Microsoft (preferred, de facto standard)
             'FreeMonoBold', // GNU FreeFont (bundled)
@@ -87,9 +87,9 @@ function find_default_font($mono = false)
             'FiraMono', // Firefox OS
             'RobotoMono-Bold', // Google
             'RobotoMono', // Google
-        );
+        ];
     } else {
-        $precedence = array(
+        $precedence = [
             'Segoe UI', // Microsoft (preferred, de facto standard)
             'Tahoma', // Microsoft (preferred, de facto standard)
             'Verdana', // Microsoft (preferred, de facto standard)
@@ -109,7 +109,7 @@ function find_default_font($mono = false)
             'FiraSans', // Firefox OS
             'Roboto', // Google
             'OpenSans', // Google
-        );
+        ];
     }
 
     $all_fonts = find_all_fonts(true);
@@ -144,15 +144,15 @@ function find_all_fonts($test_character_support = false)
         require_code('character_sets');
     }
 
-    $fonts = array();
-    foreach (array(get_file_base() . '/data_custom/fonts', get_file_base() . '/data/fonts') as $path) {
+    $fonts = [];
+    foreach ([get_file_base() . '/data_custom/fonts', get_file_base() . '/data/fonts'] as $path) {
         $dh = @opendir($path);
         if ($dh !== false) {
             while (($f = readdir($dh))) {
                 if (substr($f, -4) == '.ttf') {
                     if (($test_character_support) && (has_ttf())) {
                         $_test_text = cms_preg_replace_safe('#\s#', '', $test_text);
-                        $_chars = array();
+                        $_chars = [];
                         $len = cms_mb_strlen($_test_text);
                         for ($i = 0; $i < $len; $i++) {
                             $char = cms_mb_substr($_test_text, $i, 1);

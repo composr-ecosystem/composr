@@ -35,10 +35,10 @@ class Hook_commandr_fs_database
     {
         push_db_scope_check(false);
 
-        $listing = array();
+        $listing = [];
         if (count($meta_dir) < 1) {
             // We're at the top level; list the tables
-            $tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+            $tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
 
             foreach ($tables as $table) {
                 $table_name = $table['m_table'];
@@ -52,26 +52,26 @@ class Hook_commandr_fs_database
                     }
                 }
 
-                $listing[] = array(
+                $listing[] = [
                     $table_name,
                     COMMANDR_FS_DIR,
                     null/*don't calculate a filesize*/,
                     $modification_time,
-                );
+                ];
             }
         } elseif (count($meta_dir) == 1) {
             // We're in a table; list the row key combinations
-            $keys = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $meta_dir[0]));
+            $keys = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $meta_dir[0]]);
             if (empty($keys)) {
                 return false;
             }
-            $select = array();
+            $select = [];
             foreach ($keys as $key) {
                 if ($key['m_type'][0] == '*') {
                     $select[] = str_replace('*', '', $key['m_name']);
                 }
             }
-            $rows = $GLOBALS['SITE_DB']->query_select($meta_dir[0], $select, array(), '', 1000/*reasonable limit*/);
+            $rows = $GLOBALS['SITE_DB']->query_select($meta_dir[0], $select, [], '', 1000/*reasonable limit*/);
             foreach ($rows as $row) {
                 $x = '';
                 foreach ($select as $key) {
@@ -90,12 +90,12 @@ class Hook_commandr_fs_database
                         $x .= $key . ':' . $this->escape_name(is_string($row[$key]) ? $row[$key] : strval($row[$key]));
                     }
                 }
-                $listing[] = array(
+                $listing[] = [
                     $x,
                     COMMANDR_FS_DIR,
                     null/*don't calculate a filesize*/,
                     null/*don't specify a modification time*/,
-                );
+                ];
             }
         } elseif (count($meta_dir) == 2) {
             // We're in a row; list the row contents :)
@@ -103,18 +103,18 @@ class Hook_commandr_fs_database
             if ($where === false) {
                 return false;
             }
-            $row = $GLOBALS['SITE_DB']->query_select($meta_dir[0], array('*'), $where, '', 1, 0, false, array());
+            $row = $GLOBALS['SITE_DB']->query_select($meta_dir[0], ['*'], $where, '', 1, 0, false, []);
             if (!array_key_exists(0, $row)) {
                 return false;
             }
             $row = $row[0];
             foreach ($row as $field_name => $field_value) {
-                $listing[] = array(
+                $listing[] = [
                     $field_name,
                     COMMANDR_FS_FILE,
                     null/*don't calculate a filesize*/,
                     null/*don't specify a modification time*/,
-                );
+                ];
             }
         } else {
             return false; // Directory doesn't exist
@@ -141,12 +141,12 @@ class Hook_commandr_fs_database
         } elseif (count($meta_dir) == 1) {
             // We're in a field, and adding a new row
             $where = $this->_do_where($meta_dir[0], $new_dir_name);
-            $fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $meta_dir[0]));
+            $fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $meta_dir[0]]);
             $value = mixed();
             foreach ($fields as $field) {
                 $field['m_type'] = str_replace('?', '', str_replace('*', '', $field['m_type']));
                 if (!array_key_exists($field['m_name'], $where)) {
-                    if (in_array($field['m_type'], array('AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+                    if (in_array($field['m_type'], ['AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
                         $value = 0;
                     } elseif ($field['m_type'] == 'REAL') {
                         $value = 0.0;
@@ -211,17 +211,17 @@ class Hook_commandr_fs_database
         if (count($meta_dir) == 2) {
             // We're in a row, and deleting a field entry for this row
             $where = $this->_do_where($meta_dir[0], $meta_dir[1]);
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $meta_dir[0], 'm_name' => $file_name));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $meta_dir[0], 'm_name' => $file_name]);
             if ($test === null) {
                 return false;
             }
             $test = str_replace('?', '', str_replace('*', '', $test));
-            if (in_array($test, array('AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
-                $GLOBALS['SITE_DB']->query_update($meta_dir[0], array($file_name => 0), $where);
+            if (in_array($test, ['AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
+                $GLOBALS['SITE_DB']->query_update($meta_dir[0], [$file_name => 0], $where);
             } elseif ($test == 'REAL') {
-                $GLOBALS['SITE_DB']->query_update($meta_dir[0], array($file_name => 0.0), $where);
+                $GLOBALS['SITE_DB']->query_update($meta_dir[0], [$file_name => 0.0], $where);
             } else {
-                $GLOBALS['SITE_DB']->query_update($meta_dir[0], array($file_name => ''), $where);
+                $GLOBALS['SITE_DB']->query_update($meta_dir[0], [$file_name => ''], $where);
             }
         } else {
             return false; // Files shouldn't even exist anywhere else!
@@ -246,11 +246,11 @@ class Hook_commandr_fs_database
         if (count($meta_dir) == 2) {
             // We're in a row, and reading a field entry for this row
             $where = $this->_do_where($meta_dir[0], $meta_dir[1]);
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $meta_dir[0], 'm_name' => $this->unescape_name($file_name)));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $meta_dir[0], 'm_name' => $this->unescape_name($file_name)]);
             if ($test === null) {
                 return false;
             }
-            $output = $GLOBALS['SITE_DB']->query_select($meta_dir[0], array($file_name), $where);
+            $output = $GLOBALS['SITE_DB']->query_select($meta_dir[0], [$file_name], $where);
             if (!array_key_exists(0, $output)) {
                 return false;
             }
@@ -277,14 +277,14 @@ class Hook_commandr_fs_database
         if (count($meta_dir) == 2) {
             // We're in a row, and writing a field entry for this row
             $where = $this->_do_where($meta_dir[0], $meta_dir[1]);
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', array('m_table' => $meta_dir[0], 'm_name' => $this->unescape_name($file_name)));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('db_meta', 'm_type', ['m_table' => $meta_dir[0], 'm_name' => $this->unescape_name($file_name)]);
             if ($test === null) {
                 return false;
             }
             $accepts_null = (strpos($test, '?') !== false);
             $test = str_replace('?', '', str_replace('*', '', $test));
-            $update = array();
-            if (in_array($test, array('AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+            $update = [];
+            if (in_array($test, ['AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
                 $update[$this->unescape_name($file_name)] = ($contents == '') ? null : intval($contents);
                 if (($update[$this->unescape_name($file_name)] === null) && (!$accepts_null)) {
                     $update[$this->unescape_name($file_name)] = 0;
@@ -318,22 +318,22 @@ class Hook_commandr_fs_database
     {
         push_db_scope_check(false);
 
-        $db_keys = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'), array('m_table' => $table_name));
-        $_db_keys = array();
+        $db_keys = $GLOBALS['SITE_DB']->query_select('db_meta', ['*'], ['m_table' => $table_name]);
+        $_db_keys = [];
         foreach ($db_keys as $db_key) {
             $_db_keys[$db_key['m_name']] = str_replace('?', '', str_replace('*', '', $db_key['m_type']));
         }
 
-        $where = array();
+        $where = [];
         $pairs = explode(',', $keys);
         foreach ($pairs as $_pair) {
             if (strpos($_pair, ':') === false) {
-                $pair = array('id', $_pair);
+                $pair = ['id', $_pair];
             } else {
                 $pair = explode(':', $_pair, 2);
             }
             if ((array_key_exists($pair[0], $_db_keys)) && (array_key_exists(1, $pair))) {
-                if (in_array($_db_keys[$pair[0]], array('AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'))) {
+                if (in_array($_db_keys[$pair[0]], ['AUTO', 'MEMBER', 'INTEGER', 'UINTEGER', 'MEMBER', 'SHORT_INTEGER', 'AUTO_LINK', 'BINARY', 'GROUP', 'TIME'])) {
                     $pair[1] = intval($pair[1]);
                 } elseif ($_db_keys[$pair[0]] == 'REAL') {
                     $pair[1] = floatval($pair[1]);
@@ -359,7 +359,7 @@ class Hook_commandr_fs_database
      */
     public function escape_name($in)
     {
-        return str_replace(array(':', ',', '/'), array('!colon!', '!comma!', '!slash!'), $in);
+        return str_replace([':', ',', '/'], ['!colon!', '!comma!', '!slash!'], $in);
     }
 
     /**
@@ -370,6 +370,6 @@ class Hook_commandr_fs_database
      */
     public function unescape_name($in)
     {
-        return str_replace(array('!colon!', '!comma!', '!slash!'), array(':', ',', '/'), $in);
+        return str_replace(['!colon!', '!comma!', '!slash!'], [':', ',', '/'], $in);
     }
 }

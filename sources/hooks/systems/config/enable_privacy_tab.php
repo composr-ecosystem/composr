@@ -30,7 +30,7 @@ class Hook_config_enable_privacy_tab
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_PRIVACY_TAB',
             'type' => 'tick',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_enable_privacy_tab
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

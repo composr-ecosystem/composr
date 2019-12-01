@@ -30,7 +30,7 @@ class Module_admin_setupwizard
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,11 +55,11 @@ class Module_admin_setupwizard
             return null;
         }
 
-        return array(
-            'browse' => array('SETUPWIZARD', 'menu/adminzone/setup/setupwizard'),
-            'install_test_content' => array('INSTALL_TEST_CONTENT', 'admin/add_one_category'),
-            'uninstall_test_content' => array('UNINSTALL_TEST_CONTENT', 'buttons/clear'),
-        );
+        return [
+            'browse' => ['SETUPWIZARD', 'menu/adminzone/setup/setupwizard'],
+            'install_test_content' => ['INSTALL_TEST_CONTENT', 'admin/add_one_category'],
+            'uninstall_test_content' => ['UNINSTALL_TEST_CONTENT', 'buttons/clear'],
+        ];
     }
 
     public $title;
@@ -178,7 +178,7 @@ class Module_admin_setupwizard
     public function step1()
     {
         $dh = @opendir(get_custom_file_base() . '/imports/addons/');
-        $addons_available = array();
+        $addons_available = [];
         if ($dh !== false) {
             while (($file = readdir($dh)) !== false) {
                 if (substr($file, -4) == '.tar') {
@@ -189,7 +189,7 @@ class Module_admin_setupwizard
         }
         foreach ($addons_available as $aa) {
             if (!addon_installed($aa)) {
-                $addon_management = build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons'));
+                $addon_management = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
                 attach_message(do_lang_tempcode('ADDONS_NOT_INSTALLED_IN_SETUPWIZARD', escape_html($addon_management->evaluate())), 'notice');
                 break;
             }
@@ -198,17 +198,17 @@ class Module_admin_setupwizard
         $_done_once = get_value('setupwizard_completed');
         $done_once = $_done_once !== null;
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step2'), '_SELF', array('keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true));
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step2'], '_SELF', ['keep_theme_seed' => true, 'keep_theme_dark' => true, 'keep_theme_source' => true, 'keep_theme_algorithm' => true]);
         $text = new Tempcode();
-        $addons_url = build_url(array('page' => 'admin_addons'), get_module_zone('admin_addons'));
+        $addons_url = build_url(['page' => 'admin_addons'], get_module_zone('admin_addons'));
         $text->attach(paragraph(do_lang_tempcode($done_once ? 'SETUPWIZARD_1_DESCRIBE_ALT' : 'SETUPWIZARD_1_DESCRIBE', escape_html($addons_url->evaluate()))));
-        $rescue_url = build_url(array('page' => '', 'keep_safe_mode' => '1'), '');
-        $text->attach(paragraph(do_lang_tempcode('SETUPWIZARD_SAFE_MODE', escape_html($rescue_url->evaluate()), do_template('ICON', array('_GUID' => '049d21a64c40a98fc06229bb3985c85a', 'NAME' => 'tool_buttons/software_chat')))));
+        $rescue_url = build_url(['page' => '', 'keep_safe_mode' => '1'], '');
+        $text->attach(paragraph(do_lang_tempcode('SETUPWIZARD_SAFE_MODE', escape_html($rescue_url->evaluate()), do_template('ICON', ['_GUID' => '049d21a64c40a98fc06229bb3985c85a', 'NAME' => 'tool_buttons/software_chat']))));
         $submit_name = do_lang_tempcode('START');
 
         $fields = new Tempcode();
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => '71316d91703e3549301f57182405c997',
             'SKIP_WEBSTANDARDS' => true,
             'FIELDS' => $fields,
@@ -217,14 +217,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => '',
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => '38a02343903542f8bbe1fb49a7b21eb7',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(1)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -234,7 +234,7 @@ class Module_admin_setupwizard
      */
     public function step2()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step3'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
 
@@ -254,7 +254,7 @@ class Module_admin_setupwizard
                     $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard_installprofiles/' . filter_naughty_harsh($hook) . '.php';
                 }
                 if (file_exists($path)) {
-                    $_hook_bits = extract_module_functions($path, array('info'));
+                    $_hook_bits = extract_module_functions($path, ['info']);
                     $installprofile = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
                     if ($installprofile !== null) {
                         $installprofiles->attach(form_input_list_entry($hook . '__' . $theme, get_param_string('id', '') == $hook . '__' . $theme, do_lang('INSTALLPROFILE_WITH_THEME', $installprofile['title'], $theme_title)));
@@ -271,7 +271,7 @@ class Module_admin_setupwizard
             if (!file_exists($path)) {
                 $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard_installprofiles/' . filter_naughty_harsh($hook) . '.php';
             }
-            $_hook_bits = extract_module_functions($path, array('info'));
+            $_hook_bits = extract_module_functions($path, ['info']);
             $installprofile = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
             if ($installprofile !== null) {
                 $installprofiles->attach(form_input_list_entry($hook, get_param_string('id', '') == $hook, $installprofile['title']));
@@ -283,15 +283,15 @@ class Module_admin_setupwizard
 
         // --
 
-        $text = do_template('SETUPWIZARD_2', array(
+        $text = do_template('SETUPWIZARD_2', [
             '_GUID' => '2042f3786d10c7c5be5d38ea28942b47',
             'SKIP_WEBSTANDARDS' => true,
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => '185da65845b3001cc152b15845b63b89',
             'SKIP_WEBSTANDARDS' => true,
             'SKIP_REQUIRED' => true,
@@ -301,15 +301,15 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
-        ));
+        ]);
 
-        return do_template('SETUPWIZARD_SCREEN', array(
+        return do_template('SETUPWIZARD_SCREEN', [
             '_GUID' => 'e04bc40dfc4047b62b586711d15ad875',
             'TITLE' => $this->title,
             'STEP' => strval($this->get_effective_step(2)),
             'INNER' => $inner,
             'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-        ));
+        ]);
     }
 
     /**
@@ -319,12 +319,12 @@ class Module_admin_setupwizard
      */
     public function step3()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step4'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_3_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
 
         $fields = new Tempcode();
-        $hidden = static_evaluate_tempcode(build_keep_post_fields(array('installprofile')));
+        $hidden = static_evaluate_tempcode(build_keep_post_fields(['installprofile']));
 
         $installprofile = post_param_string('installprofile', '');
         if (strpos($installprofile, '__') !== false) {
@@ -340,7 +340,7 @@ class Module_admin_setupwizard
         $site_name = get_option('site_name');
         $description = get_option('description');
         $site_scope = get_option('site_scope');
-        $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', array('zone_name' => ''));
+        $_header_text = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
         $header_text = get_translated_text($_header_text);
         $copyright = get_option('copyright');
         $staff_address = get_option('staff_address');
@@ -421,12 +421,12 @@ class Module_admin_setupwizard
                 break;
         }
         $security_levels = new Tempcode();
-        foreach (array('low', 'medium', 'high') as $_security_level) {
+        foreach (['low', 'medium', 'high'] as $_security_level) {
             $security_levels->attach(form_input_list_entry($_security_level, $_security_level == $security_level, do_lang_tempcode('SECURITY_LEVEL_' . $_security_level)));
         }
         $fields->attach(form_input_list(do_lang_tempcode('SECURITY_LEVEL'), do_lang_tempcode('DESCRIPTION_SECURITY_LEVEL'), 'security_level', $security_levels));
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => '3126441524b51cba6a1e0de336c8a9d5',
             'SKIP_WEBSTANDARDS' => true,
             'SKIPPABLE' => 'skip_3',
@@ -436,14 +436,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => '',
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => '6bdae2f0aa24b5dbe81fd0fc72e87feb',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(3)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -456,7 +456,7 @@ class Module_admin_setupwizard
         require_code('addons2');
         require_lang('addons');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step5'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step5'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_4_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
@@ -469,7 +469,7 @@ class Module_admin_setupwizard
         $fields_advanced = '';
 
         $installprofile = post_param_string('installprofile', '');
-        $addon_list_override_to_off_by_default = array();
+        $addon_list_override_to_off_by_default = [];
         if ($installprofile != '') {
             require_code('hooks/modules/admin_setupwizard_installprofiles/' . filter_naughty_harsh($installprofile));
             $object = object_factory('Hook_admin_setupwizard_installprofiles_' . filter_naughty_harsh($installprofile));
@@ -480,7 +480,7 @@ class Module_admin_setupwizard
             }
         } else {
             $addon_list_on_by_default = null;
-            $addon_list_advanced_on_by_default = array();
+            $addon_list_advanced_on_by_default = [];
         }
 
         /*$addon_list_on_by_default = array(   These will be put on in individual Setup Wizard profiles; we list them here just so our addon_setupwizard automated test can ensure we haven't forgotten to consider their status
@@ -521,7 +521,7 @@ class Module_admin_setupwizard
 
         // These are on by default regardless of install profile. It's useful, because we don't want install profiles to have to be too prescriptive, and we want old ones to keep working well even if new addons have been introduced.
         if ($addon_list_on_by_default !== null) {
-            $addon_list_on_by_default = array_merge($addon_list_on_by_default, array(
+            $addon_list_on_by_default = array_merge($addon_list_on_by_default, [
                 'banners',
                 'ecommerce',
                 'cns_avatars',
@@ -529,9 +529,9 @@ class Module_admin_setupwizard
                 'cns_member_avatars',
                 'cns_thematic_avatars',
                 'wordfilter',
-            ));
+            ]);
         }
-        $addon_list_advanced_on_by_default = array_merge($addon_list_advanced_on_by_default, array(
+        $addon_list_advanced_on_by_default = array_merge($addon_list_advanced_on_by_default, [
             'actionlog',
             'all_icons',
             'awards',
@@ -573,7 +573,7 @@ class Module_admin_setupwizard
             'filebased_persistent_caching',
             'robots_txt',
             'getid3', // this will be downloaded as it is not bundled, for licensing reasons
-        ));
+        ]);
         // ... unless the install profile really is shunning them
         foreach ($addon_list_override_to_off_by_default as $_to_find) {
             if ($addon_list_on_by_default !== null) {
@@ -588,7 +588,7 @@ class Module_admin_setupwizard
             }
         }
 
-        $addon_list_advanced_off_by_default = array(
+        $addon_list_advanced_off_by_default = [
             // Hint that these must go under advanced (as they default as visible). Note that presence of an addon in an 'on' list gives it precedence.
             'installer',
             'rootkit_detector',
@@ -602,14 +602,14 @@ class Module_admin_setupwizard
             'user_mappr', // this will be downloaded as it is not bundled
             'facebook_support', // this will be downloaded as it is not bundled
             'twitter_support', // this will be downloaded as it is not bundled
-        );
+        ];
         if (GOOGLE_APPENGINE) {
             $addon_list_advanced_off_by_default[] = 'google_appengine';
         }
 
         // Do we need to download any from compo.sr?
         $GLOBALS['DEV_MODE'] = false;
-        foreach (array_merge(($addon_list_on_by_default === null) ? array() : $addon_list_on_by_default, $addon_list_advanced_on_by_default, $addon_list_advanced_off_by_default) as $mentioned_addon) {
+        foreach (array_merge(($addon_list_on_by_default === null) ? [] : $addon_list_on_by_default, $addon_list_advanced_on_by_default, $addon_list_advanced_off_by_default) as $mentioned_addon) {
             if ((!array_key_exists($mentioned_addon, $addons_installed)) && (!array_key_exists($mentioned_addon, $addons_not_installed))) {
                 $remote_addons = find_remote_addons();
                 $_mentioned_addon = titleify($mentioned_addon);
@@ -631,7 +631,7 @@ class Module_admin_setupwizard
         }
         sort_maps_by($all_addons, 'name', false, true);
         $_lock_addons_on = get_theme_option('setupwizard__lock_addons_on', null, post_param_string('source_theme', 'default'));
-        $lock_addons_on = ($_lock_addons_on == '') ? array() : explode(',', $_lock_addons_on);
+        $lock_addons_on = ($_lock_addons_on == '') ? [] : explode(',', $_lock_addons_on);
         require_code('addons');
         foreach ($all_addons as $addon_name => $row) {
             $is_core = ($addon_name == 'core') || (substr($addon_name, 0, 5) == 'core_') || (in_array($addon_name, $lock_addons_on));
@@ -644,10 +644,10 @@ class Module_admin_setupwizard
                 if ((substr($addon_description, -1) != '.') && ($addon_description != '')) {
                     $addon_description .= '.';
                 }
-                $_addon_description = protect_from_escaping(symbol_truncator(array(static_evaluate_tempcode(comcode_to_tempcode($addon_description)), '1000', '0', '1'), 'left'));
+                $_addon_description = protect_from_escaping(symbol_truncator([static_evaluate_tempcode(comcode_to_tempcode($addon_description)), '1000', '0', '1'], 'left'));
 
                 $addon_icon = find_addon_icon($addon_name, false, array_key_exists('tar_path', $row) ? $row['tar_path'] : null);
-                $addon_name_pretty = protect_from_escaping(do_template('ADDON_NAME', array('_GUID' => 'c036db4d27417f79e1f395d1edb44020', 'IMAGE_URL' => $addon_icon, 'NAME' => $row['name'])));
+                $addon_name_pretty = protect_from_escaping(do_template('ADDON_NAME', ['_GUID' => 'c036db4d27417f79e1f395d1edb44020', 'IMAGE_URL' => $addon_icon, 'NAME' => $row['name']]));
 
                 $field = form_input_tick($addon_name_pretty, $_addon_description, 'addon_' . $addon_name, $install_by_default);
 
@@ -662,10 +662,10 @@ class Module_admin_setupwizard
             }
         }
 
-        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED'))));
+        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '00948cc876d0ecb8b511800eabd8cae2', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         $fields .= $fields_advanced;
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => '0f361a3ac0e020ba71f3a7a900eca0e4',
             'NO_SIZING' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -676,14 +676,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => 'ca91a76aa418d5c9ae956247ebc70652',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(4)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -695,7 +695,7 @@ class Module_admin_setupwizard
     {
         require_lang('menus');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => $this->has_block_step() ? 'step6' : 'step7'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => $this->has_block_step() ? 'step6' : 'step7'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_5_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
@@ -708,13 +708,13 @@ class Module_admin_setupwizard
             if (!file_exists($path)) {
                 $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard_installprofiles/' . filter_naughty_harsh($installprofile) . '.php';
             }
-            $_hook_bits = extract_module_functions($path, array('field_defaults'));
+            $_hook_bits = extract_module_functions($path, ['field_defaults']);
             $field_defaults = is_array($_hook_bits[0]) ? call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]) : cms_eval($_hook_bits[0], $path);
         } else {
-            $field_defaults = array();
+            $field_defaults = [];
         }
 
-        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '9f81456d95f2ff66a46e2a5b9901aaf3', 'TITLE' => do_lang_tempcode('FEATURES'))));
+        $fields .= static_evaluate_tempcode(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9f81456d95f2ff66a46e2a5b9901aaf3', 'TITLE' => do_lang_tempcode('FEATURES')]));
 
         $hooks = find_all_hooks('modules', 'admin_setupwizard');
         foreach (array_keys($hooks) as $hook) {
@@ -749,10 +749,10 @@ class Module_admin_setupwizard
 
         require_code('setupwizard');
         require_javascript('setupwizard');
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => 'f1e9a4d271c7d68ff9da6dc0438f6e3f',
             'SKIP_WEBSTANDARDS' => true,
-            'JS_FUNCTION_CALLS' => array('adminSetupWizardStep5'),
+            'JS_FUNCTION_CALLS' => ['adminSetupWizardStep5'],
             'SKIPPABLE' => 'skip_5',
             'FIELDS' => $fields,
             'URL' => $post_url,
@@ -760,14 +760,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => '8dfd885199d3d1416c044fad7a97d953',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(5)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -788,8 +788,8 @@ class Module_admin_setupwizard
             $default_blocks = null;
         }
 
-        $main_blocks = array();
-        $side_blocks = array();
+        $main_blocks = [];
+        $side_blocks = [];
         $hooks = find_all_hook_obs('modules', 'admin_setupwizard', 'Hook_sw_');
         foreach ($hooks as $hook => $ob) {
             if (post_param_integer('addon_' . $hook, 0) == 1) {
@@ -810,7 +810,7 @@ class Module_admin_setupwizard
             return $this->step7();
         }
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step7'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step7'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_6_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
 
@@ -822,7 +822,7 @@ class Module_admin_setupwizard
         require_code('zones2');
 
         if (!empty($main_blocks)) {
-            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode('HOME')));
+            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode('HOME')]);
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
             foreach ($main_blocks as $block => $position_bits) {
                 if (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php')) {
@@ -836,7 +836,7 @@ class Module_admin_setupwizard
                     $position = $position_bits[1];
                 } else {
                     $position = 'NO';
-                    foreach (array('YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT') as $p) {
+                    foreach (['YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT'] as $p) {
                         if (in_array($block, $default_blocks[$p])) {
                             $position = $p;
                         }
@@ -854,7 +854,7 @@ class Module_admin_setupwizard
         }
 
         if (!empty($side_blocks)) {
-            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '13e0d3002669654d9b45b4739ecbf28c', 'TITLE' => do_lang_tempcode('PANELS')));
+            $tmp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '13e0d3002669654d9b45b4739ecbf28c', 'TITLE' => do_lang_tempcode('PANELS')]);
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
             foreach ($side_blocks as $block => $position_bits) {
                 if (!file_exists(get_file_base() . '/sources/blocks/' . $block . '.php')) {
@@ -868,7 +868,7 @@ class Module_admin_setupwizard
                     $position = $position_bits[1];
                 } else {
                     $position = 'NO';
-                    foreach (array('YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT') as $p) {
+                    foreach (['YES', 'YES_CELL', 'PANEL_LEFT', 'PANEL_RIGHT'] as $p) {
                         if (in_array($block, $default_blocks[$p])) {
                             $position = $p;
                         }
@@ -883,7 +883,7 @@ class Module_admin_setupwizard
             }
         }
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => 'd463906b9e2cd8c37577d64783aa844c',
             'SKIP_WEBSTANDARDS' => true,
             'SKIPPABLE' => 'skip_6',
@@ -894,14 +894,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => '7c2cbc9577974b210e196b92158b4bb8',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(6)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -923,7 +923,7 @@ class Module_admin_setupwizard
      */
     public function step7()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => $this->has_themewizard_step() ? 'step8' : 'step9'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => $this->has_themewizard_step() ? 'step8' : 'step9'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_7_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
@@ -934,7 +934,7 @@ class Module_admin_setupwizard
             $object = object_factory('Hook_admin_setupwizard_installprofiles_' . filter_naughty_harsh($installprofile));
             $field_defaults = $object->field_defaults();
         } else {
-            $field_defaults = array();
+            $field_defaults = [];
         }
 
         $list = new Tempcode();
@@ -945,8 +945,8 @@ class Module_admin_setupwizard
 
         require_code('setupwizard');
         require_javascript('setupwizard');
-        $js_function_calls = array('adminSetupWizardStep7');
-        $form = do_template('FORM', array(
+        $js_function_calls = ['adminSetupWizardStep7'];
+        $form = do_template('FORM', [
             '_GUID' => 'bf01a2b90967e86213ae0672c36a4b4e',
             'SKIPPABLE' => 'skip_7',
             'FIELDS' => $fields,
@@ -956,20 +956,20 @@ class Module_admin_setupwizard
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
             'JS_FUNCTION_CALLS' => $js_function_calls,
-        ));
+        ]);
 
         $balanced = comcode_to_tempcode($this->get_rules_file('balanced'), null, true);
         $liberal = comcode_to_tempcode($this->get_rules_file('liberal'), null, true);
         $corporate = comcode_to_tempcode($this->get_rules_file('corporate'), null, true);
 
-        $inner = do_template('SETUPWIZARD_7', array('_GUID' => '5e46c3a989e42fa6eec5a017e8c644c2', 'FORM' => $form, 'BALANCED' => $balanced, 'LIBERAL' => $liberal, 'CORPORATE' => $corporate));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        $inner = do_template('SETUPWIZARD_7', ['_GUID' => '5e46c3a989e42fa6eec5a017e8c644c2', 'FORM' => $form, 'BALANCED' => $balanced, 'LIBERAL' => $liberal, 'CORPORATE' => $corporate]);
+        return do_template('SETUPWIZARD_SCREEN', [
             '_GUID' => '04f24f8c44267d2ad315aa34243e9712',
             'TITLE' => $this->title,
             'STEP' => strval($this->get_effective_step(7)),
             'INNER' => $inner,
             'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-        ));
+        ]);
     }
 
     /**
@@ -982,7 +982,7 @@ class Module_admin_setupwizard
         require_lang('themes');
         require_code('themewizard');
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step9'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step9'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_8_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
@@ -992,7 +992,7 @@ class Module_admin_setupwizard
         $fields->attach(form_input_colour(do_lang_tempcode('SEED_COLOUR'), do_lang_tempcode('DESCRIPTION_SEED_COLOUR'), 'seed_hex', '#' . find_theme_seed('default'), true));
         $fields->attach(form_input_tick(do_lang_tempcode('DARK_THEME'), do_lang_tempcode('DESCRIPTION_DARK_THEME'), 'dark', get_param_integer('dark', 0) == 1));
 
-        $inner = do_template('FORM', array(
+        $inner = do_template('FORM', [
             '_GUID' => '7ef31eb9712cff98da57a92fc173f7af',
             'PREVIEW' => true,
             'SKIP_WEBSTANDARDS' => true,
@@ -1003,14 +1003,14 @@ class Module_admin_setupwizard
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => 'e67abf478cea7aed5cda64189549677a',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(8)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -1020,7 +1020,7 @@ class Module_admin_setupwizard
      */
     public function step9()
     {
-        $post_url = build_url(array('page' => '_SELF', 'type' => 'step10'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => 'step10'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_9_DESCRIBE');
         $submit_name = do_lang_tempcode('PROCEED');
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
@@ -1031,8 +1031,8 @@ class Module_admin_setupwizard
 
         require_code('setupwizard');
         require_javascript('setupwizard');
-        $js_function_calls = array('adminSetupWizardStep9');
-        $inner = do_template('FORM', array(
+        $js_function_calls = ['adminSetupWizardStep9'];
+        $inner = do_template('FORM', [
             '_GUID' => 'c405a64a08328f78ac0e3f22a8365411',
             'SKIP_WEBSTANDARDS' => true,
             'SKIPPABLE' => 'skip_9',
@@ -1043,14 +1043,14 @@ class Module_admin_setupwizard
             'SUBMIT_NAME' => $submit_name,
             'HIDDEN' => $hidden,
             'JS_FUNCTION_CALLS' => $js_function_calls,
-        ));
-        return do_template('SETUPWIZARD_SCREEN', array(
+        ]);
+        return do_template('SETUPWIZARD_SCREEN', [
                 '_GUID' => 'de13f131460e7f342c8beb6ba5ae3f42',
                 'TITLE' => $this->title,
                 'STEP' => strval($this->get_effective_step(9)),
                 'INNER' => $inner,
                 'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ));
+            ]);
     }
 
     /**
@@ -1074,7 +1074,7 @@ class Module_admin_setupwizard
         // Initialise AFM...
 
         require_code('abstract_file_manager');
-        $writable_paths = array();
+        $writable_paths = [];
         if ((post_param_integer('skip_8', 0) == 0) && ($doing_themewizard)) {
             if ($generating_new_theme) {
                 $writable_paths[] = 'themes';
@@ -1125,10 +1125,10 @@ class Module_admin_setupwizard
                 $object->install_code();
                 $installprofileblocks = $object->default_blocks();
             } else { // Hmm, we probably just uninstalled the install-profile hook as its addon was not chosen! Whoopsie, but do our best.
-                $installprofileblocks = array();
+                $installprofileblocks = [];
             }
         } else {
-            $installprofileblocks = array();
+            $installprofileblocks = [];
         }
 
         $doing_logowizard = (function_exists('imagepng')) && (addon_installed('themewizard')) && (get_theme_option('enable_logowizard', null, $source_theme) == '1');
@@ -1139,7 +1139,7 @@ class Module_admin_setupwizard
             // Make/set theme and logos
             if ($doing_themewizard) {
                 global $THEME_IMAGES_CACHE;
-                $old_img_codes_site = $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), array('theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'lang' => user_lang()));
+                $old_img_codes_site = $GLOBALS['SITE_DB']->query_select('theme_images', ['id', 'url'], ['theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'lang' => user_lang()]);
                 if ($generating_new_theme) {
                     make_theme($new_theme_name, 'default', 'equations', post_param_string('seed_hex'), /*$use=*/true, post_param_integer('dark', 0) == 1);
                 }
@@ -1152,7 +1152,7 @@ class Module_admin_setupwizard
                 set_live_theme($live_theme);
             }
             if ($doing_logowizard) {
-                foreach (array($live_theme, 'default') as $logo_save_theme) {
+                foreach ([$live_theme, 'default'] as $logo_save_theme) {
                     $logo = generate_logo($name, $font, $logo_theme_image, $background_theme_image, false, $logo_save_theme);
                     $path = 'themes/' . $logo_save_theme . '/images_custom/-logo.png';
                     if (!file_exists(get_custom_file_base() . '/' . dirname($path))) {
@@ -1209,95 +1209,95 @@ class Module_admin_setupwizard
             set_option('google_analytics', post_param_string('google_analytics'));
             set_option('fixed_width', post_param_string('fixed_width', '0'));
 
-            $a = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', array('zone_name' => ''));
-            $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $a, $header_text), array('zone_name' => ''), '', 1);
+            $a = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_header_text', ['zone_name' => '']);
+            $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $a, $header_text), ['zone_name' => ''], '', 1);
 
-            $b = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', array('zone_name' => 'site'));
+            $b = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => 'site']);
             if ($b !== null) {
-                $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $b, $header_text), array('zone_name' => 'site'), '', 1);
+                $GLOBALS['SITE_DB']->query_update('zones', lang_remap('zone_header_text', $b, $header_text), ['zone_name' => 'site'], '', 1);
             }
 
             // Security level...
 
             $security_level = post_param_string('security_level');
 
-            $security_level_options = array(
-                'csp_enabled' => array(
+            $security_level_options = [
+                'csp_enabled' => [
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
-                ),
-                'session_expiry_time' => array(
+                ],
+                'session_expiry_time' => [
                     'low' => '24',
                     'medium' => '3',
                     'high' => '1',
-                ),
-                'password_reset_process' => array(
+                ],
+                'password_reset_process' => [
                     'low' => 'emailed',
                     'medium' => 'temporary',
                     'high' => 'ultra',
-                ),
-                'password_expiry_days' => array(
+                ],
+                'password_expiry_days' => [
                     'low' => '0',
                     'medium' => '0',
                     'high' => '31',
-                ),
-                'minimum_password_length' => array(
+                ],
+                'minimum_password_length' => [
                     'low' => '5',
                     'medium' => '6',
                     'high' => '8',
-                ),
-                'minimum_password_strength' => array(
+                ],
+                'minimum_password_strength' => [
                     'low' => '2',
                     'medium' => '4',
                     'high' => '6',
-                ),
-                'login_error_secrecy' => array(
+                ],
+                'login_error_secrecy' => [
                     'low' => '0',
                     'medium' => '0',
                     'high' => '1',
-                ),
-                'ip_strict_for_sessions' => array(
+                ],
+                'ip_strict_for_sessions' => [
                     'low' => '1',
                     'medium' => '1',
                     'high' => '1',
-                ),
-                'crypt_ratchet' => array(
+                ],
+                'crypt_ratchet' => [
                     'low' => '8',
                     'medium' => '10',
                     'high' => '12',
-                ),
-                'captcha_single_guess' => array(
+                ],
+                'captcha_single_guess' => [
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
-                ),
-                'captcha_noise' => array(
+                ],
+                'captcha_noise' => [
                     'low' => '0',
                     'medium' => '1',
                     'high' => '1',
-                ),
-                'brute_force_threshold' => array(
+                ],
+                'brute_force_threshold' => [
                     'low' => '32',
                     'medium' => '16',
                     'high' => '8',
-                ),
-                'audio_captcha' => array(
+                ],
+                'audio_captcha' => [
                     'low' => '1',
                     'medium' => '1',
                     'high' => '0',
-                ),
-                'url_monikers_enabled' => array(
+                ],
+                'url_monikers_enabled' => [
                     'low' => '1',
                     'medium' => '1',
                     'high' => '0',
-                ),
-                'maintenance_script_htaccess' => array(
+                ],
+                'maintenance_script_htaccess' => [
                     'low' => '0',
                     'medium' => '0',
                     'high' => '1',
-                ),
-            );
+                ],
+            ];
             foreach ($security_level_options as $security_level_option => $values) {
                 set_option($security_level_option, $values[$security_level]);
             }
@@ -1309,17 +1309,17 @@ class Module_admin_setupwizard
                 foreach (array_keys($groups) as $id) {
                     switch ($security_level) {
                         case 'low':
-                            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_enquire_on_new_ips' => 0), array('id' => $id), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => 0], ['id' => $id], '', 1);
                             break;
 
                         case 'medium':
                             $is_admin = in_array($id, $admin_groups);
-                            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_enquire_on_new_ips' => $is_admin ? 1 : 0), array('id' => $id), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => $is_admin ? 1 : 0], ['id' => $id], '', 1);
                             break;
 
                         case 'high':
                             $is_staff = in_array($id, $admin_groups) || in_array($id, $moderator_groups);
-                            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_enquire_on_new_ips' => $is_staff ? 1 : 0), array('id' => $id), '', 1);
+                            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_enquire_on_new_ips' => $is_staff ? 1 : 0], ['id' => $id], '', 1);
                             break;
                     }
                 }
@@ -1334,7 +1334,7 @@ class Module_admin_setupwizard
         if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
             foreach ($addons_uninstall as $addon_name => $addon_info) {
                 // Archive it off to exports/addons
-                if ($addon_info['files'] != array()) {
+                if ($addon_info['files'] != []) {
                     $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $addon_name)) . '.tar';
                     create_addon(
                         $file,
@@ -1370,7 +1370,7 @@ class Module_admin_setupwizard
                     if (!file_exists($path)) {
                         $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';
                     }
-                    $_hook_bits = extract_module_functions($path, array('set_fields'));
+                    $_hook_bits = extract_module_functions($path, ['set_fields']);
                     if (is_array($_hook_bits[0])) {
                         call_user_func_array($_hook_bits[0][0], $_hook_bits[0][1]);
                     } else {
@@ -1442,9 +1442,9 @@ class Module_admin_setupwizard
             require_code('files2');
             foreach (find_all_zones() as $zone) {
                 $dir = get_custom_file_base() . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/comcode_custom/' . fallback_lang();
-                $files = get_directory_contents($dir, '', 0, true, true, array('txt'));
+                $files = get_directory_contents($dir, '', 0, true, true, ['txt']);
                 foreach ($files as $file) {
-                    $matches = array();
+                    $matches = [];
                     $regexp = '#^\_' . preg_quote($source_theme, '#') . '__([\w\-]+)\.txt$#';
                     if (preg_match($regexp, $file, $matches) != 0) {
                         $page_name = $matches[1];
@@ -1461,7 +1461,7 @@ class Module_admin_setupwizard
 
         log_it('SETUPWIZARD');
 
-        $url = build_url(array('page' => '_SELF', 'type' => 'step11'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => 'step11'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -1483,8 +1483,8 @@ class Module_admin_setupwizard
      */
     protected function detect_addon_operations()
     {
-        $installing = array();
-        $uninstalling = array();
+        $installing = [];
+        $uninstalling = [];
 
         require_lang('addons');
         require_code('addons');
@@ -1511,7 +1511,7 @@ class Module_admin_setupwizard
 
         resolve_addon_dependency_problems($installing, $uninstalling);
 
-        return array($installing, $uninstalling);
+        return [$installing, $uninstalling];
     }
 
     /**
@@ -1545,12 +1545,12 @@ class Module_admin_setupwizard
         return do_next_manager(
             $this->title,
             do_lang_tempcode('SUCCESS'),
-            array(
-                array('menu/cms/comcode_page_edit', array('cms_comcode_pages', array('type' => 'edit'), get_module_zone('cms_comcode_pages')), do_lang('COMCODE_PAGE_ADD')),
-                array('menu/' . DEFAULT_ZONE_PAGE_NAME, array(null, array(), '')),
-                array('menu/cms/cms', array(null, array(), 'cms')),
-                array('menu/adminzone/adminzone', array(null, array(), 'adminzone')),
-            ),
+            [
+                ['menu/cms/comcode_page_edit', ['cms_comcode_pages', ['type' => 'edit'], get_module_zone('cms_comcode_pages')], do_lang('COMCODE_PAGE_ADD')],
+                ['menu/' . DEFAULT_ZONE_PAGE_NAME, [null, [], '']],
+                ['menu/cms/cms', [null, [], 'cms']],
+                ['menu/adminzone/adminzone', [null, [], 'adminzone']],
+            ],
             do_lang('PAGES'),
             null,
             null,
@@ -1561,9 +1561,9 @@ class Module_admin_setupwizard
             null,
             null,
             null,
-            array(),
-            array(),
-            array(),
+            [],
+            [],
+            [],
             null,
             paragraph(do_lang_tempcode('SETUPWIZARD_10_DESCRIBE'))
         );
@@ -1577,9 +1577,9 @@ class Module_admin_setupwizard
     public function install_test_content()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $post_url = build_url(array('page' => '_SELF', 'type' => 'install_test_content'), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => 'install_test_content'], '_SELF');
 
-            return do_template('CONFIRM_SCREEN', array('_GUID' => 'a91c415cb14fcc78f98c36e67229894c', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('Q_SURE'), 'URL' => $post_url, 'HIDDEN' => '', 'FIELDS' => ''));
+            return do_template('CONFIRM_SCREEN', ['_GUID' => 'a91c415cb14fcc78f98c36e67229894c', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('Q_SURE'), 'URL' => $post_url, 'HIDDEN' => '', 'FIELDS' => '']);
         }
 
         require_code('setupwizard');
@@ -1596,9 +1596,9 @@ class Module_admin_setupwizard
     public function uninstall_test_content()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $post_url = build_url(array('page' => '_SELF', 'type' => 'uninstall_test_content'), '_SELF');
+            $post_url = build_url(['page' => '_SELF', 'type' => 'uninstall_test_content'], '_SELF');
 
-            return do_template('CONFIRM_SCREEN', array('_GUID' => '1ae3e932b2fa1f32ffebb531c0278ab7', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('Q_SURE'), 'URL' => $post_url, 'HIDDEN' => '', 'FIELDS' => ''));
+            return do_template('CONFIRM_SCREEN', ['_GUID' => '1ae3e932b2fa1f32ffebb531c0278ab7', 'TITLE' => $this->title, 'TEXT' => do_lang_tempcode('Q_SURE'), 'URL' => $post_url, 'HIDDEN' => '', 'FIELDS' => '']);
         }
 
         require_code('setupwizard');

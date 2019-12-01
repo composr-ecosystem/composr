@@ -35,9 +35,9 @@ class Hook_admin_setupwizard_installprofiles_portfolio
         }
 
         require_lang('galleries');
-        return array(
+        return [
             'title' => do_lang('PORTFOLIO'),
-        );
+        ];
     }
 
     /**
@@ -47,9 +47,9 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function get_addon_list()
     {
-        return array(
-            array('galleries', 'random_quotes', 'polls', 'news'),
-            array());
+        return [
+            ['galleries', 'random_quotes', 'polls', 'news'],
+            []];
     }
 
     /**
@@ -59,7 +59,7 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function field_defaults()
     {
-        return array(
+        return [
             'have_default_banners_hosting' => '0',
             'have_default_banners_donation' => '0',
             'have_default_banners_advertising' => '0',
@@ -75,7 +75,7 @@ class Hook_admin_setupwizard_installprofiles_portfolio
             'show_content_tagging_inline' => '1',
             'show_screen_actions' => '1',
             'rules' => 'balanced',
-        );
+        ];
     }
 
     /**
@@ -85,18 +85,18 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
                 'main_quotes',
-            ),
-            'YES_CELL' => array(),
-            'PANEL_LEFT' => array(),
-            'PANEL_RIGHT' => array(
+            ],
+            'YES_CELL' => [],
+            'PANEL_LEFT' => [],
+            'PANEL_RIGHT' => [
                 'side_galleries',
                 'main_image_fader',
                 'side_news',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_admin_setupwizard_installprofiles_portfolio
      */
     public function block_options()
     {
-        return array();
+        return [];
     }
 
     /**

@@ -25,7 +25,7 @@ class Hook_config_mentor_usergroup
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MENTOR_USERGROUP',
             'type' => 'usergroup_not_guest',
             'category' => 'USERS',
@@ -38,7 +38,7 @@ class Hook_config_mentor_usergroup
             'public' => false,
 
             'addon' => 'mentorr',
-        );
+        ];
     }
 
     /**

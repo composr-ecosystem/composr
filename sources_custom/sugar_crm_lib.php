@@ -190,7 +190,7 @@ class SugarWrapper
      */
     protected function adjustNameValueList($nvlist)
     {
-        $result = array();
+        $result = [];
 
         foreach ($nvlist as $field) {
             $result[$field['name']] = $field['value'];
@@ -214,19 +214,19 @@ class SugarWrapper
 
         $result = $this->rest_request(
             'login',
-            array(
-                'user_auth' => array(
+            [
+                'user_auth' => [
                     'user_name' => $this->username,
                     'password' => $password
-                ),
+                ],
                 'application' => 'Composr / ' . get_site_name(),
-                'name_value_list' => array(
-                    array(
+                'name_value_list' => [
+                    [
                         'name' => 'notifyonsave',
                         'value' => 'true'
-                    )
-                )
-            ),
+                    ]
+                ]
+            ],
             true
         );
 
@@ -291,15 +291,15 @@ class SugarWrapper
     {
         $request = $this->getCurl();
         $request->addData(
-            array(
+            [
                 'method' => $call_name,
                 'input_type' => 'JSON',
                 'response_type' => 'JSON',
                 'rest_data' => json_encode($call_arguments)
-            )
+            ]
         );
         if ($call_name == 'set_entry') {
-            $request->addHeaders(array('Expect'=>' '));
+            $request->addHeaders(['Expect'=>' ']);
         }
 
         $output = $request->post();
@@ -309,7 +309,7 @@ class SugarWrapper
             throw new Exception('Corrupt result: ' . json_encode($output) . ', with error: ' . $request->error);
         }
 
-        if ((is_array($response_data)) && (array_keys($response_data) == array('name', 'number', 'description'))) {
+        if ((is_array($response_data)) && (array_keys($response_data) == ['name', 'number', 'description'])) {
             throw new Exception($response_data['description']);
         }
 
@@ -341,12 +341,12 @@ class SugarWrapper
      */
     public function count_records($module, $query)
     {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'module_name' => $module,
             'query' => $query,
             'deleted' => 0
-        );
+        ];
 
         $result = $this->rest_request(
             'get_entries_count',
@@ -395,7 +395,7 @@ class SugarWrapper
      * </pre>
      * @return array
      */
-    public function get_with_related($module, $fields, $options = array())
+    public function get_with_related($module, $fields, $options = [])
     {
         if (sizeof($fields) < 1) {
             return FALSE;
@@ -406,28 +406,28 @@ class SugarWrapper
 
         //Set the defaults for the options
         $options = array_merge(
-            array(
+            [
                 'limit'    => 20,
                 'offset'   => 0,
                 'where'    => null,
                 'order_by' => null,
-            ),
+            ],
             $options
         );
 
         $base_fields = $fields[$module];
         unset($fields[$module]);
 
-        $relationships = array();
+        $relationships = [];
 
         foreach ($fields as $related_module => $fields_list) {
-            $relationships[] = array(
+            $relationships[] = [
                 'name' => strtolower($related_module),
                 'value' => $fields_list
-            );
+            ];
         }
 
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'module_name' => $module,
             'query' => $options['where'],
@@ -437,7 +437,7 @@ class SugarWrapper
             'link_name_to_fields_array' => $relationships,
             'max_results' => $options['limit'],
             'deleted' => false
-        );
+        ];
 
         $result = $this->rest_request(
             'get_entry_list',
@@ -473,15 +473,15 @@ class SugarWrapper
      * </pre>
      * @return array
      */
-    public function get($module, $fields, $options = array())
+    public function get($module, $fields, $options = [])
     {
         $results = $this->get_with_related(
             $module,
-            array($module => $fields),
+            [$module => $fields],
             $options
         );
 
-        $records = array();
+        $records = [];
 
         if ($results) {
             foreach ($results['entry_list'] as $entry) {
@@ -508,11 +508,11 @@ class SugarWrapper
      */
     public function set($module, $values)
     {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'module_name' => $module,
             'name_value_list' => $values,
-        );
+        ];
 
         $result = $this->rest_request(
             'set_entry',
@@ -579,15 +579,15 @@ class SugarWrapper
         $related_ids,
         $delete = 0
     ) {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'module_name' => $module_name,
             'module_id' => $module_id,
             'link_field_name' => $link_field_name,
             'related_ids' => $related_ids,
-            'name_value_list' => array(),
+            'name_value_list' => [],
             'delete' => $delete,
-        );
+        ];
 
         $result = $this->rest_request(
             'set_relationship',
@@ -609,10 +609,10 @@ class SugarWrapper
     public function get_note_attachment($note_id)
     {
         if ($this->is_valid_id($note_id)) {
-            $call_arguments = array(
+            $call_arguments = [
                 'session' => $this->session,
                 'id' => $note_id
-            );
+            ];
 
             $result = $this->rest_request(
                 'get_note_attachment',
@@ -637,15 +637,15 @@ class SugarWrapper
      */
     public function set_note_attachment($note_id, $file, $filename)
     {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
-            'note' => array(
+            'note' => [
                 'id' => $note_id,
                 'file' => $file,
                 'filename' => $filename,
                 'related_module_name' => 'Cases'
-            )
-        );
+            ]
+        ];
 
         $result = $this->rest_request(
             'set_note_attachment',
@@ -666,15 +666,15 @@ class SugarWrapper
       * @return array
       */
     public function set_document_revision($docID, $filename, $path, $revision) {
-         $call_arguments = array(
+         $call_arguments = [
             'session' => $this->session,
-            'document_revision' => array(
+            'document_revision' => [
             'id' => $docID,
             'revision' => $revision,
             'filename' => $filename,
             'file' => base64_encode(file_get_contents($path)),
-            ),
-        );
+            ],
+        ];
 
         $result = $this->rest_request(
             'set_document_revision',
@@ -693,9 +693,9 @@ class SugarWrapper
      */
     public function get_available_modules()
     {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session
-        );
+        ];
 
         $result = $this->rest_request(
             'get_available_modules',
@@ -719,13 +719,13 @@ class SugarWrapper
      */
     public function search_by_module($search_string, $modules, $offset, $max_results)
     {
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'search_string' => $search_string,
             'modules' => $modules,
             'offset' => $offset,
             'max_results' => $max_results,
-        );
+        ];
 
         $result = $this->rest_request(
             'search_by_module',
@@ -755,9 +755,9 @@ class SugarWrapper
         if ($this->logged_in) {
             $l = $this->rest_request(
                 'logout',
-                array(
+                [
                     'session' => $this->session
-                ),
+                ],
                 false
             );
         }
@@ -786,16 +786,16 @@ class SugarWrapper
      * </pre>
      * @return array
      */
-    public function get_by_id($id, $module, $fields,  $options = array())
+    public function get_by_id($id, $module, $fields,  $options = [])
     {
         $results = $this->get_entry(
             $id,
             $module,
-            array($module => $fields),
+            [$module => $fields],
             $options
         );
 
-        $records = array();
+        $records = [];
 
         if ($results) {
             foreach ($results['entry_list'] as $entry) {
@@ -842,7 +842,7 @@ class SugarWrapper
      * </pre>
      * @return array
      */
-    public function get_entry($id, $module, $fields, $options = array())
+    public function get_entry($id, $module, $fields, $options = [])
     {
         if (sizeof($fields) < 1) {
             return FALSE;
@@ -856,28 +856,28 @@ class SugarWrapper
 
         //Set the defaults for the options
         $options = array_merge(
-            array(
+            [
                 'limit'    => 20,
                 'offset'   => 0,
                 'where'    => null,
                 'order_by' => null,
-            ),
+            ],
             $options
         );
 
         $base_fields = $fields[$module];
         unset($fields[$module]);
 
-        $relationships = array();
+        $relationships = [];
 
         foreach ($fields as $related_module => $fields_list) {
-            $relationships[] = array(
+            $relationships[] = [
                 'name' => strtolower($related_module),
                 'value' => $fields_list
-            );
+            ];
         }
 
-        $call_arguments = array(
+        $call_arguments = [
             'session' => $this->session,
             'module_name' => $module,
             'id' => $id,
@@ -888,7 +888,7 @@ class SugarWrapper
             'link_name_to_fields_array' => $relationships,
             'max_results' => $options['limit'],
             'deleted' => false
-        );
+        ];
 
         $result = $this->rest_request(
             'get_entry',

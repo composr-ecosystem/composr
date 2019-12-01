@@ -30,7 +30,7 @@ class Hook_config_search_comcode_pages
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DEFAULT_SEARCH_COMCODE_PAGES',
             'type' => 'tick',
             'category' => 'SEARCH',
@@ -43,7 +43,7 @@ class Hook_config_search_comcode_pages
             'public' => false,
 
             'addon' => 'core_comcode_pages',
-        );
+        ];
     }
 
     /**

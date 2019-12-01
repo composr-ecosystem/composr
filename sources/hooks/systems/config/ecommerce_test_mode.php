@@ -30,7 +30,7 @@ class Hook_config_ecommerce_test_mode
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ECOMMERCE_TEST_MODE',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_ecommerce_test_mode
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

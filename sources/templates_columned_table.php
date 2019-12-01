@@ -28,10 +28,10 @@ function columned_table_header_row($values)
 {
     $cells = new Tempcode();
     foreach ($values as $value) {
-        $cells->attach(do_template('COLUMNED_TABLE_HEADER_ROW_CELL', array('_GUID' => '5002f54ccddf7259f3460d8c0759fd1a', 'VALUE' => $value)));
+        $cells->attach(do_template('COLUMNED_TABLE_HEADER_ROW_CELL', ['_GUID' => '5002f54ccddf7259f3460d8c0759fd1a', 'VALUE' => $value]));
     }
 
-    return do_template('COLUMNED_TABLE_HEADER_ROW', array('_GUID' => '2f4095b8d30f50f34fdd6acf8dd566b1', 'CELLS' => $cells));
+    return do_template('COLUMNED_TABLE_HEADER_ROW', ['_GUID' => '2f4095b8d30f50f34fdd6acf8dd566b1', 'CELLS' => $cells]);
 }
 
 /**
@@ -49,8 +49,8 @@ function columned_table_row($values, $escape)
             $value = make_string_tempcode(escape_html(is_object($value) ? $value->evaluate() : $value));
         }
 
-        $cells->attach(do_template('COLUMNED_TABLE_ROW_CELL', array('_GUID' => '700a982eb2262149295816ddee91b0e7', 'VALUE' => $value)));
+        $cells->attach(do_template('COLUMNED_TABLE_ROW_CELL', ['_GUID' => '700a982eb2262149295816ddee91b0e7', 'VALUE' => $value]));
     }
 
-    return do_template('COLUMNED_TABLE_ROW', array('_GUID' => 'a4efacc07ecb165e37c355559f476ae9', 'CELLS' => $cells));
+    return do_template('COLUMNED_TABLE_ROW', ['_GUID' => 'a4efacc07ecb165e37c355559f476ae9', 'CELLS' => $cells]);
 }

@@ -30,7 +30,7 @@ class Hook_config_gallery_mode_is
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_MODE_IS',
             'type' => 'list',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_mode_is
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

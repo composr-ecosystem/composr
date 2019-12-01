@@ -30,7 +30,7 @@ class Hook_config_login_error_secrecy
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LOGIN_ERROR_SECRECY',
             'type' => 'tick',
             'category' => 'SECURITY',
@@ -43,7 +43,7 @@ class Hook_config_login_error_secrecy
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

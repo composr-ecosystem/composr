@@ -25,7 +25,7 @@ class Hook_config_photobucket_client_id
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PHOTOBUCKET_CLIENT_ID',
             'type' => 'line',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_photobucket_client_id
             'public' => false,
 
             'addon' => 'image_syndication',
-        );
+        ];
     }
 
     /**

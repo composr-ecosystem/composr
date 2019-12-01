@@ -37,7 +37,7 @@ class warnings_test_set extends cms_test_case
 
         $this->warn_id = cns_make_warning(1, 'nothing', null, null, 1, null, null, 0, '', 0, 0, null);
 
-        $this->assertTrue('nothing' == $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_explanation', array('id' => $this->warn_id)));
+        $this->assertTrue('nothing' == $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_explanation', ['id' => $this->warn_id]));
     }
 
     public function testEditWarning()
@@ -48,7 +48,7 @@ class warnings_test_set extends cms_test_case
 
         cns_edit_warning($this->warn_id, 'something', 1);
 
-        $this->assertTrue('something' == $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_explanation', array('id' => $this->warn_id)));
+        $this->assertTrue('something' == $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'w_explanation', ['id' => $this->warn_id]));
     }
 
     public function tearDown()

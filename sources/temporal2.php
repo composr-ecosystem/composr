@@ -42,7 +42,7 @@ function make_nice_timezone_name($in)
  */
 function _get_timezone_list()
 {
-    $ret = array(
+    $ret = [
         'Pacific/Niue' => '(UTC-11:00) Niue, Pago Pago',
         'Pacific/Midway' => '(UTC-11:00) Midway Island, Samoa',
         'America/Adak' => '(UTC-10:00) Hawaii-Aleutian',
@@ -252,7 +252,7 @@ function _get_timezone_list()
         'Pacific/Apia' => '(UTC+13:00) Apia',
         'Pacific/Fakaofo' => '(UTC+13:00) Fakaofo, Johnston, Rarotonga',
         'Pacific/Kiritimati' => '(UTC+14:00) Kiritimati',
-    );
+    ];
 
     // Make shown times dynamic to consider DST etc
     foreach ($ret as $zone => $title) {
@@ -266,7 +266,7 @@ function _get_timezone_list()
         $new .= str_pad(strval(abs($hours - $offset_abs) * 100), 2, '0', STR_PAD_LEFT);
         $new .= ') ';
         $title = preg_replace('#^\(UTC[+-]\d\d:\d\d\) #', $new, $title);
-        $ret[$zone] = array($title, $offset);
+        $ret[$zone] = [$title, $offset];
     }
 
     sort_maps_by($ret, 1);
@@ -290,13 +290,13 @@ function _get_timezone_list()
  */
 function post_param_date_components($stub, $year = null, $month = null, $day = null, $get_also = false)
 {
-    $default_ret = array($year, $month, $day, 0, 0, 0);
+    $default_ret = [$year, $month, $day, 0, 0, 0];
 
     $timezone = post_param_string('timezone', get_users_timezone());
     if ($get_also) {
         $date = either_param_string($stub, null);
         if ($date !== null) { // HTML5 input style
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(\d\d\d\d)-(\d\d)-(\d\d)$#', $date, $matches) == 0) {
                 return $default_ret;
             }
@@ -344,7 +344,7 @@ function post_param_date_components($stub, $year = null, $month = null, $day = n
     } else {
         $date = post_param_string($stub, null);
         if ($date !== null) { // HTML5 input style
-            $matches = array();
+            $matches = [];
             if (preg_match('#^(\d\d\d\d)-(\d\d)-(\d\d)$#', $date, $matches) == 0) {
                 return $default_ret;
             }
@@ -407,7 +407,7 @@ function post_param_date_components($stub, $year = null, $month = null, $day = n
         warn_exit(do_lang_tempcode('INVALID_DATE_GIVEN'));
     }
 
-    return array($year, $month, $day, $hour, $minute, $seconds);
+    return [$year, $month, $day, $hour, $minute, $seconds];
 }
 
 /**

@@ -44,7 +44,7 @@ class Module_admin_awards extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -75,16 +75,16 @@ class Module_admin_awards extends Standard_crud_module
         require_code('lang3');
 
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('award_archive', array(
+            $GLOBALS['SITE_DB']->create_table('award_archive', [
                 'a_type_id' => '*AUTO_LINK',
                 'date_and_time' => '*TIME',
                 'content_id' => 'ID_TEXT',
                 'member_id' => 'MEMBER',
-            ));
+            ]);
 
-            $GLOBALS['SITE_DB']->create_index('award_archive', 'awardquicksearch', array('content_id'));
+            $GLOBALS['SITE_DB']->create_index('award_archive', 'awardquicksearch', ['content_id']);
 
-            $GLOBALS['SITE_DB']->create_table('award_types', array(
+            $GLOBALS['SITE_DB']->create_table('award_types', [
                 'id' => '*AUTO',
                 'a_title' => 'SHORT_TRANS',
                 'a_description' => 'LONG_TRANS__COMCODE',
@@ -92,15 +92,15 @@ class Module_admin_awards extends Standard_crud_module
                 'a_content_type' => 'ID_TEXT', // uses same naming convention as cms_merge importer
                 'a_show_awardee' => 'BINARY',
                 'a_update_time_hours' => 'INTEGER',
-            ));
+            ]);
 
             require_lang('awards');
-            $map = array(
+            $map = [
                 'a_points' => 0,
                 'a_content_type' => 'download',
                 'a_show_awardee' => 0,
                 'a_update_time_hours' => 168,
-            );
+            ];
             $map += lang_code_to_default_content('a_title', 'DOTW');
             $map += lang_code_to_default_content('a_description', 'DESCRIPTION_DOTW', true);
             $GLOBALS['SITE_DB']->query_insert('award_types', $map);
@@ -127,9 +127,9 @@ class Module_admin_awards extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_AWARDS', 'menu/adminzone/setup/awards'),
-        ) + parent::get_entry_points();
+        return [
+            'browse' => ['MANAGE_AWARDS', 'menu/adminzone/setup/awards'],
+        ] + parent::get_entry_points();
     }
 
     public $title;
@@ -191,10 +191,10 @@ class Module_admin_awards extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_AWARDS'),
             comcode_lang_string('DOC_AWARDS'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_AWARD_TYPE')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_AWARD_TYPE')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_AWARD_TYPE')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_AWARD_TYPE')],
+            ],
             do_lang('MANAGE_AWARDS')
         );
     }
@@ -209,7 +209,7 @@ class Module_admin_awards extends Standard_crud_module
     {
         require_code('templates_results_table');
 
-        $hr = array();
+        $hr = [];
         $hr[] = do_lang_tempcode('TITLE');
         if (addon_installed('points')) {
             $hr[] = do_lang_tempcode('POINTS');
@@ -223,10 +223,10 @@ class Module_admin_awards extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'a_title' => do_lang_tempcode('TITLE'),
             'a_content_type' => do_lang_tempcode('CONTENT_TYPE'),
-        );
+        ];
         if (addon_installed('points')) {
             $sortables['a_points'] = do_lang_tempcode('POINTS');
         }
@@ -240,10 +240,10 @@ class Module_admin_awards extends Standard_crud_module
 
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $fr = array();
-            $fr[] = protect_from_escaping(hyperlink(build_url(array('page' => 'awards', 'type' => 'award', 'id' => $row['id']), get_module_zone('awards')), get_translated_text($row['a_title']), false, true));
+            $fr = [];
+            $fr[] = protect_from_escaping(hyperlink(build_url(['page' => 'awards', 'type' => 'award', 'id' => $row['id']], get_module_zone('awards')), get_translated_text($row['a_title']), false, true));
             if (addon_installed('points')) {
                 $fr[] = integer_format($row['a_points']);
             }
@@ -263,13 +263,13 @@ class Module_admin_awards extends Standard_crud_module
                 }
             }
             $fr[] = $hook_title;
-            $fr[] = integer_format($GLOBALS['SITE_DB']->query_select_value('award_archive', 'COUNT(*)', array('a_type_id' => $row['id'])));
+            $fr[] = integer_format($GLOBALS['SITE_DB']->query_select_value('award_archive', 'COUNT(*)', ['a_type_id' => $row['id']]));
             $fr[] = protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, do_lang('EDIT') . ' #' . strval($row['id'])));
 
             $result_entries->attach(results_entry($fr, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
     }
 
     /**
@@ -298,7 +298,7 @@ class Module_admin_awards extends Standard_crud_module
             $fields->attach(form_input_integer(do_lang_tempcode('POINTS'), do_lang_tempcode('DESCRIPTION_AWARD_POINTS'), 'points', $points, true));
         }
         $list = new Tempcode();
-        $_hooks = array();
+        $_hooks = [];
         $hooks = find_all_hooks('systems', 'content_meta_aware');
         foreach (array_keys($hooks) as $hook) {
             require_code('content');
@@ -325,7 +325,7 @@ class Module_admin_awards extends Standard_crud_module
         // Permissions
         $fields->attach($this->get_permission_fields(($id === null) ? null : strval($id), do_lang_tempcode('AWARD_PERMISSION_HELP'), false/*We want permissions off by default so we do not say new category ($id === null)*/, do_lang_tempcode('GIVE_AWARD')));
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -335,7 +335,7 @@ class Module_admin_awards extends Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('award_types', array('id', 'a_title'));
+        $_m = $GLOBALS['SITE_DB']->query_select('award_types', ['id', 'a_title']);
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['a_title'])));
@@ -352,7 +352,7 @@ class Module_admin_awards extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('id' => intval($id)), '', 1);
+        $m = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'award_type'));
         }

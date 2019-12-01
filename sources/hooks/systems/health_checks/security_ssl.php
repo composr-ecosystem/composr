@@ -45,7 +45,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         $this->process_checks_section('testIncorrectHTTPSLinking', 'Insecure linking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLCorrectness', 'SSL correctness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -117,7 +117,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $url = page_link_to_url($page_link);
             $protocol = parse_url($url, PHP_URL_SCHEME);
@@ -183,7 +183,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -238,7 +238,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         if ((addon_installed('ssl')) || (substr(get_base_url(), 0, 7) == 'https://')) {
             // If it's a problem with SSL verification in general
             for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or DuckDuckGo issue
-                $data = http_get_contents('https://duckduckgo.com/', array('trigger_error' => false));
+                $data = http_get_contents('https://duckduckgo.com/', ['trigger_error' => false]);
 
                 $ok = (($data !== null) && (strpos($data, '<html') !== false));
                 if ($ok) {
@@ -258,13 +258,13 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
                         $test_url = get_base_url(true) . '/data/empty.php';
 
                         delete_value('disable_ssl_for__' . $domain);
-                        $data = http_get_contents($test_url, array('trigger_error' => false));
+                        $data = http_get_contents($test_url, ['trigger_error' => false]);
                         $ok1 = (($data !== null) && (strpos($data, '<html') !== false));
 
                         $msg = 'Problem detected with the [tt]' . $domain . '[/tt] SSL certificate';
                         if (!$ok1) {
                             set_value('disable_ssl_for__' . $domain, '1');
-                            $data = http_get_contents($test_url, array('trigger_error' => false));
+                            $data = http_get_contents($test_url, ['trigger_error' => false]);
                             $ok2 = (($data !== null) && (strpos($data, '<html') !== false));
 
                             $this->assertTrue(!$ok2, $msg); // Issue with our SSL but not if verify is disabled, suggesting the problem is with verify

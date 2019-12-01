@@ -32,7 +32,7 @@ class Module_admin_phpinfo
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -57,9 +57,9 @@ class Module_admin_phpinfo
             return null;
         }
 
-        return array(
-            '!' => array('PHPINFO', 'menu/adminzone/tools/phpinfo'),
-        );
+        return [
+            '!' => ['PHPINFO', 'menu/adminzone/tools/phpinfo'],
+        ];
     }
 
     /**
@@ -123,7 +123,7 @@ class Module_admin_phpinfo
         ob_end_clean();
 
         $out = preg_replace('#<!DOCTYPE[^>]*>#s', '', preg_replace('#</body[^>]*>#', '', preg_replace('#<body[^>]*>#', '', preg_replace('#</html[^>]*>#', '', preg_replace('#<html[^>]*>#', '', $out)))));
-        $matches = array();
+        $matches = [];
         if (preg_match('#<style[^>]*>#', $out, $matches) != 0) {
             $offset = strpos($out, $matches[0]) + strlen($matches[0]);
             $end = strpos($out, '</style>', $offset);
@@ -192,15 +192,15 @@ class Module_admin_phpinfo
 
         if (php_function_allowed('shell_exec')) {
             if (strpos(PHP_OS, 'Darwin') !== false) {
-                $commands = array(
+                $commands = [
                     'uptime',
                     'ps -Af',
                     'top -l1',
                     'iostat',
                     'iotop 3 1',
-                );
+                ];
             } else {
-                $commands = array(
+                $commands = [
                     'cat /proc/cpuinfo',
                     'cat /proc/diskstats',
                     'cat /proc/meminfo',
@@ -209,7 +209,7 @@ class Module_admin_phpinfo
                     'top -n1',
                     'iostat',
                     'iotop -n1 -b',
-                );
+                ];
             }
 
             foreach ($commands as $command) {

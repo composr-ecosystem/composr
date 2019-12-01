@@ -31,7 +31,7 @@ class Hook_addon_registry_core_webstandards
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_core_webstandards
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_accessibility',
             'tut_markup',
-        );
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ class Hook_addon_registry_core_webstandards
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_core_webstandards
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/css/webstandards.css',
             'sources/hooks/systems/addon_registry/core_webstandards.php',
             'themes/default/templates/WEBSTANDARDS_ATTRIBUTE_END.tpl',
@@ -129,7 +129,7 @@ class Hook_addon_registry_core_webstandards
             'sources/hooks/systems/config/webstandards_javascript.php',
             'sources/hooks/systems/config/webstandards_wcag.php',
             'sources/hooks/systems/config/webstandards_xhtml.php',
-        );
+        ];
     }
 
     /**
@@ -139,7 +139,7 @@ class Hook_addon_registry_core_webstandards
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/WEBSTANDARDS_SCREEN.tpl' => 'administrative__webstandards',
             'templates/WEBSTANDARDS_TAG_START.tpl' => 'administrative__webstandards',
             'templates/WEBSTANDARDS_TAG_NAME_START.tpl' => 'administrative__webstandards',
@@ -156,7 +156,7 @@ class Hook_addon_registry_core_webstandards
             'templates/WEBSTANDARDS_LINE_ERROR.tpl' => 'administrative__webstandards_error_screen',
             'templates/WEBSTANDARDS_MARKER_START.tpl' => 'administrative__webstandards',
             'templates/WEBSTANDARDS_MARKER_END.tpl' => 'administrative__webstandards',
-        );
+        ];
     }
 
     /**
@@ -169,39 +169,39 @@ class Hook_addon_registry_core_webstandards
     public function tpl_preview__administrative__webstandards()
     {
         $display = new Tempcode();
-        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN', [
             'MSG' => lorem_phrase(),
             'RETURN_URL' => placeholder_url(),
             'TITLE' => lorem_title(),
             'MESSY_URL' => placeholder_url(),
             'RET' => lorem_phrase(),
-        )));
+        ]));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_START', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_START', [
             'NUMBER' => placeholder_number(),
-        )));
+        ]));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_START', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_START', [
             'COLOUR' => '#b7b7b7',
-        )));
+        ]));
         $display->attach(lorem_word());
-        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_NAME_START', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_NAME_START', []));
         $display->attach(lorem_word());
-        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_NAME_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_TAG_NAME_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_MARKER_START', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_MARKER_START', []));
         $display->attach(lorem_word());
-        $display->attach(do_lorem_template('WEBSTANDARDS_MARKER_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_MARKER_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', []));
 
-        return array(
+        return [
             lorem_globalise($display, null, '', true)
-        );
+        ];
     }
 
     /**
@@ -216,15 +216,15 @@ class Hook_addon_registry_core_webstandards
         $errors = new Tempcode();
         $display = new Tempcode();
         foreach (placeholder_array() as $key => $_error) {
-            $errors->attach(do_lorem_template('WEBSTANDARDS_ERROR', array(
+            $errors->attach(do_lorem_template('WEBSTANDARDS_ERROR', [
                 'I' => lorem_word() . strval($key),
                 'LINE' => placeholder_number(),
                 'POS' => placeholder_number(),
                 'ERROR' => $_error,
-            )));
+            ]));
         }
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_ERROR_SCREEN', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_ERROR_SCREEN', [
             'MSG' => lorem_phrase(),
             'RETURN_URL' => placeholder_url(),
             'TITLE' => lorem_title(),
@@ -233,34 +233,34 @@ class Hook_addon_registry_core_webstandards
             'MESSY_URL' => placeholder_url(),
             'ERRORS' => $errors,
             'RET' => lorem_phrase(),
-        )));
+        ]));
 
         $markers = new Tempcode();
         foreach (placeholder_array() as $key => $_error) {
-            $markers->attach(do_lorem_template('WEBSTANDARDS_MARKER', array(
+            $markers->attach(do_lorem_template('WEBSTANDARDS_MARKER', [
                 'I' => lorem_word() . strval($key),
                 'ERROR' => $_error,
-            )));
+            ]));
         }
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_ERROR', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_ERROR', [
             'MARKERS' => $markers,
             'NUMBER' => placeholder_number(),
-        )));
-        $display->attach(do_lorem_template('WEBSTANDARDS_ATTRIBUTE_START', array()));
+        ]));
+        $display->attach(do_lorem_template('WEBSTANDARDS_ATTRIBUTE_START', []));
         $display->attach(lorem_word());
-        $display->attach(do_lorem_template('WEBSTANDARDS_ATTRIBUTE_END', array()));
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_ATTRIBUTE_END', []));
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', []));
         $display->attach(lorem_phrase());
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_START', array(
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_START', [
             'NUMBER' => placeholder_number(),
-        )));
-        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', array()));
+        ]));
+        $display->attach(do_lorem_template('WEBSTANDARDS_LINE_END', []));
 
-        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', array()));
+        $display->attach(do_lorem_template('WEBSTANDARDS_SCREEN_END', []));
 
-        return array(
+        return [
             lorem_globalise($display, null, '', true)
-        );
+        ];
     }
 }

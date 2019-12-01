@@ -95,7 +95,7 @@ namespace webdav_commandr_fs {
                 throw new \Sabre\DAV\Exception\Forbidden('Error renaming/moving ' . $name);
             }
 
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = array();
+            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = [];
 
             $this->path = $newPath;
         }
@@ -177,7 +177,7 @@ namespace webdav_commandr_fs {
                 throw new \Sabre\DAV\Exception\Forbidden('Could not create ' . $name);
             }
 
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = array();
+            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = [];
         }
 
         /**
@@ -198,7 +198,7 @@ namespace webdav_commandr_fs {
                 throw new \Sabre\DAV\Exception\Forbidden('Could not create ' . $name);
             }
 
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = array();
+            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = [];
         }
 
         /**
@@ -238,7 +238,7 @@ namespace webdav_commandr_fs {
         {
             $listing = $this->_listingWrap($this->commandr_fs->_pwd_to_array($this->path));
 
-            $nodes = array();
+            $nodes = [];
             foreach ($listing[0] as $l) {
                 list($filename, $filetype, $filesize, $filetime) = $l;
 
@@ -267,7 +267,7 @@ namespace webdav_commandr_fs {
         {
             $listing = $this->_listingWrap($this->commandr_fs->_pwd_to_array($this->path));
 
-            $nodes = array();
+            $nodes = [];
             foreach ($listing[0] + $listing[1] as $l) {
                 list($filename, $filetype, $filesize, $filetime) = $l;
 
@@ -294,7 +294,7 @@ namespace webdav_commandr_fs {
                 throw new \Sabre\DAV\Exception\Forbidden('Could not delete ' . $this->path);
             }
 
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = array();
+            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = [];
         }
     }
 
@@ -363,7 +363,7 @@ namespace webdav_commandr_fs {
                 throw new \Sabre\DAV\Exception\Forbidden('Could not delete ' . $this->path);
             }
 
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = array();
+            $GLOBALS['COMMANDR_FS_LISTING_CACHE'] = [];
         }
 
         /**

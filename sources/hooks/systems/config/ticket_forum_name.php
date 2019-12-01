@@ -30,7 +30,7 @@ class Hook_config_ticket_forum_name
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'TICKET_FORUM_NAME',
             'type' => 'forum',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_ticket_forum_name
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

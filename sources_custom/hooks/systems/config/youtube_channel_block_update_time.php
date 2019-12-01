@@ -18,7 +18,7 @@ class Hook_config_youtube_channel_block_update_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'YOUTUBE_CHANNEL_BLOCK_UPDATE_TIME',
             'type' => 'integer',
             'category' => 'BLOCKS',
@@ -30,7 +30,7 @@ class Hook_config_youtube_channel_block_update_time
             'public' => false,
 
             'addon' => 'youtube_channel_integration_block',
-        );
+        ];
     }
 
     /**

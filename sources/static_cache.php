@@ -214,7 +214,7 @@ function static_cache($mode)
         $is_mobile = is_mobile();
     } else {
         // The set of browsers
-        $browsers = array(
+        $browsers = [
             // Implication by technology claims
             'WML',
             'WAP',
@@ -235,31 +235,31 @@ function static_cache($mode)
             'BlackBerry',
             'Windows Phone',
             'nook browser', // Barnes and Noble
-        );
+        ];
         $is_mobile = (preg_match('#' . implode('|', $browsers) . '#', $_SERVER['HTTP_USER_AGENT']) != 0);
     }
 
     // Work out cache path (potentially will search a few places, based on priority)
     $url = static_cache_current_url();
     $_fast_cache_path = (function_exists('get_custom_file_base') ? get_custom_file_base() : $GLOBALS['FILE_BASE']) . '/caches/guest_pages/' . md5($url);
-    $param_sets = array(
-        array(
+    $param_sets = [
+        [
             'non_bot' => ($mode & STATIC_CACHE__FAST_SPIDER) == 0,
             'no_js' => !array_key_exists('js_on', $_COOKIE),
             'mobile' => $is_mobile,
             'failover_mode' => ($mode & STATIC_CACHE__FAILOVER_MODE) != 0,
-        ),
-    );
+        ],
+    ];
     if (($mode & STATIC_CACHE__FAILOVER_MODE) != 0) {
-        foreach ($param_sets[0]['mobile'] ? array(true, false) : array(false, true) as $mobile) {
-            foreach ($param_sets[0]['no_js'] ? array(true, false) : array(false, true) as $no_js) {
-                foreach ($param_sets[0]['non_bot'] ? array(true, false) : array(false, true) as $non_bot) {
-                    $param_sets[] = array(
+        foreach ($param_sets[0]['mobile'] ? [true, false] : [false, true] as $mobile) {
+            foreach ($param_sets[0]['no_js'] ? [true, false] : [false, true] as $no_js) {
+                foreach ($param_sets[0]['non_bot'] ? [true, false] : [false, true] as $non_bot) {
+                    $param_sets[] = [
                         'non_bot' => $non_bot,
                         'no_js' => $no_js,
                         'mobile' => $mobile,
                         'failover_mode' => true, // This is always saved as a variant anyway
-                    );
+                    ];
                 }
             }
         }
@@ -343,7 +343,7 @@ function static_cache($mode)
                 $browser = cms_mb_substr(get_browser_string(), 0, 255);
                 if ((get_option('bot_stats') == '0') || ((stripos($browser, 'http:') === false) && (stripos($browser, 'bot') === false) && (get_bot_type() === null))) {
                     load_user_stuff();
-                    $GLOBALS['SITE_DB']->query_insert('stats', array(
+                    $GLOBALS['SITE_DB']->query_insert('stats', [
                         'access_denied_counter' => 0,
                         'browser' => $browser,
                         'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
@@ -356,7 +356,7 @@ function static_cache($mode)
                         's_get' => '',
                         'post' => '',
                         'milliseconds' => 0,
-                    ), false, true);
+                    ], false, true);
                 }
             }
 

@@ -30,14 +30,14 @@ class Block_main_poll
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'zone');
+        $info['parameters'] = ['param', 'zone'];
         return $info;
     }
 
@@ -64,7 +64,7 @@ class Block_main_poll
 
         // Action links
         if ((has_actual_page_access(null, 'cms_polls', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls'))) {
-            $submit_url = build_url(array('page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_polls'));
+            $submit_url = build_url(['page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_polls'));
         } else {
             $submit_url = new Tempcode();
         }
@@ -77,14 +77,14 @@ class Block_main_poll
         if ($poll_id === null) {
             $rows = persistent_cache_get('POLL');
             if ($rows === null) {
-                $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('is_current' => 1), 'ORDER BY add_time DESC', 1);
+                $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['is_current' => 1], 'ORDER BY add_time DESC', 1);
                 persistent_cache_set('POLL', $rows);
             }
         } else {
-            $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => $poll_id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $poll_id], '', 1);
         }
         if (!array_key_exists(0, $rows)) {
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'fdc85bb2e14bdf00830347e52f25cdac',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => true,
@@ -92,7 +92,7 @@ class Block_main_poll
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'poll'),
                 'ADD_NAME' => do_lang_tempcode('ADD_POLL'),
                 'SUBMIT_URL' => $submit_url,
-            ));
+            ]);
         }
         $myrow = $rows[0];
         $poll_id = $myrow['id'];
@@ -111,11 +111,11 @@ class Block_main_poll
         }
 
         // Render block wrapper template around poll
-        return do_template('BLOCK_MAIN_POLL', array(
+        return do_template('BLOCK_MAIN_POLL', [
             '_GUID' => '06a5b384015504a6a57fc4ddedbe91a7',
             'BLOCK_ID' => $block_id,
             'BLOCK_PARAMS' => block_params_arr_to_str($map),
             'CONTENT' => $content,
-        ));
+        ]);
     }
 }

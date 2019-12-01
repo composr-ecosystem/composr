@@ -52,9 +52,9 @@ function get_topic_status_func($raw_params)
     $topic_object = new CMSTopicRead();
     $topic_status = $topic_object->get_topic_statuses($topic_ids);
 
-    $topics = array();
+    $topics = [];
     foreach ($topic_status as $topic) {
-        $topics[] = mobiquo_val(array(
+        $topics[] = mobiquo_val([
             'topic_id' => mobiquo_val(strval($topic['topic_id']), 'string'),
             'is_subscribed' => mobiquo_val($topic['is_subscribed'], 'boolean'),
             'can_subscribe' => mobiquo_val($topic['can_subscribe'], 'boolean'),
@@ -64,13 +64,13 @@ function get_topic_status_func($raw_params)
             'new_post' => mobiquo_val($topic['new_post'], 'boolean'),
             'reply_number' => mobiquo_val($topic['reply_number'], 'int'),
             'view_number' => mobiquo_val($topic['view_number'], 'int'),
-        ), 'struct');
+        ], 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'status' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -90,16 +90,16 @@ function new_topic_func($raw_params)
     $forum_id = intval($params[0]);
     $title = $params[1];
     $post = $params[2];
-    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : array();
+    $attachment_ids = isset($params[4]) ? array_map('intval', $params[4]) : [];
 
     $topics_object = new CMSTopicWrite();
     list($new_topic_id, $validated) = $topics_object->new_topic($forum_id, $title, $post, $attachment_ids);
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'topic_id' => mobiquo_val(strval($new_topic_id), 'string'),
         'state' => mobiquo_val(($validated == 1) ? TAPATALK_POST_LIVE : TAPATALK_POST_NEEDS_VALIDATION, 'int'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -116,7 +116,7 @@ function get_topic_func($raw_params) // Get topics in a forum
 
     require_once(COMMON_CLASS_PATH_READ . '/topic_read.php');
 
-    $topic_list = array();
+    $topic_list = [];
     $topic_object = new CMSTopicRead();
 
     $forum_id = intval($params[0]);
@@ -137,7 +137,7 @@ function get_topic_func($raw_params) // Get topics in a forum
         $topic_list[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'total_topic_num' => mobiquo_val($total_topic_num, 'int'),
         'forum_id' => mobiquo_val(strval($forum_id), 'string'),
         'forum_name' => mobiquo_val($forum_name, 'base64'),
@@ -148,9 +148,9 @@ function get_topic_func($raw_params) // Get topics in a forum
         'can_subscribe' => mobiquo_val(!is_guest(), 'boolean'),
         'is_subscribed' => mobiquo_val(get_forum_subscription_status($forum_id), 'boolean'),
         'require_prefix' => mobiquo_val(false, 'boolean'),
-        'prefixes' => mobiquo_val(array(), 'array'),
+        'prefixes' => mobiquo_val([], 'array'),
         'topics' => mobiquo_val($topic_list, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -172,22 +172,22 @@ function get_unread_topic_func($raw_params)
     if (isset($params[3])) {
         $filters = $params[3];
     } else {
-        $filters = array();
+        $filters = [];
     }
 
     $topic_object = new CMSTopicRead();
     list($total_forum_topics, $_topics) = $topic_object->get_topics_advanced($start, $max, $filters, CMSTopicRead::GET_TOPICS_UNREAD_ONLY);
 
-    $topics = array();
+    $topics = [];
     foreach ($_topics as $topic) {
         $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME | RENDER_TOPIC_LAST_POSTER);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'total_topic_num' => mobiquo_val($total_forum_topics, 'int'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -218,11 +218,11 @@ function get_participated_topic_func($raw_params)
     }
 
     $topic_object = new CMSTopicRead();
-    list($total_forum_topics, $_topics) = $topic_object->get_topics_advanced($start, $max, array(), CMSTopicRead::GET_TOPICS_PARTICIPATED_ONLY, $participant_id);
+    list($total_forum_topics, $_topics) = $topic_object->get_topics_advanced($start, $max, [], CMSTopicRead::GET_TOPICS_PARTICIPATED_ONLY, $participant_id);
 
     $unread_topic_count = 0;
 
-    $topics = array();
+    $topics = [];
     foreach ($_topics as $topic) {
         if (is_topic_unread($topic['topic_id'], null, $topic)) {
             $unread_topic_count++;
@@ -231,12 +231,12 @@ function get_participated_topic_func($raw_params)
         $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'total_topic_num' => mobiquo_val($total_forum_topics, 'int'),
         'total_unread_num' => mobiquo_val($unread_topic_count, 'int'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -258,7 +258,7 @@ function get_latest_topic_func($raw_params)
     if (isset($params[3])) {
         $filters = $params[3];
     } else {
-        $filters = array();
+        $filters = [];
     }
 
     if (isset($filters['only_in'])) {
@@ -274,16 +274,16 @@ function get_latest_topic_func($raw_params)
     $topic_object = new CMSTopicRead();
     list($total_forum_topics, $_topics) = $topic_object->get_topics_advanced($start, $max, $filters);
 
-    $topics = array();
+    $topics = [];
     foreach ($_topics as $topic) {
         $topics[] = render_topic_to_tapatalk($topic['topic_id'], false, null, null, $topic, RENDER_TOPIC_POST_KEY_NAME);
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'total_topic_num' => mobiquo_val($total_forum_topics, 'int'),
         'topics' => mobiquo_val($topics, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -307,26 +307,26 @@ function get_topic_participants_func($raw_params)
 
     $_users = get_topic_participants($topic_id, $max);
 
-    $users = array();
+    $users = [];
     foreach ($_users as $user) {
-        $arr = array(
+        $arr = [
             'user_id' => mobiquo_val(strval($user['user_id']), 'string'),
             'username' => mobiquo_val($user['username'], 'base64'),
             'icon_url' => mobiquo_val($user['icon_url'], 'string'),
             'is_online' => mobiquo_val($user['is_online'], 'boolean'),
-        );
+        ];
         $display_text = $GLOBALS['FORUM_DRIVER']->get_username($user['user_id'], true);
         if ($display_text != $user['username']) {
-            $arr += array(
+            $arr += [
                 'display_text' => mobiquo_val($display_text, 'base64'),
-            );
+            ];
         }
         $users[] = mobiquo_val($arr, 'struct');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'list' => mobiquo_val($users, 'array'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }

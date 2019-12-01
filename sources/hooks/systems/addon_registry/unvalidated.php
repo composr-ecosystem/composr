@@ -31,7 +31,7 @@ class Hook_addon_registry_unvalidated
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_unvalidated
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_censor',
-        );
+        ];
     }
 
     /**
@@ -73,12 +73,12 @@ class Hook_addon_registry_unvalidated
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_unvalidated'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_unvalidated'],
+        ];
     }
 
     /**
@@ -98,7 +98,7 @@ class Hook_addon_registry_unvalidated
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/audit/unvalidated.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/unvalidated.svg',
             'sources/hooks/systems/notifications/content_validated.php',
@@ -115,7 +115,7 @@ class Hook_addon_registry_unvalidated
             'sources/hooks/modules/admin_unvalidated/index.html',
             'sources_custom/hooks/modules/admin_unvalidated/index.html',
             'sources/hooks/systems/page_groupings/unvalidated.php',
-        );
+        ];
     }
 
     /**
@@ -125,11 +125,11 @@ class Hook_addon_registry_unvalidated
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/UNVALIDATED_SECTION.tpl' => 'administrative__unvalidated_screen',
             'templates/UNVALIDATED_SCREEN.tpl' => 'administrative__unvalidated_screen',
             'text/VALIDATION_REQUEST_MAIL.txt' => 'administrative__validation_request_mail',
-        );
+        ];
     }
 
     /**
@@ -141,14 +141,14 @@ class Hook_addon_registry_unvalidated
      */
     public function tpl_preview__administrative__validation_request_mail()
     {
-        return array(
-            lorem_globalise(do_lorem_template('VALIDATION_REQUEST_MAIL', array(
+        return [
+            lorem_globalise(do_lorem_template('VALIDATION_REQUEST_MAIL', [
                 'USERNAME' => lorem_word(),
                 'TYPE' => lorem_phrase(),
                 'ID' => placeholder_id(),
                 'URL' => placeholder_url(),
-            ), null, false, null, '.txt', 'text'), null, '', true)
-        );
+            ], null, false, null, '.txt', 'text'), null, '', true)
+        ];
     }
 
     /**
@@ -160,15 +160,15 @@ class Hook_addon_registry_unvalidated
      */
     public function tpl_preview__administrative__unvalidated_screen()
     {
-        $section = do_lorem_template('UNVALIDATED_SECTION', array(
+        $section = do_lorem_template('UNVALIDATED_SECTION', [
             'TITLE' => lorem_phrase(),
             'CONTENT' => lorem_phrase(),
-        ));
-        return array(
-            lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', array(
+        ]);
+        return [
+            lorem_globalise(do_lorem_template('UNVALIDATED_SCREEN', [
                 'TITLE' => lorem_title(),
                 'SECTIONS' => $section,
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

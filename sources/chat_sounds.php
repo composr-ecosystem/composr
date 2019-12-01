@@ -26,7 +26,7 @@
  */
 function get_effect_set($only_overridable = false)
 {
-    $effects = array(
+    $effects = [
         'message_received' => 'message_received',
         'message_background' => 'message_background',
         'message_initial' => $only_overridable ? null : 'message_initial',
@@ -35,7 +35,7 @@ function get_effect_set($only_overridable = false)
         'contact_off' => 'contact_off',
         'invited' => 'invited',
         'you_connect' => $only_overridable ? null : 'you_connect',
-    );
+    ];
 
     return $effects;
 }
@@ -50,7 +50,7 @@ function get_effect_set($only_overridable = false)
  */
 function get_effect_settings($full_urls = false, $for_member = null, $all_members = false)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$full_urls][$for_member][$all_members])) {
         return $cache[$full_urls][$for_member][$all_members];
     }
@@ -59,12 +59,12 @@ function get_effect_settings($full_urls = false, $for_member = null, $all_member
 
     global $EFFECT_SETTINGS_ROWS;
     if ($EFFECT_SETTINGS_ROWS === null) {
-        $EFFECT_SETTINGS_ROWS = collapse_2d_complexity('s_effect_id', 's_url', $GLOBALS['SITE_DB']->query_select('chat_sound_effects', array('s_url', 's_effect_id'), array('s_member' => get_member())));
+        $EFFECT_SETTINGS_ROWS = collapse_2d_complexity('s_effect_id', 's_url', $GLOBALS['SITE_DB']->query_select('chat_sound_effects', ['s_url', 's_effect_id'], ['s_member' => get_member()]));
     }
-    $effect_settings = array();
+    $effect_settings = [];
     if ($all_members) {
         foreach (array_keys($EFFECT_SETTINGS_ROWS) as $effect_id) {
-            $matches = array();
+            $matches = [];
             if ((!array_key_exists($effect_id, $effects)) && (preg_match('#^(.*)_(\d+)$#', $effect_id, $matches) != 0) && (array_key_exists($matches[1], $effects))) {
                 $effects[$effect_id] = $matches[1];
             }
@@ -94,11 +94,11 @@ function get_effect_settings($full_urls = false, $for_member = null, $all_member
                 $member_setting = '-1';
             }
         }
-        $effect_settings[$effect] = array(
+        $effect_settings[$effect] = [
             'KEY' => $effect,
             'VALUE' => (($full_urls && ($member_setting != '')) ? (((substr($member_setting, 0, 12) == 'data_custom/') ? get_custom_base_url() : get_base_url()) . '/') : '') . $member_setting,
             'EFFECT_TITLE' => do_lang('CHAT_EFFECT_' . $base_effect_code),
-        );
+        ];
     }
 
     $cache[$full_urls][$for_member][$all_members] = $effect_settings;

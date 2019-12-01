@@ -58,7 +58,7 @@ class Hook_symbol_CHAT_IM
 
             $_value = null;
             if ($may_cache) {
-                $cache_identifier = serialize(array());
+                $cache_identifier = serialize([]);
                 $_value = get_cache_entry('_chat_im', $cache_identifier, CACHE_AGAINST_NOTHING_SPECIAL);
             }
 
@@ -71,33 +71,33 @@ class Hook_symbol_CHAT_IM
 
                 $chat_sound = static_evaluate_tempcode(get_chat_sound_tpl());
 
-                $im_area_template_a = do_template('CHAT_LOBBY_IM_AREA', array(
+                $im_area_template_a = do_template('CHAT_LOBBY_IM_AREA', [
                     '_GUID' => '38de4f030d5980790d6d1db1a7e2ff39',
                     'MESSAGES_PHP' => $messages_php,
                     'CHATROOM_ID' => '__room_id__',
-                ));
-                $im_area_template_b = do_template('CHAT_SITEWIDE_IM_POPUP', array(
+                ]);
+                $im_area_template_b = do_template('CHAT_SITEWIDE_IM_POPUP', [
                     '_GUID' => 'e520e557f86d0dd4e32d25a208d8f154',
                     'CONTENT' => $im_area_template_a,
                     'CHAT_SOUND' => $chat_sound,
-                ));
-                $im_area_template_c = do_template('STANDALONE_HTML_WRAP', array(
+                ]);
+                $im_area_template_c = do_template('STANDALONE_HTML_WRAP', [
                     '_GUID' => '5032bfa802af3fe14e610d09078ef849',
                     'CSS' => 'sitewide-im-popup-body',
                     'TITLE' => $title,
                     'TARGET' => '_site_opener',
                     'CONTENT' => $im_area_template_b,
                     'POPUP' => true,
-                ));
+                ]);
 
-                $make_friend_url = build_url(array('page' => '_SELF', 'type' => 'friend_add', 'member_id' => '__id__'), '_SELF', array(), false, false, true);
+                $make_friend_url = build_url(['page' => '_SELF', 'type' => 'friend_add', 'member_id' => '__id__'], '_SELF', [], false, false, true);
 
-                $block_member_url = build_url(array('page' => '_SELF', 'type' => 'blocking_add', 'member_id' => '__id__'), '_SELF', array(), false, false, true);
+                $block_member_url = build_url(['page' => '_SELF', 'type' => 'blocking_add', 'member_id' => '__id__'], '_SELF', [], false, false, true);
 
                 $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url(-100, false);
                 $profile_url = str_replace('-100', '__id__', $profile_url);
 
-                $im_participant_template = do_template('CHAT_LOBBY_IM_PARTICIPANT', array(
+                $im_participant_template = do_template('CHAT_LOBBY_IM_PARTICIPANT', [
                     '_GUID' => '0c5e080d0afb29814a6e3059f0204ad1',
                     'PROFILE_URL' => $profile_url,
                     'ID' => '__id__',
@@ -107,19 +107,19 @@ class Hook_symbol_CHAT_IM
                     'AVATAR_URL' => '__avatar_url__',
                     'MAKE_FRIEND_URL' => $make_friend_url,
                     'BLOCK_MEMBER_URL' => $block_member_url,
-                ));
+                ]);
 
                 if ($may_cache) {
                     $im_area_template_c = apply_quick_caching($im_area_template_c);
                     $im_participant_template = apply_quick_caching($im_participant_template);
                 }
 
-                $_value = do_template('CHAT_SITEWIDE_IM', array(
+                $_value = do_template('CHAT_SITEWIDE_IM', [
                     '_GUID' => '5ab0404b3dac4578e8b4be699bd43c95',
                     'IM_AREA_TEMPLATE' => $im_area_template_c,
                     'IM_PARTICIPANT_TEMPLATE' => $im_participant_template,
                     'CHAT_SOUND' => $chat_sound,
-                ));
+                ]);
 
                 if ($may_cache) {
                     require_code('caches2');

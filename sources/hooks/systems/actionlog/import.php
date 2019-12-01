@@ -31,20 +31,20 @@ class Hook_actionlog_import extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('import')) {
-            return array();
+            return [];
         }
 
         require_lang('import');
 
-        return array(
-            'IMPORT' => array(
+        return [
+            'IMPORT' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
-                ),
-            ),
-        );
+                'followup_page_links' => [
+                ],
+            ],
+        ];
     }
 }

@@ -30,14 +30,14 @@ class Block_main_privacy_policy_auto
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 1;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_privacy_policy_auto
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -67,15 +67,15 @@ PHP;
     {
         require_code('privacy');
 
-        $cookies = array();
+        $cookies = [];
 
-        $sections = array();
+        $sections = [];
 
-        $sections[do_lang('COOKIES')] = array(
+        $sections[do_lang('COOKIES')] = [
             'HEADING' => do_lang_tempcode('COOKIES'),
-            'POSITIVE' => array(),
-            'GENERAL' => array(),
-        );
+            'POSITIVE' => [],
+            'GENERAL' => [],
+        ];
 
         $hook_obs = find_all_hook_obs('systems', 'privacy', 'Hook_privacy_');
         foreach ($hook_obs as $hook => $hook_ob) {
@@ -86,10 +86,10 @@ PHP;
                     continue;
                 }
 
-                $cookies[] = array(
+                $cookies[] = [
                     'NAME' => $name,
                     'REASON' => $details['reason'],
-                );
+                ];
             }
 
             foreach ($info['positive'] as $details) {
@@ -100,16 +100,16 @@ PHP;
                 $heading = $details['heading'];
 
                 if (!array_key_exists($heading, $sections)) {
-                    $sections[$heading] = array(
+                    $sections[$heading] = [
                         'HEADING' => $heading,
-                        'POSITIVE' => array(),
-                        'GENERAL' => array(),
-                    );
+                        'POSITIVE' => [],
+                        'GENERAL' => [],
+                    ];
                 }
 
-                $sections[$heading]['POSITIVE'][] = array(
+                $sections[$heading]['POSITIVE'][] = [
                     'EXPLANATION' => $details['explanation'],
-                );
+                ];
             }
 
             foreach ($info['general'] as $details) {
@@ -120,26 +120,26 @@ PHP;
                 $heading = $details['heading'];
 
                 if (!array_key_exists($heading, $sections)) {
-                    $sections[$heading] = array(
+                    $sections[$heading] = [
                         'HEADING' => $heading,
-                        'POSITIVE' => array(),
-                        'GENERAL' => array(),
-                    );
+                        'POSITIVE' => [],
+                        'GENERAL' => [],
+                    ];
                 }
 
-                $sections[$heading]['GENERAL'][] = array(
+                $sections[$heading]['GENERAL'][] = [
                     'ACTION' => $details['action'],
                     'REASON' => $details['reason'],
-                );
+                ];
             }
         }
 
         cms_mb_ksort($sections, SORT_NATURAL | SORT_FLAG_CASE);
 
-        return do_template('BLOCK_MAIN_PRIVACY_POLICY_AUTO', array(
+        return do_template('BLOCK_MAIN_PRIVACY_POLICY_AUTO', [
             '_GUID' => '0abf65878c508bf244836589a8cc45da',
             'SECTIONS' => $sections,
             'COOKIES' => $cookies,
-        ));
+        ]);
     }
 }

@@ -16,7 +16,7 @@
 // Find existing category ID for a named category. Insert into the database if the category does not exist
 function find_addon_category_download_category($category_name, $parent_id = null/*null means under "Addons" category or under root category if Addons*/, $description = null)
 {
-    static $cache = array();
+    static $cache = [];
 
     if (isset($cache[$category_name][$parent_id])) {
         return $cache[$category_name][$parent_id];
@@ -30,7 +30,7 @@ function find_addon_category_download_category($category_name, $parent_id = null
             if (isset($COMPO_SR_ADDONS_CATEGORY)) {
                 $parent_id = $COMPO_SR_ADDONS_CATEGORY;
             } else {
-                $parent_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons'));
+                $parent_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
                 if ($parent_id === null) {
                     $parent_id = find_addon_category_download_category('Addons'); // This will auto-create it
                 }
@@ -43,14 +43,14 @@ function find_addon_category_download_category($category_name, $parent_id = null
 
             if ($description === null) {
                 // Copy version category description from parent ("Addons")
-                $description = get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'the_description', array('id' => $parent_id)));
+                $description = get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'the_description', ['id' => $parent_id]));
                 $description = str_replace('[title="2"]Choose Composr version below[/title]', '[title="2"]Choose addon category below[/title]', $description);
             }
         }
     }
 
     require_code('downloads2');
-    $id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => $parent_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => $category_name));
+    $id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $parent_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => $category_name]);
     if ($id === null) {
         // Missing, add it...
 
@@ -187,10 +187,10 @@ function get_addons_list_under_category($category_name, $version_branch)
         require_code('tar');
         require_code('files');
 
-        foreach (array('uploads/downloads', 'exports/addons') as $dir) {
+        foreach (['uploads/downloads', 'exports/addons'] as $dir) {
             $dh = opendir(get_custom_file_base() . '/' . $dir);
             while (($file = readdir($dh)) !== false) {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^(\w+)-' . preg_quote($version_branch, '#') . '.tar#', $file, $matches) != 0) {
                     $path = get_custom_file_base() . '/' . $dir . '/' . $file;
                     $tar = tar_open($path, 'rb');
@@ -206,7 +206,7 @@ function get_addons_list_under_category($category_name, $version_branch)
 
                     $addon_name = $matches[1];
                     if (!isset($addons_in_cats[$_category_name])) {
-                        $addons_in_cats[$_category_name] = array();
+                        $addons_in_cats[$_category_name] = [];
                     }
                     $addons_in_cats[$_category_name][] = $addon_name;
                 }
@@ -215,7 +215,7 @@ function get_addons_list_under_category($category_name, $version_branch)
         }
     }
 
-    $addons_here = isset($addons_in_cats[$category_name]) ? $addons_in_cats[$category_name] : array();
+    $addons_here = isset($addons_in_cats[$category_name]) ? $addons_in_cats[$category_name] : [];
 
     // Look in local filesystem too
     $addons = find_all_hooks('systems', 'addon_registry');
@@ -241,7 +241,7 @@ function get_addons_list_under_category($category_name, $version_branch)
 // Returns list of categories
 function find_addon_category_list()
 {
-    $categories = array();
+    $categories = [];
 
     $addons = find_all_hooks('systems', 'addon_registry');
     foreach ($addons as $addon_name => $place) {

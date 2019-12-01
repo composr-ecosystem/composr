@@ -30,7 +30,7 @@ class Hook_config_payment_gateway_password
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAYMENT_GATEWAY_PASSWORD',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_payment_gateway_password
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

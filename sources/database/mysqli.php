@@ -29,7 +29,7 @@ require_code('database/shared/mysql');
  */
 class Database_Static_mysqli extends Database_super_mysql
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
     public $last_select_db = null;
     public $reconnected_once = false;
 
@@ -56,14 +56,14 @@ class Database_Static_mysqli extends Database_super_mysql
         }
 
         // Potential caching
-        $x = serialize(array($db_user, $db_host));
+        $x = serialize([$db_user, $db_host]);
         if (array_key_exists($x, $this->cache_db)) {
             if ($this->last_select_db[1] !== $db_name) {
                 mysqli_select_db($this->cache_db[$x], $db_name);
-                $this->last_select_db = array($this->cache_db[$x], $db_name);
+                $this->last_select_db = [$this->cache_db[$x], $db_name];
             }
 
-            return array($this->cache_db[$x], $db_name);
+            return [$this->cache_db[$x], $db_name];
         }
         $db_port = 3306;
         if (strpos($db_host, ':') !== false) {
@@ -94,7 +94,7 @@ class Database_Static_mysqli extends Database_super_mysql
                 critical_error('PASSON', $error); //warn_exit(do_lang_tempcode('CONNECT_ERROR'));
             }
         }
-        $this->last_select_db = array($db_link, $db_name);
+        $this->last_select_db = [$db_link, $db_name];
 
         $this->cache_db[$x] = $db_link;
 
@@ -111,7 +111,7 @@ class Database_Static_mysqli extends Database_super_mysql
             @mysqli_query($db_link, 'SET NAMES "' . addslashes('utf8mb4') . '"');
         }
 
-        return array($db_link, $db_name);
+        return [$db_link, $db_name];
     }
 
     /**
@@ -135,7 +135,7 @@ class Database_Static_mysqli extends Database_super_mysql
 
         if ($this->last_select_db[1] !== $db_name) {
             mysqli_select_db($db_link, $db_name);
-            $this->last_select_db = array($db_link, $db_name);
+            $this->last_select_db = [$db_link, $db_name];
         }
 
         static $version = null;
@@ -197,8 +197,8 @@ class Database_Static_mysqli extends Database_super_mysql
     protected function get_query_rows($results, $query, $start)
     {
         $num_fields = mysqli_num_fields($results);
-        $names = array();
-        $types = array();
+        $names = [];
+        $types = [];
         $fields = mysqli_fetch_fields($results);
         foreach ($fields as $x => $field) {
             $field = mysqli_fetch_field($results);
@@ -206,8 +206,8 @@ class Database_Static_mysqli extends Database_super_mysql
             $types[$x] = $field->type;
         }
 
-        $out = array();
-        $newrow = array();
+        $out = [];
+        $newrow = [];
         while (($row = mysqli_fetch_row($results)) !== null) {
             $j = 0;
             foreach ($row as $v) {

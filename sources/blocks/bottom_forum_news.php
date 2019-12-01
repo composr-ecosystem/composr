@@ -30,14 +30,14 @@ class Block_bottom_forum_news
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('date_key', 'param', 'forum', 'check');
+        $info['parameters'] = ['date_key', 'param', 'forum', 'check'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_bottom_forum_news
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : 6,
@@ -76,11 +76,11 @@ PHP;
         }
 
         if (!addon_installed('news_shared')) {
-            return do_template('RED_ALERT', array('_GUID' => 'jhmazz9b50kv3de1drxujlw7p5haozvo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))));
+            return do_template('RED_ALERT', ['_GUID' => 'jhmazz9b50kv3de1drxujlw7p5haozvo', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news_shared'))]);
         }
 
         if (has_no_forum()) {
-            return do_template('RED_ALERT', array('_GUID' => '5oomi6o1lipy2tch6rkgd7k9p3a6h2c8', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => '5oomi6o1lipy2tch6rkgd7k9p3a6h2c8', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         $block_id = get_block_id($map);
@@ -92,7 +92,7 @@ PHP;
 
         $date_key = array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime';
 
-        $forum_ids = array();
+        $forum_ids = [];
         if ((get_forum_type() == 'cns') && ((strpos($forum_name, ',') !== false) || (preg_match('#\d[-\*\+]#', $forum_name) != 0) || (is_numeric($forum_name)))) {
             require_code('selectcode');
             $forum_names = array_map('strval', selectcode_to_idlist_using_db($forum_name, 'id', 'f_forums', 'f_forums', 'f_parent_forum', 'f_parent_forum', 'id', true, true, $GLOBALS['FORUM_DB']));
@@ -100,7 +100,7 @@ PHP;
             $forum_names = explode(',', $forum_name);
         }
         if (($forum_name == do_lang('NEWS')) && (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum_name) === null)) {
-            $forum_names = array(do_lang('DEFAULT_FORUM_TITLE'));
+            $forum_names = [do_lang('DEFAULT_FORUM_TITLE')];
         }
         foreach ($forum_names as $forum_name) {
             $forum_name = trim($forum_name);
@@ -128,7 +128,7 @@ PHP;
         $topics = $GLOBALS['FORUM_DRIVER']->show_forum_topics($forum_ids, $limit, 0, $max_rows, '', false, $date_key);
 
         $out = new Tempcode();
-        $_postdetailss = array();
+        $_postdetailss = [];
         if ($topics !== null) {
             sort_maps_by($topics, $date_key);
             $topics = array_reverse($topics, false);
@@ -138,14 +138,14 @@ PHP;
                 $title = $topic['title'];
                 $date = get_timezoned_date_tempcode($topic[$date_key]);
 
-                $_postdetailss[] = array('DATE' => $date, 'FULL_URL' => $topic_url, 'NEWS_TITLE' => escape_html($title));
+                $_postdetailss[] = ['DATE' => $date, 'FULL_URL' => $topic_url, 'NEWS_TITLE' => escape_html($title)];
             }
         }
 
-        return do_template('BLOCK_BOTTOM_NEWS', array(
+        return do_template('BLOCK_BOTTOM_NEWS', [
             '_GUID' => '04d5390309dcba1f17391e9928da0d56',
             'BLOCK_ID' => $block_id,
             'POSTS' => $_postdetailss,
-        ));
+        ]);
     }
 }

@@ -57,22 +57,22 @@ class Hook_commandr_fs_groups extends Resource_fs_base
     {
         switch ($resource_type) {
             case 'member':
-                $_ret = $GLOBALS['FORUM_DB']->query_select('f_members', array('id'), array('m_username' => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], ['m_username' => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
 
             case 'group':
-                $_ret = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id'), array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $label), 'ORDER BY id');
-                $ret = array();
+                $_ret = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id'], [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $label], 'ORDER BY id');
+                $ret = [];
                 foreach ($_ret as $r) {
                     $ret[] = strval($r['id']);
                 }
                 return $ret;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -136,7 +136,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         $open_membership = $this->_default_property_int($properties, 'open_membership');
         $is_private_club = $this->_default_property_int($properties, 'is_private_club');
 
-        return array($is_default, $is_super_admin, $is_super_moderator, $rank_title, $rank_image, $promotion_target, $promotion_threshold, $group_leader, $flood_control_submit_secs, $flood_control_access_secs, $max_daily_upload_mb, $max_attachments_per_post, $max_avatar_width, $max_avatar_height, $max_post_length_comcode, $max_sig_length_comcode, $gift_points_base, $gift_points_per_day, $enquire_on_new_ips, $is_presented_at_install, $hidden, $order, $rank_image_pri_only, $open_membership, $is_private_club);
+        return [$is_default, $is_super_admin, $is_super_moderator, $rank_title, $rank_image, $promotion_target, $promotion_threshold, $group_leader, $flood_control_submit_secs, $flood_control_access_secs, $max_daily_upload_mb, $max_attachments_per_post, $max_avatar_width, $max_avatar_height, $max_post_length_comcode, $max_sig_length_comcode, $gift_points_base, $gift_points_per_day, $enquire_on_new_ips, $is_presented_at_install, $hidden, $order, $rank_image_pri_only, $open_membership, $is_private_club];
     }
 
     /**
@@ -177,13 +177,13 @@ class Hook_commandr_fs_groups extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['g_name'], $GLOBALS['FORUM_DB']),
             'is_default' => $row['g_is_default'],
             'is_super_admin' => $row['g_is_super_admin'],
@@ -210,7 +210,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             'rank_image_pri_only' => $row['g_rank_image_pri_only'],
             'open_membership' => $row['g_open_membership'],
             'is_private_club' => $row['g_is_private_club'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -287,7 +287,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
 
         $email_address = $this->_default_property_str($properties, 'email_address');
 
-        $groups = array();
+        $groups = [];
         $primary_group_id = $this->_integer_category($category);
         $groups[] = $primary_group_id;
 
@@ -340,8 +340,8 @@ class Hook_commandr_fs_groups extends Resource_fs_base
 
         require_code('cns_members');
         $custom_fields = cns_get_all_custom_fields_match();
-        $actual_custom_fields = array();
-        $props_already = array();
+        $actual_custom_fields = [];
+        $props_already = [];
         foreach ($custom_fields as $i => $custom_field) {
             $cf_name = get_translated_text($custom_field['cf_name'], $GLOBALS['FORUM_DB']);
             $fixed_id = fix_id($cf_name);
@@ -358,7 +358,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             $actual_custom_fields[$custom_field['id']] = $value;
         }
 
-        return array($password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $photo_thumb_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time);
+        return [$password_hashed, $email_address, $groups, $dob_day, $dob_month, $dob_year, $actual_custom_fields, $timezone, $language, $theme, $title, $photo_url, $photo_thumb_url, $avatar_url, $signature, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $validated_email_confirm_code, $on_probation_until, $is_perm_banned, $ip_address, $password_compatibility_scheme, $salt, $join_time];
     }
 
     /**
@@ -425,7 +425,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         );
 
         if (isset($properties['groups'])) {
-            table_from_portable_rows('f_group_members', $properties['groups'], array('gm_member_id' => $id), TABLE_REPLACE_MODE_NONE);
+            table_from_portable_rows('f_group_members', $properties['groups'], ['gm_member_id' => $id], TABLE_REPLACE_MODE_NONE);
         }
 
         $hooks = find_all_hook_obs('systems', 'commandr_fs_extended_member', 'Hook_commandr_fs_extended_member__');
@@ -455,17 +455,17 @@ class Hook_commandr_fs_groups extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => $row['m_username'],
             'password_hashed' => $row['m_pass_hash_salted'],
             'email_address' => $row['m_email_address'],
-            'groups' => table_to_portable_rows('f_group_members', array('gm_member_id'), array('gm_member_id' => intval($resource_id))),
+            'groups' => table_to_portable_rows('f_group_members', ['gm_member_id'], ['gm_member_id' => intval($resource_id)]),
             'dob_day' => $row['m_dob_day'],
             'dob_month' => $row['m_dob_month'],
             'dob_year' => $row['m_dob_year'],
@@ -498,7 +498,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
             'password_compatibility_scheme' => $row['m_password_compat_scheme'],
             'salt' => $row['m_pass_salt'],
             'join_time' => remap_time_as_portable($row['m_join_time']),
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
 
         require_code('cns_members');
@@ -585,7 +585,7 @@ class Hook_commandr_fs_groups extends Resource_fs_base
         );
 
         if (isset($properties['groups'])) {
-            table_from_portable_rows('f_group_members', $properties['groups'], array('gm_member_id' => intval($resource_id)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('f_group_members', $properties['groups'], ['gm_member_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $hooks = find_all_hook_obs('systems', 'commandr_fs_extended_member', 'Hook_commandr_fs_extended_member__');

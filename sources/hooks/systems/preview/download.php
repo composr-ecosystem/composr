@@ -31,7 +31,7 @@ class Hook_preview_download
     public function applies()
     {
         $applies = (addon_installed('downloads')) && (get_page_name() == 'cms_downloads') && ((get_param_string('type', '') == 'add') || (get_param_string('type', '') == '_edit'));
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -63,7 +63,7 @@ class Hook_preview_download
         $original_filename = post_param_string('original_filename', '');
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
 
-        $map = array();
+        $map = [];
 
         require_code('uploads');
         is_plupload(true);
@@ -82,7 +82,7 @@ class Hook_preview_download
             }
         }
         if ($id !== null) {
-            $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('id' => $id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => $id], '', 1);
             if (array_key_exists(0, $rows)) {
                 $map['id'] = $id;
 
@@ -93,7 +93,7 @@ class Hook_preview_download
             }
         }
 
-        $map += array(
+        $map += [
             'download_data_mash' => '',
             'download_licence' => $licence,
             'rep_image' => '',
@@ -119,10 +119,10 @@ class Hook_preview_download
             'validated' => $validated,
             'add_date' => $add_date,
             'file_size' => $file_size,
-        );
+        ];
 
         $output = render_download_box($map);
 
-        return array($output, null);
+        return [$output, null];
     }
 }

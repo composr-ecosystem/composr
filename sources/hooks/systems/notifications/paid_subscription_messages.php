@@ -32,11 +32,11 @@ class Hook_notification_paid_subscription_messages extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('ecommerce')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['paid_subscription_messages'] = array(do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_paid_subscription_messages'));
+        $list = [];
+        $list['paid_subscription_messages'] = [do_lang('ecommerce:ECOMMERCE'), do_lang('ecommerce:NOTIFICATION_TYPE_paid_subscription_messages')];
         return $list;
     }
 

@@ -67,11 +67,11 @@ class Hook_cron_newsletter_no_members
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Delete newsletter users who are also members',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 0,
-        );
+        ];
     }
 
     /**

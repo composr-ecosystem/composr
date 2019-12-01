@@ -34,9 +34,9 @@ class Hook_commandr_command_date
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('date', array('h'), array()), '', '');
+            return ['', do_command_help('date', ['h'], []), '', ''];
         } else {
-            return array('', '', get_timezoned_date_time(time()), '');
+            return ['', '', get_timezoned_date_time(time()), ''];
         }
     }
 }

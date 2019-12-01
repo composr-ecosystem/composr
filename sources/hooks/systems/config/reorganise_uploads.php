@@ -30,7 +30,7 @@ class Hook_config_reorganise_uploads
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'REORGANISE_UPLOADS',
             'type' => 'list',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_reorganise_uploads
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

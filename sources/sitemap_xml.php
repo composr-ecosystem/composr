@@ -57,16 +57,16 @@ function sitemap_xml_build($callback = null, $force = false)
     $time = time();
 
     // Build from sitemap_cache table
-    $set_numbers = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('DISTINCT set_number'), array(), $force ? '' : (' WHERE last_updated>=' . strval($last_time)));
+    $set_numbers = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['DISTINCT set_number'], [], $force ? '' : (' WHERE last_updated>=' . strval($last_time)));
     if (!empty($set_numbers)) {
         foreach ($set_numbers as $set_number) {
             rebuild_sitemap_set($set_number['set_number'], $last_time, $callback);
         }
 
         // Delete any nodes marked for deletion now they've been reflected in the XML
-        $GLOBALS['SITE_DB']->query_delete('sitemap_cache', array(
+        $GLOBALS['SITE_DB']->query_delete('sitemap_cache', [
             'is_deleted' => 1,
-        ));
+        ]);
 
         // Rebuild index file
         rebuild_sitemap_index();
@@ -98,8 +98,8 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     fwrite($sitemaps_out_file, $blob);
 
     // Nodes accessible by guests, and not deleted (ignore update time as we are rebuilding whole set)
-    $where = array('set_number' => $set_number, 'is_deleted' => 0, 'guest_access' => 1);
-    $nodes = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('*'), $where);
+    $where = ['set_number' => $set_number, 'is_deleted' => 0, 'guest_access' => 1];
+    $nodes = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['*'], $where);
     foreach ($nodes as $node) {
         if (function_exists('filter_sitemap_node')) { // Define this function is you need to change hard-coded Sitemap defaults, such as priorities
             filter_sitemap_node($node);
@@ -116,7 +116,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
         $edit_date = $node['edit_date'];
         $priority = $node['priority'];
 
-        $url = _build_url($attributes, $zone, array(), false, false, true, $hash);
+        $url = _build_url($attributes, $zone, [], false, false, true, $hash);
 
         $optional_details = '';
 
@@ -130,7 +130,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
         $langs = find_all_langs();
         foreach (array_keys($langs) as $lang) {
             if ($lang != get_site_default_lang()) {
-                $_url = _build_url($attributes + array('keep_lang' => $lang), $zone, array(), false, false, true, $hash);
+                $_url = _build_url($attributes + ['keep_lang' => $lang], $zone, [], false, false, true, $hash);
 
                 $optional_details = '
         <xhtml:link rel="alternate" hreflang="' . strtolower($lang) . '" href="' . xmlentities($_url) . '" />';
@@ -183,7 +183,7 @@ function rebuild_sitemap_index()
     fwrite($sitemaps_out_file, $blob);
 
     // Write out each set
-    $sitemap_sets = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('set_number', 'MAX(last_updated) AS last_updated'), array(), 'GROUP BY set_number');
+    $sitemap_sets = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['set_number', 'MAX(last_updated) AS last_updated'], [], 'GROUP BY set_number');
     foreach ($sitemap_sets as $sitemap_set) {
         $path = get_custom_file_base() . '/data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml';
         $url = get_custom_base_url() . '/data_custom/sitemaps/set_' . strval($sitemap_set['set_number']) . '.xml';
@@ -245,12 +245,12 @@ function ping_sitemap_xml($url, $trigger_error = false)
         $local = is_local_machine(parse_url($url, PHP_URL_HOST));
         if (($ping) && (get_option('site_closed') == '0') && (!$local)) {
             // Submit to search engines
-            $services = array(
+            $services = [
                 'http://www.google.com/webmasters/tools/ping?sitemap=',
                 'http://www.bing.com/webmaster/ping.aspx?siteMap=',
-            );
+            ];
             foreach ($services as $service) {
-                $out .= http_get_contents($service . urlencode($url), array('convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error));
+                $out .= http_get_contents($service . urlencode($url), ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error]);
             }
         }
     }
@@ -262,12 +262,12 @@ function ping_sitemap_xml($url, $trigger_error = false)
  */
 function clean_unused_sitemap_files()
 {
-    $pages = array_flip(collapse_1d_complexity('set_number', $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('DISTINCT set_number'))));
+    $pages = array_flip(collapse_1d_complexity('set_number', $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['DISTINCT set_number'])));
 
     $dh = @opendir(get_custom_file_base() . '/data_custom/sitemaps');
     if ($dh !== false) {
         while (($f = readdir($dh)) !== false) {
-            $matches = array();
+            $matches = [];
             if ((preg_match('#^set_(\d+)\.xml(\.gz)?$#', $f, $matches) != 0) && (!array_key_exists(intval($matches[1]), $pages))) {
                 @unlink(get_custom_file_base() . '/data_custom/sitemaps/' . $f);
             }
@@ -299,7 +299,7 @@ function build_sitemap_cache_table()
     // Load ALL URL ID monikers (for efficiency)
     global $LOADED_MONIKERS_CACHE;
     if ($GLOBALS['SITE_DB']->query_select_value('url_id_monikers', 'COUNT(*)'/*, array('m_deprecated' => 0) Poor performance to include this and it's unnecessary*/) < 10000) {
-        $results = $GLOBALS['SITE_DB']->query_select('url_id_monikers', array('m_moniker', 'm_resource_page', 'm_resource_type', 'm_resource_id'), array('m_deprecated' => 0));
+        $results = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker', 'm_resource_page', 'm_resource_type', 'm_resource_id'], ['m_deprecated' => 0]);
         foreach ($results as $result) {
             $LOADED_MONIKERS_CACHE[$result['m_resource_page']][$result['m_resource_type']][$result['m_resource_id']] = $result['m_moniker'];
         }
@@ -444,13 +444,13 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
     static $set_number = null;
     static $number_in_set = 0;
     if ($set_number === null) {
-        $set_details = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('set_number', 'COUNT(*) AS cnt'), array('guest_access' => 1), 'GROUP BY set_number HAVING COUNT(*)<' . strval(URLS_PER_SITEMAP_SET));
+        $set_details = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['set_number', 'COUNT(*) AS cnt'], ['guest_access' => 1], 'GROUP BY set_number HAVING COUNT(*)<' . strval(URLS_PER_SITEMAP_SET));
         if (array_key_exists(0, $set_details)) {
             $set_number = $set_details[0]['set_number'];
             $number_in_set = $set_details[0]['cnt'];
         } else {
             // Next set number in sequence
-            $set_number = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(set_number)', array('guest_access' => 1));
+            $set_number = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(set_number)', ['guest_access' => 1]);
             if ($set_number === null) {
                 $set_number = 0;
             } else {
@@ -520,10 +520,10 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
     }
 
     // Save into sitemap
-    $GLOBALS['SITE_DB']->query_delete('sitemap_cache', array(
+    $GLOBALS['SITE_DB']->query_delete('sitemap_cache', [
         'page_link' => $page_link,
-    ), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('sitemap_cache', array(
+    ], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('sitemap_cache', [
         'page_link' => $page_link,
         'set_number' => $set_number,
         'add_date' => ($add_date === null) ? null : $add_date,
@@ -533,7 +533,7 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
         'priority' => $priority,
         'refreshfreq' => $refreshfreq,
         'guest_access' => $guest_access ? 1 : 0,
-    ));
+    ]);
 
     // First population into the table? Do a full build too
     if ($fresh) {
@@ -558,22 +558,22 @@ function notify_sitemap_node_edit($page_link, $guest_access = null)
         return;
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('*'), array(
+    $rows = $GLOBALS['SITE_DB']->query_select('sitemap_cache', ['*'], [
         'page_link' => $page_link,
-    ), '', 1);
+    ], '', 1);
     if (!isset($rows[0])) {
         notify_sitemap_node_add($page_link);
         return;
     }
 
-    $GLOBALS['SITE_DB']->query_delete('sitemap_cache', array(
+    $GLOBALS['SITE_DB']->query_delete('sitemap_cache', [
         'page_link' => $page_link,
-    ), '', 1);
-    $GLOBALS['SITE_DB']->query_insert('sitemap_cache', array(
+    ], '', 1);
+    $GLOBALS['SITE_DB']->query_insert('sitemap_cache', [
         'edit_date' => time(),
         'last_updated' => time(),
         'guest_access' => $guest_access ? 1 : 0,
-    ) + $rows[0]);
+    ] + $rows[0]);
 }
 
 /**
@@ -588,10 +588,10 @@ function notify_sitemap_node_delete($page_link)
 {
     canonicalise_sitemap_page_link($page_link);
 
-    $GLOBALS['SITE_DB']->query_update('sitemap_cache', array(
+    $GLOBALS['SITE_DB']->query_update('sitemap_cache', [
         'last_updated' => time(),
         'is_deleted' => 1,
-    ), array('page_link' => $page_link), '', 1);
+    ], ['page_link' => $page_link], '', 1);
 }
 
 /**

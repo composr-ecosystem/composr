@@ -31,44 +31,44 @@ class Hook_actionlog_authors extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('authors')) {
-            return array();
+            return [];
         }
 
         require_lang('authors');
 
-        return array(
-            'DEFINE_AUTHOR' => array(
+        return [
+            'DEFINE_AUTHOR' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'author',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_AUTHOR' => '_SEARCH:authors:browse:{ID}',
                     'EDIT_THIS_AUTHOR' => '_SEARCH:cms_authors:_add:author={ID}',
                     'ADD_AUTHOR' => '_SEARCH:cms_authors:_add',
-                ),
-            ),
-            'DELETE_AUTHOR' => array(
+                ],
+            ],
+            'DELETE_AUTHOR' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'author',
                 'identifier_index' => 0,
                 'written_context_index' => 0,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_AUTHOR' => '_SEARCH:cms_authors:_add',
-                ),
-            ),
-            'MERGE_AUTHORS' => array(
+                ],
+            ],
+            'MERGE_AUTHORS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'author',
                 'identifier_index' => 1,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_AUTHOR' => '_SEARCH:authors:browse:{ID}',
                     'EDIT_THIS_AUTHOR' => '_SEARCH:cms_authors:_add:author={ID}',
                     'ADD_AUTHOR' => '_SEARCH:cms_authors:_add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**

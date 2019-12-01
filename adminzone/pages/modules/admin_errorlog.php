@@ -30,7 +30,7 @@ class Module_admin_errorlog
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_errorlog
             return null;
         }
 
-        return array(
-            '!' => array('ERRORLOG', 'menu/adminzone/audit/errorlog'),
-        );
+        return [
+            '!' => ['ERRORLOG', 'menu/adminzone/audit/errorlog'],
+        ];
     }
 
     public $title;
@@ -178,27 +178,27 @@ class Module_admin_errorlog
                     $lines = cms_file_safe(get_custom_file_base() . '/data_custom/errorlog.php');
                 }
             } else {
-                $lines = array();
+                $lines = [];
             }
-            $stuff = array();
+            $stuff = [];
             foreach ($lines as $line) {
                 $_line = trim($line);
 
                 if (($_line != '') && (strpos($_line, '<?php') === false)) {
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#^\[(.+?) (.+?)\] (.{1,20}):  ?(.*)#', $_line, $matches) != 0) {
                         $stuff[] = $matches;
                     }
                 }
             }
         } else {
-            $stuff = array();
+            $stuff = [];
 
             require_once('google/appengine/api/log/LogService.php');
 
             $_log_service = 'google\appengine\api\log\LogService';
             $log_service = new $_log_service;
-            $options = array();
+            $options = [];
             $options['include_app_logs'] = true;
             $options['minimum_log_level'] = eval('return $log_service::LEVEL_WARNING;'); // = PHP notice
             $options['batch_size'] = 300;
@@ -223,7 +223,7 @@ class Module_admin_errorlog
 
                     $time = intval($app_log->getTimeUsec() / 1000000.0);
 
-                    $stuff[] = array('', date('D-M-Y', $time), date('H:i:s', $time), $_level, $message);
+                    $stuff[] = ['', date('D-M-Y', $time), date('H:i:s', $time), $_level, $message];
                 }
             }
         }
@@ -231,7 +231,7 @@ class Module_admin_errorlog
         // Put errors into table
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = array('date_and_time' => do_lang_tempcode('DATE_TIME'));
+        $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
         $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -244,7 +244,7 @@ class Module_admin_errorlog
             $stuff = array_reverse($stuff);
         }
         require_code('templates_results_table');
-        $header_row = results_header_row(array(do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        $header_row = results_header_row([do_lang_tempcode('DATE_TIME'), do_lang_tempcode('TYPE'), do_lang_tempcode('MESSAGE')], $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
         for ($i = $start; $i < $start + $max; $i++) {
             if (!array_key_exists($i, $stuff)) {
@@ -253,17 +253,17 @@ class Module_admin_errorlog
 
             $message = str_replace(get_file_base(), '', $stuff[$i][4]);
 
-            $result_entries->attach(results_entry(array(
+            $result_entries->attach(results_entry([
                 $stuff[$i][1] . ' ' . $stuff[$i][2],
                 $stuff[$i][3],
                 $message,
-            ), true));
+            ], true));
         }
-        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), array('180px', '110px'));
+        $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '110px']);
 
         // Read in end of any other log files we find
         require_all_lang();
-        $logs = array();
+        $logs = [];
         $dh = opendir(get_custom_file_base() . '/data_custom');
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
@@ -295,7 +295,7 @@ class Module_admin_errorlog
                     // Any special support for reformatting particular logs
                     foreach ($lines as $i => $line) {
                         // Special support for permission log
-                        $matches = array();
+                        $matches = [];
                         if (preg_match('#^\s+has_privilege: (\w+)#', $line, $matches) != 0) {
                             $looked_up = do_lang('PRIVILEGE_' . $matches[1], null, null, null, null, false);
                             if ($looked_up !== null) {
@@ -314,12 +314,12 @@ class Module_admin_errorlog
                 $clear_url = new Tempcode();
                 $add_url = new Tempcode();
                 if ($log != '') {
-                    $download_url = build_url(array('page' => '_SELF', 'type' => 'download_log', 'id' => basename($filename, '.log')), '_SELF');
+                    $download_url = build_url(['page' => '_SELF', 'type' => 'download_log', 'id' => basename($filename, '.log')], '_SELF');
                 }
                 if ($log != '') {
-                    $clear_url = build_url(array('page' => '_SELF', 'type' => 'clear_log', 'id' => basename($filename, '.log')), '_SELF');
+                    $clear_url = build_url(['page' => '_SELF', 'type' => 'clear_log', 'id' => basename($filename, '.log')], '_SELF');
                 }
-                $delete_url = build_url(array('page' => '_SELF', 'type' => 'delete_log', 'id' => basename($filename, '.log')), '_SELF');
+                $delete_url = build_url(['page' => '_SELF', 'type' => 'delete_log', 'id' => basename($filename, '.log')], '_SELF');
 
                 // Prepare any additional details
                 if ($filename == 'cron.log') {
@@ -329,14 +329,14 @@ class Module_admin_errorlog
                 }
 
                 // Template-ready
-                $logs[$filename] = array(
+                $logs[$filename] = [
                     'LOG' => $log,
                     'DOWNLOAD_URL' => $download_url,
                     'CLEAR_URL' => $clear_url,
                     'DELETE_URL' => $delete_url,
                     'ADD_URL' => $add_url,
                     'ADDITIONAL' => $additional,
-                );
+                ];
             }
         }
         closedir($dh);
@@ -348,7 +348,7 @@ class Module_admin_errorlog
             foreach (array_keys($logs_available) as $filename) {
                 if ((!isset($logs[$filename])) && ($filename != 'errorlog.php')) { // if not already handled
                     // Action URLs
-                    $add_url = build_url(array('page' => '_SELF', 'type' => 'init_log', 'id' => basename($filename, '.log')), '_SELF');
+                    $add_url = build_url(['page' => '_SELF', 'type' => 'init_log', 'id' => basename($filename, '.log')], '_SELF');
 
                     // Prepare any additional details
                     if ($filename == 'cron.log') {
@@ -358,14 +358,14 @@ class Module_admin_errorlog
                     }
 
                     // Template-ready
-                    $logs[$filename] = array(
+                    $logs[$filename] = [
                         'LOG' => null,
                         'DOWNLOAD_URL' => new Tempcode(),
                         'CLEAR_URL' => new Tempcode(),
                         'DELETE_URL' => new Tempcode(),
                         'ADD_URL' => $add_url,
                         'ADDITIONAL' => $additional,
-                    );
+                    ];
                 }
             }
         }
@@ -374,15 +374,15 @@ class Module_admin_errorlog
 
         // Put it all together...
 
-        $clear_url = build_url(array('page' => '_SELF', 'type' => 'clear_log', 'id' => 'errorlog'), '_SELF');
+        $clear_url = build_url(['page' => '_SELF', 'type' => 'clear_log', 'id' => 'errorlog'], '_SELF');
 
-        $tpl = do_template('ERRORLOG_SCREEN', array(
+        $tpl = do_template('ERRORLOG_SCREEN', [
             '_GUID' => '9186c7beb6b722a52f39e2cbe16aded6',
             'TITLE' => $this->title,
             'ERRORS' => $errors,
             'LOGS' => $logs,
             'CLEAR_URL' => $clear_url,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -396,7 +396,7 @@ class Module_admin_errorlog
     protected function generate_cron_progression_table()
     {
         require_code('templates_results_table');
-        $_header_row = array(
+        $_header_row = [
             do_lang_tempcode('LABEL'),
             do_lang_tempcode('QUEUED_ITEMS'),
             do_lang_tempcode('TIME_BETWEEN_RUNS'),
@@ -405,11 +405,11 @@ class Module_admin_errorlog
             do_lang_tempcode('ERRORS'),
             do_lang_tempcode('ENABLED'),
             do_lang_tempcode('ACTIONS'),
-        );
+        ];
         $header_row = results_header_row($_header_row);
 
-        $_result_entries = array();
-        $cron_progression = list_to_map('c_hook', $GLOBALS['SITE_DB']->query_select('cron_progression', array('*')));
+        $_result_entries = [];
+        $cron_progression = list_to_map('c_hook', $GLOBALS['SITE_DB']->query_select('cron_progression', ['*']));
         $cron_hooks = find_all_hook_obs('systems', 'cron', 'Hook_cron_');
         foreach ($cron_hooks as $hook => $object) {
             $label = $hook;
@@ -439,27 +439,27 @@ class Module_admin_errorlog
 
             $actions = new Tempcode();
             if ($enabled) {
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '389946a7549670a785b404612ea456e3',
-                    'URL' => build_url(array('page' => '_SELF', 'type' => 'disable_cron_hook', 'id' => $hook), '_SELF'),
+                    'URL' => build_url(['page' => '_SELF', 'type' => 'disable_cron_hook', 'id' => $hook], '_SELF'),
                     'NAME' => $label,
                     'ACTION_TITLE' => do_lang_tempcode('DISABLE_CRON_HOOK'),
                     'ICON' => 'admin/delete2',
                     'GET' => false,
-                )));
+                ]));
             } else {
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => '1ca6b538b04468743043532ff0bd0403',
-                    'URL' => build_url(array('page' => '_SELF', 'type' => 'enable_cron_hook', 'id' => $hook), '_SELF'),
+                    'URL' => build_url(['page' => '_SELF', 'type' => 'enable_cron_hook', 'id' => $hook], '_SELF'),
                     'NAME' => $label,
                     'ACTION_TITLE' => do_lang_tempcode('ENABLE_CRON_HOOK'),
                     'ICON' => 'admin/add',
                     'GET' => false,
-                )));
+                ]));
             }
             if ($available) {
                 $keep = symbol_tempcode('KEEP');
-                $actions->attach(do_template('COLUMNED_TABLE_ACTION', array(
+                $actions->attach(do_template('COLUMNED_TABLE_ACTION', [
                     '_GUID' => 'b7dff48f5758ee05da8fe02beed935b6',
                     'URL' => find_script('cron_bridge') . '?limit_hook=' . urlencode($hook) . '&manual_run=1' . $keep->evaluate(),
                     'NAME' => $label,
@@ -467,7 +467,7 @@ class Module_admin_errorlog
                     'ICON' => 'admin/sync',
                     'GET' => true,
                     'NEW_WINDOW' => true,
-                )));
+                ]));
             }
 
             $_label = make_string_tempcode(escape_html($label));
@@ -475,7 +475,7 @@ class Module_admin_errorlog
                 $_label->attach(' (' . do_lang('UNAVAILABLE') . ')');
             }
 
-            $_result_entries[$label] = results_entry(array(
+            $_result_entries[$label] = results_entry([
                 $_label,
                 ($num_queued === null) ? do_lang_tempcode('UNKNOWN_EM') : make_string_tempcode(escape_html(integer_format($num_queued))),
                 ($minutes_between_runs == 0) ? make_string_tempcode('<em>(0)</em>') : display_time_period($minutes_between_runs * 60),
@@ -484,7 +484,7 @@ class Module_admin_errorlog
                 ($last_error == '') ? do_lang_tempcode('NONE_EM') : make_string_tempcode(escape_html($last_error)),
                 do_lang_tempcode($enabled ? 'YES' : 'NO'),
                 $actions,
-            ), true);
+            ], true);
         }
 
         cms_mb_asort($_result_entries, SORT_NATURAL | SORT_FLAG_CASE);
@@ -529,23 +529,23 @@ class Module_admin_errorlog
     protected function configure_cron_hook($hook, $enabled)
     {
         // Update cron_progression table
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_progression', 'c_hook', array('c_hook' => $hook)) !== null) {
-            $GLOBALS['SITE_DB']->query_update('cron_progression', array(
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_progression', 'c_hook', ['c_hook' => $hook]) !== null) {
+            $GLOBALS['SITE_DB']->query_update('cron_progression', [
                 'c_enabled' => $enabled,
-            ), array(
+            ], [
                 'c_hook' => $hook,
-            ), '', 1);
+            ], '', 1);
         } else {
-            $GLOBALS['SITE_DB']->query_insert('cron_progression', array(
+            $GLOBALS['SITE_DB']->query_insert('cron_progression', [
                 'c_hook' => $hook,
                 'c_last_run' => null,
                 'c_last_execution_secs' => null,
                 'c_last_error' => '',
                 'c_enabled' => $enabled,
-            ));
+            ]);
         }
 
-        $url = build_url(array('page' => '_SELF'), '_SELF');
+        $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -565,7 +565,7 @@ class Module_admin_errorlog
 
         unlink(get_custom_file_base() . '/data_custom/' . $log_file);
 
-        $url = build_url(array('page' => '_SELF'), '_SELF');
+        $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -586,7 +586,7 @@ class Module_admin_errorlog
         require_code('files');
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file, '');
 
-        $url = build_url(array('page' => '_SELF'), '_SELF');
+        $url = build_url(['page' => '_SELF'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
 

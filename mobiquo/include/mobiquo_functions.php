@@ -101,10 +101,10 @@ function mobiquo_response($data)
  */
 function mobiquo_response_true()
 {
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(true, 'boolean'),
         'result_text' => mobiquo_val('', 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -120,10 +120,10 @@ function mobiquo_response_false($error_message = null)
         $error_message = do_lang('INTERNAL_ERROR');
     }
 
-    $response = mobiquo_val(array(
+    $response = mobiquo_val([
         'result' => mobiquo_val(false, 'boolean'),
         'result_text' => mobiquo_val($error_message, 'base64'),
-    ), 'struct');
+    ], 'struct');
     return mobiquo_response($response);
 }
 
@@ -141,7 +141,7 @@ function request_helper_get_file($request_method)
 
     $data_file = __DIR__ . '/request_helper.bin';
     if (!is_file($data_file)) {
-        $func_file_mapping = array();
+        $func_file_mapping = [];
 
         $_d = dirname(__DIR__) . '/api';
         $dh = opendir($_d);

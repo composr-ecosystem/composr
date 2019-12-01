@@ -30,7 +30,7 @@ class Hook_cleanup_temp
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('TEMP');
         $info['description'] = do_lang_tempcode('DESCRIPTION_TEMP');
         $info['type'] = 'cache';
@@ -45,7 +45,7 @@ class Hook_cleanup_temp
      */
     public function run()
     {
-        $tables = array(
+        $tables = [
             'incoming_uploads',
             'captchas',
             'cron_caching_requests',
@@ -55,22 +55,22 @@ class Hook_cleanup_temp
             'messages_to_render',
             'temp_block_permissions',
             'webstandards_checked_once',
-        );
+        ];
         foreach ($tables as $table) {
             $GLOBALS['SITE_DB']->query_delete($table);
         }
 
-        $subdirs = array(
+        $subdirs = [
             'uploads/incoming',
             'uploads/captcha',
             'temp',
-        );
+        ];
         foreach ($subdirs as $subdir) {
             $full = get_custom_file_base() . '/' . $subdir;
             $dh = @opendir($full);
             if ($dh !== false) {
                 while (($file = readdir($dh)) !== false) {
-                    if (!in_array($file, array('index.html', '.htaccess'))) {
+                    if (!in_array($file, ['index.html', '.htaccess'])) {
                         @unlink($full . '/' . $file);
                     }
                 }

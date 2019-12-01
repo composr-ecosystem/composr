@@ -25,14 +25,14 @@ class Block_side_amazon_affiliate_sales
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Kamen Blaginov';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('associates_id', 'product_line', 'subject_keywords', 'items_number', 'region');
+        $info['parameters'] = ['associates_id', 'product_line', 'subject_keywords', 'items_number', 'region'];
         return $info;
     }
 
@@ -43,7 +43,7 @@ class Block_side_amazon_affiliate_sales
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             isset($map['associates_id']) ? $map['associates_id'] : '',
@@ -86,7 +86,7 @@ PHP;
         $items_number = (isset($map['items_number']) && intval($map['items_number']) >= 2) ? intval($map['items_number']) : 2;
         $region = isset($map['region']) ? $map['region'] : 'US';
 
-        return do_template('BLOCK_SIDE_AMAZON_AFFILIATE_SALES', array(
+        return do_template('BLOCK_SIDE_AMAZON_AFFILIATE_SALES', [
             '_GUID' => '5edc2fd386f1688fca8e0e6eefa5f455',
             'BLOCK_ID' => $block_id,
             'ASSOCIATES_ID' => $associates_id,
@@ -94,6 +94,6 @@ PHP;
             'SUBJECT_KEYWORDS' => $subject_keywords,
             'ITEMS_NUMBER' => strval($items_number),
             'REGION' => $region,
-        ));
+        ]);
     }
 }

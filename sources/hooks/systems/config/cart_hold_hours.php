@@ -30,7 +30,7 @@ class Hook_config_cart_hold_hours
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CART_HOLD_HOURS',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_cart_hold_hours
             'public' => false,
 
             'addon' => 'shopping',
-        );
+        ];
     }
 
     /**

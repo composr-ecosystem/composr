@@ -110,7 +110,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
 
         // Store session
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
-        $new_session_row = array(
+        $new_session_row = [
             'the_session' => $new_session,
             'last_activity' => time(),
             'member_id' => $member_id,
@@ -123,7 +123,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
             'the_page' => cms_mb_substr(get_page_name(), 0, 80),
             'the_type' => cms_mb_substr(get_param_string('type', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
             'the_id' => cms_mb_substr(get_param_string('id', ''), 0, 80),
-        );
+        ];
         $GLOBALS['SITE_DB']->query_insert('sessions', $new_session_row);
         if (get_forum_type() == 'cns') {
             cms_register_shutdown_function_safe(function() use ($member_id) {
@@ -142,7 +142,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
     } else {
         $new_session = $restored_session;
         $prior_session_row = $SESSION_CACHE[$new_session];
-        $new_session_row = array(
+        $new_session_row = [
             'the_title' => $prior_session_row['the_title'],
             'the_zone' => get_zone_name(),
             'the_page' => get_page_name(),
@@ -151,10 +151,10 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
             'last_activity' => time(),
             'ip' => get_ip_address(3, $ip_address),
             'session_confirmed' => $session_confirmed,
-        );
+        ];
         $big_change = ($prior_session_row['last_activity'] < time() - 10) || ($prior_session_row['session_confirmed'] != $session_confirmed) || ($prior_session_row['ip'] != $new_session_row['ip']);
         if ($big_change) {
-            $GLOBALS['SITE_DB']->query_update('sessions', $new_session_row, array('the_session' => $new_session), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+            $GLOBALS['SITE_DB']->query_update('sessions', $new_session_row, ['the_session' => $new_session], '', 1, 0, false, true); // Errors suppressed in case DB write access broken
         }
 
         $SESSION_CACHE[$new_session] = array_merge($SESSION_CACHE[$new_session], $new_session_row);
@@ -176,7 +176,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
         global $SESSION_CACHE;
         $test = isset($prior_session_row['last_activity']) ? $prior_session_row['last_activity'] : null;
         if ($test === null) {
-            $test = $GLOBALS['SITE_DB']->query_select_value('stats', 'MAX(date_and_time)', array('member_id' => $member_id));
+            $test = $GLOBALS['SITE_DB']->query_select_value('stats', 'MAX(date_and_time)', ['member_id' => $member_id]);
         }
         if ($test !== null) {
             require_code('temporal');
@@ -304,7 +304,7 @@ function try_su_login($member_id)
 
         if ((get_forum_type() == 'cns') && (get_param_integer('keep_su_online', 0) == 1)) {
             require_code('crypt');
-            $new_session_row = array(
+            $new_session_row = [
                 'the_session' => get_secure_random_string(),
                 'last_activity' => time(),
                 'member_id' => $member_id,
@@ -317,16 +317,16 @@ function try_su_login($member_id)
                 'the_page' => cms_mb_substr(get_page_name(), 0, 80),
                 'the_type' => cms_mb_substr(get_param_string('type', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
                 'the_id' => cms_mb_substr(get_param_string('id', ''), 0, 80),
-            );
+            ];
             $GLOBALS['SITE_DB']->query_insert('sessions', $new_session_row);
             global $FLOOD_CONTROL_ONCE;
             $FLOOD_CONTROL_ONCE = false;
             $GLOBALS['FORUM_DRIVER']->cns_flood_control($member_id);
-            $GLOBALS['SITE_DB']->query_update('sessions', array('session_invisible' => 1), array('the_session' => get_session_id()), '', 1);
+            $GLOBALS['SITE_DB']->query_update('sessions', ['session_invisible' => 1], ['the_session' => get_session_id()], '', 1);
 
             if (get_option('session_prudence') == '0') { // With session prudence we don't store all these in persistent cache due to the size of it all. So only re-save if that's not on.
                 global $SESSION_CACHE;
-                $SESSION_CACHE[get_session_id()] = array('session_invisible' => 1) + $new_session_row;
+                $SESSION_CACHE[get_session_id()] = ['session_invisible' => 1] + $new_session_row;
                 persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
             }
         }
@@ -396,7 +396,7 @@ function try_cookie_login()
 
             $the_cookie = $_COOKIE[$base];
 
-            $unserialize = @unserialize($the_cookie, array('allowed_classes' => false));
+            $unserialize = @unserialize($the_cookie, ['allowed_classes' => false]);
 
             if (is_array($unserialize)) {
                 if (array_key_exists($real_member_cookie, $unserialize)) {

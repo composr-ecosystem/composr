@@ -30,7 +30,7 @@ class Hook_config_zone_editor_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ZONE_EDITOR_ENABLED',
             'type' => 'tick',
             'category' => 'THEME',
@@ -43,7 +43,7 @@ class Hook_config_zone_editor_enabled
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

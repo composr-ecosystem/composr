@@ -31,139 +31,139 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
     public function get_handlers()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_warnings')) {
-            return array();
+            return [];
         }
 
         require_lang('cns_warnings');
 
-        return array(
-            'ADD_WARNING' => array(
+        return [
+            'ADD_WARNING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
-                ),
-            ),
-            'EDIT_WARNING' => array(
+                ],
+            ],
+            'EDIT_WARNING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
-                ),
-            ),
-            'DELETE_WARNING' => array(
+                ],
+            ],
+            'DELETE_WARNING' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{1}',
-                ),
-            ),
-            'MARK_AS_SPAMMER' => array(
+                ],
+            ],
+            'MARK_AS_SPAMMER' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'START_PROBATION' => array(
+                ],
+            ],
+            'START_PROBATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'STOP_PROBATION' => array(
+                ],
+            ],
+            'STOP_PROBATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'EXTEND_PROBATION' => array(
+                ],
+            ],
+            'EXTEND_PROBATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'REDUCE_PROBATION' => array(
+                ],
+            ],
+            'REDUCE_PROBATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
-                ),
-            ),
-            'SILENCE_FROM_FORUM' => array(
+                ],
+            ],
+            'SILENCE_FROM_FORUM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'FORUM' => '_SEARCH:forumview:browse:{1}',
-                ),
-            ),
-            'UNSILENCE_FORUM' => array(
+                ],
+            ],
+            'UNSILENCE_FORUM' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'FORUM' => '_SEARCH:forumview:browse:{1}',
-                ),
-            ),
-            'SILENCE_FROM_TOPIC' => array(
+                ],
+            ],
+            'SILENCE_FROM_TOPIC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{1}',
-                ),
-            ),
-            'UNSILENCE_TOPIC' => array(
+                ],
+            ],
+            'UNSILENCE_TOPIC' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'VIEW_TOPIC' => '_SEARCH:topicview:browse:{1}',
-                ),
-            ),
-            'PUNITIVE_HISTORY' => array(
+                ],
+            ],
+            'PUNITIVE_HISTORY' => [
                 'flags' => ACTIONLOG_FLAG__GDPR,
                 'cma_hook' => 'member',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                     'MEMBERS' => '_SEARCH:admin_cns_members',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -193,7 +193,7 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     $username = '#' . $actionlog_row['param_b'];
                 }
 
-                $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => intval($actionlog_row['param_b'])));
+                $forum_name = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', ['id' => intval($actionlog_row['param_b'])]);
                 if ($forum_name === null) {
                     $forum_name = '#' . $actionlog_row['param_b'];
                 }
@@ -208,7 +208,7 @@ class Hook_actionlog_cns_warnings extends Hook_actionlog
                     $username = '#' . $actionlog_row['param_b'];
                 }
 
-                $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => intval($actionlog_row['param_b'])));
+                $topic_title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', ['id' => intval($actionlog_row['param_b'])]);
                 if ($topic_title === null) {
                     $topic_title = '#' . $actionlog_row['param_b'];
                 }

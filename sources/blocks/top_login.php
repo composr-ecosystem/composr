@@ -30,14 +30,14 @@ class Block_top_login
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_top_login
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         // No caching for guests due to self URL redirect
         $info['cache_on'] = <<<'PHP'
         is_guest()
@@ -75,7 +75,7 @@ PHP;
         }
 
         if (get_forum_type() == 'none') {
-            return do_template('RED_ALERT', array('_GUID' => '8wj7a899zxqp7vnxaio4hamm6p3j651d', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => '8wj7a899zxqp7vnxaio4hamm6p3j651d', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_css('personal_stats');
@@ -85,13 +85,13 @@ PHP;
         $title = do_lang_tempcode('NOT_LOGGED_IN');
 
         list($full_url, $login_url, $join_url) = get_login_url();
-        return do_template('BLOCK_TOP_LOGIN', array(
+        return do_template('BLOCK_TOP_LOGIN', [
             '_GUID' => '9d1547632875ecd466ced4f90a866df9',
             'BLOCK_ID' => $block_id,
             'TITLE' => $title,
             'FULL_LOGIN_URL' => $full_url,
             'JOIN_URL' => $join_url,
             'LOGIN_URL' => $login_url,
-        ));
+        ]);
     }
 }

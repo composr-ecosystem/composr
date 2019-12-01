@@ -26,7 +26,7 @@ function is_spreadsheet_writable($filename)
     }
 
     $ext = get_file_extension($filename);
-    return in_array($ext, array('csv', 'txt', 'ods', 'xlsx'));
+    return in_array($ext, ['csv', 'txt', 'ods', 'xlsx']);
 }
 
 /**

@@ -30,14 +30,14 @@ class Hook_logs_core
      */
     public function enumerate_logs()
     {
-        return array(
-            'errorlog.php' => array('days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))),
-            'cron.log' => array('days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))),
-            'tasks.log' => array('days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))),
-            'permission_checks.log' => array('days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))),
-            'queries.log' => array('days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))),
-            'mail_integration.log' => array('days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))),
-            'debug_fs.log' => array('days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))),
-        );
+        return [
+            'errorlog.php' => ['days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))],
+            'cron.log' => ['days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))],
+            'tasks.log' => ['days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))],
+            'permission_checks.log' => ['days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))],
+            'queries.log' => ['days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))],
+            'mail_integration.log' => ['days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))],
+            'debug_fs.log' => ['days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))],
+        ];
     }
 }

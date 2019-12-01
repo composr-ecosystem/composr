@@ -30,7 +30,7 @@ class Hook_config_enable_timezones
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_TIMEZONES',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_enable_timezones
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

@@ -30,14 +30,14 @@ class Block_main_contact_us
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'title', 'email_optional', 'subject', 'subject_prefix', 'subject_suffix', 'body_prefix', 'body_suffix', 'redirect', 'guid', 'attachments');
+        $info['parameters'] = ['param', 'title', 'email_optional', 'subject', 'subject_prefix', 'subject_suffix', 'body_prefix', 'body_suffix', 'redirect', 'guid', 'attachments'];
         return $info;
     }
 
@@ -55,7 +55,7 @@ class Block_main_contact_us
         }
 
         if (get_forum_type() == 'none') {
-            return do_template('RED_ALERT', array('_GUID' => 'dwxpstfxs8mhfud6j23yvhorurauchng', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')));
+            return do_template('RED_ALERT', ['_GUID' => 'dwxpstfxs8mhfud6j23yvhorurauchng', 'TEXT' => do_lang_tempcode('NO_FORUM_INSTALLED')]);
         }
 
         require_lang('tickets');
@@ -99,13 +99,13 @@ class Block_main_contact_us
                 enforce_captcha();
             }
 
-            list($subject, $body, , , $from_email, $from_name) = _form_to_email(array(), $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);
+            list($subject, $body, , , $from_email, $from_name) = _form_to_email([], $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);
 
             // Checking
             if ($from_email != '') {
                 require_code('type_sanitisation');
                 if (!is_email_address($from_email)) {
-                    return do_template('RED_ALERT', array('_GUID' => '5pu5qw042z8exijsgty78o4tvq9mpnb6', 'TEXT' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')));
+                    return do_template('RED_ALERT', ['_GUID' => '5pu5qw042z8exijsgty78o4tvq9mpnb6', 'TEXT' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
                 }
             }
             $from_name = trim(post_param_string('name', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true)));
@@ -117,20 +117,20 @@ class Block_main_contact_us
             // Handle notifications
             require_code('notifications');
             $notification_subject = do_lang('CONTACT_US_NOTIFICATION_SUBJECT', $subject, null, null, get_site_default_lang());
-            $notification_message = do_notification_lang('CONTACT_US_NOTIFICATION_MESSAGE', comcode_escape(get_site_name()), comcode_escape($from_name), array($body, comcode_escape($type), strval(get_member())), get_site_default_lang());
+            $notification_message = do_notification_lang('CONTACT_US_NOTIFICATION_MESSAGE', comcode_escape(get_site_name()), comcode_escape($from_name), [$body, comcode_escape($type), strval(get_member())], get_site_default_lang());
             $id = uniqid('', false);
-            $attachments = array();
+            $attachments = [];
             if (addon_installed('securitylogging')) {
                 require_code('lookup');
                 $user_metadata_path = save_user_metadata();
                 $attachments[$user_metadata_path] = 'user_metadata.txt';
             }
-            dispatch_notification('ticket_reply', $type . '_' . $id, $notification_subject, $notification_message, null, null, array('create_ticket' => true, 'attachments' => $attachments));
+            dispatch_notification('ticket_reply', $type . '_' . $id, $notification_subject, $notification_message, null, null, ['create_ticket' => true, 'attachments' => $attachments]);
 
             // Send standard confirmation e-mail to current user
             if ($from_email != '' && get_option('message_received_emails') == '1') {
                 require_code('mail');
-                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), array($from_email), empty($from_name) ? null : $from_name, '', '', array('require_recipient_valid_since' => get_member()));
+                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $subject), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $body), [$from_email], empty($from_name) ? null : $from_name, '', '', ['require_recipient_valid_since' => get_member()]);
             }
 
             // Redirect/messaging
@@ -185,7 +185,7 @@ class Block_main_contact_us
             $attach_size_field = null;
         }
 
-        $comment_details = do_template('COMMENTS_POSTING_FORM', array(
+        $comment_details = do_template('COMMENTS_POSTING_FORM', [
             '_GUID' => $guid,
             'TITLE' => $box_title,
             'HIDDEN' => $hidden,
@@ -210,13 +210,13 @@ class Block_main_contact_us
             'SUBMIT_ICON' => 'buttons/send',
             'SKIP_PREVIEW' => true,
             'ANALYTIC_EVENT_CATEGORY' => do_lang('CONTACT_US'),
-        ));
+        ]);
 
-        return do_template('BLOCK_MAIN_CONTACT_US', array(
+        return do_template('BLOCK_MAIN_CONTACT_US', [
             '_GUID' => $guid,
             'BLOCK_ID' => $block_id,
             'COMMENT_DETAILS' => $comment_details,
             'TYPE' => $type,
-        ));
+        ]);
     }
 }

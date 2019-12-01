@@ -30,7 +30,7 @@ class Module_admin_realtime_rain
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_realtime_rain
             return null;
         }
 
-        return array(
-            '!' => array('_REALTIME_RAIN', 'menu/adminzone/audit/realtime_rain'),
-        );
+        return [
+            '!' => ['_REALTIME_RAIN', 'menu/adminzone/audit/realtime_rain'],
+        ];
     }
 
     public $title;
@@ -101,6 +101,6 @@ class Module_admin_realtime_rain
         if ($min_time === null) {
             $min_time = time();
         }
-        return do_template('REALTIME_RAIN_OVERLAY', array('_GUID' => 'd7cb1b8286311a9505c3de2d1b9a5185', 'MIN_TIME' => strval($min_time)));
+        return do_template('REALTIME_RAIN_OVERLAY', ['_GUID' => 'd7cb1b8286311a9505c3de2d1b9a5185', 'MIN_TIME' => strval($min_time)]);
     }
 }

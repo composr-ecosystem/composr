@@ -54,7 +54,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $this->process_checks_section('testWebStandards', 'Web standards', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCommonMistakePatterns', 'Common mistake patterns (page_errors.xml)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
-        return array($this->category_label, $this->results);
+        return [$this->category_label, $this->results];
     }
 
     /**
@@ -126,12 +126,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $page_links = $this->process_urls_into_page_links(array(':', ':login'));
+        $page_links = $this->process_urls_into_page_links([':', ':login']);
 
         foreach ($page_links as $page_link) {
             $http_result = $this->get_page_http_content($page_link);
 
-            $this->assertTrue(!in_array($http_result->message, array('401', '403')), '"' . $page_link . '" page is not allowing guest access');
+            $this->assertTrue(!in_array($http_result->message, ['401', '403']), '"' . $page_link . '" page is not allowing guest access');
         }
     }
 
@@ -153,7 +153,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -171,14 +171,14 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
         }
 
-        $urls = array();
+        $urls = [];
         foreach ($html_segments as $html) {
             $urls = array_merge($urls, $this->get_embed_urls_from_data($html));
             $urls = array_merge($urls, $this->get_link_urls_from_data($html));
         }
         $urls = array_unique($urls);
 
-        $_urls = array();
+        $_urls = [];
         foreach ($urls as $url) {
             if (substr($url, 0, 2) == '//') {
                 $url = 'http:' . $url;
@@ -237,7 +237,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -256,7 +256,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         }
 
         foreach ($html_segments as $field_title => $html) {
-            $check_for = array('TODO', 'FIXME', 'Lorem Ipsum');
+            $check_for = ['TODO', 'FIXME', 'Lorem Ipsum'];
             foreach ($check_for as $c) {
                 $this->assertTrue(strpos($html, $c) === false, do_lang('INCOMPLETE_CONTENT_PROBLEM', $c, $field_title));
             }
@@ -285,7 +285,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -303,7 +303,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
         }
 
-        $problematic_host_prefixes = array();
+        $problematic_host_prefixes = [];
         foreach (get_localhost_names_and_ips() as $ip_or_hostname) {
             $problematic_host_prefixes[] = preg_quote($ip_or_hostname, '#') . '($|:|/)';
         }
@@ -345,7 +345,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -365,12 +365,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         foreach ($html_segments as $field_title => $html) {
             if (stripos($html, '<form') !== false) {
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#<form[^<>]*method="POST">#i', $html, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $match = $matches[0][$i];
 
-                    $matches_action = array();
+                    $matches_action = [];
                     $has_action = (preg_match('#action=["\']([^"\']*)["\']#i', $match, $matches_action) != 0);
                     $this->assertTrue($has_action, do_lang('FORM_ACTION_PROBLEM'));
 
@@ -380,7 +380,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                         $this->assertTrue($is_absolute_url, do_lang('FORM_ACTION_RELATIVE_PROBLEM'));
 
                         if ($is_absolute_url) {
-                            $result = cms_http_request($url, array('trigger_error' => false));
+                            $result = cms_http_request($url, ['trigger_error' => false]);
                             $this->assertTrue($result->message == '400', do_lang('FORM_ACTION_ERROR_HANDLING_PROBLEM', $url, $result->message));
                         }
                     }
@@ -442,16 +442,16 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $paths = array('pages/comcode_custom/' . user_lang());
+        $paths = ['pages/comcode_custom/' . user_lang()];
         $zones = find_all_zones();
         foreach ($zones as $zone) {
             if ($zone != 'docs') { // Big, and we check this in an automated test
                 $paths[] = $zone . '/pages/comcode_custom/' . user_lang();
             }
         }
-        $all_files = array();
+        $all_files = [];
         foreach ($paths as $_path) {
-            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, null, false, true, array('txt'));
+            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, null, false, true, ['txt']);
             $all_files = array_merge($all_files, $files);
         }
 
@@ -493,7 +493,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -550,7 +550,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $okay_words = array(
+        $okay_words = [
             // Stuff there by default
             'american',
             'cms',
@@ -610,12 +610,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             'diaspora',
             'bitcoin',
             'utopian',
-        );
+        ];
 
         $spell_link = spellcheck_initialise();
         add_spellchecker_words_temp($spell_link, $okay_words);
 
-        $field_types_wanted = array(
+        $field_types_wanted = [
             'SHORT_TEXT',
             '*SHORT_TEXT',
             'LONG_TEXT',
@@ -624,7 +624,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             '*SHORT_TRANS',
             'LONG_TRANS',
             '*LONG_TRANS',
-        );
+        ];
         $or_list = '';
         foreach ($field_types_wanted as $field_type) {
             if ($or_list != '') {
@@ -633,12 +633,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             $or_list .= db_string_equal_to('m_type', $field_type);
         }
 
-        $db_fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_table', 'm_name'), array(), 'WHERE (' . $or_list . ')');
+        $db_fields = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_table', 'm_name'], [], 'WHERE (' . $or_list . ')');
         foreach ($db_fields as $db_field) {
             $table = $db_field['m_table'];
             $name = $db_field['m_name'];
 
-            if (in_array($table, array(
+            if (in_array($table, [
                 // User data
                 'f_topics',
                 'f_posts',
@@ -655,7 +655,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 'translate',
                 'comcode_pages',
                 'cached_comcode_pages',
-            ))) {
+            ])) {
                 continue;
             }
 
@@ -663,11 +663,11 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 continue;
             }
 
-            if (in_array($name, array(
+            if (in_array($name, [
                 // Irrelevant
                 'author',
                 'm_timezone_offset',
-            ))) {
+            ])) {
                 continue;
             }
 
@@ -677,7 +677,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
 
                 push_db_scope_check(true);
-                $rows = $GLOBALS['SITE_DB']->query_select($table, array($name), array(), '', $max, $start);
+                $rows = $GLOBALS['SITE_DB']->query_select($table, [$name], [], '', $max, $start);
                 pop_db_scope_check();
 
                 foreach ($rows as $row) {
@@ -723,7 +723,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $_comcode_segments = array();
+        $_comcode_segments = [];
         foreach ($page_links as $page_link) {
             $page_content = $this->get_comcode_page_content($page_link);
 
@@ -734,12 +734,12 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
             list($comcode, $html, , $page) = $page_content;
 
-            $_comcode_segments['[tt]' . $page_link . '[/tt]'] = array($comcode, $html, $page);
+            $_comcode_segments['[tt]' . $page_link . '[/tt]'] = [$comcode, $html, $page];
         }
 
         if (($comcode_segments !== null) && (get_page_name() == 'cms_comcode_pages')) {
             foreach ($comcode_segments as $comcode_segment) {
-                $_comcode_segments[do_lang('PREVIEW')] = array($comcode_segment, static_evaluate_tempcode(comcode_to_tempcode($comcode_segment)), get_param_string('page', ''));
+                $_comcode_segments[do_lang('PREVIEW')] = [$comcode_segment, static_evaluate_tempcode(comcode_to_tempcode($comcode_segment)), get_param_string('page', '')];
             }
         }
 
@@ -750,7 +750,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 $found_l1 = ((strpos($html, '<h1') !== false) || (strpos($comcode, '[title]') !== false) || (strpos($comcode, '[title="1"]') !== false));
                 $this->assertTrue($found_l1, do_lang('LEVEL_1_HEADERS_PROBLEM', $field_title));
 
-                $matches = array();
+                $matches = [];
                 $okay_l2 = (strpos($html, '<h2') !== false) || (preg_match_all('#\n\[(b|font|size)\][^\.]+\[/(b|font|size)\]\r?\n#', $comcode, $matches) < 2);
                 $this->assertTrue($okay_l2, do_lang('LEVEL_2_HEADERS_PROBLEM', $field_title));
             }
@@ -775,7 +775,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $_comcode_segments = array();
+        $_comcode_segments = [];
         foreach ($page_links as $page_link) {
             $page_content = $this->get_comcode_page_content($page_link);
 
@@ -819,7 +819,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -845,7 +845,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             require_code('webstandards');
             $results = check_xhtml($html, false, true, true, true, true, true, false);
 
-            $errors = array();
+            $errors = [];
             if ($results !== null) {
                 foreach ($results['errors'] as $error) {
                     $ignore = false;
@@ -884,7 +884,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        $patterns = array();
+        $patterns = [];
 
         require_code('xml');
 
@@ -933,7 +933,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
-        $html_segments = array();
+        $html_segments = [];
         foreach ($page_links as $page_link) {
             $html = $this->get_page_content($page_link, $check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS);
 
@@ -943,7 +943,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
 
             foreach ($patterns as $regexp => $description) {
-                $matches = array();
+                $matches = [];
                 $result = @preg_match($regexp, $html, $matches);
                 if ($result === false) {
                     attach_message('Bad regexp: ' . $regexp, 'warn', false, true);

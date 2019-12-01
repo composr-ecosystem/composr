@@ -62,21 +62,21 @@ echo "Suggested commands to run follow...\n";
 require_code('files');
 require_code('files2');
 
-$files_to_always_keep = array(
+$files_to_always_keep = [
     'delete_alien_files.php',
     'themes/default/templates_custom/MAIL.tpl',
     'themes/default/text_custom/MAIL.txt',
-);
+];
 
 // **********
-$addons_definitely_not_wanted = array(
+$addons_definitely_not_wanted = [
     // CUSTOMISE THIS TO REMOVE ADDON FILES
     //  IT ONLY WORKS WHILE HOOK FILES ARE STILL IN PLACE
     //  AFTER WHICH ANY ALIEN FILES WILL FLAG TO DELETE IF THEY ARE NOT POSSIBLE USER CUSTOMISED FILES
-);
+];
 // ^^^^^^^^^^
 
-$extra_files_to_delete = array();
+$extra_files_to_delete = [];
 
 if (git_repos() != 'master') {
     $addons_definitely_not_wanted[] = 'installer';
@@ -110,14 +110,14 @@ foreach ($extra_files_to_delete as $file) {
 }
 
 global $GFILE_ARRAY;
-$GFILE_ARRAY = array();
+$GFILE_ARRAY = [];
 do_dir();
 
 // Non-installed addons
 $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-$installed_addons = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons', array('addon_name')));
+$installed_addons = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons', ['addon_name']));
 $intersection = array_intersect(array_keys($hooks), $installed_addons);
-if ($intersection == array()) {
+if ($intersection == []) {
     echo 'All addons seem still installed. You should uninstall from within Composr.';
 } else {
     foreach ($hooks as $hook => $ob) {

@@ -35,7 +35,7 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
 
-        $urls = $GLOBALS['SITE_DB']->query_select('staff_links', array('link'));
+        $urls = $GLOBALS['SITE_DB']->query_select('staff_links', ['link']);
         foreach ($urls as $url) {
             $this->check_link($url['link'], 'staff_links');
         }
@@ -59,7 +59,7 @@ class _broken_links_test_set extends cms_test_case
         disable_php_memory_limit();
 
         $path = get_file_base() . '/docs/pages/comcode_custom/' . fallback_lang();
-        $files = get_directory_contents($path, $path, 0, true, true, array('txt'));
+        $files = get_directory_contents($path, $path, 0, true, true, ['txt']);
         foreach ($files as $file) {
             $tutorial = basename($file, '.txt');
 
@@ -87,7 +87,7 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
 
-        $urls = $GLOBALS['SITE_DB']->query_select('tutorials_external', array('t_url'));
+        $urls = $GLOBALS['SITE_DB']->query_select('tutorials_external', ['t_url']);
         foreach ($urls as $url) {
             $this->check_link($url['t_url'], 'tutorials_external');
         }
@@ -137,9 +137,9 @@ class _broken_links_test_set extends cms_test_case
             return;
         }
 
-        foreach (array('templates', 'templates_custom') as $subdir) {
+        foreach (['templates', 'templates_custom'] as $subdir) {
             $path = get_file_base() . '/themes/default/' . $subdir;
-            $files = get_directory_contents($path, '', 0, true, true, array('tpl'));
+            $files = get_directory_contents($path, '', 0, true, true, ['tpl']);
             foreach ($files as $file) {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                 $this->scan_html($c, $file);
@@ -149,7 +149,7 @@ class _broken_links_test_set extends cms_test_case
 
     protected function scan_html($html, $context)
     {
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#\shref=["\']([^"\']+)["\']#', $html, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $this->check_link(html_entity_decode($matches[1][$i], ENT_QUOTES), $context);
@@ -180,7 +180,7 @@ class _broken_links_test_set extends cms_test_case
         if (preg_match('#^http://compo\.sr/docs\d+/#', $url) != 0) {
             return;
         }
-        if (in_array($url, array( // These just won't check from a bot guest user
+        if (in_array($url, [ // These just won't check from a bot guest user
             'https://www.optimizely.com/',
             'https://cloud.google.com/console',
             'https://www.google.com/webmasters/tools/home',
@@ -193,7 +193,7 @@ class _broken_links_test_set extends cms_test_case
             'http://purl.org/dc/terms/',
             'https://notepad-plus-plus.org/',
             'https://compo.sr/themeing-changes.htm',
-        ))) {
+        ])) {
             return;
         }
 

@@ -36,23 +36,23 @@ class Hook_privacy_recommend extends Hook_privacy_base
 
         require_lang('recommend');
 
-        return array(
-            'cookies' => array(
-            ),
+        return [
+            'cookies' => [
+            ],
 
-            'positive' => array(
-            ),
+            'positive' => [
+            ],
 
-            'general' => array(
-                array(
+            'general' => [
+                [
                     'heading' => do_lang('INFORMATION_TRANSFER'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_share_code'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_share_code'),
-                ),
-            ),
+                ],
+            ],
 
-            'database_records' => array(
-            ),
-        );
+            'database_records' => [
+            ],
+        ];
     }
 }

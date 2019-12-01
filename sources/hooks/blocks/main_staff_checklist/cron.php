@@ -40,19 +40,19 @@ class Hook_checklist_cron
             $status = 1;
             $date = get_timezoned_date_time(intval($last_cron), false);
             $mails_sent = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) AS cnt FROM ' . get_table_prefix() . 'logged_mail_messages WHERE m_queued=0 AND m_date_and_time>' . strval(time() - 60 * 60 * 24));
-            $mails_queued = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*) AS cnt', array('m_queued' => 1));
+            $mails_queued = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*) AS cnt', ['m_queued' => 1]);
             $info = do_lang_tempcode('LAST_RAN_AT', escape_html($date), escape_html(integer_format($mails_sent)), escape_html(integer_format($mails_queued)));
             $url = '';
         }
 
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '543258b74e72bb3bd3b9acd5de1a623d',
             'INFO' => $info,
             'URL' => '',
             'STATUS' => $_status,
             'TASK' => do_lang_tempcode('NAG_SETUP_CRON', escape_html($url)),
-        ));
-        return array(array($tpl, ($status == 0) ? -1 : 0, 1, null));
+        ]);
+        return [[$tpl, ($status == 0) ? -1 : 0, 1, null]];
     }
 }

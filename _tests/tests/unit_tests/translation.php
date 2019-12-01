@@ -36,10 +36,10 @@ class translation_test_set extends cms_test_case
     {
         $this->assertTrue(has_translation());
 
-        $hooks = array(
+        $hooks = [
             'bing_translator',
             'google_translate',
-        );
+        ];
 
         foreach ($hooks as $hook) {
             $GLOBALS['SITE_DB']->query_delete('translation_cache');

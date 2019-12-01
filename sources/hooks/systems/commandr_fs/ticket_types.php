@@ -47,8 +47,8 @@ class Hook_commandr_fs_ticket_types extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'ticket_type_name'), array($GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['SITE_DB']->query_select('ticket_types', ['id', 'ticket_type_name'], [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -114,17 +114,17 @@ class Hook_commandr_fs_ticket_types extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['ticket_type_name']),
             'guest_emails_mandatory' => $row['guest_emails_mandatory'],
             'search_faq' => $row['search_faq'],
-        );
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }

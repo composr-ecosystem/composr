@@ -30,7 +30,7 @@ class Module_authors
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -60,13 +60,13 @@ class Module_authors
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('authors', array(
+            $GLOBALS['SITE_DB']->create_table('authors', [
                 'author' => '*ID_TEXT',
                 'url' => 'URLPATH',
                 'member_id' => '?MEMBER',
                 'the_description' => 'LONG_TRANS__COMCODE',
                 'skills' => 'LONG_TRANS__COMCODE',
-            ));
+            ]);
 
             add_privilege('SUBMISSION', 'set_own_author_profile');
         }
@@ -82,7 +82,7 @@ class Module_authors
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
-            $GLOBALS['SITE_DB']->create_index('authors', 'findmemberlink', array('member_id'));
+            $GLOBALS['SITE_DB']->create_index('authors', 'findmemberlink', ['member_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
@@ -106,11 +106,11 @@ class Module_authors
         }
 
         if ($check_perms && is_guest($member_id)) {
-            return array();
+            return [];
         }
-        return array(
-            'browse' => array('VIEW_MY_AUTHOR_PROFILE', 'menu/rich_content/authors'),
-        );
+        return [
+            'browse' => ['VIEW_MY_AUTHOR_PROFILE', 'menu/rich_content/authors'],
+        ];
     }
 
     public $title;
@@ -151,18 +151,18 @@ class Module_authors
             require_code('awards');
             $awards = find_awards_for('author', $author);
         } else {
-            $awards = array();
+            $awards = [];
         }
-        $this->title = get_screen_title('_AUTHOR', true, array(escape_html($author)), null, $awards);
+        $this->title = get_screen_title('_AUTHOR', true, [escape_html($author)], null, $awards);
 
         seo_meta_load_for('authors', $author);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('authors', array('*'), array('author' => $author), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('authors', ['*'], ['author' => $author], '', 1);
         if (!array_key_exists(0, $rows)) {
             if ((has_actual_page_access(get_member(), 'cms_authors')) && (has_edit_author_permission(get_member(), $author))) {
                 set_http_status_code(404);
 
-                $_author_add_url = build_url(array('page' => 'cms_authors', 'type' => '_add', 'id' => $author), get_module_zone('cms_authors'));
+                $_author_add_url = build_url(['page' => 'cms_authors', 'type' => '_add', 'id' => $author], get_module_zone('cms_authors'));
                 $author_add_url = $_author_add_url->evaluate();
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR_CONFIGURE_ONE', escape_html($author), escape_html($author_add_url));
 
@@ -170,15 +170,15 @@ class Module_authors
             } else {
                 $message = do_lang_tempcode('NO_SUCH_AUTHOR', escape_html($author));
             }
-            $details = array('author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null,);
+            $details = ['author' => $author, 'url' => '', 'member_id' => get_author_id_from_name($author), 'the_description' => null, 'skills' => null,];
         } else {
             $details = $rows[0];
         }
 
         // Metadata
-        set_extra_request_metadata(array(
+        set_extra_request_metadata([
             'identifier' => '_SEARCH:authors:browse:' . $author,
-        ), $details, 'author', $author);
+        ], $details, 'author', $author);
 
         $this->author = $author;
         $this->details = $details;
@@ -218,16 +218,16 @@ class Module_authors
         // Links associated with the mapping between the author and a forum member
         $handle = get_author_id_from_name($author);
         if ($handle !== null) {
-            $forum_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+            $forum_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
                 '_GUID' => 'b90b606f263eeabeba38e06eef40a21e',
                 'ACTION' => hyperlink($GLOBALS['FORUM_DRIVER']->member_profile_url($handle, true), do_lang_tempcode('AUTHOR_PROFILE'), false, false, '', null, null, 'me'),
-            ));
+            ]);
             if (addon_installed('points')) {
-                $give_points_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $handle), get_module_zone('points'));
-                $point_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+                $give_points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $handle], get_module_zone('points'));
+                $point_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
                     '_GUID' => '2bfb9bf9b5fdf1dad34102abd4bc4648',
                     'ACTION' => hyperlink($give_points_url, do_lang_tempcode('AUTHOR_POINTS'), false, false),
-                ));
+                ]);
             } else {
                 $point_details = new Tempcode();
             }
@@ -239,10 +239,10 @@ class Module_authors
         // Homepage
         $url = $details['url'];
         if (strlen($url) > 0) {
-            $url_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array(
+            $url_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', [
                 '_GUID' => '4276bac5acb0ce5839a90614438c1049',
                 'ACTION' => hyperlink($url, do_lang_tempcode('AUTHOR_HOMEPAGE'), false, false, '', null, null, 'me'),
-            ));
+            ]);
         } else {
             $url_details = new Tempcode();
         }
@@ -255,8 +255,8 @@ class Module_authors
 
         // Search link
         if (addon_installed('search')) {
-            $search_url = build_url(array('page' => 'search', 'author' => $author), get_module_zone('search'));
-            $search_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', array('_GUID' => '6fccd38451bc1198024e2452f8539411', 'ACTION' => hyperlink($search_url, do_lang_tempcode('SEARCH'), false, false)));
+            $search_url = build_url(['page' => 'search', 'author' => $author], get_module_zone('search'));
+            $search_details = do_template('AUTHOR_SCREEN_POTENTIAL_ACTION_ENTRY', ['_GUID' => '6fccd38451bc1198024e2452f8539411', 'ACTION' => hyperlink($search_url, do_lang_tempcode('SEARCH'), false, false)]);
         } else {
             $search_details = new Tempcode();
         }
@@ -268,11 +268,11 @@ class Module_authors
             require_code('downloads');
             require_lang('downloads');
 
-            $count = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)', array('author' => $author, 'validated' => 1));
+            $count = $GLOBALS['SITE_DB']->query_select_value('download_downloads', 'COUNT(*)', ['author' => $author, 'validated' => 1]);
             if ($count > 50) {
                 $downloads_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
-                $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', array('*'), array('author' => $author, 'validated' => 1), 'ORDER BY add_date');
+                $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['author' => $author, 'validated' => 1], 'ORDER BY add_date');
                 foreach ($rows as $myrow) {
                     if (addon_installed('content_privacy')) {
                         require_code('content_privacy');
@@ -295,11 +295,11 @@ class Module_authors
         if (addon_installed('news')) {
             require_lang('news');
 
-            $count = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)', array('author' => $author, 'validated' => 1));
+            $count = $GLOBALS['SITE_DB']->query_select_value('news', 'COUNT(*)', ['author' => $author, 'validated' => 1]);
             if ($count > 50) {
                 $news_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
-                $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array('author' => $author, 'validated' => 1), 'ORDER BY date_and_time');
+                $rows = $GLOBALS['SITE_DB']->query_select('news', ['*'], ['author' => $author, 'validated' => 1], 'ORDER BY date_and_time');
                 foreach ($rows as $i => $row) {
                     if (addon_installed('content_privacy')) {
                         require_code('content_privacy');
@@ -319,10 +319,10 @@ class Module_authors
         // Edit link
         $edit_url = new Tempcode();
         if (has_edit_author_permission(get_member(), $author)) {
-            $edit_url = build_url(array('page' => 'cms_authors', 'type' => '_add', 'id' => $author), get_module_zone('cms_authors'));
+            $edit_url = build_url(['page' => 'cms_authors', 'type' => '_add', 'id' => $author], get_module_zone('cms_authors'));
         }
 
-        return do_template('AUTHOR_SCREEN', array(
+        return do_template('AUTHOR_SCREEN', [
             '_GUID' => 'ea789367b15bc90fc28d1c586e6e6536',
             'TAGS' => get_loaded_tags(),
             'TITLE' => $this->title,
@@ -336,6 +336,6 @@ class Module_authors
             'FORUM_DETAILS' => $forum_details,
             'SKILLS' => $skills,
             'DESCRIPTION' => $description,
-        ));
+        ]);
     }
 }

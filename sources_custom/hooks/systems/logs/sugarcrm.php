@@ -26,12 +26,12 @@ class Hook_logs_sugarcrm
     public function enumerate_logs()
     {
         if (!addon_installed('sugarcrm')) {
-            return array(
-            );
+            return [
+            ];
         }
 
-        return array(
-            'sugarcrm.log' => array('days_to_keep' => (get_option('days_to_keep__sugarcrm_log') == '') ? null : intval(get_option('days_to_keep__sugarcrm_log'))),
-        );
+        return [
+            'sugarcrm.log' => ['days_to_keep' => (get_option('days_to_keep__sugarcrm_log') == '') ? null : intval(get_option('days_to_keep__sugarcrm_log'))],
+        ];
     }
 }

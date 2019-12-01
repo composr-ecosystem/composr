@@ -26,9 +26,9 @@ class Hook_admin_themewizard_buildr
     public function run()
     {
         if (!addon_installed('buildr')) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        return array(array('logo/buildr-logo',), array());
+        return [['logo/buildr-logo',], []];
     }
 }

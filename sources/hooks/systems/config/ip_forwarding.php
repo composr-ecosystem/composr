@@ -30,7 +30,7 @@ class Hook_config_ip_forwarding
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'IP_FORWARDING',
             'type' => 'line',
             'category' => 'SERVER',
@@ -44,7 +44,7 @@ class Hook_config_ip_forwarding
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

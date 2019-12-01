@@ -27,7 +27,7 @@
 function is_spreadsheet_writable($filename)
 {
     $ext = get_file_extension($filename);
-    return in_array($ext, array('csv', 'txt'));
+    return in_array($ext, ['csv', 'txt']);
 }
 
 /**
@@ -54,7 +54,7 @@ function spreadsheet_write_default()
  * @param  array $metadata List of maps, each map representing metadata of a row; supports 'url'; will only be used by file formats that support it
  * @return object A CMS_Spreadsheet_Writer object (pre-closed, you don't need to close it)
  */
-function make_spreadsheet(&$path, $data, $filename = null, $metadata = array())
+function make_spreadsheet(&$path, $data, $filename = null, $metadata = [])
 {
     if ($filename === null) {
         $filename = basename($path);
@@ -259,7 +259,7 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
         }
 
         require_code('character_sets');
-        $_row = array();
+        $_row = [];
         foreach ($row as $k => $v) {
             $v = convert_to_internal_encoding(@strval($v), get_charset(), $this->charset);
             $_row[$k] = $v;

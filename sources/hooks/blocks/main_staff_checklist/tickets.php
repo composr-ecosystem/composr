@@ -31,7 +31,7 @@ class Hook_checklist_tickets
     public function run()
     {
         if (!addon_installed('tickets')) {
-            return array();
+            return [];
         }
 
         require_lang('tickets');
@@ -39,7 +39,7 @@ class Hook_checklist_tickets
 
         $outstanding = 0;
 
-        $tickets = get_tickets(array(), false, true);
+        $tickets = get_tickets([], false, true);
         if ($tickets !== null) {
             foreach ($tickets as $topic) {
                 if ($topic['closed'] == 0) {
@@ -49,20 +49,20 @@ class Hook_checklist_tickets
         }
 
         if ($outstanding > 0) {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', array('_GUID' => 'g578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0', ['_GUID' => 'g578142633c6f3d37776e82a869deb91']);
         } else {
-            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', array('_GUID' => 'h578142633c6f3d37776e82a869deb91'));
+            $status = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1', ['_GUID' => 'h578142633c6f3d37776e82a869deb91']);
         }
 
-        $url = build_url(array('page' => 'tickets', 'type' => 'browse'), get_module_zone('tickets'));
+        $url = build_url(['page' => 'tickets', 'type' => 'browse'], get_module_zone('tickets'));
 
-        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', array(
+        $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '8202af47a2f1d24675acbe4c6d20c8b4',
             'URL' => $url,
             'STATUS' => $status,
             'TASK' => do_lang_tempcode('SUPPORT_TICKETS'),
             'INFO' => do_lang_tempcode('NUM_QUEUE', escape_html(integer_format($outstanding))),
-        ));
-        return array(array($tpl, null, $outstanding, null));
+        ]);
+        return [[$tpl, null, $outstanding, null]];
     }
 }

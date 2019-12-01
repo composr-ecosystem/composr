@@ -35,7 +35,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
     public function testConfigOptionNames()
     {
         $config_hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
-        $config_options = array();
+        $config_options = [];
         foreach ($config_hooks as $file => $ob) {
             $details = $ob->get_details();
             $config_options[do_lang($details['human_name'])] = 'Admin Zone > Setup > Configuration > ' . do_lang('CONFIG_CATEGORY_' . $details['category']) . ' > ' . do_lang($details['group']);
@@ -48,14 +48,14 @@ class tutorial_nav_paths_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#"([^"]*)" configuration option[^s]#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $option = trim($matches[1][$i], '\\');
                     $this->assertTrue(isset($config_options[$option]), 'Missing configuration option, ' . $option . ' in ' . $file);
                 }
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#"([^"]*)" configuration option \((Admin Zone > Setup > Configuration > [^\)]*)\)#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $option = trim($matches[1][$i], '\\');
@@ -73,7 +73,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
     {
         $config_hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
 
-        $paths_found = array();
+        $paths_found = [];
 
         $path = get_file_base() . '/docs/pages/comcode_custom/EN';
         $dh = opendir($path);
@@ -81,17 +81,17 @@ class tutorial_nav_paths_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#Admin Zone > Setup > Configuration > (\w[\w /]+\w)( > (\w[\w /]+\w))?#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $category = $matches[1][$i];
                     $group = isset($matches[3][$i]) ? $matches[3][$i] : '';
                     $total = $matches[0][$i];
 
-                    $paths_found[$total] = array($category, $group);
+                    $paths_found[$total] = [$category, $group];
                 }
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#[^>] Content Management > #', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $this->assertTrue(false, 'Start CMS zone breadcrumbs from the Admin Zone');

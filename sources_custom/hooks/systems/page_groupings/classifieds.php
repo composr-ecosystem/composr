@@ -28,12 +28,12 @@ class Hook_page_groupings_classifieds
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('classified_ads')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'spare/classifieds', array('admin_classifieds', array(), get_module_zone('admin_classifieds')), do_lang_tempcode('classifieds:CLASSIFIEDS_PRICING'), 'classifieds:DOC_CLASSIFIEDS_PRICING'),
-            array('social', 'spare/classifieds', array('classifieds', array(), get_module_zone('classifieds')), do_lang_tempcode('classifieds:CLASSIFIED_ADVERTS')),
-        );
+        return [
+            ['setup', 'spare/classifieds', ['admin_classifieds', [], get_module_zone('admin_classifieds')], do_lang_tempcode('classifieds:CLASSIFIEDS_PRICING'), 'classifieds:DOC_CLASSIFIEDS_PRICING'],
+            ['social', 'spare/classifieds', ['classifieds', [], get_module_zone('classifieds')], do_lang_tempcode('classifieds:CLASSIFIED_ADVERTS')],
+        ];
     }
 }

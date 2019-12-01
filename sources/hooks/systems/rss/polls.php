@@ -55,29 +55,29 @@ class Hook_rss_polls
 
             $_news_title = get_translated_tempcode('poll', $row, 'question');
             $news_title = xmlentities($_news_title->evaluate());
-            $answers = array();
+            $answers = [];
             for ($i = 1; $i <= 5; $i++) {
                 $answers[] = get_translated_tempcode('poll', $row, 'option' . strval($i));
             }
-            $_summary = do_template('POLL_RSS_SUMMARY', array('_GUID' => 'db39d44c1fa871122e1ae717e4947244', 'ANSWERS' => $answers));
+            $_summary = do_template('POLL_RSS_SUMMARY', ['_GUID' => 'db39d44c1fa871122e1ae717e4947244', 'ANSWERS' => $answers]);
             $summary = xmlentities($_summary->evaluate());
             $news = '';
 
             $category = '';
             $category_raw = '';
 
-            $view_url = build_url(array('page' => 'polls', 'type' => 'view', 'id' => $row['id']), get_module_zone('polls'), array(), false, false, true);
+            $view_url = build_url(['page' => 'polls', 'type' => 'view', 'id' => $row['id']], get_module_zone('polls'), [], false, false, true);
 
             if (($prefix == 'RSS_') && (get_option('is_on_comments') == '1') && ($row['allow_comments'] >= 1)) {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '0a3e8d0b18e619d88f12bc7665fbbbca', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '0a3e8d0b18e619d88f12bc7665fbbbca', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
         require_lang('polls');
-        return array($content, do_lang('POLLS'));
+        return [$content, do_lang('POLLS')];
     }
 }

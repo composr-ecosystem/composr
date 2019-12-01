@@ -29,7 +29,7 @@ class notifications_all_coded_test_set extends cms_test_case
 
         $php_path = find_php_path();
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             if (basename($path) == 'phpstub.php') {
@@ -44,7 +44,7 @@ class notifications_all_coded_test_set extends cms_test_case
             }
         }
 
-        $allowed = array(
+        $allowed = [
             // Adjust this to account for cases of notifications coded up in non-direct ways
             'error_occurred_cron',
             'error_occurred_missing_page',
@@ -58,7 +58,7 @@ class notifications_all_coded_test_set extends cms_test_case
             'catalogue_view_reports',
             'catalogue_entry',
             'classifieds',
-        );
+        ];
         foreach (array_keys($hooks) as $hook) {
             $this->assertTrue(in_array($hook, $allowed), $hook . ' is unused');
         }

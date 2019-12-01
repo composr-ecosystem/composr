@@ -70,12 +70,12 @@ class Hook_video_syndication_youtube
 
     public function get_remote_videos($local_id)
     {
-        $videos = array();
+        $videos = [];
 
         // This code is a bit annoying. Ideally we'd do a remote tag search, but YouTube's API is lagged here, and only works for listed videos. We'll therefore look at our local mappings.
         $transcoding_id = $GLOBALS['SITE_DB']->query_value_if_there('SELECT t_id FROM ' . get_table_prefix() . 'video_transcoding WHERE t_local_id=' . strval($local_id) . ' AND t_id LIKE \'' . db_encode_like('youtube\_%') . '\'');
         if ($transcoding_id === null) {
-            return array(); // Not uploaded yet
+            return []; // Not uploaded yet
         }
 
         $transcoding_id = preg_replace('#^youtube_#', '', $transcoding_id);
@@ -95,7 +95,7 @@ class Hook_video_syndication_youtube
                 }
                 */
 
-                $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads/' . $transcoding_id, array());
+                $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads/' . $transcoding_id, []);
                 $xml = $http_result->data;
 
                 if ($xml === null) {
@@ -116,7 +116,7 @@ class Hook_video_syndication_youtube
                 break; // Done
             }
 
-            $query_params = array('max-results' => strval(50), 'start-index' => strval($start));
+            $query_params = ['max-results' => strval(50), 'start-index' => strval($start)];
             $http_result = $this->_http('https://gdata.youtube.com/feeds/api/users/default/uploads', $query_params);
             $xml = $http_result->data;
 
@@ -177,7 +177,7 @@ class Hook_video_syndication_youtube
         // Find category and bound ID
         foreach ($p->xpath('//media:group/media:category') as $k) {
             if (@strval($k['scheme']) == 'http://gdata.youtube.com/schemas/2007/developertags.cat') {
-                $matches = array();
+                $matches = [];
                 if (preg_match('#^sync(\d+)$#', @strval($k), $matches) != 0) {
                     $bound_to_local_id = intval($matches[1]);
                 }
@@ -189,7 +189,7 @@ class Hook_video_syndication_youtube
 
         // Maybe bound ID was explicitly put in via keywords (takes precedence, as this is the one thing that can be re-edited [dev ID is locked at initial upload])
         foreach ($keywords as $i => $k) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^sync(\d+)$#', $k, $matches) != 0) {
                 $bound_to_local_id = intval($matches[1]);
                 unset($keywords[$i]);
@@ -202,7 +202,7 @@ class Hook_video_syndication_youtube
 
         $_player = $p->xpath('//media:group/media:player');
 
-        $detected_video = array(
+        $detected_video = [
             'bound_to_local_id' => $bound_to_local_id,
             'remote_id' => $remote_id,
 
@@ -215,7 +215,7 @@ class Hook_video_syndication_youtube
             'allow_rating' => $allow_rating,
             'allow_comments' => $allow_comments,
             'validated' => $validated,
-        );
+        ];
 
         if ($bound_to_local_id !== null) {
             return $detected_video; // else we ignore remote videos that aren't bound to local ones
@@ -226,7 +226,7 @@ class Hook_video_syndication_youtube
 
     public function upload_video($video)
     {
-        $extra_headers = array('Slug' => basename($video['url']));
+        $extra_headers = ['Slug' => basename($video['url'])];
 
         $xml = $this->_generate_video_xml($video/*PHP has weird overwrite precedence with + operator, opposite to the intuitive ordering*/, true);
 
@@ -239,7 +239,7 @@ class Hook_video_syndication_youtube
 
         cms_disable_time_limit();
         try {
-            $test_http_response = $this->_http($api_url, array(), 'POST', $xml, 1000.0, $extra_headers/*, $file_path*/);
+            $test_http_response = $this->_http($api_url, [], 'POST', $xml, 1000.0, $extra_headers/*, $file_path*/);
             $http_result = $this->_http($test_http_response->download_url, null, 'PUT', null, 10000.0, $extra_headers, $file_path, $mime_type);
 
             if ($is_temp_file) {
@@ -274,7 +274,7 @@ class Hook_video_syndication_youtube
         if (substr($url, 0, strlen(get_custom_base_url())) != get_custom_base_url()) {
             $temppath = cms_tempnam();
             $tempfile = fopen($temppath, 'wb');
-            http_get_contents($url, array('convert_to_internal_encoding' => true, 'byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile));
+            http_get_contents($url, ['convert_to_internal_encoding' => true, 'byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile]);
 
             $is_temp_file = true;
 
@@ -286,7 +286,7 @@ class Hook_video_syndication_youtube
         require_code('mime_types');
         $mime_type = get_mime_type(get_file_extension($url), false);
 
-        return array($video_path, $is_temp_file, $mime_type);
+        return [$video_path, $is_temp_file, $mime_type];
     }
 
     public function change_remote_video($video, $changes)
@@ -354,7 +354,7 @@ class Hook_video_syndication_youtube
         ');
 
         try {
-            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/videos/' . $video['remote_id'] . '/comments', array(), 'POST', $xml);
+            $http_result = $this->_http('https://gdata.youtube.com/feeds/api/videos/' . $video['remote_id'] . '/comments', [], 'POST', $xml);
 
             $parsed = simplexml_load_string($http_result->data);
 
@@ -376,7 +376,7 @@ class Hook_video_syndication_youtube
     protected function _generate_video_xml($video, $is_initial)
     {
         // Match to a category using remote list
-        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat', array('convert_to_internal_encoding' => true));
+        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat', ['convert_to_internal_encoding' => true]);
         $remote_list_parsed = simplexml_load_string($remote_list_xml);
         $category = 'People';
         foreach ($remote_list_parsed->category as $c) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
@@ -443,7 +443,7 @@ class Hook_video_syndication_youtube
         return ($this->_access_token !== null);
     }
 
-    protected function _http($url, $params, $http_verb = 'GET', $xml = null, $timeout = 6.0, $extra_headers = array(), $file_to_upload = null, $content_type = 'application/atom+xml', $text = true)
+    protected function _http($url, $params, $http_verb = 'GET', $xml = null, $timeout = 6.0, $extra_headers = [], $file_to_upload = null, $content_type = 'application/atom+xml', $text = true)
     {
         $youtube_developer_key = get_option('google_apis_api_key');
 
@@ -471,7 +471,7 @@ class Hook_video_syndication_youtube
         if ($file_to_upload !== null) {
             require_code('mime_types');
             $mime_type = get_mime_type(get_file_extension($file_to_upload), false);
-            $files = array($mime_type => $file_to_upload);
+            $files = [$mime_type => $file_to_upload];
         }
 
         if ($xml !== null) {
@@ -479,16 +479,16 @@ class Hook_video_syndication_youtube
             $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
         }
 
-        $options = array(
+        $options = [
             'trigger_error' => false,
-            'post_params' => ($xml === null) ? null : array($xml),
+            'post_params' => ($xml === null) ? null : [$xml],
             'timeout' => $timeout,
             'raw_post' => $xml !== null,
             'files' => $files,
             'extra_headers' => $extra_headers,
             'http_verb' => $http_verb,
             'raw_content_type' => $content_type,
-        );
+        ];
         if ($text) {
             $options['convert_to_internal_encoding'] = true;
         }

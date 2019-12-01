@@ -30,7 +30,7 @@ class Hook_config_likes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_LIKES',
             'type' => 'tick',
             'category' => 'USER_INTERACTION',
@@ -43,7 +43,7 @@ class Hook_config_likes
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

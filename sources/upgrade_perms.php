@@ -154,7 +154,7 @@ function get_chmod_array_combined()
 function get_chmod_array_2()
 {
     $hooks = find_all_hook_obs('systems', 'chmod', 'Hook_chmod_');
-    $directories = array();
+    $directories = [];
     foreach ($hooks as $ob) {
         $directories = array_merge($directories, $ob->run());
     }
@@ -170,7 +170,7 @@ function get_chmod_array_2()
  */
 function get_excess_perms($array, $rel = '')
 {
-    $out = array();
+    $out = [];
 
     if (is_suexec_like()) {
         return $out;

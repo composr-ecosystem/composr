@@ -30,7 +30,7 @@ class Hook_config_payment_gateway_test_username
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAYMENT_GATEWAY_TEST_USERNAME',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_payment_gateway_test_username
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

@@ -31,11 +31,11 @@ class Hook_ecommerce_community_billboard
 
         require_lang('community_billboard');
 
-        return array(
+        return [
             'category_name' => do_lang('COMMUNITY_BILLBOARD_MESSAGE'),
             'category_description' => do_lang_tempcode('COMMUNITY_BILLBOARD_MESSAGE_DESCRIPTION'),
             'category_image_url' => find_theme_image('icons/menu/adminzone/audit/community_billboard'),
-        );
+        ];
     }
 
     /**
@@ -51,18 +51,18 @@ class Hook_ecommerce_community_billboard
     {
         require_lang('community_billboard');
 
-        $products = array();
+        $products = [];
 
         $price_points = get_option('community_billboard_price_points');
 
-        foreach (array(1, 3, 5, 10, 20, 31, 90) as $days) {
-            $products['COMMUNITY_BILLBOARD_' . strval($days)] = automatic_discount_calculation(array(
+        foreach ([1, 3, 5, 10, 20, 31, 90] as $days) {
+            $products['COMMUNITY_BILLBOARD_' . strval($days)] = automatic_discount_calculation([
                 'item_name' => do_lang('COMMUNITY_BILLBOARD_MESSAGE_FOR_DAYS', integer_format($days)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => (get_option('community_billboard_price') == '') ? null : (floatval(get_option('community_billboard_price')) * $days),
                 'currency' => get_option('currency'),
@@ -77,7 +77,7 @@ class Hook_ecommerce_community_billboard
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            ));
+            ]);
         }
 
         return $products;
@@ -123,12 +123,12 @@ class Hook_ecommerce_community_billboard
     {
         require_lang('community_billboard');
 
-        $_queue = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'SUM(days) AS days', array('activation_time' => null));
+        $_queue = $GLOBALS['SITE_DB']->query_select_value('community_billboard', 'SUM(days) AS days', ['activation_time' => null]);
         $queue = @intval($_queue);
 
         $days = intval(preg_replace('#^COMMUNITY_BILLBOARD_#', '', $type_code));
 
-        return do_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', array('_GUID' => '92d51c5b87745c31397d9165595262d3', 'QUEUE' => integer_format($queue), 'DAYS' => integer_format($days)));
+        return do_template('ECOM_PRODUCT_COMMUNITY_BILLBOARD', ['_GUID' => '92d51c5b87745c31397d9165595262d3', 'QUEUE' => integer_format($queue), 'DAYS' => integer_format($days)]);
     }
 
     /**
@@ -147,7 +147,7 @@ class Hook_ecommerce_community_billboard
 
         ecommerce_attach_memo_field_if_needed($fields);
 
-        return array($fields, do_lang_tempcode('COMMUNITY_BILLBOARD_GUIDE'), null);
+        return [$fields, do_lang_tempcode('COMMUNITY_BILLBOARD_GUIDE'), null];
     }
 
     /**
@@ -163,10 +163,10 @@ class Hook_ecommerce_community_billboard
         $member_id = get_member();
         $message = post_param_string('message', '');
 
-        $e_details = json_encode(array($member_id, $message));
+        $e_details = json_encode([$member_id, $message]);
 
-        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', array('e_details' => $e_details, 'e_time' => time()), true));
-        return array($purchase_id, null);
+        $purchase_id = strval($GLOBALS['SITE_DB']->query_insert('ecom_sales_expecting', ['e_details' => $e_details, 'e_time' => time()], true));
+        return [$purchase_id, null];
     }
 
     /**
@@ -187,26 +187,26 @@ class Hook_ecommerce_community_billboard
 
         $days = intval(preg_replace('#^COMMUNITY_BILLBOARD_#', '', $type_code));
 
-        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
         list($member_id, $message) = json_decode($e_details);
 
         // Add this to the database
-        $map = array(
+        $map = [
             'notes' => '',
             'activation_time' => null,
             'active_now' => 0,
             'member_id' => $member_id,
             'days' => $days,
             'order_time' => time(),
-        );
+        ];
         $map += insert_lang_comcode('the_message', $message, 2);
         $GLOBALS['SITE_DB']->query_insert('community_billboard', $map);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('COMMUNITY_BILLBOARD_MESSAGE', null, null, null, get_site_default_lang()), 'details2' => strval($days), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('COMMUNITY_BILLBOARD_MESSAGE', null, null, null, get_site_default_lang()), 'details2' => strval($days), 'txn_id' => $details['TXN_ID']]);
 
         // Notification to staff
         require_code('notifications');
-        $_url = build_url(array('page' => 'admin_community_billboard'), get_module_zone('admin_community_billboard'), array(), false, false, true);
+        $_url = build_url(['page' => 'admin_community_billboard'], get_module_zone('admin_community_billboard'), [], false, false, true);
         $manage_url = $_url->evaluate();
         $subject = do_lang('SUBJECT_COMMUNITY_BILLBOARD_TEXT', null, null, null, get_site_default_lang());
         $body = do_notification_lang('MAIL_COMMUNITY_BILLBOARD_TEXT', $message, comcode_escape($manage_url), null, get_site_default_lang());
@@ -224,7 +224,7 @@ class Hook_ecommerce_community_billboard
      */
     public function member_for($type_code, $purchase_id)
     {
-        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', array('id' => intval($purchase_id)));
+        $e_details = $GLOBALS['SITE_DB']->query_select_value('ecom_sales_expecting', 'e_details', ['id' => intval($purchase_id)]);
         list($member_id) = json_decode($e_details);
         return $member_id;
     }

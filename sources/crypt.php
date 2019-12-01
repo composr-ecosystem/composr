@@ -29,7 +29,7 @@ function ratchet_hash($password, $salt)
 {
     // NB: We don't pass the salt separately, we let password_hash generate its own internal salt also (that builds into the hash). So it is double salted.
     $ratchet = max(10, intval(get_option('crypt_ratchet')));
-    return password_hash($salt . md5($password), PASSWORD_BCRYPT, array('cost' => $ratchet));
+    return password_hash($salt . md5($password), PASSWORD_BCRYPT, ['cost' => $ratchet]);
 }
 
 /**
@@ -89,7 +89,7 @@ function get_secure_random_string()
 
     } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
         $ratchet = max(10, function_exists('crypt_ratchet') ? intval(get_option('crypt_ratchet')) : 3);
-        return substr(md5(password_hash(uniqid('', true), PASSWORD_BCRYPT, array('cost' => $ratchet))), 0, 13);
+        return substr(md5(password_hash(uniqid('', true), PASSWORD_BCRYPT, ['cost' => $ratchet])), 0, 13);
 
     } else {
         $string = substr(md5(uniqid(strval(get_secure_random_number()), true)), 0, 13);
@@ -122,7 +122,7 @@ function get_secure_random_number()
 
         } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
             $ratchet = max(10, intval(get_option('crypt_ratchet')));
-            $hash = password_hash(uniqid('', true), PASSWORD_BCRYPT, array('cost' => $ratchet));
+            $hash = password_hash(uniqid('', true), PASSWORD_BCRYPT, ['cost' => $ratchet]);
             return crc32($hash);
 
         } else {

@@ -37,7 +37,7 @@ function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $includ
 
     require_lang('cns');
 
-    $map = array('page' => 'topicview', 'id' => $row['id']);
+    $map = ['page' => 'topicview', 'id' => $row['id']];
     if ($root !== null) {
         $map['keep_forum_root'] = $root;
     }
@@ -57,7 +57,7 @@ function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $includ
     $num_posts = $row['t_cache_num_posts'];
     $entry_details = do_lang_tempcode('FORUM_NUM_POSTS', escape_html(integer_format($num_posts)));
 
-    return do_template('SIMPLE_PREVIEW_BOX', array(
+    return do_template('SIMPLE_PREVIEW_BOX', [
         '_GUID' => ($guid != '') ? $guid : '85727b71bebcab45977363c8cb0a3ee6',
         'ID' => strval($row['id']),
         'TITLE' => $title,
@@ -69,7 +69,7 @@ function render_topic_box($row, $zone = '_SEARCH', $give_context = true, $includ
         'FRACTIONAL_EDIT_FIELD_NAME' => $give_context ? null : 'title',
         'FRACTIONAL_EDIT_FIELD_URL' => $give_context ? null : ('_SEARCH:topics:_edit_topic:' . strval($row['id'])),
         'RESOURCE_TYPE' => 'topic',
-    ));
+    ]);
 }
 
 /**
@@ -121,7 +121,7 @@ function has_topic_access($topic_id, $member_id = null, $topic_details = null)
 
     if ($topic_details === null) {
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
-        $_topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', array('*', 't.id AS topic_id', 'p.id AS post_id'), array('t.id' => $topic_id), '', 1);
+        $_topic_details = $GLOBALS['FORUM_DB']->query_select('f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id', ['*', 't.id AS topic_id', 'p.id AS post_id'], ['t.id' => $topic_id], '', 1);
         if (!isset($_topic_details[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
         }
@@ -194,14 +194,14 @@ function cns_may_post_topic($forum_id, $member_id = null)
         $member_id = get_member();
     }
 
-    if (!has_privilege($member_id, 'submit_midrange_content', 'topics', array('forums', $forum_id))) {
+    if (!has_privilege($member_id, 'submit_midrange_content', 'topics', ['forums', $forum_id])) {
         return false;
     }
     if ($forum_id === null) {
         return true;
     }
 
-    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', array('p_silence_from_forum' => $forum_id, 'w_member_id' => $member_id));
+    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_warnings', 'id', ['p_silence_from_forum' => $forum_id, 'w_member_id' => $member_id]);
     if ($test !== null) {
         return false;
     }
@@ -218,7 +218,7 @@ function cns_may_post_topic($forum_id, $member_id = null)
  */
 function cns_has_replied_topic($topic_id, $member_id = null)
 {
-    $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'id', array('p_topic_id' => $topic_id, 'p_poster' => $member_id));
+    $test = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'id', ['p_topic_id' => $topic_id, 'p_poster' => $member_id]);
     return $test !== null;
 }
 
@@ -240,7 +240,7 @@ function cns_may_edit_topics_by($forum_id, $member_id, $resource_owner)
         return has_privilege($member_id, 'moderate_private_topic');
     }
 
-    return has_edit_permission('mid', $member_id, $resource_owner, 'topics', array('forums', $forum_id));
+    return has_edit_permission('mid', $member_id, $resource_owner, 'topics', ['forums', $forum_id]);
 }
 
 /**
@@ -261,7 +261,7 @@ function cns_may_delete_topics_by($forum_id, $member_id, $resource_owner)
         return has_privilege($member_id, 'moderate_private_topic');
     }
 
-    return has_delete_permission('mid', $member_id, $resource_owner, 'topics', array('forums', $forum_id));
+    return has_delete_permission('mid', $member_id, $resource_owner, 'topics', ['forums', $forum_id]);
 }
 
 /**
@@ -280,7 +280,7 @@ function cns_ping_topic_read($topic_id, $member_id = null, $timestamp = null)
         $timestamp = time();
     }
     if (!$GLOBALS['FORUM_DB']->table_is_locked('f_read_logs')) {
-        $GLOBALS['FORUM_DB']->query_insert_or_replace('f_read_logs', array('l_time' => $timestamp), array('l_member_id' => $member_id, 'l_topic_id' => $topic_id), true); // Errors suppressed in case DB write access broken
+        $GLOBALS['FORUM_DB']->query_insert_or_replace('f_read_logs', ['l_time' => $timestamp], ['l_member_id' => $member_id, 'l_topic_id' => $topic_id], true); // Errors suppressed in case DB write access broken
     }
 }
 
@@ -303,7 +303,7 @@ function cns_has_read_topic($topic_id, $topic_last_time = null, $member_id = nul
     }
 
     if ($topic_last_time === null) {
-        $topic_last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_last_time', array('id' => $topic_id));
+        $topic_last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_last_time', ['id' => $topic_id]);
         if ($topic_last_time === null) {
             return true; // Should not happen
         }
@@ -326,7 +326,7 @@ function cns_has_read_topic($topic_id, $topic_last_time = null, $member_id = nul
         return true; // We don't store that old
     }
     if ($member_last_time === null) {
-        $member_last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', array('l_member_id' => $member_id, 'l_topic_id' => $topic_id));
+        $member_last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_read_logs', 'l_time', ['l_member_id' => $member_id, 'l_topic_id' => $topic_id]);
     }
     if ($member_last_time === null) {
         return false;
@@ -350,10 +350,10 @@ function cns_has_special_pt_access($topic_id, $member_id = null)
         $member_id = get_member();
     }
 
-    static $special_pt_access_cache = array();
+    static $special_pt_access_cache = [];
 
     if (!array_key_exists($topic_id, $special_pt_access_cache)) {
-        $special_pt_access_cache[$topic_id] = $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', array('s_member_id'), array('s_topic_id' => $topic_id));
+        $special_pt_access_cache[$topic_id] = $GLOBALS['FORUM_DB']->query_select('f_special_pt_access', ['s_member_id'], ['s_topic_id' => $topic_id]);
     }
     foreach ($special_pt_access_cache[$topic_id] as $t) {
         if ($t['s_member_id'] == $member_id) {

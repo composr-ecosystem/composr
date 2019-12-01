@@ -31,11 +31,11 @@ class Hook_admin_import_types_aggregate_types
     public function run()
     {
         if (!addon_installed('aggregate_types')) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'aggregate_type_instances' => 'AGGREGATE_TYPE_INSTANCES',
-        );
+        ];
     }
 }

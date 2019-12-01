@@ -30,7 +30,7 @@ class Hook_config_pd_email
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'EMAIL_ADDRESS',
             'type' => 'line',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_pd_email
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

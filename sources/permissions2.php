@@ -35,14 +35,14 @@ function set_global_category_access($module, $category)
 
     $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
-    $db->query_delete('group_category_access', array('module_the_name' => $module, 'category_name' => $category));
+    $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category]);
 
     foreach (array_keys($groups) as $group_id) {
         if (in_array($group_id, $admin_groups)) {
             continue;
         }
 
-        $db->query_insert('group_category_access', array('module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id));
+        $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id]);
     }
 }
 
@@ -62,23 +62,23 @@ function mass_set_page_access($no_guest_permissions, $only_admin_permissions, $z
         $GLOBALS['SITE_DB']->query_delete('group_page_access');
 
         foreach ($no_guest_permissions as $page) {
-            $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $page, 'zone_name' => $zone));
+            $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $page, 'zone_name' => $zone]);
 
-            $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $page, 'zone_name' => $zone, 'group_id' => db_get_first_id()));
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $page, 'zone_name' => $zone, 'group_id' => db_get_first_id()]);
         }
 
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
 
         foreach ($only_admin_permissions as $page) {
-            $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $page, 'zone_name' => $zone));
+            $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $page, 'zone_name' => $zone]);
 
             foreach (array_keys($usergroups) as $id) {
                 if (in_array($id, $admin_groups)) {
                     continue;
                 }
 
-                $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $page, 'zone_name' => $zone, 'group_id' => $id));
+                $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $page, 'zone_name' => $zone, 'group_id' => $id]);
             }
         }
     }
@@ -172,11 +172,11 @@ function has_privilege_group($group_id, $privilege, $page = null, $cats = null)
         return false;
     }
 
-    $perhaps = $GLOBALS['SITE_DB']->query_select('group_privileges', array('*'), array('group_id' => $group_id));
+    $perhaps = $GLOBALS['SITE_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_id]);
     if (is_on_multi_site_network() && (get_forum_type() == 'cns')) {
-        $perhaps = array_merge($perhaps, $GLOBALS['FORUM_DB']->query_select('group_privileges', array('*'), array('group_id' => $group_id, 'module_the_name' => 'forums')));
+        $perhaps = array_merge($perhaps, $GLOBALS['FORUM_DB']->query_select('group_privileges', ['*'], ['group_id' => $group_id, 'module_the_name' => 'forums']));
     }
-    $GROUP_PRIVILEGE_CACHE[$group_id] = array();
+    $GROUP_PRIVILEGE_CACHE[$group_id] = [];
     foreach ($perhaps as $p) {
         if (!@$GROUP_PRIVILEGE_CACHE[$group_id][$p['privilege']][$p['the_page']][$p['module_the_name']][$p['category_name']]) {
             $GROUP_PRIVILEGE_CACHE[$group_id][$p['privilege']][$p['the_page']][$p['module_the_name']][$p['category_name']] = ($p['the_value'] == 1);
@@ -232,20 +232,20 @@ function get_category_permissions_for_environment($module, $category, $page = nu
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true);
 
     // View access
-    $access = array();
+    $access = [];
     foreach (array_keys($groups) as $id) {
         $access[$id] = $new_category ? 1 : 0;
     }
     if (!$new_category) {
-        $access_rows = $db->query_select('group_category_access', array('group_id'), array('module_the_name' => $module, 'category_name' => $category));
+        $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $module, 'category_name' => $category]);
         foreach ($access_rows as $row) {
             $access[$row['group_id']] = 1;
         }
     }
 
     // Privileges
-    $privileges = array();
-    $access_rows = $db->query_select('group_privileges', array('group_id', 'privilege', 'the_value'), array('module_the_name' => $module, 'category_name' => $category));
+    $privileges = [];
+    $access_rows = $db->query_select('group_privileges', ['group_id', 'privilege', 'the_value'], ['module_the_name' => $module, 'category_name' => $category]);
     foreach ($access_rows as $row) {
         $privileges[$row['privilege']][$row['group_id']] = strval($row['the_value']);
     }
@@ -253,25 +253,25 @@ function get_category_permissions_for_environment($module, $category, $page = nu
     // Heading
     require_code('zones2');
     $zone = get_module_zone($page, 'modules', null, 'php', true, false);
-    $_overridables = extract_module_functions_page($zone, $page, array('get_privilege_overrides'));
+    $_overridables = extract_module_functions_page($zone, $page, ['get_privilege_overrides']);
     $out = new Tempcode;
     if ($_overridables[0] === null) {
-        $temp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '6789cb454688a1bc811af1b4011ede35', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'HELP' => $help, 'SECTION_HIDDEN' => true));
-        $overridables = array();
+        $temp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6789cb454688a1bc811af1b4011ede35', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'HELP' => $help, 'SECTION_HIDDEN' => true]);
+        $overridables = [];
     } else {
         require_lang('permissions');
-        $temp = do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $temp = do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => 'd4659e64eaeb8e9f4c09255a8d3c9f33',
             'TITLE' => do_lang_tempcode('PERMISSIONS'),
             'HELP' => do_lang_tempcode('PINTERACE_HELP'),
             'SECTION_HIDDEN' => true,
-        ));
+        ]);
         $overridables = is_array($_overridables[0]) ? call_user_func_array($_overridables[0][0], $_overridables[0][1]) : cms_eval($_overridables[0], $zone . ':' . $page);
     }
     $out->attach($temp);
 
     // Find out inherited permissions
-    $default_access = array();
+    $default_access = [];
     $all_groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
     foreach (array_keys($access) as $id) {
         if ((!array_key_exists($id, $groups)) && (array_key_exists($id, $all_groups))) {
@@ -279,14 +279,14 @@ function get_category_permissions_for_environment($module, $category, $page = nu
         }
     }
     foreach ($groups as $id => $group_name) {
-        $default_access[$id] = array();
+        $default_access[$id] = [];
         if (!in_array($id, $admin_groups)) {
             foreach ($overridables as $override => $cat_support) {
                 if (is_array($cat_support)) {
                     $cat_support = $cat_support[0];
                 }
 
-                $default_access[$id][$override] = array();
+                $default_access[$id][$override] = [];
                 if ($cat_support == 0) {
                     continue;
                 }
@@ -359,7 +359,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
                     continue;
                 }
 
-                $overrides->attach(do_template('FORM_SCREEN_INPUT_PERMISSION_OVERRIDE', array(
+                $overrides->attach(do_template('FORM_SCREEN_INPUT_PERMISSION_OVERRIDE', [
                     '_GUID' => '115fbf91873be9016c5e192f5a5e090b',
                     'FORCE_PRESETS' => !$include_outer,
                     'GROUP_NAME' => $group_name,
@@ -371,11 +371,11 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
                     'TITLE' => $lang_string,
                     'DEFAULT_ACCESS' => $default_access[$id][$override],
                     'CODE' => isset($privileges[$override][$id]) ? $privileges[$override][$id] : '-1',
-                )));
+                ]));
 
                 check_suhosin_request_quantity(1, strlen('access_' . strval($id) . '_privilege_' . $override));
             }
-            $permission_rows->attach(do_template('FORM_SCREEN_INPUT_PERMISSION', array(
+            $permission_rows->attach(do_template('FORM_SCREEN_INPUT_PERMISSION', [
                 '_GUID' => 'e2c4459ae995d33376c07e498f1d973a',
                 'FORCE_PRESETS' => !$include_outer,
                 'GROUP_NAME' => $group_name,
@@ -385,11 +385,11 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
                 'TABINDEX' => strval($tabindex),
                 'GROUP_ID' => strval($id),
                 'PINTERFACE_VIEW' => $pinterface_view,
-            )));
+            ]));
 
             check_suhosin_request_quantity(2, strlen('access_' . strval($id)));
         } else {
-            $overridables_filtered = array();
+            $overridables_filtered = [];
             foreach ($overridables as $override => $cat_support) {
                 if (is_array($cat_support)) {
                     $cat_support = $cat_support[0];
@@ -398,14 +398,14 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
                     $overridables_filtered[$override] = 1;
                 }
             }
-            $permission_rows->attach(do_template('FORM_SCREEN_INPUT_PERMISSION_ADMIN', array(
+            $permission_rows->attach(do_template('FORM_SCREEN_INPUT_PERMISSION_ADMIN', [
                 '_GUID' => '59fafa2fa66ec6eb0fe2432b1d747636',
                 'FORCE_PRESETS' => !$include_outer,
                 'OVERRIDES' => $overridables_filtered,
                 'GROUP_NAME' => $group_name,
                 'GROUP_ID' => strval($id),
                 'PINTERFACE_VIEW' => $pinterface_view,
-            )));
+            ]));
         }
     }
     if ((empty($overridables)) && ($include_outer)) {
@@ -416,7 +416,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
     $color = find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme());
 
     // For heading up the table matrix
-    $overrides_array = array();
+    $overrides_array = [];
     foreach ($overridables as $override => $cat_support) {
         $lang_string = do_lang_tempcode('PRIVILEGE_' . $override);
         if (is_array($cat_support)) {
@@ -429,22 +429,22 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
             continue;
         }
 
-        $overrides_array[$override] = array('TITLE' => $lang_string);
+        $overrides_array[$override] = ['TITLE' => $lang_string];
     }
 
     // Finish off the matrix and return
-    $inner = do_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX', array(
+    $inner = do_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX', [
         '_GUID' => '0f019c7e60366fa04058097ee6f3829a',
         'SERVER_ID' => $server_id,
         'COLOR' => $color,
         'OVERRIDES' => $overrides_array,
         'PERMISSION_ROWS' => $permission_rows,
-    ));
+    ]);
 
     if (!$include_outer) {
         return make_string_tempcode(static_evaluate_tempcode($inner));
     }
-    return make_string_tempcode(static_evaluate_tempcode(do_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX_OUTER', array('_GUID' => '2a2f9f78f3639185300c92cab50767c5', 'INNER' => $inner))));
+    return make_string_tempcode(static_evaluate_tempcode(do_template('FORM_SCREEN_INPUT_PERMISSION_MATRIX_OUTER', ['_GUID' => '2a2f9f78f3639185300c92cab50767c5', 'INNER' => $inner])));
 }
 
 /**
@@ -468,8 +468,8 @@ function set_category_permissions_from_environment($module, $category, $page = n
     $db = $GLOBALS[((($module == 'forums') || ($module == 'topics')) && (get_forum_type() == 'cns')) ? 'FORUM_DB' : 'SITE_DB'];
 
     // Based on old access settings, we may need to look at additional groups (clubs) that have permissions here
-    $access = array();
-    $access_rows = $db->query_select('group_category_access', array('group_id'), array('module_the_name' => $module, 'category_name' => $category));
+    $access = [];
+    $access_rows = $db->query_select('group_category_access', ['group_id'], ['module_the_name' => $module, 'category_name' => $category]);
     foreach ($access_rows as $row) {
         $access[$row['group_id']] = 1;
     }
@@ -485,13 +485,13 @@ function set_category_permissions_from_environment($module, $category, $page = n
             continue;
         }
 
-        $db->query_delete('group_category_access', array('module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id));
+        $db->query_delete('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id]);
     }
 
     $zone = get_module_zone($page, 'modules', null, 'php', true, false);
-    $_overridables = extract_module_functions_page($zone, $page, array('get_privilege_overrides'));
+    $_overridables = extract_module_functions_page($zone, $page, ['get_privilege_overrides']);
     if ($_overridables[0] === null) {
-        $overridables = array();
+        $overridables = [];
     } else {
         $overridables = is_array($_overridables[0]) ? call_user_func_array($_overridables[0][0], $_overridables[0][1]) : cms_eval($_overridables[0], $zone . ':' . $page);
     }
@@ -500,7 +500,7 @@ function set_category_permissions_from_environment($module, $category, $page = n
         if (is_array($cat_support)) {
             $cat_support = $cat_support[0];
         }
-        $db->query_delete('group_privileges', array('privilege' => $override, 'module_the_name' => $module, 'category_name' => $category));
+        $db->query_delete('group_privileges', ['privilege' => $override, 'module_the_name' => $module, 'category_name' => $category]);
     }
     foreach (array_keys($groups) as $group_id) {
         if (in_array($group_id, $admin_groups)) {
@@ -509,7 +509,7 @@ function set_category_permissions_from_environment($module, $category, $page = n
 
         $value = post_param_integer('access_' . strval($group_id), 0);
         if ($value == 1) {
-            $db->query_insert('group_category_access', array('module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id), false, true); // Race/corruption condition
+            $db->query_insert('group_category_access', ['module_the_name' => $module, 'category_name' => $category, 'group_id' => $group_id], false, true); // Race/corruption condition
         }
         foreach ($overridables as $override => $cat_support) {
             if (is_array($cat_support)) {
@@ -521,7 +521,7 @@ function set_category_permissions_from_environment($module, $category, $page = n
 
             $value = post_param_integer('access_' . strval($group_id) . '_privilege_' . $override, -1);
             if ($value != -1) {
-                $db->query_insert('group_privileges', array('privilege' => $override, 'group_id' => $group_id, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $value));
+                $db->query_insert('group_privileges', ['privilege' => $override, 'group_id' => $group_id, 'module_the_name' => $module, 'category_name' => $category, 'the_page' => '', 'the_value' => $value]);
             }
         }
     }
@@ -545,23 +545,23 @@ function get_page_permissions_for_environment($zone, $page, $help = null)
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true);
 
     // View access
-    $access = array();
+    $access = [];
     foreach (array_keys($groups) as $id) {
         $access[$id] = 0;
     }
-    $access_rows = $GLOBALS['SITE_DB']->query_select('group_page_access', array('group_id'), array('zone_name' => $zone, 'page_name' => $page));
+    $access_rows = $GLOBALS['SITE_DB']->query_select('group_page_access', ['group_id'], ['zone_name' => $zone, 'page_name' => $page]);
     foreach ($access_rows as $row) {
         $access[$row['group_id']] = 1;
     }
 
     // Interface
     $fields = new Tempcode();
-    $temp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '3bf8415fd44bf48c6ab49dede3dbfea5', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'HELP' => $help, 'SECTION_HIDDEN' => true));
+    $temp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3bf8415fd44bf48c6ab49dede3dbfea5', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'HELP' => $help, 'SECTION_HIDDEN' => true]);
     $fields->attach($temp);
     foreach ($groups as $id => $group_name) {
         if (!in_array($id, $admin_groups)) {
             $perhaps = $access[$id];
-            $overrides = array();
+            $overrides = [];
             $temp = form_input_tick(do_lang_tempcode('ACCESS_FOR', escape_html($group_name)), do_lang_tempcode('DESCRIPTION_ACCESS_FOR', escape_html($group_name)), 'access_' . strval($id), $perhaps == 0);
             $fields->attach($temp);
         }
@@ -584,7 +584,7 @@ function set_page_permissions_from_environment($zone, $page)
 
     $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
-    $GLOBALS['SITE_DB']->query_delete('group_page_access', array('zone_name' => $zone, 'page_name' => $page));
+    $GLOBALS['SITE_DB']->query_delete('group_page_access', ['zone_name' => $zone, 'page_name' => $page]);
 
     foreach (array_keys($groups) as $group_id) {
         if (in_array($group_id, $admin_groups)) {
@@ -593,7 +593,7 @@ function set_page_permissions_from_environment($zone, $page)
 
         $value = post_param_integer('access_' . strval($group_id), 0);
         if ($value == 0) {
-            $GLOBALS['SITE_DB']->query_insert('group_page_access', array('zone_name' => $zone, 'page_name' => $page, 'group_id' => $group_id), false, true); // Race/corruption condition
+            $GLOBALS['SITE_DB']->query_insert('group_page_access', ['zone_name' => $zone, 'page_name' => $page, 'group_id' => $group_id], false, true); // Race/corruption condition
         }
     }
 

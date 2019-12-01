@@ -31,7 +31,7 @@ class Hook_addon_registry_setupwizard
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,10 +61,10 @@ class Hook_addon_registry_setupwizard
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_configuration',
             'tut_drinking',
-        );
+        ];
     }
 
     /**
@@ -74,12 +74,12 @@ class Hook_addon_registry_setupwizard
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-            'previously_in_addon' => array('core_setupwizard'),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+            'previously_in_addon' => ['core_setupwizard'],
+        ];
     }
 
     /**
@@ -99,7 +99,7 @@ class Hook_addon_registry_setupwizard
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/setup/setupwizard.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/setup/setupwizard.svg',
             'sources/hooks/modules/admin_setupwizard_installprofiles/.htaccess',
@@ -128,7 +128,7 @@ class Hook_addon_registry_setupwizard
             'sources/hooks/blocks/main_staff_checklist/default_content.php',
             'themes/default/javascript/setupwizard.js',
             'sources/hooks/systems/actionlog/setupwizard.php',
-        );
+        ];
     }
 
     /**
@@ -138,12 +138,12 @@ class Hook_addon_registry_setupwizard
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/SETUPWIZARD_SCREEN.tpl' => 'administrative__setupwizard_2_screen',
             'templates/SETUPWIZARD_2.tpl' => 'administrative__setupwizard_2_screen',
             'templates/SETUPWIZARD_7.tpl' => 'administrative__setupwizard_7_screen',
             'templates/SETUPWIZARD_BLOCK_PREVIEW.tpl' => 'administrative__setupwizard_block_preview',
-        );
+        ];
     }
 
     /**
@@ -155,13 +155,13 @@ class Hook_addon_registry_setupwizard
      */
     public function tpl_preview__administrative__setupwizard_block_preview()
     {
-        return array(
-            lorem_globalise(do_lorem_template('SETUPWIZARD_BLOCK_PREVIEW', array(
+        return [
+            lorem_globalise(do_lorem_template('SETUPWIZARD_BLOCK_PREVIEW', [
                 'LEFT' => lorem_paragraph(),
                 'RIGHT' => lorem_paragraph(),
                 'START' => lorem_paragraph(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -175,22 +175,22 @@ class Hook_addon_registry_setupwizard
     {
         require_lang('config');
 
-        $inner = do_lorem_template('SETUPWIZARD_2', array(
+        $inner = do_lorem_template('SETUPWIZARD_2', [
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => lorem_title(),
             'URL' => placeholder_url(),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => lorem_word(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', [
                 'TITLE' => lorem_title(),
                 'INNER' => $inner,
                 'STEP' => '2',
                 'NUM_STEPS_ENUMERABLE' => '10',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 
     /**
@@ -204,21 +204,21 @@ class Hook_addon_registry_setupwizard
     {
         require_lang('config');
 
-        $inner = do_lorem_template('SETUPWIZARD_7', array(
+        $inner = do_lorem_template('SETUPWIZARD_7', [
             'TITLE' => lorem_title(),
             'FORM' => placeholder_form(),
             'BALANCED' => lorem_phrase(),
             'LIBERAL' => lorem_phrase(),
             'CORPORATE' => lorem_phrase(),
-        ));
+        ]);
 
-        return array(
-            lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', array(
+        return [
+            lorem_globalise(do_lorem_template('SETUPWIZARD_SCREEN', [
                 'TITLE' => lorem_title(),
                 'INNER' => $inner,
                 'STEP' => '7',
                 'NUM_STEPS_ENUMERABLE' => '10',
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

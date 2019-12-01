@@ -31,21 +31,21 @@ class Hook_actionlog_ssl extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('ssl')) {
-            return array();
+            return [];
         }
 
         require_lang('ssl');
 
-        return array(
-            'SSL_CONFIGURATION' => array(
+        return [
+            'SSL_CONFIGURATION' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'SSL_CONFIGURATION' => '_SEARCH:admin_ssl',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

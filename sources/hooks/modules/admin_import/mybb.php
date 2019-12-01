@@ -26,7 +26,7 @@
 function init__hooks__modules__admin_import__mybb()
 {
     global $TOPIC_FORUM_CACHE;
-    $TOPIC_FORUM_CACHE = array();
+    $TOPIC_FORUM_CACHE = [];
 
     global $STRICT_FILE;
     $STRICT_FILE = false; // Disable this for a quicker import that is quite liable to go wrong if you don't have the files in the right place
@@ -47,11 +47,11 @@ class Hook_import_mybb
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['supports_advanced_import'] = false;
         $info['product'] = 'MyBB 1.4.x';
         $info['prefix'] = 'mybb_';
-        $info['import'] = array(
+        $info['import'] = [
             'config',
             'cns_groups',
             'cns_custom_profile_fields',
@@ -70,22 +70,22 @@ class Hook_import_mybb
             'wordfilter',
             'calendar',
             'cns_multi_moderations',
-        );
+        ];
 
-        $info['dependencies'] = array(
+        $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
-           'cns_members' => array('cns_groups'),
-           'cns_member_files' => array('cns_members'),
-           'cns_forums' => array('cns_forum_groupings', 'cns_members', 'cns_groups'),
-           'cns_topics' => array('cns_forums', 'cns_members'),
-           'cns_polls_and_votes' => array('cns_topics', 'cns_members'),
-           'cns_posts' => array('cns_topics', 'cns_members'),
-           'cns_post_files' => array('cns_posts', 'cns_private_topics'),
-           'notifications' => array('cns_topics', 'cns_members', 'cns_polls_and_votes'),
-           'cns_private_topics' => array('cns_members'),
-           'cns_multi_moderations' => array('cns_forums', 'cns_members', 'cns_topics', 'cns_posts', 'cns_private_topics', 'cns_forum_groupings'),
-        );
-        $_cleanup_url = build_url(array('page' => 'admin_cleanup'), get_module_zone('admin_cleanup'));
+           'cns_members' => ['cns_groups'],
+           'cns_member_files' => ['cns_members'],
+           'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups'],
+           'cns_topics' => ['cns_forums', 'cns_members'],
+           'cns_polls_and_votes' => ['cns_topics', 'cns_members'],
+           'cns_posts' => ['cns_topics', 'cns_members'],
+           'cns_post_files' => ['cns_posts', 'cns_private_topics'],
+           'notifications' => ['cns_topics', 'cns_members', 'cns_polls_and_votes'],
+           'cns_private_topics' => ['cns_members'],
+           'cns_multi_moderations' => ['cns_forums', 'cns_members', 'cns_topics', 'cns_posts', 'cns_private_topics', 'cns_forum_groupings'],
+        ];
+        $_cleanup_url = build_url(['page' => 'admin_cleanup'], get_module_zone('admin_cleanup'));
         $cleanup_url = $_cleanup_url->evaluate();
         $info['message'] = (get_param_string('type', 'browse') != 'import' && get_param_string('type', 'browse') != 'hook') ? new Tempcode() : do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
 
@@ -100,13 +100,13 @@ class Hook_import_mybb
      */
     public function probe_db_access($file_base)
     {
-        $config = array();
+        $config = [];
         if (!file_exists($file_base . '/inc/config.php')) {
             warn_exit(do_lang_tempcode('BAD_IMPORT_PATH', escape_html('inc/config.php')));
         }
         require($file_base . '/inc/config.php');
 
-        return array($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['table_prefix'], $config['database']['hostname']);
+        return [$config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['table_prefix'], $config['database']['hostname']];
     }
 
     /**
@@ -123,15 +123,15 @@ class Hook_import_mybb
         $rows = $db->query_select('settings');
 
         $board_url = '';
-        $config_remapping = array();
-        $additional_data = array();
+        $config_remapping = [];
+        $additional_data = [];
         $groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list();
-        $page_remap_data = array();
-        $page_remap = array(
+        $page_remap_data = [];
+        $page_remap = [
             'enableregs' => 'join', //!'disableregs'
             'portal_showsearch' => 'search',
             'enablememberlist' => 'members',
-        );
+        ];
 
         foreach ($rows as $row) {
             if ($row['name'] == 'boardclosed') {
@@ -214,7 +214,7 @@ class Hook_import_mybb
             }
         }
 
-        $PROBED_FORUM_CONFIG = array();
+        $PROBED_FORUM_CONFIG = [];
 
         foreach ($config_remapping as $key => $value) {
             set_option($key, $value);
@@ -223,7 +223,7 @@ class Hook_import_mybb
         }
 
         foreach ($page_remap as $to) {
-            $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $to, 'zone_name' => get_module_zone($to)));
+            $GLOBALS['SITE_DB']->query_delete('group_page_access', ['page_name' => $to, 'zone_name' => get_module_zone($to)]);
         }
         foreach ($groups as $id => $groupname) {
             if (preg_match('/Administrator/i', $groupname) != 0) {
@@ -232,11 +232,11 @@ class Hook_import_mybb
 
             foreach ($page_remap as $from => $to) {
                 if ($page_remap_data[$from] == 1) {
-                    $GLOBALS['SITE_DB']->query_insert('group_page_access', array('page_name' => $to, 'zone_name' => get_module_zone($to), 'group_id' => $id));
+                    $GLOBALS['SITE_DB']->query_insert('group_page_access', ['page_name' => $to, 'zone_name' => get_module_zone($to), 'group_id' => $id]);
                 }
             }
 
-            $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_max_attachments_per_post' => $additional_data['maxattachments'], 'g_max_avatar_width' => $additional_data['avatar_max_width'], 'g_max_avatar_height' => $additional_data['avatar_max_height']), array('id' => $id), '', 1);
+            $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_max_attachments_per_post' => $additional_data['maxattachments'], 'g_max_avatar_width' => $additional_data['avatar_max_width'], 'g_max_avatar_height' => $additional_data['avatar_max_height']], ['id' => $id], '', 1);
 
             set_privilege($id, 'use_quick_reply', $additional_data['quickreply']);
         }
@@ -257,7 +257,7 @@ class Hook_import_mybb
         require($file_base . '/inc/config.php');
 
         $rows = $db->query_select('settings');
-        $PROBED_FORUM_CONFIG = array();
+        $PROBED_FORUM_CONFIG = [];
         foreach ($rows as $row) {
             $key = $row['name'];
             $val = $row['value'];
@@ -273,7 +273,7 @@ class Hook_import_mybb
             $avatar_max_height = null;
         }
 
-        $rows = $db->query_select('usergroups', array('*'), array(), 'ORDER BY gid');
+        $rows = $db->query_select('usergroups', ['*'], [], 'ORDER BY gid');
         foreach ($rows as $row) {
             if (import_check_if_imported('group', strval($row['gid']))) {
                 continue;
@@ -282,7 +282,7 @@ class Hook_import_mybb
             $is_super_admin = ($row['title'] == 'Administrator') ? 1 : 0;
             $is_super_moderator = ($row['title'] == 'Universal Moderator') ? 1 : 0;
 
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('g_name') => $row['title']]);
             if ($id_new === null) {
                 $id_new = cns_make_group($row['title'], 0, $is_super_admin, $is_super_moderator, '', '', null, null, null, null, null, null, null, $avatar_max_width, $avatar_max_height, null);
             }
@@ -305,7 +305,7 @@ class Hook_import_mybb
     public function import_cns_members($db, $table_prefix, $file_base)
     {
         $row_start = 0;
-        $rows = array();
+        $rows = [];
 
         do {
             $rows = $db->query('SELECT u.uid AS \'muid\',u.*,b.* FROM ' . $table_prefix . 'users u LEFT JOIN ' . $table_prefix . 'banned b ON u.uid=b.uid WHERE u.uid<>-1 ORDER BY u.uid', 200, $row_start);
@@ -333,7 +333,7 @@ class Hook_import_mybb
 
                 $primary_group = $row['usergroup'];
                 $_secondary_groups = explode(',', $row['additionalgroups']);
-                $secondary_groups = array();
+                $secondary_groups = [];
                 foreach ($_secondary_groups as $_sec_group) {
                     $sec_group = import_id_remap_get('group', $_sec_group, true);
                     if ($sec_group !== null) {
@@ -347,7 +347,7 @@ class Hook_import_mybb
                     $secondary_groups[] = db_get_first_id() + 1;
                 }
 
-                $custom_fields = array();
+                $custom_fields = [];
                 if ($row['website'] != '') {
                     $custom_fields[cns_make_predefined_content_field('website')] = (strlen($row['website']) > 0) ? ('[url]' . $row['website'] . '[/url]') : '';
                 }
@@ -363,7 +363,7 @@ class Hook_import_mybb
                     $bday_month = (!empty($birthdata[1])) ? $birthdata[1] : null;
                     $bday_year = (!empty($birthdata[2])) ? $birthdata[2] : null;
                 } else {
-                    list($bday_day, $bday_month, $bday_year) = array(null, null, null);
+                    list($bday_day, $bday_month, $bday_year) = [null, null, null];
                 }
 
                 $views_signatures = 1;
@@ -425,7 +425,7 @@ class Hook_import_mybb
                 );
 
                 // Fix usergroup leadership
-                $GLOBALS['FORUM_DB']->query_update('f_groups', array('g_group_leader' => $id_new), array('g_group_leader' => -$row['muid']));
+                $GLOBALS['FORUM_DB']->query_update('f_groups', ['g_group_leader' => $id_new], ['g_group_leader' => -$row['muid']]);
 
                 import_id_remap_put('member', strval($row['muid']), $id_new);
 
@@ -451,7 +451,7 @@ class Hook_import_mybb
         global $STRICT_FILE;
 
         $options = $db->query('SELECT * FROM ' . $table_prefix . 'settings WHERE name LIKE \'' . db_encode_like('%avatar%') . '\' OR ' . db_string_equal_to('name', 'homeurl'));
-        $options_array = array();
+        $options_array = [];
 
         $avatar_path = '';
         $avatar_gallery_path = '';
@@ -477,7 +477,7 @@ class Hook_import_mybb
         $avatar_path = $forum_dir . $avatar_path;
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
             $query = 'SELECT uid,avatar,avatardimensions,avatartype,showavatars FROM ' . $table_prefix . 'users WHERE uid<>-1 ORDER BY uid';
             $rows = $db->query($query, 200, $row_start);
@@ -530,7 +530,7 @@ class Hook_import_mybb
                         break;
                 }
 
-                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_avatar_url' => $avatar_url), array('id' => $member_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_avatar_url' => $avatar_url], ['id' => $member_id], '', 1);
 
                 import_id_remap_put('member_files', strval($row['uid']), 1);
             }
@@ -548,7 +548,7 @@ class Hook_import_mybb
      */
     public function import_ip_bans($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('users u LEFT JOIN ' . $table_prefix . 'banned b ON u.uid=b.uid', array('*'), array('b.gid' => 7));
+        $rows = $db->query_select('users u LEFT JOIN ' . $table_prefix . 'banned b ON u.uid=b.uid', ['*'], ['b.gid' => 7]);
 
         require_code('failure');
 
@@ -613,7 +613,7 @@ class Hook_import_mybb
      */
     public function import_cns_forum_groupings($db, $table_prefix, $old_base_dir)
     {
-        $rows = $db->query_select('forums', array('*'), array('type' => 'c'));
+        $rows = $db->query_select('forums', ['*'], ['type' => 'c']);
         foreach ($rows as $row) {
             if (import_check_if_imported('category', strval($row['fid']))) {
                 continue;
@@ -622,7 +622,7 @@ class Hook_import_mybb
             $title = $row['name'];
             $title = @html_entity_decode($title, ENT_QUOTES);
 
-            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => $title));
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', ['c_title' => $title]);
             if ($test !== null) {
                 import_id_remap_put('category', strval($row['fid']), $test);
                 continue;
@@ -645,7 +645,7 @@ class Hook_import_mybb
     {
         require_code('cns_forums_action2');
 
-        $rows = $db->query_select('forums', array('*'), array('type' => 'f'));
+        $rows = $db->query_select('forums', ['*'], ['type' => 'f']);
         foreach ($rows as $row) {
             $remapped = import_id_remap_get('forum', strval($row['fid']), true);
             if ($remapped !== null) {
@@ -667,9 +667,9 @@ class Hook_import_mybb
             $prev = prev($parentlist);
             $parent_forum = ($prev != $parentlist[0]) ? intval($prev) : db_get_first_id();
 
-            $access_mapping = array();
+            $access_mapping = [];
             if ($row['status'] == 1) {
-                $permissions = $db->query_select('forumpermissions', array('*'), array('fid' => $row['fid']));
+                $permissions = $db->query_select('forumpermissions', ['*'], ['fid' => $row['fid']]);
 
                 foreach ($permissions as $p) {
                     $v = 0;
@@ -704,9 +704,9 @@ class Hook_import_mybb
     public function import_cns_topics($db, $table_prefix, $file_base)
     {
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('threads', array('*'), array('visible' => 1), 'ORDER BY tid', 200, $row_start);
+            $rows = $db->query_select('threads', ['*'], ['visible' => 1], 'ORDER BY tid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic', strval($row['tid']))) {
                     continue;
@@ -746,9 +746,9 @@ class Hook_import_mybb
             $row_start += 200;
         } while (true);
 
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('posts p', array('*'), array(), 'ORDER BY p.pid', 200, $row_start);
+            $rows = $db->query_select('posts p', ['*'], [], 'ORDER BY p.pid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('post', strval($row['pid']))) {
                     continue;
@@ -767,7 +767,7 @@ class Hook_import_mybb
                 $forum_id = import_id_remap_get('forum', strval($row['fid']), true);
 
                 $title = '';
-                $topics = $db->query_select('threads', array('subject'), array('tid' => $row['tid']));
+                $topics = $db->query_select('threads', ['subject'], ['tid' => $row['tid']]);
                 $first_post = $row['dateline'];
                 if ($first_post) {
                     $title = $topics[0]['subject'];
@@ -847,13 +847,13 @@ class Hook_import_mybb
      */
     public function fix_links($post, $db, $table_prefix)
     {
-        $options = $db->query_select('settings', array('*'), array('name' => 'bburl'));
+        $options = $db->query_select('settings', ['*'], ['name' => 'bburl']);
 
         $OLD_BASE_URL = empty($options[0]['value']) ? '' : $options[0]['value'];
 
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showthread\.php\?tid=)(\d*)#', array($this, '_fix_links_callback_topic'), $post);
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(forumdisplay\.php\?fid=)(\d*)#', array($this, '_fix_links_callback_forum'), $post);
-        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(member\.php\?action=profile\&uid=)(\d*)#', array($this, '_fix_links_callback_member'), $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(showthread\.php\?tid=)(\d*)#', [$this, '_fix_links_callback_topic'], $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(forumdisplay\.php\?fid=)(\d*)#', [$this, '_fix_links_callback_forum'], $post);
+        $post = preg_replace_callback('#' . preg_quote($OLD_BASE_URL) . '/(member\.php\?action=profile\&uid=)(\d*)#', [$this, '_fix_links_callback_member'], $post);
         $post = preg_replace('#:[0-9a-f]{10}#', '', $post);
         return $post;
     }
@@ -871,7 +871,7 @@ class Hook_import_mybb
      */
     public function data_to_disk($data, $filename, $sections, $db, $table_prefix = '', $output_filename = '')
     {
-        $options = $db->query_select('settings', array('*'), array('name' => 'bburl'));
+        $options = $db->query_select('settings', ['*'], ['name' => 'bburl']);
 
         $homeurl = empty($options[0]['value']) ? '' : $options[0]['value'];
 
@@ -909,9 +909,9 @@ class Hook_import_mybb
         require_code('attachments3');
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('attachments', array('*'), array(), 'ORDER BY aid', 200, $row_start);
+            $rows = $db->query_select('attachments', ['*'], [], 'ORDER BY aid', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('post_files', strval($row['aid']))) {
                     continue;
@@ -919,7 +919,7 @@ class Hook_import_mybb
 
                 $post_id = import_id_remap_get('post', strval($row['pid']));
 
-                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', array('p_time', 'p_poster', 'p_post'), array('id' => $post_id), '', 1);
+                $post_row = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_time', 'p_poster', 'p_post'], ['id' => $post_id], '', 1);
                 if (!array_key_exists(0, $post_row)) {
                     import_id_remap_put('post_files', strval($row['aid']), 1);
                     continue; // Orphaned post
@@ -929,13 +929,13 @@ class Hook_import_mybb
 
                 $url = $this->data_to_disk('', $row['attachname'], 'attachments', $db, $table_prefix, $row['filename']);
                 $thumb_url = $this->data_to_disk('', $row['thumbnail'], 'attachments_thumbs', $db, $table_prefix, $row['filename']);
-                $attachment_map = array('a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateuploaded'], 'a_description' => '');
+                $attachment_map = ['a_member_id' => $member_id, 'a_file_size' => $row['filesize'], 'a_url' => $url, 'a_thumb_url' => $thumb_url, 'a_original_filename' => $row['filename'], 'a_num_downloads' => $row['downloads'], 'a_last_downloaded_time' => null, 'a_add_time' => $row['dateuploaded'], 'a_description' => ''];
                 $a_id = $GLOBALS['FORUM_DB']->query_insert('attachments', $attachment_map, true);
-                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', array('r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id));
+                $GLOBALS['FORUM_DB']->query_insert('attachment_refs', ['r_referer_type' => 'cns_post', 'r_referer_id' => strval($post_id), 'a_id' => $a_id]);
                 $post .= "\n\n" . '[attachment]' . strval($a_id) . '[/attachment]';
 
                 cns_over_msn();
-                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), array('id' => $post_id), '', 1);
+                $GLOBALS['FORUM_DB']->query_update('f_posts', update_lang_comcode_attachments('p_post', $post_row[0]['p_post'], $post, 'cns_post', strval($post_id)), ['id' => $post_id], '', 1);
                 cns_over_local();
 
                 import_id_remap_put('post_files', strval($row['aid']), 1);
@@ -968,24 +968,24 @@ class Hook_import_mybb
 
             $is_open = 1 - $row['closed'];
 
-            $answers = array();
+            $answers = [];
             $answers_array = explode('||~|~||', $row['options']);
 
-            $answer_map = array();
+            $answer_map = [];
             foreach ($answers_array as $key => $answer) {
                 $answer_map[$key + 1] = count($answers);
                 $answers[] = $answer;
             }
             $maximum = count($answers);
 
-            $rows2 = $db->query_select('pollvotes', array('*'), array('pid' => $row['pid']));
+            $rows2 = $db->query_select('pollvotes', ['*'], ['pid' => $row['pid']]);
             foreach ($rows2 as $row2) {
                 $row2['uid'] = import_id_remap_get('member', strval($row2['uid']), true);
             }
 
             $id_new = cns_make_poll($topic_id, $row['question'], 0, $is_open, 1, $maximum, 0, $answers, false);
 
-            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', array('id'), array('pa_poll_id' => $id_new)));
+            $answers = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['id'], ['pa_poll_id' => $id_new]));
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['uid'];
@@ -995,7 +995,7 @@ class Hook_import_mybb
                     } else {
                         $answer = $answers[$answer_map[$row2['voteoption']]];
                     }
-                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array('pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => ''));
+                    $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', ['pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => '']);
                 }
             }
 
@@ -1012,10 +1012,10 @@ class Hook_import_mybb
      */
     public function import_cns_private_topics($db, $table_prefix, $old_base_dir)
     {
-        $rows = $db->query_select('privatemessages p', array('*'), array(), 'ORDER BY dateline');
+        $rows = $db->query_select('privatemessages p', ['*'], [], 'ORDER BY dateline');
 
         // Group them up into what will become topics
-        $groups = array();
+        $groups = [];
         foreach ($rows as $row) {
             // Do some fiddling around for duplication
             if ($row['fromid'] > $row['toid']) {
@@ -1128,9 +1128,9 @@ class Hook_import_mybb
         require_code('notifications');
 
         $row_start = 0;
-        $rows = array();
+        $rows = [];
         do {
-            $rows = $db->query_select('threadsubscriptions', array('*'), array(), '', 200, $row_start);
+            $rows = $db->query_select('threadsubscriptions', ['*'], [], '', 200, $row_start);
             foreach ($rows as $row) {
                 if (import_check_if_imported('topic_notification', strval($row['tid']) . '-' . strval($row['uid']))) {
                     continue;
@@ -1188,7 +1188,7 @@ class Hook_import_mybb
                 continue;
             }
 
-            $matches = array();
+            $matches = [];
             preg_match('#\[(.*?)\\\]#', $row['regex'], $matches);
             $custom_tag = empty($matches[1]) ? '' : $matches[1];
             $title = $row['title'];
@@ -1199,7 +1199,7 @@ class Hook_import_mybb
             $tag_enabled = $row['active'];
 
             global $VALID_COMCODE_TAGS;
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', array('tag_tag' => $custom_tag));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('custom_comcode', 'tag_tag', ['tag_tag' => $custom_tag]);
             if ((array_key_exists($custom_tag, $VALID_COMCODE_TAGS)) || ($test !== null)) {
                 import_id_remap_put('custom_comcode', strval($row['cid']), 1);
                 continue;
@@ -1229,8 +1229,8 @@ class Hook_import_mybb
      */
     public function import_cns_custom_profile_fields($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('profilefields', array('*'));
-        $members = $db->query_select('userfields', array('*'));
+        $rows = $db->query_select('profilefields', ['*']);
+        $members = $db->query_select('userfields', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('cpf', strval($row['fid']))) {
                 continue;
@@ -1243,7 +1243,7 @@ class Hook_import_mybb
                 $type = 'long_text';
             }
 
-            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $row['name']));
+            $id_new = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', [$GLOBALS['FORUM_DB']->translate_field_ref('cf_name') => $row['name']]);
             if ($id_new === null) {
                 $id_new = cns_make_custom_field($row['name'], 0, $row['description'], '', 1 - $row['hidden'], 1 - $row['hidden'], $row['editable'], 0, $type, $row['required'], 0, 0, $row['disporder'], '', 0, '', 0, 0, '', '', '', true);
             }
@@ -1290,7 +1290,7 @@ class Hook_import_mybb
 
             switch ($event_repeats) {
                 case 1:
-                    $week_array = array(0, 0, 0, 0, 0, 0, 0);
+                    $week_array = [0, 0, 0, 0, 0, 0, 0];
                     $start_day_num = intval(date('w', $row['starttime']));
                     $every_days = $event_repeat_data['days'];
 
@@ -1310,7 +1310,7 @@ class Hook_import_mybb
                     $recurrence = 'daily 1111100';
                     break;
                 case 3:
-                    $week_array = array(0, 0, 0, 0, 0, 0, 0);
+                    $week_array = [0, 0, 0, 0, 0, 0, 0];
                     $week_array[0] = empty($event_repeat_data['days'][0]) ? 1 : 0;
                     $week_array[1] = empty($event_repeat_data['days'][1]) ? 1 : 0;
                     $week_array[2] = empty($event_repeat_data['days'][2]) ? 1 : 0;
@@ -1348,13 +1348,13 @@ class Hook_import_mybb
             cns_over_local();
             if ($row['visible'] == 0) {
                 if (addon_installed('content_privacy')) {
-                    $GLOBALS['SITE_DB']->query_insert('content_privacy', array(
+                    $GLOBALS['SITE_DB']->query_insert('content_privacy', [
                         'content_type' => 'event',
                         'content_id' => strval($id_new),
                         'guest_view' => 0,
                         'member_view' => 0,
                         'friend_view' => 0,
-                    ));
+                    ]);
                 }
             }
 
@@ -1371,7 +1371,7 @@ class Hook_import_mybb
      */
     public function import_cns_multi_moderations($db, $table_prefix, $file_base)
     {
-        $rows = $db->query_select('modtools', array('*'), array('type' => 't'));
+        $rows = $db->query_select('modtools', ['*'], ['type' => 't']);
         foreach ($rows as $row) {
             $mm_forum_multi_code = (!cms_empty_safe($row['forums'])) ? ('+' . $row['forums']) : '*'; //'mm_forum_multi_code'
             $mm_name = $row['name'];
@@ -1385,13 +1385,13 @@ class Hook_import_mybb
 
             $mm_post_text = ($topic_options['replysubject'] != '{subject}') ? preg_replace('#\{username\}#', '', $topic_options['replysubject']) : '';
             $mm_post_text .= ($topic_options['addreply'] != '') ? preg_replace('#\{username\}#', '', $topic_options['addreply']) : '';
-            $map = array(
+            $map = [
                 'mm_forum_multi_code' => $mm_forum_multi_code,
                 'mm_open_state' => $mm_open_state,
                 'mm_move_to' => $mm_move_to,
                 'mm_title_suffix' => $mm_title_suffix,
                 'mm_post_text' => $mm_post_text,
-            );
+            ];
             $map += insert_lang('mm_name', $mm_name, 3, $GLOBALS['FORUM_DB']);
             $GLOBALS['FORUM_DB']->query_insert('f_multi_moderations', $map);
         }

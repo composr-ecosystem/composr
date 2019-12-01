@@ -112,11 +112,11 @@ function read_booking_notes_from_form($prefix)
  */
 function get_booking_request_from_form()
 {
-    $request = array();
+    $request = [];
 
-    $bookables = list_to_map('id', $GLOBALS['SITE_DB']->query_select('bookable', array('*')));
+    $bookables = list_to_map('id', $GLOBALS['SITE_DB']->query_select('bookable', ['*']));
     foreach ($bookables as $bookable_id => $bookable) {
-        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', array('*'));
+        $all_supplements = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['*']);
 
         $quantity = post_param_integer('bookable_' . strval($bookable_id) . '_quantity', 0);
         if ($quantity > 0) {
@@ -143,16 +143,16 @@ function get_booking_request_from_form()
 
             $notes = read_booking_notes_from_form('bookable_' . strval($bookable_id) . '_notes');
 
-            $supplements = array();
+            $supplements = [];
             foreach ($all_supplements as $supplement) {
                 $s_quantity = post_param_integer('bookable_' . strval($bookable_id) . '_supplement_' . strval($supplement['id']) . '_quantity', 0);
                 if ($s_quantity > 0) {
                     $s_notes = read_booking_notes_from_form('bookable_' . strval($bookable_id) . '_supplement_' . strval($supplement['id']) . '_notes');
 
-                    $supplements[$supplement['id']] = array(
+                    $supplements[$supplement['id']] = [
                         'quantity' => $s_quantity,
                         'notes' => $s_notes,
-                    );
+                    ];
                 }
             }
 
@@ -162,7 +162,7 @@ function get_booking_request_from_form()
                 warn_exit(do_lang_tempcode('EMAIL_ADDRESS_MISMATCH'));
             }
 
-            $request[] = array(
+            $request[] = [
                 'bookable_id' => $bookable_id,
                 'start_day' => $start_day,
                 'start_month' => $start_month,
@@ -177,7 +177,7 @@ function get_booking_request_from_form()
                 'customer_email' => $customer_email,
                 'customer_mobile' => post_param_string('customer_mobile', ''),
                 'customer_phone' => post_param_string('customer_phone', ''),
-            );
+            ];
         }
     }
 
@@ -239,7 +239,7 @@ function add_booking($request, $member_id)
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // Should not be possible, as we already checked availability
                 }
 
-                $row = array(
+                $row = [
                     'bookable_id' => $req['bookable_id'],
                     'member_id' => $member_id,
                     'b_day' => $day,
@@ -254,22 +254,22 @@ function add_booking($request, $member_id)
                     'customer_email' => $req['customer_email'],
                     'customer_mobile' => $req['customer_mobile'],
                     'customer_phone' => $req['customer_phone'],
-                );
+                ];
                 $booking_id = $GLOBALS['SITE_DB']->query_insert('booking', $row, true);
 
                 if (!array_key_exists('_rows', $request[$rid])) {
-                    $request[$rid]['_rows'] = array();
+                    $request[$rid]['_rows'] = [];
                 }
                 $request[$rid]['_rows'][] = $row;
 
                 // Supplements
                 foreach ($req['supplements'] as $supplement_id => $supplement) {
-                    $GLOBALS['SITE_DB']->query_insert('booking_supplement', array(
+                    $GLOBALS['SITE_DB']->query_insert('booking_supplement', [
                         'booking_id' => $booking_id,
                         'supplement_id' => $supplement_id,
                         'quantity' => $supplement['quantity'],
                         'notes' => $supplement['notes'],
-                    ));
+                    ]);
                 }
             }
         }
@@ -290,7 +290,7 @@ function add_booking($request, $member_id)
  */
 function find_free_bookable_code($bookable_id, $day, $month, $year, $preferred_code)
 {
-    $_available = $GLOBALS['SITE_DB']->query_select('bookable_codes a LEFT JOIN ' . get_table_prefix() . 'booking b ON a.code=b.code_allocation AND a.bookable_id=b.bookable_id AND b.b_day=' . strval($day) . ' AND b.b_month=' . strval($month) . ' AND b.b_year=' . strval($year), array('code'), array('b.id' => null, 'a.bookable_id' => $bookable_id));
+    $_available = $GLOBALS['SITE_DB']->query_select('bookable_codes a LEFT JOIN ' . get_table_prefix() . 'booking b ON a.code=b.code_allocation AND a.bookable_id=b.bookable_id AND b.b_day=' . strval($day) . ' AND b.b_month=' . strval($month) . ' AND b.b_year=' . strval($year), ['code'], ['b.id' => null, 'a.bookable_id' => $bookable_id]);
     $available = collapse_1d_complexity('code', $_available);
     if (in_array($preferred_code, $available)) {
         return $preferred_code;
@@ -345,7 +345,7 @@ function find_booking_price($request)
         foreach ($part['supplements'] as $supplement_id => $supplement_part) {
             $supplement_quantity = $supplement_part['quantity'];
 
-            $_supplement = $GLOBALS['SITE_DB']->query_select('bookable_supplement', array('*'), array('id' => $supplement_id), '', 1);
+            $_supplement = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['*'], ['id' => $supplement_id], '', 1);
             if (array_key_exists(0, $_supplement)) {
                 $price += $_supplement[0]['price'] * $supplement_quantity * (($_supplement[0]['price_is_per_period'] == 1) ? count($days) : 1);
 
@@ -367,7 +367,7 @@ function find_booking_price($request)
  */
 function find_bookable_price($bookable_id)
 {
-    return $GLOBALS['SITE_DB']->query_select_value('bookable', 'price', array('id' => $bookable_id));
+    return $GLOBALS['SITE_DB']->query_select_value('bookable', 'price', ['id' => $bookable_id]);
 }
 
 /**
@@ -386,13 +386,13 @@ function days_in_range($start_day, $start_month, $start_year, $end_day, $end_mon
     $start_date = mktime(0, 0, 0, $start_month, $start_day, $start_year);
     $end_date = mktime(0, 0, 0, $end_month, $end_day, $end_year);
 
-    $days = array();
-    $days[] = array(intval(date('d', $start_date)), intval(date('m', $start_date)), intval(date('Y', $start_date)));
+    $days = [];
+    $days[] = [intval(date('d', $start_date)), intval(date('m', $start_date)), intval(date('Y', $start_date))];
 
     $current_date = $start_date;
     while ($current_date < $end_date) {
         $current_date = strtotime('+1 day', $current_date);
-        $days[] = array(intval(date('d', $current_date)), intval(date('m', $current_date)), intval(date('Y', $current_date)));
+        $days[] = [intval(date('d', $current_date)), intval(date('m', $current_date)), intval(date('Y', $current_date))];
     }
 
     return $days;
@@ -414,12 +414,12 @@ function booking_date_available($bookable_id, $day, $month, $year, $quantity, $i
     $asked = mktime(0, 0, 0, $month, $day, $year);
 
     // Check bookable exists
-    $_bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array('id' => $bookable_id), '', 1);
+    $_bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $bookable_id], '', 1);
     if (!array_key_exists(0, $_bookable_row)) {
         return do_lang_tempcode('INTERNAL_ERROR');
     }
     $bookable_row = $_bookable_row[0];
-    $codes_in_total = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', array('bookable_id' => $bookable_id));
+    $codes_in_total = $GLOBALS['SITE_DB']->query_select_value('bookable_codes', 'COUNT(*)', ['bookable_id' => $bookable_id]);
 
     // Check bookable enabled
     if ($bookable_row['enabled'] == 0) {
@@ -439,7 +439,7 @@ function booking_date_available($bookable_id, $day, $month, $year, $quantity, $i
     }
 
     // Check bookable is not blacked for time
-    $blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked b JOIN ' . get_table_prefix() . 'bookable_blacked_for f ON f.blacked_id=b.id', array('*'), array('f.bookable_id' => $bookable_id));
+    $blacks = $GLOBALS['SITE_DB']->query_select('bookable_blacked b JOIN ' . get_table_prefix() . 'bookable_blacked_for f ON f.blacked_id=b.id', ['*'], ['f.bookable_id' => $bookable_id]);
     foreach ($blacks as $black) {
         $from = mktime(0, 0, 0, $black['blacked_from_month'], $black['blacked_from_day'], $black['blacked_from_year']);
         $to = mktime(0, 0, 0, $black['blacked_to_month'], $black['blacked_to_day'], $black['blacked_to_year']);
@@ -483,7 +483,7 @@ function send_booking_emails($request)
         $customer_name = $request[0]['customer_name'];
     }
 
-    $tpl_map = array(
+    $tpl_map = [
         'EMAIL_ADDRESS' => $customer_email,
         'MEMBER_ID' => strval(get_member()),
         'USERNAME' => $customer_name,
@@ -491,34 +491,34 @@ function send_booking_emails($request)
         'DETAILS' => make_booking_request_printable($request),
         'MOBILE_NUMBER' => $request[0]['customer_mobile'],
         'PHONE_NUMBER' => $request[0]['customer_phone'],
-    );
+    ];
 
     // Send receipt to customer
     $receipt = do_notification_template('BOOKING_CONFIRM_FCOMCODE', $tpl_map);
     $subject = do_lang('SUBJECT_BOOKING_CONFIRM', get_site_name());
     $body = static_evaluate_tempcode($receipt);
     if (get_option('member_booking_only') == '1') {
-        dispatch_notification('booking_customer', null, $subject, $body, array(get_member()), A_FROM_SYSTEM_PRIVILEGED);
+        dispatch_notification('booking_customer', null, $subject, $body, [get_member()], A_FROM_SYSTEM_PRIVILEGED);
     } else {
         require_code('mail');
-        dispatch_mail($subject, $body, array($customer_email), $customer_name);
+        dispatch_mail($subject, $body, [$customer_email], $customer_name);
     }
 
     // Send notice to staff
     $subject = do_lang('SUBJECT_BOOKING_NOTICE', $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true), get_site_name(), $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
     $notice = do_notification_template(
         'BOOKING_NOTICE_FCOMCODE',
-        array(
+        [
             '_GUID' => 'd223b42f024f853f63cd9908155667a8',
             'EMAIL_ADDRESS' => $customer_email,
             'MEMBER_ID' => strval(get_member()),
             'USERNAME' => $customer_name,
             'PRICE' => float_format(find_booking_price($request)),
             'DETAILS' => make_booking_request_printable($request),
-        ),
+        ],
         get_site_default_lang()
     );
-    dispatch_notification('booking_inform_staff', null, $subject, static_evaluate_tempcode($notice), null, null, array('priority' => 2));
+    dispatch_notification('booking_inform_staff', null, $subject, static_evaluate_tempcode($notice), null, null, ['priority' => 2]);
 }
 
 /**
@@ -529,15 +529,15 @@ function send_booking_emails($request)
  */
 function make_booking_request_printable($request)
 {
-    $out = array();
+    $out = [];
 
     foreach ($request as $_part) {
         $start = mktime(0, 0, 0, $_part['start_month'], $_part['start_day'], $_part['start_year']);
         $end = mktime(0, 0, 0, $_part['end_month'], $_part['end_day'], $_part['end_year']);
 
-        $bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array('id' => $_part['bookable_id']), '', 1);
+        $bookable_row = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $_part['bookable_id']], '', 1);
 
-        $part = array(
+        $part = [
             'BOOKABLE_TITLE' => get_translated_tempcode('bookable', $bookable_row[0], 'title'),
             'PRICE' => float_format($bookable_row[0]['price']),
             'CATEGORISATION' => get_translated_text($bookable_row[0]['categorisation']),
@@ -549,19 +549,19 @@ function make_booking_request_printable($request)
             '_START' => strval($start),
             '_END' => strval($end),
             'NOTES' => $_part['notes'],
-            'SUPPLEMENTS' => array(),
-        );
+            'SUPPLEMENTS' => [],
+        ];
         foreach ($_part['supplements'] as $supplement_id => $supplement) {
-            $supplement_row = $GLOBALS['SITE_DB']->query_select('bookable_supplement', array('*'), array('id' => $supplement_id), '', 1);
+            $supplement_row = $GLOBALS['SITE_DB']->query_select('bookable_supplement', ['*'], ['id' => $supplement_id], '', 1);
 
-            $part['SUPPLEMENTS'][] = array(
+            $part['SUPPLEMENTS'][] = [
                 'SUPPLEMENT_TITLE' => get_translated_tempcode('bookable_supplement', $supplement_row[0], 'title'),
                 'SUPPLEMENT_PRICE' => float_format($supplement_row[0]['price']),
                 'SUPPLEMENT_PRICE_IS_PER_PERIOD' => $supplement_row[0]['price_is_per_period'] == 1,
                 'SUPPLEMENT_QUANTITY' => integer_format($supplement['quantity']),
                 '_SUPPLEMENT_QUANTITY' => strval($supplement['quantity']),
                 'SUPPLEMENT_NOTES' => $supplement['notes'],
-            );
+            ];
         }
 
         $out[] = $part;

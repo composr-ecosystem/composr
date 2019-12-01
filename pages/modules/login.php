@@ -30,7 +30,7 @@ class Module_login
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -58,16 +58,16 @@ class Module_login
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('failedlogins', array(
+            $GLOBALS['SITE_DB']->create_table('failedlogins', [
                 'id' => '*AUTO',
                 'failed_account' => 'ID_TEXT',
                 'date_and_time' => 'TIME',
                 'ip' => 'IP',
-            ));
+            ]);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 3)) {
-            $GLOBALS['SITE_DB']->create_index('failedlogins', 'failedlogins_by_ip', array('ip'));
+            $GLOBALS['SITE_DB']->create_index('failedlogins', 'failedlogins_by_ip', ['ip']);
         }
     }
 
@@ -83,15 +83,15 @@ class Module_login
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
         if ($check_perms && is_guest($member_id)) {
-            return array(
-                'browse' => array('_LOGIN', 'menu/site_meta/user_actions/login'),
-            );
+            return [
+                'browse' => ['_LOGIN', 'menu/site_meta/user_actions/login'],
+            ];
         }
-        $ret = array(
-            'browse' => array('_LOGIN', 'menu/site_meta/user_actions/login'),
+        $ret = [
+            'browse' => ['_LOGIN', 'menu/site_meta/user_actions/login'],
             //'logout' => array('LOGOUT', 'menu/site_meta/user_actions/logout'), Don't show an immediate action, don't want accidental preloading
             //'concede' => array('CONCEDED_MODE', 'menu/site_meta/user_actions/concede'), Don't show an immediate action, don't want accidental preloading
-        );
+        ];
         /*
         if (get_option('is_on_invisibility') == '1')
             $ret['invisible'] = array('INVISIBLE', 'menu/site_meta/user_actions/invisible'); Don't show an immediate action, don't want accidental preloading
@@ -114,18 +114,18 @@ class Module_login
     {
         $type = get_param_string('type', 'browse');
 
-        $this->fields_to_not_relay = array('username', 'password', 'remember', 'login_invisible', 'redirect', 'session_id');
+        $this->fields_to_not_relay = ['username', 'password', 'remember', 'login_invisible', 'redirect', 'session_id'];
 
         if ($type == 'browse') {
             $this->title = get_screen_title('_LOGIN');
 
             attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
 
-            breadcrumb_set_parents(array());
+            breadcrumb_set_parents([]);
         }
 
         if ($type == 'login') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_LOGIN'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_LOGIN')]]);
 
             $username = trim(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES));
 
@@ -205,16 +205,16 @@ class Module_login
         $redirect_default = get_self_url(true); // The default is to go back to where we are after login. Note that this is not necessarily the URL to the login module, as login screens happen on top of screens you're not allowed to access. If it is the URL to the login module, we'll realise this later in this code. This URL is coded to not redirect to root if we have $_POST, because we relay $_POST values and have intelligence (via $passion).
         $redirect = get_param_string('redirect', $redirect_default, INPUT_FILTER_URL_INTERNAL); // ... but often the login screen's URL tells us where to go back to
         $unhelpful_redirect = false;
-        $unhelpful_url_stubs = array(
-            static_evaluate_tempcode(build_url(array('page' => 'login'), '', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login'), '_SELF', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'browse'), '_SELF', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'login'), '_SELF', array(), false, false, true)),
-            static_evaluate_tempcode(build_url(array('page' => 'login', 'type' => 'logout'), '_SELF', array(), false, false, true)),
-        );
+        $unhelpful_url_stubs = [
+            static_evaluate_tempcode(build_url(['page' => 'login'], '', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'browse'], '', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'login'], '', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'logout'], '', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login'], '_SELF', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'browse'], '_SELF', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'login'], '_SELF', [], false, false, true)),
+            static_evaluate_tempcode(build_url(['page' => 'login', 'type' => 'logout'], '_SELF', [], false, false, true)),
+        ];
         foreach ($unhelpful_url_stubs as $unhelpful_url_stub) {
             if (substr($redirect, 0, strlen($unhelpful_url_stub)) == $unhelpful_url_stub) {
                 $unhelpful_redirect = true;
@@ -225,7 +225,7 @@ class Module_login
             $passion->attach(form_input_hidden('redirect', $redirect));
         } else { // We will only go to the zone-default page if an explicitly blank redirect URL is given or if the redirect would take us direct to another login or logout page
             global $ZONE;
-            $_url = build_url(array('page' => $ZONE['zone_default_page']), '_SELF');
+            $_url = build_url(['page' => $ZONE['zone_default_page']], '_SELF');
             $url = $_url->evaluate();
             $passion->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter($url))));
         }
@@ -248,7 +248,7 @@ class Module_login
         // Lost password link
         if (get_forum_type() == 'cns' && !has_interesting_post_fields()) {
             require_lang('cns');
-            $lost_password_url = build_url(array('page' => 'lost_password', 'wide_high' => get_param_integer('wide_high', null)), get_module_zone('lost_password'));
+            $lost_password_url = build_url(['page' => 'lost_password', 'wide_high' => get_param_integer('wide_high', null)], get_module_zone('lost_password'));
             $extra = do_lang_tempcode('cns:IF_FORGOTTEN_PASSWORD', escape_html($lost_password_url->evaluate()));
         } else {
             $extra = new Tempcode();
@@ -260,13 +260,13 @@ class Module_login
         }
 
         // Render
-        $login_url = build_url(array('page' => '_SELF', 'type' => 'login'), '_SELF');
+        $login_url = build_url(['page' => '_SELF', 'type' => 'login'], '_SELF');
         require_css('login');
         $username = trim(get_param_string('username', ''));
         if (!is_guest()) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), false, USERNAME_DEFAULT_BLANK);
         }
-        return do_template('LOGIN_SCREEN', array(
+        return do_template('LOGIN_SCREEN', [
             '_GUID' => '0940dbf2c42493c53b7e99eb50ca51f1',
             'EXTRA' => $extra,
             'USERNAME' => $username,
@@ -274,7 +274,7 @@ class Module_login
             'TITLE' => $this->title,
             'LOGIN_URL' => $login_url,
             'PASSION' => $passion,
-        ));
+        ]);
     }
 
     /**
@@ -299,7 +299,7 @@ class Module_login
                         if ($zone === null) {
                             $zone = 'site';
                         }
-                        $url = static_evaluate_tempcode(build_url(array('page' => $page_after_login), $zone));
+                        $url = static_evaluate_tempcode(build_url(['page' => $page_after_login], $zone));
                     } else {
                         $url = page_link_to_url($page_after_login);
                     }
@@ -315,18 +315,18 @@ class Module_login
                 if ($redirect_passon !== null) {
                     $post->attach(form_input_hidden('redirect', static_evaluate_tempcode(protect_url_parameter(enforce_sessioned_url($redirect_passon)))));
                 }
-                $refresh = do_template('JS_REFRESH', array('_GUID' => 'c7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form'));
+                $refresh = do_template('JS_REFRESH', ['_GUID' => 'c7d2f9e7a2cc637f3cf9ac4d1cf97eca', 'FORM_NAME' => 'redir-form']);
             }
             delete_cache_entry('side_users_online');
 
-            return do_template('REDIRECT_POST_METHOD_SCREEN', array(
+            return do_template('REDIRECT_POST_METHOD_SCREEN', [
                 '_GUID' => '82e056de9150bbed185120eac3571f40',
                 'REFRESH' => $refresh,
                 'TITLE' => $this->title,
                 'TEXT' => do_lang_tempcode('_LOGIN_TEXT'),
                 'URL' => $url,
                 'POST' => $post,
-            ));
+            ]);
         } else {
             $text = $feedback['error'];
 
@@ -336,14 +336,14 @@ class Module_login
                 require_lang('cns');
 
                 if ($text->evaluate() == do_lang('MEMBER_BAD_PASSWORD') || $text->evaluate() == do_lang('MEMBER_INVALID_LOGIN')) {
-                    $lost_password_url = build_url(array('page' => 'lost_password'), get_module_zone('lost_password'));
+                    $lost_password_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
                     $extra = do_lang_tempcode('IF_FORGOTTEN_PASSWORD', escape_html($lost_password_url->evaluate()));
 
                     attach_message($extra, 'inform');
                 }
 
                 if ($text->evaluate() == do_lang('MEMBER_NOT_VALIDATED_EMAIL')) {
-                    $lost_password_url = build_url(array('page' => 'lost_password'), get_module_zone('lost_password'));
+                    $lost_password_url = build_url(['page' => 'lost_password'], get_module_zone('lost_password'));
                     $extra = do_lang_tempcode('IF_NO_CONFIRM', escape_html($lost_password_url->evaluate()));
 
                     attach_message($extra, 'inform');
@@ -365,7 +365,7 @@ class Module_login
 
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => ''), '', array('keep_session' => true));
+            $_url = build_url(['page' => ''], '', ['keep_session' => true]);
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, do_lang_tempcode('_LOGGED_OUT'));
@@ -378,7 +378,7 @@ class Module_login
      */
     public function concede()
     {
-        $GLOBALS['SITE_DB']->query_update('sessions', array('session_confirmed' => 0), array('member_id' => get_member(), 'the_session' => get_session_id()), '', 1);
+        $GLOBALS['SITE_DB']->query_update('sessions', ['session_confirmed' => 0], ['member_id' => get_member(), 'the_session' => get_session_id()], '', 1);
         global $SESSION_CACHE;
         if ($SESSION_CACHE[get_session_id()]['member_id'] == get_member()) { // A little security
             $SESSION_CACHE[get_session_id()]['session_confirmed'] = 0;
@@ -389,7 +389,7 @@ class Module_login
 
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => ''), '');
+            $_url = build_url(['page' => ''], '');
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, do_lang_tempcode('LOGIN_CONCEDED'));
@@ -409,7 +409,7 @@ class Module_login
 
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url == '') {
-            $_url = build_url(array('page' => ''), '');
+            $_url = build_url(['page' => ''], '');
             $url = $_url->evaluate();
         }
         return redirect_screen($this->title, $url, do_lang_tempcode('NOW_INVISIBLE'));

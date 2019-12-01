@@ -31,7 +31,7 @@ For: php_oci8.dll
  */
 class Database_Static_oracle extends DatabaseDriver
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
 
     /**
      * Get the default user for making db connections (used by the installer as a default).
@@ -201,19 +201,19 @@ class Database_Static_oracle extends DatabaseDriver
      */
     public function get_query_rows($stmt, $query, $start)
     {
-        $out = array();
+        $out = [];
         $i = 0;
 
         $num_fields = ocinumcols($stmt);
-        $types = array();
-        $names = array();
+        $types = [];
+        $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
             $types[$x] = ocicolumntype($stmt, $x);
             $names[$x] = strtolower(ocicolumnname($stmt, $x));
         }
         while (ocifetch($stmt)) {
             if ($i >= $start) {
-                $newrow = array();
+                $newrow = [];
 
                 for ($j = 1; $j <= $num_fields; $j++) {
                     $v = ociresult($stmt, $j);
@@ -260,7 +260,7 @@ class Database_Static_oracle extends DatabaseDriver
      */
     public function get_type_remap($for_alter = false)
     {
-        $type_remap = array(
+        $type_remap = [
             'AUTO' => 'integer',
             'AUTO_LINK' => 'integer',
             'INTEGER' => 'integer',
@@ -282,7 +282,7 @@ class Database_Static_oracle extends DatabaseDriver
             'IP' => 'varchar(40)',
             'LANGUAGE_NAME' => 'varchar(5)',
             'URLPATH' => 'varchar(255)',
-        );
+        ];
         return $type_remap;
     }
 
@@ -334,7 +334,7 @@ class Database_Static_oracle extends DatabaseDriver
             $_fields .= ' ' . $perhaps_null . ',' . "\n";
         }
 
-        $queries = array();
+        $queries = [];
 
         $queries[] = 'CREATE TABLE ' . $table_name . ' (' . "\n" . $_fields . '    PRIMARY KEY (' . $keys . ")\n)";
 
@@ -381,7 +381,7 @@ class Database_Static_oracle extends DatabaseDriver
     public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix)
     {
         if ($index_name[0] == '#') {
-            $ret = array();
+            $ret = [];
             $index_name = substr($index_name, 1);
             $fields = explode(',', $_fields);
             foreach ($fields as $field) {
@@ -406,11 +406,11 @@ class Database_Static_oracle extends DatabaseDriver
             if ((strpos($field_type, 'LONG') !== false) || ((!multi_lang_content()) && (strpos($field_type, 'SHORT_TRANS') !== false))) {
                 // We can't support this in Oracle http://www.oratable.com/ora-01450-maximum-key-length-exceeded/.
                 // We assume shorter numbers than 250 are only being used on short columns anyway, which will index perfectly fine without any constraint.
-                return array();
+                return [];
             }
         }
 
-        return array('CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')');
+        return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . '(' . $_fields . ')'];
     }
 
     /**

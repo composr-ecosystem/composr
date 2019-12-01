@@ -26,7 +26,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,11 +106,11 @@ class Hook_addon_registry_better_mail
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -130,7 +130,7 @@ class Hook_addon_registry_better_mail
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/better_mail.php',
             'sources_custom/mail.php',
             'sources_custom/swift_mailer/.htaccess',
@@ -341,6 +341,6 @@ class Hook_addon_registry_better_mail
             'sources_custom/swift_mailer/VERSION',
             'sources_custom/swift_mailer/lib/classes/Swift/Signers/.htaccess',
             'sources_custom/hooks/systems/health_checks/email.php',
-        );
+        ];
     }
 }

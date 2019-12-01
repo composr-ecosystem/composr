@@ -30,7 +30,7 @@ class Module_admin_quiz
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,12 +55,12 @@ class Module_admin_quiz
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_QUIZZES', 'menu/rich_content/quiz'),
-            'find_winner' => array('FIND_WINNER', 'menu/cms/quiz/find_winners'),
-            'quiz_results' => array('QUIZ_RESULTS', 'menu/cms/quiz/quiz_results'),
-            'export' => array('EXPORT_QUIZ', 'admin/export_spreadsheet'),
-        );
+        return [
+            'browse' => ['MANAGE_QUIZZES', 'menu/rich_content/quiz'],
+            'find_winner' => ['FIND_WINNER', 'menu/cms/quiz/find_winners'],
+            'quiz_results' => ['QUIZ_RESULTS', 'menu/cms/quiz/quiz_results'],
+            'export' => ['EXPORT_QUIZ', 'admin/export_spreadsheet'],
+        ];
     }
 
     public $title;
@@ -88,17 +88,17 @@ class Module_admin_quiz
         set_helper_panel_tutorial('tut_quizzes');
 
         if ($type == 'browse') {
-            $also_url = build_url(array('page' => 'cms_quiz'), get_module_zone('cms_quiz'));
+            $also_url = build_url(['page' => 'cms_quiz'], get_module_zone('cms_quiz'));
             attach_message(do_lang_tempcode('menus:ALSO_SEE_CMS', escape_html($also_url->evaluate())), 'inform', true);
         }
 
         if ($type == 'find_winner') {
             breadcrumb_set_self(do_lang_tempcode('CHOOSE'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')]]);
         }
 
         if ($type == '_find_winner') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')), array('_SELF:_SELF:find_winner', do_lang_tempcode('CHOOSE'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')], ['_SELF:_SELF:find_winner', do_lang_tempcode('CHOOSE')]]);
         }
 
         if ($type == 'quiz_results') {
@@ -106,18 +106,18 @@ class Module_admin_quiz
         }
 
         if ($type == '_quiz_results') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')]]);
         }
 
         if ($type == '__quiz_results') {
             $id = get_param_integer('id'); // entry ID
-            $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', array('*'), array('id' => $id), '', 1);
+            $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['*'], ['id' => $id], '', 1);
             if (!array_key_exists(0, $rows)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
             $row = $rows[0];
 
-            breadcrumb_set_parents(array(array('_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')), array('_SELF:_SELF:_quiz_results:' . strval($row['q_quiz']), do_lang_tempcode('QUIZ_RESULTS'))));
+            breadcrumb_set_parents([['_SELF:_SELF', do_lang_tempcode('MANAGE_QUIZZES')], ['_SELF:_SELF:_quiz_results:' . strval($row['q_quiz']), do_lang_tempcode('QUIZ_RESULTS')]]);
             breadcrumb_set_self(do_lang_tempcode('RESULT'));
 
             $this->row = $row;
@@ -201,11 +201,11 @@ class Module_admin_quiz
         return do_next_manager(
             get_screen_title('MANAGE_QUIZZES'),
             comcode_lang_string('DOC_QUIZZES'),
-            array(
-                array('menu/cms/quiz/find_winners', array('_SELF', array('type' => 'find_winner'), '_SELF'), do_lang('FIND_WINNERS')),
-                array('menu/cms/quiz/quiz_results', array('_SELF', array('type' => 'quiz_results'), '_SELF'), do_lang('QUIZ_RESULTS')),
-                array('admin/export_spreadsheet', array('_SELF', array('type' => 'export'), '_SELF'), do_lang('EXPORT_QUIZ')),
-            ),
+            [
+                ['menu/cms/quiz/find_winners', ['_SELF', ['type' => 'find_winner'], '_SELF'], do_lang('FIND_WINNERS')],
+                ['menu/cms/quiz/quiz_results', ['_SELF', ['type' => 'quiz_results'], '_SELF'], do_lang('QUIZ_RESULTS')],
+                ['admin/export_spreadsheet', ['_SELF', ['type' => 'export'], '_SELF'], do_lang('EXPORT_QUIZ')],
+            ],
             do_lang('MANAGE_QUIZZES')
         );
     }
@@ -217,7 +217,7 @@ class Module_admin_quiz
      */
     public function create_selection_list_entries()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', array('id', 'q_name'), array(), 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['id', 'q_name'], [], 'ORDER BY q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -242,10 +242,10 @@ class Module_admin_quiz
 
         $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), do_lang_tempcode('DESCRIPTION_QUIZZES_EXPORT'), 'quiz_id', $quiz_list));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_export'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_export'], '_SELF');
         $submit_name = do_lang_tempcode('EXPORT_QUIZ');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '3110ee0e917e2e0f83a41ab27ec7eafe',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('EXPORT_QUIZ_TEXT'),
@@ -255,7 +255,7 @@ class Module_admin_quiz
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'POST' => true,
-        ));
+        ]);
     }
 
     /**
@@ -268,7 +268,7 @@ class Module_admin_quiz
         $quiz_id = post_param_integer('quiz_id');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_QUIZ'), $this->title, 'export_quiz', array($quiz_id));
+        return call_user_func_array__long_task(do_lang('EXPORT_QUIZ'), $this->title, 'export_quiz', [$quiz_id]);
     }
 
     /**
@@ -278,7 +278,7 @@ class Module_admin_quiz
      */
     public function find_winner()
     {
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('q_type' => 'COMPETITION'), 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['q_type' => 'COMPETITION'], 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name'])));
@@ -290,11 +290,11 @@ class Module_admin_quiz
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_find_winner'), '_SELF');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_find_winner'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
         $text = do_lang_tempcode('CHOOSE_WINNERS');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '830097b15c232b10a8204cfed86082de',
             'HIDDEN' => '',
             'SKIP_WEBSTANDARDS' => true,
@@ -304,7 +304,7 @@ class Module_admin_quiz
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -317,19 +317,19 @@ class Module_admin_quiz
         $id = post_param_integer('id');
 
         // Test to see if we have not yet chosen winners
-        $winners = $GLOBALS['SITE_DB']->query_select('quiz_winner', array('q_entry'), array('q_quiz' => $id));
+        $winners = $GLOBALS['SITE_DB']->query_select('quiz_winner', ['q_entry'], ['q_quiz' => $id]);
         if (!array_key_exists(0, $winners)) {
             // Close competition
-            $close_time = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_close_time', array('id' => $id));
+            $close_time = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_close_time', ['id' => $id]);
             if ($close_time === null) {
-                $GLOBALS['SITE_DB']->query_update('quizzes', array('q_close_time' => time()), array('id' => $id), '', 1);
+                $GLOBALS['SITE_DB']->query_update('quizzes', ['q_close_time' => time()], ['id' => $id], '', 1);
             }
 
             // Choose all entries
             $entries = $GLOBALS['SITE_DB']->query('SELECT id,q_member,q_results FROM ' . get_table_prefix() . 'quiz_entries WHERE q_quiz=' . strval($id) . ' AND q_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY q_results DESC');
 
             // Choose the maximum number of rows we'll need who could potentially win
-            $num_winners = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_num_winners', array('id' => $id));
+            $num_winners = $GLOBALS['SITE_DB']->query_select_value('quizzes', 'q_num_winners', ['id' => $id]);
             if ($num_winners == 0) {
                 $num_winners = 3; // Having 0 helps nobody, and having more than 0 if zero set hurts nobody
             }
@@ -341,11 +341,11 @@ class Module_admin_quiz
             } else {
                 $min = $entries[$num_winners]['q_results'];
             }
-            $filtered_entries = array();
+            $filtered_entries = [];
             foreach ($entries as $entry) {
                 if ($entry['q_results'] >= $min) {
                     if (!array_key_exists($entry['q_results'], $filtered_entries)) {
-                        $filtered_entries[$entry['q_results']] = array();
+                        $filtered_entries[$entry['q_results']] = [];
                     }
 
                     // Shuffle around this level
@@ -368,13 +368,13 @@ class Module_admin_quiz
                 $_entry = array_shift($temp);
                 if ($_entry !== null) {
                     $filtered_entries[$k[0]] = $temp;
-                    $winners[] = array('q_entry' => $_entry['id']);
+                    $winners[] = ['q_entry' => $_entry['id']];
 
-                    $GLOBALS['SITE_DB']->query_insert('quiz_winner', array(
+                    $GLOBALS['SITE_DB']->query_insert('quiz_winner', [
                         'q_quiz' => $id,
                         'q_entry' => $_entry['id'],
                         'q_winner_level' => $i,
-                    ));
+                    ]);
                 } else {
                     break;
                 }
@@ -383,7 +383,7 @@ class Module_admin_quiz
 
         $_winners = new Tempcode();
         foreach ($winners as $i => $winner) {
-            $member_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_member', array('id' => $winner['q_entry']));
+            $member_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_member', ['id' => $winner['q_entry']]);
             $url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
             switch ($i) {
                 case 0:
@@ -399,17 +399,17 @@ class Module_admin_quiz
                     $name = do_lang_tempcode('WINNER', escape_html(integer_format($i + 1)), $GLOBALS['FORUM_DRIVER']->get_username($member_id));
                     break;
             }
-            $_winners->attach(do_template('INDEX_SCREEN_ENTRY', array('_GUID' => '85f558c8dc99b027dbf4de821de0e419', 'URL' => $url, 'NAME' => $name, 'TARGET' => '_blank')));
+            $_winners->attach(do_template('INDEX_SCREEN_ENTRY', ['_GUID' => '85f558c8dc99b027dbf4de821de0e419', 'URL' => $url, 'NAME' => $name, 'TARGET' => '_blank']));
         }
 
         // Show the winners
-        return do_template('INDEX_SCREEN', array(
+        return do_template('INDEX_SCREEN', [
             '_GUID' => 'd427ec7300a325ee4f00020ea59468e2',
             'TITLE' => $this->title,
             'CONTENT' => $_winners,
             'PRE' => do_lang_tempcode('WINNERS_FOUND_AS_FOLLOWS'),
             'POST' => do_lang_tempcode('WINNERS_HANDLING'),
-        ));
+        ]);
     }
 
     /**
@@ -419,13 +419,13 @@ class Module_admin_quiz
      */
     public function quiz_results()
     {
-        $where = array();
+        $where = [];
         $type = get_param_string('q_type', null);
         if ($type !== null) {
             $where['q_type'] = $type;
         }
 
-        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
+        $_m = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], $where, 'ORDER BY q_validated DESC,q_add_date DESC', intval(get_option('general_safety_listing_limit')));
         $entries = new Tempcode();
         foreach ($_m as $m) {
             $entries->attach(form_input_list_entry(strval($m['id']), false, get_translated_text($m['q_name']) . ' (' . do_lang($m['q_type']) . ')'));
@@ -437,10 +437,10 @@ class Module_admin_quiz
         $fields = new Tempcode();
         $fields->attach(form_input_list(do_lang_tempcode('QUIZ'), '', 'id', $entries, null, true));
 
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_quiz_results'), '_SELF', array(), false, true);
+        $post_url = build_url(['page' => '_SELF', 'type' => '_quiz_results'], '_SELF', [], false, true);
         $submit_name = do_lang_tempcode('QUIZ_RESULTS');
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => '03f611727000c1cb1c40780773bb8ebd',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
@@ -451,7 +451,7 @@ class Module_admin_quiz
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
-        ));
+        ]);
     }
 
     /**
@@ -470,18 +470,18 @@ class Module_admin_quiz
 
         // Show summary
         if ($id !== null) {
-            $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $id), 'ORDER BY q_order,id');
+            $question_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', ['*'], ['q_quiz' => $id], 'ORDER BY q_order,id');
             foreach ($question_rows as $q) {
                 $question = get_translated_text($q['q_question_text']);
 
                 $answers = new Tempcode();
-                $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', array('*'), array('q_question' => $q['id']), 'ORDER BY q_order,id');
-                $all_answers = array();
+                $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers', ['*'], ['q_question' => $q['id']], 'ORDER BY q_order,id');
+                $all_answers = [];
                 foreach ($answer_rows as $i => $a) {
                     $answer = get_translated_text($a['q_answer_text']);
-                    $count = $GLOBALS['SITE_DB']->query_select_value('quiz_entry_answer', 'COUNT(*)', array('q_answer' => strval($a['id'])));
+                    $count = $GLOBALS['SITE_DB']->query_select_value('quiz_entry_answer', 'COUNT(*)', ['q_answer' => strval($a['id'])]);
 
-                    $all_answers[serialize(array($answer, $i))] = $count;
+                    $all_answers[serialize([$answer, $i])] = $count;
                 }
                 arsort($all_answers);
                 foreach ($all_answers as $bits => $count) {
@@ -495,7 +495,7 @@ class Module_admin_quiz
 
                 $fields->attach(map_table_field($question, $answers, true));
             }
-            $summary = do_template('MAP_TABLE', array('_GUID' => '2b0c2ba0070ba810c5e4b5b4aedcb15f', 'WIDTH' => '300', 'FIELDS' => $fields));
+            $summary = do_template('MAP_TABLE', ['_GUID' => '2b0c2ba0070ba810c5e4b5b4aedcb15f', 'WIDTH' => '300', 'FIELDS' => $fields]);
         } else {
             $summary = new Tempcode();
         }
@@ -503,7 +503,7 @@ class Module_admin_quiz
         // Show results table
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
-        $sortables = array('q_time' => do_lang_tempcode('DATE'));
+        $sortables = ['q_time' => do_lang_tempcode('DATE')];
         $test = explode(' ', get_param_string('sort', 'q_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
@@ -512,7 +512,7 @@ class Module_admin_quiz
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
-        $where = array();
+        $where = [];
         if ($id !== null) {
             $where['q_quiz'] = $id;
         }
@@ -521,12 +521,12 @@ class Module_admin_quiz
             $where['q_member'] = $member_id;
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', $where);
-        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', array('e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.*'), $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', ['e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.*'], $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
         if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();
-        $_header_row = array();
+        $_header_row = [];
         $_header_row[] = do_lang_tempcode('DATE');
         if ($id === null) {
             $_header_row[] = do_lang_tempcode('NAME');
@@ -537,9 +537,9 @@ class Module_admin_quiz
         $_header_row[] = do_lang_tempcode('MARKS');
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
-            $results_entry = array();
+            $results_entry = [];
 
-            $date_link = hyperlink(build_url(array('page' => '_SELF', 'type' => '__quiz_results', 'id' => $myrow['e_id']), '_SELF'), get_timezoned_date_time($myrow['q_time']), false, true);
+            $date_link = hyperlink(build_url(['page' => '_SELF', 'type' => '__quiz_results', 'id' => $myrow['e_id']], '_SELF'), get_timezoned_date_time($myrow['q_time']), false, true);
             $results_entry[] = $date_link;
 
             if ($id === null) {
@@ -558,12 +558,12 @@ class Module_admin_quiz
         }
         $results = results_table(do_lang_tempcode('QUIZ_RESULTS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $tpl = do_template('QUIZ_RESULTS_SCREEN', array(
+        $tpl = do_template('QUIZ_RESULTS_SCREEN', [
             '_GUID' => '3f38ac1b94fb4de8219b8f7108c7b0a3',
             'TITLE' => $this->title,
             'SUMMARY' => $summary,
             'RESULTS' => $results,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -580,7 +580,7 @@ class Module_admin_quiz
 
         $row = $this->row;
 
-        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', array('*'), array('id' => $row['q_quiz']), '', 1);
+        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $row['q_quiz']], '', 1);
         if (!array_key_exists(0, $quizzes)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
         }
@@ -619,7 +619,7 @@ class Module_admin_quiz
             $passed,
             ) = score_quiz($id, null, null, null, true);
 
-        return do_template('QUIZ_RESULT_SCREEN', array(
+        return do_template('QUIZ_RESULT_SCREEN', [
             '_GUID' => 'f59cbda2bb6b6f0ad6fa149591d94c90',
             'TITLE' => $this->title,
             'USERNAME' => $username,
@@ -637,7 +637,7 @@ class Module_admin_quiz
             'OUT_OF' => strval($out_of),
             'MARKS_RANGE' => $marks_range,
             'PERCENTAGE_RANGE' => $percentage_range,
-        ));
+        ]);
     }
 
     /**
@@ -647,10 +647,10 @@ class Module_admin_quiz
      */
     public function delete_quiz_results()
     {
-        $to_delete = array();
+        $to_delete = [];
 
         foreach (array_keys($_POST) as $key) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^delete_(\d+)$#', $key, $matches) != 0) {
                 if (post_param_integer($key) == 1) {
                     $to_delete[] = intval($matches[1]);
@@ -664,20 +664,20 @@ class Module_admin_quiz
 
         $quiz_id = null;
         foreach ($to_delete as $result_id) {
-            $entry_rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', array('q_quiz', 'q_member'), array('id' => $result_id), '', 1);
+            $entry_rows = $GLOBALS['SITE_DB']->query_select('quiz_entries', ['q_quiz', 'q_member'], ['id' => $result_id], '', 1);
             if (isset($entry_rows[0])) {
                 $quiz_id = $entry_rows[0]['q_quiz'];
 
-                $to_delete_sub = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('quiz_entries', array('id'), $entry_rows[0]));
+                $to_delete_sub = collapse_1d_complexity('id', $GLOBALS['SITE_DB']->query_select('quiz_entries', ['id'], $entry_rows[0]));
                 foreach ($to_delete_sub as $_result_id) {
-                    $GLOBALS['SITE_DB']->query_delete('quiz_entries', array('id' => $_result_id), '', 1);
-                    $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', array('q_entry' => $_result_id));
+                    $GLOBALS['SITE_DB']->query_delete('quiz_entries', ['id' => $_result_id], '', 1);
+                    $GLOBALS['SITE_DB']->query_delete('quiz_entry_answer', ['q_entry' => $_result_id]);
                 }
             }
         }
 
         if ($quiz_id !== null) {
-            $quiz_title = $GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_name', array('id' => $quiz_id));
+            $quiz_title = $GLOBALS['SITE_DB']->query_select_value_if_there('quizzes', 'q_name', ['id' => $quiz_id]);
             if ($quiz_title !== null) {
                 log_it('DELETE_QUIZ_RESULTS', strval($quiz_id), get_translated_text($quiz_title));
             }

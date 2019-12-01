@@ -30,7 +30,7 @@ class Hook_config_forum_show_stats_count_members
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'COUNT_MEMBERS',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_forum_show_stats_count_members
             'public' => false,
 
             'addon' => 'stats_block',
-        );
+        ];
     }
 
     /**

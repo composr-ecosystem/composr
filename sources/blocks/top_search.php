@@ -30,14 +30,14 @@ class Block_top_search
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('title', 'input_fields', 'limit_to', 'search_under', 'zone', 'sort', 'author', 'days', 'direction', 'only_titles', 'only_search_meta', 'boolean_search', 'conjunctive_operator', 'extra');
+        $info['parameters'] = ['title', 'input_fields', 'limit_to', 'search_under', 'zone', 'sort', 'author', 'days', 'direction', 'only_titles', 'only_search_meta', 'boolean_search', 'conjunctive_operator', 'extra'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_top_search
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         (get_page_name() == 'search')
         ?
@@ -91,6 +91,6 @@ PHP;
 
         $block_id = get_block_id($map);
 
-        return do_template('BLOCK_TOP_SEARCH', array('_GUID' => 'f9efbcbc9c10573e6c1252004be4698c', 'BLOCK_ID' => $block_id,) + do_search_block($map));
+        return do_template('BLOCK_TOP_SEARCH', ['_GUID' => 'f9efbcbc9c10573e6c1252004be4698c', 'BLOCK_ID' => $block_id,] + do_search_block($map));
     }
 }

@@ -30,7 +30,7 @@ class Hook_config_site_message
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MESSAGE',
             'type' => 'comcodetext',
             'category' => 'MESSAGES',
@@ -45,7 +45,7 @@ class Hook_config_site_message
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

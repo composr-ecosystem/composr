@@ -30,7 +30,7 @@ class Hook_config_payment_memos
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PAYMENT_MEMOS',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_payment_memos
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

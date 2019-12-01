@@ -30,7 +30,7 @@ class Hook_config_gallery_entries_grid_per_page
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GALLERY_ENTRIES_GRID_PER_PAGE',
             'type' => 'integer',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_gallery_entries_grid_per_page
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

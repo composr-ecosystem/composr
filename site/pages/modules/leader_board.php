@@ -30,7 +30,7 @@ class Module_leader_board
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -56,11 +56,11 @@ class Module_leader_board
         }
 
         if ($GLOBALS['SITE_DB']->query_select_value('leader_board', 'COUNT(*)') == 0) {
-            return array();
+            return [];
         }
-        return array(
-            '!' => array('POINT_LEADER_BOARD', 'menu/social/leader_board'),
-        );
+        return [
+            '!' => ['POINT_LEADER_BOARD', 'menu/social/leader_board'],
+        ];
     }
 
     public $title;
@@ -136,16 +136,16 @@ class Module_leader_board
         $weeks = collapse_1d_complexity('date_and_time', $weeks);
         $out = new Tempcode();
         foreach ($weeks as $week) {
-            $rows = collapse_2d_complexity('lb_member', 'lb_points', $GLOBALS['SITE_DB']->query_select('leader_board', array('lb_member', 'lb_points'), array('date_and_time' => $week)));
+            $rows = collapse_2d_complexity('lb_member', 'lb_points', $GLOBALS['SITE_DB']->query_select('leader_board', ['lb_member', 'lb_points'], ['date_and_time' => $week]));
             $week_tpl = new Tempcode();
             foreach ($rows as $member_id => $points) {
-                $points_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points'));
+                $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
 
                 $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
 
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id);
 
-                $week_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', array(
+                $week_tpl->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                     '_GUID' => '6d323b4b5abea0e82a14cb4745c4af4f',
                     'POINTS_URL' => $points_url,
                     'PROFILE_URL' => $profile_url,
@@ -153,16 +153,16 @@ class Module_leader_board
                     'USERNAME' => $username,
                     'ID' => strval($member_id),
                     'HAS_RANK_IMAGES' => $has_rank_images,
-                )));
+                ]));
             }
             $nice_week = intval(($week - $first_week) / (7 * 24 * 60 * 60) + 1);
-            $out->attach(do_template('POINTS_LEADER_BOARD_WEEK', array('_GUID' => '3a0f71bf20f9098e5711e85cf25f6549', 'WEEK' => integer_format($nice_week), 'ROWS' => $week_tpl)));
+            $out->attach(do_template('POINTS_LEADER_BOARD_WEEK', ['_GUID' => '3a0f71bf20f9098e5711e85cf25f6549', 'WEEK' => integer_format($nice_week), 'ROWS' => $week_tpl]));
         }
 
         require_code('templates_pagination');
         $pagination = pagination(do_lang_tempcode('POINT_LEADER_BOARD'), $start, 'lb_start', $max, 'lb_max', $num_weeks);
 
-        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', array('_GUID' => 'bab5f7b661435b83800532d3eebd0d54', 'TITLE' => $this->title, 'WEEKS' => $out, 'PAGINATION' => $pagination));
+        $tpl = do_template('POINTS_LEADER_BOARD_SCREEN', ['_GUID' => 'bab5f7b661435b83800532d3eebd0d54', 'TITLE' => $this->title, 'WEEKS' => $out, 'PAGINATION' => $pagination]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

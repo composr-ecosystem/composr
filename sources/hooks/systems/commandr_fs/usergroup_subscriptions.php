@@ -47,8 +47,8 @@ class Hook_commandr_fs_usergroup_subscriptions extends Resource_fs_base
      */
     public function find_resource_by_label($resource_type, $label)
     {
-        $_ret = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', array('id'), array($GLOBALS['FORUM_DB']->translate_field_ref('s_title') => $label), 'ORDER BY id');
-        $ret = array();
+        $_ret = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', ['id'], [$GLOBALS['FORUM_DB']->translate_field_ref('s_title') => $label], 'ORDER BY id');
+        $ret = [];
         foreach ($_ret as $r) {
             $ret[] = strval($r['id']);
         }
@@ -111,7 +111,7 @@ class Hook_commandr_fs_usergroup_subscriptions extends Resource_fs_base
         $id = add_usergroup_subscription($label, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh);
 
         if (isset($properties['mails'])) {
-            table_from_portable_rows('f_usergroup_sub_mails', $properties['mails'], array('m_usergroup_sub_id' => $id), TABLE_REPLACE_MODE_NONE);
+            table_from_portable_rows('f_usergroup_sub_mails', $properties['mails'], ['m_usergroup_sub_id' => $id], TABLE_REPLACE_MODE_NONE);
         }
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
@@ -130,13 +130,13 @@ class Hook_commandr_fs_usergroup_subscriptions extends Resource_fs_base
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
 
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', array('*'), array('id' => intval($resource_id)), '', 1);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', ['*'], ['id' => intval($resource_id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }
         $row = $rows[0];
 
-        $properties = array(
+        $properties = [
             'label' => get_translated_text($row['s_title'], $GLOBALS['FORUM_DB']),
             'description' => get_translated_text($row['s_description'], $GLOBALS['FORUM_DB']),
             'price' => $row['s_price'],
@@ -149,8 +149,8 @@ class Hook_commandr_fs_usergroup_subscriptions extends Resource_fs_base
             'mail_end' => $row['s_mail_end'],
             'mail_uhoh' => $row['s_mail_uhoh'],
             'uses_primary' => $row['s_uses_primary'],
-            'mails' => table_to_portable_rows('f_usergroup_sub_mails', array('id', 'm_usergroup_sub_id'), array('m_usergroup_sub_id' => intval($resource_id))),
-        );
+            'mails' => table_to_portable_rows('f_usergroup_sub_mails', ['id', 'm_usergroup_sub_id'], ['m_usergroup_sub_id' => intval($resource_id)]),
+        ];
         $this->_resource_load_extend($resource_type, $resource_id, $properties, $filename, $path);
         return $properties;
     }
@@ -191,7 +191,7 @@ class Hook_commandr_fs_usergroup_subscriptions extends Resource_fs_base
         edit_usergroup_subscription(intval($resource_id), $label, $description, $price, $tax_code, $length, $length_units, $auto_recur, $group_id, $uses_primary, $enabled, $mail_start, $mail_end, $mail_uhoh);
 
         if (isset($properties['mails'])) {
-            table_from_portable_rows('f_usergroup_sub_mails', $properties['mails'], array('m_usergroup_sub_id' => intval($resource_id)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
+            table_from_portable_rows('f_usergroup_sub_mails', $properties['mails'], ['m_usergroup_sub_id' => intval($resource_id)], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
         }
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);

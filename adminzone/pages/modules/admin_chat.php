@@ -49,13 +49,13 @@ class Module_admin_chat extends Standard_crud_module
             return null;
         }
 
-        $ret = array(
-            'browse' => array('MANAGE_CHATROOMS', 'menu/social/chat/chat'),
-        );
+        $ret = [
+            'browse' => ['MANAGE_CHATROOMS', 'menu/social/chat/chat'],
+        ];
         $ret += parent::get_entry_points();
-        $ret += array(
-            'delete_all' => array('DELETE_ALL_CHATROOMS', 'admin/delete3'),
-        );
+        $ret += [
+            'delete_all' => ['DELETE_ALL_CHATROOMS', 'admin/delete3'],
+        ];
         return $ret;
     }
 
@@ -82,7 +82,7 @@ class Module_admin_chat extends Standard_crud_module
         set_helper_panel_tutorial('tut_chat');
 
         if ($type == 'browse') {
-            $also_url = build_url(array('page' => 'cms_chat'), get_module_zone('cms_chat'));
+            $also_url = build_url(['page' => 'cms_chat'], get_module_zone('cms_chat'));
             attach_message(do_lang_tempcode('menus:ALSO_SEE_CMS', escape_html($also_url->evaluate())), 'inform', true);
         }
 
@@ -101,9 +101,9 @@ class Module_admin_chat extends Standard_crud_module
      */
     public function run_start($type)
     {
-        $this->extra_donext_entries = array(
-            array('admin/delete3', array('_SELF', array('type' => 'delete_all'), '_SELF'), do_lang('DELETE_ALL_CHATROOMS')),
-        );
+        $this->extra_donext_entries = [
+            ['admin/delete3', ['_SELF', ['type' => 'delete_all'], '_SELF'], do_lang('DELETE_ALL_CHATROOMS')],
+        ];
 
         require_code('chat');
         require_code('chat2');
@@ -136,11 +136,11 @@ class Module_admin_chat extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_CHATROOMS'),
             comcode_lang_string('DOC_CHAT'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_CHATROOM')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_CHATROOM')),
-                array('admin/delete3', array('_SELF', array('type' => 'delete_all'), '_SELF'), do_lang('DELETE_ALL_CHATROOMS')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_CHATROOM')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_CHATROOM')],
+                ['admin/delete3', ['_SELF', ['type' => 'delete_all'], '_SELF'], do_lang('DELETE_ALL_CHATROOMS')],
+            ],
             do_lang('MANAGE_CHATROOMS')
         );
     }
@@ -161,7 +161,7 @@ class Module_admin_chat extends Standard_crud_module
             $fields->attach(permission_product_form('chat'));
         }
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -173,7 +173,7 @@ class Module_admin_chat extends Standard_crud_module
     {
         require_code('chat_lobby');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('is_im' => 0), 'ORDER BY room_name DESC', intval(get_option('general_safety_listing_limit')));
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0], 'ORDER BY room_name DESC', intval(get_option('general_safety_listing_limit')));
         if (count($rows) == intval(get_option('general_safety_listing_limit'))) {
             warn_exit(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
         }
@@ -195,7 +195,7 @@ class Module_admin_chat extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'chat'));
         }
@@ -217,10 +217,10 @@ class Module_admin_chat extends Standard_crud_module
         }
 
         $delete_fields = new Tempcode();
-        $logs_url = build_url(array('page' => 'chat', 'type' => 'download_logs', 'id' => $id), get_module_zone('chat'));
+        $logs_url = build_url(['page' => 'chat', 'type' => 'download_logs', 'id' => $id], get_module_zone('chat'));
         $delete_fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE_CHATROOM', escape_html($logs_url->evaluate())), 'delete', false));
 
-        return array($fields, $hidden, $delete_fields, null, true);
+        return [$fields, $hidden, $delete_fields, null, true];
     }
 
     /**
@@ -304,9 +304,9 @@ class Module_admin_chat extends Standard_crud_module
         $fields = new Tempcode();
         $fields->attach(form_input_tick(do_lang_tempcode('PROCEED'), do_lang_tempcode('Q_SURE'), 'continue_delete', false));
         $posting_name = do_lang_tempcode('PROCEED');
-        $posting_url = build_url(array('page' => '_SELF', 'type' => '_delete_all'), '_SELF');
+        $posting_url = build_url(['page' => '_SELF', 'type' => '_delete_all'], '_SELF');
         $text = paragraph(do_lang_tempcode('CONFIRM_DELETE_ALL_CHATROOMS'));
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'fdf02f5b3a3b9ce6d1abaccf0970ed73',
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => '',
@@ -316,7 +316,7 @@ class Module_admin_chat extends Standard_crud_module
             'SUBMIT_NAME' => $posting_name,
             'URL' => $posting_url,
             'TEXT' => $text,
-        ));
+        ]);
     }
 
     /**
@@ -328,7 +328,7 @@ class Module_admin_chat extends Standard_crud_module
     {
         $delete = post_param_integer('continue_delete', 0);
         if ($delete != 1) {
-            $url = build_url(array('page' => '_SELF', 'type' => 'browse'), '_SELF');
+            $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
             return redirect_screen($this->title, $url, do_lang_tempcode('CANCELLED'));
         } else {
             delete_all_chatrooms();

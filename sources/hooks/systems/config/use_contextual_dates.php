@@ -30,7 +30,7 @@ class Hook_config_use_contextual_dates
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_CONTEXTUAL_DATES',
             'type' => 'tick',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_use_contextual_dates
             'required' => true,
             'public' => false,
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

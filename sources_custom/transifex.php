@@ -34,7 +34,7 @@ function init__transifex()
     require_code('character_sets');
 
     global $OVERRIDE_PRIORITY_LANGUAGE_FILES;
-    $OVERRIDE_PRIORITY_LANGUAGE_FILES = array(
+    $OVERRIDE_PRIORITY_LANGUAGE_FILES = [
         'global.ini' => TRANSLATE_PRIORITY_URGENT,
         'cns.ini' => TRANSLATE_PRIORITY_URGENT,
         'news.ini' => TRANSLATE_PRIORITY_URGENT,
@@ -43,55 +43,55 @@ function init__transifex()
         'sms.ini' => TRANSLATE_PRIORITY_NORMAL,
         'rss.ini' => TRANSLATE_PRIORITY_NORMAL,
         'import.ini' => TRANSLATE_PRIORITY_NORMAL,
-    );
+    ];
 
     // Extra files to send to Transifex (additional to .ini files)
     global $EXTRA_LANGUAGE_FILES;
-    $EXTRA_LANGUAGE_FILES = array(
-        'adminzone/pages/comcode/EN/netlink.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'adminzone/pages/comcode/EN/quotes.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'adminzone/pages/comcode_custom/EN/comcode_whitelist.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES),
-        'adminzone/pages/comcode_custom/EN/insults.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES),
-        'adminzone/pages/comcode_custom/EN/referrals.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES),
-        'buildr/pages/comcode_custom/EN/docs.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO),
-        'buildr/pages/comcode_custom/EN/rules.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO),
-        'data/modules/cms_comcode_pages/EN/about_us.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/advertise.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/article.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/competitor_comparison.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/contact_us.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/donate.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/guestbook.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/landing_page.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/press_release.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/pricing.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/rules_balanced.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'data/modules/cms_comcode_pages/EN/rules_corporate.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'data/modules/cms_comcode_pages/EN/rules_liberal.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'data/modules/cms_comcode_pages/EN/two_column_layout.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'data/modules/cms_comcode_pages/EN/under_construction.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'pages/comcode/EN/404.txt' => array(null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/_rules.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/feedback.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/keymap.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/privacy.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/recommend_help.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/rules.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'pages/comcode/EN/sitemap.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'site/pages/comcode/EN/help.txt' => array(null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'site/pages/comcode/EN/popup_blockers.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'site/pages/comcode/EN/userguide_chatcode.txt' => array(null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'site/pages/comcode/EN/userguide_comcode.txt' => array(null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'text/EN/quotes.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'text/EN/synonyms.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES),
-        'text/EN/too_common_words.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'text/EN/word_characters.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO),
-        'text_custom/EN/insults.txt' => array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO),
-    );
-    $EXTRA_LANGUAGE_FILES['adminzone/pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES);
-    $EXTRA_LANGUAGE_FILES['buildr/pages/comcode_custom/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO);
-    $EXTRA_LANGUAGE_FILES['pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO);
-    $EXTRA_LANGUAGE_FILES['site/pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = array(null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO);
+    $EXTRA_LANGUAGE_FILES = [
+        'adminzone/pages/comcode/EN/netlink.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'adminzone/pages/comcode/EN/quotes.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'adminzone/pages/comcode_custom/EN/comcode_whitelist.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
+        'adminzone/pages/comcode_custom/EN/insults.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
+        'adminzone/pages/comcode_custom/EN/referrals.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_YES],
+        'buildr/pages/comcode_custom/EN/docs.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO],
+        'buildr/pages/comcode_custom/EN/rules.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO],
+        'data/modules/cms_comcode_pages/EN/about_us.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/advertise.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/article.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/competitor_comparison.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/contact_us.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/donate.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/guestbook.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/landing_page.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/press_release.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/pricing.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/rules_balanced.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'data/modules/cms_comcode_pages/EN/rules_corporate.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'data/modules/cms_comcode_pages/EN/rules_liberal.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'data/modules/cms_comcode_pages/EN/two_column_layout.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'data/modules/cms_comcode_pages/EN/under_construction.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'pages/comcode/EN/404.txt' => [null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/_rules.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/feedback.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/keymap.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/privacy.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/recommend_help.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/rules.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'pages/comcode/EN/sitemap.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'site/pages/comcode/EN/help.txt' => [null, TRANSLATE_PRIORITY_URGENT, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'site/pages/comcode/EN/popup_blockers.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'site/pages/comcode/EN/userguide_chatcode.txt' => [null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'site/pages/comcode/EN/userguide_comcode.txt' => [null, TRANSLATE_PRIORITY_HIGH, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'text/EN/quotes.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'text/EN/synonyms.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES],
+        'text/EN/too_common_words.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'text/EN/word_characters.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO],
+        'text_custom/EN/insults.txt' => [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO],
+    ];
+    $EXTRA_LANGUAGE_FILES['adminzone/pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_YES];
+    $EXTRA_LANGUAGE_FILES['buildr/pages/comcode_custom/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_ADDON, TRANSLATE_ADMINISTRATIVE_NO];
+    $EXTRA_LANGUAGE_FILES['pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO];
+    $EXTRA_LANGUAGE_FILES['site/pages/comcode/EN/' . DEFAULT_ZONE_PAGE_NAME . '.txt'] = [null, TRANSLATE_PRIORITY_NORMAL, TRANSLATE_CORE, TRANSLATE_ADMINISTRATIVE_NO];
     foreach ($EXTRA_LANGUAGE_FILES as $file => &$properties) {
         $properties[0] = basename(str_replace('/', '__', $file), '.txt') . (($properties[3] == TRANSLATE_ADMINISTRATIVE_YES) ? '__administrative' : '');
     }
@@ -99,11 +99,11 @@ function init__transifex()
     // Find what language files are in what addons
     $addons = find_all_hooks('systems', 'addon_registry');
     global $LANGUAGE_FILES_ADDON, $EXISTING_LANGUAGE_AUTHORS;
-    $LANGUAGE_FILES_ADDON = array();
-    $EXISTING_LANGUAGE_AUTHORS = array();
+    $LANGUAGE_FILES_ADDON = [];
+    $EXISTING_LANGUAGE_AUTHORS = [];
     foreach (array_keys($addons) as $addon_name) {
         $info = read_addon_info($addon_name);
-        $matches = array();
+        $matches = [];
         foreach ($info['files'] as $file) {
             if (preg_match('#^lang(_custom)?/' . fallback_lang() . '/(\w+)\.ini$#', $file, $matches) != 0) {
                 $LANGUAGE_FILES_ADDON[$matches[2]] = $addon_name;
@@ -176,7 +176,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
     $project_slug = 'composr-cms-' . str_replace('.', '-', strval(cms_version()));
 
     // Create project if it does not already exist
-    $args = array(
+    $args = [
         'slug' => $project_slug,
         'name' => 'Composr CMS ' . strval(cms_version()),
         'source_language_code' => convert_lang_code_to_transifex(fallback_lang()),
@@ -189,14 +189,14 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
         'fill_up_resources' => true,
         'homepage' => 'http://compo.sr',
         'trans_instructions' => 'See https://compo.sr/docs/tut_intl.htm',
-    );
+    ];
     $_args = json_encode($args);
     $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
     $test = _transifex('/projects/', 'POST', $_args, false);
     if ($test[1] == '201') { // If creation happened
         // Create translations for all defined languages
         $langs = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
-        $failed_langs = array();
+        $failed_langs = [];
         foreach (array_keys($langs) as $lang) {
             if ($lang == fallback_lang()) {
                 continue;
@@ -207,15 +207,15 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
                 if (isset($EXISTING_LANGUAGE_AUTHORS[$lang])) {
                     $coordinators = $EXISTING_LANGUAGE_AUTHORS[$lang];
                 } else {
-                    $coordinators = array();
+                    $coordinators = [];
                 }
                 list($username, $password) = _transifex_credentials();
                 $coordinators[] = $username;
 
-                $args = array(
+                $args = [
                     'language_code' => convert_lang_code_to_transifex($lang),
                     'coordinators' => $coordinators,
-                );
+                ];
                 $_args = json_encode($args);
                 $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
                 $test = _transifex('/project/' . $project_slug . '/languages/?skip_invalid_username', 'POST', $_args);
@@ -248,7 +248,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
     if ($push_ini) {
         $d = get_file_base() . '/lang/' . fallback_lang();
         $dh = opendir($d);
-        $default_lang_files = array();
+        $default_lang_files = [];
         while (($f = readdir($dh)) !== false) {
             if (substr($f, -4) == '.ini') {
                 if (($limit_substring !== null) && (strpos($f, $limit_substring) === false)) {
@@ -297,30 +297,30 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
 
     // Upload
     $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'GET', null, false);
-    $categories = array($category);
+    $categories = [$category];
     if ($LANGUAGE_FILES_ADDON[$path] != $category) {
         // Addon name
         $categories[] = $LANGUAGE_FILES_ADDON[$path];
     }
-    $args = array(
+    $args = [
         'slug' => $resource_path,
         'name' => $resource_path,
         'accept_translations' => true,
         'categories' => $categories,
         'priority' => $priority,
-    );
+    ];
     if ($test[1] == '200') {
         // Edit
         $_args = json_encode($args);
         $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
         $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'PUT', $_args);
-        $args2 = array('content' => $c);
+        $args2 = ['content' => $c];
         $_args2 = json_encode($args2);
         $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
         $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/content/', 'PUT', $_args2);
     } else {
         // Add
-        $args2 = $args + array('i18n_type' => 'TXT', 'content' => $c);
+        $args2 = $args + ['i18n_type' => 'TXT', 'content' => $c];
         $_args2 = json_encode($args2);
         $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
         $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', $_args2);
@@ -334,7 +334,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
                 if (is_file($trans_full_path)) {
                     $c2 = cms_file_get_contents_safe($trans_full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-                    $args = array('content' => $c2);
+                    $args = ['content' => $c2];
                     _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/translation/' . convert_lang_code_to_transifex($lang) . '/', 'PUT', json_encode($args));
 
                     echo "Uploaded translation {$trans_full_path}\n";
@@ -362,7 +362,7 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
     if ((isset($OVERRIDE_PRIORITY_LANGUAGE_FILES[$f])) && ($administrative != TRANSLATE_ADMINISTRATIVE_YES)) {
         $priority = $OVERRIDE_PRIORITY_LANGUAGE_FILES[$f];
     } else {
-        if (($custom) || ($administrative == TRANSLATE_ADMINISTRATIVE_YES) && (!in_array($f, array('content_privacy.ini', 'metadata.ini', 'do_next.ini')))) {
+        if (($custom) || ($administrative == TRANSLATE_ADMINISTRATIVE_YES) && (!in_array($f, ['content_privacy.ini', 'metadata.ini', 'do_next.ini']))) {
             $priority = TRANSLATE_PRIORITY_NORMAL;
         } else {
             $priority = TRANSLATE_PRIORITY_HIGH;
@@ -398,17 +398,17 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
 
     // Upload
     $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/', 'GET', null, false);
-    $categories = array($category);
+    $categories = [$category];
     if ($LANGUAGE_FILES_ADDON[$_f] != $category) {
         // Addon name
         $categories[] = $LANGUAGE_FILES_ADDON[$_f];
     }
-    $args = array(
+    $args = [
         'slug' => $_f_extended,
         'name' => $_f_extended,
         'accept_translations' => true,
         'priority' => $priority,
-    );
+    ];
     if (count($categories) == 1) {
         $args['category'] = $categories[0];
     } else {
@@ -424,14 +424,14 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
         $_args = json_encode($args);
         $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
         $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/', 'PUT', $_args);
-        $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/content/', 'PUT', json_encode(array('content' => $c)));
+        $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/content/', 'PUT', json_encode(['content' => $c]));
     } else {
         if ($c == '') {
             return true; // Empty, so don't add
         }
 
         // Add
-        $args2 = $args + array('i18n_type' => 'INI', 'content' => $c);
+        $args2 = $args + ['i18n_type' => 'INI', 'content' => $c];
         $_args2 = json_encode($args2);
         $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
         $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', $_args2);
@@ -442,7 +442,7 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
         if (isset($LANGUAGE_STRING_DESCRIPTIONS[$key])) {
             $descrip = $LANGUAGE_STRING_DESCRIPTIONS[$key];
             $hash = md5($key . ':');
-            $args = array('comment' => $descrip);
+            $args = ['comment' => $descrip];
             $_args = json_encode($args);
             $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
             $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/source/' . $hash . '/', 'PUT', $_args, false/*getting errors recently*/);
@@ -464,7 +464,7 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
                         }
                     }
 
-                    $args = array('content' => $c2);
+                    $args = ['content' => $c2];
                     _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/translation/' . convert_lang_code_to_transifex($lang) . '/', 'PUT', json_encode($args));
                 }
             }
@@ -569,7 +569,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
             }
         }
 
-        $files = array();
+        $files = [];
 
         // Grab special files
         foreach ($EXTRA_LANGUAGE_FILES as $path => $extra_file) {
@@ -601,7 +601,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
                 if (is_file($full_path)) {
                     $c = cms_file_get_contents_safe(($full_path), FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
-                    $matches = array();
+                    $matches = [];
                     if (preg_match('#function get_author\(\)\s*\{\s*return \'([^\']*)\';#', $c, $matches) != 0) {
                         $translators = $matches[1];
                     }
@@ -780,7 +780,7 @@ END;
 
                 // addon.inf is needed too
                 $addon_inf = '';
-                $settings = array(
+                $settings = [
                     'name' => $language_name,
                     'author' => $translators,
                     'organisation' => '',
@@ -791,7 +791,7 @@ END;
                     'description' => $description,
                     'incompatibilities' => '',
                     'dependencies' => '',
-                );
+                ];
                 foreach ($settings as $setting_name => $setting_value) {
                     $addon_inf .= $setting_name . '="' . str_replace("\n", '\n', str_replace('"', '\'', $setting_value)) . '"' . "\n";
                 }
@@ -863,13 +863,13 @@ function _pull_ini_file_from_transifex($project_slug, $tar_file, $lang, $_f, &$f
             $data_a = json_decode($test_a[0], true);
             $data_a['content'] = _transifex_decode_content($data_a['content']);
         } else {
-            $data_a = array('content' => '');
+            $data_a = ['content' => ''];
         }
         if ($test_b[1] == '200') {
             $data_b = json_decode($test_b[0], true);
             $data_b['content'] = _transifex_decode_content($data_b['content']);
         } else {
-            $data_b = array('content' => '');
+            $data_b = ['content' => ''];
         }
 
         $write_out = trim(preg_replace('#^\# .*\n#m', '', $data_a['content'] . "\n" . $data_b['content'])) . "\n";
@@ -893,7 +893,7 @@ function _pull_ini_file_from_transifex($project_slug, $tar_file, $lang, $_f, &$f
     }
 }
 
-function _transifex($call, $http_verb, $params = array(), $trigger_error = true, $text = true)
+function _transifex($call, $http_verb, $params = [], $trigger_error = true, $text = true)
 {
     list($username, $password) = _transifex_credentials();
 
@@ -912,12 +912,12 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true,
 
         $raw_content_type = 'application/json';
         $raw_post = true;
-        $params = array($params);
+        $params = [$params];
     }
 
     $url = 'https://www.transifex.com/api/2' . $call;
-    $auth = array($username, $password);
-    $options = array(
+    $auth = [$username, $password];
+    $options = [
         'trigger_error' => $trigger_error,
         'post_params' => ($http_verb == 'GET') ? null : $params,
         'auth' => $auth,
@@ -925,7 +925,7 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true,
         'raw_post' => $raw_post,
         'http_verb' => $http_verb,
         'raw_content_type' => $raw_content_type,
-    );
+    ];
     if ($text) {
         $options['convert_to_internal_encoding'] = true;
     }
@@ -946,7 +946,7 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true,
         usleep(500000);
     }*/
 
-    return array($result, $http_result->message);
+    return [$result, $http_result->message];
 }
 
 function _transifex_credentials()
@@ -969,7 +969,7 @@ function _transifex_credentials()
         warn_exit(do_lang('API_NOT_CONFIGURED', 'Transifex') . ' Transifex password must be set with :set_value(\'transifex_password\', \'...\', true); or passed as the second CLI parameter', true);
     }
 
-    return array($username, $password);
+    return [$username, $password];
 }
 
 function _transifex_env_limit_substring()
@@ -977,14 +977,14 @@ function _transifex_env_limit_substring()
     if (isset($_SERVER['argv'][3])) {
         $limit_substring = $_SERVER['argv'][3];
 
-        if (in_array($limit_substring, array( // These are actually env_settings
+        if (in_array($limit_substring, [ // These are actually env_settings
             'core_only',
             'push_cms',
             'push_ini',
             'push_translations',
             'output',
             'core_only',
-        ))) {
+        ])) {
             return null;
         }
 

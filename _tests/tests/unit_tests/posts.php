@@ -45,7 +45,7 @@ class posts_test_set extends cms_test_case
 
         $this->post_id = cns_make_post($this->topic_id, 'Welcome', 'Welcome to the posts', 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '', null, false, false, false);
 
-        $this->assertTrue('Welcome' == $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', array('id' => $this->post_id)));
+        $this->assertTrue('Welcome' == $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['id' => $this->post_id]));
     }
 
     public function testEditPosts()
@@ -56,7 +56,7 @@ class posts_test_set extends cms_test_case
 
         cns_edit_post($this->post_id, 1, 'take care', 'the post editing', 0, 0, null, true, false, 'Nothing');
 
-        $this->assertTrue('take care' == $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', array('id' => $this->post_id)));
+        $this->assertTrue('take care' == $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', ['id' => $this->post_id]));
     }
 
     public function tearDown()
@@ -65,7 +65,7 @@ class posts_test_set extends cms_test_case
             return;
         }
 
-        if (!cns_delete_posts_topic($this->topic_id, array($this->post_id), 'Nothing')) {
+        if (!cns_delete_posts_topic($this->topic_id, [$this->post_id], 'Nothing')) {
             cns_delete_topic($this->topic_id);
         }
         parent::tearDown();

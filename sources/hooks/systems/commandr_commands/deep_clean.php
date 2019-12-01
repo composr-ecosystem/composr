@@ -34,13 +34,13 @@ class Hook_deep_clean
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('deep_clean', array('h'), array(true, true, false)), '', '');
+            return ['', do_command_help('deep_clean', ['h'], [true, true, false]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'deep_clean'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'deep_clean')];
             }
             if (!array_key_exists(1, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '2', 'deep_clean'));
+                return ['', '', '', do_lang('MISSING_PARAM', '2', 'deep_clean')];
             }
 
             require_code('deep_clean');
@@ -60,7 +60,7 @@ class Hook_deep_clean
             $start = 0;
             $max = 100;
             do {
-                $rows = $db->query_select($table, array('*'), array(), '', $max, $start);
+                $rows = $db->query_select($table, ['*'], [], '', $max, $start);
                 foreach ($rows as $row) {
                     $where = $row;
                     unset($where[$field]);
@@ -101,7 +101,7 @@ class Hook_deep_clean
 
                     $new_value = deep_clean($old_value, $title);
                     if ($new_value != $old_value) {
-                        $update = array($field => $new_value);
+                        $update = [$field => $new_value];
                         if ($is_trans) {
                             $update += lang_remap($field, $_old_value, $new_value, $db);
                         } else {
@@ -118,7 +118,7 @@ class Hook_deep_clean
 
             $result = do_lang('CLEANED_X_FIELDS', integer_format($total), integer_format($total_changed));
 
-            return array('', $result, '', '');
+            return ['', $result, '', ''];
         }
     }
 

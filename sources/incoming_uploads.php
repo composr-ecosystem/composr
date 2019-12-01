@@ -92,7 +92,7 @@ function incoming_uploads_script()
 
     if ($is_uploaded) {
         // Fix names that are too common
-        if (in_array($name, array('image.jpg'/*iOS*/))) {
+        if (in_array($name, ['image.jpg'/*iOS*/])) {
             $name = uniqid('', true) . '.' . get_file_extension($name);
         }
 
@@ -111,13 +111,13 @@ function incoming_uploads_script()
 
         $member_id = get_member();
 
-        $insert_map = array('i_submitter' => $member_id, 'i_date_and_time' => time(), 'i_orig_filename' => $name, 'i_save_url' => $savename);
+        $insert_map = ['i_submitter' => $member_id, 'i_date_and_time' => time(), 'i_orig_filename' => $name, 'i_save_url' => $savename];
         $insert_map['id'] = mt_rand(0, 2147483647);
         $file_db_id = $GLOBALS['SITE_DB']->query_insert('incoming_uploads', $insert_map, true, false);
 
         // File is valid, and was successfully uploaded. Now see if there is any metadata to surface from the file.
         require_code('images');
-        $outa = array();
+        $outa = [];
         if (is_image($name, IMAGE_CRITERIA_NONE)) {
             require_code('exif');
             $outa += get_exif_data(get_custom_file_base() . '/' . $savename);
@@ -142,7 +142,7 @@ function incoming_uploads_script()
         require_code('form_templates');
         $fields->attach(form_input_upload(do_lang_tempcode('FILE'), '', 'file', true, null, null, false));
         $hidden = new Tempcode();
-        $out2 = globalise(do_template('FORM_SCREEN', array('_GUID' => '632edbf0ca9f6f644cd9ebbd817b90f3', 'TITLE' => $title, 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'), 'TEXT' => '', 'HIDDEN' => $hidden, 'URL' => find_script('incoming_uploads', true), 'FIELDS' => $fields)), null, '', true);
+        $out2 = globalise(do_template('FORM_SCREEN', ['_GUID' => '632edbf0ca9f6f644cd9ebbd817b90f3', 'TITLE' => $title, 'SUBMIT_ICON' => 'buttons/proceed', 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'), 'TEXT' => '', 'HIDDEN' => $hidden, 'URL' => find_script('incoming_uploads', true), 'FIELDS' => $fields]), null, '', true);
         $out2->evaluate_echo();
     }
 }
@@ -168,7 +168,7 @@ function clear_old_uploads()
                 }
 
                 // Note: it is possible some db records to be left without corresponding files. So we need to clean them too.
-                $GLOBALS['SITE_DB']->query_delete('incoming_uploads', array('id' => $upload['id']), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('incoming_uploads', ['id' => $upload['id']], '', 1);
             }
         }
     }

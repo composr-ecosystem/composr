@@ -49,10 +49,10 @@ function captcha_script()
 
     header('X-Robots-Tag: noindex');
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
     if ($code_needed === null) {
         generate_captcha();
-        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+        $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
         /*
         set_http_status_code(500);    This would actually be very slightly insecure, as it could be used to probe (binary) login state via rogue sites that check if CAPTCHAs had been generated
         warn_exit(do_lang_tempcode('CAPTCHA_NO_SESSION'));
@@ -138,7 +138,7 @@ function captcha_image($code_needed)
 {
     // Write basic, using multiple fonts with random Y-position offsets
     $characters = strlen($code_needed);
-    $fonts = array();
+    $fonts = [];
     $width = 20;
     for ($i = 0; $i < max(1, $characters); $i++) {
         $font = mt_rand(4, 5); // 1 is too small
@@ -169,10 +169,10 @@ function captcha_image($code_needed)
 
     // Add some noise
     if (get_option('captcha_noise') == '1') {
-        $tricky_remap = array();
-        $tricky_remap[$black] = array();
-        $tricky_remap[$off_black] = array();
-        $tricky_remap[$white] = array();
+        $tricky_remap = [];
+        $tricky_remap[$black] = [];
+        $tricky_remap[$off_black] = [];
+        $tricky_remap[$white] = [];
         for ($i = 0; $i <= 5; $i++) {
             $tricky_remap['!' . strval($black)][] = imagecolorallocate($img, 0 + mt_rand(0, 15), 0 + mt_rand(0, 15), 0 + mt_rand(0, 15));
             $tricky_remap['!' . strval($off_black)][] = $off_black;
@@ -195,7 +195,7 @@ function captcha_image($code_needed)
         }
     }
 
-    return array($img, $width, $height);
+    return [$img, $width, $height];
 }
 
 /**
@@ -264,7 +264,7 @@ function form_input_captcha($hidden)
         foreach ($questions as $i => $details) {
             list($question, $answer, $wrong_answers) = $details;
             if ($wrong_answers !== null) {
-                $answers = array_merge(array($answer), $wrong_answers);
+                $answers = array_merge([$answer], $wrong_answers);
                 cms_mb_sort($answers, SORT_FLAG_CASE | SORT_NATURAL);
                 $_answers = new Tempcode();
                 $_answers->attach(form_input_list_entry(''));
@@ -280,13 +280,13 @@ function form_input_captcha($hidden)
         return $tpl;
     }
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
     if ($code_needed === null) {
         generate_captcha();
     }
 
     // Show template
-    $input = do_template('FORM_SCREEN_INPUT_CAPTCHA', array('_GUID' => 'f7452af9b83db36685ae8a86f9762d30', 'TABINDEX' => strval($tabindex)));
+    $input = do_template('FORM_SCREEN_INPUT_CAPTCHA', ['_GUID' => 'f7452af9b83db36685ae8a86f9762d30', 'TABINDEX' => strval($tabindex)]);
     if (get_option('recaptcha_site_key') != '') {
         $hidden->attach($input);
         return new Tempcode();
@@ -381,12 +381,12 @@ function uses_question_captcha()
  */
 function get_captcha_questions()
 {
-    $questions = array();
+    $questions = [];
     $_questions = trim(get_option('captcha_questions'));
     foreach (explode("\n", $_questions) as $_question) {
         $parts = explode('=', $_question);
         if (count($parts) >= 2) {
-            $details = array(trim($parts[0]), trim($parts[1]), null);
+            $details = [trim($parts[0]), trim($parts[1]), null];
             if (count($parts) > 2) {
                 $details[2] = array_slice($parts, 2);
             }
@@ -404,7 +404,7 @@ function get_captcha_questions()
         $keys = array_rand($questions, $question_total);
         srand();
 
-        $__questions = array();
+        $__questions = [];
         foreach ($keys as $key) {
             $__questions[$key] = $questions[$key];
         }
@@ -435,7 +435,7 @@ function generate_captcha()
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'captchas WHERE ' . $where);
 
     // Create code
-    $choices = array('3', '4', '6', '7', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'R', 'T', 'W', 'X', 'Y');
+    $choices = ['3', '4', '6', '7', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'R', 'T', 'W', 'X', 'Y'];
     $si_code = '';
     for ($i = 0; $i < 6; $i++) {
         $choice = mt_rand(0, count($choices) - 1);
@@ -443,7 +443,7 @@ function generate_captcha()
     }
 
     // Store code
-    $GLOBALS['SITE_DB']->query_insert('captchas', array('si_session_id' => $session, 'si_time' => time(), 'si_code' => $si_code));
+    $GLOBALS['SITE_DB']->query_insert('captchas', ['si_session_id' => $session, 'si_time' => time(), 'si_code' => $si_code]);
 
     require_code('files');
     cms_file_put_contents_safe(get_custom_file_base() . '/uploads/captcha/' . $session . '.wav', captcha_audio($si_code), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
@@ -514,11 +514,11 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
 
     if (get_option('recaptcha_site_key') != '') {
         $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $post_params = array(
+        $post_params = [
             'secret' => get_option('recaptcha_server_key'),
             'response' => post_param_string('g-recaptcha-response'),
-        );
-        $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => $post_params));
+        ];
+        $_response = http_get_contents($url, ['convert_to_internal_encoding' => true, 'post_params' => $post_params]);
         $response = json_decode($_response, true);
 
         if (!$response['success']) {
@@ -548,7 +548,7 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
         $code_entered = post_param_string('captcha');
     }
 
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', array('si_session_id' => get_session_id()));
+    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
     if ($code_needed === null) {
         if (get_option('captcha_single_guess') == '1') {
             generate_captcha();
@@ -595,7 +595,7 @@ function _cleanout_captcha()
     }
 
     if (!running_script('snippet')) {
-        $GLOBALS['SITE_DB']->query_delete('captchas', array('si_session_id' => get_session_id())); // Only allowed to check once
+        $GLOBALS['SITE_DB']->query_delete('captchas', ['si_session_id' => get_session_id()]); // Only allowed to check once
     }
 }
 

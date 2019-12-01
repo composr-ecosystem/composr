@@ -30,7 +30,7 @@ class Hook_config_hc_cron_notify_regardless
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'HC_CRON_NOTIFY_REGARDLESS',
             'type' => 'tick',
             'category' => 'HEALTH_CHECK',
@@ -44,7 +44,7 @@ class Hook_config_hc_cron_notify_regardless
             'public' => false,
 
             'addon' => 'health_check',
-        );
+        ];
     }
 
     /**

@@ -30,14 +30,14 @@ class Block_main_staff_new_version
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_staff_new_version
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
         )
@@ -77,12 +77,12 @@ PHP;
         $updated_addons = find_updated_addons();
         $has_updated_addons = (!empty($updated_addons));
 
-        return do_template('BLOCK_MAIN_STAFF_NEW_VERSION', array(
+        return do_template('BLOCK_MAIN_STAFF_NEW_VERSION', [
             '_GUID' => '43c7b18d3d44e825247579df23a2ad9c',
             'BLOCK_ID' => $block_id,
             'VERSION' => cms_version_pretty(),
             'VERSION_TABLE' => $table,
             'HAS_UPDATED_ADDONS' => $has_updated_addons,
-        ));
+        ]);
     }
 }

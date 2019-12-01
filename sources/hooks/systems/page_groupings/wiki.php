@@ -33,16 +33,16 @@ class Hook_page_groupings_wiki
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('wiki')) {
-            return array();
+            return [];
         }
 
         if ($member_id === null) {
             $member_id = get_member();
         }
 
-        return array(
-            array('cms', 'menu/rich_content/wiki', array('cms_wiki', array('type' => 'browse'), get_module_zone('cms_wiki')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)')))))), 'wiki:DOC_WIKI'),
-            array('rich_content', 'menu/rich_content/wiki', array('wiki', array('type' => 'browse'), get_module_zone('wiki')), do_lang_tempcode('wiki:WIKI')),
-        );
+        return [
+            ['cms', 'menu/rich_content/wiki', ['cms_wiki', ['type' => 'browse'], get_module_zone('cms_wiki')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('wiki:WIKI'), make_string_tempcode(escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'COUNT(*)')))))), 'wiki:DOC_WIKI'],
+            ['rich_content', 'menu/rich_content/wiki', ['wiki', ['type' => 'browse'], get_module_zone('wiki')], do_lang_tempcode('wiki:WIKI')],
+        ];
     }
 }

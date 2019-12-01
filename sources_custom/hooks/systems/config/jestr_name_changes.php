@@ -25,7 +25,7 @@ class Hook_config_jestr_name_changes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'JESTER_NAME_CHANGES',
             'type' => 'text',
             'category' => 'FEATURE',
@@ -37,7 +37,7 @@ class Hook_config_jestr_name_changes
             'public' => false,
 
             'addon' => 'jestr',
-        );
+        ];
     }
 
     /**

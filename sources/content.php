@@ -65,7 +65,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
                     $category_field = array_pop($category_field);
                     $category_id = is_integer($content[$category_field]) ? strval($content[$category_field]) : $content[$category_field];
                     if ($content_type == 'catalogue_entry') {
-                        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', array('id' => $category_id));
+                        $catalogue_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => $category_id]);
                         if (!has_category_access($member_id, 'catalogues_catalogue', $catalogue_name)) {
                             return false;
                         }
@@ -80,7 +80,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
     // FUDGE: Extra check for private topics
     $topic_id = null;
     if (($content_type == 'post') && (get_forum_type() == 'cns')) {
-        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', array('p_topic_id', 'p_intended_solely_for', 'p_poster'), array('id' => intval($content_id)), '', 1);
+        $post_rows = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_topic_id', 'p_intended_solely_for', 'p_poster'], ['id' => intval($content_id)], '', 1);
         if (!array_key_exists(0, $post_rows)) {
             return false;
         }
@@ -93,7 +93,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
         $topic_id = intval($content_id);
     }
     if ($topic_id !== null) {
-        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_forum_id', 't_pt_from', 't_pt_to'), array('id' => $topic_id), '', 1);
+        $topic_rows = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_forum_id', 't_pt_from', 't_pt_to'], ['id' => $topic_id], '', 1);
         if (!array_key_exists(0, $topic_rows)) {
             return false;
         }
@@ -114,7 +114,7 @@ function may_view_content_behind($member_id, $content_type, $content_id, $type_h
  */
 function get_content_object($content_type)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$content_type])) {
         return $cache[$content_type];
     }
@@ -188,7 +188,7 @@ function convert_composr_type_codes_multiple($type_has, $type_id)
     $type_id = preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $type_id);
 
     // Search content-meta-aware hooks
-    $found_type_ids = array();
+    $found_type_ids = [];
     $cma_hooks = find_all_hooks('systems', 'content_meta_aware') + find_all_hooks('systems', 'resource_meta_aware');
     foreach (array_keys($cma_hooks) as $content_type) {
         if ((($type_has == 'content_type') && ($content_type == $type_id)) || ($type_has != 'content_type')) {
@@ -221,7 +221,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
     $cma_info = $cma_ob->info();
 
     if ($cma_info === null) {
-        return array(null, null, null, null, null, null);
+        return [null, null, null, null, null, null];
     }
 
     $db = $cma_info['db'];
@@ -238,7 +238,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
                 $submitter_id = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member
             }
 
-            $content_row = array(
+            $content_row = [
                 'the_zone' => $zone,
                 'the_page' => $page,
                 'p_parent_page' => '',
@@ -247,22 +247,22 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
                 'p_add_date' => time(),
                 'p_submitter' => $submitter_id,
                 'p_show_as_edit' => 0,
-            );
+            ];
 
-            $content_url = build_url(array('page' => $page), $zone, array(), false, false, false);
-            $content_url_email_safe = build_url(array('page' => $page), $zone, array(), false, false, true);
+            $content_url = build_url(['page' => $page], $zone, [], false, false, false);
+            $content_url_email_safe = build_url(['page' => $page], $zone, [], false, false, true);
 
-            $_content_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', array('the_zone' => $zone, 'the_page' => $page));
+            $_content_title = $GLOBALS['SITE_DB']->query_select_value_if_there('cached_comcode_pages', 'cc_page_title', ['the_zone' => $zone, 'the_page' => $page]);
             if ($_content_title !== null) {
                 $content_title = get_translated_text($_content_title);
             } else {
                 $content_title = $zone . ':' . $page;
             }
 
-            return array($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe);
+            return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe];
         }
 
-        return array(null, null, $cma_info, null, null, null);
+        return [null, null, $cma_info, null, null, null];
     }
 
     $content_title = get_content_title($cma_info, $content_row, $content_type, $content_id, $resource_fs_style);
@@ -270,7 +270,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
     if ($cma_info['submitter_field'] !== null) {
         if (strpos($cma_info['submitter_field'], ':') !== false) {
             $bits = explode(':', $cma_info['submitter_field']);
-            $matches = array();
+            $matches = [];
             if (preg_match('#' . $bits[1] . '#', $content_row[$bits[0]], $matches) != 0) {
                 $submitter_id = intval($matches[1]);
             } else {
@@ -287,11 +287,11 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
     $content_url_email_safe = null;
     if ($cma_info['view_page_link_pattern'] !== null) {
         list($zone, $url_bits, $hash) = page_link_decode(str_replace('_WILD', $content_id, $cma_info['view_page_link_pattern']));
-        $content_url = build_url($url_bits, $zone, array(), false, false, false, $hash);
-        $content_url_email_safe = build_url($url_bits, $zone, array(), false, false, true, $hash);
+        $content_url = build_url($url_bits, $zone, [], false, false, false, $hash);
+        $content_url_email_safe = build_url($url_bits, $zone, [], false, false, true, $hash);
     }
 
-    return array($content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe);
+    return [$content_title, $submitter_id, $cma_info, $content_row, $content_url, $content_url_email_safe];
 }
 
 /**
@@ -322,7 +322,7 @@ function get_content_title($cma_info, $content_row, $content_type, $content_id =
         $content_title = do_lang($cma_info['content_type_label']);
     } else {
         if (strpos($title_field, 'CALL:') !== false) {
-            $content_title = call_user_func(trim(substr($title_field, 5)), array('id' => $content_id), $resource_fs_style);
+            $content_title = call_user_func(trim(substr($title_field, 5)), ['id' => $content_id], $resource_fs_style);
         } else {
             $_content_title = $content_row[$title_field];
             $content_title = $title_field_dereference ? get_translated_text($_content_title, $db) : $_content_title;
@@ -330,7 +330,7 @@ function get_content_title($cma_info, $content_row, $content_type, $content_id =
                 $content_title = do_lang($cma_info['content_type_label']) . ' (#' . (is_string($content_id) ? $content_id : strval($content_id)) . ')';
                 if (($content_type == 'image' || $content_type == 'video') && (addon_installed('galleries'))) { // A bit of a fudge, but worth doing
                     require_lang('galleries');
-                    $fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', array('name' => $content_row['cat']));
+                    $fullname = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'fullname', ['name' => $content_row['cat']]);
                     if ($fullname !== null) {
                         $content_title = do_lang('VIEW_' . strtoupper($content_type) . '_IN', get_translated_text($fullname));
                     }
@@ -359,7 +359,7 @@ function get_content_title($cma_info, $content_row, $content_type, $content_id =
  */
 function content_get_row($content_id, $cma_info)
 {
-    static $cache = array();
+    static $cache = [];
     $cache_key = $cma_info['table'] . '.' . $content_id;
     if (isset($cache[$cache_key])) {
         return $cache[$cache_key];
@@ -369,7 +369,7 @@ function content_get_row($content_id, $cma_info)
 
     $id_field_numeric = array_key_exists('id_field_numeric', $cma_info) ? $cma_info['id_field_numeric'] : true;
     $where = get_content_where_for_str_id($content_id, $cma_info);
-    $_content = $db->query_select($cma_info['table'] . ' r', array('r.*'), $where, '', 1);
+    $_content = $db->query_select($cma_info['table'] . ' r', ['r.*'], $where, '', 1);
 
     $ret = array_key_exists(0, $_content) ? $_content[0] : null;
     $cache[$cache_key] = $ret;
@@ -387,7 +387,7 @@ function extract_content_str_id_from_data($data, $cma_info)
 {
     $id_field = $cma_info['id_field'];
     $id = '';
-    $id_field_parts = is_array($id_field) ? $id_field : array($id_field);
+    $id_field_parts = is_array($id_field) ? $id_field : [$id_field];
     $id_field_parts = array_reverse($id_field_parts);
     foreach ($id_field_parts as $id_field_part) {
         if ($id != '') {
@@ -408,11 +408,11 @@ function extract_content_str_id_from_data($data, $cma_info)
  */
 function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
 {
-    $where = array();
+    $where = [];
     $id_field = $cma_info['id_field'];
-    $id_parts = is_array($id_field) ? explode(':', $str_id) : array($str_id);
+    $id_parts = is_array($id_field) ? explode(':', $str_id) : [$str_id];
     $id_parts = array_reverse($id_parts);
-    foreach (is_array($id_field) ? $id_field : array($id_field) as $i => $id_field_part) {
+    foreach (is_array($id_field) ? $id_field : [$id_field] as $i => $id_field_part) {
         $val = array_key_exists($i, $id_parts) ? $id_parts[$i] : '';
         $where[(($table_alias === null) ? '' : ($table_alias . '.')) . $id_field_part] = $cma_info['id_field_numeric'] ? @intval($val) : $val;
     }
@@ -428,7 +428,7 @@ function get_content_where_for_str_id($str_id, $cma_info, $table_alias = null)
  */
 function append_content_select_for_id(&$select, $cma_info, $table_alias = null)
 {
-    foreach (is_array($cma_info['id_field']) ? $cma_info['id_field'] : array($cma_info['id_field']) as $id_field_part) {
+    foreach (is_array($cma_info['id_field']) ? $cma_info['id_field'] : [$cma_info['id_field']] as $id_field_part) {
         $select[] = (($table_alias === null) ? '' : ($table_alias . '.')) . $id_field_part;
     }
 }

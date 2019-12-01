@@ -41,12 +41,12 @@ function _redirect_screen($title, $url, $text = null, $intermediary_hop = false,
     foreach ($ATTACHED_MESSAGES_RAW as $message) {
         $_message = is_object($message[0]) ? $message[0]->evaluate() : escape_html($message[0]);
         if (($_message != '') && ($_message != do_lang('_REDIRECTING')) && (strpos($_message, 'cancel_sw_warn') === false)) {
-            $GLOBALS['SITE_DB']->query_insert('messages_to_render', array(
+            $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
                 'r_session_id' => get_session_id(),
                 'r_message' => $_message,
                 'r_type' => $message[1],
                 'r_time' => time(),
-            ));
+            ]);
         }
     }
 
@@ -54,12 +54,12 @@ function _redirect_screen($title, $url, $text = null, $intermediary_hop = false,
     if ($text !== null) {
         $_message = is_object($text) ? $text->evaluate() : escape_html($text);
         if (($_message != '') && ($_message != do_lang('_REDIRECTING')) && (strpos($_message, 'cancel_sw_warn') === false)) {
-            $GLOBALS['SITE_DB']->query_insert('messages_to_render', array(
+            $GLOBALS['SITE_DB']->query_insert('messages_to_render', [
                 'r_session_id' => get_session_id(),
                 'r_message' => $_message,
                 'r_type' => $msg_type,
                 'r_time' => time(),
-            ));
+            ]);
         }
     }
 
@@ -85,5 +85,5 @@ function _redirect_screen($title, $url, $text = null, $intermediary_hop = false,
 
     require_code('site2');
     assign_refresh($url, 0.0);
-    return do_template('REDIRECT_SCREEN', array('_GUID' => '44ce3d1ffc6536b299ed0944e8ca7253', 'URL' => $url, 'TITLE' => $title, 'TEXT' => $text));
+    return do_template('REDIRECT_SCREEN', ['_GUID' => '44ce3d1ffc6536b299ed0944e8ca7253', 'URL' => $url, 'TITLE' => $title, 'TEXT' => $text]);
 }

@@ -30,8 +30,8 @@ class Hook_preview_cns_post
      */
     public function applies()
     {
-        $applies = (addon_installed('cns_forum')) && ((get_page_name() == 'topics') && (in_array(get_param_string('type'), array('birthday', 'edit_post', 'new_post', 'edit_topic', 'new_pt', 'new_topic', 'multimod')))) || (get_page_name() == 'topicview');
-        return array($applies, 'cns_post', true);
+        $applies = (addon_installed('cns_forum')) && ((get_page_name() == 'topics') && (in_array(get_param_string('type'), ['birthday', 'edit_post', 'new_post', 'edit_topic', 'new_pt', 'new_topic', 'multimod']))) || (get_page_name() == 'topicview');
+        return [$applies, 'cns_post', true];
     }
 
     /**
@@ -62,14 +62,14 @@ class Hook_preview_cns_post
         // Put quote in
         $parent_id = post_param_integer('parent_id', null);
         if (($parent_id !== null) && (strpos($post_comcode, '[quote') === false)) {
-            $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => $parent_id), '', 1);
+            $_p = $GLOBALS['FORUM_DB']->query_select('f_posts', ['*'], ['id' => $parent_id], '', 1);
             if (array_key_exists(0, $_p)) {
                 $p = $_p[0];
                 $p['message'] = get_translated_tempcode('f_posts', $p, 'p_post', $GLOBALS['FORUM_DB']);
 
                 $temp = $post_html;
                 $post_html = new Tempcode();
-                $post_html = do_template('COMCODE_QUOTE_BY', array('_GUID' => 'ba33b8277a991e48c7174c0469771a44', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']));
+                $post_html = do_template('COMCODE_QUOTE_BY', ['_GUID' => 'ba33b8277a991e48c7174c0469771a44', 'SAIDLESS' => false, 'BY' => $p['p_poster_name_if_guest'], 'CONTENT' => $p['message']]);
                 $post_html->attach($temp);
             }
         }
@@ -78,12 +78,12 @@ class Hook_preview_cns_post
         $_post_date = time();
         $post_id = post_param_integer('post_id', null);
         if ($post_id !== null) {
-            $post_owner = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', array('id' => $post_id));
+            $post_owner = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_poster', ['id' => $post_id]);
             if ($post_owner === null) {
                 $post_owner = get_member();
             }
 
-            $_post_date = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_time', array('id' => $post_id));
+            $_post_date = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_time', ['id' => $post_id]);
             if ($_post_date === null) {
                 $_post_date = time();
             }
@@ -110,11 +110,11 @@ class Hook_preview_cns_post
 
         // Member details
         $member_row = $GLOBALS['FORUM_DRIVER']->get_member_row($post_owner);
-        $just_member_row = db_map_restrict($member_row, array('id', 'm_signature'));
+        $just_member_row = db_map_restrict($member_row, ['id', 'm_signature']);
         $signature = get_translated_tempcode('f_members', $just_member_row, 'm_signature', $GLOBALS['FORUM_DB']);
         $_postdetails_avatar = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($post_owner);
         if ($_postdetails_avatar != '') {
-            $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', array('_GUID' => '2683c09eabd7a9f1fdc57a20117483ef', 'AVATAR' => $_postdetails_avatar));
+            $post_avatar = do_template('CNS_TOPIC_POST_AVATAR', ['_GUID' => '2683c09eabd7a9f1fdc57a20117483ef', 'AVATAR' => $_postdetails_avatar]);
         } else {
             $post_avatar = new Tempcode();
         }
@@ -126,23 +126,23 @@ class Hook_preview_cns_post
         // Poster box
         if (!is_guest($post_owner)) {
             require_code('cns_members2');
-            $poster_details = render_member_box($post_owner, false, false, array(), false);
+            $poster_details = render_member_box($post_owner, false, false, [], false);
             $poster_username = $GLOBALS['FORUM_DRIVER']->get_username($post_owner);
-            $poster = do_template('CNS_POSTER_MEMBER', array(
+            $poster = do_template('CNS_POSTER_MEMBER', [
                 '_GUID' => '976a6ceb631bbdcdd950b723cb5d2487',
                 'ONLINE' => true,
                 'ID' => strval($post_owner),
                 'POSTER_DETAILS' => $poster_details,
                 'PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($post_owner, true),
                 'POSTER_USERNAME' => $poster_username,
-            ));
+            ]);
         } else {
             $poster_details = new Tempcode();
-            $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', array('_GUID' => '9cbbc5913d8164970f19c38a210fda95', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => (get_ip_address())));
-            $poster_details = do_template('CNS_GUEST_DETAILS', array('_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields));
+            $custom_fields = do_template('CNS_MEMBER_BOX_CUSTOM_FIELD', ['_GUID' => '9cbbc5913d8164970f19c38a210fda95', 'NAME' => do_lang_tempcode('IP_ADDRESS'), 'VALUE' => (get_ip_address())]);
+            $poster_details = do_template('CNS_GUEST_DETAILS', ['_GUID' => '2db48e17db9f060c04386843f2d0f105', 'CUSTOM_FIELDS' => $custom_fields]);
             $poster_username = cns_get_safe_specified_poster_name();
-            $ip_url = ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) ? build_url(array('page' => 'admin_lookup', 'param' => get_ip_address()), get_module_zone('admin_lookup')) : new Tempcode();
-            $poster = do_template('CNS_POSTER_GUEST', array('_GUID' => '9c0ba6198663de96facc7399a08e8281', 'LOOKUP_IP_URL' => $ip_url, 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_username));
+            $ip_url = ((has_actual_page_access(get_member(), 'admin_lookup')) && (addon_installed('securitylogging'))) ? build_url(['page' => 'admin_lookup', 'param' => get_ip_address()], get_module_zone('admin_lookup')) : new Tempcode();
+            $poster = do_template('CNS_POSTER_GUEST', ['_GUID' => '9c0ba6198663de96facc7399a08e8281', 'LOOKUP_IP_URL' => $ip_url, 'POSTER_DETAILS' => $poster_details, 'POSTER_USERNAME' => $poster_username]);
         }
 
         // Rank images
@@ -153,23 +153,23 @@ class Hook_preview_cns_post
             $group_leader = cns_get_group_property($group, 'group_leader');
             $group_name = cns_get_group_name($group);
             if ($rank_image != '') {
-                $rank_images->attach(do_template('CNS_RANK_IMAGE', array('_GUID' => 'a6a413fc07e05b28ab995b072718b755', 'GROUP_NAME' => $group_name, 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 'IMG' => $rank_image, 'IS_LEADER' => $group_leader == get_member())));
+                $rank_images->attach(do_template('CNS_RANK_IMAGE', ['_GUID' => 'a6a413fc07e05b28ab995b072718b755', 'GROUP_NAME' => $group_name, 'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username(get_member()), 'IMG' => $rank_image, 'IS_LEADER' => $group_leader == get_member()]));
             }
         }
 
         if (get_param_string('type') == 'edit_post') {
-            $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', array(
+            $last_edited = do_template('CNS_TOPIC_POST_LAST_EDITED', [
                 '_GUID' => '3c476cf570fc4ba9780cc6b9c358b7f4',
                 'LAST_EDIT_DATE_RAW' => strval(time()),
                 'LAST_EDIT_DATE' => get_timezoned_date_time(time()),
                 'LAST_EDIT_PROFILE_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url(get_member(), true),
                 'LAST_EDIT_USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username(get_member()),
-            ));
+            ]);
         } else {
             $last_edited = new Tempcode();
         }
 
-        $map = array(
+        $map = [
             '_GUID' => '354473f96b4f7324d2a9c476ff78f0d7',
             'GIVE_CONTEXT' => false,
             'POST_ID' => '',
@@ -194,10 +194,10 @@ class Hook_preview_cns_post
             'SIGNATURE' => $signature,
             'BUTTONS' => '',
             'POSTER_ID' => strval($post_owner),
-        );
+        ];
         $post = do_template('CNS_TOPIC_POST', $map);
-        $out = do_template('CNS_POST_BOX', array('_GUID' => '62bbfabfa5c16c2aa6724a0b79839626', 'GIVE_CONTEXT' => false, 'POST' => $post) + $map + array('ACTUAL_POST' => $post_html));
+        $out = do_template('CNS_POST_BOX', ['_GUID' => '62bbfabfa5c16c2aa6724a0b79839626', 'GIVE_CONTEXT' => false, 'POST' => $post] + $map + ['ACTUAL_POST' => $post_html]);
 
-        return array($out, $post_comcode);
+        return [$out, $post_comcode];
     }
 }

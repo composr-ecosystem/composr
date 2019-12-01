@@ -41,7 +41,7 @@ class Module_admin_wordfilter extends Standard_crud_module
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -70,24 +70,24 @@ class Module_admin_wordfilter extends Standard_crud_module
     {
         require_code('wordfilter');
 
-        $naughties = array(
+        $naughties = [
             'arsehole', 'asshole', 'arse', 'bastard', 'cock', 'cocked', 'cocksucker', 'cunt', 'cum',
             'blowjob', 'bollocks', 'bondage', 'bugger', 'buggery', 'dickhead', 'dildo', 'faggot', 'fuck', 'fucked', 'fucking',
             'fucker', 'gayboy', 'jackoff', 'jerk-off', 'motherfucker', 'nigger', 'piss', 'pissed', 'puffter', 'pussy',
             'queers', 'retard', 'shag', 'shagged',
             'shat', 'shit', 'slut', 'twat', 'wank', 'wanker', 'whore',
-        );
+        ];
 
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('wordfilter', array(
+            $GLOBALS['SITE_DB']->create_table('wordfilter', [
                 'id' => '*AUTO',
                 'word' => 'SHORT_TEXT',
                 'w_replacement' => 'SHORT_TEXT',
                 'w_match_type' => 'ID_TEXT', // One of 'WORDFILTER_MATCH_TYPES'
-            ));
+            ]);
 
             foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $word, 'w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES, 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL));
+                $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES, 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
             }
         }
 
@@ -102,12 +102,12 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('wordfilter', 'w_match_type', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->query_update('wordfilter', array('w_match_type' => WORDFILTER_MATCH_TYPE_FULL), array('w_substr' => 0));
-            $GLOBALS['SITE_DB']->query_update('wordfilter', array('w_match_type' => WORDFILTER_MATCH_TYPE_SUBSTRING), array('w_substr' => 1));
+            $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_match_type' => WORDFILTER_MATCH_TYPE_FULL], ['w_substr' => 0]);
+            $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_match_type' => WORDFILTER_MATCH_TYPE_SUBSTRING], ['w_substr' => 1]);
             $GLOBALS['SITE_DB']->delete_table_field('wordfilter', 'w_substr');
 
             foreach ($naughties as $word) {
-                $GLOBALS['SITE_DB']->query_update('wordfilter', array('w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES), array('word' => $word, 'w_replacement' => '', 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL));
+                $GLOBALS['SITE_DB']->query_update('wordfilter', ['w_replacement' => WORDFILTER_REPLACEMENT_GRAWLIXES], ['word' => $word, 'w_replacement' => '', 'w_match_type' => WORDFILTER_MATCH_TYPE_FULL]);
             }
         }
     }
@@ -127,9 +127,9 @@ class Module_admin_wordfilter extends Standard_crud_module
             return null;
         }
 
-        return array(
-            'browse' => array('MANAGE_WORDFILTER', 'menu/adminzone/security/wordfilter'),
-        );
+        return [
+            'browse' => ['MANAGE_WORDFILTER', 'menu/adminzone/security/wordfilter'],
+        ];
     }
 
     public $title;
@@ -197,10 +197,10 @@ class Module_admin_wordfilter extends Standard_crud_module
         return do_next_manager(
             get_screen_title('MANAGE_WORDFILTER'),
             comcode_lang_string('OBSCENITY_WARNING'),
-            array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_WORDFILTER')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_WORDFILTER')),
-            ),
+            [
+                ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_WORDFILTER')],
+                ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_WORDFILTER')],
+            ],
             do_lang('MANAGE_WORDFILTER')
         );
     }
@@ -238,7 +238,7 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         $fields->attach(form_input_radio(do_lang_tempcode('MATCH_TYPE'), do_lang_tempcode('DESCRIPTION_MATCH_TYPE'), 'match_type', $radios, true));
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -249,7 +249,7 @@ class Module_admin_wordfilter extends Standard_crud_module
      */
     public function fill_in_edit_form($id)
     {
-        $m = $GLOBALS['SITE_DB']->query_select('wordfilter', array('*'), array('id' => $id), '', 1);
+        $m = $GLOBALS['SITE_DB']->query_select('wordfilter', ['*'], ['id' => $id], '', 1);
         if (!array_key_exists(0, $m)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'word'));
         }
@@ -257,7 +257,7 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         list($fields, $hidden) = $this->get_form_fields($w['word'], $w['w_replacement'], $w['w_match_type']);
 
-        return array($fields, $hidden);
+        return [$fields, $hidden];
     }
 
     /**
@@ -275,7 +275,7 @@ class Module_admin_wordfilter extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $id = $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type), true);
+        $id = $GLOBALS['SITE_DB']->query_insert('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type], true);
 
         log_it('ADD_WORDFILTER', $word);
 
@@ -298,7 +298,7 @@ class Module_admin_wordfilter extends Standard_crud_module
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $GLOBALS['SITE_DB']->query_update('wordfilter', array('word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type), array('id' => $id));
+        $GLOBALS['SITE_DB']->query_update('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type], ['id' => $id]);
 
         log_it('EDIT_WORDFILTER', $word);
     }
@@ -312,7 +312,7 @@ class Module_admin_wordfilter extends Standard_crud_module
     {
         $id = intval($_id);
 
-        $GLOBALS['FORUM_DB']->query_delete('wordfilter', array('id' => $id), '', 1);
+        $GLOBALS['FORUM_DB']->query_delete('wordfilter', ['id' => $id], '', 1);
 
         log_it('DELETE_WORDFILTER', $_id);
     }
@@ -330,16 +330,16 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         $current_ordering = get_param_string('sort', 'word ASC', INPUT_FILTER_GET_COMPLEX);
         list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
-        $sortables = array(
+        $sortables = [
             'word' => do_lang_tempcode('WORD'),
             'w_replacement' => do_lang_tempcode('REPLACEMENT'),
             'w_match_type' => do_lang_tempcode('MATCH_TYPE'),
-        );
+        ];
         if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $columns = array();
+        $columns = [];
         $columns[] = do_lang_tempcode('WORD');
         $columns[] = do_lang_tempcode('REPLACEMENT');
         $columns[] = do_lang_tempcode('MATCH_TYPE');
@@ -351,9 +351,9 @@ class Module_admin_wordfilter extends Standard_crud_module
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
 
         foreach ($rows as $row) {
-            $edit_url = build_url($url_map + array('id' => $row['id']), '_SELF');
+            $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $values = array();
+            $values = [];
             $values[] = $row['word'];
             $values[] = ($row['w_replacement'] === WORDFILTER_REPLACEMENT_GRAWLIXES) ? protect_from_escaping('<i>' . do_lang('REPLACED_WITH_GRAWLIXES') . '</i>') : $row['w_replacement'];
             $values[] = do_lang_tempcode('WORDFILTER_MATCH_TYPE_' . $row['w_match_type']);
@@ -362,6 +362,6 @@ class Module_admin_wordfilter extends Standard_crud_module
             $fields->attach(results_entry($values, true));
         }
 
-        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false);
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false];
     }
 }

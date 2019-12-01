@@ -79,7 +79,7 @@ function ce_do_header()
 
     global $FILE_BASE;
     $password_check_js = file_get_contents($FILE_BASE . '/themes/default/templates/PASSWORD_CHECK_JS.tpl');
-    $ls_rep = array(
+    $ls_rep = [
         '{!ADMIN_USERS_PASSWORD;^/}' => 'Administration account password',
         '{!MASTER_PASSWORD;^/}' => 'Master password',
         '{!PASSWORDS_DO_NOT_MATCH;^/}' => 'The given {1} passwords do not match',
@@ -88,7 +88,7 @@ function ce_do_header()
         '{!CONFIRM_REALLY;^/}' => 'REALLY?',
 
         '{PASSWORD_PROMPT;/}' => '',
-    );
+    ];
     $password_check_js = str_replace(array_keys($ls_rep), array_values($ls_rep), $password_check_js);
     @print('<script>' . $password_check_js . '</script>');
 
@@ -146,7 +146,7 @@ function ce_do_login()
  */
 function do_access($given_password)
 {
-    $settings = array(
+    $settings = [
         'admin_username' => 'The username used for the administrator when Composr is installed to not use a forum. On the vast majority of sites this setting does nothing.',
         'master_password' => 'If you wish the password to be changed, enter a new password here. Otherwise leave blank.',
 
@@ -231,7 +231,7 @@ function do_access($given_password)
 
         'gae_application' => '<em>Google App Engine:</em> Application name',
         'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',
-    );
+    ];
 
     global $SITE_INFO;
 
@@ -328,7 +328,7 @@ function do_set()
 {
     $given_password = $_POST['given_password'];
 
-    $new = array();
+    $new = [];
     foreach ($_POST as $key => $val) {
         // Non-saved fields
         if ($key == 'given_password') {
@@ -358,7 +358,7 @@ function do_set()
     unset($new['master_password_confirm']);
 
     // Encrypt password
-    $new['master_password'] = password_hash($new['master_password'], PASSWORD_BCRYPT, array('cost' => 12));
+    $new['master_password'] = password_hash($new['master_password'], PASSWORD_BCRYPT, ['cost' => 12]);
 
     // Test cookie settings. BASED ON CODE FROM INSTALL.PHP
     $base_url = $new['base_url'];

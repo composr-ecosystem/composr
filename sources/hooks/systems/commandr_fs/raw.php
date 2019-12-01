@@ -38,17 +38,17 @@ class Hook_commandr_fs_raw
             $path .= '/' . filter_naughty($meta_dir_section);
         }
 
-        $listing = array();
+        $listing = [];
         if (is_dir($path)) {
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (($file != '.') && ($file != '..') && ($file != '.git')) {
-                    $listing[] = array(
+                    $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
                         is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
                         filemtime($path . '/' . $file),
-                    );
+                    ];
                 }
             }
             closedir($dh);

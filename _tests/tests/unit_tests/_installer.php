@@ -56,7 +56,7 @@ class _installer_test_set extends cms_test_case
             make_installers();
         }
 
-        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'timeout' => 30.0));
+        $http_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
 
         $this->assertTrue($http_result->message == '200');
     }
@@ -72,7 +72,7 @@ class _installer_test_set extends cms_test_case
             return;
         }
 
-        $http_result = cms_http_request(get_base_url() . '/install.php?skip_slow_checks=1', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 60.0));
+        $http_result = cms_http_request(get_base_url() . '/install.php?skip_slow_checks=1', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 60.0]);
 
         $this->assertTrue($http_result->message == '200', 'Wrong HTTP status code ' . $http_result->message);
 
@@ -131,7 +131,7 @@ class _installer_test_set extends cms_test_case
         // Cleanup old install
         $tables = $GLOBALS['SITE_DB']->query('SHOW TABLES FROM ' . $database, null, 0, true); // Suppress errors in case database does not exist yet
         if ($tables === null) {
-            $tables = array();
+            $tables = [];
         }
         foreach ($tables as $table) {
             if (substr($table['Tables_in_' . $database], 0, strlen($table_prefix)) == $table_prefix) {
@@ -155,7 +155,7 @@ class _installer_test_set extends cms_test_case
                 null,
                 null,
                 null,
-                array(),
+                [],
                 true,
                 'mysqli'
             );

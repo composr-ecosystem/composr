@@ -31,9 +31,9 @@ class Hook_sw_newsletter
     public function get_blocks()
     {
         if (!addon_installed('newsletter')) {
-            return array();
+            return [];
         }
 
-        return array(array(), array('main_newsletter_signup' => array('PANEL_NONE', 'PANEL_RIGHT')));
+        return [[], ['main_newsletter_signup' => ['PANEL_NONE', 'PANEL_RIGHT']]];
     }
 }

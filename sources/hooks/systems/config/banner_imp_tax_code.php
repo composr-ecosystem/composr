@@ -30,7 +30,7 @@ class Hook_config_banner_imp_tax_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PRICE_banner_imp_tax_code',
             'type' => 'tax_code',
             'category' => 'ECOMMERCE',
@@ -44,7 +44,7 @@ class Hook_config_banner_imp_tax_code
             'public' => false,
 
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

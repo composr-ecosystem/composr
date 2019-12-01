@@ -45,7 +45,7 @@ function member_is_online($member_id)
 
     // Otherwise a manual query...
 
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$member_id])) {
         return $cache[$member_id];
     }
@@ -71,7 +71,7 @@ function member_is_online($member_id)
 function get_users_online($longer_time, $filter, &$count)
 {
     if (get_value('disable_member_tracking') === '1') {
-        return array();
+        return [];
     }
 
     $max_to_show = 200;
@@ -95,7 +95,7 @@ function get_users_online($longer_time, $filter, &$count)
     $sessions = $SESSION_CACHE;
     sort_maps_by($sessions, 'last_activity'); // There may be multiple, and we need the latest to come out of the algorithm on top
 
-    $members = array();
+    $members = [];
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
     $members_online = 0;
     foreach ($sessions as $row) {
@@ -150,17 +150,17 @@ function member_blocked($member_id, $member_blocker = null)
     }
 
     if ($member_id == get_member()) {
-        static $members_blocking_us_cache = array();
+        static $members_blocking_us_cache = [];
         if ($members_blocking_us_cache === null) {
-            $rows = $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocker'), array('member_blocked' => get_member()));
+            $rows = $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocker'], ['member_blocked' => get_member()]);
             $members_blocking_us_cache = collapse_1d_complexity('member_blocker', $rows);
         }
         return (in_array($member_blocker, $members_blocking_us_cache));
     }
 
-    static $members_blocked_cache = array();
+    static $members_blocked_cache = [];
     if ($members_blocked_cache === null) {
-        $rows = $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocked'), array('member_blocker' => get_member()));
+        $rows = $GLOBALS['SITE_DB']->query_select('chat_blocking', ['member_blocked'], ['member_blocker' => get_member()]);
         $members_blocked_cache = collapse_1d_complexity('member_blocked', $rows);
     }
     return (in_array($member_id, $members_blocked_cache));
@@ -177,7 +177,7 @@ function member_blocked($member_id, $member_blocker = null)
  */
 function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum_layer = false)
 {
-    $members = ($id === null) ? array() : get_members_viewing($page, $type, $id, $forum_layer);
+    $members = ($id === null) ? [] : get_members_viewing($page, $type, $id, $forum_layer);
     $num_guests = 0;
     $num_members = 0;
     if ($members === null) {
@@ -188,7 +188,7 @@ function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum
             if (is_guest()) {
                 $members[get_member()] = 1;
             } else {
-                $members[get_member()] = array('mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
+                $members[get_member()] = ['mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member())];
             }
         }
         foreach ($members as $member_id => $at_details) {
@@ -198,14 +198,14 @@ function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum
                 $username = $at_details['mt_cache_username'];
                 $num_members++;
                 $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
-                $map = array(
+                $map = [
                     'FIRST' => $num_members == 1,
                     'PROFILE_URL' => $profile_url,
                     'USERNAME' => $username,
                     'MEMBER_ID' => strval($member_id),
-                );
+                ];
                 if (isset($at_details['the_title'])) {
-                    if ((has_privilege(get_member(), 'show_user_browsing')) || ((in_array($at_details['the_page'], array('topics', 'topicview'))) && ($at_details['the_id'] == $id))) {
+                    if ((has_privilege(get_member(), 'show_user_browsing')) || ((in_array($at_details['the_page'], ['topics', 'topicview'])) && ($at_details['the_id'] == $id))) {
                         $map['AT'] = escape_html($at_details['the_title']);
                     }
                 }
@@ -218,7 +218,7 @@ function get_members_viewing_wrap($page = null, $type = null, $id = null, $forum
         }
     }
 
-    return array($num_guests, $num_members, $members_viewing);
+    return [$num_guests, $num_members, $members_viewing];
 }
 
 /**
@@ -255,7 +255,7 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
     // Update the member tracking
     member_tracking_update($page, $type, $id);
 
-    $map = array();
+    $map = [];
     if (!cms_empty_safe($page)) {
         $map['mt_page'] = $page;
     }
@@ -267,7 +267,7 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
     }
     $map['session_invisible'] = 0;
     $db = ($forum_layer ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
-    $results = $db->query_select('member_tracking t LEFT JOIN ' . $db->get_table_prefix() . 'sessions s ON t.mt_member_id=s.member_id', array('*'), $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND mt_time>' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' ORDER BY mt_member_id', 200);
+    $results = $db->query_select('member_tracking t LEFT JOIN ' . $db->get_table_prefix() . 'sessions s ON t.mt_member_id=s.member_id', ['*'], $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND mt_time>' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' ORDER BY mt_member_id', 200);
     if (count($results) == 200) {
         return null;
     }
@@ -277,9 +277,9 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
 
     $results = remove_duplicate_rows($results, 'mt_member_id');
 
-    $out = array(
+    $out = [
         $GLOBALS['FORUM_DRIVER']->get_guest_id() => $num_guests,
-    );
+    ];
     foreach ($results as $row) {
         if (!member_blocked(get_member(), $row['mt_member_id'])) {
             $out[$row['mt_member_id']] = $row;

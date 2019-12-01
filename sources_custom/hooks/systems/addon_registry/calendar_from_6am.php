@@ -26,7 +26,7 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -96,7 +96,7 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -106,13 +106,13 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'calendar',
-            ),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+            ],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -132,12 +132,12 @@ class Hook_addon_registry_calendar_from_6am
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/calendar_from_6am.php',
             'themes/default/templates_custom/CALENDAR_DAY.tpl',
             'themes/default/templates_custom/CALENDAR_DAY_HOUR.tpl',
             'themes/default/templates_custom/CALENDAR_WEEK.tpl',
             'themes/default/templates_custom/CALENDAR_WEEK_HOUR.tpl',
-        );
+        ];
     }
 }

@@ -177,7 +177,7 @@ class Hook_upload_syndication_photobucket
         $filename = preg_replace('#\.ram#', '.rm', $filename);
         require_code('files');
         $filetype = get_file_extension($filename);
-        if (in_array($filetype, array('ogg', 'ogv', 'webm', 'pdf'))) {
+        if (in_array($filetype, ['ogg', 'ogv', 'webm', 'pdf'])) {
             if (!$this->happens_always()) {
                 attach_message(do_lang_tempcode('PHOTOBUCKET_BAD_FILETYPE', escape_html($filetype)), 'warn');
             }
@@ -189,9 +189,9 @@ class Hook_upload_syndication_photobucket
             $success = $this->_login();
 
             $remote_gallery_name = preg_replace('#[^A-Za-z\d_\- ]#', '', get_site_name());
-            $call_params = array(
+            $call_params = [
                 'name' => $remote_gallery_name,
-            );
+            ];
             $username = get_value('photobucket_oauth_username__' . strval(get_member()), null, true);
             $api->album($username, $call_params);
             $api->post();
@@ -205,13 +205,13 @@ class Hook_upload_syndication_photobucket
 
             require_code('images');
             $api->reset(true, true, true);
-            $call_params = array(
+            $call_params = [
                 'type' => is_image($filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous')) ? 'image' : 'video',
                 'uploadfile' => '@' . $filepath, // We can't do by URL unfortunately; that requires a business deal to be arranged, it's not allowed to the general public (for abuse reasons) http://web.archive.org/web/20120119180111/http://photobucket.com/developer/forum?read,2,319
                 'filename' => $filename,
                 'title' => $title,
                 'description' => $description,
-            );
+            ];
             $api->album($username . '/' . $remote_gallery_name);
             $api->upload($call_params);
             $api->post();

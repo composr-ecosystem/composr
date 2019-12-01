@@ -34,10 +34,10 @@ class Hook_commandr_command_rm
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('rm', array('h'), array(true)), '', '');
+            return ['', do_command_help('rm', ['h'], [true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'rm'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'rm')];
             }
 
             $success = true;
@@ -48,7 +48,7 @@ class Hook_commandr_command_rm
                 if (!$commandr_fs->_is_file($param)) {
                     $success = false;
                     if (($i == 0) && (count($parameters) == 1)) {
-                        return array('', '', '', do_lang('NOT_A_FILE', strval($i + 1)));
+                        return ['', '', '', do_lang('NOT_A_FILE', strval($i + 1))];
                     }
                 }
 
@@ -57,9 +57,9 @@ class Hook_commandr_command_rm
         }
 
         if ($success) {
-            return array('', '', do_lang('SUCCESS'), '');
+            return ['', '', do_lang('SUCCESS'), ''];
         } else {
-            return array('', '', '', do_lang('INCOMPLETE_ERROR'));
+            return ['', '', '', do_lang('INCOMPLETE_ERROR')];
         }
     }
 }

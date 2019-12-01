@@ -34,7 +34,7 @@ class Hook_cleanup_page_backups
             return null;
         }
 
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('ARCHIVE_PAGE_BACKUPS');
         $info['description'] = do_lang_tempcode('DESCRIPTION_ARCHIVE_PAGE_BACKUPS');
         $info['type'] = 'optimise';

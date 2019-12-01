@@ -24,13 +24,13 @@ class firephp_test_set extends cms_test_case
 
         $guest_username = $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
 
-        $url = build_url(array('page' => '', 'keep_firephp' => 1, 'keep_su' => $guest_username), 'adminzone');
+        $url = build_url(['page' => '', 'keep_firephp' => 1, 'keep_su' => $guest_username], 'adminzone');
 
-        $extra_headers = array(
+        $extra_headers = [
             'X-FirePHP-Version' => '0.0.6',
-        );
+        ];
         $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 FirePHP/4Chrome';
-        $http_result = cms_http_request($url->evaluate(), array('ignore_http_status' => true, 'trigger_error' => false, 'ua' => $ua, 'extra_headers' => $extra_headers, 'cookies' => array(get_session_cookie() => $session_id)));
+        $http_result = cms_http_request($url->evaluate(), ['ignore_http_status' => true, 'trigger_error' => false, 'ua' => $ua, 'extra_headers' => $extra_headers, 'cookies' => [get_session_cookie() => $session_id]]);
 
         if ($this->debug) {
             @var_dump($url->evaluate());

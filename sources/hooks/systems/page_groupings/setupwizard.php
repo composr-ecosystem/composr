@@ -33,11 +33,11 @@ class Hook_page_groupings_setupwizard
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('setupwizard')) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('setup', 'menu/adminzone/setup/setupwizard', array('admin_setupwizard', array('type' => 'browse'), get_module_zone('admin_setupwizard')), do_lang_tempcode('config:SETUPWIZARD'), 'config:DOC_SETUPWIZARD'),
-        );
+        return [
+            ['setup', 'menu/adminzone/setup/setupwizard', ['admin_setupwizard', ['type' => 'browse'], get_module_zone('admin_setupwizard')], do_lang_tempcode('config:SETUPWIZARD'), 'config:DOC_SETUPWIZARD'],
+        ];
     }
 }

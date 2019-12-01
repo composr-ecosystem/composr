@@ -30,7 +30,7 @@ class Hook_config_use_local_payment
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'USE_LOCAL_PAYMENT',
             'type' => 'tick',
             'category' => 'ECOMMERCE',
@@ -43,7 +43,7 @@ class Hook_config_use_local_payment
             'required' => true,
             'public' => false,
             'addon' => 'ecommerce',
-        );
+        ];
     }
 
     /**

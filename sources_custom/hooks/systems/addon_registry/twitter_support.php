@@ -26,7 +26,7 @@ class Hook_addon_registry_twitter_support
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,10 +66,10 @@ class Hook_addon_registry_twitter_support
      */
     public function get_copyright_attribution()
     {
-        return array(
+        return [
             'Icon by leslienayibe',
             'Class by Tijs Verkoyen',
-        );
+        ];
     }
 
     /**
@@ -110,7 +110,7 @@ Once configured then syndication will be an option when adding news posts or cal
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -120,15 +120,15 @@ Once configured then syndication will be an option when adding news posts or cal
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(
+        return [
+            'requires' => [
                 'PHP curl extension',
-            ),
-            'recommends' => array(
+            ],
+            'recommends' => [
                 'activity_feed',
-            ),
-            'conflicts_with' => array(),
-        );
+            ],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -148,7 +148,7 @@ Once configured then syndication will be an option when adding news posts or cal
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/twitter_support.php',
             'sources_custom/twitter.php',
             'adminzone/pages/minimodules_custom/twitter_oauth.php',
@@ -157,6 +157,6 @@ Once configured then syndication will be an option when adding news posts or cal
             'sources_custom/hooks/systems/page_groupings/twitter.php',
             'sources_custom/hooks/systems/config/twitter_api_key.php',
             'sources_custom/hooks/systems/config/twitter_api_secret.php',
-        );
+        ];
     }
 }

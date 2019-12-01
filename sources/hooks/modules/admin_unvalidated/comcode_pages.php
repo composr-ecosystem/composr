@@ -32,9 +32,9 @@ class Hook_unvalidated_comcode_pages
     {
         require_lang('zones');
 
-        $info = array();
+        $info = [];
         $info['db_table'] = 'comcode_pages';
-        $info['db_identifier'] = array('the_zone', 'the_page');
+        $info['db_identifier'] = ['the_zone', 'the_page'];
         $info['db_validated'] = 'p_validated';
         $info['db_add_date'] = 'p_add_date';
         $info['db_edit_date'] = 'p_edit_date';

@@ -31,7 +31,7 @@ class Hook_addon_registry_random_quotes
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_random_quotes
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_featured',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_random_quotes
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,7 +97,7 @@ class Hook_addon_registry_random_quotes
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/images/icons/menu/adminzone/style/quotes.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/style/quotes.svg',
             'sources/hooks/blocks/main_notes/quotes.php',
@@ -111,7 +111,7 @@ class Hook_addon_registry_random_quotes
             'sources/blocks/main_quotes.php',
             'sources/hooks/systems/page_groupings/quotes.php',
             'themes/default/css/random_quotes.css',
-        );
+        ];
     }
 
     /**
@@ -121,9 +121,9 @@ class Hook_addon_registry_random_quotes
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_MAIN_QUOTES.tpl' => 'block_main_quotes',
-        );
+        ];
     }
 
     /**
@@ -135,14 +135,14 @@ class Hook_addon_registry_random_quotes
      */
     public function tpl_preview__block_main_quotes()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_MAIN_QUOTES', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_MAIN_QUOTES', [
                 'BLOCK_ID' => lorem_word(),
                 'EDIT_URL' => placeholder_url(),
                 'FILE' => lorem_phrase(),
                 'CONTENT' => lorem_phrase(),
                 'TITLE' => lorem_phrase(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

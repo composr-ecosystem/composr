@@ -42,6 +42,6 @@ class Hook_preview_cns_signature
                 warn_exit(do_lang_tempcode('SIGNATURE_TOO_BIG'));
             }
         }
-        return array($applies, 'cns_signature', true, array('post'));
+        return [$applies, 'cns_signature', true, ['post']];
     }
 }

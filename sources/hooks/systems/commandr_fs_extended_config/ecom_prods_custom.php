@@ -70,6 +70,6 @@ class Hook_commandr_fs_extended_config__ecom_prods_custom
      */
     public function write_file($meta_dir, $meta_root_node, $file_name, $contents, &$commandr_fs)
     {
-        return table_from_json('ecom_prods_custom', $contents, array(), TABLE_REPLACE_MODE_SEVERE);
+        return table_from_json('ecom_prods_custom', $contents, [], TABLE_REPLACE_MODE_SEVERE);
     }
 }

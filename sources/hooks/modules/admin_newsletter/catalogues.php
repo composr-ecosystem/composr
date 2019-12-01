@@ -39,7 +39,7 @@ class Hook_whatsnew_catalogues
 
         require_code('catalogues');
         $cats = create_selection_list_catalogues(null, true, false, $updated_since);
-        return array($cats, do_lang('CATALOGUE_ENTRIES'));
+        return [$cats, do_lang('CATALOGUE_ENTRIES')];
     }
 
     /**
@@ -53,7 +53,7 @@ class Hook_whatsnew_catalogues
     public function run($cutoff_time, $lang, $filter)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         require_lang('catalogues');
@@ -77,19 +77,19 @@ class Hook_whatsnew_catalogues
         $rows = $GLOBALS['SITE_DB']->query('SELECT cc_id,id,ce_submitter FROM ' . get_table_prefix() . 'catalogue_entries r' . $privacy_join . ' WHERE ce_validated=1 AND ce_add_date>' . strval($cutoff_time) . ' AND (' . $or_list . ')' . $privacy_where . ' ORDER BY ce_add_date DESC', $max);
 
         if (count($rows) == $max) {
-            return array();
+            return [];
         }
 
         foreach ($rows as $row) {
             $id = $row['id'];
 
-            $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', array('id' => $row['cc_id']));
+            $c_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_categories', 'c_name', ['id' => $row['cc_id']]);
             if ($c_name === null) {
                 continue; // Corruption
             }
-            $c_title = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', array('c_name' => $c_name));
+            $c_title = $GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', ['c_name' => $c_name]);
 
-            $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('id', 'cf_type'), array('c_name' => $c_name), 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
+            $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', ['id', 'cf_type'], ['c_name' => $c_name], 'ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
 
             // Work out name
             $name = '';
@@ -97,7 +97,7 @@ class Hook_whatsnew_catalogues
             list(, , $raw_type) = $ob->get_field_value_row_bits($fields[0]);
             switch ($raw_type) {
                 case 'short_trans':
-                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short_trans', 'cv_value', array('ce_id' => $row['id'], 'cf_id' => $fields[0]['id']));
+                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short_trans', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $fields[0]['id']]);
                     if ($name === null) {
                         $name = do_lang('UNKNOWN');
                     } else {
@@ -105,13 +105,13 @@ class Hook_whatsnew_catalogues
                     }
                     break;
                 case 'short_text':
-                    $name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'cv_value', array('ce_id' => $row['id'], 'cf_id' => $fields[0]['id']));
+                    $name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_short', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $fields[0]['id']]);
                     if ($name === null) {
                         $name = do_lang('UNKNOWN');
                     }
                     break;
                 case 'float':
-                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_float', 'cv_value', array('ce_id' => $row['id'], 'cf_id' => $fields[0]['id']));
+                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_float', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $fields[0]['id']]);
                     if ($name === null) {
                         $name = do_lang('UNKNOWN');
                     } else {
@@ -119,7 +119,7 @@ class Hook_whatsnew_catalogues
                     }
                     break;
                 case 'integer':
-                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'cv_value', array('ce_id' => $row['id'], 'cf_id' => $fields[0]['id']));
+                    $_name = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_efv_integer', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $fields[0]['id']]);
                     if ($name === null) {
                         $name = do_lang('UNKNOWN');
                     } else {
@@ -132,7 +132,7 @@ class Hook_whatsnew_catalogues
             $thumbnail = null;
             foreach ($fields as $field) {
                 if ($field['cf_type'] == 'picture') {
-                    $thumbnail = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_short', 'cv_value', array('ce_id' => $row['id'], 'cf_id' => $field['id']));
+                    $thumbnail = $GLOBALS['SITE_DB']->query_select_value('catalogue_efv_short', 'cv_value', ['ce_id' => $row['id'], 'cf_id' => $field['id']]);
                     if ($thumbnail != '') {
                         if (url_is_local($thumbnail)) {
                             $thumbnail = get_custom_base_url() . '/' . $thumbnail;
@@ -143,18 +143,18 @@ class Hook_whatsnew_catalogues
                 }
             }
 
-            $_url = build_url(array('page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']), get_module_zone('catalogues'), array(), false, false, true);
+            $_url = build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $row['id']], get_module_zone('catalogues'), [], false, false, true);
             $url = $_url->evaluate();
 
             $catalogue = get_translated_text($c_title, null, $lang);
 
             $member_id = (is_guest($row['ce_submitter'])) ? null : strval($row['ce_submitter']);
 
-            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', array('_GUID' => '4ae604e5d0e9cf4d28e7d811dc4558e5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'CATALOGUE' => $catalogue, 'NAME' => $name, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'catalogue_entry', 'CONTENT_ID' => strval($id)), null, false, null, '.txt', 'text'));
+            $new->attach(do_template('NEWSLETTER_WHATSNEW_RESOURCE_FCOMCODE', ['_GUID' => '4ae604e5d0e9cf4d28e7d811dc4558e5', 'MEMBER_ID' => $member_id, 'URL' => $url, 'CATALOGUE' => $catalogue, 'NAME' => $name, 'THUMBNAIL' => $thumbnail, 'CONTENT_TYPE' => 'catalogue_entry', 'CONTENT_ID' => strval($id)], null, false, null, '.txt', 'text'));
 
             handle_has_checked_recently($url); // We know it works, so mark it valid so as to not waste CPU checking within the generated Comcode
         }
 
-        return array($new, do_lang('CATALOGUE_ENTRIES', '', '', '', $lang));
+        return [$new, do_lang('CATALOGUE_ENTRIES', '', '', '', $lang)];
     }
 }

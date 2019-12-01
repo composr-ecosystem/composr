@@ -49,10 +49,10 @@ class Hook_rss_chat
         require_code('chat');
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT m.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_messages m LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_rooms r ON r.id=m.room_id WHERE r.is_im=0 AND date_and_time>' . strval($cutoff) . ' AND ' . $filters . ' ORDER BY date_and_time DESC', $max);
-        $count = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', array('is_im' => 0));
-        $categories = array();
+        $count = $GLOBALS['SITE_DB']->query_select_value('chat_rooms', 'COUNT(*)', ['is_im' => 0]);
+        $categories = [];
         if ($count < 100) {
-            $_categories = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('is_im' => 0));
+            $_categories = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['is_im' => 0]);
             foreach ($_categories as $category) {
                 $categories[$category['id']] = $category;
             }
@@ -61,7 +61,7 @@ class Hook_rss_chat
         $content = new Tempcode();
         foreach ($rows as $row) {
             if ((!array_key_exists($row['room_id'], $categories)) && ($count >= 100)) {
-                $_categories = $GLOBALS['SITE_DB']->query_select('chat_rooms', array('*'), array('id' => $row['room_id']), '', 1);
+                $_categories = $GLOBALS['SITE_DB']->query_select('chat_rooms', ['*'], ['id' => $row['room_id']], '', 1);
                 if (array_key_exists(0, $_categories)) {
                     $categories[$row['room_id']] = $_categories[0];
                 }
@@ -78,7 +78,7 @@ class Hook_rss_chat
                 $news_date = date($date_string, $row['date_and_time']);
                 $edit_date = '';
 
-                $just_message_row = db_map_restrict($row, array('id', 'the_message'));
+                $just_message_row = db_map_restrict($row, ['id', 'the_message']);
 
                 $_title = get_translated_tempcode('chat_messages', $just_message_row, 'the_message');
                 $news_title = xmlentities($_title->evaluate());
@@ -89,15 +89,15 @@ class Hook_rss_chat
                 $category = $categories[$row['room_id']]['room_name'];
                 $category_raw = strval($row['room_id']);
 
-                $view_url = build_url(array('page' => 'chat', 'type' => 'room', 'id' => $row['room_id']), get_module_zone('chat'), array(), false, false, true);
+                $view_url = build_url(['page' => 'chat', 'type' => 'room', 'id' => $row['room_id']], get_module_zone('chat'), [], false, false, true);
 
                 $if_comments = new Tempcode();
 
-                $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+                $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
             }
         }
 
         require_lang('chat');
-        return array($content, do_lang('MESSAGES'));
+        return [$content, do_lang('MESSAGES')];
     }
 }

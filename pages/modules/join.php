@@ -30,7 +30,7 @@ class Module_join
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -58,9 +58,9 @@ class Module_join
             return null;
         }
 
-        return array(
-            'browse' => array('_JOIN', 'menu/site_meta/user_actions/join'),
-        );
+        return [
+            'browse' => ['_JOIN', 'menu/site_meta/user_actions/join'],
+        ];
     }
 
     public $title;
@@ -78,24 +78,24 @@ class Module_join
 
         inform_non_canonical_parameter('_lead_source_description');
 
-        $this->title = get_screen_title('__JOIN', true, array(escape_html(get_site_name())));
+        $this->title = get_screen_title('__JOIN', true, [escape_html(get_site_name())]);
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('_JOIN'));
         }
 
         if ($type == 'step2') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_JOIN'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_JOIN')]]);
             breadcrumb_set_self(do_lang_tempcode('DETAILS'));
         }
 
         if ($type == 'step3') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_JOIN'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_JOIN')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
         if ($type == 'step4') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('_JOIN'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('_JOIN')]]);
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -145,7 +145,7 @@ class Module_join
 
         // Show rules
         $rules = request_page('_rules', true, get_comcode_zone('_rules'), null, true);
-        $map = array('page' => '_SELF', 'type' => 'step2');
+        $map = ['page' => '_SELF', 'type' => 'step2'];
         $email_address = trim(get_param_string('email', '', INPUT_FILTER_GET_COMPLEX));
         if ($email_address != '') {
             $map['email'] = $email_address;
@@ -157,7 +157,7 @@ class Module_join
         $url = build_url($map, '_SELF');
 
         $group_select = new Tempcode();
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_is_default'), array('g_is_presented_at_install' => 1), 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', ['id', 'g_name', 'g_is_default'], ['g_is_presented_at_install' => 1], 'ORDER BY g_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('g_name'));
         if (count($rows) > 1) {
             foreach ($rows as $group) {
                 if (get_param_integer('usergroup', null) === null) {
@@ -175,7 +175,7 @@ class Module_join
             $hidden->attach(form_input_hidden('_lead_source_description', $_lead_source_description));
         }
 
-        return do_template('CNS_JOIN_STEP1_SCREEN', array(
+        return do_template('CNS_JOIN_STEP1_SCREEN', [
             '_GUID' => '3776e89f3b18e4bd9dd532defe6b1e9e',
             'TITLE' => $this->title,
             'RULES' => $rules,
@@ -183,7 +183,7 @@ class Module_join
             'GROUP_SELECT' => $group_select,
             'HIDDEN' => $hidden,
             'DECLARATIONS' => $this->get_declarations(),
-        ));
+        ]);
     }
 
     /**
@@ -201,7 +201,7 @@ class Module_join
             warn_exit(do_lang_tempcode('DESCRIPTION_I_AGREE_RULES'));
         }
 
-        $map = array('page' => '_SELF', 'type' => 'step3');
+        $map = ['page' => '_SELF', 'type' => 'step3'];
         $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($redirect != '') {
             $map['redirect'] = protect_url_parameter($redirect);
@@ -210,7 +210,7 @@ class Module_join
 
         $form = cns_join_form($url);
 
-        return do_template('CNS_JOIN_STEP2_SCREEN', array('_GUID' => '5879db5cf331526a999371f76868233d', 'TITLE' => $this->title, 'FORM' => $form));
+        return do_template('CNS_JOIN_STEP2_SCREEN', ['_GUID' => '5879db5cf331526a999371f76868233d', 'TITLE' => $this->title, 'FORM' => $form]);
     }
 
     /**
@@ -271,27 +271,27 @@ class Module_join
             $fields->attach(form_input_email(do_lang_tempcode('EMAIL_ADDRESS'), '', 'email', '', true));
             $fields->attach(form_input_integer(do_lang_tempcode('CODE'), '', 'code', null, true));
             $submit_name = do_lang_tempcode('PROCEED');
-            return do_template('FORM_SCREEN', array(
+            return do_template('FORM_SCREEN', [
                 '_GUID' => 'e2c8c3762a308ac7489ec3fb32cc0cf8',
                 'TITLE' => $this->title,
                 'GET' => true,
                 'SKIP_WEBSTANDARDS' => true,
                 'HIDDEN' => '',
-                'URL' => get_self_url(false, false, array(), false, true),
+                'URL' => get_self_url(false, false, [], false, true),
                 'FIELDS' => $fields,
                 'TEXT' => do_lang_tempcode('MISSING_CONFIRM_CODE'),
                 'SUBMIT_ICON' => 'buttons/proceed',
                 'SUBMIT_NAME' => $submit_name,
-            ));
+            ]);
         }
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_validated'), array('m_validated_email_confirm_code' => strval($code), 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))));
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => strval($code), 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))]);
         if (!array_key_exists(0, $rows)) {
-            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_validated'), array('m_validated_email_confirm_code' => '', 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))));
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id', 'm_validated'], ['m_validated_email_confirm_code' => '', 'm_email_address' => trim(get_param_string('email', false, INPUT_FILTER_GET_COMPLEX))]);
             if (!array_key_exists(0, $rows)) {
                 warn_exit(do_lang_tempcode('INCORRECT_CONFIRM_CODE'));
             } else {
                 $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
-                $map = array('page' => 'login', 'type' => 'browse');
+                $map = ['page' => 'login', 'type' => 'browse'];
                 if ($redirect != '') {
                     $map['redirect'] = protect_url_parameter($redirect);
                 }
@@ -303,7 +303,7 @@ class Module_join
         $validated = $rows[0]['m_validated'];
 
         // Activate user
-        $GLOBALS['FORUM_DB']->query_update('f_members', array('m_validated_email_confirm_code' => ''), array('id' => $id), '', 1);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_validated_email_confirm_code' => ''], ['id' => $id], '', 1);
 
         delete_cache_entry('main_members');
 
@@ -312,7 +312,7 @@ class Module_join
         }
 
         // Alert user to situation
-        $map = array('page' => 'login', 'type' => 'browse');
+        $map = ['page' => 'login', 'type' => 'browse'];
         $page_after_join = get_option('page_after_join');
         if ($page_after_join == '') {
             $redirect = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
@@ -325,7 +325,7 @@ class Module_join
                 if ($zone === null) {
                     $zone = 'site';
                 }
-                $map['redirect'] = protect_url_parameter(build_url(array('page' => $page_after_join), $zone));
+                $map['redirect'] = protect_url_parameter(build_url(['page' => $page_after_join], $zone));
             } else {
                 $map['redirect'] = protect_url_parameter(page_link_to_url($page_after_join));
             }

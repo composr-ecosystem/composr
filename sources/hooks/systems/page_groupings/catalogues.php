@@ -33,7 +33,7 @@ class Hook_page_groupings_catalogues
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('catalogues')) {
-            return array();
+            return [];
         }
 
         $exhaustive = true;
@@ -42,19 +42,19 @@ class Hook_page_groupings_catalogues
             $member_id = get_member();
         }
 
-        $ret = array();
+        $ret = [];
         if (has_privilege($member_id, 'submit_cat_highrange_content', 'cms_catalogues')) {
             $where = '';
             if (!addon_installed('ecommerce')) {
                 $where .= 'WHERE ' . db_string_not_equal_to('c_name', 'products');
             }
-            $cnt = intval($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', array(), $where));
-            $ret[] = array('cms', 'menu/rich_content/catalogues/catalogues', array('cms_catalogues', array('type' => 'browse'), get_module_zone('cms_catalogues')), do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('catalogues:CATALOGUES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'catalogues:DOC_CATALOGUES');
+            $cnt = intval($GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'COUNT(*)', [], $where));
+            $ret[] = ['cms', 'menu/rich_content/catalogues/catalogues', ['cms_catalogues', ['type' => 'browse'], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', do_lang_tempcode('catalogues:CATALOGUES'), make_string_tempcode(escape_html(integer_format($cnt)))), 'catalogues:DOC_CATALOGUES'];
         }
         if ($exhaustive) {
-            $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', array('*'), array(), 'ORDER BY c_add_date', 50);
+            $catalogues = $GLOBALS['SITE_DB']->query_select('catalogues', ['*'], [], 'ORDER BY c_add_date', 50);
             if ($catalogues !== null) {
-                $ret2 = array();
+                $ret2 = [];
                 $count = 0;
 
                 foreach ($catalogues as $row) {
@@ -68,9 +68,9 @@ class Hook_page_groupings_catalogues
                             $menu_icon = 'menu/rich_content/catalogues/catalogues';
                         }
 
-                        if (has_submit_permission('mid', $member_id, get_ip_address(), 'cms_catalogues', array('catalogues_catalogue', $row['c_name']))) {
+                        if (has_submit_permission('mid', $member_id, get_ip_address(), 'cms_catalogues', ['catalogues_catalogue', $row['c_name']])) {
                             if ($count < 10) {
-                                $ret2[] = array('cms', $menu_icon, array('cms_catalogues', array('type' => 'browse', 'catalogue_name' => $row['c_name']), get_module_zone('cms_catalogues')), do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', array('c_name' => $row['c_name'])))))), get_translated_tempcode('catalogues', $row, 'c_description'));
+                                $ret2[] = ['cms', $menu_icon, ['cms_catalogues', ['type' => 'browse', 'catalogue_name' => $row['c_name']], get_module_zone('cms_catalogues')], do_lang_tempcode('ITEMS_HERE', escape_html(get_translated_text($row['c_title'])), escape_html(integer_format(intval($GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'COUNT(*)', ['c_name' => $row['c_name']]))))), get_translated_tempcode('catalogues', $row, 'c_description')];
                             }
                             $count++;
                         }
@@ -84,7 +84,7 @@ class Hook_page_groupings_catalogues
                         }
 
                         $show_direct_to_category_screen = false;
-                        $num_categories = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $row['c_name']));
+                        $num_categories = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', ['c_name' => $row['c_name']]);
                         if ($row['c_is_tree'] == 0) {
                             /*if ($num_categories == 0) { // Actually we should show an empty index - catalogue exists, show it does
                                 continue;
@@ -99,10 +99,10 @@ class Hook_page_groupings_catalogues
                             }
                         }
                         if ($show_direct_to_category_screen) {
-                            $only_category = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'id', array('c_name' => $row['c_name']));
-                            $ret2[] = array($page_grouping, $menu_icon, array('catalogues', array('type' => 'category', 'id' => strval($only_category)), get_module_zone('catalogues')), make_string_tempcode(escape_html(get_translated_text($row['c_title']))), get_translated_tempcode('catalogues', $row, 'c_description'));
+                            $only_category = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'id', ['c_name' => $row['c_name']]);
+                            $ret2[] = [$page_grouping, $menu_icon, ['catalogues', ['type' => 'category', 'id' => strval($only_category)], get_module_zone('catalogues')], make_string_tempcode(escape_html(get_translated_text($row['c_title']))), get_translated_tempcode('catalogues', $row, 'c_description')];
                         } else {
-                            $ret2[] = array($page_grouping, $menu_icon, array('catalogues', array('type' => 'index', 'id' => $row['c_name'], 'tree' => $row['c_is_tree']), get_module_zone('catalogues')), make_string_tempcode(escape_html(get_translated_text($row['c_title']))), get_translated_tempcode('catalogues', $row, 'c_description'));
+                            $ret2[] = [$page_grouping, $menu_icon, ['catalogues', ['type' => 'index', 'id' => $row['c_name'], 'tree' => $row['c_is_tree']], get_module_zone('catalogues')], make_string_tempcode(escape_html(get_translated_text($row['c_title']))), get_translated_tempcode('catalogues', $row, 'c_description')];
                         }
                     }
                 }

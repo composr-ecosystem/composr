@@ -30,7 +30,7 @@ class Hook_config_ldap_group_class
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LDAP_GROUP_CLASS',
             'type' => 'line',
             'category' => 'USERS',
@@ -44,7 +44,7 @@ class Hook_config_ldap_group_class
             'public' => false,
 
             'addon' => 'ldap',
-        );
+        ];
     }
 
     /**

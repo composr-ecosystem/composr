@@ -30,7 +30,7 @@ class Hook_config_days_to_keep__permission_checks_log
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'DAYS_TO_KEEP__PERMISSION_CHECKS_LOG',
             'type' => 'integer',
             'category' => 'PRIVACY',
@@ -43,7 +43,7 @@ class Hook_config_days_to_keep__permission_checks_log
             'public' => false,
 
             'addon' => 'core_privacy',
-        );
+        ];
     }
 
     /**

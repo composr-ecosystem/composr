@@ -30,7 +30,7 @@ class Module_admin_shopping
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Manuprathap';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -59,13 +59,13 @@ class Module_admin_shopping
             return null;
         }
 
-        $ret = array(
-            'browse' => array('ORDERS', 'menu/rich_content/ecommerce/orders'),
-            'show_orders' => array('SHOW_ORDERS', 'menu/rich_content/ecommerce/orders'),
-        );
+        $ret = [
+            'browse' => ['ORDERS', 'menu/rich_content/ecommerce/orders'],
+            'show_orders' => ['SHOW_ORDERS', 'menu/rich_content/ecommerce/orders'],
+        ];
 
         if ($support_crosslinks) {
-            $ret['_SEARCH:admin_shopping:show_orders:filter=undispatched'] = array('SHOW_UNDISPATCHED_ORDERS', 'menu/adminzone/audit/ecommerce/undispatched_orders');
+            $ret['_SEARCH:admin_shopping:show_orders:filter=undispatched'] = ['SHOW_UNDISPATCHED_ORDERS', 'menu/adminzone/audit/ecommerce/undispatched_orders'];
         }
 
         return $ret;
@@ -98,11 +98,11 @@ class Module_admin_shopping
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('ORDERS'));
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')]]);
         }
 
         if ($type == 'show_orders') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')), array('_SELF:_SELF:browse', do_lang_tempcode('ORDERS'))));
+            breadcrumb_set_parents([['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')], ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')]]);
 
             $filter = get_param_string('filter', null);
             if ($filter == 'undispatched') {
@@ -113,11 +113,11 @@ class Module_admin_shopping
         }
 
         if ($type == 'order_details' || $type == 'order_export' || $type == '_order_export') {
-            breadcrumb_set_parents(array(
-                array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')),
-                array('_SELF:_SELF:browse', do_lang_tempcode('ORDERS')),
-                array('_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')),
-            ));
+            breadcrumb_set_parents([
+                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
+                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
+            ]);
         }
 
         if ($type == 'order_details') {
@@ -136,15 +136,15 @@ class Module_admin_shopping
             $order_id = get_param_integer('id');
             $action = either_param_string('action');
 
-            breadcrumb_set_parents(array(
-                array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')),
-                array('_SELF:_SELF:browse', do_lang_tempcode('ORDERS')),
-                array('_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')),
-                array('_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))),
-            ));
+            breadcrumb_set_parents([
+                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
+                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
+                ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
+            ]);
 
             if ($action == 'add_note') {
-                $this->title = get_screen_title('ADD_NOTE_TITLE', true, array(escape_html(strval($order_id))));
+                $this->title = get_screen_title('ADD_NOTE_TITLE', true, [escape_html(strval($order_id))]);
 
                 breadcrumb_set_self(do_lang_tempcode('ADD_NOTE'));
             }
@@ -173,14 +173,14 @@ class Module_admin_shopping
         if ($type == '_add_note') {
             $order_id = post_param_integer('order_id');
 
-            breadcrumb_set_parents(array(
-                array('_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')),
-                array('_SELF:_SELF:browse', do_lang_tempcode('ORDERS')),
-                array('_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')),
-                array('_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))),
-            ));
+            breadcrumb_set_parents([
+                ['_SEARCH:admin_ecommerce_logs:browse', do_lang_tempcode('ECOMMERCE')],
+                ['_SELF:_SELF:browse', do_lang_tempcode('ORDERS')],
+                ['_SELF:_SELF:show_orders', do_lang_tempcode('SHOW_ORDERS')],
+                ['_SELF:_SELF:order_details:' . strval($order_id), do_lang_tempcode('CART_ORDER', strval($order_id))],
+            ]);
 
-            $this->title = get_screen_title('ADD_NOTE_TITLE', true, array(escape_html($order_id)));
+            $this->title = get_screen_title('ADD_NOTE_TITLE', true, [escape_html($order_id)]);
 
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
@@ -254,10 +254,10 @@ class Module_admin_shopping
         return do_next_manager(
             get_screen_title('ORDERS'),
             comcode_lang_string('DOC_ECOMMERCE'),
-            array(
-                array('menu/rich_content/ecommerce/orders', array('_SELF', array('type' => 'show_orders'), '_SELF'), do_lang('SHOW_ORDERS')),
-                array('menu/adminzone/audit/ecommerce/undispatched_orders', array('_SELF', array('type' => 'show_orders', 'filter' => 'undispatched'), '_SELF'), do_lang('SHOW_UNDISPATCHED_ORDERS')),
-            ),
+            [
+                ['menu/rich_content/ecommerce/orders', ['_SELF', ['type' => 'show_orders'], '_SELF'], do_lang('SHOW_ORDERS')],
+                ['menu/adminzone/audit/ecommerce/undispatched_orders', ['_SELF', ['type' => 'show_orders', 'filter' => 'undispatched'], '_SELF'], do_lang('SHOW_UNDISPATCHED_ORDERS')],
+            ],
             do_lang('ORDERS')
         );
     }
@@ -298,12 +298,12 @@ class Module_admin_shopping
 
         require_code('templates_results_table');
 
-        $sortables = array(
+        $sortables = [
             'add_date' => do_lang_tempcode('ORDERED_DATE'),
             'member_id' => do_lang_tempcode('ORDERED_BY'),
             'total_price' => do_lang_tempcode('PRICE'),
             'order_status' => do_lang_tempcode('STATUS'),
-        );
+        ];
 
         $query_sort = explode(' ', get_param_string('sort', 'add_date ASC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($query_sort) == 1) {
@@ -314,7 +314,7 @@ class Module_admin_shopping
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $header_row = results_header_row(array(
+        $header_row = results_header_row([
             do_lang_tempcode('ECOM_ORDER'),
             do_lang_tempcode('PRICE'),
             do_lang_tempcode(get_option('tax_system')),
@@ -324,7 +324,7 @@ class Module_admin_shopping
             do_lang_tempcode('TRANSACTION'),
             do_lang_tempcode('STATUS'),
             do_lang_tempcode('ACTIONS'),
-        ), $sortables, 'sort', $sortable . ' ' . $sort_order);
+        ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $sql = 'SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY order_status=\'' . /*Not using db_string_equal_to because LIKE must not be used here*/db_escape_string('ORDER_STATUS_cancelled')/*cancelled always last*/ . '\',' . $sortable . ' ' . $sort_order;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, true);
@@ -336,14 +336,14 @@ class Module_admin_shopping
                 $order_title = do_lang('PURCHASE_ORDER', strval($row['id']));
             }
 
-            $order_details_url = build_url(array('page' => '_SELF', 'type' => 'order_details', 'id' => $row['id']), '_SELF');
+            $order_details_url = build_url(['page' => '_SELF', 'type' => 'order_details', 'id' => $row['id']], '_SELF');
             $order_date = hyperlink($order_details_url, get_timezoned_date_time($row['add_date'], false), false, true);
 
             $submitted_by = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id'], false, USERNAME_DEFAULT_NULL);
             if (($submitted_by === null) || (is_guest($row['member_id']))) {
                 $member_link = do_lang_tempcode('UNKNOWN');
             } else {
-                $member_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $row['member_id']), get_module_zone('members'));
+                $member_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $row['member_id']], get_module_zone('members'));
                 $member_link = hyperlink($member_url, $submitted_by, false, true, do_lang('CUSTOMER'));
             }
 
@@ -351,15 +351,15 @@ class Module_admin_shopping
 
             $order_status = do_lang_tempcode($row['order_status']);
 
-            $order_actualise_url = build_url(array('page' => '_SELF', 'type' => 'order_act', 'id' => $row['id']), '_SELF');
-            $actions = do_template('ECOM_ADMIN_ORDER_ACTIONS', array(
+            $order_actualise_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'id' => $row['id']], '_SELF');
+            $actions = do_template('ECOM_ADMIN_ORDER_ACTIONS', [
                 '_GUID' => '19ad8393aa5dba3f2f768818f22d8837',
                 'ORDER_TITLE' => $order_title,
                 'ORDER_ACTUALISE_URL' => $order_actualise_url,
                 'ORDER_STATUS' => $order_status,
-            ));
+            ]);
 
-            $order_entries->attach(results_entry(array(
+            $order_entries->attach(results_entry([
                 escape_html($order_title),
                 ecommerce_get_currency_symbol() . escape_html(float_format($row['total_price'])),
                 ecommerce_get_currency_symbol() . escape_html(float_format($row['total_tax'])),
@@ -369,7 +369,7 @@ class Module_admin_shopping
                 $transaction_linker,
                 $order_status,
                 $actions,
-            ), false));
+            ], false));
         }
         if ($order_entries->is_empty()) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
@@ -381,11 +381,11 @@ class Module_admin_shopping
 
         $results_table = results_table(do_lang_tempcode('ORDERS'), 0, 'start', $max_rows, 'max', $max_rows, $header_row, $order_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $hidden = build_keep_form_fields('_SELF', true, array('filter'));
+        $hidden = build_keep_form_fields('_SELF', true, ['filter']);
 
         $search_url = get_self_url(true);
 
-        $tpl = do_template('ECOM_ADMIN_ORDERS_SCREEN', array(
+        $tpl = do_template('ECOM_ADMIN_ORDERS_SCREEN', [
             '_GUID' => '08afb0204c061644ec9c562b4eba24f4',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
@@ -393,7 +393,7 @@ class Module_admin_shopping
             'SEARCH_URL' => $search_url,
             'SEARCH_VAL' => $search,
             'HIDDEN' => $hidden,
-        ));
+        ]);
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -426,10 +426,10 @@ class Module_admin_shopping
     {
         $id = get_param_integer('id');
 
-        $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => 'ORDER_STATUS_dispatched'), array('id' => $id), '', 1);
-        $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => 'ORDER_STATUS_dispatched'), array('p_order_id' => $id)); // There may be more than one items to update status
+        $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_dispatched'], ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_dispatched'], ['p_order_id' => $id]); // There may be more than one items to update status
 
-        $add_note_url = build_url(array('page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'dispatched', 'id' => $id), get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'dispatched', 'id' => $id], get_module_zone('admin_shopping'));
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -446,11 +446,11 @@ class Module_admin_shopping
         $redirect_url = get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL);
         $last_action = get_param_string('last_act', null);
 
-        $update_url = build_url(array('page' => '_SELF', 'type' => '_add_note', 'redirect' => protect_url_parameter($redirect_url)), '_SELF');
+        $update_url = build_url(['page' => '_SELF', 'type' => '_add_note', 'redirect' => protect_url_parameter($redirect_url)], '_SELF');
 
         $fields = new Tempcode();
 
-        $note = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', array('id' => $id));
+        $note = $GLOBALS['SITE_DB']->query_select_value('shopping_orders', 'notes', ['id' => $id]);
 
         if ($last_action !== null) {
             $note .= do_lang('ADD_NOTE_APPEND_TEXT', get_timezoned_date_time(time(), false), do_lang('ORDER_STATUS_' . $last_action));
@@ -462,12 +462,12 @@ class Module_admin_shopping
 
         if ($last_action == 'dispatched') {
             // Display dispatch mail preview
-            $res = $GLOBALS['SITE_DB']->query_select('shopping_orders', array('*'), array('id' => $id), '', 1);
+            $res = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['*'], ['id' => $id], '', 1);
             $order_details = $res[0];
 
             $username = $GLOBALS['FORUM_DRIVER']->get_username($order_details['member_id']);
 
-            $message = do_lang('ORDER_DISPATCHED_MAIL_MESSAGE', comcode_escape(get_site_name()), comcode_escape($username), array(strval($id)), get_lang($order_details['member_id']));
+            $message = do_lang('ORDER_DISPATCHED_MAIL_MESSAGE', comcode_escape(get_site_name()), comcode_escape($username), [strval($id)], get_lang($order_details['member_id']));
 
             $fields->attach(form_input_text(do_lang_tempcode('DISPATCH_MAIL_PREVIEW'), do_lang_tempcode('DISPATCH_MAIL_PREVIEW_DESCRIPTION'), 'dispatch_mail_content', $message, true));
 
@@ -476,7 +476,7 @@ class Module_admin_shopping
             $submit_name = do_lang_tempcode('ADD');
         }
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'a5bd2fd3e7f326fd7559e78015d70715',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('NOTE_DESCRIPTION'),
@@ -486,7 +486,7 @@ class Module_admin_shopping
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'SUPPORT_AUTOSAVE' => true,
-        ));
+        ]);
     }
 
     /**
@@ -501,12 +501,12 @@ class Module_admin_shopping
         $notes = post_param_string('note');
         $redirect = get_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL);
 
-        $GLOBALS['SITE_DB']->query_update('shopping_orders', array('notes' => $notes), array('id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_orders', ['notes' => $notes], ['id' => $id], '', 1);
 
         $this->send_dispatch_notification($id);
 
         if ($redirect === null) { // If a redirect URL is not passed, redirect to the order list
-            $_redirect = build_url(array('page' => '_SELF', 'type' => 'show_orders'), get_module_zone('admin_shopping'));
+            $_redirect = build_url(['page' => '_SELF', 'type' => 'show_orders'], get_module_zone('admin_shopping'));
             $redirect = $_redirect->evaluate();
         }
 
@@ -526,14 +526,14 @@ class Module_admin_shopping
             return;
         }
 
-        $res = $GLOBALS['SITE_DB']->query_select('shopping_orders', array('*'), array('id' => $order_id), '', 1);
+        $res = $GLOBALS['SITE_DB']->query_select('shopping_orders', ['*'], ['id' => $order_id], '', 1);
         $order_details = $res[0];
 
         if (is_guest($order_details['member_id'])) {
             attach_message(do_lang_tempcode('NO_NOTE_GUEST'), 'warn');
         } else {
             require_code('notifications');
-            dispatch_notification('order_dispatched', null, do_lang('ORDER_DISPATCHED_MAIL_SUBJECT', get_site_name(), strval($order_id), null, get_lang($order_details['member_id'])), $message, array($order_details['member_id']), A_FROM_SYSTEM_PRIVILEGED);
+            dispatch_notification('order_dispatched', null, do_lang('ORDER_DISPATCHED_MAIL_SUBJECT', get_site_name(), strval($order_id), null, get_lang($order_details['member_id'])), $message, [$order_details['member_id']], A_FROM_SYSTEM_PRIVILEGED);
         }
     }
 
@@ -546,10 +546,10 @@ class Module_admin_shopping
     {
         $id = get_param_integer('id');
 
-        $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => 'ORDER_STATUS_cancelled'), array('id' => $id), '', 1);
-        $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => 'ORDER_STATUS_cancelled'), array('p_order_id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_cancelled'], ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_cancelled'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(array('page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'cancelled', 'id' => $id), get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'cancelled', 'id' => $id], get_module_zone('admin_shopping'));
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -563,10 +563,10 @@ class Module_admin_shopping
     {
         $id = get_param_integer('id');
 
-        $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => 'ORDER_STATUS_returned'), array('id' => $id), '', 1);
-        $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => 'ORDER_STATUS_returned'), array('p_order_id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_returned'], ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_returned'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(array('page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'returned', 'id' => $id), get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'returned', 'id' => $id], get_module_zone('admin_shopping'));
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -580,10 +580,10 @@ class Module_admin_shopping
     {
         $id = get_param_integer('id');
 
-        $GLOBALS['SITE_DB']->query_update('shopping_orders', array('order_status' => 'ORDER_STATUS_onhold'), array('id' => $id), '', 1);
-        $GLOBALS['SITE_DB']->query_update('shopping_order_details', array('p_dispatch_status' => 'ORDER_STATUS_onhold'), array('p_order_id' => $id), '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_orders', ['order_status' => 'ORDER_STATUS_onhold'], ['id' => $id], '', 1);
+        $GLOBALS['SITE_DB']->query_update('shopping_order_details', ['p_dispatch_status' => 'ORDER_STATUS_onhold'], ['p_order_id' => $id], '', 1);
 
-        $add_note_url = build_url(array('page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'onhold', 'id' => $id), get_module_zone('admin_shopping'));
+        $add_note_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'action' => 'add_note', 'last_act' => 'onhold', 'id' => $id], get_module_zone('admin_shopping'));
 
         return redirect_screen($this->title, $add_note_url, do_lang_tempcode('SUCCESS'));
     }
@@ -614,20 +614,20 @@ class Module_admin_shopping
         $end_hour = $start_hour;
         $end_minute = $start_minute;
 
-        $fields->attach(form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'start_date', true, false, true, array($start_minute, $start_hour, $start_month, $start_day, $start_year)));
-        $fields->attach(form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'end_date', true, false, true, array($end_minute, $end_hour, $end_month, $end_day, $end_year)));
+        $fields->attach(form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'start_date', true, false, true, [$start_minute, $start_hour, $start_month, $start_day, $start_year]));
+        $fields->attach(form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'end_date', true, false, true, [$end_minute, $end_hour, $end_month, $end_day, $end_year]));
 
-        return do_template('FORM_SCREEN', array(
+        return do_template('FORM_SCREEN', [
             '_GUID' => 'e2e5097798c963f4977ba22b50ddf2f3',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
             'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => do_lang_tempcode('EXPORT_ORDER_LIST'),
             'TEXT' => paragraph(do_lang_tempcode('EXPORT_ORDER_LIST_TEXT')),
-            'URL' => build_url(array('page' => '_SELF', 'type' => '_export_orders'), '_SELF'),
+            'URL' => build_url(['page' => '_SELF', 'type' => '_export_orders'], '_SELF'),
             'HIDDEN' => '',
             'FIELDS' => $fields,
-        ));
+        ]);
     }
 
     /**
@@ -642,6 +642,6 @@ class Module_admin_shopping
         $order_status = post_param_string('order_status');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_ORDER_LIST'), $this->title, 'export_shopping_orders', array($start_date, $end_date, $order_status));
+        return call_user_func_array__long_task(do_lang('EXPORT_ORDER_LIST'), $this->title, 'export_shopping_orders', [$start_date, $end_date, $order_status]);
     }
 }

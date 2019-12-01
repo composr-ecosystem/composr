@@ -18,7 +18,7 @@
  */
 class lang_misc_test_set extends cms_test_case
 {
-    protected $lang_file_mapping = array();
+    protected $lang_file_mapping = [];
 
     public function setUp()
     {
@@ -100,25 +100,25 @@ class lang_misc_test_set extends cms_test_case
             }
         }
 
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             // Exceptions
-            if (in_array($path, array(
+            if (in_array($path, [
                 '_tests/tests/unit_tests/lang_inline_editing.php',
-            ))) {
+            ])) {
                 continue;
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $this->process_file_for_references($c, $path, true);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('tpl'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['tpl']);
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $this->process_file_for_references($c, $path);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('js'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['js']);
         foreach ($files as $path) {
             if (preg_match('#^(data/ace|data/ckeditor|tracker)/#', $path) != 0) {
                 continue;
@@ -129,24 +129,24 @@ class lang_misc_test_set extends cms_test_case
                 $this->process_file_for_references($c, $path);
             }
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('txt'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['txt']);
         foreach ($files as $path) {
             // Exceptions
-            if (in_array($path, array(
+            if (in_array($path, [
                 'docs/pages/comcode_custom/EN/tut_designer_themes.txt',
                 'docs/pages/comcode_custom/EN/codebook_standards.txt',
                 'docs/pages/comcode_custom/EN/codebook_1.txt',
                 'docs/pages/comcode_custom/EN/codebook_1b.txt',
                 'docs/pages/comcode_custom/EN/codebook_2.txt',
                 'docs/pages/comcode_custom/EN/tut_tempcode.txt',
-            ))) {
+            ])) {
                 continue;
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $this->process_file_for_references($c, $path);
         }
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('xml'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, ['xml']);
         foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
             $this->process_file_for_references($c, $path);
@@ -158,7 +158,7 @@ class lang_misc_test_set extends cms_test_case
 
     protected function process_file_for_references($c, $path, $is_php = false)
     {
-        $matches = array();
+        $matches = [];
 
         if ($is_php) {
             if (strpos($c, '_lang') !== false) {
@@ -208,7 +208,7 @@ class lang_misc_test_set extends cms_test_case
 
         if (isset($this->lang_file_mapping[$str])) {
             $lang_file = $this->lang_file_mapping[$str];
-            if (!in_array($lang_file, array('global', 'critical_error', 'cns'))) {
+            if (!in_array($lang_file, ['global', 'critical_error', 'cns'])) {
                 $require_lang = 'require_lang(\'' . $lang_file . '\')';
                 $ok = strpos($c, $require_lang) !== false;
                 if (!$ok) {

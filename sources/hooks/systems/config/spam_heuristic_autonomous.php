@@ -30,7 +30,7 @@ class Hook_config_spam_heuristic_autonomous
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SPAM_HEURISTIC_AUTONOMOUS',
             'type' => 'line',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_spam_heuristic_autonomous
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

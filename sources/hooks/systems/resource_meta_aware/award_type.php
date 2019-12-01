@@ -36,7 +36,7 @@ class Hook_resource_meta_aware_award_type
             return null;
         }
 
-        return array(
+        return [
             'support_custom_fields' => false,
 
             'content_type_label' => 'awards:AWARD',
@@ -112,6 +112,6 @@ class Hook_resource_meta_aware_award_type
             'support_spam_heuristics' => null,
 
             'actionlog_regexp' => '\w+_AWARD_TYPE',
-        );
+        ];
     }
 }

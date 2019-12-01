@@ -26,44 +26,44 @@ class Hook_actionlog_composr_tutorials extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('composr_tutorials')) {
-            return array();
+            return [];
         }
 
         require_lang('tutorials');
 
-        return array(
-            'ADD_TUTORIAL' => array(
+        return [
+            'ADD_TUTORIAL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '{URL}',
                     'EDIT_THIS_TUTORIAL' => '_SEARCH:cms_tutorials:_edit:{ID}',
                     'ADD_TUTORIAL' => '_SEARCH:cms_tutorials:add',
-                ),
-            ),
-            'EDIT_TUTORIAL' => array(
+                ],
+            ],
+            'EDIT_TUTORIAL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '{URL}',
                     'EDIT_THIS_TUTORIAL' => '_SEARCH:cms_tutorials:_edit:{ID}',
                     'ADD_TUTORIAL' => '_SEARCH:cms_tutorials:add',
-                ),
-            ),
-            'DELETE_TUTORIAL' => array(
+                ],
+            ],
+            'DELETE_TUTORIAL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_TUTORIAL' => '_SEARCH:cms_tutorials:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -79,11 +79,11 @@ class Hook_actionlog_composr_tutorials extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_TUTORIAL':
             case 'EDIT_TUTORIAL':
-                $url = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_url', array('id' => intval($identifier)));
+                $url = $GLOBALS['SITE_DB']->query_select_value_if_there('tutorials_external', 't_url', ['id' => intval($identifier)]);
                 if ($url !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'URL' => $url,
-                    );
+                    ];
                 }
                 break;
         }

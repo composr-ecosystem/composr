@@ -41,8 +41,8 @@ class Hook_endpoint_account_join
 
         $_message = $message->evaluate();
 
-        return array(
+        return [
             'message' => ($_message == '') ? null : $_message,
-        );
+        ];
     }
 }

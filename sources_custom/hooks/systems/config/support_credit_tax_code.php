@@ -25,7 +25,7 @@ class Hook_config_support_credit_tax_code
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SUPPORT_CREDIT_TAX_CODE',
             'type' => 'tax_code',
             'category' => 'FEATURE',
@@ -38,7 +38,7 @@ class Hook_config_support_credit_tax_code
             'public' => false,
 
             'addon' => 'composr_homesite_support_credits',
-        );
+        ];
     }
 
     /**

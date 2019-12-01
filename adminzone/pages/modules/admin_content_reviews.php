@@ -30,7 +30,7 @@ class Module_admin_content_reviews
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -62,9 +62,9 @@ class Module_admin_content_reviews
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('unvalidated')));
         }
 
-        return array(
-            '!' => array('_CONTENT_NEEDING_REVIEWING', 'menu/adminzone/audit/content_reviews'),
-        );
+        return [
+            '!' => ['_CONTENT_NEEDING_REVIEWING', 'menu/adminzone/audit/content_reviews'],
+        ];
     }
 
     /**
@@ -87,7 +87,7 @@ class Module_admin_content_reviews
     {
         add_privilege('SUBMISSION', 'set_content_review_settings', false);
 
-        $GLOBALS['SITE_DB']->create_table('content_reviews', array(
+        $GLOBALS['SITE_DB']->create_table('content_reviews', [
             'content_type' => '*ID_TEXT',
             'content_id' => '*ID_TEXT',
             'review_freq' => '?INTEGER',
@@ -96,9 +96,9 @@ class Module_admin_content_reviews
             'review_notification_happened' => 'BINARY',
             'display_review_status' => 'BINARY',
             'last_reviewed_time' => 'TIME',
-        ));
-        $GLOBALS['SITE_DB']->create_index('content_reviews', 'next_review_time', array('next_review_time', 'review_notification_happened'));
-        $GLOBALS['SITE_DB']->create_index('content_reviews', 'needs_review', array('next_review_time', 'content_type'));
+        ]);
+        $GLOBALS['SITE_DB']->create_index('content_reviews', 'next_review_time', ['next_review_time', 'review_notification_happened']);
+        $GLOBALS['SITE_DB']->create_index('content_reviews', 'needs_review', ['next_review_time', 'content_type']);
     }
 
     public $title;
@@ -156,7 +156,7 @@ class Module_admin_content_reviews
 
             $content = new Tempcode();
             $content_ids = collapse_2d_complexity('content_id', 'next_review_time', $GLOBALS['SITE_DB']->query('SELECT content_id,next_review_time FROM ' . get_table_prefix() . 'content_reviews WHERE ' . db_string_equal_to('content_type', $content_type) . ' AND next_review_time<=' . strval(time()) . ' ORDER BY next_review_time', intval(get_option('general_safety_listing_limit'))));
-            $_content_ids = array();
+            $_content_ids = [];
             foreach ($content_ids as $content_id => $next_review_time) {
                 list($title,) = content_get_details($content_type, $content_id);
                 if ($title !== null) {
@@ -164,7 +164,7 @@ class Module_admin_content_reviews
                     $title .= ' (' . get_timezoned_date($next_review_time) . ')';
                     $_content_ids[$content_id] = $title;
                 } else {
-                    $GLOBALS['SITE_DB']->query_delete('content_reviews', array('content_type' => $content_type, 'content_id' => $content_id), '', 1); // The actual content was deleted, I guess
+                    $GLOBALS['SITE_DB']->query_delete('content_reviews', ['content_type' => $content_type, 'content_id' => $content_id], '', 1); // The actual content was deleted, I guess
                     continue;
                 }
             }
@@ -185,11 +185,11 @@ class Module_admin_content_reviews
                         break;
                     }
                 }
-                $post_url = build_url($attributes + array('redirect' => protect_url_parameter(SELF_REDIRECT)), $zone);
+                $post_url = build_url($attributes + ['redirect' => protect_url_parameter(SELF_REDIRECT)], $zone);
                 $fields = form_input_huge_list(do_lang_tempcode('CONTENT'), '', $edit_identifier, $content, null, true);
 
                 // Could debate whether to include "'TARGET' => '_blank',". However it does redirect back, so it's a nice linear process like this. If it was new window it could be more efficient, but also would confuse people with a lot of new windows opening and not closing.
-                $content = do_template('FORM', array(
+                $content = do_template('FORM', [
                     '_GUID' => '288c2534a75e5af5bc7155594dfef68f',
                     'SKIP_REQUIRED' => true,
                     'GET' => true,
@@ -199,12 +199,12 @@ class Module_admin_content_reviews
                     'FIELDS' => $fields,
                     'URL' => $post_url,
                     'TEXT' => '',
-                ));
+                ]);
 
-                $out->attach(do_template('UNVALIDATED_SECTION', array('_GUID' => '406d4c0a8abd36b9c88645df84692c7d', 'TITLE' => do_lang_tempcode($info['content_type_label']), 'CONTENT' => $content)));
+                $out->attach(do_template('UNVALIDATED_SECTION', ['_GUID' => '406d4c0a8abd36b9c88645df84692c7d', 'TITLE' => do_lang_tempcode($info['content_type_label']), 'CONTENT' => $content]));
             }
         }
 
-        return do_template('UNVALIDATED_SCREEN', array('_GUID' => 'c8574404597d25e3c027766c74d1a008', 'TITLE' => $_title, 'SECTIONS' => $out));
+        return do_template('UNVALIDATED_SCREEN', ['_GUID' => 'c8574404597d25e3c027766c74d1a008', 'TITLE' => $_title, 'SECTIONS' => $out]);
     }
 }

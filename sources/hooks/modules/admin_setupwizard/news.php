@@ -30,10 +30,10 @@ class Hook_sw_news
      */
     public function get_current_settings()
     {
-        $settings = array();
+        $settings = [];
 
         $keep_news_categories = false;
-        $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('id'), array('nc_owner' => null));
+        $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], ['nc_owner' => null]);
         foreach ($news_cats as $news_cat) {
             if (($news_cat['id'] > db_get_first_id()) && ($news_cat['id'] < db_get_first_id() + 7)) {
                 $keep_news_categories = true;
@@ -42,7 +42,7 @@ class Hook_sw_news
         }
         $settings['keep_news_categories'] = $keep_news_categories ? '1' : '0';
 
-        $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', array('privilege' => 'have_personal_category', 'the_page' => 'cms_news'));
+        $test = $GLOBALS['SITE_DB']->query_select_value('group_privileges', 'COUNT(*)', ['privilege' => 'have_personal_category', 'the_page' => 'cms_news']);
         $settings['keep_blogs'] = ($test == 0) ? '0' : '1';
 
         return $settings;
@@ -57,7 +57,7 @@ class Hook_sw_news
     public function get_fields($field_defaults)
     {
         if (!addon_installed('news') || post_param_integer('addon_news', null) === 0) {
-            return array(new Tempcode(), new Tempcode());
+            return [new Tempcode(), new Tempcode()];
         }
 
         $current_settings = $this->get_current_settings();
@@ -72,7 +72,7 @@ class Hook_sw_news
             $fields->attach(form_input_tick(do_lang_tempcode('EXTENDED_NEWS_CATEGORIES_SET'), do_lang_tempcode('DESCRIPTION_KEEP_DEFAULT_NEWS_CATEGORIES'), 'keep_news_categories', $field_defaults['keep_news_categories'] == '1'));
         }
 
-        return array($fields, new Tempcode());
+        return [$fields, new Tempcode()];
     }
 
     /**
@@ -86,16 +86,16 @@ class Hook_sw_news
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
-        $GLOBALS['SITE_DB']->query_delete('group_privileges', array('privilege' => 'have_personal_category', 'the_page' => 'cms_news'));
+        $GLOBALS['SITE_DB']->query_delete('group_privileges', ['privilege' => 'have_personal_category', 'the_page' => 'cms_news']);
         if (post_param_integer('keep_blogs', 0) == 1) {
             foreach (array_keys($groups) as $group_id) {
                 if (!in_array($group_id, $admin_groups)) {
-                    $GLOBALS['SITE_DB']->query_insert('group_privileges', array('privilege' => 'have_personal_category', 'group_id' => $group_id, 'module_the_name' => '', 'category_name' => '', 'the_page' => 'cms_news', 'the_value' => 1));
+                    $GLOBALS['SITE_DB']->query_insert('group_privileges', ['privilege' => 'have_personal_category', 'group_id' => $group_id, 'module_the_name' => '', 'category_name' => '', 'the_page' => 'cms_news', 'the_value' => 1]);
                 }
             }
         }
         if (post_param_integer('keep_news_categories', 0) == 0) {
-            $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', array('id'), array('nc_owner' => null));
+            $news_cats = $GLOBALS['SITE_DB']->query_select('news_categories', ['id'], ['nc_owner' => null]);
             foreach ($news_cats as $news_cat) {
                 if (($news_cat['id'] > db_get_first_id()) && ($news_cat['id'] < db_get_first_id() + 7)) {
                     require_code('news2');
@@ -112,6 +112,6 @@ class Hook_sw_news
      */
     public function get_blocks()
     {
-        return array(array('main_news' => array('NO', 'YES')), array('side_news_archive' => array('PANEL_NONE', 'PANEL_NONE'), 'side_news_categories' => array('PANEL_RIGHT', 'PANEL_RIGHT'), 'side_news' => array('PANEL_NONE', 'PANEL_NONE')));
+        return [['main_news' => ['NO', 'YES']], ['side_news_archive' => ['PANEL_NONE', 'PANEL_NONE'], 'side_news_categories' => ['PANEL_RIGHT', 'PANEL_RIGHT'], 'side_news' => ['PANEL_NONE', 'PANEL_NONE']]];
     }
 }

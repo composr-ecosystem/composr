@@ -30,7 +30,7 @@ class Hook_config_homepage_slider_cycle_duration
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CYCLE_DURATION',
             'type' => 'integer',
             'category' => 'THEME',
@@ -44,7 +44,7 @@ class Hook_config_homepage_slider_cycle_duration
             'required' => true,
             'public' => false,
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

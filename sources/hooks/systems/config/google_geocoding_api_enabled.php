@@ -30,7 +30,7 @@ class Hook_config_google_geocoding_api_enabled
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'GOOGLE_GEOCODE_API_ENABLED',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -45,7 +45,7 @@ class Hook_config_google_geocoding_api_enabled
             'addon' => 'core_configuration',
 
             'maintenance_code' => 'geocoding_google',
-        );
+        ];
     }
 
     /**

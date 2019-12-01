@@ -26,7 +26,7 @@
 function init__themes2()
 {
     global $THEME_SEED_CACHE;
-    $THEME_SEED_CACHE = array();
+    $THEME_SEED_CACHE = [];
 }
 
 /**
@@ -50,7 +50,7 @@ function find_theme_seed($theme)
             $css_path = get_file_base() . '/themes/default/css/global.css';
         }
         $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
-        $matches = array();
+        $matches = [];
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
             $THEME_SEED_CACHE[$theme] = $matches[1];
         } else {
@@ -92,7 +92,7 @@ function autoprobe_cdns()
         return '';
     }
 
-    $try = array(
+    $try = [
         'cdn' . '.' . $domain_name,
         (substr($domain_name, 0, 4) == 'www.') ? preg_replace('#^www\.#', '', $domain_name) : ('www' . '.' . $domain_name),
         'ftp' . '.' . $domain_name,
@@ -101,7 +101,7 @@ function autoprobe_cdns()
         'imap' . '.' . $domain_name,
         'pop' . '.' . $domain_name,
         'webmail' . '.' . $domain_name,*/
-    );
+    ];
 
     $detected_cdns = '';
     $expected = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/editor/comcode.svg', FILE_READ_LOCK | FILE_READ_BOM);
@@ -113,7 +113,7 @@ function autoprobe_cdns()
         if (preg_match('#^' . preg_quote($t, '#') . '($|\.|/|:)#', $domain_name) == 0) { // Don't use it if it is in the base URL
             $test_url = (tacit_https() ? 'https://' : 'http://') . $t . $parsed['path'] . '/themes/default/images/icons/editor/comcode.svg';
 
-            $test_result = http_get_contents($test_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 0.25));
+            $test_result = http_get_contents($test_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 0.25]);
 
             if (($test_result !== null) && ($test_result == $expected)) {
                 if ($detected_cdns != '') {
@@ -136,12 +136,12 @@ function autoprobe_cdns()
 function find_all_themes()
 {
     if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
-        return array('default' => do_lang('DEFAULT'));
+        return ['default' => do_lang('DEFAULT')];
     }
 
     require_code('files');
 
-    $themes = array();
+    $themes = [];
     $_dir = @opendir(get_file_base() . '/themes/');
     if ($_dir !== false) {
         while (false !== ($file = readdir($_dir))) {
@@ -170,7 +170,7 @@ function find_all_themes()
     if (isset($themes['default'])) {
         $temp = $themes['default'];
         $temp_2 = $themes;
-        $themes = array('default' => $temp) + $temp_2;
+        $themes = ['default' => $temp] + $temp_2;
     }
 
     // Admin theme should go last
@@ -258,7 +258,7 @@ function get_template_files_list($theme, $directory, $suffix = null, $this_theme
         }
     }
 
-    $out = array();
+    $out = [];
     if (($theme == 'default') || (!$this_theme_only)) {
         $out = array_merge($out, _get_template_files_list(get_file_base(), 'default/' . $directory, $suffix));
         $out = array_merge($out, _get_template_files_list(get_custom_file_base(), 'default/' . $directory . '_custom', $suffix));
@@ -288,7 +288,7 @@ function _get_template_files_list($base_dir, $subdir, $suffix)
     $_dir = @opendir($base_dir . '/themes/' . $subdir);
     if ($_dir !== false) {
         // Find all the themes
-        $files_list = array();
+        $files_list = [];
         while (false !== ($file = readdir($_dir))) {
             if (strtolower(substr($file, -strlen($suffix))) == $suffix) {
                 $files_list[$file] = $base_dir . '/themes/' . $subdir . '/' . $file;
@@ -297,7 +297,7 @@ function _get_template_files_list($base_dir, $subdir, $suffix)
         closedir($_dir);
         return $files_list;
     }
-    return array();
+    return [];
 }
 
 /**
@@ -310,7 +310,7 @@ function _get_template_files_list($base_dir, $subdir, $suffix)
  */
 function find_template_path($file, $subdir, $theme)
 {
-    static $cache = array();
+    static $cache = [];
     if (isset($cache[$file][$subdir][$theme])) {
         return $cache[$file][$subdir][$theme];
     }
@@ -346,16 +346,16 @@ function find_template_guids($file, $active_guid = null)
     $suffix = '.' . get_file_extension($file);
     $clean_file = basename($file, $suffix);
 
-    $guids = array();
+    $guids = [];
     $_guids = @unserialize(@cms_file_get_contents_safe(get_file_base() . '/data/guids.bin', FILE_READ_LOCK));
     if (($_guids !== false) && (array_key_exists($clean_file, $_guids))) {
         foreach ($_guids[$clean_file] as $_guid) {
-            $guids[] = array(
+            $guids[] = [
                 'GUID_FILENAME' => $_guid[0],
                 'GUID_LINE' => integer_format($_guid[1]),
                 'GUID_GUID' => $_guid[2],
                 'GUID_IS_LIVE' => ($_guid[2] === $active_guid),
-            );
+            ];
         }
     }
     return $guids;
@@ -369,7 +369,7 @@ function find_template_guids($file, $active_guid = null)
  */
 function find_template_parameters($file)
 {
-    $parameters = array();
+    $parameters = [];
 
     require_code('lorem');
     $all_previews = find_all_previews__by_template();
@@ -393,9 +393,9 @@ function find_template_parameters($file)
         return $parameters;
     }
 
-    $matches = array();
+    $matches = [];
     $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path, FILE_READ_LOCK), $matches);
-    $p_done = array();
+    $p_done = [];
     for ($j = 0; $j < $cnt; $j++) {
         $parameters[] = $matches[1][$j];
     }
@@ -437,11 +437,11 @@ function post_param_theme_img_code($type, $required = false, $field_file = 'file
         $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, false);
 
         $theme_img_code = $type . '/' . basename($urls[2], '.' . get_file_extension($urls[2]));
-        if ($GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', array('id' => $theme_img_code)) !== null) {
+        if ($GLOBALS['SITE_DB']->query_select_value_if_there('theme_images', 'id', ['id' => $theme_img_code]) !== null) {
             $theme_img_code = $type . '/' . uniqid('', true);
         }
 
-        $db->query_insert('theme_images', array('id' => $theme_img_code, 'theme' => 'default', 'path' => $urls[0], 'lang' => get_site_default_lang()));
+        $db->query_insert('theme_images', ['id' => $theme_img_code, 'theme' => 'default', 'path' => $urls[0], 'lang' => get_site_default_lang()]);
 
         Self_learning_cache::erase_smart_cache();
     } else {
@@ -502,7 +502,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
 
         if (substr($urls[0], 0, 8) != 'uploads/') {
-            $http_result = cms_http_request($urls[0], array('trigger_error' => false, 'byte_limit' => 0));
+            $http_result = cms_http_request($urls[0], ['trigger_error' => false, 'byte_limit' => 0]);
             if (($http_result->data === null) && ($http_result->message_b !== null)) {
                 attach_message($http_result->message_b, 'warn');
             }
@@ -609,7 +609,7 @@ function check_form_field_image($name, $val, $delete_on_error = null)
         $restrictions = $FIELD_RESTRICTIONS;
     }
 
-    static $image_size_cache = array();
+    static $image_size_cache = [];
 
     foreach ($restrictions as $_r => $_restrictions) {
         $_r_exp = explode(',', $_r);
@@ -632,16 +632,16 @@ function check_form_field_image($name, $val, $delete_on_error = null)
                     } else {
                         $image_size = $image_size_cache[$val];
                     }
-                    if (in_array(strtolower($restriction), array('minaspectratio', 'maxaspectratio'))) {
-                        $matches = array();
+                    if (in_array(strtolower($restriction), ['minaspectratio', 'maxaspectratio'])) {
+                        $matches = [];
                         if (preg_match('#^([\d\.]+):([\d\.]+)$#', $attributes['embed'], $matches) != 0) {
                             $_embed = float_to_raw_string(floatval($matches[1]) / floatval($matches[2]), 10, true);
                         } else {
                             $_embed = $attributes['embed'];
                         }
                     }
-                    if (in_array(strtolower($restriction), array('maxfilesize'))) {
-                        $matches = array();
+                    if (in_array(strtolower($restriction), ['maxfilesize'])) {
+                        $matches = [];
                         if (preg_match('#^([\d\.]+)\s*B?$#i', $attributes['embed'], $matches) != 0) {
                             $_embed = strval(intval(round(floatval($matches[1]))));
                         } elseif (preg_match('#^([\d\.]+)\s*KB?$#i', $attributes['embed'], $matches) != 0) {
@@ -795,7 +795,7 @@ function find_images_do_dir($theme, $subdir, $langs)
     require_code('images');
 
     $full = (($theme == 'default' || $theme == 'admin') ? get_file_base() : get_custom_file_base()) . '/themes/' . filter_naughty($theme) . '/' . filter_naughty($subdir);
-    $out = array();
+    $out = [];
 
     $_dir = @opendir($full);
     if ($_dir !== false) {
@@ -834,14 +834,14 @@ function find_images_do_dir($theme, $subdir, $langs)
  * @param  boolean $include_missing Whether to include missing images in the list
  * @return array The list of image IDs
  */
-function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = null, $dirs_only = false, $db_only = false, $skip = array(), $include_missing = false)
+function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = null, $dirs_only = false, $db_only = false, $skip = [], $include_missing = false)
 {
     if ($db === null) {
         $db = $GLOBALS['SITE_DB'];
     }
 
-    static $cache = array();
-    $cache_sig = serialize(array($type, $recurse, $theme, $dirs_only, $db_only, $skip));
+    static $cache = [];
+    $cache_sig = serialize([$type, $recurse, $theme, $dirs_only, $db_only, $skip]);
     if ($db === $GLOBALS['SITE_DB']) {
         if (isset($cache[$cache_sig])) {
             return $cache[$cache_sig];
@@ -865,7 +865,7 @@ function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = nu
         $type = substr($type, 0, strlen($type) - 1);
     }
 
-    $ids = array();
+    $ids = [];
 
     if ((!$db_only) && ((!$db->is_forum_db()) || ($dirs_only) || (!is_on_multi_site_network()))) {
         _get_all_image_ids_type($ids, get_file_base() . '/themes/default/images/' . (($type == '') ? '' : ($type . '/')), $type, $recurse, $dirs_only, $skip);
@@ -951,7 +951,7 @@ function get_all_image_ids_type($type, $recurse = false, $db = null, $theme = nu
  */
 function _get_all_image_ids_type(&$ids, $dir, $type, $recurse, $dirs_only, $skip)
 {
-    $has_skip = ($skip !== array());
+    $has_skip = ($skip !== []);
 
     $_dir = @opendir($dir);
     if ($_dir !== false) {
@@ -1011,7 +1011,7 @@ function combo_get_image_paths($selected_path, $base_url, $base_path)
     $i = 0;
     foreach ($paths as $pretty => $url) {
         $checked = (($url == $selected_path) || (($selected_path == '') && ($i == 0)));
-        $out->attach(do_template('FORM_SCREEN_INPUT_RADIO_LIST_ENTRY_PICTURE', array('_GUID' => 'd2ff01291e5f0c0e4cf4ee5b6061593c', 'CHECKED' => $checked, 'NAME' => 'path', 'VALUE' => $url, 'URL' => $url, 'PRETTY' => $pretty)));
+        $out->attach(do_template('FORM_SCREEN_INPUT_RADIO_LIST_ENTRY_PICTURE', ['_GUID' => 'd2ff01291e5f0c0e4cf4ee5b6061593c', 'CHECKED' => $checked, 'NAME' => 'path', 'VALUE' => $url, 'URL' => $url, 'PRETTY' => $pretty]));
         $i++;
     }
 
@@ -1027,7 +1027,7 @@ function combo_get_image_paths($selected_path, $base_url, $base_path)
  */
 function get_image_paths($base_url, $base_path)
 {
-    $out = array();
+    $out = [];
 
     require_code('images');
     require_code('files');
@@ -1063,13 +1063,13 @@ function get_image_paths($base_url, $base_path)
  */
 function get_all_image_codes($base_path, $search_under, $recurse = true)
 {
-    $out = array();
+    $out = [];
 
     require_code('images');
     require_code('files');
 
     if (!file_exists($base_path . '/' . $search_under)) {
-        return array();
+        return [];
     }
     $handle = @opendir($base_path . '/' . $search_under);
     if ($handle !== false) {
@@ -1161,15 +1161,15 @@ function tidy_theme_img_code($new, $old, $table, $field, $db = null)
         return;
     }
 
-    if ((strpos($url, '/images_custom/') !== false) && ($GLOBALS['SITE_DB']->query_select_value('theme_images', 'COUNT(DISTINCT id)', array('url' => $url)) == 1)) {
+    if ((strpos($url, '/images_custom/') !== false) && ($GLOBALS['SITE_DB']->query_select_value('theme_images', 'COUNT(DISTINCT id)', ['url' => $url]) == 1)) {
         if ($db === null) {
             $db = $GLOBALS['SITE_DB'];
         }
-        $count = $db->query_select_value($table, 'COUNT(*)', array($field => $old));
+        $count = $db->query_select_value($table, 'COUNT(*)', [$field => $old]);
         if ($count == 0) {
             @unlink(get_custom_file_base() . '/' . urldecode($url));
             sync_file(get_custom_file_base() . '/' . urldecode($url));
-            $GLOBALS['SITE_DB']->query_delete('theme_images', array('id' => $old));
+            $GLOBALS['SITE_DB']->query_delete('theme_images', ['id' => $old]);
         }
     }
 }

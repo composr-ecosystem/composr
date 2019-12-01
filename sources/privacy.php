@@ -53,13 +53,13 @@ abstract class Hook_privacy_base
      * @param  array $others List of other strings to search for, via additional-anonymise-fields
      * @return string The stem of the SQL query
      */
-    public function get_selection_sql($table_name, $table_details, $member_id_username = null, $ip_addresses = array(), $member_id = null, $email_address = '', $others = array())
+    public function get_selection_sql($table_name, $table_details, $member_id_username = null, $ip_addresses = [], $member_id = null, $email_address = '', $others = [])
     {
         $db = get_db_for($table_name);
 
         $sql = '';
 
-        $conditions = array();
+        $conditions = [];
         if ($member_id_username !== null) {
             foreach ($table_details['member_id_fields'] as $member_id_field) {
                 $conditions[] = $member_id_field . '=' . strval($member_id_username);
@@ -127,7 +127,7 @@ abstract class Hook_privacy_base
     protected function get_field_metadata($table_name)
     {
         $db = get_db_for($table_name);
-        $fields = $db->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $table_name));
+        $fields = $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table_name]);
         return collapse_2d_complexity('m_name', 'm_type', $fields);
     }
 
@@ -143,7 +143,7 @@ abstract class Hook_privacy_base
         $db = get_db_for($table_name);
         $metadata = $this->get_field_metadata($table_name);
 
-        $row2 = array();
+        $row2 = [];
         foreach ($metadata as $key => $type) {
             if (strpos($type, '_TRANS') !== false) {
                 $row2[$key] = get_translated_text($row[$key], $db);
@@ -173,17 +173,17 @@ abstract class Hook_privacy_base
         $metadata = $this->get_field_metadata($table_name);
 
         // Work out WHERE clause
-        $where = array();
+        $where = [];
         foreach ($metadata as $key => $type) {
             if (strpos($type, '*') !== false) {
                 $where[$key] = $row[$key];
             }
         }
-        if ($where === array()) {
+        if ($where === []) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $update = array();
+        $update = [];
 
         // Anonymise member ID
         $member_id_fields = $info['database_records'][$table_name]['member_id_fields'];
@@ -233,13 +233,13 @@ abstract class Hook_privacy_base
         $metadata = $this->get_field_metadata($table_name);
 
         // Work out WHERE clause
-        $where = array();
+        $where = [];
         foreach ($metadata as $key => $type) {
             if (strpos($type, '*') !== false) {
                 $where[$key] = $row[$key];
             }
         }
-        if ($where === array()) {
+        if ($where === []) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 

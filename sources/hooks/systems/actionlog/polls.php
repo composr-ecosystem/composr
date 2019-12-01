@@ -31,54 +31,54 @@ class Hook_actionlog_polls extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('polls')) {
-            return array();
+            return [];
         }
 
         require_lang('polls');
 
-        return array(
-            'ADD_POLL' => array(
+        return [
+            'ADD_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'poll',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:polls:view:{ID}',
                     'EDIT_THIS_POLL' => '_SEARCH:cms_polls:_edit:{ID}',
                     'ADD_POLL' => '_SEARCH:cms_polls:add',
-                ),
-            ),
-            'EDIT_POLL' => array(
+                ],
+            ],
+            'EDIT_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'poll',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:polls:view:{ID}',
                     'EDIT_THIS_POLL' => '_SEARCH:cms_polls:_edit:{ID}',
                     'ADD_POLL' => '_SEARCH:cms_polls:add',
-                ),
-            ),
-            'CHOOSE_POLL' => array(
+                ],
+            ],
+            'CHOOSE_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'poll',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:polls:view:{ID}',
                     'EDIT_THIS_POLL' => '_SEARCH:cms_polls:_edit:{ID}',
                     'ADD_POLL' => '_SEARCH:cms_polls:add',
-                ),
-            ),
-            'DELETE_POLL' => array(
+                ],
+            ],
+            'DELETE_POLL' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'poll',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_POLL' => '_SEARCH:cms_polls:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

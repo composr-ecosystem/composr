@@ -30,7 +30,7 @@ class Hook_config_csrf_token_expire_fresh
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'CSRF_TOKEN_EXPIRE_FRESH',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_csrf_token_expire_fresh
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

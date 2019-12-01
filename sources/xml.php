@@ -129,13 +129,13 @@ class CMS_simple_xml_reader
      */
     public function __construct($xml_data)
     {
-        $this->gleamed = array();
+        $this->gleamed = [];
         $this->error = null;
 
-        $this->tag_stack = array();
-        $this->attribute_stack = array();
-        $this->children_stack = array();
-        $this->text_stack = array();
+        $this->tag_stack = [];
+        $this->attribute_stack = [];
+        $this->children_stack = [];
+        $this->text_stack = [];
 
         if (!function_exists('xml_parser_create')) {
             $this->error = do_lang_tempcode('XML_NEEDED');
@@ -182,7 +182,7 @@ class CMS_simple_xml_reader
     {
         array_push($this->tag_stack, $name);
         array_push($this->attribute_stack, $attributes);
-        array_push($this->children_stack, array());
+        array_push($this->children_stack, []);
         array_push($this->text_stack, '');
     }
 
@@ -199,10 +199,10 @@ class CMS_simple_xml_reader
         $this_text = array_pop($this->text_stack);
 
         if (empty($this->tag_stack)) {
-            $this->gleamed = array($this_tag, $this_attributes, $this_text, $this_children);
+            $this->gleamed = [$this_tag, $this_attributes, $this_text, $this_children];
         } else {
             $next_top_tags_children = array_pop($this->children_stack);
-            $next_top_tags_children[] = array($this_tag, $this_attributes, $this_text, $this_children);
+            $next_top_tags_children[] = [$this_tag, $this_attributes, $this_text, $this_children];
             array_push($this->children_stack, $next_top_tags_children);
         }
     }
@@ -231,7 +231,7 @@ class CMS_simple_xml_reader
      * @param  array $xml_namespaces XML namespaces array( 'ns-prefix:' => 'http://example.com/namespace-uri' )
      * @return string The combined XML
      */
-    public function pull_together($xml_children, $xml_namespaces = array())
+    public function pull_together($xml_children, $xml_namespaces = [])
     {
         $data = '';
         foreach ($xml_children as $_) {

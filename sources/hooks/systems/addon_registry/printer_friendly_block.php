@@ -31,7 +31,7 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -61,9 +61,9 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_applicable_tutorials()
     {
-        return array(
+        return [
             'tut_browsers',
-        );
+        ];
     }
 
     /**
@@ -73,11 +73,11 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -97,12 +97,12 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'themes/default/templates/BLOCK_SIDE_PRINTER_FRIENDLY.tpl',
             'sources/blocks/side_printer_friendly.php',
             'sources/hooks/systems/addon_registry/printer_friendly_block.php',
             'sources/hooks/modules/admin_setupwizard/printer_friendly_block.php',
-        );
+        ];
     }
 
     /**
@@ -112,9 +112,9 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function tpl_previews()
     {
-        return array(
+        return [
             'templates/BLOCK_SIDE_PRINTER_FRIENDLY.tpl' => 'block_side_printer_friendly',
-        );
+        ];
     }
 
     /**
@@ -126,11 +126,11 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function tpl_preview__block_side_printer_friendly()
     {
-        return array(
-            lorem_globalise(do_lorem_template('BLOCK_SIDE_PRINTER_FRIENDLY', array(
+        return [
+            lorem_globalise(do_lorem_template('BLOCK_SIDE_PRINTER_FRIENDLY', [
                 'BLOCK_ID' => lorem_word(),
                 'URL' => placeholder_url(),
-            )), null, '', true)
-        );
+            ]), null, '', true)
+        ];
     }
 }

@@ -31,86 +31,86 @@ class Hook_actionlog_news extends Hook_actionlog
     public function get_handlers()
     {
         if (!addon_installed('news')) {
-            return array();
+            return [];
         }
 
         require_lang('news');
 
-        return array(
-            'ADD_NEWS_CATEGORY' => array(
+        return [
+            'ADD_NEWS_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:news:browse:{ID}',
                     'EDIT_THIS_NEWS_CATEGORY' => '_SEARCH:cms_news:_edit_category:{ID}',
                     'ADD_NEWS_CATEGORY' => '_SEARCH:cms_news:add_category',
                     'ADD_NEWS' => '_SEARCH:cms_news:add:cat={ID}',
-                ),
-            ),
-            'EDIT_NEWS_CATEGORY' => array(
+                ],
+            ],
+            'EDIT_NEWS_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:news:browse:{ID}',
                     'EDIT_THIS_NEWS_CATEGORY' => '_SEARCH:cms_news:_edit_category:{ID}',
                     'ADD_NEWS_CATEGORY' => '_SEARCH:cms_news:add_category',
                     'ADD_NEWS' => '_SEARCH:cms_news:add:cat={ID}',
-                ),
-            ),
-            'DELETE_NEWS_CATEGORY' => array(
+                ],
+            ],
+            'DELETE_NEWS_CATEGORY' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news_category',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_NEWS_CATEGORY' => '_SEARCH:cms_news:add_category',
-                ),
-            ),
-            'ADD_NEWS' => array(
+                ],
+            ],
+            'ADD_NEWS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:news:view:{ID}',
                     'EDIT_THIS_NEWS' => '_SEARCH:cms_news:_edit:{ID}',
                     'ADD_NEWS' => '_SEARCH:cms_news:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'EDIT_NEWS' => array(
+                ],
+            ],
+            'EDIT_NEWS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'VIEW' => '_SEARCH:news:view:{ID}',
                     'EDIT_THIS_NEWS' => '_SEARCH:cms_news:_edit:{ID}',
                     'ADD_NEWS' => '_SEARCH:cms_news:add:cat={CAT,OPTIONAL}',
-                ),
-            ),
-            'DELETE_NEWS' => array(
+                ],
+            ],
+            'DELETE_NEWS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'news',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_NEWS' => '_SEARCH:cms_news:add',
-                ),
-            ),
-            'IMPORT_NEWS' => array(
+                ],
+            ],
+            'IMPORT_NEWS' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => null,
                 'identifier_index' => null,
                 'written_context_index' => null,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'MANAGE_NEWS' => '_SEARCH:cms_news',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -126,11 +126,11 @@ class Hook_actionlog_news extends Hook_actionlog
         switch ($actionlog_row['the_type']) {
             case 'ADD_NEWS':
             case 'EDIT_NEWS':
-                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', array('id' => intval($identifier)));
+                $category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'news_category', ['id' => intval($identifier)]);
                 if ($category_id !== null) {
-                    $bindings += array(
+                    $bindings += [
                         'CAT' => strval($category_id),
-                    );
+                    ];
                 }
                 break;
         }

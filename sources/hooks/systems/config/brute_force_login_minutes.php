@@ -30,7 +30,7 @@ class Hook_config_brute_force_login_minutes
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BRUTE_FORCE_LOGIN_MINUTES',
             'type' => 'integer',
             'category' => 'SECURITY',
@@ -44,7 +44,7 @@ class Hook_config_brute_force_login_minutes
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

@@ -159,7 +159,7 @@ function decrypt_data($data, $passphrase)
     // Remove the magic encryption marker and base64-decode it first
     $data = base64_decode(remove_magic_encryption_marker(str_replace('<br />', '', $data)));
 
-    $key = openssl_pkey_get_private(array('file://' . str_replace('{file_base}', get_file_base(), get_option('decryption_key')), $passphrase));
+    $key = openssl_pkey_get_private(['file://' . str_replace('{file_base}', get_file_base(), get_option('decryption_key')), $passphrase]);
     if ($key === false) {
         attach_message(do_lang_tempcode('ENCRYPTION_KEY_ERROR'), 'warn');
         return '';

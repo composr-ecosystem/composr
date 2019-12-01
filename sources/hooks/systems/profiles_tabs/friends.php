@@ -58,7 +58,7 @@ class Hook_profiles_tabs_friends
         $order = 70;
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'menu/social/friends');
+            return [$title, null, $order, 'menu/social/friends'];
         }
 
         $add_friend_url = new Tempcode();
@@ -66,19 +66,19 @@ class Hook_profiles_tabs_friends
         require_code('chat');
         if (($member_id_of != $member_id_viewing) && (!is_guest())) {
             if (!member_befriended($member_id_of)) {
-                $add_friend_url = build_url(array('page' => 'chat', 'type' => 'friend_add', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))), get_module_zone('chat'));
+                $add_friend_url = build_url(['page' => 'chat', 'type' => 'friend_add', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))], get_module_zone('chat'));
             } else {
-                $remove_friend_url = build_url(array('page' => 'chat', 'type' => 'friend_remove', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))), get_module_zone('chat'));
+                $remove_friend_url = build_url(['page' => 'chat', 'type' => 'friend_remove', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true))], get_module_zone('chat'));
             }
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_FRIENDS', array(
+        $content = do_template('CNS_MEMBER_PROFILE_FRIENDS', [
                 '_GUID' => 'b24a8607c6e2d3d6ddc29c8e22b972e8',
                 'MEMBER_ID' => strval($member_id_of),
                 'ADD_FRIEND_URL' => $add_friend_url,
                 'REMOVE_FRIEND_URL' => $remove_friend_url,
-            ));
+            ]);
 
-        return array($title, $content, $order, 'menu/social/friends');
+        return [$title, $content, $order, 'menu/social/friends'];
     }
 }

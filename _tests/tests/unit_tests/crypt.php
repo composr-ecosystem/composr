@@ -29,7 +29,7 @@ class crypt_test_set extends cms_test_case
 
     public function testRandomNumber()
     {
-        $numbers = array();
+        $numbers = [];
         for ($i = 0; $i < 1000; $i++) {
             $number = get_secure_random_number();
             $this->assertTrue($number > 0);
@@ -41,7 +41,7 @@ class crypt_test_set extends cms_test_case
 
     public function testRandomString()
     {
-        $strings = array();
+        $strings = [];
         for ($i = 0; $i < 100000; $i++) {
             $string = get_secure_random_string();
             $this->assertTrue(strlen($string) == 13);

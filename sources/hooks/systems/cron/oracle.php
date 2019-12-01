@@ -36,11 +36,11 @@ class Hook_cron_oracle
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Oracle index synchronisation',
             'num_queued' => null,
             'minutes_between_runs' => 60 * 5,
-        );
+        ];
     }
 
     /**
@@ -50,7 +50,7 @@ class Hook_cron_oracle
      */
     public function run($last_run)
     {
-        $indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_name'));
+        $indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', ['i_name']);
         foreach ($indices as $index) {
             if ($index['i_name'][0] == '#') {
                 $GLOBALS['SITE_DB']->query('EXEC CTX_DDL.SYNC_INDEX(\'' . substr($index['i_name'], 1) . '\')');

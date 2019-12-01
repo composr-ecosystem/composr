@@ -15,7 +15,7 @@
  * @package    installer
  */
 
-$functions = array('fopen');
+$functions = ['fopen'];
 foreach ($functions as $function) {
     if (preg_match('#[^,\s]' . $function . '[$,\s]#', ini_get('disable_functions')) != 0) {
         header('Content-type: text/plain; charset=utf-8');
@@ -51,10 +51,10 @@ global $DEFAULT_FORUM;
 $DEFAULT_FORUM = 'cns';
 
 global $REQUIRED_BEFORE;
-$REQUIRED_BEFORE = array();
+$REQUIRED_BEFORE = [];
 
 global $SITE_INFO;
-$SITE_INFO = array();
+$SITE_INFO = [];
 
 global $CURRENT_SHARE_USER;
 $CURRENT_SHARE_USER = null;
@@ -218,10 +218,10 @@ require_code('tempcode_compiler');
 $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
 
 $installer_js = new Tempcode();
-$installer_js->attach(do_template('global', array(), null, false, null, '.js', 'javascript'));
-$installer_js->attach(do_template('installer', array(), null, false, null, '.js', 'javascript'));
+$installer_js->attach(do_template('global', [], null, false, null, '.js', 'javascript'));
+$installer_js->attach(do_template('installer', [], null, false, null, '.js', 'javascript'));
 
-$out_final = do_template('INSTALLER_HTML_WRAP', array(
+$out_final = do_template('INSTALLER_HTML_WRAP', [
     '_GUID' => '29aa056c05fa360b72dbb01c46608c4b',
     'CSS_NOCACHE' => $css_nocache,
     'DEFAULT_FORUM' => $DEFAULT_FORUM,
@@ -233,7 +233,7 @@ $out_final = do_template('INSTALLER_HTML_WRAP', array(
     'CONTENT' => $content,
     'VERSION' => $VERSION_BEING_INSTALLED,
     'INSTALLER_JS' => $installer_js
-));
+]);
 unset($css_nocache);
 unset($content);
 $out_final->evaluate_echo();
@@ -328,26 +328,26 @@ function step_1()
         $sdc = get_param_integer('skip_disk_checks', null);
         if (($sdc === 1) || (($sdc !== 0) && (file_exists(get_file_base() . '/.git')))) {
             if (!file_exists(get_file_base() . '/.git')) {
-                $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER'))));
+                $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER')]));
             }
         } else {
             $files = @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK));
             if ($files !== false) {
-                $missing = array();
-                $corrupt = array();
+                $missing = [];
+                $corrupt = [];
 
                 // Volatile files (see also list in make_release.php)
-                $skipped_files_may_be_changed_or_missing = array_flip(array(
+                $skipped_files_may_be_changed_or_missing = array_flip([
                     'data_custom/functions.bin',
                     'data/files_previous.bin',
-                ));
-                $skipped_files_may_be_changed = array_flip(array(
+                ]);
+                $skipped_files_may_be_changed = array_flip([
                     'sources/version.php',
                     'data/files.bin',
 
                     // Large file size, skip for performance
                     'data/modules/admin_stats/IP_Country.txt',
-                ));
+                ]);
 
                 foreach ($files as $file => $file_info) {
                     if (isset($skipped_files_may_be_changed_or_missing[$file])) {
@@ -382,24 +382,24 @@ function step_1()
                 }
 
                 if (count($missing) > 4) {
-                    $warnings->attach(do_template('INSTALLER_WARNING_LONG', array(
+                    $warnings->attach(do_template('INSTALLER_WARNING_LONG', [
                         '_GUID' => '515c2f26a5415224f3c09b2429a78a5f',
                         'FILES' => $missing,
-                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing)))))));
+                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing))))]));
                 } else {
                     foreach ($missing as $file) {
-                        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file)))));
+                        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file))]));
                     }
                 }
                 if (count($corrupt) > 4) {
-                    $warnings->attach(do_template('INSTALLER_WARNING_LONG', array(
+                    $warnings->attach(do_template('INSTALLER_WARNING_LONG', [
                         '_GUID' => 'f8958458d76bd4f6d146d3fe59132a02',
                         'FILES' => $corrupt,
                         'MESSAGE' => do_lang_tempcode('_CORRUPT_INSTALLATION_FILE', escape_html(integer_format(count($corrupt)))),
-                    )));
+                    ]));
                 } else {
                     foreach ($corrupt as $file) {
-                        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('CORRUPT_INSTALLATION_FILE', escape_html($file)))));
+                        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('CORRUPT_INSTALLATION_FILE', escape_html($file))]));
                     }
                 }
             }
@@ -409,20 +409,20 @@ function step_1()
     // Health Checks
     $_warnings = installer_health_checks();
     foreach ($_warnings as $_warning) {
-        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => $_warning)));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning]));
     }
 
     // Some checks relating to installation permissions
     global $FILE_ARRAY;
     if (!@is_array($FILE_ARRAY)) { // Talk about manual permission setting a bit
         if ((php_function_allowed('posix_getuid')) && (!isset($_SERVER['HTTP_X_MOSSO_DT'])) && (@posix_getuid() == @fileowner(get_file_base() . '/install.php'))) { // NB: Could also be that files are owned by 'apache'/'nobody'. In these cases the users have consciously done something special and know what they're doing (they have open_basedir at least hopefully!) so we'll still consider this 'suexec'. It's too much an obscure situation.
-            $warnings->attach(do_template('INSTALLER_NOTICE', array('MESSAGE' => do_lang_tempcode('SUEXEC_SERVER'))));
+            $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('SUEXEC_SERVER')]));
         } elseif (cms_is_writable(get_file_base() . '/install.php')) {
-            $warnings->attach(do_template('INSTALLER_NOTICE', array('MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER'))));
+            $warnings->attach(do_template('INSTALLER_NOTICE', ['MESSAGE' => do_lang_tempcode('RECURSIVE_SERVER')]));
         }
     }
     if ((file_exists(get_file_base() . '/_config.php')) && (!cms_is_writable(get_file_base() . '/_config.php')) && (!php_function_allowed('posix_getuid')) && ((strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'))) {
-        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions'))))));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('TROUBLESOME_WINDOWS_SERVER', escape_html(get_tutorial_url('tut_install_permissions')))]));
     }
 
     // Some sanity checks
@@ -437,7 +437,7 @@ function step_1()
 
     // GitLab downloads should not be used directly
     if (file_exists(get_file_base() . '/_tests')) {
-        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.')));
+        $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.']));
     }
 
     // Language selection...
@@ -448,7 +448,7 @@ function step_1()
         $lookup = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
     }
 
-    $lang_count = array();
+    $lang_count = [];
     $langs1 = get_dir_contents('lang');
     foreach (array_keys($langs1) as $lang) {
         if (array_key_exists($lang, $lookup)) {
@@ -482,13 +482,13 @@ function step_1()
     $langs = array_merge($langs1, $langs2);
     ksort($langs);
     unset($langs['EN']);
-    $langs = array_merge(array('EN' => 'lang'), $langs);
+    $langs = array_merge(['EN' => 'lang'], $langs);
     $tlanguages = new Tempcode();
     $tcount = 0;
     foreach (array_keys($langs) as $lang) {
         if (array_key_exists($lang, $lookup)) {
             $stub = ($lang == 'EN') ? '' : (' (unofficial, ' . strval(intval(round(100.0 * $lang_count[$lang] / $lang_count['EN']))) . '% changed)');
-            $entry = do_template('FORM_SCREEN_INPUT_LIST_ENTRY', array('SELECTED' => $lang == user_lang(), 'DISABLED' => false, 'NAME' => $lang, 'CLASS' => '', 'TEXT' => $lookup[$lang] . $stub));
+            $entry = do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => $lang == user_lang(), 'DISABLED' => false, 'NAME' => $lang, 'CLASS' => '', 'TEXT' => $lookup[$lang] . $stub]);
             $tlanguages->attach($entry);
             $tcount++;
         }
@@ -505,13 +505,13 @@ function step_1()
     $max = strval(get_param_integer('max', 1000));
     $hidden->attach(form_input_hidden('max', $max));
 
-    return do_template('INSTALLER_STEP_1', array(
+    return do_template('INSTALLER_STEP_1', [
         '_GUID' => '83f0ca881b9f63ab9378264c6ff507a3',
         'URL' => $url,
         'WARNINGS' => $warnings,
         'HIDDEN' => $hidden,
         'LANGUAGES' => $tlanguages
-    ));
+    ]);
 }
 
 /**
@@ -540,12 +540,12 @@ function step_2()
     $url = prepare_installer_url('install.php?step=3');
 
     $hidden = build_keep_post_fields();
-    return do_template('INSTALLER_STEP_2', array(
+    return do_template('INSTALLER_STEP_2', [
         '_GUID' => 'b08b0268784c9a0f44863ae3aece6789',
         'URL' => $url,
         'HIDDEN' => $hidden,
         'LICENCE' => $licence,
-    ));
+    ]);
 }
 
 /**
@@ -569,17 +569,17 @@ function step_3()
     }
     if (($email != '') || ($advertise_on == 1)) {
         require_code('files');
-        http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, array('trigger_error' => false));
+        http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
     }
 
     // Forum chooser
     $forums = get_dir_contents('sources/forum', true);
     unset($forums['none']);
     ksort($forums);
-    $forums = array_merge(array('none' => 'sources/forum'), $forums);
+    $forums = array_merge(['none' => 'sources/forum'], $forums);
     $forum_info = cms_parse_ini_file_fast(get_file_base() . '/sources/forum/forums.ini');
     $tforums = new Tempcode();
-    $classes = array();
+    $classes = [];
     foreach (array_keys($forums) as $forum) {
         $class = array_key_exists($forum . '_class', $forum_info) ? $forum_info[$forum . '_class'] : 'general';
         $classes[$class][] = $forum;
@@ -621,16 +621,16 @@ function step_3()
             } else {
                 $version = array_key_exists($forum . '_version', $forum_info) ? do_lang('VERSION_NUM', $forum_info[$forum . '_version']) : do_lang('VERSION_NUM', do_lang('NA'));
             }
-            $versions->attach(do_template('INSTALLER_FORUM_CHOICE_VERSION', array('_GUID' => '159a5a7cd1397620ef34e98c3b06cd7f', 'IS_DEFAULT' => ($DEFAULT_FORUM == $forum) || ($first && !$rec), 'CLASS' => $class, 'NAME' => $forum, 'VERSION' => $version)));
+            $versions->attach(do_template('INSTALLER_FORUM_CHOICE_VERSION', ['_GUID' => '159a5a7cd1397620ef34e98c3b06cd7f', 'IS_DEFAULT' => ($DEFAULT_FORUM == $forum) || ($first && !$rec), 'CLASS' => $class, 'NAME' => $forum, 'VERSION' => $version]));
             $first = false;
 
-            $simple_forums->attach(do_template('INSTALLER_FORUM_CHOICE_VERSION', array('_GUID' => 'c4c0e7accab56ae45e8e1a4ff777c42b', 'IS_DEFAULT' => ($DEFAULT_FORUM == $forum) || ($first && !$rec), 'CLASS' => $class, 'NAME' => $forum, 'VERSION' => $mapped_name . ' ' . $version)));
+            $simple_forums->attach(do_template('INSTALLER_FORUM_CHOICE_VERSION', ['_GUID' => 'c4c0e7accab56ae45e8e1a4ff777c42b', 'IS_DEFAULT' => ($DEFAULT_FORUM == $forum) || ($first && !$rec), 'CLASS' => $class, 'NAME' => $forum, 'VERSION' => $mapped_name . ' ' . $version]));
         }
         if ($rec) {
             $default_version = $versions;
         }
         $extra = ($rec) ? 'checked="checked"' : '';
-        $tforums->attach(do_template('INSTALLER_FORUM_CHOICE', array('_GUID' => 'a5460829e86c9da3637f8e566cfca63c', 'CLASS' => $class, 'REC' => $rec, 'TEXT' => $_mapped_name, 'VERSIONS' => $versions, 'EXTRA' => $extra)));
+        $tforums->attach(do_template('INSTALLER_FORUM_CHOICE', ['_GUID' => 'a5460829e86c9da3637f8e566cfca63c', 'CLASS' => $class, 'REC' => $rec, 'TEXT' => $_mapped_name, 'VERSIONS' => $versions, 'EXTRA' => $extra]));
     }
 
     // Database chooser
@@ -696,7 +696,7 @@ function step_3()
             $mapped_name = $database;
         }
         $mapped_name = is_maintained_description('database_' . $database, $mapped_name);
-        $tdatabase->attach(do_template('FORM_SCREEN_INPUT_LIST_ENTRY', array('SELECTED' => $selected, 'DISABLED' => false, 'NAME' => $database, 'CLASS' => '', 'TEXT' => $mapped_name)));
+        $tdatabase->attach(do_template('FORM_SCREEN_INPUT_LIST_ENTRY', ['SELECTED' => $selected, 'DISABLED' => false, 'NAME' => $database, 'CLASS' => '', 'TEXT' => $mapped_name]));
 
         if ($database != 'xml') {
             $dbs_found++;
@@ -709,7 +709,7 @@ function step_3()
     $url = prepare_installer_url('install.php?step=4');
 
     $hidden = build_keep_post_fields();
-    return do_template('INSTALLER_STEP_3', array(
+    return do_template('INSTALLER_STEP_3', [
         '_GUID' => 'af52ecea73e9a8e2a92c12adbabbf4ab',
         'URL' => $url,
         'HIDDEN' => $hidden,
@@ -719,7 +719,7 @@ function step_3()
         'DATABASES' => $tdatabase,
         'VERSION' => $default_version,
         'IS_QUICK' => @is_array($GLOBALS['FILE_ARRAY']),
-    ));
+    ]);
 }
 
 /**
@@ -747,7 +747,7 @@ function step_4()
     $forum_type = post_param_string('forum_type');
     require_code('forum/' . $forum_type);
     $GLOBALS['FORUM_DRIVER'] = object_factory('Forum_driver_' . filter_naughty_harsh($forum_type));
-    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = array();
+    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
 
     // Try and grab ourselves forum details
     global $PROBED_FORUM_CONFIG;
@@ -755,7 +755,7 @@ function step_4()
      *
      * @global array $PROBED_FORUM_CONFIG
      */
-    $PROBED_FORUM_CONFIG = array();
+    $PROBED_FORUM_CONFIG = [];
     $PROBED_FORUM_CONFIG['sql_database'] = '';
     $PROBED_FORUM_CONFIG['sql_user'] = '';
     $PROBED_FORUM_CONFIG['sql_pass'] = '';
@@ -917,7 +917,7 @@ function step_4()
     $webdir_stub = $dr_parts[count($dr_parts) - 1];
 
     // If we have a host where the FTP is two+ levels down (often when we have one FTP covering multiple virtual hosts), then this "last component" rule would be insufficient; do a search through for critical strings to try and make a better guess
-    $special_root_dirs = array('public_html', 'www', 'webroot', 'httpdocs', 'httpsdocs', 'wwwroot', 'Documents');
+    $special_root_dirs = ['public_html', 'www', 'webroot', 'httpdocs', 'httpsdocs', 'wwwroot', 'Documents'];
     $webdir_stub = $dr_parts[count($dr_parts) - 1];
     foreach ($dr_parts as $i => $part) {
         if (in_array($part, $special_root_dirs)) {
@@ -941,7 +941,7 @@ function step_4()
         $options->attach(make_option(do_lang_tempcode('FTP_PASSWORD'), new Tempcode(), 'ftp_password', post_param_string('ftp_password', '', INPUT_FILTER_NONE), true));
         $options->attach(make_option(do_lang_tempcode('FTP_DIRECTORY'), do_lang_tempcode('FTP_FOLDER'), 'ftp_folder', post_param_string('ftp_folder', $ftp_folder)));
         $options->attach(make_option(do_lang_tempcode('FTP_FILES_PER_GO'), do_lang_tempcode('DESCRIPTION_FTP_FILES_PER_GO'), 'max', post_param_string('max', '1000')));
-        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => '50fcb00f4d1da1813e94d86529ea0862', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options)));
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '50fcb00f4d1da1813e94d86529ea0862', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     }
 
     // General settings...
@@ -964,7 +964,7 @@ function step_4()
     require_lang('config');
     require_lang('privacy');
     $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_OCPRODUCTS'), example('', 'CONFIG_OPTION_send_error_emails_ocproducts'), 'send_error_emails_ocproducts', 1));
-    $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => 'f051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options)));
+    $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'f051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     $hidden->attach(form_input_hidden('self_learning_cache', '1'));
 
     // Database settings for forum (if applicable)...
@@ -1042,12 +1042,12 @@ function step_4()
     $title = do_lang_tempcode((($forum_type == 'cns' || $forum_type == 'none') && $use_msn == 0) ? 'DATABASE_SETTINGS' : 'COMPOSR_SETTINGS');
     if (($use_msn == 0) && ($forum_type != 'cns')) { // Merge into one set of options
         $forum_options->attach($options);
-        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => '48a122b54d68d9893533ece7237ea5e0', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options)));
+        $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '48a122b54d68d9893533ece7237ea5e0', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
     } else {
         if (GOOGLE_APPENGINE) {
             $title = do_lang_tempcode('DEV_DATABASE_SETTINGS');
             $text = do_lang_tempcode('DEV_DATABASE_SETTINGS_HELP');
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options)));
+            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
 
             $title = do_lang_tempcode('LIVE_DATABASE_SETTINGS');
             $text = do_lang_tempcode('LIVE_DATABASE_SETTINGS_HELP');
@@ -1056,12 +1056,12 @@ function step_4()
             $options->attach(make_option(do_lang_tempcode('DATABASE_NAME'), new Tempcode(), 'gae_live_db_site', '<application>', false, true));
             $options->attach(make_option(do_lang_tempcode('DATABASE_USERNAME'), new Tempcode(), 'gae_live_db_site_user', 'root', false, true));
             $options->attach(make_option(do_lang_tempcode('DATABASE_PASSWORD'), new Tempcode(), 'gae_live_db_site_password', '', true));
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options)));
+            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['HIDDEN' => '', 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
         } else {
             if (!$forum_options->is_empty()) {
-                $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options)));
+                $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '232b69a995f384275c1cd9269a42c3b8', 'HIDDEN' => '', 'TITLE' => $forum_title, 'TEXT' => $forum_text, 'OPTIONS' => $forum_options]));
             }
-            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options)));
+            $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '15e0f275f78414b6c4fe7775a1cacb23', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
         }
     }
 
@@ -1072,7 +1072,7 @@ function step_4()
     $options = new Tempcode();
     $hidden = new Tempcode();
     $options->attach(make_tick(do_lang_tempcode('MULTI_LANG_CONTENT'), is_maintained_description('multi_lang_content', example('', 'MULTI_LANG_CONTENT_TEXT')), 'multi_lang_content', $multi_lang_content));
-    $advanced_1 = do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options));
+    $advanced_1 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'g051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
 
     // Cookie settings...
 
@@ -1086,13 +1086,13 @@ function step_4()
         $options->attach(make_option(do_lang_tempcode('COOKIE_DOMAIN'), example('COOKIE_DOMAIN_EXAMPLE', 'COOKIE_DOMAIN_TEXT'), 'cookie_domain', $cookie_domain));
         $options->attach(make_option(do_lang_tempcode('COOKIE_PATH'), example('COOKIE_PATH_EXAMPLE', 'COOKIE_PATH_TEXT'), 'cookie_path', $cookie_path));
         $options->attach(make_option(do_lang_tempcode('COOKIE_DAYS'), example('COOKIE_DAYS_EXAMPLE', 'COOKIE_DAYS_TEXT'), 'cookie_days', $cookie_days, false, true));
-        $advanced_2 = do_template('INSTALLER_STEP_4_SECTION', array('_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options));
+        $advanced_2 = do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => '3b9ea022164801f4b60780a4a966006f', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]);
     }
 
     $temp = new Tempcode();
     $temp->attach($advanced_1);
     $temp->attach($advanced_2);
-    $sections->attach(do_template('INSTALLER_STEP_4_SECTION_HIDE', array('_GUID' => '42eb3d44bcf8ef99987b6daa9e6530aa', 'TITLE' => $title, 'CONTENT' => $temp)));
+    $sections->attach(do_template('INSTALLER_STEP_4_SECTION_HIDE', ['_GUID' => '42eb3d44bcf8ef99987b6daa9e6530aa', 'TITLE' => $title, 'CONTENT' => $temp]));
 
     // ----
 
@@ -1106,7 +1106,7 @@ function step_4()
     $hidden = build_keep_post_fields();
 
     global $PASSWORD_PROMPT;
-    return do_template('INSTALLER_STEP_4', array(
+    return do_template('INSTALLER_STEP_4', [
         '_GUID' => '73c3ac0a7108709b74b2e89cae30be12',
         'URL' => $url,
         'HIDDEN' => $hidden,
@@ -1118,7 +1118,7 @@ function step_4()
         'SECTIONS' => $sections,
         'MAX' => strval(post_param_integer('max', 1000)),
         'PASSWORD_PROMPT' => $PASSWORD_PROMPT,
-    ));
+    ]);
 }
 
 /**
@@ -1213,7 +1213,7 @@ function step_5()
     // Test base URL isn't subject to redirects
     $test_url = $base_url . '/installer_is_testing_base_urls.php';
     require_code('files');
-    $http_result = cms_http_request($test_url, array('trigger_error' => false));
+    $http_result = cms_http_request($test_url, ['trigger_error' => false]);
     if ($http_result->download_url != $test_url) {
         if (preg_replace('#www\.#', '', $http_result->download_url) == $test_url) {
             warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITH_WWW'));
@@ -1235,19 +1235,19 @@ function step_5()
 
     // Read in a temporary SITE_INFO, but only so this step has something to run with (the _config.php write doesn't use this data)
     foreach ($_POST as $key => $val) {
-        if (in_array($key, array(
+        if (in_array($key, [
             'ftp_password',
             'ftp_password_confirm',
             'master_password_confirm',
             'cns_admin_password',
             'cns_admin_password_confirm',
             'post_data',
-        ))) {
+        ])) {
             continue;
         }
 
         if ($key == 'master_password') {
-            $val = password_hash($val, PASSWORD_BCRYPT, array('cost' => 12));
+            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => 12]);
         }
         $SITE_INFO[$key] = trim($val);
     }
@@ -1256,7 +1256,7 @@ function step_5()
     require_code('database');
     if (post_param_integer('confirm', 0) == 0) {
         $tmp = new DatabaseConnector(trim(post_param_string('db_site')), trim(post_param_string('db_site_host')), trim(post_param_string('db_site_user')), trim(post_param_string('db_site_password', false, INPUT_FILTER_NONE)), $table_prefix);
-        $test = $tmp->query_select_value_if_there('config', 'c_value', array('c_name' => 'is_on_block_cache'), '', true);
+        $test = $tmp->query_select_value_if_there('config', 'c_value', ['c_name' => 'is_on_block_cache'], '', true);
         unset($tmp);
         if ($test !== null) {
             global $INSTALL_LANG;
@@ -1268,7 +1268,7 @@ function step_5()
             $hidden->attach(form_input_hidden('confirm', '1'));
 
             global $PASSWORD_PROMPT;
-            return do_template('INSTALLER_STEP_4', array(
+            return do_template('INSTALLER_STEP_4', [
                 '_GUID' => 'aaf0386966dd4b75c8027a6b1f7454c6',
                 'URL' => $url,
                 'HIDDEN' => $hidden,
@@ -1279,14 +1279,14 @@ function step_5()
                 'BOARD_PATH' => post_param_string('board_path'),
                 'SECTIONS' => $sections,
                 'PASSWORD_PROMPT' => $PASSWORD_PROMPT,
-            ));
+            ]);
         }
     }
 
     // Give warning if setting up a multi-site-network to a bad database
     if (($_POST['db_forums'] != $_POST['db_site']) && (get_forum_type() == 'cns')) {
         $tmp = new DatabaseConnector(trim(post_param_string('db_forums')), trim(post_param_string('db_forums_host')), trim(post_param_string('db_forums_user')), trim(post_param_string('db_forums_password', false, INPUT_FILTER_NONE)), post_param_string('cns_table_prefix'));
-        if ($tmp->query_select_value('db_meta', 'COUNT(*)', array(), '', true) === null) {
+        if ($tmp->query_select_value('db_meta', 'COUNT(*)', [], '', true) === null) {
             warn_exit(do_lang_tempcode('MSN_FORUM_DB_NOT_CNS_ALREADY'));
         }
     }
@@ -1319,14 +1319,14 @@ function step_5()
         $log->attach(step_5_core_2());
     }
 
-    return do_template('INSTALLER_STEP_LOG', array(
+    return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => '83ed0405bc32fdf2cc499662bfa51bc9',
         'PREVIOUS_STEP' => '4',
         'CURRENT_STEP' => '5',
         'URL' => $url,
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
-    ));
+    ]);
 }
 
 /**
@@ -1344,7 +1344,7 @@ function include_cns()
     $GLOBALS['FORUM_DRIVER'] = object_factory('Forum_driver_cns');
     $GLOBALS['FORUM_DB'] = $GLOBALS['SITE_DB'];
     $GLOBALS['FORUM_DRIVER']->db = $GLOBALS['SITE_DB'];
-    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = array();
+    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
     $GLOBALS['CNS_DRIVER'] = $GLOBALS['FORUM_DRIVER'];
 }
 
@@ -1409,9 +1409,9 @@ function step_5_ftp()
         }
         $files = @ftp_nlist($conn, '.');
         if ($files === false) { // :(. Weird bug on some systems
-            $files = array();
+            $files = [];
             if (@ftp_rename($conn, 'install.php', 'install.php')) {
-                $files = array('install.php', 'data.cms');
+                $files = ['install.php', 'data.cms'];
             }
         }
         if (!in_array('install.php', $files)) {
@@ -1448,7 +1448,7 @@ function step_5_ftp()
         fclose($lock_myfile);
     } else {
         $overwrite_ok = true;
-        $files = array();
+        $files = [];
         if (file_exists(get_file_base() . '/_config.php')) {
             $files[] = '_config.php';
         }
@@ -1627,7 +1627,7 @@ function step_5_ftp()
                     $no_chmod = true;
                 }
             }
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode((!$no_chmod) ? 'CHMOD_PASS' : 'CHMOD_FAIL'))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '2e4ccdd5a0b034125ee62403d5a48319', 'SOMETHING' => do_lang_tempcode((!$no_chmod) ? 'CHMOD_PASS' : 'CHMOD_FAIL')]));
         }
     }
 
@@ -1636,11 +1636,11 @@ function step_5_ftp()
             ftp_close($conn);
         }
     }
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array(
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', [
         '_GUID' => '1b447cee9e9aa3ad8e24530d4dceb03f',
         'SOMETHING' => do_lang_tempcode('FILES_TRANSFERRED', strval($i + 1 - 1/*+1 is due to counting from zero and -1 is because a for variable ends 1 more than it executed for*/), strval($count)),
-    )));
-    return array($log, $done_all ? -1 : $i);
+    ]));
+    return [$log, $done_all ? -1 : $i];
 }
 
 /**
@@ -1667,7 +1667,7 @@ function step_5_checks_a()
         warn_exit(do_lang_tempcode('BAD_PATH'));
     }
 
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '48b15e3e8486e5654563a7c3b5e6af58', 'SOMETHING' => do_lang_tempcode('GOOD_PATH'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '48b15e3e8486e5654563a7c3b5e6af58', 'SOMETHING' => do_lang_tempcode('GOOD_PATH')]));
 
     // Check permissions
     if (!file_exists(get_file_base() . '/_config.php')) {
@@ -1680,7 +1680,7 @@ function step_5_checks_a()
         test_writable($chmod);
     }
 
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'e2daeaa9060623786decb008289068da', 'SOMETHING' => do_lang_tempcode('FILE_PERM_GOOD'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'e2daeaa9060623786decb008289068da', 'SOMETHING' => do_lang_tempcode('FILE_PERM_GOOD')]));
 
     return $log;
 }
@@ -1695,9 +1695,9 @@ function step_5_checks_b()
     $log = new Tempcode();
 
     // MySQL check (could not be checked earlier due to lack of active connection)
-    $_warnings = installer_health_checks(array('Installation environment \\ MySQL version'));
+    $_warnings = installer_health_checks(['Installation environment \\ MySQL version']);
     foreach ($_warnings as $_warning) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('SOMETHING' => do_template('INSTALLER_WARNING', array('MESSAGE' => $_warning)))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['SOMETHING' => do_template('INSTALLER_WARNING', ['MESSAGE' => $_warning])]));
     }
 
     return $log;
@@ -1711,7 +1711,7 @@ function step_5_checks_b()
  */
 function installer_health_checks($sections_to_run = null)
 {
-    $_warnings = array();
+    $_warnings = [];
     if (addon_installed('health_check')) {
         require_code('health_check');
         $hook_obs = find_all_hook_obs('systems', 'health_checks', 'Hook_health_check_');
@@ -1776,7 +1776,7 @@ if (!function_exists(\'git_repos\')) {
 
     // Write in inputted settings
     foreach ($_POST as $key => $val) {
-        if (in_array($key, array(
+        if (in_array($key, [
             'ftp_password',
             'ftp_password_confirm',
             'master_password_confirm',
@@ -1800,7 +1800,7 @@ if (!function_exists(\'git_repos\')) {
             'gae_live_db_site_password',
 
             'post_data',
-        ))) {
+        ])) {
             continue;
         }
 
@@ -1821,7 +1821,7 @@ if (!function_exists(\'git_repos\')) {
         }
 
         if ($key == 'master_password') {
-            $val = password_hash($val, PASSWORD_BCRYPT, array('cost' => 12));
+            $val = password_hash($val, PASSWORD_BCRYPT, ['cost' => 12]);
         }
 
         if ($key == 'base_url') {
@@ -1946,7 +1946,7 @@ if (appengine_is_live()) {
         fix_permissions(get_custom_file_base() . '/_config.php', 0600); // Don't allow other accounts to read
     }
 
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '261a1eb80baed15cbbce1a684d4a354d', 'SOMETHING' => do_lang_tempcode('WROTE_CONFIGURATION'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '261a1eb80baed15cbbce1a684d4a354d', 'SOMETHING' => do_lang_tempcode('WROTE_CONFIGURATION')]));
     return $log;
 }
 
@@ -1967,7 +1967,7 @@ function step_5_uninstall()
         unset($tmp);
     }
 
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DATABASE_VALID', 'Composr'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dae0677246aa2f1394b90c3739490ff7', 'SOMETHING' => do_lang_tempcode('DATABASE_VALID', 'Composr')]));
 
     // UNINSTALL STUFF
 
@@ -1987,23 +1987,23 @@ function step_5_uninstall()
 function step_5_core()
 {
     $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta');
-    $GLOBALS['SITE_DB']->create_table('db_meta', array(
+    $GLOBALS['SITE_DB']->create_table('db_meta', [
         'm_table' => '*ID_TEXT',
         'm_name' => '*ID_TEXT',
         'm_type' => 'ID_TEXT',
-    ));
+    ]);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('db_meta_indices');
-    $GLOBALS['SITE_DB']->create_table('db_meta_indices', array(
+    $GLOBALS['SITE_DB']->create_table('db_meta_indices', [
         'i_table' => '*ID_TEXT',
         'i_name' => '*ID_TEXT',
         'i_fields' => '*ID_TEXT',
-    ));
+    ]);
 
-    $GLOBALS['SITE_DB']->create_index('db_meta', 'findtransfields', array('m_type'));
+    $GLOBALS['SITE_DB']->create_index('db_meta', 'findtransfields', ['m_type']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('translate');
-    $fields = array(
+    $fields = [
         'id' => '*AUTO',
         'language' => '*LANGUAGE_NAME',
         'importance_level' => 'SHORT_INTEGER',
@@ -2011,58 +2011,58 @@ function step_5_core()
         'text_parsed' => 'LONG_TEXT',
         'broken' => 'BINARY',
         'source_user' => 'MEMBER',
-    );
+    ];
     if (strpos(get_db_type(), 'sqlserver') !== false) { // Full-text search requires a single key
         $fields['_id'] = '*AUTO';
         $fields['id'] = 'AUTO_LINK';
         $fields['language'] = 'LANGUAGE_NAME';
     }
     $GLOBALS['SITE_DB']->create_table('translate', $fields);
-    $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', array('text_original'));
-    $GLOBALS['SITE_DB']->create_index('translate', 'importance_level', array('importance_level'));
+    $GLOBALS['SITE_DB']->create_index('translate', '#tsearch', ['text_original']);
+    $GLOBALS['SITE_DB']->create_index('translate', 'importance_level', ['importance_level']);
     if (strpos(get_db_type(), 'mysql') !== false) {
-        $GLOBALS['SITE_DB']->create_index('translate', 'equiv_lang', array('text_original(4)'));
-        $GLOBALS['SITE_DB']->create_index('translate', 'decache', array('text_parsed(2)'));
+        $GLOBALS['SITE_DB']->create_index('translate', 'equiv_lang', ['text_original(4)']);
+        $GLOBALS['SITE_DB']->create_index('translate', 'decache', ['text_parsed(2)']);
     }
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('values');
-    $GLOBALS['SITE_DB']->create_table('values', array(
+    $GLOBALS['SITE_DB']->create_table('values', [
         'the_name' => '*ID_TEXT',
         'the_value' => 'SHORT_TEXT',
         'date_and_time' => 'TIME',
-    ));
-    $GLOBALS['SITE_DB']->create_index('values', 'date_and_time', array('date_and_time'));
+    ]);
+    $GLOBALS['SITE_DB']->create_index('values', 'date_and_time', ['date_and_time']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('config');
-    $GLOBALS['SITE_DB']->create_table('config', array(
+    $GLOBALS['SITE_DB']->create_table('config', [
         'c_name' => '*ID_TEXT',
         'c_set' => 'BINARY',
         'c_value' => 'LONG_TEXT',
         'c_value_trans' => '?LONG_TRANS', // If it's a translatable/Comcode one, we store the language ID in here (or just a string if we don't have multi-lang-content enabled)
         'c_needs_dereference' => 'BINARY',
-    ));
+    ]);
 
     // Privileges
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_privileges');
-    $GLOBALS['SITE_DB']->create_table('group_privileges', array(
+    $GLOBALS['SITE_DB']->create_table('group_privileges', [
         'group_id' => '*INTEGER',
         'privilege' => '*ID_TEXT',
         'the_page' => '*ID_TEXT',
         'module_the_name' => '*ID_TEXT',
         'category_name' => '*ID_TEXT',
         'the_value' => 'BINARY',
-    ), false, false, true);
-    $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', array('group_id'));
+    ], false, false, true);
+    $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', ['group_id']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('privilege_list');
-    $GLOBALS['SITE_DB']->create_table('privilege_list', array( // Why does this table exist? It could be done cleanly in hooks (which are easier to version) like config is, but when we add a privilege we do need to carefully define who gets it (as an immediate-op with potential complex code) -- it is cleaner to just handle definition in same place as that code).
+    $GLOBALS['SITE_DB']->create_table('privilege_list', [ // Why does this table exist? It could be done cleanly in hooks (which are easier to version) like config is, but when we add a privilege we do need to carefully define who gets it (as an immediate-op with potential complex code) -- it is cleaner to just handle definition in same place as that code).
         'p_section' => 'ID_TEXT',
         'the_name' => '*ID_TEXT',
         'the_default' => '*BINARY',
-    ));
+    ]);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('attachments');
-    $GLOBALS['SITE_DB']->create_table('attachments', array(
+    $GLOBALS['SITE_DB']->create_table('attachments', [
         'id' => '*AUTO',
         'a_member_id' => 'MEMBER',
         'a_file_size' => '?INTEGER', // null means non-local. Doesn't count to quota
@@ -2073,19 +2073,19 @@ function step_5_core()
         'a_num_downloads' => 'INTEGER',
         'a_last_downloaded_time' => '?INTEGER',
         'a_add_time' => 'INTEGER',
-    ));
-    $GLOBALS['SITE_DB']->create_index('attachments', 'ownedattachments', array('a_member_id'));
-    $GLOBALS['SITE_DB']->create_index('attachments', 'attachmentlimitcheck', array('a_add_time'));
+    ]);
+    $GLOBALS['SITE_DB']->create_index('attachments', 'ownedattachments', ['a_member_id']);
+    $GLOBALS['SITE_DB']->create_index('attachments', 'attachmentlimitcheck', ['a_add_time']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('attachment_refs');
-    $GLOBALS['SITE_DB']->create_table('attachment_refs', array(
+    $GLOBALS['SITE_DB']->create_table('attachment_refs', [
         'id' => '*AUTO',
         'r_referer_type' => 'ID_TEXT',
         'r_referer_id' => 'ID_TEXT',
         'a_id' => 'AUTO_LINK',
-    ));
+    ]);
 
-    return do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'c6b6d92c670b7f1b223798ace54102f9', 'SOMETHING' => do_lang_tempcode('PRIMARY_CORE_INSTALLED')));
+    return do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c6b6d92c670b7f1b223798ace54102f9', 'SOMETHING' => do_lang_tempcode('PRIMARY_CORE_INSTALLED')]);
 }
 
 /**
@@ -2098,33 +2098,33 @@ function step_5_core_2()
     global $INSTALL_LANG;
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('zones');
-    $GLOBALS['SITE_DB']->create_table('zones', array(
+    $GLOBALS['SITE_DB']->create_table('zones', [
         'zone_name' => '*ID_TEXT',
         'zone_title' => 'SHORT_TRANS',
         'zone_default_page' => 'ID_TEXT',
         'zone_header_text' => 'SHORT_TRANS',
         'zone_theme' => 'ID_TEXT',
         'zone_require_session' => 'BINARY',
-    ));
+    ]);
 
     // Create default zones
     require_lang('zones');
     $trans1 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
     $h1 = insert_lang('zone_title', do_lang('_WELCOME'), 1, null, false, null, $INSTALL_LANG);
-    $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => '', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => '-1', 'zone_require_session' => 0) + $trans1 + $h1);
+    $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => '', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans1 + $h1);
     $trans2 = insert_lang('zone_header_text', do_lang('HEADER_TEXT_ADMINZONE'), 1, null, false, null, $INSTALL_LANG);
     $h2 = insert_lang('zone_title', do_lang('ADMIN_ZONE'), 1, null, false, null, $INSTALL_LANG);
-    $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => 'adminzone', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => 'admin', 'zone_require_session' => 1) + $trans2 + $h2);
+    $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'adminzone', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => 'admin', 'zone_require_session' => 1] + $trans2 + $h2);
     $trans4 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
     $h4 = insert_lang('zone_title', do_lang('SITE'), 1, null, false, null, $INSTALL_LANG);
-    $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => 'site', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => '-1', 'zone_require_session' => 0) + $trans4 + $h4);
+    $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'site', 'zone_default_page' => DEFAULT_ZONE_PAGE_NAME, 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans4 + $h4);
     $trans5 = insert_lang('zone_header_text', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
     $h5 = insert_lang('zone_title', do_lang('CMS'), 1, null, false, null, $INSTALL_LANG);
-    $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => 'cms', 'zone_default_page' => 'cms', 'zone_theme' => 'admin', 'zone_require_session' => 1) + $trans5 + $h5);
+    $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'cms', 'zone_default_page' => 'cms', 'zone_theme' => 'admin', 'zone_require_session' => 1] + $trans5 + $h5);
     if (file_exists(get_file_base() . '/docs')) { // installing from git
         $trans6 = insert_lang('zone_header_text', '', 1, null, false, null, $INSTALL_LANG);
         $h6 = insert_lang('zone_title', do_lang('TUTORIALS'), 1, null, false, null, $INSTALL_LANG);
-        $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => 'docs', 'zone_default_page' => 'tutorials', 'zone_theme' => '-1', 'zone_require_session' => 0) + $trans6 + $h6);
+        $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'docs', 'zone_default_page' => 'tutorials', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
     }
 
     // Forums
@@ -2132,31 +2132,31 @@ function step_5_core_2()
     if ($forum_type == 'cns') {
         $trans6 = insert_lang('zone_header_text', do_lang('FORUM'), 1, null, false, null, $INSTALL_LANG);
         $h6 = insert_lang('zone_title', do_lang('SECTION_FORUMS'), 1, null, false, null, $INSTALL_LANG);
-        $GLOBALS['SITE_DB']->query_insert('zones', array('zone_name' => 'forum', 'zone_default_page' => 'forumview', 'zone_theme' => '-1', 'zone_require_session' => 0) + $trans6 + $h6);
+        $GLOBALS['SITE_DB']->query_insert('zones', ['zone_name' => 'forum', 'zone_default_page' => 'forumview', 'zone_theme' => '-1', 'zone_require_session' => 0] + $trans6 + $h6);
     }
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('modules');
-    $GLOBALS['SITE_DB']->create_table('modules', array(
+    $GLOBALS['SITE_DB']->create_table('modules', [
         'module_the_name' => '*ID_TEXT',
         'module_author' => 'ID_TEXT',
         'module_organisation' => 'ID_TEXT',
         'module_hacked_by' => 'ID_TEXT',
         'module_hack_version' => '?INTEGER',
         'module_version' => 'INTEGER',
-    ));
+    ]);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('blocks');
-    $GLOBALS['SITE_DB']->create_table('blocks', array(
+    $GLOBALS['SITE_DB']->create_table('blocks', [
         'block_name' => '*ID_TEXT',
         'block_author' => 'ID_TEXT',
         'block_organisation' => 'ID_TEXT',
         'block_hacked_by' => 'ID_TEXT',
         'block_hack_version' => '?INTEGER',
         'block_version' => 'INTEGER',
-    ));
+    ]);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('sessions');
-    $GLOBALS['SITE_DB']->create_table('sessions', array(
+    $GLOBALS['SITE_DB']->create_table('sessions', [
         'the_session' => '*ID_TEXT',
         'last_activity' => 'TIME',
         'member_id' => 'MEMBER',
@@ -2169,45 +2169,45 @@ function step_5_core_2()
         'the_type' => 'ID_TEXT',
         'the_id' => 'ID_TEXT',
         'the_title' => 'SHORT_TEXT',
-    ));
-    $GLOBALS['SITE_DB']->create_index('sessions', 'delete_old', array('last_activity'));
-    $GLOBALS['SITE_DB']->create_index('sessions', 'member_id', array('member_id'));
-    $GLOBALS['SITE_DB']->create_index('sessions', 'userat', array('the_zone', 'the_page', 'the_id'));
+    ]);
+    $GLOBALS['SITE_DB']->create_index('sessions', 'delete_old', ['last_activity']);
+    $GLOBALS['SITE_DB']->create_index('sessions', 'member_id', ['member_id']);
+    $GLOBALS['SITE_DB']->create_index('sessions', 'userat', ['the_zone', 'the_page', 'the_id']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('https_pages');
-    $GLOBALS['SITE_DB']->create_table('https_pages', array(
+    $GLOBALS['SITE_DB']->create_table('https_pages', [
         'https_page_name' => '*ID_TEXT',
-    ));
+    ]);
 
     // What usergroups may view this category
     $GLOBALS['SITE_DB']->drop_table_if_exists('group_category_access');
-    $GLOBALS['SITE_DB']->create_table('group_category_access', array(
+    $GLOBALS['SITE_DB']->create_table('group_category_access', [
         'module_the_name' => '*ID_TEXT',
         'category_name' => '*ID_TEXT',
         'group_id' => '*GROUP',
-    ));
+    ]);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('seo_meta');
-    $GLOBALS['SITE_DB']->create_table('seo_meta', array(
+    $GLOBALS['SITE_DB']->create_table('seo_meta', [
         'id' => '*AUTO',
         'meta_for_type' => 'ID_TEXT',
         'meta_for_id' => 'ID_TEXT',
         'meta_description' => 'LONG_TRANS',
-    ));
-    $GLOBALS['SITE_DB']->create_index('seo_meta', 'alt_key', array('meta_for_type', 'meta_for_id'));
-    $GLOBALS['SITE_DB']->create_index('seo_meta', 'ftjoin_dmeta_description', array('meta_description'));
+    ]);
+    $GLOBALS['SITE_DB']->create_index('seo_meta', 'alt_key', ['meta_for_type', 'meta_for_id']);
+    $GLOBALS['SITE_DB']->create_index('seo_meta', 'ftjoin_dmeta_description', ['meta_description']);
 
     $GLOBALS['SITE_DB']->drop_table_if_exists('seo_meta_keywords');
-    $GLOBALS['SITE_DB']->create_table('seo_meta_keywords', array(
+    $GLOBALS['SITE_DB']->create_table('seo_meta_keywords', [
         'id' => '*AUTO',
         'meta_for_type' => 'ID_TEXT',
         'meta_for_id' => 'ID_TEXT',
         'meta_keyword' => 'SHORT_TRANS',
-    ));
-    $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'keywords_alt_key', array('meta_for_type', 'meta_for_id'));
-    $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'ftjoin_dmeta_keywords', array('meta_keyword'));
+    ]);
+    $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'keywords_alt_key', ['meta_for_type', 'meta_for_id']);
+    $GLOBALS['SITE_DB']->create_index('seo_meta_keywords', 'ftjoin_dmeta_keywords', ['meta_keyword']);
 
-    return do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '685ebf53cf9fc3f728168fed2f01a5a1', 'SOMETHING' => do_lang_tempcode('SECONDARY_CORE_INSTALLED')));
+    return do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '685ebf53cf9fc3f728168fed2f01a5a1', 'SOMETHING' => do_lang_tempcode('SECONDARY_CORE_INSTALLED')]);
 }
 
 /**
@@ -2236,16 +2236,16 @@ function step_6()
 
     require_code('cns_install');
     install_cns();
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'f268a7e03ca5b06ed9f62b29b1357d25', 'SOMETHING' => do_lang_tempcode('INSTALLED_CNS'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'f268a7e03ca5b06ed9f62b29b1357d25', 'SOMETHING' => do_lang_tempcode('INSTALLED_CNS')]));
 
-    return do_template('INSTALLER_STEP_LOG', array(
+    return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => '450f62a4664c67b6780228781218a8f2',
         'PREVIOUS_STEP' => '5',
         'CURRENT_STEP' => '6',
         'URL' => $url,
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
-    ));
+    ]);
 }
 
 /**
@@ -2274,7 +2274,7 @@ function big_installation_common()
     if ($forum_type != 'none') {
         $GLOBALS['FORUM_DRIVER']->db = new DatabaseConnector(get_db_forums(), get_db_forums_host(), get_db_forums_user(), get_db_forums_password(), $GLOBALS['FORUM_DRIVER']->get_drivered_table_prefix());
     }
-    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = array();
+    $GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED = [];
     $GLOBALS['FORUM_DB'] = &$GLOBALS['FORUM_DRIVER']->db;
 
     if (method_exists($GLOBALS['FORUM_DRIVER'], 'check_db')) {
@@ -2305,10 +2305,10 @@ function step_7()
 
     // We must install this module first
     if (reinstall_module('adminzone', 'admin_version')) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'da46e6eb9069c8f700636ab61f76f895', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_version'))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'da46e6eb9069c8f700636ab61f76f895', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_version')]));
     }
     if (reinstall_module('adminzone', 'admin_permissions')) {
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '11de3814d6a00a0e015466a0277fa7a1', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_permissions'))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '11de3814d6a00a0e015466a0277fa7a1', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', 'admin_permissions')]));
     }
 
     $modules = find_all_modules('adminzone');
@@ -2318,7 +2318,7 @@ function step_7()
 
             //echo '<!-- Installing ' . escape_html($module) . ' -->';
             if (reinstall_module('adminzone', $module)) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module)))));
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ab3', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
             }
         }
     }
@@ -2333,19 +2333,19 @@ function step_7()
         //if ($place == 'sources_custom') continue;  Now we are actually installing custom addons too
 
         reinstall_addon_soft($addon_name);
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name)))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name))]));
     }
 
     $url = prepare_installer_url('install.php?step=8');
 
-    return do_template('INSTALLER_STEP_LOG', array(
+    return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => 'c016b2a364d20cf711af7e14c60a7921',
         'PREVIOUS_STEP' => '6',
         'CURRENT_STEP' => '7',
         'URL' => $url,
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
-    ));
+    ]);
 }
 
 /**
@@ -2364,20 +2364,20 @@ function step_8()
         send_http_output_ping();
 
         if (reinstall_module('site', $module)) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module)))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '9b3c23369e8ca719256ae44b3d42fd4c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
         }
     }
 
     $url = prepare_installer_url('install.php?step=9');
 
-    return do_template('INSTALLER_STEP_LOG', array(
+    return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => '27fad5aa7f96d26a51e6afb6b7e5c7b1',
         'PREVIOUS_STEP' => '7',
         'CURRENT_STEP' => '8',
         'URL' => $url,
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
-    ));
+    ]);
 }
 
 /**
@@ -2391,7 +2391,7 @@ function step_9()
 
     $log = new Tempcode();
 
-    foreach (array('forum', 'cms', 'buildr') as $zone) {
+    foreach (['forum', 'cms', 'buildr'] as $zone) {
         if (!is_file(get_file_base() . '/' . $zone . '/index.php')) {
             continue;
         }
@@ -2401,7 +2401,7 @@ function step_9()
             send_http_output_ping();
 
             if (reinstall_module($zone, $module)) {
-                $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module)))));
+                $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'c1d95b9713006acb491b44ff6c79099c', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
             }
         }
     }
@@ -2412,20 +2412,20 @@ function step_9()
 
         echo '<!-- Installing block: ' . $block . ' -->' . "\n";
         if (reinstall_block($block)) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block)))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'dc9f833239d501f77729778b5c6681b6', 'SOMETHING' => do_lang_tempcode('INSTALLED_BLOCK', escape_html($block))]));
         }
     }
 
     $url = prepare_installer_url('install.php?step=10');
 
-    return do_template('INSTALLER_STEP_LOG', array(
+    return do_template('INSTALLER_STEP_LOG', [
         '_GUID' => 'b20121b8f4f84dd8e625e3b821c753b3',
         'PREVIOUS_STEP' => '8',
         'CURRENT_STEP' => '9',
         'URL' => $url,
         'LOG' => $log,
         'HIDDEN' => build_keep_post_fields(),
-    ));
+    ]);
 }
 
 /**
@@ -2446,7 +2446,7 @@ function step_10()
         $robots_txt_msg = null;
         create_robots_txt(null, $robots_txt_msg);
         if ($robots_txt_msg !== null) {
-            $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'eddbb0cbc46520fe767e6292465751a1', 'SOMETHING' => protect_from_escaping($robots_txt_msg))));
+            $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'eddbb0cbc46520fe767e6292465751a1', 'SOMETHING' => protect_from_escaping($robots_txt_msg)]));
         }
     }
 
@@ -2472,7 +2472,7 @@ function step_10()
     require_code('caches3');
     erase_cached_templates();
 
-    return do_template('INSTALLER_STEP_10', array('_GUID' => '0e50bc1b9934c32fb62fb865a3971a9b', 'PREVIOUS_STEP' => '9', 'CURRENT_STEP' => '10', 'FINAL' => $final, 'LOG' => $log));
+    return do_template('INSTALLER_STEP_10', ['_GUID' => '0e50bc1b9934c32fb62fb865a3971a9b', 'PREVIOUS_STEP' => '9', 'CURRENT_STEP' => '10', 'FINAL' => $final, 'LOG' => $log]);
 }
 
 /**
@@ -2499,7 +2499,7 @@ function step_10_populate_database()
                 send_http_output_ping();
 
                 if (reinstall_module($zone, $module)) {
-                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module)))));
+                    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '25eb1c88fe122ec5a817f334d5f6bc5e', 'SOMETHING' => do_lang_tempcode('INSTALLED_MODULE', escape_html($module))]));
                 }
             }
         }
@@ -2526,10 +2526,10 @@ function step_10_forum_stuff()
         install_name_fields();
         install_mobile_phone_field();
 
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => 'efdbb0cbc46520fe767c6292465751a1', 'SOMETHING' => do_lang_tempcode('CREATED_CUSTOM_PROFILE_FIELDS'))));
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => 'efdbb0cbc46520fe767c6292465751a1', 'SOMETHING' => do_lang_tempcode('CREATED_CUSTOM_PROFILE_FIELDS')]));
     }
 
-    $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '53facf1a7e666433d663fee2974cd02b', 'SOMETHING' => do_lang_tempcode('INSTALL_COMPLETE'))));
+    $log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '53facf1a7e666433d663fee2974cd02b', 'SOMETHING' => do_lang_tempcode('INSTALL_COMPLETE')]));
 
     return $log;
 }
@@ -2683,9 +2683,9 @@ function handle_self_referencing_embedment()
                 }
                 $files = @ftp_nlist($conn, '.');
                 if ($files === false) { // :(. Weird bug on some systems
-                    $files = array();
+                    $files = [];
                     if (@ftp_rename($conn, 'install.php', 'install.php')) {
-                        $files = array('install.php', 'data.cms');
+                        $files = ['install.php', 'data.cms'];
                     }
                 }
                 if (!in_array('install.php', $files)) {
@@ -2698,7 +2698,7 @@ function handle_self_referencing_embedment()
                 header('Content-Type: text/plain; charset=' . get_charset());
                 global $SITE_INFO;
                 if (!isset($SITE_INFO)) {
-                    $SITE_INFO = array();
+                    $SITE_INFO = [];
                 }
                 $SITE_INFO['db_type'] = post_param_string('db_type');
                 require_code('database');
@@ -2739,7 +2739,7 @@ function handle_self_referencing_embedment()
 
                 $output = '';
 
-                $css_files = array('global', 'forms');
+                $css_files = ['global', 'forms'];
                 foreach ($css_files as $css_file) {
                     if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
                         $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/' . $css_file . '.css')));
@@ -2812,24 +2812,24 @@ function make_option($nice_name, $description, $name, $value, $hidden = false, $
     $_required = ($required ? '-required' : '');
 
     if ($hidden) {
-        $input1 = do_template('INSTALLER_INPUT_PASSWORD', array('_GUID' => '373b85cea71837a30d146df387dc2a42', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value));
-        $a = do_template('INSTALLER_STEP_4_SECTION_OPTION', array('_GUID' => '455b0f61e6ce2eaf2acce2844fdd5e7a', 'NAME' => $name, 'INPUT' => $input1, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description));
+        $input1 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '373b85cea71837a30d146df387dc2a42', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value]);
+        $a = do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '455b0f61e6ce2eaf2acce2844fdd5e7a', 'NAME' => $name, 'INPUT' => $input1, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
         if ((substr($name, 0, 3) != 'db_') && (substr($name, 0, 12) != 'gae_live_db_') && ($name != 'ftp_password')) {
-            $input2 = do_template('INSTALLER_INPUT_PASSWORD', array('_GUID' => '0f15bfe5b58f3ca7830a48791f1a6a6d', 'REQUIRED' => $_required, 'NAME' => $name . '_confirm', 'VALUE' => $value));
-            $b = do_template('INSTALLER_STEP_4_SECTION_OPTION', array(
+            $input2 = do_template('INSTALLER_INPUT_PASSWORD', ['_GUID' => '0f15bfe5b58f3ca7830a48791f1a6a6d', 'REQUIRED' => $_required, 'NAME' => $name . '_confirm', 'VALUE' => $value]);
+            $b = do_template('INSTALLER_STEP_4_SECTION_OPTION', [
                 '_GUID' => 'c99e7339b7ffe81318ae84953e3c03a3',
                 'NAME' => $name,
                 'INPUT' => $input2,
                 'NICE_NAME' => $nice_name,
                 'DESCRIPTION' => do_lang_tempcode('CONFIRM_PASSWORD'),
-            ));
+            ]);
             $a->attach($b);
         }
         return $a;
     }
 
-    $input = do_template('INSTALLER_INPUT_LINE', array('_GUID' => '31cdfb760d7c61de65656c5256bf2e88', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value));
-    return do_template('INSTALLER_STEP_4_SECTION_OPTION', array('_GUID' => 'a13131994a22b6f646e517c54a7c41d5', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description));
+    $input = do_template('INSTALLER_INPUT_LINE', ['_GUID' => '31cdfb760d7c61de65656c5256bf2e88', 'REQUIRED' => $_required, 'NAME' => $name, 'VALUE' => $value]);
+    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => 'a13131994a22b6f646e517c54a7c41d5', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
 }
 
 /**
@@ -2843,8 +2843,8 @@ function make_option($nice_name, $description, $name, $value, $hidden = false, $
  */
 function make_tick($nice_name, $description, $name, $value)
 {
-    $input = do_template('INSTALLER_INPUT_TICK', array('CHECKED' => $value == 1, 'NAME' => $name));
-    return do_template('INSTALLER_STEP_4_SECTION_OPTION', array('_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description));
+    $input = do_template('INSTALLER_INPUT_TICK', ['CHECKED' => $value == 1, 'NAME' => $name]);
+    return do_template('INSTALLER_STEP_4_SECTION_OPTION', ['_GUID' => '0723f86908f66da7f67ebc4cd07bff2e', 'NAME' => $name, 'INPUT' => $input, 'NICE_NAME' => $nice_name, 'DESCRIPTION' => $description]);
 }
 
 /**
@@ -2912,7 +2912,7 @@ function find_forum_path($given)
  */
 function get_dir_contents($dir, $php = false)
 {
-    $out = array();
+    $out = [];
 
     global $DIR_ARRAY, $FILE_ARRAY;
     if (@is_array($DIR_ARRAY)) {
@@ -3018,7 +3018,7 @@ function compress_filter($input)
  */
 function test_htaccess($conn)
 {
-    $clauses = array();
+    $clauses = [];
 
     $clauses[] = <<<END
 # Stop any potential content-type sniffing vulnerabilities
@@ -3237,7 +3237,7 @@ END;
             if (php_function_allowed('usleep')) {
                 usleep(1000000); // 100ms, some servers are slow to update
             }
-            $http_result = cms_http_request($base_url . '/exports/addons/index.php', array('trigger_error' => false));
+            $http_result = cms_http_request($base_url . '/exports/addons/index.php', ['trigger_error' => false]);
 
             if ($http_result->message != '200') {
                 $clauses[$i] = null;

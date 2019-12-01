@@ -37,7 +37,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
 
     require_lang('polls');
 
-    $just_poll_row = db_map_restrict($myrow, array('id', 'question', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6', 'option7', 'option8', 'option9', 'option10'));
+    $just_poll_row = db_map_restrict($myrow, ['id', 'question', 'option1', 'option2', 'option3', 'option4', 'option5', 'option6', 'option7', 'option8', 'option9', 'option10']);
 
     $ip = get_ip_address();
     if (!may_vote_in_poll($myrow['id'], get_member(), get_ip_address())) {
@@ -52,7 +52,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
     }
 
     // Sort by results
-    $orderings = array();
+    $orderings = [];
     for ($i = 1; $i <= $num_options; $i++) {
         $orderings[$i] = $myrow['votes' . strval($i)];
     }
@@ -62,8 +62,8 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
 
     // Links
     $poll_results = 'show_poll_results_' . strval($myrow['id']);
-    $vote_url = get_self_url(false, true, array('poll_id' => $myrow['id'], $poll_results => 1));
-    $result_url = $results ? new Tempcode() : get_self_url(false, true, array($poll_results => 1));
+    $vote_url = get_self_url(false, true, ['poll_id' => $myrow['id'], $poll_results => 1]);
+    $result_url = $results ? new Tempcode() : get_self_url(false, true, [$poll_results => 1]);
 
     // Our questions templated
     $tpl = new Tempcode();
@@ -71,7 +71,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
         $answer = get_translated_tempcode('poll', $just_poll_row, 'option' . strval($i));
         $answer_plain = get_translated_text($myrow['option' . strval($i)]);
         if (!$results) {
-            $tpl->attach(do_template('POLL_ANSWER', array(
+            $tpl->attach(do_template('POLL_ANSWER', [
                 '_GUID' => ($guid != '') ? $guid : 'bc9c2e818f2e7031075d8d7b01d79cd5',
                 'PID' => strval($myrow['id']),
                 'I' => strval($i),
@@ -79,7 +79,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
                 'VOTE_URL' => $vote_url,
                 'ANSWER' => $answer,
                 'ANSWER_PLAIN' => $answer_plain,
-            )));
+            ]));
         } else {
             $votes = $myrow['votes' . strval($i)];
             if ($total_votes != 0) {
@@ -87,7 +87,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
             } else {
                 $width = 0;
             }
-            $tpl->attach(do_template('POLL_ANSWER_RESULT', array(
+            $tpl->attach(do_template('POLL_ANSWER_RESULT', [
                 '_GUID' => ($guid != '') ? $guid : '887ea0ed090c48305eb84500865e5178',
                 'PID' => strval($myrow['id']),
                 'I' => strval($i),
@@ -98,19 +98,19 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
                 'VOTES' => integer_format($votes),
                 '_VOTES' => strval($votes),
                 'TOTAL_VOTES' => strval($total_votes),
-            )));
+            ]));
         }
     }
 
     // Management links
     if ($include_manage_links) {
         if ((has_actual_page_access(null, 'cms_polls', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_polls'))) {
-            $submit_url = build_url(array('page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_polls'));
+            $submit_url = build_url(['page' => 'cms_polls', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_polls'));
         } else {
             $submit_url = new Tempcode();
         }
 
-        $archive_url = build_url(array('page' => 'polls', 'type' => 'browse'), $zone);
+        $archive_url = build_url(['page' => 'polls', 'type' => 'browse'], $zone);
     } else {
         $submit_url = new Tempcode();
         $archive_url = new Tempcode();
@@ -121,9 +121,9 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
     $question_plain = get_translated_text($myrow['question']);
     $full_url = new Tempcode();
     if ((get_page_name() != 'polls') || (get_param_string('type', '') != 'view')) {
-        $full_url = build_url(array('page' => 'polls', 'type' => 'view', 'id' => $myrow['id']), $zone);
+        $full_url = build_url(['page' => 'polls', 'type' => 'view', 'id' => $myrow['id']], $zone);
     }
-    $map = array(
+    $map = [
         '_GUID' => ($guid != '') ? $guid : '4c6b026f7ed96f0b5b8408eb5e5affb5',
         'VOTE_URL' => $vote_url,
         'SUBMITTER' => strval($myrow['submitter']),
@@ -137,7 +137,7 @@ function render_poll_box($results, $myrow, $zone = '_SEARCH', $include_manage_li
         'RESULT_URL' => $result_url,
         'GIVE_CONTEXT' => $give_context,
         'TOTAL_VOTES' => strval($total_votes),
-    );
+    ];
     if ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($myrow['allow_comments'] >= 1)) {
         $map['COMMENT_COUNT'] = '1';
     }
@@ -164,7 +164,7 @@ function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = n
     }
 
     if ($myrow === null) {
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('*'), array('id' => $poll_id), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['*'], ['id' => $poll_id], '', 1);
         if (!array_key_exists(0, $rows)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'poll'));
         }
@@ -181,29 +181,29 @@ function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = n
             }
             $GLOBALS['SITE_DB']->query_update(
                 'poll',
-                array(('votes' . strval($cast)) => ($myrow['votes' . strval($cast)] + 1)),
-                array('id' => $poll_id),
+                [('votes' . strval($cast)) => ($myrow['votes' . strval($cast)] + 1)],
+                ['id' => $poll_id],
                 '',
                 1
             );
             persistent_cache_delete('POLL');
 
-            $GLOBALS['SITE_DB']->query_insert('poll_votes', array(
+            $GLOBALS['SITE_DB']->query_insert('poll_votes', [
                 'v_poll_id' => $poll_id,
                 'v_voter_id' => $member_id,
                 'v_voter_ip' => $ip,
                 'v_vote_for' => $cast,
-            ));
+            ]);
 
             $myrow['votes' . strval($cast)]++;
         }
     } else {
-        $GLOBALS['SITE_DB']->query_insert('poll_votes', array(
+        $GLOBALS['SITE_DB']->query_insert('poll_votes', [
             'v_poll_id' => $poll_id,
             'v_voter_id' => is_guest() ? null : $member_id,
             'v_voter_ip' => $ip,
             'v_vote_for' => null,
-        ));
+        ]);
     }
 
     return $myrow;
@@ -257,13 +257,13 @@ function may_vote_in_poll($poll_id, $member_id, $ip)
  */
 function create_selection_list_polls($it = null, $only_owned = null)
 {
-    $where = ($only_owned === null) ? null : array('submitter' => $only_owned);
-    $rows = $GLOBALS['SITE_DB']->query_select('poll', array('question', 'is_current', 'votes1', 'votes2', 'votes3', 'votes4', 'votes5', 'votes6', 'votes7', 'votes8', 'votes9', 'votes10', 'id'), $where, 'ORDER BY is_current DESC,date_and_time,question', intval(get_option('general_safety_listing_limit')));
+    $where = ($only_owned === null) ? null : ['submitter' => $only_owned];
+    $rows = $GLOBALS['SITE_DB']->query_select('poll', ['question', 'is_current', 'votes1', 'votes2', 'votes3', 'votes4', 'votes5', 'votes6', 'votes7', 'votes8', 'votes9', 'votes10', 'id'], $where, 'ORDER BY is_current DESC,date_and_time,question', intval(get_option('general_safety_listing_limit')));
     if (count($rows) == intval(get_option('general_safety_listing_limit'))) { // Ok, just new ones
         if ($where === null) {
-            $where = array();
+            $where = [];
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('poll', array('question', 'is_current', 'votes1', 'votes2', 'votes3', 'votes4', 'votes5', 'votes6', 'votes7', 'votes8', 'votes9', 'votes10', 'id'), $where + array('date_and_time' => null), 'ORDER BY add_time DESC', intval(get_option('general_safety_listing_limit')));
+        $rows = $GLOBALS['SITE_DB']->query_select('poll', ['question', 'is_current', 'votes1', 'votes2', 'votes3', 'votes4', 'votes5', 'votes6', 'votes7', 'votes8', 'votes9', 'votes10', 'id'], $where + ['date_and_time' => null], 'ORDER BY add_time DESC', intval(get_option('general_safety_listing_limit')));
     }
     $out = new Tempcode();
     foreach ($rows as $myrow) {
@@ -282,7 +282,7 @@ function create_selection_list_polls($it = null, $only_owned = null)
                 $status = do_lang_tempcode('NOT_USED_PREVIOUSLY');
             }
         }
-        $text = do_template('POLL_LIST_LINE', array('_GUID' => 'dadf669bca2add9b79329b21e45d1010', 'QUESTION' => get_translated_text($myrow['question']), 'STATUS' => $status));
+        $text = do_template('POLL_LIST_LINE', ['_GUID' => 'dadf669bca2add9b79329b21e45d1010', 'QUESTION' => get_translated_text($myrow['question']), 'STATUS' => $status]);
         $out->attach(form_input_list_entry(strval($myrow['id']), $selected, $text));
     }
 

@@ -31,45 +31,45 @@ class Hook_actionlog_cns_cpfs extends Hook_actionlog
     public function get_handlers()
     {
         if (get_forum_type() != 'cns') {
-            return array();
+            return [];
         }
 
         if (!addon_installed('cns_cpfs')) {
-            return array();
+            return [];
         }
 
         require_lang('cns');
 
-        return array(
-            'ADD_CUSTOM_PROFILE_FIELD' => array(
+        return [
+            'ADD_CUSTOM_PROFILE_FIELD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'cpf',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_CUSTOM_PROFILE_FIELD' => '_SEARCH:admin_cns_customprofilefields:_edit:{ID}',
                     'ADD_CUSTOM_PROFILE_FIELD' => '_SEARCH:admin_cns_customprofilefields:add',
-                ),
-            ),
-            'EDIT_CUSTOM_PROFILE_FIELD' => array(
+                ],
+            ],
+            'EDIT_CUSTOM_PROFILE_FIELD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'cpf',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'EDIT_THIS_CUSTOM_PROFILE_FIELD' => '_SEARCH:admin_cns_customprofilefields:_edit:{ID}',
                     'ADD_CUSTOM_PROFILE_FIELD' => '_SEARCH:admin_cns_customprofilefields:add',
-                ),
-            ),
-            'DELETE_CUSTOM_PROFILE_FIELD' => array(
+                ],
+            ],
+            'DELETE_CUSTOM_PROFILE_FIELD' => [
                 'flags' => ACTIONLOG_FLAGS_NONE,
                 'cma_hook' => 'cpf',
                 'identifier_index' => 0,
                 'written_context_index' => 1,
-                'followup_page_links' => array(
+                'followup_page_links' => [
                     'ADD_CUSTOM_PROFILE_FIELD' => '_SEARCH:admin_cns_customprofilefields:add',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 }

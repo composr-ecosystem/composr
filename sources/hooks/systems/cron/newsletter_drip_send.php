@@ -36,11 +36,11 @@ class Hook_cron_newsletter_drip_send
             return null;
         }
 
-        return array(
+        return [
             'label' => 'Send queued newsletters',
             'num_queued' => $calculate_num_queued ? $GLOBALS['SITE_DB']->query_select_value('newsletter_drip_send', 'COUNT(*)') : null,
             'minutes_between_runs' => intval(get_option('minutes_between_sends')),
-        );
+        ];
     }
 
     /**
@@ -62,7 +62,7 @@ class Hook_cron_newsletter_drip_send
 
         require_lang('newsletter');
 
-        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', array('*'), array(), 'ORDER BY id DESC', $mails_per_send); // From disk-end, for maximum performance (truncating files to mark done is quicker?)
+        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], 'ORDER BY id DESC', $mails_per_send); // From disk-end, for maximum performance (truncating files to mark done is quicker?)
         if (!empty($to_send)) {
             // These variables are for optimisation, we detect if we can avoid work on the loop iterations via looking at what happened on the first
             $needs_substitutions = null;
@@ -79,7 +79,7 @@ class Hook_cron_newsletter_drip_send
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
 
             // We'll cache messages here
-            $cached_messages = array();
+            $cached_messages = [];
 
             // Send
             require_code('newsletter');
@@ -96,7 +96,7 @@ class Hook_cron_newsletter_drip_send
 
                 // Load message
                 if (!isset($cached_messages[$message_id])) {
-                    $newsletter_archive_rows = $GLOBALS['SITE_DB']->query_select('newsletter_archive', array('*'), array('id' => $message_id), '', 1);
+                    $newsletter_archive_rows = $GLOBALS['SITE_DB']->query_select('newsletter_archive', ['*'], ['id' => $message_id], '', 1);
                     $cached_messages[$message_id] = $newsletter_archive_rows[0];
                 }
                 $message_row = $cached_messages[$message_id];
@@ -144,11 +144,11 @@ class Hook_cron_newsletter_drip_send
                 dispatch_mail(
                     $subject,
                     $newsletter_message_substituted,
-                    array($mail['d_to_email']),
-                    array($mail['d_to_name']),
+                    [$mail['d_to_email']],
+                    [$mail['d_to_name']],
                     $from_email,
                     $from_name,
-                    array(
+                    [
                         'priority' => $priority,
                         'no_cc' => true,
                         'as_admin' => true,
@@ -165,7 +165,7 @@ class Hook_cron_newsletter_drip_send
                         'allow_ext_images' => (get_option('newsletter_allow_ext_images') == '1'),
                         'website_email' => get_option('newsletter_website_email'),
                         'is_bulk' => true,
-                    )
+                    ]
                 );
             }
         }

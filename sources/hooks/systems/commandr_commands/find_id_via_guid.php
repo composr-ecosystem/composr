@@ -34,19 +34,19 @@ class Hook_commandr_command_find_id_via_guid
     public function run($options, $parameters, &$commandr_fs)
     {
         if ((array_key_exists('h', $options)) || (array_key_exists('help', $options))) {
-            return array('', do_command_help('find_id_via_guid', array('h'), array(true, true)), '', '');
+            return ['', do_command_help('find_id_via_guid', ['h'], [true, true]), '', ''];
         } else {
             if (!array_key_exists(0, $parameters)) {
-                return array('', '', '', do_lang('MISSING_PARAM', '1', 'find_id_via_guid'));
+                return ['', '', '', do_lang('MISSING_PARAM', '1', 'find_id_via_guid')];
             }
 
             require_code('resource_fs');
 
             $result = find_id_via_guid($parameters[0]);
             if ($result !== null) {
-                return array('', '', $result, '');
+                return ['', '', $result, ''];
             } else {
-                return array('', '', '', do_lang('MISSING_RESOURCE'));
+                return ['', '', '', do_lang('MISSING_RESOURCE')];
             }
         }
     }

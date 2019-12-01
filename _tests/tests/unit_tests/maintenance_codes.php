@@ -42,7 +42,7 @@ class maintenance_codes_test_set extends cms_test_case
     {
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
-        $codenames = array();
+        $codenames = [];
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
         while (($row = $sheet_reader->read_row()) !== false) {
@@ -53,11 +53,11 @@ class maintenance_codes_test_set extends cms_test_case
 
         // Test PHP code
         require_code('files2');
-        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
+        $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php']);
         $files[] = 'install.php';
         foreach ($files as $path) {
             $_c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
-            $matches = array();
+            $matches = [];
             $num_matches = preg_match_all('#is_maintained\(\'([^\']*)\'\)#', $_c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $codename = $matches[1][$i];
@@ -86,7 +86,7 @@ class maintenance_codes_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-                $matches = array();
+                $matches = [];
                 $num_matches = preg_match_all('#\{\$IS_MAINTAINED,(\w+),#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $codename = $matches[1][$i];
@@ -104,7 +104,7 @@ class maintenance_codes_test_set extends cms_test_case
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
         while (($row = $sheet_reader->read_row()) !== false) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#(\w+) automated test#', $row['Testing automation'], $matches) != 0) {
                 $test = $matches[1];
                 $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $test . '.php'), 'Could not find referenced test, ' . $test);
@@ -116,7 +116,7 @@ class maintenance_codes_test_set extends cms_test_case
 
         $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-        $matches = array();
+        $matches = [];
         $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $test = $matches[1][$i];

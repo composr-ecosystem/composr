@@ -33,16 +33,16 @@ class Hook_page_groupings_help_page
     public function run($member_id = null, $extensive_docs = false)
     {
         if (!addon_installed('help_page')) {
-            return array();
+            return [];
         }
 
         $zone = get_comcode_zone('help', false);
         if ($zone === null) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('site_meta', 'help', array('help', array(), $zone), do_lang_tempcode('HELP')),
-        );
+        return [
+            ['site_meta', 'help', ['help', [], $zone], do_lang_tempcode('HELP')],
+        ];
     }
 }

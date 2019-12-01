@@ -27,11 +27,11 @@ class Hook_members_booking
     public function run($member_id)
     {
         if (!addon_installed('booking')) {
-            return array();
+            return [];
         }
 
         if (!has_actual_page_access(get_member(), 'cms_booking')) {
-            return array();
+            return [];
         }
 
         require_lang('booking');
@@ -42,23 +42,23 @@ class Hook_members_booking
 
         $request = get_member_booking_request($member_id);
 
-        $links = array();
+        $links = [];
 
         foreach ($request as $i => $r) {
             $from = get_timezoned_date(mktime(0, 0, 0, $r['start_month'], $r['start_day'], $r['start_year']));
             $to = get_timezoned_date(mktime(0, 0, 0, $r['end_month'], $r['end_day'], $r['end_year']));
 
-            $bookable = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array('id' => $r['bookable_id']), '', 1);
+            $bookable = $GLOBALS['SITE_DB']->query_select('bookable', ['*'], ['id' => $r['bookable_id']], '', 1);
             if (!array_key_exists(0, $bookable)) {
                 continue;
             }
 
-            $links[] = array(
+            $links[] = [
                 'content',
                 do_lang_tempcode('BOOKING_EDIT', escape_html($from), escape_html($to), get_translated_tempcode('bookable', $bookable[0], 'title')),
-                build_url(array('page' => 'cms_booking', 'type' => '_edit_booking', 'id' => strval($member_id) . '_' . strval($i)), $zone),
+                build_url(['page' => 'cms_booking', 'type' => '_edit_booking', 'id' => strval($member_id) . '_' . strval($i)], $zone),
                 'booking/booking',
-            );
+            ];
         }
 
         return $links;

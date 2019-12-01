@@ -43,10 +43,10 @@ class Hook_rss_web_notifications
             return null;
         }
 
-        $where = array(
+        $where = [
             'd_to_member_id' => get_member(),
             'd_frequency' => A_WEB_NOTIFICATION,
-        );
+        ];
 
         $extra = 'ORDER BY d_date_and_time DESC';
 
@@ -76,7 +76,7 @@ class Hook_rss_web_notifications
 
         $extra = 'AND d_date_and_time>' . strval($cutoff) . ' ' . $extra;
 
-        $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', array('*'), $where, $extra, $max, 0);
+        $rows = $GLOBALS['SITE_DB']->query_select('digestives_tin', ['*'], $where, $extra, $max, 0);
 
         require_all_lang();
 
@@ -103,17 +103,17 @@ class Hook_rss_web_notifications
             $category = $codes[$row['d_notification_code']][1];
             $category_raw = $row['d_notification_code'] . '/' . $row['d_code_category'];
 
-            $view_url = build_url(array('page' => 'notifications', 'type' => 'view', 'id' => $row['id']), get_module_zone('notifications'));
+            $view_url = build_url(['page' => 'notifications', 'type' => 'view', 'id' => $row['id']], get_module_zone('notifications'));
 
             if ($prefix == 'RSS_') {
-                $if_comments = do_template('RSS_ENTRY_COMMENTS', array('_GUID' => '6437a55941d309e16c8030c47f82d02e', 'COMMENT_URL' => $view_url, 'ID' => $id), null, false, null, '.xml', 'xml');
+                $if_comments = do_template('RSS_ENTRY_COMMENTS', ['_GUID' => '6437a55941d309e16c8030c47f82d02e', 'COMMENT_URL' => $view_url, 'ID' => $id], null, false, null, '.xml', 'xml');
             } else {
                 $if_comments = new Tempcode();
             }
 
-            $content->attach(do_template($prefix . 'ENTRY', array('VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date), null, false, null, '.xml', 'xml'));
+            $content->attach(do_template($prefix . 'ENTRY', ['VIEW_URL' => $view_url, 'SUMMARY' => $summary, 'EDIT_DATE' => $edit_date, 'IF_COMMENTS' => $if_comments, 'TITLE' => $news_title, 'CATEGORY_RAW' => $category_raw, 'CATEGORY' => $category, 'AUTHOR' => $author, 'ID' => $id, 'NEWS' => $news, 'DATE' => $news_date], null, false, null, '.xml', 'xml'));
         }
 
-        return array($content, do_lang('NOTIFICATIONS'));
+        return [$content, do_lang('NOTIFICATIONS')];
     }
 }

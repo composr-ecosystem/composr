@@ -30,7 +30,7 @@ class Hook_config_manual_gallery_codename
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MANUAL_GALLERY_CODENAME',
             'type' => 'tick',
             'category' => 'GALLERY',
@@ -43,7 +43,7 @@ class Hook_config_manual_gallery_codename
             'public' => false,
 
             'addon' => 'galleries',
-        );
+        ];
     }
 
     /**

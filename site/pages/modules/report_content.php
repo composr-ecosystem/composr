@@ -30,7 +30,7 @@ class Module_report_content
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham / Patrick Schmalstig';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -60,13 +60,13 @@ class Module_report_content
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('reported_content', array(
+            $GLOBALS['SITE_DB']->create_table('reported_content', [
                 'r_session_id' => '*ID_TEXT',
                 'r_content_type' => '*ID_TEXT',
                 'r_content_id' => '*ID_TEXT',
                 'r_counts' => 'BINARY', // If the content is marked non-validated, r_counts is set to 0 for each row for it, so if it's revalidated the counts apply elsewhere
-            ));
-            $GLOBALS['SITE_DB']->create_index('reported_content', 'reported_already', array('r_content_type', 'r_content_id'));
+            ]);
+            $GLOBALS['SITE_DB']->create_index('reported_content', 'reported_already', ['r_content_type', 'r_content_id']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
@@ -93,7 +93,7 @@ class Module_report_content
             return null;
         }
 
-        return array();
+        return [];
     }
 
     public $title;

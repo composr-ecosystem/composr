@@ -38,7 +38,7 @@ class Persistent_caching_wincache
             $success = false;
             $this->objects_list = wincache_ucache_get(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $success);
             if ($this->objects_list === null || !$success) {
-                $this->objects_list = array();
+                $this->objects_list = [];
             }
         }
         return $this->objects_list;
@@ -84,7 +84,7 @@ class Persistent_caching_wincache
         if ($expire_secs === null) {
             $expire_secs = 0;
         }
-        wincache_ucache_set($key, array(time(), $data), $expire_secs);
+        wincache_ucache_set($key, [time(), $data], $expire_secs);
     }
 
     /**
@@ -108,7 +108,7 @@ class Persistent_caching_wincache
     public function flush()
     {
         // Update list of persistent-objects
-        $this->objects_list = array();
+        $this->objects_list = [];
         wincache_ucache_set(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
 
         wincache_ucache_clear();

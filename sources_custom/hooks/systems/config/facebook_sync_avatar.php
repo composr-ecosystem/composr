@@ -25,7 +25,7 @@ class Hook_config_facebook_sync_avatar
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FACEBOOK_SYNC_AVATAR',
             'type' => 'tick',
             'category' => 'COMPOSR_APIS',
@@ -38,7 +38,7 @@ class Hook_config_facebook_sync_avatar
             'required' => true,
             'public' => false,
             'addon' => 'facebook_support',
-        );
+        ];
     }
 
     /**

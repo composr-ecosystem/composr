@@ -33,11 +33,11 @@ class Hook_ecommerce_bank
 
         $bank_dividend = intval(get_option('bank_dividend'));
 
-        return array(
+        return [
             'category_name' => do_lang('BANKING', integer_format($bank_dividend)),
             'category_description' => do_lang_tempcode('BANK_DESCRIPTION', escape_html(integer_format($bank_dividend))),
             'category_image_url' => find_theme_image('icons/menu/adminzone/audit/ecommerce/cash_flow'),
-        );
+        ];
     }
 
     /**
@@ -55,16 +55,16 @@ class Hook_ecommerce_bank
 
         $bank_dividend = intval(get_option('bank_dividend'));
 
-        $products = array();
+        $products = [];
 
-        foreach (array(10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000) as $amount) {
-            $products['BANK_' . strval($amount)] = array(
+        foreach ([10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000] as $amount) {
+            $products['BANK_' . strval($amount)] = [
                 'item_name' => do_lang('BANK', integer_format($amount)),
                 'item_description' => new Tempcode(),
                 'item_image_url' => '',
 
                 'type' => PRODUCT_PURCHASE,
-                'type_special_details' => array(),
+                'type_special_details' => [],
 
                 'price' => null,
                 'currency' => get_option('currency'),
@@ -79,7 +79,7 @@ class Hook_ecommerce_bank
                 'product_width' => null,
                 'product_height' => null,
                 'needs_shipping_address' => false,
-            );
+            ];
         }
 
         return $products;
@@ -147,9 +147,9 @@ class Hook_ecommerce_bank
         $member_id = intval($purchase_id);
 
         $bank_dividend = intval(get_option('bank_dividend'));
-        $GLOBALS['SITE_DB']->query_insert('bank', array('add_time' => time(), 'member_id' => $member_id, 'amount' => $amount, 'dividend' => $bank_dividend));
+        $GLOBALS['SITE_DB']->query_insert('bank', ['add_time' => time(), 'member_id' => $member_id, 'amount' => $amount, 'dividend' => $bank_dividend]);
 
-        $GLOBALS['SITE_DB']->query_insert('ecom_sales', array('date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('BANKING', null, null, null, get_site_default_lang()), 'details2' => strval($amount), 'txn_id' => $details['TXN_ID']));
+        $GLOBALS['SITE_DB']->query_insert('ecom_sales', ['date_and_time' => time(), 'member_id' => $member_id, 'details' => do_lang('BANKING', null, null, null, get_site_default_lang()), 'details2' => strval($amount), 'txn_id' => $details['TXN_ID']]);
 
         // Show an instant message (plus buying via points, so will definitely be seen)
         $result = do_lang_tempcode('BANKING_CONGRATULATIONS', escape_html(integer_format($amount)), escape_html(integer_format($bank_dividend)));

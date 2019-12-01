@@ -25,7 +25,7 @@ class Hook_config_bank_dividend
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'BANK_DIVIDEND',
             'type' => 'integer',
             'category' => 'ECOMMERCE',
@@ -37,7 +37,7 @@ class Hook_config_bank_dividend
             'public' => false,
 
             'addon' => 'bankr',
-        );
+        ];
     }
 
     /**

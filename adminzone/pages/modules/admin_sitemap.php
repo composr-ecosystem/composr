@@ -30,7 +30,7 @@ class Module_admin_sitemap
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
@@ -55,9 +55,9 @@ class Module_admin_sitemap
             return null;
         }
 
-        return array(
-            'browse' => array('SITEMAP_EDITOR', 'menu/adminzone/structure/sitemap/sitemap_editor'),
-        );
+        return [
+            'browse' => ['SITEMAP_EDITOR', 'menu/adminzone/structure/sitemap/sitemap_editor'],
+        ];
     }
 
     public $title;
@@ -79,34 +79,34 @@ class Module_admin_sitemap
         require_lang('zones');
 
         if ($type == 'browse') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('PAGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('PAGES')]]);
 
             $this->title = get_screen_title('SITEMAP_EDITOR');
         }
 
         if ($type == 'delete') {
             breadcrumb_set_self(do_lang_tempcode('CONFIRM'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('PAGES')), array('_SELF:_SELF:delete', do_lang_tempcode('DELETE_PAGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('PAGES')], ['_SELF:_SELF:delete', do_lang_tempcode('DELETE_PAGES')]]);
 
             $this->title = get_screen_title('DELETE_PAGES');
         }
 
         if ($type == '_delete') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('PAGES')), array('_SELF:_SELF:delete', do_lang_tempcode('DELETE_PAGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('PAGES')], ['_SELF:_SELF:delete', do_lang_tempcode('DELETE_PAGES')]]);
 
             $this->title = get_screen_title('DELETE_PAGES');
         }
 
         if ($type == 'move') {
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('PAGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('PAGES')]]);
 
             $this->title = get_screen_title('MOVE_PAGES');
         }
 
         if ($type == '_move') {
             breadcrumb_set_self(do_lang_tempcode('DONE'));
-            breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('PAGES')), array('_SELF:_SELF:move', do_lang_tempcode('MOVE_PAGES'))));
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('PAGES')], ['_SELF:_SELF:move', do_lang_tempcode('MOVE_PAGES')]]);
 
             $this->title = get_screen_title('MOVE_PAGES');
         }
@@ -162,7 +162,7 @@ class Module_admin_sitemap
 
         require_javascript('tree_list');
 
-        return do_template('SITEMAP_EDITOR_SCREEN', array('_GUID' => '2d42cb71e03d31c855a6b6467d2082d2', 'TITLE' => $this->title));
+        return do_template('SITEMAP_EDITOR_SCREEN', ['_GUID' => '2d42cb71e03d31c855a6b6467d2082d2', 'TITLE' => $this->title]);
     }
 
     /**
@@ -176,7 +176,7 @@ class Module_admin_sitemap
 
         $file = new Tempcode();
         $zone = either_param_string('zone');
-        $pages = array();
+        $pages = [];
         foreach ($_REQUEST as $key => $val) {
             if ((substr($key, 0, 6) == 'page__') && ($val === '1')) {
                 $page = substr($key, 6);
@@ -206,12 +206,12 @@ class Module_admin_sitemap
             }
         }
 
-        $url = build_url(array('page' => '_SELF', 'type' => '_delete'), '_SELF');
+        $url = build_url(['page' => '_SELF', 'type' => '_delete'], '_SELF');
         $text = do_lang_tempcode('CONFIRM_DELETE', escape_html($file));
 
         $hidden->attach(form_input_hidden('zone', $zone));
 
-        return do_template('CONFIRM_SCREEN', array('_GUID' => 'f732bb10942759c6ca5771d2d446c333', 'TITLE' => $this->title, 'HIDDEN' => $hidden, 'TEXT' => $text, 'URL' => $url, 'FIELDS' => ''));
+        return do_template('CONFIRM_SCREEN', ['_GUID' => 'f732bb10942759c6ca5771d2d446c333', 'TITLE' => $this->title, 'HIDDEN' => $hidden, 'TEXT' => $text, 'URL' => $url, 'FIELDS' => '']);
     }
 
     /**
@@ -224,7 +224,7 @@ class Module_admin_sitemap
         $zone = post_param_string('zone', null);
 
         $afm_needed = false;
-        $writable_paths = array();
+        $writable_paths = [];
         $pages = find_all_pages_wrap($zone);
         foreach ($pages as $page => $type) {
             if (is_integer($page)) {
@@ -281,20 +281,20 @@ class Module_admin_sitemap
         $zone = post_param_string('zone', null);
 
         if ($zone === null) {
-            $post_url = build_url(array('page' => '_SELF', 'type' => get_param_string('type')), '_SELF', array(), true);
+            $post_url = build_url(['page' => '_SELF', 'type' => get_param_string('type')], '_SELF', [], true);
             $hidden = build_keep_form_fields('', true);
 
-            $from = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', array('zone_name' => get_param_string('zone')));
-            $to = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', array('zone_name' => get_param_string('destination_zone')));
+            $from = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => get_param_string('zone')]);
+            $to = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_title', ['zone_name' => get_param_string('destination_zone')]);
 
-            return do_template('CONFIRM_SCREEN', array(
+            return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'c6e872cc62bdc7cf1c5157fbfdb2dfd6',
                 'TITLE' => $this->title,
                 'TEXT' => do_lang_tempcode('Q_SURE_MOVE', escape_html($from), escape_html($to)),
                 'URL' => $post_url,
                 'HIDDEN' => $hidden,
                 'FIELDS' => '',
-            ));
+            ]);
         }
 
         $new_zone = post_param_string('destination_zone', ''/*Could be welcome zone so need to imply '' is valid*/);
@@ -302,7 +302,7 @@ class Module_admin_sitemap
             $new_zone = substr($new_zone, 0, strlen($new_zone) - 1);
         }
 
-        $pages = array();
+        $pages = [];
         foreach ($_POST as $key => $val) {
             if ((substr($key, 0, 6) == 'page__') && ($val === '1')) {
                 $page = substr($key, 6);
@@ -318,7 +318,7 @@ class Module_admin_sitemap
         }
 
         $afm_needed = false;
-        $writable_paths = array();
+        $writable_paths = [];
 
         $cannot_move = new Tempcode();
 

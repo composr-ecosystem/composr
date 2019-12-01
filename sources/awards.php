@@ -27,15 +27,15 @@
  */
 function find_awards_for($content_type, $id)
 {
-    $awards = array();
+    $awards = [];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('award_archive a LEFT JOIN ' . get_table_prefix() . 'award_types t ON t.id=a.a_type_id', array('date_and_time', 'a_type_id'), array('a_content_type' => $content_type, 'content_id' => $id), 'ORDER BY date_and_time DESC');
+    $rows = $GLOBALS['SITE_DB']->query_select('award_archive a LEFT JOIN ' . get_table_prefix() . 'award_types t ON t.id=a.a_type_id', ['date_and_time', 'a_type_id'], ['a_content_type' => $content_type, 'content_id' => $id], 'ORDER BY date_and_time DESC');
     foreach ($rows as $row) {
         require_lang('awards');
-        $awards[] = array(
-            'AWARD_TYPE' => get_translated_text($GLOBALS['SITE_DB']->query_select_value('award_types', 'a_title', array('id' => $row['a_type_id']))),
+        $awards[] = [
+            'AWARD_TYPE' => get_translated_text($GLOBALS['SITE_DB']->query_select_value('award_types', 'a_title', ['id' => $row['a_type_id']])),
             'AWARD_TIMESTAMP' => strval($row['date_and_time']),
-        );
+        ];
     }
 
     return $awards;
@@ -56,7 +56,7 @@ function give_award($award_id, $content_id, $time = null)
         $time = time();
     }
 
-    $awards = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('id' => $award_id), '', 1);
+    $awards = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['id' => $award_id], '', 1);
     if (!array_key_exists(0, $awards)) {
         warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'award_type'));
     }
@@ -115,7 +115,7 @@ function give_award($award_id, $content_id, $time = null)
         system_gift_transfer(do_lang('_AWARD', get_translated_text($awards[0]['a_title'])), $awards[0]['a_points'], $member_id);
     }
 
-    $GLOBALS['SITE_DB']->query_insert('award_archive', array('a_type_id' => $award_id, 'member_id' => $member_id, 'content_id' => $content_id, 'date_and_time' => $time));
+    $GLOBALS['SITE_DB']->query_insert('award_archive', ['a_type_id' => $award_id, 'member_id' => $member_id, 'content_id' => $content_id, 'date_and_time' => $time]);
 
     delete_cache_entry('main_awards');
     delete_cache_entry('main_multi_content');
@@ -135,8 +135,8 @@ function get_award_fields($content_type, $id = null)
 
     $fields = new Tempcode();
 
-    foreach (is_array($content_type) ? $content_type : array($content_type) as $_content_type) {
-        $rows = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('a_content_type' => $_content_type));
+    foreach (is_array($content_type) ? $content_type : [$content_type] as $_content_type) {
+        $rows = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['a_content_type' => $_content_type]);
         foreach ($rows as $i => $row) {
             $rows[$i]['_title'] = get_translated_text($row['a_title']);
         }
@@ -144,7 +144,7 @@ function get_award_fields($content_type, $id = null)
 
         foreach ($rows as $row) {
             if (has_category_access(get_member(), 'award', strval($row['id']))) {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', array('a_type_id' => $row['id']), 'ORDER BY date_and_time DESC');
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC');
 
                 if ($id !== null) {
                     $has_award = ($test === $id);
@@ -155,7 +155,7 @@ function get_award_fields($content_type, $id = null)
                 if (get_translated_text($row['a_description']) == '') {
                     $description = new Tempcode();
                 } else {
-                    $just_row = db_map_restrict($row, array('id', 'a_description'));
+                    $just_row = db_map_restrict($row, ['id', 'a_description']);
                     $description = do_lang_tempcode('PRESENT_AWARD', get_translated_tempcode('award_types', $just_row, 'a_description'));
                 }
 
@@ -179,12 +179,12 @@ function get_award_fields($content_type, $id = null)
             $help_link = do_lang_tempcode('TUTORIAL_ON_THIS', get_tutorial_url('tut_featured'));
             $help->attach(paragraph($help_link));
         }
-        $_fields = do_template('FORM_SCREEN_FIELD_SPACER', array(
+        $_fields = do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '5b91c53ff3966c13407d33680354fd5d',
             'SECTION_HIDDEN' => (get_param_integer('award', null) === null),
             'TITLE' => do_lang_tempcode('AWARDS'),
             'HELP' => protect_from_escaping($help),
-        ));
+        ]);
         $_fields->attach($fields);
         $fields = $_fields;
     }
@@ -204,11 +204,11 @@ function handle_award_setting($content_type, $id)
         return;
     }
 
-    $rows = $GLOBALS['SITE_DB']->query_select('award_types', array('*'), array('a_content_type' => $content_type));
+    $rows = $GLOBALS['SITE_DB']->query_select('award_types', ['*'], ['a_content_type' => $content_type]);
 
     foreach ($rows as $row) {
         if (has_category_access(get_member(), 'award', strval($row['id']))) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', array('a_type_id' => $row['id']), 'ORDER BY date_and_time DESC');
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', ['a_type_id' => $row['id']], 'ORDER BY date_and_time DESC');
             $has_award = ($test !== null) && ($test === $id);
             $will_have_award = (post_param_integer('award_' . strval($row['id']), 0) == 1);
 
@@ -219,7 +219,7 @@ function handle_award_setting($content_type, $id)
             if (($will_have_award) && (!$has_award)) { // Set
                 give_award($row['id'], $id);
             } elseif ((!$will_have_award) && ($has_award)) { // Unset
-                $GLOBALS['SITE_DB']->query_delete('award_archive', array('a_type_id' => $row['id'], 'content_id' => strval($id)), '', 1);
+                $GLOBALS['SITE_DB']->query_delete('award_archive', ['a_type_id' => $row['id'], 'content_id' => strval($id)], '', 1);
             } // Otherwise we're happy with the current situation (regardless of whether it is set or unset)
         }
     }

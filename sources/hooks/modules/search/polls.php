@@ -52,22 +52,22 @@ class Hook_search_polls extends FieldsSearchHook
 
         require_lang('polls');
 
-        $info = array();
+        $info = [];
         $info['lang'] = do_lang_tempcode('POLL_ARCHIVE');
         $info['default'] = (get_option('search_polls') == '1');
         $info['extra_sort_fields'] = $this->_get_extra_sort_fields('_poll');
 
-        $info['permissions'] = array(
-            array(
+        $info['permissions'] = [
+            [
                 'type' => 'zone',
                 'zone_name' => get_module_zone('polls'),
-            ),
-            array(
+            ],
+            [
                 'type' => 'page',
                 'zone_name' => get_module_zone('polls'),
                 'page_name' => 'polls',
-            ),
-        );
+            ],
+        ];
 
         return $info;
     }
@@ -130,21 +130,21 @@ class Hook_search_polls extends FieldsSearchHook
         // Calculate our where clause (search)
         $sq = build_search_submitter_clauses('submitter', $author_id, $author);
         if ($sq === null) {
-            return array();
+            return [];
         } else {
             $where_clause .= $sq;
         }
         $this->_handle_date_check($cutoff, 'add_time', $where_clause);
 
         $table = 'poll r';
-        $trans_fields = array('r.question' => 'SHORT_TRANS__COMCODE', 'r.option1' => 'SHORT_TRANS__COMCODE', 'r.option2' => 'SHORT_TRANS__COMCODE', 'r.option3' => 'SHORT_TRANS__COMCODE', 'r.option4' => 'SHORT_TRANS__COMCODE', 'r.option5' => 'SHORT_TRANS__COMCODE');
-        $nontrans_fields = array();
+        $trans_fields = ['r.question' => 'SHORT_TRANS__COMCODE', 'r.option1' => 'SHORT_TRANS__COMCODE', 'r.option2' => 'SHORT_TRANS__COMCODE', 'r.option3' => 'SHORT_TRANS__COMCODE', 'r.option4' => 'SHORT_TRANS__COMCODE', 'r.option5' => 'SHORT_TRANS__COMCODE'];
+        $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_poll', $table, $where_clause, $trans_fields, $nontrans_fields);
 
         // Calculate and perform query
         $rows = get_search_rows(null, null, $content, $boolean_search, $boolean_operator, $only_search_meta, $direction, $max, $start, $only_titles, $table, $trans_fields, $where_clause, $content_where, $remapped_orderer, 'r.*', $nontrans_fields);
 
-        $out = array();
+        $out = [];
         foreach ($rows as $i => $row) {
             $out[$i]['data'] = $row;
             unset($rows[$i]);

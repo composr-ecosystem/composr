@@ -30,14 +30,14 @@ class Block_top_personal_stats
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array();
+        $info['parameters'] = [];
         return $info;
     }
 
@@ -71,7 +71,7 @@ class Block_top_personal_stats
         require_code('global4');
         list($links, $links_ecommerce, $details, $num_unread_pps) = member_personal_links_and_details($member_id);
 
-        return do_template('BLOCK_TOP_PERSONAL_STATS', array(
+        return do_template('BLOCK_TOP_PERSONAL_STATS', [
             '_GUID' => '6460943f1f0944fb6e8fe252dfa1b853',
             'BLOCK_ID' => $block_id,
             'NUM_UNREAD_PTS' => strval($num_unread_pps),
@@ -81,6 +81,6 @@ class Block_top_personal_stats
             'LINKS' => $links,
             'LINKS_ECOMMERCE' => $links_ecommerce,
             'DETAILS' => $details,
-        ));
+        ]);
     }
 }

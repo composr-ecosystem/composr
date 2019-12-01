@@ -31,11 +31,11 @@ class Hook_preview_block_comcode
     public function applies()
     {
         if (!has_privilege(get_member(), 'comcode_dangerous')) {
-            return array(false, null, false);
+            return [false, null, false];
         }
 
         $applies = (post_param_string('block', null) !== null);
-        return array($applies, null, false);
+        return [$applies, null, false];
     }
 
     /**
@@ -79,6 +79,6 @@ class Hook_preview_block_comcode
 
         $preview = comcode_to_tempcode($comcode);
 
-        return array($preview, null);
+        return [$preview, null];
     }
 }

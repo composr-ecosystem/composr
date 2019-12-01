@@ -30,7 +30,7 @@ class Hook_config_fractional_editing
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'FRACTIONAL_EDITING',
             'type' => 'tick',
             'category' => 'FEATURE',
@@ -43,7 +43,7 @@ class Hook_config_fractional_editing
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

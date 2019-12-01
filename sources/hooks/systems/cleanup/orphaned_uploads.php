@@ -30,7 +30,7 @@ class Hook_cleanup_orphaned_uploads
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['title'] = do_lang_tempcode('ORPHANED_UPLOADS');
         $info['description'] = do_lang_tempcode('DESCRIPTION_ORPHANED_UPLOADS');
         $info['type'] = 'optimise';

@@ -55,7 +55,7 @@ $version = get_param_string('version'); // This is a 'pretty' version number, ra
 $id_float = floatval($version);
 do {
     $str = 'Version ' . /*preg_replace('#\.0$#', '', */float_to_raw_string($id_float, 1)/*)*/;
-    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', array('parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str));
+    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => 3, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
     if ($_id === null) {
         $id_float -= 0.1;
     }
@@ -68,7 +68,7 @@ if ($_id === null) {
 
 require_code('selectcode');
 
-$addon_times = array();
+$addon_times = [];
 
 $filter_sql = selectcode_to_sqlfragment(strval($_id) . '*', 'id', 'download_categories', 'parent_id', 'category_id', 'id');
 
@@ -76,9 +76,9 @@ foreach (array_keys($_GET) as $x) {
     if (substr($x, 0, 6) == 'addon_') {
         $addon_name = get_param_string($x);
         $query = 'SELECT d.id,url,name FROM ' . get_table_prefix() . 'download_downloads d WHERE ' . db_string_equal_to($GLOBALS['SITE_DB']->translate_field_ref('name'), $addon_name) . ' AND (' . $filter_sql . ')';
-        $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, array('name' => 'SHORT_TRANS'));
+        $result = $GLOBALS['SITE_DB']->query($query, null, 0, false, true, ['name' => 'SHORT_TRANS']);
 
-        $addon_times[intval(substr($x, 6))] = array(null, null, null, $addon_name);
+        $addon_times[intval(substr($x, 6))] = [null, null, null, $addon_name];
 
         if (array_key_exists(0, $result)) {
             $url = $result[0]['url'];
@@ -95,7 +95,7 @@ foreach (array_keys($_GET) as $x) {
             $name = get_translated_text($result[0]['name']);
             $url = $result[0]['url'];
             $id = $result[0]['id'];
-            $addon_times[intval(substr($x, 6))] = array($last_date, $id, $url, $name);
+            $addon_times[intval(substr($x, 6))] = [$last_date, $id, $url, $name];
         }
     }
 }

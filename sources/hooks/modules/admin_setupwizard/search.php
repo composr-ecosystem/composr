@@ -31,9 +31,9 @@ class Hook_sw_search
     public function get_blocks()
     {
         if (!addon_installed('search')) {
-            return array(array(), array());
+            return [[], []];
         }
 
-        return array(array(), array('side_tag_cloud' => array('PANEL_NONE', 'PANEL_RIGHT'), 'main_search' => array('PANEL_NONE', 'PANEL_NONE')));
+        return [[], ['side_tag_cloud' => ['PANEL_NONE', 'PANEL_RIGHT'], 'main_search' => ['PANEL_NONE', 'PANEL_NONE']]];
     }
 }

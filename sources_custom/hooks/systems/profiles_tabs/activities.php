@@ -61,7 +61,7 @@ class Hook_profiles_tabs_activities
         $order = 70;
 
         // Allow user to link up things for syndication
-        $syndications = array();
+        $syndications = [];
         if ($member_id_of == $member_id_viewing) {
             $dests = find_all_hook_obs('systems', 'syndication', 'Hook_syndication_');
             foreach ($dests as $hook => $ob) {
@@ -69,12 +69,12 @@ class Hook_profiles_tabs_activities
                     if (either_param_string('syndicate_stop__' . $hook, null) !== null) {
                         $ob->auth_unset($member_id_of);
                     } elseif (either_param_string('syndicate_start__' . $hook, null) !== null) {
-                        $url_map = array('page' => '_SELF', 'type' => 'view', 'id' => $member_id_of, 'oauth_in_progress' => 1);
+                        $url_map = ['page' => '_SELF', 'type' => 'view', 'id' => $member_id_of, 'oauth_in_progress' => 1];
                         foreach (array_keys($_POST) as $key) {
                             $url_map[$key] = post_param_string($key, '');
                         }
                         $url_map['syndicate_start__' . $hook] = 1;
-                        $oauth_url = build_url($url_map, '_SELF', array(), false, false, false, 'tab--activities');
+                        $oauth_url = build_url($url_map, '_SELF', [], false, false, false, 'tab--activities');
                         $ob->auth_set($member_id_of, $oauth_url);
                     } elseif ((running_script('index')) && (!$leave_to_ajax_if_possible) && ($ob->auth_is_set($member_id_of)) && (either_param_string('oauth_in_progress', null) === null) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
                         /* running_script('index') won't work currently due to execution contexts, and it is never non-AJAX, and it's probably not needed anyway
@@ -86,21 +86,21 @@ class Hook_profiles_tabs_activities
                         */
                     }
 
-                    $syndications[$hook] = array(
+                    $syndications[$hook] = [
                         'SYNDICATION_IS_SET' => $ob->auth_is_set($member_id_of),
                         'SYNDICATION_SERVICE_NAME' => $ob->get_service_name(),
                         'SYNDICATION_JAVASCRIPT_FUNCTION_CALLS' => method_exists($ob, 'syndication_javascript_function_calls') ? $ob->syndication_javascript_function_calls() : '',
-                    );
+                    ];
                 }
             }
         }
 
         if ($leave_to_ajax_if_possible) {
-            return array($title, null, $order, 'spare/activity');
+            return [$title, null, $order, 'spare/activity'];
         }
 
-        $content = do_template('CNS_MEMBER_PROFILE_ACTIVITIES', array('_GUID' => '9fe3b8bb9a4975fa19631c43472b4539', 'MEMBER_ID' => strval($member_id_of), 'SYNDICATIONS' => $syndications));
+        $content = do_template('CNS_MEMBER_PROFILE_ACTIVITIES', ['_GUID' => '9fe3b8bb9a4975fa19631c43472b4539', 'MEMBER_ID' => strval($member_id_of), 'SYNDICATIONS' => $syndications]);
 
-        return array($title, $content, $order, 'spare/activity');
+        return [$title, $content, $order, 'spare/activity'];
     }
 }

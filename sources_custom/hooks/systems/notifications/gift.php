@@ -39,11 +39,11 @@ class Hook_notification_gift extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('giftr')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['gift'] = array(do_lang('ACTIVITY'), do_lang('giftr:NOTIFICATION_TYPE_gift'));
+        $list = [];
+        $list['gift'] = [do_lang('ACTIVITY'), do_lang('giftr:NOTIFICATION_TYPE_gift')];
         return $list;
     }
 }

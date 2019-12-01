@@ -30,7 +30,7 @@ class Hook_config_oembed_html_whitelist
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'OEMBED_HTML_WHITELIST',
             'type' => 'text',
             'category' => 'FEATURE',
@@ -44,7 +44,7 @@ class Hook_config_oembed_html_whitelist
             'public' => false,
 
             'addon' => 'core_rich_media',
-        );
+        ];
     }
 
     /**

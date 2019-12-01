@@ -30,7 +30,7 @@ class Hook_config_stats_store_time
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'STORE_TIME',
             'type' => 'integer',
             'category' => 'SITE',
@@ -43,7 +43,7 @@ class Hook_config_stats_store_time
             'public' => false,
 
             'addon' => 'stats',
-        );
+        ];
     }
 
     /**

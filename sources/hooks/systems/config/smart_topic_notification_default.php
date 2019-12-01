@@ -30,7 +30,7 @@ class Hook_config_smart_topic_notification_default
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'SMART_TOPIC_NOTIFICATION',
             'type' => 'tick',
             'category' => 'USERS',
@@ -43,7 +43,7 @@ class Hook_config_smart_topic_notification_default
             'public' => false,
 
             'addon' => 'cns_forum',
-        );
+        ];
     }
 
     /**

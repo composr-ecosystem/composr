@@ -30,14 +30,14 @@ class Block_main_leader_board
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 3;
         $info['locked'] = false;
-        $info['parameters'] = array('zone');
+        $info['parameters'] = ['zone'];
         $info['update_require_upgrade'] = true;
         return $info;
     }
@@ -49,7 +49,7 @@ class Block_main_leader_board
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board'),
@@ -76,11 +76,11 @@ PHP;
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('leader_board', array(
+            $GLOBALS['SITE_DB']->create_table('leader_board', [
                 'lb_member' => '*MEMBER',
                 'lb_points' => 'INTEGER',
                 'date_and_time' => '*TIME',
-            ));
+            ]);
         }
     }
 
@@ -119,7 +119,7 @@ PHP;
         $has_rank_images = (get_forum_type() == 'cns') && ($GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups WHERE ' . $or_list . ' AND ' . db_string_not_equal_to('g_rank_image', '')) != 0);
 
         foreach ($rows as $member_id => $points) {
-            $points_url = build_url(array('page' => 'points', 'type' => 'member', 'id' => $member_id), get_module_zone('points'));
+            $points_url = build_url(['page' => 'points', 'type' => 'member', 'id' => $member_id], get_module_zone('points'));
 
             $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
 
@@ -128,7 +128,7 @@ PHP;
                 continue; // Deleted member now
             }
 
-            $out->attach(do_template('POINTS_LEADER_BOARD_ROW', array(
+            $out->attach(do_template('POINTS_LEADER_BOARD_ROW', [
                 '_GUID' => '68caa55091aade84bc7ca760e6655a45',
                 'ID' => strval($member_id),
                 'POINTS_URL' => $points_url,
@@ -136,18 +136,18 @@ PHP;
                 'POINTS' => integer_format($points),
                 'USERNAME' => $username,
                 'HAS_RANK_IMAGES' => $has_rank_images,
-            )));
+            ]));
 
             $i++;
         }
 
-        $url = build_url(array('page' => 'leader_board'), $zone);
+        $url = build_url(['page' => 'leader_board'], $zone);
 
-        return do_template('POINTS_LEADER_BOARD', array(
+        return do_template('POINTS_LEADER_BOARD', [
             '_GUID' => 'c875cce925e73f46408acc0a153a2902',
             'URL' => $url,
             'LIMIT' => integer_format(intval(get_option('leader_board_size'))),
             'ROWS' => $out,
-        ));
+        ]);
     }
 }

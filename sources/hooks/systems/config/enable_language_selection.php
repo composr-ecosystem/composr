@@ -30,7 +30,7 @@ class Hook_config_enable_language_selection
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'ENABLE_LANGUAGE_SELECTION',
             'type' => 'list',
             'category' => 'SITE',
@@ -44,7 +44,7 @@ class Hook_config_enable_language_selection
             'public' => false,
 
             'addon' => 'core_cns',
-        );
+        ];
     }
 
     /**

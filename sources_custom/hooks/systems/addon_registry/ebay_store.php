@@ -26,7 +26,7 @@ class Hook_addon_registry_ebay_store
      */
     public function get_chmod_array($runtime = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -66,7 +66,7 @@ class Hook_addon_registry_ebay_store
      */
     public function get_copyright_attribution()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -100,7 +100,7 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_applicable_tutorials()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -110,11 +110,11 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_dependencies()
     {
-        return array(
-            'requires' => array(),
-            'recommends' => array(),
-            'conflicts_with' => array(),
-        );
+        return [
+            'requires' => [],
+            'recommends' => [],
+            'conflicts_with' => [],
+        ];
     }
 
     /**
@@ -134,11 +134,11 @@ The normal Composr block construction assistant will help you set up the block o
      */
     public function get_file_list()
     {
-        return array(
+        return [
             'sources_custom/hooks/systems/addon_registry/ebay_store.php',
             'sources_custom/blocks/main_ebay.php',
             'lang_custom/EN/ebay.ini',
             'themes/default/templates_custom/BLOCK_MAIN_EBAY.tpl',
-        );
+        ];
     }
 }

@@ -29,7 +29,7 @@ require_code('database/shared/mysql');
  */
 class Database_Static_mysql_pdo extends Database_super_mysql
 {
-    protected $cache_db = array();
+    protected $cache_db = [];
     public $last_select_db = null;
     public $reconnected_once = false;
 
@@ -58,7 +58,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
         $init_queries = $this->get_init_queries();
 
         // Potential caching
-        $x = serialize(array($db_user, $db_host, $db_name));
+        $x = serialize([$db_user, $db_host, $db_name]);
         if (array_key_exists($x, $this->cache_db)) {
             return $this->cache_db[$x];
         }
@@ -70,11 +70,11 @@ class Database_Static_mysql_pdo extends Database_super_mysql
         try {
             global $SITE_INFO;
             $dsn = 'mysql:host=' . $db_host . ';port=' . strval($db_port) . ';dbname=' . $db_name;
-            $pdo_options = array(
+            $pdo_options = [
                 PDO::ATTR_PERSISTENT => $persistent,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $SITE_INFO['database_charset'],
-            );
+            ];
             $db_link = @new PDO($dsn, $db_user, $db_password, $pdo_options);
         }
         catch (PDOException $e) {
@@ -177,8 +177,8 @@ class Database_Static_mysql_pdo extends Database_super_mysql
      */
     protected function get_query_rows($results, $query, $start)
     {
-        $names = array();
-        $types = array();
+        $names = [];
+        $types = [];
         $column_count = $results->columnCount();
         for ($i = 0; $i < $column_count; $i++) {
             $field = $results->getColumnMeta($i);
@@ -186,8 +186,8 @@ class Database_Static_mysql_pdo extends Database_super_mysql
             $types[$i] = $field['native_type'];
         }
 
-        $out = array();
-        $newrow = array();
+        $out = [];
+        $newrow = [];
         while (($row = $results->fetch(PDO::FETCH_NUM)) !== false) {
             foreach ($row as $j => $v) {
                 $name = $names[$j];

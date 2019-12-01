@@ -30,7 +30,7 @@ class Hook_config_ticket_mail_password
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'PASSWORD',
             'type' => 'line',
             'category' => 'MESSAGES',
@@ -44,7 +44,7 @@ class Hook_config_ticket_mail_password
             'public' => false,
 
             'addon' => 'tickets',
-        );
+        ];
     }
 
     /**

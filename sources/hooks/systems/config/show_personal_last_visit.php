@@ -30,7 +30,7 @@ class Hook_config_show_personal_last_visit
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'LAST_HERE',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_show_personal_last_visit
             'public' => false,
 
             'addon' => 'core_configuration',
-        );
+        ];
     }
 
     /**

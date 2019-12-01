@@ -37,7 +37,7 @@ class Hook_snippet_exists_zone
             return new Tempcode();
         }
 
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', array('zone_name' => $zone));
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_header_text', ['zone_name' => $zone]);
         if ($test === null) {
             return new Tempcode();
         }

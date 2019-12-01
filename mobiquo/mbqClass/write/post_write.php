@@ -96,7 +96,7 @@ class CMSPostWrite
             $post = semihtml_to_comcode(nl2br($post));
         }
 
-        $validated = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_validated', array('id' => $post_id));
+        $validated = $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_validated', ['id' => $post_id]);
         cns_edit_post($post_id, $validated, $title, $post, 0, 0, null, $mark_as_edited, $mark_unread, $reason); // NB: Checks perms implicitly
 
         return render_post_to_tapatalk($post_id, $return_html, null, RENDER_POST_RESULT_TRUE);

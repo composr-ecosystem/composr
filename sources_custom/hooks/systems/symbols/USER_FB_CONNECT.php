@@ -54,7 +54,7 @@ class Hook_symbol_USER_FB_CONNECT
             $appid = get_option('facebook_appid');
             $appsecret = get_option('facebook_secret_code');
             try {
-                $facebook_connect = new Facebook(array('appId' => $appid, 'secret' => $appsecret));
+                $facebook_connect = new Facebook(['appId' => $appid, 'secret' => $appsecret]);
                 $facebook_connect->setAccessToken($token);
                 $temp_cookie = $_COOKIE;
                 $fb_user = $facebook_connect->getUser();

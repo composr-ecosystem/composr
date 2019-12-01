@@ -30,7 +30,7 @@ class Hook_config_forum_show_stats_count_members_new_today
      */
     public function get_details()
     {
-        return array(
+        return [
             'human_name' => 'MEMBERS_NEW_TODAY',
             'type' => 'tick',
             'category' => 'BLOCKS',
@@ -43,7 +43,7 @@ class Hook_config_forum_show_stats_count_members_new_today
             'public' => false,
 
             'addon' => 'stats_block',
-        );
+        ];
     }
 
     /**

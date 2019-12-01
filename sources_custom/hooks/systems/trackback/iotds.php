@@ -30,7 +30,7 @@ class Hook_trackback_iotds
             return false;
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('iotd', array('allow_trackbacks'), array('id' => intval($id)), '', 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('iotd', ['allow_trackbacks'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $rows)) {
             return false;
         }

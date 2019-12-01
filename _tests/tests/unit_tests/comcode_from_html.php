@@ -22,13 +22,13 @@ class comcode_from_html_test_set extends cms_test_case
     {
         require_code('comcode_from_html');
 
-        $tests = array(
+        $tests = [
             '<b>Hello</b>' => '[b]Hello[/b]',
             '<h2>Hello</h2>' => '[title="2"]Hello[/title]',
             '<p>Hello</p>' => 'Hello',
             '<font color="red">Hello</p>' => '[font color="red"]Hello[/font]',
             '<ul><li>Hello</li></ul>' => "[list]\n[*]Hello[/*]\n[/list]",
-        );
+        ];
 
         foreach ($tests as $html => $expected) {
             $got = semihtml_to_comcode($html, true);

@@ -30,14 +30,14 @@ class Block_main_top_sites
      */
     public function info()
     {
-        $info = array();
+        $info = [];
         $info['author'] = 'Chris Graham';
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param');
+        $info['parameters'] = ['param'];
         return $info;
     }
 
@@ -48,7 +48,7 @@ class Block_main_top_sites
      */
     public function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : '',
@@ -84,13 +84,13 @@ PHP;
         $myquery = banner_select_sql($b_type) . ' ORDER BY hits_from+hits_to DESC';
         $_banners = $GLOBALS['SITE_DB']->query($myquery, 200);
 
-        $banners = array();
+        $banners = [];
         foreach ($_banners as $banner) {
             $description = get_translated_tempcode('banners', $banner, 'caption');
 
             $bd = show_banner($banner['name'], $banner['title_text'], $description, $banner['direct_code'], $banner['img_url'], '', $banner['site_url'], $banner['b_type'], $banner['submitter']);
 
-            $banners[] = array(
+            $banners[] = [
                 'BANNER' => $bd,
                 'NAME' => $banner['name'],
                 'URL' => $banner['site_url'],
@@ -101,21 +101,21 @@ PHP;
                 'VIEWS_TO' => strval($banner['views_to']),
                 'ADD_DATE' => strval($banner['add_date']),
                 'SUBMITTER' => strval($banner['submitter']),
-            );
+            ];
         }
 
         if ((has_actual_page_access(null, 'cms_banners', null, null)) && (has_submit_permission('mid', get_member(), get_ip_address(), 'cms_banners'))) {
-            $submit_url = build_url(array('page' => 'cms_banners', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)), get_module_zone('cms_banners'));
+            $submit_url = build_url(['page' => 'cms_banners', 'type' => 'add', 'redirect' => protect_url_parameter(SELF_REDIRECT_RIP)], get_module_zone('cms_banners'));
         } else {
             $submit_url = new Tempcode();
         }
 
-        return do_template('BLOCK_MAIN_TOP_SITES', array(
+        return do_template('BLOCK_MAIN_TOP_SITES', [
             '_GUID' => '776cecc3769b4f4e082be327da5b7248',
             'BLOCK_ID' => $block_id,
             'TYPE' => $map['param'],
             'BANNERS' => $banners,
             'SUBMIT_URL' => $submit_url,
-        ));
+        ]);
     }
 }

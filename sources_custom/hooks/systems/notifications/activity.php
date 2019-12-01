@@ -40,27 +40,27 @@ class Hook_notification_activity extends Hook_Notification
     public function create_category_tree($notification_code, $id)
     {
         if (!addon_installed('activity_feed')) {
-            return array();
+            return [];
         }
 
-        $page_links = array();
+        $page_links = [];
 
         $notification_category = get_param_string('id', null);
         $done_in_url = ($notification_category === null);
 
-        $types = addon_installed('chat') ? $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_liked'), array('member_likes' => get_member())) : array(); // Only show options for friends to simplify
-        $types2 = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('l_code_category'), array('l_notification_code' => substr($notification_code, 0, 80), 'l_member_id' => get_member())); // Already monitoring members who may not be friends
+        $types = addon_installed('chat') ? $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => get_member()]) : []; // Only show options for friends to simplify
+        $types2 = $GLOBALS['SITE_DB']->query_select('notifications_enabled', ['l_code_category'], ['l_notification_code' => substr($notification_code, 0, 80), 'l_member_id' => get_member()]); // Already monitoring members who may not be friends
         foreach ($types2 as $type) {
-            $types[] = array('member_liked' => intval($type['l_code_category']));
+            $types[] = ['member_liked' => intval($type['l_code_category'])];
         }
         foreach ($types as $type) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($type['member_liked'], false, USERNAME_DEFAULT_NULL);
 
             if ($username !== null) {
-                $page_links[$type['member_liked']] = array(
+                $page_links[$type['member_liked']] = [
                     'id' => strval($type['member_liked']),
                     'title' => $username,
-                );
+                ];
                 if (!$done_in_url) {
                     if (strval($type['member_liked']) == $notification_category) {
                         $done_in_url = true;
@@ -69,10 +69,10 @@ class Hook_notification_activity extends Hook_Notification
             }
         }
         if (!$done_in_url) {
-            $page_links[] = array(
+            $page_links[] = [
                 'id' => $notification_category,
                 'title' => $GLOBALS['FORUM_DRIVER']->get_username(intval($notification_category)),
-            );
+            ];
         }
         sort_maps_by($page_links, 'title', false, true);
 
@@ -100,11 +100,11 @@ class Hook_notification_activity extends Hook_Notification
     public function list_handled_codes()
     {
         if (!addon_installed('activity_feed')) {
-            return array();
+            return [];
         }
 
-        $list = array();
-        $list['activity'] = array(do_lang('ACTIVITY'), do_lang('activities:NOTIFICATION_TYPE_activity'));
+        $list = [];
+        $list['activity'] = [do_lang('ACTIVITY'), do_lang('activities:NOTIFICATION_TYPE_activity')];
         return $list;
     }
 }

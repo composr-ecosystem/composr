@@ -50,11 +50,11 @@ class Hook_cron_cns_birthdays
             $num_queued = null;
         }
 
-        return array(
+        return [
             'label' => 'Send Happy Birthday wishes',
             'num_queued' => $num_queued,
             'minutes_between_runs' => 60,
-        );
+        ];
     }
 
     /**
@@ -79,7 +79,7 @@ class Hook_cron_cns_birthdays
                 $username = $_birthday['username'];
                 $displayname = $GLOBALS['CNS_DRIVER']->get_displayname($username);
 
-                $birthday_url = build_url(array('page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']), get_module_zone('topics'));
+                $birthday_url = build_url(['page' => 'topics', 'type' => 'birthday', 'id' => $_birthday['username']], get_module_zone('topics'));
 
                 require_code('notifications');
 
@@ -88,26 +88,26 @@ class Hook_cron_cns_birthdays
                     'BIRTHDAY_NOTIFICATION_MAIL',
                     comcode_escape(get_site_name()),
                     comcode_escape($username),
-                    array(
+                    [
                         $member_url->evaluate(),
                         $birthday_url->evaluate(),
                         comcode_escape($displayname),
-                    )
+                    ]
                 );
 
                 $combined_birthdays_mail .= do_lang(
                     'COMBINED_BIRTHDAY_NOTIFICATION_MAIL_ITEM',
                     comcode_escape(get_site_name()),
                     comcode_escape($username),
-                    array(
+                    [
                         $member_url->evaluate(),
                         $birthday_url->evaluate(),
                         comcode_escape($displayname),
-                    )
+                    ]
                 );
 
                 if (addon_installed('chat')) {
-                    $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', array('member_likes'), array('member_liked' => $_birthday['id']));
+                    $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_likes'], ['member_liked' => $_birthday['id']]);
                     dispatch_notification('cns_friend_birthday', null, $subject, $mail, collapse_1d_complexity('member_likes', $friends));
                 }
 
