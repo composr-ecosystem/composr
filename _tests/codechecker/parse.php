@@ -1371,12 +1371,15 @@ function _parse_expression_inner()
             $expression = ['CREATE_ARRAY', $details, $GLOBALS['I']];
             break;
 
-        case 'ARRAY':
+        case 'ARRAY': // Long array syntax
             pparse__parser_next();
             pparse__parser_expect('PARENTHESIS_OPEN');
             $details = _parse_create_array('PARENTHESIS_CLOSE');
             pparse__parser_expect('PARENTHESIS_CLOSE');
             $expression = ['CREATE_ARRAY', $details, $GLOBALS['I']];
+
+            log_warning('Short array syntax is preferred');
+
             break;
 
         case 'PARENTHESIS_OPEN':
@@ -1680,19 +1683,22 @@ function _parse_literal()
             $literal = ['CONSTANT', $_literal[1], $GLOBALS['I']];
             break;
 
-        case 'EXTRACT_OPEN':
+        case 'EXTRACT_OPEN': // Short array syntax
             pparse__parser_expect('EXTRACT_OPEN');
             $details = _parse_create_array('EXTRACT_CLOSE');
             pparse__parser_expect('EXTRACT_CLOSE');
             $literal = ['CREATE_ARRAY', $details, $GLOBALS['I']];
             break;
 
-        case 'ARRAY':
+        case 'ARRAY': // Long array syntax
             pparse__parser_next(); // Skip over the ARRAY
             pparse__parser_expect('PARENTHESIS_OPEN');
             $details = _parse_create_array('PARENTHESIS_CLOSE');
             pparse__parser_expect('PARENTHESIS_CLOSE');
             $literal = ['CREATE_ARRAY', $details, $GLOBALS['I']];
+
+            log_warning('Short array syntax is preferred');
+
             break;
 
         default:

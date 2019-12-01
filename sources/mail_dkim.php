@@ -2,6 +2,7 @@
 
 /*EXTRA FUNCTIONS: openssl\_.+|recurse|array_replace_recursive*/
 /*CQC: No API check*/
+/*CQC: No check*/
 
 /**
  * @package    core

@@ -284,6 +284,13 @@ Spaces around operators
 | Do like [tt]$a + $b[/tt] not [tt]$a+$b[/tt]. This makes the code easier to read and understand for some programmers, and largely consistent with what other projects do.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+Use short array syntax
+| Consistency
+| Composr development +
+| Code Quality Checker
+| We want our code to be concise and clear, so we use the [tt][...][/tt] syntax not the [tt]array(...)[/tt] syntax. This syntax is similar to JavaScript, so very recognisable to the modern developer.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Trailing commas for multi-line arrays[/color]
 | Revision control
 | Product development only
