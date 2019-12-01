@@ -1301,7 +1301,7 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error);
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, 500);
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }
