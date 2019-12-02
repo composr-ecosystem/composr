@@ -302,9 +302,14 @@ function _parse_command($needs_brace = false)
                 $next_2 = pparse__parser_peek();
             }
             $command[] = $new_command;
+            $term_count = 0;
             while ($next_2 == 'COMMAND_TERMINATE') {
                 pparse__parser_next();
                 $next_2 = pparse__parser_peek();
+                $term_count++;
+            }
+            if ($term_count > 1) {
+                parser_warning('Excess of semicolons');
             }
 
             break;
@@ -318,6 +323,16 @@ function _test_command_end()
 
     if (($next != 'BOOLEAN_OR_2') && ($next != 'COMMAND_TERMINATE')) {
         parser_error('Bad command termination');
+    }
+
+    global $TOKENS, $I, $TEXT;
+    if (($next != 'BOOLEAN_OR_2') && (strpos($TEXT, '?>') !== false)) {
+        if ((isset($TOKENS[$I + 1])) && (!in_array($TOKENS[$I + 1][0], array('START_ML_COMMENT', 'COMMENT', 'comment')))) {
+            $between_tokens = substr($TEXT, end($TOKENS[$I]), end($TOKENS[$I + 1]) - end($TOKENS[$I]));
+            if (strpos($between_tokens, "\n") === false) {
+                parser_warning('Multiple commands on one line, violates PSR-12, ' . $TOKENS[$I + 1][0]);
+            }
+        }
     }
 }
 
