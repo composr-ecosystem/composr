@@ -1703,7 +1703,7 @@ function extract_module_functions($path, $functions, $params = [], $prefer_direc
         }
         if (isset($new_classes[0])) {
             $c = $new_classes[0];
-            $new_ob = new $c;
+            $new_ob = new $c();
         } else {
             $new_ob = null;
         }

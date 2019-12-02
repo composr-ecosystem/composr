@@ -254,7 +254,7 @@ function get_category_permissions_for_environment($module, $category, $page = nu
     require_code('zones2');
     $zone = get_module_zone($page, 'modules', null, 'php', true, false);
     $_overridables = extract_module_functions_page($zone, $page, ['get_privilege_overrides']);
-    $out = new Tempcode;
+    $out = new Tempcode();
     if ($_overridables[0] === null) {
         $temp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6789cb454688a1bc811af1b4011ede35', 'TITLE' => do_lang_tempcode('PERMISSIONS'), 'HELP' => $help, 'SECTION_HIDDEN' => true]);
         $overridables = [];

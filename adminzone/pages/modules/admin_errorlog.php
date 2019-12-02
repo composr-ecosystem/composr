@@ -197,7 +197,7 @@ class Module_admin_errorlog
             require_once('google/appengine/api/log/LogService.php');
 
             $_log_service = 'google\appengine\api\log\LogService';
-            $log_service = new $_log_service;
+            $log_service = new $_log_service();
             $options = [];
             $options['include_app_logs'] = true;
             $options['minimum_log_level'] = eval('return $log_service::LEVEL_WARNING;'); // = PHP notice

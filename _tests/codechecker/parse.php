@@ -1369,6 +1369,8 @@ function _parse_expression_inner()
                 pparse__parser_expect('PARENTHESIS_CLOSE');
                 $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, $expressions, $GLOBALS['I']];
             } else {
+                parser_error('PSR-12: Expects parentheses for all new object instantiations');
+
                 $expression = ['NEW_OBJECT', ($identifier[0] == 'IDENTIFIER') ? $identifier[1] : null, [], $GLOBALS['I']];
             }
             break;

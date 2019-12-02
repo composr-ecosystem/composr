@@ -515,7 +515,7 @@ function object_factory($class, $failure_ok = false)
         }
         fatal_exit(escape_html('Missing class: ' . $class));
     }
-    return new $class;
+    return new $class();
 }
 
 /**
