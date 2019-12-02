@@ -1169,7 +1169,6 @@ class Module_purchase
             $next_purchase_step = get_next_purchase_step($product_object, $type_code, 'pay');
             $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'points' => 1, 'purchase_id' => $purchase_id, 'type_code' => $type_code], '_SELF', ['include_message' => null], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
-
         } elseif (perform_local_payment()) { // Handle the transaction internally
             if ($confirmation_box === null) {
                 $_price = currency_convert_wrap($price, $currency);
@@ -1216,7 +1215,6 @@ class Module_purchase
             $finish_url = build_url(['page' => '_SELF', 'type' => $next_purchase_step, 'type_code' => $type_code], '_SELF', ['include_message' => true], true);
             $submit_name = do_lang_tempcode('MAKE_PAYMENT');
             $icon = 'menu/rich_content/ecommerce/purchase';
-
         } else { // Pass through to the gateway's HTTP server
             if ($confirmation_box === null) {
                 $_price = currency_convert_wrap($price, $currency);

@@ -499,7 +499,6 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
             // and it is always the full size it can be (or else we'd be cropping too little/much)
             $_width = $width;
             $_height = $height;
-
         } elseif ($thumb_options['type'] == 'pad') { // Handle padding here
             // We definitely need to pad some excess space because otherwise $thumb_options would not call us.
             // Thus we need a background (can be transparent). Let's see if we've been given one.

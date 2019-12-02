@@ -331,7 +331,6 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'MODSECURITY_WORKAROUND' => true,
         ]);
-
     } // Language mode
     elseif (substr($special_page_type, 0, 4) == 'lang') {
         require_code('translation');

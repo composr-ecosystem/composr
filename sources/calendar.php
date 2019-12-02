@@ -441,7 +441,6 @@ function find_periods_recurrence($timezone, $do_timezone_conv, $start_year, $sta
         if ($i == intval(get_option('general_safety_listing_limit'))) {
             break; // Let's be reasonable
         }
-
     } while (
         ($recurrence != '') &&
         ($recurrence != 'none') &&

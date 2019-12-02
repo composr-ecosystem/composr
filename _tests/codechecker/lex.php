@@ -352,7 +352,7 @@ function lex($text = null)
                         if (preg_replace('#\s#', '', $line) == '){') {
                             $should_not_be_on_same_line = (preg_match('#^\s*(function|class|public|private|protected|static|abstract|interface) #', $line) != 0);
                             if ($should_not_be_on_same_line != $new_line) {
-                                log_warning('Bracing error (opening brace on wrong line) ', $i, true);
+                                log_warning('Bracing error (opening brace on wrong line)', $i, true);
                             }
                         }
                         if ($indentation % 4 == 0 || strpos($line, '=>') === false) {
@@ -360,13 +360,21 @@ function lex($text = null)
                         } else {
                             array_push($brace_stack, end($brace_stack) + 4); // Has array structure indenting, messing with brace offsets, so calculate via other method
                         }
+
+                        if (substr($TEXT, $i, 2) == "\n\n") {
+                            log_warning('PSR-12 says not to have extra blank lines around braces', $i, true);
+                        }
                     } elseif ($char == '}') {
                         if (!$new_line) {
-                            log_warning('Bracing error (closing brace not on new line) ', $i, true);
+                            log_warning('Bracing error (closing brace not on new line)', $i, true);
                         }
                         $past_indentation = array_pop($brace_stack);
                         if ($past_indentation != $indentation) {
                             log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
+                        }
+
+                        if (substr(rtrim(substr($TEXT, max(0, $i - 103), 100), "\t "), -2, 2) == "\n\n") {
+                            log_warning('PSR-12 says not to have extra blank lines around braces', $i, true);
                         }
                     }
                 }

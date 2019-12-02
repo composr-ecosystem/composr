@@ -490,7 +490,6 @@ class LangFilter_EN extends LangFilter
                         }
                     }
                     //$value = str_replace(array_keys($reps), array_values($reps), $value); This doesn't work when a replacement itself might be replaced in a further iteration of $reps
-
                 }
             }
         }

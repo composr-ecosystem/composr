@@ -633,7 +633,6 @@ function _render_menu_branch($branch, $codename, $source_member, $level, $type, 
             $current_page = false;
             $current_zone = false;
         }
-
     } else { // URL
         // Carefully translate symbols in the URL
         $_url = $branch['url'];

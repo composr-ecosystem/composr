@@ -559,7 +559,6 @@ function ecv($lang, $escaped, $type, $name, $param)
 
                             $attributes = preg_replace('#\s+(cellspacing|cellpadding|border|width|height|align)="[^"]*"#', '', $attributes);
                             return '<div' . $attributes . '>';
-
                         } else { // Closing element
                             if ($is_in_remaining_table) {
                                 return $matches[0];
@@ -6816,7 +6815,6 @@ function ecv_STAFF_TOOLTIPS_URL_PATTERNS_JSON($lang, $escaped, $param)
  */
 function _escape_url_pattern_for_js_regex($pattern)
 {
-
     $pattern = '^' . $pattern;
     $pattern = str_replace('/', '\\/', $pattern);
     $pattern = str_replace('?', '\\?', $pattern);

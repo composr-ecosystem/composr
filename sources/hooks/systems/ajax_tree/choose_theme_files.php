@@ -239,7 +239,6 @@ class Hook_ajax_tree_choose_theme_files
                         $json_tree = $GLOBALS['SITE_DB']->query_select_value('theme_screen_tree', 'json_tree', ['page_link' => $id]);
                         $tree = json_decode($json_tree, true);
                         $out .= $this->build_screen_tree($theme, $tree);
-
                     } else {
                         // Must be a zone, show pages in it...
 

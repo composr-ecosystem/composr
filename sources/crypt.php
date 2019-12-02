@@ -83,14 +83,11 @@ function get_secure_random_string()
 
     if (function_exists('random_bytes')) {
         $string = substr(md5(random_bytes(13)), 0, 13);
-
     } elseif (function_exists('openssl_random_pseudo_bytes')) {
         $string = substr(md5(openssl_random_pseudo_bytes(13)), 0, 13);
-
     } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
         $ratchet = max(10, function_exists('crypt_ratchet') ? intval(get_option('crypt_ratchet')) : 3);
         return substr(md5(password_hash(uniqid('', true), PASSWORD_BCRYPT, ['cost' => $ratchet])), 0, 13);
-
     } else {
         $string = substr(md5(uniqid(strval(get_secure_random_number()), true)), 0, 13);
     }
@@ -113,18 +110,15 @@ function get_secure_random_number()
         // 2147483647 is from MySQL limit http://dev.mysql.com/doc/refman/5.6/en/integer-types.html ; PHP_INT_MAX is higher on 64bit machines
         if (function_exists('random_int')) {
             $number = random_int(1, 2147483647);
-
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             $number = intval(2147483647 * (hexdec(bin2hex(openssl_random_pseudo_bytes(4))) / 0xffffffff));
             if ($number < 0) {
                 $number = -$number;
             }
-
         } elseif (function_exists('password_hash')) { // password_hash will include a randomised component
             $ratchet = max(10, intval(get_option('crypt_ratchet')));
             $hash = password_hash(uniqid('', true), PASSWORD_BCRYPT, ['cost' => $ratchet]);
             return crc32($hash);
-
         } else {
             $number = mt_rand(1, min(2147483647, mt_getrandmax()));
         }

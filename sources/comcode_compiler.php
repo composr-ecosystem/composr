@@ -1268,7 +1268,6 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                 }
                                 foreach ($shortcuts as $code => $replacement) {
                                     if (($next === $code[0]) && (isset($comcode[$pos])) && ($comcode[$pos] === $code[1]) && (substr($comcode, $pos - 1, strlen($code)) === $code)) {
-
                                         $passes = true;
 
                                         if (($code == '--') || ($code == '<--') || ($code == '-->')) {

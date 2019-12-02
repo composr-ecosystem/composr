@@ -837,7 +837,6 @@ class Hook_addon_registry_core_menus
                 'CURRENT' => false,
                 'CURRENT_ZONE' => false,
             ]));
-
         }
         $content->attach(do_template('MENU_SPACER_sitemap'));
         $menu = do_lorem_template('MENU_sitemap', [

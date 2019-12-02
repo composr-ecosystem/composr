@@ -229,7 +229,6 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 'CORRECT_ANSWER' => $correct_answer,
                 'CORRECT_EXPLANATION' => $correct_explanation,
             ];
-
         } elseif ($question['q_type'] == 'MULTIMULTIPLE') { // Check boxes
             // Vector distance
             $wrongness = 0.0;
@@ -285,7 +284,6 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                 'CORRECT_ANSWER' => $correct_answer,
                 'CORRECT_EXPLANATION' => $correct_explanation,
             ];
-
         } elseif ($question['q_type'] == 'MULTIPLECHOICE') { // Radio buttons
             $was_correct = false;
             $correct_answer = new Tempcode();

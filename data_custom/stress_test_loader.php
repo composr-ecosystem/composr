@@ -23,7 +23,6 @@ global $FILE_BASE, $RELATIVE_PATH;
 $FILE_BASE = (strpos(__FILE__, './') === false) ? __FILE__ : realpath(__FILE__);
 $FILE_BASE = dirname($FILE_BASE);
 if (!is_file($FILE_BASE . '/sources/global.php')) {
-
     $RELATIVE_PATH = basename($FILE_BASE);
     $FILE_BASE = dirname($FILE_BASE);
 } else {

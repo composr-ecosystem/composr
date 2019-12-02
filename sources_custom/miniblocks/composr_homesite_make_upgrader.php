@@ -139,7 +139,6 @@ require_code('uploads/website_specific/compo.sr/upgrades/make_upgrader.php');
 $ret = make_upgrade_get_path($from_version_dotted, $to_version_dotted);
 
 if ($ret[1] !== null) {
-
     echo '<p>' . $ret[1] . '</p>';
 }
 

@@ -89,7 +89,6 @@ function comcode_convert_script()
 
     if ($from_html == -1) {
         $out = trim($data); // "No conversion"
-
     } elseif ($from_html == 0) { // "Convert Comcode to HTML"
         if (either_param_integer('lax', 0) == 1) {
             push_lax_comcode(true);
@@ -123,7 +122,6 @@ function comcode_convert_script()
             }
         }
         $out .= trim(trim($evaluated));
-
     } elseif ($from_html == 1) { // "Convert HTML/semihtml to Comcode"
         require_code('comcode_from_html');
         $out = trim(semihtml_to_comcode($data, post_param_integer('force', 0) == 1));
