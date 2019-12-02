@@ -1409,7 +1409,11 @@ function _parse_expression_inner()
                 $_expression = _parse_expression();
                 $expression = ['EMBEDDED_ASSIGNMENT', 'EQUAL', $target, $_expression, $GLOBALS['I']];
                 pparse__parser_expect('PARENTHESIS_CLOSE');
-            } elseif ((in_array($next_2, ['INTEGER', 'INT', 'BOOL', 'FLOAT', 'ARRAY', 'OBJECT', 'STRING'])) && ($next_3 == 'PARENTHESIS_CLOSE')) {
+            } elseif ((in_array($next_2, ['INTEGER', 'INT', 'BOOLEAN', 'BOOL', 'FLOAT', 'DOUBLE', 'REAL', 'ARRAY', 'OBJECT', 'STRING'])) && ($next_3 == 'PARENTHESIS_CLOSE')) {
+                if (in_array($next_2, ['INTEGER', 'BOOLEAN', 'DOUBLE', 'REAL'])) {
+                    log_warning('PSR-12: Don\'t use non-canonical casts');
+                }
+
                 pparse__parser_next();
                 pparse__parser_next();
                 if ($next_2 == 'INT') {
