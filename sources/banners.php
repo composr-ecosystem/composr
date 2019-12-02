@@ -137,7 +137,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
 
         if ($unique) {
             if (get_db_type() != 'xml') {
-                cms_register_shutdown_function_safe(function() use ($dest) {
+                cms_register_shutdown_function_safe(function () use ($dest) {
                     if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
                         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET hits_to=(hits_to+1) WHERE ' . db_string_equal_to('name', $dest), 1, 0, true); // Errors suppressed in case DB write access broken
                     }
@@ -162,7 +162,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
             }
             $myrow = $rows[0];
             if (get_db_type() != 'xml') {
-                cms_register_shutdown_function_safe(function() use ($source) {
+                cms_register_shutdown_function_safe(function () use ($source) {
                     if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
                         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET hits_from=(hits_from+1) WHERE ' . db_string_equal_to('name', $source), 1, 0, true); // Errors suppressed in case DB write access broken
                     }
@@ -171,7 +171,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
             $campaign_remaining = $myrow['campaign_remaining'];
             if ($campaign_remaining !== null) {
                 if (get_db_type() != 'xml') {
-                    cms_register_shutdown_function_safe(function() use ($source) {
+                    cms_register_shutdown_function_safe(function () use ($source) {
                         if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
                             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET campaign_remaining=(campaign_remaining+1) WHERE ' . db_string_equal_to('name', $source), 1, 0, true); // Errors suppressed in case DB write access broken
                         }
@@ -310,7 +310,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
 
         // Update the counts (ones done per-view)
         if ((get_db_type() != 'xml') && (get_value('disable_banner_count_updates') !== '1')) {
-            cms_register_shutdown_function_safe(function() use ($name) {
+            cms_register_shutdown_function_safe(function () use ($name) {
                 if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
                     $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_to=(views_to+1) WHERE ' . db_string_equal_to('name', $name), 1, 0, true); // Errors suppressed in case DB write access broken
                 }
@@ -318,7 +318,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
         if ($source != '') {
             if (get_db_type() != 'xml') {
-                cms_register_shutdown_function_safe(function() use ($name) {
+                cms_register_shutdown_function_safe(function () use ($name) {
                     if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
                         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_from=(views_from+1) WHERE ' . db_string_equal_to('name', $name), 1, 0, true); // Errors suppressed in case DB write access broken
                     }

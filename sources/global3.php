@@ -3086,7 +3086,7 @@ function log_it($type, $a = null, $b = null, $return_id = false)
         return _log_it($type, $a, $b);
     }
 
-    cms_register_shutdown_function_safe(function() use ($type, $a, $b) {
+    cms_register_shutdown_function_safe(function () use ($type, $a, $b) {
         require_code('global4');
         return _log_it($type, $a, $b);
     });
@@ -3118,14 +3118,14 @@ function member_tracking_update($page, $type, $id)
     }
 
     if (mt_rand(0, 100) == 1) {
-        cms_register_shutdown_function_safe(function() {
+        cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('member_tracking')) {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'member_tracking WHERE mt_time<' . strval(time() - 60 * intval(get_option('users_online_time'))));
             }
         });
     }
 
-    cms_register_shutdown_function_safe(function() use ($page, $type, $id) {
+    cms_register_shutdown_function_safe(function () use ($page, $type, $id) {
         $GLOBALS['SITE_DB']->query_insert_or_replace('member_tracking', [
             'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
             'mt_time' => time(),

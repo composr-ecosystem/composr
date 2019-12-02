@@ -681,7 +681,7 @@ class Module_news
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+        cms_register_shutdown_function_safe(function () use ($myrow, $id) {
             $increment = statistical_update_model('news', $myrow['news_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_views=news_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

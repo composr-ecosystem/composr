@@ -486,7 +486,7 @@ class Module_wiki
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($page, $id) {
+        cms_register_shutdown_function_safe(function () use ($page, $id) {
             $increment = statistical_update_model('wiki_pages', $page['wiki_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'wiki_pages SET wiki_views=wiki_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

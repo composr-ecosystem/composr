@@ -296,7 +296,7 @@ class Module_polls
         $edit_date = get_timezoned_date_time($myrow['edit_date']);
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+        cms_register_shutdown_function_safe(function () use ($myrow, $id) {
             $increment = statistical_update_model('poll', $myrow['poll_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'poll SET poll_views=poll_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

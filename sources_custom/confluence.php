@@ -339,7 +339,7 @@ function confluence_clean_page($html)
 
     // Clickable images so to allow zoom on mobile
     if (is_mobile()) {
-        $html = preg_replace_callback('#(<img [^<>]*class="[^"]*(confluence-embedded-image|gliffy-image)[^"]*"[^<>]* src=")([^"]*)("[^<>]*>)#s', function ($matches) use($html) {
+        $html = preg_replace_callback('#(<img [^<>]*class="[^"]*(confluence-embedded-image|gliffy-image)[^"]*"[^<>]* src=")([^"]*)("[^<>]*>)#s', function ($matches) use ($html) {
             $cleaned_leadup = preg_replace('#<a [^<>]*>.*</a>#U', '', substr($html, 0, strpos($html, $matches[0])));
             if (strpos($cleaned_leadup, '<a ') !== false) { // We're inside a link already
                 return $matches[0];

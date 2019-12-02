@@ -1598,7 +1598,7 @@ class Module_calendar
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($event, $id) {
+        cms_register_shutdown_function_safe(function () use ($event, $id) {
             $increment = statistical_update_model('calendar_events', $event['e_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'calendar_events SET e_views=e_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

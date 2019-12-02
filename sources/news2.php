@@ -363,7 +363,7 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         $old_limit = cms_disable_time_limit();
 
         // Send out on RSS cloud
-        cms_register_shutdown_function_safe(function() {
+        cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('news_rss_cloud')) {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'news_rss_cloud WHERE register_time<' . strval(time() - 25 * 60 * 60), null, 0, true); // Errors suppressed in case DB write access broken
             }

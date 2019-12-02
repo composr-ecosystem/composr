@@ -1094,7 +1094,7 @@ function do_site()
 
     // Finally, stats
     if ($PAGE_STRING !== null) {
-        cms_register_shutdown_function_safe(function() use ($PAGE_STRING, $page_generation_time) {
+        cms_register_shutdown_function_safe(function () use ($PAGE_STRING, $page_generation_time) {
             log_stats($PAGE_STRING, intval($page_generation_time));
         });
     }
@@ -2249,7 +2249,7 @@ function log_stats($string, $pg_time)
         'title' => $title,
     ], false, true); // Errors suppressed in case DB write access broken
     if (mt_rand(0, 100) == 1) {
-        cms_register_shutdown_function_safe(function() {
+        cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('stats')) {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time'))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
             }

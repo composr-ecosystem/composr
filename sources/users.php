@@ -459,7 +459,7 @@ function delete_expired_sessions_or_recover($member_id = null)
 
     // Delete expired sessions; it's important we do this reasonably routinely, as the session table is loaded up and can get large -- unless we aren't tracking online users, in which case the table is never loaded up
     if (mt_rand(0, 100) == 1) {
-        cms_register_shutdown_function_safe(function() {
+        cms_register_shutdown_function_safe(function () {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
             }

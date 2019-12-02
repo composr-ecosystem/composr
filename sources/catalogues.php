@@ -1891,7 +1891,7 @@ function render_catalogue_entry_screen($id)
     $breadcrumbs = [];
     $map = get_catalogue_entry_map($entry, $catalogue, 'PAGE', $tpl_set, $root, null, null, true, true, null, $breadcrumbs);
 
-    cms_register_shutdown_function_safe(function() use ($entry, $id) {
+    cms_register_shutdown_function_safe(function () use ($entry, $id) {
         $increment = statistical_update_model('catalogue_entries', $entry['ce_views']);
         if ($increment != 0) {
             $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_entries SET ce_views=ce_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

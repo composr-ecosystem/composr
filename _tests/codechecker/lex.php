@@ -498,6 +498,9 @@ function lex($text = null)
                         }
                     }
 
+                    if (($i_current > 0) && (isset($TEXT[$i])) && ($TEXT[$i] == '(') && (in_array($token_found, ['FUNCTION', 'USE']))) {
+                        log_warning('PSR-12: Closures should have a space after keywords', $i, true);
+                    }
                     if (($i_current > 0) && (isset($TEXT[$i_current - 2])) && ($TEXT[$i_current - 1] == ' ') && ($TEXT[$i_current - 2] != ' ') && (in_array($token_found, ['OBJECT_OPERATOR']))) {
                         log_warning('Superfluous spacing (for ' . $token_found . ') against coding standards', $i, true);
                     }

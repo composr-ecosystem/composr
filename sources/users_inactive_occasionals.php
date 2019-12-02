@@ -126,7 +126,7 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
         ];
         $GLOBALS['SITE_DB']->query_insert('sessions', $new_session_row);
         if (get_forum_type() == 'cns') {
-            cms_register_shutdown_function_safe(function() use ($member_id) {
+            cms_register_shutdown_function_safe(function () use ($member_id) {
                 if (!$GLOBALS['FORUM_DB']->table_is_locked('f_members')) {
                     $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_total_sessions=m_total_sessions+1 WHERE id=' . strval($member_id), 1, 0, true); // Suppress errors in case DB write access lost
                 }

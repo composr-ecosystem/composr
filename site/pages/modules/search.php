@@ -679,7 +679,7 @@ class Module_search
         $pagination = pagination(do_lang_tempcode('RESULTS'), $start, 'search_start', $max, 'search_max', $GLOBALS['TOTAL_SEARCH_RESULTS'], true);
 
         if ($start == 0) {
-            cms_register_shutdown_function_safe(function() use ($content, $results) {
+            cms_register_shutdown_function_safe(function () use ($content, $results) {
                 $GLOBALS['SITE_DB']->query_insert('searches_logged', [
                     's_member_id' => get_member(),
                     's_time' => time(),

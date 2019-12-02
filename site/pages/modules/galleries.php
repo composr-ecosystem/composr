@@ -680,7 +680,7 @@ HTML;
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($myrow, $cat) {
+        cms_register_shutdown_function_safe(function () use ($myrow, $cat) {
             $increment = statistical_update_model('galleries', $myrow['gallery_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'galleries SET gallery_views=gallery_views+' . strval($increment) . ' WHERE ' . db_string_equal_to('name', $cat), 1, 0, true); // Errors suppressed in case DB write access broken
@@ -904,7 +904,7 @@ HTML;
                     'COMMENT_COUNT' => ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($row['allow_comments'] >= 1)),
                 ]);
 
-                cms_register_shutdown_function_safe(function() use ($row) {
+                cms_register_shutdown_function_safe(function () use ($row) {
                     $increment = statistical_update_model('videos', $row['video_views']);
                     if ($increment != 0) {
                         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'videos SET video_views=video_views+' . strval($increment) . ' WHERE id=' . strval($row['id']), 1, 0, true); // Errors suppressed in case DB write access broken
@@ -977,7 +977,7 @@ HTML;
                     'COMMENT_COUNT' => ((get_option('is_on_comments') == '1') && (!has_no_forum()) && ($row['allow_comments'] >= 1)),
                 ]);
 
-                cms_register_shutdown_function_safe(function() use ($row) {
+                cms_register_shutdown_function_safe(function () use ($row) {
                     $increment = statistical_update_model('images', $row['image_views']);
                     if ($increment != 0) {
                         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'images SET image_views=image_views+' . strval($increment) . ' WHERE id=' . strval($row['id']), 1, 0, true); // Errors suppressed in case DB write access broken
@@ -1478,7 +1478,7 @@ HTML;
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+        cms_register_shutdown_function_safe(function () use ($myrow, $id) {
             $increment = statistical_update_model('images', $myrow['image_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'images SET image_views=image_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
@@ -1595,7 +1595,7 @@ HTML;
         }
 
         // Views
-        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+        cms_register_shutdown_function_safe(function () use ($myrow, $id) {
             $increment = statistical_update_model('videos', $myrow['video_views']);
             if ($increment != 0) {
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'videos SET video_views=video_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken

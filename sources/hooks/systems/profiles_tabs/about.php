@@ -82,7 +82,7 @@ class Hook_profiles_tabs_about
         ];
         $member_info = cns_read_in_member_profile($member_id_of, $need, true);
 
-        cms_register_shutdown_function_safe(function() use ($member_info, $member_id_of) {
+        cms_register_shutdown_function_safe(function () use ($member_info, $member_id_of) {
             $increment = statistical_update_model('f_members', $member_info['profile_views']);
             if ($increment != 0) {
                 $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_profile_views=m_profile_views+' . strval($increment) . ' WHERE id=' . strval($member_id_of), 1, 0, true); // Errors suppressed in case DB write access broken
