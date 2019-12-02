@@ -125,6 +125,7 @@ class Hook_endpoint_content_commandr_fs
                 $is_file = $commandr_fs->_is_file($path_arr);
                 $is_dir = $commandr_fs->_is_dir($path_arr);
                 $exists = $is_file || $is_dir;
+                // no break
 
             case 'view':
                 if ($exists) {

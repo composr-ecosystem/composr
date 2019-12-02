@@ -561,6 +561,8 @@ abstract class EmailIntegration
                         break;
                     }
                 }
+
+                break;
         }
 
         switch ($mail_nonmatch_policy) {

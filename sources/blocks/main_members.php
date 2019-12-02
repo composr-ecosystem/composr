@@ -263,7 +263,7 @@ PHP;
                     $show_avatar = true;
                     break;
                 }
-            // intentionally rolls on...
+                // no break
 
             case 'avatars':
             default:

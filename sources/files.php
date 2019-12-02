@@ -381,10 +381,13 @@ function php_return_bytes($val)
     switch ($last) {
         case 'g':
             $_val *= 1024;
+            // no break
         case 'm':
             $_val *= 1024;
+            // no break
         case 'k':
             $_val *= 1024;
+            // no break
     }
 
     return $_val;

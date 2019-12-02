@@ -429,6 +429,7 @@ PHP;
 
                             break;
                         }
+                        // no break
                     case 'recent':
                     case 'recent ASC':
                     case 'recent DESC':
@@ -437,12 +438,14 @@ PHP;
                             break;
                         }
                         $sort = $first_id_field;
+                        // no break
                     case 'views':
                         if ((array_key_exists('views_field', $info)) && ($info['views_field'] !== null)) {
                             $rows = $info['db']->query('SELECT r.*' . $extra_select_sql . ' ' . $query . ' ORDER BY r.' . $info['views_field'] . ' DESC', $max + $start, 0, false, true, $lang_fields);
                             break;
                         }
                         $sort = $first_id_field;
+                        // no break
                     case 'average_rating':
                     case 'average_rating ASC':
                     case 'average_rating DESC':
@@ -456,6 +459,7 @@ PHP;
                             break;
                         }
                         $sort = $first_id_field;
+                        // no break
                     case 'compound_rating':
                     case 'compound_rating ASC':
                     case 'compound_rating DESC':
@@ -469,6 +473,7 @@ PHP;
                             break;
                         }
                         $sort = $first_id_field;
+                        // no break
                     case 'title':
                     case 'title ASC':
                     case 'title DESC':

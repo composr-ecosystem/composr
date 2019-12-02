@@ -207,6 +207,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
 
                         case 'BIT':
                             $newrow[$name] = ($v === 1 || $v === true || $v === '1') ? 1 : 0;
+                            break;
 
                         case 'DECIMAL':
                         case 'NEWDECIMAL':
@@ -217,9 +218,11 @@ class Database_Static_mysql_pdo extends Database_super_mysql
 
                         case 'NULL':
                             $newrow[$name] = null;
+                            break;
 
                         default:
                             $newrow[$name] = $v;
+                            break;
                     }
                 }
             }

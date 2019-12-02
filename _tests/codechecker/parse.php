@@ -250,6 +250,7 @@ function _parse_php($inside_namespace = false)
                 if ($inside_namespace) {
                     return $program;
                 }
+                // no break
 
             default:
                 $program['main'] = array_merge($program['main'], _parse_command());
@@ -896,6 +897,15 @@ function _parse_cases()
                 while (($next_2 != 'CURLY_CLOSE') && ($next_2 != 'CASE') && ($next_2 != 'DEFAULT')) {
                     $commands = array_merge($commands, _parse_command());
                     $next_2 = pparse__parser_peek();
+                }
+                if (count($commands) > 0) {
+                    $last_command = $commands[count($commands) - 1];
+                    if (!in_array($last_command[0], array('BREAK', 'CONTINUE', 'CASE', 'RETURN'))) {
+                        global $TOKENS, $I;
+                        if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (trim($TOKENS[$I - 1][1]) != 'no break')) {
+                            log_warning('PSR-12: Missing break at end of case statement, and not marked with "no break" comment (last token was ' . $TOKENS[$I - 1][0] . ')');
+                        }
+                    }
                 }
                 foreach ($cases as $c) {
                     if (($c[0][0] == 'LITERAL') && ($expression[0] == 'LITERAL') && ($c[0][1][1] == $expression[1][1])) {

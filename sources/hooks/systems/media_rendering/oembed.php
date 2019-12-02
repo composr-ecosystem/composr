@@ -212,7 +212,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 if ((!array_key_exists('width', $data)) || (!array_key_exists('height', $data))) {
                     return null;
                 }
-            // intentionally rolls on...
+                // no break
             case 'rich':
                 if (!array_key_exists('html', $data)) {
                     return null;

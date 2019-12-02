@@ -402,12 +402,14 @@ class Hook_payment_gateway_paypal
                             return null;
                         }
                         exit(); // We don't need to track individual payments
+                        break;
 
                     case 'subscr_failed':
                         if ($silent_fail) {
                             return null;
                         }
                         exit(); // PayPal auto-cancels at a configured point ("To avoid unnecessary cancellations, you can specify that PayPal should reattempt failed payments before cancelling subscriptions."). So, we only listen to the actual cancellation signal.
+                        break;
 
                     case 'subscr_modify':
                         $status = 'SModified';
@@ -419,6 +421,7 @@ class Hook_payment_gateway_paypal
                             return null;
                         }
                         exit(); // We ignore cancel transactions as we don't want to process them immediately - we just let things run until the end-of-term (see below). Maybe ideally we would process these in Composr as a separate state, but it would over-complicate things
+                        break;
 
                     case 'subscr_eot': // NB: An 'eot' means "end of *final* term" (i.e. if a payment fail / cancel / natural last term, has happened). PayPal's terminology is a little dodgy here.
                     case 'recurring_payment_suspended_due_to_max_failed_payment':
@@ -451,6 +454,7 @@ class Hook_payment_gateway_paypal
                     return null;
                 }
                 exit(); // Non-supported for IPN in Composr
+                break;
         }
 
         // SECURITY: Ignore sandbox transactions if we are not in test mode

@@ -3419,6 +3419,7 @@ class Database_Static_xml extends DatabaseDriver
                                 $want = $want[1];
                                 break;
                         }
+                        // no break
 
                     default:
                         if ($as === null) {

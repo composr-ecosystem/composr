@@ -265,7 +265,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if (($GLOBALS['XHTML_FORM_ENCODING'] == 'multipart/form-data') && (array_key_exists('method', $attributes)) && ($attributes['method'] == 'get')) {
                     $errors[] = ['XHTML_FORM_ENCODING_2'];
                 }
-            // intentionally rolls on...
+                // no break
 
             case 'map':
             case 'iframe':

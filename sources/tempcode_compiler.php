@@ -911,7 +911,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 } else {
                                     $parameters_used = null; // We don't know what the INCLUDE directive may need
                                 }
-                            // intentionally rolls on...
+                                // no break
 
                             default:
                                 $current_level_data[] = $regular_code;

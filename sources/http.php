@@ -1673,6 +1673,7 @@ class HttpDownloaderSockets extends HttpDownloader
 
                                         return $text;
                                     }
+                                    // no break
 
                                 default:
                                     if (!$this->ignore_http_status) {

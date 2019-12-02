@@ -803,6 +803,7 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
             if (!$is_guarded) {
                 return js_check_variable($inner, true);
             }
+            break;
     }
     return '!Object';
 }

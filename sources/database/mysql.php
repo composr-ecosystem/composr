@@ -251,9 +251,11 @@ class Database_Static_mysql extends Database_super_mysql
 
                             break;
                         }
+                        // no break
 
                     default:
                         $newrow[$name] = $v;
+                        break;
                 }
 
                 ++$j;

@@ -159,7 +159,7 @@ class Module_admin_trackbacks
                             add_ip_ban($trackback_ip, do_lang('TRACKBACK_SPAM'));
                             syndicate_spammer_report($trackback_ip, '', '', do_lang('TRACKBACK_SPAM'), false);
                         }
-                    // Intentionally no 'break' line below
+                        // no break
                     case '1':
                         $GLOBALS['SITE_DB']->query_delete('trackbacks', ['id' => $id], '', 1);
                         break;

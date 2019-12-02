@@ -899,7 +899,7 @@ function _find_all_pages($zone, $type, $ext = 'php', $keep_ext_on = false, $cuto
                             } else {
                                 break;
                             }
-                        //break; Actually, no, let it roll on to the next one to get key files too
+                            // no break
 
                         case FIND_ALL_PAGES__PERFORMANT: // Default, chooses selection carefully based on site size
                             if (($show_method == FIND_ALL_PAGES__NEWEST) || (count($out) > intval(get_option('general_safety_listing_limit')))) {

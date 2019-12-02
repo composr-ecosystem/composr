@@ -248,7 +248,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                         $applicable_page_groupings = [];
                         break;
                     }
-                    // else flow on...
+                    // no break
 
                 case 'site':
                     $applicable_page_groupings = [
