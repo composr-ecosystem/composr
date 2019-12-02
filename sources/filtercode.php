@@ -963,7 +963,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
                         }
                         break;
                     }
-                // intentionally rolls on...
+                    // no break
 
                 case '#':
                     if ($filter_val != '') {

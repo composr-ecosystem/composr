@@ -1406,7 +1406,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
-        // else roll on, as probably been deleted since persistent cache was filled
+            // no break (as probably been deleted since persistent cache was filled)
         case 'COMCODE_CUSTOM_PURE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode_custom/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
@@ -1414,7 +1414,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
-        // else roll on, as probably been deleted since persistent cache was filled
+            // no break (as probably been deleted since persistent cache was filled)
         case 'COMCODE':
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/comcode/' . $details[3] . '/' . $details[2] . '.txt', true);
             if (((isset($SITE_INFO['no_disk_sanity_checks'])) && ($SITE_INFO['no_disk_sanity_checks'] == '1')) || (@is_file(get_file_base() . '/' . $path))) {
@@ -1422,7 +1422,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
-        // else roll on, as probably been deleted since persistent cache was filled
+            // no break (as probably been deleted since persistent cache was filled)
         case 'HTML_CUSTOM':
             require_code('site_html_pages');
             $path = isset($details[4]) ? $details[4] : zone_black_magic_filterer($details[1] . (($details[1] == '') ? '' : '/') . 'pages/html_custom/' . $details[3] . '/' . $details[2] . '.htm', true);
@@ -1483,6 +1483,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
                 $REQUEST_PAGE_NEST_LEVEL--;
                 return $ret;
             }
+            break;
     }
 
     $REQUEST_PAGE_NEST_LEVEL--;
@@ -1584,7 +1585,7 @@ function __request_page($codename, $zone, $page_type = null, $lang = null, $redi
                         }
                     }
                 }
-            //break;
+                // no break
             case 'comcode':
                 $path = zone_black_magic_filterer($zone . (($zone == '') ? '' : '/') . 'pages/comcode/' . $lang . '/' . $codename . '.txt', true);
                 if (@is_file(get_file_base() . '/' . $path)) {

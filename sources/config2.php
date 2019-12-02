@@ -88,6 +88,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
                 require_code('ecommerce');
                 return form_input_tax_code($human_name, $explanation_with_default, $name, $current_value, $required);
             }
+            // no break
         case 'line':
         case 'transline':
             return form_input_line($human_name, $explanation_with_default, $name, $current_value, $required, null, 100000);

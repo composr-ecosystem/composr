@@ -43,7 +43,7 @@ function notification_script()
     switch ($type) {
         case 'mark_all_read':
             notification_mark_all_read_script();
-        //break; Intentionally continue on
+            // no break
         case 'poller':
             notification_poller_script();
             break;

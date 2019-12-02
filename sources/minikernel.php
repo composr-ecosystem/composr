@@ -617,6 +617,7 @@ function catch_fatal_errors()
                 push_suppress_error_death(false); // We can't recover as we've lost our execution track. Force a nice death rather than trying to display a recoverable error.
                 $GLOBALS['DYING_BADLY'] = true; // Does not actually work unfortunately. @'d calls never get here at all.
                 composr_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
+                break;
         }
     }
 }
@@ -667,6 +668,7 @@ function composr_error_handler($errno, $errstr, $errfile, $errline)
         case E_NOTICE:
             cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
             fatal_exit('PHP [' . strval($errno) . '] ' . $errstr);
+            break;
     }
 
     return false;

@@ -1079,6 +1079,7 @@ function catch_fatal_errors()
                 $GLOBALS['DYING_BADLY'] = true; // Tells composr_error_handler to roll through, definitely an error.
                 $GLOBALS['EXITING'] = 2; // Fudge to force a critical error, we're too desperate to show a Tempcode stack trace.
                 composr_error_handler($error['type'], $error['message'], $error['file'], $error['line']);
+                break;
         }
     }
 }

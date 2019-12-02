@@ -902,7 +902,7 @@ function _parse_cases()
                     $last_command = $commands[count($commands) - 1];
                     if (!in_array($last_command[0], array('BREAK', 'CONTINUE', 'CASE', 'RETURN'))) {
                         global $TOKENS, $I;
-                        if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (trim($TOKENS[$I - 1][1]) != 'no break')) {
+                        if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (strpos($TOKENS[$I - 1][1], 'no break') === false)) {
                             log_warning('PSR-12: Missing break at end of case statement, and not marked with "no break" comment (last token was ' . $TOKENS[$I - 1][0] . ')');
                         }
                     }
