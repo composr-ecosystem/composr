@@ -329,7 +329,8 @@ abstract class Hook_sitemap_base
                 }
             } elseif ($matches[1] != $zone) { // Correct the zone from what is in the page-link
                 $zone = $matches[1]; // $page_link was known, $zone was known, but mismatch so assume $zone was wrong
-            } // else change nothing ($page_link was known, $zone was known)
+            }
+            // else change nothing ($page_link was known, $zone was known)
         }
 
         if (($zone == 'site') && (get_option('single_public_zone') == '1')) {

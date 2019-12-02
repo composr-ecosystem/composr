@@ -378,7 +378,8 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
                 if ($listener['rem_protocol'] == 'xml-rpc') {
                     require_code('xmlrpc');
                     xml_rpc('http://' . $listener['rem_ip'] . ':' . strval($listener['rem_port']) . '/' . $listener['rem_path'], $listener['rem_procedure'], $data, true);
-                } // Other protocols not supported
+                }
+                // Other protocols not supported
             }
             $start += 100;
         } while (array_key_exists(0, $listeners));

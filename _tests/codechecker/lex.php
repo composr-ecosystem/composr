@@ -376,6 +376,10 @@ function lex($text = null)
                         if (substr(rtrim(substr($TEXT, max(0, $i - 103), 100), "\t "), -2, 2) == "\n\n") {
                             log_warning('PSR-12 says not to have extra blank lines around braces', $i, true);
                         }
+
+                        if ((substr($TEXT, $i, 1) == '/') || (substr($TEXT, $i, 2) == ' /')) {
+                            log_warning('PSR-12 says not to put a comment after a closing brace', $i, true);
+                        }
                     }
                 }
                 $new_line = false;

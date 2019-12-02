@@ -827,7 +827,8 @@ HTML;
                     $row = $first_image[0];
                     $probe_type = 'image';
                     $probe_id = $row['id'];
-                } // If else, then we have no probe_type, and thus won't be able to show anything
+                }
+                // If else, then we have no probe_type, and thus won't be able to show anything
             }
         }
         if (($row !== null) && ($row['validated'] == 0) && (addon_installed('unvalidated'))) {

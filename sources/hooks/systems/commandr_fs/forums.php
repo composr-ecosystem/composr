@@ -306,9 +306,10 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             if ($category_resource_type != 'forum') {
                 return false;
             }
-            if ($category == '') {
+            if ($category == '') { // Can't create more than one root
                 $category = strval(db_get_first_id());
-            }/*return false;*/ // Can't create more than one root
+                /*return false;*/
+            }
 
             require_code('cns_forums_action');
 

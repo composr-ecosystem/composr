@@ -453,7 +453,8 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
                     if ($test === null) {
                         $GLOBALS['SITE_DB']->query_insert('translate', ['id' => $trans_cc_page_title_key, 'source_user' => $page_submitter, 'broken' => 0, 'importance_level' => 1, 'text_original' => $title_to_use, 'text_parsed' => '', 'language' => $lang], false, true, true); // errors suppressed in case of race condition
                     }
-                } // else race condition, decached while being recached
+                }
+                // else race condition, decached while being recached
             }
         } else {
             $map = [];

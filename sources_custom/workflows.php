@@ -126,8 +126,8 @@ function get_default_workflow()
         }
         // If we're here then we have one default, so return it
         return $defaults[0]['id'];
-    } // Otherwise just give back what we've found (singleton or empty)
-    elseif (count($workflows) == 1) {
+    }
+    elseif (count($workflows) == 1) { // Otherwise just give back what we've found (singleton or empty)
         $keys = array_keys($workflows);
         return $keys[0];
     } else {

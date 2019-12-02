@@ -276,8 +276,7 @@ PHP;
 
             // Get content ID
             $content_id = extract_content_str_id_from_data($award_content_row, $info);
-        } // Select mode
-        else {
+        } else { // Select mode
             if ($content_type == 'comcode_page') { // FUDGE
                 // Try and force a parse of the page, so it's in the system
                 $bits = explode(':', $content_id);

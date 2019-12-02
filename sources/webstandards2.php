@@ -775,8 +775,9 @@ function _check_labelling($tag, $attributes, $self_close, $close)
     if (($tag == 'label') && (isset($attributes['for']))) {
         $FOR_LABEL_IDS[$attributes['for']] = 1;
         $FOR_LABEL_IDS_2[$attributes['for']] = 1;
-    } // Check we that all input tags have labels
-    elseif ((!$close) && (($tag == 'textarea') || ($tag == 'select') || (($tag == 'input') && ((!isset($attributes['type'])) || (($attributes['type'] != 'hidden') && ($attributes['type'] != 'button') && ($attributes['type'] != 'image') && ($attributes['type'] != 'reset') && ($attributes['type'] != 'submit')))))) {
+    } elseif ((!$close) && (($tag == 'textarea') || ($tag == 'select') || (($tag == 'input') && ((!isset($attributes['type'])) || (($attributes['type'] != 'hidden') && ($attributes['type'] != 'button') && ($attributes['type'] != 'image') && ($attributes['type'] != 'reset') && ($attributes['type'] != 'submit')))))) {
+        // Check we that all input tags have labels...
+
         if (isset($attributes['id'])) {
             $INPUT_TAG_IDS[$attributes['id']] = 1;
         }
@@ -917,7 +918,8 @@ function _webstandards_css_sheet($data)
                                 }
                             }
                         }
-                    } // We don't explicitly support validating other @-rules (#3928)
+                    }
+                    // We don't explicitly support validating other @-rules (#3928)
                 } else {
                     $at_rule .= $next;
                 }
@@ -941,7 +943,8 @@ function _webstandards_css_sheet($data)
                                     $errors[] = $error;
                                 }
                             }
-                        } // We don't explicitly support validating other @-rules (#3928)
+                        }
+                        // We don't explicitly support validating other @-rules (#3928)
 
                         $matches = [];
                         if (preg_match('#^(\w+)\s*$#', $at_rule, $matches) != 0) {

@@ -3709,7 +3709,8 @@ function seo_meta_load_for($type, $id, $title = null)
         if ($title !== null) {
             set_short_title(str_replace('&ndash;', '-', str_replace('&copy;', '(c)', str_replace('&#039;', '\'', $title))));
         }
-    } // Otherwise don't bother (this is an optimisation)
+    }
+    // Otherwise don't bother (this is an optimisation)
 }
 
 /**
@@ -4110,7 +4111,8 @@ function cms_eval($code, $context, $trigger_error = true)
         } else {
             if (($attach_manually) && (get_option('error_handling_errors') != 'SKIP')) {
                 attach_message(protect_from_escaping(escape_html($context) . ': ' . $errormsg), 'notice'); // Won't attach naturally and won't show in a fatal error, so we must attach it
-            } // other errors will have still been attached anyway (depending on error_handling_* configuration)
+            }
+            // other errors will have still been attached anyway (depending on error_handling_* configuration)
         }
     }
 

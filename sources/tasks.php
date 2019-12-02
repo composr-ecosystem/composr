@@ -291,7 +291,8 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
 
             @unlink($content_result[1]);
             sync_file($content_result[1]);
-        }/* elseif (is_object($content_result))
+        }
+        /* elseif (is_object($content_result))
         {
             $content_result->evaluate_echo(null);
         } else {

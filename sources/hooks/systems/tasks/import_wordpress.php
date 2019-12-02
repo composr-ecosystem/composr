@@ -281,8 +281,9 @@ class Hook_task_import_wordpress
                         if ($imp_con != '') {
                             $_content .= '[surround]' . $imp_con . '[/surround]';
                         } else {
+                            // Not a real page
                             continue;
-                        } /* Not a real page */
+                        }
                         $_content .= "\n\n[block]main_comcode_page_children[/block]";
                         if ($allow_comments == 1) {
                             $_content .= "\n\n[block=\"main\"]main_comments[/block]";

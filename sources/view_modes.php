@@ -252,8 +252,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
         ]);
     }
 
-    // Content translation mode
-    if (substr($special_page_type, 0, 12) == 'lang_content') {
+    if (substr($special_page_type, 0, 12) == 'lang_content') { // Content translation mode
         require_code('translation');
 
         require_code('input_filter_2');
@@ -331,8 +330,8 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'MODSECURITY_WORKAROUND' => true,
         ]);
-    } // Language mode
-    elseif (substr($special_page_type, 0, 4) == 'lang') {
+    }
+    elseif (substr($special_page_type, 0, 4) == 'lang') { // Language mode
         require_code('translation');
 
         require_code('input_filter_2');

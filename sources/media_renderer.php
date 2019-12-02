@@ -435,7 +435,8 @@ abstract class Media_renderer_with_fallback
                     // Natural link
                     if ($click_url !== null) {
                         $attributes['click_url'] = $click_url;
-                    } // Else: no link
+                    }
+                    // Else: no link
                 }
             }
 

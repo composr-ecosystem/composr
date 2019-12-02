@@ -53,15 +53,13 @@ class Hook_profiles_tabs_edit_photo
 
         $order = 30;
 
-        // Special delete actualiser
-        if (post_param_integer('delete_photo', 0) == 1) {
+        if (post_param_integer('delete_photo', 0) == 1) { // Special delete actualiser
             require_code('cns_members_action');
             require_code('cns_members_action2');
             cns_member_choose_photo_concrete('', '', $member_id_of);
 
             attach_message(do_lang_tempcode('SUCCESS_SAVE'), 'inform');
-        } // Actualiser
-        elseif (post_param_integer('submitting_photo_tab', 0) == 1) {
+        } elseif (post_param_integer('submitting_photo_tab', 0) == 1) { // Actualiser
             require_code('cns_members_action');
             require_code('cns_members_action2');
             cns_member_choose_photo('photo_url', 'photo_file', 'photo_thumb_url', 'photo_thumb_file', $member_id_of);

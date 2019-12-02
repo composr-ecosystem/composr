@@ -97,8 +97,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                     require_code('symbols2');
                     if (function_exists('ecv2_' . $name)) {
                         $value = call_user_func('ecv2_' . $name, $lang, $escaped, $param); // A constant?
-                    } // Error :-(
-                    else {
+                    } else { // Error :-(
                         $value = '';
                         if ($GLOBALS['XSS_DETECT']) {
                             ocp_mark_as_escaped($value);

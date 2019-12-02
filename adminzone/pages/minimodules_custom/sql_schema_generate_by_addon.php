@@ -48,7 +48,8 @@ foreach ($tables_by_addon as $addon_name => $tables_in_addon) {
     foreach ($tables_in_addon as $table_in_addon) {
         if (array_key_exists($table_in_addon, $all_tables_detailed)) {
             $tables_in_addon_detailed[$table_in_addon] = $all_tables_detailed[$table_in_addon];
-        } // else not installed
+        }
+        // else not installed
     }
 
     $data = get_innodb_table_sql($tables_in_addon_detailed, $all_tables_detailed);

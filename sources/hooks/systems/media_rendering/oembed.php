@@ -244,16 +244,15 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
         if ($data['type'] == 'photo') {
             $matches = [];
 
-            // Flickr
-            if (preg_match('#^(https?://[^/]+\.staticflickr\.com/.*_)[nm](\.jpg)$#', $data['url'], $matches) != 0) {
+            if (preg_match('#^(https?://[^/]+\.staticflickr\.com/.*_)[nm](\.jpg)$#', $data['url'], $matches) != 0) { // Flickr
                 unset($data['thumb_url']);
                 $data['url'] = $matches[1] . 'b' . $matches[2];
                 $w = $data['width'];
                 $h = $data['height'];
                 $data['width'] = '1024';
                 $data['height'] = strval(intval(1024.0 * floatval($h) / floatval($w)));
-            } // Instagram
-            elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) {
+            }
+            elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) { // Instagram
                 unset($data['thumb_url']);
                 $data['url'] = $matches[1] . 'n' . $matches[2];
                 $w = $data['width'];

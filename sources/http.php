@@ -506,7 +506,9 @@ abstract class HttpDownloader
                     }
                     $this->raw_payload .= 'Content-Length: ' . strval(strlen($_postdetails_params)) . "\r\n";
                     $this->raw_payload .= "\r\n";
-                } // curl sets the above itself
+                }
+                // curl sets the above itself
+
                 $this->raw_payload .= $_postdetails_params;
                 if (!$this->add_content_type_header_manually) {
                     $this->raw_payload .= "\r\n\r\n";

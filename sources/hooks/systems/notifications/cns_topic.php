@@ -297,7 +297,8 @@ class Hook_notification_cns_topic extends Hook_Notification
                         $num_posts_since = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_intended_solely_for IS NULL AND p_topic_id=' . strval(intval($category)) . ' AND p_time>' . strval($read_log_time));
                         if ($num_posts_since <= 1) { // Ah, just this one new post, so we can notify
                             $members_new[$member_id] = $setting;
-                        } // Else we know there have been other posts since and not to send the notification
+                        }
+                        // Else we know there have been other posts since and not to send the notification
                     } else { // We assume has never been visited
                         $members_new[$member_id] = $setting;
                         $GLOBALS['FORUM_DB']->query_insert('f_read_logs', ['l_member_id' => $member_id, 'l_topic_id' => $category, 'l_time' => 0]); // So we can count the number of posts since this

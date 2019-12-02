@@ -220,7 +220,8 @@ function handle_award_setting($content_type, $id)
                 give_award($row['id'], $id);
             } elseif ((!$will_have_award) && ($has_award)) { // Unset
                 $GLOBALS['SITE_DB']->query_delete('award_archive', ['a_type_id' => $row['id'], 'content_id' => strval($id)], '', 1);
-            } // Otherwise we're happy with the current situation (regardless of whether it is set or unset)
+            }
+            // Otherwise we're happy with the current situation (regardless of whether it is set or unset)
         }
     }
 }

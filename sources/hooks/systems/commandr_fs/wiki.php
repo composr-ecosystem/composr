@@ -96,9 +96,10 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
     public function folder_add($filename, $path, $properties)
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
-        if ($category == '') {
+        if ($category == '') { // Can't create more than one root
             $category = strval(db_get_first_id());
-        }/*return false;*/ // Can't create more than one root
+            /*return false;*/
+        }
 
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, $this->folder_resource_type);
 

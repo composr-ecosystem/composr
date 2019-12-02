@@ -131,7 +131,8 @@ NOTE TO PROGRAMMERS:
   **** If you ignore this advice, then your website upgrades (e.g. for bug fixes) will likely kill your changes ****
 ', '', $data);
                 cms_file_put_contents_safe(get_file_base() . '/' . $new_file, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-            } // else already moved
+            }
+            // else already moved
         } else {
             //var_dump($file);
         }

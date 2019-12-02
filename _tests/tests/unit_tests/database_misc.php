@@ -367,6 +367,7 @@ class database_misc_test_set extends cms_test_case
 
         if ($this->only === null) {
             $GLOBALS['SITE_DB']->drop_table_if_exists('testy_test_test');
-        } // Otherwise we're probably testing via manual queries too, so need the table
+        }
+        // Otherwise we're probably testing via manual queries too, so need the table
     }
 }

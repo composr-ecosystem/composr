@@ -934,8 +934,7 @@ function get_id_by_url($url)
                 'post_id' => $post_id,
             ];
         }
-    } // A topic?
-    elseif (isset($parts['page']) && $parts['page'] == 'topicview' && isset($parts['id'])) {
+    } elseif (isset($parts['page']) && $parts['page'] == 'topicview' && isset($parts['id'])) { // A topic?
         $test = is_numeric($parts['id']) ? $parts['id'] : $GLOBALS['SITE_DB']->query_select_value_if_there('url_id_monikers', 'm_resource_id', ['m_resource_page' => 'topicview', 'm_resource_type' => 'browse', 'm_moniker' => $parts['id']]);
         if ($test !== null) {
             $result = $GLOBALS['FORUM_DB']->query_select('f_topics', ['t_cache_first_post_id', 't_forum_id'], ['id' => $test], '', 1);

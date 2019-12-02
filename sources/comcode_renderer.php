@@ -667,8 +667,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             'RESTRICT_VISIBILITY' => strval($source_member),
             'WARNING' => do_lang_tempcode('comcode:NO_ACCESS_FOR_TAG', escape_html($tag), escape_html($username)),
         ]);
-    } // These are just for convenience.. we will remap to more formalised Comcode
-    elseif ($tag == 'codebox') {
+
+        // These below are just for convenience.. we will remap to more formalised Comcode
+    } elseif ($tag == 'codebox') {
         $attributes['scroll'] = '1';
         $tag = 'code';
     } elseif ($tag == 'left') {
@@ -2166,8 +2167,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
             }
 
-            // New attachments: embedded attachments (base64)
-            if ((!is_numeric($id)) && (substr($id, 0, 4) != 'new_')) {
+            if ((!is_numeric($id)) && (substr($id, 0, 4) != 'new_')) { // New attachments: embedded attachments (base64)
                 $file = base64_decode(str_replace("\n", '', $id));
                 if ($file === false) {
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '422658aee3c0eea77ad85d8621af742b', 'WARNING' => do_lang_tempcode('comcode:CORRUPT_ATTACHMENT')]);
@@ -2194,8 +2194,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 if ($db->is_forum_db()) {
                     $url = get_custom_base_url() . '/' . $url;
                 }
-            } // New attachments: uploads
-            elseif (!is_numeric($id)) {
+            } elseif (!is_numeric($id)) { // New attachments: uploads
                 if (substr($id, 0, 4) == 'new_') {
                     disable_php_memory_limit(); // In case needs lots of RAM for thumbnail generation
 
@@ -2216,8 +2215,9 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     }
                     $urls = get_url('', 'file' . $_id, 'uploads/attachments', 2, $enforce_type, ((!array_key_exists('thumb', $attributes)) || ($attributes['thumb'] != '0')) && ($attributes['thumb_url'] == ''), '', '', true, true, true, true, $source_member);
                     if ($urls[0] == '') {
+                        //warn_exit(do_lang_tempcode('ERROR_UPLOADING'));  Can't do this, because this might not be post-calculated if something went wrong once
                         return new Tempcode();
-                    }//warn_exit(do_lang_tempcode('ERROR_UPLOADING'));  Can't do this, because this might not be post-calculated if something went wrong once
+                    }
                     $_size = $_FILES['file' . $_id]['size'];
                     $original_filename = $_FILES['file' . $_id]['name'];
 

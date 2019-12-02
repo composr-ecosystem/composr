@@ -936,8 +936,9 @@ function gallery_breadcrumbs($gallery, $root = 'root', $include_link = false, $z
     if (!array_key_exists($gallery, $pt_pair_cache_g)) {
         $category_rows = $GLOBALS['SITE_DB']->query_select('galleries', ['parent_id', 'fullname'], ['name' => $gallery], '', 1);
         if (!array_key_exists(0, $category_rows)) {
+            //fatal_exit(do_lang_tempcode('CAT_NOT_FOUND',escape_html($gallery), 'gallery'));
             return [];
-        }//fatal_exit(do_lang_tempcode('CAT_NOT_FOUND',escape_html($gallery), 'gallery'));
+        }
         $pt_pair_cache_g[$gallery] = $category_rows[0];
     }
 

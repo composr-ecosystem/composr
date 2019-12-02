@@ -111,7 +111,8 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
         $message = new Swift_Message($subject_wrapped);
         if ($this->sender_email !== null) {
             $message->setFrom([$this->sender_email => $from_name]);
-        } // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
+        }
+        // else maybe server won't let us set it due to whitelist security, and we must let it use it's default (i.e. accountname@hostname)
         $message
             ->setReplyTo([$from_email => $from_name])
             ->setTo($to_array)

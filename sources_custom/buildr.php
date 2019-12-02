@@ -845,7 +845,8 @@ function add_item_to_room($realm, $x, $y, $item_name, $not_infinite, $price, $co
                 fatal_exit(do_lang_tempcode('ACCESS_DENIED__I_ERROR', $GLOBALS['FORUM_DRIVER']->get_username(get_member())));
             }
             $GLOBALS['SITE_DB']->query_update('w_items', ['i_count' => $count + 1], ['name' => $item_name, 'copy_owner' => $copy_owner, 'location_x' => $x, 'location_y' => $y, 'location_realm' => $realm], '', 1);
-        } // No need for an else, because an infinite item doesn't need adding to
+        }
+        // No need for an else, because an infinite item doesn't need adding to
     } else { // We just create it
         $GLOBALS['SITE_DB']->query_insert('w_items', [
             'name' => $item_name,

@@ -194,8 +194,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         }
         require_code('site2');
         redirect_exit($url);
-    } // Being called to display a banner
-    else {
+    } else { // Being called to display a banner
         if ($dest === null) {
             $dest = substr(get_param_string('dest', ''), 0, 80);
         }

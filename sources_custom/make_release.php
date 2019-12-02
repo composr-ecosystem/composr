@@ -691,8 +691,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = "<" . "?php return; ?" . ">\n";
             } elseif ($pretend_dir . $file == 'data_custom/execute_temp.php') { // So that code can't be executed
                 continue; // We'll add this back in later
-            } // Update time of version in version.php
-            elseif ($pretend_dir . $file == 'sources/version.php') {
+            } elseif ($pretend_dir . $file == 'sources/version.php') { // Update time of version in version.php
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file), 1); // Copy file as-is
             } else {
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file);

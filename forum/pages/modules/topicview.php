@@ -621,8 +621,8 @@ class Module_topicview
                 } else {
                     unset($topic_info['may_use_quick_reply']);
                 }
-            } // Maybe we can let them edit their last post instead?
-            elseif ((($topic_info['forum_id'] === null) || (has_privilege(get_member(), 'submit_lowrange_content', 'topics', ['forums', $topic_info['forum_id']]))) && ($topic_info['last_poster'] == get_member()) && (!is_guest()) && (cns_may_edit_post_by($topic_info['last_post_id'], $topic_info['last_time'], get_member(), $topic_info['forum_id'], null, $topic_info['is_open'] == 0))) {
+            } elseif ((($topic_info['forum_id'] === null) || (has_privilege(get_member(), 'submit_lowrange_content', 'topics', ['forums', $topic_info['forum_id']]))) && ($topic_info['last_poster'] == get_member()) && (!is_guest()) && (cns_may_edit_post_by($topic_info['last_post_id'], $topic_info['last_time'], get_member(), $topic_info['forum_id'], null, $topic_info['is_open'] == 0))) {
+                // Maybe we can let them edit their last post instead?
                 $map = ['page' => 'topics', 'type' => 'edit_post', 'id' => $topic_info['last_post_id']];
                 $test = get_param_string('kfs' . strval($topic_info['forum_id']), null, INPUT_FILTER_GET_COMPLEX);
                 if (($test !== null) && ($test !== '0')) {

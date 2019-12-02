@@ -803,8 +803,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                             } else {
                                 $list_type = 'ul';
                             }
-                        } // Rule?
-                        else {
+                        } else { // Rule?
                             list($close_list, $list_indent) = _close_open_lists($list_indent, $list_type);
                             if ($GLOBALS['XSS_DETECT']) {
                                 ocp_mark_as_escaped($close_list);

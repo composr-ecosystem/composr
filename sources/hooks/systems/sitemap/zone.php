@@ -247,7 +247,8 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                     if (get_option('single_public_zone') == '0') {
                         $applicable_page_groupings = [];
                         break;
-                    } // else flow on...
+                    }
+                    // else flow on...
 
                 case 'site':
                     $applicable_page_groupings = [

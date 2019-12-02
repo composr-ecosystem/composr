@@ -189,7 +189,8 @@ function bookings_ical_script()
     if ($pass_ok) {
         header('Content-Type: text/calendar; charset=' . get_charset());
         header('Content-Disposition: inline; filename="bookings_export.ics"');
-    } // If not, it's an admin testing, so just display contents
+    }
+    // If not, it's an admin testing, so just display contents
 
     if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
         return '';

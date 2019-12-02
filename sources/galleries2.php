@@ -295,7 +295,8 @@ function _get_mp4_details_do_atom_list($file, $atom_size = null)
             fseek($file, 8, SEEK_CUR);
             $size = read_network_endian_int(fread($file, 4));
             $count += 12;
-        }// else $qt_atom = false;
+        }
+        // else $qt_atom = false;
 
         $type = fread($file, 4);
         $count += 4;

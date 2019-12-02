@@ -359,7 +359,8 @@ function _get_timezoned_date_time($include_time, $timestamp, $use_contextual_dat
                     $ret1 = cms_strftime($date_string1, $usered_timestamp);
                     $ret2 = ($date_string2 == '') ? '' : cms_strftime($date_string2, $usered_timestamp);
                     $ret = $ret1 . (($ret2 == '') ? '' : ($joiner . $ret2));
-                } // We could go on, and check for month, and year, but it would serve little value - probably would make the user think more than help.
+                }
+                // We could go on, and check for month, and year, but it would serve little value - probably would make the user think more than help.
             }
         }
     }
