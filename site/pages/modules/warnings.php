@@ -864,8 +864,7 @@ class Module_warnings extends Standard_crud_module
                     }
 
                     $start += $max;
-                }
-                while (count($rows) == $max);
+                } while (count($rows) == $max);
             }
         }
 

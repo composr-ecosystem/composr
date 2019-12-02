@@ -219,7 +219,7 @@ class Module_admin_disastr extends Standard_crud_module
 
         $id = get_param_integer('id');
 
-        $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], ['id' => $id], '' , 1);
+        $rows = $GLOBALS['SITE_DB']->query_select('diseases', ['*'], ['id' => $id], '', 1);
         if (!isset($rows[0])) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

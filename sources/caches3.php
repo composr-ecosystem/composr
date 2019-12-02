@@ -213,8 +213,7 @@ function erase_thumb_cache()
                 }
             }
             $start += $max;
-        }
-        while (!empty($rows));
+        } while (!empty($rows));
 
         $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => '']);
     }

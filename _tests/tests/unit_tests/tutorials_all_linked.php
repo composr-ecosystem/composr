@@ -63,7 +63,7 @@ class tutorials_all_linked_test_set extends cms_test_case
 
         $hooks = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
         foreach ($hooks as $hook => $ob) {
-            if (preg_match('#^language_[A-Z]+$#',  $hook) != 0) {
+            if (preg_match('#^language_[A-Z]+$#', $hook) != 0) {
                 continue;
             }
 

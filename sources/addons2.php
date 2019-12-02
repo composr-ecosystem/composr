@@ -1314,8 +1314,7 @@ function get_addon_uninstall_writable_paths($addon_name)
                 }
             }
         }
-    }
-    while ($changes);
+    } while ($changes);
 
     return $writable_paths;
 }

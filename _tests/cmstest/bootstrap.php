@@ -143,7 +143,8 @@ function run_testset($testset)
     $loader = new SimpleFileLoader();
     $suite = $loader->createSuiteFromClasses(
         $testset,
-        [basename($testset) . '_test_set']);
+        [basename($testset) . '_test_set']
+    );
     /*$result=*/$suite->run(new DefaultReporter());
 }
 

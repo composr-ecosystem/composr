@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ ! -f "netbeans/dist/Code_Quality_Checker.jar" ]; then
+if [ ! -f "target/codequalitychecker-11.0.jar" ]; then
 	cd "$(dirname "$0")"
 fi
 
-java -jar "netbeans/dist/Code_Quality_Checker.jar"
+java -jar "target/codequalitychecker-11.0.jar"

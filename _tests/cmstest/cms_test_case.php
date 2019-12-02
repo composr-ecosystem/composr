@@ -75,6 +75,15 @@ class cms_test_case extends WebTestCase
         );
     }
 
+    public function extend_cqc_call($url)
+    {
+        $url .= '&base_path=' . urlencode(get_file_base());
+        if ($this->debug) {
+            $url .= '&codesniffer=1';
+        }
+        return $url;
+    }
+
     public function get($url, $parameters = null)
     {
         $parts = [];

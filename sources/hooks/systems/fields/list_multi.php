@@ -259,8 +259,7 @@ class Hook_fields_list_multi extends ListFieldHook
                         $ret[] = post_param_string('label_for__' . $_tmp_name);
                     }
                     $i++;
-                }
-                while (post_param_string('tick_on_form__' . $_tmp_name, null) !== null);
+                } while (post_param_string('tick_on_form__' . $_tmp_name, null) !== null);
                 break;
 
             case 'multilist':

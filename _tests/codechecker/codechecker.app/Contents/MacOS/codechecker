@@ -1,4 +1,4 @@
 #!/bin/sh
 cd "`dirname $0`"
 cd ../../..
-java -jar "netbeans/dist/Code_Quality_Checker.jar"
+java -jar "dist/Code_Quality_Checker.jar"

@@ -334,8 +334,7 @@ function confluence_clean_page($html)
 
             return $matches[1] . ' responsive-table' . $matches[4];
         }, $html);
-    }
-    while ($html != $html_before);
+    } while ($html != $html_before);
 
     // Clickable images so to allow zoom on mobile
     if (is_mobile()) {

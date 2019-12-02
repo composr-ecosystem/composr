@@ -44,7 +44,7 @@ class password_censor_test_set extends cms_test_case
         }
 
         $topic_id = cns_make_topic($forum_id, 'Test');
-        $post_id = cns_make_post($topic_id, '', 'Password: ' . $test_password, 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '',  null, false, false, false);
+        $post_id = cns_make_post($topic_id, '', 'Password: ' . $test_password, 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '', null, false, false, false);
 
         require_code('password_censor');
         password_censor(true, false, 0);

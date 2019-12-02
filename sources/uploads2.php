@@ -114,8 +114,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
             }
         }
         $start += $max;
-    }
-    while (!empty($rows));
+    } while (!empty($rows));
 
     // Cleanup
     if (empty($where)) {
@@ -209,8 +208,7 @@ function _reorganise_content_row_upload($row, $content_type, $upload_directory, 
         $new_disk_path = get_custom_file_base() . '/' . rawurldecode($new_upload_url);
 
         $i++;
-    }
-    while (is_file($new_disk_path));
+    } while (is_file($new_disk_path));
 
     if (strlen($new_upload_url) > 255) {
         $REORGANISE_UPLOADS_ERRORMSGS[] = 'NOTICE: Too long URL, ' . $new_upload_url . ' for ' . serialize($row);
@@ -323,8 +321,7 @@ function _get_upload_tree_path($content_type, $parent_id, $cma_info, $upload_dir
         if (($parent_id === '') || ($parent_id === null)) {
             break; // Reached root
         }
-    }
-    while (true);
+    } while (true);
 
     return cms_rawurlrecode($upload_directory . (($path == '') ? '' : ('/' . $path)));
 }

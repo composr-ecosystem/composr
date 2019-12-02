@@ -122,8 +122,7 @@ function get_secure_random_number()
         } else {
             $number = mt_rand(1, min(2147483647, mt_getrandmax()));
         }
-    }
-    while ($number <= 0);
+    } while ($number <= 0);
 
     return $number;
 }

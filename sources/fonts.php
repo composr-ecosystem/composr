@@ -181,8 +181,7 @@ function find_all_fonts($test_character_support = false)
                         $font_label = preg_replace('#\s*(Light)($| )#i', ' Light$2', $font_label);
                         $font_label = preg_replace('#\s*(Extra Light)($| )#i', ' Extra Light$2', $font_label);
                         $font_label = preg_replace('#\s*(Thin)($| )#i', ' Thin$2', $font_label);
-                    }
-                    while ($font_label != $_font_label);
+                    } while ($font_label != $_font_label);
                     $font_label = str_replace('Italic', ' Italic', $font_label);
                     $font_label = trim(preg_replace('#\s+#', ' ', $font_label));
 

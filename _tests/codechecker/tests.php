@@ -58,8 +58,7 @@ foreach ([1,2] as \$a=>\$b)
     do
     {
         // Pointless and unnecessary comment
-    }
-    while (false);
+    } while (false);
 }
 
 END;
@@ -264,8 +263,7 @@ if (true)
                     } else {
                             echo 3;
                     }
-            }
-            while (true);
+            } while (true);
         }
     }
 }

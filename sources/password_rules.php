@@ -68,8 +68,7 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
                 $password = substr($password, 0, $pos) . substr($password, $pos + strlen($tainted_substring));
                 $password_upper = cms_mb_strtoupper($password);
             }
-        }
-        while ($pos !== false);
+        } while ($pos !== false);
     }
 
     // Simple dictionary pass

@@ -21,7 +21,9 @@ class cqc_site_test_set extends cms_test_case
     public function testSite()
     {
         cms_disable_time_limit();
-        $result = http_get_contents(get_base_url() . '/_tests/codechecker/code_quality.php?subdir=site&api=1', ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=site&api=1&todo=1';
+        $url = $this->extend_cqc_call($url);
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         foreach (explode('<br />', $result) as $line) {
             $this->assertTrue($this->should_filter_cqc_line($line), $line);
         }

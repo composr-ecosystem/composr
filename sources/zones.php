@@ -515,8 +515,7 @@ function get_module_zone($module_name, $type = 'modules', $dir2 = null, $ftype =
             }
         }
         $start += 50;
-    }
-    while (count($zones) == $max);
+    } while (count($zones) == $max);
 
     foreach ($zones as $zone) { // Okay, finally check for redirects
         if (($check_redirects) && (isset($REDIRECT_CACHE[$zone][strtolower($module_name)])) && ($REDIRECT_CACHE[$zone][strtolower($module_name)]['r_is_transparent'] === 1)) {

@@ -53,8 +53,7 @@ function shorten_urlencoded_filename($filename, $length = 226)
             }
             $filename_stem .= $next_mb_char;
             $i++;
-        }
-        while ($i < $mb_len);
+        } while ($i < $mb_len);
 
         $filename = $filename_stem . '.' . $filename_suffix;
     }
@@ -147,7 +146,7 @@ class HarmlessURLCoder
     public function decode($str)
     {
         if ((function_exists('idn_to_utf8')) && (strpos($str, '://') !== false) && (get_charset() == 'utf-8')) {
-            $domain = parse_url($str,  PHP_URL_HOST);
+            $domain = parse_url($str, PHP_URL_HOST);
             $_domain = @/*LEGACY @ to remove awkward temporary INTL_IDNA_VARIANT_2003 deprecation message that exists until PHP4*/idn_to_utf8($domain);
             if ($_domain !== false) {
                 $str = preg_replace('#(^.*://)' . preg_quote($domain, '#') . '(.*$)#U', '$1' . $_domain . '$2', $str);

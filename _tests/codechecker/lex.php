@@ -207,9 +207,7 @@ function lex($text = null)
 
         if (substr($FILENAME, -4) == '.css') {
             $webstandards_parse = check_css($TEXT);
-        }
-
-        elseif (substr($FILENAME, -3) == '.js') {
+        } elseif (substr($FILENAME, -3) == '.js') {
             require_code('webstandards_js_lint');
             init__webstandards_js_lint();
             require_code('webstandards_js_parse');
@@ -218,11 +216,9 @@ function lex($text = null)
             init__webstandards_js_lex();
 
             $webstandards_parse = check_js($TEXT);
-        }
-
-        else {
+        } else {
             $is_fragment = (strpos($TEXT, '<!DOCTYPE') === false);
-            $webstandards_manual = !empty($GLOBALS['CHECKS']);
+            $webstandards_manual = !empty($GLOBALS['FLAG__MANUAL_CHECKS']);
             $webstandards_parse = check_xhtml($TEXT, false, $is_fragment, true, true, true, true, false, $webstandards_manual, false);
         }
 
@@ -613,12 +609,12 @@ function lex($text = null)
                 // Exit case
                 if ($char == "\n" . $heredoc_nowdoc_symbol . ';') {
                     $lex_state = PLEXER_FREE;
-                    if ((isset($GLOBALS['CHECKS'])) && (preg_match('#<[^<>]*>#', $special_token_value) != 0)) {
+                    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (preg_match('#<[^<>]*>#', $special_token_value) != 0)) {
                         log_warning('It looks like HTML used outside of templates', $i, true);
                     }
                     $tokens[] = ['string_literal', $special_token_value, $i];
                     $tokens[] = ['COMMAND_TERMINATE', $i];
-                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';
@@ -813,7 +809,7 @@ function lex($text = null)
                 if (($char == '"') && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
                     $tokens[] = ['string_literal', $special_token_value, $i];
-                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';
@@ -867,7 +863,7 @@ function lex($text = null)
                 if (($char == "'") && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
                     $tokens[] = ['string_literal', $special_token_value, $i];
-                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Shouldn\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';

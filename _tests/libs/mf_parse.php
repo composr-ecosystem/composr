@@ -1,5 +1,8 @@
 <?php
 
+/*CQC: No API check*/
+/*CQC: No check*/
+
 namespace Mf2;
 
 use DOMDocument;

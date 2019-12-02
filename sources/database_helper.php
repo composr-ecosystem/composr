@@ -751,7 +751,7 @@ function _helper_alter_table_field($this_ref, $table_name, $name, $_type, $new_n
                 }
             }
             if ($changed_index) {
-                $this_ref->query_update('db_meta_indices', ['i_fields' => implode(',', $fields)], ['i_table' =>$table_name, 'i_name' => $index['i_name']]);
+                $this_ref->query_update('db_meta_indices', ['i_fields' => implode(',', $fields)], ['i_table' => $table_name, 'i_name' => $index['i_name']]);
             }
         }
     }
@@ -863,8 +863,7 @@ function _helper_add_auto_key($this_ref, $table_name, $field_name)
             $i++;
         }
         $start += 100;
-    }
-    while (!empty($rows));
+    } while (!empty($rows));
 
     // Set the new key
     $this_ref->change_primary_key($table_name, [$field_name]);

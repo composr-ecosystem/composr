@@ -1264,11 +1264,9 @@ class Database_Static_xml extends DatabaseDriver
         foreach ($record as $key => $val) {
             if (is_integer($val)) {
                 $val = strval($val);
-            }
-            elseif (is_float($val)) {
+            } elseif (is_float($val)) {
                 $val = float_to_raw_string($val);
-            }
-            elseif ($val === null) {
+            } elseif ($val === null) {
                 $val = '';
             }
             $contents .= "\t<" . $key . ">" . xmlentities($val) . "</" . $key . ">\n";
@@ -2020,8 +2018,7 @@ class Database_Static_xml extends DatabaseDriver
                         $at--;
                         break;
                     }
-                }
-                while (true);
+                } while (true);
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
                     return null;
                 }
@@ -3152,8 +3149,7 @@ class Database_Static_xml extends DatabaseDriver
         $done = 0;
         if (empty($joins)) {
             $records = [[]];
-        }
-        elseif ((count($joins) == 1) && (!is_array($joins[0][1])) && ($where_expr == ['LITERAL', true]) && ($select === [['COUNT', '*']]) && ($orders === null)) { // Quick fudge to get fast table counts
+        } elseif ((count($joins) == 1) && (!is_array($joins[0][1])) && ($where_expr == ['LITERAL', true]) && ($select === [['COUNT', '*']]) && ($orders === null)) { // Quick fudge to get fast table counts
             global $DIR_CONTENTS_CACHE;
             if (!isset($DIR_CONTENTS_CACHE[$joins[0][1]])) {
                 if (is_dir($db[0] . '/' . $joins[0][1])) {

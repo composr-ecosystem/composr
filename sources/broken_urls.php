@@ -387,8 +387,7 @@ class BrokenURLScanner
                         }
                     }
                 }
-            }
-            while ($continuing);
+            } while ($continuing);
         }
 
         return $urls;

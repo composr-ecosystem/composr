@@ -39,7 +39,8 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 foreach ($files as $file) {
                     if (substr($file, -4) == '.php') {
                         // Exceptions
-                        $no_go_dirs = ['sources_custom/aws',
+                        $no_go_dirs = [
+                            'sources_custom/aws',
                             'sources_custom/swift_mailer',
                             'tracker',
                             'sources_custom/spout',
@@ -53,11 +54,12 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             '_tests/simpletest',
                             'mobiquo/lib',
                             'mobiquo/smartbanner',
-                            'sources_custom/composr_mobile_sdk/ios',
-                            'sources_custom/composr_mobile_sdk/android',
                             '_tests/codechecker',
                             'sources_custom/Cloudinary',
                             'sources_custom/facebook',
+                            'data_custom/upload-crop',
+                            'exports',
+                            'sources_custom/composr_mobile_sdk/ios/ApnsPHP',
                         ];
                         if (preg_match('#^(' . implode('|', $no_go_dirs) . ')/#', $file) != 0) {
                             continue;
@@ -66,10 +68,12 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             'sources_custom/sugar_crm_lib.php',
                             'sources_custom/curl.php',
                             'sources_custom/geshi.php',
-                            'sources_custom/sugarcrm.php',
-                            'data_custom/upload-crop/upload_crop_v1.2.php',
-                            'sources_custom/hooks/systems/startup/tapatalk.php',
                             '_tests/libs/mf_parse.php',
+                            'data_custom/errorlog.php',
+                            'data_custom/execute_temp.php',
+                            'sources_custom/browser_detect.php',
+                            'sources_custom/twitter.php',
+                            '_config.php',
                         ])) {
                             continue;
                         }
@@ -83,16 +87,14 @@ class _cqc_nonbundled_test_set extends cms_test_case
         define('PER_RUN', 20);
         $count = count($to_scan);
         for ($i = 0; $i < $count; $i += PER_RUN) {
-            $url = get_base_url() . '/_tests/codechecker/code_quality.php?api=1&to_use=';
+            $url = get_base_url() . '/_tests/codechecker/codechecker.php?api=1&todo=1';
+            $url = $this->extend_cqc_call($url);
             for ($j = $i; $j < $i + PER_RUN; $j++) {
                 if (!isset($to_scan[$j])) {
                     break;
                 }
 
-                if ($j != $i) {
-                    $url .= ':';
-                }
-                $url .= urlencode($to_scan[$j]);
+                $url .= '&to_use[' . strval($j - $i) . ']=' . urlencode($to_scan[$j]);
             }
             $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
             foreach (explode('<br />', $result) as $line) {

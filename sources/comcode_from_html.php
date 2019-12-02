@@ -680,8 +680,7 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
     do {
         $old = $semihtml;
         $semihtml = preg_replace('# style="([^"]*); ?; ?+[^"]*#', ' style="$1;', $semihtml);
-    }
-    while ($old != $semihtml);
+    } while ($old != $semihtml);
     $semihtml = str_replace(' style=""', '', $semihtml);
 
     // Cleanup impossible stuff in code tags
@@ -928,8 +927,7 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
     do {
         $old = $semihtml;
         $semihtml = preg_replace('# style="([^"]*); ?; ?+[^"]*#', ' style="$1;', $semihtml);
-    }
-    while ($old != $semihtml);
+    } while ($old != $semihtml);
     $semihtml = str_replace(' style=""', '', $semihtml);
 
     // Clean some now-empty span/p/align tags

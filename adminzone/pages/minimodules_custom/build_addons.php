@@ -241,7 +241,7 @@ echo "<hr /><p><strong>Done. To deploy live upload changed files from <kbd>expor
 function update_addon_descriptions($file, $name, $description)
 {
     $_description = addslashes($description);
-return <<<END
+    return <<<END
     :\$GLOBALS['SITE_DB']->query_update('download_downloads', ['the_description' => '{$_description}'], ['url' => 'uploads/downloads/' . rawurlencode('{$file}']));
 END;
 }

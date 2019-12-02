@@ -544,7 +544,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
             }
         }
 
-        if ((($attribute == 'alt') || ($attribute == 'title') || (($attribute == 'content') && (array_key_exists('http-equiv', $attributes)) && ((strtolower($attributes['http-equiv']) == 'description') || (strtolower($attributes['http-equiv']) == 'keywords')))) && (function_exists('pspell_new')) && (!empty($GLOBALS['SPELLING'])) && ($value != '')) {
+        if ((($attribute == 'alt') || ($attribute == 'title') || (($attribute == 'content') && (array_key_exists('http-equiv', $attributes)) && ((strtolower($attributes['http-equiv']) == 'description') || (strtolower($attributes['http-equiv']) == 'keywords')))) && (function_exists('pspell_new')) && (!empty($GLOBALS['FLAG__SPELLING'])) && ($value != '')) {
             $errors = array_merge($errors, check_spelling(clean_simple_html_for_spellcheck($value)));
         }
 
@@ -1290,7 +1290,7 @@ function _check_css_value($key, $value, $_i)
         return [0 => 'CSS_BAD_PROPERTY_VALUE', 1 => $key, 2 => $value, 3 => $reg_exp, 'pos' => $_i];
     }
 
-    if (!empty($GLOBALS['PEDANTIC'])) {
+    if (!empty($GLOBALS['FLAG__PEDANTIC'])) {
         if (($key == 'font-size') && (substr($value, -2) == 'px')) {
             return [0 => 'CSS_PX_FONT', 'pos' => $_i];
         }

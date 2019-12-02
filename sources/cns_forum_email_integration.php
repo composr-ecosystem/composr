@@ -258,8 +258,7 @@ class ForumEmailIntegration extends EmailIntegration
                 $title = substr($title, 4);
                 $changed = true;
             }
-        }
-        while ($changed);
+        } while ($changed);
 
         // Try and match to a topic
         $topic_id = null;

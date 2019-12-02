@@ -26,7 +26,7 @@ function parse($_tokens = null)
     $structure = _parse_php($TOKENS);
     $structure['ok_extra_functions'] = $OK_EXTRA_FUNCTIONS;
     global $FILENAME;
-    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'global.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'static_cache.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
+    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources/global.php') && ($FILENAME != 'sources/static_cache.php') && ($FILENAME != 'sources/critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
         log_warning('Sources files should not contain loose code');
     }
 
@@ -327,8 +327,8 @@ function _test_command_end()
     }
 
     global $TOKENS, $I, $TEXT;
-    if (($next != 'BOOLEAN_OR_2') && (strpos($TEXT, '?>') !== false)) {
-        if ((isset($TOKENS[$I + 1])) && (!in_array($TOKENS[$I + 1][0], array('START_ML_COMMENT', 'COMMENT', 'comment')))) {
+    if (($next != 'BOOLEAN_OR_2') && (strpos($TEXT, '?' . '>') !== false)) {
+        if ((isset($TOKENS[$I + 1])) && (!in_array($TOKENS[$I + 1][0], ['START_ML_COMMENT', 'COMMENT', 'comment']))) {
             $between_tokens = substr($TEXT, end($TOKENS[$I]), end($TOKENS[$I + 1]) - end($TOKENS[$I]));
             if (strpos($between_tokens, "\n") === false) {
                 parser_warning('Multiple commands on one line, violates PSR-12, ' . $TOKENS[$I + 1][0]);
@@ -391,6 +391,7 @@ function _parse_command_actual($no_term_needed = false)
             pparse__parser_next();
             $is_static = true;
             $static_set = [];
+            // no break
 
         case 'variable':
             do {
@@ -651,6 +652,7 @@ function _parse_command_actual($no_term_needed = false)
                         if (pparse__parser_peek() != 'CURLY_OPEN') {
                             parser_error('Expected code block after "catch".');
                         }
+                        // no break
                     case 'CURLY_OPEN':
                         $catch = _parse_command(true);
                         $catches[] = ['CATCH', $exception, $catch, $catch_position];
@@ -900,7 +902,7 @@ function _parse_cases()
                 }
                 if (count($commands) > 0) {
                     $last_command = $commands[count($commands) - 1];
-                    if (!in_array($last_command[0], array('BREAK', 'CONTINUE', 'CASE', 'RETURN'))) {
+                    if (!in_array($last_command[0], ['BREAK', 'CONTINUE', 'CASE', 'RETURN'])) {
                         global $TOKENS, $I;
                         if ((!isset($TOKENS[$I - 1])) || ($TOKENS[$I - 1][0] != 'comment') || (strpos($TOKENS[$I - 1][1], 'no break') === false)) {
                             log_warning('PSR-12: Missing break at end of case statement, and not marked with "no break" comment (last token was ' . $TOKENS[$I - 1][0] . ')');
@@ -954,8 +956,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                 do {
                     pparse__parser_next();
                     $class['traits'][] = pparse__parser_expect('IDENTIFIER');
-                }
-                while (pparse__parser_peek() == 'COMMA');
+                } while (pparse__parser_peek() == 'COMMA');
 
                 if (pparse__parser_peek() == 'CURLY_OPEN') {
                     pparse__parser_next();
@@ -980,8 +981,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                         }
 
                         pparse__parser_expect('COMMAND_TERMINATE');
-                    }
-                    while (pparse__parser_peek() != 'CURLY_CLOSE');
+                    } while (pparse__parser_peek() != 'CURLY_CLOSE');
                     pparse__parser_expect('CURLY_CLOSE');
                 } else {
                     pparse__parser_expect('COMMAND_TERMINATE');
@@ -993,6 +993,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                 if ($is_interface) {
                     log_warning('Interfaces cannot contain anything protected or private');
                 }
+                // no break
             case 'PUBLIC':
                 if (in_array('public', $modifiers) || in_array('private', $modifiers) || in_array('protected', $modifiers)) {
                     log_warning('Multiple visibility levels defined: ' . implode(', ', $modifiers) . ', ' . $next);
@@ -1010,11 +1011,13 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                     pparse__parser_next(); // VAR does this in its do-while loop
                     break;
                 }
+                // no break
 
             case 'VAR':
                 if ($next == 'VAR') {
                     log_warning('Don\'t use the var keyword anymore, it is deprecated');
                 }
+                // no break
 
             case 'CONST':
                 do {
@@ -1110,6 +1113,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                                     log_warning('Abstract keyword applied to member variable');
                                     break;
                                 }
+                                // no break
                             default:
                                 // Invalid
                                 log_warning('Visibility keywords are only valid for functions and member variables, not ' . pparse__parser_peek());
@@ -1312,6 +1316,7 @@ function _parse_expression_inner()
             pparse__parser_next();
             pparse__parser_expect('FUNCTION');
             $GLOBALS['I']--;
+            // no break
         case 'FUNCTION':
             $_function = _parse_function_def([], true);
             $expression = ['CLOSURE', $_function, ($next == 'STATIC'), $GLOBALS['I']];
@@ -1986,6 +1991,7 @@ function _parse_parameter($for_function_definition = false)
             case 'VARIADIC':
                 $is_variadic = true;
                 $next = pparse__parser_expect('variable');
+                // no break
             case 'variable':
                 // 'RECEIVE_BY_REFERENCE' and 'RECEIVE_BY_VALUE' aren't actually used for anything specifically.
                 $parameter = ['RECEIVE_BY_VALUE', $next[1], null, $hint, $is_variadic, $GLOBALS['I']];
@@ -2121,7 +2127,7 @@ function handle_comment($comment)
     if (strpos($comment[1], 'HACKHACK') !== false) {
         log_warning('HACKHACK comment found [should be a FUDGE] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
     }
-    if (isset($GLOBALS['TODO'])) {
+    if (isset($GLOBALS['FLAG__TODO'])) {
         if (strpos($comment[1], 'TODO') !== false) {
             log_warning('TODO comment found (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
         }

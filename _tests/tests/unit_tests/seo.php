@@ -31,7 +31,7 @@ class seo_test_set extends cms_test_case
         //  no stop words
         //  first word detected
         list($keywords) = _seo_meta_find_data(['hello Mr Tester this Is a world-renowned luxorious test. Epic epic testing, it shan\'t fail.'], '');
-        $_keywords = explode(',' , $keywords);
+        $_keywords = explode(',', $keywords);
         sort($_keywords); // We need to re-sort, as the occurrence-based sort order isn't fully defined
         $keywords = implode(',', $_keywords);
         $this->assertTrue($keywords == 'Mr Tester,epic,fail,hello,luxorious,shan\'t,testing,world-renowned', 'Got: ' . $keywords);

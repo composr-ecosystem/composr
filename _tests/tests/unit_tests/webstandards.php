@@ -18,12 +18,6 @@
  */
 class webstandards_test_set extends cms_test_case
 {
-    public function testCQCFailuresStillWork()
-    {
-        $result = http_get_contents(get_base_url() . '/_tests/codechecker/code_quality.php?test=10', ['convert_to_internal_encoding' => true]);
-        $this->assertTrue(strpos($result, 'Bad return type') !== false);
-    }
-
     public function testWebStandardsFailuresStillWork()
     {
         require_code('webstandards');

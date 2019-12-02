@@ -18,13 +18,21 @@
  */
 class cqc_explicit_fail_test_set extends cms_test_case
 {
-    public function testDatabase()
+    public function testCQCTestsStillWork()
+    {
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?test=10';
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true]);
+        $this->assertTrue(strpos($result, 'Bad return type') !== false);
+    }
+
+    public function testCQCFailuresStillWork()
     {
         cms_disable_time_limit();
         $path = get_file_base() . '/temp/temp.php';
         require_code('files');
         cms_file_put_contents_safe($path, "<" . "?= foo() . 1 + ''\n");
-        $result = http_get_contents(get_base_url() . '/_tests/codechecker/code_quality.php?subdir=temp&api=1', ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=temp&api=1';
+        $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         unlink($path);
 
         $this->assertTrue(strpos($result, 'Could not find function') !== false, 'Should have an error but does not (' . $result . ')');

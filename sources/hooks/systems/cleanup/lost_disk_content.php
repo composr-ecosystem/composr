@@ -59,8 +59,7 @@ class Hook_cleanup_lost_disk_content
                 }
             }
             $start += $max;
-        }
-        while (count($zones) == $max);
+        } while (count($zones) == $max);
         foreach ($to_delete as $zone_name) {
             actual_delete_zone_lite($zone_name);
         }
@@ -81,8 +80,7 @@ class Hook_cleanup_lost_disk_content
                     }
                 }
                 $start += $max;
-            }
-            while (count($zones) == $max);
+            } while (count($zones) == $max);
             foreach ($to_delete as $page_details) {
                 delete_cms_page($page_details[0], $page_details[1], 'comcode_custom');
                 $GLOBALS['SITE_DB']->query_delete('comcode_pages', ['the_zone' => $page_details[0], 'the_page' => $page_details[1]], '', 1);

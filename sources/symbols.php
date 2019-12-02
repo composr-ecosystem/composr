@@ -738,8 +738,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                                 }
 
                                 $prior_pos_end = $pos_end + $end_len;
-                            }
-                            while (true);
+                            } while (true);
                             $after = substr($value, $prior_pos_end, $insert_pos - $prior_pos_end);
                             $tail = substr($value, $insert_pos);
                             $value = $new_value . $script_buildup . $tail;
@@ -4167,8 +4166,7 @@ function ecv_RAND($lang, $escaped, $param)
         }
         do {
             $random = mt_rand($min, $max);
-        }
-        while (isset($before[$key][$random]));
+        } while (isset($before[$key][$random]));
         if (count($before[$key]) < $max - $min) {
             $before[$key][$random] = true;
         } else { // Reset, so we get another set to randomise through

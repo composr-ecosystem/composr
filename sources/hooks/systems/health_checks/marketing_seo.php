@@ -322,7 +322,6 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
                 $this->assertTrue(!is_unbannable_bot_ip($row['ip']), 'Accidentally banned a web crawler (according to IP address): ' . $row['ip']);
             }
             $start += 100;
-        }
-        while (!empty($rows));
+        } while (!empty($rows));
     }
 }

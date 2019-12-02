@@ -1,4 +1,4 @@
 #!/bin/sh
 
-javac -d netbeans/build/classes netbeans/src/codequalitychecker/*.java -Xlint:unchecked
-jar cfe netbeans/dist/Code_Quality_Checker.jar codequalitychecker.Main -C netbeans/build/classes codequalitychecker
+javac -d target/classes src/main/java/com/composrfoundation/codequalitychecker/*.java -Xlint:unchecked
+jar cfe target/codequalitychecker-11.0.jar com.composrfoundation.codequalitychecker.Main -C target/classes .

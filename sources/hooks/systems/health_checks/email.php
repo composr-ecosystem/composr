@@ -678,8 +678,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 $time_taken = time() - $time_started;
 
                 $i++;
-            }
-            while ((!$good) && ($time_taken < $wait_time) && ($ok));
+            } while ((!$good) && ($time_taken < $wait_time) && ($ok));
 
             $this->assertTrue($good, 'Did not receive test e-mail within ' . display_time_period($wait_time));
         } else {

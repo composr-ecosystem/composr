@@ -459,7 +459,7 @@ function _find_spell_checker()
         return 'enchant';
     }
 
-    if (strpos($_SERVER['PHP_SELF'], 'code_quality.php') !== false) {
+    if (strpos($_SERVER['PHP_SELF'], 'codechecker.php') !== false) {
         // Allow testing even if pspell not working
         return 'mock';
     }

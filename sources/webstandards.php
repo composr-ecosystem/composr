@@ -1541,7 +1541,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
     }
 
     // Main spelling
-    if (!empty($GLOBALS['SPELLING'])) {
+    if (!empty($GLOBALS['FLAG__SPELLING'])) {
         $stripped = $OUT;
         $matches = [];
         if (stripos($stripped, '<style') !== false) {

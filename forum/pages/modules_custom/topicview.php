@@ -120,7 +120,8 @@ function jestr_leet_filter($in)
             '0', 'P', 'Q', 'R', '5', '7', 'U', 'V',
             'W', 'X', 'Y', '2',
         ],
-        $in);
+        $in
+    );
 
     return $in;
 }

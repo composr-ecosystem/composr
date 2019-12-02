@@ -579,8 +579,7 @@ class Module_topics
         // Certain aspects relating to the posting system
         $fields = new Tempcode();
         $hidden = $this->keep_markers();
-        $fields->attach(form_input_tree_list(do_lang_tempcode('DESTINATION_FORUM'), do_lang_tempcode('DESCRIPTION_POSTS_DESTINATION_FORUM'), 'to_forum_id', null, 'choose_forum', [], true,
-            strval($topic_info['t_forum_id'])));
+        $fields->attach(form_input_tree_list(do_lang_tempcode('DESTINATION_FORUM'), do_lang_tempcode('DESCRIPTION_POSTS_DESTINATION_FORUM'), 'to_forum_id', null, 'choose_forum', [], true, strval($topic_info['t_forum_id'])));
         $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('TOPIC_TITLE_WILL_BE'), 'title', $default_title, false, null, 120));
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE_IF_EMPTY'), do_lang_tempcode('DESCRIPTION_DELETE_IF_EMPTY'), 'delete_if_empty', true));
         $fields->attach(form_input_line(do_lang_tempcode('REASON'), do_lang_tempcode('DESCRIPTION_REASON'), 'reason', '', false));
@@ -747,8 +746,7 @@ class Module_topics
         }
 
         if ($success != count($topics)) {
-            attach_message(do_lang_tempcode('MARK_UNREAD_TOO_OLD', escape_html(integer_format(count($topics) - $success)), escape_html(integer_format(intval(get_option('post_read_history_days'))))),
-                'warn');
+            attach_message(do_lang_tempcode('MARK_UNREAD_TOO_OLD', escape_html(integer_format(count($topics) - $success)), escape_html(integer_format(intval(get_option('post_read_history_days'))))), 'warn');
         }
 
         if ($forum_id === null) {
@@ -1485,8 +1483,7 @@ class Module_topics
 
         $post = new Tempcode();
         foreach ($quotes as $quote) {
-            $_postdetails = $GLOBALS['FORUM_DB']->query_select('f_posts',
-                ['p_cache_forum_id', 'p_post', 'p_poster_name_if_guest', 'p_topic_id', 'p_intended_solely_for', 'p_poster', 'p_validated', 'p_ip_address'], ['id' => $quote], '', 1);
+            $_postdetails = $GLOBALS['FORUM_DB']->query_select('f_posts', ['p_cache_forum_id', 'p_post', 'p_poster_name_if_guest', 'p_topic_id', 'p_intended_solely_for', 'p_poster', 'p_validated', 'p_ip_address'], ['id' => $quote], '', 1);
             if (!array_key_exists(0, $_postdetails)) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'post'));
             }
@@ -2085,11 +2082,9 @@ class Module_topics
         if (cns_may_moderate_forum($forum_id, get_member())) {
             require_code('cns_forums2');
 
-            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER',
-                ['_GUID' => '061fdbebcc17e08e8d6ff2c329f3d483', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('TOPIC_MODERATION')]));
+            $specialisation2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '061fdbebcc17e08e8d6ff2c329f3d483', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('TOPIC_MODERATION')]));
             $specialisation2->attach(form_input_line(do_lang_tempcode('TITLE'), '', 'new_title', $topic_title, false));
-            $specialisation2->attach(form_input_tree_list(do_lang_tempcode('DESTINATION_FORUM'), do_lang_tempcode('DESCRIPTION_DESTINATION_FORUM'), 'to', null, 'choose_forum', [], false,
-                ($forum_id === null) ? '' : strval($forum_id)));
+            $specialisation2->attach(form_input_tree_list(do_lang_tempcode('DESTINATION_FORUM'), do_lang_tempcode('DESCRIPTION_DESTINATION_FORUM'), 'to', null, 'choose_forum', [], false, ($forum_id === null) ? '' : strval($forum_id)));
             $options = [
                 [do_lang_tempcode('OPEN'), 'open', $topic_info['t_is_open'] == 1, do_lang_tempcode('DESCRIPTION_OPEN')],
                 [do_lang_tempcode('PINNED'), 'pinned', $topic_info['t_pinned'] == 1, do_lang_tempcode('DESCRIPTION_PINNED')],
@@ -2122,8 +2117,7 @@ class Module_topics
         $specialisation2->attach(metadata_get_fields('post', null));
 
         $topic_posts = new Tempcode();
-        $posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE p_topic_id=' . strval($topic_id) . ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ') AND p_validated=1 ORDER BY p_time DESC,p.id DESC',
-            20);
+        $posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p WHERE p_topic_id=' . strval($topic_id) . ' AND (p_intended_solely_for IS NULL OR p_intended_solely_for=' . strval(get_member()) . ' OR p_poster=' . strval(get_member()) . ') AND p_validated=1 ORDER BY p_time DESC,p.id DESC', 20);
         foreach ($posts as $row) {
             $topic_posts->attach(render_post_box($row, true, false, false));
         }
@@ -2338,8 +2332,7 @@ class Module_topics
                     }
                 }
 
-                $topic_id = cns_make_topic(null, post_param_string('description', ''), post_param_string('emoticon', ''), $topic_validated, post_param_integer('open', 0),
-                    post_param_integer('pinned', 0), post_param_integer('cascading', 0), get_member(), $member_id, true, $metadata['views']);
+                $topic_id = cns_make_topic(null, post_param_string('description', ''), post_param_string('emoticon', ''), $topic_validated, post_param_integer('open', 0), post_param_integer('pinned', 0), post_param_integer('cascading', 0), get_member(), $member_id, true, $metadata['views']);
                 $first_post = true;
                 $_title = get_screen_title('ADD_PRIVATE_TOPIC');
             } else { // New topic
@@ -2351,8 +2344,7 @@ class Module_topics
                     }
                 }
 
-                $topic_id = cns_make_topic($forum_id, post_param_string('description', ''), post_param_string('emoticon', ''), $topic_validated, post_param_integer('open', 0),
-                    post_param_integer('pinned', 0), post_param_integer('cascading', 0), null, null, true, $metadata['views']);
+                $topic_id = cns_make_topic($forum_id, post_param_string('description', ''), post_param_string('emoticon', ''), $topic_validated, post_param_integer('open', 0), post_param_integer('pinned', 0), post_param_integer('cascading', 0), null, null, true, $metadata['views']);
                 $first_post = true;
                 $_title = get_screen_title('ADD_TOPIC');
 
@@ -2371,8 +2363,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $schedule_code, 3, $start_year, $start_month, $start_day,
-                        'day_of_month', $start_hour, $start_minute);
+                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
                     regenerate_event_reminder_jobs($event_id);
 
                     $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_validated' => 0], ['id' => $topic_id], '', 1);
@@ -2445,8 +2436,7 @@ END;
                     $start_hour = intval(date('H', $schedule));
                     $start_minute = intval(date('i', $schedule));
                     require_code('calendar2');
-                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_POST'), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour,
-                        $start_minute);
+                    $event_id = add_calendar_event(db_get_first_id(), '', null, 0, do_lang('ADD_POST'), $schedule_code, 3, $start_year, $start_month, $start_day, 'day_of_month', $start_hour, $start_minute);
                     regenerate_event_reminder_jobs($event_id);
 
                     $text = do_lang_tempcode('SUCCESS');
@@ -2500,9 +2490,7 @@ END;
             }
         }
 
-        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, $validated, $is_emphasised, $poster_name_if_guest, null, $metadata['add_time'], $metadata['submitter'],
-            $intended_solely_for, null, null, $check_permissions, true, null, true, $topic_title, null, $anonymous == 1, $forum_id === null || ($forum_id === null),
-            $forum_id === null || ($forum_id === null), false, $parent_id);
+        $post_id = cns_make_post($topic_id, $title, $post, $skip_sig, $first_post, $validated, $is_emphasised, $poster_name_if_guest, null, $metadata['add_time'], $metadata['submitter'], $intended_solely_for, null, null, $check_permissions, true, null, true, $topic_title, null, $anonymous == 1, $forum_id === null || ($forum_id === null), $forum_id === null || ($forum_id === null), false, $parent_id);
 
         set_url_moniker('post', strval($post_id));
 
@@ -2515,8 +2503,7 @@ END;
             require_code('users2');
             if ((has_actual_page_access(get_modal_user(), 'forumview')) && (has_category_access(get_modal_user(), 'forums', strval($forum_id)))) {
                 require_code('activities');
-                syndicate_described_activity($first_post ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $first_post ? $title : $topic_title, '', '',
-                    '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum');
+                syndicate_described_activity($first_post ? 'cns:ACTIVITY_ADD_TOPIC' : 'cns:ACTIVITY_ADD_POST_IN', $first_post ? $title : $topic_title, '', '', '_SEARCH:topicview:browse:' . strval($topic_id) . '#post_' . strval($post_id), '', '', 'cns_forum');
             }
         }
 
@@ -3358,9 +3345,7 @@ END;
             }
         }
 
-        $topic_id = cns_edit_post($post_id, $validated, post_param_string('title', ''), post_param_string('post'), post_param_integer('skip_sig', 0), post_param_integer('is_emphasised', 0),
-            $intended_solely_for, (post_param_integer('show_as_edited', 0) == 1), (post_param_integer('mark_as_unread', 0) == 1), post_param_string('reason'), true, $metadata['edit_time'],
-            $metadata['add_time'], $metadata['submitter'], true, true, $poster_name_if_guest);
+        $topic_id = cns_edit_post($post_id, $validated, post_param_string('title', ''), post_param_string('post'), post_param_integer('skip_sig', 0), post_param_integer('is_emphasised', 0), $intended_solely_for, (post_param_integer('show_as_edited', 0) == 1), (post_param_integer('mark_as_unread', 0) == 1), post_param_string('reason'), true, $metadata['edit_time'], $metadata['add_time'], $metadata['submitter'], true, true, $poster_name_if_guest);
 
         require_code('fields');
         if (has_tied_catalogue('post')) {
@@ -3558,8 +3543,7 @@ END;
         require_code('content2');
         $metadata = actual_metadata_get_fields('topic', strval($topic_id), ['submitter', 'add_time', 'edit_time']);
 
-        cns_edit_topic($topic_id, post_param_string('description', STRING_MAGIC_NULL), post_param_string('emoticon', STRING_MAGIC_NULL), $validated, $open, $pinned, $cascading,
-            post_param_string('reason', STRING_MAGIC_NULL), $title, null, true, $metadata['views']);
+        cns_edit_topic($topic_id, post_param_string('description', STRING_MAGIC_NULL), post_param_string('emoticon', STRING_MAGIC_NULL), $validated, $open, $pinned, $cascading, post_param_string('reason', STRING_MAGIC_NULL), $title, null, true, $metadata['views']);
 
         require_code('fields');
         if (has_tied_catalogue('topic')) {
@@ -4258,8 +4242,7 @@ END;
     public function birthday()
     {
         $id = get_param_string('id');
-        $topic_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_first_time>' . strval(time() - 60 * 60 * 24 * 3) . ' AND ' . db_string_equal_to('t_cache_first_title',
-                do_lang('HAPPY_BIRTHDAY_PERSON', $id)));
+        $topic_id = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_cache_first_time>' . strval(time() - 60 * 60 * 24 * 3) . ' AND ' . db_string_equal_to('t_cache_first_title', do_lang('HAPPY_BIRTHDAY_PERSON', $id)));
         if ($topic_id !== null) {
             $title = get_screen_title('VIEW_TOPIC');
             $url = $GLOBALS['FORUM_DRIVER']->topic_url($topic_id, '', true);

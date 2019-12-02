@@ -272,7 +272,8 @@ class Module_admin_cns_members
                 addon_installed('ecommerce') ? ['menu/adminzone/audit/ecommerce/ecommerce', ['admin_ecommerce', ['type' => 'browse'], get_module_zone('admin_ecommerce')], do_lang_tempcode('CUSTOM_PRODUCT_USERGROUP'), 'DOC_ECOMMERCE'] : null,
                 ['menu/social/groups', ['admin_cns_groups', ['type' => 'browse'], get_module_zone('admin_cns_groups'), do_lang_tempcode('SWITCH_SECTION_WARNING')], do_lang_tempcode('USERGROUPS'), 'DOC_GROUPS'],
                 ['menu/pages/privacy_policy', ['admin_privacy', ['type' => 'browse'], get_module_zone('admin_privacy'), do_lang_tempcode('SWITCH_SECTION_WARNING')], do_lang_tempcode('PRIVACY'), 'DOC_GDPR'],
-            ], do_lang('MEMBERS')
+            ],
+            do_lang('MEMBERS')
         );
     }
 

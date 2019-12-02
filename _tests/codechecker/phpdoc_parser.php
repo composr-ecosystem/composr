@@ -17,25 +17,29 @@
 Parse PHPdoc in all scripts under project directory
 */
 
-global $COMPOSR_PATH;
-
 require(__DIR__ . '/lib.php');
 
-if (isset($_SERVER['argv'])) {
-    $extra = [];
-    foreach ($_SERVER['argv'] as $index => $argv) {
-        $argv = str_replace('\\\\', '\\', $argv);
-        $_SERVER['argv'][$index] = $argv;
-        $explode = explode('=', $argv, 2);
-        if (count($explode) == 2) {
-            $extra[$explode[0]] = trim($explode[1], '"');
-            unset($_SERVER['argv'][$index]);
-        }
+// Handle options
+$available_options = [
+    'base_path' => [
+        'auto_global' => false,
+        'takes_value' => true,
+    ],
+];
+if (empty($_GET)) { // CLI
+    $longopts = [];
+    foreach ($available_options as $key => $settings) {
+        $longopts[] = $key . ($settings['takes_value'] ? '::' : '');
     }
-    $_SERVER['argv'] = array_merge($_SERVER['argv'], $extra);
-    if (array_key_exists('path', $_SERVER['argv'])) {
-        $GLOBALS['COMPOSR_PATH'] = $_SERVER['argv']['path'];
-    }
+    $optind = 1;
+    $options = getopt('', $longopts, $optind);
+} else {
+    $options = $_GET;
+}
+if (array_key_exists('base_path', $options)) {
+    $COMPOSR_PATH = $options['base_path'];
+} else {
+    $COMPOSR_PATH = '.';
 }
 
 require_code('php');
@@ -44,9 +48,9 @@ $enable_custom = false;
 if ((isset($_GET['allow_custom'])) && ($_GET['allow_custom'] == '1')) {
     $enable_custom = true;
 }
-$files = do_dir($COMPOSR_PATH, $enable_custom, true);
+$files = do_dir($COMPOSR_PATH, '', $enable_custom, true);
 if (!$enable_custom) {
-    $files[] = $COMPOSR_PATH . '/sources_custom/phpstub.php';
+    $files[] = 'sources_custom/phpstub.php';
 }
 
 ini_set('memory_limit', '-1');
@@ -54,24 +58,23 @@ ini_set('memory_limit', '-1');
 $classes = [];
 $global = [];
 global $TO_USE;
-//$files = [$COMPOSR_PATH . '/sources/global2.php']; For debugging
+//$files = ['sources/global2.php']; For debugging
 foreach ($files as $filename) {
     if (strpos($filename, 'sabredav/') !== false || strpos($filename, 'Swift/') !== false || strpos($filename, 'tracker/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
         continue;
     }
 
-    $TO_USE = $filename;
+    $TO_USE = $COMPOSR_PATH . '/' . $filename;
 
-    $_filename = ($COMPOSR_PATH == '') ? $filename : substr($filename, strlen($COMPOSR_PATH) + 1);
-    if ($_filename == 'sources/minikernel.php') {
+    if ($filename == 'sources/minikernel.php') {
         continue;
     }
     //echo 'SIGNATURES-DOING ' . $_filename . cnl();
-    $result = get_php_file_api($_filename, false, true);
+    $result = get_php_file_api($filename, false, true);
 
     foreach ($result as $i => $r) {
         if ($r['name'] == '__global') {
-            if (($_filename != 'sources/global.php') && ($_filename != 'phpstub.php')) {
+            if (($filename != 'sources/global.php') && ($filename != 'phpstub.php')) {
                 foreach (array_keys($r['functions']) as $f) {
                     if ((isset($global[$f])) && (!in_array($f, ['do_lang', 'mixed', 'qualify_url', 'http_get_contents', 'get_forum_type', 'mailto_obfuscated', 'get_custom_file_base']))) {
                         echo 'DUPLICATE-FUNCTION ' . $f . ' (in ' . $filename . ')' . cnl();
@@ -94,6 +97,8 @@ foreach ($files as $filename) {
 }
 
 $classes['__global'] = ['functions' => $global];
+
+// Save file
 if (file_exists($COMPOSR_PATH . '/data_custom')) {
     $myfile = fopen($COMPOSR_PATH . '/data_custom/functions.bin', 'wb');
 } else {

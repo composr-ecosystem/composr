@@ -2830,7 +2830,7 @@ function strlen($str)
     return 0;
 }
 
-// FUDGE: strpos can give "Offset not contained in string" error. We'd ideally have it in our catch errors list (code_quality.php) but it's unrealistic to catch all strpos errors.
+// FUDGE: strpos can give "Offset not contained in string" error. We'd ideally have it in our catch errors list (codechecker.php) but it's unrealistic to catch all strpos errors.
 
 /**
  * Find position of first occurrence of a string.

@@ -25,67 +25,6 @@ if (function_exists('set_time_limit')) {
 global $COMPOSR_PATH;
 $COMPOSR_PATH = dirname(dirname(__DIR__));
 
-function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null, $count = null)
-{
-    global $TOKENS, $TEXT, $FILENAME, $COMPOSR_PATH;
-    $FILENAME = $to_use;
-
-    if (($COMPOSR_PATH != '') && (substr($FILENAME, 0, strlen($COMPOSR_PATH)) == $COMPOSR_PATH)) {
-        $FILENAME = substr($FILENAME, strlen($COMPOSR_PATH));
-        if (substr($FILENAME, 0, 1) == DIRECTORY_SEPARATOR) {
-            $FILENAME = substr($FILENAME, 1);
-        }
-        if (substr($FILENAME, 0, 1) == DIRECTORY_SEPARATOR) {
-            $FILENAME = substr($FILENAME, 1);
-        }
-    }
-    $TEXT = str_replace("\r", '', file_get_contents($to_use));
-
-    if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
-        $TEXT = substr($TEXT, 4);
-    }
-
-    if ($verbose) {
-        echo '<hr /><p>DOING ' . $to_use . '</p>';
-    }
-    if ($verbose) {
-        echo '<pre>';
-    }
-    if ($very_verbose) {
-        echo '<b>Our code...</b>' . "\n";
-    }
-    if ($very_verbose) {
-        echo htmlentities($TEXT);
-    }
-    if ($verbose) {
-        echo "\n\n" . '<b>Starting lexing...</b>' . "\n";
-    }
-    $TOKENS = lex();
-    if ($very_verbose) {
-        print_r($TOKENS);
-    }
-    if ($very_verbose) {
-        echo strval(count($TOKENS)) . ' tokens';
-    }
-    if ($verbose) {
-        echo "\n\n" . '<b>Starting parsing...</b>' . "\n";
-    }
-    $structure = parse();
-    if ($very_verbose) {
-        print_r($structure);
-    }
-    if ($verbose) {
-        echo '</pre>';
-    }
-    /*echo 'DONE ' . $FILENAME;
-    if ($i !== null) {
-        echo ' - ' . $i . ' of ' . $count;
-    }
-    echo cnl();*/
-
-    return $structure;
-}
-
 function cnl()
 {
     $cli = (php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR']));
@@ -112,7 +51,7 @@ function unixify_line_format($in)
 
 function object_factory($class)
 {
-    return new $class;
+    return new $class();
 }
 
 function find_all_hooks($type, $entry)
@@ -155,15 +94,14 @@ function get_charset()
     return 'utf-8';
 }
 
-function do_dir($dir, $enable_custom = true, $orig_priority = false, $avoid = [], $filter = [], $filter_avoid = [])
+function do_dir($dir, $rel = '', $enable_custom = true, $orig_priority = false, $avoid = [], $filter = [], $filter_avoid = [])
 {
     global $COMPOSR_PATH;
     require_once($COMPOSR_PATH . '/sources/files.php');
     init__files();
 
     $out = [];
-    $_dir = ($dir == '') ? '.' : $dir;
-    $dh = opendir($_dir);
+    $dh = opendir($dir);
     if ($dh) {
         while (($file = readdir($dh)) !== false) {
             if (in_array($file, $avoid)) {
@@ -181,20 +119,18 @@ function do_dir($dir, $enable_custom = true, $orig_priority = false, $avoid = []
                 }
             }
 
-            $stripped_path = preg_replace('#^' . preg_quote($COMPOSR_PATH . '/', '#') . '#', '', $dir . '/') . $file;
-
             $bitmask = IGNORE_ACCESS_CONTROLLERS | IGNORE_HIDDEN_FILES | IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_UPLOADS;
             if (!$enable_custom) {
                 $bitmask = $bitmask | IGNORE_CUSTOM_ZONES | IGNORE_CUSTOM_DIRS | IGNORE_NONBUNDLED;
             }
-            if (should_ignore_file($stripped_path, $bitmask)) {
+            if (should_ignore_file($rel . (($rel != '') ? '/' : '') . $file, $bitmask)) {
                 continue;
             }
 
             if ($file[0] != '.') {
-                if (is_file($_dir . '/' . $file)) {
+                if (is_file($dir . '/' . $file)) {
                     if (substr($file, -4, 4) == '.php') {
-                        $path = $dir . (($dir != '') ? '/' : '') . $file;
+                        $path = $rel . (($rel != '') ? '/' : '') . $file;
                         if ($orig_priority) {
                             $alt = str_replace('_custom', '', $path);
                         } else {
@@ -204,8 +140,8 @@ function do_dir($dir, $enable_custom = true, $orig_priority = false, $avoid = []
                             $out[] = $path;
                         }
                     }
-                } elseif (is_dir($_dir . '/' . $file)) {
-                    $out = array_merge($out, do_dir($dir . (($dir != '') ? '/' : '') . $file, $enable_custom, $orig_priority, $avoid, $filter, $filter_avoid));
+                } elseif (is_dir($dir . '/' . $file)) {
+                    $out = array_merge($out, do_dir($dir . (($dir != '') ? '/' : '') . $file, $rel . (($rel != '') ? '/' : '') . $file, $enable_custom, $orig_priority, $avoid, $filter, $filter_avoid));
                 }
             }
         }

@@ -31,6 +31,7 @@ The checker is designed to work with the following editors:
  - Notepad++ (Windows)
  - TextMate (Mac)
  - Kate (Linux)
+ - Geany (Linux)
  - JEdit (Cross Platform)
  - NetBeans (Cross Platform)
  - BBEdit (Mac)
@@ -112,7 +113,6 @@ The code quality checker has been an essential and very successful part of our p
  - [i]dozens of other things[/i]
 
 The downside to the checker is that it will not let you use weak-typing, and it will force all PHP functions you use to be explicitly laid out according to their typing properties. This is because if weak-type checking is allowed in PHP, it is literally impossible to properly check the code for a whole range of problems - for example, it is impossible to check if function parameters are passed in an incorrect order (which is extremely useful for the case of a function having its arguments changed, and somewhere a call to it accidentally not updated).
-Zend (the makers of PHP) also have a code checker in their Zend Studio package, but it does not do the type checking that ours does, and is closed-source and hence we could not tailor it to Composr).
 
 Certain aspects of the PHP language have been left out of the subset supported by the checker. This is because either:
  - they are considered sloppy/error-prone
@@ -163,6 +163,32 @@ function mixed()
 {
    return null;
 }
+
+Comparison to other PHP linters
+-------------------------------
+
+Here are some checks other linters do which we do not do...
+
+Zend's Code Analyzer:
+ - if-else-else check (Reason: doesn't confuse us)
+ - unnecessary reference check (Reason: lies!)
+ - error for breaking with a variable (Reason: would only get used for a good reason, so let programmers do it if they have one)
+ - Values overwritten before use (Reason: we may be initialising them for code clarity; PHPStorm's inspector can show these)
+
+HPHP's warnings:
+ - Anything specific to compilation (Reason: we must manually ensure that works, often code branching structures will be involved but warnings still happen)
+ - Wrong number of parameters, on method of subclass (Reason: very hard to do)
+ - Undeclared constant (Reason: we don't track these)
+
+CodeLobster Errors:
+ - IF and ELSEIF have same conditions (theoretically the prior IF might have changed the state)
+
+PhpStorm Code Inspector:
+ - Many (lots of false positives in here)
+ - "Missing return statement" (this is useful, but if we have like a warn_exit at the end of a function, this would trigger the error)
+
+PHP CodeSniffer:
+ - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks are more detailed, and more likely to have false positives, or positives that we choose to ignore for neater code.
 
 Relationship with Composr
 --------------------------

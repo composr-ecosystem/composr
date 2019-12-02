@@ -214,7 +214,9 @@ class Module_admin_redirects
     public function browse()
     {
         require_code('templates_donext');
-        return do_next_manager(get_screen_title('REDIRECTS'), comcode_lang_string('DOC_REDIRECTS'),
+        return do_next_manager(
+            get_screen_title('REDIRECTS'),
+            comcode_lang_string('DOC_REDIRECTS'),
             [
                 ['content_types/page', ['_SELF', ['type' => 'page'], '_SELF'], do_lang('PAGE_REDIRECTS')],
                 ['buttons/redirect', ['_SELF', ['type' => 'url'], '_SELF'], do_lang('URL_REDIRECTS')],
@@ -467,7 +469,7 @@ class Module_admin_redirects
 
             $from = get_base_url() . '/' . $from;
             if (url_is_local($to)) {
-                $path = parse_url(get_base_url(),  PHP_URL_PATH);
+                $path = parse_url(get_base_url(), PHP_URL_PATH);
                 $to = get_base_url() . $path . (($path == '') ? '/' : '') . $to;
             }
 

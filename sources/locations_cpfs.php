@@ -43,8 +43,7 @@ function autofill_geo_cpfs($member_id = null)
             _autofill_geo_cpfs($row);
         }
         $start += $max;
-    }
-    while (array_key_exists(0, $rows));
+    } while (array_key_exists(0, $rows));
 }
 
 /**
