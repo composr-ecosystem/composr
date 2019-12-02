@@ -118,9 +118,13 @@ function convert_bad_entities($data, $charset = 'ISO-8859-1')
 class CMS_simple_xml_reader
 {
     // Used during parsing
-    public $tag_stack, $attribute_stack, $children_stack, $text_stack;
+    public $tag_stack;
+    public $attribute_stack;
+    public $children_stack;
+    public $text_stack;
 
-    public $gleamed, $error;
+    public $gleamed;
+    public $error;
 
     /**
      * Constructs the XML reader: parses the given data. Check $gleamed and $error after constructing.

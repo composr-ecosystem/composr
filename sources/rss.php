@@ -39,9 +39,15 @@ function extract_plain_links($matches)
 class CMS_RSS
 {
     // Used during parsing
-    public $type, $namespace_stack, $version, $tag_stack, $attribute_stack, $text_so_far;
+    public $type;
+    public $namespace_stack;
+    public $version;
+    public $tag_stack;
+    public $attribute_stack;
+    public $text_so_far;
 
-    public $gleamed_feed, $gleamed_items;
+    public $gleamed_feed;
+    public $gleamed_items;
 
     public $feed_url;
 

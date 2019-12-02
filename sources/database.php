@@ -1105,12 +1105,14 @@ class DatabaseDriver
 class DatabaseConnector
 {
     public $table_prefix;
-    public $connection_read, $connection_write;
+    public $connection_read;
+    public $connection_write;
 
     public $text_lookup_original_cache;
     public $text_lookup_cache;
 
-    public $table_exists_cache, $table_exists_real_cache;
+    public $table_exists_cache;
+    public $table_exists_real_cache;
 
     public $static_ob;
 

@@ -140,7 +140,9 @@ function load_breadcrumb_substitutions($segments)
 class Breadcrumb_substitution_loader
 {
     // Used during parsing
-    private $tag_stack, $attribute_stack, $text_so_far;
+    private $tag_stack;
+    private $attribute_stack;
+    private $text_so_far;
     private $substitution_current_links;
     public $substitutions; // output
 

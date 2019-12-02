@@ -1003,7 +1003,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
 
             case 'VAR':
                 if ($next == 'VAR') {
-                    log_warning('Don\'t use the var keyword anymore, it is deprecated.');
+                    log_warning('Don\'t use the var keyword anymore, it is deprecated');
                 }
 
             case 'CONST':
@@ -1026,6 +1026,10 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                     }
 
                     $next_2 = pparse__parser_peek();
+
+                    if ($next_2 == 'COMMA') {
+                        log_warning('PSR-12: Don\'t define multiple class properties/constants on a single line');
+                    }
                 } while ($next_2 == 'COMMA');
 
                 pparse__parser_expect('COMMAND_TERMINATE');

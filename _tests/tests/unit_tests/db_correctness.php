@@ -18,7 +18,10 @@
  */
 class db_correctness_test_set extends cms_test_case
 {
-    protected $table_fields, $all_fields, $tables, $indexes;
+    protected $table_fields;
+    protected $all_fields;
+    protected $tables;
+    protected $indexes;
 
     public function testDbCorrectness()
     {

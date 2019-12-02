@@ -36,7 +36,8 @@ function init__cns_forum_email_integration()
  */
 class ForumEmailIntegration extends EmailIntegration
 {
-    protected $forum_id = null, $forum_row = null;
+    protected $forum_id = null;
+    protected $forum_row = null;
 
     /**
      * Set what forum we're currently dealing with.
