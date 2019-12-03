@@ -290,7 +290,7 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
         $out = shell_exec($cmd_line . ' 2>&1');
         $matches = [];
         foreach (explode("\n", $out) as $msg_line) {
-            $matches = array();
+            $matches = [];
             if (preg_match('#^\s*(\d+):(\d+)\s+(\w+)\s+(.*)$#', $msg_line, $matches) != 0) {
                 $line = $matches[1];
                 $pos = $matches[2];
@@ -303,23 +303,10 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     }
 
     if ((!empty($GLOBALS['FLAG__CODESNIFFER'])) && (substr($FILENAME, -4) == '.php')) {
-        if (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
-            $cmd = trim(shell_exec('which phpcs'));
-            if ($cmd == '') {
-                $cmd = 'phpcs';
-            }
-        } elseif (strpos(shell_exec('php phpcs.phar --version'), 'PHP_CodeSniffer') !== false) {
-            $cmd = trim(shell_exec('which php'));
-            if ($cmd == '') {
-                $cmd = 'php';
-            }
- 
-            $where = preg_replace('#^.*:\s*#', '', trim(shell_exec('whereis phpcs.phar')));
-            if ($where == '') {
-                $where = 'phpcs.phar';
-            }
- 
-            $cmd .= ' ' . $where;
+        if (strpos(shell_exec('php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar') . ' --version'), 'PHP_CodeSniffer') !== false) {
+            $cmd = 'php ' . escapeshellarg($COMPOSR_PATH . '/phpcs.phar');
+        } elseif (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
+            $cmd = 'phpcs';
         } else {
             echo 'Cannot find PHP CodeSniffer in the path' . cnl();
         }
@@ -385,6 +372,13 @@ function filtered_codesniffer_result($message)
         'PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace', // May split 'if' across multiple lines
         'PSR2.Methods.FunctionCallSignature.EmptyLine', // May split across multiple lines
         'PSR2.Methods.MethodDeclaration.Underscore', // This is not a failure, should not be treated as such
+        'PSR12.ControlStructures.BooleanOperatorPlacement.FoundMixed', // May split 'if' across multiple lines tidely: we want to be able to make || more prominent
+        'PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine', // May split 'if' across multiple lines tidely
+        'PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine', // May split 'if' across multiple lines tidely
+        'PSR12.ControlStructures.ControlStructureSpacing.LineIndent', // May split 'if' across multiple lines tidely
+        'PSR12.Files.FileHeader.SpacingAfterBlock', // Composr header is more compact
+        'PSR12.Files.OpenTag.NotAlone', // Composr header is more compact
+        'PSR12.Properties.ConstantVisibility.NotFound', // PHP7.1+ only
 
         // In standards we don't support
         'Generic.Commenting.DocComment.ContentAfterOpen',

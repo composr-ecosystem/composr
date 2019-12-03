@@ -1,4 +1,5 @@
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+/phpcs.phar
 /_tests/codechecker/codechecker.ini
 /Icon?
 /cgi-bin

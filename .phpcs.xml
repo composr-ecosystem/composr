@@ -79,5 +79,26 @@
 
 		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
 		<!-- May spread 'if' across multiple lines -->
+
+		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock" />
+		<!-- Composr header is more compact -->
+
+		<exclude name="PSR12.ControlStructures.BooleanOperatorPlacement.FoundMixed" />
+		<!-- May spread 'if' across multiple lines tidely: we want to be able to make || more prominent -->
+
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine" />
+		<!-- May spread 'if' across multiple lines tidely -->
+
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine" />
+		<!-- May spread 'if' across multiple lines tidely -->
+
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.LineIndent" />
+		<!-- May spread 'if' across multiple lines tidely -->
+
+		<exclude name="PSR12.Files.OpenTag.NotAlone" />
+		<!-- Composr header is more compact -->
+
+		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
+		<!-- PHP7.1+ only -->
 	</rule>
 </ruleset>

@@ -606,9 +606,12 @@ function should_ignore_file($path, $bitmask = 0)
         '.project' => '', // Eclipse
         '.idea' => '', // JetBrains / PhpStorm
         '.editorconfig' => '',
+
+        // Linting
         '.eslintignore' => '', // ESLint ignore file
         '.eslintrc.json' => '', // ESLint config file
         '.phpcs.xml' => '', // PHP CodeSniffer config file
+        'phpcs.phar' => '', // For latest version of PHP CodeSniffer
 
         // Composr control files
         'closed.html' => '',
