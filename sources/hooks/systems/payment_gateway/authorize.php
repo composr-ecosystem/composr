@@ -850,12 +850,12 @@ class Hook_payment_gateway_authorize
      */
     protected function _parse_arb_return($response)
     {
-       $result_code  = $this->_substring_between($response, '<resultCode>', '</resultCode>');
-       $code = $this->_substring_between($response, '<code>', '</code>'); // in <message>
-       $text = $this->_substring_between($response, '<text>', '</text>'); // in <message>
-       $subscription_id = $this->_substring_between($response, '<subscriptionId>', '</subscriptionId>');
+        $result_code  = $this->_substring_between($response, '<resultCode>', '</resultCode>');
+        $code = $this->_substring_between($response, '<code>', '</code>'); // in <message>
+        $text = $this->_substring_between($response, '<text>', '</text>'); // in <message>
+        $subscription_id = $this->_substring_between($response, '<subscriptionId>', '</subscriptionId>');
 
-       return [strtoupper($result_code), $code, $text, $subscription_id];
+        return [strtoupper($result_code), $code, $text, $subscription_id];
     }
 
     /**

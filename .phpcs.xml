@@ -9,7 +9,6 @@
 	<exclude-pattern>_tests/libs/mf_parse</exclude-pattern>
 	<exclude-pattern>_tests/simpletest</exclude-pattern>
 	<exclude-pattern>data/ace</exclude-pattern>
-	<exclude-pattern>data_custom/execute_temp.php</exclude-pattern>
 	<exclude-pattern>data_custom/upload-crop</exclude-pattern>
 	<exclude-pattern>data_custom/webdav.php</exclude-pattern>
 	<exclude-pattern>exports</exclude-pattern>
@@ -51,17 +50,11 @@
 		<exclude name="Generic.Files.LineLength.TooLong" />
 		<!-- We don't follow this standard strictly, although we try and avoid long lines when reasonable -->
 
-		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
-		<!-- Composr has its own check, and this one fails on switch structures with no break -->
-
-		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
-		<!-- Composr has its own check, and this one fails on switch structures with no break -->
-
 		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
 		<!-- This is not even in PSR-1 -->
 
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.EmptyLine" />
-		<!-- May split if across multiple lines -->
+		<!-- May split across multiple lines -->
 
 		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
 		<!-- No namespaces -->
@@ -79,12 +72,12 @@
 		<!-- This is not a failure, should not be treated as such -->
 
 		<exclude name="PSR2.Methods.FunctionCallSignature.EmptyLine" />
-		<!-- May split if across multiple lines -->
+		<!-- May split across multiple lines -->
 
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
 		<!-- This is not a failure, should not be treated as such -->
 
 		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
-		<!-- May spread an 'if' across multiple lines -->
+		<!-- May spread 'if' across multiple lines -->
 	</rule>
 </ruleset>

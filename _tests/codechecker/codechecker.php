@@ -375,16 +375,15 @@ function filtered_codesniffer_result($message)
 {
     $skip_tests = [
         'Generic.Files.LineLength.TooLong', // We don't follow this standard strictly, although we try and avoid long lines when reasonable
-        'Generic.WhiteSpace.ScopeIndent.Incorrect', // Composr has its own check, and this one fails on switch structures with no break
-        'Generic.WhiteSpace.ScopeIndent.IncorrectExact', // Composr has its own check, and this one fails on switch structures with no break
         'Squiz.Classes.ValidClassName.NotCamelCaps', // This is not even in PSR-1
-        'Squiz.Functions.MultiLineFunctionDeclaration.EmptyLine', // May split if across multiple lines
+        'Squiz.Functions.MultiLineFunctionDeclaration.EmptyLine', // May split across multiple lines
         'PSR1.Classes.ClassDeclaration.MissingNamespace', // No namespaces
         'PSR1.Classes.ClassDeclaration.MultipleClasses', // We don't follow this standard strictly
         'PSR1.Files.SideEffects.FoundWithSymbols', // Blunt test
         'PSR1.Methods.CamelCapsMethodName.NotCamelCaps', // This is not even in PSR-1
         'PSR2.Classes.PropertyDeclaration.Underscore', // This is not a failure, should not be treated as such
-        'PSR2.Methods.FunctionCallSignature.EmptyLine', // May split if across multiple lines
+        'PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace', // May split 'if' across multiple lines
+        'PSR2.Methods.FunctionCallSignature.EmptyLine', // May split across multiple lines
         'PSR2.Methods.MethodDeclaration.Underscore', // This is not a failure, should not be treated as such
 
         // In standards we don't support

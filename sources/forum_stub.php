@@ -49,12 +49,12 @@ class Forum_driver_base
 
     public $EMOTICON_CACHE = null;
 
-     /**
-      * Run whatever initialisation code we need to run. Not used within minikernel (i.e. installer).
-      */
-     public function forum_layer_initialise()
-     {
-     }
+    /**
+     * Run whatever initialisation code we need to run. Not used within minikernel (i.e. installer).
+     */
+    public function forum_layer_initialise()
+    {
+    }
 
     /**
      * Delete the specified custom field from the forum.

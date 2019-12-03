@@ -321,7 +321,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
             foreach ($fails as $test => $details) {
                 $result = $details['result'];
                 if (strlen($result) > 1000) {
-                   $result = substr($result, 0, 100) . '...';
+                    $result = substr($result, 0, 100) . '...';
                 }
 
                 $results .= $test . $details['stub'] . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";

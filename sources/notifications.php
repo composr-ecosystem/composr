@@ -1379,7 +1379,7 @@ class Hook_Notification
             // Now go through the actual cases
             if ($is_locked_on) {
                 // :-( For non-Conversr we have to fall-back to only doing explicit opt-in to notifications, as we are not going to be querying the member table directly
-               $query = $standard_query;
+                $query = $standard_query;
             } else {
                 if ($has_by_default) {
                     // :-( For non-Conversr we have to fall-back to only doing explicit opt-in to notifications, as we are not going to be querying the member table directly

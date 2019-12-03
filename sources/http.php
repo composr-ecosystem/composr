@@ -1269,7 +1269,7 @@ class HttpDownloaderCurl extends HttpDownloader
         return $this->curl_body;
     }
 
-   /**
+    /**
     * Callback for receiving cURL headers.
     *
     * @param  resource $ch cURL resource handle
@@ -1278,13 +1278,13 @@ class HttpDownloaderCurl extends HttpDownloader
     *
     * @ignore
     */
-   protected function file_curl_headers($ch, $header)
-   {
-       $this->curl_headers[] = $header;
-       return strlen($header);
-   }
+    protected function file_curl_headers($ch, $header)
+    {
+        $this->curl_headers[] = $header;
+        return strlen($header);
+    }
 
-   /**
+    /**
     * Callback for receiving a part of the cURL body.
     *
     * @param  resource $ch cURL resource handle
@@ -1293,18 +1293,18 @@ class HttpDownloaderCurl extends HttpDownloader
     *
     * @ignore
     */
-   protected function file_curl_body($ch, $str)
-   {
-       if ($this->write_to_file !== null) {
-           fwrite($this->write_to_file, $str);
-       } else {
-           if ($this->curl_body === null) {
-               $this->curl_body = '';
-           }
-           $this->curl_body .= $str;
-       }
-       return strlen($str);
-   }
+    protected function file_curl_body($ch, $str)
+    {
+        if ($this->write_to_file !== null) {
+            fwrite($this->write_to_file, $str);
+        } else {
+            if ($this->curl_body === null) {
+                $this->curl_body = '';
+            }
+            $this->curl_body .= $str;
+        }
+        return strlen($str);
+    }
 }
 
 /**
