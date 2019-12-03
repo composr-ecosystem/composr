@@ -608,6 +608,7 @@ function should_ignore_file($path, $bitmask = 0)
         '.editorconfig' => '',
         '.eslintignore' => '', // ESLint ignore file
         '.eslintrc.json' => '', // ESLint config file
+        '.phpcs.xml' => '', // PHP CodeSniffer config file
 
         // Composr control files
         'closed.html' => '',

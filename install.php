@@ -385,8 +385,8 @@ function step_1()
                     $warnings->attach(do_template('INSTALLER_WARNING_LONG', [
                         '_GUID' => '515c2f26a5415224f3c09b2429a78a5f',
                         'FILES' => $missing,
-                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing))))]
-                    ));
+                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing))))
+                    ]));
                 } else {
                     foreach ($missing as $file) {
                         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file))]));

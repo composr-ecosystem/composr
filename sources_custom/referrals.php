@@ -94,10 +94,19 @@ function assign_referral_awards($referee, $trigger)
                 $ini_file_section_name,
                 $ini_file_section,
 
-                $referee, $referee_username, $referee_displayname, $referee_email, $one_trigger_already,
-                $referrer, $referrer_username, $referrer_displayname, $referrer_email,
+                $referee,
+                $referee_username,
+                $referee_displayname,
+                $referee_email,
+                $one_trigger_already,
 
-                $num_total_qualified_by_referrer, $num_total_by_referrer
+                $referrer,
+                $referrer_username,
+                $referrer_displayname,
+                $referrer_email,
+
+                $num_total_qualified_by_referrer,
+                $num_total_by_referrer
             );
             //if ($qualified_trigger) break; // Only do the first qualified scheme, not multiple schemes    ACTUALLY we will allow multiple; no actual harm
         }
@@ -110,10 +119,19 @@ function _assign_referral_awards(
     $scheme_name,
     $scheme,
 
-    $referee, $referee_username, $referee_displayname, $referee_email, $one_trigger_already,
-    $referrer, $referrer_username, $referrer_displayname, $referrer_email,
+    $referee,
+    $referee_username,
+    $referee_displayname,
+    $referee_email,
+    $one_trigger_already,
 
-    $num_total_qualified_by_referrer, $num_total_by_referrer
+    $referrer,
+    $referrer_username,
+    $referrer_displayname,
+    $referrer_email,
+
+    $num_total_qualified_by_referrer,
+    $num_total_by_referrer
 ) {
     $scheme_title = isset($scheme['title']) ? $scheme['title'] : $scheme_name;
 

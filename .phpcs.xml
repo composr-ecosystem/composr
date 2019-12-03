@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!-- PHP_CodeSniffer ruleset file -->
+<!-- Example: https://github.com/squizlabs/PHP_CodeSniffer/blob/master/phpcs.xml.dist -->
+<ruleset name="PHP_CodeSniffer">
+	<description>PHP coding standard for Composr CMS</description>
+
+	<!-- Exclude third-party code (mostly) -->
+	<exclude-pattern>_config.php</exclude-pattern>
+	<exclude-pattern>_tests/libs/mf_parse</exclude-pattern>
+	<exclude-pattern>_tests/simpletest</exclude-pattern>
+	<exclude-pattern>data/ace</exclude-pattern>
+	<exclude-pattern>data_custom/execute_temp.php</exclude-pattern>
+	<exclude-pattern>data_custom/upload-crop</exclude-pattern>
+	<exclude-pattern>data_custom/webdav.php</exclude-pattern>
+	<exclude-pattern>exports</exclude-pattern>
+	<exclude-pattern>mobiquo/lib</exclude-pattern>
+	<exclude-pattern>mobiquo/smartbanner</exclude-pattern>
+	<exclude-pattern>sources/diff.php</exclude-pattern>
+	<exclude-pattern>sources/firephp.php</exclude-pattern>
+	<exclude-pattern>sources/jsmin.php</exclude-pattern>
+	<exclude-pattern>sources/lang_stemmer_EN.php</exclude-pattern>
+	<exclude-pattern>sources/m_zip.php</exclude-pattern>
+	<exclude-pattern>sources/mail_dkim.php</exclude-pattern>
+	<exclude-pattern>sources_custom/aws</exclude-pattern>
+	<exclude-pattern>sources_custom/browser_detect.php</exclude-pattern>
+	<exclude-pattern>sources_custom/Cloudinary</exclude-pattern>
+	<exclude-pattern>sources_custom/composr_mobile_sdk/ios</exclude-pattern>
+	<exclude-pattern>sources_custom/curl.php</exclude-pattern>
+	<exclude-pattern>sources_custom/facebook</exclude-pattern>
+	<exclude-pattern>sources_custom/geshi</exclude-pattern>
+	<exclude-pattern>sources_custom/getid3</exclude-pattern>
+	<exclude-pattern>sources_custom/hooks/modules/chat_bots/trickstr.php</exclude-pattern>
+	<exclude-pattern>sources_custom/ILess</exclude-pattern>
+	<exclude-pattern>sources_custom/photobucket</exclude-pattern>
+	<exclude-pattern>sources_custom/programe</exclude-pattern>
+	<exclude-pattern>sources_custom/sabredav</exclude-pattern>
+	<exclude-pattern>sources_custom/spout</exclude-pattern>
+	<exclude-pattern>sources_custom/sugar_crm_lib.php</exclude-pattern>
+	<exclude-pattern>sources_custom/swift_mailer</exclude-pattern>
+	<exclude-pattern>sources_custom/Transliterator</exclude-pattern>
+	<exclude-pattern>sources_custom/twitter.php</exclude-pattern>
+	<exclude-pattern>sources_custom/webdav_commandr_fs.php</exclude-pattern>
+	<exclude-pattern>themes/*/templates_cached</exclude-pattern>
+	<exclude-pattern>tracker</exclude-pattern>
+	<exclude-pattern>*.js</exclude-pattern>
+	<exclude-pattern>*.css</exclude-pattern>
+
+	<!-- Include the PSR-12 standard (https://www.php-fig.org/psr/psr-12/) -->
+	<!-- We only partially follow it (see notes in codebook_standards) -->
+	<rule ref="PSR12">
+		<exclude name="Generic.Files.LineLength.TooLong" />
+		<!-- We don't follow this standard strictly, although we try and avoid long lines when reasonable -->
+
+		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+		<!-- Composr has its own check, and this one fails on switch structures with no break -->
+
+		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
+		<!-- Composr has its own check, and this one fails on switch structures with no break -->
+
+		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+		<!-- This is not even in PSR-1 -->
+
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.EmptyLine" />
+		<!-- May split if across multiple lines -->
+
+		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
+		<!-- No namespaces -->
+
+		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses" />
+		<!-- We don't follow this standard strictly -->
+
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />
+		<!-- Blunt test -->
+
+		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+		<!-- This is not even in PSR-1 -->
+
+		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore" />
+		<!-- This is not a failure, should not be treated as such -->
+
+		<exclude name="PSR2.Methods.FunctionCallSignature.EmptyLine" />
+		<!-- May split if across multiple lines -->
+
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
+		<!-- This is not a failure, should not be treated as such -->
+
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
+        <!-- May spread an 'if' across multiple lines -->
+	</rule>
+</ruleset>

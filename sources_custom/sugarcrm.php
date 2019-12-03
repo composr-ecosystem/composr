@@ -49,8 +49,7 @@ function sugarcrm_initialise_connection()
         if (!$SUGARCRM->connect()) {
             sugarcrm_failed('Could not connect to SugarCRM');
         }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         sugarcrm_failed($e->getMessage());
     }
 }
