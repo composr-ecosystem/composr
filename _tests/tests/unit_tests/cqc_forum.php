@@ -21,7 +21,7 @@ class cqc_forum_test_set extends cms_test_case
     public function testForum()
     {
         cms_disable_time_limit();
-        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=forum&api=1&todo=1';
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=forum';
         $url = $this->extend_cqc_call($url);
         $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 10000.0]);
         foreach (explode('<br />', $result) as $line) {

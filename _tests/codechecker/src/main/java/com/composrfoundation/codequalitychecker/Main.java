@@ -39,7 +39,7 @@ public class Main {
         // Load settings
         Properties p = new Properties();
         try {
-            p.load(new FileInputStream(System.getProperty("user.dir") + File.separator + "checker.ini"));
+            p.load(new FileInputStream(System.getProperty("user.dir") + File.separator + "codechecker.ini"));
             relay__api = (p.getProperty("relay__api").equals("1"));
             relay__todo = (p.getProperty("relay__todo").equals("1"));
             relay__mixed = (p.getProperty("relay__mixed").equals("1"));

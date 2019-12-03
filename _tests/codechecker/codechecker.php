@@ -314,7 +314,7 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
                 $cmd = 'php';
             }
  
-            $where = trim(shell_exec('where phpcs.phar'));
+            $where = preg_replace('#^.*:\s*#', '', trim(shell_exec('whereis phpcs.phar')));
             if ($where == '') {
                 $where = 'phpcs.phar';
             }

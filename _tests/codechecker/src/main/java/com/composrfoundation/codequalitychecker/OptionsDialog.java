@@ -183,7 +183,7 @@ public class OptionsDialog extends JDialog {
         Main.textEditorPath = textEditorPath.getText();
         Main.phpPath = phpPath.getText();
         try {
-            FileOutputStream out = new FileOutputStream(System.getProperty("user.dir") + File.separator + "checker.ini");
+            FileOutputStream out = new FileOutputStream(System.getProperty("user.dir") + File.separator + "codechecker.ini");
             Properties p = new Properties();
             p.put("relay__api", Main.relay__api ? "1" : "0");
             p.put("relay__todo", Main.relay__todo ? "1" : "0");

@@ -619,7 +619,7 @@ function should_ignore_file($path, $bitmask = 0)
         'safe_mode_temp' => '', // LEGACY
 
         // Composr testing platform
-        'checker.ini' => '_tests/codechecker',
+        'codechecker.ini' => '_tests/codechecker',
     ];
 
     $ignore_extensions = [ // Case insensitive, define in lower case
