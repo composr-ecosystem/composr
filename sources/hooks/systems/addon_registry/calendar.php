@@ -402,7 +402,7 @@ class Hook_addon_registry_calendar
                         'TIME_RAW' => strval(123456789),
                         'TIME_VCAL' => strval(123456789),
 
-                        'TO_TIME' =>get_timezoned_date(123456789 + 60 * 60 * 24),
+                        'TO_TIME' => get_timezoned_date(123456789 + 60 * 60 * 24),
                         'TO_TIME_RAW' => strval(123456789 + 60 * 60 * 24),
                         'TO_TIME_VCAL' => strval(123456789 + 60 * 60 * 24),
                     ],
@@ -836,7 +836,7 @@ class Hook_addon_registry_calendar
                 'TIME_VCAL' => strval(123456789),
 
                 'TO_DAY' => get_timezoned_date(123456789 + 60 * 60 * 24),
-                'TO_TIME' =>get_timezoned_date(123456789 + 60 * 60 * 24),
+                'TO_TIME' => get_timezoned_date(123456789 + 60 * 60 * 24),
                 'TO_TIME_RAW' => strval(123456789 + 60 * 60 * 24),
                 'TO_TIME_VCAL' => strval(123456789 + 60 * 60 * 24),
             ]), null, '', true)

@@ -1100,7 +1100,7 @@ function learnallfiles($curbot)
 function learnstring($xmlstring)
 {
 
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     $xml_parser = xml_parser_create();
     xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
     xml_set_element_handler($xml_parser, "startElement", "endElement");
@@ -1134,7 +1134,7 @@ function learnstring($xmlstring)
 function learn($file)
 {
 
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     $xml_parser = xml_parser_create();
     xml_parser_set_option($xml_parser,XML_OPTION_CASE_FOLDING,0);
     xml_set_element_handler($xml_parser, "startElement", "endElement");

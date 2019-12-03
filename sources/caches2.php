@@ -177,22 +177,28 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
             'cached_for' => $codename,
             'identifier' => md5($cache_identifier),
         ], '', 1);
-        $GLOBALS['SITE_DB']->query_insert_or_replace('cache', [
-            'dependencies' => $dependencies,
-            'staff_status' => $staff_status,
-            'the_member' => $member_id,
-            'the_groups' => $groups,
-            'is_bot' => $is_bot,
-            'timezone' => $timezone,
-            'is_ssl' => $is_ssl,
-            'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
-            'date_and_time' => time(),
-        ], [
-            'lang' => $lang,
-            'the_theme' => $theme,
-            'cached_for' => $codename,
-            'identifier' => md5($cache_identifier),
-        ], false, true);
+        $GLOBALS['SITE_DB']->query_insert_or_replace(
+            'cache',
+            [
+                'dependencies' => $dependencies,
+                'staff_status' => $staff_status,
+                'the_member' => $member_id,
+                'the_groups' => $groups,
+                'is_bot' => $is_bot,
+                'timezone' => $timezone,
+                'is_ssl' => $is_ssl,
+                'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
+                'date_and_time' => time(),
+            ],
+            [
+                'lang' => $lang,
+                'the_theme' => $theme,
+                'cached_for' => $codename,
+                'identifier' => md5($cache_identifier),
+            ],
+            false,
+            true
+        );
     }
 
     if ($big_mainstream_cache) {

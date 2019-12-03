@@ -166,7 +166,7 @@ class Hook_geocoding_bing
             $error_msg = new Tempcode();
             foreach ($result['errorDetails'] as $i => $message) {
                 if ($i != 0) {
-                    $error_msg->attach(',' );
+                    $error_msg->attach(',');
                 }
                 $error_msg->attach($message);
             }

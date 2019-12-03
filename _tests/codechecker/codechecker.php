@@ -195,7 +195,10 @@ if (empty($files_to_check)) {
         }
 
         try {
-            check(parse_file($full_path));
+            $structure = parse_file($full_path);
+            if ($structure !== null) {
+                check($structure);
+            }
         } catch (Exception $e) {
             echo $e->getMessage() . cnl();
         }
@@ -218,10 +221,14 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
             $FILENAME = substr($FILENAME, 1);
         }
     }
-    $TEXT = str_replace("\r", '', file_get_contents($to_use));
 
-    if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
-        $TEXT = substr($TEXT, 4);
+    $codesniffer_only = null; // For debugging
+
+    if ($codesniffer_only === null) {
+        $TEXT = str_replace("\r", '', file_get_contents($to_use));
+        if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
+            $TEXT = substr($TEXT, 4);
+        }
     }
 
     if ($verbose) {
@@ -230,30 +237,36 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     if ($verbose) {
         echo '<pre>';
     }
-    if ($very_verbose) {
-        echo '<b>Our code...</b>' . "\n";
-    }
-    if ($very_verbose) {
-        echo htmlentities($TEXT);
+    if ($codesniffer_only === null) {
+        if ($very_verbose) {
+            echo '<b>Our code...</b>' . "\n";
+            echo htmlentities($TEXT);
+        }
     }
 
     if ($verbose) {
         echo "\n\n" . '<b>Starting lexing...</b>' . "\n";
     }
-    $TOKENS = lex();
-    if ($very_verbose) {
-        print_r($TOKENS);
-    }
-    if ($very_verbose) {
-        echo strval(count($TOKENS)) . ' tokens';
+    if ($codesniffer_only === null) {
+        $TOKENS = lex();
+        if ($very_verbose) {
+            print_r($TOKENS);
+        }
+        if ($very_verbose) {
+            echo strval(count($TOKENS)) . ' tokens';
+        }
     }
 
     if ($verbose) {
         echo "\n\n" . '<b>Starting parsing...</b>' . "\n";
     }
-    $structure = parse();
-    if ($very_verbose) {
-        print_r($structure);
+    if ($codesniffer_only === null) {
+        $structure = parse();
+        if ($very_verbose) {
+            print_r($structure);
+        }
+    } else {
+        $structure = null;
     }
 
     if ($verbose) {
@@ -287,10 +300,20 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
             echo "Cannot find PHP CodeSniffer in the path\n";
         }
 
-        $cmd_line = $cmd . ' ' . $to_use . ' --standard=PSR12 -s -q --report-width=10000';
-        /*if (!empty($skip_tests)) {
-            $cmd_line .= ' --exclude=' . implode(',', $skip_tests);
-        }*/
+        $cmd_line = $cmd . ' ' . $to_use . ' -s -q --report-width=10000';
+        //$cmd_line .= ' --standard=PSR12'; Better to just disable sniffs we don't like
+        $skip_tests_broad = [
+            // In standards we don't support
+            'PEAR.NamingConventions.ValidClassName',
+            'PEAR.NamingConventions.ValidFunctionName',
+            'PEAR.NamingConventions.ValidVariableName',
+        ];
+        if (!empty($skip_tests_broad)) {
+            $cmd_line .= ' --exclude=' . implode(',', $skip_tests_broad);
+        }
+        if ($codesniffer_only !== null) {
+            $cmd_line .= ' --sniffs=' . implode(',', $codesniffer_only);
+        }
         $out = shell_exec($cmd_line . ' 2>&1');
         $pending_out = null;
         $matches = [];
@@ -331,11 +354,70 @@ function filtered_codesniffer_result($message)
         'Generic.WhiteSpace.ScopeIndent.Incorrect', // Composr has its own check, and this one fails on switch structures with no break
         'Generic.WhiteSpace.ScopeIndent.IncorrectExact', // Composr has its own check, and this one fails on switch structures with no break
         'Squiz.Classes.ValidClassName.NotCamelCaps', // This is not even in PSR-1
+        'Squiz.Functions.MultiLineFunctionDeclaration.EmptyLine', // May split if across multiple lines
         'PSR1.Classes.ClassDeclaration.MissingNamespace', // No namespaces
+        'PSR1.Classes.ClassDeclaration.MultipleClasses', // We don't follow this standard strictly
         'PSR1.Files.SideEffects.FoundWithSymbols', // Blunt test
         'PSR1.Methods.CamelCapsMethodName.NotCamelCaps', // This is not even in PSR-1
-        'PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace', // May split if across multiple lines
+        'PSR2.Classes.PropertyDeclaration.Underscore', // This is not a failure, should not be treated as such
+        'PSR2.Methods.FunctionCallSignature.EmptyLine', // May split if across multiple lines
         'PSR2.Methods.MethodDeclaration.Underscore', // This is not a failure, should not be treated as such
+
+        // In standards we don't support
+        'Generic.Commenting.DocComment.ContentAfterOpen',
+        'Generic.Commenting.DocComment.ContentBeforeClose',
+        'Generic.Commenting.DocComment.LongNotCapital',
+        'Generic.Commenting.DocComment.MissingShort',
+        'Generic.Commenting.DocComment.NonParamGroup',
+        'Generic.Commenting.DocComment.ParamNotFirst',
+        'Generic.Commenting.DocComment.ShortNotCapital',
+        'Generic.Commenting.DocComment.SpacingBeforeShort',
+        'Generic.Commenting.DocComment.SpacingBeforeTags',
+        'Generic.Commenting.DocComment.TagsNotGrouped',
+        'Generic.Commenting.DocComment.TagValueIndent',
+        'Generic.PHP.DisallowShortOpenTag.EchoFound',
+        'PEAR.Commenting.ClassComment.InvalidPackage',
+        'PEAR.Commenting.ClassComment.InvalidVersion',
+        'PEAR.Commenting.ClassComment.MissingAuthorTag',
+        'PEAR.Commenting.ClassComment.MissingCategoryTag',
+        'PEAR.Commenting.ClassComment.MissingLicenseTag',
+        'PEAR.Commenting.ClassComment.MissingLinkTag',
+        'PEAR.Commenting.ClassComment.MissingPackageTag',
+        'PEAR.Commenting.ClassComment.WrongStyle',
+        'PEAR.Commenting.FileComment.IncompleteCopyright',
+        'PEAR.Commenting.FileComment.InvalidPackage',
+        'PEAR.Commenting.FileComment.LicenseTagOrder',
+        'PEAR.Commenting.FileComment.MissingAuthorTag',
+        'PEAR.Commenting.FileComment.MissingCategoryTag',
+        'PEAR.Commenting.FileComment.MissingLinkTag',
+        'PEAR.Commenting.FileComment.MissingVersion',
+        'PEAR.Commenting.FileComment.PackageTagOrder',
+        'PEAR.Commenting.FileComment.WrongStyle',
+        'PEAR.Commenting.FunctionComment.Missing',
+        'PEAR.Commenting.FunctionComment.SpacingAfter',
+        'PEAR.Commenting.FunctionComment.SpacingAfterParamName',
+        'PEAR.Commenting.FunctionComment.SpacingAfterParamType',
+        'PEAR.Commenting.FunctionComment.MissingReturn', // Assumes every function has a return!
+        'PEAR.ControlStructures.MultiLineCondition.Alignment',
+        'PEAR.ControlStructures.MultiLineCondition.CloseBracketNewLine',
+        'PEAR.ControlStructures.MultiLineCondition.SpacingAfterOpenBrace',
+        'PEAR.ControlStructures.MultiLineCondition.StartWithBoolean',
+        'PEAR.Files.IncludingFile.BracketsNotRequired',
+        'PEAR.Files.IncludingFile.UseInclude',
+        'PEAR.Files.IncludingFile.UseIncludeOnce',
+        'PEAR.Files.IncludingFile.UseRequire',
+        'PEAR.Formatting.MultiLineAssignment.EqualSignLine',
+        'PEAR.Functions.FunctionCallSignature.CloseBracketLine',
+        'PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket',
+        'PEAR.Functions.FunctionCallSignature.EmptyLine',
+        'PEAR.Functions.FunctionCallSignature.OpeningIndent',
+        'PEAR.Functions.FunctionDeclaration.EmptyLine',
+        'PEAR.WhiteSpace.ScopeIndent.Incorrect',
+        'PEAR.WhiteSpace.ScopeIndent.IncorrectExact',
+
+        // If there is no function comment, the file comment will be moved down, triggering these -- Composr will pick up on them anyway
+        'PEAR.Commenting.FunctionComment.MissingParamTag',
+        'PEAR.Commenting.FunctionComment.WrongStyle',
     ];
 
     foreach ($skip_tests as $skip_test) {

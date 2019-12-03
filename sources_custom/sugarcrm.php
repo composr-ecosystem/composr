@@ -39,7 +39,7 @@ function sugarcrm_initialise_connection()
     $username = get_option('sugarcrm_username');
     $password = get_option('sugarcrm_password');
 
-    $SUGARCRM = new SugarWrapper;
+    $SUGARCRM = new SugarWrapper();
 
     $SUGARCRM->setUrl($base_url . '/service/v2/rest.php');
     $SUGARCRM->setUsername($username);
@@ -649,8 +649,7 @@ function sync_contact_metadata_into_sugarcrm()
         }
 
         $start += 100;
-    }
-    while (count($rows) == $max);
+    } while (count($rows) == $max);
 }
 
 function sync_lead_metadata_into_sugarcrm()
@@ -702,8 +701,7 @@ function sync_lead_metadata_into_sugarcrm()
         }
 
         $start += 100;
-    }
-    while (count($rows) == $max);
+    } while (count($rows) == $max);
 }
 
 function read_composr_cpfs($member_id)

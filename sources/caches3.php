@@ -73,7 +73,7 @@ function composr_cleanup($cleanup_tools = null)
 {
     require_lang('cleanup');
 
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     $messages = new Tempcode();
     $hooks = find_all_hooks('systems', 'cleanup');

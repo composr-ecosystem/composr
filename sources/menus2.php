@@ -61,7 +61,7 @@ function export_menu_spreadsheet($file_path = null)
  * Assumes spreadsheet was generated with export_menu_spreadsheet.
  *
  * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
-* @param  ?string $filename The filename of the spreadsheet file (null: detect from $file_path)
+ * @param  ?string $filename The filename of the spreadsheet file (null: detect from $file_path)
  */
 function import_menu_spreadsheet($file_path = null, $filename = null)
 {

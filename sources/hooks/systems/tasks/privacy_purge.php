@@ -49,7 +49,7 @@ class Hook_task_privacy_purge
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
-                    if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] != PRIVACY_METHOD_leave)) {
+                    if ((array_key_exists($table_name, $table_actions)) && ($table_actions[$table_name] != PRIVACY_METHOD__LEAVE)) {
                         $this->handle_for_table($hook_ob, $table_name, $table_details, $table_actions[$table_name], $member_id_username, $ip_addresses, $member_id, $email_address, $others);
                     }
                 }
@@ -88,11 +88,11 @@ class Hook_task_privacy_purge
 
         foreach ($rows as $row) {
             switch ($table_action) {
-                case PRIVACY_METHOD_anonymise:
+                case PRIVACY_METHOD__ANONYMISE:
                     $hook_ob->anonymise($table_name, $row);
                     break;
 
-                case PRIVACY_METHOD_delete:
+                case PRIVACY_METHOD__DELETE:
                     $hook_ob->delete($table_name, $row);
                     break;
             }

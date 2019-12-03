@@ -377,7 +377,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
 
     $len = strlen($comcode);
 
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_modest);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     $allowed_html_seqs = [
         // HTML tag may actually be used in very limited conditions: only the following HTML seqs will come out as HTML. This is, unless the blacklist filter is used instead.

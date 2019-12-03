@@ -22,7 +22,7 @@ class override_issues_test_set extends cms_test_case
     {
         require_code('files2');
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, ['php']);
         $files[] = 'install.php';

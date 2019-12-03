@@ -142,7 +142,7 @@ function download_associated_media(&$text)
  */
 function _download_associated_media(&$text, $old_url)
 {
-    if (!is_our_server(parse_url($old_url,  PHP_URL_HOST))) {
+    if (!is_our_server(parse_url($old_url, PHP_URL_HOST))) {
         require_code('crypt');
         $temp_filename = get_secure_random_string();
         $temp_dir = get_custom_file_base() . '/uploads/external_media';

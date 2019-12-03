@@ -20,7 +20,7 @@ class notifications_all_coded_test_set extends cms_test_case
 {
     public function testAllNotificationsCoded()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         // Ensure all notification types used
         $hooks = find_all_hooks('systems', 'notifications');

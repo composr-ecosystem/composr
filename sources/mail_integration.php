@@ -254,7 +254,7 @@ abstract class EmailIntegration
                 }
             }
 
-            imap_close($mbox,  CL_EXPUNGE);
+            imap_close($mbox, CL_EXPUNGE);
         } else {
             $error = imap_last_error();
             imap_errors(); // Works-around weird PHP bug where "Retrying PLAIN authentication after [AUTHENTICATIONFAILED] Authentication failed. (errflg=1) in Unknown on line 0" may get spit out into any stream (even the backup log)

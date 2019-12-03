@@ -1089,7 +1089,8 @@ class Hook_import_cms_merge
             if ($submitter === null) {
                 $submitter = $GLOBALS['FORUM_DRIVER']->get_guest_id();
             }
-            $id_new = add_poll($this->get_lang_string($db, $row['question']),
+            $id_new = add_poll(
+                $this->get_lang_string($db, $row['question']),
                 $this->get_lang_string($db, $row['option1']),
                 $this->get_lang_string($db, $row['option2']),
                 $this->get_lang_string($db, $row['option3']),
@@ -1120,7 +1121,8 @@ class Hook_import_cms_merge
                 $row['votes9'],
                 $row['votes10'],
                 $row['poll_views'],
-                $row['edit_date']);
+                $row['edit_date']
+            );
 
             // Who has voted in the poll?
             $votes = $db->query_select('poll_votes', ['*'], ['v_poll_id' => $row['id']], '', null, 0, true);

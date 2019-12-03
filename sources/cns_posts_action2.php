@@ -319,22 +319,18 @@ function cns_force_update_topic_caching($topic_id, $post_count_dif = null, $last
             t_cache_last_member_id=' . (($last_member_id === null) ? 'NULL' : strval($last_member_id)) . ',';
     }
 
-    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET ' .
-            ($first ? $update_first : '') .
-            ($last ? $update_last : '') .
-            (
-                ($post_count_dif !== null)
-                ?
-                ('t_cache_num_posts=(t_cache_num_posts+' . strval($post_count_dif) . ')')
-                :
-                ('t_cache_num_posts=' . strval($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', ['p_topic_id' => $topic_id, 'p_intended_solely_for' => null])))
-            ) .
-            ' WHERE id=' . strval($topic_id),
-        null,
-        0,
-        false,
-        true
-    );
+    $sql = 'UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET ' .
+        ($first ? $update_first : '') .
+        ($last ? $update_last : '') .
+        (
+            ($post_count_dif !== null)
+            ?
+            ('t_cache_num_posts=(t_cache_num_posts+' . strval($post_count_dif) . ')')
+            :
+            ('t_cache_num_posts=' . strval($GLOBALS['FORUM_DB']->query_select_value('f_posts', 'COUNT(*)', ['p_topic_id' => $topic_id, 'p_intended_solely_for' => null])))
+        ) .
+        ' WHERE id=' . strval($topic_id);
+    $GLOBALS['FORUM_DB']->query($sql, null, 0, false, true);
 }
 
 /**

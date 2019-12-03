@@ -25,7 +25,7 @@ class lang_misc_test_set extends cms_test_case
         parent::setUp();
 
         disable_php_memory_limit();
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     }
 
     public function testLangStringsWork()

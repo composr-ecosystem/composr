@@ -14,7 +14,7 @@
  */
 
 /**
- * eCommerce product hook.
+ * Hook class.
  */
 class Hook_ecommerce_support_credits
 {

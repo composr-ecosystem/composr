@@ -74,6 +74,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             'sources_custom/browser_detect.php',
                             'sources_custom/twitter.php',
                             '_config.php',
+                            'sources_custom/hooks/systems/startup/tapatalk.php',
                         ])) {
                             continue;
                         }

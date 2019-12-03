@@ -389,20 +389,17 @@ class LangFilter_EN extends LangFilter
                 $preserve = $matches[1];
                 $preserved[$flag_i] = $matches[1];
                 $value = str_replace($preserve, 'preserve_' . strval($flag_i), $value);
-            }
+            } elseif ($flag == 'platform_specific') {
+                // Putting in correct keypress for Mac users...
 
-            // Putting in correct keypress for Mac users
-            elseif ($flag == 'platform_specific') {
                 if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') === false) {
                     $value = str_replace('Ctrl key (Option key on a mac)', 'Ctrl key', $value);
                 } else {
                     $value = str_replace('Ctrl key (Option key on a mac)', 'Option key', $value);
                 }
-            }
+            } elseif (preg_match('#^(resource|category|entry|content_type_module)_in_param_(\d+)$#', $flag, $matches) != 0) {
+                // Putting correct content type words to generic strings, with appropriate grammar...
 
-            // Putting correct content type words to generic strings, with appropriate grammar...
-
-            elseif (preg_match('#^(resource|category|entry|content_type_module)_in_param_(\d+)$#', $flag, $matches) != 0) {
                 $type = $matches[1];
                 $param_num = intval($matches[2]);
                 if (!empty($parameters[$param_num - 1])) {

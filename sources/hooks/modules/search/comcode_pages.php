@@ -285,7 +285,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
     {
         global $SEARCH__CONTENT_BITS;
 
-        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow); // This can be slow.
+        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW); // This can be slow.
 
         require_code('xhtml');
 

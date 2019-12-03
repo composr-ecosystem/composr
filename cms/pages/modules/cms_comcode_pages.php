@@ -325,7 +325,8 @@ class Module_cms_comcode_pages
             $archive_url = build_url(['page' => ''], '');
         }
         $sitemap_url = build_url(['page' => '_SELF', 'type' => 'generate_page_sitemap'], '_SELF');
-        $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_TABLE_EXTRA_COMCODE_PAGES',
+        $text = paragraph(do_lang_tempcode(
+            'CHOOSE_EDIT_TABLE_EXTRA_COMCODE_PAGES',
             escape_html($search_url->evaluate()),
             escape_html($sitemap_url->evaluate()),
             [
@@ -1302,7 +1303,7 @@ class Module_cms_comcode_pages
         require_code('type_sanitisation');
 
         disable_php_memory_limit();
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $zone = get_param_string('filter', null);
 

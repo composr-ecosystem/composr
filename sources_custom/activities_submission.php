@@ -138,7 +138,8 @@ function activities_handler_script()
                 if (strlen($map['STATUS']) > 255) {
                     $response .= '<success>0</success><feedback>Message is ' . strval(strlen($map['STATUS']) - 255) . ' characters too long</feedback>';
                 } else {
-                    $stored_id = activities_addon_syndicate_described_activity('RAW_DUMP',
+                    $stored_id = activities_addon_syndicate_described_activity(
+                        'RAW_DUMP',
                         $map['STATUS'],
                         '',
                         '',

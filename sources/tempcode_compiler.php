@@ -248,13 +248,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
         foreach ($parameters as $key => $parameter) {
             if (is_bool($parameter)) {
                 $parameters[$key] = $parameter ? '1' : '0';
-            }
-
-            elseif ($parameter === null) {
+            } elseif ($parameter === null) {
                 unset($parameters[$key]);
-            }
-
-            elseif (isset($parameter->is_all_static)) {
+            } elseif (isset($parameter->is_all_static)) {
                 $parameters[$key] = $parameters[$key]->evaluate();
             }
         }
@@ -1132,7 +1128,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
     // Special case: LESS support
     if ((addon_installed('less')) && ($suffix === '.less')) {
         // Up our resources
-        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
         disable_php_memory_limit();
 
         // Stop parallel compilation of the same file by a little hack; without this it could knock out a server
@@ -1182,11 +1178,14 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
             // Heavy-weight, newer (iLess)
             require_code('ILess/Autoloader');
             ILess_Autoloader::register();
-            $less = new ILess_Parser([
-                'import_dirs' => [dirname($_path)],
-            ], new ILess_Cache_FileSystem([
-                'cache_dir' => get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang,
-            ]));
+            $less = new ILess_Parser(
+                [
+                    'import_dirs' => [dirname($_path)],
+                ],
+                new ILess_Cache_FileSystem([
+                    'cache_dir' => get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang,
+                ])
+            );
             try {
                 $less->parseString($template_contents);
                 $template_contents = $less->getCSS();

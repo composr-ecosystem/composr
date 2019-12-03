@@ -40,7 +40,7 @@ class maintenance_codes_test_set extends cms_test_case
 
     public function testMaintenanceCodeReferences()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $codenames = [];
         require_code('files_spreadsheets_read');

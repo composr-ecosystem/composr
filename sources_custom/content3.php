@@ -13,6 +13,10 @@
  * @package    content_oop_api
  */
 
+/**
+ * CMS API base class.
+ * @package content_oop_api
+ */
 abstract class CMS_API_object
 {
     public $entity_id = null;
@@ -130,6 +134,10 @@ function catalogue_query_select_count($catalogue_name, $where = [], $filters = '
     return $GLOBALS['SITE_DB']->query_value_if_there($query);
 }
 
+/**
+ * CMS API catalogue base class.
+ * @package content_oop_api
+ */
 abstract class CMS_API_catalogue_object extends CMS_API_object
 {
     public $field_refs = [];
@@ -222,6 +230,10 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
     }
 }
 
+/**
+ * CMS API database base class.
+ * @package content_oop_api
+ */
 abstract class CMS_API_database_object extends CMS_API_object
 {
     public $table = null;

@@ -110,8 +110,7 @@ function endpoint_script()
             'error_details' => isset($result['error_details']) ? $result['error_details'] : null,
             'response_data' => array_diff_key($result, ['success' => true, 'error_details' => true]),
         ];
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         $return_data = [
             'success' => false,
             'error_details' => strip_html($e->getMessage()),

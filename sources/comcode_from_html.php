@@ -1257,7 +1257,7 @@ function array_html_preg_replace($element, $array, $semihtml)
                     // Find the matching end position
                     $end = null;
                     $balance = 0;
-                    for ($j = $i ; $j < $num_tags; $j++) {
+                    for ($j = $i; $j < $num_tags; $j++) {
                         $balance += $tags[$j][0];
                         if ($balance == 0) {
                             $end = $tags[$j][1];

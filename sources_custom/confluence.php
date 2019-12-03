@@ -222,7 +222,7 @@ function create_selection_list_confluence($selected_page_id = null, $under = nul
 /**
  * Get a formatted XHTML string of the route back to the specified root, from the specified category.
  *
- * @param  AUTO_LINK $category_id The category we are finding for
+ * @param  AUTO_LINK $page_id The page we are finding for
  * @param  boolean $no_link_for_me_sir Whether to include category links at this level (the recursed levels will always contain links - the top level is optional, hence this parameter)
  * @return ?array The breadcrumb segments (null: lost)
  */
@@ -327,7 +327,9 @@ function confluence_clean_page($html)
     // Responsive tables
     do { // We have to loop as our regex doesn't handle nested tables well
         $html_before = $html;
-        $html = preg_replace_callback('#(<table class="((wrapped |relative-table )*)confluenceTable)("[^<>]*>(\s*<colgroup>.*</colgroup>)?\s*<thead.*</table>)#Us', function ($matches) { // The last ".*</table>" bit is so we can detect the colspans
+        $html = preg_replace_callback('#(<table class="((wrapped |relative-table )*)confluenceTable)("[^<>]*>(\s*<colgroup>.*</colgroup>)?\s*<thead.*</table>)#Us', function ($matches) {
+            // ^ The last ".*</table>" bit is so we can detect the colspans
+
             if (strpos(str_replace('colspan="1"', '', $matches[0]), 'colspan="') !== false) { // colspan will screw up responsive tables
                 return $matches[0];
             }

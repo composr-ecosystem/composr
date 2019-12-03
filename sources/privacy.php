@@ -25,10 +25,10 @@
  */
 function init__privacy()
 {
-    if (!defined('PRIVACY_METHOD_leave')) {
-        define('PRIVACY_METHOD_leave', 1);
-        define('PRIVACY_METHOD_anonymise', 2);
-        define('PRIVACY_METHOD_delete', 4);
+    if (!defined('PRIVACY_METHOD__LEAVE')) {
+        define('PRIVACY_METHOD__LEAVE', 1);
+        define('PRIVACY_METHOD__ANONYMISE', 2);
+        define('PRIVACY_METHOD__DELETE', 4);
     }
 
     require_lang('privacy');

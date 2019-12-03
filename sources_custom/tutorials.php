@@ -29,7 +29,7 @@ Tags correspond also to icons, if one matches. Earliest match.
 
 function init__tutorials()
 {
-    define('TUTORIAL_VIRTUAL_FIELD_page_name', 't_page_name');
+    define('TUTORIAL_VIRTUAL_FIELD__PAGE_NAME', 't_page_name');
 }
 
 function list_tutorial_tags($skip_addons_and_specials = false)
@@ -164,7 +164,7 @@ function list_tutorials()
         $tutorials[] = get_tutorial_metadata(strval($e['id']), $e, $tags);
     }
 
-    $internal = list_to_map('t_page_name', $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD_page_name)]));
+    $internal = list_to_map('t_page_name', $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME)]));
     $dh = opendir(get_file_base() . '/docs/pages/comcode_custom/EN');
     while (($f = readdir($dh)) !== false) {
         if (substr($f, -4) == '.txt' && $f != 'panel_top.txt') {
@@ -277,7 +277,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
         // From git
 
         if ($db_row === null) {
-            $db_rows = $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD_page_name), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD_page_name)], ['t_page_name' => $tutorial_name], '', 1);
+            $db_rows = $GLOBALS['SITE_DB']->query_select('tutorials_internal t', ['t.*', tutorial_sql_rating(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_rating_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME), tutorial_sql_likes_recent(TUTORIAL_VIRTUAL_FIELD__PAGE_NAME)], ['t_page_name' => $tutorial_name], '', 1);
             if (isset($db_rows[0])) {
                 $db_row = $db_rows[0];
             } else {

@@ -302,14 +302,14 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
                 $rel = 'last';
             }
             $next = do_template('PAGINATION_NEXT_LINK', [
-                    '_GUID' => '6da9b396bdd46b7ee18c05b5a7eb4d10',
-                    'NOFOLLOW' => ($start + $max > $max * 5) && ($bot),
-                    'REL' => $rel,
-                    'TITLE' => $title,
-                    'NUM_PAGES' => integer_format($num_pages),
-                    'P' => integer_format(intval($p)),
-                    'URL' => $cat_url,
-                ]);
+                '_GUID' => '6da9b396bdd46b7ee18c05b5a7eb4d10',
+                'NOFOLLOW' => ($start + $max > $max * 5) && ($bot),
+                'REL' => $rel,
+                'TITLE' => $title,
+                'NUM_PAGES' => integer_format($num_pages),
+                'P' => integer_format(intval($p)),
+                'URL' => $cat_url,
+            ]);
         } else {
             $next = do_template('PAGINATION_NEXT');
         }

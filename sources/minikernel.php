@@ -35,6 +35,10 @@ function init__minikernel()
 {
     // LEGACY (PHP < 7)
     if (!class_exists('Error')) {
+        /**
+         * Error class.
+         * @package core
+         */
         class Error
         {
         }
@@ -922,9 +926,6 @@ function get_custom_base_url($https = null)
  * @param  ID_TEXT $reason The reason for the hack attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
- * @param  boolean $silent Whether to silently log the hack rather than also exiting
- * @param  boolean $instant_ban Whether a ban should be immediate
- * @param  integer $percentage_score The risk factor
  * @return mixed Never returns (i.e. exits)
  */
 function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '')

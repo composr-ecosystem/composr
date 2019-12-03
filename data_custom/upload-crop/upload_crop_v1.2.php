@@ -1,5 +1,8 @@
 <?php
 
+/*CQC: No API check*/
+/*CQC: No check*/
+
 /**
  * @package    thumbnail_editor
  */

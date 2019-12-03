@@ -386,7 +386,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                     // Test connection still works
                     fwrite($socket, "NOOP\r\n");
                     $rcv = fread($socket, 1024);
-                    if (strtolower(substr($rcv, 0, 3)) != '250')  {
+                    if (strtolower(substr($rcv, 0, 3)) != '250') {
                         @fclose($socket);
                         $socket = null;
                     }
@@ -838,14 +838,23 @@ abstract class Mail_dispatcher_base
 
                 // Cleanup the Comcode a bit
                 $message_plain = strip_comcode($message_raw);
-                $message_plain = static_evaluate_tempcode(do_template($this->mail_template, [
-                     '_GUID' => 'a23069c20202aa59b7450ebf8d49cde1',
-                     'CSS' => '{CSS}',
-                     'LOGOURL' => get_logo_url(''),
-                     'LANG' => $lang,
-                     'TITLE' => $subject_wrapped,
-                     'CONTENT' => $message_plain,
-                 ], $lang, false, 'MAIL', '.txt', 'text', $theme));
+                $message_plain = static_evaluate_tempcode(do_template(
+                    $this->mail_template,
+                    [
+                        '_GUID' => 'a23069c20202aa59b7450ebf8d49cde1',
+                        'CSS' => '{CSS}',
+                        'LOGOURL' => get_logo_url(''),
+                        'LANG' => $lang,
+                        'TITLE' => $subject_wrapped,
+                        'CONTENT' => $message_plain,
+                    ],
+                    $lang,
+                    false,
+                    'MAIL',
+                    '.txt',
+                    'text',
+                    $theme
+                ));
 
                 $html_content_cache[$cache_sig] = [$html_evaluated, $message_plain, $EMAIL_ATTACHMENTS];
 

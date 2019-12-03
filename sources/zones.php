@@ -1138,7 +1138,7 @@ function do_block($codename, $map = [], $ttl = null)
                         global $MEMORY_OVER_SPEED;
                         $MEMORY_OVER_SPEED = true; // Let this eat up some CPU in order to let it save RAM,
                         disable_php_memory_limit();
-                        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+                        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
                     } else {
                         $old_limit = null;
                     }

@@ -108,12 +108,18 @@ class Hook_cron_notification_digests
                         delete_cache_entry('_get_notifications', null, $to_member_id);
                     }
 
-                    $GLOBALS['SITE_DB']->query_update('digestives_consumed', [
-                        'c_time' => time(),
-                    ], [
-                        'c_member_id' => $to_member_id,
-                        'c_frequency' => $frequency,
-                    ], '', 1);
+                    $GLOBALS['SITE_DB']->query_update(
+                        'digestives_consumed',
+                        [
+                            'c_time' => time(),
+                        ],
+                        [
+                            'c_member_id' => $to_member_id,
+                            'c_frequency' => $frequency,
+                        ],
+                        '',
+                        1
+                    );
                 }
 
                 $start += 100;

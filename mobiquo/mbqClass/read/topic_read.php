@@ -207,7 +207,7 @@ class CMSTopicRead
                 }
             }
 
-            if (isset ($filters['excluded_topics'])) {
+            if (isset($filters['excluded_topics'])) {
                 $or_list = '';
                 foreach ($filters['excluded_topics'] as $_forum_id) {
                     if ($or_list != '') {

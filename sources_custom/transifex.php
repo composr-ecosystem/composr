@@ -171,7 +171,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
     global $EXISTING_LANGUAGE_AUTHORS, $EXTRA_LANGUAGE_FILES;
 
     push_query_limiting(false);
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     $project_slug = 'composr-cms-' . str_replace('.', '-', strval(cms_version()));
 
@@ -185,7 +185,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
         'license' => 'permissive_open_source',
         'repository_url' => COMPOSR_REPOS_URL,
         'organization' => 'ocproducts',
-        'team'=> 39268, // This is a hard-coded known value for the ocProducts organisation
+        'team' => 39268, // This is a hard-coded known value for the ocProducts organisation
         'fill_up_resources' => true,
         'homepage' => 'http://compo.sr',
         'trans_instructions' => 'See https://compo.sr/docs/tut_intl.htm',
@@ -537,7 +537,7 @@ function pull_from_transifex($version, $tar_file, $lang, $core_only)
     $project_slug = 'composr-cms-' . str_replace('.', '-', $version);
 
     push_query_limiting(false);
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     if ($lang === null) {
         $langs = array_keys(cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini'));
@@ -810,9 +810,9 @@ function _pull_cms_file_from_transifex($project_slug, $tar_file, $lang, $path, $
     $default_path = str_replace('__', '/', str_replace('__administrative', '', $resource_path)) . '.txt';
 
     $trans_path = str_replace('/' . fallback_lang() . '/', '/' . $lang . '/', $default_path);
-    $trans_path = str_replace('/comcode/', '/comcode_custom/' , $trans_path);
-    $trans_path = preg_replace('#^text/#', 'text_custom/' , $trans_path);
-    $trans_path = preg_replace('#^data/#', 'data_custom/' , $trans_path);
+    $trans_path = str_replace('/comcode/', '/comcode_custom/', $trans_path);
+    $trans_path = preg_replace('#^text/#', 'text_custom/', $trans_path);
+    $trans_path = preg_replace('#^data/#', 'data_custom/', $trans_path);
 
     $trans_full_path = get_file_base() . '/' . $trans_path;
 

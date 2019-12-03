@@ -22,7 +22,7 @@ class Hook_task_sugarcrm_sync_message
      * Run the task hook.
      *
      * @param  string $subject The subject of the message
-     * @param  string $body_prefix The body of the message
+     * @param  string $body The body of the message
      * @param  EMAIL $to_email E-mail address to send to
      * @param  string $to_name The recipient name. Array or string
      * @param  EMAIL $from_email The from address
@@ -59,8 +59,7 @@ class Hook_task_sugarcrm_sync_message
 
         try {
             $success = save_message_into_sugarcrm_as_configured(($subject == get_site_name()) ? '' : $subject, $body, $from_email, $from_name, $attachments, $body_parts, $_POST + $_GET + $_COOKIE);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             sugarcrm_failed($e->getMessage());
             return false;
         }

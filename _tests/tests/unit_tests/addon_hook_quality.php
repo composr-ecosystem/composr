@@ -39,8 +39,7 @@ class addon_hook_quality_test_set extends cms_test_case
 
             try {
                 check_comcode($description);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $this->assertTrue(false, 'Failed to parse addon description for ' . $addon_name . ', ' . $e->getMessage());
             }
         }

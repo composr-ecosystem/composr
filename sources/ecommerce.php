@@ -594,7 +594,7 @@ function make_transaction_button($type_code, $item_name, $purchase_id, $price, $
  * @param  ?ID_TEXT $payment_gateway The payment gateway the payment will go via (null: autodetect)
  * @return Tempcode The button
  */
-function make_subscription_button($type_code, $item_name, $purchase_id, $price, $tax_derivation, $tax, $tax_tracking, $currency, $price_points = 0, $length, $length_units, $payment_gateway = null)
+function make_subscription_button($type_code, $item_name, $purchase_id, $price, $tax_derivation, $tax, $tax_tracking, $currency, $price_points, $length, $length_units, $payment_gateway = null)
 {
     if ($payment_gateway === null) {
         $payment_gateway = get_option('payment_gateway');
@@ -1440,10 +1440,14 @@ function handle_ipn_transaction_script($silent_fail = false, $send_notifications
  * @param  boolean $send_notifications Whether to send notifications. Set to false if this is not the primary payment handling (e.g. a POST redirect rather than the real IPN).
  * @return ?array ID_TEXT A pair: The product purchased, The purchasing member ID (or null) (null: error)
  */
-function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type_code = null, $item_name = null, $purchase_id = null, $is_subscription = false, $status = 'Completed', $reason = '', $amount = null, $tax = null, $currency = null, $check_amounts = true, $parent_txn_id = '', $pending_reason = '', $memo = '', $period = '', $member_id_paying, $payment_gateway, $silent_fail, $send_notifications)
+function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type_code = null, $item_name = null, $purchase_id = null, $is_subscription = false, $status = 'Completed', $reason = '', $amount = null, $tax = null, $currency = null, $check_amounts = true, $parent_txn_id = '', $pending_reason = '', $memo = '', $period = '', $member_id_paying = null, $payment_gateway = '', $silent_fail = false, $send_notifications = true)
 {
     if ($txn_id === null) {
         $txn_id = uniqid('trans', true);
+    }
+
+    if ($payment_gateway == '') {
+        $payment_gateway = get_option('payment_gateway');
     }
 
     // We need to grab these from somewhere
@@ -1548,8 +1552,7 @@ function handle_confirmed_transaction($trans_expecting_id, $txn_id = null, $type
         if ($member_id === null) {
             if ($found['type'] == PRODUCT_SUBSCRIPTION) {
                 $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_subscriptions', 's_member_id', ['id' => intval($purchase_id)]);
-            }
-            elseif ($found['type'] == PRODUCT_INVOICE) {
+            } elseif ($found['type'] == PRODUCT_INVOICE) {
                 $member_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ecom_invoices', 'i_member_id', ['id' => intval($purchase_id)]);
             }
         }

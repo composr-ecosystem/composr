@@ -60,7 +60,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         }
     }
 
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
     // Find out path/filenames for the upgrade file we're making
     if ($from_version_dotted !== null) {
@@ -70,8 +70,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     }
     if ((get_param_integer('supports_gzip', 0) == 1) && (function_exists('gzopen'))) {
         $filename .= '.cms.gz';
-    }
-    elseif ((get_param_integer('supports_zip', 0) == 1) && ((function_exists('zip_open')) || (get_option('unzip_cmd') == ''))) {
+    } elseif ((get_param_integer('supports_zip', 0) == 1) && ((function_exists('zip_open')) || (get_option('unzip_cmd') == ''))) {
         $filename .= '.zip';
     } else {
         $filename .= '.cms';

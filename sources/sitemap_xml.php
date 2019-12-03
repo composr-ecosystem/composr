@@ -398,7 +398,6 @@ function canonicalise_sitemap_page_link(&$page_link)
             $page_link = preg_replace('#^_SEARCH:#', $_zone . ':', $page_link);
         }
     }
-
 }
 
 /**

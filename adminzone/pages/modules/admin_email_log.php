@@ -143,7 +143,7 @@ class Module_admin_email_log
     {
         require_code('mail');
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         // Put errors into table
         $start = get_param_integer('start', 0);

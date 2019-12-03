@@ -12,6 +12,10 @@
  * @copyright  ocProducts Ltd
  * @package    cns_tapatalk
  */
+
+/**
+ * Mobiquo server base class.
+ */
 abstract class MobiquoServer
 {
     /**

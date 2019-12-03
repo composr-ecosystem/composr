@@ -674,7 +674,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             $start = 0;
             $max = 100;
             do {
-                $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+                $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
                 push_db_scope_check(true);
                 $rows = $GLOBALS['SITE_DB']->query_select($table, [$name], [], '', $max, $start);

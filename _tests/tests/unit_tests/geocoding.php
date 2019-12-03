@@ -78,7 +78,7 @@ class geocoding_test_set extends cms_test_case
         foreach (['google', 'bing', 'mapquest'] as $service) {
             $error_msg = new Tempcode();
             $address = reverse_geocode(52.516667, 13.388889, $error_msg, $service);
-            if (($this->debug) || ($address === null))  {
+            if (($this->debug) || ($address === null)) {
                 var_dump($error_msg->evaluate());
                 var_dump($address);
             }
@@ -90,7 +90,7 @@ class geocoding_test_set extends cms_test_case
 
             $error_msg = new Tempcode();
             $address = reverse_geocode(64.133333, -21.933333, $error_msg, $service);
-            if (($this->debug) || ($address === null))  {
+            if (($this->debug) || ($address === null)) {
                 var_dump($error_msg->evaluate());
                 var_dump($address);
             }

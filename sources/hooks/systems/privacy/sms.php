@@ -48,14 +48,14 @@ class Hook_privacy_sms extends Hook_privacy_base
                 'sms_log' => [
                     'timestamp_field' => 's_time',
                     'retention_days' => intval(get_option('email_log_store_time')),
-                    'retention_handle_method' => PRIVACY_METHOD_delete,
+                    'retention_handle_method' => PRIVACY_METHOD__DELETE,
                     'member_id_fields' => ['s_member_id'],
                     'ip_address_fields' => ['s_trigger_ip'],
                     'email_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD_delete,
-                    'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],
         ];

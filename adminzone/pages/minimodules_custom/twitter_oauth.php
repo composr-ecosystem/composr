@@ -49,8 +49,7 @@ $ob = new Hook_syndication_twitter();
 
 try {
     $result = $ob->auth_set(null, get_self_url(false, false, ['oauth_in_progress' => 1]));
-}
-catch (Exception $e) {
+} catch (Exception $e) {
     warn_exit($e->getMessage());
 }
 

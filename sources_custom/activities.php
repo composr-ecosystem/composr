@@ -241,7 +241,8 @@ function render_activity($row, $use_inside_cms = true)
     } else {
         $extra_lang_string_params[] = do_lang_tempcode('GUEST');
     }
-    $message->attach(do_lang_tempcode($row['a_language_string_code'],
+    $message->attach(do_lang_tempcode(
+        $row['a_language_string_code'],
         $label[1],
         $label[2],
         $extra_lang_string_params

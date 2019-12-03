@@ -171,8 +171,7 @@ class Composr_mobile_sdk_tools
             foreach ($lines as $line) {
                 if (rtrim($line) == '[strings]') {
                     $processing = true;
-                }
-                elseif (substr($line, 0, 1) == '[') {
+                } elseif (substr($line, 0, 1) == '[') {
                     $processing = false;
                 }
                 if ($processing) {

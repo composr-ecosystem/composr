@@ -475,8 +475,7 @@ class Module_calendar
         }
         if (empty($types_has)) {
             $filter = [];
-        }
-        elseif (count($types_has) == 1) { // Viewing a single calendar type
+        } elseif (count($types_has) == 1) { // Viewing a single calendar type
             // Metadata
             set_extra_request_metadata([
                 'identifier' => '_SEARCH:calendar:browse:int_' . strval($types_has[0]) . '=1',

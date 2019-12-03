@@ -133,11 +133,10 @@ function array_count_values($input)
  * Calculate the difference between arrays.
  *
  * @param  array $array1 First array
- * @param  array $array2 Second array
- * @param  ?array $array3 Third array (null: only 2)
+ * @param  array $arrays Other arrays
  * @return array The difference
  */
-function array_diff($array1, $array2, $array3 = null)
+function array_diff($array1, ...$arrays)
 {
     return [];
 }
@@ -146,11 +145,10 @@ function array_diff($array1, $array2, $array3 = null)
  * Computes the intersection of arrays with additional index check.
  *
  * @param  array $array1 First array
- * @param  array $array2 Second array
- * @param  ?array $array3 Third array (null: only 2)
+ * @param  array $arrays Other arrays
  * @return array The difference
  */
-function array_diff_assoc($array1, $array2, $array3 = null)
+function array_diff_assoc($array1, ...$arrays)
 {
     return [];
 }
@@ -194,11 +192,10 @@ function array_keys($input, $search_value = null)
  * Calculate the intersection between arrays.
  *
  * @param  array $array1 First array
- * @param  array $array2 Second array
- * @param  ?array $array3 Third array (null: only 2)
+ * @param  array $arrays Other arrays
  * @return array The intersection
  */
-function array_intersect($array1, $array2, $array3 = null)
+function array_intersect($array1, ...$arrays)
 {
     return [];
 }
@@ -207,11 +204,10 @@ function array_intersect($array1, $array2, $array3 = null)
  * Computes the intersection of arrays using keys for comparison.
  *
  * @param  array $array1 First array
- * @param  array $array2 Second array
- * @param  ?array $array3 Third array (null: only 2)
+ * @param  array $arrays Other arrays
  * @return array The intersection
  */
-function array_intersect_key($array1, $array2, $array3 = null)
+function array_intersect_key($array1, ...$arrays)
 {
     return [];
 }
@@ -220,11 +216,10 @@ function array_intersect_key($array1, $array2, $array3 = null)
  * Calculate the intersection of arrays with additional index check.
  *
  * @param  array $array1 First array
- * @param  array $array2 Second array
- * @param  ?array $array3 Third array (null: only 2)
+ * @param  array $arrays Other arrays
  * @return array The intersection
  */
-function array_intersect_assoc($array1, $array2, $array3 = null)
+function array_intersect_assoc($array1, ...$arrays)
 {
     return [];
 }
@@ -375,10 +370,10 @@ function base64_encode($data)
  * Call a user function given by the first parameter.
  *
  * @param  mixed $function Function callback
- * @param  mixed $param Parameters
+ * @param  mixed $params Parameters
  * @return mixed Whatever the function returns
  */
-function call_user_func($function, ...$param)
+function call_user_func($function, ...$params)
 {
     return 0;
 }
@@ -1991,19 +1986,10 @@ function mail($to, $subject, $message, $additional_headers = '', $additional_fla
 /**
  * Find highest value between arguments.
  *
- * @param  mixed $arg1 First argument (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg2 Second argument (null: no second argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg3 Third argument (null: no third argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg4 Fourth argument (null: no fourth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg5 Fifth argument (null: no fifth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg6 Sixth argument (null: no sixth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg7 Seventh argument (null: no seventh argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg8 Eighth argument (null: no eighth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg9 Ninth argument (null: no ninth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg10 Tenth argument (null: no tenth argument) (if array, then each treated as a separate parameter)
+ * @param  mixed $args Arguments (if array, then each treated as a separate parameter)
  * @return mixed The highest valued argument
  */
-function max($arg1, $arg2 = null, $arg3 = null, $arg4 = null, $arg5 = null, $arg6 = null, $arg7 = null, $arg8 = null, $arg9 = null, $arg10 = null)
+function max(...$args)
 {
     return 0;
 }
@@ -2045,19 +2031,10 @@ function microtime($as_float = false)
 /**
  * Find lowest value between arguments.
  *
- * @param  mixed $arg1 First argument (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg2 Second argument (null: no second argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg3 Third argument (null: no third argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg4 Fourth argument (null: no fourth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg5 Fifth argument (null: no fith argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg6 Sixth argument (null: no sixth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg7 Seventh argument (null: no seventh argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg8 Eighth argument (null: no eighth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg9 Ninth argument (null: no ninth argument) (if array, then each treated as a separate parameter)
- * @param  ?mixed $arg10 Tenth argument (null: no tenth argument) (if array, then each treated as a separate parameter)
+ * @param  mixed $args Arguments (if array, then each treated as a separate parameter)
  * @return mixed The lowest valued argument
  */
-function min($arg1, $arg2 = null, $arg3 = null, $arg4 = null, $arg5 = null, $arg6 = null, $arg7 = null, $arg8 = null, $arg9 = null, $arg10 = null)
+function min(...$args)
 {
     return 0;
 }
@@ -2499,20 +2476,9 @@ function realpath($path)
  * Do not rely on this function working. Use it for development/debug/cleanup-niceties only.
  *
  * @param  mixed $callback Callback
- * @param  ?mixed $param_a Parameter (null: not used)
- * @param  ?mixed $param_b Parameter (null: not used)
- * @param  ?mixed $param_c Parameter (null: not used)
- * @param  ?mixed $param_d Parameter (null: not used)
- * @param  ?mixed $param_e Parameter (null: not used)
- * @param  ?mixed $param_f Parameter (null: not used)
- * @param  ?mixed $param_g Parameter (null: not used)
- * @param  ?mixed $param_h Parameter (null: not used)
- * @param  ?mixed $param_i Parameter (null: not used)
- * @param  ?mixed $param_j Parameter (null: not used)
- * @param  ?mixed $param_k Parameter (null: not used)
- * @param  ?mixed $param_l Parameter (null: not used)
+ * @param  mixed $params Parameters
  */
-function register_shutdown_function($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null)
+function register_shutdown_function($callback, ...$params)
 {
 }
 
@@ -3201,13 +3167,10 @@ function array_rand($input, $num_req = 1)
  * Prepend one or more elements to the beginning of array.
  *
  * @param  array $array Array to prepend to
- * @param  mixed $var1 Element to prepend
- * @param  ?mixed $var2 Element to prepend (null: no more - actually pass nothing for this)
- * @param  ?mixed $var3 Element to prepend (null: no more - actually pass nothing for this)
- * @param  ?mixed $var4 Element to prepend (null: no more - actually pass nothing for this)
+ * @param  mixed $vars Elements to prepend
  * @return integer The new number of elements in the array
  */
-function array_unshift(&$array, $var1, $var2 = null, $var3 = null, $var4 = null)
+function array_unshift(&$array, ...$vars)
 {
     return 0;
 }
@@ -4088,14 +4051,10 @@ function array_sum($array)
  * Merges the elements of one or more arrays together so that the values of one are appended to the end of the previous one. It returns the resulting array.
  * If the input arrays have the same string keys, then the values for these keys are merged together into an array, and this is done recursively, so that if one of the values is an array itself, the function will merge it with a corresponding entry in another array too. If, however, the arrays have the same numeric key, the later value will not overwrite the original value, but will be appended.
  *
- * @param  array $array1 First array to merge
- * @param  array $array2 Second array to merge
- * @param  ?array $array3 Third array to merge (null: not this one)
- * @param  ?array $array4 Fourth array to merge (null: not this one)
- * @param  ?array $array5 Fifth array to merge (null: not this one)
+ * @param  array $array Arrays to merge
  * @return array Result
  */
-function array_merge_recursive($array1, $array2, $array3 = null, $array4 = null, $array5 = null)
+function array_merge_recursive(...$array)
 {
     return [];
 }

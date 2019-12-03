@@ -162,11 +162,11 @@ function init__global3()
 
     // Time limits...
 
-    if (!defined('TIME_LIMIT_EXTEND_modest')) {
-        define('TIME_LIMIT_EXTEND_modest', 30);
-        define('TIME_LIMIT_EXTEND_sluggish', 100);
-        define('TIME_LIMIT_EXTEND_slow', 300);
-        define('TIME_LIMIT_EXTEND_crawl', 1000);
+    if (!defined('TIME_LIMIT_EXTEND__MODEST')) {
+        define('TIME_LIMIT_EXTEND__MODEST', 30);
+        define('TIME_LIMIT_EXTEND__SLUGGISH', 100);
+        define('TIME_LIMIT_EXTEND__SLOW', 300);
+        define('TIME_LIMIT_EXTEND__CRAWL', 1000);
     }
 }
 
@@ -3126,15 +3126,19 @@ function member_tracking_update($page, $type, $id)
     }
 
     cms_register_shutdown_function_safe(function () use ($page, $type, $id) {
-        $GLOBALS['SITE_DB']->query_insert_or_replace('member_tracking', [
-            'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
-            'mt_time' => time(),
-        ], [
-            'mt_member_id' => get_member(),
-            'mt_page' => $page,
-            'mt_type' => $type,
-            'mt_id' => $id,
-        ]);
+        $GLOBALS['SITE_DB']->query_insert_or_replace(
+            'member_tracking',
+            [
+                'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
+                'mt_time' => time(),
+            ],
+            [
+                'mt_member_id' => get_member(),
+                'mt_page' => $page,
+                'mt_type' => $type,
+                'mt_id' => $id,
+            ]
+        );
     });
 }
 
@@ -3520,7 +3524,7 @@ function get_bot_type($agent = null)
                 'sqworm' => 'Aol.com',
                 'baidu' => 'Baidu',
                 'facebookexternalhit' => 'Facebook',
-                'yandex'=> 'Yandex',
+                'yandex' => 'Yandex',
                 'daum' => 'Daum',
                 'ahrefsbot' => 'Ahrefs',
                 'mj12bot' => 'Majestic-12',
@@ -3939,11 +3943,8 @@ function make_fractionable_editable($content_type, $id, $title)
 
     $parameters = [
         is_object($title) ? $title->evaluate() : $title,
-        array_key_exists('edit_page_link_field', $info) ? $info['edit_page_link_field'] : preg_replace('#^\w\w?_#', '',
-        array_key_exists('title_field_post', $info) ? $info['title_field_post'] : $info['title_field']),
-        array_key_exists('edit_page_link_pattern_post', $info) ? str_replace('_WILD', is_integer($id) ? strval($id) : $id,
-        $info['edit_page_link_pattern_post']) : preg_replace('#:_(.*)#', ':__${1}', str_replace('_WILD',
-        is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern'])),
+        array_key_exists('edit_page_link_field', $info) ? $info['edit_page_link_field'] : preg_replace('#^\w\w?_#', '', array_key_exists('title_field_post', $info) ? $info['title_field_post'] : $info['title_field']),
+        array_key_exists('edit_page_link_pattern_post', $info) ? str_replace('_WILD', is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern_post']) : preg_replace('#:_(.*)#', ':__${1}', str_replace('_WILD', is_integer($id) ? strval($id) : $id, $info['edit_page_link_pattern'])),
         (array_key_exists('title_field_supports_comcode', $info) && $info['title_field_supports_comcode']) ? '1' : '0',
     ];
     return directive_tempcode('FRACTIONAL_EDITABLE', is_object($title) ? $title : escape_html($title), $parameters);
@@ -4087,14 +4088,12 @@ function cms_eval($code, $context, $trigger_error = true)
         if (($errormsg == '') || ($errormsg === $errormsg_before)) {
             $errormsg = '';
         }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         $result = false;
         $attach_manually = true;
 
         $errormsg = $e->getMessage();
-    }
-    catch (Error $e) {
+    } catch (Error $e) {
         $result = false;
         $attach_manually = true;
 

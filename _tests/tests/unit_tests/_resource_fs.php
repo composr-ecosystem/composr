@@ -90,8 +90,7 @@ class _resource_fs_test_set extends cms_test_case
                 try {
                     $_path = $ob->folder_convert_id_to_filename($folder_resource_type_1, 'test-a');
                     $ob->folder_delete('test-a', $_path);
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                 }
                 set_throw_errors(false);
 
@@ -109,8 +108,7 @@ class _resource_fs_test_set extends cms_test_case
             set_throw_errors(true);
             try {
                 $ob->file_delete('test_content.' . RESOURCE_FS_DEFAULT_EXTENSION, $path);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
             }
             set_throw_errors(false);
 
@@ -283,8 +281,7 @@ class _resource_fs_test_set extends cms_test_case
                         $result = $ob->folder_delete(basename($_path), (strpos($_path, '/') === false) ? '' : dirname($_path));
                         $this->assertTrue($result !== false, 'Failed to folder_delete ' . $commandr_fs_hook . ' (' . $_path . ')');
                     }
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                 }
                 set_throw_errors(false);
             }

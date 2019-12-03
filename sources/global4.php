@@ -150,7 +150,8 @@ function make_xhtml_strict($global)
     $_global = str_replace(
         '<!DOCTYPE html>',
         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-        $_global);
+        $_global
+    );
     $_global = preg_replace('#(<a\s[^>]*)onclick="([^"]*)"(\s[^>]*)target="_blank"#', '${1}onclick="this.target=\'_blank\'; ${2}"${3}', $_global);
     $_global = preg_replace('#(<a\s[^>]*)target="_blank"(\s[^>]*)onclick="([^"]*)"#', '${1}onclick="this.target=\'_blank\'; ${3}"${2}', $_global);
     $_global = preg_replace('#(<a\s[^>]*)target="_blank"#', '${1}onclick="this.target=\'_blank\';"', $_global);
@@ -576,7 +577,9 @@ function generate_guid()
     $hash = md5(uniqid('', true));
 
     // Based on a comment in the PHP manual
-    return sprintf('%08s-%04s-%04x-%04x-%12s',
+    return sprintf(
+        '%08s-%04s-%04x-%04x-%12s',
+
         // 32 bits for "time_low"
         substr($hash, 0, 8),
 

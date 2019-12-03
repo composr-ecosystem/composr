@@ -189,7 +189,7 @@ class Hook_geocoding_mapquest
             $error_msg = new Tempcode();
             foreach ($result['info']['messages'] as $i => $message) {
                 if ($i != 0) {
-                    $error_msg->attach(',' );
+                    $error_msg->attach(',');
                 }
                 $error_msg->attach($message);
             }

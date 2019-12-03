@@ -52,11 +52,17 @@ function tasks_script()
     if (!array_key_exists(0, $task_rows)) {
         return; // Missing / locked / secure_ref error
     }
-    $GLOBALS['SITE_DB']->query_update('task_queue', [
-        't_locked' => 1,
-    ], [
-        'id' => $id,
-    ], '', 1);
+    $GLOBALS['SITE_DB']->query_update(
+        'task_queue',
+        [
+            't_locked' => 1,
+        ],
+        [
+            'id' => $id,
+        ],
+        '',
+        1
+    );
     $task_row = $task_rows[0];
 
     execute_task_background($task_row);
@@ -164,11 +170,17 @@ function execute_task_background($task_row)
     }
 
     if ($result === false) {
-        $GLOBALS['SITE_DB']->query_update('task_queue', [
-            't_locked' => 0,
-        ], [
-            'id' => $task_row['id'],
-        ], '', 1);
+        $GLOBALS['SITE_DB']->query_update(
+            'task_queue',
+            [
+                't_locked' => 0,
+            ],
+            [
+                'id' => $task_row['id'],
+            ],
+            '',
+            1
+        );
     } else {
         $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
@@ -291,14 +303,12 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = []
 
             @unlink($content_result[1]);
             sync_file($content_result[1]);
-        }
-        /* elseif (is_object($content_result))
-        {
-            $content_result->evaluate_echo(null);
         } else {
-            echo $content_result;
-        }*/
-        else {
+            /*if (is_object($content_result)) {
+                $content_result->evaluate_echo(null);
+            } else {
+                echo $content_result;
+            }*/
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';

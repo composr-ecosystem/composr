@@ -358,7 +358,7 @@ class Module_admin_addons
      */
     public function gui()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow); // So it can scan inside addons
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW); // So it can scan inside addons
         send_http_output_ping();
 
         push_query_limiting(false);
@@ -695,7 +695,7 @@ class Module_admin_addons
     {
         appengine_live_guard();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         require_code('abstract_file_manager');
         $writable_paths = [];
@@ -1053,13 +1053,13 @@ class Module_admin_addons
         }
 
         return do_template('ADDON_EXPORT_SCREEN', [
-                '_GUID' => 'd89367c0bbc3d6b8bd19f736d9474dfa',
-                'TITLE' => $this->title,
-                'LANGUAGES' => $tpl_langs,
-                'URL' => $url,
-                'FILES' => $frm_files,
-                'THEMES' => $tpl_themes,
-            ]);
+            '_GUID' => 'd89367c0bbc3d6b8bd19f736d9474dfa',
+            'TITLE' => $this->title,
+            'LANGUAGES' => $tpl_langs,
+            'URL' => $url,
+            'FILES' => $frm_files,
+            'THEMES' => $tpl_themes,
+        ]);
     }
 
     /**

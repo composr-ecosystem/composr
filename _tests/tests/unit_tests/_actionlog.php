@@ -132,7 +132,7 @@ class _actionlog_test_set extends cms_test_case
             $handlers += $ob->get_handlers();
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('files');
         require_code('files2');

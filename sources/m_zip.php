@@ -75,7 +75,7 @@ function init__m_zip()
         {
             global $M_ZIP_DIR_HANDLES, $M_ZIP_DIR_OPEN_PATHS;
 
-            $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+            $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
             list($usec, $sec) = explode(' ', microtime(false));
             $id = strval(intval($sec) - 1007700000) . str_pad(strval(intval($usec) * 1000000), 6, '0', STR_PAD_LEFT) . str_pad(strval(mt_rand(0, 999)), 3, '0', STR_PAD_LEFT);

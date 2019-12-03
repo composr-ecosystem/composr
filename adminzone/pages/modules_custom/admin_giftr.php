@@ -398,7 +398,7 @@ class Module_admin_giftr extends Standard_crud_module
     /**
      * Standard crud_module delete actualiser.
      *
-     * @param  ID_TEXT $id The entry being deleted
+     * @param  ID_TEXT $_id The entry being deleted
      */
     public function delete_actualisation($_id)
     {

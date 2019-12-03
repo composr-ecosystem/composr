@@ -61,7 +61,7 @@ require_code('version2');
 require_code('tar');
 require_code('addon_publish');
 
-cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
 $only = get_param_string('only', null);
 

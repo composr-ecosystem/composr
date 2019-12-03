@@ -390,8 +390,7 @@ function closure_eval($code, $parameters)
 
     try {
         $ret = eval($code);
-    }
-    catch (Error $e) {
+    } catch (Error $e) {
         tempcode_error($e, $code);
     }
     if (!is_string($ret)) {
@@ -1364,6 +1363,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
             return;
 
         case 'CSS_INHERIT':
+            // no break
 
         case 'REQUIRE_CSS':
             if (isset($param[0])) {
@@ -1972,8 +1972,7 @@ class Tempcode
 
         try {
             $result = eval($raw_data);
-        }
-        catch (Error $e) {
+        } catch (Error $e) {
             tempcode_error($e, $raw_data);
         }
         if ($result === false) {
@@ -2253,8 +2252,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     try {
                         eval($this->code_to_preexecute[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $this->code_to_preexecute[$seq_part_0]);
                     }
                 }
@@ -2264,8 +2262,7 @@ class Tempcode
                     $parameters = $seq_part[1];
                     try {
                         eval($tpl_funcs[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $tpl_funcs[$seq_part_0]);
                     }
                 }
@@ -2364,8 +2361,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     try {
                         eval($this->code_to_preexecute[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $this->code_to_preexecute[$seq_part_0]);
                     }
                 }
@@ -2375,8 +2371,7 @@ class Tempcode
                     $parameters = $seq_part[1];
                     try {
                         eval($tpl_funcs[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $tpl_funcs[$seq_part_0]);
                     }
                 }
@@ -2466,8 +2461,7 @@ class Tempcode
                 if (!isset($tpl_funcs[$seq_part_0])) {
                     try {
                         eval($this->code_to_preexecute[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $this->code_to_preexecute[$seq_part_0]);
                     }
                 }
@@ -2477,8 +2471,7 @@ class Tempcode
                     $parameters = $seq_part[1];
                     try {
                         eval($tpl_funcs[$seq_part_0]);
-                    }
-                    catch (Error $e) {
+                    } catch (Error $e) {
                         tempcode_error($e, $tpl_funcs[$seq_part_0]);
                     }
                 }
@@ -2523,8 +2516,7 @@ function recall_named_function($id, $parameters, $code)
         $code = 'return function (' . $parameters . ') { ' . $code . ' };';
         try {
             $GLOBALS[$k] = eval($code);
-        }
-        catch (Error $e) {
+        } catch (Error $e) {
             tempcode_error($e, $code);
         }
     }

@@ -20,7 +20,7 @@ if (!addon_installed('composr_homesite_support_credits')) {
 }
 
 if (!addon_installed('tickets')) {
-    return do_template('RED_ALERT', ['_GUID' => 'xxuw4d79s9qmq2jgaris712w3nj95ce0', 'TEXT' =>do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'xxuw4d79s9qmq2jgaris712w3nj95ce0', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
 }
 if (!addon_installed('ecommerce')) {
     return do_template('RED_ALERT', ['_GUID' => 'z9wzu51gk1qa89j52xdc7ccwpq6l3soz', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);

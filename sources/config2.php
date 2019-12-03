@@ -50,7 +50,7 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
     } else {
         $explanation = do_lang_tempcode($details['explanation'], isset($details['explanation_param_a']) ? $details['explanation_param_a'] : null, isset($details['explanation_param_b']) ? $details['explanation_param_b'] : null, isset($details['explanation_param_c']) ? $details['explanation_param_c'] : null);
     }
-    if (!$is_override ) {
+    if (!$is_override) {
         if (!empty($details['theme_override'])) {
             $explanation = do_lang_tempcode('IS_ALSO_THEME_SETTING', $explanation);
         }

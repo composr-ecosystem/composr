@@ -11,7 +11,7 @@
  * Composr Twitter Support non-bundled addon.  PHP5 and PHP CuRL Extension are required.
  */
 
- /**
+/**
  * Block class.
  */
 class Block_twitter_feed

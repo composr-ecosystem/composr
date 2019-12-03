@@ -50,6 +50,10 @@ function grab_photobucket_content()
     cms_set_time_limit($old_limit);
 }
 
+/**
+ * Grab remote content.
+ * @package remote_content_grabber
+ */
 class RemoteContentGrabber
 {
     protected $url_context_regexps = [];

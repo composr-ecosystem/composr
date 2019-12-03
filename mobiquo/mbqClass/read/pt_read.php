@@ -124,7 +124,7 @@ class CMSPtRead
         $_posts = $GLOBALS['FORUM_DB']->query('SELECT *,p.id AS post_id,p.p_topic_id AS topic_id' . $sql, $max, $start);
         $total_post_count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*)' . $sql);
 
-        $last_read_sql = db_function('COALESCE' , ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
+        $last_read_sql = db_function('COALESCE', ['(SELECT l_time FROM ' . $table_prefix . 'f_read_logs l WHERE l_topic_id=p.p_topic_id AND l_member_id=' . strval(get_member()) . ')', '0']);
 
         $extra = ' AND p_time>' . db_function('GREATEST', [
             strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))),

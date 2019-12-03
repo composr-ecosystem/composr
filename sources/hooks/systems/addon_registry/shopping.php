@@ -259,24 +259,24 @@ class Hook_addon_registry_shopping
 
         return [
             lorem_globalise(do_lorem_template('CATALOGUE_products_ENTRY_SCREEN', $map + [
-                    'TITLE' => lorem_title(),
-                    'WARNINGS' => '',
-                    'ENTRY' => $entry,
-                    'ID' => placeholder_id(),
-                    'EDIT_URL' => placeholder_url(),
-                    'TRACKBACK_DETAILS' => lorem_phrase(),
-                    'RATING_DETAILS' => lorem_phrase(),
-                    'COMMENT_DETAILS' => lorem_phrase(),
-                    'ADD_DATE' => placeholder_date(),
-                    'ADD_DATE_RAW' => placeholder_date_raw(),
-                    'EDIT_DATE_RAW' => placeholder_date_raw(),
-                    'VIEWS' => placeholder_number(),
-                    'TAGS' => [],
-                    'CART_BUTTONS' => $cart_buttons,
-                    'CATALOGUE' => 'products',
-                    'SUBMITTER' => placeholder_id(),
-                    'FIELD_1' => lorem_word(),
-                ]), null, '', true)
+                'TITLE' => lorem_title(),
+                'WARNINGS' => '',
+                'ENTRY' => $entry,
+                'ID' => placeholder_id(),
+                'EDIT_URL' => placeholder_url(),
+                'TRACKBACK_DETAILS' => lorem_phrase(),
+                'RATING_DETAILS' => lorem_phrase(),
+                'COMMENT_DETAILS' => lorem_phrase(),
+                'ADD_DATE' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
+                'EDIT_DATE_RAW' => placeholder_date_raw(),
+                'VIEWS' => placeholder_number(),
+                'TAGS' => [],
+                'CART_BUTTONS' => $cart_buttons,
+                'CATALOGUE' => 'products',
+                'SUBMITTER' => placeholder_id(),
+                'FIELD_1' => lorem_word(),
+            ]), null, '', true)
         ];
     }
 

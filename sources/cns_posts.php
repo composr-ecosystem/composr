@@ -199,7 +199,7 @@ function cns_may_edit_post_by($post_id, $post_time, $resource_owner, $forum_id, 
  * @param  ?string $reason The reason for the topic being closed is put here (null: no interesting reason)
  * @return boolean The answer
  */
-function cns_may_delete_post_by($post_id, $post_time = null, $resource_owner, $forum_id, $member_id = null, $topic_is_closed = null, &$reason = null)
+function cns_may_delete_post_by($post_id, $post_time, $resource_owner, $forum_id, $member_id = null, $topic_is_closed = null, &$reason = null)
 {
     if ($member_id === null) {
         $member_id = get_member();

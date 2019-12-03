@@ -109,16 +109,16 @@ class Hook_translation_google_translate
             'target' => $_to,
         ];
         switch ($context) {
-            case TRANS_TEXT_CONTEXT_autodetect:
+            case TRANS_TEXT_CONTEXT__AUTODETECT:
                 break;
 
-            case TRANS_TEXT_CONTEXT_plain:
+            case TRANS_TEXT_CONTEXT__PLAIN:
                 $request['format'] = 'text';
                 break;
 
-            case TRANS_TEXT_CONTEXT_html_block:
-            case TRANS_TEXT_CONTEXT_html_inline:
-            case TRANS_TEXT_CONTEXT_html_raw:
+            case TRANS_TEXT_CONTEXT__HTML_BLOCK:
+            case TRANS_TEXT_CONTEXT__HTML_INLINE:
+            case TRANS_TEXT_CONTEXT__HTML_RAW:
                 $request['format'] = 'html';
                 break;
         }
@@ -151,17 +151,17 @@ class Hook_translation_google_translate
 
         $ret = $text_result;
         switch ($context) {
-            case TRANS_TEXT_CONTEXT_autodetect:
-            case TRANS_TEXT_CONTEXT_plain:
-            case TRANS_TEXT_CONTEXT_html_raw:
+            case TRANS_TEXT_CONTEXT__AUTODETECT:
+            case TRANS_TEXT_CONTEXT__PLAIN:
+            case TRANS_TEXT_CONTEXT__HTML_RAW:
                 $ret = $text_result;
                 break;
 
-            case TRANS_TEXT_CONTEXT_html_block:
-            case TRANS_TEXT_CONTEXT_html_inline:
-                $tag = ($context == TRANS_TEXT_CONTEXT_html_block) ? 'div' : 'span';
+            case TRANS_TEXT_CONTEXT__HTML_BLOCK:
+            case TRANS_TEXT_CONTEXT__HTML_INLINE:
+                $tag = ($context == TRANS_TEXT_CONTEXT__HTML_BLOCK) ? 'div' : 'span';
                 $ret = '<' . $tag . ' lang="' . $_to . '-x-mtfrom-' . $_from . '">' . $text_result . '</' . $tag . '>';
-                if ($context == TRANS_TEXT_CONTEXT_html_block) {
+                if ($context == TRANS_TEXT_CONTEXT__HTML_BLOCK) {
                     $ret .= '<div>' . $this->get_translation_credit() . '</div>';
                 }
                 break;

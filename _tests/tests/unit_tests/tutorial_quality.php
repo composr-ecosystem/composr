@@ -71,9 +71,7 @@ class tutorial_quality_test_set extends cms_test_case
 
             if (substr($file, 0, 4) == 'sup_') {
                 $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), 'Composr Supplementary: ') !== false, $file . ' has wrong title stub');
-            }
-
-            elseif (substr($file, 0, 4) == 'tut_') {
+            } elseif (substr($file, 0, 4) == 'tut_') {
                 $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), 'Composr Tutorial: ') !== false, $file . ' has wrong title stub');
             }
         }

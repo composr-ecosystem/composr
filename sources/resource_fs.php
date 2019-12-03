@@ -628,8 +628,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
 
         if (strpos($db_field_type, '_TRANS') !== false) {
             $lang_fields[] = $db_field_name;
-        }
-        elseif ($db_field_type == 'URLPATH') {
+        } elseif ($db_field_type == 'URLPATH') {
             $upload_fields[] = $db_field_name;
         }
     }
@@ -637,8 +636,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
     if ($replace_mode != TABLE_REPLACE_MODE_NONE) {
         if ($replace_mode == TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA) {
             $delete_where = $extra_field_data;
-        }
-        elseif ($replace_mode == TABLE_REPLACE_MODE_SEVERE) {
+        } elseif ($replace_mode == TABLE_REPLACE_MODE_SEVERE) {
             $delete_where = [];
         }
 
@@ -738,33 +736,19 @@ function table_row_to_portable_row($row, $db_fields, $relation_map, $db = null)
 
         if (strpos($db_field_type, '_TRANS') !== false) {
             $row[$db_field_name] = remap_trans_as_portable($row, $db_field_name, $db);
-        }
-
-        elseif (($db_field_type == 'MEMBER') && (get_forum_type() == 'cns')) {
+        } elseif (($db_field_type == 'MEMBER') && (get_forum_type() == 'cns')) {
             $row[$db_field_name] = remap_resource_id_as_portable('member', $row[$db_field_name]);
-        }
-
-        elseif (($db_field_type == 'GROUP') && (get_forum_type() == 'cns')) {
+        } elseif (($db_field_type == 'GROUP') && (get_forum_type() == 'cns')) {
             $row[$db_field_name] = remap_resource_id_as_portable('group', $row[$db_field_name]);
-        }
-
-        elseif ($db_field_type == 'TIME') {
+        } elseif ($db_field_type == 'TIME') {
             $row[$db_field_name] = remap_time_as_portable($row[$db_field_name]);
-        }
-
-        elseif ($db_field_type == 'URLPATH') {
+        } elseif ($db_field_type == 'URLPATH') {
             $row[$db_field_name] = remap_urlpath_as_portable($row[$db_field_name]);
-        }
-
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
+        } elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
             $row[$db_field_name] = remap_resource_id_as_portable('topic', $row[$db_field_name]);
-        }
-
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
+        } elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
             $row[$db_field_name] = remap_resource_id_as_portable('post', $row[$db_field_name]);
-        }
-
-        elseif (isset($relation_map[$db_field_name])) {
+        } elseif (isset($relation_map[$db_field_name])) {
             $row[$db_field_name] = remap_foreign_key_as_portable($relation_map[$db_field_name], $row[$db_field_name]);
         }
     }
@@ -798,38 +782,24 @@ function table_row_from_portable_row($row, $db_fields, $relation_map, $db = null
 
         if (strpos($db_field_type, '_TRANS') !== false) {
             $row += remap_portable_as_trans($row[$db_field_name], $db_field_name, $db);
-        }
-
-        elseif (($db_field_type == 'MEMBER') && (get_forum_type() == 'cns')) {
+        } elseif (($db_field_type == 'MEMBER') && (get_forum_type() == 'cns')) {
             $row[$db_field_name] = remap_portable_as_resource_id('member', $row[$db_field_name]);
             $to_int = true;
-        }
-
-        elseif (($db_field_type == 'GROUP') && (get_forum_type() == 'cns')) {
+        } elseif (($db_field_type == 'GROUP') && (get_forum_type() == 'cns')) {
             $row[$db_field_name] = remap_portable_as_resource_id('group', $row[$db_field_name]);
             $to_int = true;
-        }
-
-        elseif ($db_field_type == 'TIME') {
+        } elseif ($db_field_type == 'TIME') {
             $row[$db_field_name] = remap_portable_as_time($row[$db_field_name]);
             $to_int = true;
-        }
-
-        elseif ($db_field_type == 'URLPATH') {
+        } elseif ($db_field_type == 'URLPATH') {
             $row[$db_field_name] = remap_portable_as_urlpath($row[$db_field_name]);
-        }
-
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
+        } elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_topics', 'id'])) {
             $row[$db_field_name] = remap_portable_as_resource_id('topic', $row[$db_field_name]);
             $to_int = true;
-        }
-
-        elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
+        } elseif ((isset($relation_map[$db_field_name])) && (get_forum_type() == 'cns') && ($relation_map[$db_field_name] == ['f_posts', 'id'])) {
             $row[$db_field_name] = remap_portable_as_resource_id('post', $row[$db_field_name]);
             $to_int = true;
-        }
-
-        elseif (isset($relation_map[$db_field_name])) {
+        } elseif (isset($relation_map[$db_field_name])) {
             $row[$db_field_name] = remap_portable_as_foreign_key($relation_map[$db_field_name], $row[$db_field_name]);
         }
 

@@ -530,11 +530,7 @@ class Module_admin_errorlog
     {
         // Update cron_progression table
         if ($GLOBALS['SITE_DB']->query_select_value_if_there('cron_progression', 'c_hook', ['c_hook' => $hook]) !== null) {
-            $GLOBALS['SITE_DB']->query_update('cron_progression', [
-                'c_enabled' => $enabled,
-            ], [
-                'c_hook' => $hook,
-            ], '', 1);
+            $GLOBALS['SITE_DB']->query_update('cron_progression', ['c_enabled' => $enabled], ['c_hook' => $hook], '', 1);
         } else {
             $GLOBALS['SITE_DB']->query_insert('cron_progression', [
                 'c_hook' => $hook,

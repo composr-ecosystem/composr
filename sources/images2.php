@@ -146,7 +146,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
     }
 
     disable_php_memory_limit();
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_modest);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     // Branch based on the type of thumbnail we're making
     switch ($algorithm) {
@@ -290,7 +290,7 @@ function convert_image_plus($orig_url, $dimensions = null, $output_dir = 'upload
 function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on_error = true, $ext2 = null, $using_path = false, $only_make_smaller = false, $thumb_options = null)
 {
     disable_php_memory_limit();
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_modest);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     if (!file_exists(dirname($to))) {
         require_code('files2');

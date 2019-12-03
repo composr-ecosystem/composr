@@ -134,8 +134,7 @@ function continuous_integration_script()
 
             process_ci_queue($output, $ignore_lock, $cli);
         }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         fatal_exit($e->getMessage());
     }
 }

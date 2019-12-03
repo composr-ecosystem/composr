@@ -47,8 +47,7 @@ class optimisations_fragile_test_set extends cms_test_case
         foreach (array_keys($modules) as $module) {
             try {
                 $out = load_module_page('site/pages/modules/' . $module . '.php', $module);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
             }
             $bad = function_exists('ecv2_MAKE_URL_ABSOLUTE');
             $this->assertTrue(!$bad, 'Loaded symbols2.php in module ' . $module);

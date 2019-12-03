@@ -147,7 +147,7 @@ class config_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('files2');
 
@@ -215,9 +215,7 @@ class config_test_set extends cms_test_case
                     if ((strpos($c, 'get_option') === false) && (strpos($c, 'get_theme_option') === false)) {
                         continue;
                     }
-                }
-
-                elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
+                } elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                     if ((strpos($c, 'CONFIG_OPTION') === false) && (strpos($c, 'THEME_OPTION') === false)) {
                         continue;
                     }
@@ -240,9 +238,7 @@ class config_test_set extends cms_test_case
                         } else {
                             $this->assertTrue((strpos($c, 'get_theme_option(\'' . $hook . '\'') === false) || ($hook == 'description'), $hook . ' must not be accessed as a theme option (.php): ' . $path);
                         }
-                    }
-
-                    elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
+                    } elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                         if (!empty($details['theme_override'])) {
                             $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as a theme option: ' . $path);
                         } else {

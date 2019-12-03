@@ -73,11 +73,11 @@ class Hook_profiles_tabs_friends
         }
 
         $content = do_template('CNS_MEMBER_PROFILE_FRIENDS', [
-                '_GUID' => 'b24a8607c6e2d3d6ddc29c8e22b972e8',
-                'MEMBER_ID' => strval($member_id_of),
-                'ADD_FRIEND_URL' => $add_friend_url,
-                'REMOVE_FRIEND_URL' => $remove_friend_url,
-            ]);
+            '_GUID' => 'b24a8607c6e2d3d6ddc29c8e22b972e8',
+            'MEMBER_ID' => strval($member_id_of),
+            'ADD_FRIEND_URL' => $add_friend_url,
+            'REMOVE_FRIEND_URL' => $remove_friend_url,
+        ]);
 
         return [$title, $content, $order, 'menu/social/friends'];
     }

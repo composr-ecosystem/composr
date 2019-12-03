@@ -385,7 +385,8 @@ function step_1()
                     $warnings->attach(do_template('INSTALLER_WARNING_LONG', [
                         '_GUID' => '515c2f26a5415224f3c09b2429a78a5f',
                         'FILES' => $missing,
-                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing))))]));
+                        'MESSAGE' => do_lang_tempcode('_MISSING_INSTALLATION_FILE', escape_html(integer_format(count($missing))))]
+                    ));
                 } else {
                     foreach ($missing as $file) {
                         $warnings->attach(do_template('INSTALLER_WARNING', ['MESSAGE' => do_lang_tempcode('MISSING_INSTALLATION_FILE', escape_html($file))]));
@@ -1139,7 +1140,7 @@ function step_5()
         $_POST['cns_table_prefix'] = preg_replace('#[^\w]#', '', $_POST['cns_table_prefix']);
     }
 
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     $url = prepare_installer_url('install.php?step=6');
 
@@ -1217,8 +1218,7 @@ function step_5()
     if ($http_result->download_url != $test_url) {
         if (preg_replace('#www\.#', '', $http_result->download_url) == $test_url) {
             warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITH_WWW'));
-        }
-        elseif ($http_result->download_url == preg_replace('#www\.#', '', $test_url)) {
+        } elseif ($http_result->download_url == preg_replace('#www\.#', '', $test_url)) {
             warn_exit(do_lang_tempcode('BASE_URL_REDIRECTS_WITHOUT_WWW'));
         }
     }
@@ -2217,7 +2217,7 @@ function step_5_core_2()
  */
 function step_6()
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
@@ -2253,7 +2253,7 @@ function step_6()
  */
 function big_installation_common()
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
@@ -2603,7 +2603,7 @@ function require_code($codename)
  */
 function object_factory($class)
 {
-    return new $class;
+    return new $class();
 }
 
 /**
@@ -2634,6 +2634,7 @@ function handle_self_referencing_embedment()
         switch ($type) {
             case 'test_blank_result':
                 exit();
+                break;
 
             case 'ajax_ftp_details':
                 header('Content-Type: text/plain; charset=' . get_charset());
@@ -2693,6 +2694,7 @@ function handle_self_referencing_embedment()
                 }
                 ftp_close($conn);
                 exit();
+                break;
 
             case 'ajax_db_details':
                 header('Content-Type: text/plain; charset=' . get_charset());
@@ -2709,6 +2711,7 @@ function handle_self_referencing_embedment()
                 }
                 $db->ensure_connected();
                 exit();
+                break;
 
             case 'logo':
                 header('Content-type: image/png');
@@ -2720,6 +2723,7 @@ function handle_self_referencing_embedment()
                     exit();
                 }
                 exit();
+                break;
 
             case 'contract':
             case 'expand':
@@ -2732,6 +2736,7 @@ function handle_self_referencing_embedment()
                     exit();
                 }
                 exit();
+                break;
 
             case 'css':
             case 'css_2'/*Chained together so that colours are parsed initially*/:

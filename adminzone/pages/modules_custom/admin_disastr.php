@@ -352,7 +352,7 @@ class Module_admin_disastr extends Standard_crud_module
     /**
      * Standard crud_module edit actualiser.
      *
-     * @param  ID_TEXT $id The entry being edited
+     * @param  ID_TEXT $_id The entry being edited
      * @return ?Tempcode Confirm message (null: continue)
      */
     public function edit_actualisation($_id)
@@ -388,7 +388,7 @@ class Module_admin_disastr extends Standard_crud_module
     /**
      * Standard crud_module delete actualiser.
      *
-     * @param  ID_TEXT $id The entry being deleted
+     * @param  ID_TEXT $_id The entry being deleted
      */
     public function delete_actualisation($_id)
     {

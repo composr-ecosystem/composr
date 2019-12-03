@@ -166,7 +166,7 @@ function do_work()
     // point earn list / gift points to a single member
     require_code('points2');
     for ($j = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)'); $j < $num_wanted; $j++) {
-        give_points(10, $member_id, mt_rand(db_get_first_id(),/*don't want wide distribution as points caching then eats RAM*/min(100, $num_wanted - 1)), random_line(), false, false);
+        give_points(10, $member_id, mt_rand(db_get_first_id(), /*don't want wide distribution as points caching then eats RAM*/min(100, $num_wanted - 1)), random_line(), false, false);
     }
     // number of friends of a single member
     for ($j = intval(floatval($GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)')) / 2.0); $j < $num_wanted; $j++) {

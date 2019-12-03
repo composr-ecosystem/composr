@@ -49,7 +49,7 @@ class addon_guards_test_set extends cms_test_case
     {
         require_code('files2');
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $exceptions = [
             '(sources|sources_custom)/hooks/systems/addon_registry/\w+\.php',

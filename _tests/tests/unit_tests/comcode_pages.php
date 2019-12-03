@@ -50,8 +50,7 @@ class comcode_pages_test_set extends cms_test_case
 
             try {
                 check_comcode($c);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $this->assertTrue(false, 'Failed to parse ' . $file . ', ' . $e->getMessage());
             }
         }

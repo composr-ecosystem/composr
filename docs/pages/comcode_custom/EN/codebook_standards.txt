@@ -50,12 +50,14 @@ You are invited to improve automated test code as you see fit.
 
 [title="3"]Code formatting within editors[/title]
 
-To automatically format code for PSR-2 you can either use the "PHP-CS-Fixer" Open Source project, or ideally PhpStorm. PHP-CS-Fixer has some bugs and can't clean everything (especially argument spacing) but generally does a serviceable job.
+To automatically format code for PSR-2 you can either use the "PHP-CS-Fixer" Open Source project, the PHP CodeSniffer project (untested), or ideally PhpStorm. PHP-CS-Fixer has some bugs and can't clean everything (especially argument spacing) but generally does a serviceable job.
 
 The optimum PHP-CS-Fixer command is:
 [code="Bash"]
 php-cs-fixer fix --fixers=indentation,phpdoc_params,visibility,braces,lowercase_constants,function_declaration,controls_spaces,eof_ending,standardize_not_equal,elseif,lowercase_keywords,php_closing_tag,short_tag,object_operator,trailing_spaces,linefeed,encoding,concat_with_spaces,operators_spaces .
 [/code]
+
+Don't reformat other people's code automatically, as you may cause problems with comment or line alignment.
 
 It is a good idea to use an editor/IDE with support for the [tt].editorconfig[/tt] standard. Most editors/IDEs have a plugin for it. [tt].editorconfig[/tt] will help you automatically set correct tab settings (among other things) as you move between different projects.
 

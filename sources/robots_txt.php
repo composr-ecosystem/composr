@@ -26,7 +26,7 @@
 function get_base_url_path()
 {
     $base_url = get_base_url();
-    $base_url_path = parse_url($base_url,  PHP_URL_PATH);
+    $base_url_path = parse_url($base_url, PHP_URL_PATH);
     if ($base_url_path === null) {
         $base_url_path = '';
     }

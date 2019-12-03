@@ -288,7 +288,7 @@ class Module_admin
 
         push_query_limiting(false);
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
         $n = null;
 

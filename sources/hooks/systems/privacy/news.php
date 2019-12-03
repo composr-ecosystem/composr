@@ -48,37 +48,37 @@ class Hook_privacy_news extends Hook_privacy_base
                 'news' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => null,
-                    'retention_handle_method' => PRIVACY_METHOD_leave,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'member_id_fields' => ['submitter'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'additional_anonymise_fields' => ['author'],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
-                    'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
                 'news_categories' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
-                    'retention_handle_method' => PRIVACY_METHOD_leave,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'member_id_fields' => ['nc_owner'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'additional_anonymise_fields' => ['nc_title'],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD_anonymise,
-                    'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],
         ];
     }
 
    /**
-     * Delete a row.
-     *
-     * @param ID_TEXT Table name
-     * @param array Row raw from the database
-     */
+    * Delete a row.
+    *
+    * @param ID_TEXT $table_name Table name
+    * @param array $row Row raw from the database
+    */
     public function delete($table_name, $row)
     {
         require_lang('news');

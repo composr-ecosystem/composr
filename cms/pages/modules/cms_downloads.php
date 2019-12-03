@@ -605,7 +605,7 @@ class Module_cms_downloads extends Standard_crud_module
         $metadata = actual_metadata_get_fields('download', null);
         actual_metadata_get_fields__special($metadata, 'num_downloads', 0);
 
-        $id = add_download($category_id, $name, fixup_protocolless_urls($url), $description, $author, $additional_details, $out_mode_id, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $original_filename, $file_size, $cost, $submitter_gets_points, $licence, $metadata['add_time'],/*$metadata['num_downloads']*/0, $metadata['views'], $metadata['submitter'], null, null, '', '', 1, $url_redirect);
+        $id = add_download($category_id, $name, fixup_protocolless_urls($url), $description, $author, $additional_details, $out_mode_id, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $original_filename, $file_size, $cost, $submitter_gets_points, $licence, $metadata['add_time'], /*$metadata['num_downloads']*/0, $metadata['views'], $metadata['submitter'], null, null, '', '', 1, $url_redirect);
 
         set_url_moniker('download', strval($id));
 

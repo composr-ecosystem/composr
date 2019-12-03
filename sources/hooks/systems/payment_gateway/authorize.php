@@ -853,7 +853,7 @@ class Hook_payment_gateway_authorize
        $result_code  = $this->_substring_between($response, '<resultCode>', '</resultCode>');
        $code = $this->_substring_between($response, '<code>', '</code>'); // in <message>
        $text = $this->_substring_between($response, '<text>', '</text>'); // in <message>
-       $subscription_id = $this->_substring_between($response,  '<subscriptionId>', '</subscriptionId>');
+       $subscription_id = $this->_substring_between($response, '<subscriptionId>', '</subscriptionId>');
 
        return [strtoupper($result_code), $code, $text, $subscription_id];
     }

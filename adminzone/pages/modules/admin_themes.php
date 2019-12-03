@@ -987,7 +987,7 @@ class Module_admin_themes
      */
     public function manage_images()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         $lang = choose_language($this->title, true, true);
         if (is_object($lang)) {
@@ -1264,7 +1264,7 @@ class Module_admin_themes
      */
     public function screen_previews()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         require_code('lorem');
 

@@ -244,7 +244,7 @@ class CMSSearchRead
             }
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_modest);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
         $full_sql = 'SELECT *,t.id AS topic_id,p.id AS post_id,t.t_cache_first_title,f.id AS forum_id,f.f_name' . $sql;
         if ($keywords == '') {

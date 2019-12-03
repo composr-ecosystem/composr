@@ -108,7 +108,7 @@ class Hook_translation_bing_translator
         }
         $url .= '&to=' . urlencode($to);
         switch ($context) {
-            case TRANS_TEXT_CONTEXT_autodetect:
+            case TRANS_TEXT_CONTEXT__AUTODETECT:
                 if (preg_match('#(&\w+;|<([a-z]+|[A-Z]+)[ />])#', $text) != 0) {
                     $url .= '&textType=html';
                 } else {
@@ -116,13 +116,13 @@ class Hook_translation_bing_translator
                 }
                 break;
 
-            case TRANS_TEXT_CONTEXT_plain:
+            case TRANS_TEXT_CONTEXT__PLAIN:
                 $url .= '&textType=plain';
                 break;
 
-            case TRANS_TEXT_CONTEXT_html_block:
-            case TRANS_TEXT_CONTEXT_html_inline:
-            case TRANS_TEXT_CONTEXT_html_raw:
+            case TRANS_TEXT_CONTEXT__HTML_BLOCK:
+            case TRANS_TEXT_CONTEXT__HTML_INLINE:
+            case TRANS_TEXT_CONTEXT__HTML_RAW:
                 $url .= '&textType=html';
                 break;
         }

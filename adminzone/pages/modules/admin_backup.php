@@ -180,7 +180,8 @@ class Module_admin_backup
         } elseif (date('Y/m/d', utctime_to_usertime($last_backup)) == date('Y/m/d', utctime_to_usertime(time() - 60 * 60 * 24))) {
             $text = do_lang_tempcode('LAST_BACKUP_YESTERDAY');
         } else {
-            $text = do_lang_tempcode('LAST_BACKUP',
+            $text = do_lang_tempcode(
+                'LAST_BACKUP',
                 integer_format(
                     intval(round(
                         (time() - $last_backup) / (60 * 60 * 24)
@@ -220,15 +221,15 @@ class Module_admin_backup
         }
 
         $form = do_template('FORM', [
-                '_GUID' => '64ae569b2cce398e89d1b4167f116193',
-                'HIDDEN' => '',
-                'JS_FUNCTION_CALLS' => $js_function_calls,
-                'TEXT' => '',
-                'FIELDS' => $fields,
-                'SUBMIT_ICON' => 'buttons/proceed',
-                'SUBMIT_NAME' => do_lang_tempcode('BACKUP'),
-                'URL' => $url,
-            ]);
+            '_GUID' => '64ae569b2cce398e89d1b4167f116193',
+            'HIDDEN' => '',
+            'JS_FUNCTION_CALLS' => $js_function_calls,
+            'TEXT' => '',
+            'FIELDS' => $fields,
+            'SUBMIT_ICON' => 'buttons/proceed',
+            'SUBMIT_NAME' => do_lang_tempcode('BACKUP'),
+            'URL' => $url,
+        ]);
 
         $results = $this->get_results();
 

@@ -32,8 +32,8 @@ function init__weather()
  * @param  string $units Units to use
  * @set imperial metric
  * @param  ?integer $max_days Maximum number of days to return if supported (null: no limit)
- * @param  ?string $api The API to use (null: first available)
  * @param  string $errormsg Error message (returned by reference)
+ * @param  ?string $api The API to use (null: first available)
  * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
  */
 function weather_lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, &$errormsg = '', $api = null)

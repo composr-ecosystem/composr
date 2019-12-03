@@ -35,17 +35,17 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
 
         $text = isset($param[0]) ? $param[0] : '';
 
-        if (!defined('TRANS_TEXT_CONTEXT_html_block')) {
+        if (!defined('TRANS_TEXT_CONTEXT__HTML_BLOCK')) {
             return $text; // Somehow startup hook didn't run
         }
 
         if (!empty($param[1])) {
             $context = @constant('TRANS_TEXT_CONTEXT_' . $param[1]);
             if ($context === null) {
-                $context = TRANS_TEXT_CONTEXT_html_block;
+                $context = TRANS_TEXT_CONTEXT__HTML_BLOCK;
             }
         } else {
-            $context = TRANS_TEXT_CONTEXT_html_block;
+            $context = TRANS_TEXT_CONTEXT__HTML_BLOCK;
         }
 
         $from = empty($param[2]) ? null : $param[2];
@@ -57,15 +57,15 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
         }
 
         switch ($context) {
-            case TRANS_TEXT_CONTEXT_plain:
+            case TRANS_TEXT_CONTEXT__PLAIN:
                 $text .= ' (' . $text_translated . ')';
                 break;
 
-            case TRANS_TEXT_CONTEXT_html_block:
+            case TRANS_TEXT_CONTEXT__HTML_BLOCK:
                 $text .= '<br /><div class="box box__translation"><div class="box_inner">' . $text_translated . '</div></div>'; // Comes with a "Powered by" message
                 break;
 
-            case TRANS_TEXT_CONTEXT_html_inline:
+            case TRANS_TEXT_CONTEXT__HTML_INLINE:
                 $text .= ' (' . $text_translated . ')';
                 break;
         }

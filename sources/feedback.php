@@ -29,9 +29,9 @@ function init__feedback()
         define('MAX_LIKES_TO_SHOW', 20);
     }
 
-    if (!defined('RATING_TYPE_star_choice')) {
-        define('RATING_TYPE_star_choice', 0);
-        define('RATING_TYPE_like_dislike', 1);
+    if (!defined('RATING_TYPE__STAR_CHOICE')) {
+        define('RATING_TYPE__STAR_CHOICE', 0);
+        define('RATING_TYPE__LIKE_DISLIKE', 1);
     }
 
     global $RATINGS_STRUCTURE;
@@ -302,7 +302,7 @@ function get_rating_simple_array($content_url, $content_title, $content_type, $c
         global $RATINGS_STRUCTURE;
         $all_rating_criteria = [];
         if (array_key_exists($content_type, $RATINGS_STRUCTURE)) {
-            $likes = ($RATINGS_STRUCTURE[$content_type][0] == RATING_TYPE_like_dislike);
+            $likes = ($RATINGS_STRUCTURE[$content_type][0] == RATING_TYPE__LIKE_DISLIKE);
             foreach ($RATINGS_STRUCTURE[$content_type][1] as $r => $t) {
                 $rating_for_type = $content_type;
                 if ($r != '') {

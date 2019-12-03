@@ -142,7 +142,7 @@ function reprocess_url($url, $operation_base_url)
     foreach ($expressions as $expression) {
         $all_matches = [];
         $count = preg_match_all('#(<[^>]*)' . $expression . '([^>]*>)#i', $body, $all_matches, PREG_OFFSET_CAPTURE);
-        for ($i = $count - 1; $i >= 0 ; $i--) {
+        for ($i = $count - 1; $i >= 0; $i--) {
             $m_to_replace = $all_matches[0][$i][0];
             $offset = $all_matches[0][$i][1];
             $offset_end = $offset + strlen($m_to_replace);

@@ -167,5 +167,4 @@ You will need to set up an OpenWeatherMap API key at Admin Zone > Setup > Config
             'w_code' => 'INTEGER',
         ]);
     }
-
 }

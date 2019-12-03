@@ -34,7 +34,7 @@ class Hook_snippet_backup_size
             return new Tempcode();
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         require_code('files2');
         require_code('backup');

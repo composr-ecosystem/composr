@@ -21,7 +21,7 @@ class Hook_task_sugarcrm_sync_member
     /**
      * Run the task hook.
      *
-     * @param  MEMBER Member ID
+     * @param  MEMBER $member_id Member ID
      * @param  ?array $get Copy of GET parameters (null: don't set)
      * @param  ?array $post Copy of POST parameters (null: don't set)
      * @return mixed A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message) (false: re-try later, no specific error message)
@@ -55,8 +55,7 @@ class Hook_task_sugarcrm_sync_member
 
         try {
             $contact_id = save_composr_account_into_sugarcrm_as_configured($member_id);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             sugarcrm_failed($e->getMessage());
             return false;
         }

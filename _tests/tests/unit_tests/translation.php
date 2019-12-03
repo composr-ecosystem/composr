@@ -53,7 +53,7 @@ class translation_test_set extends cms_test_case
             $this->assertTrue(has_translation($from, $to, $translation_object, $errormsg));
 
             $from_text = 'Hello';
-            $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT_autodetect, $from, $to, $hook, $errormsg);
+            $to_text = translate_text($from_text, TRANS_TEXT_CONTEXT__AUTODETECT, $from, $to, $hook, $errormsg);
             $this->assertTrue($to_text == 'Bonjour' || $to_text == 'Salut', 'Got ' . $to_text . ' (error message is ' . $errormsg . ')');
 
             if ($hook == 'google_translate') {

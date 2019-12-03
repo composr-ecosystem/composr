@@ -886,9 +886,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_PRIVACY_OTHER
         TABLES
         PURGE
-        PRIVACY_METHOD_leave
-        PRIVACY_METHOD_anonymise
-        PRIVACY_METHOD_delete
+        PRIVACY_METHOD__LEAVE
+        PRIVACY_METHOD__ANONYMISE
+        PRIVACY_METHOD__DELETE
         PERSONAL_DATA_PURGING
         CONFIG_OPTION_bing_translator_enabled
         BING_TRANSLATOR_ENABLED

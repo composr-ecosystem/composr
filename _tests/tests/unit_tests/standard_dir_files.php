@@ -22,7 +22,7 @@ class standard_dir_files_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
     }
 
     public function testHtaccessConsistency()

@@ -230,8 +230,7 @@ function is_animated_image($c, $ext)
             $where1 = strpos($c, "\x00\x21\xF9\x04", $str_loc);
             if ($where1 === false) {
                 break;
-            }
-            else {
+            } else {
                 $str_loc = $where1 + 1;
                 $where2 = strpos($c, "\x00\x2C", $str_loc);
                 if ($where2 === false) {

@@ -19,7 +19,7 @@
  */
 
 /**
- * eCommerce product hook.
+ * Hook class.
  */
 class Hook_ecommerce_usergroup
 {

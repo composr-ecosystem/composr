@@ -324,6 +324,10 @@ function clean_php_file_for_eval($c, $path = null)
 
 // LEGACY (PHP < 7)
 if (!class_exists('Error')) {
+    /**
+     * Error class.
+     * @package core
+     */
     class Error
     {
     }
@@ -367,13 +371,11 @@ function call_included_code($path, $codename, $light_exit, $code = null)
         } else {
             $errormsg = '';
         }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         $result = false;
 
         $errormsg = $e->getMessage();
-    }
-    catch (Error $e) {
+    } catch (Error $e) {
         $result = false;
 
         $errormsg = $e->getMessage();
@@ -383,7 +385,7 @@ function call_included_code($path, $codename, $light_exit, $code = null)
         pop_suppress_error_death();
     }
 
-    if ($errormsg != '')  {
+    if ($errormsg != '') {
         if (!function_exists('do_lang')) {
             if (!is_file($path)) {
                 critical_error('MISSING_SOURCE', $codename);

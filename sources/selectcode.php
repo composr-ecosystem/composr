@@ -234,8 +234,7 @@ function selectcode_to_sqlfragment($filter, $field_name, $parent_spec__table_nam
 
     if ($out_or == '') {
         $sql = ($out_and == '') ? '0=1' : $out_and;
-    }
-    elseif ($out_and == '') {
+    } elseif ($out_and == '') {
         $sql = ($out_or == '') ? '0=1' : ('(' . $out_or . ')');
     } else {
         $sql = '(' . $out_or . ') AND (' . $out_and . ')';

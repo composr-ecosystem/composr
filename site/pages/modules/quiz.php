@@ -477,12 +477,7 @@ class Module_quiz
                     'v_member_id' => get_member(),
                     'v_quiz_id' => $quiz_id,
                 ]);
-                $GLOBALS['SITE_DB']->query_insert_or_replace('quiz_member_last_visit', [
-                    'v_time' => time(),
-                ], [
-                    'v_quiz_id' => $quiz_id,
-                    'v_member_id' => get_member(),
-                ]);
+                $GLOBALS['SITE_DB']->query_insert_or_replace('quiz_member_last_visit', ['v_time' => time()], ['v_quiz_id' => $quiz_id, 'v_member_id' => get_member()]);
                 $timer_offset = 0;
             }
         } else {
@@ -614,11 +609,20 @@ class Module_quiz
                 ]);
             }
         }
-        $GLOBALS['SITE_DB']->query_update('quiz_member_last_visit', [ // Say quiz was completed on time limit, to force next attempt to be considered a re-do
-            'v_time' => time() - (($quiz['q_timeout'] === null) ? 0 : $quiz['q_timeout']) * 60,
-        ], [
-            'v_member_id' => get_member(), 'v_quiz_id' => $quiz_id,
-        ], '', 1);
+
+        // Say quiz was completed on time limit, to force next attempt to be considered a re-do
+        $GLOBALS['SITE_DB']->query_update(
+            'quiz_member_last_visit',
+            [
+                'v_time' => time() - (($quiz['q_timeout'] === null) ? 0 : $quiz['q_timeout']) * 60,
+            ],
+            [
+                'v_member_id' => get_member(),
+                'v_quiz_id' => $quiz_id,
+            ],
+            '',
+            1
+        );
 
         // Calculate results
         list(
@@ -639,7 +643,7 @@ class Module_quiz
             $unknowns_to_staff,
             $given_answers_to_staff,
             $passed,
-            ) = score_quiz($entry_id, $quiz_id, $quiz, $questions);
+        ) = score_quiz($entry_id, $quiz_id, $quiz, $questions);
 
         // Award points?
         if ((addon_installed('points')) && ($quiz['q_points_for_passing'] != 0) && (($quiz['q_type'] != 'TEST') || ($passed === true))) {

@@ -425,8 +425,7 @@ class EmToPx extends CSSCleanup
                 if ($_font_size !== null) {
                     if ($_font_size == 'larger') {
                         $_font_size = '1.2em';
-                    }
-                    elseif ($_font_size == 'smaller') {
+                    } elseif ($_font_size == 'smaller') {
                         $_font_size = '0.9em';
                     }
 

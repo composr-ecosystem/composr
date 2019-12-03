@@ -251,8 +251,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 $h = $data['height'];
                 $data['width'] = '1024';
                 $data['height'] = strval(intval(1024.0 * floatval($h) / floatval($w)));
-            }
-            elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) { // Instagram
+            } elseif (preg_match('#^(https?://[^/]+\.instagram\.com/.*_)[as](\.jpg)$#', $data['url'], $matches) != 0) { // Instagram
                 unset($data['thumb_url']);
                 $data['url'] = $matches[1] . 'n' . $matches[2];
                 $w = $data['width'];

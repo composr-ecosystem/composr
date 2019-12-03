@@ -365,8 +365,7 @@ function cron_bridge_script($caller)
                 set_throw_errors(true);
                 try {
                     $object->run($last_run);
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     $last_error = $e->getMessage();
                 }
                 set_throw_errors(false);
@@ -374,17 +373,23 @@ function cron_bridge_script($caller)
             $time_after = time();
 
             // Reset time limit (hook may have overwritten / we provide same max time for each hook)
-            cms_set_time_limit(TIME_LIMIT_EXTEND_crawl);
+            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
             // Update cron_progression table
             if (isset($cron_progression[$hook])) {
-                $GLOBALS['SITE_DB']->query_update('cron_progression', [
-                    'c_last_run' => time(),
-                    'c_last_execution_secs' => $time_after - $time_before,
-                    'c_last_error' => $last_error,
-                ], [
-                    'c_hook' => $hook,
-                ], '', 1);
+                $GLOBALS['SITE_DB']->query_update(
+                    'cron_progression',
+                    [
+                        'c_last_run' => time(),
+                        'c_last_execution_secs' => $time_after - $time_before,
+                        'c_last_error' => $last_error,
+                    ],
+                    [
+                        'c_hook' => $hook,
+                    ],
+                    '',
+                    1
+                );
             } else {
                 $GLOBALS['SITE_DB']->query_insert('cron_progression', [
                     'c_hook' => $hook,

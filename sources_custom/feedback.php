@@ -26,19 +26,19 @@ function init__feedback()
 
     define('MAX_LIKES_TO_SHOW', 20);
 
-    define('RATING_TYPE_star_choice', 0);
-    define('RATING_TYPE_like_dislike', 1);
+    define('RATING_TYPE__STAR_CHOICE', 0);
+    define('RATING_TYPE__LIKE_DISLIKE', 1);
 
     global $RATINGS_STRUCTURE;
     $RATINGS_STRUCTURE = [
         'catalogues__links' => [
-            RATING_TYPE_like_dislike,
+            RATING_TYPE__LIKE_DISLIKE,
             [
                 '' => '',
             ],
         ],
         'images' => [
-            RATING_TYPE_star_choice,
+            RATING_TYPE__STAR_CHOICE,
             [
                 '' => 'General',
                 'scenery' => 'Scenery',

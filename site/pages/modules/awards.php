@@ -244,12 +244,12 @@ class Module_awards
         }
 
         return do_template('INDEX_SCREEN_FANCIER_SCREEN', [
-                    '_GUID' => '4d705418b837db3dc992de95c3b93f71',
-                    'TITLE' => $this->title,
-                    'PRE' => do_lang_tempcode('DESCRIPTION_AWARD_OVERVIEW'),
-                    'CONTENT' => $content,
-                    'POST' => '',
-                ]);
+            '_GUID' => '4d705418b837db3dc992de95c3b93f71',
+            'TITLE' => $this->title,
+            'PRE' => do_lang_tempcode('DESCRIPTION_AWARD_OVERVIEW'),
+            'CONTENT' => $content,
+            'POST' => '',
+        ]);
     }
 
     /**

@@ -78,12 +78,10 @@ class MobiquoServerXMLRPC extends MobiquoServer
 
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        if (!empty($_POST['method_name'])) // HTTP post message, no further payload data
-        {
+        if (!empty($_POST['method_name'])) { // HTTP post message, no further payload data
             $xml = new xmlrpcmsg($_POST['method_name']);
             $request = $xml->serialize();
-        } else // Native XML-RPC message, it will parse out the method name from the POST environment
-        {
+        } else { // Native XML-RPC message, it will parse out the method name from the POST environment
             $request = null; // Let it auto-calculate
         }
         try {

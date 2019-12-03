@@ -76,8 +76,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $SITE_INFO['database_charset'],
             ];
             $db_link = @new PDO($dsn, $db_user, $db_password, $pdo_options);
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             $error = 'Could not connect to database (' . $e->getMessage() . ')';
             if ($fail_ok) {
                 echo ((running_script('install')) && (get_param_string('type', '') == 'ajax_db_details')) ? strip_html($error) : $error;
@@ -93,8 +92,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
         foreach ($init_queries as $init_query) {
             try {
                 $db_link->query($init_query);
-            }
-            catch (PDOException $e) {
+            } catch (PDOException $e) {
             }
         }
 
@@ -138,8 +136,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
 
         try {
             $results = $connection->query($query);
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             if (!$fail_ok) {
                 $this->handle_failed_query($query, $e->getMessage(), $connection);
             }

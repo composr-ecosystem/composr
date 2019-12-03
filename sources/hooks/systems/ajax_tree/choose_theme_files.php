@@ -202,9 +202,7 @@ class Hook_ajax_tree_choose_theme_files
                                 img_url="' . xmlentities($img_url) . '"
                             ></entry>';
                         }
-                    }
-
-                    elseif (preg_match('#^(templates|css|javascript|xml|text)/\w+\.(tpl|css|js|xml|txt)$#', $id) != 0) {
+                    } elseif (preg_match('#^(templates|css|javascript|xml|text)/\w+\.(tpl|css|js|xml|txt)$#', $id) != 0) {
                         // Must be for related templates
 
                         $action_log_times = $this->load_actionlog_times_templates($theme);
@@ -231,9 +229,7 @@ class Hook_ajax_tree_choose_theme_files
                                 img_url="' . xmlentities($img_url) . '"
                             ></entry>';
                         }
-                    }
-
-                    elseif (strpos(rtrim($id, ':'), ':') !== false) {
+                    } elseif (strpos(rtrim($id, ':'), ':') !== false) {
                         // Must be a screen show meta-tree...
 
                         $json_tree = $GLOBALS['SITE_DB']->query_select_value('theme_screen_tree', 'json_tree', ['page_link' => $id]);

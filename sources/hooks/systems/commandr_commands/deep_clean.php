@@ -121,5 +121,4 @@ class Hook_deep_clean
             return ['', $result, '', ''];
         }
     }
-
 }

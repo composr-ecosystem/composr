@@ -2892,8 +2892,7 @@ function cms_trim($text, $try_hard = true)
                     $text = substr($text, 4);
                 }
             }
-        }
-        elseif ($c == '&') {
+        } elseif ($c == '&') {
             if (strtolower(substr($text, 0, 6)) === '&nbsp;') {
                 $text = substr($text, 6);
             }
@@ -2913,8 +2912,7 @@ function cms_trim($text, $try_hard = true)
             if (strtolower(substr($text, -4)) === '<br>') {
                 $text = substr($text, 0, -4);
             }
-        }
-        elseif ($c == ';') {
+        } elseif ($c == ';') {
             if (strtolower(substr($text, -6)) === '&nbsp;') {
                 $text = substr($text, 0, -6);
             }
@@ -4589,7 +4587,7 @@ function ecv_INC($lang, $escaped, $param)
             $TEMPCODE_SETGET[$param[0]] = '0';
         }
 
-        if (!empty($param[1]))  {
+        if (!empty($param[1])) {
             $value = $TEMPCODE_SETGET[$param[0]];
         }
 

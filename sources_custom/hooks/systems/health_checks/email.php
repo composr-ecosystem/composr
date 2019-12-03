@@ -67,8 +67,7 @@ class Hx_health_check_email extends Hook_health_check_email
 
         try {
             $transport->start();
-        }
-        catch (Swift_SwiftException $e) {
+        } catch (Swift_SwiftException $e) {
             $error = $e->getMessage();
         }
 

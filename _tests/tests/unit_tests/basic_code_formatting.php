@@ -25,7 +25,7 @@ class basic_code_formatting_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         require_code('files2');
 
@@ -164,7 +164,7 @@ class basic_code_formatting_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
             $exceptions = [
@@ -224,7 +224,7 @@ class basic_code_formatting_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
             $exceptions = [
@@ -297,7 +297,7 @@ class basic_code_formatting_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
         foreach ($this->files as $path) {
             if (filesize(get_file_base() . '/' . $path) == 0) {

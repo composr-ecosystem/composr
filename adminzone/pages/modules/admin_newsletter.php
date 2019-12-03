@@ -783,7 +783,7 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function whatsnew_2()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
         disable_php_memory_limit();
 
         $cutoff_time = post_param_date('cutoff');

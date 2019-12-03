@@ -25,12 +25,12 @@
  */
 function init__translation()
 {
-    if (!defined('TRANS_TEXT_CONTEXT_autodetect')) {
-        define('TRANS_TEXT_CONTEXT_autodetect', 0);
-        define('TRANS_TEXT_CONTEXT_plain', 1);
-        define('TRANS_TEXT_CONTEXT_html_block', 2);
-        define('TRANS_TEXT_CONTEXT_html_inline', 3);
-        define('TRANS_TEXT_CONTEXT_html_raw', 4);
+    if (!defined('TRANS_TEXT_CONTEXT__AUTODETECT')) {
+        define('TRANS_TEXT_CONTEXT__AUTODETECT', 0);
+        define('TRANS_TEXT_CONTEXT__PLAIN', 1);
+        define('TRANS_TEXT_CONTEXT__HTML_BLOCK', 2);
+        define('TRANS_TEXT_CONTEXT__HTML_INLINE', 3);
+        define('TRANS_TEXT_CONTEXT__HTML_RAW', 4);
     }
 }
 
@@ -107,7 +107,7 @@ function translate_text($text, $context = 0, $from = null, $to = null, $hook = n
     }
 
     if ($from === null) {
-        if (($to === 'EN') && (preg_match('#^[\x00-\x7F]*$#', ($context == TRANS_TEXT_CONTEXT_plain) ? $text : html_entity_decode($text, ENT_QUOTES, 'utf-8')) != 0)) {
+        if (($to === 'EN') && (preg_match('#^[\x00-\x7F]*$#', ($context == TRANS_TEXT_CONTEXT__PLAIN) ? $text : html_entity_decode($text, ENT_QUOTES, 'utf-8')) != 0)) {
             return null; // Looks like it's already in English (no other languages work well in ASCII): don't waste money on translation
         }
     }

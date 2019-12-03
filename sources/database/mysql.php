@@ -103,7 +103,7 @@ class Database_Static_mysql extends Database_super_mysql
         if ((!$test) && ($SITE_INFO['database_charset'] == 'utf8mb4')) {
             // Conflict between compiled-in MySQL client library and what the server supports
             $test = @mysql_set_charset('utf8', $db_link);
-            @mysql_query( 'SET NAMES "' . addslashes('utf8mb4') . '"', $db_link);
+            @mysql_query('SET NAMES "' . addslashes('utf8mb4') . '"', $db_link);
         }
 
         return [$db_link, $db_name];

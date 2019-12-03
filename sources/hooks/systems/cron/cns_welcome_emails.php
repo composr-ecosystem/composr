@@ -92,8 +92,7 @@ class Hook_cron_cns_welcome_emails
                             $members[] = $member;
                         }
                     }
-                }
-                elseif (($mail['w_newsletter'] === null) && ($mail['w_usergroup'] === null)) { // By general membership
+                } elseif (($mail['w_newsletter'] === null) && ($mail['w_usergroup'] === null)) { // By general membership
                     // Think of it like this, m_join_time (members join time) must between $last_run and $this->time_now, but offset back by $send_seconds_after_joining
                     $where = ' WHERE m_join_time>' . strval($last_run - $send_seconds_after_joining) . ' AND m_join_time<=' . strval($this->time_now - $send_seconds_after_joining) . ' AND ' . db_string_not_equal_to('m_email_address', '');
                     if (get_option('staff_email_receipt_configurability') != '0') {

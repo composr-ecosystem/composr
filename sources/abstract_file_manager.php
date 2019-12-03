@@ -43,7 +43,7 @@ function init__abstract_file_manager()
  * Make sure that the AFM connection details have been posted. If not, get them and loop back.
  *
  * @param  array $writable_paths A list of file or directory paths to check first for writability. Only works for suEXEC-style. Advisable because we don't want to fail in the middle of something. May be glob style, or end in '/*' for recursion.
-*/
+ */
 function force_have_afm_details($writable_paths = [])
 {
     $no_ftp_conditions = [

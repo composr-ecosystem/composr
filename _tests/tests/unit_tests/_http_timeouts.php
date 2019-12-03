@@ -28,7 +28,7 @@ class _http_timeouts_test_set extends cms_test_case
 
         disable_php_memory_limit();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
     }
 
     public function testTimeouts()

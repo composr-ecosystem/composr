@@ -103,7 +103,7 @@ function init__database__xml()
 
     require_code('xml');
 
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish); // XML DB is *slow*
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH); // XML DB is *slow*
 }
 
 /**

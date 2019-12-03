@@ -113,7 +113,7 @@ function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algor
  */
 function js_compile($j, $js_cache_path, $minify = true, $theme = null)
 {
-    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     cms_profile_start_for('js_compile');
 

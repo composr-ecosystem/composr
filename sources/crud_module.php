@@ -974,7 +974,9 @@ abstract class Standard_crud_module
             ] + $extra_tpl_params);
         } else {
             $fields->attach($fields2);
-            return do_template('FORM_SCREEN', [
+            return do_template(
+                'FORM_SCREEN',
+                [
                     '_GUID' => '1df73fdfccb387640340f15d5d6dae54' . get_class($this),
                     'PREVIEW' => $this->do_preview,
                     'SEPARATE_PREVIEW' => $this->second_stage_preview,
@@ -989,7 +991,8 @@ abstract class Standard_crud_module
                     'JS_FUNCTION_CALLS' => $this->js_function_calls,
                     'SUPPORT_AUTOSAVE' => true,
                     'CANCEL_URL' => $cancel_url,
-                ] + $extra_tpl_params);
+                ] + $extra_tpl_params
+            );
         }
     }
 
@@ -1220,7 +1223,8 @@ abstract class Standard_crud_module
             $fields = form_input_radio(do_lang_tempcode($this->select_name), $description, 'id', $entries, $this->no_blank_ids, true, '');
         } elseif ((method_exists($this, 'create_selection_list_ajax_tree')) && (($_fields = $this->create_selection_list_ajax_tree()) !== null)) {
             if (is_array($_fields)) {
-                $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_LIST_EXTRA',
+                $text = paragraph(do_lang_tempcode(
+                    'CHOOSE_EDIT_LIST_EXTRA',
                     escape_html($_fields[1]->evaluate()),
                     escape_html($_fields[2]->evaluate()),
                     [
@@ -1254,7 +1258,8 @@ abstract class Standard_crud_module
             $table = $table_result[0];
             $has_ordering = $table_result[1];
             if ((array_key_exists(2, $table_result)) && ($table_result[2] !== null)) {
-                $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_TABLE_EXTRA',
+                $text = paragraph(do_lang_tempcode(
+                    'CHOOSE_EDIT_TABLE_EXTRA',
                     escape_html($table_result[2]->evaluate()),
                     escape_html($table_result[3]->evaluate()),
                     [
@@ -1273,7 +1278,8 @@ abstract class Standard_crud_module
                     ]
                 ));
             } elseif ((array_key_exists(3, $table_result)) && ($table_result[3] !== null)) {
-                $text = paragraph(do_lang_tempcode('_CHOOSE_EDIT_TABLE_EXTRA',
+                $text = paragraph(do_lang_tempcode(
+                    '_CHOOSE_EDIT_TABLE_EXTRA',
                     escape_html($table_result[3]->evaluate()),
                     static_evaluate_tempcode(do_template('ICON', [
                         '_GUID' => '1b354455b62ec898fcde5b287d3609cf',
@@ -1305,7 +1311,8 @@ abstract class Standard_crud_module
 
             if (is_array($_entries)) {
                 if ($_entries[1] !== null) {
-                    $text = paragraph(do_lang_tempcode('CHOOSE_EDIT_LIST_EXTRA',
+                    $text = paragraph(do_lang_tempcode(
+                        'CHOOSE_EDIT_LIST_EXTRA',
                         escape_html($_entries[1]->evaluate()),
                         escape_html($_entries[2]->evaluate()),
                         [
@@ -1324,7 +1331,8 @@ abstract class Standard_crud_module
                         ]
                     ));
                 } else {
-                    $text = paragraph(do_lang_tempcode('_CHOOSE_EDIT_LIST_EXTRA',
+                    $text = paragraph(do_lang_tempcode(
+                        '_CHOOSE_EDIT_LIST_EXTRA',
                         escape_html($_entries[2]->evaluate()),
                         static_evaluate_tempcode(do_template('ICON', [
                             '_GUID' => '8347dd2a738978fe0473c32fe90ef291',

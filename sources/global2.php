@@ -671,7 +671,7 @@ function fixup_bad_php_env_vars()
         }
 
         if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
-            $bits = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)), 2);
+            $bits = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)), 2);
             if (count($bits) == 2) {
                 list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = $bits;
             }

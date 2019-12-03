@@ -55,7 +55,7 @@ class Hook_cron_privacy_purging
             $details = $hook_ob->info();
             if ($details !== null) {
                 foreach ($details['database_records'] as $table_name => $table_details) {
-                    if (($table_details['retention_handle_method'] != PRIVACY_METHOD_leave) && ($table_details['timestamp_field'] !== null)) {
+                    if (($table_details['retention_handle_method'] != PRIVACY_METHOD__LEAVE) && ($table_details['timestamp_field'] !== null)) {
                         $table_action = $table_details['retention_handle_method'];
                         $this->handle_for_table($hook_ob, $table_name, $table_details, $table_action);
                     }
@@ -89,11 +89,11 @@ class Hook_cron_privacy_purging
 
         foreach ($rows as $row) {
             switch ($table_action) {
-                case PRIVACY_METHOD_anonymise:
+                case PRIVACY_METHOD__ANONYMISE:
                     $hook_ob->anonymise($table_name, $row);
                     break;
 
-                case PRIVACY_METHOD_delete:
+                case PRIVACY_METHOD__DELETE:
                     $hook_ob->delete($table_name, $row);
                     break;
             }

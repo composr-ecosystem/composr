@@ -65,7 +65,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
 {
     global $RECORDED_TEMPLATES_USED;
 
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     $middle_spt = new Tempcode();
 
@@ -330,8 +330,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
             'MODSECURITY_WORKAROUND' => true,
         ]);
-    }
-    elseif (substr($special_page_type, 0, 4) == 'lang') { // Language mode
+    } elseif (substr($special_page_type, 0, 4) == 'lang') { // Language mode
         require_code('translation');
 
         require_code('input_filter_2');
@@ -614,7 +613,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
     global $XHTML_SPIT_OUT;
     $XHTML_SPIT_OUT = true;
 
-    cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     require_css('webstandards');
 
@@ -804,17 +803,13 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
         // Escaping
         if ($char == '&') {
             $char = '&amp;';
-        }
-        elseif ($char == '<') {
+        } elseif ($char == '<') {
             $char = '&lt;';
-        }
-        elseif ($char == '>') {
+        } elseif ($char == '>') {
             $char = '&gt;';
-        }
-        elseif ($char == '"') {
+        } elseif ($char == '"') {
             $char = '&quot;';
-        }
-        elseif ($char == '\'') {
+        } elseif ($char == '\'') {
             $char = '&#039;';
         }
         if (($level_ranges === null) && ($char == ' ')) {

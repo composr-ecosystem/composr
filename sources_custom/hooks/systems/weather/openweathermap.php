@@ -32,7 +32,7 @@ class Hook_weather_openweathermap
      * @param  string $errormsg Error message (returned by reference)
      * @return ?array A pair: Weather API current conditions in standardised simple format, Weather API forecast in standardised simple format (null: not available)
      */
-    public function lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, &$errormsg)
+    public function lookup($location_search = null, $latitude = null, $longitude = null, $units = 'metric', $max_days = null, &$errormsg = '')
     {
         if (!addon_installed('weather')) {
             return null;

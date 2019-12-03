@@ -48,14 +48,14 @@ class Hook_privacy_authors extends Hook_privacy_base
                 'authors' => [
                     'timestamp_field' => null,
                     'retention_days' => null,
-                    'retention_handle_method' => PRIVACY_METHOD_leave,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
                     'member_id_fields' => ['member_id'],
                     'ip_address_fields' => [],
                     'email_fields' => [],
                     'additional_anonymise_fields' => [],
                     'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD_delete,
-                    'allowed_handle_methods' => PRIVACY_METHOD_anonymise | PRIVACY_METHOD_delete,
+                    'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
             ],
         ];

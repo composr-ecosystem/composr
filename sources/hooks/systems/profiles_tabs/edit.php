@@ -80,7 +80,7 @@ class Hook_profiles_tabs_edit
             return [$title, null, $order, 'buttons/settings'];
         }
 
-        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_modest); // Raise time limit, as can be slow
+        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST); // Raise time limit, as can be slow
 
         $tabs = [];
 

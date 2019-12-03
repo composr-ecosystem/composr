@@ -111,11 +111,11 @@ function render_post_box($row, $use_post_title = false, $give_context = true, $i
                     ]);
                 } else {
                     $poster = do_template('CNS_POSTER_GUEST', [
-                            '_GUID' => '260a204ec51a3a79896f4e39325f025e',
-                            'LOOKUP_IP_URL' => '',
-                            'POSTER_DETAILS' => $poster_details,
-                            'POSTER_USERNAME' => ($row['p_poster_name_if_guest'] != '') ? $row['p_poster_name_if_guest'] : do_lang('GUEST'),
-                        ]);
+                        '_GUID' => '260a204ec51a3a79896f4e39325f025e',
+                        'LOOKUP_IP_URL' => '',
+                        'POSTER_DETAILS' => $poster_details,
+                        'POSTER_USERNAME' => ($row['p_poster_name_if_guest'] != '') ? $row['p_poster_name_if_guest'] : do_lang('GUEST'),
+                    ]);
                 }
             } else {
                 $poster = do_template('CNS_POSTER_GUEST', [

@@ -735,7 +735,7 @@ function _build_url($parameters, $zone_name = '', $skip = [], $keep_all = false,
             }
 
             // Add in
-            $url .= $symbol . $key . '=' . (is_integer($val) ? strval($val) :/*cms_*/urlencode($val/*,false*/));
+            $url .= $symbol . $key . '=' . (is_integer($val) ? strval($val) : /*cms_*/urlencode($val/*,false*/));
             $symbol = '&';
         }
     } else {
@@ -1541,12 +1541,16 @@ function check_url_exists($url, $test_freq_secs)
             ]);
         }
 
-        $GLOBALS['SITE_DB']->query_insert_or_replace('urls_checked', [
-            'url_exists' => $exists,
-            'url_check_time' => time(),
-        ], [
-            'url' => $url,
-        ]);
+        $GLOBALS['SITE_DB']->query_insert_or_replace(
+            'urls_checked',
+            [
+                'url_exists' => $exists,
+                'url_check_time' => time(),
+            ],
+            [
+                'url' => $url,
+            ]
+        );
     } else {
         $exists = $test1[0]['url_exists'];
     }

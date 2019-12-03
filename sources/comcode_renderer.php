@@ -2152,7 +2152,8 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         $temp_tpl = do_template('WARNING_BOX', [
                             '_GUID' => '89b7982164ccf8d98f3d0596ad425f78',
                             'RESTRICT_VISIBILITY' => strval($source_member),
-                            'WARNING' => do_lang_tempcode($over_quota_str,
+                            'WARNING' => do_lang_tempcode(
+                                $over_quota_str,
                                 escape_html(integer_format($daily_quota)),
                                 escape_html(float_format($size_uploaded_today)),
                                 [

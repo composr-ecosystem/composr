@@ -22,7 +22,7 @@ class _images_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_set_time_limit(TIME_LIMIT_EXTEND_crawl);
+        cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         require_code('images');
         require_code('images2');

@@ -119,15 +119,13 @@ function get_default_workflow()
         // If there aren't any then we can't presume to know which should be returned, so return an empty array
         if ($defaults == []) {
             return null;
-        }
-        // Likewise we cannot choose between multiple defaults, so return an empty array
-        elseif (count($defaults) > 1) {
+        } elseif (count($defaults) > 1) {
+            // Likewise we cannot choose between multiple defaults, so return an empty array
             return null;
         }
         // If we're here then we have one default, so return it
         return $defaults[0]['id'];
-    }
-    elseif (count($workflows) == 1) { // Otherwise just give back what we've found (singleton or empty)
+    } elseif (count($workflows) == 1) { // Otherwise just give back what we've found (singleton or empty)
         $keys = array_keys($workflows);
         return $keys[0];
     } else {
@@ -954,8 +952,7 @@ function handle_position_in_workflow_edit($validated, $content_type, $id, $categ
                     attach_message(do_lang_tempcode('CONTENT_NOW_IN_WORKFLOW', escape_html(get_workflow_name($workflow_id))), 'inform');
                 }
             }
-        }
-        elseif ($edit_workflow) {
+        } elseif ($edit_workflow) {
             // Use the specific ID provided
             if ($workflow_id != $current_workflow) {
                 add_content_to_workflow($content_type, strval($id), $workflow_id);

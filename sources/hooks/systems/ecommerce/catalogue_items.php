@@ -25,6 +25,10 @@ It is modular though, and purchase hook may provide these methods too.
  * @copyright   ocProducts Ltd
  * @package     shopping
  */
+
+/**
+ * Hook class.
+ */
 class Hook_ecommerce_catalogue_items
 {
     /**

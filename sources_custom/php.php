@@ -305,9 +305,11 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             }
 
             // Do some checks
+            $found_a_default = false;
             foreach ($parameters as $parameter) {
                 // Type check
                 if (array_key_exists('default', $parameter)) {
+                    $found_a_default = true;
                     $default = $parameter['default'];
                     if ($default === 'boolean-true') {
                         $default = true;
@@ -317,6 +319,10 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     }
                 } else {
                     $default = null;
+                    if ($found_a_default) {
+                        attach_message(do_lang_tempcode('DEFAULT_DEFINED_BEFORE_NON_DEFAULT', escape_html($function_name)), 'warn');
+                        $found_a_default = false;
+                    }
                 }
 
                 if ($parameters[$arg_counter]['phpdoc_name'] == '') {

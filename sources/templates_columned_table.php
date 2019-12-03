@@ -45,7 +45,7 @@ function columned_table_row($values, $escape)
 {
     $cells = new Tempcode();
     foreach ($values as $value) {
-        if (($escape) && (!is_object($value)) ) {
+        if (($escape) && (!is_object($value))) {
             $value = make_string_tempcode(escape_html(is_object($value) ? $value->evaluate() : $value));
         }
 

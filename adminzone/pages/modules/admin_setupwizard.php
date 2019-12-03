@@ -98,8 +98,7 @@ class Module_admin_setupwizard
 
         if ($type == 'install_test_content') {
             $this->title = get_screen_title('INSTALL_TEST_CONTENT');
-        }
-        elseif ($type == 'uninstall_test_content') {
+        } elseif ($type == 'uninstall_test_content') {
             $this->title = get_screen_title('UNINSTALL_TEST_CONTENT');
         } else {
             $this->title = get_screen_title('SETUPWIZARD');
@@ -219,12 +218,12 @@ class Module_admin_setupwizard
             'HIDDEN' => '',
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => '38a02343903542f8bbe1fb49a7b21eb7',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(1)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => '38a02343903542f8bbe1fb49a7b21eb7',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(1)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -438,12 +437,12 @@ class Module_admin_setupwizard
             'HIDDEN' => '',
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => '6bdae2f0aa24b5dbe81fd0fc72e87feb',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(3)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => '6bdae2f0aa24b5dbe81fd0fc72e87feb',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(3)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -678,12 +677,12 @@ class Module_admin_setupwizard
             'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => 'ca91a76aa418d5c9ae956247ebc70652',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(4)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => 'ca91a76aa418d5c9ae956247ebc70652',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(4)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -762,12 +761,12 @@ class Module_admin_setupwizard
             'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => '8dfd885199d3d1416c044fad7a97d953',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(5)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => '8dfd885199d3d1416c044fad7a97d953',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(5)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -896,12 +895,12 @@ class Module_admin_setupwizard
             'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => '7c2cbc9577974b210e196b92158b4bb8',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(6)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => '7c2cbc9577974b210e196b92158b4bb8',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(6)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -1005,12 +1004,12 @@ class Module_admin_setupwizard
             'HIDDEN' => $hidden,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => 'e67abf478cea7aed5cda64189549677a',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(8)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => 'e67abf478cea7aed5cda64189549677a',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(8)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**
@@ -1045,12 +1044,12 @@ class Module_admin_setupwizard
             'JS_FUNCTION_CALLS' => $js_function_calls,
         ]);
         return do_template('SETUPWIZARD_SCREEN', [
-                '_GUID' => 'de13f131460e7f342c8beb6ba5ae3f42',
-                'TITLE' => $this->title,
-                'STEP' => strval($this->get_effective_step(9)),
-                'INNER' => $inner,
-                'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
-            ]);
+            '_GUID' => 'de13f131460e7f342c8beb6ba5ae3f42',
+            'TITLE' => $this->title,
+            'STEP' => strval($this->get_effective_step(9)),
+            'INNER' => $inner,
+            'NUM_STEPS_ENUMERABLE' => strval($this->get_num_steps_enumerable()),
+        ]);
     }
 
     /**

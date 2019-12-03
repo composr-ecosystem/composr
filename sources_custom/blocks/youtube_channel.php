@@ -555,14 +555,15 @@ class Block_youtube_channel
             'CHANNEL_TITLE' => $channel_title,
             'CHANNEL_NAME' => $channel_name,
             'CHANNEL_URL' => $channel_url,
-            'CONTENT' => $content]);
+            'CONTENT' => $content
+        ]);
     }
 }
 
 /**
  * Find the cache signature for the block.
  *
- * @param  array The block parameters
+ * @param  array $map The block parameters
  * @return array The cache signature
  */
 function block_youtube_channel__cache_on($map)

@@ -23,7 +23,7 @@ Orders are compound-products. They link together multiple eCommerce items into a
 */
 
 /**
- * eCommerce product hook.
+ * Hook class.
  */
 class Hook_ecommerce_cart_orders
 {

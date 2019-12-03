@@ -88,7 +88,7 @@ class Hook_cleanup_page_stats
             exit();
         }
 
-        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        $old_limit = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         // Read in template file and find marker in it
         $template = get_custom_file_base() . '/data_custom/modules/admin_cleanup/page_stats.php.pre';

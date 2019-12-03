@@ -24,7 +24,7 @@ class _web_resources_test_set extends cms_test_case
     {
         parent::setUp();
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
 
         $_GET['keep_minify'] = '0'; // Doesn't seem to actually work due to internal caching
 
