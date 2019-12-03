@@ -84,7 +84,7 @@
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
 		<!-- This is not a failure, should not be treated as such -->
 
-        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
-        <!-- May spread an 'if' across multiple lines -->
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace" />
+		<!-- May spread an 'if' across multiple lines -->
 	</rule>
 </ruleset>

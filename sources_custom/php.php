@@ -196,7 +196,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                         }
 
                         if ($pedantic_warnings) {
-                            if (preg_match('#^@param  [^\s]+ \$\w+ #s', $ltrim) == 0) {
+                            if (preg_match('#^@param  [^\s]+ (\.\.\.)?\$\w+ #s', $ltrim) == 0) {
                                 attach_message('The spacing alignment for a PHPDoc parameter definition on ' . $function_name . ' was not as expected; maybe too few or too many spaces. This is a pedantic error, but we like consistent code layout.', 'inform');
                             }
 
@@ -240,7 +240,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                             }
                         }
                         $parameters[$arg_counter]['description'] = preg_replace('#^\$\w+ #', '', $_description);
-                        $parameters[$arg_counter]['phpdoc_name'] = ltrim(preg_replace('#^(\$\w+) .*#', '$1', $_description), '$');
+                        $parameters[$arg_counter]['phpdoc_name'] = ltrim(preg_replace('#^(\.\.\.)?(\$\w+) .*#', '$2', $_description), '$');
                     } elseif (substr($ltrim, 0, 7) == '@return') {
                         if ($return !== null) {
                             attach_message('Multiple return values defined', 'inform');

@@ -133,7 +133,7 @@ function array_count_values($input)
  * Calculate the difference between arrays.
  *
  * @param  array $array1 First array
- * @param  array $arrays Other arrays
+ * @param  array ...$arrays Other arrays
  * @return array The difference
  */
 function array_diff($array1, ...$arrays)
@@ -145,7 +145,7 @@ function array_diff($array1, ...$arrays)
  * Computes the intersection of arrays with additional index check.
  *
  * @param  array $array1 First array
- * @param  array $arrays Other arrays
+ * @param  array ...$arrays Other arrays
  * @return array The difference
  */
 function array_diff_assoc($array1, ...$arrays)
@@ -192,7 +192,7 @@ function array_keys($input, $search_value = null)
  * Calculate the intersection between arrays.
  *
  * @param  array $array1 First array
- * @param  array $arrays Other arrays
+ * @param  array ...$arrays Other arrays
  * @return array The intersection
  */
 function array_intersect($array1, ...$arrays)
@@ -204,7 +204,7 @@ function array_intersect($array1, ...$arrays)
  * Computes the intersection of arrays using keys for comparison.
  *
  * @param  array $array1 First array
- * @param  array $arrays Other arrays
+ * @param  array ...$arrays Other arrays
  * @return array The intersection
  */
 function array_intersect_key($array1, ...$arrays)
@@ -216,7 +216,7 @@ function array_intersect_key($array1, ...$arrays)
  * Calculate the intersection of arrays with additional index check.
  *
  * @param  array $array1 First array
- * @param  array $arrays Other arrays
+ * @param  array ...$arrays Other arrays
  * @return array The intersection
  */
 function array_intersect_assoc($array1, ...$arrays)
@@ -227,7 +227,7 @@ function array_intersect_assoc($array1, ...$arrays)
 /**
  * Merge arrays together.
  *
- * @param  array $arrays Arrays to merge
+ * @param  array ...$arrays Arrays to merge
  * @return array Merged array
  */
 function array_merge(...$arrays)
@@ -250,7 +250,7 @@ function array_pop(&$array)
  * Push one or more elements onto the end of array.
  *
  * @param  array $array The array
- * @param  mixed $vars Elements to append
+ * @param  mixed ...$vars Elements to append
  * @return integer The new number of elements in the array
  */
 function array_push(&$array, ...$vars)
@@ -370,7 +370,7 @@ function base64_encode($data)
  * Call a user function given by the first parameter.
  *
  * @param  mixed $function Function callback
- * @param  mixed $params Parameters
+ * @param  mixed ...$params Parameters
  * @return mixed Whatever the function returns
  */
 function call_user_func($function, ...$params)
@@ -1986,7 +1986,7 @@ function mail($to, $subject, $message, $additional_headers = '', $additional_fla
 /**
  * Find highest value between arguments.
  *
- * @param  mixed $args Arguments (if array, then each treated as a separate parameter)
+ * @param  mixed ...$args Arguments (if array, then each treated as a separate parameter)
  * @return mixed The highest valued argument
  */
 function max(...$args)
@@ -2031,7 +2031,7 @@ function microtime($as_float = false)
 /**
  * Find lowest value between arguments.
  *
- * @param  mixed $args Arguments (if array, then each treated as a separate parameter)
+ * @param  mixed ...$args Arguments (if array, then each treated as a separate parameter)
  * @return mixed The lowest valued argument
  */
 function min(...$args)
@@ -2284,7 +2284,7 @@ function ord($string)
  * Pack data into binary string.
  *
  * @param  string $format The formatting string
- * @param  mixed $args Argument that binds to the formatting string
+ * @param  mixed ...$args Argument that binds to the formatting string
  * @return string The binary string
  */
 function pack($format, ...$args)
@@ -2476,7 +2476,7 @@ function realpath($path)
  * Do not rely on this function working. Use it for development/debug/cleanup-niceties only.
  *
  * @param  mixed $callback Callback
- * @param  mixed $params Parameters
+ * @param  mixed ...$params Parameters
  */
 function register_shutdown_function($callback, ...$params)
 {
@@ -2655,7 +2655,7 @@ function sin($arg)
  * Return a formatted string.
  *
  * @param  string $format Formatting string
- * @param  mixed $args Arguments for the formatting string
+ * @param  mixed ...$args Arguments for the formatting string
  * @return string Formatted string
  */
 function sprintf($format, ...$args)
@@ -2668,7 +2668,7 @@ function sprintf($format, ...$args)
  *
  * @param  resource $handle File to write to
  * @param  string $format Formatting string
- * @param  mixed $args Arguments for the formatting string
+ * @param  mixed ...$args Arguments for the formatting string
  * @return string Formatted string
  */
 function fprintf($handle, $format, ...$args)
@@ -3167,7 +3167,7 @@ function array_rand($input, $num_req = 1)
  * Prepend one or more elements to the beginning of array.
  *
  * @param  array $array Array to prepend to
- * @param  mixed $vars Elements to prepend
+ * @param  mixed ...$vars Elements to prepend
  * @return integer The new number of elements in the array
  */
 function array_unshift(&$array, ...$vars)
@@ -4051,10 +4051,10 @@ function array_sum($array)
  * Merges the elements of one or more arrays together so that the values of one are appended to the end of the previous one. It returns the resulting array.
  * If the input arrays have the same string keys, then the values for these keys are merged together into an array, and this is done recursively, so that if one of the values is an array itself, the function will merge it with a corresponding entry in another array too. If, however, the arrays have the same numeric key, the later value will not overwrite the original value, but will be appended.
  *
- * @param  array $array Arrays to merge
+ * @param  array ...$arrays Arrays to merge
  * @return array Result
  */
-function array_merge_recursive(...$array)
+function array_merge_recursive(...$arrays)
 {
     return [];
 }
@@ -4063,7 +4063,7 @@ function array_merge_recursive(...$array)
  * Sort multiple or multi-dimensional array.
  *
  * @param  array $array Array to sort
- * @param  mixed $args Other arguments
+ * @param  mixed ...$args Other arguments
  * @return array Result
  */
 function array_multisort($array, ...$args)
@@ -4403,7 +4403,7 @@ function nl2br($in, $is_xhtml = true)
  * Output a formatted string.
  *
  * @param  string $format Formatting string
- * @param  mixed $args Arguments for the formatting string
+ * @param  mixed ...$args Arguments for the formatting string
  * @return string Assembled string
  */
 function printf($format, ...$args)
