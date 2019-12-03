@@ -616,5 +616,16 @@ foreach ([] as \$a)
 }
 END;
 
+    $tests[68] = <<<END
+define('FOO_bar', true);
+END;
+
+    $tests[69] = <<<END
+class Foo
+{
+    const foobar = true;
+}
+END;
+
     return $tests;
 }

@@ -188,7 +188,11 @@ PhpStorm Code Inspector:
  - "Missing return statement" (this is useful, but if we have like a warn_exit at the end of a function, this would trigger the error)
 
 PHP CodeSniffer:
- - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks are more detailed, and more likely to have false positives, or positives that we choose to ignore for neater code.
+ - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks are more detailed, and more likely to have false positives, or positives that we choose to ignore for neater code
+
+ESLint:
+ - As with PHP CodeSniffer, the CQC can chain to ESLint
+ - (We are aware JSHint exists, but we don't use it)
 
 Relationship with Composr
 --------------------------

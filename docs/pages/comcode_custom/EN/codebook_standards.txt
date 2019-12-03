@@ -50,7 +50,7 @@ You are invited to improve automated test code as you see fit.
 
 [title="3"]Code formatting within editors[/title]
 
-To automatically format code for PSR-2 you can either use the "PHP-CS-Fixer" Open Source project, the PHP CodeSniffer project (untested), or ideally PhpStorm. PHP-CS-Fixer has some bugs and can't clean everything (especially argument spacing) but generally does a serviceable job.
+To automatically format code for PSR-12 you can either use the "PHP-CS-Fixer" Open Source project, the PHP CodeSniffer project (untested), or ideally PhpStorm. PHP-CS-Fixer has some bugs and can't clean everything (especially argument spacing) but generally does a serviceable job.
 
 The optimum PHP-CS-Fixer command is:
 [code="Bash"]
@@ -269,14 +269,15 @@ You do not need to make third-party libraries meet our particular choice of stan
 ! Notes
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-Use PSR-2 coding standard
+Use PSR-12 coding standard
 | Consistency
 | Composr development +
-| Code Quality Checker, Autoformatting in PhpStorm
-| Use PSR-2, e.g. the bracing style, 4-spaces not tabs. Our only exceptions are relating to:
- - class and namespace structure, as we are not an OOP-heavy codebase
+| Code Quality Checker, PHP CodeSniffer (integrated with CQC)
+| Use PSR-12, e.g. the bracing style, 4-spaces not tabs. Our only exceptions are relating to:
+ - class and namespace structure, as we are not an OOP-heavy codebase and not a library
  - we allow long lines
  - don't split function/method declarations across multiple lines
+ - we may split function calls (parameters) across multiple lines and include blank lines to space out groups of parameters
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Spaces around operators
@@ -2406,7 +2407,7 @@ Use official DOM (so no [tt]document.all[/tt], or [tt]window.images[/tt])
 | Consistency
 | Product development only
 | Manually
-| Generally code is formatted the same way as PSR-2 is specified and with spaces around operators, except with JavaScript we use camelCase for identifiers rather than underscores, and we place function opening braces on the same line as the function declaration. For functions assigned to a variable we put a space between the function keyword and opening parenthesis ([tt]function (foo)[/tt]). Rather than us prescribing all the rules we suggest looking at existing code to see how to do it.
+| Generally code is formatted to ESLint-preferred standards, with spaces around operators, camelCase for identifiers rather than underscores, and we place function opening braces on the same line as the function declaration. For functions assigned to a variable we put a space between the function keyword and opening parenthesis ([tt]function (foo)[/tt]). Rather than us prescribing all the rules we bundle an ESLint configuration.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use of classes[/color]

@@ -781,11 +781,6 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
         }
 
         switch ($c[0]) {
-            case 'CONST':
-                foreach ($c[1] as $const) {
-                    check_expression($const);
-                }
-                break;
             case 'CALL_METHOD':
                 check_method($c, $c_pos, $function_guard);
                 break;
@@ -1277,6 +1272,9 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         log_warning('Make sure temporary files are deleted', $c_pos);
     }
     //if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'fopen')) log_warning('Make sure opened files are closed', $c_pos);  Not going to actually cause problems, as PHP'll close it when the script finishes
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'define') && (@strtoupper($params[0][0][1]) != $params[0][0][1])) {
+        log_warning('Constants should be upper case', $c_pos);
+    }
     if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'get_username') && (@$params[0][0][1] != 'get_member')) {
         log_warning('Make sure guests/deleted-members are handled properly', $c_pos);
     }

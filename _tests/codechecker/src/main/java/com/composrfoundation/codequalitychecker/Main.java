@@ -16,6 +16,7 @@ public class Main {
     public static boolean relay__manual_checks = false;
     public static boolean relay__spelling = false;
     public static boolean relay__codesniffer = false;
+    public static boolean relay__eslint = false;
     public static String basePath = ".." + File.separator + ".." + File.separator;
     public static String textEditorPath = "geany";
     public static String phpPath = "php";
@@ -47,6 +48,7 @@ public class Main {
             relay__manual_checks = (p.getProperty("relay__manual_checks").equals("1"));
             relay__spelling = (p.getProperty("relay__spelling").equals("1"));
             relay__codesniffer = (p.getProperty("relay__codesniffer").equals("1"));
+            relay__eslint = (p.getProperty("relay__eslint").equals("1"));
             basePath = p.getProperty("basePath");
             textEditorPath = p.getProperty("textEditorPath");
             phpPath = p.getProperty("phpPath");

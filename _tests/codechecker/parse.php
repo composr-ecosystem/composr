@@ -769,34 +769,6 @@ function _parse_command_actual($no_term_needed = false)
             $command = ['GOTO', $label, $GLOBALS['I']];
             break;
 
-        case 'CONST':
-            $constants = [];
-
-            do {
-                pparse__parser_next();
-                $identifier = pparse__parser_peek(true);
-                if (($identifier[0] != 'IDENTIFIER') && ($identifier[0] != 'variable')) {
-                    parser_error('Expected IDENTIFIER or variable but got ' . $identifier[0]);
-                }
-                $identifier = pparse__parser_expect('IDENTIFIER');
-                $next_2 = pparse__parser_peek();
-                if ($next_2 == 'EQUAL') {
-                    pparse__parser_next();
-
-                    $expression = _parse_expression();
-                } else {
-                    $expression = ['SOLO', ['LITERAL', ['null']]];
-                }
-                $constants[$identifier] = $expression;
-
-                $next_2 = pparse__parser_peek();
-            } while ($next_2 == 'COMMA');
-
-            pparse__parser_expect('COMMAND_TERMINATE');
-
-            $command = ['CONST', $constants, $GLOBALS['I']];
-            break;
-
         default:
             parser_error('Expected <command> but got ' . $next[0]);
     }
@@ -1024,6 +996,10 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                     pparse__parser_next();
                     if ($next == 'CONST') {
                         $identifier = pparse__parser_expect('IDENTIFIER');
+
+                        if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (@strtoupper($identifier) != $identifier)) {
+                            log_warning('Constants should be upper case');
+                        }
                     } else {
                         $identifier = pparse__parser_expect('variable');
                     }

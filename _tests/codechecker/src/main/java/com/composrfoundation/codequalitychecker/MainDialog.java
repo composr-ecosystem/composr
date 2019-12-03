@@ -21,8 +21,8 @@ public class MainDialog extends JFrame {
     // UI
 
     JPanel panel1 = new JPanel();
-    JButton templatesBtn = new JButton();
-    JButton scanFilesBtn = new JButton();
+    JButton scanFrontendBtn = new JButton();
+    JButton scanBackendBtn = new JButton();
     JButton examineFilesBtn = new JButton();
     JButton forgetErrorBtn = new JButton();
     JButton viewCodeBtn = new JButton();
@@ -66,18 +66,18 @@ public class MainDialog extends JFrame {
         errors.setDragEnabled(false);
 
         panel1.setLayout(null);
-        templatesBtn.setBounds(new Rectangle(8, 557, 107, 19));
-        templatesBtn.setMargin(new Insets(0, 0, 0, 0));
-        templatesBtn.setActionCommand("templatesBtn");
-        templatesBtn.setText("<html>Scan for HTML</html>");
-        templatesBtn.addActionListener(new MainDialog_templatesBtn_actionAdapter(this));
-        templatesBtn.setBackground(new Color(215, 245, 229));
-        scanFilesBtn.setBounds(new Rectangle(8, 538, 107, 19));
-        scanFilesBtn.setMargin(new Insets(0, 0, 0, 0));
-        scanFilesBtn.setActionCommand("scanFilesBtn");
-        scanFilesBtn.setText("<html>Scan for code</html>");
-        scanFilesBtn.addActionListener(new MainDialog_scanFilesBtn_actionAdapter(this));
-        scanFilesBtn.setBackground(new Color(215, 245, 229));
+        scanFrontendBtn.setBounds(new Rectangle(8, 557, 107, 19));
+        scanFrontendBtn.setMargin(new Insets(0, 0, 0, 0));
+        scanFrontendBtn.setActionCommand("scanFrontendBtn");
+        scanFrontendBtn.setText("<html>Frontend-scan</html>");
+        scanFrontendBtn.addActionListener(new MainDialog_scanFrontendBtn_actionAdapter(this));
+        scanFrontendBtn.setBackground(new Color(215, 245, 229));
+        scanBackendBtn.setBounds(new Rectangle(8, 538, 107, 19));
+        scanBackendBtn.setMargin(new Insets(0, 0, 0, 0));
+        scanBackendBtn.setActionCommand("scanBackendBtn");
+        scanBackendBtn.setText("<html>Backend-scan</html>");
+        scanBackendBtn.addActionListener(new MainDialog_scanBackendBtn_actionAdapter(this));
+        scanBackendBtn.setBackground(new Color(215, 245, 229));
         examineFilesBtn.setBounds(new Rectangle(194, 538, 78, 37));
         examineFilesBtn.setMargin(new Insets(0, 0, 0, 0));
         examineFilesBtn.setToolTipText("");
@@ -154,8 +154,8 @@ public class MainDialog extends JFrame {
         panel1.add(forgetErrorBtn);
         //panel1.add(ClearErrorsBtn);
         panel1.add(optionsBtn);
-        panel1.add(scanFilesBtn);
-        panel1.add(templatesBtn);
+        panel1.add(scanBackendBtn);
+        panel1.add(scanFrontendBtn);
         panel1.add(jLabel1);
         panel1.add(scrollPaneFiles);
         panel1.add(jLabel2);
@@ -166,7 +166,7 @@ public class MainDialog extends JFrame {
         this.setVisible(true);
 
         // Loading of file list
-        EventQueue.invokeLater(scanFilesBtn::doClick);
+        EventQueue.invokeLater(scanBackendBtn::doClick);
     }
 
     public void initiateFileSearch(String type) {
@@ -242,9 +242,20 @@ public class MainDialog extends JFrame {
             if (tmpFile.isDirectory()) {
                 // Similar to IGNORE_FLOATING
                 if ((theFiles[i].equals("_meta_tree"))
+                        || (theFiles[i].equals("templates_cached"))
                         || (theFiles[i].equals("tracker"))
                         || (theFiles[i].equals("exports"))
                         || (theFiles[i].equals("ckeditor"))
+                        || (theFiles[i].equals("ace"))
+                        || (theFiles[i].equals("aws"))
+                        || (theFiles[i].equals("geshi"))
+                        || (theFiles[i].equals("getid3"))
+                        || (theFiles[i].equals("sabredav"))
+                        || (theFiles[i].equals("spout"))
+                        || (theFiles[i].equals("swift_mailer"))
+                        || (theFiles[i].equals("ILess"))
+                        || (theFiles[i].equals("Transliterator"))
+                        || (theFiles[i].equals("composr-api-template"))
                         || (theFiles[i].equals("simpletest"))) {
                     continue;
                 }
@@ -274,10 +285,10 @@ public class MainDialog extends JFrame {
                 }
 
                  // Filter by file type
-                if ((type.equals("PHP")) && (!theFiles[i].toLowerCase().endsWith(".php"))) {
+                if ((type.equals("Backend")) && (!theFiles[i].toLowerCase().endsWith(".php"))) {
                     continue;
                 }
-                if ((type.equals("HTML"))
+                if ((type.equals("Frontend"))
                         && (!theFiles[i].toLowerCase().endsWith(".css"))
                         && (!theFiles[i].toLowerCase().endsWith(".js"))
                         && (!theFiles[i].toLowerCase().endsWith(".html"))
@@ -304,8 +315,8 @@ public class MainDialog extends JFrame {
         new OptionsDialog().setVisible(true);
     }
 
-    public void scanFilesBtn_actionPerformed(ActionEvent e) {
-        initiateFileSearch("PHP");
+    public void scanBackendBtn_actionPerformed(ActionEvent e) {
+        initiateFileSearch("Backend");
     }
 
     public void scanSignaturesBtn_actionPerformed(ActionEvent e) {
@@ -313,8 +324,8 @@ public class MainDialog extends JFrame {
         executePHPfile("phpdoc_parser.php --base_path=" + Main.basePath.replace(" ", "\\ "));
     }
 
-    public void templatesBtn_actionPerformed(ActionEvent e) {
-        initiateFileSearch("HTML");
+    public void scanFrontendBtn_actionPerformed(ActionEvent e) {
+        initiateFileSearch("Frontend");
     }
 
     public void errors_actionPerformedKey(KeyEvent e) {
@@ -527,6 +538,9 @@ public class MainDialog extends JFrame {
         }
         if (Main.relay__codesniffer) {
             line = line + " --codesniffer";
+        }
+        if (Main.relay__eslint) {
+            line = line + " --eslint";
         }
         for (i = 0; i < sv.length; i++) {
             line = line + " " + ((String) sv[i]).replace(" ", "\\ ");
@@ -830,17 +844,17 @@ class MainDialog_countBtn_actionAdapter implements ActionListener {
     }
 }
 
-class MainDialog_templatesBtn_actionAdapter implements ActionListener {
+class MainDialog_scanFrontendBtn_actionAdapter implements ActionListener {
 
     private final MainDialog adaptee;
 
-    MainDialog_templatesBtn_actionAdapter(MainDialog adaptee) {
+    MainDialog_scanFrontendBtn_actionAdapter(MainDialog adaptee) {
         this.adaptee = adaptee;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        adaptee.templatesBtn_actionPerformed(e);
+        adaptee.scanFrontendBtn_actionPerformed(e);
     }
 }
 
@@ -858,17 +872,17 @@ class MainDialog_scanSignaturesBtn_actionAdapter implements ActionListener {
     }
 }
 
-class MainDialog_scanFilesBtn_actionAdapter implements ActionListener {
+class MainDialog_scanBackendBtn_actionAdapter implements ActionListener {
 
     private final MainDialog adaptee;
 
-    MainDialog_scanFilesBtn_actionAdapter(MainDialog adaptee) {
+    MainDialog_scanBackendBtn_actionAdapter(MainDialog adaptee) {
         this.adaptee = adaptee;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        adaptee.scanFilesBtn_actionPerformed(e);
+        adaptee.scanBackendBtn_actionPerformed(e);
     }
 }
 

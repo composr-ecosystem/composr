@@ -159,14 +159,14 @@ function check_parameters()
 function die_error($system, $pos, $line, $message)
 {
     global $FILENAME;
-    throw new Exception('ERROR "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $message);
+    throw new Exception('ERROR "' . (($FILENAME != '') ? $FILENAME : '(code)') . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $message);
 }
 
 function warn_error($system, $pos, $line, $message)
 {
     global $FILENAME;
     @touch(get_file_base() . '/' . $FILENAME); // So CQC can sort by mtime and find it easily
-    echo 'WARNING "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $message . cnl();
+    echo 'WARNING "' . (($FILENAME != '') ? $FILENAME : '(code)') . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $message . cnl();
 }
 
 function get_file_extension($name)
@@ -232,7 +232,7 @@ function log_warning($warning, $i = -1, $absolute = false)
     }
     list($pos, $line, $full_line) = pos_to_line_details($i, $absolute);
 
-    echo 'WARNING "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $warning . cnl();
+    echo 'WARNING "' . (($FILENAME != '') ? $FILENAME : '(code)') . '" ' . $line . ' ' . $pos . ' ' . 'PHP: ' . $warning . cnl();
 }
 
 function log_special($type, $value)

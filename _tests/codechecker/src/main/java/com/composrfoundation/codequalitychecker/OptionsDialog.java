@@ -19,7 +19,7 @@ public class OptionsDialog extends JDialog {
     JPanel flags = new JPanel();
     JButton phpPathBtn = new JButton();
     JTextField phpPath = new JTextField();
-    JLabel phpExecutableLabel = new JLabel();
+    JLabel phpPathLabel = new JLabel();
     JButton basePathBtn = new JButton();
     JLabel basePathLabel = new JLabel();
     JTextField basePath = new JTextField();
@@ -35,6 +35,7 @@ public class OptionsDialog extends JDialog {
     JCheckBox manual_checks = new JCheckBox();
     JCheckBox spelling = new JCheckBox();
     JCheckBox codesniffer = new JCheckBox();
+    JCheckBox eslint = new JCheckBox();
 
     public OptionsDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
@@ -58,9 +59,9 @@ public class OptionsDialog extends JDialog {
 
         environment.setLayout(null);
 
-        phpExecutableLabel.setText("PHP executable:");
-        phpExecutableLabel.setBounds(new Rectangle(8, 52, 104, 22));
-        environment.add(phpExecutableLabel);
+        phpPathLabel.setText("PHP executable:");
+        phpPathLabel.setBounds(new Rectangle(8, 52, 104, 22));
+        environment.add(phpPathLabel);
         phpPath.setBounds(new Rectangle(114, 54, 228, 19));
         phpPath.setText(Main.phpPath);
         environment.add(phpPath);
@@ -139,28 +140,33 @@ public class OptionsDialog extends JDialog {
         codesniffer.setText("Run 3rd party PHP CodeSniffer (must be in system path)");
         flags.add(codesniffer);
 
-        closeBtn.setBounds(new Rectangle(389, 293, 71, 23));
+        eslint = new JCheckBox(eslint.getText(), Main.relay__eslint);
+        eslint.setActionCommand("eslint");
+        eslint.setText("Run 3rd party ESLint (must be installed via npm)");
+        flags.add(eslint);
+
+        jTabbedPane1.setBounds(new Rectangle(10, 13, 451, 287));
+        jTabbedPane1.add(flags, "Flags");
+        jTabbedPane1.add(environment, "Environment");
+
+        closeBtn.setBounds(new Rectangle(389, 313, 71, 23));
         closeBtn.setMargin(new Insets(0, 0, 0, 0));
         closeBtn.setActionCommand("closeBtn");
         closeBtn.setText("Close");
         closeBtn.addActionListener(new OptionsDialog_closeBtn_actionAdapter(this));
 
-        cancelBtn.setBounds(new Rectangle(308, 293, 71, 23));
+        cancelBtn.setBounds(new Rectangle(308, 313, 71, 23));
         cancelBtn.setMargin(new Insets(0, 0, 0, 0));
         cancelBtn.setActionCommand("cancelBtn");
         cancelBtn.setText("Cancel");
         cancelBtn.addActionListener(new OptionsDialog_cancelBtn_actionAdapter(this));
-
-        jTabbedPane1.setBounds(new Rectangle(10, 13, 451, 267));
-        jTabbedPane1.add(flags, "Flags");
-        jTabbedPane1.add(environment, "Environment");
 
         panel1.setLayout(null);
         getContentPane().add(panel1);
         panel1.add(jTabbedPane1);
         panel1.add(closeBtn);
         panel1.add(cancelBtn);
-        panel1.setPreferredSize(new Dimension(475, 327));
+        panel1.setPreferredSize(new Dimension(475, 347));
     }
 
     public void closeBtn_actionPerformed(ActionEvent e) {
@@ -172,6 +178,7 @@ public class OptionsDialog extends JDialog {
         Main.relay__manual_checks = manual_checks.isSelected();
         Main.relay__spelling = spelling.isSelected();
         Main.relay__codesniffer = codesniffer.isSelected();
+        Main.relay__eslint = eslint.isSelected();
         Main.basePath = basePath.getText();
         Main.textEditorPath = textEditorPath.getText();
         Main.phpPath = phpPath.getText();
@@ -186,6 +193,7 @@ public class OptionsDialog extends JDialog {
             p.put("relay__manual_checks", Main.relay__manual_checks ? "1" : "0");
             p.put("relay__spelling", Main.relay__spelling ? "1" : "0");
             p.put("relay__codesniffer", Main.relay__codesniffer ? "1" : "0");
+            p.put("relay__eslint", Main.relay__eslint ? "1" : "0");
             p.put("basePath", Main.basePath);
             p.put("textEditorPath", Main.textEditorPath);
             p.put("phpPath", Main.phpPath);

@@ -61,6 +61,10 @@ $available_options = [
         'auto_global' => true,
         'takes_value' => false,
     ],
+    'eslint' => [
+        'auto_global' => true,
+        'takes_value' => false,
+    ],
 
     // What to test
     'test' => [
@@ -134,7 +138,7 @@ require_once('lib.php');
 
 // To get it started...
 
-if (!empty($options['test'])) {
+if (isset($options['test'])) {
     // Checking an internal test (by web URL)...
 
     $GLOBALS['FLAG__MANUAL_CHECKS'] = 1;
@@ -143,10 +147,9 @@ if (!empty($options['test'])) {
     load_function_signatures();
 
     $tests = get_tests();
-    $parsed = parse(lex('<' . '?php' . "\n" . $tests[$_GET['test']] . "\n"));
+    $parsed = parse(lex('<' . '?php' . "\n" . $tests[intval($options['test'])] . "\n"));
     check($parsed);
-}
-if (empty($files_to_check)) {
+} elseif (empty($files_to_check)) {
     // Search for stuff to check using subdir/enable_custom/filter/avoid/filter_avoid/start (by web URL)...
 
     $avoid = [];
@@ -278,7 +281,28 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     }
     echo cnl();*/
 
-    if (!empty($GLOBALS['FLAG__CODESNIFFER'])) {
+    if ((!empty($GLOBALS['FLAG__ESLINT'])) && (substr($FILENAME, -3) == '.js')) {
+        if (strpos(shell_exec('npx eslint -v'), 'v') === false) {
+            echo 'Cannot find npm/eslint in the path' . cnl();
+        }
+
+        $cmd_line = 'npx eslint -c ' . escapeshellarg($COMPOSR_PATH . '/.eslintrc.json') . ' ' . escapeshellarg($to_use);
+        $out = shell_exec($cmd_line . ' 2>&1');
+        $matches = [];
+        foreach (explode("\n", $out) as $msg_line) {
+            $matches = array();
+            if (preg_match('#^\s*(\d+):(\d+)\s+(\w+)\s+(.*)$#', $msg_line, $matches) != 0) {
+                $line = $matches[1];
+                $pos = $matches[2];
+                $message_type = $matches[3];
+                $message = $matches[4];
+
+                echo 'ESLINT-' . $message_type . ' "' . $FILENAME . '" ' . $line . ' ' . $pos . ' ' . $message . cnl();
+            }
+        }
+    }
+
+    if ((!empty($GLOBALS['FLAG__CODESNIFFER'])) && (substr($FILENAME, -4) == '.php')) {
         if (strpos(shell_exec('phpcs --version'), 'PHP_CodeSniffer') !== false) {
             $cmd = trim(shell_exec('which phpcs'));
             if ($cmd == '') {
@@ -297,7 +321,7 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
  
             $cmd .= ' ' . $where;
         } else {
-            echo "Cannot find PHP CodeSniffer in the path\n";
+            echo 'Cannot find PHP CodeSniffer in the path' . cnl();
         }
 
         $cmd_line = $cmd . ' ' . $to_use . ' -s -q --report-width=10000';

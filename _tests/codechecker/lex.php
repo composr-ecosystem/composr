@@ -358,7 +358,7 @@ function lex($text = null)
                         }
 
                         if (substr($TEXT, $i, 2) == "\n\n") {
-                            log_warning('PSR-12 says not to have extra blank lines around braces', $i, true);
+                            log_warning('PSR-12 says not to have extra blank lines around opening braces', $i, true);
                         }
                     } elseif ($char == '}') {
                         if (!$new_line) {
@@ -369,8 +369,9 @@ function lex($text = null)
                             log_warning('Bracing error (' . $past_indentation . ' vs ' . strval($indentation) . ')', $i, true);
                         }
 
-                        if (substr(rtrim(substr($TEXT, max(0, $i - 103), 100), "\t "), -2, 2) == "\n\n") {
-                            log_warning('PSR-12 says not to have extra blank lines around braces', $i, true);
+                        $backtrack_i = max(0, $i - 103);
+                        if (substr(rtrim(substr($TEXT, $backtrack_i, $i - $backtrack_i - 1), "\t "), -2, 2) == "\n\n") {
+                            log_warning('PSR-12 says not to have extra blank lines around closing braces', $i, true);
                         }
 
                         if ((substr($TEXT, $i, 1) == '/') || (substr($TEXT, $i, 2) == ' /')) {
