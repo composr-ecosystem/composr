@@ -183,6 +183,8 @@ PhpStorm's Code Inspector:
  - (Many, lots of false positives in here that we will not mention)
 (Excellent tool to use if you are happy to wade through false positives)
 
+PHPStan:
+
 PHP CodeSniffer:
  - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks capture more detailed coding standards errors, like putting spaces or line-breaks in the wrong place
 
@@ -202,11 +204,14 @@ CodeLobster IDE's Code Validator:
 NetBeans Inspect (Source -> Inspect):
 (Basic parsing only, unless 3rd party tools are configured)
 
-Other tools, that are not worth discussing as they are more esoteric:
+Other tools, that are worth just mentioning for completeness:
  - [tt]php -l[/tt]
  - PHP Mess Detector
- - PHPStan
  - PHP CS Fixer
+ - PHP copy and paste detector
+ - Phan
+ - Exakat
+ - Psalm
 
 Relationship with Composr
 --------------------------
