@@ -714,7 +714,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
             $next_2 = pparse__parser_peek();
             switch ($next_2) {
                 case 'COMMAND_TERMINATE':
-                    $command = ['RETURN', ['SOLO', ['LITERAL', ['null']], $GLOBALS['I']], $GLOBALS['I']];
+                    $command = ['RETURN', null, $GLOBALS['I']];
                     break;
 
                 default:

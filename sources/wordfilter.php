@@ -201,6 +201,7 @@ function warn_exit_wordfilter($name, $message)
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
     exit();
+    return null;
 }
 
 /**

@@ -659,11 +659,11 @@ function check_function($function, $is_closure = false, $inside_class = false)
         $ret = (isset($func['return']));
 
         // Check a return is given if the function returns and the opposite
-        if (($ret) && ($func['return']['type'] != 'mixed') && (!in_array('abstract', $function['modifiers'])) && (!isset($LOCAL_VARIABLES['__return']))) {
-            log_warning('Function \'' . $function['name'] . '\' is missing a return statement.', $function['offset']);
+        if (($ret) && (!in_array('abstract', $function['modifiers'])) && (!isset($LOCAL_VARIABLES['__return']))) {
+            log_warning('Function \'' . $function['name'] . '\' is missing a return statement with a value', $function['offset']);
         }
-        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && (array_unique($LOCAL_VARIABLES['__return']['types']) != ['null'])) {
-            log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function doesn\'t return a value', $LOCAL_VARIABLES['__return']['first_mention']);
+        if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && ($LOCAL_VARIABLES['__return']['types'] != [])) {
+            log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
         }
 
         // Check return types
@@ -818,15 +818,17 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 check_expression($c[2], false, false, $function_guard);
                 break;
             case 'RETURN':
-                $ret_type = check_expression($c[1], false, false, $function_guard);
-                add_variable_reference('__return', $c_pos);
-                set_composr_type('__return', $ret_type);
-                if (!isset($LOCAL_VARIABLES['__return']['mentions'])) {
-                    $LOCAL_VARIABLES['__return']['mentions'] = [];
+                if ($c[1] !== null) {
+                    $ret_type = check_expression($c[1], false, false, $function_guard);
+                    add_variable_reference('__return', $c_pos);
+                    set_composr_type('__return', $ret_type);
+                    if (!isset($LOCAL_VARIABLES['__return']['mentions'])) {
+                        $LOCAL_VARIABLES['__return']['mentions'] = [];
+                    }
+                    $LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
                 }
-                $LOCAL_VARIABLES['__return']['mentions'][] = $c_pos;
                 if (count($command) - 1 > $i) {
-                    log_warning('There is unreachable code', $c_pos);
+                    log_warning('There is unreachable code (after a return statement)', $c_pos);
                 }
                 break;
             case 'SWITCH':
@@ -1502,6 +1504,8 @@ function check_assignment($c, $c_pos, $function_guard = '')
     $op = $c[1];
     $target = $c[2];
 
+    check_for_equivalent_operands($c[2], $c[3]);
+
     // Special assignment operational checks
     if (in_array($op, ['CONCAT_EQUAL'])) {
         $passes = ensure_type(['string'], $e_type, $c_pos, 'Can only concatenate onto and with strings (not ' . $e_type . ')');
@@ -1588,6 +1592,31 @@ function check_assignment($c, $c_pos, $function_guard = '')
     return 'mixed';
 }
 
+function check_for_equivalent_operands($a, $b)
+{
+    $c_pos = $a[count($a) - 1];
+    _nullify_final_integers($a);
+    _nullify_final_integers($b);
+    if (serialize($a) == serialize($b)) {
+        log_warning('Two operands are the same', $c_pos);
+    }
+}
+
+function _nullify_final_integers(&$x)
+{
+    if (is_array($x)) {
+        $cnt = count($x);
+        foreach ($x as $i => &$_x) {
+            if (is_array($_x)) {
+                _nullify_final_integers($_x);
+            }
+            if (($i == $cnt - 1) && (is_integer($_x))) {
+                $_x = null;
+            }
+        }
+    }
+}
+
 function check_expression($e, $assignment = false, $equate_false = false, $function_guard = '')
 {
     $c_pos = $e[count($e) - 1];
@@ -1618,6 +1647,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         }
         $type_a = check_expression($e[2][0], false, false, $function_guard);
         $type_b = check_expression($e[2][1], false, false, $function_guard);
+        check_for_equivalent_operands($e[2][0], $e[2][1]);
         if (($type_a != 'null') && ($type_b != 'null')) {
             $passes = ensure_type([$type_a, 'mixed'/*imperfect, but useful for performance*/], $type_b, $c_pos, 'Type symettry error in ternary operator');
             if ($passes) {
@@ -1655,6 +1685,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         if ($passes) {
             infer_expression_type_to_variable_type('boolean', $e[2]);
         }
+        check_for_equivalent_operands($e[1], $e[2]);
         return 'boolean';
     }
     if (in_array($e[0], ['SL', 'SR', 'REMAINDER'])) {
@@ -1698,6 +1729,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     if (in_array($e[0], ['IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
+        check_for_equivalent_operands($e[1], $e[2]);
         ensure_type(['integer', 'float', 'string'], $type_a, $c_pos - 1, 'Can only use arithmetical comparators with numbers or strings');
         ensure_type(['integer', 'float', 'string'], $type_b, $c_pos, 'Can only use arithmetical comparators with numbers or strings');
         ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
@@ -1706,6 +1738,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     if (in_array($e[0], ['IS_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_NOT_EQUAL'])) {
         $type_a = check_expression($e[1], false, (in_array($e[0], ['IS_IDENTICAL', 'IS_NOT_IDENTICAL'])) && ($e[2][0] == 'LITERAL') && ($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1]), $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
+        check_for_equivalent_operands($e[1], $e[2]);
         $x = $e;
         if ($x[1][0] == 'EMBEDDED_ASSIGNMENT') {
             $x = $e[1];
@@ -1805,6 +1838,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'BW_AND':
             $exp_1 = check_expression($inner[1], false, false, $function_guard);
             $exp_2 = check_expression($inner[2], false, false, $function_guard);
+            check_for_equivalent_operands($inner[1], $inner[2]);
 
             $string_mode = ensure_type(['string'], $exp_1, $c_pos, '', true, true) || ensure_type(['string'], $exp_2, $c_pos, '', true, true);
             $integer_mode = ensure_type(['integer'], $exp_1, $c_pos, '', true, true) || ensure_type(['integer'], $exp_2, $c_pos, '', true, true);

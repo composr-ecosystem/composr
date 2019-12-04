@@ -170,17 +170,13 @@ Comparison to other PHP linters
 Here are some checks other linters do which we do not do (no duplication of remarks across projects, written in tool quality order)...
 
 PhpStorm's Code Inspector:
- - "Unreachable statement" (Reason: often caught between a rock and a hard place with these, e.g. other lint checks for 'break' always being defined, or other lints insist on 'return' being defined yet a code path exits)
- - "Variable '$<variable>' is probably undefined" (Reason: does not do smart branch checks)
- - Unused checks (Reason: there are many reasons to not use variables)
- - "Missing return statement" (this is useful, but if we have like a warn_exit at the end of a function, this would trigger the error)
+ - "Unreachable statement" (Reason: often caught between a rock and a hard place with these, e.g. other lint checks for 'break' always being defined, or other lints insist on 'return' being defined yet a code path exits; the CQC only checks if you have code after an actual 'return' statement)
+ - "Variable '$<variable>' is probably undefined" (Reason: does not do smart branch checks, many false positives)
+ - Unused checks (Reason: there are many reasons to not use variables, so many false positives)
+ - Import checks of various kinds (Reason: Unreliable)
  - Regexp scanning (Reason: pedantic and inaccurate)
  - "Missing @return tag" (Reason: we don't explicitly document void returns)
- - Missing returns for functions that can return null (Reason: not needed, and a little hard for us to track)
  - "Unhandled exception" / "Redundant catch clause" / "Missing @throws tag" (Reason: we don't force exceptions to be handled in the caller function)
- - Import checks of various kinds (Reason: Unreliable)
- - "Silly assignment", Assignment to self (Reason: very rare mistake and a bit hard to implement in our system)
- - "Expression has the same operands" (Reason: very rare mistake and a bit hard to implement in our system)
  - Checking overridden methods match parent (Reason: we don't track method signatures so well)
  - Checking method calls have the correct parameters (Reason: we cannot trace classes as well as PhpStorm, only sometimes can we do it)
  - Duplicate code detection (Reason: the portions of code detected as duplicated are often too small to handle differently)
