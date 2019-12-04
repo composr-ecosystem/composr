@@ -614,6 +614,7 @@ function should_ignore_file($path, $bitmask = 0)
         '.eslintrc.json' => '', // ESLint config file
         '.phpcs.xml' => '', // PHP CodeSniffer config file
         'phpcs.phar' => '', // For latest version of PHP CodeSniffer
+        'psalm.xml' => '', // Psalm
 
         // Composer
         'composer.phar' => '',
