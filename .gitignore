@@ -1,6 +1,8 @@
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
 /composer.phar
 /phpcs.phar
+/vendor
+/composer.lock
 /_tests/codechecker/codechecker.ini
 /Icon?
 /cgi-bin
