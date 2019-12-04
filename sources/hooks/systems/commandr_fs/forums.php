@@ -300,7 +300,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
     public function folder_add($filename, $path, $properties, $force_type = null)
     {
         if ((($path == '') || (substr($filename, 0, 6) == 'FORUM-') || ($force_type === 'forum')) && ($force_type !== 'topic')) {
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'forum');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
 
             if ($category_resource_type != 'forum') {
@@ -321,7 +321,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
 
             $this->_resource_save_extend('forum', strval($id), $filename, $label, $properties);
         } else {
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'topic');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
 
             if ($category_resource_type != 'forum') {
@@ -517,7 +517,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         if (substr($filename, 0, 6) == 'FORUM-') {
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'forum');
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'forum');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
             require_code('cns_forums_action2');
 
@@ -532,7 +532,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         } else {
             list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename, 'topic');
             list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path, 'forum');
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'topic');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
             require_code('cns_topics_action2');
 

@@ -95,11 +95,11 @@ class comcode_test_set extends cms_test_case
         $comcode = '
 <button class="cms-keep-ui-controlled" size="45" title="[contents][/contents]" type="button">contents Comcode tag (dbl-click to edit/delete)</button>
 
-<h2 id="xxx">Foo</h2>
+<h2 id="xxx1">Foo</h2>
 
-<h3 id="xxx">Bar</h3>
+<h3 id="xxx2">Bar</h3>
 
-<h2 id="xxx">Test</h2>
+<h2 id="xxx3">Test</h2>
 ';
         $actual = comcode_to_tempcode(semihtml_to_comcode('[semihtml]' . $comcode . '[/semihtml]'));
         $_actual = $actual->evaluate();

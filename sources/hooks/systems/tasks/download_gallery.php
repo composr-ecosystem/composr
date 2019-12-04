@@ -86,9 +86,9 @@ class Hook_task_download_gallery
             } else {
                 continue; // Actually we won't include them, if they are not local it implies it is not reasonable for them to lead to server load, and they may not even be native files
 
-                $time = $row['add_date'];
+                /*$time = $row['add_date'];
                 $name = basename(urldecode($row['url']));
-                $data = http_get_contents($row['url']);
+                $data = http_get_contents($row['url']);*/
             }
 
             $array[] = ['name' => preg_replace('#^uploads/galleries/#', '', $name), 'time' => $time, 'data' => $data, 'full_path' => $full_path];

@@ -372,6 +372,7 @@
 
                     setTimeout(function () {
                         wysiwygEditorInitFor(textarea);
+                   
                     }, 1000);
 
                     resolvePromise();
@@ -380,13 +381,6 @@
         }
 
         function wysiwygEditorInitFor(element) {
-            var pageStylesheets = []; // NB: Used by WYSIWYG_SETTINGS.js
-            var linkedSheets = document.querySelectorAll('link[rel="stylesheet"]');
-
-            for (var counter = 0; counter < linkedSheets.length; counter++) {
-                pageStylesheets.push(linkedSheets[counter].href);
-            }
-
             // Fiddly procedure to find our colour
             var testDiv = document.createElement('div');
             document.body.appendChild(testDiv);
@@ -439,7 +433,7 @@
             element.parentNode.className += ' ' + editorSettings.skin; // Used for us to target per-skin CSS
 
             // CSS to run inside the CKEditor frame
-            linkedSheets = document.getElementsByTagName('style');
+            var linkedSheets = document.getElementsByTagName('style');
             var css = '';
             for (var counter2 = 0; counter2 < linkedSheets.length; counter2++) {
                 css += $dom.html(linkedSheets[counter2]);

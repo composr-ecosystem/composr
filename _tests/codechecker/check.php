@@ -1355,7 +1355,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
             }
         }
         foreach ($params as $param) {
-            check_expression($param, false, false, $function_guard);
+            check_expression($param[0], false, false, $function_guard);
         }
         return 'mixed';
     }
@@ -1742,9 +1742,9 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         case 'CLOSURE':
             global $LOCAL_VARIABLES;
             $temp = $LOCAL_VARIABLES;
-            $ret = check_function($inner[1] + ['name' => '(closure)'], true);
+            check_function($inner[1] + ['name' => '(closure)'], true);
             $LOCAL_VARIABLES = $temp;
-            return $ret;
+            return null;
         case 'EMBEDDED_ASSIGNMENT':
             $ret = check_assignment($inner, $c_pos, $function_guard);
             return $ret;

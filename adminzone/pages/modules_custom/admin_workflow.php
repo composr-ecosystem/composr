@@ -442,7 +442,7 @@ class Module_admin_workflow extends Standard_crud_module
 
             foreach ($redefine_points as $seq_id => $p) {
                 // Now add a list of the groups to allow, defaulting to those which already have permission
-                $groups = get_usergroups_for_approval_point($all_points[$p], false);
+                $groups = get_usergroups_for_approval_point($all_points[$p]);
 
                 $content = [];
                 foreach ($usergroups as $group_id => $group_name) {

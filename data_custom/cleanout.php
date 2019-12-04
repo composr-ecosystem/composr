@@ -526,4 +526,6 @@ function cleanup()
             }
         }
     }
+
+    return null;
 }

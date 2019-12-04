@@ -340,9 +340,9 @@ function get_workflow_form($workflow_content_id)
             }
             // Add on the point's position to this group's score
             if (array_key_exists($group, $group_scores)) {
-                $group_scores[$group] = $group_scores[$group] + get_approval_point_position($point, $relevant_workflow); // Otherwise give it a new score equal to this point's position
+                $group_scores[$group] = $group_scores[$group] + get_approval_point_position($point); // Otherwise give it a new score equal to this point's position
             } else {
-                $group_scores[$group] = get_approval_point_position($point, $relevant_workflow);
+                $group_scores[$group] = get_approval_point_position($point);
             }
             // Now increment the group's approval point count
             if (array_key_exists($group, $group_counts)) {

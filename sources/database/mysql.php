@@ -135,7 +135,7 @@ class Database_Static_mysql extends Database_super_mysql
 
         static $version = null;
         if ($version === null) {
-            $version = @mysql_get_server_info($db);
+            $version = @mysql_get_server_info($db_link);
         }
         if ($version !== false) {
             if (version_compare($version, '8', '>=')) {

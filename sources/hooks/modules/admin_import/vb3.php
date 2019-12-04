@@ -986,7 +986,7 @@ class Hook_import_vb3
                     return [$url, ''];
                 }
             } else {
-                list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $t_filename);
+                list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);
                 cms_file_put_contents_safe($path, $thumbnail_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
                 return [$url, $thumb_url];

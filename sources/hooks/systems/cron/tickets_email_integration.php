@@ -37,7 +37,7 @@ class Hook_cron_tickets_email_integration
         }
 
         if (get_option('ticket_mail_on') !== '1') {
-            return;
+            return null;
         }
 
         return [

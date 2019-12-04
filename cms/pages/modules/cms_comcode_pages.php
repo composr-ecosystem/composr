@@ -672,7 +672,7 @@ class Module_cms_comcode_pages
             if ($row['validated'] === null) {
                 $validated = do_lang_tempcode('YES');
             } else {
-                $validated = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('YES');
+                $validated = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
 
             $actions = do_template('COMCODE_PAGE_EDIT_ACTIONS', [

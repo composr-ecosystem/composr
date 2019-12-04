@@ -37,7 +37,7 @@ class Hook_login_providers_direct_auth_external_db
         }
 
         if (get_forum_type() != 'cns') {
-            return;
+            return null;
         }
 
         require_code('external_db');

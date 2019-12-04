@@ -2858,8 +2858,6 @@ class Hook_import_cms_merge
             if ($id_new === null) {
                 $title = $this->get_lang_string($db, $row['g_title']);
 
-                $row['g_rank_image'] = $row['g_rank_image'];
-
                 $id_new = cns_make_group($name, $row['g_is_default'], $row['g_is_super_admin'], $row['g_is_super_moderator'], $title, '', $row['g_promotion_target'], $row['g_promotion_threshold'], -$row['g_group_leader'], $row['g_flood_control_submit_secs'], $row['g_flood_control_access_secs'], $row['g_max_daily_upload_mb'], $row['g_max_attachments_per_post'], $row['g_max_avatar_width'], $row['g_max_avatar_height'], $row['g_max_post_length_comcode'], $row['g_max_sig_length_comcode'], $row['g_gift_points_base'], $row['g_gift_points_per_day'], $row['g_enquire_on_new_ips'], $row['g_is_presented_at_install'], $row['g_hidden'], $row['g_order'], $row['g_rank_image_pri_only'], $row['g_open_membership'], $row['g_is_private_club']);
             }
 
@@ -2913,8 +2911,6 @@ class Hook_import_cms_merge
                     $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
 
                     $timezone = $row['m_timezone_offset'];
-
-                    $row['m_avatar_url'] = $row['m_avatar_url'];
 
                     $id_new = cns_make_member(
                         $row['m_username'], // username
@@ -3312,8 +3308,6 @@ class Hook_import_cms_merge
 
                 $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
 
-                $row['t_emoticon'] = $row['t_emoticon'];
-
                 $id_new = cns_make_topic($forum_id, $row['t_description'], $row['t_emoticon'], $row['t_validated'], $row['t_is_open'], $row['t_pinned'], $row['t_cascading'], $t_pt_from, $t_pt_to, false, $row['t_num_views'], $id);
 
                 import_id_remap_put('topic', strval($row['id']), $id_new);
@@ -3521,8 +3515,6 @@ class Hook_import_cms_merge
         foreach ($rows as $row) {
             $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_emoticons', 'e_code', ['e_code' => $row['e_code']]);
             if ($test === null) {
-                $row['e_theme_img_code'] = $row['e_theme_img_code'];
-
                 $GLOBALS['FORUM_DB']->query_insert('f_emoticons', $row);
             }
         }

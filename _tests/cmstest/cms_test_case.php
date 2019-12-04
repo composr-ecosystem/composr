@@ -128,7 +128,7 @@ class cms_test_case extends WebTestCase
     {
         static $done_once = false;
         if ($done_once) {
-            return;
+            return get_session_id();
         }
         $done_once = true;
 

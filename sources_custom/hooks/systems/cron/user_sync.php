@@ -32,7 +32,7 @@ class Hook_cron_user_sync
         }
 
         if (!addon_installed('commandr')) {
-            return;
+            return null;
         }
 
         if (get_forum_type() != 'cns') {
@@ -59,6 +59,6 @@ class Hook_cron_user_sync
     {
         require_code('user_sync');
 
-        user_sync__inbound($last_time);
+        user_sync__inbound($last_run);
     }
 }

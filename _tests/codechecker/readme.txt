@@ -167,32 +167,50 @@ function mixed()
 Comparison to other PHP linters
 -------------------------------
 
-Here are some checks other linters do which we do not do...
+Here are some checks other linters do which we do not do (no duplication of remarks across projects, written in tool quality order)...
 
-Zend's Code Analyzer:
- - if-else-else check (Reason: doesn't confuse us)
- - unnecessary reference check (Reason: lies!)
- - error for breaking with a variable (Reason: would only get used for a good reason, so let programmers do it if they have one)
- - Values overwritten before use (Reason: we may be initialising them for code clarity; PHPStorm's inspector can show these)
-
-HPHP's warnings:
- - Anything specific to compilation (Reason: we must manually ensure that works, often code branching structures will be involved but warnings still happen)
- - Wrong number of parameters, on method of subclass (Reason: very hard to do)
- - Undeclared constant (Reason: we don't track these)
-
-CodeLobster Errors:
- - IF and ELSEIF have same conditions (theoretically the prior IF might have changed the state)
-
-PhpStorm Code Inspector:
- - Many (lots of false positives in here)
+PhpStorm's Code Inspector:
+ - "Unreachable statement" (Reason: often caught between a rock and a hard place with these, e.g. other lint checks for 'break' always being defined, or other lints insist on 'return' being defined yet a code path exits)
+ - "Variable '$<variable>' is probably undefined" (Reason: does not do smart branch checks)
+ - Unused checks (Reason: there are many reasons to not use variables)
  - "Missing return statement" (this is useful, but if we have like a warn_exit at the end of a function, this would trigger the error)
+ - Regexp scanning (Reason: pedantic and inaccurate)
+ - "Missing @return tag" (Reason: we don't explicitly document void returns)
+ - Missing returns for functions that can return null (Reason: not needed, and a little hard for us to track)
+ - "Unhandled exception" / "Redundant catch clause" / "Missing @throws tag" (Reason: we don't force exceptions to be handled in the caller function)
+ - Import checks of various kinds (Reason: Unreliable)
+ - "Silly assignment", Assignment to self (Reason: very rare mistake and a bit hard to implement in our system)
+ - "Expression has the same operands" (Reason: very rare mistake and a bit hard to implement in our system)
+ - Checking overridden methods match parent (Reason: we don't track method signatures so well)
+ - Checking method calls have the correct parameters (Reason: we cannot trace classes as well as PhpStorm, only sometimes can we do it)
+ - Duplicate code detection (Reason: the portions of code detected as duplicated are often too small to handle differently)
+ - (Many, lots of false positives in here that we will not mention)
+(Excellent tool to use if you are happy to wade through false positives)
 
 PHP CodeSniffer:
- - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks are more detailed, and more likely to have false positives, or positives that we choose to ignore for neater code
+ - The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks capture more detailed coding standards errors, like putting spaces or line-breaks in the wrong place
 
 ESLint:
  - As with PHP CodeSniffer, the CQC can chain to ESLint
  - (We are aware JSHint exists, but we don't use it)
+
+Zend Studio's Code Analyzer (Problems):
+ - "Assignment in condition" (Reason: the CQC doesn't have a problem with assignments as conditions, but it does something similar - separates the concept of expressions and commands; a command must be bracketed to become an expression)
+ - Linting of PHP functions in extensions (Reason: we don't try and define what extension functions exist, it would be too much)
+(Buggy, but has some limited use)
+
+CodeLobster IDE's Code Validator:
+ - IF and ELSEIF have same conditions (theoretically the prior IF might have changed the state)
+(CodeLobster's Code Validator is very limited, not worth using)
+
+NetBeans Inspect (Source -> Inspect):
+(Basic parsing only, unless 3rd party tools are configured)
+
+Other tools, that are not worth discussing as they are more esoteric:
+ - [tt]php -l[/tt]
+ - PHP Mess Detector
+ - PHPStan
+ - PHP CS Fixer
 
 Relationship with Composr
 --------------------------

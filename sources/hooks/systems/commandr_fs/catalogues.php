@@ -290,7 +290,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
         require_code('catalogues2');
 
         if ($path != '') { // Category
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'catalogue_category');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
             $_properties = $this->__folder_read_in_properties_category($path, $properties, false);
             if ($_properties === false) {
@@ -304,7 +304,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
             return strval($id);
         } else { // Catalogue
-            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, 'catalogue');
+            list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
             list($description, $display_type, $is_tree, $notes, $submit_points, $ecommerce, $categories_sort_order, $send_view_reports, $default_review_freq, $add_time) = $this->__folder_read_in_properties_catalogue($path, $properties);
 
@@ -451,7 +451,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
         require_code('catalogues2');
 
-        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, $resource_type);
+        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
         if ($resource_type == 'catalogue') {
             $label = $this->_default_property_str($properties, 'label');

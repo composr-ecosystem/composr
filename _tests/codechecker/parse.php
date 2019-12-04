@@ -61,7 +61,7 @@ function _parse_php($inside_namespace = false)
 
                 pparse__parser_next();
                 pparse__parser_expect('PARENTHESIS_OPEN');
-                $key = pparse__parser_expect('IDENTIFIER', true);
+                $key = pparse__parser_expect('IDENTIFIER');
                 pparse__parser_expect('EQUAL');
                 if (in_array($key, ['encoding'])) {
                     $value = pparse__parser_expect('string_literal');
@@ -91,7 +91,7 @@ function _parse_php($inside_namespace = false)
                     pparse__parser_expect('COMMAND_TERMINATE');
                 } else {
                     if (pparse__parser_peek() == 'IDENTIFIER') {
-                        $key = pparse__parser_expect('IDENTIFIER', true);
+                        $key = pparse__parser_expect('IDENTIFIER');
                         if (pparse__parser_peek() == 'COMMAND_TERMINATE') {
                             // namespace my\name;
                             pparse__parser_expect('COMMAND_TERMINATE');
@@ -142,7 +142,7 @@ function _parse_php($inside_namespace = false)
                 $key = pparse__parser_expect('IDENTIFIER', true);
                 if (pparse__parser_peek() == 'AS' && $next == 'FUNCTION') {
                     pparse__parser_next();
-                    $key_new = pparse__parser_expect('IDENTIFIER', true);
+                    $key_new = pparse__parser_expect('IDENTIFIER');
                 } else {
                     $key_new = null;
                 }
@@ -262,9 +262,11 @@ function _parse_php($inside_namespace = false)
     return $program;
 }
 
-function _parse_command($needs_brace = false)
+function _parse_command($needs_brace = false, &$is_braced = null)
 {
     // Choice{"CURLY_OPEN" command* "CURLY_CLOSE" | command_actual "COMMAND_TERMINATE"*}
+
+    $is_braced = false;
 
     $next = pparse__parser_peek();
     $command = [];
@@ -275,6 +277,7 @@ function _parse_command($needs_brace = false)
             while (true) {
                 switch ($next_2) {
                     case 'CURLY_CLOSE':
+                        $is_braced = true;
                         pparse__parser_next();
                         break 2;
 
@@ -291,7 +294,8 @@ function _parse_command($needs_brace = false)
                 parser_warning('PSR-2 asks us to use braces for all control structures');
             }
 
-            $new_command = _parse_command_actual();
+            $_is_braced = null;
+            $new_command = _parse_command_actual(false, $_is_braced);
 
             // This is now a bit weird. Not all commands end with a COMMAND_TERMINATE, and those are actually for the commands to know they're finished (and the ones requiring would have complained if they were missing). Therefore we now just skip any semicolons. There can be more than one, it's valid, albeit crazy.
             $next_2 = pparse__parser_peek();
@@ -309,7 +313,7 @@ function _parse_command($needs_brace = false)
                 $next_2 = pparse__parser_peek();
                 $term_count++;
             }
-            if ($term_count > 1) {
+            if ($term_count > ($_is_braced ? 0 : 1)) {
                 parser_warning('Excess of semicolons');
             }
 
@@ -337,9 +341,11 @@ function _test_command_end()
     }
 }
 
-function _parse_command_actual($no_term_needed = false)
+function _parse_command_actual($no_term_needed = false, &$is_braced = null)
 {
     // Choice{"FUNCTION" | variable "DEC" | variable "INC" | target assignment_operator expression | function "PARENTHESIS_OPEN" comma_expressions "PARENTHESIS_CLOSE" | "IF" expression command if_rest? | "SWITCH" expression "CURLY_OPEN" cases "CURLY_CLOSE" | "FOREACH" "PARENTHESIS_OPEN" expression "AS" _foreach "PARENTHESIS_CLOSE" command | "FOR" "PARENTHESIS_OPEN" command expression command "PARENTHESIS_CLOSE" command | "DO" command "WHILE" "PARENTHESIS_OPEN" expression "PARENTHESIS_CLOSE" | "WHILE" "PARENTHESIS_OPEN" expression "PARENTHESIS_CLOSE" command | "RETURN" | "CONTINUE" | "BREAK" | "BREAK" expression | "CONTINUE" expression | "RETURN" expression | "GLOBAL" comma_variables | "ECHO" expression}
+
+    $is_braced = false;
 
     $is_static = false;
 
@@ -467,7 +473,7 @@ function _parse_command_actual($no_term_needed = false)
             }
             if ($next_2 == 'SCOPE') {
                 pparse__parser_next();
-                $command = _parse_command_actual();
+                $command = _parse_command_actual(false);
                 if ($command[0] == 'CALL_DIRECT') {
                     $command[0] = 'CALL_METHOD';
                     $command[1] = ['VARIABLE', null, ['DEREFERENCE', ['VARIABLE', $command[1], [], $command[4]], [], $command[4]], $command[4]];
@@ -515,11 +521,11 @@ function _parse_command_actual($no_term_needed = false)
             pparse__parser_expect('PARENTHESIS_OPEN');
             $expression = _parse_expression();
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $command = _parse_command(true);
+            $command = _parse_command(true, $is_braced);
 
             $next_2 = pparse__parser_peek();
             if (($next_2 == 'ELSE') || ($next_2 == 'ELSEIF')) {
-                $if_rest = _parse_if_rest();
+                $if_rest = _parse_if_rest($is_braced);
                 $command = ['IF_ELSE', $expression, $command, $if_rest, $c_pos];
             } else {
                 $command = ['IF', $expression, $command, $c_pos];
@@ -533,6 +539,7 @@ function _parse_command_actual($no_term_needed = false)
             pparse__parser_expect('CURLY_OPEN');
             $cases = _parse_cases();
             pparse__parser_expect('CURLY_CLOSE');
+            $is_braced = true;
             $command = ['SWITCH', $expression, $cases, $c_pos];
             break;
 
@@ -580,7 +587,7 @@ function _parse_command_actual($no_term_needed = false)
                 $_foreach = $variable;
             }
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $loop_command = _parse_command(true);
+            $loop_command = _parse_command(true, $is_braced);
             if ($after_variable == 'DOUBLE_ARROW') {
                 $command = ['FOREACH_map', $expression, $_foreach[0], $_foreach[1], $loop_command, $c_pos];
             } else {
@@ -603,14 +610,14 @@ function _parse_command_actual($no_term_needed = false)
             pparse__parser_expect('COMMAND_TERMINATE');
             $control_command = _parse_command_actual(true);
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $loop_command = _parse_command(true);
+            $loop_command = _parse_command(true, $is_braced);
             $command = ['FOR', $init_command, $control_expression, $control_command, $loop_command, $c_pos];
             break;
 
         case 'DO':
             pparse__parser_next();
             $c_pos = $GLOBALS['I'];
-            $loop_command = _parse_command(true);
+            $loop_command = _parse_command(true); // No $is_braced passed because there will need to be a 'WHILE' next
             pparse__parser_expect('WHILE');
             pparse__parser_expect('PARENTHESIS_OPEN');
             $control_expression = _parse_expression();
@@ -624,7 +631,7 @@ function _parse_command_actual($no_term_needed = false)
             pparse__parser_expect('PARENTHESIS_OPEN');
             $control_expression = _parse_expression();
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $loop_command = _parse_command(true);
+            $loop_command = _parse_command(true, $is_braced);
             $command = ['WHILE', $control_expression, $loop_command, $c_pos];
             break;
 
@@ -634,7 +641,7 @@ function _parse_command_actual($no_term_needed = false)
             if (pparse__parser_peek() != 'CURLY_OPEN') {
                 parser_error('Expected code block after "try".');
             }
-            $try = _parse_command(true);
+            $try = _parse_command(true, $is_braced);
             $exception = null;
             $catches = [];
             do {
@@ -820,15 +827,17 @@ function _parse_target()
     return $target;
 }
 
-function _parse_if_rest()
+function _parse_if_rest(&$is_braced = null)
 {
     // Choice{else command | elseif expression command if_rest?}
+
+    $is_braced = false;
 
     $next = pparse__parser_peek();
     switch ($next) {
         case 'ELSE':
             pparse__parser_next();
-            $command = _parse_command(true);
+            $command = _parse_command(true, $is_braced);
             $if_rest = $command;
             break;
 
@@ -838,10 +847,10 @@ function _parse_if_rest()
             pparse__parser_expect('PARENTHESIS_OPEN');
             $expression = _parse_expression();
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            $command = _parse_command(true);
+            $command = _parse_command(true, $is_braced);
             $next_2 = pparse__parser_peek();
             if (($next_2 == 'ELSE') || ($next_2 == 'ELSEIF')) {
-                $_if_rest = _parse_if_rest();
+                $_if_rest = _parse_if_rest($is_braced);
                 $if_rest = [['IF_ELSE', $expression, $command, $_if_rest, $c_pos]];
             } else {
                 $if_rest = [['IF', $expression, $command, $c_pos]];
@@ -1989,13 +1998,15 @@ function _parse_parameter($for_function_definition = false)
                 parser_error('Expected <parameter> but got ' . $next[0]);
         }
     }
+
+    return null;
 }
 
 function pparse__parser_expect($token)
 {
     global $TOKENS, $I;
     if (!isset($TOKENS[$I])) {
-        parser_error('Ran out of input when expecting ' . $token, $TOKENS);
+        parser_error('Ran out of input when expecting ' . $token);
     }
     $next = $TOKENS[$I];
     if ($next[0] == 'comment') {
@@ -2005,7 +2016,7 @@ function pparse__parser_expect($token)
     }
     $I++;
     if ($next[0] != $token) {
-        parser_error('Expected ' . $token . ' but got ' . $next[0] . ' (' . $next[1] . ')', $TOKENS);
+        parser_error('Expected ' . $token . ' but got ' . $next[0] . ' (' . $next[1] . ')');
     }
     return $next[1];
 }

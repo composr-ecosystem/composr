@@ -28,11 +28,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Background Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="background {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/css3_pr_background.asp">background</a></td>
@@ -72,11 +72,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Border Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="border {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_border.asp">border</a></td>
@@ -131,11 +131,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Dimension Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="width {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_dim_width.asp">width</a></td>
@@ -180,11 +180,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">List Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="list-style {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_list-style.asp">list-style</a></td>
@@ -209,11 +209,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion">Margin/Padding Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="margin {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_margin.asp">margin</a></td>
@@ -278,11 +278,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Positioning Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="float {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_class_float.asp">float</a></td>
@@ -352,11 +352,11 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Text/Font Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
-						<table class="columned-table results-table" cellspacing="0" cellpadding="0" border="1" width="100%">
+						<table class="columned-table results-table" width="100%">
 							<tbody><tr>
-								<th width="28%" align="left">Property</th>
-								<th width="67%" align="left">Description</th>
-								<th width="5%" align="left">CSS</th>
+								<th width="28%">Property</th>
+								<th width="67%">Description</th>
+								<th width="5%">CSS</th>
 							</tr>
 							<tr>
 								<td><a target="_blank" title="font-family {!LINK_NEW_WINDOW}" href="http://www.w3schools.com/cssref/pr_font_font-family.asp">font-family</a></td>

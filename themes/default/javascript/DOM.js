@@ -2909,6 +2909,7 @@
     /**
      * @param urlStem
      * @param wrapper
+     * @param recursive
      */
     function internaliseInfiniteScrolling(urlStem, wrapper, recursive) {
         recursive = boolVal(recursive);

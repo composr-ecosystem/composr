@@ -1,2 +1,17 @@
 {
+  "require": {
+    "ext-json": "*",
+      "ext-posix": "*",
+      "ext-simplexml": "*",
+      "ext-zip": "*",
+      "ext-libxml": "*",
+      "ext-xml": "*",
+      "ext-ctype": "*",
+      "ext-curl": "*",
+      "ext-intl": "*",
+      "ext-gd": "*",
+      "ext-mbstring": "*",
+      "ext-iconv": "*",
+      "ext-zlib": "*"
+  }
 }

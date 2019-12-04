@@ -128,6 +128,7 @@ class MobiquoServerPOST extends MobiquoServer
         }
 
         warn_exit($format . ' is not valid format');
+        return null;
     }
 
     /**

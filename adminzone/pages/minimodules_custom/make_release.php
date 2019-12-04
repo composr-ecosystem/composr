@@ -170,7 +170,7 @@ function phase_0()
             <legend>Upgrade necessity</legend>
             <p>Upgrading is&hellip;</p>
             <input type="radio" name="needed" id="unrecommended" ' . (((strpos($release_description, 'patch release') === false) && (strpos($release_description, 'gold') === false)) ? 'checked="checked" ' : '') . 'value="not recommended for live sites" /><label for="unrecommended">&hellip;not recommended for live sites&hellip;</label><br />
-            <input type="radio" name="needed" id="not-needed" ' . ((strpos($release_description, 'gold') !== false) ? 'checked="checked" ' : '') . 'value="not necessary" /><label for="not_needed">&hellip;not necessary&hellip;</label><br />
+            <input type="radio" name="needed" id="not-needed" ' . ((strpos($release_description, 'gold') !== false) ? 'checked="checked" ' : '') . 'value="not necessary" /><label for="not-needed">&hellip;not necessary&hellip;</label><br />
             <input type="radio" name="needed" id="suggested" value="suggested" /><label for="suggested">&hellip;suggested&hellip;</label><br />
             <input type="radio" name="needed" id="advised" ' . ((strpos($release_description, 'patch release') !== false) ? 'checked="checked" ' : '') . 'value="strongly advised" /><label for="advised">&hellip;strongly advised&hellip;</label><br />
             <label for="justification">&hellip;due to</label><input type="text" name="justification" id="justification" value="" />

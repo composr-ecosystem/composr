@@ -161,6 +161,7 @@ function post_param_multi_source_upload($name, $upload_to, $required = true, $is
     }
 
     warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+    return null;
 }
 
 /**
@@ -963,6 +964,8 @@ function handle_upload_post_processing($enforce_type, $path, $upload_folder, $fi
 
     // Check space
     check_shared_space_usage(filesize($path));
+
+    return null;
 }
 
 /**

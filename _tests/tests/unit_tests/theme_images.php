@@ -70,6 +70,8 @@ class theme_images_test_set extends cms_test_case
                     $height = intval($matches[2]);
                 } elseif (is_image($path, IMAGE_CRITERIA_GD_READ, true)) {
                     list($width, $height) = cms_getimagesize($path);
+                } else {
+                    continue;
                 }
 
                 $this->assertTrue($width === $height, 'Non-square icon, ' . $path);

@@ -151,7 +151,7 @@ class Database_Static_oracle extends DatabaseDriver
     {
         $this->apply_sql_limit_clause($query, $max, $start);
 
-        $stmt = ociparse($connection, $query, 0);
+        $stmt = ociparse($connection, $query);
         $results = @ociexecute($stmt);
         if ((($results === false) || (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
             $err = ocierror($connection);

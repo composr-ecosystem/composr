@@ -464,5 +464,6 @@ class DecisionTree
         }
 
         warn_exit('Internal error - not sure where to go');
+        return null;
     }
 }

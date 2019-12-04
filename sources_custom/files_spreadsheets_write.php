@@ -82,4 +82,5 @@ function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $chars
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
+    return null;
 }

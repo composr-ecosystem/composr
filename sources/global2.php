@@ -1287,6 +1287,7 @@ function inform_exit($text, $support_match_key_messages = null)
 {
     require_code('failure'); // It's in failure.php although this isn't REALLY failure. Still it's an exceptional event so we can't justify loading the code as global.
     _generic_exit($text, 'INFORM_SCREEN', $support_match_key_messages);
+    return null;
 }
 
 /**
@@ -1306,6 +1307,7 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }
+    return null;
 }
 
 /**
@@ -1321,6 +1323,7 @@ function fatal_exit($text, $log_error = true, $http_status = 500)
 {
     require_code('failure');
     _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
+    return null;
 }
 
 /**
@@ -1338,6 +1341,7 @@ function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b
 {
     require_code('failure');
     _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b, $silent, $instant_ban, $percentage_score);
+    return null;
 }
 
 /**
@@ -1477,7 +1481,7 @@ function in_safe_mode()
     global $SITE_INFO;
     if (!empty($SITE_INFO['safe_mode'])) {
         if (!isset($_GET['keep_safe_mode'])) {
-            return ($SITE_INFO['safe_mode'] == '1'); // Useful for testing HPHP support, and generally more robust and fast
+            return ($SITE_INFO['safe_mode'] == '1'); // Generally more robust and fast than specifying as a URL parameter
         }
     }
 

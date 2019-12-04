@@ -202,7 +202,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         }
 
         foreach ($html_segments as $field_title => $html) {
-            $urls = $this->get_link_urls_from_data($html, false);
+            $urls = $this->get_link_urls_from_data($html);
 
             foreach ($urls as $url) {
                 // Check

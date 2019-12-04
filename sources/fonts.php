@@ -148,7 +148,7 @@ function find_all_fonts($test_character_support = false)
     foreach ([get_file_base() . '/data_custom/fonts', get_file_base() . '/data/fonts'] as $path) {
         $dh = @opendir($path);
         if ($dh !== false) {
-            while (($f = readdir($dh))) {
+            while (($f = readdir($dh)) !== false) {
                 if (substr($f, -4) == '.ttf') {
                     if (($test_character_support) && (has_ttf())) {
                         $_test_text = cms_preg_replace_safe('#\s#', '', $test_text);

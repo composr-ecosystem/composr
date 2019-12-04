@@ -196,8 +196,8 @@ function get_addons_list_under_category($category_name, $version_branch)
                     $tar = tar_open($path, 'rb');
                     $info_file = tar_get_file($tar, 'addon.inf', true);
                     if ($info_file === null) {
-                        continue;
                         tar_close($tar);
+                        continue;
                     }
 
                     $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);

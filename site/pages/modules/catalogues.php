@@ -966,7 +966,7 @@ class Module_catalogues
         } else {
             $edit_cat_url = new Tempcode();
         }
-        if (has_actual_page_access(null, 'cms_catalogues', null, (get_value('disable_cat_cat_perms') === '1') ? ['catalogues_catalogue', $catalogue_name] : ['catalogues_catalogue', $catalogue_name], 'edit_cat_highrange_content')) {
+        if (has_actual_page_access(null, 'cms_catalogues', null, ['catalogues_catalogue', $catalogue_name], 'edit_cat_highrange_content')) {
             $edit_catalogue_url = build_url(['page' => 'cms_catalogues', 'type' => '_edit_catalogue', 'id' => $catalogue_name], get_module_zone('cms_catalogues'));
         } else {
             $edit_catalogue_url = new Tempcode();
@@ -1043,7 +1043,7 @@ class Module_catalogues
         } else {
             $edit_cat_url = new Tempcode();
         }
-        if (has_actual_page_access(null, 'cms_catalogues', null, (get_value('disable_cat_cat_perms') === '1') ? ['catalogues_catalogue', $catalogue_name] : ['catalogues_catalogue', $catalogue_name], 'edit_cat_highrange_content')) {
+        if (has_actual_page_access(null, 'cms_catalogues', null, ['catalogues_catalogue', $catalogue_name], 'edit_cat_highrange_content')) {
             $edit_catalogue_url = build_url(['page' => 'cms_catalogues', 'type' => '_edit_catalogue', 'id' => $catalogue_name], get_module_zone('cms_catalogues'));
         } else {
             $edit_catalogue_url = new Tempcode();

@@ -658,7 +658,7 @@ class Forum_driver_mybb extends Forum_driver_base
         }
 
         $topic_filter = ($filter_topic_title != '') ? ('AND subject LIKE \'' . db_encode_like($filter_topic_title) . '\'') : '';
-        $topic_filter .= ' ORDER BY ' . (($date_key == 'lasttime') ? 'lastpost' : 'lastpost') . ' DESC';
+        $topic_filter .= ' ORDER BY ' . (($date_key == 'lasttime') ? 'lastpost' : 'dateline') . ' DESC';
 
         $rows = $this->db->query('SELECT * FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ') ' . $topic_filter, $limit, $start);
         $max_rows = $this->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this->db->get_table_prefix() . 'threads WHERE (' . $id_list . ') ' . $topic_filter);

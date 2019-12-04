@@ -1727,6 +1727,8 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_check_ended($at, $tokens, $query)) {
             return null;
         }
+
+        return null;
     }
 
     /**
@@ -2458,7 +2460,7 @@ class Database_Static_xml extends DatabaseDriver
                 if ($value === null) {
                     return null;
                 }
-                return @!$a;
+                return @!$value;
 
             case 'AND':
                 $a = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
@@ -2770,6 +2772,8 @@ class Database_Static_xml extends DatabaseDriver
         if (!$this->_parsing_check_ended($at, $tokens, $query)) {
             return null;
         }
+
+        return null;
     }
 
     /**

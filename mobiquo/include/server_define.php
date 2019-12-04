@@ -374,21 +374,6 @@ $SERVER_DEFINE = [
         'signature' => [[$xmlrpcStruct, $xmlrpcString, $xmlrpcInt]],
     ],
 
-    'get_dashboard' => [
-        'function' => 'get_dashboard_func',
-        'signature' => [[$xmlrpcStruct],
-                             [$xmlrpcStruct, $xmlrpcBoolean]],
-    ],
-
-    'like_post' => [
-        'function' => 'like_post_func',
-        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
-    ],
-    'unlike_post' => [
-        'function' => 'unlike_post_func',
-        'signature' => [[$xmlrpcStruct, $xmlrpcString]],
-    ],
-
     'report_post' => [
         'function' => 'report_post_func',
         'signature' => [[$xmlrpcStruct, $xmlrpcString],
@@ -560,12 +545,6 @@ $SERVER_DEFINE = [
     'm_unban_user' => [
         'function' => 'm_unban_user_func',
         'signature' => [[$xmlrpcStruct, $xmlrpcString]],
-    ],
-
-    'get_contact' => [
-        'function' => 'get_contact_func',
-        'signature' => [[$xmlrpcStruct],
-                             [$xmlrpcStruct]],
     ],
 
     'm_close_report' => [

@@ -309,9 +309,10 @@ class Database_super_sqlserver extends DatabaseDriver
      * When running this SQL you must suppress errors.
      *
      * @param  ID_TEXT $table The table name
+     * @param  mixed $connection The DB connection
      * @return array List of SQL queries to run
      */
-    public function drop_table_if_exists($table)
+    public function drop_table_if_exists($table, $connection)
     {
         return ['IF EXISTS (SELECT * FROM sys.objects WHERE object_id=OBJECT_ID(\'' . $table . '\') AND type IN (\'U\')) DROP TABLE ' . $table];
     }

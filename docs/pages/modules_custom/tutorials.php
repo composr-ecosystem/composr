@@ -614,7 +614,7 @@ class Module_tutorials
 
         $tag = get_param_string('type', 'Installation', INPUT_FILTER_GET_COMPLEX); // $type, essentially
 
-        $tags = list_tutorial_tags(true, ($tag == '' || $tag == 'browse') ? null : $tag);
+        $tags = list_tutorial_tags(true);
 
         $tutorials = list_tutorials_by('likes', ($tag == '') ? null : $tag);
         $_tutorials = templatify_tutorial_list($tutorials);

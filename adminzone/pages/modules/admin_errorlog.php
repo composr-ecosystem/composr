@@ -268,6 +268,7 @@ class Module_admin_errorlog
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
                 $myfile_file_charset = null;
+                $lines = [];
                 $myfile = @cms_fopen_text_read(get_custom_file_base() . '/data_custom/' . $filename, $myfile_file_charset, true);
                 if ($myfile !== false) {
                     // Get last 40000 bytes of log

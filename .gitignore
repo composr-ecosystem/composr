@@ -48,10 +48,12 @@ test_a
 /data_custom/modules/admin_stats/*.xml
 /data_custom/modules/web_notifications/latest.bin
 /cms_sitemap.xml
-/*.clpprj
-/*.csprj
+*.clpprj
+*.csprj
 /*.geany
 /.project
+/.settings
+/.buildpath
 /data_custom/latest_activity.bin
 tmpfile__*
 *.tmp

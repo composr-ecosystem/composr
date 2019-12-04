@@ -244,7 +244,7 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
                         $_results[] = $result;
                         break;
                 }
-            };
+            }
             if (!empty($_results)) {
                 $_sections[$section_label] = [
                     'RESULTS' => $_results,

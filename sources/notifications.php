@@ -1458,7 +1458,7 @@ class Hook_notification__Staff extends Hook_Notification
      */
     public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
     {
-        return $this->_all_staff_who_have_enabled($notification_code, $category, $to_member_ids, $from_member_id, $start, $max);
+        return $this->_all_staff_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
     }
 
     /**

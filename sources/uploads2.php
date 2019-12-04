@@ -71,7 +71,7 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
     }
     if ($cma_info['title_field'] !== null) {
         $select[] = $cma_info['title_field'];
-    };
+    }
 
     $start = 0;
     $max = 100;

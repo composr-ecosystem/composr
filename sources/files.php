@@ -603,7 +603,9 @@ function should_ignore_file($path, $bitmask = 0)
 
         // IDE projects
         'nbproject' => '', // Netbeans
-        '.project' => '', // Eclipse
+        '.project' => '', // Eclipse / Zend Studio
+        '.settings' => '', // Eclipse / Zend Studio
+        '.buildpath' => '', // Eclipse / Zend Studio
         '.idea' => '', // JetBrains / PhpStorm
         '.editorconfig' => '',
 
@@ -650,8 +652,8 @@ function should_ignore_file($path, $bitmask = 0)
         'cms' => '.*', // Installers and upgraders
 
         // IDE projects
-        'clpprj' => '', // Code Lobster
-        'csprj' => '', // Code Lobster
+        'clpprj' => '.*', // Code Lobster
+        'csprj' => '.*', // Code Lobster
         'geany' => '', // Geany
     ];
 

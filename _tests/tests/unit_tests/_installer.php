@@ -122,7 +122,7 @@ class _installer_test_set extends cms_test_case
     {
         if (strpos(get_db_type(), 'mysql') === false) {
             $this->assertTrue(false, 'Cannot run test without MySQL');
-            return;
+            return false;
         }
 
         $database = 'test';

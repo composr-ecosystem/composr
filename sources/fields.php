@@ -238,6 +238,7 @@ function define_custom_field($name, $description = '', $order = 0, $content_type
         $settings_map += insert_lang('cf_description', $description, 2);
         $field_id = $db->query_insert('catalogue_fields', $settings_map);
     } else {
+        $field_id = $field_details[0]['id'];
         $settings_map += lang_remap('cf_name', $field_details[0]['cf_name'], $name);
         $settings_map += lang_remap_comcode('cf_description', $field_details[0]['cf_description'], $description);
         $db->query_update('catalogue_fields', $settings_map, ['id' => $field_id], '', 1);
@@ -502,7 +503,7 @@ function get_bound_content_entry($content_type, $id)
         persistent_cache_set('CONTENT_TYPE_HAS_CUSTOM_FIELDS_CACHE', $content_type_has_custom_fields_cache);
     }
     if (!$content_type_has_custom_fields_cache[$content_type]) {
-        return;
+        return null;
     }
     static $get_bound_content_entry_cache = null;
     if (!isset($get_bound_content_entry_cache[$content_type . ':' . $id])) {

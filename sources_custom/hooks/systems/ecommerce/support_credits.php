@@ -169,7 +169,7 @@ class Hook_ecommerce_support_credits
         $product_array = explode('_', $type_code, 2);
         $num_credits = intval($product_array[0]);
         if ($num_credits == 0) {
-            return;
+            return [null, null];
         }
 
         $manual = 0;
@@ -211,18 +211,18 @@ class Hook_ecommerce_support_credits
 
         $row = $GLOBALS['SITE_DB']->query_select('credit_purchases', ['member_id', 'num_credits'], ['purchase_validated' => 0, 'purchase_id' => intval($purchase_id)], '', 1);
         if (count($row) != 1) {
-            return;
+            return null;
         }
         $member_id = $row[0]['member_id'];
         if ($member_id === null) {
-            return;
+            return null;
         }
         $num_credits = $row[0]['num_credits'];
 
         require_code('mantis');
         $cpf_id = get_credits_profile_field_id();
         if ($cpf_id === null) {
-            return;
+            return null;
         }
 
         // Increment the number of credits this customer has

@@ -583,6 +583,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
     }
 
     warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+    return null;
 }
 
 /**

@@ -1520,5 +1520,7 @@ class Module_purchase
         if (($discounted_price === null) && ($details['price'] === null)) {
             return warn_screen($this->title, do_lang_tempcode('INTERNAL_ERROR')); // Cannot buy with money and not available with points for some reason
         }
+
+        return null;
     }
 }

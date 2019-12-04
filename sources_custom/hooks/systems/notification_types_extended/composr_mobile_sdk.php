@@ -108,7 +108,7 @@ class Hook_notification_types_extended_composr_mobile_sdk
     public function _notification_setting_available($setting, $member_id, &$system_wide, &$for_member)
     {
         if (!addon_installed('composr_mobile_sdk')) {
-            return;
+            return false;
         }
 
         switch ($setting) {
@@ -132,6 +132,8 @@ class Hook_notification_types_extended_composr_mobile_sdk
                 }
                 break;
         }
+
+        return false;
     }
 
     /**

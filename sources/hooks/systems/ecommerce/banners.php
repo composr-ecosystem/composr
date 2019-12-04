@@ -235,6 +235,8 @@ class Hook_ecommerce_banners
             case 'BANNER_UPGRADE_IMPORTANCE':
                 return null;
         }
+
+        return null;
     }
 
     /**

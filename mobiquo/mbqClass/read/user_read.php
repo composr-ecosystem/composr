@@ -129,6 +129,8 @@ class CMSUserRead
             default:
                 warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
+
+        return null;
     }
 
     /**

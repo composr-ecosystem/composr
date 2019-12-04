@@ -753,6 +753,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         fatal_exit(do_lang('HACK_ATTACK'));
     }
     warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
+    return null;
 }
 
 /**

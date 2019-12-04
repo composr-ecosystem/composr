@@ -106,6 +106,6 @@ class Persistent_caching_apcucache
         $this->objects_list = [];
         @apcu_store(get_file_base() . 'PERSISTENT_CACHE_OBJECTS', $this->objects_list);
 
-        apcu_clear_cache('user');
+        apcu_clear_cache();
     }
 }

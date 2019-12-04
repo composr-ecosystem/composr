@@ -88,7 +88,7 @@ class PasswordHash
     public function get_random_bytes($count)
     {
         $output = '';
-        if (($fh = @fopen('/dev/urandom', 'rb'))) {
+        if (($fh = @fopen('/dev/urandom', 'rb')) !== false) {
             $output = fread($fh, $count);
             fclose($fh);
         }

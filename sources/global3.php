@@ -3090,6 +3090,8 @@ function log_it($type, $a = null, $b = null, $return_id = false)
         require_code('global4');
         return _log_it($type, $a, $b);
     });
+
+    return null;
 }
 
 /**
@@ -3854,7 +3856,6 @@ function titleify($boring)
         'SMS',
         'SSL',
         'XML',
-        'HPHP',
         'CSS',
         'SEO',
         'JavaScript',

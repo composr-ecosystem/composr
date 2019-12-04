@@ -185,7 +185,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
     public function start_transaction($connection)
     {
         if (function_exists('sqlsrv_begin_transaction')) {
-            sqlsrv_begin_transaction($connection, false);
+            sqlsrv_begin_transaction($connection);
         }
     }
 
@@ -197,7 +197,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
     public function end_transaction($connection)
     {
         if (function_exists('sqlsrv_commit')) {
-            sqlsrv_commit($connection, true);
+            sqlsrv_commit($connection);
         }
     }
 }

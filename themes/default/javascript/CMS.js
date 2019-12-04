@@ -117,7 +117,6 @@
      * Get URL stub to propagate keep_* parameters
      * @memberof $cms
      * @param [starting]
-     * @param [forceSession]
      * @return {string}
      */
     $cms.keep = function keep(starting) {
@@ -285,7 +284,6 @@
 
     /**
      * @memberof $cms
-     * @param forceSession
      * @return { URLSearchParams }
      */
     $cms.pageKeepSearchParams = function pageKeepSearchParams() {

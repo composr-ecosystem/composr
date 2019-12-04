@@ -90,9 +90,6 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
 
     // Find words
     $words = str_word_count($a, 2);
-    if ($words === null) {
-        $words = []; // HPHP issue #113
-    }
 
     // Apply filter for complete blocked words
     $changes = [];

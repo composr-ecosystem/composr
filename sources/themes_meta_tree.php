@@ -360,7 +360,6 @@ function find_template_tree_nice($metadata, &$collected_templates)
             break;
 
         case TEMPLATE_TREE_NODE__UNKNOWN:
-        case TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE:
             $out = $identifier;
             if ($out == '') {
                 $out = '(mixed)';

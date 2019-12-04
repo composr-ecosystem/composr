@@ -32,7 +32,7 @@ function report_post_func($raw_params)
     $reason = isset($params[1]) ? $params[1] : '';
 
     $post_object = new CMSPostWrite();
-    $result = $post_object->report_post($post_id, $reason);
+    $post_object->report_post($post_id, $reason);
     return mobiquo_response_true();
 }
 

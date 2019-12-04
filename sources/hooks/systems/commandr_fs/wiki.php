@@ -101,7 +101,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
             /*return false;*/
         }
 
-        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, $this->folder_resource_type);
+        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
         require_code('wiki');
 
@@ -179,7 +179,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
-        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties, $this->folder_resource_type);
+        list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
 
         require_code('wiki');
 

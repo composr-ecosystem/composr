@@ -64,6 +64,7 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
+    return null;
 }
 
 /**
