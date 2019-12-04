@@ -130,6 +130,7 @@ if (array_key_exists('base_path', $options)) {
 }
 
 // Load code
+require_once('metadata.php');
 require_once('check.php');
 require_once('tests.php');
 require_once('lex.php');

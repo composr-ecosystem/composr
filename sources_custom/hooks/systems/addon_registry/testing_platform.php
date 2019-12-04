@@ -185,6 +185,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             'data_custom/continuous_integration.php',
             'sources_custom/continuous_integration.php',
             '_tests/codechecker/check.php',
+            '_tests/codechecker/metadata.php',
             '_tests/codechecker/codechecker.php',
             '_tests/codechecker/lib.php',
             '_tests/codechecker/lex.php',
