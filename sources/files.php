@@ -615,6 +615,9 @@ function should_ignore_file($path, $bitmask = 0)
         '.phpcs.xml' => '', // PHP CodeSniffer config file
         'phpcs.phar' => '', // For latest version of PHP CodeSniffer
 
+        // Composer
+        'composer.phar',
+
         // Composr control files
         'closed.html' => '',
         'closed.html.old' => '',
