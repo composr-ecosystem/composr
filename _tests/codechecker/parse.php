@@ -475,8 +475,7 @@ function _parse_command_actual($no_term_needed = false, &$is_braced = null)
                 pparse__parser_next();
                 $command = _parse_command_actual(false);
                 if ($command[0] == 'CALL_DIRECT') {
-                    $command[0] = 'CALL_METHOD';
-                    $command[1] = ['VARIABLE', null, ['DEREFERENCE', ['VARIABLE', $command[1], [], $command[4]], [], $command[4]], $command[4]];
+                    $command = ['CALL_METHOD', ['IDENTIFIER', /*class name*/$identifier, ['DEREFERENCE', ['VARIABLE', /*method name*/$command[1], [], $GLOBALS['I']], [], $GLOBALS['I']], $GLOBALS['I']], /*params*/$command[2], $GLOBALS['I']];
                 } else {
                     $expression = ['REFERENCE', $command, $GLOBALS['I']];
                 }
@@ -1035,14 +1034,14 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
                 break;
 
             case 'FUNCTION':
-                if (!in_array('private', $modifiers) && !in_array('protected', $modifiers) && !in_array('public', $modifiers)) {
+                if ((!in_array('private', $modifiers)) && (!in_array('protected', $modifiers)) && (!in_array('public', $modifiers))) {
                     log_warning('You must specify function visibility (e.g. public)');
                 }
 
-                if ($is_interface && in_array('private', $modifiers)) {
+                if (($is_interface) && (in_array('private', $modifiers))) {
                     log_warning('All methods in an interface must be public or protected');
                 }
-                if ($is_interface && in_array('abstract', $modifiers)) {
+                if (($is_interface) && (in_array('abstract', $modifiers))) {
                     log_warning('Everything in an interface is inherently abstract. Do not use the abstract keyword');
                 }
                 $_function = _parse_function_def(array_merge($modifiers, $is_interface ? ['abstract'] : [])); // Interface methods are inherently abstract
@@ -1072,7 +1071,7 @@ function _parse_class_contents($class_modifiers = [], $is_interface = false, $is
 
                     $modifiers[] = 'abstract';
                     if (!in_array('abstract', $class_modifiers)) {
-                        log_warning('Abstract keyword found in a non-abstract class.');
+                        log_warning('Abstract keyword found in a non-abstract class');
                     }
                 } else {
                     if (empty($modifiers)) {

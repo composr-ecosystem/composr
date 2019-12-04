@@ -632,7 +632,7 @@ function error_reporting($level = null)
  * Output a message and terminate the current script.
  *
  * @param  mixed $message The message (string), or status code (integer)
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function exit($message = '')
 {

@@ -58,6 +58,7 @@ function chat_poller()
 
 /**
  * Exit the code saying "no messages".
+ * @exits
  */
 function chat_null_exit()
 {

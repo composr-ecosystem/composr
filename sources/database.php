@@ -845,6 +845,7 @@ class DatabaseDriver
      * Exit with an error message. If the user doesn't have permissions to view queries it shows a generic message.
      *
      * @param  mixed $message Message to show (Tempcode or string)
+     * @exits
      */
     public function failed_query_exit($message)
     {

@@ -96,7 +96,7 @@ foreach ($files as $filename) {
     //echo 'SIGNATURES-DONE ' . $_filename . cnl();
 }
 
-$classes['__global'] = ['functions' => $global];
+$classes['__global'] = ['functions' => $global, 'name' => '__global', 'inherits_from' => [], 'type' => null];
 
 // Save file
 if (file_exists($COMPOSR_PATH . '/data_custom')) {

@@ -129,6 +129,7 @@ function get_page_warning_details($zone, $codename, $edit_url)
  * @param  boolean $intermediary_hop For intermediary hops, don't mark so as to read status messages - save them up for the next hop (which will not be intermediary)
  * @param  ID_TEXT $msg_type Code of message type to show
  * @set warn inform fatal
+ * @exits
  */
 function redirect_exit($url, $title = null, $text = null, $intermediary_hop = false, $msg_type = 'inform')
 {
@@ -210,6 +211,7 @@ function assign_refresh($url, $multiplier = 0.0)
 
 /**
  * Render the site as closed.
+ * @exits
  */
 function closed_site_exit()
 {

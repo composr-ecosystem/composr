@@ -58,13 +58,12 @@ function load_function_signatures()
 // Do the actual code quality check
 function check($structure)
 {
-    global $GLOBAL_VARIABLES, $CURRENT_CLASS, $OK_EXTRA_FUNCTIONS, $STRUCTURE;
+    global $GLOBAL_VARIABLES, $LOCAL_VARIABLES, $CURRENT_CLASS, $OK_EXTRA_FUNCTIONS, $STRUCTURE;
     $GLOBAL_VARIABLES = [];
     $OK_EXTRA_FUNCTIONS = $structure['ok_extra_functions'];
     $STRUCTURE = $structure;
 
     $CURRENT_CLASS = '__global';
-    global $LOCAL_VARIABLES;
     $LOCAL_VARIABLES = reinitialise_local_variables();
     if ($GLOBALS['OK_EXTRA_FUNCTIONS'] == '') { // Useful for tests to be able to define functions natively
         foreach ($structure['functions'] as $function) {
@@ -82,41 +81,111 @@ function check($structure)
     }
     check_command($structure['main'], 0);
     $local_variables = $LOCAL_VARIABLES;
+
     foreach ($structure['functions'] as $function) {
         check_function($function);
     }
+
     foreach ($structure['classes'] as $class) {
-        if (!empty($GLOBALS['FLAG__API'])) {
-            if (substr($class['name'], 0, 1) == strtolower(substr($class['name'], 0, 1))) {
-                log_warning('Class names should start with an upper case letter, \'' . $class['name'] . '\'');
-            }
-        }
-
-        /*if (substr($class['name'], 1) != strtolower(substr($class['name'], 1))) {     Too Composr-specific
-            log_warning('Class names should be lower case apart from the first letter, \'' . $class['name'] . '\'');
-        }*/
-
-        $CURRENT_CLASS = $class['name'];
-        foreach ($class['functions'] as $function) {
-            if (strtolower($function['name']) == strtolower($class['name'])) {
-                log_warning('Use __construct for construct name, not \'' . $function['name'] . '\'', $function['offset']);
-            }
-
-            check_function($function, false, true);
-        }
-
-        foreach ($class['vars'] as $var) {
-            check_expression($var[1]);
-        }
-
-        foreach ($class['constants'] as $constant) {
-            check_expression($constant[1]);
-        }
+        check_class($class);
     }
+
     check_variable_list($local_variables, 0);
 
     // Check for type conflicts in the global variables
     check_variable_list($GLOBAL_VARIABLES);
+}
+
+function check_class($class)
+{
+    global $CURRENT_CLASS, $FUNCTION_SIGNATURES;
+
+    if (!empty($GLOBALS['FLAG__API'])) {
+        if (substr($class['name'], 0, 1) == strtolower(substr($class['name'], 0, 1))) {
+            log_warning('Class names should start with an upper case letter, \'' . $class['name'] . '\'');
+        }
+    }
+
+    /*if (substr($class['name'], 1) != strtolower(substr($class['name'], 1))) {     Too Composr-specific
+        log_warning('Class names should be lower case apart from the first letter, \'' . $class['name'] . '\'');
+    }*/
+
+    $CURRENT_CLASS = $class['name'];
+    foreach ($class['functions'] as $function) {
+        if (strtolower($function['name']) == strtolower($class['name'])) {
+            log_warning('Use __construct for construct name, not \'' . $function['name'] . '\'', $function['offset']);
+        }
+
+        check_function($function, false, true);
+
+        // Check overridden method is consistent (only works when function signatures are known, and no real-time parsing)
+        if ((isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) && (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$function['name']]))) {
+            $function_signature = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$function['name']];
+
+            $inherits_from = find_inherits_from($CURRENT_CLASS);
+            foreach ($inherits_from as $_inherits_from) {
+                if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                    if (isset($FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function['name']])) {
+                        $inherited_function_signature = $FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function['name']];
+                        $differs = false;
+                        foreach (['parameters', 'return', 'is_static', 'visibility'] as $compare) {
+                            if ($compare == 'parameters') {
+                                foreach ($inherited_function_signature[$compare] as $i => $inherited_function_signature_param) {
+                                    $function_signature_param = isset($function_signature[$compare][$i]) ? $function_signature[$compare][$i] : null;
+                                    foreach (['ref', 'is_variadic', 'type'] as $compare2) {
+                                        if (serialize($inherited_function_signature_param[$compare2]) !== (($function_signature_param === null) ? null : serialize($function_signature_param[$compare2]))) {
+                                            $differs = true;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (serialize($inherited_function_signature[$compare]) != serialize($function_signature[$compare])) {
+                                    $differs = true;
+                                }
+                            }
+                        }
+                        if ($differs) {
+                            log_warning('Overridden function \'' . $function['name'] . '\' does not match what it is derived from', $function['offset']);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    foreach ($class['vars'] as $var) {
+        check_expression($var[1]);
+    }
+
+    foreach ($class['constants'] as $constant) {
+        check_expression($constant[1]);
+    }
+
+    // Check all all abstract functions from parent are implemented (only works when function signatures are known, and no real-time parsing)
+    if (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) {
+        foreach ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['inherits_from'] as $_inherits_from) {
+            foreach ($FUNCTION_SIGNATURES[$_inherits_from]['functions'] as $inherited_function) {
+                if ($inherited_function['is_abstract']) {
+                    $inherited_abstract_function = $inherited_function['name'];
+                    if (!isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$inherited_abstract_function])) {
+                        log_warning('Abstract function \'' . $inherited_abstract_function . '\' from parent is not implemented', $function['offset']);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function find_inherits_from($class)
+{
+    global $FUNCTION_SIGNATURES;
+    $inherits_from = $FUNCTION_SIGNATURES[$class]['inherits_from'];
+    foreach ($inherits_from as $_inherits_from) {
+        if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+            $inherits_from = array_unique(array_merge($inherits_from, $FUNCTION_SIGNATURES[$_inherits_from]['inherits_from']));
+        }
+    }
+    return $inherits_from;
 }
 
 function check_function($function, $is_closure = false, $inside_class = false)
@@ -127,7 +196,7 @@ function check_function($function, $is_closure = false, $inside_class = false)
         $bak = $LOCAL_VARIABLES;
     }
 
-    $LOCAL_VARIABLES = reinitialise_local_variables($inside_class); // Map (by name) of maps : is_global, types. Note there is boolean-false and null types: boolean_false is when we KNOW a boolean is false, so it might map to ~
+    $LOCAL_VARIABLES = reinitialise_local_variables(in_array('static', $function['modifiers']) ? false : $inside_class); // Map (by name) of maps : is_global, types. Note there is boolean-false and null types: boolean_false is when we KNOW a boolean is false, so it might map to ~
 
     //if (!empty($GLOBALS['FLAG__PEDANTIC'])) if (strlen(serialize($function)) > 30000) log_warning('Function ' . $function['name'] . ' is too big', $function['offset']);
 
@@ -311,22 +380,29 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
 
         switch ($c[0]) {
             case 'CALL_METHOD':
-                check_method($c, $c_pos, $function_guard);
+                $return_type = check_method_call($c, $c_pos, $function_guard);
+                process_unused_return($return_type, $c_pos);
                 break;
+
             case 'CALL_INDIRECT':
                 add_variable_reference($c[1][1], $c_pos);
                 break;
+
             case 'VARIABLE':
-                check_variable($c, false, $function_guard);
+                $return_type = check_variable($c, false, $function_guard);
+                process_unused_return($return_type, $c_pos);
                 break;
+
             case 'CALL_DIRECT':
                 if (!empty($GLOBALS['FLAG__PEDANTIC'])) {
                     if ((isset($GLOBALS['NULL_ERROR_FUNCS'][$c[1]])) || (isset($GLOBALS['FALSE_ERROR_FUNCS'][$c[1]]))) {
                         log_warning('Crucial return value was not handled', $c_pos);
                     }
                 }
-                check_call($c, $c_pos, null, $function_guard);
+                $return_type = check_call($c, $c_pos, null, $function_guard);
+                process_unused_return($return_type, $c_pos);
                 break;
+
             case 'GLOBAL':
                 foreach ($c[1] as $v) {
                     if ((isset($LOCAL_VARIABLES[$v[1]])) && (!$LOCAL_VARIABLES[$v[1]]['is_global'])) {
@@ -337,15 +413,19 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     $LOCAL_VARIABLES[$v[1]]['unused_value'] = true;
                 }
                 break;
+
             case 'YIELD_0':
                 break;
+
             case 'YIELD_1':
                 check_expression($c[1], false, false, $function_guard);
                 break;
+
             case 'YIELD_2':
                 check_expression($c[1], false, false, $function_guard);
                 check_expression($c[2], false, false, $function_guard);
                 break;
+
             case 'RETURN':
                 if ($c[1] !== null) {
                     $ret_type = check_expression($c[1], false, false, $function_guard);
@@ -360,6 +440,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     log_warning('There is unreachable code (after a return statement)', $c_pos);
                 }
                 break;
+
             case 'SWITCH':
                 $switch_type = check_expression($c[1], false, false, $function_guard);
                 foreach ($c[2] as $case) {
@@ -372,14 +453,17 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     check_command($case[1], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['SWITCH']));
                 }
                 break;
+
             case 'STATIC_ASSIGNMENT':
                 foreach ($c[1] as $_c) {
                     check_assignment($_c, $c_pos, $function_guard);
                 }
                 break;
+
             case 'ASSIGNMENT':
                 check_assignment($c, $c_pos, $function_guard);
                 break;
+
             case 'IF':
             case 'IF_ELSE':
                 $t = check_expression($c[1], false, false, $function_guard);
@@ -414,11 +498,13 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     check_command($c[3], $depth, $function_guard, $nogo_parameters, $jump_structures);
                 }
                 break;
+
             case 'INNER_FUNCTION':
                 $temp = $LOCAL_VARIABLES;
                 check_function($c[1]);
                 $LOCAL_VARIABLES = $temp;
                 break;
+
             case 'INNER_CLASS':
                 $class = $c[1];
                 foreach ($class['functions'] as $function) {
@@ -428,6 +514,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     $LOCAL_VARIABLES = $temp;
                 }
                 break;
+
             case 'TRY':
                 check_command($c[1], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Goes first so that we get local variables defined inside loop for use in our loop conditional
                 foreach ($c[2] as $catch) {
@@ -438,6 +525,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     check_command($c[3], $depth + 1, $function_guard, $nogo_parameters, $jump_structures); // Finally
                 }
                 break;
+
             case 'FOREACH_map':
                 $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
@@ -463,6 +551,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
 
                 check_command($c[4], $depth + 1, $function_guard, array_merge($nogo_parameters, [$c[2][1], $c[3][1]]), array_merge($jump_structures, ['FOREACH_map']));
                 break;
+
             case 'FOREACH_list':
                 $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
@@ -484,6 +573,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
 
                 check_command($c[3], $depth + 1, $function_guard, array_merge($nogo_parameters, [$c[2][1]]), array_merge($jump_structures, ['FOREACH_list']));
                 break;
+
             case 'FOR':
                 if ($c[1] !== null) {
                     check_command([$c[1]], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
@@ -495,6 +585,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
                 check_command($c[4], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['FOR']));
                 break;
+
             case 'DO':
                 check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['DO'])); // Goes first so that we get local variables defined inside loop for use in our loop conditional
                 $passes = ensure_type(['boolean'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (do)', true);
@@ -502,6 +593,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
                 break;
+
             case 'WHILE':
                 $passes = ensure_type(['boolean'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Conditionals must be boolean (while)', true);
                 if ($passes) {
@@ -509,6 +601,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
                 check_command($c[2], $depth + 1, $function_guard, $nogo_parameters, array_merge($jump_structures, ['WHILE']));
                 break;
+
             case 'CONTINUE':
                 if (($c[1][0] == 'SOLO') && ($c[1][1][0] == 'LITERAL') && ($c[1][1][1][0] == 'INTEGER')) {
                     $continue_level = $c[1][1][1][1];
@@ -536,6 +629,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     infer_expression_type_to_variable_type('integer', $c[1]);
                 }
                 break;
+
             case 'BREAK':
                 $passes = ensure_type(['integer'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Loop/switch control must use integers (break)');
                 if ($passes) {
@@ -546,18 +640,23 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     log_warning('Nothing to break out of', $c_pos);
                 }
                 break;
+
             case 'PRE_DEC':
                 ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
                 break;
+
             case 'PRE_INC':
                 ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
                 break;
+
             case 'DEC':
                 ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
                 break;
+
             case 'INC':
                 ensure_type(['integer', 'float'], check_variable($c[1], false, $function_guard), $c_pos, 'Can only increment numbers');
                 break;
+
             case 'ECHO':
                 foreach ($c[1] as $e) {
                     $passes = ensure_type(['string'], check_expression($e, false, false, $function_guard), $c_pos, 'Can only echo strings');
@@ -574,440 +673,31 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
     }
 }
 
-function check_method($c, $c_pos, $function_guard = '')
+function process_unused_return($type, $c_pos)
 {
-    global $LOCAL_VARIABLES, $FUNCTION_SIGNATURES;
-
-    $params = $c[2];
-
-    if ($c[1] !== null) {
-        check_variable($c[1], false, $function_guard);
-
-        // Special rule for 'this->db'
-        if (($c[1][1] == 'this') && ($c[1][2][1][1] == 'db') && ((!isset($c[1][2][2][0])) || ($c[1][2][2][0] != 'DEREFERENCE'))) {
-            $method = $c[1][2][2][1][1];
-            $class = 'DatabaseConnector';
-            return actual_check_method($class, $method, $params, $c_pos, $function_guard);
-        }
-
-        // Special rule for $GLOBALS['?_DB']
-        if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && (substr($c[1][2][1][1][1], -3) == '_DB') && ((!isset($c[1][2][2][2][0])) || ($c[1][2][2][2][0] != 'DEREFERENCE'))) {
-            $method = $c[1][2][2][1][1];
-            $class = 'DatabaseConnector';
-            return actual_check_method($class, $method, $params, $c_pos, $function_guard);
-        }
-
-        // Special rule for $GLOBALS['FORUM_DRIVER']
-        if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && ($c[1][2][1][1][1] == 'FORUM_DRIVER')) {
-            $method = $c[1][2][2][1][1];
-            $class = 'Forum_driver_base';
-            return actual_check_method($class, $method, $params, $c_pos, $function_guard);
-        }
-
-        if ((isset($c[1][2][0])) && ($c[1][2][0] == 'DEREFERENCE') && (empty($c[1][2][2]))) {
-            $object = $c[1][1];
-            $method = $c[1][2][1][1];
-            add_variable_reference($object, $c_pos);
-
-            if (((count($LOCAL_VARIABLES[$object]['types']) == 1) && ($LOCAL_VARIABLES[$object]['types'][0] == 'Tempcode')) || (isset($FUNCTION_SIGNATURES[$LOCAL_VARIABLES[$object]['object_type']]))) { // Construction
-                $class = substr($LOCAL_VARIABLES[$object]['types'][0], 6);
-                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
-            } else {
-                // Parameters
-                foreach ($params as $e) {
-                    check_expression($e[0], false, false, $function_guard);
-                }
-
-                return 'mixed';
-            }
-        }
-
-        scan_extractive_expressions($c[1][2]);
-    }
-    // Parameters
-    foreach ($params as $e) {
-        check_expression($e[0], false, false, $function_guard);
-    }
-
-    return 'mixed';
-}
-
-function actual_check_method($class, $method, $params, $c_pos, $function_guard = '')
-{
-    // Parameters
-    foreach ($params as $e) {
-        check_expression($e[0], false, false, $function_guard);
-    }
-
-    return check_call(['CALL_DIRECT', $method, $params], $c_pos, $class, $function_guard);
-}
-
-function check_call($c, $c_pos, $class = null, $function_guard = '')
-{
-    global $CURRENT_CLASS;
-    if ($class === null) {
-        $class = '__global';
-    }
-    $class = preg_replace('#^(\?|~|object-)*#', '', $class);
-
-    $params = $c[2];
-
-    if ((!empty($GLOBALS['FLAG__PEDANTIC'])) && (array_key_exists(3, $c)) && (!$c[3])) {
-        if (((isset($GLOBALS['VAR_ERROR_FUNCS'][$c[1]])) && (@$params[1][0][0] == 'VARIABLE')) || (isset($GLOBALS['ERROR_FUNCS'][$c[1]]))) {
-            log_warning('Check this call is error-caught', $c_pos);
-        }
-    }
-
-    $function = $c[1];
     if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
-        global $EXT_FUNCS;
-        if (isset($EXT_FUNCS[$function])) {
-            log_warning('Check for function_exists usage around ' . $function, $c_pos);
-        }
-    }
-    $_function = ($class == '__global') ? $function : ($class . '.' . $function);
-    if (!empty($GLOBALS['FLAG__SECURITY'])) {
-        global $INSECURE_FUNCTIONS;
-        if (in_array($_function, $INSECURE_FUNCTIONS)) {
-            log_warning('Call to insecure function (' . $_function . ')', $c_pos);
-        }
-    }
-    global $FUNCTION_SIGNATURES, $STRUCTURE;
-    $ret = null;
-    $found = false;
-
-    if (isset($FUNCTION_SIGNATURES[$class]['functions'][$function])) {
-        $potential = $FUNCTION_SIGNATURES[$class]['functions'][$function];
-    } else {
-        $potential = null;
-    }
-    if (($potential === null) && ($class == 'Forum_driver_base')) {
-        $class = 'Forum_driver_cns';
-        if (isset($FUNCTION_SIGNATURES[$class]['functions'][$function])) {
-            $potential = $FUNCTION_SIGNATURES[$class]['functions'][$function];
-        } else {
-            $potential = null;
-        }
-    }
-
-    if ($class == 'DatabaseConnector') {
-        if ((count($params) >= 2) && ($params[0][0][0] == 'LITERAL')) {
-            $table = $params[0][0][1][1];
-            if ($function == 'query_insert') {
-                $map = check_db_map($table, $params[1][0], $c_pos, true);
-            }
-            if ($function == 'query_update') {
-                check_db_map($table, $params[1][0], $c_pos);
-                if (isset($params[2][0])) {
-                    check_db_map($table, $params[2][0], $c_pos);
-                }
-            }
-            if ($function == 'query_select') {
-                check_db_fields($table, $params[1][0], $c_pos);
-                if (isset($params[2][0])) {
-                    check_db_map($table, $params[2][0], $c_pos);
-                }
-            }
-            if (($function == 'query_select_value') || ($function == 'query_select_value_if_there')) {
-                check_db_field($table, $params[1][0], $c_pos);
-                if (isset($params[2][0])) {
-                    check_db_map($table, $params[2][0], $c_pos);
-                }
-            }
-        }
-    }
-
-    foreach ($params as $param) {
-        if ($param[0][0] == 'VARIABLE_REFERENCE') {
-            log_warning('Call by reference to function \'' . $function . '\'', $c_pos);
-        }
-    }
-
-    if ($potential !== null) {
-        $found = true;
-        if (isset($potential['return'])) {
-            $ret = $potential['return'];
-        }
-        foreach ($potential['parameters'] as $i => $param) {
-            if ((!isset($params[$i])) && ((empty($params)) || (!$params[count($params) - 1][1]/*not a vadiadic call*/)) && (!$param['is_variadic']/*not variadic parameter spot*/) && (!array_key_exists('default', $param))) {
-                log_warning('Insufficient parameters to function \'' . $function . '\'', $c_pos);
-                break;
-            }
-            if (isset($params[$i])) {
-                $temp = $params[$i][0];
-
-                // Can't pass references
-                if (($temp[0] == 'SOLO') && (is_array($temp[1])) && ($temp[1][0] == 'VARIABLE_REFERENCE')) {
-                    log_warning('Reference parameter passed to function \'' . $function . '\'', $c_pos);
-                    break;
-                }
-
-                // If it is a referenced parameter then we must pass a variable expression not a general expression
-                if ((@$param['ref']) && ($temp[0] != 'VARIABLE')) {
-                    log_warning('A referenced parameter for \'' . $function . '\' was given a non-variable expression', $c_pos);
-                    break;
-                }
-
-                $t = check_expression($temp, false, false, $function_guard);
-                $passes = ensure_type([$param['type']], $t, $c_pos, 'Parameter type error for ' . $function . '/' . ($i + 1) . ' (should be ' . $param['type'] . ' not ' . $t . ')');
-                if (($t === 'float') && ($function === 'strval')) {
-                    log_warning('Floats should not be used with strval, use float_to_raw_string or float_format', $c_pos);
-                }
-                if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
-                    if (($t === 'mixed') && ($function === 'count') && (strpos($c[2][0][1], 'rows') === false)) {
-                        log_warning('Make sure that count parameter is definitely counting an array', $c_pos);
-                    }
-                }
-                if ($passes) {
-                    infer_expression_type_to_variable_type($param['type'], $temp);
-                }
-            } else {
-                break;
-            }
-        }
-        if ((count($potential['parameters']) < count($params)) && (!empty($potential['parameters'])) && (!$potential['parameters'][count($potential['parameters']) - 1]['is_variadic']/*not a variadic function*/)) {
-            log_warning('Too many parameters to function \'' . $function . '\'', $c_pos);
-        }
-
-        // Look for file-creators, and give notice that chmoding might be required to allow it to be deleted via FTP
-        if (in_array('creates-file', $potential['flags'])) {
-            if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
-                if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['w', 'a']))) {
-                    log_warning('Call to \'' . $function . '\' that may create a file/folder. Check that the code chmods it so that FTP can delete it.', $c_pos);
-                }
-            }
-
-            if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['t']))) {
-                log_warning('Call to \'' . $function . '\' uses a text flag. This creates platform-dependent text files, which we do not want.', $c_pos);
-            }
-        }
-    }
-
-    if (($function == 'isset') && (@$params[0][0][0] != 'VARIABLE')) {
-        log_warning('Can only pass variables to ' . $function, $c_pos);
-    }
-
-    if (($function == 'tempnam') && (@$params[0][0][0] == 'LITERAL') && (substr(@$params[0][0][1][1], 0, 4) == '/tmp')) {
-        log_warning('Don\'t assume you can write to the shared temp directory', $c_pos);
-    }
-    if (($function == 'strpos') && (@$params[0][0][0] == 'LITERAL') && (@$params[1][0][0] != 'LITERAL')) {
-        log_warning('Looks like strpos parameters are the wrong way around; you fell for a common API anomaly: unlike most functions like in_array, strpos is haystack followed by needle', $c_pos);
-    }
-    if ((($function == 'sprintf') || ($function == 'printf')) && (@$params[0][0][0] == 'LITERAL')) {
-        $matches = [];
-        $num_matches = preg_match_all('#\%[+-]?.?-?\d*(\.\d+)?(\$[bcdefuFodsxX])?#', $params[0][0][1][1], $matches);
-        if ($num_matches + 1 != count($params)) {
-            log_warning('Looks like the wrong number of parameters were sent to this [s]printf function, got ' . integer_format(count($params)) . ', expected, ' . integer_format($num_matches + 1), $c_pos);
-        }
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'tempname')) {
-        log_warning('Make sure temporary files are deleted', $c_pos);
-    }
-    //if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'fopen')) log_warning('Make sure opened files are closed', $c_pos);  Not going to actually cause problems, as PHP'll close it when the script finishes
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'define') && (@strtoupper($params[0][0][1]) != $params[0][0][1])) {
-        log_warning('Constants should be upper case', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'get_username') && (@$params[0][0][1] != 'get_member')) {
-        log_warning('Make sure guests/deleted-members are handled properly', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'get_url')) {
-        log_warning('Make sure that deleting the entry for this file/URL deletes the disk file', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (in_array($function, ['query_insert', 'insert_lang', 'insert_lang_comcode']))) {
-        log_warning('Make sure that deleting the entry (or uninstalling) for this row deletes the row (if applicable)', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'query_delete') && (!array_key_exists(2, $params))) {
-        log_warning('Check that non-singular modification is wanted for this query', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'query_update') && (!array_key_exists(3, $params))) {
-        log_warning('Check that non-singular modification is wanted for this query', $c_pos);
-    }
-    if (($function == 'implode' || $function == 'explode')) {
-        if ($params[0][0][0] != 'LITERAL' && $params[1][0][0] == 'LITERAL') {
-            log_warning('You have almost certainly got the ' . $function . ' parameters the wrong way around', $c_pos);
-        }
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'unlink')) {
-        log_warning('Be very careful that shared URLs cannot be deleted (check upload dir, and staff access)', $c_pos);
-    }
-    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && (in_array($function, ['query_update', 'query_delete']))) {
-        log_warning('Check log_it/cat-entry-handling/delete_lang', $c_pos);
-    }
-    //if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && ($function == 'query_select')) log_warning('Check that non-singular select is wanted for this query', $c_pos);  This is REALLY pedantic ;) I'm sure MySQL is clever enough to see that only one row can match against a key
-
-    if ($ret !== null) {
-        return $ret['type'];
-    }
-    if (!$found) {
-        if ((isset($FUNCTION_SIGNATURES['__global'])) && (empty($FUNCTION_SIGNATURES['__global']['functions']))) {
-            static $warned_missing_api_once = false;
-            if (!$warned_missing_api_once) {
-                log_warning('No API function metabase available', $c_pos);
-            }
-            $warned_missing_api_once = true;
-        } elseif (!empty($GLOBALS['FLAG__API'])) {
-            if (
-                (
-                    ($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) ||
-                    (
-                        (preg_match('#^(' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . ')#', $function) == 0) &&
-                        (($class === null) || (preg_match('#^(' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . ')#', $class) == 0))
-                    )
-                )
-                &&
-                (strpos($function_guard, ',' . $function . ',') === false) &&
-                (!isset($GLOBALS['KNOWN_EXTRA_FUNCTIONS'][$function]))
-                &&
-                (
-                    ($class === null)
-                    ||
-                    (
-                        (strpos($function_guard, ',' . $class . ',') === false) &&
-                        (!in_array($class, ['mixed', '?mixed', 'object', '?object', ''/*Dynamic*/])) &&
-                        (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]))
-                    )
-                )
-            ) {
-                if (($class === null) || ($class == '__global')) {
-                    if ($function != '' && $function != 'ocp_mark_as_escaped' && $function != 'ocp_is_escaped'/*These aren't checked with function_exists, checked with a global, for performance reasons*/) {
-                        log_warning('Could not find function \'' . $function . '\'', $c_pos);
-                    }
-                } else {
-                    if (!isset($FUNCTION_SIGNATURES[$class])) {
-                        if (in_array($class, ['integer', 'float', 'string', 'boolean', 'boolean-false', 'null'])) {
-                            log_warning('Mixing variable type', $c_pos);
-                        } else {
-                            log_warning('Could not find class \'' . $class . '\'', $c_pos);
-                        }
-                    } elseif (empty($STRUCTURE['classes'][$class]['superclass'])) {
-                        //@var_dump($FUNCTION_SIGNATURES[$class]['functions']);exit(); Useful for debugging
-                        log_warning('Could not find method \'' . $class . '->' . $function . '\'', $c_pos);
-                    }
-                }
-            }
-        }
-        foreach ($params as $param) {
-            check_expression($param[0], false, false, $function_guard);
-        }
-        return 'mixed';
-    }
-    return $ret;
-}
-
-function check_db_map($table, $expr_map, $c_pos, $must_be_complete = false)
-{
-    $map = [];
-    $arr_count = 0;
-    if ($expr_map[0] == 'CREATE_ARRAY') {
-        foreach ($expr_map[1] as $passing) {
-            if (count($passing) == 1) {
-                log_warning('Map required, list given', $c_pos);
-            } else {
-                if ($passing[0][0] == 'LITERAL') {
-                    $type = check_expression($passing[1]);
-                    if ($type == 'array') {
-                        $arr_count++;
-                    }
-                    $map[$passing[0][1][1]] = $type;
-                }
-            }
-        }
-    }
-    if ($arr_count == count($map)) {
-        if ((!isset($GLOBALS['TABLE_FIELDS'][$table])) && ($GLOBALS['TABLE_FIELDS'] !== null)) {
-            if ((strpos($table, ' ') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
-                log_warning('Unknown table referenced (' . $table . ')', $c_pos);
-            }
-        }
-    } else {
-        foreach ($map as $field => $type) {
-            _check_db_field($table, $field, $c_pos, $type);
-        }
-    }
-    if (($must_be_complete) && (isset($GLOBALS['TABLE_FIELDS'][$table])) && ($GLOBALS['TABLE_FIELDS'] !== null)) {
-        if ((isset($GLOBALS['TABLE_FIELDS'][$table]['fields']['id'])) && (strpos($GLOBALS['TABLE_FIELDS'][$table]['fields']['id'], 'AUTO') !== false)) {
-            $map['id'] = 'integer'; // Auto
-        }
-        $missing = implode(', ', array_diff(array_keys($GLOBALS['TABLE_FIELDS'][$table]['fields']), array_keys($map)));
-        if (($missing != '') && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
-            log_warning('Field map for ' . $table . ' table may be incomplete (unsure, but can\'t see: ' . $missing . ' )', $c_pos);
-        }
-    }
-    return $map;
-}
-
-function check_db_fields($table, $expr_map, $c_pos)
-{
-    if ($expr_map[0] == 'CREATE_ARRAY') {
-        foreach ($expr_map[1] as $passing) {
-            if (count($passing) == 2) {
-                log_warning('The selection array must be a list, not a map', $c_pos);
-            } else {
-                check_db_field($table, $passing[0], $c_pos);
-            }
+        if (($type !== null) && ($type !== 'boolean') && ($type != 'mixed')) {
+            log_warning('Returned value of type ' . $type . ' is ignored', $c_pos);
         }
     }
 }
 
-function check_db_field($table, $expr_map, $c_pos)
-{
-    if (($expr_map[0] == 'LITERAL') && ($GLOBALS['TABLE_FIELDS'] !== null)) {
-        _check_db_field($table, $expr_map[1][1], $c_pos);
-    }
-}
-
-function _check_db_field($table, $field, $c_pos, $type = null)
-{
-    if ($GLOBALS['TABLE_FIELDS'] === null) {
-        return;
-    }
-
-    if (!isset($GLOBALS['TABLE_FIELDS'][$table])) {
-        if ((strpos($table, ' ') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
-            log_warning('Unknown table referenced (' . $table . ')', $c_pos);
-        }
-        return;
-    }
-
-    $field = str_replace('DISTINCT ', '', $field);
-    $field = preg_replace('# AS .*#', '', $field);
-    $field = preg_replace('#MAX\((.*)\)#', '${1}', $field);
-    $field = preg_replace('#MIN\((.*)\)#', '${1}', $field);
-    $field = preg_replace('#SUM\((.*)\)#', '${1}', $field);
-    if (strpos($field, '*') !== false) {
-        return;
-    }
-
-    if ((!isset($GLOBALS['TABLE_FIELDS'][$table]['fields'][$field])) && (strpos($field, '(') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
-        log_warning('Unknown field (' . $field . ') referenced', $c_pos);
-        return;
-    }
-
-    if ($type !== null) {
-        if (isset($GLOBALS['TABLE_FIELDS'][$table]['fields'][$field])) {
-            $expected_type = str_replace('*', '', $GLOBALS['TABLE_FIELDS'][$table]['fields'][$field]);
-            if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
-                ensure_type([$expected_type], $type, $c_pos, 'DB field ' . $field . ' should be ' . $expected_type . ', not ' . $type);
-            }
-        }
-    }
-}
-
-/*
-Demonstration of all the assignment checks we could make:
-
-$foo += 'a';
-
-$bar = 1;
-$bar[] = 'a';
-
-list($a) = 1;
-
-$b = 1;
-$b[3] = 'a';
-*/
 function check_assignment($c, $c_pos, $function_guard = '')
 {
+    /*
+    Demonstration of all the assignment checks we could make:
+
+    $foo += 'a';
+
+    $bar = 1;
+    $bar[] = 'a';
+
+    list($a) = 1;
+
+    $b = 1;
+    $b[3] = 'a';
+    */
+
     global $LOCAL_VARIABLES;
     $GLOBALS['MADE_CALL'] = null;
     $e_type = check_expression($c[3], true, false, $function_guard);
@@ -1132,16 +822,20 @@ function _nullify_final_integers(&$x)
 function check_expression($e, $assignment = false, $equate_false = false, $function_guard = '')
 {
     $c_pos = $e[count($e) - 1];
+
     if ($e[0] == 'VARIABLE_REFERENCE') {
         $e = $e[1];
     }
+
     if ($e[0] == 'SOLO') {
         $type = check_expression($e[1], false, false, $function_guard);
         return $type;
     }
+
     if ($e[0] == 'EXPRESSION_CHAINING') {
         return check_variable($e, false, $function_guard);
     }
+
     if ((in_array($e[0], ['DIVIDE', 'REMAINDER', 'DIV_EQUAL'])) && ($e[2][0] != 'LITERAL')) {
         if (($assignment) && (@is_array($e[2][1][2])) && (empty($e[2][1][2]))) {
             $GLOBALS['LOCAL_VARIABLES'][$e[2][1][1]]['conditioner'][] = '_divide_';
@@ -1149,6 +843,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             log_warning('Divide by zero un-handled', $c_pos);
         }
     }
+
     if ($e[0] == 'TERNARY_IF') {
         if (($e[1][0] == 'CALL_DIRECT') && ($e[1][1] == 'php_function_allowed' || strpos($e[1][1], '_exists') !== false/*function_exists or method_exists or class_exists*/) && ($e[1][2][0][0][0] == 'LITERAL') && ($e[1][2][0][0][1][0] == 'STRING')) {
             $function_guard .= ',' . $e[1][2][0][0][1][1] . ',';
@@ -1178,6 +873,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
 
         return $type_a;
     }
+
     if (in_array($e[0], ['BOOLEAN_AND', 'BOOLEAN_OR', 'BOOLEAN_XOR'])) {
         foreach ([0, 1] as $function_parameter_pos) {
             foreach ([0, 1] as $and_position) {
@@ -1200,6 +896,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         check_for_equivalent_operands($e[1], $e[2]);
         return 'boolean';
     }
+
     if (in_array($e[0], ['SL', 'SR', 'REMAINDER'])) {
         $passes = ensure_type(['integer'], check_expression($e[1], false, false, $function_guard), $c_pos - 1, 'Can only use integer combinators with integers');
         if ($passes) {
@@ -1211,6 +908,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         }
         return 'integer';
     }
+
     if (in_array($e[0], ['CONC'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
@@ -1224,6 +922,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         }
         return 'string';
     }
+
     if (in_array($e[0], ['SUBTRACT', 'MULTIPLY', 'DIVIDE', 'EXPONENTIATION'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $t = check_expression($e[2], false, false, $function_guard);
@@ -1231,6 +930,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         ensure_type(['integer', 'float'], $t, $c_pos, 'Can only use arithmetical combinators with numbers (2) (not ' . $t . ')');
         return ($e[0] == 'DIVIDE') ? 'float' : $type_a;
     }
+
     if (in_array($e[0], ['ADD'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $t = check_expression($e[2], false, false, $function_guard);
@@ -1238,6 +938,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         ensure_type(['integer', 'float', 'array'], $t, $c_pos, 'Can only use + combinator with numbers/arrays (2) (not ' . $t . ')');
         return $type_a;
     }
+
     if (in_array($e[0], ['IS_GREATER_OR_EQUAL', 'IS_SMALLER_OR_EQUAL', 'IS_GREATER', 'IS_SMALLER'])) {
         $type_a = check_expression($e[1], false, false, $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
@@ -1247,6 +948,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         ensure_type([$type_a], $type_b, $c_pos, 'Comparators must have type symmetric operands (' . $type_a . ' vs ' . $type_b . ')');
         return 'boolean';
     }
+
     if (in_array($e[0], ['IS_EQUAL', 'IS_IDENTICAL', 'IS_NOT_IDENTICAL', 'IS_NOT_EQUAL'])) {
         $type_a = check_expression($e[1], false, (in_array($e[0], ['IS_IDENTICAL', 'IS_NOT_IDENTICAL'])) && ($e[2][0] == 'LITERAL') && ($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1]), $function_guard);
         $type_b = check_expression($e[2], false, false, $function_guard);
@@ -1290,19 +992,23 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             check_function($inner[1] + ['name' => '(closure)'], true);
             $LOCAL_VARIABLES = $temp;
             return null;
+
         case 'EMBEDDED_ASSIGNMENT':
             $ret = check_assignment($inner, $c_pos, $function_guard);
             return $ret;
+
         case 'CALL_METHOD':
-            $ret = check_method($inner, $c_pos, $function_guard);
+            $ret = check_method_call($inner, $c_pos, $function_guard);
             if ($ret === null) {
                 log_warning('Method that returns no value used in an expression', $c_pos);
                 return 'mixed';
             }
             return $ret;
+
         case 'CALL_INDIRECT':
             add_variable_reference($inner[1][1], $c_pos);
             return 'mixed';
+
         case 'CALL_DIRECT':
             $ret = check_call($inner, $c_pos, null, $function_guard);
             if ($ret === null) {
@@ -1328,23 +1034,28 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 }
             }
             return $ret;
+
         case 'CASTED':
             check_expression($inner[2], false, false, $function_guard);
             return strtolower($inner[1]);
+
         case 'PARENTHESISED':
             return check_expression($inner[1], false, false, $function_guard);
+
         case 'BOOLEAN_NOT':
             $passes = ensure_type(['boolean'], check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'NOT\' a boolean', true);
             if ($passes) {
                 infer_expression_type_to_variable_type('boolean', $inner[1]);
             }
             return 'boolean';
+
         case 'BW_NOT':
             $passes = ensure_type(['integer'], check_expression($inner[1], false, false, $function_guard), $c_pos, 'Can only \'BITWISE-NOT\' an integer', true);
             if ($passes) {
                 infer_expression_type_to_variable_type('integer', $inner[1]);
             }
             return 'integer';
+
         case 'BW_OR':
         case 'BW_XOR':
         case 'BW_AND':
@@ -1364,16 +1075,27 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             }
 
             return $arg_type;
+
         case 'NEGATE':
             $type = check_expression($inner[1], false, false, $function_guard);
             ensure_type(['integer', 'float'], $type, $c_pos, 'Can only negate a number');
             return $type;
+
         case 'LITERAL':
             $type = check_literal($inner[1]);
             return $type;
+
         case 'NEW_OBJECT':
             $class = preg_replace('#^.*\\\\#', '', $inner[1]); // We strip out namespaces from the name, and just look at the actual class name
             global $FUNCTION_SIGNATURES;
+            if (isset($FUNCTION_SIGNATURES[$class])) {
+                if ($FUNCTION_SIGNATURES[$class]['is_abstract']) {
+                    log_warning('Trying to initiate an abstract class, ' . $class, $c_pos);
+                }
+                if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
+                    log_warning('Trying to initiate a(n) ' . $FUNCTION_SIGNATURES[$class]['type'] . ', ' . $class, $c_pos);
+                }
+            }
             if ((!isset($FUNCTION_SIGNATURES[$class])) && ($FUNCTION_SIGNATURES != []) && (strpos($function_guard, ',' . $class . ',') === false)) {
                 if ((($GLOBALS['OK_EXTRA_FUNCTIONS'] === null) || (preg_match('#^' . $GLOBALS['OK_EXTRA_FUNCTIONS'] . '#', $class) == 0))) {
                     if (!isset($GLOBALS['KNOWN_EXTRA_CLASSES'][$class]) && $class != '') {
@@ -1390,10 +1112,12 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 check_call(['CALL_METHOD', '__construct', $inner[2]], $c_pos, $inner[1], $function_guard);
             }
             return 'object-' . $inner[1];
+
         case 'CLONE_OBJECT':
             // $a = clone $b will make a shallow copy of the object $, so we just
             // return $b's type
             return check_expression($inner[1], false, false, '');
+
         case 'CREATE_ARRAY':
             foreach ($inner[1] as $param) {
                 check_expression($param[0], false, false, $function_guard);
@@ -1402,21 +1126,27 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
                 }
             }
             return 'array';
+
         case 'ASSIGNMENT':
             check_assignment($inner, $c_pos, $function_guard);
             break;
+
         case 'PRE_DEC':
             ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
             break;
+
         case 'PRE_INC':
             ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
             break;
+
         case 'DEC':
             ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only decrement numbers');
             break;
+
         case 'INC':
             ensure_type(['integer', 'float'], check_variable($inner[1], false, $function_guard), $c_pos, 'Can only increment numbers');
             break;
+
         case 'VARIABLE':
             return check_variable($inner, true, $function_guard);
     }
@@ -1430,6 +1160,8 @@ function check_variable($variable, $reference = false, $function_guard = '')
     if ($identifier === null) {
         return null;
     }
+
+    $c_pos = $variable[count($variable) - 1];
 
     if (!is_array($identifier)) {
         global $LOCAL_VARIABLES;
@@ -1452,6 +1184,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
     }
 
     $next = $variable[2];
+    $depth = 0;
     while ($next != []) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
         /*if ($next[0] == 'CHAR_OF_STRING') {    Deprecated syntax
             check_expression($next[1]);
@@ -1496,7 +1229,17 @@ function check_variable($variable, $reference = false, $function_guard = '')
 
             ensure_type(['object', 'resource'], $type, $variable[3], 'Variable must be an object due to dereferencing');
             if (($next[2] != []) && ($next[2][0] == 'CALL_METHOD')) {
-                $type = actual_check_method($type/*class*/, $next[1][1]/*method*/, $next[2][2]/*params*/, $next[3]/*line number*/, $function_guard);
+                if ($depth == 0) {
+                    // Convert the complex variable chaining syntax into a simpler method call that we can check
+                    $method_call_command = $next[2];
+                    $method_call_command[1] = $variable; // Replace what is 'null' with main variable
+                    $method_call_command[1][2][2] = []; // Remove chaining commands that were attached to variable
+                    unset($method_call_command[5]); // Further chaining not relevant
+
+                    $type = check_method_call($method_call_command, $c_pos, $function_guard);
+                } else {
+                    $type = actual_check_method($type/*class*/, $next[1][1]/*method*/, $next[2][2]/*params*/, $next[3]/*line number*/, $function_guard);
+                }
                 $next = $next[2][5];
             } else {
                 $type = 'mixed';
@@ -1505,9 +1248,538 @@ function check_variable($variable, $reference = false, $function_guard = '')
         } else {
             $next = [];
         }
+
+        $depth++;
     }
 
     return $type;
+}
+
+function check_method_call($c, $c_pos, $function_guard = '')
+{
+    global $LOCAL_VARIABLES, $FUNCTION_SIGNATURES;
+
+    // Check parameters
+    $params = $c[2];
+    foreach ($params as $e) {
+        check_expression($e[0], false, false, $function_guard);
+    }
+
+    // If we have a chance to actually know what the method is being called on...
+    if ($c[1] !== null) {
+        $is_static_call = ($c[1][0] == 'IDENTIFIER');
+
+        if (!$is_static_call) {
+            check_variable($c[1], false, $function_guard);
+        }
+
+        if (!$is_static_call) {
+            // Composr specific: Special rules for knowing the types of complex variables which we otherwise would not be able to get...
+
+            // $this->db
+            if (($c[1][1] == 'this') && ($c[1][2][1][1] == 'db') && ((!isset($c[1][2][2][0])) || ($c[1][2][2][0] != 'DEREFERENCE'))) {
+                $method = $c[1][2][2][1][1];
+                $class = 'DatabaseConnector';
+                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+            }
+
+            // $GLOBALS['?_DB']
+            if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && (substr($c[1][2][1][1][1], -3) == '_DB') && ((!isset($c[1][2][2][2][0])) || ($c[1][2][2][2][0] != 'DEREFERENCE'))) {
+                $method = $c[1][2][2][1][1];
+                $class = 'DatabaseConnector';
+                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+            }
+
+            // $GLOBALS['FORUM_DRIVER']
+            if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && ($c[1][2][1][1][1] == 'FORUM_DRIVER')) {
+                $method = $c[1][2][2][1][1];
+                $class = 'Forum_driver_base';
+                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+            }
+        }
+
+        // Standard...
+
+        if ((isset($c[1][2][0])) && ($c[1][2][0] == 'DEREFERENCE') && (empty($c[1][2][2]))) {
+            $method = $c[1][2][1][1]; // deep under 'DEREFERENCE' (which is being applied to 'IDENTIFIER')
+
+            if ($is_static_call) {
+                $class = $c[1][1];
+
+                check_method_call_scope($class, $method, $c_pos);
+
+                if (isset($FUNCTION_SIGNATURES[$class])) {
+                    if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
+                        log_warning('Calling ' . $method . ' as static on a ' . $FUNCTION_SIGNATURES[$class]['type'], $c_pos);
+                    }
+
+                    if ($FUNCTION_SIGNATURES[$class]['is_abstract']) {
+                        log_warning('Calling ' . $method . ' as static on an abstract class', $c_pos);
+                    }
+
+                    if (isset($FUNCTION_SIGNATURES[$class]['functions'][$method])) {
+                        if (!$FUNCTION_SIGNATURES[$class]['functions'][$method]['is_static']) {
+                            log_warning('Calling a non-static method (' . $method . ') as static', $c_pos);
+                        }
+                    }
+                }
+
+                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+            } else {
+                $object = $c[1][1];
+
+                add_variable_reference($object, $c_pos);
+
+                if (
+                    ((count($LOCAL_VARIABLES[$object]['types']) == 1) && ((substr($LOCAL_VARIABLES[$object]['types'][0], 0, 7) == 'object-') || ($LOCAL_VARIABLES[$object]['types'][0] == 'Tempcode')))
+                    ||
+                    (!empty($LOCAL_VARIABLES[$object]['object_type']))
+                ) {
+                    // We can detect the class
+                    if (isset($FUNCTION_SIGNATURES[$LOCAL_VARIABLES[$object]['object_type']])) {
+                        $class = $LOCAL_VARIABLES[$object]['object_type'];
+                    } elseif ($LOCAL_VARIABLES[$object]['types'][0] == 'Tempcode') {
+                        $class = 'Tempcode';
+                    } else {
+                        $class = $LOCAL_VARIABLES[$object]['types'][0]; // check_call will strip "object-" off
+                    }
+
+                    check_method_call_scope($class, $method, $c_pos);
+
+                    return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+                }
+            }
+
+            // We have no idea!
+            return 'mixed';
+        }
+
+        scan_extractive_expressions($c[1][2]);
+    }
+
+    // We have no idea at all!
+    return 'mixed';
+}
+
+function check_method_call_scope($class, $method, $c_pos)
+{
+    global $FUNCTION_SIGNATURES, $CURRENT_CLASS;
+
+    if (isset($FUNCTION_SIGNATURES[$class]['functions'][$method])) {
+        $visibility = $FUNCTION_SIGNATURES[$class]['functions'][$method]['visibility'];
+
+        if ($visibility == 'public') {
+            return;
+        }
+
+        if ($CURRENT_CLASS == '__global') {
+            log_warning('Calling a non-public method, ' . $method . ', from global scope', $c_pos);
+        } elseif ($class != $CURRENT_CLASS) {
+            if ($visibility == 'private') {
+                log_warning('Calling a private method, ' . $method . ', from a different class', $c_pos);
+            }
+
+            if ($visibility == 'protected') {
+                $inherits_from = find_inherits_from($CURRENT_CLASS);
+
+                if (!in_array($class, $inherits_from)) {
+                    log_warning('Calling a protected method, ' . $method . ', from a different class that is not inheriting', $c_pos);
+                }
+            }
+        }
+    }
+}
+
+function actual_check_method($class, $method, $params, $c_pos, $function_guard = '')
+{
+    // This just wraps check_call, with $class being passed so check_call can do proper verification
+    return check_call(['CALL_DIRECT', $method, $params], $c_pos, $class, $function_guard);
+}
+
+function check_call($c, $c_pos, $class = null, $function_guard = '')
+{
+    global $CURRENT_CLASS;
+    if ($class === null) {
+        $class = '__global';
+    }
+    $class = preg_replace('#^(\?|~|object-)*#', '', $class);
+
+    $function = $c[1];
+    $_function = ($class == '__global') ? $function : ($class . '.' . $function);
+
+    $params = $c[2];
+
+    // Special checks based on metadata about certain functions
+    if ((!empty($GLOBALS['FLAG__PEDANTIC'])) && (array_key_exists(3, $c)) && (!$c[3])) {
+        global $VAR_ERROR_FUNCS, $ERROR_FUNCS;
+        if (((isset($VAR_ERROR_FUNCS[$c[1]])) && (@$params[1][0][0] == 'VARIABLE')) || (isset($ERROR_FUNCS[$c[1]]))) {
+            log_warning('Check this call is error-caught', $c_pos);
+        }
+    }
+    if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
+        global $EXT_FUNCS;
+        if (isset($EXT_FUNCS[$function])) {
+            log_warning('Check for function_exists usage around ' . $function, $c_pos);
+        }
+    }
+    if (!empty($GLOBALS['FLAG__SECURITY'])) {
+        global $INSECURE_FUNCTIONS;
+        if (in_array($_function, $INSECURE_FUNCTIONS)) {
+            log_warning('Call to insecure function (' . $_function . ')', $c_pos);
+        }
+    }
+
+    global $FUNCTION_SIGNATURES, $OK_EXTRA_FUNCTIONS, $KNOWN_EXTRA_FUNCTIONS, $KNOWN_EXTRA_CLASSES, $TABLE_FIELDS, $STRUCTURE, $TABLE_FIELDS;
+    $ret = null;
+    $found = false;
+
+    // Composr specific: Special checks for database calls
+    if ($class == 'DatabaseConnector') {
+        if ((count($params) >= 2) && ($params[0][0][0] == 'LITERAL')) {
+            $table = $params[0][0][1][1];
+            if (in_array($function, ['query_insert'])) {
+                $map = check_db_map($table, $params[1][0], $c_pos, true);
+            } elseif (in_array($function, ['query_update', 'query_insert_or_replace'])) {
+                check_db_map($table, $params[1][0], $c_pos);
+                if (isset($params[2][0])) {
+                    check_db_map($table, $params[2][0], $c_pos);
+                }
+            } elseif (in_array($function, ['query_select'])) {
+                check_db_map($table, $params[2][0], $c_pos);
+                if (isset($params[3][0])) {
+                    check_db_map($table, $params[3][0], $c_pos);
+                }
+            } elseif (in_array($function, ['query_select_value', 'query_select_value_if_there'])) {
+                check_db_field($table, $params[1][0], $c_pos);
+                if (isset($params[2][0])) {
+                    check_db_map($table, $params[2][0], $c_pos);
+                }
+            }
+        }
+    }
+
+    // Check for call-by-reference
+    foreach ($params as $param) {
+        if ($param[0][0] == 'VARIABLE_REFERENCE') {
+            log_warning('Call by reference to function \'' . $function . '\'', $c_pos);
+        }
+    }
+
+    // See if we have a signature for the function being called
+    if (isset($FUNCTION_SIGNATURES[$class]['functions'][$function])) {
+        $potential = $FUNCTION_SIGNATURES[$class]['functions'][$function];
+    } else {
+        // Search superclasses and interfaces
+        $potential = null;
+        if (isset($FUNCTION_SIGNATURES[$class])) {
+            $inherits_from = find_inherits_from($class);
+            foreach ($inherits_from as $_inherits_from) {
+                if (isset($FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function])) {
+                    $potential = $FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function];
+                    break;
+                }
+            }
+        }
+    }
+    if (($potential === null) && ($class == 'Forum_driver_base')) {
+        // Composr specific: Special checks for Forum_driver_cns (normative), which may be detected as Forum_driver_base
+        $class = 'Forum_driver_cns';
+        if (isset($FUNCTION_SIGNATURES[$class]['functions'][$function])) {
+            $potential = $FUNCTION_SIGNATURES[$class]['functions'][$function];
+        } else {
+            $potential = null;
+        }
+    }
+
+    // Check function being called using its signature
+    if ($potential !== null) {
+        $found = true;
+
+        if (isset($potential['return'])) {
+            $ret = $potential['return'];
+        }
+
+        foreach ($potential['parameters'] as $i => $param) {
+            if ((!isset($params[$i])) && ((empty($params)) || (!$params[count($params) - 1][1]/*not a vadiadic call*/)) && (!$param['is_variadic']/*not variadic parameter spot*/) && (!array_key_exists('default', $param))) {
+                log_warning('Insufficient parameters to function \'' . $function . '\'', $c_pos);
+                break;
+            }
+            if (isset($params[$i])) {
+                $temp = $params[$i][0];
+
+                // Can't pass references
+                if (($temp[0] == 'SOLO') && (is_array($temp[1])) && ($temp[1][0] == 'VARIABLE_REFERENCE')) {
+                    log_warning('Reference parameter passed to function \'' . $function . '\'', $c_pos);
+                    break;
+                }
+
+                // If it is a referenced parameter then we must pass a variable expression not a general expression
+                if ((@$param['ref']) && ($temp[0] != 'VARIABLE')) {
+                    log_warning('A referenced parameter for \'' . $function . '\' was given a non-variable expression', $c_pos);
+                    break;
+                }
+
+                $t = check_expression($temp, false, false, $function_guard);
+                $passes = ensure_type([$param['type']], $t, $c_pos, 'Parameter type error for ' . $function . '/' . ($i + 1) . ' (should be ' . $param['type'] . ' not ' . $t . ')');
+                if (($t === 'float') && ($function === 'strval')) {
+                    log_warning('Floats should not be used with strval, use float_to_raw_string or float_format', $c_pos);
+                }
+                if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
+                    if (($t === 'mixed') && ($function === 'count') && (strpos($c[2][0][1], 'rows') === false)) {
+                        log_warning('Make sure that count parameter is definitely counting an array', $c_pos);
+                    }
+                }
+                if ($passes) {
+                    infer_expression_type_to_variable_type($param['type'], $temp);
+                }
+            } else {
+                break;
+            }
+        }
+        if ((count($potential['parameters']) < count($params)) && ((empty($potential['parameters'])) || (!$potential['parameters'][count($potential['parameters']) - 1]['is_variadic']/*not a variadic function*/))) {
+            log_warning('Too many parameters to function \'' . $function . '\'', $c_pos);
+        }
+
+        // Look for file-creators, and give notice that chmoding might be required to allow it to be deleted via FTP
+        if (in_array('creates-file', $potential['flags'])) {
+            if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
+                if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['w', 'a']))) {
+                    log_warning('Call to \'' . $function . '\' that may create a file/folder. Check that the code chmods it so that FTP can delete it.', $c_pos);
+                }
+            }
+
+            if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], ['t']))) {
+                log_warning('Call to \'' . $function . '\' uses a text flag. This creates platform-dependent text files, which we do not want.', $c_pos);
+            }
+        }
+    }
+
+    // Check for some known problem patterns
+    if (($function == 'isset') && (@$params[0][0][0] != 'VARIABLE')) {
+        log_warning('Can only pass variables to ' . $function, $c_pos);
+    }
+    if (($function == 'tempnam') && (@$params[0][0][0] == 'LITERAL') && (substr(@$params[0][0][1][1], 0, 4) == '/tmp')) {
+        log_warning('Don\'t assume you can write to the shared temp directory', $c_pos);
+    }
+    if (($function == 'strpos') && (@$params[0][0][0] == 'LITERAL') && (@$params[1][0][0] != 'LITERAL')) {
+        log_warning('Looks like strpos parameters are the wrong way around; you fell for a common API anomaly: unlike most functions like in_array, strpos is haystack followed by needle', $c_pos);
+    }
+    if ((($function == 'sprintf') || ($function == 'printf')) && (@$params[0][0][0] == 'LITERAL')) {
+        $matches = [];
+        $num_matches = preg_match_all('#\%[+-]?.?-?\d*(\.\d+)?(\$[bcdefuFodsxX])?#', $params[0][0][1][1], $matches);
+        if ($num_matches + 1 != count($params)) {
+            log_warning('Looks like the wrong number of parameters were sent to this [s]printf function, got ' . integer_format(count($params)) . ', expected, ' . integer_format($num_matches + 1), $c_pos);
+        }
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'tempname')) {
+        log_warning('Make sure temporary files are deleted', $c_pos);
+    }
+    //if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'fopen')) log_warning('Make sure opened files are closed', $c_pos);  Not going to actually cause problems, as PHP'll close it when the script finishes
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'define') && (@strtoupper($params[0][0][1]) != $params[0][0][1])) {
+        log_warning('Constants should be upper case', $c_pos);
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'unlink')) {
+        log_warning('Be very careful that shared URLs cannot be deleted (check upload dir, and staff access)', $c_pos);
+    }
+
+    // Composr specific: Check for some known problem patterns
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'get_username') && (@$params[0][0][1] != 'get_member')) {
+        log_warning('Make sure guests/deleted-members are handled properly', $c_pos);
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'get_url')) {
+        log_warning('Make sure that deleting the entry for this file/URL deletes the disk file', $c_pos);
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (in_array($function, ['query_insert', 'insert_lang', 'insert_lang_comcode']))) {
+        log_warning('Make sure that deleting the entry (or uninstalling) for this row deletes the row (if applicable)', $c_pos);
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'query_delete') && (!array_key_exists(2, $params))) {
+        log_warning('Check that non-singular modification is wanted for this query', $c_pos);
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && ($function == 'query_update') && (!array_key_exists(3, $params))) {
+        log_warning('Check that non-singular modification is wanted for this query', $c_pos);
+    }
+    if (($function == 'implode' || $function == 'explode')) {
+        if ($params[0][0][0] != 'LITERAL' && $params[1][0][0] == 'LITERAL') {
+            log_warning('You have almost certainly got the ' . $function . ' parameters the wrong way around', $c_pos);
+        }
+    }
+    if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && (in_array($function, ['query_update', 'query_delete']))) {
+        log_warning('Check log_it/cat-entry-handling/delete_lang', $c_pos);
+    }
+    //if ((!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) && (!empty($GLOBALS['FLAG__PEDANTIC'])) && ($function == 'query_select')) log_warning('Check that non-singular select is wanted for this query', $c_pos);  This is REALLY pedantic ;) I'm sure MySQL is clever enough to see that only one row can match against a key
+
+    if ($found) {
+        // If we know the return type
+        if ($ret !== null) {
+            return $ret['type'];
+        }
+        return null;
+    }
+
+    // Unknown function...
+
+    if ((isset($FUNCTION_SIGNATURES['__global'])) && (empty($FUNCTION_SIGNATURES['__global']['functions']))) {
+        // If we found no signature as we have no signatures, say so (but only once!)
+        static $warned_missing_api_once = false;
+        if (!$warned_missing_api_once) {
+            log_warning('No API function metabase available', $c_pos);
+        }
+        $warned_missing_api_once = true;
+    } elseif (!empty($GLOBALS['FLAG__API'])) {
+        // Unknown function, so say so...
+
+        if (
+            (
+                ($OK_EXTRA_FUNCTIONS === null) ||
+                (
+                    (preg_match('#^(' . $OK_EXTRA_FUNCTIONS . ')#', $function) == 0) &&
+                    (($class === null) || (isset($FUNCTION_SIGNATURES[$class])) || (preg_match('#^(' . $OK_EXTRA_FUNCTIONS . ')#', $class) == 0))
+                )
+            )
+            &&
+            (strpos($function_guard, ',' . $function . ',') === false)
+            &&
+            (!isset($KNOWN_EXTRA_FUNCTIONS[$function]))
+            &&
+            (
+                ($class === null)
+                ||
+                (
+                    (strpos($function_guard, ',' . $class . ',') === false) &&
+                    (!in_array($class, ['mixed', '?mixed', 'object', '?object', ''/*Dynamic*/])) &&
+                    (!isset($KNOWN_EXTRA_CLASSES[$class]))
+                )
+            )
+        ) {
+            if (($class === null) || ($class == '__global')) {
+                if ($function != '' && $function != 'ocp_mark_as_escaped' && $function != 'ocp_is_escaped'/*These aren't checked with function_exists, checked with a global, for performance reasons*/) {
+                    log_warning('Could not find function \'' . $function . '\'', $c_pos);
+                }
+            } else {
+                if (!isset($FUNCTION_SIGNATURES[$class])) {
+                    if (in_array($class, ['integer', 'float', 'string', 'boolean', 'boolean-false', 'null'])) {
+                        log_warning('Mixing variable type', $c_pos);
+                    } else {
+                        log_warning('Could not find class \'' . $class . '\'', $c_pos);
+                    }
+                } else {
+                    //@var_dump($FUNCTION_SIGNATURES[$class]['functions']);exit(); Useful for debugging
+                    log_warning('Could not find method \'' . $class . '->' . $function . '\'', $c_pos);
+                }
+            }
+        }
+    }
+
+    foreach ($params as $param) {
+        check_expression($param[0], false, false, $function_guard);
+    }
+
+    return 'mixed';
+}
+
+function check_db_map($table, $expr_map, $c_pos, $must_be_complete = false)
+{
+    global $TABLE_FIELDS;
+
+    $map = [];
+    $arr_count = 0;
+    if ($expr_map[0] == 'CREATE_ARRAY') {
+        foreach ($expr_map[1] as $passing) {
+            if (count($passing) == 1) {
+                log_warning('Map required, list given', $c_pos);
+            } else {
+                if ($passing[0][0] == 'LITERAL') {
+                    $type = check_expression($passing[1]);
+                    if ($type == 'array') {
+                        $arr_count++;
+                    }
+                    $map[$passing[0][1][1]] = $type;
+                }
+            }
+        }
+    }
+    if ($arr_count == count($map)) {
+        if ((!isset($TABLE_FIELDS[$table])) && ($TABLE_FIELDS !== null)) {
+            if ((strpos($table, ' ') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
+                log_warning('Unknown table referenced (' . $table . ')', $c_pos);
+            }
+        }
+    } else {
+        foreach ($map as $field => $type) {
+            _check_db_field($table, $field, $c_pos, $type);
+        }
+    }
+    if (($must_be_complete) && (isset($TABLE_FIELDS[$table])) && ($TABLE_FIELDS !== null)) {
+        if ((isset($TABLE_FIELDS[$table]['fields']['id'])) && (strpos($TABLE_FIELDS[$table]['fields']['id'], 'AUTO') !== false)) {
+            $map['id'] = 'integer'; // Auto
+        }
+        $missing = implode(', ', array_diff(array_keys($TABLE_FIELDS[$table]['fields']), array_keys($map)));
+        if (($missing != '') && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
+            log_warning('Field map for ' . $table . ' table may be incomplete (unsure, but can\'t see: ' . $missing . ' )', $c_pos);
+        }
+    }
+    return $map;
+}
+
+function check_db_fields($table, $expr_map, $c_pos)
+{
+    if ($expr_map[0] == 'CREATE_ARRAY') {
+        foreach ($expr_map[1] as $passing) {
+            if (count($passing) == 2) {
+                log_warning('The selection array must be a list, not a map', $c_pos);
+            } else {
+                check_db_field($table, $passing[0], $c_pos);
+            }
+        }
+    }
+}
+
+function check_db_field($table, $expr_map, $c_pos)
+{
+    global $TABLE_FIELDS;
+
+    if (($expr_map[0] == 'LITERAL') && ($TABLE_FIELDS !== null)) {
+        _check_db_field($table, $expr_map[1][1], $c_pos);
+    }
+}
+
+function _check_db_field($table, $field, $c_pos, $type = null)
+{
+    global $TABLE_FIELDS;
+
+    if ($TABLE_FIELDS === null) {
+        return;
+    }
+
+    if (!isset($TABLE_FIELDS[$table])) {
+        if ((strpos($table, ' ') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
+            log_warning('Unknown table referenced (' . $table . ')', $c_pos);
+        }
+        return;
+    }
+
+    $field = str_replace('DISTINCT ', '', $field);
+    $field = preg_replace('# AS .*#', '', $field);
+    $field = preg_replace('#MAX\((.*)\)#', '${1}', $field);
+    $field = preg_replace('#MIN\((.*)\)#', '${1}', $field);
+    $field = preg_replace('#SUM\((.*)\)#', '${1}', $field);
+    if (strpos($field, '*') !== false) {
+        return;
+    }
+
+    if ((!isset($TABLE_FIELDS[$table]['fields'][$field])) && (strpos($field, '(') === false) && (!empty($GLOBALS['FLAG__MANUAL_CHECKS']))) {
+        log_warning('Unknown field (' . $field . ') referenced', $c_pos);
+        return;
+    }
+
+    if ($type !== null) {
+        if (isset($TABLE_FIELDS[$table]['fields'][$field])) {
+            $expected_type = str_replace('*', '', $TABLE_FIELDS[$table]['fields'][$field]);
+            if (!empty($GLOBALS['FLAG__MANUAL_CHECKS'])) {
+                ensure_type([$expected_type], $type, $c_pos, 'DB field ' . $field . ' should be ' . $expected_type . ', not ' . $type);
+            }
+        }
+    }
 }
 
 function scan_extractive_expressions($variable)
@@ -1633,7 +1905,7 @@ function reinitialise_local_variables($inside_class = false)
     ];
     if ($inside_class) {
         global $CURRENT_CLASS;
-        $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object'], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
+        $ret['this'] = ['is_global' => false, 'conditioner' => [], 'conditioned_zero' => false, 'conditioned_false' => false, 'conditioned_null' => false, 'types' => ['object-' . $CURRENT_CLASS], 'references' => 0, 'object_type' => $CURRENT_CLASS, 'unused_value' => false, 'first_mention' => 0, 'mixed_tag' => false];
     }
     return $ret;
 }

@@ -1281,13 +1281,12 @@ function running_script($is_this_running)
  *
  * @param  mixed $text The error message (string or Tempcode)
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function inform_exit($text, $support_match_key_messages = null)
 {
     require_code('failure'); // It's in failure.php although this isn't REALLY failure. Still it's an exceptional event so we can't justify loading the code as global.
     _generic_exit($text, 'INFORM_SCREEN', $support_match_key_messages);
-    return null;
 }
 
 /**
@@ -1297,7 +1296,7 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none)
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = null)
 {
@@ -1307,7 +1306,6 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }
-    return null;
 }
 
 /**
@@ -1317,13 +1315,12 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
  * @param  mixed $text The error message (string or Tempcode)
  * @param  boolean $log_error Whether to log the error
  * @param  integer $http_status HTTP status to set
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function fatal_exit($text, $log_error = true, $http_status = 500)
 {
     require_code('failure');
     _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
-    return null;
 }
 
 /**
@@ -1335,13 +1332,12 @@ function fatal_exit($text, $log_error = true, $http_status = 500)
  * @param  boolean $silent Whether to silently log the hack rather than also exiting
  * @param  boolean $instant_ban Whether a ban should be immediate
  * @param  integer $percentage_score The risk factor
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false, $percentage_score = 100)
 {
     require_code('failure');
     _log_hack_attack_and_exit($reason, $reason_param_a, $reason_param_b, $silent, $instant_ban, $percentage_score);
-    return null;
 }
 
 /**

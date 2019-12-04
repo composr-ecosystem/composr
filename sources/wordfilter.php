@@ -157,7 +157,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
  *
  * @param  ?ID_TEXT $name The name of the parameter this is coming from. Certain parameters are not checked, for reasons of efficiency (avoiding loading whole word check list if not needed) (null: don't know param, do not check to avoid)
  * @param  Tempcode $message Error message
- * @return mixed Never returns (i.e. exits)
+ * @exits
  */
 function warn_exit_wordfilter($name, $message)
 {
@@ -201,7 +201,6 @@ function warn_exit_wordfilter($name, $message)
     $echo->handle_symbol_preprocessing();
     $echo->evaluate_echo();
     exit();
-    return null;
 }
 
 /**

@@ -31,9 +31,9 @@ function init__php()
 /**
  * Get a complex API information structure from a PHP file. It assumes the file has reasonably properly layed out class and function whitespace.
  * The return structure is...
- *  list of classes
- * each entry is a map containing 'functions' (list of functions) and 'name'
- *  each functions entry is a map containing 'parameters' and 'name' and 'return'
+ *  list of classes/interfaces/traits
+ * each entry is a map containing 'functions' (list of functions) and 'name' and 'inherits_from' and 'type'
+ *  each functions entry is a map containing 'parameters' and 'name' and 'return' and 'flags' and 'is_static' and 'is_abstract' and 'visibility'
  *   each parameters entry is a map containing...
  *    name
  *    description
@@ -43,6 +43,7 @@ function init__php()
  *    set
  *    range
  *    ref
+ *    is_variadic
  *
  * @param  PATH $filename The PHP code module to get API information for
  * @param  boolean $include_code Whether to include function source code
@@ -55,6 +56,8 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
 
     $classes = [];
     $class_has_comments = [];
+
+    $meta_keywords_available = ['public', 'private', 'protected', 'static', 'abstract'];
 
     $make_alterations = false;
     if ((isset($_GET['allow_write'])) && ($_GET['allow_write'] == '1')) {
@@ -78,6 +81,9 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     $current_class = '__global';
     $current_class_level = 0;
     $functions = [];
+    $class_is_abstract = false;
+    $inherits_from = [];
+    $type = null;
     global $LINE;
     for ($i = 0; array_key_exists($i, $lines); $i++) {
         $line = $lines[$i];
@@ -89,31 +95,35 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
 
         // Sense class boundaries (hackerish: assumes whitespace laid out correctly)
         $ltrim = ltrim($line);
-        if (substr($ltrim, 0, 6) == 'class ' || substr($ltrim, 0, 15) == 'abstract class ') {
+        $matches = [];
+        if (preg_match('#^(abstract\s+)?(interface|class|trait)\s+(\w+)#', $ltrim, $matches) != 0) {
             if (!empty($functions)) {
-                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class];
+                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
             }
 
-            $ltrim2 = preg_replace('#^abstract #', '', $ltrim);
-
-            $space_pos = strpos($ltrim2, ' ');
-            $space_pos_2 = strpos($ltrim2, ' ', $space_pos + 1);
-            if ($space_pos_2 === false) {
-                $space_pos_2 = strpos($ltrim2, "\r", $space_pos + 1);
-            }
-            if ($space_pos_2 === false) {
-                $space_pos_2 = strpos($ltrim2, "\n", $space_pos + 1);
-            }
-            $current_class = substr($ltrim2, $space_pos + 1, $space_pos_2 - $space_pos - 1);
+            $current_class = $matches[3];
             $current_class_level = strlen($line) - strlen($ltrim);
             $functions = [];
+            $class_is_abstract = (strpos($matches[1], 'abstract') !== false);
+            $type = $matches[2];
+
+            $inherits_from = [];
+            $matches = [];
+            $num_matches = preg_match_all('# (implements|extends) ([\w\\\\]+)#', $ltrim, $matches);
+            for ($j = 0; $j < $num_matches; $j++) {
+                $inherits_from[] = $matches[2][$j];
+            }
         } elseif (($current_class != '__global') && (substr($line, 0, $current_class_level + 1) == str_repeat(' ', $current_class_level) . '}')) {
             if (!empty($functions)) {
-                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class];
+                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
             }
 
             $current_class = '__global';
             $functions = array_key_exists('__global', $classes) ? $classes['__global']['functions'] : [];
+            $class_is_abstract = false;
+            $type = null;
+
+            $inherits_from = [];
         }
 
         // Detect an API class or function
@@ -142,15 +152,38 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     // Parse function line
                     $_line = substr($line2, $depth + 9);
                     list($function_name, $parameters) = _read_php_function_line($_line);
+                    $is_static = null;
+                    $is_abstract = null;
+                    $visibility = null;
                     break;
                 }
 
                 // Method
                 $matches = [];
-                if (preg_match('#^' . $_depth . '((public|private|protected|static|abstract) )*function (.*)#', $line2, $matches) != 0) {
+                if (preg_match('#^' . $_depth . '(((' . implode('|', $meta_keywords_available) . ') )*)function (.*)#', $line2, $matches) != 0) {
                     // Parse function line
-                    $_line = $matches[3];
+                    $_line = $matches[4];
                     list($function_name, $parameters) = _read_php_function_line($_line);
+
+                    // Check meta properties for sanity
+                    foreach ($meta_keywords_available as $meta_keyword) {
+                        if (substr_count($matches[1], $meta_keyword) > 1) {
+                            attach_message($function_name . ' has repeated meta keywords', 'warn');
+                        }
+                    }
+                    if (substr_count($matches[1], 'public') + substr_count($matches[1], 'protected') + substr_count($matches[1], 'private') > 1) {
+                        attach_message($function_name . ' has multiple visibilities set', 'warn');
+                    }
+
+                    // Detect meta properties
+                    $is_static = (strpos($matches[1], 'static') !== false);
+                    $is_abstract = (strpos($matches[1], 'abstract') !== false);
+                    $visibility = 'public';
+                    if (strpos($matches[1], 'private') !== false) {
+                        $visibility = 'private';
+                    } elseif (strpos($matches[1], 'protected') !== false) {
+                        $visibility = 'protected';
+                    }
 
                     if ($current_class == '__global') {
                         attach_message($function_name . ' seems to be a method outside of a class', 'warn');
@@ -398,6 +431,9 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 'name' => $function_name,
                 'description' => $description,
                 'flags' => $flags,
+                'is_static' => $is_static,
+                'is_abstract' => $is_abstract,
+                'visibility' => $visibility,
             ];
             if ($include_code) {
                 $function['code'] = $code;
@@ -414,7 +450,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     // See if there are any functions with blank lines above them
     for ($i = 0; array_key_exists($i, $lines); $i++) {
         $line = ltrim($lines[$i]);
-        if ((preg_match('#^((public|private|protected|static|abstract) )*function (.*)#', $line) != 0) && ((trim($lines[$i - 1]) == '') || (trim($lines[$i - 1]) == '{'))) {
+        if ((preg_match('#^((' . implode('|', $meta_keywords_available) . ') )*function (.*)#', $line) != 0) && ((trim($lines[$i - 1]) == '') || (trim($lines[$i - 1]) == '{'))) {
             // Infer some parameters from the function line, given we have no PHPDoc
             if (substr($lines[$i], 0, 9) == 'function ') { // Only if not class level (i.e. global)
                 $function_name = preg_replace('#function\s+(\w+)\s*\(.*#s', '${1}', $line);
@@ -462,7 +498,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     }
 
     if (!empty($functions)) {
-        $classes[$current_class/*will be global*/] = ['functions' => $functions, 'name' => $current_class];
+        $classes[$current_class/*will be global*/] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
     }
 
     return $classes;

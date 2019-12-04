@@ -166,6 +166,7 @@ abstract class CMS_Spreadsheet_Writer
      *
      * @param  ?ID_TEXT $filename Filename we will be using (null: try and derive from $outfile_path, otherwise generate a .csv filename)
      * @param  boolean $is_tmp_file If the path we've been working with is a temporary file, and therefore needs to be deleted
+     * @exits
      */
     public function output_and_exit($filename, $is_tmp_file = false)
     {

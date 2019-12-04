@@ -375,8 +375,8 @@ function _sanitise_error_msg($text)
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @param  boolean $log_error Whether to log the error
  * @param  ?integer $http_status HTTP status to set (null: none, unless it's a missing resource error in which case 404)
- * @return mixed Never returns (i.e. exits)
  * @ignore
+ * @exits
  */
 function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null)
 {
@@ -575,8 +575,8 @@ function _inet_pton($ip)
  * @param  boolean $silent Whether to silently log the hack rather than also exiting
  * @param  boolean $instant_ban Whether a ban should be immediate
  * @param  integer $percentage_score The risk factor
- * @return mixed Never returns (i.e. exits)
  * @ignore
+ * @exits
  */
 function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_b = '', $silent = false, $instant_ban = false, $percentage_score = 100)
 {
@@ -753,7 +753,6 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
         fatal_exit(do_lang('HACK_ATTACK'));
     }
     warn_exit(do_lang_tempcode('HACK_ATTACK_USER'));
-    return null;
 }
 
 /**
