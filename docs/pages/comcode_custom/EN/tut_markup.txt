@@ -225,7 +225,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>This is automatically included in Composr's templates (content comments/reviews).</td>
 		</tr>
 		<tr>
-			<td>[url="http://microformats.org/wiki/rel-nofollow"]rel-nofollow[/url], [url="http://microformats.org/wiki/rel-enclosure"]rel-enclosure[/url], [url="http://microformats.org/wiki/rel-license"]rel-license[/url], [url="http://microformats.org/wiki/rel-tag"]rel-tag[/url]</td>
+			<td>[url="http://microformats.org/wiki/rel-nofollow"]rel-nofollow[/url], rel-noopener (and removing rel-opener), [url="http://microformats.org/wiki/rel-enclosure"]rel-enclosure[/url], [url="http://microformats.org/wiki/rel-license"]rel-license[/url], [url="http://microformats.org/wiki/rel-tag"]rel-tag[/url]</td>
 			<td>{$IS_MAINTAINED,standard_microformats,Standards for describing linking behaviour}.</td>
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
