@@ -104,7 +104,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>[url="CSP"]https://www.w3.org/TR/CSP3/[/url]</td>
 			<td>Extra security for web pages.</td>
-			<td>This imposes various constraints on how you can code, but no true limitations.</td>
+			<td>This imposes various constraints on how you can code, but no true limitations. Other similar micro standards we use: [tt]X-Content-Type-Options[/tt] and [tt]X-XSS-Protection[/tt].</td>
 		</tr>
 		<tr>
 			<td>[abbr="Scalable Vector Graphics"][url="http://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>
@@ -113,7 +113,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		</tr>
 		<tr>
 			<td>[url="https://developers.google.com/search/reference/robots_txt"]robots.txt[/url]</td>
-			<td>Robots exclusion standard. Google's version of the specification is the most accurate to what search engines now support.</td>
+			<td>Robots exclusion standard. Google's version of the specification is the most accurate to what search engines now support. We also use the [tt]X-Robots-Tag[/tt] header.</td>
 			<td>Knowing this may be important for [abbr="Search Engine Optimisation"]SEO[/abbr].</td>
 		</tr>
 		<tr>

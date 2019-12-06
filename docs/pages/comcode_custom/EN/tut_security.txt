@@ -422,6 +422,12 @@ If you are a programmer and want to customise the CSP rules in more detail, over
 
 A detailed technical writeup of the implementation is at the top of the [tt]sources/csp.php[/tt] file.
 
+[title="3"]Security headers you can implement manually[/title]
+
+There are some additional HTTP headers you can implement in your server configuration (outside the scope of Composr) if you consider it appropriate:
+ - [url="Strict-Transport-Security"]https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security[/url] (to block HTTP-access to your site)
+ - [url="Referrer-Policy"]https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy[/url] (to prevent any outgoing links relaying your URLs as a referrer)
+
 [title="2"]Anti-spam measures[/title]
 
 [surround]
