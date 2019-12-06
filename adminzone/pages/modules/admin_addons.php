@@ -1007,8 +1007,7 @@ class Module_admin_addons
                     $author = $details['author'];
                 }
             }
-        }
-        if ($is_lang) {
+        } elseif ($is_lang) {
             $lang = post_param_string('lang');
             $ini_file = get_custom_file_base() . '/lang_custom/langs.ini';
             if (!file_exists($ini_file)) {
@@ -1019,6 +1018,54 @@ class Module_admin_addons
                 if (array_key_exists($lang, $details)) {
                     $name = $details[$lang];
                     $description = $details[$lang];
+                }
+            }
+        } else {
+            // Get from existing addon_registry hook if selected
+            $files = array();
+            foreach ($_POST as $key => $val) {
+                if (preg_match('#^file_\d+$#', $key) != 0) {
+                    $files[] = $val;
+                }
+            }
+            sort($files);
+            foreach ($files as $file) {
+                if (preg_match('#^sources(_custom)?/hooks/systems/addon_registry/[^/]+\.php$#', $file) != 0) {
+                    if ($name != '') {
+                        attach_message('Multiple addon_registry hooks were selected - that is a bad idea.', 'warn');
+                    } else {
+                        attach_message('Defaults have been selected from the chosen addon_registry hook. If you change them the hook itself will not be changed, so it will become inconsistent - edit the hook instead and refresh.', 'warn');
+                    }
+
+                    $existing_addon_info = read_addon_info(basename($file, '.php'), false, null, null, $file);
+
+                    sort($existing_addon_info['files']);
+
+                    if ($existing_addon_info['files'] != $files) {
+                        if (count($files) == 1) {
+                            if (count($existing_addon_info['files']) > 1) {
+                                attach_message('You only selected the addon_registry hook - automatically selecting the ' . integer_format(count($existing_addon_info['files'])) . ' files referenced by that hook.', 'warn');
+
+                                foreach ($existing_addon_info['files'] as $i => $_file) {
+                                    if ($_file != $file) {
+                                        $hidden->attach(form_input_hidden('file_' . strval(10000000 + $i), $_file));
+                                    }
+                                }
+                            }
+                        } else {
+                            warn_exit('The selected files differ from those specified by the addon_registry hook.');
+                        }
+                    }
+
+                    $name = $existing_addon_info['name'];
+                    $author = $existing_addon_info['author'];
+                    $organisation = $existing_addon_info['organisation'];
+                    $description = $existing_addon_info['description'];
+                    $version = $existing_addon_info['version'];
+                    $copyright_attribution = $existing_addon_info['copyright_attribution'];
+                    $licence = $existing_addon_info['licence'];
+                    $dependencies = empty($existing_addon_info['dependencies']['requires']) ? '' : implode(',', $existing_addon_info['dependencies']['requires']);
+                    $incompatibilities = empty($existing_addon_info['dependencies']['conflicts_with']) ? '' : implode(',', $existing_addon_info['dependencies']['conflicts_with']);
                 }
             }
         }
