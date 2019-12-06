@@ -325,6 +325,9 @@ function load_csp($options = null, $enable_more_open_html_for = null)
         } else {
             header('Content-Security-Policy: ' . $header);
         }
+
+        // Also COOP
+        header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
     }
 }
 

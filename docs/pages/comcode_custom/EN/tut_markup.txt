@@ -104,7 +104,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>[url="CSP"]https://www.w3.org/TR/CSP3/[/url]</td>
 			<td>Extra security for web pages.</td>
-			<td>This imposes various constraints on how you can code, but no true limitations. Other similar micro standards we use: [tt]X-Content-Type-Options[/tt] and [tt]X-XSS-Protection[/tt].</td>
+			<td>This imposes various constraints on how you can code, but no true limitations. Other similar micro standards we use: [tt]X-Content-Type-Options[/tt] and [tt]X-XSS-Protection[/tt] and [tt]Cross-Origin-Opener-Policy[/tt].</td>
 		</tr>
 		<tr>
 			<td>[abbr="Scalable Vector Graphics"][url="http://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>
