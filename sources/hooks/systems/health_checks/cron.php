@@ -92,11 +92,15 @@ class Hook_health_check_cron extends Hook_Health_Check
         $threshold = intval(get_option('hc_cron_threshold'));
 
         if (($last_cron_started !== null) && ($last_cron_finished !== null)) {
+            // Completed cycle
             $time = intval($last_cron_finished) - intval($last_cron_started);
             $this->assertTrue($time < $threshold, 'The system scheduler is running slow @ ' . display_time_period($time) . ' to run');
-        } elseif (($last_cron_started !== null) && (intval($last_cron_started) < time() - 60 * $threshold) && ($last_cron_finished === null)) {
-            $this->assertTrue(false, 'The system scheduler has taken ' . display_time_period($time) . ' and not finished -- it is either running very slow, or it failed');
+        } elseif (($last_cron_started !== null) && ($last_cron_finished === null)) {
+            // Mid cycle
+            $time = time() - intval($last_cron_started);
+            $this->assertTrue($time < $threshold, 'The system scheduler has taken ' . display_time_period($time) . ' and not finished -- it is either running very slow, or it failed');
         } else {
+            // No cycle
             $this->stateCheckSkipped('The system scheduler never ran');
         }
     }

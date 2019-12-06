@@ -948,12 +948,12 @@ class Hook_import_vb3
      * @param  string $data The file data
      * @param  string $filename The optimal filename
      * @param  ID_TEXT $sections The upload type (e.g. cns_photos)
-     * @param  boolean $thumbnail Whether to create a thumbnail for it
+     * @param  boolean $generate_thumbnail Whether to create a thumbnail for it
      * @param  string $thumbnail_data Thumbnail data (blank: no thumbnail / generate one if asked)
      * @param  boolean $obfuscate Whether to obfuscate the file type
      * @return array A tuple containing the URL, and if requested, the thumbnail
      */
-    public function data_to_disk($data, $filename, $sections, $thumbnail = true, $thumbnail_data = '', $obfuscate = false)
+    public function data_to_disk($data, $filename, $sections, $generate_thumbnail = true, $thumbnail_data = '', $obfuscate = false)
     {
         if ($filename == '') {
             $filetype = '';
@@ -972,13 +972,15 @@ class Hook_import_vb3
         if ($filename != '') {
             require_code('files');
 
+            // Save main file
             list($path, $url) = find_unique_path('uploads/' . $sections, $filename . ($obfuscate ? '.bin' : ''));
             cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
+            // Save thumbnail
             if ($thumbnail_data == '') {
-                if ($thumbnail) {
-                    $t_filename = $filename;
-                    list($thumb_path) = find_unique_path('uploads/' . $sections . '_thumbs', $t_filename);
+                // Create from main file
+                if ($generate_thumbnail) {
+                    list($thumb_path) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);
                     require_code('images');
                     $thumb_url = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), false, null, true);
                     return [$url, $thumb_url];
@@ -986,6 +988,7 @@ class Hook_import_vb3
                     return [$url, ''];
                 }
             } else {
+                // Given directly, so save
                 list($path, $thumb_url) = find_unique_path('uploads/' . $sections . '_thumbs', $filename);
                 cms_file_put_contents_safe($path, $thumbnail_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 

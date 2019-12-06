@@ -1893,9 +1893,9 @@ abstract class Resource_fs_base
         }
 
         if (($GLOBALS['RESOURCE_FS_ADD_ONLY']) && ($filename !== null)) {
-            list(, $resource_id) = $this->file_convert_filename_to_id($filename);
-            if ($resource_id !== null) {
-                return $resource_id;
+            $resource_parts = $this->file_convert_filename_to_id($filename);
+            if ($resource_parts !== null) {
+                return $resource_parts[1];
             }
         }
 
@@ -1953,9 +1953,9 @@ abstract class Resource_fs_base
         }
 
         if (($GLOBALS['RESOURCE_FS_ADD_ONLY']) && ($filename !== null)) {
-            list(, $resource_id) = $this->folder_convert_filename_to_id($filename);
-            if ($resource_id !== null) {
-                return $resource_id;
+            $resource_parts = $this->folder_convert_filename_to_id($filename);
+            if ($resource_parts !== null) {
+                return $resource_parts[1];
             }
         }
 

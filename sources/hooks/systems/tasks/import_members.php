@@ -284,7 +284,7 @@ class Hook_task_import_members
                     $photo_thumb_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($linked_id, 'm_photo_url');
                 } else {
                     require_code('images');
-                    $photo_thumb_path = get_custom_file_base() . '/' . urldecode($photo_thumb_url);
+                    list($photo_thumb_path) = find_unique_path('uploads/cns_photos_thumbs');
                     $photo_thumb_url = convert_image($photo_url, $photo_thumb_path, null, null, intval(get_option('thumb_width')), false);
                 }
             } else {
