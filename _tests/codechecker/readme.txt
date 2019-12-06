@@ -201,15 +201,14 @@ Zend Studio's Code Analyzer (Problems):
  > (Buggy, but has some limited use)
 
 CodeLobster IDE's Code Validator:
- - IF and ELSEIF have same conditions (theoretically the prior IF might have changed the state)
  > (CodeLobster's Code Validator is very limited, not worth using)
 
 NetBeans Inspect (Source -> Inspect):
  > (Basic parsing only, unless 3rd party tools are configured)
 
 PHPStan:
- - Generics (Reason: We do not use them in Composr)
- - Property type and scope validation (Reason: We do not use many properties, and it would be very time consuming to implement)
+ - Generics (Reason: We do not use them in Composr, we are waiting until we can properly use union types and don't plan anything more complex)
+ - Property type and scope validation (Reason: We do not use many properties and we don't define their data types: it would be very time consuming to implement)
  - Always false instanceof (Reason: Very specific and unlikely)
  - Identifying unused return values (Reason: We'd have to flag which function return values are relevant, which would be a lot of overhead; instead we have a manual check for functions where there's a non-boolean/non-mixed return value that is not used)
  > PHPStan will not execute, as it makes assumptions about how autoloading/require's work, incompatible with Composr
@@ -223,6 +222,7 @@ Other tools, that are worth just mentioning for completeness:
  - PHP Insights (pedantic)
  - Phan (very strict type inference)
  - Psalm (very strict type inference)
+ - HHVM linting (no longer supports PHP)
 
 Relationship with Composr
 --------------------------

@@ -515,6 +515,8 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 if ($passes) {
                     infer_expression_type_to_variable_type('boolean', $c[1]);
                 }
+
+                // Work out function guards
                 $temp_function_guard = $function_guard;
                 foreach ([0, 1] as $function_parameter_pos) {
                     if (($c[1][0] == 'BOOLEAN_NOT') && ($c[1][1][0] == 'CALL_DIRECT') && ($c[1][1][1] == 'php_function_allowed' || strpos($c[1][1][1], '_exists') !== false) && (isset($c[1][1][2][$function_parameter_pos])) && ($c[1][1][2][$function_parameter_pos][0][0][0] == 'LITERAL') && ($c[1][1][2][$function_parameter_pos][1][0][0] == 'STRING') && (($c[2][0][0] == 'BREAK') || ($c[2][0][0] == 'CONTINUE') || ($c[2][0][0] == 'RETURN') || (($c[2][0][0] == 'CALL_DIRECT') && ($c[2][0][1] == 'critical_error')))) {
@@ -533,10 +535,34 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                         }
                     }
                 }
+
+                // Check for duplicated conditions
+                $if_elseif_expressions = [$c[1]];
+                $_c = $c;
+                while ($_c[0] == 'IF_ELSE') {
+                    if (count($_c[3]) == 1) { // A single command, meaning a directly chained if/elseif
+                        $_c = $_c[3][0];
+                        if (($_c[0] == 'IF') || ($_c[0] == 'IF_ELSE')) {
+                            $if_elseif_expressions[] = $_c[1];
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                foreach ($if_elseif_expressions as &$if_elseif_expression) {
+                    _nullify_final_integers($if_elseif_expression);
+                    $if_elseif_expression = serialize($if_elseif_expression);
+                }
+                if (count(array_unique($if_elseif_expressions)) < count($if_elseif_expressions)) {
+                    log_warning('Duplicate if/elseif condition(s) going deeper into if chain from here', $c_pos);
+                }
+
+                // Check commands
                 check_command($c[2], $depth, $temp_function_guard, $nogo_parameters, $jump_structures);
                 if ($c[0] == 'IF_ELSE') {
                     check_command($c[3], $depth, $function_guard, $nogo_parameters, $jump_structures);
                 }
+
                 break;
 
             case 'INNER_FUNCTION':
