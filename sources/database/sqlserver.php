@@ -187,7 +187,7 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      */
     public function db_start_transaction($db)
     {
-        sqlsrv_begin_transaction($db, false);
+        sqlsrv_begin_transaction($db);
     }
 
     /**
@@ -197,6 +197,6 @@ class Database_Static_sqlserver extends Database_super_sqlserver
      */
     public function db_end_transaction($db)
     {
-        sqlsrv_commit($db, true);
+        sqlsrv_commit($db);
     }
 }

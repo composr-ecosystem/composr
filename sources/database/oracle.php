@@ -472,7 +472,7 @@ class Database_Static_oracle
     {
         $this->apply_sql_limit_clause($query, $max, $start);
 
-        $stmt = ociparse($db, $query, 0);
+        $stmt = ociparse($db, $query);
         $results = @ociexecute($stmt);
         if ((($results === false) || (((strtoupper(substr(ltrim($query), 0, 7)) == 'SELECT ') || (strtoupper(substr(ltrim($query), 0, 8)) == '(SELECT ')) && ($results === true))) && (!$fail_ok)) {
             $err = ocierror($db);
