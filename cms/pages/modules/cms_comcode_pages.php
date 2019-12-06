@@ -632,7 +632,7 @@ class Module_cms_comcode_pages
             if (is_null($row['validated'])) {
                 $validated = do_lang_tempcode('YES');
             } else {
-                $validated = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('YES');
+                $validated = ($row['validated'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO');
             }
 
             $edit_link = build_url(array('page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $lang), '_SELF');
