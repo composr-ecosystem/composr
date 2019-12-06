@@ -1697,7 +1697,7 @@ HTML;
      *
      * @param  string $where Where clause for doing set query
      * @param  string $join Join clause for doing set query
-     * @param  Tempcode $category_name The actual title for the gallery we are using
+     * @param  string $category_name The actual title for the gallery we are using
      * @param  ?AUTO_LINK $current_id The ID of the current entry of the type we are browsing in the gallery we are using (null: assume first)
      * @param  ID_TEXT $root The root gallery (the gallery we are considering as an ad hoc root, to allow gallery splitting-up)
      * @param  ?ID_TEXT $current_type The current type being browsed (null: assume first)
@@ -1820,7 +1820,7 @@ HTML;
     /**
      * Show gallery navigation bits used when viewing images/videos.
      *
-     * @param  Tempcode $category_name The actual title for the gallery we are using
+     * @param  string $category_name The actual title for the gallery we are using
      * @param  string $where Where clause for doing set query
      * @param  string $join Join clause for doing set query
      * @param  AUTO_LINK $current_id The ID of the current entry of the type we are browsing in the gallery we are using

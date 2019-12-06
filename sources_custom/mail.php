@@ -18,7 +18,7 @@
 /**
  * E-mail dispatcher object. Handles the actual delivery of an e-mail over PHP's mail function.
  *
- * @package    core
+ * @package core
  */
 class Mail_dispatcher_override extends Mail_dispatcher_base
 {

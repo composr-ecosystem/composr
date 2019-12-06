@@ -27,7 +27,7 @@ For: php_oci8.dll
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_oracle extends DatabaseDriver
 {
@@ -194,34 +194,34 @@ class Database_Static_oracle extends DatabaseDriver
     /**
      * Get the rows returned from a SELECT query.
      *
-     * @param  resource $stmt The query result pointer
+     * @param  resource $results The query result pointer
      * @param  string $query The complete SQL query (useful for debugging)
      * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    public function get_query_rows($stmt, $query, $start)
+    protected function get_query_rows($results, $query, $start)
     {
         $out = [];
         $i = 0;
 
-        $num_fields = ocinumcols($stmt);
+        $num_fields = ocinumcols($results);
         $types = [];
         $names = [];
         for ($x = 1; $x <= $num_fields; $x++) {
-            $types[$x] = ocicolumntype($stmt, $x);
-            $names[$x] = strtolower(ocicolumnname($stmt, $x));
+            $types[$x] = ocicolumntype($results, $x);
+            $names[$x] = strtolower(ocicolumnname($results, $x));
         }
-        while (ocifetch($stmt)) {
+        while (ocifetch($results)) {
             if ($i >= $start) {
                 $newrow = [];
 
                 for ($j = 1; $j <= $num_fields; $j++) {
-                    $v = ociresult($stmt, $j);
+                    $v = ociresult($results, $j);
                     if (is_object($v)) {
                         $v = $v->load(); // For CLOB's
                     }
                     if ($v === false) {
-                        $this->failed_query_exit(do_lang_tempcode('QUERY_FAILED', ocierror($stmt)));
+                        $this->failed_query_exit(do_lang_tempcode('QUERY_FAILED', ocierror($results)));
                     }
 
                     $name = $names[$j];

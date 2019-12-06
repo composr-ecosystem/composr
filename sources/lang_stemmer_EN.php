@@ -21,7 +21,7 @@
  *
  * How easy is that?
  *
- * @package         core
+ * @package core
  */
 class Stemmer_EN
 {

@@ -129,6 +129,16 @@ class Module_cms_cns_groups extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a adding/editing form.
      *
      * @param  ?GROUP $id The usergroup being edited (null: adding, not editing, and let's choose the current member)
@@ -245,7 +255,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * Standard aed_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -256,13 +266,13 @@ class Module_cms_cns_groups extends Standard_crud_module
         $myrow = $rows[0];
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($myrow['g_group_leader'], false, USERNAME_DEFAULT_BLANK);
-        return $this->get_form_fields($id, get_translated_text($myrow['g_name'], $GLOBALS['FORUM_DB']), $username, $myrow['g_open_membership']);
+        return $this->get_form_fields(intval($id), get_translated_text($myrow['g_name'], $GLOBALS['FORUM_DB']), $username, $myrow['g_open_membership']);
     }
 
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -318,7 +328,7 @@ class Module_cms_cns_groups extends Standard_crud_module
             syndicate_described_activity('cns:ACTIVITY_ADD_CLUB', $name, '', '', '_SEARCH:groups:view:' . strval($id), '', '', 'cns_clubs');
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
@@ -356,7 +366,7 @@ class Module_cms_cns_groups extends Standard_crud_module
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return ?Tempcode Confirm message (null: continue)
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {

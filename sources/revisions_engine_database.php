@@ -20,6 +20,7 @@
 
 /**
  * Revisions via database.
+ *
  * @package actionlog
  */
 class RevisionEngineDatabase

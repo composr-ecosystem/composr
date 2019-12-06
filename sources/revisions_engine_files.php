@@ -27,6 +27,7 @@ RevisionsEngineDatabase and RevisionEngineFiles are not API-compatible but are d
 
 /**
  * Revisions via very simple file management.
+ *
  * @package actionlog
  */
 class RevisionEngineFiles

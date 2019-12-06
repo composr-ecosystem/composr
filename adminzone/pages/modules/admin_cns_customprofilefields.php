@@ -190,6 +190,16 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $name The name of the Custom Profile Field
@@ -216,7 +226,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * @param  LONG_TEXT $tempcode Whether it is required that every member have this field filled in
      * @param  ID_TEXT $autofill_type Autofill field name from https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-field
      * @param  ID_TEXT $autofill_hint Autofill hint: '' or 'shipping' or 'billing'
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($name = '', $description = '', $default = '', $public_view = 1, $owner_view = 1, $owner_set = 1, $encrypted = 0, $type = 'long_text', $required = 0, $show_on_join_form = 0, $show_in_posts = 0, $show_in_post_previews = 0, $order = null, $only_group = '', $locked = 0, $options = '', $include_in_main_search = 0, $allow_template_search = 0, $icon = '', $section = '', $tempcode = '', $autofill_type = '', $autofill_hint = '')
     {
@@ -429,7 +439,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         }
 
         // Load rows, according to pagination
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, null);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
 
         // Save sorting changes
         if ($standard_ordering) {
@@ -560,7 +570,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -574,8 +584,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         $description = get_translated_text($myrow['cf_description'], $GLOBALS['FORUM_DB']);
         $default = $myrow['cf_default'];
         require_code('encryption');
-        $encrypted = (($myrow['cf_encrypted'] == 1) && (is_encryption_enabled()));
-        $public_view = (($myrow['cf_public_view'] == 1) && (!$encrypted)) ? 1 : 0;
+        $encrypted = (($myrow['cf_encrypted'] == 1) && (is_encryption_enabled())) ? 1 : 0;
+        $public_view = (($myrow['cf_public_view'] == 1) && ($encrypted == 0)) ? 1 : 0;
         $owner_view = $myrow['cf_owner_view'];
         $owner_set = $myrow['cf_owner_set'];
         $type = $myrow['cf_type'];
@@ -607,7 +617,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -638,17 +648,19 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             post_param_string('autofill_type'),
             post_param_string('autofill_hint')
         );
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         $only_group = array_key_exists('only_group', $_POST) ? (is_array($_POST['only_group']) ? implode(',', $_POST['only_group']) : post_param_string('only_group')) : '';
+
         cns_edit_custom_field(
             intval($id),
             post_param_string('cpf_name'),
@@ -674,6 +686,8 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
             post_param_string('autofill_type'),
             post_param_string('autofill_hint')
         );
+
+        return null;
     }
 
     /**

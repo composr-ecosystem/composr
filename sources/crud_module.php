@@ -21,7 +21,7 @@
 /**
  * CRUD module (Create/Update/Delete), for operations on content types.
  *
- * @package        core
+ * @package core
  */
 abstract class Standard_crud_module
 {
@@ -58,8 +58,8 @@ abstract class Standard_crud_module
     protected $special_edit_frontend = false;
     protected $upload = null;
     protected $possibly_some_kind_of_upload = false;
-    protected $cat_crud_module = null; // Allows chaining of a secondary CRUD module on, to listen for cat CRUD (c)
-    protected $alt_crud_module = null; // Allows chaining of a secondary CRUD module on, to listen for some other CRUD (v)
+    protected $cat_crud_module = null; // Allows chaining of a secondary CRUD module on, to listen for cat CRUD
+    protected $alt_crud_module = null; // Allows chaining of a secondary CRUD module on, to listen for some other CRUD
     protected $content_type = null;
     protected $posting_form_title = null;
     protected $posting_form_text = '';
@@ -575,6 +575,39 @@ abstract class Standard_crud_module
     }
 
     /**
+     * Standard crud_module category getter.
+     *
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
+     */
+    public function get_cat($id)
+    {
+        return '';
+    }
+
+    /**
+     * Standard crud_module category getter.
+     *
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
+     */
+    public function get_cat_b($id)
+    {
+        return '';
+    }
+
+    /**
+     * Standard crud_module submitter getter.
+     *
+     * @param  ID_TEXT $id The entry for which the submitter is sought
+     * @return array The submitter, and the time of submission (null submission time implies no known submission time)
+     */
+    public function get_submitter($id)
+    {
+        return [null, null];
+    }
+
+    /**
      * Work out a screen type code.
      *
      * @param  string $type_code General-purpose screen type code (e.g. 'add')
@@ -640,7 +673,7 @@ abstract class Standard_crud_module
     }
 
     /**
-     * Set permissions of the news category from POST parameters.
+     * Set permissions of the category from POST parameters.
      *
      * @param  ID_TEXT $id The category to set permissions for
      */
@@ -650,83 +683,21 @@ abstract class Standard_crud_module
     }
 
     /**
-     * The do-next manager for after content management.
+     * Find whether this content type has a tied catalogue.
      *
-     * @param  Tempcode $title The title (output of get_screen_title)
-     * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
-     * @return Tempcode The UI
+     * @return boolean Whether it has
      */
-    public function do_next_manager($title, $description, $id = null)
+    public function has_tied_catalogue()
     {
-        $archive_url = null;
-        if ($this->archive_entry_point !== null) {
-            list($zone, $attributes,) = page_link_decode($this->archive_entry_point);
-            $page = $attributes['page'];
-            unset($attributes['page']);
-            $archive_url = [$page, $attributes, $zone, (!isset($this->archive_label)) ? null : do_lang_tempcode($this->archive_label)];
+        if ($this->content_type !== null) {
+            require_code('fields');
+            return has_tied_catalogue($this->content_type);
         }
-        $view_url = null;
-        if ($this->view_entry_point !== null) {
-            list($zone, $attributes,) = page_link_decode(str_replace('_ID', $id, $this->view_entry_point));
-            $page = $attributes['page'];
-            unset($attributes['page']);
-            $view_url = [$page, $attributes, $zone, (!isset($this->view_label)) ? null : $this->view_label];
-        }
-
-        require_code('templates_donext');
-        return do_next_manager(
-            $title,
-            $description,
-            [],
-            null,
-            /* TYPED-ORDERED LIST OF 'LINKS' */
-            $this->do_next_editing_categories ? null : ['_SELF', ['type' => $this->get_screen_type_for('add', $this->type_code)], '_SELF', ($this->add_one_label !== null) ? $this->add_one_label : null], // Add one
-            $this->do_next_editing_categories ? null : ((($id === null) || (($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name)))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id], '_SELF', ($this->edit_this_label !== null) ? $this->edit_this_label : null]), // Edit this
-            $this->do_next_editing_categories ? null : ((($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('edit', $this->type_code)], '_SELF', ($this->edit_one_label !== null) ? $this->edit_one_label : null]), // Edit one
-            $this->do_next_editing_categories ? null : (($id === null) ? null : $view_url), // View this
-            $archive_url, // View archive
-            (!$this->do_next_editing_categories) ? null : ['_SELF', ['type' => $this->get_screen_type_for('add', $this->type_code)], '_SELF', ($this->add_one_cat_label !== null) ? $this->add_one_cat_label : null], // Add one category
-            (!$this->do_next_editing_categories) ? null : ((($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('edit', $this->type_code)], '_SELF', ($this->edit_one_cat_label !== null) ? $this->edit_one_cat_label : null]), // Edit one category
-            (!$this->do_next_editing_categories) ? null : ((($id === null) || (($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name)))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id], '_SELF', ($this->edit_this_cat_label !== null) ? $this->edit_this_cat_label : null]), // Edit this category
-            (!$this->do_next_editing_categories) ? null : $view_url, // View this category
-            $this->extra_donext_entries,
-            $this->extra_donext_categories,
-            $this->extra_donext_whatever,
-            $this->extra_donext_whatever_title,
-            null,
-            $this->entries_title,
-            $this->categories_title,
-            $this->donext_entry_content_type,
-            $this->donext_category_content_type
-        );
+        return false;
     }
 
     /**
-     * If a confirmation is needed, and not been given, ask for one.
-     *
-     * @param  Tempcode $title The page title for what's being done
-     * @return ?Tempcode The confirmation UI (null: all is clear - no confirmation needed)
-     */
-    public function handle_confirmations($title)
-    {
-        if (!method_exists($this, 'get_preview')) {
-            return null;
-        }
-
-        if (get_param_integer('confirmed', 0) == 1) {
-            return null;
-        }
-
-        $preview = $this->get_preview();
-        $fields = build_keep_post_fields();
-        $url = get_self_url(false, false, ['confirmed' => 1]);
-
-        return do_template('CONFIRM_SCREEN', ['_GUID' => '802e21c2beb889385141bb2ed2f27976' . get_class($this), 'TITLE' => $title, 'PREVIEW' => $preview, 'URL' => $url, 'FIELDS' => $fields]);
-    }
-
-    /**
-     * Get some XHTML for a form to choose a catalogue out of all the available ones.
+     * Get a form to choose a catalogue out of all the available ones.
      *
      * @param  Tempcode $title The get_screen_title converted title for this page
      * @param  string $icon The icon to use
@@ -786,18 +757,22 @@ abstract class Standard_crud_module
     }
 
     /**
-     * Find whether this content type has a tied catalogue.
+     * If a confirmation (or some kind of interstitial screen) is needed, and not been given, ask for one.
      *
-     * @return boolean Whether it has
+     * @param  Tempcode $title The page title for what's being done
+     * @return ?Tempcode The confirmation UI (null: all is clear - no confirmation needed)
      */
-    public function has_tied_catalogue()
+    public function handle_confirmations($title)
     {
-        if ($this->content_type !== null) {
-            require_code('fields');
-            return has_tied_catalogue($this->content_type);
-        }
-        return false;
+        return null;
     }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    abstract public function get_form_fields_for_add();
 
     /**
      * Standard CRUD-module UI to add a resource.
@@ -845,7 +820,7 @@ abstract class Standard_crud_module
 
         url_default_parameters__enable();
 
-        $bits = $this->get_form_fields();
+        $bits = $this->get_form_fields_for_add();
         if (is_object($bits)) {
             return $bits;
         }
@@ -927,7 +902,7 @@ abstract class Standard_crud_module
         $submit_icon = ($this->type_code == 'category') ? 'admin/add_one_category' : 'admin/add';
 
         $cancel_url = build_url(['page' => '_SELF', 'clear_autosave' => 1], '_SELF');
-        if (get_param_string('type', 'add') == 'add_catalogue') {
+        if ((get_param_string('type', 'add') == 'add_catalogue') && (method_exists($this, 'get_field_fields'))) {
             require_javascript('catalogues');
 
             // New field
@@ -1030,17 +1005,11 @@ abstract class Standard_crud_module
             require_code('uploads');
         }
 
-        $temp = $this->add_actualisation();
+        list($id, $text) = $this->add_actualisation();
 
         $description = ($this->do_next_description === null) ? paragraph(do_lang_tempcode($this->success_message_str)) : $this->do_next_description;
-
-        if (is_array($temp)) {
-            list($id, $text) = $temp;
-            if ($text !== null) {
-                $description->attach($text);
-            }
-        } else {
-            $id = $temp;
+        if ($text !== null) {
+            $description->attach($text);
         }
 
         // Save custom fields
@@ -1059,9 +1028,9 @@ abstract class Standard_crud_module
 
                 $description->attach(paragraph(do_lang_tempcode('SUBMIT_UNVALIDATED', $this->content_type)));
             }
-            $submitter = get_member();
-            if (method_exists($this, 'get_submitter')) {
-                list($submitter,) = $this->get_submitter($id);
+            list($submitter) = $this->get_submitter($id);
+            if ($submitter === null) {
+                $submitter = get_member();
             }
             give_submit_points($this->doing, $submitter);
         }
@@ -1083,6 +1052,13 @@ abstract class Standard_crud_module
 
         return $this->do_next_manager($this->title, $description, $id);
     }
+
+    /**
+     * Standard crud_module add actualiser.
+     *
+     * @return array A pair: The entry added, description about usage
+     */
+    abstract public function add_actualisation();
 
     /**
      * Standard CRUD-module entry function to get rows for selection from.
@@ -1171,7 +1147,7 @@ abstract class Standard_crud_module
      */
     public function create_selection_list_entries()
     {
-        list($_entries,) = $this->get_entry_rows(false, null, null, false, '', intval(get_option('general_safety_listing_limit')));
+        list($_entries,) = $this->get_entry_rows(false, null, [], false, '', intval(get_option('general_safety_listing_limit')));
 
         $entries = new Tempcode();
         foreach ($_entries as $key => $row) {
@@ -1307,45 +1283,7 @@ abstract class Standard_crud_module
             require_code('templates_internalise_screen');
             return internalise_own_screen($tpl);
         } else {
-            $_entries = $this->create_selection_list_entries();
-
-            if (is_array($_entries)) {
-                if ($_entries[1] !== null) {
-                    $text = paragraph(do_lang_tempcode(
-                        'CHOOSE_EDIT_LIST_EXTRA',
-                        escape_html($_entries[1]->evaluate()),
-                        escape_html($_entries[2]->evaluate()),
-                        [
-                            static_evaluate_tempcode(do_template('ICON', [
-                                '_GUID' => 'd8a307b6bea2155fc3ca0b5c1a9e05fe',
-                                'NAME' => 'buttons/search',
-                                'ICON_SIZE' => '18',
-                                'ICON_CLASS' => 'vertical-alignment',
-                            ])),
-                            static_evaluate_tempcode(do_template('ICON', [
-                                '_GUID' => 'd533c97f02cc8030fb3c7602deb2870b',
-                                'NAME' => 'admin/view_archive',
-                                'ICON_SIZE' => '18',
-                                'ICON_CLASS' => 'vertical-alignment',
-                            ])),
-                        ]
-                    ));
-                } else {
-                    $text = paragraph(do_lang_tempcode(
-                        '_CHOOSE_EDIT_LIST_EXTRA',
-                        escape_html($_entries[2]->evaluate()),
-                        static_evaluate_tempcode(do_template('ICON', [
-                            '_GUID' => '8347dd2a738978fe0473c32fe90ef291',
-                            'NAME' => 'admin/view_archive',
-                            'ICON_SIZE' => '18',
-                            'ICON_CLASS' => 'vertical-alignment',
-                        ]))
-                    ));
-                }
-                $entries = $_entries[0];
-            } else {
-                $entries = $_entries;
-            }
+            $entries = $this->create_selection_list_entries();
 
             if ($entries->is_empty()) {
                 inform_exit(do_lang_tempcode(($this->type_code == '') ? 'NO_ENTRIES' : 'NO_CATEGORIES', $this->content_type));
@@ -1390,6 +1328,42 @@ abstract class Standard_crud_module
     }
 
     /**
+     * Standard crud_module edit form filler.
+     *
+     * @param  ID_TEXT $id The entry being edited
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    abstract public function fill_in_edit_form($id);
+
+    /**
+     * Standard crud_module delete possibility checker.
+     *
+     * @param  ID_TEXT $id The entry being potentially deleted
+     * @return boolean Whether it may be deleted
+     */
+    public function may_delete_this($id)
+    {
+        list($submitter, $timestamp) = $this->get_submitter($id);
+
+        $delete_permission = true;
+        if ($this->permissions_require !== null) {
+            $delete_permission = has_delete_permission(
+                $this->permissions_require,
+                get_member(),
+                $submitter,
+                ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name,
+                [
+                    $this->permissions_cat_require,
+                    ($this->permissions_cat_name === null) ? null : $this->get_cat($id),
+                    $this->permissions_cat_require_b,
+                    ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)
+                ]
+            );
+        }
+        return (($this->non_integer_id) || (intval($id) >= db_get_first_id() + $this->protect_first)) && ($delete_permission);
+    }
+
+    /**
      * Standard CRUD-module UI to edit a resource.
      *
      * @return Tempcode The UI
@@ -1422,12 +1396,7 @@ abstract class Standard_crud_module
         }
         $post_url = build_url($map, '_SELF');
 
-        if (method_exists($this, 'get_submitter')) {
-            list($submitter, $timestamp) = $this->get_submitter($id);
-        } else {
-            $submitter = null;
-            $timestamp = null;
-        }
+        list($submitter, $timestamp) = $this->get_submitter($id);
 
         if ($this->permissions_require !== null) {
             check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
@@ -1500,11 +1469,7 @@ abstract class Standard_crud_module
         }
 
         // Action fields / deletion options
-        $delete_permission = true;
-        if ($this->permissions_require !== null) {
-            $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)]);
-        }
-        $may_delete = (((!method_exists($this, 'may_delete_this')) || ($this->may_delete_this($id))) && ((!is_numeric($id)) || (intval($id) >= db_get_first_id() + $this->protect_first))) && ($delete_permission);
+        $may_delete = $this->may_delete_this($id);
 
         // Deletion options
         $action_fields = new Tempcode();
@@ -1555,7 +1520,7 @@ abstract class Standard_crud_module
             }
         }
 
-        if (get_param_string('type', '_edit') == '_edit_catalogue') {
+        if ((get_param_string('type', '_edit') == '_edit_catalogue') && (method_exists($this, 'get_field_fields'))) {
             require_javascript('catalogues');
 
             // Existing fields
@@ -1676,20 +1641,16 @@ abstract class Standard_crud_module
             return $this->preview_intercept($this->title);
         }
 
-        if (method_exists($this, 'get_submitter')) {
-            list($submitter, $timestamp) = $this->get_submitter($id);
-            if (($timestamp !== null) && (addon_installed('points'))) {
-                $reverse = post_param_integer('reverse_point_transaction', 0);
-                if ($reverse == 1) {
-                    $points_test = $GLOBALS['SITE_DB']->query_select('gifts', ['id'], ['date_and_time' => $timestamp, 'gift_to' => $submitter, 'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
-                    if (array_key_exists(0, $points_test)) {
-                        require_code('points2');
-                        reverse_point_gift_transaction($points_test[0]['id']);
-                    }
+        list($submitter, $timestamp) = $this->get_submitter($id);
+        if (($timestamp !== null) && (addon_installed('points'))) {
+            $reverse = post_param_integer('reverse_point_transaction', 0);
+            if ($reverse == 1) {
+                $points_test = $GLOBALS['SITE_DB']->query_select('gifts', ['id'], ['date_and_time' => $timestamp, 'gift_to' => $submitter, 'gift_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
+                if (array_key_exists(0, $points_test)) {
+                    require_code('points2');
+                    reverse_point_gift_transaction($points_test[0]['id']);
                 }
             }
-        } else {
-            $submitter = null;
         }
 
         $delete = post_param_integer('delete', 0);
@@ -1789,6 +1750,21 @@ abstract class Standard_crud_module
     }
 
     /**
+     * Standard crud_module edit actualiser.
+     *
+     * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
+     */
+    abstract public function edit_actualisation($id);
+
+    /**
+     * Standard crud_module delete actualiser.
+     *
+     * @param  ID_TEXT $id The entry being deleted
+     */
+    abstract public function delete_actualisation($id);
+
+    /**
      * Mass delete some entries/categories.
      *
      * @param  boolean $top_level Whether this is a top level mass delete op (i.e. not a recursion)
@@ -1804,11 +1780,7 @@ abstract class Standard_crud_module
                     $id = $matches[1];
 
                     if ($this->permissions_require !== null) {
-                        if (method_exists($this, 'get_submitter')) {
-                            list($submitter, $timestamp) = $this->get_submitter($id);
-                        } else {
-                            $submitter = null;
-                        }
+                        list($submitter, $timestamp) = $this->get_submitter($id);
                         check_delete_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat($id), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)], $this->privilege_page_name);
                     }
 
@@ -1849,5 +1821,58 @@ abstract class Standard_crud_module
 
         // Not top level
         return null;
+    }
+
+    /**
+     * The do-next manager for after content management.
+     *
+     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  Tempcode $description Some description to show, saying what happened
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
+     * @return Tempcode The UI
+     */
+    public function do_next_manager($title, $description, $id = null)
+    {
+        $archive_url = null;
+        if ($this->archive_entry_point !== null) {
+            list($zone, $attributes,) = page_link_decode($this->archive_entry_point);
+            $page = $attributes['page'];
+            unset($attributes['page']);
+            $archive_url = [$page, $attributes, $zone, (!isset($this->archive_label)) ? null : do_lang_tempcode($this->archive_label)];
+        }
+        $view_url = null;
+        if ($this->view_entry_point !== null) {
+            list($zone, $attributes,) = page_link_decode(str_replace('_ID', $id, $this->view_entry_point));
+            $page = $attributes['page'];
+            unset($attributes['page']);
+            $view_url = [$page, $attributes, $zone, (!isset($this->view_label)) ? null : $this->view_label];
+        }
+
+        require_code('templates_donext');
+        return do_next_manager(
+            $title,
+            $description,
+            [],
+            null,
+            /* TYPED-ORDERED LIST OF 'LINKS' */
+            $this->do_next_editing_categories ? null : ['_SELF', ['type' => $this->get_screen_type_for('add', $this->type_code)], '_SELF', ($this->add_one_label !== null) ? $this->add_one_label : null], // Add one
+            $this->do_next_editing_categories ? null : ((($id === null) || (($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name)))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id], '_SELF', ($this->edit_this_label !== null) ? $this->edit_this_label : null]), // Edit this
+            $this->do_next_editing_categories ? null : ((($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('edit', $this->type_code)], '_SELF', ($this->edit_one_label !== null) ? $this->edit_one_label : null]), // Edit one
+            $this->do_next_editing_categories ? null : (($id === null) ? null : $view_url), // View this
+            $archive_url, // View archive
+            (!$this->do_next_editing_categories) ? null : ['_SELF', ['type' => $this->get_screen_type_for('add', $this->type_code)], '_SELF', ($this->add_one_cat_label !== null) ? $this->add_one_cat_label : null], // Add one category
+            (!$this->do_next_editing_categories) ? null : ((($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('edit', $this->type_code)], '_SELF', ($this->edit_one_cat_label !== null) ? $this->edit_one_cat_label : null]), // Edit one category
+            (!$this->do_next_editing_categories) ? null : ((($id === null) || (($this->permissions_require !== null) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name)))) ? null : ['_SELF', ['type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id], '_SELF', ($this->edit_this_cat_label !== null) ? $this->edit_this_cat_label : null]), // Edit this category
+            (!$this->do_next_editing_categories) ? null : $view_url, // View this category
+            $this->extra_donext_entries,
+            $this->extra_donext_categories,
+            $this->extra_donext_whatever,
+            $this->extra_donext_whatever_title,
+            null,
+            $this->entries_title,
+            $this->categories_title,
+            $this->donext_entry_content_type,
+            $this->donext_category_content_type
+        );
     }
 }

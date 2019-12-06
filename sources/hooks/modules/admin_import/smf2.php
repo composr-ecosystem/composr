@@ -1464,8 +1464,8 @@ class Hook_import_smf2
     /**
      * Used to build privilege permission access to Forums.
      *
-     * @param  string $gid Group ID to map
-     * @param  string $pid Profile ID to map
+     * @param  integer $gid group ID to map
+     * @param  integer $pid profile ID to map
      * @param  integer $v Value to map
      * @param  boolean $r Whether to return the map or not
      * @return array The mapped Groups and Profile with highest privilege calculated
@@ -1506,8 +1506,8 @@ class Hook_import_smf2
     /**
      * Used to set view access to Forums.
      *
-     * @param  integer $gid The Group ID to set
-     * @param  string $fid The Forum ID to set
+     * @param  integer $gid The group ID to set
+     * @param  integer $fid The forum ID to set
      */
     public function set_forum_view_access($gid, $fid)
     {
@@ -1530,7 +1530,7 @@ class Hook_import_smf2
      * Used to set permissions for Forums.
      *
      * @param  array $arr The static array map built from static_perm_arr
-     * @param  integer $forum_id The Forum ID to set
+     * @param  integer $forum_id The forum ID to set
      */
     public function sort_set_forum_perms_array($arr, $forum_id)
     {
@@ -1563,8 +1563,8 @@ class Hook_import_smf2
     /**
      * Set Forum Permissions.
      *
-     * @param  integer $group_id The Group ID to set
-     * @param  string $forum_id The Forum ID to set
+     * @param  integer $group_id The group ID to set
+     * @param  integer $forum_id The forum ID to set
      * @param  integer $role The basic Role they have: 0=ReadOnly, 1=Post/Submit, 2=Unvetted, 3=Moderate
      */
     public function set_forums_perms($group_id, $forum_id, $role = 0)

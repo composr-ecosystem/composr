@@ -88,7 +88,7 @@ class Hook_media_rendering_video_facebook extends Media_renderer_with_fallback
      */
     public function get_video_thumbnail($src_url)
     {
-        if ($this->recognises_url($src_url)) {
+        if ($this->recognises_url($src_url) != MEDIA_RECOG_PRECEDENCE_NONE) {
             $id = null;
 
             $matches = [];

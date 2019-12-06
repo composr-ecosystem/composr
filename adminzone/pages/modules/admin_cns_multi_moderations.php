@@ -336,6 +336,16 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $name The name of the Multi Moderation
@@ -463,7 +473,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -479,20 +489,23 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
         $pin_state = post_param_integer('pin_state', null);
         $open_state = post_param_integer('open_state', null);
 
-        return strval(cns_make_multi_moderation(post_param_string('multi_moderation_name'), post_param_string('post_text'), post_param_integer('move_to', null), $pin_state, $open_state, read_multi_code('forum_multi_code'), post_param_string('title_suffix')));
+        $id = cns_make_multi_moderation(post_param_string('multi_moderation_name'), post_param_string('post_text'), post_param_integer('move_to', null), $pin_state, $open_state, read_multi_code('forum_multi_code'), post_param_string('title_suffix'));
+
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -500,6 +513,8 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $open_state = post_param_integer('open_state', null);
 
         cns_edit_multi_moderation(intval($id), post_param_string('multi_moderation_name'), post_param_string('post_text'), post_param_integer('move_to', null), $pin_state, $open_state, read_multi_code('forum_multi_code'), post_param_string('title_suffix'));
+
+        return null;
     }
 
     /**

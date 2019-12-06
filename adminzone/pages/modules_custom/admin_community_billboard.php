@@ -230,6 +230,16 @@ class Module_admin_community_billboard extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a community billboard message adding/editing form.
      *
      * @param  SHORT_TEXT $message The message
@@ -255,7 +265,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A quartet: fields, hidden, delete-fields, text
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -284,7 +294,7 @@ class Module_admin_community_billboard extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -292,20 +302,25 @@ class Module_admin_community_billboard extends Standard_crud_module
         $notes = post_param_string('notes', '');
         $validated = post_param_integer('validated', 0);
 
-        return strval(add_community_billboard_message($message, post_param_integer('days'), $notes, $validated));
+        $id = add_community_billboard_message($message, post_param_integer('days'), $notes, $validated);
+
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
-     * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         $message = post_param_string('message');
         $notes = post_param_string('notes', '');
         $validated = post_param_integer('validated', 0);
+
         edit_community_billboard_message(intval($id), $message, $notes, $validated);
+
+        return null;
     }
 
     /**

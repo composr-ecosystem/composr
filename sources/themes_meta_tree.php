@@ -414,7 +414,7 @@ function find_template_tree_nice($metadata, &$collected_templates)
 /**
  * Class to build meta-trees (template relationships).
  *
- * @package        core_themeing
+ * @package core_themeing
  */
 class Meta_tree_builder
 {

@@ -1615,7 +1615,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
 /**
  * Tempcode (compiled implementation).
  *
- * @package    core
+ * @package core
  */
 class Tempcode
 {

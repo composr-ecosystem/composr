@@ -13,6 +13,46 @@
  * @package    testing_platform
  */
 
+function load_table_fields()
+{
+    global $TABLE_FIELDS, $COMPOSR_PATH;
+    if (file_exists($COMPOSR_PATH . '/data/db_meta.bin') && (filemtime($COMPOSR_PATH . '/index.php') < filemtime($COMPOSR_PATH . '/data/db_meta.bin'))) {
+        $_table_fields = unserialize(file_get_contents($COMPOSR_PATH . '/data/db_meta.bin'));
+        $TABLE_FIELDS = $_table_fields['tables'];
+    } else {
+        $TABLE_FIELDS = [];
+    }
+    $TABLE_FIELDS['db_meta'] = [
+        'addon' => 'core',
+        'fields' => [
+            'm_table' => '*ID_TEXT',
+            'm_name' => '*ID_TEXT',
+            'm_type' => 'ID_TEXT',
+        ]
+    ];
+    $TABLE_FIELDS['db_meta_indices'] = [
+        'addon' => 'core',
+        'fields' => [
+            'i_table' => '*ID_TEXT',
+            'i_name' => '*ID_TEXT',
+            'i_fields' => '*ID_TEXT',
+        ]
+    ];
+}
+
+function load_function_signatures()
+{
+    global $FUNCTION_SIGNATURES, $COMPOSR_PATH;
+    $FUNCTION_SIGNATURES = [];
+
+    if (!empty($GLOBALS['FLAG__API'])) {
+        // Load up function info
+        $functions_file_path = file_exists($COMPOSR_PATH . '/data_custom/functions.bin') ? ($COMPOSR_PATH . '/data_custom/functions.bin') : 'functions.bin';
+        $functions_file = file_get_contents($functions_file_path);
+        $FUNCTION_SIGNATURES = unserialize($functions_file);
+    }
+}
+
 function load_php_metadetails()
 {
     global $KNOWN_EXTRA_FUNCTIONS;
@@ -25,6 +65,22 @@ function load_php_metadetails()
         'master__sync_file' => true,
         'master__sync_file_move' => true,
         '__construct' => true,
+    ];
+
+    global $KNOWN_EXTRA_INTERFACES;
+    $KNOWN_EXTRA_INTERFACES = [
+        'Traversable' => true,
+        'Iterator' => true,
+        'IteratorAggregate' => true,
+        'Throwable' => true,
+        'ArrayAccess' => true,
+        'Serializable' => true,
+        'Countable' => true,
+        'OuterIterator' => true,
+        'RecursiveIterator' => true,
+        'SeekableIterator' => true,
+        'SplObserver' => true,
+        'SplSubject' => true,
     ];
 
     global $KNOWN_EXTRA_CLASSES;
@@ -55,6 +111,7 @@ function load_php_metadetails()
 
         'Closure' => true,
         'Generator' => true,
+        //PHP7.4+ 'WeakReference' => true,
         'ClosedGeneratorException' => true,
 
         'DateTime' => true,

@@ -37,10 +37,17 @@ function init__privacy()
 /**
  * Privacy details base class.
  *
- * @package        core
+ * @package core
  */
 abstract class Hook_privacy_base
 {
+    /**
+     * Find privacy details.
+     *
+     * @return ?array A map of privacy details in a standardised format (null: disabled)
+     */
+    abstract public function info();
+
     /**
      * Get selection SQL for a particular search.
      *

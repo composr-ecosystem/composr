@@ -41,6 +41,7 @@ class resource_closing_test_set extends cms_test_case
             'sources_custom/sabredav/',
             'sources_custom/spout/',
             'tracker/',
+            'vendor/',
             'sources_custom/getid3/',
         ];
 

@@ -13,47 +13,9 @@
  * @package    testing_platform
  */
 
-// Load up table info
-global $TABLE_FIELDS, $COMPOSR_PATH;
-if (file_exists($COMPOSR_PATH . '/data/db_meta.bin') && (filemtime($COMPOSR_PATH . '/index.php') < filemtime($COMPOSR_PATH . '/data/db_meta.bin'))) {
-    $_table_fields = unserialize(file_get_contents($COMPOSR_PATH . '/data/db_meta.bin'));
-    $TABLE_FIELDS = $_table_fields['tables'];
-} else {
-    $TABLE_FIELDS = [];
-}
-$TABLE_FIELDS['db_meta'] = [
-    'addon' => 'core',
-    'fields' => [
-        'm_table' => '*ID_TEXT',
-        'm_name' => '*ID_TEXT',
-        'm_type' => 'ID_TEXT',
-    ]
-];
-$TABLE_FIELDS['db_meta_indices'] = [
-    'addon' => 'core',
-    'fields' => [
-        'i_table' => '*ID_TEXT',
-        'i_name' => '*ID_TEXT',
-        'i_fields' => '*ID_TEXT',
-    ]
-];
-
-global $FUNCTION_SIGNATURES;
-$FUNCTION_SIGNATURES = [];
-if (!empty($GLOBALS['FLAG__API'])) {
-    load_function_signatures();
-}
-
+load_table_fields();
+load_function_signatures();
 load_php_metadetails();
-
-function load_function_signatures()
-{
-    // Load up function info
-    global $FUNCTION_SIGNATURES, $COMPOSR_PATH;
-    $functions_file_path = file_exists($COMPOSR_PATH . '/data_custom/functions.bin') ? ($COMPOSR_PATH . '/data_custom/functions.bin') : 'functions.bin';
-    $functions_file = file_get_contents($functions_file_path);
-    $FUNCTION_SIGNATURES = unserialize($functions_file);
-}
 
 // Do the actual code quality check
 function check($structure)
@@ -110,6 +72,8 @@ function check_class($class)
         log_warning('Class names should be lower case apart from the first letter, \'' . $class['name'] . '\'');
     }*/
 
+    $inherits_from = find_inherits_from($CURRENT_CLASS);
+
     $CURRENT_CLASS = $class['name'];
     foreach ($class['functions'] as $function) {
         if (strtolower($function['name']) == strtolower($class['name'])) {
@@ -122,11 +86,15 @@ function check_class($class)
         if ((isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) && (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$function['name']]))) {
             $function_signature = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$function['name']];
 
-            $inherits_from = find_inherits_from($CURRENT_CLASS);
             foreach ($inherits_from as $_inherits_from) {
                 if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
                     if (isset($FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function['name']])) {
                         $inherited_function_signature = $FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function['name']];
+
+                        if ($inherited_function_signature['is_final']) {
+                            log_warning('Cannot override final function \'' . $function['name'] . '\'', $function['offset']);
+                        }
+
                         $differs = false;
                         foreach (['parameters', 'return', 'is_static', 'visibility'] as $compare) {
                             if ($compare == 'parameters') {
@@ -136,6 +104,12 @@ function check_class($class)
                                         if (serialize($inherited_function_signature_param[$compare2]) !== (($function_signature_param === null) ? null : serialize($function_signature_param[$compare2]))) {
                                             $differs = true;
                                         }
+                                    }
+                                }
+                            } elseif ($compare == 'return') {
+                                foreach (['type'] as $compare2) {
+                                    if (serialize($inherited_function_signature['return'][$compare2]) !== serialize($function_signature['return'][$compare2])) {
+                                        $differs = true;
                                     }
                                 }
                             } else {
@@ -161,31 +135,95 @@ function check_class($class)
         check_expression($constant[1]);
     }
 
-    // Check all all abstract functions from parent are implemented (only works when function signatures are known, and no real-time parsing)
-    if (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) {
-        foreach ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['inherits_from'] as $_inherits_from) {
-            foreach ($FUNCTION_SIGNATURES[$_inherits_from]['functions'] as $inherited_function) {
-                if ($inherited_function['is_abstract']) {
-                    $inherited_abstract_function = $inherited_function['name'];
-                    if (!isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$inherited_abstract_function])) {
-                        log_warning('Abstract function \'' . $inherited_abstract_function . '\' from parent is not implemented', $function['offset']);
+    // Check all all abstract/interface functions from parents are implemented (only works when function signatures are known, and no real-time parsing)
+    list($functions_responsible_for_implementing) = functions_responsible_for_implementing($CURRENT_CLASS);
+    foreach ($functions_responsible_for_implementing as $inherited_abstract_function) {
+        $found_it = isset($FUNCTION_SIGNATURES[$CURRENT_CLASS]['functions'][$inherited_abstract_function]);
+        if ((!$found_it) && (!$FUNCTION_SIGNATURES[$CURRENT_CLASS]['is_abstract'])) {
+            log_warning('Abstract function \'' . $inherited_abstract_function . '\' from parent is not implemented', $function['offset']);
+        }
+    }
+}
+
+function functions_responsible_for_implementing($class)
+{
+    global $FUNCTION_SIGNATURES;
+
+    $functions_responsible_for_implementing = [];
+    $functions_deferred_for_implementing = [];
+
+    if (isset($FUNCTION_SIGNATURES[$class])) {
+        $inherits_from_direct = find_inherits_from($class, true);
+        foreach ($inherits_from_direct as $_inherits_from) {
+            if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                // Direct responsibilities
+                foreach ($FUNCTION_SIGNATURES[$_inherits_from]['functions'] as $inherited_function) {
+                    if (($inherited_function['is_abstract']) || ($FUNCTION_SIGNATURES[$_inherits_from]['type'] == 'interface')) {
+                        $inherited_abstract_function = $inherited_function['name'];
+
+                        if ((!$FUNCTION_SIGNATURES[$class]['is_abstract']) || (isset($FUNCTION_SIGNATURES[$class]['functions'][$inherited_abstract_function]))) {
+                            $functions_responsible_for_implementing[] = $inherited_abstract_function;
+                        } else {
+                            $functions_deferred_for_implementing[] = $inherited_abstract_function;
+                        }
+                    }
+                }
+
+                // Indirect responsibilities
+                list(, $inherited_abstract_functions) = functions_responsible_for_implementing($_inherits_from);
+                foreach ($inherited_abstract_functions as $inherited_abstract_function) {
+                    if ((!$FUNCTION_SIGNATURES[$class]['is_abstract']) || (isset($FUNCTION_SIGNATURES[$class]['functions'][$inherited_abstract_function]))) {
+                        $functions_responsible_for_implementing[] = $inherited_abstract_function;
+                    } else {
+                        $functions_deferred_for_implementing[] = $inherited_abstract_function;
                     }
                 }
             }
         }
     }
+
+    return [$functions_responsible_for_implementing, $functions_deferred_for_implementing];
 }
 
-function find_inherits_from($class)
+function find_inherits_from($class, $direct_only = false)
 {
     global $FUNCTION_SIGNATURES;
-    $inherits_from = $FUNCTION_SIGNATURES[$class]['inherits_from'];
-    foreach ($inherits_from as $_inherits_from) {
-        if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
-            $inherits_from = array_unique(array_merge($inherits_from, $FUNCTION_SIGNATURES[$_inherits_from]['inherits_from']));
+
+    if (!isset($FUNCTION_SIGNATURES[$class])) {
+        return [];
+    }
+
+    $inherits_from = array();
+
+    $inherits_from = array_merge($inherits_from, $FUNCTION_SIGNATURES[$class]['implements']);
+    if (!$direct_only) {
+        foreach ($FUNCTION_SIGNATURES[$class]['implements'] as $_inherits_from) {
+            if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                $inherits_from = array_merge($inherits_from, find_inherits_from($_inherits_from));
+            }
         }
     }
-    return $inherits_from;
+
+    $inherits_from = array_merge($inherits_from, $FUNCTION_SIGNATURES[$class]['traits']);
+    if (!$direct_only) {
+        foreach ($FUNCTION_SIGNATURES[$class]['traits'] as $_inherits_from) {
+            if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                $inherits_from = array_merge($inherits_from, find_inherits_from($_inherits_from));
+            }
+        }
+    }
+
+    $_inherits_from = $FUNCTION_SIGNATURES[$class]['extends'];
+    if ($_inherits_from !== null) {
+        $inherits_from[] = $_inherits_from;
+        if (!$direct_only) {
+            if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                $inherits_from = array_merge($inherits_from, find_inherits_from($_inherits_from));
+            }
+        }
+    }
+
+    return array_unique($inherits_from);
 }
 
 function check_function($function, $is_closure = false, $inside_class = false)
@@ -261,7 +299,9 @@ function check_function($function, $is_closure = false, $inside_class = false)
             log_warning('Function \'' . $function['name'] . '\' is missing a return statement with a value', $function['offset']);
         }
         if ((!$ret) && (isset($LOCAL_VARIABLES['__return'])) && ($LOCAL_VARIABLES['__return']['types'] != [])) {
-            log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
+            if (strpos($function['name'], 'init__') === false/*Composr-specific*/) {
+                log_warning('Function \'' . $function['name'] . '\' has a return with a value, and the function returns void', $LOCAL_VARIABLES['__return']['first_mention']);
+            }
         }
 
         // Check return types
@@ -1229,7 +1269,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
 
             ensure_type(['object', 'resource'], $type, $variable[3], 'Variable must be an object due to dereferencing');
             if (($next[2] != []) && ($next[2][0] == 'CALL_METHOD')) {
-                if ($depth == 0) {
+                if (($depth == 0) && (is_string($variable[1]))) {
                     // Convert the complex variable chaining syntax into a simpler method call that we can check
                     $method_call_command = $next[2];
                     $method_call_command[1] = $variable; // Replace what is 'null' with main variable
@@ -1257,7 +1297,9 @@ function check_variable($variable, $reference = false, $function_guard = '')
 
 function check_method_call($c, $c_pos, $function_guard = '')
 {
-    global $LOCAL_VARIABLES, $FUNCTION_SIGNATURES;
+    // Can be called with a variable, or with an identifier (parent/self/<static>)...
+
+    global $LOCAL_VARIABLES, $FUNCTION_SIGNATURES, $KNOWN_EXTRA_INTERFACES, $CURRENT_CLASS;
 
     // Check parameters
     $params = $c[2];
@@ -1267,32 +1309,34 @@ function check_method_call($c, $c_pos, $function_guard = '')
 
     // If we have a chance to actually know what the method is being called on...
     if ($c[1] !== null) {
-        $is_static_call = ($c[1][0] == 'IDENTIFIER');
+        $variable = $c[1];
 
-        if (!$is_static_call) {
-            check_variable($c[1], false, $function_guard);
+        $is_static_call = ($variable[0] == 'IDENTIFIER') && (!in_array($variable[1], ['parent', 'self', 'static']));
+
+        if ($variable[0] != 'IDENTIFIER') {
+            check_variable($variable, false, $function_guard);
         }
 
         if (!$is_static_call) {
             // Composr specific: Special rules for knowing the types of complex variables which we otherwise would not be able to get...
 
             // $this->db
-            if (($c[1][1] == 'this') && ($c[1][2][1][1] == 'db') && ((!isset($c[1][2][2][0])) || ($c[1][2][2][0] != 'DEREFERENCE'))) {
-                $method = $c[1][2][2][1][1];
+            if (($variable[1] == 'this') && ($variable[2][1][1] == 'db') && ((!isset($variable[2][2][0])) || ($variable[2][2][0] != 'DEREFERENCE'))) {
+                $method = $variable[2][2][1][1];
                 $class = 'DatabaseConnector';
                 return actual_check_method($class, $method, $params, $c_pos, $function_guard);
             }
 
             // $GLOBALS['?_DB']
-            if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && (substr($c[1][2][1][1][1], -3) == '_DB') && ((!isset($c[1][2][2][2][0])) || ($c[1][2][2][2][0] != 'DEREFERENCE'))) {
-                $method = $c[1][2][2][1][1];
+            if (($variable[1] == 'GLOBALS') && (substr($variable[2][1][1][0], -3) == 'LITERAL') && (substr($variable[2][1][1][1], -3) == '_DB') && ((!isset($variable[2][2][2][0])) || ($variable[2][2][2][0] != 'DEREFERENCE'))) {
+                $method = $variable[2][2][1][1];
                 $class = 'DatabaseConnector';
                 return actual_check_method($class, $method, $params, $c_pos, $function_guard);
             }
 
             // $GLOBALS['FORUM_DRIVER']
-            if (($c[1][1] == 'GLOBALS') && (substr($c[1][2][1][1][0], -3) == 'LITERAL') && ($c[1][2][1][1][1] == 'FORUM_DRIVER')) {
-                $method = $c[1][2][2][1][1];
+            if (($variable[1] == 'GLOBALS') && (substr($variable[2][1][1][0], -3) == 'LITERAL') && ($variable[2][1][1][1] == 'FORUM_DRIVER')) {
+                $method = $variable[2][2][1][1];
                 $class = 'Forum_driver_base';
                 return actual_check_method($class, $method, $params, $c_pos, $function_guard);
             }
@@ -1300,33 +1344,69 @@ function check_method_call($c, $c_pos, $function_guard = '')
 
         // Standard...
 
-        if ((isset($c[1][2][0])) && ($c[1][2][0] == 'DEREFERENCE') && (empty($c[1][2][2]))) {
-            $method = $c[1][2][1][1]; // deep under 'DEREFERENCE' (which is being applied to 'IDENTIFIER')
+        if ((isset($variable[2][0])) && ($variable[2][0] == 'DEREFERENCE') && (empty($variable[2][2]))) {
+            $method = $variable[2][1][1]; // deep under 'DEREFERENCE' (which is being applied to 'IDENTIFIER')
 
             if ($is_static_call) {
-                $class = $c[1][1];
+                $class = $variable[1];
 
-                check_method_call_scope($class, $method, $c_pos);
+                if ($class !== null) {
+                    check_method_call_scope($class, $method, $c_pos);
 
-                if (isset($FUNCTION_SIGNATURES[$class])) {
-                    if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
-                        log_warning('Calling ' . $method . ' as static on a ' . $FUNCTION_SIGNATURES[$class]['type'], $c_pos);
-                    }
+                    if (isset($FUNCTION_SIGNATURES[$class])) {
+                        if ($FUNCTION_SIGNATURES[$class]['type'] != 'class') {
+                            log_warning('Calling ' . $method . ' as static on a ' . $FUNCTION_SIGNATURES[$class]['type'], $c_pos);
+                        }
 
-                    if ($FUNCTION_SIGNATURES[$class]['is_abstract']) {
-                        log_warning('Calling ' . $method . ' as static on an abstract class', $c_pos);
-                    }
+                        if (($FUNCTION_SIGNATURES[$class]['is_abstract']) && ($CURRENT_CLASS != $class)) {
+                            log_warning('Calling ' . $method . ' as static on an abstract class', $c_pos);
+                        }
 
-                    if (isset($FUNCTION_SIGNATURES[$class]['functions'][$method])) {
-                        if (!$FUNCTION_SIGNATURES[$class]['functions'][$method]['is_static']) {
-                            log_warning('Calling a non-static method (' . $method . ') as static', $c_pos);
+                        if (isset($FUNCTION_SIGNATURES[$class]['functions'][$method])) {
+                            if (!$FUNCTION_SIGNATURES[$class]['functions'][$method]['is_static']) {
+                                log_warning('Calling a non-static method (' . $method . ') as static', $c_pos);
+                            }
                         }
                     }
+
+                    if (isset($KNOWN_EXTRA_INTERFACES[$class])) {
+                        log_warning('Calling ' . $method . ' as static on an interface', $c_pos);
+                    }
+
+                    return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+                }
+            } elseif (($variable[0] == 'IDENTIFIER') && (in_array($variable[1], ['self', 'static']))) {
+                if ($CURRENT_CLASS != '__global') {
+                    $class = $CURRENT_CLASS;
+                } else {
+                    log_warning('Cannot reference a self class from outside a class', $c_pos);
+                    $class = null;
                 }
 
-                return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+                if ($class !== null) {
+                    check_method_call_scope($class, $method, $c_pos);
+
+                    return actual_check_method($class, $method, $params, $c_pos, $function_guard, false);
+                }
+            } elseif (($variable[0] == 'IDENTIFIER') && ($variable[1] == 'parent')) {
+                if (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) {
+                    if ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'] !== null) {
+                        $class = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'];
+                    } else {
+                        log_warning('Cannot reference a parent class when a class is not a subclass', $c_pos);
+                        $class = null;
+                    }
+                } else {
+                    $class = null;
+                }
+
+                if ($class !== null) {
+                    check_method_call_scope($class, $method, $c_pos);
+
+                    return actual_check_method($class, $method, $params, $c_pos, $function_guard, false);
+                }
             } else {
-                $object = $c[1][1];
+                $object = $variable[1];
 
                 add_variable_reference($object, $c_pos);
 
@@ -1336,7 +1416,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
                     (!empty($LOCAL_VARIABLES[$object]['object_type']))
                 ) {
                     // We can detect the class
-                    if (isset($FUNCTION_SIGNATURES[$LOCAL_VARIABLES[$object]['object_type']])) {
+                    if (isset($LOCAL_VARIABLES[$object]['object_type'])) {
                         $class = $LOCAL_VARIABLES[$object]['object_type'];
                     } elseif ($LOCAL_VARIABLES[$object]['types'][0] == 'Tempcode') {
                         $class = 'Tempcode';
@@ -1346,7 +1426,9 @@ function check_method_call($c, $c_pos, $function_guard = '')
 
                     check_method_call_scope($class, $method, $c_pos);
 
-                    return actual_check_method($class, $method, $params, $c_pos, $function_guard);
+                    $show_missing_class_errors = ($object != 'this');
+
+                    return actual_check_method($class, $method, $params, $c_pos, $function_guard, $show_missing_class_errors);
                 }
             }
 
@@ -1354,7 +1436,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
             return 'mixed';
         }
 
-        scan_extractive_expressions($c[1][2]);
+        scan_extractive_expressions($variable[2]);
     }
 
     // We have no idea at all!
@@ -1390,13 +1472,13 @@ function check_method_call_scope($class, $method, $c_pos)
     }
 }
 
-function actual_check_method($class, $method, $params, $c_pos, $function_guard = '')
+function actual_check_method($class, $method, $params, $c_pos, $function_guard = '', $show_missing_class_errors = true)
 {
     // This just wraps check_call, with $class being passed so check_call can do proper verification
-    return check_call(['CALL_DIRECT', $method, $params], $c_pos, $class, $function_guard);
+    return check_call(['CALL_DIRECT', $method, $params], $c_pos, $class, $function_guard, $show_missing_class_errors);
 }
 
-function check_call($c, $c_pos, $class = null, $function_guard = '')
+function check_call($c, $c_pos, $class = null, $function_guard = '', $show_missing_class_errors = true)
 {
     global $CURRENT_CLASS;
     if ($class === null) {
@@ -1429,7 +1511,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         }
     }
 
-    global $FUNCTION_SIGNATURES, $OK_EXTRA_FUNCTIONS, $KNOWN_EXTRA_FUNCTIONS, $KNOWN_EXTRA_CLASSES, $TABLE_FIELDS, $STRUCTURE, $TABLE_FIELDS;
+    global $FUNCTION_SIGNATURES, $OK_EXTRA_FUNCTIONS, $KNOWN_EXTRA_FUNCTIONS, $KNOWN_EXTRA_INTERFACES, $KNOWN_EXTRA_CLASSES, $TABLE_FIELDS, $STRUCTURE, $TABLE_FIELDS;
     $ret = null;
     $found = false;
 
@@ -1445,7 +1527,9 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                     check_db_map($table, $params[2][0], $c_pos);
                 }
             } elseif (in_array($function, ['query_select'])) {
-                check_db_map($table, $params[2][0], $c_pos);
+                if (isset($params[2][0])) {
+                    check_db_map($table, $params[2][0], $c_pos);
+                }
                 if (isset($params[3][0])) {
                     check_db_map($table, $params[3][0], $c_pos);
                 }
@@ -1474,9 +1558,11 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         if (isset($FUNCTION_SIGNATURES[$class])) {
             $inherits_from = find_inherits_from($class);
             foreach ($inherits_from as $_inherits_from) {
-                if (isset($FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function])) {
-                    $potential = $FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function];
-                    break;
+                if (isset($FUNCTION_SIGNATURES[$_inherits_from])) {
+                    if (isset($FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function])) {
+                        $potential = $FUNCTION_SIGNATURES[$_inherits_from]['functions'][$function];
+                        break;
+                    }
                 }
             }
         }
@@ -1647,7 +1733,8 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                 (
                     (strpos($function_guard, ',' . $class . ',') === false) &&
                     (!in_array($class, ['mixed', '?mixed', 'object', '?object', ''/*Dynamic*/])) &&
-                    (!isset($KNOWN_EXTRA_CLASSES[$class]))
+                    (!isset($KNOWN_EXTRA_CLASSES[$class])) &&
+                    (!isset($KNOWN_EXTRA_INTERFACES[$class]))
                 )
             )
         ) {
@@ -1660,7 +1747,9 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                     if (in_array($class, ['integer', 'float', 'string', 'boolean', 'boolean-false', 'null'])) {
                         log_warning('Mixing variable type', $c_pos);
                     } else {
-                        log_warning('Could not find class \'' . $class . '\'', $c_pos);
+                        if ($show_missing_class_errors) {
+                            log_warning('Could not find class \'' . $class . '\'', $c_pos);
+                        }
                     }
                 } else {
                     //@var_dump($FUNCTION_SIGNATURES[$class]['functions']);exit(); Useful for debugging

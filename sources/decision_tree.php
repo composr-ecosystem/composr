@@ -62,7 +62,7 @@ Other features
 /**
  * Provide multi-screen (multi-form) decision trees.
  *
- * @package        core
+ * @package core
  */
 class DecisionTree
 {

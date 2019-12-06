@@ -91,6 +91,7 @@ function database_repair_wrap()
 
 /**
  * Provide advice for repairing database issues.
+ *
  * @package core
  */
 class DatabaseRepair

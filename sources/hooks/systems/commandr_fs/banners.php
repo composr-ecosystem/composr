@@ -84,9 +84,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * Standard Commandr-fs date fetch function for resource-fs hooks. Defined when getting an edit date is not easy.
      *
      * @param  array $row Resource row (not full, but does contain the ID)
+     * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_folder_edit_date($row)
+    protected function _get_folder_edit_date($row, $category = '')
     {
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', $row['id']) . ' AND  (' . db_string_equal_to('the_type', 'ADD_BANNER_TYPE') . ' OR ' . db_string_equal_to('the_type', 'EDIT_BANNER_TYPE') . ')';
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -98,9 +99,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * @param  LONG_TEXT $filename Filename OR Resource label
      * @param  string $path The path (blank: root / not applicable)
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error)
      */
-    public function folder_add($filename, $path, $properties)
+    public function folder_add($filename, $path, $properties, $force_type = null)
     {
         if ($path != '') {
             return false; // Only one depth allowed for this resource type
@@ -168,9 +170,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * @param  ID_TEXT $filename The filename
      * @param  string $path The path (blank: root / not applicable)
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function folder_edit($filename, $path, $properties)
+    public function folder_edit($filename, $path, $properties, $explicit_move = false)
     {
         list($resource_type, $resource_id) = $this->folder_convert_filename_to_id($filename);
         list($properties, $label) = $this->_folder_magic_filter($filename, $path, $properties);
@@ -254,9 +257,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * Standard Commandr-fs date fetch function for resource-fs hooks. Defined when getting an edit date is not easy.
      *
      * @param  array $row Resource row (not full, but does contain the ID)
+     * @param  ID_TEXT $category Parent category (blank: root / not applicable)
      * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
      */
-    protected function _get_file_edit_date($row)
+    protected function _get_file_edit_date($row, $category = '')
     {
         $query = 'SELECT MAX(date_and_time) FROM ' . get_table_prefix() . 'actionlogs WHERE ' . db_string_equal_to('param_a', $row['name']) . ' AND  (' . db_string_equal_to('the_type', 'ADD_BANNER') . ' OR ' . db_string_equal_to('the_type', 'EDIT_BANNER') . ')';
         return $GLOBALS['SITE_DB']->query_value_if_there($query);
@@ -268,9 +272,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * @param  LONG_TEXT $filename Filename OR Resource label
      * @param  string $path The path (blank: root / not applicable)
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_add($filename, $path, $properties)
+    public function file_add($filename, $path, $properties, $force_type = null)
     {
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
@@ -363,9 +368,10 @@ class Hook_commandr_fs_banners extends Resource_fs_base
      * @param  ID_TEXT $filename The filename
      * @param  string $path The path (blank: root / not applicable)
      * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
      * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
      */
-    public function file_edit($filename, $path, $properties)
+    public function file_edit($filename, $path, $properties, $explicit_move = false)
     {
         list($resource_type, $resource_id) = $this->file_convert_filename_to_id($filename);
         list($category_resource_type, $category) = $this->folder_convert_filename_to_id($path);

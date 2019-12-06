@@ -572,6 +572,16 @@ class Module_admin_zones
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a zone adding/editing form.
      *
      * @param  boolean $in_zone_editor Whether the zone editor will be used
@@ -581,7 +591,7 @@ class Module_admin_zones
      * @param  ?ID_TEXT $theme The theme (null: no override)
      * @param  BINARY $require_session Whether the zone requires a session for pages to be used
      * @param  ?ID_TEXT $zone Name of the zone (null: unknown)
-     * @return array A tuple: The Tempcode for the fields, hidden fields, and extra JavaScript
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($in_zone_editor = false, $title = '', $default_page = DEFAULT_ZONE_PAGE_NAME, $header_text = '', $theme = null, $require_session = 0, $zone = null)
     {

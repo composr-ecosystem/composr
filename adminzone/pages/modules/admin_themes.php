@@ -1302,7 +1302,7 @@ class Module_admin_themes
 
                     $preview_url = build_url(['page' => '_SELF', 'type' => 'screen_preview', 'id' => $t, 'hook' => $all_previews[$t][0], 'function' => $func], '_SELF');
 
-                    $template_used = "(" . implode(', ', $all_previews__by_screen[$func]) . ")";
+                    $template_used = '(' . implode(', ', $all_previews__by_screen[$func]) . ')';
 
                     $tpl_x = do_template('THEME_SCREEN_PREVIEW', [
                         '_GUID' => '1f27f619db553dfcb8d427e70a736226',
@@ -1339,7 +1339,7 @@ class Module_admin_themes
         $com_li = new Tempcode();
         foreach ($comcode_files as $zone => $pages) {
             if ($zone == 'pages') {
-                $zone = "";
+                $zone = '';
             }
             foreach ($pages as $page => $type) {
                 if (!is_string($page)) {

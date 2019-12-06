@@ -197,6 +197,16 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $name A name for the Welcome E-mail
@@ -313,7 +323,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -329,7 +339,7 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -340,14 +350,17 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $newsletter = post_param_integer('newsletter', null);
         $usergroup = post_param_integer('usergroup', null);
         $usergroup_type = post_param_string('usergroup_type', '');
+
         $id = cns_make_welcome_email($name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
-        return strval($id);
+
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -358,7 +371,10 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
         $newsletter = post_param_integer('newsletter', null);
         $usergroup = post_param_integer('usergroup', null);
         $usergroup_type = post_param_string('usergroup_type', '');
+
         cns_edit_welcome_email(intval($id), $name, $subject, $text, $send_time, $newsletter, $usergroup, $usergroup_type);
+
+        return null;
     }
 
     /**

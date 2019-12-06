@@ -25,7 +25,7 @@ require_code('database/shared/mysql');
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_mysql_pdo extends Database_super_mysql
 {
@@ -155,7 +155,7 @@ class Database_Static_mysql_pdo extends Database_super_mysql
             $ins = intval($connection->lastInsertId());
             if ($ins === 0) {
                 $table = substr($query, 12, strpos($query, ' ', 12) - 12);
-                $rows = $this->db_query('SELECT MAX(id) AS x FROM ' . $table, $connection, 1, 0, false, false);
+                $rows = $this->query('SELECT MAX(id) AS x FROM ' . $table, $connection, 1, 0, false, false);
                 return $rows[0]['x'];
             }
             return $ins;

@@ -218,7 +218,7 @@ END;
         }
     }
 
-    if (!empty($settings['email'])) { // Will only be the case on Google App Engine
+    if ((!empty($settings['email'])) && (class_exists('\google\appengine\api\mail\Message'))) { // Will only be the case on Google App Engine
         require_once('google/appengine/api/mail/Message.php');
 
         $task = new \google\appengine\api\mail\Message([

@@ -133,7 +133,7 @@ function init__caches()
  *  anything in the cache really should be useful for all page loads, we do not want to have to load a great bloated smart cache on each page load;
  *  the above said, we will often *say* what is needed, then feed this in for doing bulk loads from the dedicated caches (e.g. saying which blocks to bulk load)
  *
- * @package    core
+ * @package core
  */
 class Self_learning_cache
 {
@@ -443,7 +443,7 @@ function persistent_cache_set($key, $data, $server_wide = false, $expire_secs = 
 {
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
-        return null;
+        return;
     }
     if ($expire_secs === null) {
         $expire_secs = $server_wide ? 0 : (60 * 60);
@@ -467,7 +467,7 @@ function persistent_cache_delete($key, $substring = false)
 {
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
-        return null;
+        return;
     }
     if ($substring) {
         $list = $PERSISTENT_CACHE->load_objects_list();
@@ -538,7 +538,7 @@ function erase_persistent_cache()
 
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
-        return null;
+        return;
     }
     $PERSISTENT_CACHE->flush();
 }

@@ -156,7 +156,7 @@ class Hook_notification_ticket_assigned_staff extends Hook_Notification
      * @param  ID_TEXT $notification_code Notification code
      * @param  MEMBER $member_id Member to check against
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
-     * @return boolean Whether they are
+     * @return boolean Whether they have
      */
     public function member_has_enabled($notification_code, $member_id, $category = null)
     {

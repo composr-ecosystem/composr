@@ -25,7 +25,7 @@
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_postgresql extends DatabaseDriver
 {
@@ -347,7 +347,7 @@ class Database_Static_postgresql extends DatabaseDriver
                 if ($aggregation != '') {
                     $aggregation .= ' || \' \' || ';
                 }
-                $aggregation .= '\'' . $this->db_escape_string($_field) . '\'';
+                $aggregation .= '\'' . $this->escape_string($_field) . '\'';
             }
 
             return ['CREATE INDEX ' . $index_name . '__' . $table_name . ' ON ' . $table_name . ' USING gin(to_tsvector(\'pg_catalog.' . $postgres_fulltext_language . '\', ' . $aggregation . '))'];
@@ -464,7 +464,7 @@ class Database_Static_postgresql extends DatabaseDriver
             $postgres_fulltext_language = 'english';
         }
 
-        return 'to_tsvector(?) @@ plainto_tsquery(\'pg_catalog.' . $postgres_fulltext_language . '\', \'' . $this->db_escape_string($content) . '\')';
+        return 'to_tsvector(?) @@ plainto_tsquery(\'pg_catalog.' . $postgres_fulltext_language . '\', \'' . $this->escape_string($content) . '\')';
     }
 
     /**

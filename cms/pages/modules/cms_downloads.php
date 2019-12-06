@@ -347,6 +347,16 @@ class Module_cms_downloads extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a download adding/editing form.
      *
      * @param  ?AUTO_LINK $id The ID of the download (null: new)
@@ -369,7 +379,7 @@ class Module_cms_downloads extends Standard_crud_module
      * @param  ?AUTO_LINK $licence The licence to use (null: none)
      * @param  integer $default_pic Which image to use for the downloads representative image (counts from 1)
      * @param  URLPATH $url_redirect The URL to redirect
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $name = '', $category_id = null, $url = '', $author = '', $description = '', $additional_details = '', $out_mode_id = null, $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $file_size = null, $cost = 0, $submitter_gets_points = 1, $original_filename = null, $licence = null, $default_pic = 1, $url_redirect = '')
     {
@@ -519,10 +529,10 @@ class Module_cms_downloads extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return mixed The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -537,7 +547,7 @@ class Module_cms_downloads extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -571,7 +581,7 @@ class Module_cms_downloads extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the new entry
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -652,13 +662,14 @@ class Module_cms_downloads extends Standard_crud_module
             content_review_set('download', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -745,6 +756,8 @@ class Module_cms_downloads extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('download', strval($id));
         }
+
+        return null;
     }
 
     /**
@@ -770,7 +783,7 @@ class Module_cms_downloads extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -795,11 +808,21 @@ class Module_cms_downloads_alt extends Standard_crud_module
     /**
      * Standard CRUD-module entry list fetcher.
      *
-     * @return Tempcode The list
+     * @return Tempcode The selection list
      */
     public function create_selection_list_entries()
     {
         return create_selection_list_download_licences();
+    }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
     }
 
     /**
@@ -822,7 +845,7 @@ class Module_cms_downloads_alt extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -840,25 +863,28 @@ class Module_cms_downloads_alt extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the new entry
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
         $id = add_download_licence(post_param_string('title'), post_param_string('text'));
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
         $id = intval($_id);
 
         edit_download_licence($id, post_param_string('title'), post_param_string('text'));
+
+        return null;
     }
 
     /**
@@ -878,7 +904,7 @@ class Module_cms_downloads_alt extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -918,6 +944,16 @@ class Module_cms_downloads_cat extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a download category adding/editing form.
      *
      * @param  ?AUTO_LINK $id The download ID (null: new)
@@ -927,7 +963,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
      * @param  LONG_TEXT $notes Notes
      * @param  ?AUTO_LINK $category_id The ID of the download category (null: we're adding, not editing)
      * @param  URLPATH $rep_image The rep-image for the download category
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $category = '', $parent_id = null, $description = '', $notes = '', $category_id = -1, $rep_image = '')
     {
@@ -974,7 +1010,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -992,7 +1028,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1023,13 +1059,14 @@ class Module_cms_downloads_cat extends Standard_crud_module
             content_review_set('download_category', strval($category_id));
         }
 
-        return strval($category_id);
+        return [strval($category_id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -1064,6 +1101,8 @@ class Module_cms_downloads_cat extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('download_category', strval($category_id));
         }
+
+        return null;
     }
 
     /**
@@ -1085,7 +1124,7 @@ class Module_cms_downloads_cat extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)

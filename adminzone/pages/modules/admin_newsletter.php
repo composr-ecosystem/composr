@@ -1055,7 +1055,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $send_to = (post_param_integer($key, empty($send_details[$key]) ? 0 : 1) == 1);
             $newsletter_subscriber_count = $this->_count_on_newsletter($key, $lang);
 
-            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_CNS'), do_lang_tempcode('NUM_READERS', escape_html(integer_format($newsletter_subscriber_count))), $key, $subscriber_count));
+            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_CNS'), do_lang_tempcode('NUM_READERS', escape_html(integer_format($newsletter_subscriber_count))), $key, $subscriber_count > 0));
 
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             foreach ($groups as $group_id => $group) {
@@ -1566,6 +1566,16 @@ class Module_admin_newsletter extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $title The title
@@ -1641,7 +1651,7 @@ class Module_admin_newsletter extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -1657,7 +1667,7 @@ class Module_admin_newsletter extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1666,13 +1676,14 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $id = add_newsletter($title, $description);
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -1680,6 +1691,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $description = post_param_string('description');
 
         edit_newsletter(intval($id), $title, $description);
+
+        return null;
     }
 
     /**

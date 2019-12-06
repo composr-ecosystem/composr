@@ -140,7 +140,7 @@ function commandr_script()
 /**
  * Commandr.
  *
- * @package    commandr
+ * @package commandr
  */
 class Virtual_shell
 {

@@ -134,6 +134,16 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a forum grouping template adding/editing form.
      *
      * @param  SHORT_TEXT $title The title (name) of the forum grouping
@@ -209,7 +219,7 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A triple: fields, hidden-fields, delete-fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -247,30 +257,36 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
         $tmp = strval(cns_make_forum_grouping(post_param_string('title'), post_param_string('description'), post_param_integer('expanded_by_default', 0)));
+
         $this->extra_donext_whatever = [
             ['admin/add', ['admin_cns_forums', ['type' => 'add', 'forum_grouping_id' => $tmp], get_module_zone('admin_cns_forums')], do_lang_tempcode('ADD_FORUM')],
             ['admin/edit', ['admin_cns_forums', ['type' => 'edit'], get_module_zone('admin_cns_forums')], do_lang_tempcode('EDIT_FORUM')],
         ];
-        return $tmp;
+
+        return [$tmp, null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         cns_edit_forum_grouping(intval($id), post_param_string('title'), post_param_string('description', STRING_MAGIC_NULL), post_param_integer('expanded_by_default', fractional_edit() ? INTEGER_MAGIC_NULL : 0));
+
         $this->extra_donext_whatever = [
             ['admin/add', ['admin_cns_forums', ['type' => 'add', 'forum_grouping_id' => $id], get_module_zone('admin_cns_forums')], do_lang_tempcode('ADD_FORUM')],
             ['admin/edit', ['admin_cns_forums', ['type' => 'edit'], get_module_zone('admin_cns_forums')], do_lang_tempcode('EDIT_FORUM')],
         ];
+
+        return null;
     }
 
     /**

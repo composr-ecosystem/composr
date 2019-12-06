@@ -33,7 +33,7 @@ function init__tickets_email_integration()
 /**
  * Ticket e-mail integration class.
  *
- * @package        tickets
+ * @package tickets
  */
 class TicketsEmailIntegration extends EmailIntegration
 {

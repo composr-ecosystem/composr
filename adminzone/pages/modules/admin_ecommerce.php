@@ -187,6 +187,16 @@ class Module_admin_ecommerce extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $title The title
@@ -205,7 +215,7 @@ class Module_admin_ecommerce extends Standard_crud_module
      * @param  ?LONG_TEXT $mail_uhoh The text of the e-mail to send out when a subscription cannot be renewed because the subproduct is gone (null: default)
      * @param  array $mails Other e-mails to send
      * @param  ?AUTO_LINK $id ID of existing subscription (null: new)
-     * @return array Tuple: The input fields, The hidden fields, The delete fields
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($title = '', $description = '', $price = 9.99, $tax_code = '0%', $length = 12, $length_units = 'm', $auto_recur = 1, $group_id = null, $uses_primary = 0, $enabled = 1, $mail_start = null, $mail_end = null, $mail_uhoh = null, $mails = [], $id = null)
     {
@@ -345,7 +355,7 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, null, get_forum_type() != 'cns');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, [], get_forum_type() != 'cns');
         foreach ($rows as $r) {
             $edit_url = build_url($url_map + ['id' => $r['id']], '_SELF');
 
@@ -377,7 +387,7 @@ class Module_admin_ecommerce extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array Tuple: The input fields, The hidden fields, The delete fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -415,7 +425,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             get_translated_text($r['s_mail_end'], $db),
             get_translated_text($r['s_mail_uhoh'], $db),
             $mails,
-            $id
+            intval($id)
         );
 
         return $fields;
@@ -456,7 +466,7 @@ class Module_admin_ecommerce extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return array A pair: The entry added, Description about usage
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -488,6 +498,7 @@ class Module_admin_ecommerce extends Standard_crud_module
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -496,6 +507,8 @@ class Module_admin_ecommerce extends Standard_crud_module
         $mails = $this->_mails();
 
         edit_usergroup_subscription(intval($id), $title, post_param_string('description'), float_unformat(post_param_string('price')), post_param_tax_code('tax_code'), post_param_integer('length'), post_param_string('length_units'), post_param_integer('auto_recur', 0), post_param_integer('group_id'), post_param_integer('uses_primary', 0), post_param_integer('enabled', 0), post_param_string('mail_start'), post_param_string('mail_end'), post_param_string('mail_uhoh'), $mails);
+
+        return null;
     }
 
     /**

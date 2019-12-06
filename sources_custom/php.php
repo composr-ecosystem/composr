@@ -32,8 +32,8 @@ function init__php()
  * Get a complex API information structure from a PHP file. It assumes the file has reasonably properly layed out class and function whitespace.
  * The return structure is...
  *  list of classes/interfaces/traits
- * each entry is a map containing 'functions' (list of functions) and 'name' and 'inherits_from' and 'type'
- *  each functions entry is a map containing 'parameters' and 'name' and 'return' and 'flags' and 'is_static' and 'is_abstract' and 'visibility'
+ * each entry is a map containing 'functions' (list of functions) and 'name' and 'extends' and 'implements' and 'type'
+ *  each functions entry is a map containing 'parameters' and 'name' and 'return' and 'flags' and 'is_static' and 'is_abstract' and 'is_final' and 'visibility'
  *   each parameters entry is a map containing...
  *    name
  *    description
@@ -57,7 +57,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     $classes = [];
     $class_has_comments = [];
 
-    $meta_keywords_available = ['public', 'private', 'protected', 'static', 'abstract'];
+    $meta_keywords_available = ['final', 'public', 'private', 'protected', 'static', 'abstract'];
 
     $make_alterations = false;
     if ((isset($_GET['allow_write'])) && ($_GET['allow_write'] == '1')) {
@@ -82,7 +82,9 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     $current_class_level = 0;
     $functions = [];
     $class_is_abstract = false;
-    $inherits_from = [];
+    $implements = [];
+    $traits = [];
+    $extends = null;
     $type = null;
     global $LINE;
     for ($i = 0; array_key_exists($i, $lines); $i++) {
@@ -98,7 +100,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
         $matches = [];
         if (preg_match('#^(abstract\s+)?(interface|class|trait)\s+(\w+)#', $ltrim, $matches) != 0) {
             if (!empty($functions)) {
-                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
+                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'implements' => $implements, 'traits' => $traits, 'extends' => $extends, 'type' => $type];
             }
 
             $current_class = $matches[3];
@@ -107,15 +109,23 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             $class_is_abstract = (strpos($matches[1], 'abstract') !== false);
             $type = $matches[2];
 
-            $inherits_from = [];
             $matches = [];
-            $num_matches = preg_match_all('# (implements|extends) ([\w\\\\]+)#', $ltrim, $matches);
+            $num_matches = preg_match_all('#\s(extends)\s([\w\\\\]+)#', $ltrim, $matches);
             for ($j = 0; $j < $num_matches; $j++) {
-                $inherits_from[] = $matches[2][$j];
+                $extends = $matches[2][$j];
             }
+            if ($num_matches > 1) {
+                attach_message($current_class . ' is trying to extend multiple classes', 'warn');
+            }
+            $implements = [];
+            $num_matches = preg_match_all('#\s(implements)\s([\w\\\\]+)#', $ltrim, $matches);
+            for ($j = 0; $j < $num_matches; $j++) {
+                $implements[] = $matches[2][$j];
+            }
+            $traits = [];
         } elseif (($current_class != '__global') && (substr($line, 0, $current_class_level + 1) == str_repeat(' ', $current_class_level) . '}')) {
             if (!empty($functions)) {
-                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
+                $classes[$current_class] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'implements' => $implements, 'traits' => $traits, 'extends' => $extends, 'type' => $type];
             }
 
             $current_class = '__global';
@@ -123,7 +133,9 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             $class_is_abstract = false;
             $type = null;
 
-            $inherits_from = [];
+            $implements = [];
+            $traits = [];
+            $extends = null;
         }
 
         // Detect an API class or function
@@ -135,15 +147,10 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 $line2 = $lines[$j];
                 $_depth = str_repeat(' ', $depth);
 
-                // Class
-                if (substr($line2, 0, $depth + 6) == $_depth . 'class ') {
-                    $class_with_comments = preg_replace('#\s.*$#s', '', substr($line2, $depth + 6));
-                    $class_has_comments[$class_with_comments] = true;
-                    continue 2;
-                }
-                if (substr($line2, 0, $depth + 15) == $_depth . 'abstract class ') {
-                    $class_with_comments = preg_replace('#\s.*$#s', '', substr($line2, $depth + 15));
-                    $class_has_comments[$class_with_comments] = true;
+                // Class/Interface/Trait
+                $matches = [];
+                if (preg_match('#^' . str_repeat(' ', $depth) . '(abstract\s+)?(interface|class|trait)\s+([\w\\\\]+)#', $line2, $matches) != 0) {
+                    $class_has_comments[$matches[3]] = true;
                     continue 2;
                 }
 
@@ -154,13 +161,14 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     list($function_name, $parameters) = _read_php_function_line($_line);
                     $is_static = null;
                     $is_abstract = null;
+                    $is_final = null;
                     $visibility = null;
                     break;
                 }
 
                 // Method
                 $matches = [];
-                if (preg_match('#^' . $_depth . '(((' . implode('|', $meta_keywords_available) . ') )*)function (.*)#', $line2, $matches) != 0) {
+                if (preg_match('#^' . $_depth . '(((' . implode('|', $meta_keywords_available) . ') )*)function &?(.*)#', $line2, $matches) != 0) {
                     // Parse function line
                     $_line = $matches[4];
                     list($function_name, $parameters) = _read_php_function_line($_line);
@@ -178,6 +186,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                     // Detect meta properties
                     $is_static = (strpos($matches[1], 'static') !== false);
                     $is_abstract = (strpos($matches[1], 'abstract') !== false);
+                    $is_final = (strpos($matches[1], 'final') !== false);
                     $visibility = 'public';
                     if (strpos($matches[1], 'private') !== false) {
                         $visibility = 'private';
@@ -193,7 +202,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 }
 
                 // Irrelevant line, don't let it confuse us
-                if ((substr(trim($line2), 0, 3) == '/**') || ((strpos($line2, '*/') !== false) && (array_key_exists($j + 1, $lines)) && (strpos($lines[$j + 1], 'function ') === false) && (strpos($lines[$j + 1], 'class ') === false))) { // Probably just skipped past a top header
+                if ((substr(trim($line2), 0, 3) == '/**') || ((strpos($line2, '*/') !== false) && (array_key_exists($j + 1, $lines)) && (preg_match('#(^|\s)(function|class|interface|trait)\s+#', $lines[$j + 1]) == 0))) { // Probably just skipped past a top header
                     $i = $j - 1;
                     continue 2;
                 }
@@ -433,17 +442,21 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
                 'flags' => $flags,
                 'is_static' => $is_static,
                 'is_abstract' => $is_abstract,
+                'is_final' => $is_final,
                 'visibility' => $visibility,
+                'return' => $fret,
             ];
             if ($include_code) {
                 $function['code'] = $code;
             }
-            if ($fret !== null) {
-                $function['return'] = $fret;
-            }
             $functions[$function_name] = $function;
 
             $i++;
+        }
+
+        $matches = [];
+        if (preg_match('#^use ([\w\\\\]+);#', $ltrim, $matches) != 0) {
+            $traits[] = $matches[1];
         }
     }
 
@@ -498,7 +511,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
     }
 
     if (!empty($functions)) {
-        $classes[$current_class/*will be global*/] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'inherits_from' => $inherits_from, 'type' => $type];
+        $classes[$current_class/*will be global*/] = ['functions' => $functions, 'name' => $current_class, 'is_abstract' => $class_is_abstract, 'implements' => $implements, 'traits' => $traits, 'extends' => $extends, 'type' => $type];
     }
 
     return $classes;

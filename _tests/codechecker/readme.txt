@@ -119,19 +119,26 @@ Certain aspects of the PHP language have been left out of the subset supported b
  - they are considered very bad style
  - they cannot be properly checker against, and hence the checker tightens things up to catch a higher number of errors
 
-The skipped aspects are:
- - checking whether variables exist before considering heredoc/quote-embedded variable references (REASON: can't check)
- - @ is handled differently to PHP: it is tagged onto string-extraction, array-extraction, and function-calls (REASON: sloppy)
- - if..endif (etc) style (REASON: bad style)
- - non-functional style of include include_once require require_once print unset empty isset declare exit die (REASON: bad style)
- - certain duplicated cast identifiers (REASON: bad style)
- - expressions used as pure commands (REASON: bad style)
- - written AND or OR or XOR (REASON: bad style)
- - unused variable check imperfect for loops (REASON: can't check)
- - dynamic variable referencing ($$foo) (REASON: sloppy, a likely bug)
- - PHP 5.4 Class::{expr}() Syntax (REASON: sloppy, a likely bug)
- - certain functions, including insecure or platform-dependant ones (these can be white-listed per-file though)
- - namespace resolution is not implemented, we just match on class names (REASON: to simplify the code)
+The intentionally skipped aspects are:
+ - checking whether variables exist before considering heredoc/quote-embedded/now-doc variable references (Reason: can't check, and we avoid using embedded variables in Composr anyway)
+ - @ is handled differently to PHP: it is tagged onto string-extraction, array-extraction, and function-calls (Reason: sloppy)
+ - if..endif (etc) style (Reason: bad style)
+ - non-functional style of include include_once require require_once print unset empty isset declare exit die (Reason: bad style)
+ - expressions used as pure commands (Reason: bad style)
+ - written AND or OR or XOR (Reason: bad style)
+ - dynamic variable referencing ($$foo) (Reason: sloppy, a likely bug)
+ - PHP 5.4 Class::{expr}() Syntax (Reason: sloppy, a likely bug)
+ - object iteration (Reason: treating objects like arrays hurts type-checking, better to just allow returning an array using an object method)
+ - certain functions, including insecure or platform-dependant ones (these can be white-listed per-file though) (Reason: they should not be used)
+
+Some checks we could do but don't:
+ - namespace resolution is not implemented, we just match on class names (Reason: We do not use namespaces internally in Composr; if namespaces are involved the class names can just be whitelisted)
+ - compatibility checks when implementing multiple interfaces (Reason: Complexity and a very rare event that would cause a run-time crash anyway)
+ - goto label presence/position checks (Reason: We don't, and shouldn't, use goto)
+ - full validation of use of inbuilt PHP objects (Reason: We don't use them much and we'd need to define all their skeletons in phpstub.php)
+ - magic method validity checks (Reason: very unlikely to incorrectly define a magic method)
+ - checking constants exist (predefined and global and class constants), and knowing their type (Reason: Would be difficult to implement given they can be defined dynamically)
+ > see "Comparison to other PHP linters" for more
 
 The PHP checker is very much set up to enforce compatibility across different PHP platforms. It is only assumed that a small number of extensions will be present:
  - gd2
@@ -181,13 +188,6 @@ PhpStorm's Code Inspector:
  > (Many, lots of false positives in here that we will not mention)
 (Excellent tool to use if you are happy to wade through false positives)
 
-PHPStan:
- - Generics (Reason: We do not use them in Composr)
- - Namespaces (Reason: We do not use them in Composr)
- - Property type and scope validation (Reason: We do not use many properties, and it would be very time consuming to implement)
- - Always false instanceof (Reason: Very specific and unlikely)
- - Identifying unused return values (Reason: We'd have to flag which function return values are relevant, which would be a lot of overhead; instead we have a manual check for functions where there's a non-boolean/non-mixed return value that is not used)
-
 PHP CodeSniffer:
  > The CQC can chain a connection to the popular PHP CodeSniffer package, for additional checks. These checks capture more detailed coding standards errors, like putting spaces or line-breaks in the wrong place
 
@@ -207,14 +207,22 @@ CodeLobster IDE's Code Validator:
 NetBeans Inspect (Source -> Inspect):
  > (Basic parsing only, unless 3rd party tools are configured)
 
+PHPStan:
+ - Generics (Reason: We do not use them in Composr)
+ - Property type and scope validation (Reason: We do not use many properties, and it would be very time consuming to implement)
+ - Always false instanceof (Reason: Very specific and unlikely)
+ - Identifying unused return values (Reason: We'd have to flag which function return values are relevant, which would be a lot of overhead; instead we have a manual check for functions where there's a non-boolean/non-mixed return value that is not used)
+ > PHPStan will not execute, as it makes assumptions about how autoloading/require's work, incompatible with Composr
+
 Other tools, that are worth just mentioning for completeness:
  - [tt]php -l[/tt]
  - PHP Mess Detector
  - PHP CS Fixer
  - PHP copy and paste detector
- - Phan
- - Exakat
- - Psalm
+ - Exakat (a big complex system, semi-commercial)
+ - PHP Insights (pedantic)
+ - Phan (very strict type inference)
+ - Psalm (very strict type inference)
 
 Relationship with Composr
 --------------------------

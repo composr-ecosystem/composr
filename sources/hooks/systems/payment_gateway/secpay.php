@@ -417,7 +417,7 @@ class Hook_payment_gateway_secpay
             $my_hash = md5('trans_id=' . $txn_id . '&' . 'req_cv2=true' . '&' . get_option('payment_gateway_digest'));
         } else {
             $repeat = $this->_translate_subscription_details($transaction_row['e_length'], $transaction_row['e_length_units']);
-            $my_hash = md5('trans_id=' . $txn_id . '&' . 'req_cv2=true' . '&' . 'repeat=' . $repeat . '&' . get_option('payment_gateway_digest'));
+            $my_hash = md5('trans_id=' . $txn_id . '&' . 'req_cv2=true' . '&' . 'repeat=' . strval($repeat) . '&' . get_option('payment_gateway_digest'));
         }
         if ($hash != $my_hash) {
             if ($silent_fail) {

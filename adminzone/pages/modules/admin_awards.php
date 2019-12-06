@@ -273,6 +273,16 @@ class Module_admin_awards extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  ?AUTO_LINK $id The ID of the award (null: not added yet)
@@ -348,7 +358,7 @@ class Module_admin_awards extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -366,7 +376,7 @@ class Module_admin_awards extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -374,19 +384,22 @@ class Module_admin_awards extends Standard_crud_module
 
         $this->set_permissions(strval($id));
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         edit_award_type(intval($id), post_param_string('title'), post_param_string('description'), post_param_integer('points', 0), post_param_string('content_type'), post_param_integer('show_awardee', 0), post_param_integer('update_time_hours'));
 
         $this->set_permissions($id);
+
+        return null;
     }
 
     /**

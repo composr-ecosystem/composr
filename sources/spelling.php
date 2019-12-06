@@ -420,7 +420,7 @@ function spellchecker_shutdown()
     $spell_checker = _find_spell_checker();
 
     if ($spell_checker === null) {
-        return null;
+        return;
     }
 
     global $SPELL_LINKS;

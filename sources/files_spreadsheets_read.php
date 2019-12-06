@@ -64,13 +64,12 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
-    return null;
 }
 
 /**
  * Spreadsheet reader.
  *
- * @package    core
+ * @package core
  */
 abstract class CMS_Spreadsheet_Reader
 {
@@ -177,7 +176,7 @@ abstract class CMS_Spreadsheet_Reader
 /**
  * CSV spreadsheet file reader.
  *
- * @package    core
+ * @package core
  */
 class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
 {

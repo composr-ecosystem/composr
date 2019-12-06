@@ -6,7 +6,7 @@
 
 	<!-- Exclude third-party code (mostly) -->
 	<exclude-pattern>_config.php</exclude-pattern>
-	<exclude-pattern>_tests/libs/mf_parse</exclude-pattern>
+	<exclude-pattern>_tests/libs/mf_parse.php</exclude-pattern>
 	<exclude-pattern>_tests/simpletest</exclude-pattern>
 	<exclude-pattern>data/ace</exclude-pattern>
 	<exclude-pattern>data_custom/upload-crop</exclude-pattern>
@@ -27,6 +27,7 @@
 	<exclude-pattern>sources_custom/curl.php</exclude-pattern>
 	<exclude-pattern>sources_custom/facebook</exclude-pattern>
 	<exclude-pattern>sources_custom/geshi</exclude-pattern>
+	<exclude-pattern>sources_custom/geshi.php</exclude-pattern>
 	<exclude-pattern>sources_custom/getid3</exclude-pattern>
 	<exclude-pattern>sources_custom/hooks/modules/chat_bots/trickstr.php</exclude-pattern>
 	<exclude-pattern>sources_custom/ILess</exclude-pattern>
@@ -41,6 +42,7 @@
 	<exclude-pattern>sources_custom/webdav_commandr_fs.php</exclude-pattern>
 	<exclude-pattern>themes/*/templates_cached</exclude-pattern>
 	<exclude-pattern>tracker</exclude-pattern>
+	<exclude-pattern>vendor</exclude-pattern>
 	<exclude-pattern>*.js</exclude-pattern>
 	<exclude-pattern>*.css</exclude-pattern>
 

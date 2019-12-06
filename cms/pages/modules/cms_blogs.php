@@ -217,7 +217,7 @@ class Module_cms_blogs extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : ['submitter' => $only_owned], false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? [] : ['submitter' => $only_owned], false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
         if (empty($rows)) {
             return null;
         }
@@ -254,6 +254,16 @@ class Module_cms_blogs extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a news adding/editing form.
      *
      * @param  ?AUTO_LINK $id The news ID (null: new)
@@ -270,7 +280,7 @@ class Module_cms_blogs extends Standard_crud_module
      * @param  LONG_TEXT $notes Notes for the video
      * @param  URLPATH $image URL to the image for the news entry (blank: use cat image)
      * @param  ?array $scheduled Scheduled go-live time (null: N/A)
-     * @return array A tuple of lots of info (fields, hidden fields, trailing fields)
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($id = null, $main_news_category = null, $news_category = null, $title = '', $news = '', $author = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $send_trackbacks = 1, $notes = '', $image = '', $scheduled = null)
     {
@@ -369,10 +379,10 @@ class Module_cms_blogs extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return string The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -387,7 +397,7 @@ class Module_cms_blogs extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -435,7 +445,7 @@ class Module_cms_blogs extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -510,13 +520,14 @@ class Module_cms_blogs extends Standard_crud_module
             regenerate_event_reminder_jobs($event_id, true);
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -594,6 +605,8 @@ class Module_cms_blogs extends Standard_crud_module
         $metadata = actual_metadata_get_fields('news', strval($id));
 
         edit_news(intval($id), $title, post_param_string('news', STRING_MAGIC_NULL), post_param_string('author', STRING_MAGIC_NULL), $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $url, $metadata['add_time'], $metadata['edit_time'], $metadata['views'], $metadata['submitter'], [], true);
+
+        return null;
     }
 
     /**
@@ -613,7 +626,7 @@ class Module_cms_blogs extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)

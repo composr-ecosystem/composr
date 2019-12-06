@@ -16,7 +16,7 @@
 /**
  * Spout spreadsheet reader.
  *
- * @package    core
+ * @package core
  */
 class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
 {

@@ -25,7 +25,7 @@ require_code('database/shared/mysql');
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_mysqli extends Database_super_mysql
 {
@@ -156,7 +156,7 @@ class Database_Static_mysqli extends Database_super_mysql
                 cms_ini_set('mysqli.reconnect', '1');
                 $this->reconnected_once = true;
                 mysqli_ping($db_link);
-                $ret = $this->query($query, $connection, null/*already encoded*/, null/*already encoded*/, $fail_ok, $get_insert_id);
+                $ret = $this->query($query, $connection, null/*already encoded*/, 0/*already encoded*/, $fail_ok, $get_insert_id);
                 $this->reconnected_once = false;
                 return $ret;
             }

@@ -140,7 +140,7 @@ function _get_sql_keywords()
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_xml extends DatabaseDriver
 {
@@ -408,10 +408,10 @@ class Database_Static_xml extends DatabaseDriver
     /**
      * Find whether full-text-search is present.
      *
-     * @param  array $db The DB connection
+     * @param  mixed $connection The DB connection
      * @return boolean Whether it is
      */
-    public function has_full_text($db)
+    public function has_full_text($connection)
     {
         return false;
     }
@@ -2502,7 +2502,7 @@ class Database_Static_xml extends DatabaseDriver
             case 'X_REPLACE':
                 $search = $this->_execute_expression($expr[2], $bindings, $query, $db, $fail_ok, $full_set);
                 $replace = $this->_execute_expression($expr[3], $bindings, $query, $db, $fail_ok);
-                $subject = $this->_execute_expression($expr[1], $bindings, $query, $fail_ok, $full_set);
+                $subject = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
                 if (($search === null) || ($replace === null) || ($subject === null)) {
                     return null;
                 }
@@ -2915,6 +2915,8 @@ class Database_Static_xml extends DatabaseDriver
         // FROM
 
         if ($this->_parsing_expects($at, $tokens, 'FROM', $query, true)) {
+            $table_name = mixed();
+
             $closing_parentheses_needed = 0;
             $table_name = $this->_parsing_read($at, $tokens, $query);
             if ($table_name == '(') { // subquery
@@ -2949,11 +2951,11 @@ class Database_Static_xml extends DatabaseDriver
 
             $joins = [['SIMPLE', $table_name, $as]];
             do {
-                $test = $this->_read_join($at, $tokens, $query, $db, $fail_ok, $closing_parentheses_needed);
-                if ($test !== null) {
-                    $joins[] = $test;
+                $join_test = $this->_read_join($at, $tokens, $query, $db, $fail_ok, $closing_parentheses_needed);
+                if ($join_test !== null) {
+                    $joins[] = $join_test;
                 }
-            } while ($test !== null);
+            } while ($join_test !== null);
 
             for ($i = 0; $i < $closing_parentheses_needed; $i++) {
                 if (!$this->_parsing_expects($at, $tokens, ')', $query)) {
@@ -2991,9 +2993,9 @@ class Database_Static_xml extends DatabaseDriver
             $group_by = [];
             do {
                 $group_by[] = $this->_parsing_read($at, $tokens, $query);
-                $test = $this->_parsing_read($at, $tokens, $query, true);
-            } while ($test === ',');
-            if ($test !== null) {
+                $group_by_test = $this->_parsing_read($at, $tokens, $query, true);
+            } while ($group_by_test === ',');
+            if ($group_by_test !== null) {
                 $at--;
             }
 
@@ -3106,12 +3108,12 @@ class Database_Static_xml extends DatabaseDriver
                 $at--;
             }
 
-            $test = $this->_parse_query_select($tokens, $query, $db, $max, $start, $fail_ok, $at, $do_end_check);
-            if ($test === null) {
+            $select_test = $this->_parse_query_select($tokens, $query, $db, $max, $start, $fail_ok, $at, $do_end_check);
+            if ($select_test === null) {
                 return null;
             }
 
-            $unions[] = [$test, $de_dupe];
+            $unions[] = [$select_test, $de_dupe];
         } else {
             if ($token !== null) {
                 $at--;
@@ -3224,8 +3226,8 @@ class Database_Static_xml extends DatabaseDriver
         // Filter by WHERE
         $pre_filtered_records = [];
         foreach ($records as $record) {
-            $test = $this->_execute_expression($where_expr, $record + $bindings, $query, $db, $fail_ok);
-            if ($test) {
+            $where_test = $this->_execute_expression($where_expr, $record + $bindings, $query, $db, $fail_ok);
+            if ($where_test) {
                 $pre_filtered_records[] = $record;
             }
         }
@@ -3257,8 +3259,8 @@ class Database_Static_xml extends DatabaseDriver
                 if ($having !== null) {
                     $pre_filtered_records = [];
                     foreach ($records as $i => $record) {
-                        $test = $this->_execute_expression($having, $record, $query, $db, $fail_ok, $records_full_set[$i]);
-                        if ($test) {
+                        $having_test = $this->_execute_expression($having, $record, $query, $db, $fail_ok, $records_full_set[$i]);
+                        if ($having_test) {
                             $pre_filtered_records[] = $record;
                         }
                     }

@@ -206,12 +206,22 @@ class Module_admin_wordfilter extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for adding/editing form.
      *
      * @param  SHORT_TEXT $word The word
      * @param  SHORT_TEXT $replacement The replacement
      * @param  ID_TEXT $match_type The match type
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($word = '', $replacement = '', $match_type = '')
     {
@@ -245,7 +255,7 @@ class Module_admin_wordfilter extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -263,7 +273,7 @@ class Module_admin_wordfilter extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -279,13 +289,14 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         log_it('ADD_WORDFILTER', $word);
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -301,6 +312,8 @@ class Module_admin_wordfilter extends Standard_crud_module
         $GLOBALS['SITE_DB']->query_update('wordfilter', ['word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type], ['id' => $id]);
 
         log_it('EDIT_WORDFILTER', $word);
+
+        return null;
     }
 
     /**

@@ -38,7 +38,7 @@ The non-threaded cns_forum view has its own rendering.
 /**
  * Manage threaded topics / comment topics.
  *
- * @package    core_feedback_features
+ * @package core_feedback_features
  */
 class CMS_Topic
 {

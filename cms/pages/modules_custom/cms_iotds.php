@@ -154,6 +154,16 @@ class Module_cms_iotds extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for an IOTD adding/editing form.
      *
      * @param  ?AUTO_LINK $id The IOTD ID (null: new)
@@ -166,7 +176,7 @@ class Module_cms_iotds extends Standard_crud_module
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @param  LONG_TEXT $notes Notes for the IOTD
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $url = '', $thumb_url = '', $title = '', $caption = '', $current = true, $allow_rating = 1, $allow_comments = 1, $allow_trackbacks = 1, $notes = '')
     {
@@ -295,7 +305,7 @@ class Module_cms_iotds extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -316,7 +326,7 @@ class Module_cms_iotds extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -359,13 +369,14 @@ class Module_cms_iotds extends Standard_crud_module
             content_review_set('iotd', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -419,6 +430,8 @@ class Module_cms_iotds extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('iotd', strval($id));
         }
+
+        return null;
     }
 
     /**

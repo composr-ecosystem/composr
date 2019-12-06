@@ -411,7 +411,7 @@ function _find_mail_bounces($host, $port, $type, $folder, $username, $password, 
 /**
  * E-mail dispatcher object. Handles the actual delivery of an e-mail over a process call.
  *
- * @package    core
+ * @package core
  */
 class Mail_dispatcher_manualproc extends Mail_dispatcher_base
 {

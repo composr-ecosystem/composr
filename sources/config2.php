@@ -210,7 +210,6 @@ function build_config_inputter($name, $details, $current_value = null, $is_overr
     }
 
     fatal_exit('Invalid config option type: ' . $details['type'] . ' (for ' . $name . ')');
-    return null;
 }
 
 /**

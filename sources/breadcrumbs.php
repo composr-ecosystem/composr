@@ -135,7 +135,7 @@ function load_breadcrumb_substitutions($segments)
 /**
  * Breadcrumb composition class.
  *
- * @package    breadcrumbs
+ * @package breadcrumbs
  */
 class Breadcrumb_substitution_loader
 {

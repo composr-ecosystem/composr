@@ -55,6 +55,7 @@ function spreadsheet_write_default()
  * @param  ?string $filename Filename (null: derive from $path)
  * @param  integer $algorithm An ALGORITHM_* constant
  * @param  ?string $charset The character set to write with
+ * @return object A subclass of CMS_Spreadsheet_Writer
  */
 function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $charset = '')
 {
@@ -82,5 +83,4 @@ function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $chars
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
-    return null;
 }

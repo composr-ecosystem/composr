@@ -21,9 +21,9 @@
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
-class Database_super_sqlserver extends DatabaseDriver
+abstract class Database_super_sqlserver extends DatabaseDriver
 {
     /**
      * Adjust an SQL query to apply offset/limit restriction.
@@ -377,7 +377,7 @@ class Database_super_sqlserver extends DatabaseDriver
      */
     public function string_equal_to($attribute, $compare)
     {
-        return $attribute . "='" . $this->db_escape_string($compare) . "'";
+        return $attribute . "='" . $this->escape_string($compare) . "'";
     }
 
     /**

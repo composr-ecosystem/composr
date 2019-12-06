@@ -886,6 +886,16 @@ class Module_cms_galleries extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for an image adding/editing form.
      *
      * @param  ?AUTO_LINK $id The ID of the image (null: new)
@@ -900,7 +910,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @param  LONG_TEXT $notes Notes for the image
      * @param  array $regions The regions (empty: not region-limited)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
     {
@@ -1031,7 +1041,7 @@ class Module_cms_galleries extends Standard_crud_module
     /**
      * Standard crud_module submitter getter.
      *
-     * @param  AUTO_LINK $id The entry for which the submitter is sought
+     * @param  ID_TEXT $id The entry for which the submitter is sought
      * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
     public function get_submitter($id)
@@ -1044,10 +1054,10 @@ class Module_cms_galleries extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return mixed The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -1062,7 +1072,7 @@ class Module_cms_galleries extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -1106,7 +1116,7 @@ class Module_cms_galleries extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1182,13 +1192,14 @@ class Module_cms_galleries extends Standard_crud_module
             content_review_set('image', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -1273,6 +1284,8 @@ class Module_cms_galleries extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('image', strval($id));
         }
+
+        return null;
     }
 
     /**
@@ -1332,7 +1345,7 @@ class Module_cms_galleries extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -1510,6 +1523,16 @@ class Module_cms_galleries_alt extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a video adding/editing form.
      *
      * @param  ?AUTO_LINK $id The ID of the video (null: new)
@@ -1527,7 +1550,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ?integer $video_width The width of the video (null: not yet added, so not yet known)
      * @param  ?integer $video_height The height of the video (null: not yet added, so not yet known)
      * @param  array $regions The regions (empty: not region-limited)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $title = '', $cat = '', $description = '', $url = '', $thumb_url = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $video_length = null, $video_width = null, $video_height = null, $regions = [])
     {
@@ -1677,10 +1700,10 @@ class Module_cms_galleries_alt extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return mixed The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -1695,7 +1718,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -1740,7 +1763,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1822,13 +1845,14 @@ class Module_cms_galleries_alt extends Standard_crud_module
             content_review_set('video', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -1922,6 +1946,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('video', strval($id));
         }
+
+        return null;
     }
 
     /**
@@ -1953,7 +1979,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -1999,6 +2025,16 @@ class Module_cms_galleries_cat extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a gallery adding/editing form.
      *
      * @param  ID_TEXT $name The gallery codename (blank: new)
@@ -2017,7 +2053,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ?URLPATH $watermark_bottom_right Watermark (null: none)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($name = '', $fullname = '', $description = '', $notes = '', $parent_id = '', $accept_images = null, $accept_videos = null, $is_member_synched = 0, $layout_mode = null, $rep_image = null, $watermark_top_left = null, $watermark_top_right = null, $watermark_bottom_left = null, $watermark_bottom_right = null, $allow_rating = null, $allow_comments = null)
     {
@@ -2159,7 +2195,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -2175,7 +2211,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -2219,13 +2255,14 @@ class Module_cms_galleries_cat extends Standard_crud_module
             content_review_set('gallery', $name);
         }
 
-        return $name;
+        return [$name, null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -2314,6 +2351,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
                 permission_product_save('gallery', $id, $name);
             }
         }
+
+        return null;
     }
 
     /**

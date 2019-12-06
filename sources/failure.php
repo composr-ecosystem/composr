@@ -1479,7 +1479,7 @@ function throwing_errors()
 /**
  * A Composr  exception.
  *
- * @package        core
+ * @package core
  */
 class CMSException extends Exception
 {

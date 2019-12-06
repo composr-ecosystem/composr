@@ -32,7 +32,7 @@ function init__cns_forum_email_integration()
 /**
  * Forum e-mail integration class.
  *
- * @package        cns_forum
+ * @package cns_forum
  */
 class ForumEmailIntegration extends EmailIntegration
 {

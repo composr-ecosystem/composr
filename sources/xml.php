@@ -113,7 +113,7 @@ function convert_bad_entities($data, $charset = 'ISO-8859-1')
 /**
  * Simple XML reader.
  *
- * @package    core
+ * @package core
  */
 class CMS_simple_xml_reader
 {

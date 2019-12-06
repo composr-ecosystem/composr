@@ -15,6 +15,7 @@
 
 /**
  * CMS API base class.
+ *
  * @package content_oop_api
  */
 abstract class CMS_API_object
@@ -136,6 +137,7 @@ function catalogue_query_select_count($catalogue_name, $where = [], $filters = '
 
 /**
  * CMS API catalogue base class.
+ *
  * @package content_oop_api
  */
 abstract class CMS_API_catalogue_object extends CMS_API_object
@@ -232,6 +234,7 @@ abstract class CMS_API_catalogue_object extends CMS_API_object
 
 /**
  * CMS API database base class.
+ *
  * @package content_oop_api
  */
 abstract class CMS_API_database_object extends CMS_API_object

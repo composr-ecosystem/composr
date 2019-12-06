@@ -821,7 +821,7 @@ class Module_purchase
      * @param  ID_TEXT $type_code The product codename
      * @param  array $details The product details
      * @param  string $filter Filter prefix
-     * @param  string $type_filter Filter by exact product name
+     * @param  integer $type_filter Filter by eCommerce type
      * @param  boolean $must_support_money Filter out products that don't support money
      * @param  boolean $must_support_points Filter out products that don't support points
      * @return boolean Is filtered

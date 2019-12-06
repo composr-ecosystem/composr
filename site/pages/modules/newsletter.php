@@ -550,7 +550,7 @@ class Module_newsletter
      * Send a newsletter join confirmation.
      *
      * @param  SHORT_TEXT $email The e-mail address
-     * @param  SHORT_TEXT $code_confirm The confirmation code
+     * @param  integer $code_confirm The confirmation code
      * @param  ?SHORT_TEXT $password The newsletter password (null: password may not be viewed, because it's been permanently hashed already)
      * @param  string $forename Subscribers forename
      * @param  string $surname Subscribers surname

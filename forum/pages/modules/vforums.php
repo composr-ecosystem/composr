@@ -200,7 +200,7 @@ class Module_vforums
 
         $initial_table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t';
 
-        return $this->_vforum($title, $condition, 'last_post', false, null, $initial_table);
+        return $this->_vforum($title, $condition, 'last_post', false, [], $initial_table);
     }
 
     /**
@@ -233,7 +233,7 @@ class Module_vforums
             $order = 'post_time';
         }
 
-        return $this->_vforum($title, $condition, $order, false, null, $initial_table, $extra_select);
+        return $this->_vforum($title, $condition, $order, false, [], $initial_table, $extra_select);
     }
 
     /**

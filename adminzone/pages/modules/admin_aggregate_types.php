@@ -214,12 +214,22 @@ class Module_admin_aggregate_types extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a forum grouping template adding/editing form.
      *
      * @param  ID_TEXT $aggregate_type The aggregate type (blank: ask first)
      * @param  SHORT_TEXT $aggregate_label The label for the instance
      * @param  array $other_parameters Other parameters
-     * @return mixed Either Tempcode; or a tuple: form fields, hidden fields, delete fields
+     * @return mixed Either Tempcode; or a tuple: the input fields, hidden fields, delete fields
      */
     public function get_form_fields($aggregate_type = '', $aggregate_label = '', $other_parameters = [])
     {
@@ -326,7 +336,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A triple: fields, hidden-fields, delete-fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -363,24 +373,26 @@ class Module_admin_aggregate_types extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
         list($aggregate_label, $aggregate_type, $other_parameters) = $this->_read_in_parameters();
         $id = add_aggregate_type_instance($aggregate_label, $aggregate_type, $other_parameters);
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         list($aggregate_label, $aggregate_type, $other_parameters) = $this->_read_in_parameters();
         edit_aggregate_type_instance(intval($id), $aggregate_label, $aggregate_type, $other_parameters);
+        return null;
     }
 
     /**

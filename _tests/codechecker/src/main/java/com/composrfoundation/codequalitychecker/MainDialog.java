@@ -244,6 +244,7 @@ public class MainDialog extends JFrame {
                 if ((theFiles[i].equals("_meta_tree"))
                         || (theFiles[i].equals("templates_cached"))
                         || (theFiles[i].equals("tracker"))
+                        || (theFiles[i].equals("vendor"))
                         || (theFiles[i].equals("exports"))
                         || (theFiles[i].equals("ckeditor"))
                         || (theFiles[i].equals("ace"))

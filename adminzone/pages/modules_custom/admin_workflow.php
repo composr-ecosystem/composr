@@ -222,7 +222,7 @@ class Module_admin_workflow extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A triple: fields, hidden-fields, delete-fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -245,6 +245,16 @@ class Module_admin_workflow extends Standard_crud_module
             }
         }
         return $temp_point_names;
+    }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
     }
 
     /**
@@ -603,16 +613,16 @@ class Module_admin_workflow extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
         // Grab our data. We pass true so that it will create non-existent content for us (workflow and approval points)
-        list($workflow_id, $workflow_name, $approval_points, $is_default) = $this->read_in_data(true);
+        list($id, $workflow_name, $approval_points, $is_default) = $this->read_in_data(true);
 
-        log_it('ADD_WORKFLOW', strval($workflow_id), $workflow_name);
+        log_it('ADD_WORKFLOW', strval($id), $workflow_name);
 
-        return strval($workflow_id);
+        return [strval($id), null];
     }
 
     /**
@@ -666,7 +676,7 @@ class Module_admin_workflow extends Standard_crud_module
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return ?Tempcode Confirm message (null: continue)
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {

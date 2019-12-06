@@ -137,9 +137,6 @@ class Module_admin_sitemap
             return $this->_delete();
         }
 
-        if ($type == 'move') {
-            return $this->move();
-        }
         if ($type == '_move') {
             return $this->_move();
         }

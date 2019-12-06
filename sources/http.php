@@ -293,7 +293,7 @@ function _cms_http_request($url, $options = [])
 /**
  * Base HttpDownloader.
  *
- * @package    core
+ * @package core
  */
 abstract class HttpDownloader
 {
@@ -936,7 +936,7 @@ abstract class HttpDownloader
 /**
  * cURL-based HttpDownloader.
  *
- * @package    core
+ * @package core
  */
 class HttpDownloaderCurl extends HttpDownloader
 {
@@ -1310,7 +1310,7 @@ class HttpDownloaderCurl extends HttpDownloader
 /**
  * Sockets-based HttpDownloader.
  *
- * @package    core
+ * @package core
  */
 class HttpDownloaderSockets extends HttpDownloader
 {
@@ -1775,7 +1775,7 @@ class HttpDownloaderSockets extends HttpDownloader
 /**
  * File-wrapper-based HttpDownloader.
  *
- * @package    core
+ * @package core
  */
 class HttpDownloaderFileWrapper extends HttpDownloader
 {
@@ -1923,7 +1923,7 @@ class HttpDownloaderFileWrapper extends HttpDownloader
 /**
  * Filesystem-wrapper-based HttpDownloader.
  *
- * @package    core
+ * @package core
  */
 class HttpDownloaderFilesystem extends HttpDownloader
 {

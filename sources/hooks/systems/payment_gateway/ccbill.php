@@ -299,7 +299,7 @@ class Hook_payment_gateway_ccbill
      */
     public function handle_ipn_transaction($silent_fail)
     {
-        $trans_expecting_id = post_param_integer('customPurchaseId');
+        $trans_expecting_id = post_param_string('customPurchaseId');
 
         $transaction_rows = $GLOBALS['SITE_DB']->query_select('ecom_trans_expecting', ['*'], ['id' => $trans_expecting_id], '', 1);
         if (!array_key_exists(0, $transaction_rows)) {

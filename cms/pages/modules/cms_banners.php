@@ -207,7 +207,7 @@ class Module_cms_banners extends Standard_crud_module
         }
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_banners') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
 
         $has_expiry_dates = false; // Save space by default
         foreach ($rows as $row) {
@@ -285,6 +285,16 @@ class Module_cms_banners extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get the Tempcode for the form to add a banner, with the information passed along to it via the parameters already added in.
      *
      * @param  ID_TEXT $name The name of the banner (blank: new)
@@ -306,7 +316,7 @@ class Module_cms_banners extends Standard_crud_module
      * @param  array $b_types The secondary banner types (empty: no secondary banner types)
      * @param  array $regions The regions (empty: not region-limited)
      * @param  SHORT_TEXT $title_text The title text for the banner (only used for text banners, and functions as the 'trigger text' if the banner type is shown inline)
-     * @return array Bits
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($name = '', $image_url = '', $site_url = '', $caption = '', $direct_code = '', $notes = '', $display_likelihood = 3, $campaign_remaining = 50, $deployment_agreement = 0, $expiry_date = null, $submitter = null, $validated = 1, $b_type = '', $b_types = [], $regions = [], $title_text = '')
     {
@@ -358,7 +368,7 @@ class Module_cms_banners extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array Bits
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -378,7 +388,7 @@ class Module_cms_banners extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return array A pair: The entry added, Description about usage
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -441,6 +451,7 @@ class Module_cms_banners extends Standard_crud_module
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -479,6 +490,8 @@ class Module_cms_banners extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('banner', $new_id, $id);
         }
+
+        return null;
     }
 
     /**
@@ -499,12 +512,12 @@ class Module_cms_banners extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
     {
-        return $this->cat_crud_module->_do_next_manager($title, $description, $id, $this->donext_type);
+        return $this->cat_crud_module->_do_next_manager($title, $description, intval($id), $this->donext_type);
     }
 
     /**
@@ -707,6 +720,16 @@ class Module_cms_banners_cat extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a Post Template adding/editing form.
      *
      * @param  ?ID_TEXT $id The ID of the banner type (null: new)
@@ -715,7 +738,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * @param  integer $image_height The image height (ignored for textual banners)
      * @param  integer $max_file_size The maximum file size for the banners (this is a string length for textual banners)
      * @param  BINARY $comcode_inline Whether the banner will be automatically shown via Comcode hot-text (this can only happen if banners of the title are given title-text)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($id = null, $is_textual = 0, $image_width = 160, $image_height = 600, $max_file_size = 250, $comcode_inline = 0)
     {
@@ -776,7 +799,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -829,7 +852,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return Tempcode Description about usage
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -875,7 +898,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)

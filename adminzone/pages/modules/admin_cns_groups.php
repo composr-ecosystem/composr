@@ -147,7 +147,17 @@ class Module_admin_cns_groups extends Standard_crud_module
     }
 
     /**
-     * Get Tempcode for a adding/editing form.
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
+     * Get Tempcode for adding/editing form.
      *
      * @param  ?GROUP $id The usergroup being edited (null: adding, not editing)
      * @param  SHORT_TEXT $name The usergroup name
@@ -496,7 +506,7 @@ class Module_admin_cns_groups extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A triple: fields, hidden-fields, delete-fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -607,7 +617,7 @@ class Module_admin_cns_groups extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -654,14 +664,14 @@ class Module_admin_cns_groups extends Standard_crud_module
             content_review_set('group', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return ?Tempcode Confirm message (null: continue)
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {

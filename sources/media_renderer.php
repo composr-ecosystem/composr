@@ -403,7 +403,7 @@ function _create_media_template_parameters($url, $attributes, $as_admin = false,
 /**
  * A media renderer coded to fall-back to a simple image if we have low-fi mode turned on.
  *
- * @package        core_rich_media
+ * @package core_rich_media
  */
 abstract class Media_renderer_with_fallback
 {

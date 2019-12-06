@@ -168,7 +168,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
 
         $rules = $this->robots_parse(null, true);
         if ($rules === null) {
-            $this->state_check_skipped('No robots.txt file');
+            $this->stateCheckSkipped('No robots.txt file');
         }
 
         $scripts = [ // Really bad if these get indexed on Google
@@ -293,7 +293,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
     /**
      * Parse our domain's robots.txt.
      *
-     * @param  string $user_agent The user-agent
+     * @param  ?string $user_agent The user-agent (null: N/A)
      * @param  boolean $error_messages Show error messages for any parsing issues
      * @return ?array List of rules (null: could not parse)
      */

@@ -21,7 +21,7 @@
 /**
  * Base class for CSS conversions.
  *
- * @package    core_themeing
+ * @package core_themeing
  */
 abstract class CSSCleanup
 {
@@ -129,7 +129,7 @@ abstract class CSSCleanup
  * So we have made the decision to hard-code it to Composr's default theme.
  * Key assumptions made are mentioned within code comments.
  *
- * @package    core_themeing
+ * @package core_themeing
  */
 class DirSimplify extends CSSCleanup
 {
@@ -164,7 +164,7 @@ class DirSimplify extends CSSCleanup
  * So we have made the decision to hard-code it to Composr's default theme.
  * Key assumptions made are mentioned within code comments.
  *
- * @package    core_themeing
+ * @package core_themeing
  */
 class EmToPx extends CSSCleanup
 {

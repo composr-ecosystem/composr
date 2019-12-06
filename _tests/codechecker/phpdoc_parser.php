@@ -60,7 +60,7 @@ $global = [];
 global $TO_USE;
 //$files = ['sources/global2.php']; For debugging
 foreach ($files as $filename) {
-    if (strpos($filename, 'sabredav/') !== false || strpos($filename, 'Swift/') !== false || strpos($filename, 'tracker/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
+    if (strpos($filename, 'sabredav/') !== false || strpos($filename, 'Swift/') !== false || strpos($filename, 'tracker/') !== false || strpos($filename, 'vendor/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
         continue;
     }
 
@@ -96,7 +96,7 @@ foreach ($files as $filename) {
     //echo 'SIGNATURES-DONE ' . $_filename . cnl();
 }
 
-$classes['__global'] = ['functions' => $global, 'name' => '__global', 'inherits_from' => [], 'type' => null];
+$classes['__global'] = ['functions' => $global, 'name' => '__global', 'implements' => [], 'traits' => [], 'extends' => null, 'type' => null];
 
 // Save file
 if (file_exists($COMPOSR_PATH . '/data_custom')) {

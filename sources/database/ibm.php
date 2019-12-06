@@ -41,7 +41,7 @@ function init__database__ibm()
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_ibm extends DatabaseDriver
 {

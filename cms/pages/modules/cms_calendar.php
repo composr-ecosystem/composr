@@ -189,7 +189,7 @@ class Module_cms_calendar extends Standard_crud_module
             return $this->export_ical();
         }
         if ($type == '_export') {
-            return $this->_export_ical();
+            $this->_export_ical();
         }
 
         return new Tempcode();
@@ -300,6 +300,16 @@ class Module_cms_calendar extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get the form fields for an event input form.
      *
      * @param  ?AUTO_LINK $id The event ID (null: new)
@@ -334,7 +344,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @param  LONG_TEXT $notes Notes
      * @param  array $regions The regions (empty: not region-limited)
-     * @return array A tuple of: (fields, hidden-fields, delete-fields, edit-text, whether all delete fields are specified, posting form text, more fields)
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($id = null, $type = null, $start_year = null, $start_month = null, $start_day = null, $start_monthly_spec_type = 'day_of_month', $start_hour = null, $start_minute = null, $title = '', $content = '', $recurrence = 'none', $recurrences = null, $seg_recurrences = 0, $priority = 3, $end_year = null, $end_month = null, $end_day = null, $end_monthly_spec_type = 'day_of_month', $end_hour = null, $end_minute = null, $timezone = null, $do_timezone_conv = 0, $member_calendar = null, $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $notes = '', $regions = [])
     {
@@ -761,10 +771,10 @@ class Module_cms_calendar extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return mixed The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -779,7 +789,7 @@ class Module_cms_calendar extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A tuple of: (fields, hidden-fields, delete-fields, edit-text, whether all delete fields are specified, posting form text, more fields, parsed WYSIWYG editable text)
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -814,7 +824,7 @@ class Module_cms_calendar extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return array A pair: the entry added, and a description
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1176,7 +1186,7 @@ class Module_cms_calendar extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -1313,6 +1323,16 @@ class Module_cms_calendar_cat extends Standard_crud_module
     protected $is_chained_with_parent_browse = true;
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a Post Template adding/editing form.
      *
      * @param  ?AUTO_LINK $id ID of category (null: new category)
@@ -1418,7 +1438,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -1436,7 +1456,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1459,13 +1479,14 @@ class Module_cms_calendar_cat extends Standard_crud_module
             content_review_set('calendar_type', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -1491,6 +1512,8 @@ class Module_cms_calendar_cat extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('calendar_type', $id);
         }
+
+        return null;
     }
 
     /**
@@ -1508,7 +1531,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)

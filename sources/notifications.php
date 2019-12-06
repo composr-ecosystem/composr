@@ -242,7 +242,7 @@ function _get_notification_ob_for_code($notification_code)
 /**
  * Notification dispatcher object. Handles the actual delivery of a notification.
  *
- * @package    core_notifications
+ * @package core_notifications
  */
 class Notification_dispatcher
 {
@@ -1015,7 +1015,7 @@ function delete_all_notifications_on($notification_code, $notification_category)
 /**
  * Base class for notification hooks. Provides default implementations for all methods that provide full access to everyone, and interact with enabled table.
  *
- * @package    core_notifications
+ * @package core_notifications
  */
 class Hook_Notification
 {
@@ -1427,7 +1427,7 @@ class Hook_Notification
 /**
  * Derived abstract base class of notification hooks that provides only staff access.
  *
- * @package    core_notifications
+ * @package core_notifications
  */
 class Hook_notification__Staff extends Hook_Notification
 {
@@ -1481,7 +1481,7 @@ class Hook_notification__Staff extends Hook_Notification
      * @param  ID_TEXT $notification_code Notification code
      * @param  MEMBER $member_id Member to check against
      * @param  ?SHORT_TEXT $category The category within the notification code (null: none)
-     * @return boolean Whether they are
+     * @return boolean Whether they have
      */
     public function member_has_enabled($notification_code, $member_id, $category = null)
     {

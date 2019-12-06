@@ -160,7 +160,7 @@ function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names
 /**
  * E-mail dispatcher object. Handles the actual delivery of an e-mail over PHP's mail function.
  *
- * @package    core
+ * @package core
  */
 class Mail_dispatcher_php extends Mail_dispatcher_base
 {
@@ -256,7 +256,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
 /**
  * E-mail dispatcher object. Handles the actual delivery of an e-mail over SMTP.
  *
- * @package    core
+ * @package core
  */
 class Mail_dispatcher_smtp extends Mail_dispatcher_base
 {
@@ -504,7 +504,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
 /**
  * E-mail dispatcher base object. Puts together an e-mail.
  *
- * @package    core
+ * @package core
  */
 abstract class Mail_dispatcher_base
 {
@@ -724,6 +724,23 @@ abstract class Mail_dispatcher_base
 
         return [$worked, $error];
     }
+
+    /**
+     * Implementation-specific e-mail dispatcher, passed with pre-prepared/tidied e-mail component details for us to use.
+     *
+     * @param  array $to_emails To e-mail addresses
+     * @param  array $to_names To names
+     * @param  EMAIL $from_email From e-mail address
+     * @param  string $from_name From name
+     * @param  string $subject_wrapped Subject line
+     * @param  string $headers Headers to use
+     * @param  string $sending_message Full MIME message
+     * @param  string $charset Character set to use
+     * @param  string $html_evaluated Full HTML message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @param  string $message_plain Full text message (is also inside $sending_message, so we won't use this unless we are not using $sending_message)
+     * @return array A pair: Whether it worked, and an error message
+     */
+    abstract protected function _dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
 
     /**
      * Implementation-specific e-mail dispatcher, passed with pre-prepared/tidied e-mail component details for us to use.

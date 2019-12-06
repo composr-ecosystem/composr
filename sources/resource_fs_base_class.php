@@ -21,7 +21,7 @@
 /**
  * Resource-fs base class.
  *
- * @package    commandr
+ * @package commandr
  */
 abstract class Resource_fs_base
 {
@@ -37,7 +37,7 @@ abstract class Resource_fs_base
      * Get the file resource info for this Commandr-fs resource hook.
      *
      * @param  ID_TEXT $resource_type The resource type
-     * @return object The object
+     * @return array The info map
      */
     protected function _get_cma_info($resource_type)
     {
@@ -73,6 +73,131 @@ abstract class Resource_fs_base
     }
 
     /*
+    HOOKS MUST DEFINE
+    */
+
+    /**
+     * Standard Commandr-fs function for seeing how many resources are. Useful for determining whether to do a full rebuild.
+     *
+     * @param  ID_TEXT $resource_type The resource type
+     * @return integer How many resources there are
+     */
+    abstract public function get_resources_count($resource_type);
+
+    /**
+     * Standard Commandr-fs function for searching for a resource by label.
+     *
+     * @param  ID_TEXT $resource_type The resource type
+     * @param  LONG_TEXT $label The resource label
+     * @return array A list of resource IDs
+     */
+    abstract public function find_resource_by_label($resource_type, $label);
+
+    /**
+     * Standard Commandr-fs add function for resource-fs hooks. Adds some resource with the given label and properties.
+     *
+     * @param  LONG_TEXT $filename Filename OR Resource label
+     * @param  string $path The path (blank: root / not applicable)
+     * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
+     * @return ~ID_TEXT The resource ID (false: error)
+     */
+    public function folder_add($filename, $path, $properties, $force_type = null)
+    {
+        return false;
+    }
+
+    /**
+     * Standard Commandr-fs load function for resource-fs hooks. Finds the properties for some resource.
+     *
+     * @param  SHORT_TEXT $filename Filename
+     * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
+     * @return ~array Details of the resource (false: error)
+     */
+    public function folder_load($filename, $path)
+    {
+        return false;
+    }
+
+    /**
+     * Standard Commandr-fs edit function for resource-fs hooks. Edits the resource to the given properties.
+     *
+     * @param  ID_TEXT $filename The filename
+     * @param  string $path The path (blank: root / not applicable)
+     * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
+     * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
+     */
+    public function folder_edit($filename, $path, $properties, $explicit_move = false)
+    {
+        return false;
+    }
+
+    /**
+     * Standard Commandr-fs delete function for resource-fs hooks. Deletes the resource.
+     *
+     * @param  ID_TEXT $filename The filename
+     * @param  string $path The path (blank: root / not applicable)
+     * @return boolean Success status
+     */
+    public function folder_delete($filename, $path)
+    {
+        return false;
+    }
+
+    /**
+     * Standard Commandr-fs date fetch function for resource-fs hooks. Defined when getting an edit date is not easy.
+     *
+     * @param  array $row Resource row (not full, but does contain the ID)
+     * @param  ID_TEXT $category Parent category (blank: root / not applicable)
+     * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
+     */
+    protected function _get_file_edit_date($row, $category = '')
+    {
+        return null;
+    }
+
+    /**
+     * Standard Commandr-fs add function for resource-fs hooks. Adds some resource with the given label and properties.
+     *
+     * @param  LONG_TEXT $filename Filename OR Resource label
+     * @param  string $path The path (blank: root / not applicable)
+     * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  ?ID_TEXT $force_type Resource type to try to force (null: do not force)
+     * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
+     */
+    abstract public function file_add($filename, $path, $properties, $force_type = null);
+
+    /**
+     * Standard Commandr-fs load function for resource-fs hooks. Finds the properties for some resource.
+     *
+     * @param  SHORT_TEXT $filename Filename
+     * @param  string $path The path (blank: root / not applicable). It may be a wildcarded path, as the path is used for content-type identification only. Filenames are globally unique across a hook; you can calculate the path using ->search.
+     * @return ~array Details of the resource (false: error)
+     */
+    abstract public function file_load($filename, $path);
+
+    /**
+     * Standard Commandr-fs edit function for resource-fs hooks. Edits the resource to the given properties.
+     *
+     * @param  ID_TEXT $filename The filename
+     * @param  string $path The path (blank: root / not applicable)
+     * @param  array $properties Properties (may be empty, properties given are open to interpretation by the hook but generally correspond to database fields)
+     * @param  boolean $explicit_move Whether we are definitely moving (as opposed to possible having it in multiple positions)
+     * @return ~ID_TEXT The resource ID (false: error, could not create via these properties / here)
+     */
+    abstract public function file_edit($filename, $path, $properties, $explicit_move = false);
+
+    /**
+     * Standard Commandr-fs delete function for resource-fs hooks. Deletes the resource.
+     *
+     * @param  ID_TEXT $filename The filename
+     * @param  string $path The path (blank: root / not applicable)
+     * @return boolean Success status
+     */
+    abstract public function file_delete($filename, $path);
+
+    /*
     HOOKS MAY OVERRIDE THESE AS REQUIRED, TO ENCODE IMPLEMENTATION COMPLEXITIES
     */
 
@@ -84,6 +209,18 @@ abstract class Resource_fs_base
     public function is_active()
     {
         return true;
+    }
+
+    /**
+     * Standard Commandr-fs date fetch function for resource-fs hooks. Defined when getting an edit date is not easy.
+     *
+     * @param  array $row Resource row (not full, but does contain the ID)
+     * @param  ID_TEXT $category Parent category (blank: root / not applicable)
+     * @return ?TIME The edit date or add date, whichever is higher (null: could not find one)
+     */
+    protected function _get_folder_edit_date($row, $category = '')
+    {
+        return null;
     }
 
     /**
@@ -1756,7 +1893,7 @@ abstract class Resource_fs_base
         }
 
         if (($GLOBALS['RESOURCE_FS_ADD_ONLY']) && ($filename !== null)) {
-            $resource_id = $this->file_convert_filename_to_id($filename);
+            list(, $resource_id) = $this->file_convert_filename_to_id($filename);
             if ($resource_id !== null) {
                 return $resource_id;
             }
@@ -1816,7 +1953,7 @@ abstract class Resource_fs_base
         }
 
         if (($GLOBALS['RESOURCE_FS_ADD_ONLY']) && ($filename !== null)) {
-            $resource_id = $this->folder_convert_filename_to_id($filename);
+            list(, $resource_id) = $this->folder_convert_filename_to_id($filename);
             if ($resource_id !== null) {
                 return $resource_id;
             }
@@ -2410,10 +2547,7 @@ abstract class Resource_fs_base
                 $str_id = extract_content_str_id_from_data($folder, $folder_info);
                 $filename = $this->folder_convert_id_to_filename($resource_type, $str_id);
 
-                $filetime = null;
-                if (method_exists($this, '_get_folder_edit_date')) {
-                    $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
-                }
+                $filetime = $this->_get_folder_edit_date($folder, end($meta_dir));
                 if ($filetime === null) {
                     if ($folder_info['edit_time_field'] !== null) {
                         $filetime = $folder[$folder_info['edit_time_field']];

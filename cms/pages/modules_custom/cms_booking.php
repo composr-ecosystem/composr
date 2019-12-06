@@ -280,13 +280,23 @@ class Module_cms_booking extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get a form for entering a bookable.
      *
      * @param  ?array $details Details of the bookable (null: new)
      * @param  array $supplements List of supplements
      * @param  array $blacks List of blacks
      * @param  array $codes List of codes
-     * @return array Tuple: form fields, hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($details = null, $supplements = [], $blacks = [], $codes = [])
     {
@@ -379,7 +389,7 @@ class Module_cms_booking extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -401,7 +411,7 @@ class Module_cms_booking extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -409,13 +419,14 @@ class Module_cms_booking extends Standard_crud_module
 
         $id = add_bookable($bookable_details, $codes, $blacked, $supplements);
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -424,6 +435,8 @@ class Module_cms_booking extends Standard_crud_module
         list($bookable_details, $codes, $blacked, $supplements) = get_bookable_details_from_form();
 
         edit_bookable($id, $bookable_details, $codes, $blacked, $supplements);
+
+        return null;
     }
 
     /**
@@ -443,7 +456,7 @@ class Module_cms_booking extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -519,11 +532,21 @@ class Module_cms_booking_supplements extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get a form for entering a bookable supplement.
      *
      * @param  ?array $details Details of the supplement (null: new)
      * @param  array $bookables List of bookables this is for
-     * @return array Tuple: form fields, hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($details = null, $bookables = [])
     {
@@ -575,7 +598,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -595,7 +618,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -603,13 +626,14 @@ class Module_cms_booking_supplements extends Standard_crud_module
 
         $id = add_bookable_supplement($details, $bookables);
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -618,6 +642,8 @@ class Module_cms_booking_supplements extends Standard_crud_module
         list($details, $bookables) = get_bookable_supplement_details_from_form();
 
         edit_bookable_supplement($id, $details, $bookables);
+
+        return null;
     }
 
     /**
@@ -637,7 +663,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -713,11 +739,21 @@ class Module_cms_booking_blacks extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get a form for entering a bookable black.
      *
      * @param  ?array $details Details of the black (null: new)
      * @param  array $bookables List of bookables this is for
-     * @return array Tuple: form fields, hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($details = null, $bookables = [])
     {
@@ -757,7 +793,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -777,7 +813,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -785,13 +821,14 @@ class Module_cms_booking_blacks extends Standard_crud_module
 
         $id = add_bookable_blacked($details, $bookables);
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -800,6 +837,8 @@ class Module_cms_booking_blacks extends Standard_crud_module
         list($details, $bookables) = get_bookable_blacked_details_from_form();
 
         edit_bookable_blacked($id, $details, $bookables);
+
+        return null;
     }
 
     /**
@@ -819,7 +858,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -985,11 +1024,21 @@ class Module_cms_booking_bookings extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get a form for entering a booking.
      *
      * @param  ?array $details Details of the booking (null: new)
      * @param  ?MEMBER $member_id Who the booking is for (null: current member)
-     * @return mixed Either Tempcode; or a tuple: form fields, hidden fields
+     * @return mixed Either Tempcode; or a tuple: the input fields, hidden fields
      */
     public function get_form_fields($details = null, $member_id = null)
     {
@@ -1102,7 +1151,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -1119,7 +1168,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1191,13 +1240,14 @@ class Module_cms_booking_bookings extends Standard_crud_module
             return strval($request[0]['_rows'][0]['id']);
         }
 
-        return strval($member_id) . '_' . strval($i);
+        return [strval($member_id) . '_' . strval($i), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -1222,6 +1272,8 @@ class Module_cms_booking_bookings extends Standard_crud_module
         // Delete then re-add
         $this->delete_actualisation($_id);
         $this->new_id = $this->add_actualisation();
+
+        return null;
     }
 
     /**
@@ -1249,7 +1301,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)

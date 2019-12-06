@@ -37,7 +37,7 @@ function init__database__sqlserver_odbc()
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_sqlserver_odbc extends Database_super_sqlserver
 {
@@ -159,10 +159,10 @@ class Database_Static_sqlserver_odbc extends Database_super_sqlserver
      *
      * @param  resource $results The query result pointer
      * @param  string $query The complete SQL query (useful for debugging)
-     * @param  ?integer $start Where to start reading from (null: irrelevant)
+     * @param  integer $start Where to start reading from
      * @return array A list of row maps
      */
-    public function get_query_rows($results, $query, $start = null)
+    protected function get_query_rows($results, $query, $start)
     {
         $out = [];
         if ($start === null) {

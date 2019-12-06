@@ -80,7 +80,7 @@ function close_debug_fs()
  * so that this runs as a common denominator of any file system's limitations.
  * Useful if developing on Mac/Windows with an SSD!
  *
- * @package    core
+ * @package core
  */
 class DebugFsStreamWrapper
 {

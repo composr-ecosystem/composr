@@ -283,7 +283,7 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
 /**
  * Base object for Health Check hooks.
  *
- * @package    health_check
+ * @package health_check
  */
 abstract class Hook_Health_Check
 {

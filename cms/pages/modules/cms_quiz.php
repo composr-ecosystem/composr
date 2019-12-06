@@ -240,14 +240,24 @@ class Module_cms_quiz extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return mixed The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
         return $id;
+    }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
     }
 
     /**
@@ -376,7 +386,7 @@ class Module_cms_quiz extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -417,7 +427,7 @@ class Module_cms_quiz extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the new entry
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -471,13 +481,14 @@ class Module_cms_quiz extends Standard_crud_module
             content_review_set('quiz', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -541,6 +552,8 @@ class Module_cms_quiz extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('quiz', strval($id));
         }
+
+        return null;
     }
 
     /**

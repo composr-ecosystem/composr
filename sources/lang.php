@@ -1387,7 +1387,7 @@ function table_id_locking_end($db, $id, $lock, $table = 'translate', $id_field =
 /**
  * Do filtering for a language pack. This is the base class that doesn't actually do anything.
  *
- * @package        core
+ * @package core
  */
 class LangFilter
 {

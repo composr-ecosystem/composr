@@ -347,8 +347,8 @@ class Module_admin_menus
     /**
      * Show a branch-editor of the menu editor.
      *
-     * @param  AUTO_LINK $id The ID of the branch we are displaying items for
-     * @param  integer $branch The parent branch holding the branch
+     * @param  ID_TEXT $id The menu we are displaying items for
+     * @param  ?AUTO_LINK $branch The parent branch holding the branch (null: root)
      * @param  integer $order The order this branch has in the editor (and due to linearly moving through, the number of branches shown assembled ready)
      * @param  boolean $clickable_sections Whether childed branches themselves can have URLs (etc)
      * @param  array $menu_items All rows on the menu
@@ -358,7 +358,7 @@ class Module_admin_menus
     {
         $child_branches = new Tempcode();
         foreach ($menu_items as $menu_item) {
-            if ($menu_item['i_parent'] == $branch) {
+            if ($menu_item['i_parent'] === $branch) {
                 $caption = get_translated_text($menu_item['i_caption']);
                 $url = $menu_item['i_url'];
                 $page_only = $menu_item['i_page_only'];

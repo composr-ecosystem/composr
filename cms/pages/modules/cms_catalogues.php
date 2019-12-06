@@ -440,6 +440,16 @@ class Module_cms_catalogues extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a catalogue entry adding/editing form.
      *
      * @param  ?ID_TEXT $catalogue_name The catalogue for the entry (null: detect)
@@ -450,7 +460,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @param  ?AUTO_LINK $id The ID of the entry (null: not yet added)
-     * @return array Tuple: the Tempcode for the visible fields, and the Tempcode for the hidden fields, ..., extra templating details
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function get_form_fields($catalogue_name = null, $category_id = null, $validated = 1, $notes = '', $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $id = null)
     {
@@ -623,8 +633,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $fields2 = new Tempcode();
         if (($id !== null) && (is_ecommerce_catalogue($catalogue_name)) && (!$this->may_delete_this(strval($id)))) {
-            $_submitter = $this->get_submitter($id);
-            $submitter = $_submitter[0];
+            list($submitter) = $this->get_submitter(strval($id));
             $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
             if ($delete_permission) {
                 $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'f38200840366846dd7d9ed769f673657', 'TITLE' => do_lang_tempcode('ACTIONS'), 'SECTION_HIDDEN' => true]));
@@ -651,10 +660,22 @@ class Module_cms_catalogues extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return string The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
+     */
+    public function get_cat($id)
+    {
+        $cat = $this->get_cat_b($id);
+        return $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => intval($cat)]);
+    }
+
+    /**
+     * Standard crud_module category getter.
+     *
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat_b($id)
     {
@@ -666,22 +687,10 @@ class Module_cms_catalogues extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
-     *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return string The cat
-     */
-    public function get_cat($id)
-    {
-        $cat = $this->get_cat_b($id);
-        return $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'c_name', ['id' => intval($cat)]);
-    }
-
-    /**
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -736,7 +745,7 @@ class Module_cms_catalogues extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -802,13 +811,14 @@ class Module_cms_catalogues extends Standard_crud_module
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -875,8 +885,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         // Purge support
         if (post_param_integer('force_delete', 0) == 1) {
-            $_submitter = $this->get_submitter($id);
-            $submitter = $_submitter[0];
+            list($submitter) = $this->get_submitter(strval($id));
             $delete_permission = has_delete_permission($this->permissions_require, get_member(), $submitter, ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))]);
             if ($delete_permission) {
                 $start = 0;
@@ -898,6 +907,8 @@ class Module_cms_catalogues extends Standard_crud_module
 
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
+
+        return null;
     }
 
     /**
@@ -950,7 +961,7 @@ class Module_cms_catalogues extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -1249,6 +1260,16 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a catalogue category adding/editing form.
      *
      * @param  ?ID_TEXT $catalogue_name The name of the catalogue the category is in (null: detect)
@@ -1261,7 +1282,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  integer $move_days_lower The number of days before expiry (lower limit)
      * @param  integer $move_days_higher The number of days before expiry (higher limit)
      * @param  ?AUTO_LINK $move_target The expiry category (null: do not expire)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($catalogue_name = null, $title = '', $description = '', $notes = '', $parent_id = -1, $id = null, $rep_image = '', $move_days_lower = 30, $move_days_higher = 60, $move_target = null)
     {
@@ -1325,10 +1346,10 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry being edited
-     * @return string The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -1343,7 +1364,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -1378,7 +1399,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return AUTO_LINK The ID of what was added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1423,13 +1444,14 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
 
-        return $category_id;
+        return [$category_id, null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -1482,6 +1504,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
 
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
+
+        return null;
     }
 
     /**
@@ -1508,7 +1532,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever catalogue category was just handled (null: deleted)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -1571,6 +1595,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     protected $is_chained_with_parent_browse = true;
 
     public $js_function_calls = ['moduleCmsCataloguesAlt'];
+
     /**
      * Standard crud_module list function.
      *
@@ -1616,6 +1641,16 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a catalogue adding/editing form.
      *
      * @param  ID_TEXT $name The name of the catalogue
@@ -1631,7 +1666,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ID_TEXT $send_view_reports How to send view reports
      * @set never daily weekly monthly quarterly
      * @param  ?integer $default_review_freq Default review frequency for catalogue entries (null: none)
-     * @return array A tuple: the Tempcode for the visible fields, and the Tempcode for the hidden fields, ..., and action fields
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($name = '', $title = '', $description = '', $display_type = 0, $is_tree = 1, $notes = '', $submit_points = 0, $ecommerce = 0, $categories_sort_order = 'title ASC', $send_view_reports = 'never', $default_review_freq = null)
     {
@@ -1825,7 +1860,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $catalogue_name The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($catalogue_name)
     {
@@ -1844,7 +1879,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1986,13 +2021,14 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $this->do_next_description = paragraph(do_lang_tempcode('SUGGEST_ADD_CATEGORY_NEXT'));
         }
 
-        return $name;
+        return [$name, null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $old_name The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($old_name)
     {
@@ -2192,6 +2228,8 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                 permission_product_save('catalogue', $name);
             }
         }
+
+        return null;
     }
 
     /**

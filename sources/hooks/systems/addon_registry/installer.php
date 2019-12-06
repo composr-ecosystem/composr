@@ -366,8 +366,8 @@ class Hook_addon_registry_installer
     /**
      * Make the UI for an installer tick (check) option.
      *
-     * @param  Tempcode $nice_name The human readable name for the option
-     * @param  Tempcode $description A description of the option
+     * @param  string $nice_name The human readable name for the option
+     * @param  string $description A description of the option
      * @param  ID_TEXT $name The name of the option
      * @param  BINARY $value The default/current value of the option
      * @return Tempcode The list of usergroups
@@ -390,8 +390,8 @@ class Hook_addon_registry_installer
     /**
      * Make the UI for an installer textual option.
      *
-     * @param  Tempcode $nice_name The human readable name for the option
-     * @param  Tempcode $description A description of the option
+     * @param  string $nice_name The human readable name for the option
+     * @param  string $description A description of the option
      * @param  ID_TEXT $name The name of the option
      * @param  string $value The default/current value of the option
      * @param  boolean $hidden Whether the options value should be kept starred out (e.g. it is a password)
@@ -437,8 +437,8 @@ class Hook_addon_registry_installer
         require_lang('version');
 
         $options = new Tempcode();
-        $options->attach($this->make_option(lorem_phrase(), new Tempcode(), 'ftp_username', '', false, true));
-        $options->attach($this->make_option(lorem_phrase(), new Tempcode(), 'ftp_password', '', true));
+        $options->attach($this->make_option(lorem_phrase(), '', 'ftp_username', '', false, true));
+        $options->attach($this->make_option(lorem_phrase(), '', 'ftp_password', '', true));
 
         $options->attach($this->make_tick(lorem_word(), lorem_phrase(), 'tick', 1));
 

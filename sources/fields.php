@@ -850,7 +850,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
 /**
  * Used by list fields to derive list data based on field options.
  *
- * @package    core_fields
+ * @package core_fields
  */
 abstract class ListFieldHook
 {

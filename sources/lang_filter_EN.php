@@ -25,7 +25,7 @@ For other language packs you can copy this file to the obvious new name. This is
 /**
  * Do filtering for the bundled English language pack.
  *
- * @package        core
+ * @package core
  */
 class LangFilter_EN extends LangFilter
 {

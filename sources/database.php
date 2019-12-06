@@ -569,10 +569,156 @@ function get_db_forums_password()
 /**
  * Base class for database drivers.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
-class DatabaseDriver
+abstract class DatabaseDriver
 {
+    /**
+     * Get the default user for making db connections (used by the installer as a default).
+     *
+     * @return string The default user for db connections
+     */
+    abstract public function default_user();
+
+    /**
+     * Get the default password for making db connections (used by the installer as a default).
+     *
+     * @return string The default password for db connections
+     */
+    abstract public function default_password();
+
+    /**
+     * Get a database connection. This function shouldn't be used by you, as a connection to the database is established automatically.
+     *
+     * @param  boolean $persistent Whether to create a persistent connection
+     * @param  string $db_name The database name
+     * @param  string $db_host The database host (the server)
+     * @param  string $db_user The database connection username
+     * @param  string $db_password The database connection password
+     * @param  boolean $fail_ok Whether to on error echo an error and return with a null, rather than giving a critical error
+     * @return ?mixed A database connection (null: failed)
+     */
+    abstract public function get_connection($persistent, $db_name, $db_host, $db_user, $db_password, $fail_ok = false);
+
+    /**
+     * Adjust an SQL query to apply offset/limit restriction.
+     *
+     * @param  string $query The complete SQL query
+     * @param  ?integer $max The maximum number of rows to affect (null: no limit)
+     * @param  integer $start The start row to affect
+     */
+    abstract public function apply_sql_limit_clause(&$query, $max = null, $start = 0);
+
+    /**
+     * Start a transaction.
+     */
+    public function start_transaction()
+    {
+    }
+
+    /**
+     * End a transaction.
+     */
+    public function end_transaction()
+    {
+    }
+
+    /**
+     * This function is a very basic query executor. It shouldn't usually be used by you, as there are abstracted versions available.
+     *
+     * @param  string $query The complete SQL query
+     * @param  mixed $connection The DB connection
+     * @param  ?integer $max The maximum number of rows to affect (null: no limit)
+     * @param  integer $start The start row to affect
+     * @param  boolean $fail_ok Whether to output an error on failure
+     * @param  boolean $get_insert_id Whether to get the autoincrement ID created for an insert query
+     * @return ?mixed The results (null: no results), or the insert ID
+     */
+    abstract public function query($query, $connection, $max = null, $start = 0, $fail_ok = false, $get_insert_id = false);
+
+    /**
+     * Insert a update a row (depending on whether a row with the key exists already).
+     *
+     * @param  string $table The table name
+     * @param  array $map The INSERT/UPDATE map, minus anything in the key
+     * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
+     * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @return ?string SQL query (null: not supported)
+     */
+    public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
+    {
+        return null;
+    }
+
+    /**
+     * Get a map of Composr field types, to actual database types.
+     *
+     * @param  boolean $for_alter Whether this is for adding a table field
+     * @return array The map
+     */
+    abstract public function get_type_remap($for_alter = false);
+
+    /**
+     * Get SQL for creating a new table.
+     *
+     * @param  ID_TEXT $table_name The table name
+     * @param  array $fields A map of field names to Composr field types (with *#? encodings)
+     * @param  mixed $connection The DB connection to make on
+     * @param  ID_TEXT $raw_table_name The table name with no table prefix
+     * @param  boolean $save_bytes Whether to use lower-byte table storage, with trade-offs of not being able to support all unicode characters; use this if key length is an issue
+     * @return array List of SQL queries to run
+     */
+    abstract public function create_table($table_name, $fields, $connection, $raw_table_name, $save_bytes = false);
+
+    /**
+     * Get SQL for creating a table index.
+     *
+     * @param  ID_TEXT $table_name The name of the table to create the index on
+     * @param  ID_TEXT $index_name The index name (not really important at all)
+     * @param  string $_fields Part of the SQL query: a comma-separated list of fields to use on the index
+     * @param  mixed $connection The DB connection to make on
+     * @param  ID_TEXT $raw_table_name The table name with no table prefix
+     * @param  string $unique_key_fields The name of the unique key field for the table
+     * @param  string $table_prefix The table prefix
+     * @return array List of SQL queries to run
+     */
+    abstract public function create_index($table_name, $index_name, $_fields, $connection, $raw_table_name, $unique_key_fields, $table_prefix);
+
+    /**
+     * Change the primary key of a table.
+     *
+     * @param  ID_TEXT $table_name The name of the table to create the index on
+     * @param  array $new_key A list of fields to put in the new key
+     * @param  mixed $connection The DB connection to make on
+     */
+    abstract public function change_primary_key($table_name, $new_key, $connection);
+
+    /**
+     * Get the number of rows in a table, with approximation support for performance (if necessary on the particular database backend).
+     *
+     * @param  string $table The table name
+     * @param  mixed $connection The DB connection
+     * @return ?integer The count (null: do it normally)
+     */
+    public function get_table_count_approx($table, $connection)
+    {
+        return null;
+    }
+
+    /**
+     * Escape a string so it may be inserted into a query. If SQL statements are being built up and passed using db_query then it is essential that this is used for security reasons. Otherwise, the abstraction layer deals with the situation.
+     *
+     * @param  string $string The string
+     * @return string The escaped string
+     */
+    abstract public function escape_string($string);
+
+    /**
+     * Close the database connections. We don't really need to close them (will close at exit), just disassociate so we can refresh them.
+     */
+    abstract public function close_connections();
+
     /**
      * Get SQL to delete a table.
      * When running this SQL you must suppress errors.
@@ -629,6 +775,19 @@ class DatabaseDriver
     public function has_full_text_boolean()
     {
         return false;
+    }
+
+    /**
+     * Assemble part of a WHERE clause for doing full-text search.
+     *
+     * @param  string $content Our match string (assumes "?" has been stripped already)
+     * @param  boolean $boolean Whether to do a boolean full text search
+     * @return string Part of a WHERE clause for doing full-text search
+     */
+    public function full_text_assemble($content, $boolean)
+    {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        return ''; // Not implemented
     }
 
     /**
@@ -753,10 +912,6 @@ class DatabaseDriver
      */
     public function cast($field, $type)
     {
-        if (method_exists($GLOBALS['DB_STATIC_OBJECT'], 'db_cast')) {
-            return $GLOBALS['DB_STATIC_OBJECT']->cast($field, $type);
-        }
-
         switch ($type) {
             case 'CHAR':
             case 'INT':
@@ -1100,7 +1255,7 @@ class DatabaseDriver
 /**
  * Database handling.
  *
- * @package    core
+ * @package core
  */
 class DatabaseConnector
 {
@@ -1914,8 +2069,8 @@ class DatabaseConnector
      */
     public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
     {
-        if (method_exists($this->static_ob, 'query_insert_or_replace')) {
-            $query = $this->static_ob->query_insert_or_replace($this->get_table_prefix() . $table, $map, $key_map, $fail_ok, $save_as_volatile);
+        $query = $this->static_ob->query_insert_or_replace($this->get_table_prefix() . $table, $map, $key_map, $fail_ok, $save_as_volatile);
+        if ($query !== null) {
             $this->_query($query, null, 0, $fail_ok, false, null, '', $save_as_volatile);
             return true;
         }
@@ -2369,9 +2524,7 @@ class DatabaseConnector
      */
     public function start_transaction()
     {
-        if (method_exists($this->static_ob, 'db_start_transaction')) {
-            $this->static_ob->start_transaction($this->connection_write);
-        }
+        $this->static_ob->start_transaction($this->connection_write);
     }
 
     /**
@@ -2379,9 +2532,7 @@ class DatabaseConnector
      */
     public function end_transaction()
     {
-        if (method_exists($this->static_ob, 'db_end_transaction')) {
-            $this->static_ob->end_transaction($this->connection_write);
-        }
+        $this->static_ob->end_transaction($this->connection_write);
     }
 
     /**
@@ -2405,11 +2556,9 @@ class DatabaseConnector
      */
     public function get_table_count_approx($table, $where = [], $where_clause = null)
     {
-        if (method_exists($this->static_ob, 'get_table_count_approx')) {
-            $ret = $this->static_ob->get_table_count_approx($this->get_table_prefix() . $table, $this->connection_read);
-            if ($ret !== null) {
-                return $ret;
-            }
+        $ret = $this->static_ob->get_table_count_approx($this->get_table_prefix() . $table, $this->connection_read);
+        if ($ret !== null) {
+            return $ret;
         }
 
         return $this->query_select_value($table, 'COUNT(*)', $where, ($where_clause === null) ? '' : (' AND ' . $where_clause));

@@ -43,6 +43,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                             'sources_custom/aws',
                             'sources_custom/swift_mailer',
                             'tracker',
+                            'vendor',
                             'sources_custom/spout',
                             'sources_custom/geshi',
                             'sources_custom/getid3',

@@ -21,7 +21,7 @@
 /**
  * Forum driver class.
  *
- * @package    core_forum_drivers
+ * @package core_forum_drivers
  */
 class Forum_driver_smf2 extends Forum_driver_base
 {
@@ -438,7 +438,7 @@ class Forum_driver_smf2 extends Forum_driver_base
     public function find_topic_id_for_topic_identifier($forum, $topic_identifier)
     {
         if (is_integer($forum)) {
-            $forum_id = $forum;
+            $forum_id = intval($forum);
         } else {
             $forum_id = $this->forum_id_from_name($forum);
         }

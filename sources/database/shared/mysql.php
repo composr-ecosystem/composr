@@ -21,9 +21,9 @@
 /**
  * Base class for MySQL database drivers.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
-class Database_super_mysql extends DatabaseDriver
+abstract class Database_super_mysql extends DatabaseDriver
 {
     /**
      * Get the default user for making db connections (used by the installer as a default).
@@ -602,7 +602,7 @@ class Database_super_mysql extends DatabaseDriver
      * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
      * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
      * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
-     * @return string SQL query
+     * @return ?string SQL query (null: not supported)
      */
     public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
     {

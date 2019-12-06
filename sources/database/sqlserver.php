@@ -29,7 +29,7 @@ require_code('database/shared/sqlserver');
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_sqlserver extends Database_super_sqlserver
 {

@@ -120,7 +120,7 @@ PHP;
                         if ($cache_on != '') {
                             $_cache_on = cms_eval('return ' . $cache_on . ';', 'Block: ' . $codename); // NB: This uses $map, as $map is referenced inside $cache_on
                             if ($_cache_on === null) {
-                                return null;
+                                return;
                             }
                             foreach ($_cache_on as $on) {
                                 $_cache_identifier[] = $on;

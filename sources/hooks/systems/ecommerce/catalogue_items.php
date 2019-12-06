@@ -587,7 +587,7 @@ class Hook_ecommerce_catalogue_items
         $stock_after_dispatch = $available_quantity - $quantity;
 
         if ($stock_after_dispatch < $stock_level_warn_threshold) {
-            $this->_send_stock_maintain_warn_mail($product_title, $entry_id);
+            $this->_send_stock_maintain_warn_mail($product_title, strval($entry_id));
         }
 
         if (array_key_exists($shopping_catalogue__stock_level, $field_rows)) {

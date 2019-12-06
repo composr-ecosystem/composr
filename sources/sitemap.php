@@ -212,7 +212,7 @@ function find_sitemap_object($page_link, $options = 0)
 /**
  * Sitemap node type base class.
  *
- * @package        core
+ * @package core
  */
 abstract class Hook_sitemap_base
 {
@@ -551,7 +551,7 @@ abstract class Hook_sitemap_base
     /**
      * Convert a page-link to a category ID and category permission module type.
      *
-     * @param  string $page_link The page-link
+     * @param  ID_TEXT $page_link The page-link
      * @return ?array The pair (null: permission modules not handled)
      */
     public function extract_child_page_link_permission_pair($page_link)
@@ -684,7 +684,7 @@ abstract class Hook_sitemap_base
 /**
  * Sitemap node type for content types.
  *
- * @package        core
+ * @package core
  */
 abstract class Hook_sitemap_content extends Hook_sitemap_base
 {

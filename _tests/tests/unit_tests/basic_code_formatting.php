@@ -95,6 +95,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'data/ckeditor',
                 'sources_custom/composr_mobile_sdk',
                 'tracker',
+                'vendor',
                 'sources_custom/ILess',
                 'sources_custom/spout',
                 'sources_custom/getid3',
@@ -184,6 +185,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/programe',
                 'sources_custom/sabredav',
                 'tracker',
+                'vendor',
                 'data_custom/pdf_viewer',
             ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
@@ -240,6 +242,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/spout',
                 'sources_custom/swift_mailer',
                 'tracker',
+                'vendor',
                 'lang_custom/(?!EN)\w+',
                 'text_custom/(?!EN)\w+',
                 'comcode_custom/(?!EN)\w+',
@@ -308,6 +311,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 '_tests/assets/text',
                 '_tests/assets/spreadsheets',
                 'tracker',
+                'vendor',
                 'data/ace',
                 'data/ckeditor',
                 'sources_custom/composr_mobile_sdk/ios/ApnsPHP',

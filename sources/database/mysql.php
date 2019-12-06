@@ -25,7 +25,7 @@ require_code('database/shared/mysql');
 /**
  * Database driver class.
  *
- * @package    core_database_drivers
+ * @package core_database_drivers
  */
 class Database_Static_mysql extends Database_super_mysql
 {
@@ -157,7 +157,7 @@ class Database_Static_mysql extends Database_super_mysql
                     $GLOBALS['SITE_DB']->connection_write = $connection;
                     $GLOBALS['SITE_DB']->connection_read = $connection;
                 }
-                $ret = $this->query($query, $connection, null/*already encoded*/, null/*already encoded*/, $fail_ok, $get_insert_id);
+                $ret = $this->query($query, $connection, null/*already encoded*/, 0/*already encoded*/, $fail_ok, $get_insert_id);
                 $this->reconnected_once = false;
                 return $ret;
             }

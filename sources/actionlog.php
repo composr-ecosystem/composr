@@ -38,7 +38,7 @@ function init__actionlog()
  * Base action log object.
  * Used for ameliorating action log entries.
  *
- * @package    core_notifications
+ * @package core_notifications
  */
 abstract class Hook_actionlog
 {

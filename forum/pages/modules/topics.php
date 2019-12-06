@@ -323,7 +323,7 @@ class Module_topics
      * Do a redirection page to a certain forum (because we've just done an action and want to go back).
      *
      * @param  ID_TEXT $_title The language string codename for the title to use in the page
-     * @param  AUTO_LINK $forum_id The ID of the forum to redirect to
+     * @param  ?AUTO_LINK $forum_id The ID of the forum to redirect to (null: PTs)
      * @param  ?mixed $lang What to output (Tempcode or string) (null: default)
      * @return Tempcode The UI
      */

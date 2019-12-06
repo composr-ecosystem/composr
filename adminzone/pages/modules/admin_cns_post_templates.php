@@ -378,6 +378,16 @@ class Module_admin_cns_post_templates extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a Post Template adding/editing form.
      *
      * @param  SHORT_TEXT $title The title (name) of the Post Template
@@ -401,7 +411,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -417,21 +427,24 @@ class Module_admin_cns_post_templates extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
-        return strval(cns_make_post_template(post_param_string('title'), post_param_string('text'), read_multi_code('forum_multi_code'), post_param_integer('use_default_forums', 0)));
+        $id = cns_make_post_template(post_param_string('title'), post_param_string('text'), read_multi_code('forum_multi_code'), post_param_integer('use_default_forums', 0));
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
         cns_edit_post_template(intval($id), post_param_string('title'), post_param_string('text'), read_multi_code('forum_multi_code'), post_param_integer('use_default_forums', 0));
+        return null;
     }
 
     /**

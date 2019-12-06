@@ -34,7 +34,7 @@ function extract_plain_links($matches)
 /**
  * RSS loader.
  *
- * @package    core
+ * @package core
  */
 class CMS_RSS
 {

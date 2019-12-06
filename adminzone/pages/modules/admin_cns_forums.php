@@ -191,6 +191,16 @@ class Module_admin_cns_forums extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a forum adding/editing form.
      *
      * @param  ?AUTO_LINK $id The ID of the forum being edited (null: adding, not editing)
@@ -566,7 +576,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A tuple: fields, hidden-fields, delete-fields, N/A, N/A, N/A, action fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -662,7 +672,7 @@ class Module_admin_cns_forums extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -751,17 +761,18 @@ class Module_admin_cns_forums extends Standard_crud_module
             syndicate_described_activity('cns:ACTIVITY_ADD_FORUM', $name, '', '', '_SEARCH:forumview:browse:' . $id, '', '', 'cns_forum');
         }
 
-        return $id;
+        return [$id, null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
-        list($mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice) = $this->input_and_check_mail_parameters($id);
+        list($mail_email_address, $mail_server_type, $mail_server_host, $mail_server_port, $mail_folder, $mail_username, $mail_password, $mail_nonmatch_policy, $mail_unconfirmed_notice) = $this->input_and_check_mail_parameters(intval($id));
 
         $metadata = actual_metadata_get_fields('forum', $id);
 
@@ -817,6 +828,8 @@ class Module_admin_cns_forums extends Standard_crud_module
                 content_review_set('forum', $id);
             }
         }
+
+        return null;
     }
 
     /**

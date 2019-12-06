@@ -58,6 +58,7 @@ class file_naming_test_set extends cms_test_case
             'themes/default/javascript/mediaelement-and-player.js',
             'themes/default/images/cns_emoticons/',
             'tracker/',
+            'vendor/',
             '_config.php.template',
             '_tests/codechecker/codechecker.app/',
             '_tests/codechecker/netbeans/',

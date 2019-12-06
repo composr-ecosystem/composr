@@ -34,7 +34,7 @@ function init__commandr_fs()
 /**
  * Virtual filesystems.
  *
- * @package    commandr
+ * @package commandr
  */
 class Commandr_fs
 {

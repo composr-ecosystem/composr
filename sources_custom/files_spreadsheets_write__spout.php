@@ -16,7 +16,7 @@
 /**
  * Spout spreadsheet writer.
  *
- * @package    core
+ * @package core
  */
 class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
 {

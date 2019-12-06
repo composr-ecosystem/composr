@@ -405,13 +405,23 @@ class Module_warnings extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a warning adding/editing form.
      *
      * @param  boolean $new Whether it is a new warning/punishment record
      * @param  LONG_TEXT $explanation The explanation for the warning/punishment record
      * @param  BINARY $is_warning Whether to make this a formal warning
      * @param  ?MEMBER $member_id The member the warning is for (null: get from environment)
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return array A pair: The input fields, Hidden fields
      */
     public function get_form_fields($new = true, $explanation = '', $is_warning = 0, $member_id = null)
     {
@@ -787,7 +797,7 @@ class Module_warnings extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $id The entry being edited
-     * @return array A pair: the Tempcode for the visible fields, and the Tempcode for the hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($id)
     {
@@ -874,7 +884,7 @@ class Module_warnings extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1141,13 +1151,14 @@ class Module_warnings extends Standard_crud_module
             unset($_GET['redirect']);
         }
 
-        return strval($warning_id);
+        return [strval($warning_id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -1157,6 +1168,8 @@ class Module_warnings extends Standard_crud_module
             require_code('site2');
             assign_refresh($GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), 0.0); // redirect_screen not used because there is already a legitimate output screen happening
         }
+
+        return null;
     }
 
     /**

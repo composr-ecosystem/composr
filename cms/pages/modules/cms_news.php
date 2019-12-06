@@ -253,7 +253,7 @@ class Module_cms_news extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_highrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
         $news_cat_titles = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
@@ -301,6 +301,16 @@ class Module_cms_news extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a news adding/editing form.
      *
      * @param  ?AUTO_LINK $id The news ID (null: new)
@@ -318,7 +328,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  URLPATH $image URL to the image for the news entry (blank: use cat image)
      * @param  ?array $scheduled Scheduled go-live time (null: N/A)
      * @param  array $regions The regions (empty: not region-limited)
-     * @return array A tuple of lots of info (fields, hidden fields, trailing fields, tabindex for posting form)
+     * @return array A tuple: The input fields, Hidden fields, ...
      */
     public function get_form_fields($id = null, $main_news_category = null, $news_category = null, $title = '', $news = '', $author = '', $validated = 1, $allow_rating = null, $allow_comments = null, $allow_trackbacks = null, $send_trackbacks = 1, $notes = '', $image = '', $scheduled = null, $regions = [])
     {
@@ -327,16 +337,16 @@ class Module_cms_news extends Standard_crud_module
             $id = get_param_integer('id', null);
             if ($id !== null) {
                 if (method_exists($this, 'get_submitter')) {
-                    list($submitter) = $this->get_submitter($id);
+                    list($submitter) = $this->get_submitter(strval($id));
                 } else {
                     $submitter = null;
                 }
 
                 if ($this->permissions_require !== null) {
-                    check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id)), $this->permissions_cat_require_b, ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b(strval($id))], $this->privilege_page_name);
+                    check_edit_permission($this->permissions_require, $submitter, [$this->permissions_cat_require, ($this->permissions_cat_name === null) ? null : $this->get_cat(strval($id))], $this->privilege_page_name);
                 }
 
-                $ret = $this->fill_in_edit_form($id);
+                $ret = $this->fill_in_edit_form(strval($id));
 
                 $ret[2] = null;
                 $ret[3] = null;
@@ -472,10 +482,10 @@ class Module_cms_news extends Standard_crud_module
     }
 
     /**
-     * Standard crud_module cat getter.
+     * Standard crud_module category getter.
      *
-     * @param  ID_TEXT $id The entry for which the cat is sought
-     * @return string The cat
+     * @param  ID_TEXT $id The entry for which the category is sought
+     * @return mixed The category
      */
     public function get_cat($id)
     {
@@ -490,7 +500,7 @@ class Module_cms_news extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A tuple of lots of info
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -542,7 +552,7 @@ class Module_cms_news extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The ID of the entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -639,13 +649,14 @@ class Module_cms_news extends Standard_crud_module
             content_review_set('news', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $_id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($_id)
     {
@@ -750,6 +761,8 @@ class Module_cms_news extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('news', strval($id));
         }
+
+        return null;
     }
 
     /**
@@ -774,7 +787,7 @@ class Module_cms_news extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
@@ -948,6 +961,16 @@ class Module_cms_news_cat extends Standard_crud_module
     }
 
     /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
      * Get Tempcode for a news category adding/editing form.
      *
      * @param  ?AUTO_LINK $id The news category ID (null: new)
@@ -994,7 +1017,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * Standard crud_module edit form filler.
      *
      * @param  ID_TEXT $_id The entry being edited
-     * @return array A pair: The input fields, Hidden fields
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
     public function fill_in_edit_form($_id)
     {
@@ -1012,7 +1035,7 @@ class Module_cms_news_cat extends Standard_crud_module
     /**
      * Standard crud_module add actualiser.
      *
-     * @return ID_TEXT The entry added
+     * @return array A pair: The entry added, description about usage
      */
     public function add_actualisation()
     {
@@ -1039,13 +1062,14 @@ class Module_cms_news_cat extends Standard_crud_module
             content_review_set('news_category', strval($id));
         }
 
-        return strval($id);
+        return [strval($id), null];
     }
 
     /**
      * Standard crud_module edit actualiser.
      *
      * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
      */
     public function edit_actualisation($id)
     {
@@ -1068,7 +1092,7 @@ class Module_cms_news_cat extends Standard_crud_module
 
         edit_news_category(intval($id), $title, $img, $notes, $metadata['submitter']);
 
-        $this->set_permissions(intval($id));
+        $this->set_permissions($id);
         if (addon_installed('ecommerce')) {
             require_code('ecommerce_permission_products');
             permission_product_save('news_category', $id);
@@ -1077,17 +1101,19 @@ class Module_cms_news_cat extends Standard_crud_module
         if (addon_installed('content_reviews')) {
             content_review_set('news_category', $id);
         }
+
+        return null;
     }
 
     /**
      * Standard crud_module submitter getter.
      *
      * @param  ID_TEXT $id The entry for which the submitter is sought
-     * @return ?MEMBER The submitter (null: none)
+     * @return array The submitter, and the time of submission (null submission time implies no known submission time)
      */
     public function get_submitter($id)
     {
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', ['id' => intval($id)]);
+        return [$GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', ['id' => intval($id)]), null];
     }
 
     /**
@@ -1105,12 +1131,12 @@ class Module_cms_news_cat extends Standard_crud_module
      *
      * @param  Tempcode $title The title (output of get_screen_title)
      * @param  Tempcode $description Some description to show, saying what happened
-     * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
      * @return Tempcode The UI
      */
     public function do_next_manager($title, $description, $id = null)
     {
-        return $this->_do_next_manager($title, $description, [], ($id === null) ? null : intval($id));
+        return $this->_do_next_manager($title, $description, ($id === null) ? null : intval($id));
     }
 
     /**

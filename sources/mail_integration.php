@@ -33,7 +33,7 @@ function init__mail_integration()
 /**
  * E-mail integration  base class.
  *
- * @package        core
+ * @package core
  */
 abstract class EmailIntegration
 {

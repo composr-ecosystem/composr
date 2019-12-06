@@ -522,7 +522,11 @@ function semihtml_to_comcode($semihtml, $force = false, $quick = false, $member_
     // ---
 
     // Maybe we don't do a conversion? If possible we want to avoid it because conversions are messy.
-    if (((!$force) && (get_option('eager_wysiwyg') == '0') && (has_privilege($member_id, 'allow_html'))) || (strpos($semihtml, '{$,page hint: no_smart_conversion}') !== false)) {
+    if (
+        ((!$force) && (get_option('eager_wysiwyg') == '0') && (has_privilege($member_id, 'allow_html')))
+        ||
+        (strpos($semihtml, '{$,page hint: no_smart_conversion}') !== false)/*Note that allow_html will be re-checked (whitelist) in comcode_compiler.php*/
+    ) {
         // Resolve relative URLs
         $semihtml = preg_replace_callback('#<img([^>]*) src="([^"]*)"([^>]*) />#siU', '_img_tag_fixup_raw', $semihtml);
         $semihtml = preg_replace_callback('#<img([^>]*) src="([^"]*)"([^>]*)>#siU', '_img_tag_fixup_raw', $semihtml);
