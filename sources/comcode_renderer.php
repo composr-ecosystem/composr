@@ -1720,6 +1720,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $rel .= 'nofollow';
             }
             if (!$as_admin) {
+                $rel = preg_replace('#(^|\s)opener($|[^\w])#', '\2', $rel);
                 if ($rel != '') {
                     $rel .= ' ';
                 }
