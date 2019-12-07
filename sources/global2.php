@@ -239,7 +239,9 @@ function init__global2()
     $BASE_URL_HTTPS_CACHE = null;
 
     require_code('version');
-    @header('X-Content-Type-Options: nosniff');
+    if (!empty($SITE_INFO['no_nosniff_header'])) {
+        @header('X-Content-Type-Options: nosniff');
+    }
     @header('X-XSS-Protection: 1');
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) {
         // Marker that Composr running
