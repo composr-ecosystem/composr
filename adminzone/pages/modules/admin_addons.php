@@ -1048,6 +1048,10 @@ class Module_admin_addons
 
                                 foreach ($existing_addon_info['files'] as $i => $_file) {
                                     if ($_file != $file) {
+                                        if (!is_file($_file)) {
+                                            warn_exit('Missing file referenced by addon registry hook: ' . $_file);
+                                        }
+
                                         $hidden->attach(form_input_hidden('file_' . strval(10000000 + $i), $_file));
                                     }
                                 }
