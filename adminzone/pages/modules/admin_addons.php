@@ -1044,7 +1044,7 @@ class Module_admin_addons
                     if ($existing_addon_info['files'] != $files) {
                         if (count($files) == 1) {
                             if (count($existing_addon_info['files']) > 1) {
-                                attach_message('You only selected the addon_registry hook - automatically selecting the ' . integer_format(count($existing_addon_info['files'])) . ' files referenced by that hook.', 'warn');
+                                attach_message('You only selected the addon_registry hook - automatically selecting the ' . integer_format(count($existing_addon_info['files'])) . ' files referenced by that hook.', 'inform');
 
                                 foreach ($existing_addon_info['files'] as $i => $_file) {
                                     if ($_file != $file) {
