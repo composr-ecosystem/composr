@@ -1303,7 +1303,22 @@ function get_html_trace()
     }
     $GLOBALS['SUPPRESS_ERROR_DEATH'] = $bak;
 
-    return do_template('STACK_TRACE', array('_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : array(), 'TRACE' => $trace));
+    $post = array();
+    if (count($_POST) < 200) {
+        foreach ($_POST as $key => $val) {
+            if (stripos($key, 'password') !== false) {
+                continue;
+            }
+
+            if (@get_magic_quotes_gpc()) {
+                $val = stripslashes($val);
+            }
+
+            $post[$key] = $val;
+        }
+    }
+
+    return do_template('STACK_TRACE', array('_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => $post, 'TRACE' => $trace));
 }
 
 /**
