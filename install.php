@@ -1254,7 +1254,7 @@ function step_5()
             continue;
         }
 
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $val = stripslashes($val);
         }
         if ($key == 'master_password') {
@@ -1804,7 +1804,7 @@ if (!function_exists(\'git_repos\')) {
             continue;
         }
 
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $val = stripslashes($val);
         }
         if ($key == 'master_password') {

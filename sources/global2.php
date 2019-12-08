@@ -1679,7 +1679,7 @@ function __param($array, $name, $default, $integer = false, $posted = false)
 
     static $mq = null;
     if ($mq === null) {
-        $mq = get_magic_quotes_gpc();
+        $mq = @get_magic_quotes_gpc();
     }
     if ($mq) {
         $val = stripslashes($val);

@@ -365,8 +365,10 @@ function lex($text = null)
 
                 // Special case, don't allow tokens in object dereferencing chains
                 $_last_token = end($tokens);
-                if ($_last_token[0] == 'OBJECT_OPERATOR') {
-                    $applicable_tokens = array();
+                if ($_last_token !== false) {
+                    if ($_last_token[0] == 'OBJECT_OPERATOR') {
+                        $applicable_tokens = array();
+                    }
                 }
 
                 // If we have any applicable tokens, find the longest and move $i so it's as we just read it

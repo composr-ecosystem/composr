@@ -549,6 +549,10 @@ abstract class Hook_sitemap_base
 
             $links = get_page_grouping_links();
             foreach ($links as $link) {
+                if ($link === null) {
+                    continue;
+                }
+
                 if (!is_array($link[2])) {
                     continue;
                 }

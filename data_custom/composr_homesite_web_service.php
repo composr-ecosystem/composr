@@ -54,7 +54,7 @@ header('Content-type: text/plain; charset=' . get_charset());
 $call = get_param_string('call');
 
 $parameters = isset($_POST['parameters']) ? $_POST['parameters'] : array();
-if (get_magic_quotes_gpc()) {
+if (@get_magic_quotes_gpc()) {
     $parameters = array_map('stripslashes', $parameters);
 }
 

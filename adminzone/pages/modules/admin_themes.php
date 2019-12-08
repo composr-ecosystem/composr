@@ -668,7 +668,7 @@ class Module_admin_themes
         }
         if (array_key_exists('mapping', $_POST)) {
             foreach ($_POST['mapping'] as $val) {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = stripslashes($val);
                 }
                 $new_map[$val] = $theme;

@@ -617,7 +617,7 @@ class Module_cms_blogs extends Standard_crud_module
             null, // Add to category
             has_privilege(get_member(), 'submit_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => 'add_category'), '_SELF') : null, // Add one category
             has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => 'edit_category'), '_SELF') : null, // Edit one category
-            is_null($cat) ? null : has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => '_edit_category', 'id' => $cat), '_SELF') : null, // Edit this category
+            is_null($cat) ? null : (has_privilege(get_member(), 'edit_own_cat_midrange_content', 'cms_news') ? array('cms_news', array('type' => '_edit_category', 'id' => $cat), '_SELF') : null), // Edit this category
             null, // View this category
             null,
             null,

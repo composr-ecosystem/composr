@@ -1871,7 +1871,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                 continue;
             }
 
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val = stripslashes($val);
             }
 
@@ -2039,7 +2039,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
                     continue;
                 }
 
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = stripslashes($val);
                 }
 

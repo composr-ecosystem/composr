@@ -126,7 +126,8 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
                 $path = utf8_decode($path);
             }
 
-            $mode = octdec(substr($header, 100, 8));
+            $_mode = substr($header, 100, 8);
+            $mode = octdec(trim($_mode));
             $size = octdec(rtrim(substr($header, 124, 12)));
             $mtime = octdec(rtrim(substr($header, 136, 12)));
             $chksum = octdec(rtrim(substr($header, 148, 8)));

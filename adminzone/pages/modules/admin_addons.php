@@ -1230,7 +1230,7 @@ class Module_admin_addons
                 continue;
             }
 
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val = stripslashes($val);
             }
 

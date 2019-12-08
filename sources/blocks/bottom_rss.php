@@ -95,7 +95,7 @@ class Block_bottom_rss
             }
 
             $_title = array_key_exists('title', $item) ? $item['title'] : do_lang('UNKNOWN');
-            $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_tempcode($item['clean_add_date']) : array_key_exists('add_date', $item) ? make_string_tempcode($item['add_date']) : new Tempcode();
+            $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date_tempcode($item['clean_add_date']) : (array_key_exists('add_date', $item) ? make_string_tempcode($item['add_date']) : new Tempcode());
 
             $_postdetailss[] = array('DATE' => $date, 'FULL_URL' => $full_url, 'NEWS_TITLE' => $_title);
         }

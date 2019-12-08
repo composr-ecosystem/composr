@@ -64,9 +64,9 @@ class MobiquoServerPOST extends MobiquoServer
 
         convert_data_encodings(true);
 
-        $get = get_magic_quotes_gpc() ? array_map('stripslashes', $_GET) : $_GET;
+        $get = @get_magic_quotes_gpc() ? array_map('stripslashes', $_GET) : $_GET;
         unset($get['method_name']);
-        $post = get_magic_quotes_gpc() ? array_map('stripslashes', $_POST) : $_POST;
+        $post = @get_magic_quotes_gpc() ? array_map('stripslashes', $_POST) : $_POST;
         unset($post['method_name']);
 
         $params = array_merge($post, $get);

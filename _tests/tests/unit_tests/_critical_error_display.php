@@ -30,7 +30,7 @@ class _critical_error_display_test_set extends cms_test_case
         rename($c_path, $c_path . '.old');
         $result = http_download_file(get_base_url() . '/index.php', null, false, true);
         global $HTTP_DOWNLOAD_URL;
-        $this->assertTrue(strpos($HTTP_DOWNLOAD_URL, '_critical_error.html') !== false);
+        $this->assertTrue(strpos($HTTP_DOWNLOAD_URL, '_critical_error.html') !== false, 'Got ' . $HTTP_DOWNLOAD_URL . ' (' . serialize($result) . ')');
         rename($c_path . '.old', $c_path);
 
         unlink($e_path);

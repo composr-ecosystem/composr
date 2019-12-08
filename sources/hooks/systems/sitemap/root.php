@@ -137,11 +137,13 @@ class Hook_sitemap_root extends Hook_sitemap_base
                 require_code('hooks/systems/sitemap/zone');
                 $ob = object_factory('Hook_sitemap_zone');
                 $temp = $ob->get_node(':', $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, null, $return_anyway);
-                $struct['children'] = isset($temp['children']) ? $temp['children'] : array();
-                $struct['extra_meta'] = $temp['extra_meta'];
-                $struct['permissions'] = $temp['permissions'];
-                $struct['privilege_page'] = $temp['privilege_page'];
-                $struct['edit_url'] = $temp['edit_url'];
+                if ($temp !== null) {
+                    $struct['children'] = isset($temp['children']) ? $temp['children'] : array();
+                    $struct['extra_meta'] = $temp['extra_meta'];
+                    $struct['permissions'] = $temp['permissions'];
+                    $struct['privilege_page'] = $temp['privilege_page'];
+                    $struct['edit_url'] = $temp['edit_url'];
+                }
             }
 
             if ($callback !== null) {

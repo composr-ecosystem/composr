@@ -477,6 +477,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_mrow($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $i => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $row;
             }
@@ -1351,6 +1355,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_username($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $id;
             }
@@ -1376,6 +1384,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_email_address($email_address)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_email_address'] == $email_address) {
                 return $id;
             }
