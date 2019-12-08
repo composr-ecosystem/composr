@@ -385,7 +385,7 @@ function _do_next_section($list, $title, $entry_content_type = null, $category_c
             'DESCRIPTION' => $description,
             'URL' => $url,
             'DOC' => $doc,
-            'WARNING' => array_key_exists(3, $url_map) ? $url_map[3] : '',
+            'WARNING' => '',
         )));
         $i++;
     }
