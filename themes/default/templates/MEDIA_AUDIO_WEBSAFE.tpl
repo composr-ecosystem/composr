@@ -3,8 +3,8 @@
 
 	{$REQUIRE_JAVASCRIPT,jwplayer}
 
-	{$SET,audio_width,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height}}},400,{WIDTH}}}
-	{$SET,audio_height,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height}}},30,{HEIGHT}}}
+	{$SET,audio_width,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width,1}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height,1}}},400,{WIDTH}}}
+	{$SET,audio_height,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width,1}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height,1}}},30,{HEIGHT}}}
 
 	{+START,IF_NON_PASSED_OR_FALSE,WYSIWYG_EDITABLE}
 		{+START,IF_EMPTY,{$METADATA,video}}
