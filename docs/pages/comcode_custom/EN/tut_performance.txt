@@ -591,71 +591,30 @@ Go with an SSD in your machine if possible.
 
 If you have outgrown normal shared hosting / a single VPS or server, you can do a cloud deployment of Composr, and there are a few options.
 
-Options to consider:
-1) Composr runs perfectly on Rackspace Cloud Sites hosting, where you can set up quite large instances (we have been told that behind-the-scenes there is database replication, to share database load).
-2) You can run on Amazon EC2 Instances (or pretty much any cloud service that supports custom images, or PHP). There is a Composr Bitnami image for easy installation on Amazon's infrastructure. Bitnami also provide their own Amazon-based hosting service.
-3) You can set up your own cloud system on your own servers, or cheap dedicated servers. You could look at using something like OpenStack to achieve this. This is similar to Facebook's infrastructure and a very challenging option, but perhaps the best from a huge-scale cost perspective.
-4) You can use Google App Engine, to get automated scaling, with a trade-off that it is a bit harder to initially set up. This is the most elegant and maintainable option and we generally prefer it over '1' and '2' if you are seriously investing in a maintainable infrastructure. We discuss this in the separate [page="_SEARCH:tut_google_appengine"]Google App Engine[/page] tutorial. [i]At the time of writing Google App Engine PHP support is unstable and won't run Composr properly -- this is outside our control, and we have been discussing it with Google directly.[/i]
+Options to consider (in increasing complexity):
+1) Auto-scaling webhost. There are some webhosts that will automatically set up scaling for you behind-the-scenes. For example, Composr runs perfectly on Rackspace Cloud Sites hosting, where you can set up quite large instances (we have been told that behind-the-scenes there is database replication, to share database load).
+2) VM provisioning services, such as Amazon EC2. There is a Composr Bitnami image for easy installation on Amazon's infrastructure. Bitnami also provide their own Amazon-based hosting service. There are some solutions to auto-scale out new cloud instances to meet demand, although many companies handle it manually. You will need some kind of load balancer.
+3) You can use Google App Engine, to get automated scaling, with a trade-off that it is a bit harder to initially set up. This is the most elegant and maintainable option and we generally prefer it over '1' and '2' if you are seriously investing in a maintainable infrastructure. We discuss this in the separate [page="_SEARCH:tut_google_appengine"]Google App Engine[/page] tutorial. [i]At the time of writing Google App Engine PHP support is unstable and won't run Composr properly -- this is outside our control, and we have been discussing it with Google directly.[/i]
+4) You can set up your own cloud system on your own servers, or cheap dedicated servers. You could look at using something like OpenStack to achieve this. This is similar to Facebook's infrastructure and a very challenging option, but perhaps the best from a huge-scale cost perspective.
 
-Please be aware that an auto-scaling cloud solution is not the same as just installing Composr on a cloud instance, so options 1/2/3 above are not simple out-of-the-box solutions. If you are just installing on a cloud instance then there's little difference to a VPS. Achieving effective automatic scaling requires significant expertise. If you want to use multiple instances you will need to set up your own MySQL replication and file-synching, which Composr does support (see "Server farms"). There are some solutions to auto-scale out cloud instances, although many companies handle it manually.
+Please be aware that an auto-scaling cloud solution is not the same as just installing Composr on a cloud instance, so options 2/3/4 above are not simple out-of-the-box solutions. If you are just installing on a cloud instance then there's little difference to a VPS. Achieving effective automatic scaling requires significant expertise. If you want to use multiple instances you will need to set up your own MySQL replication and file-synching, which Composr does support (read on).
 
-[title="4"]Server farms[/title]
+[title="4"]Shared filesystem[/title]
 
-Composr has special support for running on server farms (or custom cloud platforms):
- - Composr file changes are architected so that any changes call up a synchronisation function which can be used to distribute filesystem changes across servers. As Composr requires no usage of FTP once installed, it presents the ideal managed solution for automated mirroring, once the initial network and synchronisation hook are created
- - the Composr database system supports replication
+All web servers will need to share files (as we don't try and store file data in the database).
 
-In order to implement file change synchronisation, you need to create a simple PHP file in [tt]data_custom/sync_script.php[/tt] that defines these functions:
-[code="PHP"]
-/**
- * Provides a hook for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
- *
- * @param  PATH $filename File/directory name to sync on (may be full or relative path)
- */
-function master__sync_file($filename)
-{
-   // Implementation details up to the network administrators; might work via NFS, FTP, etc
-}
+There are 3 approaches with Composr:
+1) The best way to do this is with network storage (e.g. S3 or SAN).
+2) Composr has support for automatically synching local file changes between servers.
+3) Syndicate large media files to other storage, and sync all other files as per '2'
 
-/**
- * Provides a hook for file-move synchronisation between mirrored servers. Called after any rename or move action.
- *
- * @param  PATH $old File/directory name to move from (may be full or relative path)
- * @param  PATH $new File/directory name to move to (may be full or relative path)
- */
-function master__sync_file_move($old, $new)
-{
-   // Implementation details up to the network administrators; might work via NFS, FTP, etc
-}
-[/code]
+We recommend SAN storage as it is easier to set up, doesn't require mirroring of every file on multiple machines, doesn't have sync delay, and has potential for much larger file stores. The down-side is the higher cost and the need for everything to be in the same data centre. You will need to take various factors into account when making your decision, such as cost, availability of programmers, existing hosting limitations, volume of data, nature of data, and requirements for geographic distribution.
 
-In order to implement replication, just change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. The first host in the list must be the master server. It is assumed that each server has equivalent credentials and database naming. Due to the master server being a bottleneck, it will never be picked as a read-access server in the randomisation process, unless there is only one slave.
-It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
+[title="5"]SAN storage[/title]
 
-Round-Robin DNS could be used to choose a frontend server from the farm randomly, or some other form of load balancing such as one based on a reverse proxy server.
-
-[title="4"]Geographic distribution of servers[/title]
-
-Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
-
-Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible.
-
-[title="4"]Amazon EC2[/title]
-
-Composr does quite a lot of disk space when checking for installed files, etc (much more than a traditional hard-coded custom application would need to do).
-Because of this we recommend using 'magnetic' rather than 'SSD' storage, because SSD storage on Amazon's infrastructure has extremely very low IOPS allowances (presumably so that their internal bandwidth is used for very-fast burst reads/writes from/to fast SSD rather than more regular reads/writes).
-
-[title="4"]Upload syndication[/title]
-
-[i]This section is mainly applicable to programmers, although specific service implementations may be available within addons[/i]
-
-Composr contains 2 kinds of hooks for sending off uploads to third-party servers:
-1) [tt]upload_syndication[/tt] -- transfers attachments and gallery files to other services, useful both for syndication and remote hosting; supports a basic UI for determining whether syndication happens
-2) [tt]cdn_transfer[/tt] -- transparently transfers uploads directly to other services at an early stage; has no UI
+There is not much for us to say here. SAN storage would be configured as normal filesystem storage by a skilled IT person.
 
 [title="5"]S3 storage[/title]
-
-If you receive more uploads than you can handle through normal disk space, you could use S3 storage. This will also give your users a marginal improvement in download speeds and provide better value storage (on cloud hosting traditional disk space may be more limited).
 
 Composr has no direct inbuilt S3 support, but this is intentional, because you do not need it. Assuming you have a Linux dedicated server or cloud instance, you may use the 'FUSE' system to make Composr upload directory/directories use S3.
 
@@ -676,6 +635,69 @@ to:
 You'll need to disable the Composr "Reveal usage figures" configuration option, as the usage figures can't be maintained with requests not routing through Composr.
 
 Alternatively, you could do a similar thing using rewrite rules in the [tt].htaccess[/tt]/[tt]web.config[/tt], but this would add additional latency.
+
+[title="5"]Synching local file changes[/title]
+
+[i]This section is mainly applicable to programmers[/i]
+
+In order to implement file change synchronisation, you need to create a simple PHP file in [tt]data_custom/sync_script.php[/tt] that defines these functions:
+[code="PHP"]
+/**
+ * Provides a hook for file synchronisation between mirrored servers. Called after any file creation, deletion or edit.
+ *
+ * @param  PATH $filename File/directory name to sync on (may be full or relative path)
+ */
+function master__sync_file($filename)
+{
+   // Implementation details up to the network administrators; might work via NFS, SCP, etc
+}
+
+/**
+ * Provides a hook for file-move synchronisation between mirrored servers. Called after any rename or move action.
+ *
+ * @param  PATH $old File/directory name to move from (may be full or relative path)
+ * @param  PATH $new File/directory name to move to (may be full or relative path)
+ */
+function master__sync_file_move($old, $new)
+{
+   // Implementation details up to the network administrators; might work via NFS, SCP, etc
+}
+[/code]
+
+You may want to code up these functions so that log files are not synched. By keeping log files separate on each machine. Or you might want to dissect them and pass them onto something like a network-based syslog.
+
+[title="5"]Upload syndication[/title]
+
+[i]This section is mainly applicable to programmers, although specific service implementations may be available within addons[/i]
+
+Composr contains 2 kinds of hooks for sending off uploads to third-party servers:
+1) [tt]upload_syndication[/tt] -- transfers attachments and gallery files to other services, useful both for syndication and remote hosting; supports a basic UI for determining whether syndication happens
+2) [tt]cdn_transfer[/tt] -- transparently transfers uploads directly to other services at an early stage; has no UI
+
+[title="4"]Database replication[/title]
+
+In order to implement replication, just change the [tt]db_site_host[/tt] and [tt]db_forums_host[/tt] values using [tt]http://yourbaseurl/config_editor.php[/tt] (or editing [tt]_config.php[/tt] by hand in a text editor) so that they contain a comma-separated list of host names. The first host in the list must be the master server. It is assumed that each server has equivalent credentials and database naming. Due to the master server being a bottleneck, it will never be picked as a read-access server in the randomisation process, unless there is only one slave.
+
+It is advised to not set replication for the Composr [tt]sessions[/tt] table, as this is highly volatile. Instead you should remove any display of 'users online' from your templates because if you're at the point of replication there will be too many to list anyway (and Composr will have realised this and stopped showing it consistently in many cases, to stop performance issues).
+
+[title="4"]Load balancing[/title]
+
+Round-Robin DNS could be used to choose a frontend server from the farm randomly, or some other form of load balancing such as one based on a reverse proxy server.
+
+A proper load balancer is better than Round-Robin DNS as it can detect when servers are down, or overloaded, and properly route traffic accordingly. You may also have a load balancer than automatically provisions and starts and stops VMs for you based on demand patterns. You may even have a load balancer that acts as a front-end to initiating Cron jobs on whatever server is most available to run them at any point in time.
+
+[title="5"]Geographic distribution of servers[/title]
+
+Some people with very ambitious goals want to have multiple servers dotted around the world, able to operate in isolation to each other for maximum redundancy and performance. Priority-based geo-DNS resolution would be used for request routing.
+
+Composr can not currently support this, as ID numbers would conflict if database servers are not kept in strict sync with each other. We hope in a future version we can make changes for it to be possible (see https://compo.sr/tracker/view.php?id=3147). 
+
+[title="4"]Platform notes[/title]
+
+[title="5"]Amazon EC2[/title]
+
+Composr does quite a lot of disk I/O when checking for installed files, etc (much more than a traditional hard-coded custom application would need to do).
+Because of this we recommend using 'magnetic' rather than 'SSD' storage, because SSD storage on Amazon's infrastructure has extremely very low IOPS allowances (presumably so that their internal bandwidth is used for very-fast burst reads/writes from/to fast SSD rather than more regular reads/writes).
 
 [title="2"]Calculating hosting requirements[/title]
 
@@ -1102,5 +1124,6 @@ If you create a [tt]data_custom/debug_fs.log[/tt] file then all disk activity wi
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - https://developers.google.com/speed/pagespeed/insights/
  - https://compo.sr/tracker/tag_view_page.php?tag_id=16
+ - https://share.transistor.fm/s/38a4e496
 
 {$SET,tutorial_tags,Performance,filebased_persistent_caching,cloudinary,failover,Maintenance,Development,Power tools,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr is very heavily optimised for high performance out-of-the-box, but here are some advanced performance tips.}[block]main_tutorial_rating[/block]
