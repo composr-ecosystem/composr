@@ -23,6 +23,8 @@ class _installer_xml_db_test_set extends cms_test_case
         $database = 'test';
         $table_prefix = 'cms_xmldb_test_';
 
+        deldir_contents(get_custom_file_base() . '/uploads/website_specific/' . $database);
+
         global $SITE_INFO;
         require_code('install_headless');
         for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
