@@ -60,6 +60,8 @@ class file_naming_test_set extends cms_test_case
             '_config.php.template',
             '_tests/codechecker/codechecker.app/',
             '_tests/codechecker/netbeans/',
+            'data_custom/pdf_viewer/',
+            '_tests/codechecker/target/',
 
             'themes/default/images/cns_default_avatars/default_set/cartoons/half-life.jpg'
         );

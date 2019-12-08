@@ -34,7 +34,7 @@ class user_test_set extends cms_test_case
             cns_delete_member($this->member_id);
         }
 
-        $this->member_id = cns_make_member('testmember', '123456', 'test@test.com', array(), 10, 1, 1980, array(), null, null, 1, null, null, '', null, '', 0, 0, 1, '', '', '', 1, 1, null, 1, 1, null, '', true, null, '', 1, null, 0, '*', '');
+        $this->member_id = cns_make_member('testmember', '123456789', 'test@test.com', array(), 10, 1, 1980, array(), null, null, 1, null, null, '', null, '', 0, 0, 1, '', '', '', 1, 1, null, 1, 1, null, '', true, null, '', 1, null, 0, '*', '');
 
         $this->assertTrue('testmember' == $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_username', array('id' => $this->member_id)));
     }
