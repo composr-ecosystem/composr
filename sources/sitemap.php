@@ -1193,28 +1193,10 @@ function get_page_grouping_links()
 
         $hooks = find_all_hook_obs('systems', 'page_groupings', 'Hook_page_groupings_');
         foreach ($hooks as $ob) {
-            $links_to_add = $ob->run();
-
-            if (!empty($links_to_add) && in_array(null, $links_to_add, true)) {
-                // Remove null elements
-                $links_to_add = array_filter($links_to_add, '_not_null');
-            }
-
-            if (!empty($links_to_add)) {
-                $links = array_merge($links, $links_to_add);
-            }
+            $links = array_merge($links, $ob->run());
         }
     }
     return $links;
-}
-
-/**
- * @param mixed $var
- * @return bool false if var is null, true otherwise.
- */
-function _not_null($var)
-{
-    return !is_null($var);
 }
 
 /**
