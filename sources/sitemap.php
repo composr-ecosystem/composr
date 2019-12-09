@@ -766,14 +766,21 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             return null;
         }
 
+        $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
+
         $content_id = $this->_get_page_link_id($page_link);
         if ($content_id === null) {
             return null;
         }
         if ($row === null) {
             $row = $this->_get_row($content_id);
+            if ($row === null) {
+                return null;
+            }
         }
-        $cma_info = $this->_get_cma_info();
 
         if (strpos($cma_info['title_field'], 'CALL:') !== false) {
             $title_value = call_user_func(trim(substr($cma_info['title_field'], 5)), array('id' => $content_id), false);

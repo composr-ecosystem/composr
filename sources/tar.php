@@ -617,17 +617,17 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
         $name = pack('a100', $target_path);
     }
 
-    $mode = sprintf('%7s ', decoct($_mode));
-    $uid = sprintf('%7s ', decoct(fileowner(get_file_base() . '/sources/global.php')));
+    $mode = sprintf('%07s', decoct($_mode)) . chr(0);
+    $uid = sprintf('%07s', decoct(fileowner(get_file_base() . '/sources/global.php'))) . chr(0);
     if (strlen($uid) > 8) {
         $uid = '        ';
     }
-    $gid = sprintf('%7s ', decoct(filegroup(get_file_base() . '/sources/global.php')));
+    $gid = sprintf('%07s', decoct(filegroup(get_file_base() . '/sources/global.php'))) . chr(0);
     if (strlen($gid) > 8) {
         $gid = '        ';
     }
-    $size = sprintf('%11s ', decoct($data_is_path ? filesize($data) : strlen($data)));
-    $mtime = sprintf('%11s ', decoct($_mtime));
+    $size = sprintf('%011s', decoct($data_is_path ? filesize($data) : strlen($data))) . chr(0);
+    $mtime = sprintf('%011s', decoct($_mtime)) . chr(0);
     $chksum = '        ';
     $typeflag = pack('a1', ($target_path == '././@LongLink') ? 'L' : '');
     $linkname = pack('a100', '');

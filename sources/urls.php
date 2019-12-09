@@ -1301,7 +1301,7 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
         }
         if ($search_redirects) {
             $page_place = _request_page(str_replace('-', '_', $page), $zone);
-            if ($page_place[0] == 'REDIRECT') {
+            if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
                 $page = $page_place[1]['r_to_page'];
                 $zone = $page_place[1]['r_to_zone'];
             }
