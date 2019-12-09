@@ -56,7 +56,7 @@ class standard_dir_files_test_set extends cms_test_case
             echo "\t\t\t'" . $type . "',\n";
         }*/
 
-        $this->assertTrue(array_keys($types) == [
+        $valid_hashes = [
             '296a0f42479e015438791d0b21e22a07',
             '3184b8b93e2d9b02dea0c4ec3133ee9c',
             '35524c96fbfc2361a6dff117f3a19bc8',
@@ -70,7 +70,10 @@ class standard_dir_files_test_set extends cms_test_case
             'b4af30b08914c4a8240106cf7c614034',
             'de9b5b7778090cf4376839b6aebb9f45',
             'e829b8bdcef68c92b0926288106048b6',
-        ]);
+        ];
+        foreach ($types as $hash => $file_paths) {
+            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths));
+        }
     }
 
     public function testStandardDirFiles()
@@ -96,10 +99,6 @@ class standard_dir_files_test_set extends cms_test_case
                     if (in_array($file, ['tracker'])) {
                         continue;
                     }
-                } elseif ($dir_stub == '_tests/codechecker') {
-                    if (in_array($file, ['netbeans'])) { // Auto-generated folder, should not be meddled with
-                        continue;
-                    }
                 }
 
                 if (is_dir($dir . '/' . $file)) {
@@ -113,9 +112,13 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
-                (!file_exists($dir . '/index.php')) // Not in a zone (needs to run as default)
+                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) // Not in codechecker (we need to call CQC)
             ) {
-                $this->assertTrue(file_exists($dir . '/index.html'), 'touch "' . $dir . '/index.html" ; git add -f "' . $dir . '/index.html"');
+                if (
+                    (!file_exists($dir . '/index.php')) // Not in a zone (needs to run as default)
+                ) {
+                    $this->assertTrue(file_exists($dir . '/index.html'), 'touch "' . $dir . '/index.html" ; git add -f "' . $dir . '/index.html"');
+                }
             }
 
             if (
@@ -127,7 +130,7 @@ class standard_dir_files_test_set extends cms_test_case
                 (preg_match('#/data(/|$|_)#', $dir) == 0) && // Not from data (scripts need to run)
                 (preg_match('#themes($|/[^/]*($|/(images|images_custom|templates_cached)(/|$)))#', $dir_stub) == 0) && // Not from themes (we need to download from)
                 (preg_match('#^exports(/|$)#', $dir_stub) == 0) && // Not in exports (we need to download from)
-                (preg_match('#^_tests/codechecker$#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)
+                (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)
                 (preg_match('#^mobiquo(/smartbanner(/images)?)?$#', $dir_stub) == 0) && // Not in mobiquo (we need to call Tapatalk)
                 (preg_match('#^sources_custom/composr_mobile_sdk(/|$)#', $dir_stub) == 0) // composr_mobile_sdk may need to be callable
             ) {

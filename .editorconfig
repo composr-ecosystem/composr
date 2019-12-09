@@ -74,7 +74,7 @@ tab_width = 3
 #  uploads _config.php sources_custom/browser_detect.php tracker _old _tests/html_dump _tests/screens_tested \
 #  docs/api docs/composr-api-template data_custom/upload-crop caches exports imports nbproject \
 #  themes/default/templates_cached/EN themes/admin/templates_cached/EN \
-#  _tests/codechecker/codechecker.app _tests/codechecker/netbeans/nbproject _tests/codechecker/netbeans/build _tests/codechecker/netbeans/dist \
+#  _tests/codechecker/codechecker.app _tests/codechecker/target \
 #  temp themes/default/javascript/xsl_mopup.js data/modules/admin_stats/IP_Country.txt docs \
 #  themes/default/css_custom/skitter.css \
 #  themes/default/css_custom/unslider.css themes/default/css_custom/sortable_tables.css themes/default/css_custom/google_search.css \

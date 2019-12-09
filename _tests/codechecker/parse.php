@@ -1230,7 +1230,7 @@ function _parse_cases()
                     }
                 }
                 foreach ($cases as $c) {
-                    if (($c[0][0] == 'LITERAL') && ($expression[0] == 'LITERAL') && ($c[0][1][1] == $expression[1][1])) {
+                    if (($c[0] !== null) && ($c[0][0] == 'LITERAL') && ($expression[0] == 'LITERAL') && ($c[0][1][1] == $expression[1][1])) {
                         log_warning('Duplicate case expression');
                     }
                 }

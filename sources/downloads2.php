@@ -901,7 +901,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
         }
     }
 
-    if (($file_size < 0) || ($file_size > 2147483647)) {
+    if (($file_size < 0) || ($file_size > 2147483647)) { // TODO: #3046 in tracker
         $file_size = 2147483647;
     }
 
@@ -1109,7 +1109,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
         }
     }
 
-    if (($file_size < 0) || ($file_size > 2147483647)) {
+    if (($file_size < 0) || ($file_size > 2147483647)) { // TODO: #3046 in tracker
         $file_size = 2147483647;
     }
 

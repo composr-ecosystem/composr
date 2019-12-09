@@ -1288,7 +1288,18 @@ function get_html_trace()
     }
     pop_suppress_error_death();
 
-    return do_template('STACK_TRACE', ['_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : [], 'TRACE' => $trace]);
+    $post = [];
+    if (count($_POST) < 200) {
+        foreach ($_POST as $key => $val) {
+            if (stripos($key, 'password') !== false) {
+                continue;
+            }
+
+            $post[$key] = $val;
+        }
+    }
+
+    return do_template('STACK_TRACE', ['_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => $post, 'TRACE' => $trace]);
 }
 
 /**

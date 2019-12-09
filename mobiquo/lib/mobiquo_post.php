@@ -63,8 +63,8 @@ class MobiquoServerPOST extends MobiquoServer
         convert_data_encodings(true);
 
         $get = $_GET;
-
         unset($get['method_name']);
+
         $post = $_POST;
         unset($post['method_name']);
 

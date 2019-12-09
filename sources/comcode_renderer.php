@@ -1823,6 +1823,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $rel .= 'nofollow';
             }
             if (!$as_admin) {
+                $rel = preg_replace('#(^|\s)opener($|[^\w])#', '\2', $rel);
                 if ($rel != '') {
                     $rel .= ' ';
                 }
@@ -2417,8 +2418,8 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
 {
     $_embed = null;
     $title = do_lang_tempcode('CODE');
-    if (file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) {
-        $evaluated = $embed->evaluate();
+    if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
+            $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
             require_code('comcode_from_html');

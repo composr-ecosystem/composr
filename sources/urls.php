@@ -1311,7 +1311,7 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
         }
         if ($search_redirects) {
             $page_place = _request_page(str_replace('-', '_', $page), $zone);
-            if ($page_place[0] == 'REDIRECT') {
+            if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
                 $page = $page_place[1]['r_to_page'];
                 $zone = $page_place[1]['r_to_zone'];
             }
@@ -1493,7 +1493,7 @@ function ensure_protocol_suitability($url)
         return $url;
     }
 
-    $https_url = 'https://' . $url;
+    $https_url = 'https://' . substr($url, 7);
 
     $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
 

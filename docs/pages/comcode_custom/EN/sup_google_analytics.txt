@@ -304,8 +304,10 @@ The redirect technique is good enough for many, but is sub-optimal because the r
 
 Another approach is to use JavaScript to randomly decide the version ourselves, and to tell [i]Google Analytics[/i] which page variant is loaded.
 
+[color="red"]The below instructions need updating, as Google Analytics Content Experiments are now Google Optimize, which we have not tested.[/color]
+
 For this to work we need to:
-1) [url="Follow Google's tutorial"]https://developers.google.com/analytics/solutions/experiments-client-side[/url]
+1) [url="Follow Google's tutorial"]https://marketingplatform.google.com/about/optimize[/url]
 2) Write the Composr code to pick the random version
 3) Don't put any code in [tt]HTML_HEAD.tpl[/tt] (remove it if you added it already)
 

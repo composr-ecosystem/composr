@@ -152,6 +152,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             if (!is_array($file_list)) {
                 $file_list = [];
             }
+            sort($file_list);
         } else {
             $file_list = [];
         }
@@ -246,9 +247,9 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
         'default_icon' => null,
     ];
 
-    $addon_info['files'] = array_unique(collapse_1d_complexity('filepath', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath'], ['addon_name' => $addon_name])));
-    $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 0]));
-    $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 1]));
+    $addon_info['files'] = array_unique(collapse_1d_complexity('filepath', $GLOBALS['SITE_DB']->query_select('addons_files', ['filepath'], ['addon_name' => $addon_name], 'ORDER BY filepath')));
+    $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 0], 'ORDER BY addon_name_dependant_upon'));
+    $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name_dependant_upon'], ['addon_name' => $addon_name, 'addon_name_incompatibility' => 1], 'ORDER BY addon_name_dependant_upon'));
     if ($get_dependencies_on_this) {
         $addon_info['dependencies_on_this'] = find_addon_dependencies_on($addon_name);
     }

@@ -169,7 +169,7 @@ if (!function_exists('critical_error')) {
         $extra = '';
 
         $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-        $in_upgrader = (strpos($script_name, 'upgrader.php') !== false);
+        $in_upgrader = (basename($script_name) == 'upgrader.php');
 
         if (
             (strpos($error, 'Allowed memory') === false) &&

@@ -284,6 +284,10 @@ class Hook_sitemap_zone extends Hook_sitemap_base
             $pages_found = [];
             $links = get_page_grouping_links();
             foreach ($links as $link) {
+                if ($link === null) {
+                    continue;
+                }
+
                 list($page_grouping) = $link;
 
                 if ((is_array($link[2])) && (is_string($link[2][2]))) {

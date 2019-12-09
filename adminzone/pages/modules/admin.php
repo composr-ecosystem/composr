@@ -459,11 +459,14 @@ class Module_admin
             $hooks = find_all_hook_obs('systems', 'cleanup', 'Hook_cleanup_');
             foreach ($hooks as $hook => $object) {
                 $info = $object->info(true);
-                $n = $info['title'];
-                if ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) {
-                    $_url = build_url(['page' => 'admin_cleanup', 'tick' => $hook], get_module_zone('admin_cleanup'));
-                    $breadcrumbs = new Tempcode();
-                    $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', ['_GUID' => 'fc53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => '']));
+
+                if ($info !== null) {
+                    $n = $info['title'];
+                    if ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) {
+                        $_url = build_url(['page' => 'admin_cleanup', 'tick' => $hook], get_module_zone('admin_cleanup'));
+                        $breadcrumbs = new Tempcode();
+                        $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', ['_GUID' => 'fc53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => '']));
+                    }
                 }
             }
         }

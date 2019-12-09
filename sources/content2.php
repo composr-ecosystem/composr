@@ -30,7 +30,7 @@ function init__content2()
         define('METADATA_HEADER_YES', 1);
         define('METADATA_HEADER_FORCE', 2);
 
-        define('ORDER_AUTOMATED_CRITERIA', 2147483647); // lowest order, shared for all who care not about order, so other SQL ordering criterias take precedence
+        define('ORDER_AUTOMATED_CRITERIA', 2147483647); // lowest order, shared for all who care not about order, so other SQL ordering criterias take precedence // TODO: #3046 in tracker
     }
 }
 

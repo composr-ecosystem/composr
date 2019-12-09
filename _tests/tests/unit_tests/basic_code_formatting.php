@@ -90,7 +90,6 @@ class basic_code_formatting_test_set extends cms_test_case
                 'data_custom/modules/admin_stats',
                 'data/polyfills',
                 'aps',
-                '_tests/codechecker/netbeans',
                 'data/ace',
                 'data/ckeditor',
                 'sources_custom/composr_mobile_sdk',
@@ -137,6 +136,8 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/sortable_tables.js',
                 'themes/default/javascript_custom/unslider.js',
                 'themes/default/javascript_custom/charts.js',
+                '_tests/codechecker/pom.xml',
+                '_tests/codechecker/nbactions.xml',
             ];
             if (in_array($path, $exceptions)) {
                 continue;
@@ -171,7 +172,6 @@ class basic_code_formatting_test_set extends cms_test_case
             $exceptions = [
                 '_tests/assets/text',
                 '_tests/assets/spreadsheets',
-                '_tests/codechecker/netbeans',
                 '_tests/simpletest',
                 'data/ace',
                 'data/ckeditor/plugins/codemirror',
@@ -187,6 +187,8 @@ class basic_code_formatting_test_set extends cms_test_case
                 'tracker',
                 'vendor',
                 'data_custom/pdf_viewer',
+                '_tests/codechecker/pom.xml',
+                '_tests/codechecker/nbactions.xml',
             ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -215,7 +217,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 $c = cms_file_get_contents_safe($path);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
-                $this->assertTrue($ok, 'Has trailing whitespace in ' . $path);
+                $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
             }
         }
     }
@@ -327,7 +329,11 @@ class basic_code_formatting_test_set extends cms_test_case
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
-            if ($path == '_tests/codechecker/codechecker.ini') {
+            $exceptions = [
+                '_tests/codechecker/codechecker.ini',
+                '_tests/codechecker/pom.xml',
+            ];
+            if (in_array($path, $exceptions)) {
                 continue;
             }
 

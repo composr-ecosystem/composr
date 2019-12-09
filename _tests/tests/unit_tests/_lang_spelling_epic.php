@@ -36,6 +36,15 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = [
+            'codesniffer',
+            'goto',
+            'jshint',
+            'ide',
+            'phpstan',
+            'instanceof',
+            'autoloading',
+            'exakat',
+            'phan',
             'unionised',
             'blobby',
             'reparsing',
@@ -3390,7 +3399,6 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             'text/EN/licence.txt',
                             'docs/pages/comcode_custom/EN/tut_addon_index.txt',
                             'text/EN/synonyms.txt',
-                            '_tests/codechecker/netbeans/dist/README.TXT',
                         ])) {
                             continue 2;
                         }

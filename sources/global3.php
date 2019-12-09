@@ -3794,7 +3794,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
     }*/
 
     global $ZONE;
-    if (($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
+    if (($ZONE !== null) && ($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
         return $ZONE['zone_default_page'];
     } else {
         global $ZONE_DEFAULT_PAGES_CACHE;

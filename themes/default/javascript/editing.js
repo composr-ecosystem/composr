@@ -372,7 +372,6 @@
 
                     setTimeout(function () {
                         wysiwygEditorInitFor(textarea);
-                   
                     }, 1000);
 
                     resolvePromise();

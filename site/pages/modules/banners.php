@@ -301,7 +301,7 @@ class Module_banners
             $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], ['name' => $source], '', 1);
             if (!array_key_exists(0, $rows)) {
                 set_http_status_code(404);
-                warn_exit(do_lang_tempcode('BANNER_MISSING_SOURCE'));
+                warn_exit(do_lang_tempcode('BANNER_MISSING_SOURCE'), false, false, 404);
             }
             $myrow = $rows[0];
 

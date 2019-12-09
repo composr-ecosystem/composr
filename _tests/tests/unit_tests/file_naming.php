@@ -61,7 +61,6 @@ class file_naming_test_set extends cms_test_case
             'vendor/',
             '_config.php.template',
             '_tests/codechecker/codechecker.app/',
-            '_tests/codechecker/netbeans/',
             'test-a',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',
             'data/mediaelement/mediaelement-flash-audio.swf',
@@ -80,6 +79,7 @@ class file_naming_test_set extends cms_test_case
             '_tests/assets/spreadsheets/test-tsv.txt',
             '_tests/assets/spreadsheets/test-scsv.txt',
             'data_custom/pdf_viewer/',
+            '_tests/codechecker/target/maven-archiver/pom.properties',
         ];
 
         $ignore_substrings = [

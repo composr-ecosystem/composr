@@ -408,7 +408,7 @@ class Module_admin_version
                 'identifier' => 'MINIID_TEXT',
                 'staff_status' => '?BINARY', // May be null
                 'the_member' => '?MEMBER', // May be null
-                'the_groups' => 'SHORT_TEXT', // May be blank
+                'the_groups' => 'LONG_TEXT', // May be blank
                 'is_bot' => '?BINARY', // May be null
                 'timezone' => 'MINIID_TEXT', // May be blank
                 'is_ssl' => '?BINARY', // May be null
@@ -1111,7 +1111,7 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->query_update('actionlogs', ['the_type' => 'SET_PAGE_REDIRECTS'], ['the_type' => 'SET_REDIRECTS']);
 
-            $GLOBALS['SITE_DB']->alter_table_field('cache', 'groups', 'SHORT_TEXT', 'the_groups');
+            $GLOBALS['SITE_DB']->alter_table_field('cache', 'groups', 'LONG_TEXT', 'the_groups');
 
             if (get_value('timezone') !== null) {
                 set_option('timezone', get_value('timezone'));

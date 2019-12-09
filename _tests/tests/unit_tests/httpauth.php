@@ -38,6 +38,10 @@ class httpauth_test_set extends cms_test_case
 
         set_option('httpauth_is_enabled', '0');
 
+        if ($this->debug) {
+            var_dump($data);
+        }
+
         $this->assertTrue(strpos($data, '<span class="fn nickname">admin</span>') !== false);
     }
 }

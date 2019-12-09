@@ -884,8 +884,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
 
                                     $found = find_template_place($eval, '', $_theme, $_ex, $_td, ($template_name === $eval) || ($_force_original == '1'));
 
-                                    $_theme = $found[0];
-                                    if ($found[1] !== null) {
+                                    if (($found !== null) && ($found[1] !== null)) {
+                                        $_theme = $found[0];
+
                                         $full_path = get_custom_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
                                         if (!is_file($full_path)) {
                                             $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];

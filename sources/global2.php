@@ -283,8 +283,10 @@ function init__global2()
 
     require_code('version');
     if (!headers_sent()) {
-        header('X-Content-Type-Options: nosniff');
-        header('X-XSS-Protection: 1');
+        if (!empty($SITE_INFO['no_nosniff_header'])) {
+            @header('X-Content-Type-Options: nosniff');
+        }
+        @header('X-XSS-Protection: 1');
     }
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) {
         // Marker that Composr running
@@ -1618,6 +1620,7 @@ function get_base_url($https = null, $zone_for = null)
     if ((!isset($SITE_INFO)) || (empty($SITE_INFO['base_url']))) { // Try and autodetect the base URL if it's not configured
         $domain = get_domain();
         $script_name_path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '');
+        $script_name_path = str_replace(DIRECTORY_SEPARATOR, '/', $script_name_path);
         if (($GLOBALS['RELATIVE_PATH'] === '') || (strpos($script_name_path, $GLOBALS['RELATIVE_PATH']) !== false)) {
             $script_name_path = preg_replace('#/' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
         } else {
