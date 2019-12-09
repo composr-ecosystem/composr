@@ -943,10 +943,30 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     if (in_array($e[0], ['BOOLEAN_AND', 'BOOLEAN_OR', 'BOOLEAN_XOR'])) {
         foreach ([0, 1] as $function_parameter_pos) {
             foreach ([0, 1] as $and_position) {
-                if (($e[0] == 'BOOLEAN_AND') && ($e[1][0] == 'PARENTHESISED') && ($e[1][$and_position + 1][0] == 'CALL_DIRECT') && ($e[1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[1][$and_position + 1][1], '_exists') !== false) && (isset($e[1][$and_position + 1][2][$function_parameter_pos])) && ($e[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($e[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
+                if (
+                    ($e[0] == 'BOOLEAN_AND') &&
+                    ($e[1][0] == 'PARENTHESISED') &&
+                    is_array($e[1][$and_position + 1]) &&
+                    ($e[1][$and_position + 1][0] == 'CALL_DIRECT') &&
+                    ($e[1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[1][$and_position + 1][1], '_exists') !== false) &&
+                    (isset($e[1][$and_position + 1][2][$function_parameter_pos])) &&
+                    ($e[1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                    ($e[1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')
+                ) {
                     $function_guard .= ',' . $e[1][1][2][$function_parameter_pos][0][1][1] . ',';
                 }
-                if (($e[0] == 'BOOLEAN_AND') && ($e[2][0] == 'BOOLEAN_AND') && ($e[2][1][0] == 'PARENTHESISED') && ($e[2][1][$and_position + 1][0] == 'CALL_DIRECT') && ($e[2][1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[2][1][$and_position + 1][1], '_exists') !== false) && (isset($e[2][1][$and_position + 1][2][$function_parameter_pos][0])) && ($e[2][1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') && ($e[2][1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')) {
+
+                if (
+                    ($e[0] == 'BOOLEAN_AND') &&
+                    ($e[2][0] == 'BOOLEAN_AND') &&
+                    ($e[2][1][0] == 'PARENTHESISED') &&
+                    is_array($e[2][1][$and_position + 1]) &&
+                    ($e[2][1][$and_position + 1][0] == 'CALL_DIRECT') &&
+                    ($e[2][1][$and_position + 1][1] == 'php_function_allowed' || strpos($e[2][1][$and_position + 1][1], '_exists') !== false) &&
+                    (isset($e[2][1][$and_position + 1][2][$function_parameter_pos][0])) &&
+                    ($e[2][1][$and_position + 1][2][$function_parameter_pos][0][0] == 'LITERAL') &&
+                    ($e[2][1][$and_position + 1][2][$function_parameter_pos][0][1][0] == 'STRING')
+                ) {
                     $function_guard .= ',' . $e[2][1][1][2][$function_parameter_pos][0][1][1] . ',';
                 }
             }

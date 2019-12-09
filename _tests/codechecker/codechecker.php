@@ -102,7 +102,7 @@ $available_options = [
         'takes_value' => true,
     ],
 ];
-if (empty($_GET)) { // CLI
+if (empty($_GET) && empty($_SERVER['REQUEST_METHOD'])) { // CLI
     $longopts = [];
     foreach ($available_options as $key => $settings) {
         $longopts[] = $key . ($settings['takes_value'] ? '::' : '');
