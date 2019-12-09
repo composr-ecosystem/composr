@@ -139,6 +139,7 @@ require_once('lib.php');
 
 // To get it started...
 
+$has_errors = false;
 if (isset($options['test'])) {
     // Checking an internal test (by web URL)...
 
@@ -184,6 +185,7 @@ if (isset($options['test'])) {
         try {
             check(parse_file($full_path, false, false, $i, count($files_to_check)));
         } catch (Exception $e) {
+            $has_errors = true;
             echo $e->getMessage() . cnl();
         }
     }
@@ -204,12 +206,14 @@ if (isset($options['test'])) {
                 check($structure);
             }
         } catch (Exception $e) {
+            $has_errors = true;
             echo $e->getMessage() . cnl();
         }
     }
 }
 
 echo 'FINAL Done!';
+exit($has_errors ? 1 : 0);
 
 function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null, $count = null)
 {
