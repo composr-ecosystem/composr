@@ -1103,13 +1103,14 @@ function do_block($codename, $map = null, $ttl = null)
 
     $DO_NOT_CACHE_THIS = ($map['cache'] === '0');
 
-    $object = mixed();
+    $object = null;
+    $new_security_scope = null;
     if (has_caching_for('block')) {
         // See if the block may be cached (else cannot, or is yet unknown)
         if ($map['cache'] === '0') {
             $row = null;
         } else { // We may allow it to be cached but not store the cache signature, as it is too complex
-            $row = get_block_info_row($codename, $map);
+            $row = get_block_info_row($codename, $map, $object, $new_security_scope);
         }
         if ($row !== null) {
             $cache_identifier = do_block_get_cache_identifier($row['cache_on'], $map);
@@ -1489,9 +1490,11 @@ function do_block_hunt_file($codename, $map = null)
  *
  * @param  ID_TEXT $codename The block name
  * @param  array $map The block parameter map
+ * @param  ?mixed $object Object/string of the block (null: not looked up)
+ * @param  ?boolean $new_security_scope Whether the block is in a new security scope (null: not looked up)
  * @return ?array The block info (null: cannot cache for some reason)
  */
-function get_block_info_row($codename, $map)
+function get_block_info_row($codename, $map, &$object = null, &$new_security_scope = null)
 {
     static $cache = array();
     $sz = serialize(array($codename, $map));
