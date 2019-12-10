@@ -1,5 +1,5 @@
 {+START,SET,media}
-	<iframe width="{WIDTH*}" height="{HEIGHT*}" title="{!DOCUMENT}" style="clear: both" class="gallery_pdf" src="{$BASE_URL*}/data_custom/pdf_viewer/web/viewer.html?file={URL&*}#zoom=90">{!DOCUMENT}</iframe>
+	<iframe width="{WIDTH*}" height="{HEIGHT*}" title="{!DOCUMENT}" style="clear: both" class="gallery_pdf" src="{$BASE_URL*}/data_custom/pdf_viewer/web/viewer.html?file={URL.*}#zoom=90">{!DOCUMENT}</iframe>
 
 	{+START,IF_NON_EMPTY,{DESCRIPTION}}
 		<figcaption class="associated_details">
