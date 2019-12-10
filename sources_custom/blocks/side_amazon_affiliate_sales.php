@@ -53,7 +53,7 @@ class Block_side_amazon_affiliate_sales
             isset($map['region']) ? $map['region'] : 'US',
         ]
 PHP;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 5);
+        $info['ttl'] = 60 * 5;
         return $info;
     }
 

@@ -651,7 +651,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_user_online_counting[/tt] -- set this to '1' if you don't want to count online users (small performance improvement)
   - [tt]disable_banner_count_updates[/tt] -- set this to '1' if you don't want to maintain banner view counts (small performance improvement)
   - [tt]pinpoint_submitban_check[/tt] -- set this to '1' if you only want submitter ban checks to occur in the CMS zone (small performance improvement)
-  - [tt]disable_block_timeout[/tt] -- set this to '1' if blocks should never timeout (stops stuttered performance if a site is not used regularly)
   - [tt]disable_sitemap_for__*[/tt] -- disable sitemap generation for a particular page (e.g. if there's too much data in it and the server can't cope, and the data isn't so important anyway). Replace '*' with the page name
   - [tt]disable_view_counts[/tt] -- set this to '1' if you don't want view counts to be maintained (reduces database writes). You will probably want to disable the normal "Reveal usage figures" configuration option (Admin Zone > Setup > Configuration > Site options > Analytics / Logging) too, to hide all the zero counts
   - [tt]disable_normal_topic_read_history[/tt] -- set this to '1' if you don't want topic-read history to be maintained for things other than private topics

@@ -989,6 +989,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_PARAM_defer
         BLOCK_PARAM_failsafe
         BLOCK_PARAM_quick_cache
+        BLOCK_PARAM_ttl
         BLOCK_TAG
         BLOCK_THEM
         TRANSCODING_IN_PROGRESS

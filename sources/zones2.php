@@ -602,6 +602,7 @@ function get_standard_block_parameters()
         'quick_cache',
         'defer',
         'block_id',
+        'ttl',
     ];
 }
 

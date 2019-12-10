@@ -54,23 +54,18 @@ class Hook_preview_block_comcode
 
         $bparameters = '';
         $block = post_param_string('block');
-        $parameters = get_block_parameters($block);
-        $parameters[] = 'failsafe';
-        $parameters[] = 'cache';
-        $parameters[] = 'quick_cache';
-        $parameters[] = 'defer';
-        $parameters[] = 'block_id';
+        $parameters = get_block_parameters($block, true);
         foreach ($parameters as $parameter) {
             $value = post_param_string($parameter, null);
             if ($value === null) {
-                // If not on form, continue, otherwise must be 0
                 if (post_param_integer('tick_on_form__' . $parameter, null) === null) {
-                    continue;
+                    $value = '';
+                } else {
+                    $value = '0';
                 }
-                $value = '0';
             }
 
-            if (($value != '') && (($parameter != 'failsafe') || ($value == '1')) && (($parameter != 'cache') || ($value != block_cache_default($block))) && (($parameter != 'quick_cache') || ($value == '1'))) {
+            if ($value != '') {
                 $bparameters .= ' ' . $parameter . '="' . str_replace('"', '\"', $value) . '"';
             }
         }

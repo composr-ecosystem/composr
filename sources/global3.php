@@ -3859,6 +3859,7 @@ function titleify($boring)
         'CSS',
         'SEO',
         'JavaScript',
+        'TTL',
     ];
     foreach ($acronyms as $acronym) {
         if (stripos($ret, $acronym) !== false) {

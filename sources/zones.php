@@ -1052,6 +1052,7 @@ function get_block_id($map)
     ksort($map);
     unset($map['raw']);
     unset($map['cache']);
+    unset($map['ttl']);
     unset($map['start']);
     unset($map['max']);
     return substr(md5(serialize($map)), 0, 6);
@@ -1062,10 +1063,9 @@ function get_block_id($map)
  *
  * @param  ID_TEXT $codename The block name
  * @param  array $map The block parameter map
- * @param  ?integer $ttl The TTL to use in minutes (null: block default)
  * @return Tempcode The generated Tempcode
  */
-function do_block($codename, $map = [], $ttl = null)
+function do_block($codename, $map = [])
 {
     global $LANGS_REQUESTED, $REQUIRED_ALL_LANG, $JAVASCRIPTS, $CSSS, $DO_NOT_CACHE_THIS, $SMART_CACHE;
 
@@ -1080,6 +1080,12 @@ function do_block($codename, $map = [], $ttl = null)
     }
 
     $DO_NOT_CACHE_THIS = ($map['cache'] === '0');
+
+    if ((isset($map['ttl'])) && ($map['ttl'] != '')) {
+        $ttl = intval($map['ttl']);
+    } else {
+        $ttl = null;
+    }
 
     $object = null;
     if (has_caching_for('block')) {
@@ -1184,7 +1190,7 @@ function do_block($codename, $map = [], $ttl = null)
                         if (!$GLOBALS['OUTPUT_STREAMING']) {
                             restore_output_state(false, true);
                         }
-                        return do_block($codename, $map, -1);
+                        return do_block($codename, ['ttl' => '0'] + $map);
                     }
                     $LANGS_REQUESTED += $backup_langs_requested;
                     $REQUIRED_ALL_LANG += $backup_required_all_lang;
@@ -1247,12 +1253,16 @@ function do_block($codename, $map = [], $ttl = null)
     if ((!$DO_NOT_CACHE_THIS) && (method_exists($object, 'caching_environment')) && (has_caching_for('block'))) {
         $info = $object->caching_environment($map);
         if ($info !== null) {
+            if ($ttl === null) {
+                $ttl = $info['ttl'];
+            }
+
             $cache_identifier = do_block_get_cache_identifier($codename, $info['cache_on'], $map);
             if ($cache_identifier !== null) {
                 $special_cache_flags = array_key_exists('special_cache_flags', $info) ? $info['special_cache_flags'] : CACHE_AGAINST_DEFAULT;
 
                 require_code('caches2');
-                set_cache_entry($codename, $info['ttl'], $cache_identifier, $cache, $special_cache_flags, array_keys($LANGS_REQUESTED), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($JAVASCRIPTS), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($CSSS), true);
+                set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_cache_flags, array_keys($LANGS_REQUESTED), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($JAVASCRIPTS), $GLOBALS['OUTPUT_STREAMING'] ? [] : array_keys($CSSS), true);
             }
         }
     }
@@ -1487,7 +1497,7 @@ function do_block_hunt_file($codename, $map = [])
  * @param  array $map The block parameter map
  * @return ?array The block info (null: cannot cache for some reason)
  */
-function get_block_info_row($codename, $map)
+function get_block_info_row($codename, $map = [])
 {
     static $cache = [];
     $sz = serialize([$codename, $map]);
@@ -1519,7 +1529,7 @@ function get_block_info_row($codename, $map)
         }
     }
     if (($row === null) && (isset($map['quick_cache'])) && ($map['quick_cache'] === '1')) {
-        $row = ['cached_for' => $codename, 'cache_on' => '[$map,$GLOBALS[\'FORUM_DRIVER\']->get_members_groups(get_member(]))', 'cache_ttl' => 60];
+        $row = ['cached_for' => $codename, 'cache_on' => '[$map]', 'cache_ttl' => 60, 'special_cache_flags' => CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS];
     }
 
     $cache[$sz] = $row;

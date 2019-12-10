@@ -71,7 +71,7 @@ class Block_main_search
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search'),
         ]
 PHP;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 2);
+        $info['ttl'] = 60 * 2;
         return $info;
     }
 
