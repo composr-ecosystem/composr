@@ -49,7 +49,7 @@ header('X-Robots-Tag: noindex');
 
 cms_disable_time_limit();
 cms_ini_set('ocproducts.xss_detect', '0');
-@header('Content-type: text/plain; charset=' . get_charset());
+@header('Content-Type: text/plain; charset=' . get_charset());
 disable_php_memory_limit();
 if (function_exists('gc_enable')) {
     gc_enable();
@@ -62,7 +62,7 @@ do_work();
 function do_work()
 {
     if (!is_cli()) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         exit('Must run this script on command line, for security reasons');
     }
 

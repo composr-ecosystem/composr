@@ -210,7 +210,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         require_code('addons2');
-        $this->assertTrue(find_updated_addons() === [], 'Some addon(s) need updating');
+        $this->assertTrue(empty(find_updated_addons()), 'Some addon(s) need updating');
     }
 
     /**

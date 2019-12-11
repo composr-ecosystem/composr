@@ -744,7 +744,7 @@ function opensearch_script()
         case 'suggest':
             require_code('search');
 
-            header('Content-type: application/x-suggestions+json; charset=' . get_charset());
+            header('Content-Type: application/x-suggestions+json; charset=' . get_charset());
             $request = get_param_string('request', false, INPUT_FILTER_GET_COMPLEX);
 
             $suggestions = find_search_suggestions($request);
@@ -1247,7 +1247,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
                 if (get_param_integer('keep_just_show_query', 0) == 1) {
                     cms_ini_set('ocproducts.xss_detect', '0');
-                    header('Content-type: text/plain; charset=' . get_charset());
+                    header('Content-Type: text/plain; charset=' . get_charset());
                     exit($query);
                 }
             }
@@ -1408,7 +1408,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
             }
             if (get_param_integer('keep_just_show_query', 0) == 1) {
                 cms_ini_set('ocproducts.xss_detect', '0');
-                header('Content-type: text/plain; charset=' . get_charset());
+                header('Content-Type: text/plain; charset=' . get_charset());
                 exit($query);
             }
 

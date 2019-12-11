@@ -28,7 +28,7 @@ class _extra_logging_test_set extends cms_test_case
 
         $config_path = get_file_base() . '/_config.php';
         $c = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
-        $c = str_replace("\n\$SITE_INFO['fast_spider_cache'] = '1';", '', $c);
+        $c = str_replace("\n\$SITE_INFO['static_caching_hours'] = '1';", '', $c);
         $c = str_replace("\n\$SITE_INFO['any_guest_cached_too'] = '1';", '', $c);
         require_code('files');
         cms_file_put_contents_safe($config_path, $c);

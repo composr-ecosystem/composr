@@ -22,7 +22,7 @@ class _static_caching_test_set extends cms_test_case
     {
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
-        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['fast_spider_cache'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';");
+        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';");
         fix_permissions($config_file_path);
         if (php_function_allowed('usleep')) {
             usleep(500000);
@@ -34,7 +34,7 @@ class _static_caching_test_set extends cms_test_case
 
         if (get_param_integer('early_debug', 0) == 1) {
             require_code('files2');
-            var_dump(get_directory_contents(get_custom_file_base() . '/caches/guest_pages'));
+            var_dump(get_directory_contents(get_custom_file_base() . '/caches/static'));
 
             var_dump($result);
         }
@@ -62,7 +62,7 @@ class _static_caching_test_set extends cms_test_case
 
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
-        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['fast_spider_cache'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['failover_mode'] = 'auto_off';\n\$SITE_INFO['failover_check_urls'] = '" . $test_url . "';\n\$SITE_INFO['failover_cache_miss_message'] = 'FAILOVER_CACHE_MISS';\n\$SITE_INFO['failover_email_contact'] = 'test@example.com';\$SITE_INFO['base_url'] = '" . addslashes(get_base_url()) . "';\n");
+        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['failover_mode'] = 'auto_off';\n\$SITE_INFO['failover_check_urls'] = '" . $test_url . "';\n\$SITE_INFO['failover_cache_miss_message'] = 'FAILOVER_CACHE_MISS';\n\$SITE_INFO['failover_email_contact'] = 'test@example.com';\$SITE_INFO['base_url'] = '" . addslashes(get_base_url()) . "';\n");
         fix_permissions($config_file_path);
 
         // This will empty the static cache, meaning when it is re-primed it actually will do so for fail-over (now that's enabled) priming rather than just outputting from the cache made in testStaticCacheWorks

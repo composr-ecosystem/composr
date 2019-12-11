@@ -76,7 +76,7 @@ flock($tmp_path_handle, LOCK_SH);
 // Open and read metadata file
 $tmp_metadata_path = dirname(__DIR__) . '/data_custom/upgrader.tmp';
 if (!file_exists($tmp_metadata_path)) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('2nd temp file has disappeared (' . $tmp_metadata_path . ')');
 }
 $metadata = unserialize(file_get_contents($tmp_metadata_path));
@@ -109,7 +109,7 @@ foreach ($todo as $i => $_target_file) {
     fseek($tmp_path_handle, $offset);
     $target_file_handle = @fopen($FILE_BASE . '/' . $target_file, 'wb');
     if ($target_file_handle === false) {
-        header('Content-type: text/plain; charset=utf-8');
+        header('Content-Type: text/plain; charset=utf-8');
         exit('Filesystem permission error when trying to extract ' . $target_file . '. Maybe you needed to give FTP details when logging in?');
     }
     flock($target_file_handle, LOCK_EX);

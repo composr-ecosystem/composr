@@ -52,7 +52,7 @@ function incoming_uploads_script()
                 error_log('Composr: ' . do_lang('ERROR_UPLOADING_' . strval($_FILES['file']['error'])), 0);
             }*/
 
-            header('Content-type: text/plain; charset=' . get_charset());
+            header('Content-Type: text/plain; charset=' . get_charset());
             require_code('uploads');
             $upload_error_message = get_upload_error_message($_FILES['file']);
             exit($upload_error_message->evaluate());
@@ -99,7 +99,7 @@ function incoming_uploads_script()
         $max_length = 255;
         $name = substr($name, max(0, strlen($name) - $max_length));
 
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
 
         require_code('files');
 
@@ -133,7 +133,7 @@ function incoming_uploads_script()
 
         exit(); // So auto_append_file cannot run and corrupt our output
     } else {
-        //header('Content-type: text/plain; charset=' . get_charset()); @print('No file (' . serialize($_FILES) . ')');
+        //header('Content-Type: text/plain; charset=' . get_charset()); @print('No file (' . serialize($_FILES) . ')');
         header('HTTP/1.1 500 File Upload Error');
 
         // Test harness

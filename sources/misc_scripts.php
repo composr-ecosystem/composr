@@ -255,7 +255,7 @@ function cron_bridge_script($caller)
 
     // In query mode, Composr will just give advice on the system scheduler settings to use
     if (get_param_integer('querymode', 0) == 1) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
         require_code('files2');
         $php_path = find_php_path();
@@ -273,7 +273,7 @@ function cron_bridge_script($caller)
     $limit_hook = get_param_string('limit_hook', '');
     $manual_run = (get_param_integer('manual_run', 0) == 1);
     if ($manual_run) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
     }
     require_code('failure');
 
@@ -435,7 +435,7 @@ function cron_bridge_script($caller)
     }
 
     if (!headers_sent()) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
     }
 
     if ($manual_run) {
@@ -480,7 +480,7 @@ function iframe_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 

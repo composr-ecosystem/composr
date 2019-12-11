@@ -323,7 +323,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 break;
 
             case '}':
-                if (($stack === []) || ($current_level_mode === PARSE_DIRECTIVE_INNER)) {
+                if ((empty($stack)) || ($current_level_mode === PARSE_DIRECTIVE_INNER)) {
                     $literal = php_addslashes($next_token);
                     if ($GLOBALS['XSS_DETECT']) {
                         ocp_mark_as_escaped($literal);
@@ -348,7 +348,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 $past_level_data = $current_level_data;
                 $past_level_params = $current_level_params;
                 $past_level_mode = $current_level_mode;
-                if ($stack === []) {
+                if (empty($stack)) {
                     if (!$tolerate_errors) {
                         warn_exit(do_lang_tempcode('TEMPCODE_TOO_MANY_CLOSES', escape_html($template_name), escape_html(integer_format(1 + _length_so_far($bits, $i)))), false, true);
                     }
@@ -416,7 +416,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                 }
                 $_opener_params = '';
                 foreach ($opener_params as $oi => &$oparam) {
-                    if ($oparam === []) {
+                    if (empty($oparam)) {
                         $oparam = ['""'];
                         if (!isset($opener_params[$oi + 1])) {
                             unset($opener_params[$oi]);
@@ -574,7 +574,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             }
                             $temp .= ')';
 
-                            if ($escaped === []) {
+                            if (empty($escaped)) {
                                 $current_level_data[] = $temp;
                             } else {
                                 $s_escaped = '';
@@ -617,12 +617,12 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                     } elseif ($eval === 'END') { // END
                         // Test that the top stack does represent a started directive, and close directive level
                         $past_level_data = $current_level_data;
-                        if ($past_level_data === []) {
+                        if (empty($past_level_data)) {
                             $past_level_data = ['""'];
                         }
                         $past_level_params = $current_level_params;
                         $past_level_mode = $current_level_mode;
-                        if ($stack === []) {
+                        if (empty($stack)) {
                             if ($tolerate_errors) {
                                 continue 2;
                             }
@@ -653,12 +653,12 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         // Work out parameters
                         $directive_params = '';
                         $first_directive_param = '""';
-                        if ($directive_opener_params[1] === []) {
+                        if (empty($directive_opener_params[1])) {
                             $directive_opener_params[1] = ['""'];
                         }
                         $count_directive_opener_params = count($directive_opener_params);
                         for ($j = 2; $j < $count_directive_opener_params; $j++) {
-                            if ($directive_opener_params[$j] === []) {
+                            if (empty($directive_opener_params[$j])) {
                                 $directive_opener_params[$j] = ['""'];
                             }
 
@@ -955,7 +955,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
     }
     require_code('comcode');
     if (!peek_lax_comcode()) {
-        if ($stack !== []) {
+        if (!empty($stack)) {
             if (!$tolerate_errors) {
                 warn_exit(do_lang_tempcode('UNCLOSED_DIRECTIVE_OR_BRACE', escape_html($template_name), escape_html(integer_format(1 + substr_count(substr($data, 0, _length_so_far($bits, $i)), "\n")))), false, true);
             }
@@ -1135,7 +1135,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
         // Stop parallel compilation of the same file by a little hack; without this it could knock out a server
         /*$final_css_path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.css'; Actually this is architecturally messy, just let it happen - it's not as slow as it was
         if ((is_file($final_css_path)) && (cms_file_get_contents_safe($final_css_path, FILE_READ_LOCK) === 'GENERATING')) {
-            header('Content-type: text/plain; charset=' . get_charset());
+            header('Content-Type: text/plain; charset=' . get_charset());
             exit('We are doing a code update. Please refresh in around 2 minutes.');
         }
         require_code('files');
@@ -1345,7 +1345,7 @@ function template_to_tempcode($text, $symbol_pos = 0, $inside_directive = false,
  */
 function build_closure_function($myfunc, $parts)
 {
-    if ($parts === []) {
+    if (empty($parts)) {
         $parts = ['""'];
     }
     $code = '';

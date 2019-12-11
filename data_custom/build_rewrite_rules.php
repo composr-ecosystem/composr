@@ -25,7 +25,7 @@ header('X-Robots-Tag: noindex');
 
 $cli = is_cli();
 if (!$cli) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('Must run this script on command line, for security reasons');
 }
 
@@ -33,7 +33,7 @@ if (basename(getcwd()) != 'data_custom') {
     chdir('data_custom');
 }
 
-header('Content-type: text/plain; charset=utf-8');
+header('Content-Type: text/plain; charset=utf-8');
 
 $zones = ['', 'site', 'forum', 'adminzone', 'cms'];
 

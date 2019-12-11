@@ -160,7 +160,7 @@ function handle_self_referencing_embedment()
         $type = $_GET['type'];
 
         if ($type == 'logo') {
-            header('Content-type: image/png');
+            header('Content-Type: image/png');
             if (!file_exists(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png')) {
                 $out = file_array_get('themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             } else {

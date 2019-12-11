@@ -59,7 +59,7 @@ function username_check_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     require_code('cns_members_action');
     require_code('cns_members_action2');
@@ -92,7 +92,7 @@ function username_exists_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $username = trim(get_param_string('username', false, INPUT_FILTER_GET_COMPLEX));
     $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
@@ -225,7 +225,7 @@ function find_permissions_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     require_code('permissions2');
 
@@ -266,7 +266,7 @@ function fractional_edit_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $_POST['fractional_edit'] = '1'; // FUDGE
 
@@ -317,7 +317,7 @@ function change_detection_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $page = get_page_name();
 
@@ -340,7 +340,7 @@ function edit_ping_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE the_time<' . strval(time() - 200));
 
@@ -373,7 +373,7 @@ function ajax_tree_script()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));
     }
 
@@ -426,7 +426,7 @@ function confirm_session_script()
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
     global $SESSION_CONFIRMED_CACHE;
     if (!$SESSION_CONFIRMED_CACHE) {
         echo $GLOBALS['FORUM_DRIVER']->get_username(get_member());

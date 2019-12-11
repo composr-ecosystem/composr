@@ -43,7 +43,7 @@ function password_censor($auto = false, $display = true, $days_ago = 30)
     $sql .= ' AND p_time<=' . strval(time() - 60 * 60 * 24 * $days_ago);
     $rows = $GLOBALS['FORUM_DB']->query($sql, null, 0, false, false, ['p_post' => 'LONG_TRANS__COMCODE']);
     if ($display) {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
     }
 
     foreach ($rows as $row) {

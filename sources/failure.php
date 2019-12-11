@@ -474,7 +474,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
 
     global $WANT_TEXT_ERRORS;
     if ($WANT_TEXT_ERRORS) {
-        @header('Content-type: text/plain; charset=' . get_charset());
+        @header('Content-Type: text/plain; charset=' . get_charset());
         if ($HTTP_STATUS_CODE == 200) {
             set_http_status_code(500);
         }
@@ -483,7 +483,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
         exit((is_object($text) ? strip_html($text->evaluate()) : $text) . "\n");
     }
 
-    @header('Content-type: text/html; charset=' . get_charset());
+    @header('Content-Type: text/html; charset=' . get_charset());
     @header('Content-Disposition: inline');
 
     if ((function_exists('do_lang')) && (strpos($text_eval, do_lang('MISSING_RESOURCE_SUBSTRING')) !== false)) {

@@ -674,7 +674,7 @@ function apply_tempcode_escaping($escaped, &$value)
             $value = filter_naughty_harsh($value, true);
         }
     }
-    if (($GLOBALS['XSS_DETECT']) && ($escaped !== [])) {
+    if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {
         ocp_mark_as_escaped($value);
     }
 
@@ -727,7 +727,7 @@ function apply_tempcode_escaping_inline($escaped, $value)
             $value = filter_naughty_harsh($value, true);
         }
     }
-    if (($GLOBALS['XSS_DETECT']) && ($escaped !== [])) {
+    if (($GLOBALS['XSS_DETECT']) && (!empty($escaped))) {
         ocp_mark_as_escaped($value);
     }
 
@@ -1802,7 +1802,7 @@ class Tempcode
                 $end = &$this->seq_parts[key($this->seq_parts)];
                 if ($inlining_mode && end($end) !== false) {
                     $_end = &$end[key($end)];
-                    if (($_end[2] === TC_KNOWN) && ($_end[1] === [])) { // Optimisation to save memory/storage-space/evaluation-time -- we can just append text
+                    if (($_end[2] === TC_KNOWN) && (empty($_end[1]))) { // Optimisation to save memory/storage-space/evaluation-time -- we can just append text
                         $myfunc = $_end[0];
                         if (isset($this->code_to_preexecute[$myfunc])) {
                             $code = $this->code_to_preexecute[$myfunc];
@@ -2013,7 +2013,7 @@ class Tempcode
         foreach ($this->seq_parts as $seq_parts_group) {
             foreach ($seq_parts_group as $seq_part) {
                 if ($i === $at) {
-                    return ($seq_part[1] === []);
+                    return empty($seq_part[1]);
                 }
                 $i++;
             }
@@ -2135,7 +2135,7 @@ class Tempcode
             }
         }
 
-        if ($this->seq_parts === []) {
+        if (empty($this->seq_parts)) {
             return;
         }
 

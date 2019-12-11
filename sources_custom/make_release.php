@@ -86,7 +86,7 @@ function make_installers($skip_file_grab = false)
         }
     }
 
-    //header('Content-type: text/plain; charset=' . get_charset());var_dump(array_keys($MAKE_INSTALLERS__FILE_ARRAY));exit(); Useful for testing quickly what files will be built
+    //header('Content-Type: text/plain; charset=' . get_charset());var_dump(array_keys($MAKE_INSTALLERS__FILE_ARRAY));exit(); Useful for testing quickly what files will be built
 
     // What we'll be building
     $bundled = $builds_path . '/builds/' . $version_dotted . '/composr-' . $version_dotted . '.tar';

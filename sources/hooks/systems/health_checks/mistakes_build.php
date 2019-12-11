@@ -949,7 +949,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                     continue;
                 }
                 /*if ($result != 0) { Debugging
-                    @header('Content-type: text/plain');@var_dump($matches);exit();
+                    @header('Content-Type: text/plain');@var_dump($matches);exit();
                 }*/
                 $this->assertTrue($result == 0, $description);
             }

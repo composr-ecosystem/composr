@@ -127,7 +127,7 @@ function get_self_url_easy($script_name_if_cli = false)
 function get_self_url($evaluate = false, $root_if_posted = false, $extra_params = [], $posted_too = false, $avoid_remap = false)
 {
     global $SELF_URL_CACHED, $IN_SELF_ROUTING_SCRIPT;
-    $cacheable = ($evaluate) && (!$root_if_posted) && ($extra_params === []) && (!$posted_too) && (!$avoid_remap);
+    $cacheable = ($evaluate) && (!$root_if_posted) && (empty($extra_params)) && (!$posted_too) && (!$avoid_remap);
     if (($cacheable) && ($SELF_URL_CACHED !== null)) {
         return $SELF_URL_CACHED;
     }
@@ -884,7 +884,7 @@ function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
                         break;
                 }
             }
-            if (($extra_vars !== []) || ($force_index_php)) {
+            if ((empty($extra_vars)) || ($force_index_php)) {
                 $first = true;
                 $_makeup = '';
                 foreach ($extra_vars as $key => $val) { // Add these in explicitly

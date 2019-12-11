@@ -354,11 +354,11 @@ Composr uses boxes to show featured areas, including featured content and catego
  - Templates: The HTML markup referencing the above
  - Tempcode: The Tempcode [tt]BOX[/tt] directive, for automatically generating box markup (not used much in v9+ due to it adding an unnecessary abstraction layer, but was common in previous versions when the markup was more complex due to a need to support old web browsers)
  - Comcode: The Comcode [tt]box[/tt] tag, used for generating a box from Comcode
- - Content API: The [tt]render_<content-type>_box[/tt] functions, and associated templates that they call up
+ - Content API: The [tt]render_<Content-Type>_box[/tt] functions, and associated templates that they call up
 
 The rest of this section will focus on how the content API uses boxes...
 
-Almost every kind of content (and category) has an content type hook defined. That content type hook will specify how a box of that content (or category) will be displayed. The convention is that the content type hooks glue themselves to the [tt]render_<content-type>_box[/tt] functions, which glue themselves to particular templates.
+Almost every kind of content (and category) has an content type hook defined. That content type hook will specify how a box of that content (or category) will be displayed. The convention is that the content type hooks glue themselves to the [tt]render_<Content-Type>_box[/tt] functions, which glue themselves to particular templates.
 
 So, how do the templates work? Any content type will probably have two main templates used to display it:
 1) A box template ([tt]<content_type>_BOX.tpl[/tt]) [what we are discussing here]
@@ -395,7 +395,7 @@ However, things aren't always so simple. There are some exceptions because some 
 [box float="right" width="20em"]
 This abstraction quandary comes up in other places too. Often programmers will try and abstract everything and end up with a mess. For example, Composr CRUD modules define the form structure manually. We could try and automatically generate forms via the semantic database structure we already have -- but for usability we need much more control over how each form will look in every case.
 [/box]
-There is a constant battle between abstraction, and intuitive interfaces. Not everything can be simplified down to an instance of a common pattern. Therefore Composr abstracts the patterns in layers, and then module/block code will interface with the layer that is compatible with its requirements and fill in the gaps. This minimises code, while maximises the user experience, and allows new unplanned experiences to be created by webmasters who wish to interface with the APIs at various levels. In general, even if a block is not used to display listings, the code required is still minimal due to use of the [tt]render_<content-type>_box[/tt] functions.
+There is a constant battle between abstraction, and intuitive interfaces. Not everything can be simplified down to an instance of a common pattern. Therefore Composr abstracts the patterns in layers, and then module/block code will interface with the layer that is compatible with its requirements and fill in the gaps. This minimises code, while maximises the user experience, and allows new unplanned experiences to be created by webmasters who wish to interface with the APIs at various levels. In general, even if a block is not used to display listings, the code required is still minimal due to use of the [tt]render_<Content-Type>_box[/tt] functions.
 
 [title="4"]Why doesn't Composr just use blocks for everything?[/title]
 
@@ -458,7 +458,7 @@ while (($f = readdir($dh)) !== false) {
     }
 }
 
-header('Content-type: text/plain');
+header('Content-Type: text/plain');
 
 echo number_format($count) . ' words, in ' . number_format($strings) . ' language strings, in ' . number_format($files) . ' files.';
 [/codebox]
@@ -478,7 +478,7 @@ Here's a script for if you you to found out what are the most common functions u
    Find top functions used in a codebase
 */
 
-header('Content-type: text/plain');
+header('Content-Type: text/plain');
 
 if (isset($_GET['path'])) {
     chdir($_GET['path']);

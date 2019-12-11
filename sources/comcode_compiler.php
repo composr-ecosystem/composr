@@ -117,7 +117,7 @@ function wysiwyg_comcode_markup_style($tag, $attributes = null, $embed = null, $
             }
         }
 
-        if ((isset($REVERSIBLE_TAGS[$tag])) && (is_array($REVERSIBLE_TAGS[$tag])) && (!$conservative) && (($attributes === null) || (array_intersect(array_keys($attributes), $REVERSIBLE_TAGS[$tag]) == []))) {
+        if ((isset($REVERSIBLE_TAGS[$tag])) && (is_array($REVERSIBLE_TAGS[$tag])) && (!$conservative) && (($attributes === null) || (empty(array_intersect(array_keys($attributes), $REVERSIBLE_TAGS[$tag]))))) {
             if (!$html_errors) {
                 return WYSIWYG_COMCODE__HTML;
             }
@@ -1974,7 +1974,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                         $code_nest_stack = 0;
                     }
                 } elseif ($next === ']') {
-                    if (($attribute_map === []) && (!$lax)) {
+                    if ((empty($attribute_map)) && (!$lax)) {
                         return comcode_parse_error_exit($preparse_mode, ['CCP_TAG_CLOSE_ANOMALY'], $pos, $comcode, $check_only);
                     }
 
@@ -2128,7 +2128,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
         }
     }
 
-    /*if ($html_element_stack !== []) {    Not actually needed
+    /*if (!empty($html_element_stack)) {    Not actually needed
         $html_errors = true;
     }*/
 

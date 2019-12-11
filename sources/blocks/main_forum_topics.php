@@ -225,7 +225,7 @@ PHP;
                 }
             }
         }
-        if ($_topics === []) {
+        if (empty($_topics)) {
             return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => 'c76ab018a0746c2875c6cf69c92a01fb',
                 'BLOCK_ID' => $block_id,

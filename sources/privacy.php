@@ -186,7 +186,7 @@ abstract class Hook_privacy_base
                 $where[$key] = $row[$key];
             }
         }
-        if ($where === []) {
+        if (empty($where)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
@@ -246,7 +246,7 @@ abstract class Hook_privacy_base
                 $where[$key] = $row[$key];
             }
         }
-        if ($where === []) {
+        if (empty($where)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 

@@ -78,6 +78,7 @@ function debugging_static_cache()
 
 /**
  * Find if we can use the static cache.
+ * For the load side, some additional checks are done before static caching code is even initiated (like checking if it is enabled and you are a guest).
  * For the save side, some additional checks are done in save_static_caching.
  *
  * @return boolean Whether we can
@@ -86,74 +87,65 @@ function can_static_cache()
 {
     $debugging = debugging_static_cache();
 
+    $url = static_cache__get_self_url_easy();
+
     if ($debugging) {
         require_code('urls');
     }
 
-    if (isset($_GET['redirect'])) {
+    if ($_SERVER['REQUEST_METHOD'] != 'GET') {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC: No, redirect in URL on ' . get_self_url_easy());
+                @error_log('SC: No, ' . $_SERVER['REQUEST_METHOD'] . ' request on ' . $url);
             }
         }
 
         return false;
     }
 
-    global $EXTRA_HEAD;
-    if ($EXTRA_HEAD !== null) {
-        if (strpos($EXTRA_HEAD->evaluate(), '<meta name="robots" content="noindex"') !== false) {
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['static_caching_pattern'])) {
+        if (preg_match('#' . $SITE_INFO['static_caching_pattern'] . '#', $url) == 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, robots blocking so obscure on ' . get_self_url_easy());
+                    @error_log('SC: No, non-pattern-matched URL on ' . $url);
                 }
             }
 
-            return false; // Too obscure to waste cache space with
+            return false;
         }
-    }
+    } else {
+        if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
+            if ($debugging) {
+                if (php_function_allowed('error_log')) {
+                    @error_log('SC: No, home page has spurious parameters, likely a bot probing');
+                }
+            }
 
-    global $NON_CANONICAL_PARAMS;
-    if ($NON_CANONICAL_PARAMS !== null) {
-        foreach ($NON_CANONICAL_PARAMS as $param => $block_page_from_static_cache_if_present) {
-            if (isset($_GET[$param])) {
-                if ($block_page_from_static_cache_if_present) {
-                    if ($debugging) {
-                        if (php_function_allowed('error_log')) {
-                            @error_log('SC: No, has ' . $param . ' on ' . get_self_url_easy());
+            return false;
+        }
+
+        global $NON_CANONICAL_PARAMS;
+        if ($NON_CANONICAL_PARAMS !== null) {
+            foreach ($NON_CANONICAL_PARAMS as $param => $block_page_from_static_cache_if_present) {
+                if (isset($_GET[$param])) {
+                    if ($block_page_from_static_cache_if_present) {
+                        if ($debugging) {
+                            if (php_function_allowed('error_log')) {
+                                @error_log('SC: No, has ' . $param . ' on ' . $url);
+                            }
                         }
-                    }
 
-                    return false; // Too parameterised
+                        return false; // Too parameterised
+                    }
                 }
             }
         }
-    }
-
-    if ((isset($_GET['page'])) && ($_GET['page'] == '404')) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC: No, 404 page on ' . get_self_url_easy());
-            }
-        }
-
-        return false;
-    }
-
-    global $HTTP_STATUS_CODE;
-    if ($HTTP_STATUS_CODE == 404) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC: No, 404 status on ' . get_self_url_easy());
-            }
-        }
-
-        return false;
     }
 
     if ($debugging) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC: Yes, on ' . get_self_url_easy());
+            @error_log('SC: Yes, on ' . $url);
         }
     }
 
@@ -185,30 +177,33 @@ function static_cache($mode)
 {
     global $SITE_INFO;
 
-    $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-    if (basename($script_name) == 'backend.php') {
-        $file_extension = '.xml';
+    $in_failover_mode = (($mode & STATIC_CACHE__FAILOVER_MODE) != 0);
+
+    if ($in_failover_mode) {
+        // Correct HTTP status
+        if ((!function_exists('browser_matches')) || ((!browser_matches('ie')) && (strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') === false))) {
+            http_response_code(503);
+        }
     } else {
-        $file_extension = '.htm';
-    }
-
-    $support_compressed = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false);
-    if ($support_compressed) {
-        $file_extension .= '.gz';
-    }
-
-    if (($mode & STATIC_CACHE__FAILOVER_MODE) == 0) {
         if (!can_static_cache()) {
             return;
         }
     }
 
-    if (($mode & STATIC_CACHE__FAILOVER_MODE) != 0) {
-        // Correct HTTP status
-        if ((!function_exists('browser_matches')) || ((!browser_matches('ie')) && (strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') === false))) {
-            http_response_code(503);
-        }
+    $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    if (basename($script_name) == 'backend.php') { // FUDGE hardcoding recognition of backend.php caching
+        $file_extension = '.xml';
+    } else {
+        $file_extension = '.htm';
     }
+    // ^ Note that static caching will not run for anything other, but it's implicit - as nothing other will be saving into the cache!
+
+    $support_compressed = 
+        (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) &&
+        (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) &&
+        (function_exists('gzencode')) &&
+        (function_exists('php_function_allowed')) &&
+        (php_function_allowed('ini_set'));
 
     if (function_exists('is_mobile')) {
         $is_mobile = is_mobile();
@@ -241,16 +236,16 @@ function static_cache($mode)
 
     // Work out cache path (potentially will search a few places, based on priority)
     $url = static_cache_current_url();
-    $_fast_cache_path = (function_exists('get_custom_file_base') ? get_custom_file_base() : $GLOBALS['FILE_BASE']) . '/caches/guest_pages/' . md5($url);
+    $_fast_cache_path = (function_exists('get_custom_file_base') ? get_custom_file_base() : $GLOBALS['FILE_BASE']) . '/caches/static/' . md5($url);
     $param_sets = [
         [
             'non_bot' => ($mode & STATIC_CACHE__FAST_SPIDER) == 0,
             'no_js' => !array_key_exists('js_on', $_COOKIE),
             'mobile' => $is_mobile,
-            'failover_mode' => ($mode & STATIC_CACHE__FAILOVER_MODE) != 0,
+            'failover_mode' => $in_failover_mode,
         ],
     ];
-    if (($mode & STATIC_CACHE__FAILOVER_MODE) != 0) {
+    if ($in_failover_mode) {
         foreach ($param_sets[0]['mobile'] ? [true, false] : [false, true] as $mobile) {
             foreach ($param_sets[0]['no_js'] ? [true, false] : [false, true] as $no_js) {
                 foreach ($param_sets[0]['non_bot'] ? [true, false] : [false, true] as $non_bot) {
@@ -281,6 +276,14 @@ function static_cache($mode)
             $fast_cache_path .= '__failover_mode';
         }
         $fast_cache_path .= $file_extension;
+
+        if ($support_compressed) {
+            if (is_file($fast_cache_path . '.gz')) {
+                $fast_cache_path .= '.gz';
+                break;
+            }
+        }
+
         if (is_file($fast_cache_path)) {
             break;
         }
@@ -288,21 +291,21 @@ function static_cache($mode)
 
     // Is cached
     if (is_file($fast_cache_path)) {
-        if (($file_extension == '.htm') || ($file_extension == '.htm.gz')) {
-            header('Content-type: text/html; charset=utf-8');
-        } else {
-            header('Content-type: text/xml; charset=utf-8');
-        }
-
-        $expires = intval(60.0 * 60.0 * floatval($SITE_INFO['fast_spider_cache']));
+        $expires = intval(60.0 * 60.0 * floatval($SITE_INFO['static_caching_hours']));
         $mtime = filemtime($fast_cache_path);
-        if (($mtime > time() - $expires) || (($mode & STATIC_CACHE__FAILOVER_MODE) != 0)) {
+        if (($mtime > time() - $expires) || ($in_failover_mode)) {
+            if (($file_extension == '.htm') || ($file_extension == '.htm.gz')) {
+                header('Content-Type: text/html; charset=utf-8');
+            } else {
+                header('Content-Type: text/xml; charset=utf-8');
+            }
+
             // Only bots can do HTTP caching, as they won't try to login and end up reaching a previously cached page
-            if ((($mode & STATIC_CACHE__FAST_SPIDER) != 0) && (($mode & STATIC_CACHE__FAILOVER_MODE) == 0)) {
-                header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expires) . ' GMT');
+            if ((($mode & STATIC_CACHE__FAST_SPIDER) != 0) && ($in_failover_mode)) {
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $mtime) . ' GMT');
                 header('Cache-Control: public, max-age=' . strval($expires));
                 header_remove('Pragma');
+                header_remove('Expires');
 
                 $since = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
                 if ($since != '') {
@@ -317,11 +320,15 @@ function static_cache($mode)
                         exit();
                     }
                 }
+            } else {
+                @header('Cache-Control: no-cache');
             }
 
             // Output
-            if ((($mode & STATIC_CACHE__FAILOVER_MODE) == 0) && ($support_compressed) && (function_exists('gzencode')) && (function_exists('php_function_allowed')) && (php_function_allowed('ini_set'))) {
-                ini_set('zlib.output_compression', 'Off');
+            if (substr($fast_cache_path, -3) == '.gz') {
+                if (function_exists('ini_set')/*guard for CQC; always will be true for this branch as also checked earlier*/) {
+                    ini_set('zlib.output_compression', 'Off');
+                }
                 header('Content-Encoding: gzip');
                 header('Vary: Accept-Encoding');
             }
@@ -329,7 +336,7 @@ function static_cache($mode)
             if (function_exists('ocp_mark_as_escaped')) {
                 ocp_mark_as_escaped($contents);
             }
-            if (($mode & STATIC_CACHE__FAILOVER_MODE) != 0) {
+            if (($in_failover_mode) && ($file_extension == '.htm')) {
                 $contents .= "\n\n" . '<!-- Served ' . htmlentities($fast_cache_path) . ' -->';
                 $contents .= '<failover />';
             }
@@ -370,9 +377,9 @@ function static_cache($mode)
         }
     }
 
-    if (($mode & STATIC_CACHE__FAILOVER_MODE) != 0) {
+    if ($in_failover_mode) {
         // Error message saying nothing cached
-        header('Content-type: text/plain; charset=utf-8');
+        header('Content-Type: text/plain; charset=utf-8');
         if (!isset($SITE_INFO['failover_cache_miss_message'])) {
             $SITE_INFO['failover_cache_miss_message'] = 'Cannot find cache file.';
         }

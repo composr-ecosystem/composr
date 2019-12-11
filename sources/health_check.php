@@ -129,7 +129,7 @@ function health_check_script()
     $has_fails = false;
     $categories = run_health_check($has_fails, $sections_to_run, $passes, $skips, $manual_checks);
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
 
     $out = display_health_check_results_as_text($categories);

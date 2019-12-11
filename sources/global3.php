@@ -681,10 +681,10 @@ function push_output_state($just_tempcode = false, $true_blank = false)
  * @sets_output_state
  *
  * @param  boolean $just_tempcode Whether to only restore the Tempcode execution part of the state
- * @param  boolean $merge_current Whether to merge the current output state in
- * @param  array $keep Settings to keep / merge if possible
+ * @param  boolean $merge_current Whether to merge the current output state in (or take precedence when merging isn't applicable)
+ * @param  ?array $keep Settings to keep (not replace) / merge if possible (null: merge all)
  */
-function restore_output_state($just_tempcode = false, $merge_current = false, $keep = [])
+function restore_output_state($just_tempcode = false, $merge_current = false, $keep = null)
 {
     global $OUTPUT_STATE_STACK;
 
@@ -700,7 +700,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                 $merge_array = (($merge_current) && (is_array($val)) && (isset($mergeable_arrays[$var])));
                 $merge_tempcode = (($merge_current) && (isset($val->codename/*faster than is_object*/, $mergeable_tempcode[$var])));
                 $mergeable = $merge_array || $merge_tempcode;
-                if (($keep === []) || (!in_array($var, $keep)) || ($mergeable)) {
+                if (($keep === null) || (!in_array($var, $keep)) || ($mergeable)) {
                     if ($merge_array) {
                         if ($GLOBALS[$var] === null) {
                             $GLOBALS[$var] = [];
@@ -711,7 +711,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
                             $GLOBALS[$var] = new Tempcode();
                         }
                         $GLOBALS[$var]->attach($val);
-                    } elseif (!$merge_current || !isset($GLOBALS[$var]) || $GLOBALS[$var] === [] || $GLOBALS[$var] === false || $GLOBALS[$var] === '' || $var == 'REFRESH_URL') {
+                    } elseif ((!$merge_current) || (!isset($GLOBALS[$var])) || (cms_empty_safe($GLOBALS[$var])) || ($var == 'REFRESH_URL') || (($var == 'HTTP_STATUS_CODE') && ($GLOBALS['HTTP_STATUS_CODE'] == 200))) {
                         $GLOBALS[$var] = $val;
                     }
                 }
@@ -745,8 +745,6 @@ function globalise($middle, $message = null, $type = '', $include_header_and_foo
     if ($message !== null) {
         attach_message($message, $type);
     }
-
-    restore_output_state(true); // Here we reset some Tempcode environmental stuff, because template compilation or preprocessing may have dirtied things
 
     $show_border = (get_param_integer('show_border', $show_border ? 1 : 0) == 1);
     if (!$show_border && !running_script('index') && $middle !== null) {
@@ -4529,7 +4527,7 @@ function website_creation_time()
 function is_maintained($code)
 {
     static $cache = [];
-    if ($cache === []) {
+    if (empty($cache)) {
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');

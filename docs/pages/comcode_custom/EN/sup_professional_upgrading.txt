@@ -380,7 +380,7 @@ Options 3 or 4 are the most likely you will want to use.
    Find files modified within the last days days
 */
 
-header('Content-type: text/plain');
+header('Content-Type: text/plain');
 
 if (!isset($_GET['days'])) {
     exit('Must give a days parameter');
@@ -408,7 +408,7 @@ if (!empty($_GET['zip'])) {
         exit('No files');
     }
 
-    header('Content-type: application/octet-stream');
+    header('Content-Type: application/octet-stream');
     $h = 'Content-Disposition: attachment;
         filename="new_files.zip"';
     header($h);

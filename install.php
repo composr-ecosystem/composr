@@ -18,13 +18,13 @@
 $functions = ['fopen'];
 foreach ($functions as $function) {
     if (preg_match('#[^,\s]' . $function . '[$,\s]#', ini_get('disable_functions')) != 0) {
-        header('Content-type: text/plain; charset=utf-8');
+        header('Content-Type: text/plain; charset=utf-8');
         exit('The ' . $function . ' function appears to have been manually disabled in your PHP installation. This is a basic and necessary function, required for Composr.');
     }
 }
 
 if ((!array_key_exists('type', $_GET)) && (file_exists('install_locked'))) {
-    header('Content-type: text/plain; charset=utf-8');
+    header('Content-Type: text/plain; charset=utf-8');
     exit('Installer is locked for security reasons (delete the \'install_locked\' file to return to the installer)');
 }
 
@@ -72,7 +72,7 @@ define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done usin
 
 if (!array_key_exists('type', $_GET)) {
     if (empty($_GET)) {
-        header('Content-type: text/html; charset=utf-8');
+        header('Content-Type: text/html; charset=utf-8');
     }
 
     echo '<!DOCTYPE html>' . "\n";
@@ -2714,7 +2714,7 @@ function handle_self_referencing_embedment()
                 break;
 
             case 'logo':
-                header('Content-type: image/png');
+                header('Content-Type: image/png');
                 if (!file_exists(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png')) {
                     $out = file_array_get('themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png');
                     echo $out;
@@ -2727,7 +2727,7 @@ function handle_self_referencing_embedment()
 
             case 'contract':
             case 'expand':
-                header('Content-type: image/svg+xml');
+                header('Content-Type: image/svg+xml');
                 if (!file_exists(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg')) {
                     $out = file_array_get('themes/default/images/icons/trays/' . $type . '.svg');
                     echo $out;
@@ -2781,7 +2781,7 @@ function handle_self_referencing_embedment()
         }
 
         if (substr($type, 0, 15) == 'themes/default/') {
-            header('Content-type: image/svg+xml; charset=' . get_charset());
+            header('Content-Type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
                 $out = handle_string_bom(file_array_get(filter_naughty($type)));
                 echo $out;
@@ -3026,7 +3026,7 @@ function test_htaccess($conn)
     $clauses = [];
 
     $clauses[] = <<<END
-# Stop any potential content-type sniffing vulnerabilities
+# Stop any potential Content-Type sniffing vulnerabilities
 <IfModule mod_headers.c>
 Header set X-Content-Type-Options "nosniff"
 </IfModule>
@@ -3113,7 +3113,7 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javasc
 </IfModule>
 </IfModule>
 
-# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-content-type.aspx (IE won't decompress again as it thinks it's a mistake)
+# We do not want for TAR files, due to IE bug http://blogs.msdn.com/b/wndp/archive/2006/08/21/content-encoding-not-equal-Content-Type.aspx (IE won't decompress again as it thinks it's a mistake)
 <IfModule mod_setenvif.c>
 SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 </IfModule>
@@ -3232,10 +3232,7 @@ END;
 
         foreach ($clauses as $i => $clause) {
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/index.php', "<" . "?php
-            header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
             header('Cache-Control: no-cache');
-            header('Pragma: no-cache');
             ");
 
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/.htaccess', $clause);

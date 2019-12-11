@@ -147,12 +147,12 @@ function transifex_push_script()
     $cli = is_cli();
     if (!$cli) {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
-            header('Content-type: text/plain; charset=utf-8');
+            header('Content-Type: text/plain; charset=utf-8');
             exit('Must run this script on command line, for security reasons -- or be logged in as an administrator');
         }
     }
 
-    @header('Content-type: text/plain; charset=' . get_charset());
+    @header('Content-Type: text/plain; charset=' . get_charset());
     cms_ini_set('ocproducts.xss_detect', '0');
 
     $core_only = _transifex_env_setting('core_only');
@@ -492,12 +492,12 @@ function transifex_pull_script()
     if (!$cli) {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             if (!$output) {
-                header('Content-type: text/plain; charset=utf-8');
+                header('Content-Type: text/plain; charset=utf-8');
                 exit('You must be logged in as an administrator (or run this script from the command line) if not using output=0');
             }
 
             if ($lang === null) {
-                header('Content-type: text/plain; charset=utf-8');
+                header('Content-Type: text/plain; charset=utf-8');
                 exit('You must be logged in as an administrator (or run this script from the command line) if not setting an output language');
             }
         }
@@ -526,7 +526,7 @@ function transifex_pull_script()
         tar_close($tar_file);
         exit();
     } else {
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
         echo 'Done';
     }

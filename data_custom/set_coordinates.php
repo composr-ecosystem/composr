@@ -55,7 +55,7 @@ set_coordinates();
 
 function set_coordinates()
 {
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     if (get_forum_type() != 'cns') {
         warn_exit(do_lang_tempcode('NO_CNS'));

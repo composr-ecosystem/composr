@@ -146,7 +146,7 @@ while (($r = $sheet_reader->read_row()) !== false) {
 }
 $sheet_reader->close();
 
-@header('Content-type: text/plain; charset=' . get_charset());
+@header('Content-Type: text/plain; charset=' . get_charset());
 echo 'Imported ' . integer_format($done) . ' news articles.';
 
 function parse_ezinearticles($r)

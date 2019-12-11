@@ -40,7 +40,21 @@ function init__site()
 
     global $NON_CANONICAL_PARAMS;
     // We only bother listing ones the software itself may inject - otherwise admin responsible for their own curation of canonical settings
-    $NON_CANONICAL_PARAMS = ['_t' => false, 'wide_high' => false, 'wide' => false, 'wide_print' => false, 'filtered' => false, 'utheme' => false, 'active_filter' => true, 'redirected' => true, 'redirect_url' => true, 'redirect' => true, 'redirect_passon' => true];
+    $NON_CANONICAL_PARAMS = [
+        '_t' => false,
+        'wide_high' => false,
+        'wide' => false,
+        'wide_print' => false,
+        'filtered' => false,
+        'utheme' => false,
+
+        // 'true' means that the static cache cannot cache with this parameter by default
+        'active_filter' => true,
+        'redirected' => true,
+        'redirect_url' => true,
+        'redirect' => true,
+        'redirect_passon' => true,
+    ];
     inform_non_canonical_parameter('#^(.*_)?(max|start|sort)$#');
     if (function_exists('get_value')) {
         $is_non_canonical = false;
@@ -1127,59 +1141,57 @@ function do_site()
  *
  * @param  mixed $out Output to cache (Tempcode or string)
  * @param  string $mime_type Mime type to use
+ * @return boolean Whether saving could have happened
  */
 function save_static_caching($out, $mime_type = 'text/html')
 {
     require_code('static_cache');
     $debugging = debugging_static_cache();
 
+    $url = get_self_url_easy();
+
     // Initial assessments of whether we can cache...
 
     global $SITE_INFO;
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ((!isset($SITE_INFO['static_caching_hours'])) || ($SITE_INFO['static_caching_hours'] == '0')) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, POST request on ' . get_self_url_easy());
+                @error_log('SC save: No, not enabled on ' . $url);
             }
         }
 
-        return;
+        return false;
     }
-    if ((!isset($SITE_INFO['fast_spider_cache'])) || ($SITE_INFO['fast_spider_cache'] == '0')) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, not enabled on ' . get_self_url_easy());
-            }
-        }
 
-        return;
-    }
     if (!is_guest()) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, logged in on ' . get_self_url_easy());
+                @error_log('SC save: No, logged in on ' . $url);
             }
         }
 
-        return;
+        return false;
     }
+
     if ($GLOBALS['IS_ACTUALLY_ADMIN']) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, using SU to Guest on ' . get_self_url_easy());
+                @error_log('SC save: No, using SU to Guest on ' . $url);
             }
         }
 
-        return;
+        return false;
     }
-    if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
+
+    global $HTTP_STATUS_CODE;
+    if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, home page has spurious parameters, likely a bot probing');
+                @error_log('SC save: HTTP status is and non-HTML so no http-equiv ' . strval($HTTP_STATUS_CODE));
             }
         }
 
-        return;
+        return false;
     }
 
     $bot_type = get_bot_type();
@@ -1188,18 +1200,20 @@ function save_static_caching($out, $mime_type = 'text/html')
     require_code('static_cache');
     if (($bot_type === null) && (!$supports_failover_mode) && (!$supports_guest_caching)) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC save: No, not a bot and no failover mode or guest caching enabled, on ' . get_self_url_easy());
+            @error_log('SC save: No, not a bot and no failover mode or guest caching enabled, on ' . $url);
         }
+
+        return false;
     }
 
     if (!can_static_cache()) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, static cache not available according to can_static_cache() on ' . get_self_url_easy());
+                @error_log('SC save: No, static cache not available according to can_static_cache() on ' . $url);
             }
         }
 
-        return;
+        return false;
     }
 
     // Work out what to cache...
@@ -1213,24 +1227,14 @@ function save_static_caching($out, $mime_type = 'text/html')
 
     // Deeper assessments about what we can cache...
 
-    if (strpos($static_cache, '<meta name="robots" content="noindex') !== false) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, page had set noindex on ' . get_self_url_easy());
-            }
-        }
-
-        return;
-    }
-
     if (!$GLOBALS['STATIC_CACHE_ENABLED']) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, internal signal to not cache on ' . get_self_url_easy());
+                @error_log('SC save: No, internal signal to not cache on ' . $url);
             }
         }
 
-        return; // Something in the output tree decided this was not cacheable
+        return false; // Something in the output tree decided this was not cacheable
     }
 
     // Cache...
@@ -1240,7 +1244,7 @@ function save_static_caching($out, $mime_type = 'text/html')
     // Log
     if ($debugging) {
         if (php_function_allowed('error_log')) {
-            @error_log('SC save: Yes, on ' . get_self_url_easy());
+            @error_log('SC save: Yes, on ' . $url);
         }
     }
 
@@ -1254,8 +1258,40 @@ function save_static_caching($out, $mime_type = 'text/html')
     $static_cache .= "\n\n" . '<!-- Mime type ' . htmlentities($mime_type) . ' -->';
     $file_extension = ($mime_type == 'text/xml') ? '.xml' : '.htm';
 
+    // Add HTTP response code and select HTTP headers (HTML-only)
+    if ($mime_type == 'text/html') {
+        $meta_extra = '';
+
+        if (substr(strval($HTTP_STATUS_CODE), 0, 1) != '2') {
+            $meta_extra .= '<meta http-equiv="Status" content="' . strval($HTTP_STATUS_CODE) . '" />';
+
+            // Search engines likely won't support "meta http-equiv status", so let's just tell them not to index
+            $noindex_meta = '<meta name="robots" content="noindex" />';
+            if (strpos($static_cache, $noindex_meta) === false) {
+                $meta_extra .= '<meta name="robots" content="noindex" />';
+            }
+        }
+
+        // Criteria:
+        //  - likely supported under http-equiv
+        //  - actually set by Composr
+        //  - has actual chance of being present during something statically cached
+        //  - is not already represented in HTML output in some (other?) way already (e.g. unlike X-Robots-Tag)
+        //  - is not set algorithmically by the static cache itself (e.g. unlike Content-Type, or caching, or Vary)
+        $supported_http_equiv_header_patterns = '#^(Content-Security-Policy|Cross-Origin-Opener-Policy):\s*(.*)$#';
+
+        foreach (headers_list() as $header) {
+            $matches = [];
+            if (preg_match($supported_http_equiv_header_patterns, $header, $matches) != 0) {
+                $meta_extra .= '<meta http-equiv="' . escape_html($matches[1]) . '" content="' . escape_html($matches[2]) . '" />';
+            }
+        }
+
+        $static_cache = str_ireplace('</head>', $meta_extra . '</head>', $static_cache);
+    }
+
     // Work out cache path on disk
-    $fast_cache_path = get_custom_file_base() . '/caches/guest_pages/' . md5($url);
+    $fast_cache_path = get_custom_file_base() . '/caches/static/' . md5($url);
     $fast_cache_path_failover_mode = $fast_cache_path;
     if ($bot_type === null) {
         $fast_cache_path .= '__non-bot';
@@ -1310,6 +1346,8 @@ function save_static_caching($out, $mime_type = 'text/html')
             }
         }
     }
+
+    return true;
 }
 
 /**

@@ -235,11 +235,11 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         }
 
         if ($check_context == CHECK_CONTEXT__TEST_SITE) {
-            $this->assertTrue($found === [], 'Sitemap directive found in robots.txt but this is a test site and we should not have one');
+            $this->assertTrue(empty($found), 'Sitemap directive found in robots.txt but this is a test site and we should not have one');
         }
 
         if ($check_context == CHECK_CONTEXT__LIVE_SITE) {
-            $this->assertTrue($found !== [], 'No Sitemap directive found in robots.txt');
+            $this->assertTrue(!empty($found), 'No Sitemap directive found in robots.txt');
         }
     }
 

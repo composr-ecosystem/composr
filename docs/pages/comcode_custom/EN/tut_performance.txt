@@ -98,7 +98,7 @@ If you are optimising your backend infrastructure to be able to handle large num
 
 If you want to [b]serve cached pages to bots[/b], put a line like this into your [tt]_config.php[/tt] file:
 [code="PHP"]
-$SITE_INFO['fast_spider_cache'] = '3';
+$SITE_INFO['static_caching_hours'] = '3';
 [/code]
 All user agents identified as bots or spiders, or listed in the [tt]text/bots.txt[/tt] file, will be served out of a cache. HTTP caching is also properly implemented.
 The cache lifetime in this example would be 3 hours, but you can change it to whatever you require.

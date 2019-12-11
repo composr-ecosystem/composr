@@ -325,7 +325,7 @@ function init__global2()
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) { // Fast caching for bots and possibly guests
         if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
             $bot_type = get_bot_type();
-            if (($bot_type !== null) && (!empty($SITE_INFO['fast_spider_cache']))) {
+            if (($bot_type !== null) && (!empty($SITE_INFO['static_caching_hours']))) {
                 load_csp(['csp_enabled' => '0']);
                 require_code('static_cache');
                 static_cache(STATIC_CACHE__FAST_SPIDER);
@@ -426,7 +426,7 @@ function init__global2()
     require_code('urls'); // URL building is crucial
 
     // Register Internationalisation settings
-    @header('Content-type: text/html; charset=' . get_charset());
+    @header('Content-Type: text/html; charset=' . get_charset());
     setlocale(LC_ALL, explode(',', do_lang('locale')));
     if (substr(@strftime('%M'), 0, 2) == '??') { // Windows may do this because it can't output a utf-8 character set, so gets mangled to question marks by PHP
         setlocale(LC_ALL, explode(',', do_lang('locale', null, null, null, fallback_lang()))); // The user will have to define locale_subst correctly
@@ -817,15 +817,12 @@ function get_domain()
 function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
-        @header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
-        @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
         @header('Cache-Control: no-cache');
-        @header('Pragma: no-cache');
     } else {
-        @header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expiry_seconds) . ' GMT');
         @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_modified) . ' GMT');
         @header('Cache-Control: ' . ($public ? 'public' : 'private') . 'max-age=' . strval($expiry_seconds));
         @header_remove('Pragma');
+        @header_remove('Expires');
     }
 }
 
@@ -1532,7 +1529,7 @@ function find_script($name, $append_keep = false, $base_url_code = 0)
     }
 
     static $find_script_cache = [];
-    if ($find_script_cache === []) {
+    if (empty($find_script_cache)) {
         if (function_exists('persistent_cache_get')) {
             $find_script_cache = persistent_cache_get('SCRIPT_PLACES');
         }

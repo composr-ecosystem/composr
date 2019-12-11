@@ -59,7 +59,7 @@ function retrieve_autosave_script()
 {
     prepare_for_known_ajax_response();
 
-    header('Content-type: text/xml; charset=' . get_charset());
+    header('Content-Type: text/xml; charset=' . get_charset());
 
     $member_id = get_member();
     $stem = either_param_string('stem');

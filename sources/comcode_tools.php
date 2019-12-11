@@ -170,7 +170,7 @@ function comcode_convert_script()
     } else {
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        header('Content-type: text/plain; charset=' . get_charset());
+        header('Content-Type: text/plain; charset=' . get_charset());
         echo $out;
     }
 

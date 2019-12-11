@@ -47,8 +47,8 @@ Need to output a simple spreadsheet? You are allowed to set headers and [tt]exit
 [code="PHP"]
 <?php
 
-header('Content-type: text/plain; charset=utf-8');
-header('Content-disposition: attachment; filename="example.csv"');
+header('Content-Type: text/plain; charset=utf-8');
+header('Content-Disposition: attachment; filename="example.csv"');
 
 // Some arbitrary data to output
 $example_data = array(

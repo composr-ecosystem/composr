@@ -389,7 +389,7 @@ if ($website_email == "") {
 $headers .= "From: \"" . str_replace("\"", "", $name) . "\" <{$website_email}>\n";
 $headers .= "Reply-To: \"" . str_replace("\"", "", $name) . "\" <{$email}>\n";
 $random_hash = md5(date("r", time()));
-$headers .= "Content-type: multipart/mixed; boundary=\"PHP-mixed-{$random_hash}\"";
+$headers .= "Content-Type: multipart/mixed; boundary=\"PHP-mixed-{$random_hash}\"";
 $mime_message = "";
 $mime_message .= "--PHP-mixed-{$random_hash}\n";
 $mime_message .= "Content-Type: text/plain; charset=\"' . get_charset() . '\"\n\n";

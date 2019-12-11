@@ -73,7 +73,7 @@ function form_input_various_ticks($options, $description, $_tabindex = null, $_p
             $out[] = ['CHECKED' => $value, 'TABINDEX' => strval($tabindex), 'NAME' => $name, 'PRETTY_NAME' => $pretty_name, 'DESCRIPTION' => $_description, 'DISABLED' => $disabled];
         }
 
-        if ($custom_value === []) {
+        if (empty($custom_value)) {
             $custom_value = [''];
         }
 

@@ -359,7 +359,7 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
 
     imagesavealpha($im_canvas, true);
     if ($raw) { // Output direct?
-        header('Content-type: image/png');
+        header('Content-Type: image/png');
         //header('Content-Disposition: attachment; filename="-logo.png"');
 
         if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
@@ -620,7 +620,7 @@ function themewizard_script()
             $tpl->evaluate();
         }
         $css = themewizard_colours_to_sheet($show, $landscape, $source_theme, $algorithm, $seed);
-        header('Content-type: text/css; charset=' . get_charset());
+        header('Content-Type: text/css; charset=' . get_charset());
         if ($type == 'css') {
             $tpl = template_to_tempcode($css);
             $tpl->evaluate_echo();
@@ -642,7 +642,7 @@ function themewizard_script()
 
         cms_ob_end_clean();
 
-        header('Content-type: image/png');
+        header('Content-Type: image/png');
 
         readfile($saveat);
 

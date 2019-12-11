@@ -43,7 +43,7 @@ class MobiquoServerJSON extends MobiquoServer
             return $_POST['method_name'];
         }
 
-        header('Content-type: text/plain; charset=utf-8');
+        header('Content-Type: text/plain; charset=utf-8');
         exit('No method is provided');
     }
 

@@ -121,7 +121,7 @@ function endpoint_script()
     // Output
     switch ($response_type) {
         case 'json':
-            @header('Content-type: application/json; charset=' . get_charset());
+            @header('Content-Type: application/json; charset=' . get_charset());
             echo json_encode($return_data);
             break;
 

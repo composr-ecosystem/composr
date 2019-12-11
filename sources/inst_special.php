@@ -110,7 +110,7 @@ function get_chmod_array($lang, $runtime = false)
         [
             'adminzone/pages/comcode_custom/' . $lang,
             'adminzone/pages/html_custom/' . $lang,
-            'caches/guest_pages',
+            'caches/static',
             'caches/lang',
             'caches/lang/' . $lang,
             'caches/persistent',

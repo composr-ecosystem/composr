@@ -116,15 +116,12 @@ function init__minikernel()
 function set_http_caching($last_modified, $public = false, $expiry_seconds = 604800/*1 week*/)
 {
     if ($last_modified === null) {
-        @header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
-        @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
         @header('Cache-Control: no-cache');
-        @header('Pragma: no-cache');
     } else {
-        @header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expiry_seconds) . ' GMT');
         @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $last_modified) . ' GMT');
         @header('Cache-Control: ' . ($public ? 'public' : 'private') . 'max-age=' . strval($expiry_seconds));
         @header_remove('Pragma');
+        @header_remove('Expires');
     }
 }
 

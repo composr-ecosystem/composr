@@ -2506,7 +2506,7 @@ function _do_contents_level($tree_structure, $list_types, $base, $the_level = 0)
         $lines[] = ['ID' => $level[0], 'LINE' => $level[1], 'URL' => $level[2], 'UNDER' => $under];
     }
 
-    if ($lines === []) {
+    if (empty($lines)) {
         return new Tempcode();
     }
 

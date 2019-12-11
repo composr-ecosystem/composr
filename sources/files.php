@@ -637,12 +637,12 @@ function should_ignore_file($path, $bitmask = 0)
         // Cache files
         'lcd' => 'caches/.*',
         'gcd' => 'caches/.*',
-        'htm' => 'caches/guest_pages',
-        'xml' => 'caches/guest_pages',
+        'htm' => 'caches/static',
+        'xml' => 'caches/static',
         'tcp' => 'themes/[^/]*/templates_cached/.*',
         'css' => 'themes/[^/]*/templates_cached/.*',
         'js' => 'themes/[^/]*/templates_cached/.*',
-        'gz' => '(themes/[^/]*/templates_cached/.*|caches/guest_pages)',
+        'gz' => '(themes/[^/]*/templates_cached/.*|caches/static)',
 
         // Log files
         'log' => '.*',
@@ -787,7 +787,7 @@ function should_ignore_file($path, $bitmask = 0)
         }
 
         $ignore_extensions = array_merge($ignore_extensions, [
-            'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/guest_pages|imports/.*|exports/.*)',
+            'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/static|imports/.*|exports/.*)',
 
             // Import/Export files
             'tar' => '(imports|exports)/.*',

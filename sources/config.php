@@ -611,7 +611,7 @@ function delete_value($name, $elective_or_lengthy = false)
  */
 function delete_values($values)
 {
-    if ($values === []) {
+    if (empty($values)) {
         return;
     }
     global $VALUE_OPTIONS_CACHE;

@@ -69,7 +69,7 @@ function notification_mark_all_read_script()
 function notification_display_script()
 {
     set_http_caching(null);
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
 
     $max = post_param_integer('max', null);
 

@@ -71,7 +71,7 @@ class Hook_task_privacy_download
 
         $filename = preg_replace('#[^\w]#', '_', $username) . '.json';
         $headers = [];
-        $headers['Content-type'] = 'application/json';
+        $headers['Content-Type'] = 'application/json';
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = [];

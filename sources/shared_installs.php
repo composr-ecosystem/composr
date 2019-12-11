@@ -66,7 +66,7 @@ function current_share_user()
         return null;
     }
 
-    header('Content-type: text/plain; charset=' . get_charset());
+    header('Content-Type: text/plain; charset=' . get_charset());
     if (!empty($SITE_INFO['no_website_redirect'])) {
         header('Location: ' . $SITE_INFO['no_website_redirect']); // assign_refresh not used, as it is a pre-page situation
     }

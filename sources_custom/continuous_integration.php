@@ -198,7 +198,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
     cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
 
     if ($output) {
-        @header('Content-type: text/plain; charset=' . get_charset());
+        @header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
         echo 'Enqueued';
     }
@@ -207,7 +207,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
 function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 {
     if ($output) {
-        @header('Content-type: text/plain; charset=' . get_charset());
+        @header('Content-Type: text/plain; charset=' . get_charset());
         cms_ini_set('ocproducts.xss_detect', '0');
     }
 

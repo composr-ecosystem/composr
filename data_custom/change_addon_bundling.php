@@ -71,7 +71,7 @@ if (!check_master_password($password)) {
     warn_exit('Access denied - you must pass the master password through correctly');
 }
 
-header('Content-type: text/plain; charset=' . get_charset());
+header('Content-Type: text/plain; charset=' . get_charset());
 
 $mode = get_param_string('mode'); // bundle | unbundle
 $addon_name = get_param_string('addon');
