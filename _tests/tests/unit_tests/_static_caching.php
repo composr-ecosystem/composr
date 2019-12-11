@@ -22,7 +22,7 @@ class _static_caching_test_set extends cms_test_case
     {
         $config_file_path = get_file_base() . '/_config.php';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
-        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';");
+        file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['static_caching_hours'] = '1';\n\$SITE_INFO['any_guest_cached_too'] = '1';\n\$SITE_INFO['static_caching_pattern']='';");
         fix_permissions($config_file_path);
         if (php_function_allowed('usleep')) {
             usleep(500000);
@@ -41,13 +41,16 @@ class _static_caching_test_set extends cms_test_case
 
         $time_before = microtime(true);
         $data = http_get_contents($url->evaluate(), ['convert_to_internal_encoding' => true, 'timeout' => 20.0]);
+        if ($this->debug) {
+            var_dump($data);
+        }
         $time_after = microtime(true);
 
         $time = $time_after - $time_before;
 
         $this->assertTrue($time < 0.1, 'Took too long, ' . float_format($time) . ' seconds');
 
-        $this->assertTrue(strpos($data, 'global.css') !== false);
+        $this->assertTrue(preg_match('#global\w+\.css#', $data) != 0);
         $this->assertTrue(strpos($data, '</html>') !== false);
 
         file_put_contents($config_file_path, $config_file);

@@ -174,13 +174,17 @@ If you want to be able to generate custom graphics with quality TrueType text on
 
 If you want automatic image rotation correction, and image metadata import, you'll need the PHP [tt]exif[/tt] extension.
 
-If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors).
-
 For the most reliable unzipping support, you want the PHP [tt]zip[/tt] extension.
 
-For faster upgrade transfer (which might be necessary on some webhosts), or compressed backups, you want the PHP [tt]zlib[/tt] extension. This is standard on many Linux distributions without a need to separately install it, but if compiling PHP yourself you need to include support for it.
+To properly check permissions the [tt]posix[/tt] extension is needed.
+
+For faster upgrade transfer (which might be necessary on some webhosts), or compressed backups, or page compression, you want the PHP [tt]zlib[/tt] extension. This is standard on many Linux distributions without a need to separately install it, but if compiling PHP yourself you need to include support for it.
+
+For slightly faster performance the [tt]ctype[/tt] extension helps.
 
 [title="4"]Very specific features[/title]
+
+If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors).
 
 If you want automatic thumbnail generation you need a server with FFMPEG on it. It must be accessible via PHP either via the unofficial PHP FFMPEG extension, or the ability for [tt]shell_exec[/tt] to run from PHP.
 

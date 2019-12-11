@@ -10,6 +10,7 @@
       "ext-curl": "*",
       "ext-intl": "*",
       "ext-gd": "*",
+      "ext-exif": "*",
       "ext-mbstring": "*",
       "ext-iconv": "*",
       "ext-zlib": "*"

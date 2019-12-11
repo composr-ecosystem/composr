@@ -120,7 +120,7 @@ function supports_brotli($live = true, &$use_cmd_line = false)
                 return false; // No Brotli on HTTP due to non-compliant proxy caches potentially getting polluted
             }
 
-            if ((!php_function_allowed('brotli_compress')) || ((ini_get('output_handler') != '') && (ini_get('output_handler') != '_cms_ob_brhandler'))) {
+            if ((!php_function_allowed('brotli_compress')) || (ini_get('output_handler') != '')) {
                 $live_ok = false;
                 return false; // We have to use a real output handler as otherwise realistically we get chaos
             }
@@ -153,33 +153,6 @@ function supports_brotli($live = true, &$use_cmd_line = false)
     $ok_use_cmd_line = false;
     $ok = false;
     return false;
-}
-
-/**
- * Output handler for Brotli compression. Handles PHP header and actual output filtering.
- *
- * @param  string $in Output
- * @return string Filtered output
- */
-function _cms_ob_brhandler($in)
-{
-    if (headers_sent()) {
-        return;
-    }
-
-    header('Content-Encoding: br');
-    header('Vary: Content-Encoding');
-
-    set_error_handler(null); // Needed as otherwise Tempcode execution can happen which itself uses buffers
-
-    $out = cms_brotli_compress($in, 11 /*recommended*/);
-    if ($out === false) {
-        return $in;
-    }
-
-    restore_error_handler();
-
-    return $out;
 }
 
 /**
@@ -267,7 +240,7 @@ function supports_gzip($live = true, &$use_cmd_line = false)
                 return false;
             }
 
-            if ((!php_function_allowed('gzencode')) || ((ini_get('output_handler') != '') && (ini_get('output_handler') != '_cms_ob_gzhandler'))) {
+            if ((!php_function_allowed('gzencode')) || (ini_get('output_handler') != '')) {
                 $live_ok = false;
                 return false; // We have to use a real output handler as otherwise realistically we get chaos
             }
@@ -300,33 +273,6 @@ function supports_gzip($live = true, &$use_cmd_line = false)
     $ok_use_cmd_line = false;
     $ok = false;
     return false;
-}
-
-/**
- * Output handler for Gzip compression. Handles PHP header and actual output filtering.
- *
- * @param  string $in Output
- * @return string Filtered output
- */
-function _cms_ob_gzhandler($in)
-{
-    if (headers_sent()) {
-        return;
-    }
-
-    header('Content-Encoding: gzip');
-    header('Vary: Content-Encoding');
-
-    set_error_handler(null); // Needed as otherwise Tempcode execution can happen which itself uses buffers
-
-    $out = cms_gzencode($in, 2 /*recommended*/);
-    if ($out === false) {
-        return $in;
-    }
-
-    restore_error_handler();
-
-    return $out;
 }
 
 /**

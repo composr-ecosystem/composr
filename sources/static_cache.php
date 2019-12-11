@@ -115,7 +115,8 @@ function can_static_cache()
             return false;
         }
     } else {
-        if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
+        global $RELATIVE_PATH;
+        if ((isset($RELATIVE_PATH)) && ($RELATIVE_PATH == '') && ((!isset($_GET['page'])) || ($_GET['page'] == 'home')) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
                     @error_log('SC: No, home page has spurious parameters, likely a bot probing');
@@ -126,7 +127,7 @@ function can_static_cache()
         }
 
         global $NON_CANONICAL_PARAMS;
-        if ($NON_CANONICAL_PARAMS !== null) {
+        if (isset($NON_CANONICAL_PARAMS)) {
             foreach ($NON_CANONICAL_PARAMS as $param => $block_page_from_static_cache_if_present) {
                 if (isset($_GET[$param])) {
                     if ($block_page_from_static_cache_if_present) {

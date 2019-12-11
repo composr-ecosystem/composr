@@ -6188,6 +6188,11 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_GD_ON_SERVER_JPEG
         NO_GD_ON_SERVER_PNG
         NO_GD_ON_SERVER_TTF
+        NO_EXIF_ON_SERVER
+        NO_POSIX_ON_SERVER
+        NO_CTYPE_ON_SERVER
+        NO_INTL_ON_SERVER
+        NO_ZLIB_ON_SERVER
         NO_HELP
         NO_INTEGERS_TEMPLATE
         NO_LAST_BACKUP
