@@ -56,9 +56,11 @@ function enable_output_compression()
 
     $use_cmd_line = false;
     if (supports_brotli(true, $use_cmd_line)) {
+        @header('Content-Encoding: br'); // Seems unofficial addon does not send header early enough
         cms_ini_set('brotli.output_compression', 'On');
         cms_ini_set('brotli.output_compression_level', '11'); // Recommended. Default for Brotli
     } elseif (supports_gzip(true, $use_cmd_line)) {
+        @header('Content-Encoding: gzip'); // Better safe than sorry
         cms_ini_set('zlib.output_compression', '2048'); // 2KB buffer is based on capturing repetition while not breaking output streaming
         cms_ini_set('zlib.output_compression_level', '2'); // Recommended. Compression doesn't get much better after this, but performance drop
     }
@@ -72,6 +74,7 @@ function disable_output_compression()
     foreach (_disable_output_compression() as $key => $val) {
         cms_ini_set($key, $val);
     }
+
     header_remove('Content-Encoding');
 }
 

@@ -179,6 +179,7 @@ For the most reliable unzipping support, you want the PHP [tt]zip[/tt] extension
 To properly check permissions the [tt]posix[/tt] extension is needed.
 
 For faster upgrade transfer (which might be necessary on some webhosts), or compressed backups, or page compression, you want the PHP [tt]zlib[/tt] extension. This is standard on many Linux distributions without a need to separately install it, but if compiling PHP yourself you need to include support for it.
+If you want full Brotli compression you need to have the [url="unofficial PHP Brotli extension"]https://github.com/kjdev/php-ext-brotli[/url]; installing this generally requires some access and expertise.
 
 For slightly faster performance the [tt]ctype[/tt] extension helps.
 
