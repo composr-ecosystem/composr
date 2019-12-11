@@ -19,7 +19,7 @@
  */
 
 /**
- * Open up a TAR archive (or tarball if the zlib extension is available), and return the resource.
+ * Open up a TAR archive (or tarball if the zlib extension is available and .gz is requested), and return the resource.
  *
  * @param  PATH $path The path to the TAR archive
  * @param  string $mode The mode to open the TAR archive (rb=read, wb=write)
@@ -57,6 +57,7 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
     $resource['new'] = !$exists;
     $resource['mode'] = $mode;
     $resource['myfile'] = $myfile;
+    $resource['real_filename'] = $real_filename;
     $resource['full'] = $path;
     $resource['already_at_end'] = false;
     if (((!$exists) || (!(filesize($path) > 0))) && (strpos($mode, 'w') !== false)) {
@@ -720,7 +721,11 @@ function tar_close($resource)
     }
 
     @flock($resource['myfile'], LOCK_UN);
-    fclose($resource['myfile']);
+    if ((function_exists('gzclose')) && (strtolower(substr($resource['real_filename'], -3)) == '.gz')) {
+        gzclose($resource['myfile']);
+    } else {
+        fclose($resource['myfile']);
+    }
 
     if ($writing) {
         fix_permissions($resource['full']);

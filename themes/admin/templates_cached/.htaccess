@@ -25,7 +25,7 @@ ExpiresByType text/css "now plus 1 months"
 </IfModule>
 
 
-# Serve pre-compressed CSS/JS files if they exist and the client accepts gzip
+# Serve pre-compressed CSS/JS files if they exist and the client accepts Gzip
 #  This may not work properly on Windows due to Apache bugs. The RewriteRule may redirect to contain the full file path, and also the most recent FilesMatch expression
 #<IfModule mod_rewrite.c>
 #<IfModule mod_env.c>
@@ -35,17 +35,47 @@ ExpiresByType text/css "now plus 1 months"
 #Header set Content-Encoding: gzip
 #Header append Vary: Accept-Encoding
 #SetEnv no-gzip
+#SetEnv no-brotli
 #</FilesMatch>
 #<FilesMatch "\.css(\.gz)?($|\?)">
 #ForceType text/css
 #Header set Content-Encoding: gzip
 #Header append Vary: Accept-Encoding
 #SetEnv no-gzip
+#SetEnv no-brotli
 #</FilesMatch>
 #<FilesMatch "\.(js|css)?($|\?)">
 #RewriteCond %{HTTP:Accept-encoding} gzip
 #RewriteCond %{REQUEST_FILENAME}\.gz -s
 #RewriteRule (.*) $1.gz [QSA,L]
+#</FilesMatch>
+#</IfModule>
+#</IfModule>
+#</IfModule>
+
+# Serve pre-compressed CSS/JS files if they exist and the client accepts Brotli
+#  This may not work properly on Windows due to Apache bugs. The RewriteRule may redirect to contain the full file path, and also the most recent FilesMatch expression
+#<IfModule mod_rewrite.c>
+#<IfModule mod_env.c>
+#<IfModule mod_headers.c>
+#<FilesMatch "\.js(\.br)?($|\?)">
+#ForceType application/javascript
+#Header set Content-Encoding: br
+#Header append Vary: Accept-Encoding
+#SetEnv no-gzip
+#SetEnv no-brotli
+#</FilesMatch>
+#<FilesMatch "\.css(\.br)?($|\?)">
+#ForceType text/css
+#Header set Content-Encoding: br
+#Header append Vary: Accept-Encoding
+#SetEnv no-gzip
+#SetEnv no-brotli
+#</FilesMatch>
+#<FilesMatch "\.(js|css)?($|\?)">
+#RewriteCond %{HTTP:Accept-encoding} br
+#RewriteCond %{REQUEST_FILENAME}\.br -s
+#RewriteRule (.*) $1.br [QSA,L]
 #</FilesMatch>
 #</IfModule>
 #</IfModule>

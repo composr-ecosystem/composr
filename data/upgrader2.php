@@ -66,7 +66,7 @@ if (!is_file($tmp_path)) { // LEGACY. Some old ocPortal upgraders versions overw
 if (!is_file($tmp_path)) {
     exit('Could not find data_custom/upgrader.cms.tmp');
 }
-if (strtolower(substr($original_filename, -3)) == '.gz') {
+if ((function_exists('gzopen')) && (strtolower(substr($original_filename, -3)) == '.gz')) {
     $tmp_path_handle = gzopen($tmp_path, 'rb');
 } else {
     $tmp_path_handle = fopen($tmp_path, 'rb');

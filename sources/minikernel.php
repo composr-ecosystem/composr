@@ -1195,8 +1195,7 @@ function cms_ob_end_clean()
 {
     while (ob_get_level() > 0) {
         if (!ob_end_clean()) {
-            cms_ini_set('zlib.output_compression', '0');
-            break;
+            break; // Cannot delete special buffer, likely output compression
         }
     }
 }

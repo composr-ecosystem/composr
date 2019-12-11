@@ -140,10 +140,8 @@ Some checks we could do but don't:
  - checking constants exist (predefined and global and class constants), and knowing their type (Reason: Would be difficult to implement given they can be defined dynamically)
  > see "Comparison to other PHP linters" for more
 
-The PHP checker is very much set up to enforce compatibility across different PHP platforms. It is only assumed that a small number of extensions will be present:
- - gd2
- - gzip
-For all of these, you should use function_exists at some point before using these function sets.
+The PHP checker is very much set up to enforce compatibility across different PHP platforms. It is only assumed that the gd2 extension will be present:
+For extension functions you should use function_exists at some point before using these function sets.
 For other functions you can use function_exists too. The checker is smart about function_exists, but not very smart. You can do:
 function_exists('foo')?foo():bar()
 and

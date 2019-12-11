@@ -53,7 +53,6 @@ function init__global2()
     define('INPUT_FILTER_NONE', 0);
 
     fixup_bad_php_env_vars();
-    handle_bad_access_context();
 
     cms_ini_set('log_errors', '1');
     if ((GOOGLE_APPENGINE) && (!appengine_is_live())) {
@@ -425,6 +424,8 @@ function init__global2()
     }
     require_code('urls'); // URL building is crucial
 
+    handle_bad_access_context();
+
     // Register Internationalisation settings
     @header('Content-Type: text/html; charset=' . get_charset());
     setlocale(LC_ALL, explode(',', do_lang('locale')));
@@ -442,12 +443,8 @@ function init__global2()
         check_for_spam(null, null, true);
     }
 
-    // G-zip?
-    $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
-    if (!in_safe_mode() && $page != 'admin_config') {
-        cms_ini_set('zlib.output_compression', (get_option('gzip_output') == '1') ? '2048' : 'Off'); // 2KB buffer is based on capturing repetition while not breaking output streaming
-    }
-    cms_ini_set('zlib.output_compression_level', '2'); // Compression doesn't get much better after this, but performance drop
+    // Output compression?
+    require_code('output_compression');
 
     if ((!$MICRO_AJAX_BOOTUP) && (!$MICRO_BOOTUP)) {
         // Before anything gets outputted
@@ -1297,11 +1294,11 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  ?integer $http_status HTTP status to set (null: none)
  * @exits
  */
-function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = null)
+function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = 500)
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, 500);
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status);
     if (running_script('cron_bridge')) {
         relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
     }
@@ -2127,9 +2124,11 @@ function cms_ob_end_clean()
 {
     while (ob_get_level() > 0) {
         if (!@ob_end_clean()) {
-            cms_ini_set('zlib.output_compression', '0');
-            break;
+            break; // Cannot delete special buffer, likely output compression
         }
+    }
+    if (function_exists('init_output_compression')) {
+        reinit_output_compression();
     }
 }
 

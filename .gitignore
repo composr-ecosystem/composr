@@ -31,10 +31,12 @@ test_a
 /caches/*/*.htm
 /caches/*/*.xml
 /caches/*/*.gz
+/caches/*/*.br
 /themes/*/templates_cached/*/*.js
 /themes/*/templates_cached/*/*.css
 /themes/*/templates_cached/*/*.tcp
 /themes/*/templates_cached/*/*.gz
+/themes/*/templates_cached/*/*.br
 /data_custom/rate_limiter.php
 /data_custom/*log.php
 /exports/*/*.tar

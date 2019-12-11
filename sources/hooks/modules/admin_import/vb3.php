@@ -147,7 +147,7 @@ class Hook_import_vb3
             'maxposts' => 'forum_posts_per_page',
             'maxthreads' => 'forum_topics_per_page',
             //'reputationenable' => 'is_on_points',
-            'gzipoutput' => 'gzip_output',
+            'gzipoutput' => 'output_compression',
             'regimagecheck' => 'use_captchas',
             'moderatenewmembers' => 'require_new_member_validation',
             'timeoffset' => 'timezone',

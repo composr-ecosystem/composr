@@ -304,7 +304,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/forum_show_personal_stats_posts.php',
             'sources/hooks/systems/config/forum_show_personal_stats_topics.php',
             'sources/hooks/systems/config/global_donext_icons.php',
-            'sources/hooks/systems/config/gzip_output.php',
+            'sources/hooks/systems/config/output_compression.php',
             'sources/hooks/systems/config/has_low_memory_limit.php',
             'sources/hooks/systems/config/url_scheme.php',
             'sources/hooks/systems/config/ip_forwarding.php',

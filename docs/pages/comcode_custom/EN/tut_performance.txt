@@ -75,7 +75,7 @@ General tips:
  - [b]Don't have addons installed that you don't need[/b]. Some may have general performance requirements, such as catalogues (adds custom fields checking to all content types) -- while others may just have general over-head in terms of sitemap generation, language string presence, moniker registration, and hook execution.
  - Enable the [b]disable_smart_decaching[/b] option in the installation options. You can make it intelligent, by only allowing smart decaching if the FTP log was modified recently.
  - If you get a lot of 404 errors, it is best to make a [b]static 404 page[/b] instead of using Composr's which can be relatively intensive. You activate a custom 404 page by putting a reference to it in the [tt].htaccess[/tt] file (Apache only; our [tt]recommended.htaccess[/tt] file does this for Composr's). Or for IIS, there is sample code in the [tt]web.config[/tt] file.
- - Enable the "Gzipped output" configuration option. Unless you're using Cloudflare's optimisation features, in which case disable it so Cloudflare can do that instead.
+ - Enable the "Output compression" configuration option. Unless you're using Cloudflare's optimisation features, in which case disable it so Cloudflare can do that instead.
  - Sending e-mails can be an intensive task because Composr has to work out what CSS to include for each e-mail, put templating together, and connect through and send to the e-mail server. [b]Turning on the "E-mail queue" configuration option[/b] will avoid this happening immediately during user actions, deferring it. It will make forum posting, for example, faster.
  - Disabling URL monikers can help with performance; however this will also impact SEO if you think your URL paths are key to that.
  - If you use [tt]www[/tt] in your base URL, set an explicit cookie domain in [tt]_config.php[/tt] to include that. This will cause Google Analytics cookies to be set on the [tt]www[/tt] subdomain, reducing the cookie volume on other domains.
@@ -193,7 +193,7 @@ Comcode tips:
  - You can add [tt]{$,page hint: Quick Cache}[/tt] into Comcode pages to enable the equivalent of quick block caching for that page.
 
 Miscellaneous tips:
- - Serve pre-gzipped CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers
+ - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers
 
 [title="3"]Merging JavaScript or CSS files[/title]
 

@@ -228,7 +228,7 @@ function dload_script()
     $from = 0;
     $new_length = $size;
 
-    cms_ini_set('zlib.output_compression', 'Off'); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
 
     // They're trying to resume (so update our range)
     $httprange = $_SERVER['HTTP_RANGE'];
@@ -651,25 +651,24 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
             @unlink($tmp_file);
             break;
         case 'gz':
-            if (function_exists('gzopen')) {
-                if (function_exists('gzeof')) {
-                    if (function_exists('gzread')) {
-                        $tmp_file = cms_tempnam();
-                        file_put_contents($tmp_file, $data);
-                        $myfile = gzopen($tmp_file, 'rb');
-                        if ($myfile !== false) {
-                            $file_data = '';
-                            while (!gzeof($myfile)) {
-                                $it = gzread($myfile, 1024);
-                                $file_data .= $it;
-                                if (strlen($file_data) >= 3 * 1024 * 1024) {
-                                    break; // 3MB is enough
-                                }
+            if ((function_exists('gzopen')) && (function_exists('gzclose'))) {
+                if ((function_exists('gzeof')) && (function_exists('gzread'))) {
+                    $tmp_file = cms_tempnam();
+                    file_put_contents($tmp_file, $data);
+                    $myfile = gzopen($tmp_file, 'rb');
+                    if ($myfile !== false) {
+                        $file_data = '';
+                        while (!gzeof($myfile)) {
+                            $it = gzread($myfile, 1024);
+                            $file_data .= $it;
+                            if (strlen($file_data) >= 3 * 1024 * 1024) {
+                                break; // 3MB is enough
                             }
-                            $mash = ' ' . create_data_mash(preg_replace('#\.gz#i', '', $url), $file_data);
                         }
-                        @unlink($tmp_file);
+                        gzclose($myfile);
+                        $mash = ' ' . create_data_mash(preg_replace('#\.gz#i', '', $url), $file_data);
                     }
+                    @unlink($tmp_file);
                 }
             }
             break;

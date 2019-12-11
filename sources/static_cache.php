@@ -198,12 +198,11 @@ function static_cache($mode)
     }
     // ^ Note that static caching will not run for anything other, but it's implicit - as nothing other will be saving into the cache!
 
-    $support_compressed = 
-        (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) &&
-        (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) &&
-        (function_exists('gzencode')) &&
-        (function_exists('php_function_allowed')) &&
-        (php_function_allowed('ini_set'));
+    $client_support_brotli = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'br') !== false);
+    $client_support_gzip = (isset($_SERVER['HTTP_ACCEPT_ENCODING'])) && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false);
+    $client_support_compressed = ($client_support_brotli || $client_support_gzip) && (function_exists('php_function_allowed')) && (php_function_allowed('ini_set')/*If can disable default PHP compression*/);
+    $server_support_brotli = false; // May be set later
+    $server_support_gzip = false; // May be set later
 
     if (function_exists('is_mobile')) {
         $is_mobile = is_mobile();
@@ -277,9 +276,16 @@ function static_cache($mode)
         }
         $fast_cache_path .= $file_extension;
 
-        if ($support_compressed) {
-            if (is_file($fast_cache_path . '.gz')) {
+        if ($client_support_compressed) {
+            if (($client_support_brotli) && (is_file($fast_cache_path . '.br'))) {
                 $fast_cache_path .= '.gz';
+                $server_support_brotli = true;
+                break;
+            }
+
+            if (($client_support_gzip) && (is_file($fast_cache_path . '.gz'))) {
+                $fast_cache_path .= '.gz';
+                $server_support_gzip = true;
                 break;
             }
         }
@@ -294,7 +300,7 @@ function static_cache($mode)
         $expires = intval(60.0 * 60.0 * floatval($SITE_INFO['static_caching_hours']));
         $mtime = filemtime($fast_cache_path);
         if (($mtime > time() - $expires) || ($in_failover_mode)) {
-            if (($file_extension == '.htm') || ($file_extension == '.htm.gz')) {
+            if ($file_extension == '.htm') {
                 header('Content-Type: text/html; charset=utf-8');
             } else {
                 header('Content-Type: text/xml; charset=utf-8');
@@ -325,11 +331,17 @@ function static_cache($mode)
             }
 
             // Output
-            if (substr($fast_cache_path, -3) == '.gz') {
+            if (($server_support_brotli) || ($server_support_gzip)) {
                 if (function_exists('ini_set')/*guard for CQC; always will be true for this branch as also checked earlier*/) {
                     ini_set('zlib.output_compression', 'Off');
+                    ini_set('brotli.output_compression', 'Off');
                 }
-                header('Content-Encoding: gzip');
+                if ($server_support_brotli) {
+                    header('Content-Encoding: br');
+                }
+                if ($server_support_gzip) {
+                    header('Content-Encoding: gzip');
+                }
                 header('Vary: Accept-Encoding');
             }
             $contents = file_get_contents($fast_cache_path);

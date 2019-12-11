@@ -57,22 +57,26 @@ class standard_dir_files_test_set extends cms_test_case
         }*/
 
         $valid_hashes = [
-            '296a0f42479e015438791d0b21e22a07',
-            '3184b8b93e2d9b02dea0c4ec3133ee9c',
-            '35524c96fbfc2361a6dff117f3a19bc8',
-            '362eb392e7da973c77733262cf1d0e90',
-            '4215242c301a30d66cd824e1ef0dd562',
-            '54173c31cdac14469a93eaa292ebbb08',
-            '8a55e7d3c6651736659f3bc5959c16dd',
-            '8a7c42d7083b00b153df228e1700c60a',
-            '8ce63a764e2f9e6ec2cca2aa511197dd',
-            '97656c6f2c60873d55a421cd762fac00',
-            'b4af30b08914c4a8240106cf7c614034',
-            'de9b5b7778090cf4376839b6aebb9f45',
-            'e829b8bdcef68c92b0926288106048b6',
+            '296a0f42479e015438791d0b21e22a07' => true,
+            '3184b8b93e2d9b02dea0c4ec3133ee9c' => true,
+            '35524c96fbfc2361a6dff117f3a19bc8' => true,
+            '362eb392e7da973c77733262cf1d0e90' => true,
+            '4215242c301a30d66cd824e1ef0dd562' => true,
+            '54173c31cdac14469a93eaa292ebbb08' => true,
+            '8a55e7d3c6651736659f3bc5959c16dd' => true,
+            '8a7c42d7083b00b153df228e1700c60a' => true,
+            '8ce63a764e2f9e6ec2cca2aa511197dd' => true,
+            '97656c6f2c60873d55a421cd762fac00' => true,
+            'de9b5b7778090cf4376839b6aebb9f45' => true,
+            'e829b8bdcef68c92b0926288106048b6' => true,
+            '19a8c8adbb99cac491544ba444ab9541' => true,
         ];
         foreach ($types as $hash => $file_paths) {
-            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths));
+            $this->assertTrue(array_key_exists($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths) . ' with hash of ' . $hash);
+            unset($valid_hashes[$hash]);
+        }
+        if ($this->debug) {
+            var_dump($valid_hashes);
         }
     }
 

@@ -210,7 +210,7 @@ class Hook_health_check_performance extends Hook_Health_Check
             return;
         }
 
-        //set_option('gzip_output', '1');   To test
+        //set_option('output_compression', '1');   To test
 
         if (!php_function_allowed('stream_context_set_default')) {
             $this->stateCheckSkipped('PHP [tt]stream_context_set_default[/tt] function not available');

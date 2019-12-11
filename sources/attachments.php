@@ -264,7 +264,7 @@ function attachments_script()
     $from = 0;
     $new_length = $size;
 
-    cms_ini_set('zlib.output_compression', 'Off'); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
+    disable_output_compression(); // So ranges work, plus workaround to bugs caused by IE being 'smart' http://blogs.msdn.com/b/ieinternals/archive/2014/10/21/http-compression-optimize-file-formats-with-deflate.aspx
 
     // They're trying to resume (so update our range)
     $httprange = $_SERVER['HTTP_RANGE'];

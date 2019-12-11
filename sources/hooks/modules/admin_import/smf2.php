@@ -192,7 +192,7 @@ class Hook_import_smf2
             /*
             // Disabled due to possible problems on some systems.
             if ($row['variable'] == 'enableCompressedOutput') {
-                $config_remapping['gzip_output'] = $row['value'];
+                $config_remapping['output_compression'] = $row['value'];
                 continue;
             }
             */

@@ -160,11 +160,9 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     sync_file($sitemaps_out_path);
     fix_permissions($sitemaps_out_path);
 
-    // Gzip
-    if (function_exists('gzencode')) {
-        require_code('files');
-        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(cms_file_get_contents_safe($sitemaps_out_path, FILE_READ_LOCK), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-    }
+    // Compress
+    require_code('web_resources2');
+    compress_cms_stub_file($sitemaps_out_path);
 }
 
 /**

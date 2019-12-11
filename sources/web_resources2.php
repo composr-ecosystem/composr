@@ -155,22 +155,68 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
 }
 
 /**
- * Compress a file, and save with a stem of .gz.
+ * Compress a file to Gzip, and save with a stem of .gz.
  *
  * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
  */
 function compress_cms_stub_file($stub_file)
 {
-    if (function_exists('gzencode')) {
-        $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
+    $a = compress_cms_stub_file_br($stub_file);
+    $b = compress_cms_stub_file_gz($stub_file);
+    return $a || $b;
+}
 
-        if ($data === false) {
-            return;
-        }
-
-        require_code('files');
-        cms_file_put_contents_safe($stub_file . '.gz', gzencode($data, 9), FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+/**
+ * Compress a file to Brotli, and save with a stem of .br.
+ *
+ * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
+ */
+function compress_cms_stub_file_br($stub_file)
+{
+    if (!supports_brotli(false)) {
+        return false;
     }
+
+    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
+    if ($data === false) {
+        return false;
+    }
+
+    require_code('files');
+    $compressed = cms_brotli_compress($data, 11 /*max*/);
+    if ($compressed === false) {
+        return false;
+    }
+    cms_file_put_contents_safe($stub_file . '.br', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    return true;
+}
+
+/**
+ * Compress a file, and save with a stem of .gz.
+ *
+ * @param  PATH $stub_file Full path to the file to compress
+ * @return boolean Success status
+ */
+function compress_cms_stub_file_gz($stub_file)
+{
+    if (!supports_gzip(false)) {
+        return false;
+    }
+
+    $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
+    if ($data === false) {
+        return false;
+    }
+
+    require_code('files');
+    $compressed = cms_gzencode($data, 9 /*max*/);
+    if ($compressed === false) {
+        return false;
+    }
+    cms_file_put_contents_safe($stub_file . '.gz', $compressed, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    return true;
 }
 
 /**

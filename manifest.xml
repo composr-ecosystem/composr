@@ -53,7 +53,7 @@
 
   <setAcl path="composr/adminzone/pages/comcode_custom/EN" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/adminzone/pages/html_custom/EN" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
-  <setAcl path="composr/caches/guest_pages" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
+  <setAcl path="composr/caches/static" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/caches/lang" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/caches/lang/EN" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />
   <setAcl path="composr/caches/persistent" setAclAccess="Modify" setAclUser="anonymousAuthenticationUser" />

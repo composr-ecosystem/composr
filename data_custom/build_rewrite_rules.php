@@ -181,26 +181,6 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
 
                     # If rewrites are directing to bogus URLs, try adding a "RewriteBase /" line, or a "RewriteBase /subdir" line if you\'re in a subdirectory. Requirements vary from server to server.
                     ';
-
-                if ($type == 'ApacheRecommended') {
-                    $rules_txt .= '
-                        # Serve pre-compressed CSS/JS files if they exist and the client accepts gzip
-                        <FilesMatch "\.js\.gz($|\?)">
-                        ForceType application/javascript
-                        Header set Content-Encoding: gzip
-                        Header append Vary: Accept-Encoding
-                        </FilesMatch>
-                        <FilesMatch "\.css\.gz($|\?)">
-                        ForceType text/css
-                        Header set Content-Encoding: gzip
-                        Header append Vary: Accept-Encoding
-                        </FilesMatch>
-                        RewriteCond %{HTTP:Accept-encoding} gzip
-                        RewriteCond %{REQUEST_FILENAME}\.gz -s
-                        RewriteRule (.*/templates_cached/[^/]*/[^/]*\.(css|js)) $1.gz [QSA]
-                        SetEnvIfNoCase Request_URI (.*/templates_cached/[^/]*/[^/]*\.(css|js)) no-gzip
-                        ';
-                }
             }
 
             $rules_txt .= '

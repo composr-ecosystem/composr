@@ -715,9 +715,6 @@ function external_url_proxy_script()
     // No time-limits wanted
     cms_disable_time_limit();
 
-    // Can't add in compression
-    cms_ini_set('zlib.output_compression', 'Off');
-
     // No ocProducts XSS filter
     cms_ini_set('ocproducts.xss_detect', '0');
 

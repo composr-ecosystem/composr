@@ -74,8 +74,6 @@ function captcha_script()
             return;
         }
 
-        cms_ini_set('zlib.output_compression', 'Off');
-
         $data = captcha_audio($code_needed);
 
         header('Content-Length: ' . strval(strlen($data)));

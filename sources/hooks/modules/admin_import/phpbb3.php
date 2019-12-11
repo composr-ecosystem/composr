@@ -142,7 +142,7 @@ class Hook_import_phpbb3
             'posts_per_page' => 'forum_posts_per_page',
             'topics_per_page' => 'forum_topics_per_page',
             'board_email' => 'staff_address',
-            'gzip_compress' => 'gzip_output',
+            'gzip_compress' => 'output_compression',
             'smtp_delivery' => 'smtp_sockets_use',
             'smtp_host' => 'smtp_sockets_host',
             'smtp_username' => 'smtp_sockets_username',

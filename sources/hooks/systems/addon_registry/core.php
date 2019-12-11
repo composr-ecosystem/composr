@@ -1285,6 +1285,7 @@ class Hook_addon_registry_core
             'sources/site_adminzone.php',
             'sources/site_html_pages.php',
             'sources/site2.php',
+            'sources/output_compression.php',
             'sources/submit.php',
             'sources/global3.php',
             'sources/global4.php',

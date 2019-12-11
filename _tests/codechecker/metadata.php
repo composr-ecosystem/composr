@@ -167,16 +167,6 @@ function load_php_metadetails()
     // Special funcs (these may have been defined with stubs, but this says to mark them as requiring guards anyway)...
     global $EXT_FUNCS;
     $EXT_FUNCS = [
-        'gzclose' => true,
-        'gzopen' => true,
-        'gzread' => true,
-        'gzwrite' => true,
-        'gzcompress' => true,
-        'gzdeflate' => true,
-        'gzencode' => true,
-        'gzfile' => true,
-        'gzinflate' => true,
-        'gzuncompress' => true,
     ];
 
     // Error funcs...

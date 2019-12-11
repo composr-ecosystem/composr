@@ -273,9 +273,8 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             inet_ntop fputcsv is_nan is_finite is_infinite ob_flush array_chunk array_fill
             var_export array_intersect_key end sys_get_temp_dir error_get_last stream_get_contents fmod
             gethostbyname htmlspecialchars stat str_ireplace stripos key pi print set_exception_handler acos
-            readgzfile ob_gzhandler gzcompress gzdeflate gzencode gzfile gzinflate gzuncompress gzclose gzopen gzwrite
             array_column array_fill_keys getimagesizefromstring hash_equals preg_last_error
-            http_response_code memory_get_peak_usage password_get_info password_hash gzdecode hex2bin
+            http_response_code memory_get_peak_usage password_get_info password_hash hex2bin
             password_needs_rehash password_verify str_getcsv strripos spl_autoload_register
 END;
 

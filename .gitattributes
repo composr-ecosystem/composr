@@ -79,6 +79,7 @@
 *.asf binary
 *.avi binary
 *.bmp binary
+*.br binary
 *.bz2 binary
 *.cur binary
 *.bin binary

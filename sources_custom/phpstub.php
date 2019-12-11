@@ -2195,18 +2195,6 @@ function ob_clean()
 }
 
 /**
- * ob_start callback function to gzip output buffer.
- *
- * @param  string $buffer Input string
- * @param  integer $mode Irrelevant (we don't use this function directly anyway)
- * @return string Filtered version
- */
-function ob_gzhandler($buffer, $mode)
-{
-    return '';
-}
-
-/**
  * Return the length of the output buffer.
  *
  * @return ~integer Output buffer length (false: error)
@@ -4989,136 +4977,6 @@ function iptcembed($iptcdata, $jpeg_file_name, $spool = 0)
 }
 
 /**
- * Close an open gz-file pointer.
- *
- * @param  resource $handle The handle
- * @return boolean Success status
- */
-function gzclose($handle)
-{
-    return false;
-}
-
-/**
- * Open gz-file. {{creates-file}}
- *
- * @param  PATH $filename The filename
- * @param  string $mode The mode (e.g. b).
- * @return ~resource The handle (false: error)
- */
-function gzopen($filename, $mode)
-{
-    return [];
-}
-
-/**
- * Binary-safe gz-file write.
- *
- * @param  resource $handle The file handle
- * @param  string $string The string to write to the file
- * @param  ?integer $length The length of data to write (null: full length of input string)
- * @return ~integer The number of bytes written (false: error)
- */
-function gzwrite($handle, $string, $length = null)
-{
-    return 0;
-}
-
-/**
- * Output a gz-file.
- *
- * @param  PATH $filename Path to read from
- * @return ~integer Number of uncompressed bytes handled (false: error)
- */
-function readgzfile($filename)
-{
-    return 0;
-}
-
-/**
- * Compress a string.
- *
- * @param  string $data Data to compress
- * @param  integer $level Compression level
- * @return string Compressed data
- */
-function gzcompress($data, $level)
-{
-    return '';
-}
-
-/**
- * Deflate a string.
- *
- * @param  string $data Compressed data
- * @param  integer $level Compression level
- * @return ~string Uncompressed data (false: error)
- */
-function gzdeflate($data, $level)
-{
-    return '';
-}
-
-/**
- * Create a gzip compressed string.
- *
- * @param  string $data In
- * @param  integer $level How much compression
- * @range  1 9
- * @return string Out
- */
-function gzencode($data, $level)
-{
-    return '';
-}
-
-/**
- * Decode a gzip compressed string.
- *
- * @param  string $data In
- * @return string Out
- */
-function gzdecode($data)
-{
-    return '';
-}
-
-/**
- * Read entire gz-file into an array.
- *
- * @param  PATH $filename The filename
- * @return ~array An array containing the file, one line per cell (false: error)
- */
-function gzfile($filename)
-{
-    return [];
-}
-
-/**
- * Inflate a deflated string.
- *
- * @param  string $data The data compressed by gzdeflate()
- * @param  integer $length Maximum length to read in
- * @return string Inflated (uncompressed) data
- */
-function gzinflate($data, $length = 0)
-{
-    return '';
-}
-
-/**
- * Uncompress a compressed string.
- *
- * @param  string $data The data compressed by gzcompress()
- * @param  integer $length Maximum length to read in
- * @return string Uncompressed data
- */
-function gzuncompress($data, $length = 0)
-{
-    return '';
-}
-
-/**
  * Register given function as __autoload() implementation.
  *
  * @param  mixed $autoload_function The autoload function being registered
@@ -5495,9 +5353,6 @@ gzread
 gzpassthru
 gzseek
 gztell
-zlib_encode
-zlib_decode
-zlib_get_coding_type
 stream_bucket_append
 stream_bucket_make_writeable
 stream_bucket_new

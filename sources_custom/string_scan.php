@@ -3163,7 +3163,10 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_google_geocoding_api_enabled
         CONFIG_OPTION_google_translate_enabled
         CONFIG_OPTION_group_private_chatrooms
-        CONFIG_OPTION_gzip_output
+        CONFIG_OPTION_output_compression
+        CONFIG_OPTION_output_compression_VALUE_0
+        CONFIG_OPTION_output_compression_VALUE_1
+        CONFIG_OPTION_output_compression_VALUE_2
         CONFIG_OPTION_hack_ban_threshold
         CONFIG_OPTION_has_low_memory_limit
         CONFIG_OPTION_header_menu_call_string
@@ -5336,7 +5339,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GROUP_PRIVATE_CHATROOMS
         GROUP_TEXT
         GUEST_ZONE_ACCESS
-        GZIP_OUTPUT
+        OUTPUT_COMPRESSION
         HACKED_BY
         HACKER_DETECTED
         HACK_ATTACK
@@ -6207,7 +6210,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_SUCH_THEME_IMAGE
         NO_SUCH_ZONE
         NO_SUICIDAL_SUPER_ADMIN_REMOVAL
-        NO_THEME_PERMISSION
         NO_TRACKBACKS
         NO_UPGRADE_DONE
         NO_UPLOAD

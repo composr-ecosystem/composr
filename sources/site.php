@@ -560,7 +560,7 @@ function do_site_prep()
 
         // Detect bad access protocol (also see handle_bad_access_context function)
         if (addon_installed('ssl')) {
-            if (is_page_https(get_zone_name(), get_page_name()) != tacit_https()) {
+            if ((!whole_site_https()) && (is_page_https(get_zone_name(), get_page_name()) != tacit_https())) {
                 set_http_status_code(301);
                 header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
                 exit();
@@ -1100,8 +1100,6 @@ function do_site()
                 $middle->handle_symbol_preprocessing();
             }
             $GLOBALS['FINISHING_OUTPUT'] = true;
-            /*if (get_option('gzip_output')=='1')  Does not work well
-                    ob_start('_compress_html_output');*/
             $out->evaluate_echo(null);
         }
     }
@@ -1355,15 +1353,17 @@ function save_static_caching($out, $mime_type = 'text/html')
  *
  * @param  PATH $fast_cache_path Cache file path
  * @param  string $out_evaluated Cache contents
- * @param  boolean $support_gzip Whether to allow gzipping
+ * @param  boolean $support_output_compression Whether to allow output compression
  */
-function write_static_cache_file($fast_cache_path, $out_evaluated, $support_gzip)
+function write_static_cache_file($fast_cache_path, $out_evaluated, $support_output_compression)
 {
     require_code('files');
     cms_file_put_contents_safe($fast_cache_path, $out_evaluated, FILE_WRITE_FIX_PERMISSIONS);
-    if ((function_exists('gzencode')) && (php_function_allowed('ini_set')) && ($support_gzip)) {
-        cms_file_put_contents_safe($fast_cache_path . '.gz', gzencode($out_evaluated, 9), FILE_WRITE_FIX_PERMISSIONS);
-        //unlink($fast_cache_path); Actually, we should not assume all user agents support gzip
+    if ($support_output_compression) {
+        require_code('web_resources2');
+        compress_cms_stub_file($fast_cache_path);
+
+        //unlink($fast_cache_path); Actually, we should not assume all user agents support compression
     }
 }
 
@@ -2303,14 +2303,3 @@ function log_stats($string, $pg_time)
         }
     }
 }
-
-/* *
- * Output filter to compress HTML.
- *
- * @param  string $data The HTML to filter
- * @return string Compressed HTML
- */
-/*f unction _compress_html_output($data)
-{
-    return preg_replace(['#>[ \t]+#', '#[ \t]+<#', '#\n[ \t]+\r?\n#', '#\n+#'], ['> ', ' <', "\n", "\n"], $data);
-}*/
