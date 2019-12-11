@@ -645,6 +645,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_chmod/chmod_2.png',
             'data_custom/images/docs/tut_website_health/cleanup_1.png',
             'data_custom/images/docs/tut_website_health/cleanup_2.png',
+            'data_custom/images/docs/tut_website_health/health_check.png',
             'data_custom/images/docs/tut_collaboration/collaboration_filedump.png',
             'data_custom/images/docs/tut_comcode/comcode_attachment_add.png',
             'data_custom/images/docs/tut_comcode/comcode_attachment_edit.png',

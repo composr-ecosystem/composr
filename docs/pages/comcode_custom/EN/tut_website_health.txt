@@ -6,6 +6,7 @@ This tutorial will cover some aspects of keeping your website running smoothly.
 
 [title="2"]Health Check[/title]
 
+[media width="150" description="The Health Check screen" float="right"]data_custom/images/docs/tut_website_health/health_check.png[/media]
 {!DOC_HEALTH_CHECK}
 
 On the modern advanced web there is too much to keep in mind to check. All kinds of things could go wrong without you noticing, which could be embarrassing.
