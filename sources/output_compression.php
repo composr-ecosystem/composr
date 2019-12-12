@@ -46,7 +46,7 @@ function reinit_output_compression()
  */
 function enable_output_compression()
 {
-    disable_output_compression(); // Start from blank slate
+    disable_output_compression(true); // Start from blank slate
 
     $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
     if ((in_safe_mode()) || ($page == 'admin_config')) {
@@ -56,7 +56,6 @@ function enable_output_compression()
 
     $use_cmd_line = false;
     if (supports_brotli(true, $use_cmd_line)) {
-        @header('Content-Encoding: br'); // Seems unofficial addon does not send header early enough
         cms_ini_set('brotli.output_compression', 'On');
         cms_ini_set('brotli.output_compression_level', '11'); // Recommended. Default for Brotli
     } elseif (supports_gzip(true, $use_cmd_line)) {
@@ -68,8 +67,10 @@ function enable_output_compression()
 
 /**
  * Disable output compression.
+ *
+ * @param  boolean $during_init Whether this is just during initialisation (useful for debugging)
  */
-function disable_output_compression()
+function disable_output_compression($during_init = false)
 {
     foreach (_disable_output_compression() as $key => $val) {
         cms_ini_set($key, $val);

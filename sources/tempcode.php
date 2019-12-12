@@ -1326,7 +1326,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                             @ob_end_flush();
                             @ob_end_flush();
                             print('<!-- block: ' . htmlentities($block_parms['block']) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(integer_format(memory_get_usage())) . ') -->' . "\n");
-                            flush();
+                            cms_flush_safe();
                         }
                     }
 
@@ -1428,7 +1428,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                                 @ob_end_flush();
                                 @ob_end_flush();
                                 print('<!-- panel: ' . htmlentities('panel_' . $param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                                flush();
+                                cms_flush_safe();
                             }
                         }
 
@@ -1541,7 +1541,7 @@ function handle_symbol_preprocessing($seq_part, &$children)
                         @ob_end_flush();
                         @ob_end_flush();
                         print('<!-- page: ' . htmlentities($param[0]) . ' (' . htmlentities(clean_file_size(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                        flush();
+                        cms_flush_safe();
                     }
                 }
 
@@ -2493,7 +2493,7 @@ class Tempcode
             ob_end_flush();
         }
 
-        flush();
+        cms_flush_safe();
 
         return '';
     }

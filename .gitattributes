@@ -158,7 +158,7 @@
 *.xls binary
 *.xlsx binary
 *.zip binary
-*.bcmap text
+*.bcmap binary
 
 # Other binary formats
 *.aiml binary

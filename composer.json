@@ -1,6 +1,7 @@
 {
   "require": {
     "ext-json": "*",
+      "ext-openssl": "*",
       "ext-posix": "*",
       "ext-simplexml": "*",
       "ext-zip": "*",

@@ -41,7 +41,7 @@ class HtmlReporter extends SimpleReporter {
     function paintHeader($test_name) {
         $this->sendNoCacheHeaders();
         print "<h1>$test_name</h1>\n";
-        flush();
+        cms_flush_safe();
     }
 
     /**
@@ -215,7 +215,7 @@ class TextReporter extends SimpleReporter {
             header('Content-type: text/plain');
         }
         print "$test_name\n";
-        flush();
+        cms_flush_safe();
     }
 
     /**
@@ -303,7 +303,7 @@ class TextReporter extends SimpleReporter {
      */
     function paintFormattedMessage($message) {
         print "$message\n";
-        flush();
+        cms_flush_safe();
     }
 }
 

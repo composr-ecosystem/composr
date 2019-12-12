@@ -2556,7 +2556,7 @@ function require_code($codename)
         $prior = memory_get_usage();
         //echo '<!-- Memory: ' . number_format($prior) . ' -->' . "\n"; Can break JS validity if we inject this
         //echo '<!-- Loading code file: ' . $codename . ' -->' . "\n";
-        flush();
+        cms_flush_safe();
     }
 
     global $FILE_BASE;
@@ -2620,6 +2620,16 @@ function cms_ini_set($var, $value)
     }
 
     return @ini_set($var, $value);
+}
+
+/**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
 }
 
 /**

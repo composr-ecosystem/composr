@@ -191,9 +191,10 @@ If you want automatic thumbnail generation you need a server with FFMPEG on it. 
 
 If LDAP integration is required (for corporate network authentication integration), the PHP LDAP extension ([tt]ldap[/tt]) is required.
 
-If encrypted CPFs (Custom Profile Fields) are needed (see the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial) the PHP OpenSSL extension ([tt]openssl[/tt]) is required.
-
-If Composr-fed DKIM is needed the PHP OpenSSL extension ([tt]openssl[/tt]) is required.
+The OpenSSL extension ([tt]openssl[/tt]) is required for:
+ - encrypted CPFs (Custom Profile Fields) (see the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial)
+ - Composr-fed DKIM
+ - SSL-certificate expiry Health Check
 
 If spell checking is needed, the Pspell ([tt]pspell[/tt]) or Enchant ([tt]enchant[/tt]) PHP extensions must be installed with matching aspell/hunspell installs and dictionaries on the server.
 

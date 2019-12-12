@@ -1190,6 +1190,7 @@ function persistent_cache_delete($key, $substring = false)
 
 /**
  * Recursively clean (erase) the output buffer and turn off output buffering.
+ * Does not disable the output handler, you need to call disable_output_compression() for that.
  */
 function cms_ob_end_clean()
 {

@@ -12,6 +12,8 @@
 
 */
 
+/*EXTRA FUNCTIONS: stream\_.+*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
@@ -44,6 +46,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         $this->process_checks_section('testIncorrectHTTPSEmbedding', 'Insecure embedding', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testIncorrectHTTPSLinking', 'Insecure linking', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSSLCorrectness', 'SSL correctness', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testSSLExpiry', 'SSL expiry', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -88,6 +91,11 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
         }
 
         if (!$manual_checks) {
+            return;
+        }
+
+        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+            $this->stateCheckSkipped('SSL not enabled');
             return;
         }
 
@@ -235,47 +243,95 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if ((addon_installed('ssl')) || (substr(get_base_url(), 0, 7) == 'https://')) {
-            // If it's a problem with SSL verification in general
-            for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or DuckDuckGo issue
-                $data = http_get_contents('https://duckduckgo.com/', ['trigger_error' => false]);
+        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+            $this->stateCheckSkipped('SSL not enabled');
+            return;
+        }
 
-                $ok = (($data !== null) && (strpos($data, '<html') !== false));
-                if ($ok) {
-                    break;
-                }
-                if (php_function_allowed('usleep')) {
-                    usleep(5000000);
-                }
-            }
-            $this->assertTrue($ok, 'Problem downloading HTTP requests by SSL');
+        // If it's a problem with SSL verification in general
+        for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or DuckDuckGo issue
+            $data = http_get_contents('https://duckduckgo.com/', ['trigger_error' => false]);
 
+            $ok = (($data !== null) && (strpos($data, '<html') !== false));
             if ($ok) {
-                // If it's a problem with SSL verification on our domain specifically
-                $domains = get_server_names(false);
-                foreach ($domains as $domain) {
-                    if (get_value('disable_ssl_for__' . $domain) !== '1') {
-                        $test_url = get_base_url(true) . '/data/empty.php';
+                break;
+            }
+            if (php_function_allowed('usleep')) {
+                usleep(5000000);
+            }
+        }
+        $this->assertTrue($ok, 'Problem downloading HTTP requests by SSL');
+
+        if ($ok) {
+            // If it's a problem with SSL verification on our domain specifically
+            $domains = get_server_names(false);
+            foreach ($domains as $domain) {
+                if (get_value('disable_ssl_for__' . $domain) !== '1') {
+                    $test_url = get_base_url(true) . '/data/empty.php';
+
+                    delete_value('disable_ssl_for__' . $domain);
+                    $data = http_get_contents($test_url, ['trigger_error' => false]);
+                    $ok1 = (($data !== null) && (strpos($data, '<html') !== false));
+
+                    $msg = 'Problem detected with the [tt]' . $domain . '[/tt] SSL certificate';
+                    if (!$ok1) {
+                        set_value('disable_ssl_for__' . $domain, '1');
+                        $data = http_get_contents($test_url, ['trigger_error' => false]);
+                        $ok2 = (($data !== null) && (strpos($data, '<html') !== false));
+
+                        $this->assertTrue(!$ok2, $msg); // Issue with our SSL but not if verify is disabled, suggesting the problem is with verify
 
                         delete_value('disable_ssl_for__' . $domain);
-                        $data = http_get_contents($test_url, ['trigger_error' => false]);
-                        $ok1 = (($data !== null) && (strpos($data, '<html') !== false));
-
-                        $msg = 'Problem detected with the [tt]' . $domain . '[/tt] SSL certificate';
-                        if (!$ok1) {
-                            set_value('disable_ssl_for__' . $domain, '1');
-                            $data = http_get_contents($test_url, ['trigger_error' => false]);
-                            $ok2 = (($data !== null) && (strpos($data, '<html') !== false));
-
-                            $this->assertTrue(!$ok2, $msg); // Issue with our SSL but not if verify is disabled, suggesting the problem is with verify
-
-                            delete_value('disable_ssl_for__' . $domain);
-                        } else {
-                            $this->assertTrue(true, $msg); // No issue with our SSL
-                        }
+                    } else {
+                        $this->assertTrue(true, $msg); // No issue with our SSL
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testSSLExpiry($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
+        if ((!addon_installed('ssl')) && (substr(get_base_url(), 0, 7) != 'https://')) {
+            $this->stateCheckSkipped('SSL not enabled');
+            return;
+        }
+
+        if (function_exists('openssl_x509_parse')) {
+            $url = get_base_url();
+            $domain = parse_url($url, PHP_URL_HOST);
+            $context = stream_context_create(['ssl' => ['allow_self_signed' => true, 'verify_peer_name' => false, 'verify_peer' => false, 'capture_peer_cert' => true]]);
+            $errno = null;
+            $errstr = null;
+            $read = stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 5.0, STREAM_CLIENT_CONNECT, $context);
+            $cert = stream_context_get_params($read);
+            $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+
+            if (isset($certinfo['validTo_time_t'])) {
+                $expiry = $certinfo['validTo_time_t'];
+                $this->assertTrue($expiry > time() - 60 * 60 * 24 * 7, 'SSL certificate seems to be expiring within a week or already expired (' . get_timezoned_date($expiry) . ')');
+            } else {
+                $this->stateCheckSkipped('Could not read expiry time');
+            }
+        } else {
+            $this->stateCheckSkipped('OpenSSL extension is required for this test');
         }
     }
 }

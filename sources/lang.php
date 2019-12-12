@@ -540,7 +540,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
             attach_message('require_lang: ' . $codename . ' (' . integer_format(memory_get_usage()) . ' before)', 'inform');
         } else {
             print('<!-- require_lang: ' . htmlentities($codename) . ' (' . htmlentities(integer_format(memory_get_usage())) . ' before) -->' . "\n");
-            flush();
+            cms_flush_safe();
         }
     }
 

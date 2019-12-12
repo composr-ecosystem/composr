@@ -171,7 +171,7 @@ END;
     if (@ob_end_flush() !== false) {
         @ob_start(); // Push out and recreate buffer
     }
-    flush();
+    cms_flush_safe();
 }
 
 function testset_do_footer()

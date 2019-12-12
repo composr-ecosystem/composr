@@ -244,7 +244,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
             } else {
                 print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                flush();
+                cms_flush_safe();
             }
         }
 
@@ -268,7 +268,7 @@ function require_code($codename, $light_exit = false, $has_custom = null)
                 attach_message('require_code: ' . $codename . ' (' . number_format(memory_get_usage() - $before) . ' bytes used, now at ' . number_format(memory_get_usage()) . ')', 'inform');
             } else {
                 print('<!-- require_code: ' . htmlentities($codename) . ' (' . htmlentities(number_format(memory_get_usage() - $before)) . ' bytes used, now at ' . htmlentities(number_format(memory_get_usage())) . ') -->' . "\n");
-                flush();
+                cms_flush_safe();
             }
         }
 
@@ -560,6 +560,16 @@ function cms_ini_set($var, $value)
     }
 
     return @ini_set($var, $value);
+}
+
+/**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
 }
 
 /**

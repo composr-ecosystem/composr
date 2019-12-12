@@ -600,7 +600,7 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
 
         if ($output_statuses) {
             print('Working out SQL for table: ' . $table_name . "\n");
-            flush();
+            cms_flush_safe();
         }
 
         if ($include_drops) {

@@ -866,7 +866,7 @@ foreach ($files as $file_path) {
         continue;
     }
 
-    echo 'Processing ' . $file_path . "\n";
+    cms_flush_safe 'Processing ' . $file_path . "\n";
     flush();
 
     $domain = basename(dirname(dirname($file_path)));
@@ -877,7 +877,7 @@ foreach ($files as $file_path) {
         $lines = explode("\n", shell_exec('tail -n 1000 ' . $file_path));
     }
 
-    echo ' found ' . strval(count($lines)) . ' lines' . "\n";
+    cms_flush_safe ' found ' . strval(count($lines)) . ' lines' . "\n";
     flush();
 
     foreach ($lines as $line) {

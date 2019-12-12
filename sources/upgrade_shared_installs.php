@@ -99,7 +99,7 @@ function upgrade_sharedinstall_sites($from = 0)
         automate_upgrade();
 
         echo 'Upgraded ' . escape_html($site) . ' (' . escape_html(number_format($i + 1) . ' of ' . number_format($total)) . ')<br />';
-        flush();
+        cms_flush_safe();
     }
 }
 

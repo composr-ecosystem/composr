@@ -282,6 +282,16 @@ function cms_ini_set($var, $value)
 }
 
 /**
+ * Flush but don't break Brotli compression.
+ */
+function cms_flush_safe()
+{
+    if ((ini_get('output_handler') == '') && (ini_get('brotli.output_compression') !== 'On')) {
+        flush();
+    }
+}
+
+/**
  * Handle GET URLs requesting embedded media files.
  */
 function handle_self_referencing_embedment()

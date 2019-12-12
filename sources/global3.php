@@ -4853,12 +4853,12 @@ function send_http_output_ping()
 
     if ((running_script('index')) && (!is_cli())) {
         if (!headers_sent()) {
-            disable_output_compression(); // Otherwise it can compress all the spaces to nothing
+            disable_output_compression(); // Otherwise the output handler will squash flushes
             cms_ob_end_clean(); // Otherwise flushing won't help
         }
 
         echo ' ';
-        flush();
+        cms_flush_safe();
     }
 }
 
