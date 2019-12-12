@@ -5,7 +5,7 @@
 		{$BLOCK,block=main_activities_state,member={MEMBER_ID},mode=some_members,param=}
 	{+END}
 
-	{$BLOCK,block=main_activities,member={MEMBER_ID},mode=some_members,param=,max=10,grow=1}
+	{$BLOCK,block=main_activities,member={MEMBER_ID},mode=some_members,param=,max=10,grow=1,cache={$NOT,show_syndication_options}}
 
 	<hr class="spaced_rule" />
 
