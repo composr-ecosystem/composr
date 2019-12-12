@@ -61,6 +61,4 @@
 			{+START,INCLUDE,ACTIVITY}{+END}
 		</li>
 	{+END}
-
-	{PAGINATION}
 {+END}
