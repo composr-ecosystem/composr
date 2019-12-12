@@ -48,7 +48,7 @@
 
 		{+START,IF_NON_EMPTY,{PAGINATION}}
 			{+START,INCLUDE,AJAX_PAGINATION}
-				ALLOW_INFINITE_SCROLL=1
+				ALLOW_INFINITE_SCROLL={$NOT,{$GET,show_syndication_options}}
 				WRAPPER_ID={$GET,ajax_block_main_activities_wrapper}
 			{+END}
 		{+END}
