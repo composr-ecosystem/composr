@@ -718,7 +718,7 @@ abstract class Standard_crud_module
             $this->do_next_editing_categories ? null : array('_SELF', array('type' => $this->get_screen_type_for('add', $this->type_code)), '_SELF', !is_null($this->add_one_label) ? $this->add_one_label : null), // Add one
             $this->do_next_editing_categories ? null : ((is_null($id) || ((!is_null($this->permissions_require)) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', is_null($this->privilege_page_name) ? get_page_name() : $this->privilege_page_name)))) ? null : array('_SELF', array('type' => $this->get_screen_type_for('_edit', $this->type_code), 'id' => $id), '_SELF', !is_null($this->edit_this_label) ? $this->edit_this_label : null)), // Edit this
             $this->do_next_editing_categories ? null : (((!is_null($this->permissions_require)) && (!has_privilege(get_member(), 'edit_own_' . $this->permissions_require . 'range_content', is_null($this->privilege_page_name) ? get_page_name() : $this->privilege_page_name))) ? null : array('_SELF', array('type' => $this->get_screen_type_for('edit', $this->type_code)), '_SELF', !is_null($this->edit_one_label) ? $this->edit_one_label : null)), // Edit one
-            $this->do_next_editing_categories ? null : (is_null($id)) ? null : $view_url, // View this
+            $this->do_next_editing_categories ? null : ((is_null($id)) ? null : $view_url), // View this
             $archive_url, // View archive
             null, // Add to category
             (!$this->do_next_editing_categories) ? null : array('_SELF', array('type' => $this->get_screen_type_for('add', $this->type_code)), '_SELF', !is_null($this->add_one_cat_label) ? $this->add_one_cat_label : null), // Add one category

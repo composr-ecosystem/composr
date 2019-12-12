@@ -441,7 +441,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         $filename = urldecode(preg_replace('#\?.*#', '', basename($url)));
 
         // Get thumbnail
-        $_POST[$field_url] = get_magic_quotes_gpc() ? addslashes($url) : $url; // FUDGE
+        $_POST[$field_url] = @get_magic_quotes_gpc() ? addslashes($url) : $url; // FUDGE
         $urls = get_url($field_url, '', $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
         if ($thumb_url !== null) {
             $thumb_url = $urls[1];

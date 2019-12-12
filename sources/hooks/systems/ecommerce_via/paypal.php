@@ -349,7 +349,7 @@ class Hook_paypal
         if ((!ecommerce_test_mode()) && (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())/*allow debugging if your test IP was intentionally back-doored*/)) {
             require_code('files');
             $pure_post = empty($GLOBALS['PURE_POST']) ? $_POST : $GLOBALS['PURE_POST'];
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $pure_post = array_map('stripslashes', $pure_post);
             }
             $x = 0;

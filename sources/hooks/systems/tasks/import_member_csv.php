@@ -393,6 +393,7 @@ class Hook_task_import_member_csv
                 if ($using_default_password) {
                     // Minimise setting time, so we aren't taking ages encrypting the same password (which presumably we know isn't very secure anyway)
                     $cr_bak = get_option('crypt_ratchet');
+                    require_code('config2');
                     set_option('crypt_ratchet', '4');
                 }
 
@@ -402,6 +403,7 @@ class Hook_task_import_member_csv
                 $num_added++;
 
                 if ($using_default_password) {
+                    require_code('config2');
                     set_option('crypt_ratchet', $cr_bak);
                 }
             } else {

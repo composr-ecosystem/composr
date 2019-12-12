@@ -716,7 +716,7 @@ function process_url_monikers($page, $redirect_if_non_canonical = true)
     if (url_monikers_enabled()) {
         // Monikers relative to the zone
         $page_place = _request_page($page, $zone);
-        if ($page_place[0] == 'REDIRECT') {
+        if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
             $page = $page_place[1]['r_to_page'];
             $zone = $page_place[1]['r_to_zone'];
             $page_place = _request_page($page_place[1]['r_to_page'], $page_place[1]['r_to_zone']);
@@ -1303,7 +1303,7 @@ function request_page($codename, $required, $zone = null, $page_type = null, $be
 
                 foreach ($bits[1] as $key => $val) {
                     if ($key != 'page') {
-                        $_GET[$key] = get_magic_quotes_gpc() ? addslashes($val) : $val;
+                        $_GET[$key] = @get_magic_quotes_gpc() ? addslashes($val) : $val;
                     }
                 }
                 if (($redirect['r_to_page'] != $codename) || ($redirect['r_to_zone'] != $zone)) {

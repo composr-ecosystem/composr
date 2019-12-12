@@ -98,7 +98,7 @@ class Module_admin_health_check
     {
         if (cms_srv('REQUEST_METHOD') == 'POST') {
             $sections_to_run = isset($_POST['sections_to_run']) ? $_POST['sections_to_run'] : array();
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $sections_to_run = array_map('stripslashes', $sections_to_run);
             }
 

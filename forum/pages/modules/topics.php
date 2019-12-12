@@ -316,7 +316,7 @@ class Module_topics
 
         // Show it worked / Refresh
         if (is_null($forum_id)) {
-            $url = build_url(array('page' => 'members', 'type' => 'view', 'id' => get_member()), get_module_zone('members'), null, false, false, false, 'tab__pts');
+            $url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), null, false, false, false, 'tab__pts');
         } else {
             $url = build_url(array('page' => 'forumview', 'id' => $forum_id), get_module_zone('forumview'));
         }
@@ -674,11 +674,14 @@ class Module_topics
      * Mark a topic as unread by the current member.
      *
      * @param  AUTO_LINK $topic_id The ID of the topic to mark as unread.
-     * @return boolean Success status.
+     * @return boolean Success status (false = too old to mark read; true = marked read or topic entirely missing).
      */
     public function cns_ping_topic_unread($topic_id)
     {
-        $last_time = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_last_time', array('id' => $topic_id));
+        $last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_last_time', array('id' => $topic_id));
+        if ($last_time === null) {
+            return true;
+        }
         $too_old = $last_time < time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'));
         if (!$too_old) {
             if (!$GLOBALS['FORUM_DB']->table_is_locked('f_read_logs')) {
@@ -1323,7 +1326,7 @@ class Module_topics
 
         // Show it worked / Refresh
         $title = get_screen_title('DELETE_TOPICS_AND_POSTS');
-        $url = build_url(array('page' => 'members', 'type' => 'view', 'id' => get_member()), get_module_zone('members'));
+        $url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'));
         return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }
 
@@ -2296,7 +2299,7 @@ class Module_topics
                     continue;
                 }
 
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $_invited_member = stripslashes($_invited_member);
                 }
 
@@ -3084,7 +3087,7 @@ END;
             }
 
             if (substr($key, 0, 7) == 'answer_') {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = stripslashes($val);
                 }
                 if ($val != '') {
@@ -3817,7 +3820,7 @@ END;
                 }
 
                 if (substr($key, 0, 7) == 'answer_') {
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $val = stripslashes($val);
                     }
                     if ($val != '') {
@@ -4265,6 +4268,10 @@ END;
 
         $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null), array('id' => $topic_id), '', 1);
 
+        require_code('notifications');
+        enable_notifications('cns_topic', strval($topic_id), $a); // from
+        enable_notifications('cns_topic', strval($topic_id), $b); // to
+
         // Update forum cache view
         require_code('cns_posts_action2');
         cns_force_update_forum_caching($forum_id, -1);
@@ -4287,7 +4294,7 @@ END;
             return redirect_screen($title, $url, do_lang_tempcode('REDIRECTING_TO_BIRTHDAY_TOPIC'));
         }
         $_POST['title'] = do_lang('HAPPY_BIRTHDAY_PERSON', $id);
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $_POST['title'] = addslashes($_POST['title']);
         }
         $forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => get_option('main_forum_name')));

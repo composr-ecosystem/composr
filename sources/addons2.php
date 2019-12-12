@@ -431,7 +431,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
 function find_addon_dependencies_on($addon)
 {
     // From DB
-    $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon, 'addon_name_incompatibility' => 0)));
+    $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon, 'addon_name_incompatibility' => 0), 'ORDER BY addon_name'));
 
     // From ocProducts addons
     static $ocproducts_addon_dep_cache = null;
@@ -864,7 +864,7 @@ function uninstall_addon($addon, $clear_caches = true)
     // Try and cleanup some empty/unneeded dirs
     krsort($dirs);
     foreach (array_keys($dirs) as $dir) {
-        if (array_diff(scandir($dir), array('..', '.')) == array()) {
+        if (array_diff(scandir(get_file_base() . '/' . $dir), array('..', '.')) == array()) {
             afm_delete_directory($dir);
         }
     }
@@ -1058,7 +1058,7 @@ function inform_about_addon_install($file, $also_uninstalling = null, $also_inst
         }
         $done_non_core_warn = true;
     }
-    $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon, 'addon_name_incompatibility' => 1)));
+    $incompatibilities = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name'), array('addon_name_dependant_upon' => $addon, 'addon_name_incompatibility' => 1), 'ORDER BY addon_name'));
     $_incompatibilities = new Tempcode();
     foreach ($incompatibilities as $in) {
         if (!$_incompatibilities->is_empty()) {

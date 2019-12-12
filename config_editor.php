@@ -28,7 +28,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
-if (get_magic_quotes_gpc()) {
+if (@get_magic_quotes_gpc()) {
     foreach ($_POST as $key => $val) {
         if (is_array($val)) {
             $_POST[$key] = array_map('stripslashes', $val);
@@ -81,7 +81,7 @@ function ce_do_header()
 <html lang="EN">
 <head>
     <title>Composr Installation Options editor</title>
-    <link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
     <style>
 ';
     @print(preg_replace('#/\*\s*\*/\s*#', '', str_replace('url(\'\')', 'none', str_replace('url("")', 'none', preg_replace('#\{\$[^\}]*\}#', '', preg_replace('#\{\$\?,\{\$MOBILE\},([^,]+),([^,]+)\}#', '$2', file_get_contents($GLOBALS['FILE_BASE'] . '/themes/default/css/global.css')))))));
@@ -201,6 +201,7 @@ function do_access($given_password)
         'fast_spider_cache' => '<em>Performance:</em> The number of hours that the spider/bot cache lasts for (this sets both HTTP caching, and server retention of cached screens).',
         'any_guest_cached_too' => '<em>Performance:</em> Whether Guests are cached with the spider cache time too.',
         'self_learning_cache' => '<em>Performance:</em> Whether to allow pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront. Stores copies of some resources within the self-learning cache itself. If you disable this you should also disable the Composr "Output streaming" config option.',
+        'no_nosniff_header' => '<em>Performance:</em> If you can rely on your webserver configuration sending "X-Content-Type-Options: nosniff" enable this to stop Composr duplicating it.',
 
         'max_execution_time' => '<em>Performance:</em> The time in seconds to use for PHP\'s maximum execution time option. Composr defaults to 60 and raises it in known situations that require more time.',
 

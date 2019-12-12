@@ -97,7 +97,7 @@ class Hook_commandr_command_feed_display
                 }
 
                 $_title = $item['title'];
-                $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date($item['clean_add_date']) : array_key_exists('add_date', $item) ? $item['add_date'] : '';
+                $date = array_key_exists('clean_add_date', $item) ? get_timezoned_date($item['clean_add_date']) : (array_key_exists('add_date', $item) ? $item['add_date'] : '');
 
                 $content[] = array('FULL_URL' => $full_url, 'NEWS_TITLE' => $_title, 'DATE' => $date, 'SUMMARY' => xhtmlise_html($item['news']));
             }

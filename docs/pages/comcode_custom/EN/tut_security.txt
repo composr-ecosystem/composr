@@ -498,15 +498,15 @@ Follows are sample access rules for an Apache [tt].htaccess[/tt] file to provide
 For IIS, the [tt]web.config[/tt] file's [tt]hiddenSegments[/tt] can be extended:
 [code="XML"]
 <hiddenSegments>
-	<add segment="caches" />
-	<add segment="safe_mode_temp" />
 	<add segment="errorlog.php" />
 	<add segment="permissioncheckslog.php" />
-	<add segment="ecommerce.log" />
-	<add segment="queries.log" />
-	<add segment="big_query_screens.log" />
 	<add segment="profiling*.log" />
+	<add segment="ecommerce.log" />
 	<add segment="resource_fs.log" />
+	<add segment="big_query_screens.log" />
+	<add segment="queries.log" />
+	<add segment="fields.xml" />
+	<add segment="breadcrumbs.xml" />
 
 	<add segment="rootkit_detection.php" />
 	<add segment="upgrader.php" />

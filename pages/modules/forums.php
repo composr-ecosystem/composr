@@ -101,7 +101,7 @@ class Module_forums
 
             if (is_array($val)) {
                 foreach ($val as $_key => $_val) { // We'll only support one level deep.
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $_val = stripslashes($_val);
                     }
 
@@ -113,7 +113,7 @@ class Module_forums
                     $access_url .= $key . '[' . $_key . ']' . '=' . urlencode($_val);
                 }
             } else {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = stripslashes($val);
                 }
 

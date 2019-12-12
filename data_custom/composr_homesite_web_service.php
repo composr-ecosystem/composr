@@ -54,7 +54,7 @@ header('Content-type: text/plain; charset=' . get_charset());
 $call = get_param_string('call');
 
 $parameters = isset($_POST['parameters']) ? $_POST['parameters'] : array();
-if (get_magic_quotes_gpc()) {
+if (@get_magic_quotes_gpc()) {
     $parameters = array_map('stripslashes', $parameters);
 }
 
@@ -82,5 +82,9 @@ if ($password_given === null) {
     require_code('users_inactive_occasionals');
     create_session($member);
 
-    call_user_func_array('server__' . $call, $parameters);
+    if (function_exists('server__' . $call)) {
+        call_user_func_array('server__' . $call, $parameters);
+    } else {
+        call_user_func_array('server__public__' . $call, $parameters);
+    }
 }

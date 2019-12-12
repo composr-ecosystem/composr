@@ -613,7 +613,7 @@ class Module_admin_permissions
 
         $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, true);
         foreach ($_POST as $key => $val) {
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val = stripslashes($val);
             }
 
@@ -822,13 +822,13 @@ class Module_admin_permissions
             $sections_uncommon = new Tempcode();
             $doing_uncommon = false;
             foreach ($_sections as $s) {
-                if (($s['p_section'] == 'FORUMS_AND_MEMBERS') && (get_forum_type() != 'cns')) {
-                    continue;
-                }
-
                 if (is_null($s)) {
                     $doing_uncommon = true;
                 } else {
+                    if (($s['p_section'] == 'FORUMS_AND_MEMBERS') && (get_forum_type() != 'cns')) {
+                        continue;
+                    }
+
                     if (!is_null($s['trans'])) {
                         if ($doing_uncommon) {
                             $sections_uncommon->attach(form_input_list_entry($s['p_section'], false, $s['trans']));

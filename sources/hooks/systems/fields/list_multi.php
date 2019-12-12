@@ -325,7 +325,7 @@ class Hook_fields_list_multi
                 if (isset($_POST[$tmp_name])) {
                     if (is_array($_POST[$tmp_name])) {
                         $retx = $_POST[$tmp_name];
-                        if (get_magic_quotes_gpc()) {
+                        if (@get_magic_quotes_gpc()) {
                             $retx = array_map('stripslashes', $retx);
                         }
                         $ret = array_merge($ret, $retx);
@@ -340,7 +340,7 @@ class Hook_fields_list_multi
                 if (isset($_POST[$tmp_name . '_other_value'])) {
                     if (is_array($_POST[$tmp_name . '_other_value'])) {
                         $retx = $_POST[$tmp_name . '_other_value'];
-                        if (get_magic_quotes_gpc()) {
+                        if (@get_magic_quotes_gpc()) {
                             $retx = array_map('stripslashes', $retx);
                         }
                         foreach ($retx as $other_value) {

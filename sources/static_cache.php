@@ -270,6 +270,7 @@ function static_cache($mode)
             if ((($mode & STATIC_CACHE__FAILOVER_MODE) == 0) && ($support_compressed) && (function_exists('gzencode')) && (function_exists('php_function_allowed')) && (php_function_allowed('ini_set'))) {
                 ini_set('zlib.output_compression', 'Off');
                 header('Content-Encoding: gzip');
+                header('Vary: Accept-Encoding');
             }
             $contents = file_get_contents($fast_cache_path);
             if (function_exists('ocp_mark_as_escaped')) {

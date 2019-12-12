@@ -96,24 +96,23 @@ function phase_0()
                 $__changes[$id] = $change_label;
             }
         }
-        if (count($discovered_tracker_issues) > 0) {
-            $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
-            $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array(implode(',', array_keys($discovered_tracker_issues)))));
-            $tracker_issue_titles = json_decode($_result, true);
-        }
-        foreach ($__changes as $id => $change_label) {
-            if (is_numeric($id)) {
-                $url = get_brand_base_url() . '/tracker/view.php?id=' . $id;
-                if (array_key_exists(intval($id), $tracker_issue_titles)) {
-                    $change_label .= $tracker_issue_titles[intval($id)];
-                } else {
-                    continue; // A private issue, should not advertise
-                }
-            } else {
-                $url = COMPOSR_REPOS_URL . '/commit/' . $id;
-            }
 
-            $changes .= ' - [url="' . addslashes($change_label) . '"]' . $url . '[/url]' . "\n";
+        $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
+        $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
+        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version)));
+        $tracker_issue_titles = json_decode($_result, true);
+        foreach ($tracker_issue_titles as $key => $summary) {
+            if (strpos($summary, '[General]') === false) { // Only ones in the main Composr project
+                $url = get_brand_base_url() . '/tracker/view.php?id=' . substr($key, 1);
+                $changes .= ' - [url="' . comcode_escape($summary) . '"]' . $url . '[/url]' . "\n";
+            }
+        }
+
+        foreach ($__changes as $id => $change_label) {
+            if (!is_numeric($id)) {
+                $url = COMPOSR_REPOS_URL . '/commit/' . $id;
+                $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
+            }
         }
     } else {
         $changes = 'All reported bugs since the last release have been fixed.';
@@ -309,13 +308,6 @@ function phase_2()
     <p>Here\'s a list of things for you to do. Get to it!</p>
     <ol>
     ';
-    if (!$is_bleeding_edge && !$is_substantial) {
-        echo '
-            <li>
-                Security Advice (<em>Optional</em>): If you are fixing a security issue, follow the security process. This may mean delaying the release for around a week and sending a newsletter telling people when exactly the upgrade will come.
-            </li>
-        ';
-    }
     if (strpos(PHP_OS, 'Darwin') !== false) {
         $command_to_try = 'open';
     } elseif (strpos(PHP_OS, 'WIN') !== false) {
