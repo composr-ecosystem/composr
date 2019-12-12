@@ -58,23 +58,27 @@ class Hook_syndication_twitter
             exit();
         }
 
-        $response = $twitter->oAuthAccessToken(get_param_string('oauth_token'), get_param_string('oauth_verifier'));
-
-        if (!isset($response['oauth_token'])) {
-            attach_message(do_lang_tempcode('TWITTER_OAUTH_FAIL', escape_html($response['message'])), 'warn');
-            return false;
-        }
-
         $save_to = 'twitter_oauth_token';
-        if (!is_null($member_id)) {
+        if ($member_id !== null) {
             $save_to .= '__' . strval($member_id);
         }
-        set_value($save_to, $response['oauth_token'], true);
-        $save_to = 'twitter_oauth_token_secret';
-        if (!is_null($member_id)) {
-            $save_to .= '__' . strval($member_id);
+
+        $secret_save_to = 'twitter_oauth_token_secret';
+        if ($member_id !== null) {
+            $secret_save_to .= '__' . strval($member_id);
         }
-        set_value($save_to, $response['oauth_token_secret'], true);
+
+        if ((get_value_newer_than($save_to, time() - 10, true) === null) || (get_value_newer_than($secret_save_to, time() - 10, true) === null)) {
+            $response = $twitter->oAuthAccessToken(get_param_string('oauth_token'), get_param_string('oauth_verifier'));
+
+            if (!isset($response['oauth_token'])) {
+                attach_message(do_lang_tempcode('TWITTER_OAUTH_FAIL', escape_html(isset($response['message']) ? $response['message'] : serialize($response))), 'warn');
+                return false;
+            }
+
+            set_value($save_to, $response['oauth_token'], true);
+            set_value($secret_save_to, $response['oauth_token_secret'], true);
+        }
 
         return true;
     }
