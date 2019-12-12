@@ -1,11 +1,9 @@
-{$SET,show_syndication_options,{$AND,{$IS_NON_EMPTY,{SYNDICATIONS}},{$EQ,{MEMBER_ID},{$MEMBER}}}}
-
 <div class="float_surrounder">
 	{+START,IF,{$EQ,{MEMBER_ID},{$MEMBER}}}
 		{$BLOCK,block=main_activities_state,member={MEMBER_ID},mode=some_members,param=}
 	{+END}
 
-	{$BLOCK,block=main_activities,member={MEMBER_ID},mode=some_members,param=,max=10,grow=1,cache=0}
+	{$BLOCK,block=main_activities,member={MEMBER_ID},mode=some_members,param=,max=10,grow=1}
 
 	<hr class="spaced_rule" />
 
@@ -17,6 +15,7 @@
 	</div>
 </div>
 
+{$SET,show_syndication_options,{$AND,{$IS_NON_EMPTY,{SYNDICATIONS}},{$EQ,{MEMBER_ID},{$MEMBER}}}}
 {+START,IF,{$GET,show_syndication_options}}
 	<p>{!CREATE_SYNDICATION_LINK}</p>
 
