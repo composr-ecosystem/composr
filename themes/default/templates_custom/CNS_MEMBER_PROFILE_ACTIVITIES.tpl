@@ -1,3 +1,5 @@
+{$SET,show_syndication_options,{$AND,{$IS_NON_EMPTY,{SYNDICATIONS}},{$EQ,{MEMBER_ID},{$MEMBER}}}}
+
 <div class="float_surrounder">
 	{+START,IF,{$EQ,{MEMBER_ID},{$MEMBER}}}
 		{$BLOCK,block=main_activities_state,member={MEMBER_ID},mode=some_members,param=}
@@ -15,10 +17,10 @@
 	</div>
 </div>
 
-{+START,IF_NON_EMPTY,{SYNDICATIONS}}
+{+START,IF,{$GET,show_syndication_options}}
 	<p>{!CREATE_SYNDICATION_LINK}</p>
 
-	<form action="{$PAGE_LINK*,_SEARCH:members:view:{MEMBER_ID}}#tab__activities" method="post" autocomplete="off">
+	<form action="{$PAGE_LINK*,_SEARCH:members:view}#tab__activities" method="post" autocomplete="off">
 		{$INSERT_SPAMMER_BLACKHOLE}
 
 		<p>
