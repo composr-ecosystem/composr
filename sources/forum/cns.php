@@ -557,7 +557,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function member_home_url($id, $tempcode_okay = false)
     {
-        $_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $id), get_module_zone('members'), null, false, false, false, 'tab__edit');
+        $_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id), get_module_zone('members'), null, false, false, false, 'tab__edit');
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -588,7 +588,7 @@ class Forum_driver_cns extends Forum_driver_base
             }
             $_url = build_url($map, get_module_zone('members'), null, false, false, !$tempcode_okay);
         } else {
-            $map = array('page' => 'members', 'type' => 'view', 'id' => $id);
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id);
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
