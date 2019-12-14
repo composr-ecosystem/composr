@@ -591,6 +591,10 @@ function fixup_bad_php_env_vars()
 
     // Now derive missing ones...
 
+    if (empty($_SERVER['HTTPS'])) { // Maybe on command line
+        $_SERVER['HTTPS'] = '';
+    }
+
     if ((empty($_SERVER['SERVER_ADDR'])) && (!empty($_SERVER['LOCAL_ADDR']))) {
         $_SERVER['SERVER_ADDR'] = $_SERVER['LOCAL_ADDR'];
     }
@@ -704,6 +708,10 @@ function whole_site_https()
  */
 function handle_bad_access_context()
 {
+    if (is_cli()) {
+        return;
+    }
+
     $request_hostname = get_request_hostname();
 
     // Detect bad access domain
