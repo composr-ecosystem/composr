@@ -69,7 +69,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
-    if (($allow_defer) && (function_exists('can_static_cache')) && (can_static_cache())) {
+    if (($allow_defer) && (function_exists('can_static_cache_request')) && (can_static_cache_request())) {
         $allow_defer = false;
     }
 
@@ -311,7 +311,7 @@ function css_enforce($c, $theme = null, $allow_defer = false)
 {
     list($minify, $https, $mobile) = _get_web_resources_env();
 
-    if (($allow_defer) && (function_exists('can_static_cache')) && (can_static_cache())) {
+    if (($allow_defer) && (function_exists('can_static_cache_request')) && (can_static_cache_request())) {
         $allow_defer = false;
     }
 

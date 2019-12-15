@@ -1150,64 +1150,21 @@ function save_static_caching($out, $mime_type = 'text/html')
 
     // Initial assessments of whether we can cache...
 
-    global $SITE_INFO;
-    if ((!isset($SITE_INFO['static_caching_hours'])) || ($SITE_INFO['static_caching_hours'] == '0')) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, not enabled on ' . $url);
-            }
-        }
-
-        return false;
-    }
-
-    if (!is_guest()) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, logged in on ' . $url);
-            }
-        }
-
-        return false;
-    }
-
-    if ($GLOBALS['IS_ACTUALLY_ADMIN']) {
-        if ($debugging) {
-            if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, using SU to Guest on ' . $url);
-            }
-        }
-
-        return false;
-    }
-
     global $HTTP_STATUS_CODE;
     if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: HTTP status is and non-HTML so no http-equiv ' . strval($HTTP_STATUS_CODE));
+                @error_log('SC save: HTTP status is ' . strval($HTTP_STATUS_CODE) . ' and non-HTML so no http-equiv');
             }
         }
 
         return false;
     }
 
-    $bot_type = get_bot_type();
-    $supports_failover_mode = (isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] != 'off');
-    $supports_guest_caching = (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1');
-    require_code('static_cache');
-    if (($bot_type === null) && (!$supports_failover_mode) && (!$supports_guest_caching)) {
-        if (php_function_allowed('error_log')) {
-            @error_log('SC save: No, not a bot and no failover mode or guest caching enabled, on ' . $url);
-        }
-
-        return false;
-    }
-
-    if (!can_static_cache()) {
+    if (!can_static_cache_request(true)) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, static cache not available according to can_static_cache() on ' . $url);
+                @error_log('SC save: No, static cache not available according to can_static_cache_request() on ' . $url);
             }
         }
 
@@ -1228,7 +1185,7 @@ function save_static_caching($out, $mime_type = 'text/html')
     if (!$GLOBALS['STATIC_CACHE_ENABLED']) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC save: No, internal signal to not cache on ' . $url);
+                @error_log('SC save: No, internal signal to not cache from Tempcode on ' . $url);
             }
         }
 
@@ -1291,6 +1248,7 @@ function save_static_caching($out, $mime_type = 'text/html')
     // Work out cache path on disk
     $fast_cache_path = get_custom_file_base() . '/caches/static/' . md5($url);
     $fast_cache_path_failover_mode = $fast_cache_path;
+    $bot_type = get_bot_type();
     if ($bot_type === null) {
         $fast_cache_path .= '__non-bot';
     }
@@ -1309,6 +1267,8 @@ function save_static_caching($out, $mime_type = 'text/html')
     }
 
     // Save for failover mode
+    global $SITE_INFO;
+    $supports_failover_mode = (isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] != 'off');
     if ($supports_failover_mode) {
         if (!is_file($fast_cache_path_failover_mode . $file_extension) || filemtime($fast_cache_path_failover_mode . $file_extension) < time() - 60 * 60 * 5) {
             // Add failover messages

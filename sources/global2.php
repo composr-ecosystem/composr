@@ -301,10 +301,6 @@ function init__global2()
         }
     }
 
-    define('STATIC_CACHE__FAST_SPIDER', 1);
-    define('STATIC_CACHE__GUEST', 2);
-    define('STATIC_CACHE__FAILOVER_MODE', 4);
-
     // Most critical things
     require_code('global3'); // A lot of support code is present in this
     require_code('web_resources');
@@ -315,35 +311,26 @@ function init__global2()
             exit();
         }
     }
+
+    // Static caching checks (early)
+    define('STATIC_CACHE__FAST_SPIDER', 1);
+    define('STATIC_CACHE__GUEST', 2);
+    define('STATIC_CACHE__FAILOVER_MODE', 4);
     $force_failover = get_param_integer('keep_failover', null);
     if (((isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] == 'on' || $SITE_INFO['failover_mode'] == 'auto_on') && ($force_failover !== 0)) || ($force_failover === 1)) {
+        // Forced static cache, due to failover mode
         $bot_type = get_bot_type();
         require_code('static_cache');
         static_cache((($bot_type !== null) ? STATIC_CACHE__FAST_SPIDER : 0) | STATIC_CACHE__FAILOVER_MODE);
     }
-    if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) { // Fast caching for bots and possibly guests
-        if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
-            $bot_type = get_bot_type();
-            if (($bot_type !== null) && (!empty($SITE_INFO['static_caching_hours']))) {
-                load_csp(['csp_enabled' => '0']);
-                require_code('static_cache');
-                static_cache(STATIC_CACHE__FAST_SPIDER);
-            }
-            if (
-                (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') &&
-                (
-                    (get_forum_type() == 'cns') && (!isset($_COOKIE[$SITE_INFO['user_cookie']])) && (!isset($_COOKIE[$SITE_INFO['session_cookie']])) ||
-                    (empty(array_diff_key($_COOKIE, ['__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0])))
-                ) &&
-                ((!isset($SITE_INFO['backdoor_ip'])) || ($SITE_INFO['backdoor_ip'] != @strval($_SERVER['REMOTE_ADDR']))) &&
-                (!isset($_GET['keep_session'])
-            )) {
-                load_csp(['csp_enabled' => '0']);
-                require_code('static_cache');
-                static_cache(STATIC_CACHE__GUEST);
-            }
-        }
+    $static_cache_mode = null;
+    if (web_client_may_use_static_cache(true, $static_cache_mode)) {
+        load_csp(['csp_enabled' => '0']);
+        require_code('static_cache');
+        static_cache($static_cache_mode);
     }
+
+    // More critical things
     require_code('caches');
     require_code('database'); // There's nothing without the database
     require_code('config'); // Config is needed for much active stuff
@@ -376,24 +363,29 @@ function init__global2()
         get_base_url();/*force calculation first*/
         $RELATIVE_PATH = '';
     }
+
     require_code('users'); // Users are important due to permissions
-    if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) { // Fast caching for Guests
-        if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (@cms_empty_safe($_SERVER['PHP_AUTH_USER']))) {
-            if ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest(null, true)) && (get_param_integer('keep_failover', null) !== 0)) {
-                require_code('static_cache');
-                static_cache(STATIC_CACHE__GUEST);
-            }
-        }
+
+    // Static caching checks (late)
+    if (web_client_may_use_static_cache(false, $static_cache_mode)) {
+        require_code('static_cache');
+        static_cache($static_cache_mode);
     }
+
     if (get_param_integer('keep_debug_fs', 0) != 0) {
         require_code('debug_fs');
         enable_debug_fs();
     }
+
     $CACHE_TEMPLATES = has_caching_for('template');
+
     require_code('lang'); // So that we can do language stuff (e.g. errors). Note that even though we have included a lot so far, we can't really use any of it until lang is loaded. Lang isn't loaded earlier as it itself has a dependency on Tempcode.
+
     if (!$MICRO_AJAX_BOOTUP) {
         require_code('temporal'); // Date/time functions
+
         convert_request_data_encodings(get_param_integer('known_utf8', 0) == 1);
+
         if (!$MICRO_BOOTUP) {
             // FirePHP console support, only for administrators
             if ((get_param_integer('keep_firephp', 0) == 1) && (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || ($GLOBALS['IS_ACTUALLY_ADMIN']))) {
@@ -684,6 +676,107 @@ function fixup_bad_php_env_vars()
             $_SERVER['PHP_AUTH_USER'] = $_SERVER['REMOTE_USER'];
         }
     }
+}
+
+/**
+ * Find if the current web client can use the static cache.
+ * This doesn't do checks to see if the whole web request is cachable (see can_static_cache_request), just the web client.
+ *
+ * @param  boolean $early_boot_check Whether this is an check before the user subsystem is initiated (stricter conditions, but good to detect early)
+ * @param  ?integer $mode A STATIC_CACHE__* constant (null: not yet set)
+ * @param  ?string $reason Reason for a false result (null: not yet set)
+ * @param  boolean $consider_failover_mode Whether to consider potential of cache being needed for failover mode
+ * @return boolean Whether the web client can use static caching
+ */
+function web_client_may_use_static_cache($early_boot_check = false, &$mode = null, &$reason = null, $consider_failover_mode = false)
+{
+    global $SITE_INFO, $MICRO_BOOTUP, $MICRO_AJAX_BOOTUP, $STATIC_CACHE_ENABLED, $IS_ACTUALLY_ADMIN;
+
+    if (empty($SITE_INFO['static_caching_hours'])) {
+        $reason = 'Not enabled in _config.php';
+        return false;
+    }
+
+    if ($MICRO_BOOTUP) {
+        $reason = 'Micro bootup';
+        return false;
+    }
+
+    if ($MICRO_AJAX_BOOTUP) {
+        $reason = 'Micro-AJAX bootup';
+        return false;
+    }
+
+    if (!$STATIC_CACHE_ENABLED) {
+        $reason = '$STATIC_CACHE_ENABLED is false';
+        return false;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+        $reason = 'Request method is ' . $_SERVER['REQUEST_METHOD'];
+        return false;
+    }
+
+    if (!@cms_empty_safe($_SERVER['PHP_AUTH_USER'])) {
+        $reason = 'HTTP-auth active';
+        return false;
+    }
+
+    $bot_type = get_bot_type();
+    if ($bot_type !== null) {
+        $mode = STATIC_CACHE__FAST_SPIDER;
+        return true;
+    }
+
+    $supports_failover_mode = (isset($SITE_INFO['failover_mode'])) && ($SITE_INFO['failover_mode'] != 'off');
+    $supports_guest_caching = (!empty($SITE_INFO['any_guest_cached_too']));
+    if ((!$supports_guest_caching) && ((!$consider_failover_mode) || (!$supports_failover_mode))) {
+        $reason = 'Enabled for bots only';
+        return false;
+    }
+
+    $mode = STATIC_CACHE__GUEST;
+
+    if ($early_boot_check) {
+        if ((isset($SITE_INFO['backdoor_ip'])) && ($SITE_INFO['backdoor_ip'] == @strval($_SERVER['REMOTE_ADDR']))) {
+            $reason = '[Conservative early boot check] Authorised by backdoor_ip';
+            return false;
+        }
+
+        if (isset($_GET['keep_session'])) {
+            $reason = '[Conservative early boot check] May have session via URL';
+            return false;
+        }
+
+        if (get_forum_type() == 'cns') {
+            if (isset($_COOKIE[$SITE_INFO['user_cookie']])) {
+                $reason = '[Conservative early boot check] A login cookie is present';
+                return false;
+            }
+
+            if (isset($_COOKIE[$SITE_INFO['session_cookie']])) {
+                $reason = '[Conservative early boot check] A session cookie is present';
+                return false;
+            }
+        } else {
+            if (!empty(array_diff_key($_COOKIE, ['__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0]))) {
+                $reason = '[Conservative early boot check] Unknown cookies (which may be login cookies) are present';
+                return false;
+            }
+        }
+    } else {
+        if (!is_guest(null, true)) {
+            $reason = '[Later boot check]  Logged in';
+            return false;
+        }
+
+        if ($IS_ACTUALLY_ADMIN) {
+            $reason = '[Later boot check]  Using SU';
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**

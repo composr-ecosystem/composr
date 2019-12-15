@@ -73,17 +73,17 @@ function static_cache__get_self_url_easy()
  */
 function debugging_static_cache()
 {
-    return false;
+    return !empty($_GET['debug_static_cache']);
 }
 
 /**
- * Find if we can use the static cache.
- * For the load side, some additional checks are done before static caching code is even initiated (like checking if it is enabled and you are a guest).
+ * Find if we can use the static cache for the web request.
  * For the save side, some additional checks are done in save_static_caching.
  *
+ * @param  boolean $consider_failover_mode Whether to consider potential of cache being needed for failover mode
  * @return boolean Whether we can
  */
-function can_static_cache()
+function can_static_cache_request($consider_failover_mode = false)
 {
     $debugging = debugging_static_cache();
 
@@ -93,10 +93,12 @@ function can_static_cache()
         require_code('urls');
     }
 
-    if ($_SERVER['REQUEST_METHOD'] != 'GET') {
+    $mode = null;
+    $reason = null;
+    if (!web_client_may_use_static_cache(!function_exists('is_guest'), $mode, $reason, $consider_failover_mode)) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
-                @error_log('SC: No, ' . $_SERVER['REQUEST_METHOD'] . ' request on ' . $url);
+                @error_log('SC: No, ' . $reason . ' on ' . $url);
             }
         }
 
@@ -186,7 +188,7 @@ function static_cache($mode)
             http_response_code(503);
         }
     } else {
-        if (!can_static_cache()) {
+        if (!can_static_cache_request($in_failover_mode)) {
             return;
         }
     }
@@ -279,7 +281,7 @@ function static_cache($mode)
 
         if ($client_support_compressed) {
             if (($client_support_brotli) && (is_file($fast_cache_path . '.br'))) {
-                $fast_cache_path .= '.gz';
+                $fast_cache_path .= '.br';
                 $server_support_brotli = true;
                 break;
             }
