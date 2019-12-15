@@ -1,0 +1,729 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2019
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    cms_permissions_scanner
+ */
+
+/*EXTRA FUNCTIONS: shell_exec|escapeshellarg|posix_getuid|posix_getpwnam*/
+
+/**
+ * Dispatcher object.
+ * Used to create a closure for a notification dispatch, so we can then tell that to send in the background (register_shutdown_function), for performance reasons.
+ *
+ * @package cms_permissions_scanner
+ */
+class CMSPermissionsScanner
+{
+    // Constants...
+
+    const BITMASK_PERMISSIONS_STICKY = 01000;
+    const BITMASK_PERMISSIONS_SETGID = 02000;
+    const BITMASK_PERMISSIONS_SETUID = 04000;
+
+    const BITMASK_PERMISSIONS_OWNER_EXECUTE = 00100;
+    const BITMASK_PERMISSIONS_OWNER_WRITE = 00200;
+    const BITMASK_PERMISSIONS_OWNER_READ = 00400;
+
+    const BITMASK_PERMISSIONS_GROUP_EXECUTE = 00010;
+    const BITMASK_PERMISSIONS_GROUP_WRITE = 00020;
+    const BITMASK_PERMISSIONS_GROUP_READ = 00040;
+
+    const BITMASK_PERMISSIONS_OTHER_EXECUTE = 00001;
+    const BITMASK_PERMISSIONS_OTHER_WRITE = 00002;
+    const BITMASK_PERMISSIONS_OTHER_READ = 00004;
+
+    const RESULT_TYPE_SUCCESS = 0;
+    const RESULT_TYPE_SUGGESTION_EXCESSIVE = 1;
+    const RESULT_TYPE_SUGGESTION_MISSING = 2;
+    const RESULT_TYPE_ERROR_EXCESSIVE = 3;
+    const RESULT_TYPE_ERROR_MISSING = 4;
+
+    // Options...
+
+    protected $web_user;
+
+    protected $sensitive_paths = [];
+    protected $chmod_paths = [];
+    protected $script_paths = null;
+
+    protected $has_ftp_loopback_for_write = false;
+
+    protected $minimum_level = 3;
+    protected $live_output = false;
+
+    // Run-time data...
+
+    protected $has_lsattr;
+
+    // Code...
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->set_web_username();
+
+        $this->set_path_patterns();
+
+        $this->has_lsattr = false;
+        if (($this->php_function_allowed('shell_exec')) && ($this->php_function_allowed('escapeshellarg'))) {
+            if (preg_match('#lsattr \d#', shell_exec('lsattr -V 2>&1')) != 0) {
+                $this->has_lsattr = true;
+            }
+        }
+    }
+
+    /**
+     * Set username the web user will run as.
+     *
+     * @param  ?string $username Username or User ID (null: try and auto-detect, failing that assume suEXEC-style)
+     */
+    public function set_web_username($username = null)
+    {
+        $this->web_user = null;
+
+        if ($username === null) {
+            if ($this->php_function_allowed('posix_getuid')) {
+                $this->web_user = posix_getuid();
+            }
+        } else {
+            if (is_numeric($username)) {
+                $this->web_user = intval($username);
+            } else {
+                if ($this->php_function_allowed('posix_getpwnam')) {
+                    $details = @posix_getpwnam($username);
+                    if ($details === false) {
+                        throw new Exception('Cannot find user, ' . $username);
+                    }
+                    $this->web_user = $details['uid'];
+                } else {
+                    throw new Exception('Posix extension is needed if passing a username');
+                }
+            }
+        }
+    }
+
+    /**
+     * Set paths patterns.
+     *
+     * @param  array $sensitive_paths A list of sensitive path regexps that really should have minimal read permission
+     * @param  array $chmod_paths A list of path regexps that should be chmodded as writable for non-suEXEC-style servers
+     * @param  ?array $script_paths A list of path regexps for scripts that need Unix execute permission (null: .sh files)
+     */
+    public function set_path_patterns($sensitive_paths = [], $chmod_paths = [], $script_paths = null)
+    {
+        $this->sensitive_paths = $sensitive_paths;
+        $this->chmod_paths = $chmod_paths;
+        if ($script_paths === null) {
+            $this->script_paths = [
+                '.*\.sh',
+            ];
+        } else {
+            $this->script_paths = $script_paths;
+        }
+    }
+
+    /**
+     * Set whether we can 'get' write access via some kind of loopback.
+     *
+     * @param  boolean $has_ftp_loopback_for_write Whether the system has the potential to 'get' write access on non-suEXEC-style servers by (for example) looping through FTP
+     */
+    public function set_has_ftp_loopback_for_write($has_ftp_loopback_for_write)
+    {
+        $this->has_ftp_loopback_for_write = $has_ftp_loopback_for_write;
+    }
+
+    /**
+     * Set minimum result level.
+     *
+     * @param  boolean $minimum_level Minimum RESULT_TYPE_* level
+     */
+    public function set_minimum_level($minimum_level)
+    {
+        $this->minimum_level = $minimum_level;
+    }
+
+    /**
+     * Set whether to show live output, rather than just returning at the end.
+     *
+     * @param  boolean $live_output Whether to output live
+     */
+    public function set_live_output($live_output)
+    {
+        $this->live_output = $live_output;
+    }
+
+    /**
+     * Get general messages.
+     *
+     * @return array A pair: List of messages, List of commands
+     */
+    public function get_general_messages()
+    {
+        $messages = [];
+        $commands = [];
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Find whether a particular PHP function is allowed.
+     *
+     * @param  string $function Function name
+     * @return boolean Whether it is
+     */
+    protected function php_function_allowed($function)
+    {
+        if (!function_exists($function)) {
+            return false;
+        }
+        $disabled_functions = @strtolower(ini_get('disable_functions') . ',' . ini_get('suhosin.executor.func.blacklist') . ',' . ini_get('suhosin.executor.include.blacklist') . ',' . ini_get('suhosin.executor.eval.blacklist'));
+        return (@preg_match('#(\s|,|^)' . preg_quote($function, '#') . '(\s|$|,)#', $disabled_functions) == 0);
+    }
+
+    /**
+     * Find the extended attributes for a path.
+     *
+     * @param  PATH $path The absolute path
+     * @param  boolean $directory_contents Whether this is a directory to get the contents of
+     * @return array A map of file paths to extended attribute strings
+     */
+    protected function process_lsattr($path, $directory_contents = false)
+    {
+        $lsattr = [];
+        if ($this->has_lsattr) {
+            $cmd = 'lsattr';
+            if (!$directory_contents) {
+                $cmd .= ' -d';
+            }
+            $cmd .= ' ' . escapeshellarg($path);
+            $_lsattr = @strval(shell_exec($cmd . ' 2>&1'));
+
+            $matches = [];
+            $num_matches = preg_match_all('#^([A-Za-z\-])\t(.*)$#m', $_lsattr, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $lsattr[$matches[2][$i]] = $matches[1][$i];
+            }
+        }
+        return $lsattr;
+    }
+
+    /**
+     * Enumerate a directory for permission checks (actual processing is in process_node).
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  ?string $attr A string of extended attributes from lsattr (null: look up individually, which is slower)
+     * @param  boolean $top_level Whether this is the top level of the recursion; don't set this manually
+     * @return array A pair: List of messages, List of commands
+     */
+    public function process_directory($path, $rel_path = '', $attr = null, $top_level = true)
+    {
+        $messages = [];
+        $commands = [];
+
+        if ($top_level) {
+            if ($this->php_function_allowed('shell_exec')) {
+                if (strpos(shell_exec('sestatus'), 'enabled') !== false) {
+                    if (strpos(shell_exec('ps -eZ'), 'httpd_t') !== false) {
+                        $found_selinux_rule = false;
+
+                        $path_up = $path;
+                        do {
+                            $cmd = 'ls -Zld ' . escapeshellarg($path_up);
+                            if (strpos(shell_exec($cmd), 'httpd_sys_rw_content_t') !== false) {
+                                $found_selinux_rule = true;
+                            }
+
+                            $_path_up = $path_up;
+                            $path_up = dirname($path_up);
+                        } while (($path_up != '.') && (!empty($path_up)) && ($path_up != $_path_up));
+
+                        if (!$found_selinux_rule) {
+                            $message = 'Error: selinux is running and httpd_sys_rw_content_t is not set in the directory tree of ' . $path;
+                            $messages[] = $message;
+                            if ($this->live_output) {
+                                echo $message . "\n";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($attr === null) {
+            $lsattr = $this->process_lsattr($path);
+            $attr = isset($lsattr[$path]) ? $lsattr[$path] : '';
+        }
+
+        $_messages = $this->process_node($path, $rel_path, true, $attr);
+        $messages = array_merge($messages, $_messages[0]);
+        $commands = array_merge($commands, $_messages[1]);
+
+        $lsattr = $this->process_lsattr($path, true);
+
+        $dh = @opendir($path);
+        if ($dh !== false) {
+            while (($f = readdir($dh)) !== false) {
+                if (($f == '.') || ($f == '..')) {
+                    continue;
+                }
+                if ($f == '.git') {
+                    // Funky things happen with permissions under .git
+                    continue;
+                }
+
+                $_path = $path . '/' . $f;
+                $_rel_path = $rel_path . (($rel_path == '') ? '' : '/') . $f;
+
+                $is_directory = @is_dir($_path);
+
+                if ($is_directory) {
+                    $_messages = $this->process_directory($_path, $_rel_path, isset($lsattr[$_path]) ? $lsattr[$_path] : '', false);
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                } else {
+                    $_messages = $this->process_node($_path, $_rel_path, false, isset($lsattr[$_path]) ? $lsattr[$_path] : '');
+                    $messages = array_merge($messages, $_messages[0]);
+                    $commands = array_merge($commands, $_messages[1]);
+                }
+            }
+
+            closedir($dh);
+        }
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Process a file or directory for permission checks.
+     *
+     * @param  PATH $path The absolute path
+     * @param  PATH $rel_path The relative path to the base directory
+     * @param  boolean $is_directory Whether this is a directory
+     * @param  string $attr A string of extended attributes from lsattr
+     * @return array A pair: List of messages, List of commands
+     */
+    protected function process_node($path, $rel_path, $is_directory, $attr)
+    {
+        $messages = [];
+        $commands = [];
+
+        $file_owner = @fileowner($path);
+        $file_perms = @fileperms($path);
+
+        if (($file_owner === false) || ($file_perms === false)) {
+            return [[], []]; // Likely as parent directory is missing perms, which will be flagged
+        }
+
+        $perms_needed = 0;
+        $perms_desired = 0;
+        $perms_irrelevant = 0;
+        $perms_avoided = 0;
+        $perms_dangerous = 0;
+
+        $contains_sensitive = false;
+        foreach ($this->sensitive_paths as $sensitive_path) {
+            if (preg_match('#^' . $sensitive_path . '$#', $rel_path) != 0) {
+                $contains_sensitive = true;
+            }
+        }
+
+        $is_shell_script = false;
+        if (!$is_directory) {
+            foreach ($this->script_paths as $script_path) {
+                if (preg_match('#^' . $script_path . '$#', $rel_path) != 0) {
+                    $is_shell_script = true;
+                }
+            }
+        }
+
+        $on_chmod_list = false;
+        foreach ($this->chmod_paths as $chmod_path) {
+            if (preg_match('#^' . $chmod_path . '$#', $rel_path) != 0) {
+                $on_chmod_list = true;
+            }
+        }
+
+        $perms_dangerous |= self::BITMASK_PERMISSIONS_SETGID;
+        $perms_dangerous |= self::BITMASK_PERMISSIONS_SETUID;
+
+        if (($this->web_user === null) || ($file_owner == $this->web_user)) {
+            // suEXEC style...
+
+            $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+
+            if ($is_directory) {
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                if ($on_chmod_list) {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                } else {
+                    $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                }
+
+                $perms_irrelevant |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                if ($contains_sensitive) {
+                    $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                } else {
+                    $perms_irrelevant |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                }
+                $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+            } else {
+                if ($is_shell_script) {
+                    $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                } else {
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                }
+                $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                if ($on_chmod_list) {
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                } else {
+                    $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+                }
+
+                $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                if ($contains_sensitive) {
+                    $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                } else {
+                    $perms_irrelevant |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                }
+                $perms_dangerous |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+            }
+        } else {
+            // nobody style...
+
+            if ($is_directory) {
+                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+
+                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                if ($on_chmod_list) {
+                    $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                } else {
+                    if ($this->has_ftp_loopback_for_write) {
+                        $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+                        $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    } else {
+                        $perms_avoided |= self::BITMASK_PERMISSIONS_STICKY;
+                        $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    }
+                }
+            } else {
+                if ($is_shell_script) {
+                    $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                } else {
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_OWNER_EXECUTE;
+                }
+                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_READ;
+                $perms_desired |= self::BITMASK_PERMISSIONS_OWNER_WRITE;
+
+                if ($is_shell_script) {
+                    $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                } else {
+                    $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_EXECUTE;
+                }
+                $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_READ;
+                if ($on_chmod_list) {
+                    $perms_dangerous |= self::BITMASK_PERMISSIONS_STICKY;
+                    $perms_needed |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                } else {
+                    if ($this->has_ftp_loopback_for_write) {
+                        $perms_irrelevant |= self::BITMASK_PERMISSIONS_STICKY;
+                        $perms_avoided |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    } else {
+                        $perms_avoided |= self::BITMASK_PERMISSIONS_STICKY;
+                        $perms_desired |= self::BITMASK_PERMISSIONS_OTHER_WRITE;
+                    }
+                }
+            }
+        }
+
+        $found_issue = false;
+
+        // $perms_needed
+        if ($this->minimum_level <= self::RESULT_TYPE_ERROR_MISSING) {
+            if (($file_perms & $perms_needed) != $perms_needed) {
+                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_MISSING, ($file_perms ^ $perms_needed) & $perms_needed);
+                $messages[] = $message;
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    echo $message . "\n";
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+                $found_issue = true;
+            }
+            if (($perms_needed & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+                $extended_attribute_issues = [];
+                if (strpos($attr, 'a') !== false) {
+                    $extended_attribute_issues[] = 'remove "a" append-only attribute';
+                    $commands[] = 'chattr -a ' . escapeshellarg($path);
+                }
+                if (strpos($attr, 'i') !== false) {
+                    $extended_attribute_issues[] = 'remove "i" immutable attribute';
+                    $commands[] = 'chattr -i ' . escapeshellarg($path);
+                }
+                if (!empty($extended_attribute_issues)) {
+                    $message = 'Error: extended attributes problem on ' . $path . ' (' . implode(', ', $extended_attribute_issues) . ')';
+                    $found_issue = true;
+                }
+            }
+        }
+
+        // $perms_desired
+        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_MISSING) {
+            if (($file_perms & $perms_desired) != $perms_desired) {
+                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_MISSING, ($file_perms ^ $perms_desired) & $perms_desired);
+                $found_issue = true;
+                $messages[] = $message;
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    echo $message . "\n";
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+            }
+        }
+
+        // $perms_avoided
+        if ($this->minimum_level <= self::RESULT_TYPE_SUGGESTION_EXCESSIVE) {
+            if (($file_perms & $perms_avoided) != 0) {
+                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_SUGGESTION_EXCESSIVE, $file_perms & $perms_avoided);
+                $found_issue = true;
+                $messages[] = $message;
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    echo $message . "\n";
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+            }
+        }
+
+        // $perms_dangerous
+        if ($this->minimum_level <= self::RESULT_TYPE_ERROR_EXCESSIVE) {
+            if (($file_perms & $perms_dangerous) != 0) {
+                list($message, $command) = $this->output_issue($path, self::RESULT_TYPE_ERROR_EXCESSIVE, $file_perms & $perms_dangerous);
+                $found_issue = true;
+                $messages[] = $message;
+                if ($command !== null) {
+                    $commands[] = $command;
+                }
+                if ($this->live_output) {
+                    echo $message . "\n";
+                    if ($command !== null) {
+                        echo $command . "\n";
+                    }
+                }
+            }
+        }
+
+        if ($this->minimum_level <= self::RESULT_TYPE_SUCCESS) {
+            if (!$found_issue) {
+                $message = $this->output_success($path);
+                $messages[] = $message;
+                if ($this->live_output) {
+                    echo $message . "\n";
+                }
+            }
+        }
+
+        return [$messages, $commands];
+    }
+
+    /**
+     * Create a success message.
+     *
+     * @param  PATH $path The path the message is about
+     * @return string The message
+     */
+    protected function output_success($path)
+    {
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+
+        $message = 'Success: ' . $path;
+
+        return $message;
+    }
+
+    /**
+     * Create an issue message.
+     *
+     * @param  PATH $path The path the message is about
+     * @param  integer $result_type A RESULT_TYPE_* constant
+     * @param  integer $perms_involved_octal The permissions the issue is about
+     * @return array A pair: The message, A command (which may be null)
+     */
+    protected function output_issue($path, $result_type, $perms_involved_octal)
+    {
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+
+        $perms_involved_written = $this->convert_octal_to_written($perms_involved_octal);
+
+        switch ($result_type) {
+            case self::RESULT_TYPE_SUGGESTION_MISSING:
+                $message = 'Suggestion: set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, '+');
+                break;
+
+            case self::RESULT_TYPE_ERROR_MISSING:
+                $message = 'Error: set additional permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, '+');
+                break;
+
+            case self::RESULT_TYPE_SUGGESTION_EXCESSIVE:
+                $message = 'Suggestion: remove unnecessary permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, '-');
+                break;
+
+            case self::RESULT_TYPE_ERROR_EXCESSIVE:
+                $message = 'Error: remove dangerous permissions for ' . $path . ' (' . $perms_involved_written . ')';
+                $command = $this->generate_chmod_command($path, $perms_involved_octal, '-');
+                break;
+
+            default:
+                throw new Exception('Internal Error');
+        }
+
+        return [$message, $command];
+    }
+
+    /**
+     * Generate a chmod command from differential octal permissions.
+     *
+     * @param  PATH $path The path the command is for
+     * @param  integer $octal Permissions
+     * @param  string $operator Change operator
+     * @set - +
+     * @return string Chmod command
+     */
+    protected function generate_chmod_command($path, $octal, $operator)
+    {
+        $owner_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+            $owner_perms[] = 's';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+            $owner_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+            $owner_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+            $owner_perms[] = 'w';
+        }
+
+        $group_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+            $group_perms[] = 's';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+            $group_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+            $group_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+            $group_perms[] = 'w';
+        }
+
+        $other_perms = [];
+        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+            $other_perms[] = 't';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+            $other_perms[] = 'x';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+            $other_perms[] = 'r';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+            $other_perms[] = 'w';
+        }
+
+        $chmod = '';
+        foreach (['u' => $owner_perms, 'g' => $group_perms, 'o' => $other_perms] as $permission_class => $perms) {
+            if (!empty($perms)) {
+                if ($chmod != '') {
+                    $chmod .= ',';
+                }
+                $chmod .= $permission_class . $operator . implode('', $perms);
+            }
+        }
+        return 'chmod ' . $chmod . ' ' . escapeshellarg($path);
+    }
+
+    /**
+     * Convert octal permissions to written ones.
+     *
+     * @param  integer $octal Permissions
+     * @return string Written permissions
+     */
+    protected function convert_octal_to_written($octal)
+    {
+        $perms = [];
+
+        if (($octal & self::BITMASK_PERMISSIONS_STICKY) != 0) {
+            $perms[] = 'sticky';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_SETGID) != 0) {
+            $perms[] = 'setgid';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_SETUID) != 0) {
+            $perms[] = 'setuid';
+        }
+
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_EXECUTE) != 0) {
+            $perms[] = 'owner execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_READ) != 0) {
+            $perms[] = 'owner read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OWNER_WRITE) != 0) {
+            $perms[] = 'owner write';
+        }
+
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_EXECUTE) != 0) {
+            $perms[] = 'group execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_READ) != 0) {
+            $perms[] = 'group read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_GROUP_WRITE) != 0) {
+            $perms[] = 'group write';
+        }
+
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_EXECUTE) != 0) {
+            $perms[] = 'other execute';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_READ) != 0) {
+            $perms[] = 'other read';
+        }
+        if (($octal & self::BITMASK_PERMISSIONS_OTHER_WRITE) != 0) {
+            $perms[] = 'other write';
+        }
+
+        return implode(', ', $perms);
+    }
+}
