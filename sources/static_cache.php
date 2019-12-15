@@ -85,6 +85,8 @@ function debugging_static_cache()
  */
 function can_static_cache_request($consider_failover_mode = false)
 {
+    global $SITE_INFO, $RELATIVE_PATH, $NON_CANONICAL_PARAMS;
+
     $debugging = debugging_static_cache();
 
     $url = static_cache__get_self_url_easy();
@@ -105,19 +107,29 @@ function can_static_cache_request($consider_failover_mode = false)
         return false;
     }
 
-    global $SITE_INFO;
-    if (!empty($SITE_INFO['static_caching_pattern'])) {
-        if (preg_match('#' . $SITE_INFO['static_caching_pattern'] . '#', $url) == 0) {
+    if (!empty($SITE_INFO['static_caching_blacklist'])) {
+        if (preg_match('#' . $SITE_INFO['static_caching_blacklist'] . '#', $url) != 0) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
-                    @error_log('SC: No, non-pattern-matched URL on ' . $url);
+                    @error_log('SC: No, pattern-matched URL to blacklist on ' . $url);
+                }
+            }
+
+            return false;
+        }
+    }
+
+    if (!empty($SITE_INFO['static_caching_whitelist'])) {
+        if (preg_match('#' . $SITE_INFO['static_caching_whitelist'] . '#', $url) == 0) {
+            if ($debugging) {
+                if (php_function_allowed('error_log')) {
+                    @error_log('SC: No, non-pattern-matched URL to whitelist on ' . $url);
                 }
             }
 
             return false;
         }
     } else {
-        global $RELATIVE_PATH;
         if ((isset($RELATIVE_PATH)) && ($RELATIVE_PATH == '') && ((!isset($_GET['page'])) || ($_GET['page'] == 'home')) && (!empty(array_diff(array_keys($_GET), ['page', 'keep_session', 'keep_devtest', 'keep_failover'])))) {
             if ($debugging) {
                 if (php_function_allowed('error_log')) {
@@ -128,7 +140,6 @@ function can_static_cache_request($consider_failover_mode = false)
             return false;
         }
 
-        global $NON_CANONICAL_PARAMS;
         if (isset($NON_CANONICAL_PARAMS)) {
             foreach ($NON_CANONICAL_PARAMS as $param => $block_page_from_static_cache_if_present) {
                 if (isset($_GET[$param])) {
