@@ -8,7 +8,7 @@
 		<title>{$SITE_NAME*}: {MODE_NICE*}</title>
 		<link>{$BASE_URL*}</link>
 		<language>{$LANG*}</language>
-		<copyright>{COPYRIGHT}</copyright>
+		<copyright>{$REPLACE,&copy;,&#169;,{$COPYRIGHT}}</copyright>
 		<description>{ABOUT}</description>
 		{+START,IF,{$NOT,{$BROWSER_MATCHES,itunes}}}
 			<managingEditor>{$STAFF_ADDRESS} ({$SITE_NAME*})</managingEditor>
