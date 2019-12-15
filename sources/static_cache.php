@@ -368,7 +368,7 @@ function static_cache($mode)
                         'access_denied_counter' => 0,
                         'browser' => $browser,
                         'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
-                        'the_page' => '/static_caching',
+                        'the_page' => cms_mb_substr('/static_caching:' . serialize($_GET), 0, 255),
                         'ip' => get_ip_address(),
                         'session_id' => '',
                         'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
