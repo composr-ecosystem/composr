@@ -46,6 +46,10 @@ function reinit_output_compression()
  */
 function enable_output_compression()
 {
+    if (headers_sent()) {
+        return; // Not safe to change
+    }
+
     disable_output_compression(true); // Start from blank slate
 
     $page = get_param_string('page', ''); // Not get_page_name for bootstrap order reasons
@@ -59,7 +63,6 @@ function enable_output_compression()
         cms_ini_set('brotli.output_compression', 'On');
         cms_ini_set('brotli.output_compression_level', '11'); // Recommended. Default for Brotli
     } elseif (supports_gzip(true, $use_cmd_line)) {
-        @header('Content-Encoding: gzip'); // Better safe than sorry
         cms_ini_set('zlib.output_compression', '2048'); // 2KB buffer is based on capturing repetition while not breaking output streaming
         cms_ini_set('zlib.output_compression_level', '2'); // Recommended. Compression doesn't get much better after this, but performance drop
     }
@@ -72,11 +75,15 @@ function enable_output_compression()
  */
 function disable_output_compression($during_init = false)
 {
+    if (headers_sent()) {
+        return; // Not safe to change
+    }
+
     foreach (_disable_output_compression() as $key => $val) {
         cms_ini_set($key, $val);
     }
 
-    header_remove('Content-Encoding');
+    @header_remove('Content-Encoding');
 }
 
 /**

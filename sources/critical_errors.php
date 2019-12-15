@@ -289,8 +289,6 @@ END;
             }
             @header('Location: ' . $url);
             echo '<meta http-equiv="refresh" content="0;url=' . htmlentities($url) . '" />';
-        } else {
-            ob_end_flush();
         }
 
         if (php_function_allowed('error_log')) {
