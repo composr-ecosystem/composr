@@ -217,6 +217,10 @@ class Module_lost_password
      */
     public function step3()
     {
+        // We need to disable static caching for 'ultra' mode to work (it is a GET request, so static cache may be enabled otherwise)
+        require_code('static_cache');
+        disable_static_caching();
+
         $password_reset_process = get_password_reset_process();
 
         $code = trim(get_param_string('code', ''));

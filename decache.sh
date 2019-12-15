@@ -6,8 +6,13 @@ rm -f themes/*/templates_cached/*/*.css
 rm -f themes/*/templates_cached/*/*.gz
 rm -f themes/*/templates_cached/*/*.br
 rm -f caches/http/*.bin
+rm -f caches/persistent/*.bin
+rm -f caches/self_learning/*.bin
 rm -f caches/lang/*.lcd
 rm -f caches/lang/*/*.lcd
+rm -f caches/static/*.htm
+rm -f caches/static/*.br
+rm -f caches/static/*.gz
 find caches -name "*.gcd" -exec rm -f {} \;
 find caches -name "*.xml" -exec rm -f {} \;
 find caches -name "*.htm" -exec rm -f {} \;

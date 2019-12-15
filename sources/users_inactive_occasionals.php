@@ -92,8 +92,9 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
     global $SESSION_CACHE, $MEMBER_CACHED, $SITE_INFO;
     $MEMBER_CACHED = $member_id;
 
-    if ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id))) {
-        return 'omni-guest'; // We should not even try and count/distinguish sessions for guests if the static cache is on
+    require_code('static_cache');
+    if (can_static_cache_request()) {
+        return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
     }
 
     if (($invisible) && (get_option('is_on_invisibility') == '0')) {
@@ -216,16 +217,18 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
     }
 
     // Save cookie
-    $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) : null;
-    /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0)) {     Useful for testing non-cookie support, but annoying if left on
-        $test = false;
-    } else {*/
-    $test = @setcookie(get_session_cookie(), $id, $timeout, get_cookie_path(), get_cookie_domain()); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and URLs do the rest
-    if ($test === null) {
-        $test = false;
+    if ($id != '') {
+        $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) : null;
+        /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0)) {     Useful for testing non-cookie support, but annoying if left on
+            $test = false;
+        } else {*/
+        $test = @setcookie(get_session_cookie(), $id, $timeout, get_cookie_path(), get_cookie_domain()); // Set a session cookie with our session ID. We only use sessions for secure browser-session login... the database and URLs do the rest
+        if ($test === null) {
+            $test = false;
+        }
+        //}
+        $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
     }
-    //}
-    $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
 
     // If we really have to, store in URL
     if (((!has_cookies()) || (!$test)) && (!$guest_session/*restorable with no special auth*/) && (get_bot_type() === null)) {

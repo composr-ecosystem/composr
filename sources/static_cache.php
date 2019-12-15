@@ -412,3 +412,15 @@ function static_cache($mode)
         exit($SITE_INFO['failover_cache_miss_message']);
     }
 }
+
+/**
+ * Mark that this request will not be cached into the static cache.
+ * Also causes real session IDs to be returned, consistent with previous requests that were also not subject to the static cache.
+ *
+ * @return URLPATH The URL
+ */
+function disable_static_caching()
+{
+    global $STATIC_CACHE_ENABLED;
+    $STATIC_CACHE_ENABLED = false;
+}

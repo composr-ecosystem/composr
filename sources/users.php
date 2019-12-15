@@ -400,6 +400,11 @@ function apply_forum_driver_md5_variant($data, $key)
  */
 function get_session_id()
 {
+    require_code('static_cache');
+    if (can_static_cache_request()) {
+        return ''; // We should not even try and count/distinguish sessions for guests if the static cache may be involved
+    }
+
     $cookie_var = get_session_cookie();
 
     if ((!isset($_COOKIE[$cookie_var])) || (/*To work around Commandr's development mode trick*/$GLOBALS['DEV_MODE'] && running_script('commandr'))) {

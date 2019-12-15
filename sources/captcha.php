@@ -254,8 +254,6 @@ function form_input_captcha($hidden)
     if (uses_question_captcha()) {
         $tpl = new Tempcode();
 
-        $GLOBALS['STATIC_CACHE_ENABLED'] = false;
-
         require_code('form_templates');
 
         $questions = get_captcha_questions();
@@ -276,11 +274,6 @@ function form_input_captcha($hidden)
         }
 
         return $tpl;
-    }
-
-    $code_needed = $GLOBALS['SITE_DB']->query_select_value_if_there('captchas', 'si_code', ['si_session_id' => get_session_id()]);
-    if ($code_needed === null) {
-        generate_captcha();
     }
 
     // Show template
