@@ -428,7 +428,7 @@ class Module_cms_downloads extends Standard_crud_module
         if (addon_installed('authors')) {
             $fields->attach(form_input_author(do_lang_tempcode('AUTHOR'), do_lang_tempcode('DESCRIPTION_AUTHOR', 'download'), 'author', $author, true));
         }
-        $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'the_description', $description, false));
+        $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION'), 'description', $description, false));
         $image_upload_field = form_input_upload(do_lang_tempcode('IMAGE'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_IMAGE_SHORTCUT'), 'img_file', false, null, null, true, get_allowed_image_file_types());
         if (($id === null) && (addon_installed('galleries'))) {
             $fields->attach($image_upload_field);
