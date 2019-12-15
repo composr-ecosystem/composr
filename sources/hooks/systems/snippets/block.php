@@ -58,7 +58,7 @@ class Hook_snippet_block
             $auth_key = get_param_integer('auth_key');
 
             // Check permissions
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('temp_block_permissions', 'p_block_constraints', ['p_session_id' => get_session_id(), 'id' => $auth_key]);
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('temp_block_permissions', 'p_block_constraints', ['p_session_id' => is_guest() ? '' : get_session_id(), 'id' => $auth_key]);
             if (($test === null) || (!block_signature_check(block_params_str_to_arr($test), $map))) {
                 require_lang('permissions');
                 return do_template('RED_ALERT', ['_GUID' => 'wtoaz4b4yp5rwe4wcmyknihps8ujoguv', 'TEXT' => do_lang_tempcode('ACCESS_DENIED__ACCESS_DENIED', escape_html($map['block']))]);
@@ -69,7 +69,16 @@ class Hook_snippet_block
         if (mt_rand(0, 100) == 1) {
             cms_register_shutdown_function_safe(function () {
                 if (!$GLOBALS['SITE_DB']->table_is_locked('temp_block_permissions')) {
-                    $sql = 'DELETE FROM ' . get_table_prefix() . 'temp_block_permissions WHERE p_time<' . strval(time() - intval(60.0 * 60.0 * floatval(get_option('session_expiry_time'))));
+                    global $SITE_INFO;
+
+                    $sql = 'DELETE FROM ' . get_table_prefix() . 'temp_block_permissions WHERE ';
+                    $expiry_time = intval(60.0 * 60.0 * floatval(get_option('session_expiry_time')));
+                    $sql .= db_string_not_equal_to('p_session_id', '') . ' AND p_time<' . strval(time() - $expiry_time);
+                    $sql .= ' OR ';
+                    if (!empty($SITE_INFO['static_caching_hours'])) {
+                        $expiry_time = $SITE_INFO['static_caching_hours'] * 60;
+                    }
+                    $sql .= db_string_equal_to('p_session_id', '') . ' AND p_time<' . strval(time() - $expiry_time);
                     $sql .= ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'sessions WHERE the_session=p_session_id)';
                     $GLOBALS['SITE_DB']->query($sql, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
                 }
