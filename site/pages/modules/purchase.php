@@ -504,6 +504,11 @@ class Module_purchase
     {
         @ignore_user_abort(true); // Must keep going till completion
 
+        // Static cache issue? (We can disable static caching for particular pages to avoid this)
+        if (get_session_id() == '') {
+            access_denied('NOT_AS_GUEST');
+        }
+
         require_lang('config');
         require_css('ecommerce');
         require_code('currency');
