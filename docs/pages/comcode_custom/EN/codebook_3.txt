@@ -8,7 +8,7 @@
 
 The Composr core is extremely optimised.
 
-Most of the Composr page generation time can be put down to detecting the context the user is operating in, retrieving all components from their storage locations, structuring, processing whatever aspects of the output are dynamic, and outputting. This typically all-together takes a few hundred milliseconds. With opcode caching and persistent caching, it can be under 100ms, and potentially further with a platform like HipHop-PHP (which compiles code, and keeps code even more permanently resident between requests than an opcode cache).
+Most of the Composr page generation time can be put down to detecting the context the user is operating in, retrieving all components from their storage locations, structuring, processing whatever aspects of the output are dynamic, and outputting. This typically all-together takes a few hundred milliseconds. With opcode caching and persistent caching, it can be under 100ms.
 
 The very core Composr responsibilities are as follows...
 
