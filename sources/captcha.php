@@ -423,6 +423,9 @@ function generate_captcha()
     }
 
     $session = get_session_id();
+    if ($session == '') {
+        error_log('CAPTCHA generated aainst blank session - static caching is misconfigured');
+    }
 
     // Clear out old codes
     $where = 'si_time<' . strval(time() - 60 * 30) . ' OR ' . db_string_equal_to('si_session_id', $session);
