@@ -87,10 +87,8 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
 
         $keep = symbol_tempcode('KEEP');
         $url->attach($keep);
-        if (get_option('anti_leech') == '1') {
-            $url->attach('&for_session=');
-            $url->attach(symbol_tempcode('SESSION_HASHED'));
-        }
+        require_code('anti_leech');
+        apply_anti_leech_to_tempcode_url($url);
 
         if ((array_key_exists('thumb_url', $attributes)) && ($attributes['thumb_url'] != '')) {
             $attributes['thumb_url'] = new Tempcode();
@@ -177,12 +175,8 @@ function attachments_script()
     $has_no_restricts = ($db->query_select_value_if_there('attachment_refs', 'id', ['r_referer_type' => 'null', 'a_id' => $id]) !== null);
 
     if (!$has_no_restricts) {
-        global $SITE_INFO;
-        if ((!is_guest()) || (!isset($SITE_INFO['any_guest_cached_too'])) || ($SITE_INFO['any_guest_cached_too'] == '0')) {
-            if ((get_param_string('for_session', '') != md5(get_session_id())) && (get_option('anti_leech') == '1') && ($_SERVER['HTTP_REFERER'] != '')) {
-                warn_exit(do_lang_tempcode('LEECH_BLOCK'));
-            }
-        }
+        require_code('anti_leech');
+        check_anti_leech();
     }
 
     require_lang('comcode');

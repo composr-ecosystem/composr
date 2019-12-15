@@ -85,12 +85,8 @@ function dload_script()
         @exit(get_option('closed'));
     }
 
-    global $SITE_INFO;
-    if ((!is_guest()) || (!isset($SITE_INFO['any_guest_cached_too'])) || ($SITE_INFO['any_guest_cached_too'] == '0')) {
-        if ((get_param_string('for_session', '') != md5(get_session_id())) && (get_option('anti_leech') == '1') && ($_SERVER['HTTP_REFERER'] != '')) {
-            warn_exit(do_lang_tempcode('LEECH_BLOCK'));
-        }
-    }
+    require_code('anti_leech');
+    check_anti_leech();
 
     require_lang('downloads');
     require_code('downloads');
