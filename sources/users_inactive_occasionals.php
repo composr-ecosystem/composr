@@ -92,8 +92,9 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
     global $SESSION_CACHE, $MEMBER_CACHED, $SITE_INFO;
     $MEMBER_CACHED = $member_id;
 
-    if ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id))) {
-        return 'omni-guest'; // We should not even try and count/distinguish sessions for guests if the static cache is on
+    require_code('static_cache');
+    if (can_static_cache_request()) {
+        return ''; // We should not even try and count/distinguish sessions for guests if the static cache could be involved (we don't want them leaking into the cache)
     }
 
     if (($invisible) && (get_option('is_on_invisibility') == '0')) {
