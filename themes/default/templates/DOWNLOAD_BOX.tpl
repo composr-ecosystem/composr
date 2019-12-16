@@ -34,7 +34,7 @@
 
 	<div class="hide_if_in_panel">
 		{+START,IF_NON_EMPTY,{IMGCODE}}
-			<div class="download_box_pic"><a href="{URL*}">{IMGCODE}</a></div>
+			<div class="download_box_pic"><a href="{URL*}">{$TRIM,{IMGCODE}}</a></div>
 		{+END}
 
 		<div class="download_box_description{+START,IF_NON_EMPTY,{IMGCODE}} pic{+END}">
