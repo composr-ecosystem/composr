@@ -3,17 +3,20 @@
 
 	{$REQUIRE_JAVASCRIPT,jwplayer}
 
+	{$SET,audio_width,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width,1}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height,1}}},400,{WIDTH}}}
+	{$SET,audio_height,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width,1}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height,1}}},30,{HEIGHT}}}
+
 	{+START,IF_NON_PASSED_OR_FALSE,WYSIWYG_EDITABLE}
 		{+START,IF_EMPTY,{$METADATA,video}}
 			{$METADATA,video,{URL}}
-			{$METADATA,video:height,{HEIGHT}}
-			{$METADATA,video:width,{WIDTH}}
+			{$METADATA,video:height,{$GET,audio_height}}
+			{$METADATA,video:width,{$GET,audio_width}}
 			{$METADATA,video:type,{MIME_TYPE}}
 		{+END}
 	{+END}
 
-	<meta itemprop="width" content="{WIDTH*}" />
-	<meta itemprop="height" content="{HEIGHT*}" />
+	<meta itemprop="width" content="{$GET,audio_width}" />
+	<meta itemprop="height" content="{$GET*,audio_height}" />
 	{+START,IF_NON_EMPTY,{LENGTH}}
 		<meta itemprop="duration" content="T{LENGTH*}S" />
 	{+END}
@@ -28,8 +31,8 @@
 		{$,Carefully tuned to avoid this problem: http://www.longtailvideo.com/support/forums/jw-player/setup-issues-and-embedding/8439/sound-but-no-video}
 		add_event_listener_abstract(window,'load',function() {
 			jwplayer('{$GET%,player_id}').setup({
-				width: {WIDTH%},
-				height: {HEIGHT%},
+				width: {$GET%,audio_width},
+				height: {$GET%,audio_height},
 				autostart: false,
 				{+START,IF_NON_EMPTY,{LENGTH}}
 					duration: {LENGTH%},

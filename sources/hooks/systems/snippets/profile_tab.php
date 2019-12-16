@@ -44,7 +44,7 @@ class Hook_snippet_profile_tab
             }
             $keep_get[$key] = get_param_string($key, null, true);
         }
-        $former_context = set_execution_context(array('page' => 'members', 'type' => 'view', 'id' => $member_id_of) + $keep_get, get_module_zone('members'));
+        $former_context = set_execution_context(array('page' => 'members', 'type' => 'view', 'id' => ($member_id_of == get_member()) ? null : $member_id_of) + $keep_get, get_module_zone('members'));
 
         require_code('hooks/systems/profiles_tabs/' . $hook, true);
         $ob = object_factory('Hook_profiles_tabs_' . $hook);

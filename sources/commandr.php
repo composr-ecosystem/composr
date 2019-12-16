@@ -1208,7 +1208,7 @@ class Virtual_shell
             // Reload settings...
 
             if (array_key_exists('commandr_state', $_COOKIE)) {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $_COOKIE['commandr_state'] = stripslashes($_COOKIE['commandr_state']);
                 }
                 $_commandr_state_diff = base64_decode($_COOKIE['commandr_state']);
@@ -1222,7 +1222,7 @@ class Virtual_shell
             }
 
             if (array_key_exists('commandr_state_lang', $_COOKIE)) {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $_COOKIE['commandr_state_lang'] = stripslashes($_COOKIE['commandr_state_lang']);
                 }
                 $_commandr_state_lang_diff = base64_decode($_COOKIE['commandr_state_lang']);
@@ -1241,7 +1241,7 @@ class Virtual_shell
             }
 
             if (array_key_exists('commandr_state_code', $_COOKIE)) {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $_COOKIE['commandr_state_code'] = stripslashes($_COOKIE['commandr_state_code']);
                 }
                 $_commandr_state_code_diff = base64_decode($_COOKIE['commandr_state_code']);

@@ -460,11 +460,13 @@ class Module_admin
                     continue;
                 }
                 $info = $object->info(true);
-                $n = $info['title'];
-                if ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) {
-                    $_url = build_url(array('page' => 'admin_cleanup', 'tick' => $hook), get_module_zone('admin_cleanup'));
-                    $breadcrumbs = new Tempcode();
-                    $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array('_GUID' => 'fc53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => '')));
+                if ($info !== null) {
+                    $n = $info['title'];
+                    if ($this->_keyword_match(is_object($n) ? $n->evaluate() : $n)) {
+                        $_url = build_url(array('page' => 'admin_cleanup', 'tick' => $hook), get_module_zone('admin_cleanup'));
+                        $breadcrumbs = new Tempcode();
+                        $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array('_GUID' => 'fc53a1d45fe6a80308bf509b896d2763', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => '', 'SUP' => '')));
+                    }
                 }
             }
         }

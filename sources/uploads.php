@@ -847,7 +847,7 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
     get_upload_filearray($attach_name, $filearrays);
 
     $file = shorten_urlencoded_filename($filearrays[$attach_name]['name']);
-    if (get_magic_quotes_gpc()) {
+    if (@get_magic_quotes_gpc()) {
         $file = stripslashes($file);
     }
 

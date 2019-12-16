@@ -549,6 +549,10 @@ abstract class Hook_sitemap_base
 
             $links = get_page_grouping_links();
             foreach ($links as $link) {
+                if ($link === null) {
+                    continue;
+                }
+
                 if (!is_array($link[2])) {
                     continue;
                 }
@@ -687,7 +691,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $cache[$this->content_type] = $cma_info;
             }
             require_code('site');
-            if (($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
+            if (($cma_info !== null) && ($cma_info['module'] == $page) && (($zone == '_SEARCH') || (_request_page($page, $zone) !== false))) { // Ensure the given page matches the content type, and it really does exist in the given zone
                 if ($matches[0] == $page_link) {
                     return SITEMAP_NODE_HANDLED_VIRTUALLY; // No type/ID specified
                 }
@@ -762,14 +766,21 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
             return null;
         }
 
+        $cma_info = $this->_get_cma_info();
+        if ($cma_info === null) {
+            return null;
+        }
+
         $content_id = $this->_get_page_link_id($page_link);
         if ($content_id === null) {
             return null;
         }
         if ($row === null) {
             $row = $this->_get_row($content_id);
+            if ($row === null) {
+                return null;
+            }
         }
-        $cma_info = $this->_get_cma_info();
 
         if (strpos($cma_info['title_field'], 'CALL:') !== false) {
             $title_value = call_user_func(trim(substr($cma_info['title_field'], 5)), array('id' => $content_id), false);

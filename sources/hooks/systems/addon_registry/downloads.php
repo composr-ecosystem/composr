@@ -355,6 +355,7 @@ class Hook_addon_registry_downloads
                 'ADD_CAT_TITLE' => do_lang_tempcode('ADD_DOWNLOAD_CATEGORY'),
                 'EDIT_CAT_URL' => placeholder_url(),
                 'SUB_CATEGORIES' => $subcats,
+                'TEMPLATE_PREVIEW' => true,
             )), null, '', true)
         );
     }

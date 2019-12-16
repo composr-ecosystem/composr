@@ -82,7 +82,7 @@ END;
     // Load POSTed settings
     $settings = array();
     foreach ($_POST as $key => $val) {
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $val = stripslashes($val);
         }
         $settings[$key] = $val;
@@ -91,7 +91,7 @@ END;
     // Google App Engine
     if (isset($_SERVER['APPLICATION_ID'])) {
         if (isset($_GET['settings'])) { // Running out of the task queue
-            $settings = unserialize(get_magic_quotes_gpc() ? stripslashes($_GET['settings']) : $_GET['settings']);
+            $settings = unserialize(@get_magic_quotes_gpc() ? stripslashes($_GET['settings']) : $_GET['settings']);
         } else { // Put into the task queue
             require_once('google/appengine/api/taskqueue/PushTask.php');
 
@@ -281,7 +281,7 @@ function rd_do_header()
 	<html lang="EN">
 	<head>
 		<title>Composr rootkit detector</title>
-		<link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+		<link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
 		<style>/*<![CDATA[*/
 END;
     @print(preg_replace('#/\*\s*\*/\s*#', '', str_replace('url(\'\')', 'none', str_replace('url("")', 'none', preg_replace('#\{\$[^\}]*\}#', '', preg_replace('#\{\$\?,\{\$MOBILE\},([^,]+),([^,]+)\}#', '$2', file_get_contents($GLOBALS['FILE_BASE'] . '/themes/default/css/global.css')))))));

@@ -262,7 +262,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100) // This is called
 
     rename($backup_file_tmp_path, $backup_file_path);
 
-    fix_permissions($backup_file_path);
+    fix_permissions($backup_file_path, 0600);
 
     // Compress...
 
@@ -287,7 +287,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100) // This is called
 
         rename($compressed_file_tmp_path, $compressed_file_path);
 
-        fix_permissions($compressed_file_path);
+        fix_permissions($compressed_file_path, 0600);
     }
 
     // Finish logging...

@@ -164,7 +164,7 @@ $next_offset_url = '';
 if ($file_offset + $per_cycle < count($todo)) {
     $next_offset_url = 'upgrader2.php?';
     foreach ($_GET as $key => $val) {
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $val = stripslashes($val);
         }
 
@@ -216,7 +216,7 @@ function up2_do_header($refresh_url = '')
     <html lang="EN">
     <head>
         <title>Extracting files</title>
-        <link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
 END;
     if ($refresh_url != '') {
         echo <<<END

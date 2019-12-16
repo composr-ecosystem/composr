@@ -217,7 +217,11 @@ function fix_permissions($path, $perms = null)
 
     // If the file user is different to the FTP user, we need to make it world writeable
     if ((!is_suexec_like()) || (cms_srv('REQUEST_METHOD') == '')) {
-        @chmod($path, $perms);
+        if ($perms == 0600) {
+            @chmod($path, 0666);
+        } else {
+            @chmod($path, $perms);
+        }
     } else { // Otherwise we do not
         if ($perms == 0666) {
             @chmod($path, 0644);
@@ -1717,10 +1721,21 @@ function match_key_match($match_keys, $support_post = false, $current_params = n
     $potentials = is_array($match_keys) ? $match_keys : explode(',', $match_keys);
     foreach ($potentials as $potential) {
         $parts = is_array($potential) ? $potential : explode(':', $potential);
+
+        // Allow the first 2 parts to be omitted, but if so we need to insert them back in here
+        $prepend_zone = ((!isset($parts[0])) || (strpos($parts[0], '=') !== false));
+        if ($prepend_zone) {
+            $parts = array_merge(array('_WILD'), $parts);
+        }
+        $prepend_page = ((!isset($parts[1])) || (strpos($parts[1], '=') !== false));
+        if ($prepend_page) {
+            $parts = array_merge(array_slice($parts, 0, 1), array('_WILD'), array_slice($parts, 1));
+        }
+
         if (($parts[0] == '_WILD') || ($parts[0] == '_SEARCH')) {
             $parts[0] = $current_zone_name;
         }
-        if ((!isset($parts[1])) || ($parts[1] == '_WILD') || (($parts[1] == '_WILD_NOT_START') && ($current_page_name != get_zone_default_page($parts[0])))) {
+        if (($parts[1] == '_WILD') || (($parts[1] == '_WILD_NOT_START') && ($current_page_name != get_zone_default_page($parts[0])))) {
             $parts[1] = $current_page_name;
         }
         if (($parts[0] == 'site') && (get_option('collapse_user_zones') == '1')) {
@@ -2938,7 +2953,7 @@ function flatten_slashed_array($array, $already_stripped = false)
             $val = flatten_slashed_array($val);
         }
 
-        if (!$already_stripped && get_magic_quotes_gpc()) {
+        if (!$already_stripped && @get_magic_quotes_gpc()) {
             $val = stripslashes($val);
         }
 
@@ -3108,7 +3123,7 @@ function get_zone_default_page($zone_name)
     }*/
 
     global $ZONE;
-    if (($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
+    if (($ZONE !== null) && ($ZONE['zone_name'] == $zone_name) && ($ZONE['zone_default_page'] !== null)) {
         return $ZONE['zone_default_page'];
     } else {
         global $ZONE_DEFAULT_PAGES_CACHE;
@@ -3310,7 +3325,7 @@ function get_brand_base_url()
 {
     $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
     if (($value === null) || ($value == '')) {
-        $value = 'http://compo.sr';
+        $value = 'https://compo.sr';
     }
     return $value;
 }

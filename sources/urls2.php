@@ -122,7 +122,7 @@ function _build_keep_form_fields($page = '', $keep_all = false, $exclude = null)
                         continue; // Nested $_POST arrays should not happen in Composr, but may happen by hack-bots
                     }
 
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $_val = stripslashes($_val);
                     }
 
@@ -139,7 +139,7 @@ function _build_keep_form_fields($page = '', $keep_all = false, $exclude = null)
                     $key = strval($key);
                 }
 
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = stripslashes($val);
                 }
 
@@ -181,7 +181,7 @@ function _fixed_post_parser($key, $value)
             }
         }
     } else {
-        if (get_magic_quotes_gpc()) {
+        if (@get_magic_quotes_gpc()) {
             $value = stripslashes($value);
         }
 

@@ -409,7 +409,7 @@ class Module_admin_email_log
                 $extra_bcc_addresses = array();
                 foreach ($_POST as $key => $input_value) {
                     //stripslashes if necessary
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $input_value = stripslashes($input_value);
                     }
 

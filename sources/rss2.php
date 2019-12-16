@@ -86,8 +86,8 @@ function rss_backend_script()
         return;
     }
 
-    $type = get_param_string('type', 'RSS2');
-    $mode = get_param_string('mode', 'opml');
+    $type = filter_naughty_harsh(get_param_string('type', 'RSS2'));
+    $mode = filter_naughty_harsh(get_param_string('mode', 'opml'));
     require_lang('rss');
     require_code('xml');
 
@@ -96,7 +96,7 @@ function rss_backend_script()
         header('Content-Type: text/xsl');
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('RSS_XSLT', array('_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
+        $echo = do_template('RSS_XSLT', array('_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'JAVASCRIPT_XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -105,7 +105,7 @@ function rss_backend_script()
         header('Content-Type: text/xsl');
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
-        $echo = do_template('ATOM_XSLT', array('_GUID' => '27fec456a6b3144aa847130e74463d99', 'XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
+        $echo = do_template('ATOM_XSLT', array('_GUID' => '27fec456a6b3144aa847130e74463d99', 'JAVASCRIPT_XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
         $echo->evaluate_echo();
         return;
     }
@@ -152,7 +152,6 @@ function rss_backend_script()
 
     $site_about = xmlentities(get_option('description'));
     $logo_url = xmlentities(find_theme_image('logo/standalone_logo'));
-    $copyright = xmlentities(trim(str_replace('&copy;', '', str_replace('$CURRENT_YEAR', date('Y'), get_option('copyright')))));
 
     $cutoff = get_param_integer('cutoff', time() - 60 * 60 * 24 * get_param_integer('days', 30));
     $max = get_param_integer('max', 100);
@@ -192,7 +191,12 @@ function rss_backend_script()
         return;
     }
 
-    require_code('hooks/systems/rss/' . filter_naughty_harsh($mode), true);
+    $GLOBALS['NO_QUERY_LIMIT'] = true;
+
+    if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+    require_code('hooks/systems/rss/' . $mode, true);
     $object = object_factory('Hook_rss_' . $mode);
     require_code('selectcode');
     $_content = $object->run($select, $cutoff, $prefix, $date_string, $max);
@@ -206,24 +210,12 @@ function rss_backend_script()
     if ($type == 'RSS2') {
         // Change a full url into constituent parts
         $base_url = get_base_url();
-        $port = 80;
-        $end_protocol_pos = strpos($base_url, '://');
-        $colon_pos = strpos($base_url, ':', $end_protocol_pos + 1);
-        if ($colon_pos !== false) {
-            $after_port_pos = strpos($base_url, '/', $colon_pos);
-            if ($after_port_pos === false) {
-                $after_port_pos = strlen($base_url);
-            }
-            $port = intval(substr($base_url, $colon_pos, $after_port_pos - $colon_pos));
-        }
-        $start_path_pos = strpos($base_url, '/', $end_protocol_pos + 4);
-        if ($start_path_pos !== false) {
-            $local_base_url = substr($base_url, $start_path_pos);
-        } else {
-            $local_base_url = '';
-        }
+        $url_bits = parse_url($base_url);
+        $domain = isset($url_bits['host']) ? $url_bits['host'] : $_SERVER['HTTP_HOST'];
+        $port = isset($url_bits['port']) ? $url_bits['port'] : 80;
+        $local_base_url = isset($url_bits['path']) ? $url_bits['path'] : '';
 
-        $rss_cloud = do_template('RSS_CLOUD', array('_GUID' => 'a47c40a4c137ea1e5abfc71346547313', 'TYPE' => ($type == 'news') ? '' : $type, 'PORT' => strval($port), 'LOCAL_BASE_URL' => $local_base_url), null, false, null, '.xml', 'xml');
+        $rss_cloud = do_template('RSS_CLOUD', array('_GUID' => 'a47c40a4c137ea1e5abfc71346547313', 'TYPE' => ($type == 'news') ? '' : $type, 'PORT' => strval($port), 'DOMAIN' => $domain, 'LOCAL_BASE_URL' => $local_base_url), null, false, null, '.xml', 'xml');
     } else {
         $rss_cloud = new Tempcode();
     }
@@ -235,7 +227,7 @@ function rss_backend_script()
         return;
     }
 
-    $echo = do_template($prefix . 'WRAPPER', array('SELECT' => $select, 'CUTOFF' => strval($cutoff), 'MODE' => $mode, 'MODE_NICE' => $mode_nice, 'RSS_CLOUD' => $rss_cloud, 'VERSION' => cms_version_pretty(), 'COPYRIGHT' => $copyright, 'DATE' => $date, 'LOGO_URL' => $logo_url, 'ABOUT' => $site_about, 'CONTENT' => $content, 'SELF_URL' => get_self_url_easy()), null, false, null, '.xml', 'xml');
+    $echo = do_template($prefix . 'WRAPPER', array('SELECT' => $select, 'CUTOFF' => strval($cutoff), 'MODE' => $mode, 'MODE_NICE' => $mode_nice, 'RSS_CLOUD' => $rss_cloud, 'VERSION' => cms_version_pretty(), 'DATE' => $date, 'LOGO_URL' => $logo_url, 'ABOUT' => $site_about, 'CONTENT' => $content, 'SELF_URL' => get_self_url_easy()), null, false, null, '.xml', 'xml');
     $echo->evaluate_echo();
 
     if ($mode != 'comments') {

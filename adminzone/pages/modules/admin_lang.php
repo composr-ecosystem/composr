@@ -541,7 +541,7 @@ class Module_admin_lang
 
             $lang_id = intval(substr($key, 6));
 
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val = stripslashes($val);
             }
 
