@@ -56,6 +56,8 @@ $justification = get_param_string('justification', '', true);
 
 $urls = array();
 
+set_mass_import_mode(); // We will be adding multiple categories of the same name
+
 // Bugs list
 
 if (!$is_bleeding_edge) {
