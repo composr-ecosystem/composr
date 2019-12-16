@@ -71,7 +71,17 @@ class feeds_and_podcasts_test_set extends cms_test_case
 
                 $result = http_download_file('https://validator.w3.org/feed/check.cgi', null, true, false, 'Composr', array('rawdata' => $data));
 
-                $this->assertTrue(strpos($result, 'Congratulations!') !== false, 'Failed on ' . $url);
+                $success = strpos($result, 'Congratulations!') !== false;
+
+                if (!empty($_GET['debug'])) {
+                    if (!$success) {
+                        var_dump($url);
+                        var_dump($result);
+                        exit();
+                    }
+                }
+
+                $this->assertTrue($success, 'Failed on ' . $url);
             }
         }
     }

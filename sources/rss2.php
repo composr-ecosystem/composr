@@ -191,6 +191,8 @@ function rss_backend_script()
         return;
     }
 
+    $GLOBALS['NO_QUERY_LIMIT'] = true;
+
     if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
