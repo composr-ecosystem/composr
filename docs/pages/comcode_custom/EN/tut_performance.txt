@@ -47,6 +47,18 @@ The Composr caches are:
 Composr is not designed to "cache everything as it will be displayed" because the high dynamic nature of the system makes that impossible. Instead, Tempcode is typically cached against relevant parameters, which provides a "half way" between determined output and neutral data.
 [/box]
 
+[title="4"]Static caching[/title]
+
+The static caching provides extreme performance by bypassing most of the Composr framework.
+It works on the principle that bots and guest users don't need dynamically-generated content (in most situations), and thus whole pages can be cached.
+
+Enable the static cache from Installation Options.
+
+Composr tries to be smart about what is statically cached, but you also have some control over it via some options available within the Installation Options.
+
+Note(s):
+ - Unless you prevent static caching running for the [tt]purchase[/tt] and [tt]shopping[/tt] modules, they will no longer be available to Guests -- this is because Composr cannot track eCommerce activity to guest users if they are working via statically cached pages.
+
 [title="4"]Persistent caching[/title]
 
 PHP requests are completely standalone. No data is held in memory from one request to another. The [b]persistent cache[/b] is a cache that aims to store regularly-accessed data in-memory between requests, so that it does not actually need to be loaded from the database or re-calculated on each page load. This cache removes about 30% of the page load time, but most importantly, takes load away from the database, allowing the database to become less of a limiting factor in high throughput situations.

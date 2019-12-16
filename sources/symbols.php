@@ -1929,23 +1929,33 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
         $block_constraints = block_params_arr_to_str($_block_constraints);
 
         // Store permissions
-        $_auth_key = $GLOBALS['SITE_DB']->query_select('temp_block_permissions', ['id', 'p_time'], [
-            'p_session_id' => is_guest() ? '' : get_session_id(),
-            'p_block_constraints' => $block_constraints,
-        ], '', 1);
-        if (!isset($_auth_key[0])) {
-            $auth_key = $GLOBALS['SITE_DB']->query_insert('temp_block_permissions', [
+        $pass = false;
+        $_whitelisted_blocks = get_value('whitelisted_blocks');
+        if (!empty($_whitelisted_blocks)) {
+            $whitelisted_blocks = explode(',', $_whitelisted_blocks);
+            if (in_array($map['block'], $whitelisted_blocks)) {
+                $pass = true;
+            }
+        }
+        if (!$pass) {
+            $_auth_key = $GLOBALS['SITE_DB']->query_select('temp_block_permissions', ['id', 'p_time'], [
                 'p_session_id' => is_guest() ? '' : get_session_id(),
                 'p_block_constraints' => $block_constraints,
-                'p_time' => time(),
-            ], true);
-        } else {
-            $auth_key = $_auth_key[0]['id'];
-            if (time() - $_auth_key[0]['p_time'] > 100) {
-                $GLOBALS['SITE_DB']->query_update('temp_block_permissions', ['p_time' => time()], [
+            ], '', 1);
+            if (!isset($_auth_key[0])) {
+                $auth_key = $GLOBALS['SITE_DB']->query_insert('temp_block_permissions', [
                     'p_session_id' => is_guest() ? '' : get_session_id(),
                     'p_block_constraints' => $block_constraints,
-                ], '', 1);
+                    'p_time' => time(),
+                ], true);
+            } else {
+                $auth_key = $_auth_key[0]['id'];
+                if (time() - $_auth_key[0]['p_time'] > 100) {
+                    $GLOBALS['SITE_DB']->query_update('temp_block_permissions', ['p_time' => time()], [
+                        'p_session_id' => is_guest() ? '' : get_session_id(),
+                        'p_block_constraints' => $block_constraints,
+                    ], '', 1);
+                }
             }
         }
 

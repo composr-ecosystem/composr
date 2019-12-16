@@ -603,7 +603,7 @@ Values are like hidden configuration options. They are either hidden because the
  - Low-level tuning:
   - [tt]disable_kid_gloves_html[/tt] -- set this to '1' if you want to completely disable the kid-gloves HTML escaping mode, i.e. avoid the need to make declarations in your overrides. You may want to use this if you override various files but aren't really writing custom code and don't really understand how to make the declarations
   - [tt]show_menu_items_as_url[/tt] -- set this to '1' if you want the menu editor to show URLs instead of page-links (they will then be converted back)
-  - [tt]whitelisted_blocks[/tt] -- set this to a comma-separated list of block names to whitelist any user to use those blocks independently. This is useful for AJAX-loaded blocks on sites where users may leave pages open, letting their sessions or block authorisations expire.
+  - [tt]whitelisted_blocks[/tt] -- set this to a comma-separated list of block names to whitelist any user to use those blocks independently. This is useful for AJAX-loaded blocks on sites where users may leave pages open, letting their sessions or block authorisations expire. It also is a performance boost because it means that the run-time permissions don't need maintaining.
   - [tt]no_individual_gallery_view[/tt] -- set this to '1' if all images/videos in a carousel-mode gallery must be viewed from the carousel-mode view (never individually)
   - [tt]root_cat__images[/tt] -- you can set this to the codename of a gallery, which will be the root for gallery selection on the gallery addon's Add Image form (root is not shown as an option). Alternatively, it can be an Selectcode string.
   - [tt]root_cat__videos[/tt] -- you can set this to the codename of a gallery, which will be the root for gallery selection on the gallery addon's Add Video form (root is not shown as an option). Alternatively, it can be an Selectcode string.
@@ -668,6 +668,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]innodb[/tt] -- set this to '1' if you have switched to MySQL's InnoDB
   - [tt]disable_post_rating[/tt] -- set this to '1' if you don't want to allow post ratings, which saves one query per displayed post
   - [tt]statistical_update_model[/tt] -- update view counts irregularly in bulk, using a statistical algorithm
+  - [tt]whitelisted_blocks[/tt] -- see explanation under "Low-level tuning"
  - Performance tuning (negative):
   - [tt]flush_cache_on_action[/tt] -- set this to '1' to automatically flush the static cache when actions are performed
   - [tt]allow_admin_in_other_zones[/tt] -- set this to '1' if you want to allow admin and CMS modules to run in other zones (small performance cost)
