@@ -636,7 +636,7 @@ class Module_cms_comcode_pages
 
             $view_url = build_url(['page' => $row['page']], $row['zone']);
             $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => $row['page_link'], 'lang' => $lang], '_SELF');
-            $clone_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => /*new page-link only has zone specified initially*/$row['zone'] . ':', 'restore_from_path' => $page_path, 'lang' => $lang], '_SELF');
+            $clone_url = build_url(['page' => '_SELF', 'type' => '_edit', 'page_link' => /*new page-link only has zone specified initially*/$row['zone'] . ':', 'restore_from_path' => $row['page_path'], 'lang' => $lang], '_SELF');
 
             $page_path = $row['page_path'];
 
