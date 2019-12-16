@@ -183,7 +183,6 @@ class Hook_addon_registry_syndication
             do_lorem_template('RSS_WRAPPER', array(
                 'MODE' => 'rss',
                 'MODE_NICE' => lorem_word(),
-                'COPYRIGHT' => lorem_phrase(),
                 'ABOUT' => lorem_paragraph(),
                 'RSS_CLOUD' => $cloud,
                 'LOGO_URL' => placeholder_image_url(),
@@ -226,7 +225,6 @@ class Hook_addon_registry_syndication
                 'CUTOFF' => placeholder_number(),
                 'ABOUT' => lorem_paragraph(),
                 'VERSION' => lorem_word(),
-                'COPYRIGHT' => lorem_phrase(),
             ), null, false, null, '.xml', 'xml'
             ),
         );

@@ -855,6 +855,11 @@ function get_selected_html(editor)
 	var my_selection=editor.getSelection();
 	if (!my_selection || my_selection.getType()==window.CKEDITOR.SELECTION_NONE) return '';
 
+	var element=my_selection.getSelectedElement();
+	if (element) {
+		return get_outer_html(element.$);
+	}
+
 	var selected_text='';
 	if (my_selection.getNative())
 	{

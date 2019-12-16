@@ -217,7 +217,11 @@ function fix_permissions($path, $perms = null)
 
     // If the file user is different to the FTP user, we need to make it world writeable
     if ((!is_suexec_like()) || (cms_srv('REQUEST_METHOD') == '')) {
-        @chmod($path, $perms);
+        if ($perms == 0600) {
+            @chmod($path, 0666);
+        } else {
+            @chmod($path, $perms);
+        }
     } else { // Otherwise we do not
         if ($perms == 0666) {
             @chmod($path, 0644);

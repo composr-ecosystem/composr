@@ -434,6 +434,7 @@ function do_set()
     $config_file = '_config.php';
     $backup_path = $FILE_BASE . '/exports/file_backups/' . $config_file . '.' . strval(time()) . '_' . strval(mt_rand(0, mt_getrandmax()));
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
+    @chmod($backup_path, 0600);
     if ($copied_ok !== false) {
         co_sync_file($backup_path);
     }

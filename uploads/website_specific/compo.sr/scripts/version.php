@@ -124,6 +124,9 @@ echo '<h3 class="notes_about">Notes about your current version (' . escape_html(
 if ($our_version !== null) {
     if (!$has_jump) {
         $descrip = $our_version['download_description'] . ' You are running the latest version.';
+
+        $tracker_url = get_base_url() . '/tracker/search.php?version=' . urlencode($version_dotted) . '&sort=last_updated%2Cid&dir=DESC%2CDESC';
+        $descrip .= '<br /><br />See bug reports for <a target="_blank" title="Bug reports (this link will open in a new window)" href="' . escape_html($tracker_url) . '">' . escape_html($version_pretty) . '</a>.';
     } else {
         $descrip = 'You are <strong>not</strong> running the latest version. Browse the <a title="Composr news archive (this link will open in a new window)" target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(array('page' => 'news'), 'site'))) . '">Composr news archive</a> for a full list of the updates or see below for recommended paths.';
     }
