@@ -989,7 +989,7 @@ NB: There is no special styling by default: this field exists so as to provide a
 ! Supported field options
 | [tt]min_year=YYYY[/tt]
 
-[tt]max_year=YYYY[/tt] (defaults place selection around current year)
+[tt]max_year=YYYY[/tt] (defaults place selection +/-10 around current year)
 
 [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-
@@ -1015,7 +1015,7 @@ NB: There is no special styling by default: this field exists so as to provide a
 ! Supported field options
 | [tt]min_year=YYYY[/tt]
 
-[tt]max_year=YYYY[/tt] (defaults place selection around current year)
+[tt]max_year=YYYY[/tt] (defaults place selection +/-10 around current year)
 
 [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-

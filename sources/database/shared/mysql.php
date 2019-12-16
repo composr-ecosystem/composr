@@ -508,6 +508,7 @@ class Database_super_mysql
 
                     if (($next == '*') && ($i + 1 < $len) && ($query[$i + 1] == '/')) {
                         $tokens[] = '/*' . $current_token . '*/';
+                        $i++;
                         break;
                     } else {
                         $current_token .= $next;

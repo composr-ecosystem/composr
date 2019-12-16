@@ -81,7 +81,7 @@ class MobiquoServerJSON extends MobiquoServer
         require_code('character_sets');
         $data = convert_to_internal_encoding($data, 'utf-8');
 
-        $get = get_magic_quotes_gpc() ? array_map('stripslashes', $_GET) : $_GET;
+        $get = @get_magic_quotes_gpc() ? array_map('stripslashes', $_GET) : $_GET;
         unset($get['method_name']);
 
         $params = @array_merge(array_values(json_decode($data, true)), $get);
@@ -89,6 +89,9 @@ class MobiquoServerJSON extends MobiquoServer
         ini_set('ocproducts.xss_detect', '0');
 
         global $SERVER_DEFINE;
+        if (!isset($SERVER_DEFINE[$this->get_method_name()])) {
+            warn_exit('Unknown endpoint');
+        }
         $function = $SERVER_DEFINE[$this->get_method_name()]['function'];
         try {
             $response = call_user_func($function, $params);

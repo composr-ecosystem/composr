@@ -291,7 +291,7 @@ function clean_file_size($bytes)
     if (is_null($bytes)) {
         return do_lang('UNKNOWN') . ' bytes';
     }
-    if ($bytes == 2147483647) {
+    if ($bytes == 2147483647) { // TODO: #3046 in tracker
         return do_lang('UNKNOWN') . ' bytes';
     }
     if (floatval($bytes) > 2.0 * 1024.0 * 1024.0 * 1024.0) {
@@ -649,6 +649,29 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
         ));
     }
 
+    if (($bitmask & IGNORE_NONBUNDLED_SCATTERED) != 0 || ($bitmask & IGNORE_NONBUNDLED_VERY_SCATTERED) != 0 || ($bitmask & IGNORE_NONBUNDLED_EXTREMELY_SCATTERED) != 0) {
+        if (preg_match('#^data_custom/images/addon_screenshots(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Relating to addon build, but not defined in addons
+        }
+        if (preg_match('#^exports/static(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Empty directory, so has to be a special exception
+        }
+        if (preg_match('#^exports/(builds|backups/test)(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Needed to stop build recursion
+        }
+        if (preg_match('#^_tests(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Test set may have various temporary files buried within
+        }
+        if (preg_match('#^data_custom/ckeditor(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Don't want development version of CKEditor
+        }
+        if (preg_match('#^tracker/uploads(/|$)#', strtolower($filepath)) != 0) {
+            return true; // Don't want tracker uploads
+        }
+
+        $ignore_extensions['xml'] = 'data_custom/sitemaps';
+    }
+
     $filename_lower = strtolower($filename);
 
     if (isset($ignore_filenames_and_dir_names[$filename_lower])) {
@@ -686,28 +709,6 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
     if (($bitmask & IGNORE_CUSTOM_ZONES) != 0) {
         if ((is_dir(get_file_base() . '/' . $filepath)) && (is_file(get_file_base() . '/' . $filepath . '/index.php')) && (is_dir(get_file_base() . '/' . $filepath . '/pages')) && (!in_array($filename_lower, array('adminzone', 'collaboration', 'cms', 'forum', 'site')))) {
             return true;
-        }
-    }
-
-    if (($bitmask & IGNORE_NONBUNDLED_SCATTERED) != 0 || ($bitmask & IGNORE_NONBUNDLED_VERY_SCATTERED) != 0 || ($bitmask & IGNORE_NONBUNDLED_EXTREMELY_SCATTERED) != 0) {
-        if (preg_match('#^data_custom/images/addon_screenshots(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Relating to addon build, but not defined in addons
-        }
-        if (preg_match('#^exports/static(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Empty directory, so has to be a special exception
-        }
-        if (preg_match('#^exports/(builds|backups/test)(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Needed to stop build recursion
-        }
-        if (preg_match('#^_tests(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Test set may have various temporary files buried within
-        }
-        if (preg_match('#^data_custom/ckeditor(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Don't want development version of CKEditor
-        }
-
-        if (preg_match('#^data_custom/sitemaps(/|$)#', strtolower($filepath)) != 0) {
-            return true; // Don't want sitemap files
         }
     }
 

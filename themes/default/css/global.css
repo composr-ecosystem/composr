@@ -574,7 +574,7 @@ header h1 {
 
 .global_navigation .top_buttons {
 	/*{+START,IF,{$NOT,{$MOBILE}}}*/
-		margin-left: 1.5em;
+		margin-left: 1.3em;
 	/*{+END}*/
 	margin-top: 1px; /* To force it align correctly with the form in a different block (which is taller) */
 }

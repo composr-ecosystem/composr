@@ -251,7 +251,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
                 case 'allow':
                 case 'disallow':
                     if ($rule == '') {
-                        continue; // Ignored rule
+                        continue 2; // Ignored rule
                     }
 
                     if (preg_match('#^' . $rule . '#', $url_path) != 0) {

@@ -167,7 +167,7 @@ function _parse_raw_http_request_urlencoded($input)
         if (count($exploded) == 2) {
             $key = urldecode($exploded[0]);
             $val = urldecode($exploded[1]);
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val = addslashes($val);
             }
 
@@ -213,7 +213,7 @@ function _parse_raw_http_request_multipart($input, $boundary)
             if (preg_match('#name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?[\r\n]$#s', $block, $matches) != 0) {
                 $key = $matches[1];
                 $val = $matches[2];
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $val = addslashes($val);
                 }
 

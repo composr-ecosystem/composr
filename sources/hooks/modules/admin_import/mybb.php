@@ -1345,8 +1345,8 @@ class Hook_mybb
 
             $topic_options = unserialize($row['threadoptions']);
 
-            $mm_sink_state = ($topic_options['approvethread'] == 'approve') ? 1 : ($topic_options['approvethread'] == 'unapprove') ? 0 : null;
-            $mm_open_state = ($topic_options['openthread'] == 'open') ? 1 : ($topic_options['openthread'] == 'close') ? 0 : null;
+            $mm_sink_state = ($topic_options['approvethread'] == 'approve') ? 1 : (($topic_options['approvethread'] == 'unapprove') ? 0 : null);
+            $mm_open_state = ($topic_options['openthread'] == 'open') ? 1 : (($topic_options['openthread'] == 'close') ? 0 : null);
             $mm_move_to = ($topic_options['movethread'] != 0) ? $topic_options['movethread'] : null;
 
             $mm_title_suffix = ($topic_options['newsubject'] != '{subject}') ? preg_replace('#\{username\}#', '', $topic_options['newsubject']) : '';

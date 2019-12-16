@@ -239,7 +239,9 @@ function init__global2()
     $BASE_URL_HTTPS_CACHE = null;
 
     require_code('version');
-    @header('X-Content-Type-Options: nosniff');
+    if (!empty($SITE_INFO['no_nosniff_header'])) {
+        @header('X-Content-Type-Options: nosniff');
+    }
     @header('X-XSS-Protection: 1');
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) {
         // Marker that Composr running
@@ -874,6 +876,9 @@ function composr_error_handler($errno, $errstr, $errfile, $errline)
             case E_CORE_ERROR:
             case E_COMPILE_ERROR:
             case E_ERROR:
+                if (function_exists('set_throw_errors')) {
+                    set_throw_errors(false);
+                }
                 $type = 'error';
                 $syslog_type = LOG_ERR;
                 break;
@@ -1401,6 +1406,7 @@ function get_base_url($https = null, $zone_for = null)
     if ((!isset($SITE_INFO)) || (empty($SITE_INFO['base_url']))) { // Try and autodetect the base URL if it's not configured
         $domain = get_domain();
         $script_name_path = dirname(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : ''));
+        $script_name_path = str_replace(DIRECTORY_SEPARATOR, '/', $script_name_path);
         if (($GLOBALS['RELATIVE_PATH'] === '') || (strpos($script_name_path, $GLOBALS['RELATIVE_PATH']) !== false)) {
             $script_name_path = preg_replace('#/' . preg_quote($GLOBALS['RELATIVE_PATH'], '#') . '$#', '', $script_name_path);
         } else {
@@ -1673,7 +1679,7 @@ function __param($array, $name, $default, $integer = false, $posted = false)
 
     static $mq = null;
     if ($mq === null) {
-        $mq = get_magic_quotes_gpc();
+        $mq = @get_magic_quotes_gpc();
     }
     if ($mq) {
         $val = stripslashes($val);

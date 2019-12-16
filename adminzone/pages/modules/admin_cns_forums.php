@@ -359,7 +359,8 @@ class Module_admin_cns_forums extends Standard_crud_module
             unset($subforums[$i]);
         }
         if (!is_null($forum_grouping_id)) {
-            $forum_groupings->attach(do_template('CNS_EDIT_FORUM_SCREEN_GROUPING', array('_GUID' => '6cb30ec5189f75a9631b2bb430c89fd0', 'ORDERINGS' => $orderings, 'GROUPING' => $C_TITLE[$forum_grouping_id], 'SUBFORUMS' => $forums)));
+            $grouping_title = array_key_exists($forum_grouping_id, $C_TITLE) ? $C_TITLE[$forum_grouping_id] : do_lang('UNKNOWN');
+            $forum_groupings->attach(do_template('CNS_EDIT_FORUM_SCREEN_GROUPING', array('_GUID' => '6cb30ec5189f75a9631b2bb430c89fd0', 'ORDERINGS' => $orderings, 'GROUPING' => $grouping_title, 'SUBFORUMS' => $forums)));
         }
 
         $edit_url = build_url(array('page' => '_SELF', 'type' => '_edit', 'id' => $id), '_SELF');

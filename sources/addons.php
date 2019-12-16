@@ -152,6 +152,7 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             if (!is_array($file_list)) {
                 $file_list = array();
             }
+            sort($file_list);
         } else {
             $file_list = array();
         }
@@ -172,8 +173,8 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             'description' => $description,
             'install_time' => filemtime($path),
             'files' => $file_list,
-            'dependencies' => $dep['requires'],
-            'incompatibilities' => $dep['conflicts_with'],
+            'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : array(),
+            'incompatibilities' => array_key_exists('conflicts_with', $dep) ? $dep['conflicts_with'] : array(),
             'default_icon' => $default_icon,
         );
         if ($get_dependencies_on_this) {
@@ -243,9 +244,9 @@ function read_addon_info($addon, $get_dependencies_on_this = false, $row = null,
             'default_icon' => null,
         );
 
-        $addon_info['files'] = array_unique(collapse_1d_complexity('filename', $GLOBALS['SITE_DB']->query_select('addons_files', array('filename'), array('addon_name' => $addon))));
-        $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon, 'addon_name_incompatibility' => 0)));
-        $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon, 'addon_name_incompatibility' => 1)));
+        $addon_info['files'] = array_unique(collapse_1d_complexity('filename', $GLOBALS['SITE_DB']->query_select('addons_files', array('filename'), array('addon_name' => $addon), 'ORDER BY filename')));
+        $addon_info['dependencies'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon, 'addon_name_incompatibility' => 0), 'ORDER BY addon_name_dependant_upon'));
+        $addon_info['incompatibilities'] = collapse_1d_complexity('addon_name_dependant_upon', $GLOBALS['SITE_DB']->query_select('addons_dependencies', array('addon_name_dependant_upon'), array('addon_name' => $addon, 'addon_name_incompatibility' => 1), 'ORDER BY addon_name_dependant_upon'));
         if ($get_dependencies_on_this) {
             $addon_info['dependencies_on_this'] = find_addon_dependencies_on($addon);
         }

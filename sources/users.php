@@ -588,7 +588,7 @@ function cms_admirecookie($name, $default = null)
         return $default;
     }
     $the_cookie = $_COOKIE[$name];
-    if (get_magic_quotes_gpc()) {
+    if (@get_magic_quotes_gpc()) {
         $the_cookie = stripslashes($the_cookie);
     }
     return $the_cookie;

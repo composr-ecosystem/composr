@@ -428,16 +428,18 @@ function _post_param_date($stub, $get_also = false, $do_timezone_conversion = tr
         return null;
     }
 
-    $time = mktime($hour, $minute, $seconds, $month, $day, $year);
+    $time = @mktime($hour, $minute, $seconds, $month, $day, $year);
+    if ($time === false) { // TODO: #3046 in tracker
+        if ($year >= intval(date('Y'))) {
+            $time = 2147483647 - 60 * 60 * 24 * 2; // As close as reasonably possible to the maximum 32 bit timestamp (with space for timezone differences)
+        } else {
+            $time = 60 * 60 * 24 * 2; // As close as reasonably possible to the minimum 32 bit timestamp (with space for timezone differences)
+        }
+    }
     if ($do_timezone_conversion) {
         if (($year >= 1970) || (@strftime('%Y', @mktime(0, 0, 0, 1, 1, 1963)) == '1963')) { // Only try and do timezone conversion if we can do proper maths this far back
             $time = $time * 2 - tz_time($time, $timezone);
         }
-    }
-
-    // TODO: #3046 in tracker
-    if ($time > 2147483647) {
-        $time = 2147483647;
     }
 
     return $time;

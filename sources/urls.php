@@ -136,7 +136,7 @@ function get_self_url($evaluate = false, $root_if_posted = false, $extra_params 
     if ($posted_too) {
         static $mq = null;
         if ($mq === null) {
-            $mq = get_magic_quotes_gpc();
+            $mq = @get_magic_quotes_gpc();
         }
         $post_array = array();
         foreach ($_POST as $key => $val) {
@@ -588,7 +588,7 @@ function _build_url($vars, $zone_name = '', $skip = null, $keep_all = false, $av
     if (($HAS_KEEP_IN_URL_CACHE === null) || ($HAS_KEEP_IN_URL_CACHE) || ($keep_all)) {
         static $mc = null;
         if ($mc === null) {
-            $mc = get_magic_quotes_gpc();
+            $mc = @get_magic_quotes_gpc();
         }
 
         $keep_cant_use = array();
@@ -760,7 +760,7 @@ function _handle_array_var_append($key, $val, &$vars)
         if (is_array($val2)) {
             _handle_array_var_append($key . '[' . $key2 . ']', $val2, $vars);
         } else {
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $val2 = stripslashes($val2);
             }
 
@@ -1301,7 +1301,7 @@ function find_id_moniker($url_parts, $zone, $search_redirects = true)
         }
         if ($search_redirects) {
             $page_place = _request_page(str_replace('-', '_', $page), $zone);
-            if ($page_place[0] == 'REDIRECT') {
+            if (($page_place !== false) && ($page_place[0] == 'REDIRECT')) {
                 $page = $page_place[1]['r_to_page'];
                 $zone = $page_place[1]['r_to_zone'];
             }
@@ -1489,7 +1489,7 @@ function ensure_protocol_suitability($url)
         return $url;
     }
 
-    $https_url = 'https://' . $url;
+    $https_url = 'https://' . substr($url, 7);
 
     $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
 

@@ -310,7 +310,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
         if ($source != '') {
             if (get_db_type() != 'xml') {
                 if (!$GLOBALS['SITE_DB']->table_is_locked('banners')) {
-                    $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_from=(views_from+1) WHERE ' . db_string_equal_to('name', $name), 1, null, false, true);
+                    $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'banners SET views_from=(views_from+1) WHERE ' . db_string_equal_to('name', $source), 1, null, false, true);
                 }
             }
         }

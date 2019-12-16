@@ -129,7 +129,7 @@ class Module_members
             $privacy_ok = true;
             if (addon_installed('content_privacy')) {
                 require_code('content_privacy');
-                $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member());
+                $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member(), '', $member_id_of);
             }
 
             $photo_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_photo_url');
@@ -223,6 +223,10 @@ class Module_members
     public function profile()
     {
         disable_php_memory_limit();
+
+        if (($this->member_id_of == get_member()) && (get_param_string('id', null) !== null)) {
+            unset($_GET['id']); // So self-URL links go without 'id', which is unneeded. oAuth may whitelist what URLs may request linkage.
+        }
 
         require_code('cns_profiles');
         return render_profile_tabset($this->title, $this->member_id_of, get_member(), $this->username);

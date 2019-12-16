@@ -477,6 +477,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_mrow($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $i => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $row;
             }
@@ -553,7 +557,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function member_home_url($id, $tempcode_okay = false)
     {
-        $_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => $id), get_module_zone('members'), null, false, false, false, 'tab__edit');
+        $_url = build_url(array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id), get_module_zone('members'), null, false, false, false, 'tab__edit');
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -578,13 +582,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
             }
-            $map = array('page' => 'members', 'type' => 'view', 'id' => is_null($username) ? strval($id) : $username);
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username));
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), null, false, false, !$tempcode_okay);
         } else {
-            $map = array('page' => 'members', 'type' => 'view', 'id' => $id);
+            $map = array('page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id);
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
@@ -1055,7 +1059,7 @@ class Forum_driver_cns extends Forum_driver_base
         $privacy_ok = true;
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
-            $privacy_ok = has_privacy_access('_photo', strval($member));
+            $privacy_ok = has_privacy_access('_photo', strval($member), get_member(), '', $member);
         }
 
         if ((!addon_installed('cns_member_photos')) || (!has_privilege(get_member(), 'view_member_photos')) || (!$privacy_ok)) {
@@ -1351,6 +1355,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_username($name)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_username'] == $name) {
                 return $id;
             }
@@ -1376,6 +1384,10 @@ class Forum_driver_cns extends Forum_driver_base
     public function get_member_from_email_address($email_address)
     {
         foreach ($this->MEMBER_ROWS_CACHED as $id => $row) {
+            if ($row === null) {
+                continue;
+            }
+
             if ($row['m_email_address'] == $email_address) {
                 return $id;
             }
@@ -1445,7 +1457,7 @@ class Forum_driver_cns extends Forum_driver_base
      * @param  boolean $only_permissive Whether to only grab permissive usergroups
      * @param  boolean $force_show_all Do not limit things even if there are huge numbers of usergroups
      * @param  ?array $force_find Usergroups that must be included in the results (null: no extras must be)
-     * @param  ?MEMBER $for_member Always return usergroups of this member (null: current member)
+     * @param  ?MEMBER $for_member Always return usergroups of this member if otherwise there are too many to return in full (null: current member)
      * @param  boolean $skip_hidden Whether to completely skip hidden usergroups
      * @return array The usergroup list, a map of usergroup ID to usergroup name
      */

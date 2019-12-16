@@ -68,7 +68,7 @@ class Hook_profiles_tabs_activities
                     if (either_param_string('syndicate_stop__' . $hook, null) !== null) {
                         $ob->auth_unset($member_id_of);
                     } elseif (either_param_string('syndicate_start__' . $hook, null) !== null) {
-                        $url_map = array('page' => '_SELF', 'type' => 'view', 'id' => $member_id_of, 'oauth_in_progress' => 1);
+                        $url_map = array('page' => '_SELF', 'type' => 'view', 'id' => ($member_id_of == get_member()) ? null : $member_id_of, 'oauth_in_progress' => 1);
                         foreach (array_keys($_POST) as $key) {
                             $url_map[$key] = post_param_string($key, '');
                         }
@@ -78,7 +78,7 @@ class Hook_profiles_tabs_activities
                     } elseif ((running_script('index')) && (!$leave_to_ajax_if_possible) && ($ob->auth_is_set($member_id_of)) && (either_param_string('oauth_in_progress', null) === null) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
                         /* running_script('index') won't work currently due to execution contexts, and it is never non-AJAX, and it's probably not needed anyway
                         // Do a refresh to make sure the token is updated
-                        $url_map = array('page' => '_SELF', 'type' => 'view', 'id' => $member_id_of, 'oauth_in_progress' => 1);
+                        $url_map = array('page' => '_SELF', 'type' => 'view', 'id' => ($member_id_of == get_member()) ? null : $member_id_of, 'oauth_in_progress' => 1);
                         $url_map['syndicate_start__' . $hook] = 1;
                         $oauth_url = build_url($url_map, '_SELF', null, false, false, false, 'tab__activities');
                         $ob->auth_set($member_id_of, $oauth_url);

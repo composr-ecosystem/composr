@@ -97,6 +97,10 @@ function comcode_convert_script()
         return;
     }
 
+    if (either_param_integer('raw_output', 0) == 1) {
+        header('Content-type: text/plain; charset=' . get_charset());
+    }
+
     $from_html = either_param_integer('from_html', 0);
 
     if ($from_html == -1) {
@@ -188,7 +192,6 @@ function comcode_convert_script()
     } else {
         safe_ini_set('ocproducts.xss_detect', '0');
 
-        header('Content-type: text/plain; charset=' . get_charset());
         echo $out;
     }
 

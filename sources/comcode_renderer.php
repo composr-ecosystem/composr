@@ -543,7 +543,7 @@ function test_url($url_full, $tag_type, $given_url, $source_member)
                     if (is_array($_POST)) {
                         continue;
                     }
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $val = stripslashes($val);
                     }
                     if ((is_string($val)) && (strpos($val, $given_url) !== false)) {
@@ -1723,6 +1723,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 $rel .= 'nofollow';
             }
             if (!$as_admin) {
+                $rel = preg_replace('#(^|\s)opener($|[^\w])#', '\2', $rel);
                 if ($rel != '') {
                     $rel .= ' ';
                 }
@@ -2144,7 +2145,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     }//warn_exit(do_lang_tempcode('ERROR_UPLOADING'));  Can't do this, because this might not be post-calculated if something went wrong once
                     $_size = $_FILES['file' . $_id]['size'];
                     $original_filename = $_FILES['file' . $_id]['name'];
-                    if (get_magic_quotes_gpc()) {
+                    if (@get_magic_quotes_gpc()) {
                         $original_filename = stripslashes($original_filename);
                     }
 
@@ -2360,8 +2361,8 @@ function do_code_box($type, $embed, $numbers = true, $in_semihtml = false, $is_a
 {
     $_embed = mixed();
     $title = do_lang_tempcode('CODE');
-    if (file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) {
-        $evaluated = $embed->evaluate();
+    if ((file_exists(get_file_base() . '/sources_custom/geshi/' . filter_naughty(($type == 'HTML') ? 'html5' : strtolower($type)) . '.php')) && (!in_safe_mode())) {
+            $evaluated = $embed->evaluate();
 
         if (($in_semihtml) || ($is_all_semihtml)) {
             require_code('comcode_from_html');

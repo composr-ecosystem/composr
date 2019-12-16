@@ -437,9 +437,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false)
     }
     $EXITING++;
 
-    if (!function_exists('do_header')) {
-        require_code('site');
-    }
+    require_code('site');
 
     if ((get_forum_type() == 'cns') && (get_db_type() != 'xml') && (isset($GLOBALS['FORUM_DRIVER']))) {
         require_code('cns_groups');
@@ -1106,6 +1104,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'Too many connections') === false) &&
         (strpos($text, 'duplicate key in table') === false) &&
         (strpos($text, 'Incorrect string value') === false) &&
+        (strpos($text, 'Too many words in a FTS phrase or proximity search') === false) &&
         (strpos($text, 'Can\'t create/write to file') === false) &&  // MySQL
         (strpos($text, 'Error writing file') === false) && // E.g. cannot PHP create a temporary file
         (strpos($text, 'possibly out of free disk space') === false) &&
@@ -1119,6 +1118,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'Unknown database') === false) &&
         (strpos($text, 'headers already sent') === false) &&
         (strpos($text, 'Your TaxCloud API trial period has expired') === false) &&
+        (strpos($text, 'Resource temporarily unavailable') === false) &&
         (strpos($text, 'Broken pipe') === false) &&
         (strpos($text, 'Interrupted system call') === false) &&
         (preg_match('#php\.net.*SSL3_GET_SERVER_CERTIFICATE:certificate #', $text) == 0) && // Missing certificates on server
@@ -1304,7 +1304,22 @@ function get_html_trace()
     }
     $GLOBALS['SUPPRESS_ERROR_DEATH'] = $bak;
 
-    return do_template('STACK_TRACE', array('_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => (count($_POST) < 200) ? $_POST : array(), 'TRACE' => $trace));
+    $post = array();
+    if (count($_POST) < 200) {
+        foreach ($_POST as $key => $val) {
+            if (stripos($key, 'password') !== false) {
+                continue;
+            }
+
+            if (@get_magic_quotes_gpc()) {
+                $val = stripslashes($val);
+            }
+
+            $post[$key] = $val;
+        }
+    }
+
+    return do_template('STACK_TRACE', array('_GUID' => '9620695fb8c3e411a6a4926432cea64f', 'POST' => $post, 'TRACE' => $trace));
 }
 
 /**

@@ -564,7 +564,7 @@ function _fields_api_filtercode($db, $info, $catalogue_name, &$extra_join, &$ext
         $table_join_code_here = $table_join_code;
     }
 
-    if ((!isset($info['content_type'])) || ($info['content_type'] == 'catalogues')) {
+    if ((!isset($info['content_type'])) || ($info['content_type'] == 'catalogue_entry')) {
         $join_sql = ' LEFT JOIN ' . $db->get_table_prefix() . 'catalogue_efv_' . $table . ' f' . strval($field_id) . '_' . $catalogue_key . ' ON f' . strval($field_id) . '_' . $catalogue_key . '.ce_id=' . $table_join_code_here . '.id AND f' . strval($field_id) . '_' . $catalogue_key . '.cf_id=' . strval($field_id);
     } else {
         $id_field = is_array($info['id_field']) ? $info['id_field'][0] : $info['id_field'];

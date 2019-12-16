@@ -1302,7 +1302,7 @@ class Module_filedump
             }
 
             $filename = $file['name'];
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $filename = stripslashes($filename);
             }
 

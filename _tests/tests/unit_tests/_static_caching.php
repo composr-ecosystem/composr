@@ -46,7 +46,7 @@ class _static_caching_test_set extends cms_test_case
 
         $this->assertTrue($time < 0.1, 'Took too long, ' . float_format($time) . ' seconds');
 
-        $this->assertTrue(strpos($data, 'global.css') !== false);
+        $this->assertTrue(preg_match('#global\w*\.css#', $data) != 0);
         $this->assertTrue(strpos($data, '</html>') !== false);
 
         file_put_contents($config_file_path, $config_file);

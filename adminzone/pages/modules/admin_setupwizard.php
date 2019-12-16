@@ -962,8 +962,6 @@ class Module_admin_setupwizard
                 if (post_param_integer('addon_' . $addon_info['name'], 0) == 0 && $addon_info['name'] != 'core' && substr($addon_info['name'], 0, 5) != 'core_') {
                     $uninstalling[$addon_info['name']] = $addon_info;
                 }
-
-                $addons_installed[$i] = $addon_info;
             }
             $addons_not_installed = find_available_addons(false);
             $installing = array();
@@ -971,8 +969,6 @@ class Module_admin_setupwizard
                 if (post_param_integer('addon_' . $addon_info['name'], 0) == 1) {
                     $installing[] = $addon_info['name'];
                 }
-
-                $addons_installed[$i] = $addon_info;
             }
             do {
                 $cnt = count($uninstalling);

@@ -246,7 +246,7 @@ class Module_recommend
                 continue;
             }
 
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $email_address = stripslashes($email_address);
             }
 
@@ -382,7 +382,7 @@ class Module_recommend
         $already = array();
         $email_counter = 0;
         foreach ($_POST as $key => $input_value) {
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $input_value = stripslashes($input_value);
             }
 
@@ -637,7 +637,7 @@ class Module_recommend
                 continue;
             }
 
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $email_address = stripslashes($email_address);
             }
 
@@ -662,7 +662,7 @@ class Module_recommend
                 continue;
             }
             if (preg_match('#details_email_#', $key) != 0) {
-                if (get_magic_quotes_gpc()) {
+                if (@get_magic_quotes_gpc()) {
                     $email_address = stripslashes($email_address);
                 }
 
@@ -698,7 +698,7 @@ class Module_recommend
         }
 
         foreach ($email_adrs_to_send as $key => $email_address) {
-            if (get_magic_quotes_gpc()) {
+            if (@get_magic_quotes_gpc()) {
                 $email_address = stripslashes($email_address);
             }
 

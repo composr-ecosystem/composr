@@ -264,14 +264,14 @@ function hard_filter_input_data__dynamic_firewall($name, &$val)
 }
 
 /**
- * Used by hard_filter_input_data__html to add rel="nofollow" to links
+ * Used by hard_filter_input_data__html to add rel="nofollow" to links and remove rel="opener"
  *
  * @param  array $matches Array of matches
  * @return string Substituted text
  *
  * @ignore
  */
-function _link_nofollow_callback($matches)
+function _link_rel_callback($matches)
 {
     // Remove any existing rel attributes (it's too complex to play nice, e.g. what if a hacker added multiple ones and we altered the wrong one)
     $matches[1] = preg_replace('#\srel="[^"]*"#', '', $matches[1]);
@@ -363,8 +363,8 @@ function hard_filter_input_data__html(&$val, $lite = false)
         return;
     }
 
-    // nofollow needs applying
-    $val = preg_replace_callback('#(<a\s[^<>]*)(>)(.*)(</a>)#Ui', '_link_nofollow_callback', $val);
+    // rel="nofollow" needs applying and rel="opener" needs removing
+    $val = preg_replace_callback('#(<a\s[^<>]*)(>)(.*)(</a>)#Ui', '_link_rel_callback', $val);
 
     // Check tag balancing (we don't want to allow partial tags to compound together against separately checked chunks)
     $len = strlen($val);

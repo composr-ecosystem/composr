@@ -1103,13 +1103,14 @@ function do_block($codename, $map = null, $ttl = null)
 
     $DO_NOT_CACHE_THIS = ($map['cache'] === '0');
 
-    $object = mixed();
+    $object = null;
+    $new_security_scope = null;
     if (has_caching_for('block')) {
         // See if the block may be cached (else cannot, or is yet unknown)
         if ($map['cache'] === '0') {
             $row = null;
         } else { // We may allow it to be cached but not store the cache signature, as it is too complex
-            $row = get_block_info_row($codename, $map);
+            $row = get_block_info_row($codename, $map, $object, $new_security_scope);
         }
         if ($row !== null) {
             $cache_identifier = do_block_get_cache_identifier($row['cache_on'], $map);
@@ -1183,7 +1184,7 @@ function do_block($codename, $map = null, $ttl = null)
                         require_code('temporal');
                         $staff_status = (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
                         $member_id = (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0) ? get_member() : null;
-                        $groups = (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0) ? implode(',', array_map('strval', filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member())))) : '';
+                        $groups = (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0) ? permissive_groups_cache_signature() : '';
                         $is_bot = (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0) ? (is_null(get_bot_type()) ? 0 : 1) : null;
                         $timezone = (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0) ? get_users_timezone(get_member()) : '';
                         put_into_cache($codename, $ttl, $cache_identifier, $staff_status, $member_id, $groups, $is_bot, $timezone, $cache, array_keys($LANGS_REQUESTED), array_keys($JAVASCRIPTS), array_keys($CSSS), true);
@@ -1255,7 +1256,7 @@ function do_block($codename, $map = null, $ttl = null)
                 require_code('temporal');
                 $staff_status = (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
                 $member_id = (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0) ? get_member() : null;
-                $groups = (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0) ? implode(',', array_map('strval', filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member())))) : '';
+                $groups = (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0) ? permissive_groups_cache_signature() : '';
                 $is_bot = (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0) ? (is_null(get_bot_type()) ? 0 : 1) : null;
                 $timezone = (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0) ? get_users_timezone(get_member()) : '';
                 put_into_cache($codename, $info['ttl'], $cache_identifier, $staff_status, $member_id, $groups, $is_bot, $timezone, $cache, array_keys($LANGS_REQUESTED), $GLOBALS['OUTPUT_STREAMING'] ? array() : array_keys($JAVASCRIPTS), $GLOBALS['OUTPUT_STREAMING'] ? array() : array_keys($CSSS), true);
@@ -1489,9 +1490,11 @@ function do_block_hunt_file($codename, $map = null)
  *
  * @param  ID_TEXT $codename The block name
  * @param  array $map The block parameter map
+ * @param  ?mixed $object Object/string of the block (null: not looked up)
+ * @param  ?boolean $new_security_scope Whether the block is in a new security scope (null: not looked up)
  * @return ?array The block info (null: cannot cache for some reason)
  */
-function get_block_info_row($codename, $map)
+function get_block_info_row($codename, $map, &$object = null, &$new_security_scope = null)
 {
     static $cache = array();
     $sz = serialize(array($codename, $map));

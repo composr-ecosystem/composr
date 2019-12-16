@@ -30,7 +30,7 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 @chdir($FILE_BASE);
 
-if (get_magic_quotes_gpc()) {
+if (@get_magic_quotes_gpc()) {
     foreach ($_POST as $key => $val) {
         $_POST[$key] = stripslashes($val);
     }
@@ -89,7 +89,7 @@ function code_editor_do_header($type, $target = '_top')
 <html lang="EN">
 <head>
     <title>Composr code editor</title>
-    <link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
     <style>
 ';
     @print(preg_replace('#/\*\s*\*/\s*#', '', str_replace('url(\'\')', 'none', str_replace('url("")', 'none', preg_replace('#\{\$[^\}]*\}#', '', preg_replace('#\{\$\?,\{\$MOBILE\},([^,]+),([^,]+)\}#', '$2', file_get_contents($GLOBALS['FILE_BASE'] . '/themes/default/css/global.css')))))));
@@ -182,13 +182,7 @@ function code_editor_do_login()
         }
         $webdir_stub = $dr_parts[count($dr_parts) - 1];
         $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : '');
-        $pos = strpos($script_name, 'code_editor.php');
-        if ($pos === false) {
-            $pos = strlen($script_name);
-        } else {
-            $pos--;
-        }
-        $ftp_folder = '/' . $webdir_stub . substr($script_name, 0, $pos);
+        $ftp_folder = '/' . $webdir_stub . str_replace(DIRECTORY_SEPARATOR, '/', dirname($script_name));
     } else {
         $ftp_folder = $SITE_INFO['ftp_folder'];
     }

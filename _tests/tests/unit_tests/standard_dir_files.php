@@ -38,7 +38,7 @@ class standard_dir_files_test_set extends cms_test_case
             if ($path == '.htaccess') {
                 continue;
             }
-            if (preg_match('#^(tracker|exports/backups|exports/builds)/#', $path) != 0) {
+            if (preg_match('#^(tracker|exports/backups|exports/builds|themes/_unnamed_)/#', $path) != 0) {
                 continue;
             }
 
@@ -58,7 +58,7 @@ class standard_dir_files_test_set extends cms_test_case
             echo "\t\t\t'" . $type . "',\n";
         }*/
 
-        $this->assertTrue(array_keys($types) == array(
+        $valid_hashes = array(
             '040f254836ecefb94bebc44d91e391eb',
             '0e665ce3d0ae5f44e1a6affe3c7f5303',
             '296a0f42479e015438791d0b21e22a07',
@@ -74,7 +74,10 @@ class standard_dir_files_test_set extends cms_test_case
             'd90c4471fc2a552580896dd6dae99df7',
             'e584f07661e5fee9170ba1df153359ad',
             'ede82ed9879b9d6d011638ca5736bddd',
-        ));
+        );
+        foreach ($types as $hash => $file_paths) {
+            $this->assertTrue(in_array($hash, $valid_hashes), 'Invalid .htaccess file: ' . serialize($file_paths));
+        }
     }
 
     public function testStandardDirFiles()

@@ -291,7 +291,7 @@ function count_catalogue_category_children($category_id)
  * @param  ?ID_TEXT $order_by_high_level Orderer (null: read from environment)
  * @param  ID_TEXT $ordering_param Environment param used for ordering. You should pass in $order_by_high_level if it is set.
  * @param  ?MEMBER $viewing_member_id Viewing member ID (null: current user)
- * @return array An array containing our built up entries (renderable Tempcode), our sorting interface, and our entries (entry records from database, with an additional 'map' field), and the max rows
+ * @return array An array containing our built up entries (renderable Tempcode), our sorting interface, and our entries (entry records from database, with an additional 'map' field), and the max rows, and the display type used
  */
 function render_catalogue_category_entry_buildup($category_id, $catalogue_name, $catalogue, $view_type, $tpl_set, $max, $start, $select, $root, $display_type = null, $do_sorting = true, $entries = null, $filter = '', $order_by_high_level = null, $ordering_param = 'sort', $viewing_member_id = null)
 {
@@ -596,7 +596,7 @@ function render_catalogue_category_entry_buildup($category_id, $catalogue_name, 
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 
-    return array($entry_buildup, $sorting, $entries, $num_entries);
+    return array($entry_buildup, $sorting, $entries, $num_entries, $display_type);
 }
 
 /**

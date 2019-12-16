@@ -1102,7 +1102,7 @@ function keep_symbol($param)
 
     static $gpc = null;
     if ($gpc === null) {
-        $gpc = get_magic_quotes_gpc();
+        $gpc = @get_magic_quotes_gpc();
     }
 
     $first = ((isset($param[0])) && ($param[0] === '1'));

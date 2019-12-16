@@ -40,6 +40,10 @@ class css_file_test_set extends cms_test_case
                 continue;
             }
 
+            if ($theme == '_unnamed_') {
+                continue;
+            }
+
             $_classes_defined = array_merge($this->findClassesDefined('default'), $this->findClassesDefined($theme));
             sort($_classes_defined);
             $classes_defined = array_flip($_classes_defined);

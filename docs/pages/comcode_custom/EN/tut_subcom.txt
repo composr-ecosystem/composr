@@ -252,6 +252,7 @@ An alternative to using the breadcrumbs XML file would have been to use virtual 
 [concepts
  1_key="Virtual root"       1_value="Virtual roots allow you to split a Composr tree based content system (such as the download system) so it appears to have multiple databases"
  2_key="Redirection page"   2_value="Allows pages to be redirected to from different zone/page combinations, either transparently, or with a redirection message"
+ 3_key="Club"               3_value="A special usergroup with no permissions that comes with its own forum"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
