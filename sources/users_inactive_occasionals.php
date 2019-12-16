@@ -228,6 +228,8 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
         }
         //}
         $_COOKIE[get_session_cookie()] = $id; // So we remember for this page view
+    } else {
+        $test = true;
     }
 
     // If we really have to, store in URL
