@@ -32,69 +32,15 @@
 		</thead>
 
 		<tbody>
-			{+START,IF,{$NEQ,{POINTS_JOINING},0}}
+		{+START,LOOP,POINTS_RECORDS}
+			{+START,IF,{$NEQ,{COUNT},0}}
 				<tr>
-					<td>&bull;&nbsp;{!JOINING}:</td>
-					<td class="equation">1 &times; {POINTS_JOINING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {POINTS_JOINING*} {!POINTS_UNIT}</td>
+					<td>&bull;&nbsp;{LABEL*}:</td>
+					<td class="equation">{COUNT*} &times; {POINTS_EACH*} {!POINTS_UNIT}</td>
+					<td class="answer">= {POINTS_TOTAL*} {!POINTS_UNIT}</td>
 				</tr>
 			{+END}
-			{+START,IF,{$NEQ,{POINTS_PER_DAY},0}}
-				<tr>
-					<td>&bull;&nbsp;{!MEMBERSHIP_LENGTH}</td>
-					<td class="equation">{DAYS_JOINED*} &times; {POINTS_PER_DAY*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_PER_DAY*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}
-			{+START,IF,{$NEQ,{POINTS_POSTING},0}}{+START,IF,{$HAS_FORUM}}
-				<tr>
-					<td>&bull;&nbsp;{!COUNT_POSTS}:</td>
-					<td class="equation">{POST_COUNT*} &times; {POINTS_POSTING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_POSTING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}{+END}
-			{+START,IF,{$NEQ,{POINTS_WIKI_POSTING},0}}{+START,IF,{$ADDON_INSTALLED,wiki}}
-				<tr>
-					<td>&bull;&nbsp;{!wiki:WIKI_POSTS}:</td>
-					<td class="equation">{WIKI_POST_COUNT*} &times; {POINTS_WIKI_POSTING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_WIKI_POSTING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}{+END}
-			{+START,IF,{$NEQ,{POINTS_CHAT_POSTING},0}}{+START,IF,{$ADDON_INSTALLED,chat}}
-				<tr>
-					<td>&bull;&nbsp;{!chat:COUNT_CHATPOSTS}:</td>
-					<td class="equation">{CHAT_POST_COUNT*} &times; {POINTS_CHAT_POSTING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_CHAT_POSTING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}{+END}
-			{+START,IF,{$NEQ,{POINTS_PER_DAILY_VISIT},0}}
-				<tr>
-					<td>&bull;&nbsp;{!COUNT_VISITS}:</td>
-					<td class="equation">{POINTS_GAINED_VISITING*} &times; {POINTS_PER_DAILY_VISIT*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_VISITING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}
-			{+START,IF,{$NEQ,{POINTS_VOTING},0}}{+START,IF,{$ADDON_INSTALLED,polls}}
-				<tr>
-					<td>&bull;&nbsp;{!COUNT_VOTINGS}:</td>
-					<td class="equation">{POINTS_GAINED_VOTING*} &times; {POINTS_VOTING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_VOTING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}{+END}
-			{+START,IF,{$NEQ,{POINTS_RATING},0}}
-				<tr>
-					<td>&bull;&nbsp;{!RATING_CONTENT}:</td>
-					<td class="equation">{POINTS_GAINED_RATING*} &times; {POINTS_RATING*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_RATING*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}
-			{+START,IF_PASSED,POINTS_GAINED_CREDITS}{+START,IF_PASSED,POINTS_CREDITS}{+START,IF,{$NEQ,{POINTS_CREDITS},0}}{+START,IF,{$ADDON_INSTALLED,composr_homesite_support_credits}}
-				<tr>
-					<td>&bull;&nbsp;{!SPECIAL_CPF__cms_support_credits}:</td>
-					<td class="equation">{POINTS_GAINED_CREDITS*} &times; {POINTS_CREDITS*} {!POINTS_UNIT}</td>
-					<td class="answer">= {MULT_POINTS_CREDITS*} {!POINTS_UNIT}</td>
-				</tr>
-			{+END}{+END}{+END}{+END}
+		{+END}
 		</tbody>
 	</table>
 </div>
