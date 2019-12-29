@@ -116,6 +116,8 @@ class standard_dir_files_test_set extends cms_test_case
 
         if ($contents_count > 0) {
             if (
+                (preg_match('#^uploads/website_specific/test(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 test XML DB
+                (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
                 (preg_match('#^_tests/codechecker(/|$)#', $dir_stub) == 0) // Not in codechecker (we need to call CQC)
             ) {
                 if (
@@ -126,6 +128,7 @@ class standard_dir_files_test_set extends cms_test_case
             }
 
             if (
+                (preg_match('#^caches/guest_pages(/|$)#', $dir_stub) == 0) && // LEGACY: Not from v10 static cache dir
                 (preg_match('#^_tests/assets(/|$)#', $dir_stub) == 0) && // Needs to be web-executable
                 (!file_exists($dir . '/index.php')) && // Not in a zone (needs to run)
                 (!file_exists($dir . '/html_custom')) && // Not in an HTML directory (want to be able to call by hand)

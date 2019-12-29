@@ -271,6 +271,7 @@ Tolerances:
  1_key="Virtual root"       1_value="Virtual roots allow you to split a Composr tree based content system (such as the download system) so it appears to have multiple databases"
  2_key="Page Redirect"      2_value="Allows pages to be redirected to from different zone+page URLs, either transparently, or with a redirection message"
  3_key="URL Redirect"       3_value="Allows redirecting any arbitrary URL you configure to be redirected"
+ 4_key="Club"               4_value="A special usergroup with no permissions that comes with its own forum"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

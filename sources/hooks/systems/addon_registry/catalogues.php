@@ -323,7 +323,7 @@ class Hook_addon_registry_catalogues
                 'ENTRIES' => $entries,
                 'SUBCATEGORIES' => $subcategories,
                 'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'GRID',
             ]), null, '', true)
         ];
     }
@@ -410,7 +410,7 @@ class Hook_addon_registry_catalogues
                 'ENTRIES' => $entries,
                 'SUBCATEGORIES' => $subcategories,
                 'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'FIELDMAPS',
             ]), null, '', true)
         ];
     }
@@ -477,7 +477,7 @@ class Hook_addon_registry_catalogues
                 'ENTRIES' => $entries,
                 'SUBCATEGORIES' => '',
                 'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'TITLELIST',
             ]), null, '', true)
         ];
     }
@@ -568,7 +568,7 @@ class Hook_addon_registry_catalogues
                 'ENTRIES' => $entries,
                 'SUBCATEGORIES' => $subcategories,
                 'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'TABULAR',
             ]), null, '', true)
         ];
     }
@@ -656,7 +656,7 @@ class Hook_addon_registry_catalogues
                 'ENTRIES' => $entries,
                 'SUBCATEGORIES' => $subcategories,
                 'DESCRIPTION' => lorem_sentence(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'TABULAR',
             ]), null, '', true)
         ];
     }

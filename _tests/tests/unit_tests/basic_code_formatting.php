@@ -189,6 +189,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'data_custom/pdf_viewer',
                 '_tests/codechecker/pom.xml',
                 '_tests/codechecker/nbactions.xml',
+                'caches',
             ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -325,6 +326,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/aws/Aws',
                 'docs/jsdoc',
                 'data_custom/pdf_viewer',
+                'caches',
             ];
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -332,6 +334,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $exceptions = [
                 '_tests/codechecker/codechecker.ini',
                 '_tests/codechecker/pom.xml',
+                'data_custom/latest_activity.txt', // LEGACY
             ];
             if (in_array($path, $exceptions)) {
                 continue;

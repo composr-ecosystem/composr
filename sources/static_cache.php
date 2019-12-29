@@ -416,8 +416,6 @@ function static_cache($mode)
 /**
  * Mark that this request will not be cached into the static cache.
  * Also causes real session IDs to be returned, consistent with previous requests that were also not subject to the static cache.
- *
- * @return URLPATH The URL
  */
 function disable_static_caching()
 {

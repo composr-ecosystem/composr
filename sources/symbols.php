@@ -1921,7 +1921,8 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
 
     if (!empty($param[0])) {
         require_code('blocks');
-        $_block_constraints = block_params_to_block_signature(block_params_str_to_arr($param[0]));
+        $map = block_params_str_to_arr($param[0]);
+        $_block_constraints = block_params_to_block_signature($map);
         if (isset($param[1])) {
             $_block_constraints = array_merge($_block_constraints, block_params_str_to_arr($param[1]));
             ksort($_block_constraints);

@@ -368,7 +368,7 @@ class Hook_addon_registry_shopping
                 'SUBCATEGORIES' => '',
                 'DESCRIPTION' => lorem_sentence(),
                 'TREE' => lorem_phrase(),
-                'DISPLAY_TYPE' => '0',
+                'DISPLAY_TYPE' => 'GRID',
             ]), null, '', true)
         ];
     }

@@ -567,7 +567,7 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function member_home_url($id, $tempcode_okay = false)
     {
-        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $id], get_module_zone('members'), [], false, false, false, 'tab--edit');
+        $_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id], get_module_zone('members'), [], false, false, false, 'tab--edit');
         if (($tempcode_okay) && (get_base_url() == get_forum_base_url())) {
             return $_url;
         }
@@ -592,13 +592,13 @@ class Forum_driver_cns extends Forum_driver_base
             if ($username === null) {
                 $username = $GLOBALS['FORUM_DRIVER']->get_username($id, false, USERNAME_DEFAULT_ID_TIDY);
             }
-            $map = ['page' => 'members', 'type' => 'view', 'id' => $username];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : (($username === null) ? strval($id) : $username)];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }
             $_url = build_url($map, get_module_zone('members'), [], false, false, !$tempcode_okay);
         } else {
-            $map = ['page' => 'members', 'type' => 'view', 'id' => $id];
+            $map = ['page' => 'members', 'type' => 'view', 'id' => ($id == get_member()) ? null : $id];
             if (get_page_name() == 'members') {
                 $map += propagate_filtercode();
             }

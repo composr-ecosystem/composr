@@ -406,7 +406,7 @@ class Module_admin_lang
             warn_exit(do_lang_tempcode('MULTILANG_OFF_CONTENT'));
         }
 
-        $GLOBALS['NO_QUERY_LIMIT'] = true;
+        push_query_limiting(false);
 
         $max = get_param_integer('max', 100);
         $start = get_param_integer('start', 0);
@@ -504,6 +504,8 @@ class Module_admin_lang
 
             $last_level = $it['importance_level'];
         }
+
+        pop_query_limiting();
 
         $url = build_url(['page' => '_SELF', 'type' => '_content', 'lang' => $lang, 'start' => $start], '_SELF');
 

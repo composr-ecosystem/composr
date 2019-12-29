@@ -237,7 +237,7 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
         $_GET['keep_session'] = $id;
     }
 
-    if ($id != get_session_id()) {
+    if (($id != get_session_id()) && (running_script('index'))) {
         delete_cache_entry('side_users_online');
     }
 }

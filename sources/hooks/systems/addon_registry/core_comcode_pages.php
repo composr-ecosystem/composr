@@ -295,6 +295,8 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function tpl_preview__administrative__comcode_page_sitemap()
     {
+        require_lang('zones');
+
         $menu_paths = [];
         $menu_paths[] = [
             'MENU' => lorem_phrase(),
