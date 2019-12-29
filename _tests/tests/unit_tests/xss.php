@@ -89,10 +89,12 @@ class xss_test_set extends cms_test_case
 
         set_privilege($guest_group_id, 'allow_html', true);
 
-        $comcode = '<scr<script>';
-
+        $comcode = '<scr<script>'; // Browser will interpret as a script tag
         $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
+        $this->assertTrue(strpos($parsed, '<script') === false);
 
+        $comcode = '<script/foobar>'; // Browser will interpret as a script tag
+        $parsed = strtolower(static_evaluate_tempcode(comcode_to_tempcode($comcode, $GLOBALS['FORUM_DRIVER']->get_guest_id())));
         $this->assertTrue(strpos($parsed, '<script') === false);
 
         set_privilege($guest_group_id, 'allow_html', false);
