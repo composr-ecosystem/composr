@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    points
  */
 
 /**
@@ -33,6 +33,10 @@ class Hook_points_given
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('points')) {
+            return 0;
+        }
+
         $points_gained_given = isset($point_info['points_gained_given']) ? $point_info['points_gained_given'] : 0;
 
         if ($timestamp !== null)  {
@@ -44,15 +48,19 @@ class Hook_points_given
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record for use in POINTS_PROFILE.tpl. This is its own Tempcode variable and not an item in the equation list.
+     * @return ?array Point record for use in POINTS_PROFILE.tpl. This is its own Tempcode variable and not an item in the equation list. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('points')) {
+            return null;
+        }
+
         $points_gained_given = array_key_exists('points_gained_given', $point_info) ? $point_info['points_gained_given'] : 0;
 
         return [

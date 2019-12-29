@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    polls
  */
 
 /**
@@ -33,10 +33,14 @@ class Hook_points_voting
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('polls')) {
+            return 0;
+        }
+
         $points_gained_voting = isset($point_info['points_gained_voting']) ? $point_info['points_gained_voting'] : 0;
         $points_voting = intval(get_option('points_voting'));
 
-        if ($timestamp !== null && addon_installed('polls')) {
+        if ($timestamp !== null) {
             $points_gained_voting -= min($points_gained_voting, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'poll_votes v JOIN ' . get_table_prefix() . 'poll p ON p.id=v.v_poll_id WHERE add_time>' . strval($timestamp) . ' AND v_voter_id=' . strval($member_id)));
         }
 
@@ -44,15 +48,19 @@ class Hook_points_voting
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('polls')) {
+            return null;
+        }
+
         $points_gained_voting = array_key_exists('points_gained_voting', $point_info) ? $point_info['points_gained_voting'] : 0;
         $points_voting = intval(get_option('points_voting'));
 

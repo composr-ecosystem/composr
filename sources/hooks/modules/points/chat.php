@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    chat
  */
 
 /**
@@ -29,14 +29,18 @@ class Hook_points_chat
      * @param  MEMBER $member_id The ID of the member we are getting points for
      * @param  TIME $timestamp Time to get for (null: now)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return integer the number of points the member has
+     * @return integer the number of points the member has.
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('chat')) {
+            return 0;
+        }
+        
         $points_gained_chat = isset($point_info['points_gained_chat']) ? $point_info['points_gained_chat'] : 0;
-        $points_chat = intval(get_option('points_chat', true));
+        $points_chat = intval(get_option('points_chat'));
 
-        if ($timestamp !== null && addon_installed('chat')) {
+        if ($timestamp !== null) {
             $points_gained_chat -= min($points_gained_chat, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'chat_messages WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
         }
 
@@ -49,12 +53,16 @@ class Hook_points_chat
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('chat')) {
+            return null;
+        }
+
         $chat_post_count = array_key_exists('points_gained_chat', $point_info) ? $point_info['points_gained_chat'] : 0;
-        $_points_chat = get_option('points_chat', true);
+        $_points_chat = get_option('points_chat');
         if ($_points_chat === null) {
             $_points_chat = '0';
         }

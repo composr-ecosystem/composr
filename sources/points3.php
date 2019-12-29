@@ -50,14 +50,9 @@ function points_profile($member_id_of, $member_id_viewing)
     $additional_fields = [];
 
     // Run points hooks
-    $hooks = find_all_hooks('modules', 'points');
-    foreach (array_keys($hooks) as $hook) {
-        require_code('hooks/modules/points/' . filter_naughty_harsh($hook));
-        $object = object_factory('Hook_points_' . filter_naughty_harsh($hook), true);
-        if ($object === null) {
-            continue;
-        }
-        $_array = $object->points_profile($member_id_of, $member_id_viewing, $point_info);
+    $hook_obs = find_all_hook_obs('modules', 'points', 'Hook_points_');
+    foreach ($hook_obs as $hook_ob) {
+        $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
         if (!is_null($_array)) {
             if (array_key_exists('POINTS_EACH', $_array)) {
                 array_push($points_records, $_array);

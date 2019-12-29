@@ -69,14 +69,9 @@ function total_points($member_id, $timestamp = null)
     $points = 0;
 
     // Run points hooks
-    $hooks = find_all_hooks('modules', 'points');
-    foreach (array_keys($hooks) as $hook) {
-            require_code('hooks/modules/points/' . filter_naughty_harsh($hook));
-            $object = object_factory('Hook_points_' . filter_naughty_harsh($hook), true);
-            if ($object === null) {
-                continue;
-            }
-            $points += $object->total_points($member_id, $timestamp, $point_info);
+    $hook_obs = find_all_hook_obs('modules', 'points', 'Hook_points_');
+    foreach ($hook_obs as $hook_ob) {
+        $points += $hook_ob->total_points($member_id, $timestamp, $point_info);
     }
 
     if ($timestamp === null) {
