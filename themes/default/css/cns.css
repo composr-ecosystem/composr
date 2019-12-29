@@ -133,7 +133,7 @@ This file defines styles for Conversr (abbreviated as CNS).
 	border: 0 !important;
 	border-collapse: collapse;
 }
-.cns-topic-list th, .cns-forum-grouping th, .cns-topic-list td, .cns-forum-grouping td, .cns-topic>div>div>div {
+.cns-topic-list td, .cns-forum-grouping td, .cns-topic>div>div>div {
 	border: 1px solid {$GET,main_background};
 }
 /*{+START,CSS_MODE,mobile}*/
