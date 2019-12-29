@@ -579,7 +579,7 @@ class Module_warnings extends Standard_crud_module
                         $groups->attach(form_input_list_entry(strval($group['id']), false, get_translated_text($group['g_name'], $GLOBALS['FORUM_DB'])));
                     }
                 }
-                $fields->attach(form_input_list(do_lang_tempcode('CHANGE_USERGROUP_TO'), do_lang_tempcode('DESCRIPTION_CHANGE_USERGROUP_TO'), 'changed_usergroup_from', $groups));
+                $fields->attach(form_input_list(do_lang_tempcode('CHANGE_USERGROUP_TO'), do_lang_tempcode('DESCRIPTION_CHANGE_USERGROUP_TO'), 'changed_usergroup_from', $groups, null, false, false));
             }
 
             if ($post_id !== null) {
