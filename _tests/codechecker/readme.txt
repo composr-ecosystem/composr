@@ -14,10 +14,12 @@ The code quality checker is a tool to check web documents against a number of st
 The checker consists of a number of linked checkers.
 
 The code quality checker is copyright ocProducts Ltd, licensed under the CPAL (http://opensource.org/licenses/cpal_1.0), and hence can be extended and re-distributed by third-parties.
-The frontend is written in Java, and thus should run wherever Java can run. The backend is written in PHP, and thus it also requires a command-line PHP interpreter to be installed (e.g. php.exe).
 
-To launch the Code Quality checker open a command line to the code checker directory and run:
-java -jar "netbeans/dist/Code_Quality_Checker.jar"
+The frontend is written in Java, and thus should run wherever Java can run. A minimum of Java 11 is required. Note the latest version of Java from java.com is version 8, as that website was created for the Java web plugin only, which has reached end-of-life some time ago.
+
+The backend is written in PHP, and thus it also requires a command-line PHP interpreter to be installed (e.g. php.exe).
+
+To launch the Code Quality checker open a command line to the code checker directory and run codechecker.sh (Linux/MacOS) or codechecker.bat (Windows). The correct minimum version of Java needs to be in the system path.
 
 You can drag and drop files into the checker, or you can work from a project directory.
 
