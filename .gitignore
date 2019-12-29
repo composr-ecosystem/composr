@@ -1,3 +1,7 @@
+; LEGACY from v10
+/data_custom/latest_activity.txt
+/safe_mode_temp
+
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
 /psalm.xml
 /composer.phar
@@ -50,6 +54,7 @@ test_a
 /data_custom/ckeditor
 /data_custom/sitemaps/*.xml
 /data_custom/sitemaps/*.gz
+/data_custom/sitemaps/*.br
 /data_custom/modules/chat/*.bin
 /data_custom/modules/admin_stats/*.xml
 /data_custom/modules/web_notifications/latest.bin

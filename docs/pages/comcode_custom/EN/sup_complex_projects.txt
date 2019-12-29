@@ -25,7 +25,7 @@ The approach many people have is "let's build a catalogue for animals, and a cat
 
 However, the reality is you'll going to come across things you haven't thought of, and you've already started your project with an assumption of "this is easy, and I am going to do it myself". You might not even have thought much about that basic assumption, but it's a dangerous one, and a bad precedent to start a project on.
 
-The truth is, [url="there is a lot to know about database design"]https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=database+design[/url]. There are all kinds of theoretical concepts, and practical requirements of how to optimise querying by using indexes and optimising queries. Catalogues are built on the simple idea of viewable and content manageable entries on a website, and there's basic support for field relationships, but that's a long way from a full database system, and it's a long way from a professional database designer properly optimising things.
+The truth is, [url="there is a lot to know about database design"]https://www.amazon.com/s?k=database+design&ref=nb_sb_noss[/url]. There are all kinds of theoretical concepts, and practical requirements of how to optimise querying by using indexes and optimising queries. Catalogues are built on the simple idea of viewable and content manageable entries on a website, and there's basic support for field relationships, but that's a long way from a full database system, and it's a long way from a professional database designer properly optimising things.
 
 Trust me, any of the successful complex database systems you've seen on existing websites were built by a professional team.
 

@@ -158,6 +158,17 @@ class _broken_links_test_set extends cms_test_case
 
     protected function check_link($url, $context)
     {
+        /*// This is just for temporary testing of a list of broken links
+        if (!in_array($url, [
+        ])) {
+            return;
+        }*/
+
+        $docs_stub =  get_brand_base_url() . '/docs' . strval(cms_version()) . '/';
+        if ((substr($url, strlen($docs_stub)) == $docs_stub) && (cms_version_branch_status() == VERSION_ALPHA)) {
+            return;
+        }
+
         if (strpos($url, '{') !== false) {
             return;
         }

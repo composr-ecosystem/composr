@@ -68,6 +68,8 @@ $justification = get_param_string('justification', '', INPUT_FILTER_GET_COMPLEX)
 
 $urls = [];
 
+set_mass_import_mode(); // We will be adding multiple categories of the same name
+
 // Bugs list
 
 if (!$is_bleeding_edge) {

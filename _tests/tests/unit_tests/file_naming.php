@@ -100,7 +100,7 @@ class file_naming_test_set extends cms_test_case
                 }
             }
 
-            $ok = preg_match('#^[\w/]*(\.\w+)?$#', $path);
+            $ok = preg_match('#^[\w/]*(\.\w+)?(\.(gz|br))?$#', $path);
 
             $this->assertTrue($ok, 'File naming not matching convention for: ' . $path);
         }

@@ -143,7 +143,7 @@ PHP;
         if (!cns_may_make_private_topic()) {
             $send_url = new Tempcode();
         }
-        $view_url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'), [], true, false, false, 'tab--pts');
+        $view_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], true, false, false, 'tab--pts');
         return do_template('BLOCK_SIDE_CNS_PRIVATE_TOPICS', [
             '_GUID' => '9376cd47884a78f3d1914c176b67ee28',
             'BLOCK_ID' => $block_id,

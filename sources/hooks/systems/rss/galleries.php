@@ -69,7 +69,8 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('video', 'r.id');
         }
-        $rows1 = $GLOBALS['SITE_DB']->query('SELECT r.*,\'video\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC', $max);
+        $query = 'SELECT r.*,\'video\' AS type,r.id AS id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $rows1 = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $extra_join = '';
         $extra_where = '';
@@ -81,7 +82,8 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('image', 'r.id');
         }
-        $rows2 = browser_matches('itunes') ? [] : $GLOBALS['SITE_DB']->query('SELECT r.*,\'image\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC', $max);
+        $query = 'SELECT r.*,\'image\' AS type FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $rows2 = browser_matches('itunes') ? [] : $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $rows = array_merge($rows1, $rows2);
         foreach ($rows as $row) {

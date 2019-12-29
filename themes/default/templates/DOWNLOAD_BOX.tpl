@@ -29,7 +29,7 @@
 
 	<div class="hide-if-in-panel">
 		{+START,IF_NON_EMPTY,{IMGCODE}}
-			<div class="download-box-pic"><a href="{URL*}">{IMGCODE}</a></div>
+			<div class="download-box-pic"><a href="{URL*}">{$TRIM,{IMGCODE}}</a></div>
 		{+END}
 
 		<div class="download-box-description{+START,IF_NON_EMPTY,{IMGCODE}} pic{+END}">

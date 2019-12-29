@@ -336,7 +336,7 @@ class Module_topics
 
         // Show it worked / Refresh
         if ($forum_id === null) {
-            $url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'), [], false, false, false, 'tab--pts');
+            $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, 'tab--pts');
         } else {
             $url = build_url(['page' => 'forumview', 'id' => $forum_id], get_module_zone('forumview'));
         }
@@ -1283,7 +1283,7 @@ class Module_topics
 
         // Show it worked / Refresh
         $title = get_screen_title('DELETE_TOPICS_AND_POSTS');
-        $url = build_url(['page' => 'members', 'type' => 'view', 'id' => get_member()], get_module_zone('members'));
+        $url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'));
         return redirect_screen($title, $url, do_lang_tempcode('SUCCESS'));
     }
 

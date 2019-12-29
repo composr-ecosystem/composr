@@ -64,7 +64,7 @@ class Hook_points_support_credits
         $points_gained_credits = @intval($_points_gained_credits);
 
         return [
-            'LABEL' => do_lang('SPECIAL_CPF__cms_support_credits'), 
+            'LABEL' => do_lang('customers:SPECIAL_CPF__cms_support_credits'), 
             'COUNT' => integer_format($points_gained_credits), 
             'POINTS_EACH' => integer_format(50), 
             'POINTS_TOTAL' => integer_format($points_gained_credits * 50)

@@ -81,7 +81,7 @@ class Block_main_member_bar
 
             // Any unread PT-PPs?
             $pt_extra = ($num_unread_pps == 0) ? new Tempcode() : do_lang_tempcode('NUM_UNREAD', escape_html(integer_format($num_unread_pps)));
-            $private_topic_url = build_url(['page' => 'members', 'type' => 'view', 'id' => $member_id], get_module_zone('members'), [], true, false, false, 'tab--pts');
+            $private_topic_url = build_url(['page' => 'members', 'type' => 'view', 'id' => ($member_id == get_member()) ? null : $member_id], get_module_zone('members'), [], true, false, false, 'tab--pts');
 
             $bar = do_template('CNS_MEMBER_BAR', [
                 '_GUID' => 's3kdsadf0p3wsjlcfksdj',

@@ -18,7 +18,8 @@
 		</div>
 	</div>
 
-	{+START,IF_NON_EMPTY,{SYNDICATIONS}}
+	{$SET,show_syndication_options,{$AND,{$IS_NON_EMPTY,{SYNDICATIONS}},{$EQ,{MEMBER_ID},{$MEMBER}}}}
+	{+START,IF,{$GET,show_syndication_options}}
 		<p>{!CREATE_SYNDICATION_LINK}</p>
 
 		<form action="{$PAGE_LINK*,_SEARCH:members:view:{MEMBER_ID}}#tab--activities" method="post">

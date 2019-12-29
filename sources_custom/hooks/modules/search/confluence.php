@@ -228,5 +228,5 @@ class Hook_search_confluence extends FieldsSearchHook
         $out = nl2br($out);
         $out = preg_replace('#@@@hl@@@(.*)@@@endhl@@@#U', '<span class="comcode_highlight">\1</span>', $out);
         return $out;
-     }
+    }
 }

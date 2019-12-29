@@ -427,6 +427,7 @@ function do_set()
         $backup_path .= strval(mt_rand(0, mt_getrandmax()));
     }
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
+    @chmod($backup_path, 0600);
     if ($copied_ok !== false) {
         co_sync_file($backup_path);
     }

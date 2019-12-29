@@ -123,7 +123,7 @@ PHP;
             }
         }
 
-        $GLOBALS['NO_QUERY_LIMIT'] = true;
+        push_query_limiting(false);
 
         $block_id = get_block_id($map);
 
@@ -516,6 +516,8 @@ PHP;
 
         $tpl = ($display_mode == 'listing') ? 'BLOCK_MAIN_MEMBERS' : 'BLOCK_MAIN_MEMBERS_COMPLEX';
 
+        pop_query_limiting();
+
         return do_template($tpl, [
             '_GUID' => $guid,
             'BLOCK_ID' => $block_id,
@@ -525,7 +527,7 @@ PHP;
             'SORT_ORDER' => $sort_order,
             'FILTERS_ROW_A' => $filters_row_a,
             'FILTERS_ROW_B' => $filters_row_b,
-            'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0/*avoid possibility of rounding issues as pixels won't divide perfectly*/ / floatval($per_row)) . '%'),
+            'ITEM_WIDTH' => ($per_row === null) ? '' : (float_to_raw_string(99.0 /*avoid possibility of rounding issues as pixels won't divide perfectly*/ / floatval($per_row)) . '%'),
             'PER_ROW' => ($per_row === null) ? '' : strval($per_row),
             'DISPLAY_MODE' => $display_mode,
             'MEMBER_BOXES' => $member_boxes,

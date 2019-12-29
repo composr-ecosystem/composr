@@ -417,7 +417,9 @@ function generate_captcha()
 
     $session = get_session_id();
     if ($session == '') {
-        error_log('CAPTCHA generated aainst blank session - static caching is misconfigured');
+        if (php_function_allowed('error_log')) {
+            error_log('CAPTCHA generated aainst blank session - static caching is misconfigured');
+        }
     }
 
     // Clear out old codes
