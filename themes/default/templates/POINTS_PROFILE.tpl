@@ -52,7 +52,7 @@
 <h2>{!POINTS_RECEIVED}</h2>
 
 {+START,IF_NON_EMPTY,{TO}}
-	{$SET,ajax_points_profile_to_wrapper,ajax_points_profile_to_wrapper_{$RAND%}}
+	{$SET,ajax_points_profile_to_wrapper,ajax-points-profile-to-wrapper-{$RAND%}}
 	<div id="{$GET*,ajax_points_profile_to_wrapper}">
 		{TO}
 	</div>

@@ -39,7 +39,7 @@ function points_profile($member_id_of, $member_id_viewing)
     }
 
     // Get info about viewed user
-    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, false, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
+    $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true, USERNAME_GUEST_AS_DEFAULT | USERNAME_DEFAULT_ERROR);
 
     $profile_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id_of, true);
 

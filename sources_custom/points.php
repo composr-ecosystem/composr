@@ -11,9 +11,7 @@
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
  * @package    group_points
- * @package    composr_homesite_support_credits
  */
-
 
 function get_group_points()
 {
