@@ -1147,7 +1147,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_member_join_timestamp($member)
     {
-        return $this->get_member_row_field($member, 'm_join_time');
+        $ret = $this->get_member_row_field($member, 'm_join_time');
+        if ($ret === null) {
+            $ret = time();
+        }
+        return $ret;
     }
 
     /**
@@ -1195,7 +1199,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_post_count($member)
     {
-        return $this->get_member_row_field($member, 'm_cache_num_posts');
+        $ret = $this->get_member_row_field($member, 'm_cache_num_posts');
+        if ($ret === null) {
+            $ret = 0;
+        }
+        return $ret;
     }
 
     /**
@@ -1206,7 +1214,11 @@ class Forum_driver_cns extends Forum_driver_base
      */
     public function get_topic_count($member)
     {
-        return $this->db->query_select_value('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
+        $ret = $this->db->query_select_value_if_there('f_topics', 'COUNT(*)', ['t_cache_first_member_id' => $member]);
+        if ($ret === null) {
+            $ret = 0;
+        }
+        return $ret;
     }
 
     /**
