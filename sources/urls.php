@@ -1190,18 +1190,6 @@ function page_link_to_tempcode_url($page_link)
 }
 
 /**
- * Convert a local page file path to a written page-link.
- *
- * @param  string $page The path
- * @return string The page-link (blank: could not convert)
- */
-function page_path_to_page_link($page)
-{
-    require_code('urls2');
-    return _page_path_to_page_link($page);
-}
-
-/**
  * Load up hooks needed to detect how to use monikers.
  */
 function load_moniker_hooks()
@@ -1640,4 +1628,40 @@ function normalise_idn_url($url)
     require_code('urls_simplifier');
     $coder_ob = new HarmlessURLCoder();
     return $coder_ob->encode($url);
+}
+
+/**
+ * Find the page-link of the current screen.
+ *
+ * @param  boolean $include_keep_components Whether to include keep_* components in the URL
+ * @return string Page-link
+ */
+function get_current_page_link($include_keep_components = true)
+{
+    $page_link = get_zone_name() . ':' . get_page_name();
+    $type = get_param_string('type', null);
+    if ($type !== null) {
+        $page_link .= ':' . $type;
+    }
+    $id = get_param_string('id', null);
+    if ($id !== null) {
+        if ($type === null) {
+            $page_link .= ':id=' . $id;
+        } else {
+            $page_link .= ':' . $id;
+        }
+    }
+    foreach ($_GET as $key => $val) {
+        if (($key == 'page') || ($key == 'type') || ($key == 'id')) {
+            continue;
+        }
+        if (is_array($val)) {
+            continue;
+        }
+        if ((substr($key, 0, 5) == 'keep_') && ((!$include_keep_components) || (!skippable_keep($key, $val)))) {
+            continue;
+        }
+        $page_link .= ':' . $key . '=' . $val;
+    }
+    return $page_link;
 }

@@ -91,6 +91,11 @@ class Block_main_contact_simple
                 enforce_captcha();
             }
 
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_contact_form_stats(get_page_name());
+            }
+
             // Send e-mail
             form_to_email(null, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, null, $to_email, true);
 

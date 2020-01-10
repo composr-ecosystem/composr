@@ -1426,9 +1426,6 @@ function _access_denied($class, $param, $force_login)
         throw new CMSException($message);
     }
 
-    require_code('site');
-    log_stats('/access_denied', 0);
-
     if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_integer('keep_fatalistic', 0) != 0)) {
         fatal_exit($message);
     }

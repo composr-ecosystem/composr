@@ -695,11 +695,11 @@ class Module_admin
                     if ($this->_keyword_match($n2)) {
                         $upload_max_filesize = (ini_get('upload_max_filesize') == '0') ? do_lang('NA') : clean_file_size(php_return_bytes(ini_get('upload_max_filesize')));
                         $post_max_size = (ini_get('post_max_size') == '0') ? do_lang('NA') : clean_file_size(php_return_bytes(ini_get('post_max_size')));
-                        $_group_description = do_lang('CONFIG_GROUP_DESCRIP_' . $group, escape_html($post_max_size), escape_html($upload_max_filesize), null, null, false);
+                        $_group_description = do_lang('CONFIG_GROUP_DESCRIP_' . $group, escape_html($post_max_size), escape_html($upload_max_filesize), escape_html(get_base_url()), null, false);
                         if ($_group_description === null) {
                             $group_description = new Tempcode();
                         } else {
-                            $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group, escape_html($post_max_size), escape_html($upload_max_filesize), false);
+                            $group_description = do_lang_tempcode('CONFIG_GROUP_DESCRIP_' . $group, escape_html($post_max_size), escape_html($upload_max_filesize), escape_html(get_base_url()));
                         }
                         $_url = build_url(['page' => 'admin_config', 'type' => 'category', 'id' => $category_codename], get_module_zone('admin_config'));
                         $url = $_url->evaluate();

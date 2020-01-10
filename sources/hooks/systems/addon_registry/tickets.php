@@ -161,6 +161,7 @@ class Hook_addon_registry_tickets
             'sources/blocks/main_contact_us.php',
             'themes/default/javascript/tickets.js',
             'sources/hooks/systems/actionlog/tickets.php',
+            'sources/hooks/modules/admin_stats/support_tickets.php',
         ];
     }
 

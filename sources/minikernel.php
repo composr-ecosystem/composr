@@ -178,7 +178,6 @@ function fixup_bad_php_env_vars_pre()
         'HTTP_PREFER',
         'HTTP_RANGE',
         'HTTP_REFERER',
-        'HTTP_UA_OS',
         'HTTP_USER_AGENT',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_X_FORWARDED_PROTO',
@@ -226,6 +225,8 @@ function fixup_bad_php_env_vars()
     if ((empty($_SERVER['SERVER_ADDR'])) && (!empty($_SERVER['LOCAL_ADDR']))) {
         $_SERVER['SERVER_ADDR'] = $_SERVER['LOCAL_ADDR'];
     }
+
+    $_SERVER['HTTP_USER_AGENT'] = urldecode($_SERVER['HTTP_USER_AGENT']);
 
     $document_root = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $_SERVER['DOCUMENT_ROOT'];
     if (empty($document_root)) {

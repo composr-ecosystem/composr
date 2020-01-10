@@ -225,8 +225,6 @@ function closed_site_exit()
 
         set_http_status_code(503);
 
-        log_stats('/closed', 0);
-
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 
         list($login_url, , $join_url) = get_login_url();

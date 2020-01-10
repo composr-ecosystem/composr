@@ -29,34 +29,39 @@ function init__google_analytics()
 
 function google_analytics_initialise($weak_test = false)
 {
-    $property_id = get_value('ga_property_id', null, true);
-    if ($property_id === null) {
-        $msg = 'You need to set the Google Analytics <strong>View ID</strong> (this is different from the property ID which starts with <kbd>UA</kbd>) in Commandr with... <kbd>:set_value(\'ga_property_id\', \'SOME_NUMBER\');</kbd>';
+    $property_id = get_option('ga_property_view_id');
+    if ($property_id == '') {
+        $msg = 'You need to set the Google Analytics <strong>View ID</strong> (this is different from the property ID which starts with <kbd>UA</kbd>).';
         return paragraph(make_string_tempcode($msg), 'red-alert');
     }
 
     if ((get_option('google_apis_client_id') == '') || (get_option('google_apis_client_secret') == '')) {
-        $msg = 'You need to configure the Google Client ID & Client Secret in the configuration';
+        $msg = 'You need to configure the Google Client ID & Client Secret in the configuration.';
         return paragraph(make_string_tempcode($msg), 'red-alert');
     }
 
     require_code('oauth');
-    if ($weak_test) {
-        $refresh_token = get_oauth_refresh_token('google_analytics');
-        if ($refresh_token === null) {
-            $msg = 'You need to configure the Google Analytics oAuth connection';
-            return paragraph(make_string_tempcode($msg), 'red-alert');
-        }
 
+    if ($weak_test) {
+        static $refresh_token = null;
+        if ($refresh_token === null) {
+            $refresh_token = get_oauth_refresh_token('google_analytics');
+            if ($refresh_token === null) {
+                $msg = 'You need to configure the Google Analytics oAuth connection.';
+                return paragraph(make_string_tempcode($msg), 'red-alert');
+            }
+        }
         return $refresh_token;
-    } else {
+    }
+
+    static $access_token = null;
+    if ($access_token === null) {
         $access_token = refresh_oauth2_token('google_analytics', false);
         if ($access_token === null) {
-            $msg = 'You need to configure the Google Analytics oAuth connection';
+            $msg = 'You need to configure the Google Analytics oAuth connection.';
             return paragraph(make_string_tempcode($msg), 'red-alert');
         }
     }
-
     return $access_token;
 }
 
@@ -86,14 +91,6 @@ function enumerate_google_analytics_metrics()
         'exit_pages' => 'Exit pages',
         'popular_pages' => 'Popular pages',
     ];
-
-    require_code('oauth');
-    $refresh_token = get_oauth_refresh_token('google_search_console');
-    if ($refresh_token !== null) {
-        $ret += [
-            'keywords' => 'Search keywords',
-        ];
-    }
 
     return $ret;
 }
@@ -139,9 +136,6 @@ function _render_google_analytics_tabs($metric, $days, $access_token)
             'referral_mediums',
             'popular_pages',
         ];
-        if (array_key_exists('keywords', $all_metrics)) {
-            $metrics[] = 'keywords';
-        }
     } else {
         $metrics = ($metric == '*') ? array_keys($all_metrics) : explode(',', $metric);
     }
@@ -178,11 +172,7 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
         $id = md5(uniqid('', true));
     }
 
-    if ($metric == 'keywords') {
-        return _render_google_search_console_keywords($id, $days, $under_tab);
-    }
-
-    $property_id = get_value('ga_property_id', null, true);
+    $property_id = get_option('ga_property_view_id');
 
     $extra = [];
     switch ($metric) {
@@ -378,75 +368,5 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
         'METRICS' => $metrics,
         'EXTRA' => $extra,
         'CHART_TYPE' => $chart_type,
-    ]);
-}
-
-// https://developers.google.com/webmaster-tools/search-console-api-original/v3/searchanalytics/query#dimensionFilterGroups.filters.dimension
-
-function _render_google_search_console_keywords($id, $days, $under_tab)
-{
-    if ($id === null) {
-        $id = md5(uniqid('', true));
-    }
-
-    require_code('oauth');
-    $access_token = refresh_oauth2_token('google_search_console', false);
-    if ($access_token === null) {
-        $msg = 'You need to configure the Google Search Console oAuth connection';
-        return paragraph(make_string_tempcode($msg), 'red-alert');
-    }
-
-    $base_url = get_base_url();
-    $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($base_url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
-
-    $_json = [
-        'startDate' => date('Y-m-d', time() - 60 * 60 * 24 * $days),
-        'endDate' => date('Y-m-d'),
-        'dimensions' => ['query'],
-        'rowLimit' => 30,
-    ];
-    $json = json_encode($_json);
-
-    require_code('character_sets');
-    $json = convert_to_internal_encoding($json, get_charset(), 'utf-8');
-
-    $trigger_error = (!$under_tab) && (get_page_name() == 'admin_stats');
-    $_result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error, 'post_params' => [$json], 'raw_post' => true, 'raw_content_type' => 'application/json']);
-    if ($_result === null) {
-        $msg = 'Failed to query the Google Search Console API';
-        return paragraph(make_string_tempcode($msg), 'red-alert');
-    }
-    $result = json_decode($_result, true);
-
-    require_code('templates_columned_table');
-
-    $_header_row = [
-        'Query',
-        'Clicks',
-        'Impressions',
-        'Click-through rate',
-        'Position',
-    ];
-    $header_row = columned_table_header_row($_header_row);
-
-    $rows = new Tempcode();
-    foreach ($result['rows'] as $row) {
-        $values = [
-            $row['keys'][0],
-            integer_format(intval($row['clicks'])),
-            integer_format(intval($row['impressions'])),
-            float_format($row['ctr'] * 100.0) . '%',
-            integer_format(intval($row['position'])),
-        ];
-        $rows->attach(columned_table_row($values, true));
-    }
-
-    $table = do_template('COLUMNED_TABLE', ['_GUID' => '00c9731002eea4822ca91d21a4d25fc0', 'HEADER_ROW' => $header_row, 'ROWS' => $rows]);
-
-    return do_template('GOOGLE_SEARCH_CONSOLE_KEYWORDS', [
-        '_GUID' => 'c7ff763455bd1fc31bab7a70c6859127',
-        'ID' => $id,
-        'TABLE' => $table,
-        'DAYS' => strval($days),
     ]);
 }

@@ -2369,13 +2369,7 @@ function ecv2_SELF_PAGE_LINK($lang, $escaped, $param)
     $value = '';
     global $IN_SELF_ROUTING_SCRIPT;
     if ($IN_SELF_ROUTING_SCRIPT) {
-        $value = get_zone_name() . ':' . get_page_name();
-        foreach ($_GET as $key => $val) {
-            if ($key == 'page' || is_array($val) || substr($key, 0, 5) == 'keep_') {
-                continue;
-            }
-            $value .= ':' . $key . '=' . $val;
-        }
+        $value = get_current_page_link(false);
     }
 
     if ($escaped !== []) {

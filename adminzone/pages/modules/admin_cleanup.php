@@ -115,46 +115,57 @@ class Module_admin_cleanup
         $url = build_url(['page' => '_SELF', 'type' => 'rebuild'], '_SELF');
 
         $checkbox_ids = [];
+
         $_fields_cache = [];
-        $_fields_optimise = [];
         $fields_cache_expand = true;
+
+        $_fields_optimise = [];
         $fields_optimise_expand = false;
+
+        $_fields_other = [];
+        $fields_other_expand = false;
+
         $hooks = find_all_hook_obs('systems', 'cleanup', 'Hook_cleanup_');
         foreach ($hooks as $hook => $object) {
             $output = $object->info();
             if ($output !== null) {
                 $is_ticked = (get_param_string('tick', null) === $hook);
                 $tick = form_input_tick($output['title'], $output['description'], 'cleanup_' . $hook, $is_ticked);
-                if ($output['type'] == 'cache') {
-                    $_fields_cache[$output['title']->evaluate()] = $tick;
-                    $checkbox_ids[] = '#cleanup_' . $hook;
-                    if ($is_ticked) {
-                        $fields_cache_expand = true;
-                    }
-                } else {
-                    $_fields_optimise[$output['title']->evaluate()] = $tick;
-                    if ($is_ticked) {
-                        $fields_optimise_expand = true;
-                    }
+                switch ($output['type']) {
+                    case 'cache':
+                        $_fields_cache[$output['title']->evaluate()] = $tick;
+                        $checkbox_ids[] = '#cleanup_' . $hook;
+                        if ($is_ticked) {
+                            $fields_cache_expand = true;
+                        }
+                        break;
+
+                    case 'optimise':
+                        $_fields_optimise[$output['title']->evaluate()] = $tick;
+                        if ($is_ticked) {
+                            $fields_optimise_expand = true;
+                        }
+                        break;
+
+                    case 'other':
+                        $_fields_other[$output['title']->evaluate()] = $tick;
+                        if ($is_ticked) {
+                            $fields_other_expand = true;
+                        }
+                        break;
+
+                    default:
                 }
             }
         }
 
-        cms_mb_ksort($_fields_cache, SORT_NATURAL | SORT_FLAG_CASE);
-        cms_mb_ksort($_fields_optimise, SORT_NATURAL | SORT_FLAG_CASE);
+        $fields = new Tempcode();
 
+        cms_mb_ksort($_fields_cache, SORT_NATURAL | SORT_FLAG_CASE);
         $fields_cache = new Tempcode();
         foreach ($_fields_cache as $tick) {
             $fields_cache->attach($tick);
         }
-
-        $fields_optimise = new Tempcode();
-        foreach ($_fields_optimise as $tick) {
-            $fields_optimise->attach($tick);
-        }
-
-        $fields = new Tempcode();
-
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '3ddb387dba8c42ac4ef7b85621052e11',
             'SECTION_HIDDEN' =>  !$fields_cache_expand,
@@ -163,13 +174,30 @@ class Module_admin_cleanup
         ]));
         $fields->attach($fields_cache);
 
+        cms_mb_ksort($_fields_optimise, SORT_NATURAL | SORT_FLAG_CASE);
+        $fields_optimise = new Tempcode();
+        foreach ($_fields_optimise as $tick) {
+            $fields_optimise->attach($tick);
+        }
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
             '_GUID' => '4a9d6e722f246887160c444a062a9d00',
             'SECTION_HIDDEN' =>  !$fields_optimise_expand,
             'TITLE' => do_lang_tempcode('CLEANUP_PAGE_EXP_OPTIMISERS'),
-            'HELP' => do_lang_tempcode('CLEANUP_PAGE_OPTIMISERS', escape_html(find_script('upgrader'))),
+            'HELP' => do_lang_tempcode('CLEANUP_PAGE_MISC_TOOLS', escape_html(find_script('upgrader'))),
         ]));
         $fields->attach($fields_optimise);
+
+        cms_mb_ksort($_fields_other, SORT_NATURAL | SORT_FLAG_CASE);
+        $fields_other = new Tempcode();
+        foreach ($_fields_other as $tick) {
+            $fields_other->attach($tick);
+        }
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
+            'SECTION_HIDDEN' =>  !$fields_other_expand,
+            'TITLE' => do_lang_tempcode('OTHER'),
+            'HELP' => do_lang_tempcode('CLEANUP_PAGE_MISC_TOOLS', escape_html(find_script('upgrader'))),
+        ]));
+        $fields->attach($fields_other);
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '85bfdf171484604594a157aa8983f920',

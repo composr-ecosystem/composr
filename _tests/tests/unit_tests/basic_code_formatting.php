@@ -135,7 +135,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/skitter.js',
                 'themes/default/javascript_custom/sortable_tables.js',
                 'themes/default/javascript_custom/unslider.js',
-                'themes/default/javascript_custom/charts.js',
+                'themes/default/javascript/charts.js',
                 '_tests/codechecker/pom.xml',
                 '_tests/codechecker/nbactions.xml',
             ];
@@ -203,7 +203,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'themes/default/javascript_custom/skitter.js',
                 'themes/default/javascript_custom/sortable_tables.js',
                 'themes/default/javascript_custom/unslider.js',
-                'themes/default/javascript_custom/charts.js',
+                'themes/default/javascript/charts.js',
                 'themes/default/javascript_custom/confluence2.js',
                 'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
                 'data_custom/rate_limiter.php',

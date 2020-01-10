@@ -110,6 +110,7 @@ The following special POST fields are supported:
  - [tt]email[/tt]: E-mail address of sender (default is the e-mail address of the current user or staff address if there is none)
  - [tt]name[/tt]: Name of sender (default is the username of the current user)
  - [tt]to_members_email[/tt]: Member to e-mail. This is not available by default. See the Code Book for the [tt]allow_member_mail_relay[/tt] option if you need the form to work for e-mailing regular members.
+ - [tt]form_name[/tt]: Form name (if you want to name the form for the stats addon to show data against).
  - [tt]redirect[/tt]: URL to redirect to after the relay is done (if non-set then it will show a success message)
 
 Any other fields (except certain special reserved names) you pass will become part of the post body. Pass [tt]label_for__<field_name>[/tt] to label the fields for a neater e-mail (optional).

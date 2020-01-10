@@ -820,7 +820,7 @@ function _do_lang($codename, $parameter1 = null, $parameter2 = null, $parameter3
                     } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '1|')) {
                         $exploded = explode('|', $out[$at - 2]);
                         $_parameter = $parameter1->evaluate();
-                        $_parameter_denum = str_replace(',', '', $_parameter);
+                        $_parameter_denum = ((isset($_parameter[0])) && (is_numeric($_parameter[0]))) ? $_parameter[0] : $_parameter;
                         $ret->attach((in_array(is_numeric($_parameter_denum) ? $_parameter_denum : cms_mb_strtolower(cms_mb_substr($_parameter, 0, 1)), $non_plural_non_vowel)) ? $exploded[1] : $exploded[2]);
                     } elseif (($plural_or_vowel_check) && (substr($out[$at - 2], 0, 2) === '2|')) {
                         $exploded = explode('|', $out[$at - 2]);

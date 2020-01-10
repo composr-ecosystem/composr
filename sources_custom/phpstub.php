@@ -299,9 +299,10 @@ function array_shift(&$array)
  * @param  array $array The array
  * @param  integer $offset The offset
  * @param  ?integer $length The length (null: up to the end of the array)
+ * @param  boolean $preserve_keys When set to TRUE keys will be preserved. Default is FALSE which will reindex the slice numerically.
  * @return array The slice
  */
-function array_slice($array, $offset, $length = null)
+function array_slice($array, $offset, $length = null, $preserve_keys = false)
 {
     return [];
 }

@@ -378,7 +378,6 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/profiles_tabs_edit/.htaccess',
             'sources_custom/hooks/systems/profiles_tabs_edit/.htaccess',
             'sources/hooks/systems/commandr_fs/members.php',
-            'sources/hooks/modules/admin_stats/cns_demographics.php',
             'pages/modules/join.php',
             'sources/cns_join.php',
             'pages/modules/lost_password.php',
@@ -479,6 +478,10 @@ class Hook_addon_registry_core_cns
             'themes/default/images/cns_post_map/middle_mesg_level.svg',
             'sources/hooks/systems/config/is_on_post_map.php',
             'sources/hooks/systems/config/is_on_automatic_mark_topic_read.php',
+
+            'sources/hooks/modules/admin_stats/cns_forum.php',
+            'sources/hooks/modules/admin_stats/cns_members.php',
+            'sources/hooks/modules/admin_stats/invites.php',
         ];
     }
 

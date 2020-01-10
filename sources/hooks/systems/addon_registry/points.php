@@ -164,6 +164,8 @@ class Hook_addon_registry_points
             'sources/hooks/systems/commandr_fs_extended_member/point_gifts_given.php',
             'themes/default/javascript/points.js',
             'sources/hooks/systems/actionlog/points.php',
+
+            'sources/hooks/modules/admin_stats/point_gifts.php',
         ];
     }
 

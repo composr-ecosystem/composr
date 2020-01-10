@@ -895,6 +895,15 @@ class Module_tickets
             $post = ticket_wrap_with_email_address($post, $email, ($ticket_type_details['guest_emails_mandatory'] == 1));
         }
 
+        // Stats logging...
+
+        if ($ticket_type_id === null) {
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_contact_form_stats($ticket_type_details['ticket_type_name']);
+            }
+        }
+
         // Add post to ticket...
 
         $ticket_url = ticket_add_post($ticket_id, $ticket_type_id, $_title, $post, $staff_only);

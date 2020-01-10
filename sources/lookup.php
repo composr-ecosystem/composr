@@ -127,7 +127,9 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
         return new Tempcode();
     }
 
-    $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'the_page' => do_lang_tempcode('PAGE')];
+    require_lang('zones');
+
+    $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'page_link' => do_lang_tempcode('PAGE_LINK')];
     if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
     }
@@ -142,33 +144,16 @@ function get_stats_track($member, $ip, $start = 0, $max = 50, $sortable = 'date_
         $query .= 'ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\'';
     }
     $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE ' . $query, false, true);
-    $rows = $GLOBALS['SITE_DB']->query('SELECT the_page,date_and_time,s_get,post,browser,operating_system FROM ' . get_table_prefix() . 'stats WHERE ' . $query . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start, false, true);
+    $rows = $GLOBALS['SITE_DB']->query('SELECT page_link,date_and_time,post,browser,operating_system FROM ' . get_table_prefix() . 'stats WHERE ' . $query . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start, false, true);
 
     $out = new Tempcode();
     require_code('templates_results_table');
-    $header_row = results_header_row([do_lang_tempcode('PAGE'), do_lang_tempcode('DATE'), do_lang_tempcode('PARAMETERS'), do_lang_tempcode('USER_AGENT'), do_lang_tempcode('USER_OS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
+    $header_row = results_header_row([do_lang_tempcode('PAGE_LINK'), do_lang_tempcode('DATE'), do_lang_tempcode('USER_AGENT'), do_lang_tempcode('USER_OS')], $sortables, 'sort', $sortable . ' ' . $sort_order);
     foreach ($rows as $myrow) {
         $date = get_timezoned_date_time($myrow['date_and_time']);
-        $page = $myrow['the_page'];
+        $page_converted = $myrow['page_link'];
 
-        $page_converted = convert_page_string_to_page_link($myrow['the_page'], true);
-
-        if ($myrow['s_get'] !== null) {
-            $get = $myrow['s_get'];
-            if (strpos($page_converted, ':') !== false) {
-                $get = str_replace('<param>page=' . substr($page_converted, strpos($page_converted, ':') + 1) . '</param>' . "\n", '', $get);
-            }
-            $data = escape_html($get) . (($myrow['post'] == '') ? '' : ', ') . escape_html($myrow['post']);
-            $data = str_replace('&lt;param&gt;', '', str_replace('&lt;/param&gt;', ', ', $data));
-            if (substr($data, -3) == ', ' . "\n") {
-                $data = substr($data, 0, strlen($data) - 3);
-            }
-            $parameters = symbol_truncator([$data, 35, '1'], 'left');
-        } else {
-            $parameters = escape_html('?');
-        }
-
-        $out->attach(results_entry([escape_html($page_converted), escape_html($date), $parameters, escape_html($myrow['browser']), escape_html($myrow['operating_system'])], false));
+        $out->attach(results_entry([escape_html($page_converted), escape_html($date), escape_html($myrow['browser']), escape_html($myrow['operating_system'])], false));
     }
     return results_table(do_lang_tempcode('RESULTS'), $start, 'start', $max, 'max', $max_rows, $header_row, $out, $sortables, $sortable, $sort_order, 'sort');
 }
@@ -391,7 +376,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     if (addon_installed('stats')) {
         $history = [];
 
-        $select = 'a.the_page,a.s_get,a.date_and_time,a.title,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system';
+        $select = 'a.page_link,a.date_and_time,a.title,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system';
 
         $where = db_string_equal_to('ip', $ip) . ' AND member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (!is_guest($member_id)) {
@@ -407,8 +392,8 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
         if ($advanced) {
             $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a WHERE ' . $where;
         } else { // Filter to one-result-per-page
-            $inner_sql = 'SELECT the_page,MAX(date_and_time) AS date_and_time FROM ' . $tp . 'stats WHERE ' . $where . ' GROUP BY the_page';
-            $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a JOIN (' . $inner_sql . ') b ON a.the_page=b.the_page AND a.date_and_time=b.date_and_time WHERE ' . $where . ' GROUP BY the_page';
+            $inner_sql = 'SELECT page_link,MAX(date_and_time) AS date_and_time FROM ' . $tp . 'stats WHERE ' . $where . ' GROUP BY page_link';
+            $sql = 'SELECT ' . $select . ' FROM ' . $tp . 'stats a JOIN (' . $inner_sql . ') b ON a.page_link=b.page_link AND a.date_and_time=b.date_and_time WHERE ' . $where . ' GROUP BY page_link';
         }
 
         $pages = $GLOBALS['SITE_DB']->query($sql . ' ORDER BY date_and_time DESC', 50);
@@ -433,10 +418,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
                 continue;
             }
 
-            if ($myrow['the_page'] == '/access_denied') {
-                continue;
-            }
-            if (basename($myrow['the_page']) == '404.txt') {
+            if (basename($myrow['page_link']) == ':404') {
                 continue;
             }
 
@@ -444,15 +426,8 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
 
             $h[$l_date_time] = get_timezoned_date(tz_time($myrow['date_and_time'], get_server_timezone()), false);
 
-            $page_link = convert_page_string_to_page_link($myrow['the_page']);
+            $page_link = $myrow['page_link'];
             list($zone, $attributes) = page_link_decode($page_link);
-            $matches = [];
-            $num_matches = preg_match_all('#<param>(\w+)=(.*)</param>#Us', $myrow['s_get'], $matches);
-            for ($i = 0; $i < $num_matches; $i++) {
-                if ($matches[1][$i] != 'page') {
-                    $attributes[html_entity_decode($matches[1][$i], ENT_QUOTES)] = html_entity_decode($matches[2][$i], ENT_QUOTES);
-                }
-            }
             $h[$l_url] = static_evaluate_tempcode(build_url($attributes, $zone));
 
             $h[$l_title] = $myrow['title'];
@@ -499,28 +474,4 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     //$data['Cookie'] = $_COOKIE;   Don't want to pass this out too freely, not useful anyway
 
     return $data;
-}
-
-/**
- * Convert a stats page path to a page-link.
- *
- * @param  string $page The page string
- * @param  boolean $show_lang Whether to show the language (will not be a proper page-link in this case)
- * @return string Page-link
- */
-function convert_page_string_to_page_link($page, $show_lang = false)
-{
-    $page_converted = preg_replace('#(^|/)pages/.*/#', '/', $page);
-    if ($page_converted == '') {
-        return ':';
-    }
-    if ((substr($page_converted, -4) == '.php') || (substr($page_converted, -4) == '.htm') || (substr($page_converted, -4) == '.txt')) {
-        $page_converted = substr($page_converted, 0, strlen($page_converted) - 4);
-    }
-    if ((multi_lang_content()) && ($show_lang)) {
-        $page_converted = str_replace('/', ': ', $page_converted);
-    } else {
-        $page_converted = str_replace('/', ':', preg_replace('#((.*)/)?pages/.*/[' . URL_CONTENT_REGEXP . ']+/(.*)#', '$2/$3', $page_converted));
-    }
-    return $page_converted;
 }

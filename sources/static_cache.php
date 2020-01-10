@@ -374,24 +374,43 @@ function static_cache($mode)
                 require_code('caches');
                 require_code('database');
                 require_code('config');
-                $browser = cms_mb_substr(get_browser_string(), 0, 255);
-                if ((get_option('bot_stats') == '0') || ((stripos($browser, 'http:') === false) && (stripos($browser, 'bot') === false) && (get_bot_type() === null))) {
-                    load_user_stuff();
-                    $GLOBALS['SITE_DB']->query_insert('stats', [
-                        'access_denied_counter' => 0,
-                        'browser' => $browser,
-                        'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
-                        'the_page' => cms_mb_substr('/static_caching:' . serialize($_GET), 0, 255),
-                        'ip' => get_ip_address(),
-                        'session_id' => '',
-                        'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                        'date_and_time' => time(),
-                        'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
-                        's_get' => '',
-                        'post' => '',
-                        'milliseconds' => 0,
-                    ], false, true);
+
+                load_user_stuff();
+
+                global $RELATIVE_PATH;
+                $page_link = $RELATIVE_PATH . ':' . str_replace('-', '_', get_param_string('page', DEFAULT_ZONE_PAGE_NAME));
+                $type = get_param_string('type', null);
+                if ($type !== null) {
+                    $page_link .= ':' . $type;
                 }
+                $id = get_param_string('id', null);
+                if ($id !== null) {
+                    if ($type === null) {
+                        $page_link .= ':id=' . $id;
+                    } else {
+                        $page_link .= ':' . $id;
+                    }
+                }
+                foreach ($_GET as $key => $val) {
+                    if (($key == 'page') || ($key == 'type') || ($key == 'id') || (is_array($val)) || (substr($key, 0, 5) == 'keep_')) {
+                        continue;
+                    }
+                    $page_link .= ':' . $key . '=' . $val;
+                }
+
+                $GLOBALS['SITE_DB']->query_insert('stats', [
+                    'date_and_time' => time(),
+                    'page_link' => $page_link,
+                    'post' => '',
+                    'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
+                    'ip' => get_ip_address(),
+                    'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                    'session_id' => '',
+                    'browser' => cms_mb_substr(get_browser_string(), 0, 255),
+                    'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
+                    'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
+                    'milliseconds' => 0,
+                ], false, true);
             }
 
             exit();

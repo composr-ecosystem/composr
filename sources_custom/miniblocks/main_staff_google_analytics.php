@@ -22,7 +22,6 @@ if (!addon_installed__messaged('google_analytics', $error_msg)) {
 
 if (!empty($map['param'])) {
     $property_id = $map['param'];
-    set_value('ga_property_id', $property_id, true);
 }
 
 $metric = @cms_empty_safe($map['metric']) ? null : $map['metric'];

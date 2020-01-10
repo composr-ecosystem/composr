@@ -1144,6 +1144,7 @@ class Hook_import_cms_merge
                     'v_voter_id' => $vote['v_voter_id'],
                     'v_voter_ip' => $vote['v_voter_ip'],
                     'v_vote_for' => $vote['v_vote_for'],
+                    'v_vote_time' => $vote['v_vote_time'],
                 ]);
             }
 

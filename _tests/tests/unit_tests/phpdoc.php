@@ -83,6 +83,9 @@ class phpdoc_test_set extends cms_test_case
             'This function is a very basic query executor.',
             'Escape a string so it may be inserted into a query.',
             'Get a map of Composr field types, to actual database types.',
+            'Find all the graphs in a stats category.',
+            'Find metadata about stats graphs that are provided by this stats hook.',
+            'Generate final data from preprocessed data.',
         ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

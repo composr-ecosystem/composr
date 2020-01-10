@@ -65,7 +65,7 @@ tab_width = 3
 #  themes/default/javascript_custom/confluence.js themes/default/javascript_custom/confluence2.js \
 #  themes/default/javascript/widget_color.js themes/default/javascript/widget_date.js \
 #  themes/default/javascript/mediaelement-and-player.js themes/default/css/mediaelementplayer.css themes/default/javascript/sound.js \
-#  themes/default/javascript_custom/charts.js themes/default/javascript/modernizr.js themes/default/javascript/select2.js \
+#  themes/default/javascript/charts.js themes/default/javascript/modernizr.js themes/default/javascript/select2.js \
 #  themes/default/javascript_custom/skitter.js themes/default/javascript_custom/sortable_tables.js themes/default/javascript_custom/unslider.js \
 #  themes/default/javascript/plupload.js themes/default/javascript_custom/columns.js \
 #  themes/default/javascript_custom/jquery_flip.js themes/default/javascript_custom/tag_cloud.js \

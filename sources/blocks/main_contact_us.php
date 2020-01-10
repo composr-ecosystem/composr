@@ -99,6 +99,11 @@ class Block_main_contact_us
                 enforce_captcha();
             }
 
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_contact_form_stats($type);
+            }
+
             list($subject, $body, , , $from_email, $from_name) = _form_to_email([], $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);
 
             // Checking

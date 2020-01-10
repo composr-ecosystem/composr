@@ -144,6 +144,11 @@ PHP;
             require_code('antispam');
             inject_action_spamcheck(null, post_param_string('email', null));
 
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_contact_form_stats($catalogue_name);
+            }
+
             // Send e-mail
             form_to_email($subject, $subject_prefix, $subject_suffix, $body_prefix, $body_suffix, $field_results, $to_email, false);
 

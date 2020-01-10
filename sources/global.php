@@ -682,7 +682,6 @@ function fixup_bad_php_env_vars_pre()
         'HTTP_PREFER',
         'HTTP_RANGE',
         'HTTP_REFERER',
-        'HTTP_UA_OS',
         'HTTP_USER_AGENT',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_X_FORWARDED_PROTO',

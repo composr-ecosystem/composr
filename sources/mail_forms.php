@@ -39,6 +39,11 @@ function form_to_email_entry_script()
         post_param_string('post'); // We need to produce a hard-error if nothing sent
     }
 
+    if (addon_installed('stats')) {
+        require_code('stats');
+        log_contact_form_stats(post_param_string('form_name', parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH)));
+    }
+
     form_to_email();
 
     global $PAGE_NAME_CACHE;

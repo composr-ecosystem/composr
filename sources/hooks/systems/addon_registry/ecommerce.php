@@ -350,6 +350,9 @@ class Hook_addon_registry_ecommerce
             'themes/default/templates/ECOM_PAYMENT_PROCESSOR_LINKS_AUTHORIZE.tpl',
 
             'sources/hooks/systems/actionlog/ecommerce.php',
+
+            'sources/hooks/modules/admin_stats/subscriptions.php',
+            'sources/hooks/modules/admin_stats/transactions.php',
         ];
     }
 

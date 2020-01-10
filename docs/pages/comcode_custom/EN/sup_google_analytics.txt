@@ -467,15 +467,14 @@ c) Third-parties may have onerous policies you can't deal with.
 
 However, in a few very special cases we do think its best to pick one widespread tool and pre-integrate it, hence our strong support for [i]Google Analytics[/i].
 
-In the interest of providing other options, here are some good alternative resources for you to consider...
-
-Split testing tools:
- - [url="Visual Website Optimizer"]https://vwo.com/[/url]
- - [url="Optimizely"]https://www.optimizely.com/[/url]
- - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
-
-Hosted analytics tool:
- - http://piwik.org/
+In the interest of providing other options, here are some good alternative resources for you to consider:
+ - Composr's own integrated stats addon
+ - Hosted analytics tool:
+  - http://piwik.org/
+ - Split testing tools:
+  - [url="Visual Website Optimizer"]https://vwo.com/[/url]
+  - [url="Optimizely"]https://www.optimizely.com/[/url]
+  - [url="http://blog.crazyegg.com/2014/06/25/best-testing-software/"]Comparison article[/url]
 
 [concepts
  1_key="Multivariate testing"		1_value="An analytical technique to see which of multiple variations performs best."
@@ -495,6 +494,6 @@ Hosted analytics tool:
  - http://www.simplybusiness.co.uk/microsites/google-analytics-guide/
  - https://moz.com/blog/absolute-beginners-guide-to-google-analytics
  - https://econsultancy.com/blog/66230-a-beginner-s-dictionary-of-google-analytics/
- - [page="_SEARCH:tut_statistics"]Activity statistics for your site (analytics)[/page]
+ - [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page]
 
 {$SET,tutorial_tags,Analytics,Administration,expert,pinned}{$SET,tutorial_add_date,Jan 2016}{$SET,tutorial_summary,Applying advanced Google Analytics techniques to Composr.}[block]main_tutorial_rating[/block]

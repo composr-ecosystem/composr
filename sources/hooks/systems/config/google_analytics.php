@@ -38,6 +38,7 @@ class Hook_config_google_analytics
             'explanation' => 'CONFIG_OPTION_google_analytics',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 5,
             'required' => false,
             'public' => true,
 

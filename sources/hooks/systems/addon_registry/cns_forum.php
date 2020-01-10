@@ -106,7 +106,6 @@ class Hook_addon_registry_cns_forum
         return [
 
             'themes/default/images/icons/menu/social/forum/inline_personal_posts.svg',
-            'themes/default/images/icons/menu/adminzone/audit/statistics/posting_rates.svg',
             'themes/default/images/icons/menu/social/forum/forums.svg',
             'themes/default/images/icons/buttons/add_topic.svg',
             'themes/default/images/icons/menu/social/forum/vforums/involved_topics.svg',
@@ -126,7 +125,6 @@ class Hook_addon_registry_cns_forum
             'themes/default/images/icons/menu/social/forum/vforums/index.html',
 
             'themes/default/images/icons_monochrome/menu/social/forum/inline_personal_posts.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/posting_rates.svg',
             'themes/default/images/icons_monochrome/menu/social/forum/forums.svg',
             'themes/default/images/icons_monochrome/buttons/add_topic.svg',
             'themes/default/images/icons_monochrome/menu/social/forum/vforums/involved_topics.svg',
@@ -153,7 +151,6 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/notifications/cns_topic.php',
             'sources/hooks/systems/content_meta_aware/forum.php',
             'sources/hooks/systems/commandr_fs/forums.php',
-            'sources/hooks/modules/admin_stats/cns_posting_rates.php',
             'sources/hooks/systems/sitemap/topic.php',
             'sources/hooks/systems/sitemap/forum.php',
             'themes/default/templates/CNS_FORUM_INTRO_QUESTION_POPUP.tpl',

@@ -1689,9 +1689,6 @@ class Forum_driver_cns extends Forum_driver_base
                     }
                 }
 
-                require_code('site');
-                log_stats('/flood', 0);
-
                 $time_threshold = 30;
                 $count_threshold = 50;
                 $query = 'SELECT COUNT(*) FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - $time_threshold) . ' AND date_and_time<' . strval(time()) . ' AND ' . db_string_equal_to('ip', get_ip_address());

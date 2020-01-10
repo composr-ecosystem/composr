@@ -31,7 +31,6 @@ class file_naming_test_set extends cms_test_case
             'data/ckeditor/',
             'data/curl-ca-bundle.crt',
             'data/modules/admin_backup/restore.php.pre',
-            'data/modules/admin_cleanup/page_stats.php.pre',
             'data/modules/google_appengine/php.gae.ini',
             'data/plupload/',
             'data_custom/execute_temp.php.bundle',

@@ -193,6 +193,7 @@ function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = n
                 'v_voter_id' => $member_id,
                 'v_voter_ip' => $ip,
                 'v_vote_for' => $cast,
+                'v_vote_time' => time(),
             ]);
 
             $myrow['votes' . strval($cast)]++;
@@ -203,6 +204,7 @@ function vote_in_poll($poll_id, $cast, $myrow = null, $member_id = null, $ip = n
             'v_voter_id' => is_guest() ? null : $member_id,
             'v_voter_ip' => $ip,
             'v_vote_for' => null,
+            'v_vote_time' => time(),
         ]);
     }
 

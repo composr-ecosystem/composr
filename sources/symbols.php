@@ -1108,19 +1108,7 @@ function ecv_PAGE_LINK($lang, $escaped, $param)
 
         $value = _build_url($map, $zone, $skip, $keep_all, $avoid_remap, $skip_keep, $hash);
     } else {
-        $value = get_zone_name() . ':' . get_page_name();
-        foreach ($_GET as $key => $val) {
-            if ($key == 'page') {
-                continue;
-            }
-            if (is_array($val)) {
-                continue;
-            }
-            if ((substr($key, 0, 5) == 'keep_') && (!skippable_keep($key, $val))) {
-                continue;
-            }
-            $value .= ':' . $key . '=' . $val;
-        }
+        $value = get_current_page_link();
     }
 
     if (!empty($escaped)) {
@@ -3566,6 +3554,9 @@ function ecv_URL_FOR_GET_FORM($lang, $escaped, $param)
         }
         if (isset($url_bits['path'])) {
             $value .= $url_bits['path'];
+        }
+        if (!empty($url_bits['fragment'])) {
+            $value .= '#' . $url_bits['fragment'];
         }
     }
 

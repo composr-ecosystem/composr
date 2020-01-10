@@ -2873,8 +2873,11 @@ function me_debug($ip, $data)
  */
 function get_browser_string()
 {
-    $ret = $_SERVER['HTTP_USER_AGENT'];
-    $ret = str_replace(' (' . get_os_string() . ')', '', $ret);
+    static $ret = null;
+    if ($ret === null) {
+        $ret = $_SERVER['HTTP_USER_AGENT'];
+        $ret = str_replace(' (' . get_os_string() . ')', '', $ret);
+    }
     return $ret;
 }
 
@@ -2885,19 +2888,18 @@ function get_browser_string()
  */
 function get_os_string()
 {
-    if ($_SERVER['HTTP_UA_OS'] != '') {
-        return $_SERVER['HTTP_UA_OS'];
-    } elseif ($_SERVER['HTTP_USER_AGENT'] != '') {
+    static $ret = null;
+    if ($ret === null) {
+        $ret = '';
         // E.g. Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586)
         // We need to get the stuff in the parentheses
         $matches = [];
         if (preg_match('#\(([^\)]*)\)#', $_SERVER['HTTP_USER_AGENT'], $matches) != 0) {
             $ret = $matches[1];
             $ret = preg_replace('#^compatible; (MSIE[^;]*; )?#', '', $ret);
-            return $ret;
         }
     }
-    return '';
+    return $ret;
 }
 
 /**
@@ -3299,8 +3301,8 @@ function browser_matches($code, $comcode = null)
         return $browser_matches_cache[$code];
     }
 
-    $browser = strtolower($_SERVER['HTTP_USER_AGENT']);
-    $os = strtolower($_SERVER['HTTP_UA_OS']) . ' ' . $browser;
+    $browser = get_browser_string();
+    $os = get_os_string();
     $is_safari = strpos($browser, 'applewebkit') !== false;
     $is_chrome = strpos($browser, 'chrome/') !== false;
     $is_gecko = (strpos($browser, 'gecko') !== false) && !$is_safari;

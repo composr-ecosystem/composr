@@ -100,7 +100,6 @@ class Hook_addon_registry_stats
         return [
             'sources/hooks/systems/privacy/stats.php',
             'themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg',
-            'themes/default/images/icons/menu/adminzone/audit/statistics/clear_stats.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/geolocate.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/load_times.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/page_views.svg',
@@ -109,7 +108,6 @@ class Hook_addon_registry_stats
             'themes/default/images/icons/menu/adminzone/audit/statistics/users_online.svg',
             'themes/default/images/icons/menu/adminzone/audit/statistics/index.html',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/statistics.svg',
-            'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/clear_stats.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/geolocate.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/load_times.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/page_views.svg',
@@ -117,37 +115,44 @@ class Hook_addon_registry_stats
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/top_referrers.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/users_online.svg',
             'themes/default/images/icons_monochrome/menu/adminzone/audit/statistics/index.html',
-            'sources/hooks/modules/admin_setupwizard/stats.php',
             'sources/hooks/systems/config/stats_store_time.php',
             'sources/hooks/systems/config/super_logging.php',
             'sources/hooks/systems/realtime_rain/stats.php',
-            'data/modules/admin_cleanup/page_stats.php.pre',
             'sources/hooks/systems/cleanup/page_stats.php',
-            'sources/hooks/systems/cron/stats_clean.php',
             'sources/hooks/systems/page_groupings/stats.php',
             'sources/hooks/systems/non_active_urls/stats.php',
             'sources/hooks/systems/addon_registry/stats.php',
             'sources/hooks/modules/admin_stats/.htaccess',
-            'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources/hooks/modules/admin_stats/index.html',
+            'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources_custom/hooks/modules/admin_stats/index.html',
-            'themes/default/templates/STATS_GRAPH.tpl',
+            'sources/hooks/modules/admin_stats_redirects/.htaccess',
+            'sources/hooks/modules/admin_stats_redirects/index.html',
             'themes/default/templates/STATS_SCREEN.tpl',
-            'themes/default/templates/STATS_SCREEN_ISCREEN.tpl',
-            'themes/default/templates/STATS_OVERVIEW_SCREEN.tpl',
             'adminzone/pages/modules/admin_stats.php',
             'themes/default/css/stats.css',
-            'themes/default/css/svg.css',
             'data/modules/admin_stats/index.html',
             'data/modules/admin_stats/IP_Country.txt', // http://geolite.maxmind.com/download/geoip/database/
             'data_custom/modules/admin_stats/index.html',
             'lang/EN/stats.ini',
-            'sources/svg.php',
-            'sources/hooks/systems/config/bot_stats.php',
             'sources/hooks/systems/tasks/install_geolocation_data.php',
             'data/modules/admin_stats/.htaccess',
             'data_custom/modules/admin_stats/.htaccess',
-            'adminzone/stats_graph.php',
+            'text/search_engine_domains.txt',
+            'text/social_media_domains.txt',
+            'sources/blocks/main_staff_stats_graph.php',
+            'sources/hooks/systems/cron/stats_preprocess_raw_data.php',
+            'sources/hooks/systems/block_ui_renderers/stats.php',
+            'themes/default/templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl',
+
+            'sources/hooks/modules/admin_stats/emails.php',
+            'sources/hooks/modules/admin_stats/sitemap.php',
+            'sources/hooks/modules/admin_stats/users_online.php',
+            'sources/hooks/modules/admin_stats/views.php',
+            'sources/hooks/modules/admin_stats/comments.php',
+            'sources/hooks/modules/admin_stats/contact_forms.php',
+            'sources/hooks/modules/admin_stats/ratings.php',
+            'sources/hooks/modules/admin_stats_redirects/google_analytics.php',
         ];
     }
 
@@ -159,10 +164,8 @@ class Hook_addon_registry_stats
     public function tpl_previews()
     {
         return [
-            'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
-            'templates/STATS_OVERVIEW_SCREEN.tpl' => 'administrative__stats_screen_overview',
-            'templates/STATS_SCREEN_ISCREEN.tpl' => 'administrative__stats_screen_iscreen',
+            'templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl' => 'administrative__form_screen_input_stats_date_range_screen',
         ];
     }
 
@@ -175,16 +178,19 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen()
     {
-        $graph = do_lorem_template('STATS_GRAPH', [
-            'GRAPH' => placeholder_url(),
-            'TEXT' => lorem_sentence(),
-        ]);
+        $graphs = [];
+        $graphs[] = [
+            'GRAPH_NAME' => lorem_word(),
+            'GRAPH_LABEL' => lorem_phrase(),
+            'GRAPH_FORM' => placeholder_form(),
+            'GRAPH_RENDERED' => lorem_chunk_html(),
+            'RESULTS_TABLE' => placeholder_table(),
+        ];
 
         return [
             lorem_globalise(do_lorem_template('STATS_SCREEN', [
                 'TITLE' => lorem_title(),
-                'GRAPH' => $graph,
-                'STATS' => placeholder_table(),
+                'GRAPHS' => $graphs,
             ]), null, '', true)
         ];
     }
@@ -196,49 +202,15 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__administrative__stats_screen_overview()
+    public function tpl_preview__administrative__form_screen_input_stats_date_range_screen()
     {
         return [
-            lorem_globalise(do_lorem_template('STATS_OVERVIEW_SCREEN', [
-                'TITLE' => lorem_title(),
-                'STATS_VIEWS' => placeholder_table(),
-                'GRAPH_VIEWS_MONTHLY' => lorem_phrase(),
-                'STATS_VIEWS_MONTHLY' => lorem_phrase(),
-            ]), null, '', true)
-        ];
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__administrative__stats_screen_iscreen()
-    {
-        return [
-            lorem_globalise(do_lorem_template('STATS_SCREEN_ISCREEN', [
-                'TITLE' => lorem_title(),
-                'GRAPH_REGIONALITY' => lorem_phrase(),
-                'STATS_REGIONALITY' => placeholder_table(),
-                'STATS_VIEWS' => lorem_phrase(),
-                'GRAPH_VIEWS_HOURLY' => lorem_phrase(),
-                'STATS_VIEWS_HOURLY' => lorem_phrase(),
-                'GRAPH_VIEWS_DAILY' => lorem_phrase(),
-                'STATS_VIEWS_DAILY' => lorem_phrase(),
-                'GRAPH_VIEWS_WEEKLY' => lorem_phrase(),
-                'STATS_VIEWS_WEEKLY' => lorem_phrase(),
-                'GRAPH_VIEWS_MONTHLY' => lorem_phrase(),
-                'STATS_VIEWS_MONTHLY' => lorem_phrase(),
-                'GRAPH_IP' => placeholder_ip(),
-                'STATS_IP' => placeholder_ip(),
-                'GRAPH_BROWSER' => lorem_phrase(),
-                'STATS_BROWSER' => lorem_phrase(),
-                'GRAPH_REFERRER' => lorem_phrase(),
-                'STATS_REFERRER' => lorem_phrase(),
-                'GRAPH_OS' => lorem_phrase(),
-                'STATS_OS' => lorem_phrase(),
+            lorem_globalise(do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
+                'TABINDEX' => placeholder_number(),
+                'NAME' => placeholder_id(),
+                'MONTHS' => ['10' => lorem_phrase()],
+                'START' => '10',
+                'END' => '10',
             ]), null, '', true)
         ];
     }

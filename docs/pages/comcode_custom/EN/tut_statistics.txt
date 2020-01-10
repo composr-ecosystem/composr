@@ -1,13 +1,34 @@
-[title sub="Written by Philip Withnall (ocProducts)"]Composr Tutorial: Activity statistics for your site (analytics)[/title]
+[title sub="Written by Chris Graham (ocProducts)"]Composr Tutorial: Statistics for your site (analytics)[/title]
 
 [media width="150" description="Lots of statistics types are available" float="right"]data_custom/images/docs/tut_statistics/statistics_icons.png[/media]
 {!stats:DOC_STATISTICS}
 
 [contents]decimal,lower-alpha[/contents]
 
+[title="2"]Google Analytics vs Composr statistics[/title]
+
+[url="Google Analytics"]http://www.google.com/analytics/[/url] is extremely popular free tool for website owners and marketers for viewing website statistics. For that reason, I am starting the tutorial by directly addressing this.
+
+We intentionally do not try and 'compete' with Google Analytics. There is significant overlap but Composr statistics and Google Analytics are complementary tools. Here are some key differences:
+ - Pros for Google Analytics:
+  - Google Analytics is a very sophisticated and complicated product that provides a lot of functionality to professional marketers. Composr statistics is fairly straight-forward.
+  - Integration with other Google products, such as Google AdSense (to see what is producing AdSense income, for example).
+  - Integration with Google Search Console (for SEO hints).
+  - Google Analytics has access to insights from Google's own marketing. For example, it can show statistics of genders of visitors.
+ - Cons:
+  - Google Analytics ultimately only knows about web visit to URLs, unless you do custom programming or complex configuration. Composr statistics has much more contextual information (e.g. knowing how Composr pages work), and can draw graphs for things beyond just web visits (e.g. sales).
+  - Google Analytics uses JavaScript to initiate tracking. Composr does tracking server-side, not relying on JavaScript, and thus not subject to web browser configuration/blocking. While Composr by default does require JavaScript to display pages, views will still be logged even if JavaScript is not enabled by users.
+  - Google Analytics uses tracking cookies, which is a privacy concern and questionable under legislation such as GDPR. Composr doesn't use anything beyond regular IP addresses, session IDs, and member IDs.
+  - Google Analytics is a product of a large multi-national corporation that makes money through targeted advertising, and has a number of major controversies around it. Composr statistics is hosted only on your own website and under your complete personal control.
+  - Google Analytics is closed source. Composr statistics is just another bundled Composr addon, and therefore fully Open Source.
+
+Basic users may be happy with only Composr statistics, especially given the privacy and freedom around big-tech marketing. Expert marketers will likely want the power of Google Analytics, there is no doubting it is an extremely powerful tool and a professional standard.
+
+Google Analytics is easy to set up in Composr as we have support built-in: you just need to enter your analytics code in the Composr configuration.
+
 [title="2"]The administration module[/title]
 
-The administration module resides in Admin Zone > Audit > Site statistics.
+The Composr stats administration module resides in Admin Zone > Audit > Site statistics.
 
 Be aware that hits coming from the web server itself will be filtered from the stats, so if you are running a web server on your own computer you may not see any results if nobody else has used your website yet.
 
@@ -19,78 +40,112 @@ Be aware that hits coming from the web server itself will be filtered from the s
 {!stats:DOC_INSTALL_GEOLOCATION_DATA} That said, the separate install is usually automatic because the Composr installer creates a background task for it. If that has not happened somehow then you can go to Admin Zone > Audit > Site statistics > Install geolocation data, which will reschedule a task. If you don't see this option, you do have geolocation data installed already
 [/surround]
 
-[box="Important -- keep it going"]
-Do not disturb the geolocation data installation process. You will be informed when it is complete.
-[/box]
-
 Once the geo-location data is installed, all the extra statistics can be used.
 
-[title="3"]Page view statistics[/title]
+[title="2"]Categories and Graphs[/title]
 
-[media width="150" description="Stats data for a particular page" float="right"]data_custom/images/docs/tut_statistics/statistics_page.png[/media]
-[media width="150" description="List of pages with stats data" float="right"]data_custom/images/docs/tut_statistics/statistics_page_views.png[/media]
-[media width="150" description="Overview stats" float="right"]data_custom/images/docs/tut_statistics/statistics_overview.png[/media]
-{!stats:DOC_PAGE_STATISTICS}
+The statistics module splits up the graphs into a number of categories. The exact categories and graphs available depend what addons you have installed, and to some extent your configuration.
 
-[title="3"]Per-page breakdowns[/title]
+There are a large number of different graphs available for viewing, and most of them function in an obvious way. This documentation section will highlight some specifics that are not so obvious.
 
-The per-page breakdowns list more detailed statistics for each page, in various forms, but all have a graph. The following statistics are present:
- - Views per hour
- - Views per day
- - Views per week
- - Views per month
- - Browsers used to view this page
- - Referrers to this page
- - Operating Systems used to view this page
- - Regions this page has been viewed from
+[title="3"]Tally by[/title]
 
-[title="3"]Users online statistics[/title]
+You can set time-based graphs to tally records (pivot) in different ways. There are 2 kinds of tallying:
+1) time series -- this groups all records into chunks of continuous time, and puts the tallies on a graph
+2) flow pattern -- this groups all records by repeating patterns of time; for example, you can show a tally of all the records that happened at 2pm (regardless of date)
 
-{!stats:DOC_USERS_ONLINE_STATISTICS}
+Time series show as a line graph, while flow patterns show as a bar chart.
 
-[title="3"]Submission statistics[/title]
+[title="3"]Hits[/title]
 
-{!stats:DOC_SUBMISSION_STATISTICS}
+Most of the graphs under the 'Hits' category only show hits from user agents that look like real humans (i.e. real humans using a web browser).
 
-[title="3"]Top referrers[/title]
+The 'Unique views' graph only counts hits to the website once for any particular user, even if they have viewed multiple pages. A 'user' is defined by member ID for logged in users, or by IP address for non-logged-in users. As the web is inherently transactional, and we do not use tracking cookies in Composr, the unique measurement algorithm will never be completely imperfect. For example, a user may be on a connection that has changing IP addresses.
 
-{!stats:DOC_TOP_REFERRERS}
+[title="3"]Demographics[/title]
 
-[title="3"]Page load times[/title]
+Demographics graphs give you an idea who your users are. It may help you have an idea who you need to work harder for -- be that attracting new audiences, or doubling down on what you now understand as your core audience.
 
-{!stats:DOC_LOAD_TIMES}
+Information about what operating systems and web browsers are used will help you know what to test your website in.
 
-[title="2"]Download statistics[/title]
+[title="3"]Sessions[/title]
 
-[surround]
-[media width="150" description="The download statistics box" float="right"]data_custom/images/docs/tut_statistics/statistics_download_statistics.png[/media]
-There is a screen for download statistics, but you may also wish to allow your visitors to see some trends...
+There are various graphs that will tell you about user sessions. These are telling you about the broader flow of users, and in particular how they enter and exit your website. This is important information to help you understand your users, and perhaps see what needs further work.
 
-There are two methods for revealing download trends to your visitors:
-1) Download statistics are generally available on an individual download page
-2) You can also pull out key downloads for the benefit of your visitors is to use one of the download blocks: [i]most popular downloads[/i], and [i]most recently-added downloads[/i]. These are explained below.
-[/surround]
+[title="3"]Referrers[/title]
+
+There are various graphs that show referrers to your website, broken down in different ways. A referrer is a web page from another website that is linking to you.
+
+Such data is invaluable in finding out what advertising is working (and conversely which advertising schemes aren't working), potential partners, the nature of your traffic, etc.
+
+[title="3"]Activity[/title]
+
+There are activity statistics of various kinds, broadly:
+1) Activity from staff (to give a sense if momentum is being maintained)
+2) Activity from users (highlighting user engagement, basically)
+
+A graph of number of comments on content is available for Conversr users, if the "Strongly tie content to the forum" option is enabled.
+
+[title="3"]Performance[/title]
+
+The load times and page speed graphs tell you about website performance. This is useful for:
+1) Getting an overall idea of how fast your website is
+2) Getting an idea what specific pages may be slow.
+
+The times quoted are just server page generation time. It doesn't count any time taken transferring pages to the user, or for the user to download the page and page components (images etc).
+
+This is useful information for optimising your site; finding bottlenecks and jams. For example you may find where things could be spread out more (e.g. putting fifteen blocks on different pages, instead of putting them all on the same one).
+
+If web pages are taking seconds to just generate, you have a problem.
+
+[title="2"]Filters[/title]
+
+Most of the filters where you enter text for filtering support the [tt]?[/tt] and [tt]*[/tt] wildcards.
+
+[title="2"]Spreadsheet export[/title]
+
+Every graph has the option to download the data the graph is generated from, in spreadsheet form. This allows you to manually review it in detail, or use third-party graphing tools.
+
+[title="2"]Privacy[/title]
+
+No default graphs or data tsbles provided by Composr statistics reveal personal information about users -- everything is anonymous. This puts the system in line with GDPR (EU privacy legislation).
+
+[title="2"]Pre-computed statistics[/title]
+
+All statistics are generated from pre-computed data, which is itself based on raw data.
+The pre-computation happens in the system scheduler, daily. The system scheduler is therefore required for Composr statistics.
+
+Why do we do this? There are a number of reasons:
+1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going all the way back.
+2) Some graphs require fairly complicated computations that should not be performed in real-time (for example doing geolocation of users, or tracing behaviour across user sessions).
+3) We want to be able to process huge numbers of records without performance degradation.
+4) Generally, we want statistics to be as snappy as possible, so that you feel comfortable dipping in and out of them, and setting different filters. If there's friction, you'll likely not spend as much time looking at your numbers as you should.
+5) We want generated data to be readily available in other parts of Composr.
+
+One limitation to the pre-computation is that it does limit the amount of filtering possible to what we have built into our data structures. For example, you can set date ranges but only aligned to months.
+
+[title="2"]Time zones[/title]
+
+All times are calculated/shown in the configured website time zone, regardless of the time zone of visitors or the time zone your own account is configured to. This is a necessary limitation based on how statistics are pre-computed.
+Some graphs allow showing hour-by-hour stats and also filtering by country, in which case you may get an idea for the local times by manually considering any local time zone differences.
 
 [title="2"]Other statistics[/title]
 
 [media width="150" description="View statistics are shown for various forms of content" float="right"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
-All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
-
+Apart from page view statistics, the Composr stats system doesn't tell you what content specifically is most popular. For example, it won't tell you what gallery images are most popular.
+This information can, however, be found from regular view counts presented throughout Composr. All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
 An example of this would be news entries: each news entry records how many times it is viewed, and displays this number on its view screen.
 
-[title="2"]Conversr statistics[/title]
+The [tt]main_multi_content[/tt] block can also be used to draw out content based on popularity.
 
-The following statistics screens exist to show [concept]Conversr[/concept] data:
- - Demographics (summarise the ages of your members)
- - Posting rates (identify trends in daily posting rates)
+[title="3"]The statistics block[/title]
 
-[title="2"]The statistics block[/title]
-
-[media width="150" description="The [tt]side_stats[/tt] block" float="right"]data_custom/images/docs/tut_statistics/side_stats.png[/media]
+[media width="150" description="The [tt]side_stats[/tt] block" float="left"]data_custom/images/docs/tut_statistics/side_stats.png[/media]
 The [tt]side_stats[/tt] block shows various figures that relate to your website's activity and archive size. The exact details shown are configurable (in the main Composr configuration) from quite a wide selection.
 
-[title="2"]Real-time analytics[/title]
+[title="3"]Real-time analytics[/title]
 
+[surround]
 [media width="150" description="Real-time analytics" float="right"]data_custom/images/docs/tut_statistics/realtime_rain.png[/media]
 {!realtime_rain:DOC_REALTIME_RAIN}
 
@@ -98,15 +153,10 @@ Access Real-time analytics from:
 Admin Zone > Audit > What's happening now (RTR)
 
 It is a good way to visualise how people are using the site. This works best when the site has multiple online users performing options, but you can move the timeline back to when stuff was happening previously (i.e. view activity from a historic viewpoint).
-
-[title="2"]Google Analytics[/title]
-
-[url="Google Analytics"]http://www.google.com/analytics/[/url] is an excellent free package for analysing website activity, allowing you to spot all kinds of trends in your data.
-
-We don't consider Google Analytics a competitor to our own inbuilt analytics -- both offer different features, complementing each other. Google Analytics is easy to install, we have support built-in so you just need to enter your analytics code in the Composr configuration.
+[/surround]
 
 [concepts
- 1_key="SVG"            1_value="Scalable Vector Graphics, a text-markup-based graphics format that allows infinite scalability of graphics without texture loss due to being vector-based (co-ordinate-delimited shapes) instead of pixel based (specific data for each pixel)."
+ 1_key="Referrer"       1_value="A page of a 3rd-party website linking to a page on your website."
  2_key="Geo-location"   2_value="The process of using some type of individually-identifiable information to find out where in the world somebody is."
 ]Concepts[/concepts]
 

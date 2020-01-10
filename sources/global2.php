@@ -591,6 +591,8 @@ function fixup_bad_php_env_vars()
         $_SERVER['SERVER_ADDR'] = $_SERVER['LOCAL_ADDR'];
     }
 
+    $_SERVER['HTTP_USER_AGENT'] = urldecode($_SERVER['HTTP_USER_AGENT']);
+
     $document_root = empty($_SERVER['DOCUMENT_ROOT']) ? '' : $_SERVER['DOCUMENT_ROOT'];
     if (empty($document_root)) {
         // Note on Windows we really do use '/' in DOCUMENT_ROOT

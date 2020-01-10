@@ -46,7 +46,7 @@ class Hook_addon_registry_google_analytics
      */
     public function get_category()
     {
-        return 'Development';
+        return 'Third Party Integration';
     }
 
     /**
@@ -86,25 +86,20 @@ class Hook_addon_registry_google_analytics
      */
     public function get_description()
     {
-        return 'Adds Google Analytics to the stats addon, and adds a block for showing analytic data of your choice (suggested for adding to the Admin Zone dashboard).
+        return 'Adds Google Analytics to the stats addon.
 
-This addon is a little hard to configure (hence being filed as a Developer addon), but works well.
-
-Instructions...
+Setup instructions...
 [list="1"]
-[*] Set up oAuth for Google Analytics at Admin Zone > Setup > Setup API Access. You can also consider Google Search Console, as we will pull keyword data from there if configured.
-[*] Find the numeric ID of the Google Analytics property you need to integrate with (e.g. 12345678), then run this Commandr command: [code="Commander"]set_value(\'ga_property_id\', \'12345678\', true);[/code]. Note this number has nothing to do with the identifier that starts [tt]UA[/tt].
-[*] To use the block on the dashboard, use this Comcode:
-[code="Comcode"]
-[block]main_staff_google_analytics[/block]
-[/code]
-
-There are [i]metric[/i] and [i]days[/i] parameters you may want to use:
- - [b]metric[/b] is a comma-separated list of any of the following: [tt]hits[/tt], [tt]speed[/tt], [tt]browsers[/tt], [tt]device_types[/tt], [tt]screen_sizes[/tt], [tt]countries[/tt], [tt]languages[/tt], [tt]referrers[/tt], [tt]referrers_social[/tt], [tt]referral_mediums[/tt], [tt]popular_pages[/tt], [tt]keywords[/tt]. [tt]keywords[/tt] is only available if Google Search Console is configured. If you don\'t specify this parameter it will default to a reasonable selection.
- - [b]days[/b] is a number, the number of days to show data for (initially). If you don\'t specify this parameter it will default to 31.
+[*] Set up oAuth for Google Analytics at Admin Zone > Setup > Setup API Access.
+[*] Find the numeric ID of the Google Analytics property you need to integrate with (e.g. 12345678), then configure the "Google Analytics View ID" option at Admin Zone > Setup > Configuration > Site options > Logging. Note this number has nothing to do with the identifier that starts [tt]UA[/tt].
 [/list]
 
-You can always see all metrics from Admin Zone > Audit > Site statistics > Google Analytics.
+The addon provides a [tt]main_staff_google_analytics[/tt] block for showing analytic data of your choice (suggested for adding to the Admin Zone dashboard). You can use the default [tt]main_staff_stats_graph[/tt] but this doesn\'t come with tabbing support, and the [tt]main_staff_google_analytics[/tt] tabbing support has special code required to make tabbing work with Google Analytics\'s JavaScript-based graph rendering.
+There are [i]metric[/i] and [i]days[/i] parameters you may want to use for the block:
+ - [b]metric[/b] is a comma-separated list of any of the following: [tt]hits[/tt], [tt]speed[/tt], [tt]browsers[/tt], [tt]device_types[/tt], [tt]screen_sizes[/tt], [tt]countries[/tt], [tt]languages[/tt], [tt]referrers[/tt], [tt]referrers_social[/tt], [tt]referral_mediums[/tt], [tt]popular_pages[/tt], [tt]keywords[/tt]. [tt]keywords[/tt] is only available if Google Search Console is configured. Tabs will be used if multiple metrics are requested. If you don\'t specify this parameter it will default to a reasonable selection.
+ - [b]days[/b] is a number, the number of days to show data for (initially). If you don\'t specify this parameter it will default to 31.
+
+You can always see all metrics from Admin Zone > Audit > Site statistics > Google Analytics simplified view.
 ';
     }
 
@@ -156,13 +151,14 @@ You can always see all metrics from Admin Zone > Audit > Site statistics > Googl
             'lang_custom/EN/google_analytics.ini',
             'sources_custom/google_analytics.php',
             'sources_custom/hooks/modules/admin_stats/google_analytics.php',
-            'sources_custom/hooks/systems/snippets/google_search_console.php',
+            'sources_custom/hooks/modules/admin_stats/.htaccess',
+            'sources_custom/hooks/modules/admin_stats/index.html',
             'sources_custom/miniblocks/main_staff_google_analytics.php',
             'themes/default/templates_custom/GOOGLE_ANALYTICS.tpl',
             'themes/default/templates_custom/GOOGLE_ANALYTICS_TABS.tpl',
-            'themes/default/templates_custom/GOOGLE_SEARCH_CONSOLE_KEYWORDS.tpl',
             'themes/default/templates_custom/_GOOGLE_TIME_PERIODS.tpl',
             'themes/default/javascript_custom/google_analytics.js',
+            'sources_custom/hooks/systems/config/ga_property_view_id.php',
         ];
     }
 }

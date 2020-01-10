@@ -2,18 +2,3 @@
  {$BRAND_NAME`}
  Copyright (c) ocProducts, 2004-2019
 */
-
-.svg-graph {
-	border: 1px solid {$GET,pale_border};
-	padding: 2px;
-}
-
-.svg-graph object {
-	width: 100%;
-	height: 430px;
-}
-
-.svg-graph-text {
-	width: 100%;
-	font-style: italic;
-}

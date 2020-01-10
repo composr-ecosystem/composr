@@ -129,6 +129,7 @@ class Module_polls
                 'v_voter_id' => '?MEMBER',
                 'v_voter_ip' => 'IP',
                 'v_vote_for' => '?SHORT_INTEGER',
+                'v_vote_time' => 'TIME',
             ]);
 
             $GLOBALS['SITE_DB']->create_index('poll_votes', 'v_voter_id', ['v_voter_id']);
@@ -146,6 +147,7 @@ class Module_polls
                         'v_voter_id' => is_numeric($voter) ? intval($voter) : null,
                         'v_voter_ip' => is_numeric($voter) ? '' : $voter,
                         'v_vote_for' => null,
+                        'v_vote_time' => time(),
                     ]);
                 }
             }
@@ -162,6 +164,8 @@ class Module_polls
 
             add_privilege('SEARCH', 'autocomplete_keyword_poll', false);
             add_privilege('SEARCH', 'autocomplete_title_poll', false);
+
+            $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
         }
     }
 

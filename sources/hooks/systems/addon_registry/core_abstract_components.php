@@ -119,6 +119,13 @@ class Hook_addon_registry_core_abstract_components
             'sources_custom/hooks/systems/change_detection/.htaccess',
             'sources/hooks/systems/change_detection/index.html',
             'sources_custom/hooks/systems/change_detection/index.html',
+
+            'sources/graphs.php',
+            'themes/default/templates/GRAPH_BAR_CHART.tpl',
+            'themes/default/templates/GRAPH_LINE_CHART.tpl',
+            'themes/default/templates/GRAPH_PIE_CHART.tpl',
+            'themes/default/templates/GRAPH_SCATTER_DIAGRAM.tpl',
+            'themes/default/javascript/charts.js',
         ];
     }
 
@@ -140,6 +147,10 @@ class Hook_addon_registry_core_abstract_components
             'templates/STANDARDBOX_accordion.tpl' => 'standardbox_accordion',
             'templates/HANDLE_CONFLICT_RESOLUTION.tpl' => 'administrative__handle_conflict_resolution',
             'templates/STAFF_ACTIONS.tpl' => 'staff_actions',
+            'templates/GRAPH_SCATTER_DIAGRAM.tpl' => 'graph_scatter_diagram',
+            'templates/GRAPH_LINE_CHART.tpl' => 'graph_line_chart',
+            'templates/GRAPH_PIE_CHART.tpl' => 'graph_pie_chart',
+            'templates/GRAPH_BAR_CHART.tpl' => 'graph_bar_chart',
         ];
     }
 
@@ -363,6 +374,196 @@ class Hook_addon_registry_core_abstract_components
     {
         return [
             lorem_globalise(do_lorem_template('HANDLE_CONFLICT_RESOLUTION', []))
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__graph_scatter_diagram()
+    {
+        $datapoints = [
+            [
+                'x' => 1,
+                'y' => 1,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'x' => 3,
+                'y' => 2,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+
+        $_datapoints = [];
+        foreach ($datapoints as $p) {
+            $_datapoints[] = [
+                'X' => strval($p['x']),
+                'Y' => strval($p['y']),
+                'TOOLTIP' => $p['tooltip'],
+            ];
+        }
+
+        return [
+            lorem_globalise(do_lorem_template('GRAPH_SCATTER_DIAGRAM', [
+                'ID' => lorem_word(),
+                'WIDTH' => '500px',
+                'HEIGHT' => '500px',
+                'X_AXIS_LABEL' => lorem_phrase(),
+                'Y_AXIS_LABEL' => lorem_phrase(),
+                'DATAPOINTS' => $_datapoints,
+                'COLOR' => '#FF0000',
+                'BEGIN_AT_ZERO' => true,
+            ]))
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__graph_line_chart()
+    {
+        $datasets = [
+            [
+                'datapoints' => [
+                    [
+                        'value' => 1,
+                        'tooltip' => lorem_phrase(),
+                    ],
+                    [
+                        'value' => 3,
+                        'tooltip' => lorem_phrase(),
+                    ],
+                ],
+            ],
+        ];
+
+        $_datasets = [];
+        foreach ($datasets as $i => $dataset) {
+            $datapoints = [];
+            foreach ($dataset['datapoints'] as $p) {
+                $datapoints[] = [
+                    'VALUE' => strval($p['value']),
+                    'TOOLTIP' => $p['tooltip'],
+                ];
+            }
+
+            $_datasets[] = [
+                'LABEL' => lorem_phrase(),
+                'COLOR' => '#FF0000',
+                'DATAPOINTS' => $datapoints,
+            ];
+        }
+
+        return [
+            lorem_globalise(do_lorem_template('GRAPH_LINE_CHART', [
+                'ID' => lorem_word(),
+                'WIDTH' => '500px',
+                'HEIGHT' => '500px',
+                'X_LABELS' => [lorem_word(), lorem_word()],
+                'X_AXIS_LABEL' => lorem_phrase(),
+                'Y_AXIS_LABEL' => lorem_phrase(),
+                'DATASETS' => $_datasets,
+                'BEGIN_AT_ZERO' => true,
+                'SHOW_DATA_LABELS' => true,
+            ]))
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__graph_pie_chart()
+    {
+        $datapoints = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 1,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 3,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+
+        $_datapoints = [];
+        foreach ($datapoints as $x => $p) {
+            $_datapoints[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+                'COLOR' => '#FF0000',
+            ];
+        }
+
+        return [
+            lorem_globalise(do_lorem_template('GRAPH_PIE_CHART', [
+                'ID' => lorem_word(),
+                'WIDTH' => '500px',
+                'HEIGHT' => '500px',
+                'DATAPOINTS' => $_datapoints,
+                'SHOW_DATA_LABELS' => true,
+            ]))
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
+    public function tpl_preview__graph_bar_chart()
+    {
+        $datapoints = [
+            [
+                'label' => lorem_phrase(),
+                'value' => 1,
+                'tooltip' => lorem_phrase(),
+            ],
+            [
+                'label' => lorem_phrase(),
+                'value' => 3,
+                'tooltip' => lorem_phrase(),
+            ],
+        ];
+
+        $_datapoints = [];
+        foreach ($datapoints as $x => $p) {
+            $_datapoints[] = [
+                'LABEL' => $p['label'],
+                'VALUE' => strval($p['value']),
+                'TOOLTIP' => $p['tooltip'],
+                'COLOR' => '#FF0000',
+            ];
+        }
+
+        return [
+            lorem_globalise(do_lorem_template('GRAPH_BAR_CHART', [
+                'ID' => lorem_word(),
+                'WIDTH' => '500px',
+                'HEIGHT' => '500px',
+                'X_AXIS_LABEL' => lorem_phrase(),
+                'Y_AXIS_LABEL' => lorem_phrase(),
+                'DATAPOINTS' => $_datapoints,
+                'BEGIN_AT_ZERO' => true,
+                'SHOW_DATA_LABELS' => true,
+            ]))
         ];
     }
 }
