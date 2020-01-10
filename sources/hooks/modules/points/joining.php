@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    points
  */
 
 /**
@@ -33,6 +33,10 @@ class Hook_points_joining
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('points')) {
+            return 0;
+        }
+
         $points_joining = intval(get_option('points_joining'));
 
         if ($timestamp !== null && $timestamp < $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) {
@@ -43,15 +47,19 @@ class Hook_points_joining
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('points')) {
+            return null;
+        }
+
         $points_joining = intval(get_option('points_joining'));
 
         return [

@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    core_cns
  */
 
 /**
@@ -24,7 +24,7 @@
 class Hook_points_posts
 {
     /**
-     * Get points earned for making posts; some of these will probably have been spent already.
+     * Get points earned for making posts; some of these will probably have been spent already. This only works for the cns forum type.
      *
      * @param  MEMBER $member_id The ID of the member we are getting points for
      * @param  TIME $timestamp Time to get for (null: now)
@@ -33,10 +33,14 @@ class Hook_points_posts
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (get_forum_type() != 'cns') {
+            return 0;
+        }
+
         $points_gained_posting = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id);
         $points_posting = intval(get_option('points_posting'));
 
-        if ($timestamp !== null && get_forum_type() == 'cns') {
+        if ($timestamp !== null) {
             $points_gained_posting -= min($points_gained_posting, @intval($GLOBALS['FORUM_DB']->query_value_if_there('SELECT SUM(f_post_count_increment) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_forums f ON f.id=p.p_cache_forum_id WHERE p_time>' . strval($timestamp) . ' AND p_poster=' . strval($member_id))));
         }
 
@@ -44,15 +48,19 @@ class Hook_points_posts
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: not using cns forum)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (get_forum_type() != 'cns') {
+            return null;
+        }
+
         $post_count = $GLOBALS['FORUM_DRIVER']->get_post_count($member_id_of);
         $points_posting = intval(get_option('points_posting'));
 

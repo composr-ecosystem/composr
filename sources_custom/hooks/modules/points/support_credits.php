@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    composr_homesite_support_credits
  */
 
 /**
@@ -32,40 +32,42 @@ class Hook_points_support_credits
      */
     public function total_points($member_id, $timestamp)
     {
-        if (addon_installed('composr_homesite_support_credits')) {
-            $_credits = $GLOBALS['SITE_DB']->query_select_value('credit_purchases', 'SUM(num_credits)', ['member_id' => $member_id, 'purchase_validated' => 1]);
-            $credits = @intval($_credits);
-    
-            if ($timestamp !== null) {
-                $credits -= intval($GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(num_credits) FROM ' . get_table_prefix() . 'credit_purchases WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
-            }
-    
-            return $credits * 50;
+        if (!addon_installed('composr_homesite_support_credits')) {
+            return 0;
         }
-        return 0;
+
+        $_credits = $GLOBALS['SITE_DB']->query_select_value('credit_purchases', 'SUM(num_credits)', ['member_id' => $member_id, 'purchase_validated' => 1]);
+        $credits = @intval($_credits);
+    
+        if ($timestamp !== null) {
+            $credits -= intval($GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(num_credits) FROM ' . get_table_prefix() . 'credit_purchases WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
+        }
+    
+        return $credits * 50;
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array|null Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. Returns null if support_credits addon not installed.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
-        if (addon_installed('composr_homesite_support_credits')) {
-            $_points_gained_credits = $GLOBALS['SITE_DB']->query_select_value('credit_purchases', 'SUM(num_credits)', ['member_id' => $member_id_of, 'purchase_validated' => 1]);
-            $points_gained_credits = @intval($_points_gained_credits);
-
-            return [
-                'LABEL' => do_lang('customers:SPECIAL_CPF__cms_support_credits'), 
-                'COUNT' => integer_format($points_gained_credits), 
-                'POINTS_EACH' => integer_format(50), 
-                'POINTS_TOTAL' => integer_format($points_gained_credits * 50)
-            ];
+        if (!addon_installed('composr_homesite_support_credits')) {
+            return null;
         }
-        return null;
+
+        $_points_gained_credits = $GLOBALS['SITE_DB']->query_select_value('credit_purchases', 'SUM(num_credits)', ['member_id' => $member_id_of, 'purchase_validated' => 1]);
+        $points_gained_credits = @intval($_points_gained_credits);
+
+        return [
+            'LABEL' => do_lang('customers:SPECIAL_CPF__cms_support_credits'), 
+            'COUNT' => integer_format($points_gained_credits), 
+            'POINTS_EACH' => integer_format(50), 
+            'POINTS_TOTAL' => integer_format($points_gained_credits * 50)
+        ];
     }
 }

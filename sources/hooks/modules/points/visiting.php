@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    points
  */
 
 /**
@@ -33,6 +33,10 @@ class Hook_points_visiting
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('points')) {
+            return 0;
+        }
+
         $points_gained_visiting = isset($point_info['points_gained_visiting']) ? $point_info['points_gained_visiting'] : 0;
         $points_visiting = intval(get_option('points_per_daily_visit'));
 
@@ -40,15 +44,19 @@ class Hook_points_visiting
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('points')) {
+            return null;
+        }
+
         $points_gained_visiting = array_key_exists('points_gained_visiting', $point_info) ? $point_info['points_gained_visiting'] : 0;
         $points_per_daily_visit = intval(get_option('points_per_daily_visit'));
 

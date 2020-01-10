@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    calendar
+ * @package    wiki
  */
 
 /**
@@ -33,10 +33,14 @@ class Hook_points_wiki
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
+        if (!addon_installed('wiki')) {
+            return 0;
+        }
+
         $points_gained_wiki = isset($point_info['points_gained_wiki']) ? $point_info['points_gained_wiki'] : 0;
         $points_wiki = intval(get_option('points_wiki', true));
 
-        if ($timestamp !== null && addon_installed('wiki')) {
+        if ($timestamp !== null) {
             $points_gained_wiki -= min($points_gained_wiki, $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'wiki_posts WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
         }
 
@@ -44,15 +48,19 @@ class Hook_points_wiki
     }
 
     /**
-     * Calculate points earned to be displayed on POINTS_PROFILE.tpl
+     * Calculate points earned to be displayed on POINTS_PROFILE.tpl.
      *
      * @param  MEMBER $member_id_of The ID of the member who is being viewed
      * @param  ?MEMBER $member_id_viewing The ID of the member who is doing the viewing (null: current member)
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
-     * @return array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl.
+     * @return ?array Point record map containing LABEL, COUNT, POINTS_EACH, and POINTS_TOTAL for use in POINTS_PROFILE.tpl. (null: addon disabled)
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
+        if (!addon_installed('wiki')) {
+            return null;
+        }
+
         $wiki_post_count = array_key_exists('points_gained_wiki', $point_info) ? $point_info['points_gained_wiki'] : 0;
         $_points_wiki_posting = get_option('points_wiki', true);
         if ($_points_wiki_posting === null) {
