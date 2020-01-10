@@ -308,5 +308,6 @@ We have the following kinds of broken URL checking across composr:
  - [page="_SEARCH:tut_accessibility"]Helping improve site accessibility for disabled users[/page]
  - [page="_SEARCH:sup_domain_names"]How domain names work[/page]
  - [page="_SEARCH:tut_upgrade"]Performing an upgrade[/page]
+ - [url="Internet Archivee"]https://archive.org/[/url] (Find archived web pages that are no longer online)
 
 {$SET,tutorial_tags,Maintenance,Webhosting,phpinfo,core_cleanup_tools,health_check,regular}{$SET,tutorial_add_date,Jul 2017}{$SET,tutorial_summary,This tutorial will cover some aspects of keeping your website running smoothly.}[block]main_tutorial_rating[/block]

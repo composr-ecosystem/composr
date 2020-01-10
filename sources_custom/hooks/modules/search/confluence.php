@@ -31,6 +31,10 @@ class Hook_search_confluence extends FieldsSearchHook
             return null;
         }
 
+        if ((get_option('confluence_subdomain') == '') || (get_option('confluence_space') == '')) {
+            return null;
+        }
+
         if ($member_id === null) {
             $member_id = get_member();
         }

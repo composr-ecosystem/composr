@@ -45,7 +45,7 @@ class Block_main_sortable_table
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        $map
+        [$map, @filemtime(get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($map['param']))]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
         $info['ttl'] = 60 * 60 * 24 * 365 * 5;
@@ -171,7 +171,7 @@ PHP;
             }
             $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             if (!is_file($path)) {
-                $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
+                $path = get_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             }
             if (!is_file($path)) {
                 return paragraph('File not found (' . escape_html($file) . ').', 'encs8t6p4oax17o84fq6uwhjcty6mo13', 'nothing-here');

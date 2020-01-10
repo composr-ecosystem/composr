@@ -884,7 +884,7 @@ function _url_rewrite_params($zone_name, $parameters, $force_index_php = false)
                         break;
                 }
             }
-            if ((empty($extra_vars)) || ($force_index_php)) {
+            if ((!empty($extra_vars)) || ($force_index_php)) {
                 $first = true;
                 $_makeup = '';
                 foreach ($extra_vars as $key => $val) { // Add these in explicitly

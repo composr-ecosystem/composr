@@ -379,7 +379,7 @@ function install_cns($upgrade_from = null)
             build_cpf_indices($id, $index, $type, $_type);
         }
     }
-    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) {
+    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_email_address', 'SHORT_TEXT');
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_server_type', 'ID_TEXT');
         $GLOBALS['FORUM_DB']->add_table_field('f_forums', 'f_mail_server_host', 'SHORT_TEXT');
@@ -393,18 +393,8 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_smart_topic_notification', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
-    }
-    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) {
+
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
-    }
-
-    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
-        add_privilege('FORUMS_AND_MEMBERS', 'appear_under_birthdays', true);
-
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_by', ['p_last_edit_by']);
-        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_inviter']);
-        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', ['pv_member_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', ['m_last_visit_time']);
     }
 
     // If we have the forum installed to this db already, leave
@@ -1120,9 +1110,15 @@ function install_cns($upgrade_from = null)
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
+        add_privilege('FORUMS_AND_MEMBERS', 'appear_under_birthdays', true);
+
         $GLOBALS['FORUM_DB']->create_index('f_forums', 'club_search', ['f_description']);
 
         $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_member', ['s_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_topic', ['s_topic_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_by', ['p_last_edit_by']);
+        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_inviter']);
+        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'member_id', ['pv_member_id']);
+        $GLOBALS['FORUM_DB']->create_index('f_members', 'last_visit_time_2', ['m_last_visit_time']);
     }
 }

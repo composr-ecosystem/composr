@@ -489,10 +489,10 @@ function cns_get_custom_field_mappings($member_id)
                             }
                             break;
                         case 'integer':
-                            $row['field_' . strval($field['id'])] = intval($value);
+                            $row['field_' . strval($field['id'])] = @intval($value);
                             break;
                         case 'float':
-                            $row['field_' . strval($field['id'])] = floatval($value);
+                            $row['field_' . strval($field['id'])] = @floatval($value);
                             break;
                     }
                 }

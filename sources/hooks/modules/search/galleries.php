@@ -135,7 +135,7 @@ class Hook_search_galleries extends FieldsSearchHook
         $where_clause .= 'name NOT LIKE \'' . db_encode_like('download\_%') . '\'';
 
         $table = 'galleries r';
-        $trans_fields = ['r.fullname' => 'SHORT_TRANS__COMCODE', 'r.description' => 'LONG_TRANS__COMCODE'];
+        $trans_fields = ['r.fullname' => 'SHORT_TRANS__COMCODE', 'r.the_description' => 'LONG_TRANS__COMCODE'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_gallery', $table, $where_clause, $trans_fields, $nontrans_fields, 'name');
 

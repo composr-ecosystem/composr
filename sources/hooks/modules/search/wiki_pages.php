@@ -128,7 +128,7 @@ class Hook_search_wiki_pages extends FieldsSearchHook
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
         $table = 'wiki_pages r';
-        $trans_fields = ['r.title' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE'];
+        $trans_fields = ['r.title' => 'SHORT_TRANS', 'r.the_description' => 'LONG_TRANS__COMCODE'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_wiki_page', $table, $where_clause, $trans_fields, $nontrans_fields);
 

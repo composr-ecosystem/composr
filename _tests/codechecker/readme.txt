@@ -19,7 +19,7 @@ The frontend is written in Java, and thus should run wherever Java can run. A mi
 
 The backend is written in PHP, and thus it also requires a command-line PHP interpreter to be installed (e.g. php.exe).
 
-To launch the Code Quality checker open a command line to the code checker directory and run codechecker.sh (Linux/MacOS) or codechecker.bat (Windows). The correct minimum version of Java needs to be in the system path.
+To launch the Code Quality checker open a command line to the code checker directory and run codechecker.sh (Linux/Mac OS) or codechecker.bat (Windows). The correct minimum version of Java needs to be in the system path.
 
 You can drag and drop files into the checker, or you can work from a project directory.
 

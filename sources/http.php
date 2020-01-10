@@ -897,7 +897,7 @@ abstract class HttpDownloader
             }
         }
 
-        if (($this->convert_to_internal_encoding) && ($this->charset !== null)) {
+        if (($this->convert_to_internal_encoding) && ($this->charset !== null) && ($this->data !== null)) {
             require_code('character_sets');
             $this->data = convert_to_internal_encoding($this->data, $this->charset);
         }

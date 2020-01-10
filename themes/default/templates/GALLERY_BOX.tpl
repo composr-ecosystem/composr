@@ -21,7 +21,7 @@
 
 		<div class="gallery-box-meta">
 			<ul class="horizontal-links">
-				<li>{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} <span class="desktop-only">{!ADDED}</span> <a href="{URL*}"><time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{$DATE_TIME,{ADD_DATE_RAW}}</time></a></li>
+				<li>{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} <span class="desktop-only">{!ADDED}</span> <a href="{URL*}"><time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{$DATE_TIME*,{ADD_DATE_RAW}}</time></a></li>
 
 				{+START,IF_PASSED,OWNER}
 					<li>

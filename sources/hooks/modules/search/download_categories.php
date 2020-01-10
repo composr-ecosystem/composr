@@ -127,7 +127,7 @@ class Hook_search_download_categories extends FieldsSearchHook
         $this->_handle_date_check($cutoff, 'add_date', $where_clause);
 
         $table = 'download_categories r';
-        $trans_fields = ['r.category' => 'SHORT_TRANS', 'r.description' => 'LONG_TRANS__COMCODE'];
+        $trans_fields = ['r.category' => 'SHORT_TRANS', 'r.the_description' => 'LONG_TRANS__COMCODE'];
         $nontrans_fields = [];
         $this->_get_search_parameterisation_advanced_for_content_type('_download_category', $table, $where_clause, $trans_fields, $nontrans_fields);
 
