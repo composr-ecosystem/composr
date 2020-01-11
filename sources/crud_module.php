@@ -106,7 +106,6 @@ abstract class Standard_crud_module
     // These only needed if we are generate create_selection_list_entries automatically
     protected $table_prefix = '';
     protected $array_key = 'id';
-    protected $title_is_multi_lang = true;
     protected $orderer = null;
     protected $table = null; // Actually, this is used by choose_feedback_fields_statistically also
 

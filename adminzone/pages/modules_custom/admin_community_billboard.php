@@ -27,7 +27,6 @@ class Module_admin_community_billboard extends Standard_crud_module
     protected $select_name = 'MESSAGE';
     protected $table = 'community_billboard';
     protected $orderer = 'the_message';
-    protected $title_is_multi_lang = true;
 
     /**
      * Find details of the module.

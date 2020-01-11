@@ -32,7 +32,6 @@ class Module_warnings extends Standard_crud_module
     public $menu_label = 'WARNINGS';
     public $table = 'f_warnings';
     public $orderer = 'w_time';
-    public $title_is_multi_lang = true;
 
     /**
      * Find icon for this module, specifically to find an icon for the module's main sitemap node. Defined when there is no entry-point for a default page call.

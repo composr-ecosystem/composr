@@ -29,7 +29,6 @@ class Module_cms_calendar extends Standard_crud_module
     protected $select_name = 'TITLE';
     protected $orderer = 'id';
     protected $array_key = 'id';
-    protected $title_is_multi_lang = true;
     protected $non_integer_id = false;
     protected $table = 'calendar_events';
     protected $code_require = 'calendar';
@@ -1313,7 +1312,6 @@ class Module_cms_calendar_cat extends Standard_crud_module
     protected $select_name_description = 'DESCRIPTION_EVENT_TYPE';
     protected $orderer = 't_title';
     protected $array_key = 'id';
-    protected $title_is_multi_lang = true;
     protected $non_integer_id = false;
     protected $protect_first = 2;
     protected $table = 'calendar_types';

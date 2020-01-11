@@ -30,7 +30,6 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     protected $menu_label = 'CUSTOM_PROFILE_FIELDS';
     protected $orderer = 'cf_name';
     protected $table = 'f_custom_fields';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'cpf';
     protected $donext_category_content_type = null;
 

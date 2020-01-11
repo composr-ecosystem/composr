@@ -30,7 +30,6 @@ class Module_admin_newsletter extends Standard_crud_module
     protected $do_preview = null;
     protected $menu_label = 'NEWSLETTER';
     protected $table = 'newsletters';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'newsletter';
     protected $donext_category_content_type = null;
 

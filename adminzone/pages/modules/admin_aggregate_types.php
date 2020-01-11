@@ -29,7 +29,6 @@ class Module_admin_aggregate_types extends Standard_crud_module
     protected $select_name = 'LABEL';
     protected $menu_label = 'AGGREGATE_TYPES';
     protected $orderer = 'aggregate_label';
-    protected $title_is_multi_lang = false;
     protected $table = 'aggregate_type_instances';
     protected $do_preview = null;
 

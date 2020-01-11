@@ -30,7 +30,6 @@ class Module_admin_wordfilter extends Standard_crud_module
     protected $menu_label = 'WORDFILTER';
     protected $orderer = 'word';
     protected $table = 'wordfilter';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'word';
     protected $donext_category_content_type = null;
 

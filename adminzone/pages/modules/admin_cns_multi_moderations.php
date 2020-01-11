@@ -32,7 +32,6 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     protected $menu_label = 'MULTI_MODERATIONS';
     protected $table = 'f_multi_moderations';
     protected $orderer = 'mm_name';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'multi_moderation';
     protected $donext_category_content_type = null;
 

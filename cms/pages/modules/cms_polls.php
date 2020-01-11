@@ -35,7 +35,6 @@ class Module_cms_polls extends Standard_crud_module
     protected $select_name_description = 'DESCRIPTION_QUESTION';
     protected $menu_label = 'POLLS';
     protected $table = 'poll';
-    protected $title_is_multi_lang = true;
     protected $content_type = 'poll';
 
     protected $donext_entry_content_type = 'poll';

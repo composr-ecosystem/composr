@@ -33,7 +33,6 @@ class Module_admin_awards extends Standard_crud_module
     protected $menu_label = 'AWARDS';
     protected $table = 'award_types';
     protected $orderer = 'a_title';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'award_type';
     protected $donext_category_content_type = null;
 

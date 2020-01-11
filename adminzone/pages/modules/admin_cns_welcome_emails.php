@@ -30,7 +30,6 @@ class Module_admin_cns_welcome_emails extends Standard_crud_module
     protected $select_name_description = 'DESCRIPTION_WELCOME_EMAIL_SUBJECT';
     protected $menu_label = 'WELCOME_EMAILS';
     protected $orderer = 'w_name';
-    protected $title_is_multi_lang = false;
     protected $donext_entry_content_type = 'welcome_email';
     protected $donext_category_content_type = null;
 

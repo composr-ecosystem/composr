@@ -32,7 +32,6 @@ class Module_admin_ecommerce extends Standard_crud_module
     protected $menu_label = 'USERGROUP_SUBSCRIPTIONS';
     protected $table = 'f_usergroup_subs';
     protected $orderer = 's_title';
-    protected $title_is_multi_lang = true;
     protected $donext_entry_content_type = 'usergroup_subscription';
     protected $donext_category_content_type = null;
 
