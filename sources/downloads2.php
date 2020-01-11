@@ -979,7 +979,7 @@ function add_download($category_id, $name, $url, $description, $author, $additio
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = null;
         }
 
         require_lang('downloads');
@@ -1177,7 +1177,7 @@ function edit_download($id, $category_id, $name, $url, $description, $author, $a
             require_code('content_privacy');
             $privacy_limits = privacy_limits_for('download', strval($id));
         } else {
-            $privacy_limits = array();
+            $privacy_limits = null;
         }
 
         require_lang('downloads');
