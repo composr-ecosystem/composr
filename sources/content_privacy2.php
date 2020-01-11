@@ -132,6 +132,43 @@ function read_privacy_fields($prefix = '')
 }
 
 /**
+ * Convert a privacy level into the actual binary settings we store in the database.
+ *
+ * @param  string $privacy_level Privacy level
+ * @return array Tuple: member view access, friend view access, guest view access
+ */
+function privacy_level_to_binary_settings($privacy_level)
+{
+    switch ($privacy_level) {
+        case 'members':
+            $member_view = 1;
+            $friend_view = 0;
+            $guest_view = 0;
+            break;
+
+        case 'friends':
+            $member_view = 0;
+            $friend_view = 1;
+            $guest_view = 0;
+            break;
+
+        case 'staff':
+            $member_view = 0;
+            $friend_view = 0;
+            $guest_view = 0;
+            break;
+
+        case 'guests':
+        default:
+            $member_view = 0;
+            $friend_view = 0;
+            $guest_view = 1;
+            break;
+    }
+    return array($member_view, $friend_view, $guest_view);
+}
+
+/**
  * Actualise form data for setting content privacy.
  *
  * @param  ID_TEXT $content_type The content type
@@ -159,32 +196,7 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
         return false;
     }
 
-    switch ($privacy_level) {
-        case 'members':
-            $member_view = 1;
-            $friend_view = 0;
-            $guest_view = 0;
-            break;
-
-        case 'friends':
-            $member_view = 0;
-            $friend_view = 1;
-            $guest_view = 0;
-            break;
-
-        case 'staff':
-            $member_view = 0;
-            $friend_view = 0;
-            $guest_view = 0;
-            break;
-
-        case 'guests':
-        default:
-            $member_view = 0;
-            $friend_view = 0;
-            $guest_view = 1;
-            break;
-    }
+    list($member_view, $friend_view, $guest_view) = privacy_level_to_binary_settings($privacy_level);
     $GLOBALS['SITE_DB']->query_delete('content_privacy', array(
         'content_type' => $content_type,
         'content_id' => $content_id,
