@@ -92,7 +92,6 @@ class Module_cms_banners extends Standard_crud_module
 
         $type = get_param_string('type', 'browse');
 
-
         inform_non_canonical_parameter('b_type');
 
         set_helper_panel_tutorial('tut_banners');
