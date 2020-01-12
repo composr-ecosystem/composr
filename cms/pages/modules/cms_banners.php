@@ -291,7 +291,7 @@ class Module_cms_banners extends Standard_crud_module
     }
 
     /**
-     * Get the Tempcode for the form to add a banner, with the information passed along to it via the parameters already added in.
+     * Get Tempcode for adding/editing form.
      *
      * @param  ID_TEXT $name The name of the banner (blank: new)
      * @param  URLPATH $image_url The URL to the banner image
