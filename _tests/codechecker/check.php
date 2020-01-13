@@ -197,7 +197,7 @@ function find_inherits_from($class, $direct_only = false)
         return [];
     }
 
-    $inherits_from = array();
+    $inherits_from = [];
 
     $inherits_from = array_merge($inherits_from, $FUNCTION_SIGNATURES[$class]['implements']);
     if (!$direct_only) {
@@ -1104,6 +1104,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
     }
 
     $inner = $e;
+
     switch ($inner[0]) {
         case 'CLOSURE':
             global $LOCAL_VARIABLES;
@@ -1458,7 +1459,7 @@ function check_method_call($c, $c_pos, $function_guard = '')
                 if ($CURRENT_CLASS != '__global') {
                     $class = $CURRENT_CLASS;
                 } else {
-                    log_warning('Cannot reference a self class from outside a class', $c_pos);
+                    log_warning('Cannot reference the ' . $variable[1] . ' class pseudonym from outside a class', $c_pos);
                     $class = null;
                 }
 
@@ -1469,10 +1470,15 @@ function check_method_call($c, $c_pos, $function_guard = '')
                 }
             } elseif (($variable[0] == 'IDENTIFIER') && ($variable[1] == 'parent')) {
                 if (isset($FUNCTION_SIGNATURES[$CURRENT_CLASS])) {
-                    if ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'] !== null) {
-                        $class = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'];
+                    if ($CURRENT_CLASS != '__global') {
+                        if ($FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'] !== null) {
+                            $class = $FUNCTION_SIGNATURES[$CURRENT_CLASS]['extends'];
+                        } else {
+                            log_warning('Cannot reference the parent class pseudonym when a class is not a subclass', $c_pos);
+                            $class = null;
+                        }
                     } else {
-                        log_warning('Cannot reference a parent class when a class is not a subclass', $c_pos);
+                        log_warning('Cannot reference the parent class pseudonym from outside a class', $c_pos);
                         $class = null;
                     }
                 } else {
