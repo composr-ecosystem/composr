@@ -81,7 +81,7 @@ class _special_links_test_set extends cms_test_case
             'https://www.bing.com/toolbox/markup-validator' => true,
             'https://search.google.com/structured-data/testing-tool/' => true,
             'https://webmaster.yandex.com/tools/microtest/' => false,
-            'https://developers.facebook.com/tools/debug/sharing/' => true,
+            'https://developers.facebook.com/tools/debug/' => true,
             'https://www.woorank.com/' => true,
             'https://website.grader.com/' => true,
             'https://developers.google.com/speed/pagespeed/insights/' => true,
