@@ -191,7 +191,7 @@ function check_privacy($content_type, $content_id, $viewing_member_id = null)
  */
 function privacy_limits_for($content_type, $content_id, $strict_all = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
+    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
     if (array_key_exists(0, $rows)) {
         $row = $rows[0];
 
@@ -201,7 +201,7 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
         $additional_access = collapse_1d_complexity('member_id', $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['member_id'], ['content_type' => $content_type, 'content_id' => $content_id]));
     } else {
         // Is something being set right now by POST? (this layers on EXTRA security, so is not any kind of security risk)
-        if (cms_srv('REQUEST_METHOD') == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             require_code('content_privacy2');
             list($privacy_level, $additional_access) = read_privacy_fields();
             if ($privacy_level == '') {

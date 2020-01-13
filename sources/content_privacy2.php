@@ -159,7 +159,7 @@ function privacy_level_to_binary_settings($privacy_level)
             $guest_view = 1;
             break;
     }
-    return array($member_view, $friend_view, $guest_view);
+    return [$member_view, $friend_view, $guest_view];
 }
 
 /**
