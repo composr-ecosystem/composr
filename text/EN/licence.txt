@@ -163,6 +163,7 @@ This product includes:
   - URL encode code (http://locutus.io/php/url/urlencode/, public domain)
   - Glide.js (MIT licence)
   - Chart.js (MIT licence)
+  - Masonry (MIT licence)
  - Smaller front-end polyfills:
   - Web Animations (Google, Apache licence)
   - URL Search parameters (WebReflection, BSD licence)

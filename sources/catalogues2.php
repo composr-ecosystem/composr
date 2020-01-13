@@ -1121,7 +1121,7 @@ function actual_add_catalogue_entry($category_id, $validated, $notes, $allow_rat
                 require_code('content_privacy');
                 $privacy_limits = privacy_limits_for('catalogue_entry', strval($id));
             } else {
-                $privacy_limits = [];
+                $privacy_limits = null;
             }
 
             require_lang('catalogues');
@@ -1318,7 +1318,7 @@ function actual_edit_catalogue_entry($id, $category_id, $validated, $notes, $all
                 require_code('content_privacy');
                 $privacy_limits = privacy_limits_for('catalogue_entry', strval($id));
             } else {
-                $privacy_limits = [];
+                $privacy_limits = null;
             }
 
             require_lang('catalogues');

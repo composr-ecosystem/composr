@@ -126,30 +126,13 @@ function read_privacy_fields($prefix = '')
 }
 
 /**
- * Actualise form data for setting content privacy.
+ * Convert a privacy level into the actual binary settings we store in the database.
  *
- * @param  ID_TEXT $content_type The content type
- * @param  ?ID_TEXT $content_id The content ID (null: adding)
- * @param  ID_TEXT $privacy_level The privacy level
- * @set members friends staff guests
- * @param  array $additional_access A list of usernames
- * @param  boolean $send_invites Whether to send out invite notifications (only do this is it is a new content entry, rather than something obscure, like a member's photo)
- * @return boolean Whether it saved something
+ * @param  string $privacy_level Privacy level
+ * @return array Tuple: member view access, friend view access, guest view access
  */
-function save_privacy_form_fields($content_type, $content_id, $privacy_level, $additional_access, $send_invites = true)
+function privacy_level_to_binary_settings($privacy_level)
 {
-    if (fractional_edit()) {
-        return false;
-    }
-
-    if (is_guest()) {
-        return false;
-    }
-
-    if (!addon_installed('cns_cpfs')) { // This is coded as a dependency
-        return false;
-    }
-
     switch ($privacy_level) {
         case 'members':
             $member_view = 1;
@@ -176,6 +159,36 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
             $guest_view = 1;
             break;
     }
+    return array($member_view, $friend_view, $guest_view);
+}
+
+/**
+ * Actualise form data for setting content privacy.
+ *
+ * @param  ID_TEXT $content_type The content type
+ * @param  ?ID_TEXT $content_id The content ID (null: adding)
+ * @param  ID_TEXT $privacy_level The privacy level
+ * @set members friends staff guests
+ * @param  array $additional_access A list of usernames
+ * @param  boolean $send_invites Whether to send out invite notifications (only do this is it is a new content entry, rather than something obscure, like a member's photo)
+ * @return boolean Whether it saved something
+ */
+function save_privacy_form_fields($content_type, $content_id, $privacy_level, $additional_access, $send_invites = true)
+{
+    if (fractional_edit()) {
+        return false;
+    }
+
+    if (is_guest()) {
+        return false;
+    }
+
+    if (!addon_installed('cns_cpfs')) { // This is coded as a dependency
+        return false;
+    }
+
+    list($member_view, $friend_view, $guest_view) = privacy_level_to_binary_settings($privacy_level);
+
     $GLOBALS['SITE_DB']->query_delete('content_privacy', [
         'content_type' => $content_type,
         'content_id' => $content_id,

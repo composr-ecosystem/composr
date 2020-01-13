@@ -191,17 +191,32 @@ function check_privacy($content_type, $content_id, $viewing_member_id = null)
  */
 function privacy_limits_for($content_type, $content_id, $strict_all = false)
 {
-    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], ['content_type' => $content_type, 'content_id' => $content_id], '', 1);
-    if (!array_key_exists(0, $rows)) {
-        return null;
+    $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', ['*'], array('content_type' => $content_type, 'content_id' => $content_id), '', 1);
+    if (array_key_exists(0, $rows)) {
+        $row = $rows[0];
+
+        $member_view = $row['member_view'];
+        $friend_view = $row['friend_view'];
+        $guest_view = $row['guest_view'];
+        $additional_access = collapse_1d_complexity('member_id', $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['member_id'], ['content_type' => $content_type, 'content_id' => $content_id]));
+    } else {
+        // Is something being set right now by POST? (this layers on EXTRA security, so is not any kind of security risk)
+        if (cms_srv('REQUEST_METHOD') == 'POST') {
+            require_code('content_privacy2');
+            list($privacy_level, $additional_access) = read_privacy_fields();
+            if ($privacy_level == '') {
+                return null;
+            }
+            list($member_view, $friend_view, $guest_view) = privacy_level_to_binary_settings($privacy_level);
+        } else {
+            return null;
+        }
     }
 
-    $row = $rows[0];
-
-    if ($row['guest_view'] == 1) {
+    if ($guest_view == 1) {
         return null;
     }
-    if ($row['member_view'] == 1) {
+    if ($member_view == 1) {
         return null;
     }
 
@@ -212,16 +227,15 @@ function privacy_limits_for($content_type, $content_id, $strict_all = false)
 
     $members[] = $content_submitter;
 
-    if (($row['friend_view'] == 1) && (addon_installed('chat'))) {
-        $cnt = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['chat_likes' => $content_submitter]);
+    if (($friend_view == 1) && (addon_installed('chat'))) {
+        $cnt = $GLOBALS['SITE_DB']->query_select_value('chat_friends', 'COUNT(*)', ['member_likes' => $content_submitter]);
         if (($strict_all) || ($cnt <= 1000/*safety limit*/)) {
-            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', ['chat_liked'], ['chat_likes' => $content_submitter]);
+            $friends = $GLOBALS['SITE_DB']->query_select('chat_friends', ['member_liked'], ['member_likes' => $content_submitter]);
             $members = array_merge($members, collapse_1d_complexity('member_liked', $friends));
         }
     }
 
-    $individuals = $GLOBALS['SITE_DB']->query_select('content_privacy__members', ['member_id'], ['content_type' => $content_type, 'content_id' => $content_id]);
-    $members = array_merge($members, collapse_1d_complexity('member_id', $individuals));
+    $members = array_merge($members, $additional_access);
 
     return $members;
 }
