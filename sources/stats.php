@@ -1205,7 +1205,7 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
             'END' => strval($value[1]),
         ]);
 
-        return _form_input($this->filter_name, $this->label, new Tempcode(), $input, true, false, $tabindex);
+        return _form_input($this->filter_name, $this->label, new Tempcode(), $input, true, false, $tabindex, false, true);
     }
 
     /**

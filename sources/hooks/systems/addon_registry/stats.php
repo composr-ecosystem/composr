@@ -278,10 +278,12 @@ class Hook_addon_registry_stats
             'END' => '10',
         ]);
 
+        $fields = new Tempcode();
+
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
-            'SKIP_LABEL' => false,
-            'NAME' => lorem_name(),
+            'SKIP_LABEL' => true,
+            'NAME' => lorem_word(),
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence_html(),
             'DESCRIPTION_SIDE' => '',
