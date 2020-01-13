@@ -376,7 +376,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     if (addon_installed('stats')) {
         $history = [];
 
-        $select = 'a.page_link,a.date_and_time,a.title,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system';
+        $select = 'a.page_link,a.date_and_time,a.member_id,a.ip,a.session_id,a.referer,a.browser,a.operating_system';
 
         $where = db_string_equal_to('ip', $ip) . ' AND member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         if (!is_guest($member_id)) {

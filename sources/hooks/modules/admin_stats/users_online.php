@@ -26,18 +26,20 @@ class Hook_admin_stats_users_online extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         return [
             'users_online' => [
                 'label' => do_lang_tempcode('USERS_ONLINE'),
                 'category' => 'hits',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('users_online__month_range', do_lang_tempcode('DATE_RANGE')),
+                    'users_online__month_range' => new CMSStatsDateMonthRangeFilter('users_online__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => new CMSStatsDatePivot('users_online__pivot', $this->get_date_pivots(false)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

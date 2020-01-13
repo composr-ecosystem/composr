@@ -102,15 +102,28 @@ If web pages are taking seconds to just generate, you have a problem.
 
 Most of the filters where you enter text for filtering support the [tt]?[/tt] and [tt]*[/tt] wildcards.
 
+[title="2"]KPIs[/title]
+
+Most time-series graphs allow you to add that graph as a [concept]KPI[/concept]. KPIs are special because:[list="1"]
+[*] They are available for quick reference from the staff checklist on the Admin Zone dashboard
+[*] You can set targets against the KPIs:[list="a"]
+[*] You can see the targets on the graphs
+[*] You can easily see an overview of which targets have and have not been hit
+[*] Regular notifications will be sent to staff showing whether the targets have been hit or not
+[/list]
+[/list]
+
 [title="2"]Spreadsheet export[/title]
 
 Every graph has the option to download the data the graph is generated from, in spreadsheet form. This allows you to manually review it in detail, or use third-party graphing tools.
 
-[title="2"]Privacy[/title]
+[title="2"]Implementation notes[/title]
 
-No default graphs or data tsbles provided by Composr statistics reveal personal information about users -- everything is anonymous. This puts the system in line with GDPR (EU privacy legislation).
+[title="3"]Privacy[/title]
 
-[title="2"]Pre-computed statistics[/title]
+No default graphs or data tables provided by Composr statistics reveal personal information about users -- everything is anonymous. This puts the system in line with GDPR (EU privacy legislation).
+
+[title="3"]Pre-computed statistics[/title]
 
 All statistics are generated from pre-computed data, which is itself based on raw data.
 The pre-computation happens in the system scheduler, daily. The system scheduler is therefore required for Composr statistics.
@@ -124,7 +137,7 @@ Why do we do this? There are a number of reasons:
 
 One limitation to the pre-computation is that it does limit the amount of filtering possible to what we have built into our data structures. For example, you can set date ranges but only aligned to months.
 
-[title="2"]Time zones[/title]
+[title="3"]Time zones[/title]
 
 All times are calculated/shown in the configured website time zone, regardless of the time zone of visitors or the time zone your own account is configured to. This is a necessary limitation based on how statistics are pre-computed.
 Some graphs allow showing hour-by-hour stats and also filtering by country, in which case you may get an idea for the local times by manually considering any local time zone differences.
@@ -158,6 +171,7 @@ It is a good way to visualise how people are using the site. This works best whe
 [concepts
  1_key="Referrer"       1_value="A page of a 3rd-party website linking to a page on your website."
  2_key="Geo-location"   2_value="The process of using some type of individually-identifiable information to find out where in the world somebody is."
+ 3_key="KPI"            3_value="Key Performance Indicator, a measurement that has been chosen for marketing purposes."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

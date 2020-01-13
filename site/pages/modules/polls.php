@@ -157,6 +157,8 @@ class Module_polls
         if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
             $GLOBALS['SITE_DB']->alter_table_field('poll', 'option6', '?SHORT_TRANS__COMCODE');
             $GLOBALS['SITE_DB']->alter_table_field('poll', 'option7', '?SHORT_TRANS__COMCODE');
+
+            $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 6)) {
@@ -164,8 +166,6 @@ class Module_polls
 
             add_privilege('SEARCH', 'autocomplete_keyword_poll', false);
             add_privilege('SEARCH', 'autocomplete_title_poll', false);
-
-            $GLOBALS['SITE_DB']->add_table_field('poll_votes', 'v_vote_time', 'TIME', time());
         }
     }
 

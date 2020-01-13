@@ -26,18 +26,24 @@ class Hook_admin_stats_polls extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
+        if (!addon_installed('polls')) {
+            return null;
+        }
+
         return [
             'poll_votes' => [
                 'label' => do_lang_tempcode('POLL_VOTES'),
                 'category' => 'feedback_and_engagement',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('poll_votes__month_range', do_lang_tempcode('DATE_RANGE')),
+                    'poll_votes__month_range' => new CMSStatsDateMonthRangeFilter('poll_votes__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('poll_votes__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('poll_votes__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

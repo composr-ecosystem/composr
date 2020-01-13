@@ -1102,7 +1102,7 @@ function page_link_decode($page_link)
         }
         if (isset($_bit[1])) {
             $decoded = urldecode($_bit[1]);
-            if (($decoded !== '') && ($decoded[0] === '{') && (strlen($decoded) > 2) && (intval($decoded[1]) > 51)) { // If it is in template format (symbols)
+            if (($decoded !== '') && ($decoded[0] === '{') && (strlen($decoded) > 2) && (is_numeric($decoded[1])) && (intval($decoded[1]) > 51)) { // If it is in template format (symbols)
                 require_code('tempcode_compiler');
                 $_decoded = template_to_tempcode($decoded);
                 $decoded = $_decoded->evaluate();

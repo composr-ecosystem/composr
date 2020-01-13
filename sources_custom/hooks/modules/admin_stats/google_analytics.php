@@ -48,9 +48,10 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('google_analytics')) {
             return null;

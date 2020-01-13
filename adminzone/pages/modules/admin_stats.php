@@ -18,11 +18,23 @@
  * @package    stats
  */
 
+require_code('crud_module');
+
 /**
  * Module page class.
  */
-class Module_admin_stats
+class Module_admin_stats extends Standard_crud_module
 {
+    protected $lang_type = 'KPI';
+    protected $select_name = 'KPI';
+    protected $select_name_description = 'DESCRIPTION_KPI';
+    protected $menu_label = 'MODULE_TRANS_NAME_admin_stats';
+    protected $table = 'stats_kpis';
+    protected $do_preview = false;
+    protected $orderer = 'k_title';
+
+    public $title;
+
     /**
      * Find details of the module.
      *
@@ -50,6 +62,7 @@ class Module_admin_stats
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed');
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed_flat');
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_contact_forms');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_kpis');
         $GLOBALS['SITE_DB']->drop_table_if_exists('usersonline_track');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ip_country');
     }
@@ -173,6 +186,19 @@ class Module_admin_stats
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_contact_forms', 'form_name', ['form_name']);
             $GLOBALS['SITE_DB']->create_index('stats_contact_forms', 'date_and_time', ['date_and_time']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_kpis', [
+                'id' => '*AUTO',
+                'k_graph_name' => 'ID_TEXT',
+                'k_pivot' => 'ID_TEXT',
+                'k_filters' => 'LONG_TEXT',
+                'k_target' => '?REAL',
+                'k_title' => 'SHORT_TEXT',
+                'k_added' => 'TIME',
+                'k_added_by' => 'MEMBER',
+                'k_notes' => 'LONG_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_kpis', 'k_graph_name', ['k_graph_name']);
         }
     }
 
@@ -222,17 +248,21 @@ class Module_admin_stats
             $ret['install_data'] = ['INSTALL_GEOLOCATION_DATA', 'menu/adminzone/audit/statistics/geolocate'];
         }
 
+        $ret['edit'] = ['EDIT_KPI', 'admin/edit'];
+
+        $ret['kpis'] = ['KPIS', 'admin/view_archive'];
+
         return $ret;
     }
-
-    public $title;
 
     /**
      * Module pre-run function. Allows us to know metadata for <head> before we start streaming output.
      *
+     * @param  boolean $top_level Whether this is running at the top level, prior to having sub-objects called
+     * @param  ?ID_TEXT $type The screen type to consider for metadata purposes (null: read from environment)
      * @return ?Tempcode Tempcode indicating some kind of exceptional output (null: none)
      */
-    public function pre_run()
+    public function pre_run($top_level = true, $type = null)
     {
         $error_msg = new Tempcode();
         if (!addon_installed__messaged('stats', $error_msg)) {
@@ -254,8 +284,6 @@ class Module_admin_stats
             $categories = stats_find_graph_categories();
             $category_name = get_param_string('id');
             $this->title = get_screen_title($categories[$category_name]['label_lang_string']);
-
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MODULE_TRANS_NAME_admin_stats')]]);
 
             $_graphs = stats_find_graphs_in_category($category_name);
             foreach ($_graphs as $graph_name => $_graph) {
@@ -280,7 +308,9 @@ class Module_admin_stats
             $title = get_screen_title($graph_details['label'], false);
 
             foreach ($graph_details['filters'] as $filter) {
-                inform_non_canonical_parameter($filter->filter_name);
+                if ($filter !== null) {
+                    inform_non_canonical_parameter($filter->filter_name);
+                }
             }
             inform_non_canonical_parameter($graph_name . '_start');
             inform_non_canonical_parameter($graph_name . '_max');
@@ -311,39 +341,45 @@ class Module_admin_stats
 
         if ($type == 'install_data') {
             $this->title = get_screen_title('INSTALL_GEOLOCATION_DATA');
-
-            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MODULE_TRANS_NAME_admin_stats')]]);
         }
 
-        return null;
+        if ($type == 'kpis') {
+            $this->title = get_screen_title('KPIS');
+        }
+
+        return parent::pre_run($top_level);
     }
 
     /**
-     * Execute the module.
+     * Standard crud_module run_start.
      *
-     * @return Tempcode The result of execution
+     * @param  ID_TEXT $type The type of module execution
+     * @return Tempcode The output of the run
      */
-    public function run()
+    public function run_start($type)
     {
         require_css('stats');
-
-        cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
-        disable_php_memory_limit();
-
-        $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
             return $this->browse();
         } elseif ($type == 'install_data') {
             return $this->install_geolocation_data();
         } elseif ($type == 'category') {
+            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            disable_php_memory_limit();
+
             return $this->category();
         } elseif ($type == 'graph') {
+            cms_set_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+            disable_php_memory_limit();
+
             return $this->graph();
         } elseif ($type == 'spreadsheet') {
             return $this->spreadsheet();
         } elseif ($type == 'redirect') {
             return $this->redirect();
+        } elseif ($type == 'kpis') {
+            return $this->kpis();
         }
         return new Tempcode();
     }
@@ -355,48 +391,7 @@ class Module_admin_stats
      */
     public function browse()
     {
-        require_code('templates_donext');
-
-        $actions = [];
-
-        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
-        foreach ($hooks as $ob) {
-            $info = $ob->info();
-            if ($info !== null) {
-                foreach ($info as $id => $graph_details) {
-                    $actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'redirect', 'id' => $id], '_SELF'], do_lang_tempcode($graph_details['label_lang_string'])];
-                }
-            }
-        }
-
-        $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-        foreach ($hooks as $ob) {
-            $info = $ob->info();
-            if ($info !== null) {
-                foreach ($info as $graph_name => $graph_details) {
-                    if ($graph_details['category'] === null) {
-                        $actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'graph', 'id' => $graph_name], '_SELF'], $graph_details['label']];
-                    }
-                }
-            }
-        }
-
-        $categories = stats_find_graph_categories();
-        foreach ($categories as $category_name => $category) {
-            $actions[] = [$category['icon'], ['_SELF', ['type' => 'category', 'id' => $category_name], '_SELF'], do_lang_tempcode($category['label_lang_string'])];
-        }
-
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-        if ($test === null) {
-            $actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
-        }
-
-        return do_next_manager(
-            get_screen_title('MODULE_TRANS_NAME_admin_stats'),
-            comcode_lang_string('DOC_STATISTICS'),
-            $actions,
-            do_lang('MODULE_TRANS_NAME_admin_stats')
-        );
+        return $this->do_next_manager($this->title, comcode_lang_string('DOC_STATISTICS'));
     }
 
     /**
@@ -432,21 +427,7 @@ class Module_admin_stats
         $graphs = [];
         foreach ($_graphs as $graph_name => $_graph) {
             list($hook_ob, $graph_details) = $_graph;
-
-            $graph_rendered = stats_generate_graph($graph_name, [], null, $hook_ob, $graph_details);
-
-            $graph_final_details = null;
-            $graph_form = stats_generate_graph_form($graph_name, $hook_ob, $graph_details);
-
-            $results_table = stats_generate_results_table($graph_name, [], null, $hook_ob, $graph_details, $graph_final_details);
-
-            $graph = [
-                'GRAPH_NAME' => $graph_name,
-                'GRAPH_LABEL' => $graph_details['label'],
-                'GRAPH_RENDERED' => $graph_rendered,
-                'GRAPH_FORM' => $graph_form,
-                'RESULTS_TABLE' => $results_table,
-            ];
+            $graph = $this->templatify_graph($graph_name, $hook_ob, $graph_details);
             $graphs[] = $graph;
         }
 
@@ -465,24 +446,77 @@ class Module_admin_stats
         send_http_output_ping();
 
         list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+        $graph = $this->templatify_graph($graph_name, $hook_ob, $graph_details);
+        $graphs = [$graph];
 
-        $graph_rendered = stats_generate_graph($graph_name, [], null, $hook_ob, $graph_details);
+        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
+    }
 
-        $graph_final_details = null;
-        $graph_form = stats_generate_graph_form($graph_name, $hook_ob, $graph_details);
+    /**
+     * Make a specific graph template-ready.
+     *
+     * @param  string $graph_name The UI
+     * @param  object $hook_ob Hook object
+     * @param  array $graph_details Graph details
+     * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+     * @param  array $filters Filter settings to take precedence
+     * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+     * @param  boolean $include_form Whether to include a form
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
+     * @return array The UI
+     */
+    protected function templatify_graph($graph_name, $hook_ob, $graph_details, $graph_final_details = null, $filters = [], $pivot = null, $include_form = true, $for_kpi = false)
+    {
+        $graph_rendered = stats_generate_graph($graph_name, $filters, $pivot, $hook_ob, $graph_details, $graph_final_details, $for_kpi);
 
-        $results_table = stats_generate_results_table($graph_name, [], null, $hook_ob, $graph_details, $graph_final_details);
+        if ($include_form) {
+            $graph_form = stats_generate_graph_form($graph_name, $hook_ob, $graph_details, $filters, $pivot, $for_kpi);
+        } else {
+            $graph_form = new Tempcode();
+        }
 
-        $graph = [
+        $results_table = stats_generate_results_table($graph_name, [], null, $hook_ob, $graph_details, $graph_final_details, $for_kpi);
+
+        list($filters_relative, $pivot_relative) = _stats_get_graph_context($graph_details, $filters, $pivot, true); // We have to do a conversion because a new KPI has to take initial parameters in a KPI-format
+        list($filters_absolute, $pivot_absolute) = _stats_get_graph_context($graph_details, $filters, $pivot, false); // We have to do a conversion because stats_generate_spreadsheet assumes non-KPI parameters
+
+        $supports_kpi = (!empty($graph_details['support_kpis'])) && (($pivot_absolute === null) || (strpos($pivot_absolute, '_series') !== false));
+
+        if ($supports_kpi) {
+            $existing_kpis = [];
+            $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['id', 'k_title'], ['k_graph_name' => $graph_name]);
+            foreach ($kpi_rows as $kpi_row) {
+                $existing_kpis[] = [
+                    'KPI_ID' => strval($kpi_row['id']),
+                    'KPI_TITLE' => $kpi_row['k_title'],
+                    'KPI_EDIT_URL' => build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $kpi_row['id']], '_SELF'),
+                ];
+            }
+        } else {
+            $existing_kpis = null;
+        }
+
+        $kpi_add_url = null;
+        if ((!$for_kpi) && ($supports_kpi)) {
+            $kpi_add_url = build_url(['page' => '_SELF', 'type' => 'add', 'graph_name' => $graph_name, 'filters' => json_encode($filters_relative), 'pivot' => $pivot_relative], '_SELF');
+        }
+
+        if ($results_table->is_empty()) {
+            $spreadsheet_url = null;
+        } else {
+            $spreadsheet_url = build_url(['page' => '_SELF', 'type' => 'spreadsheet', 'id' => $graph_name, 'filters' => json_encode($filters_absolute), 'pivot' => $pivot_absolute], '_SELF');
+        }
+
+        return [
             'GRAPH_NAME' => $graph_name,
             'GRAPH_LABEL' => $graph_details['label'],
             'GRAPH_RENDERED' => $graph_rendered,
             'GRAPH_FORM' => $graph_form,
             'RESULTS_TABLE' => $results_table,
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => $kpi_add_url,
+            'SPREADSHEET_URL' => $spreadsheet_url,
         ];
-        $graphs = [$graph];
-
-        return do_template('STATS_SCREEN', ['TITLE' => $this->title, 'GRAPHS' => $graphs]);
     }
 
     /**
@@ -494,8 +528,11 @@ class Module_admin_stats
     {
         $spreadsheet_graph_name = get_param_string('id');
 
+        $filters = json_decode(get_param_string('filters', '[]', INPUT_FILTER_GET_COMPLEX), true);
+        $pivot = get_param_string('pivot', null);
+
         $filename = null;
-        $sheet_writer = stats_generate_spreadsheet($spreadsheet_graph_name, $filename);
+        $sheet_writer = stats_generate_spreadsheet($spreadsheet_graph_name, $filename, $filters, $pivot);
         $sheet_writer->output_and_exit($filename, true);
 
         return new Tempcode();
@@ -524,5 +561,357 @@ class Module_admin_stats
         }
 
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+
+    /**
+     * Show KPIs.
+     *
+     * @return Tempcode The UI
+     */
+    public function kpis()
+    {
+        $graphs = [];
+        $kpis = [];
+        $_kpis = gather_kpis();
+        foreach ($_kpis as $_kpi) {
+            list($kpi_row, $hook_ob, $graph_details, $graph_final_details, $filters, $pivot, $edit_url, , $target, $current, $hits_target) = $_kpi;
+
+            $graphs[] = $this->templatify_graph($kpi_row['k_graph_name'], $hook_ob, $graph_details, $graph_final_details, $filters, $pivot, false, true);
+
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+
+            $kpi = [
+                'TITLE' => $kpi_row['k_title'],
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'HITS_TARGET' => $hits_target,
+                'TARGET' => ($target === null) ? null : float_format($target, 4, true),
+                'KPI_EDIT_URL' => $edit_url,
+                'GRAPH_NAME' => $kpi_row['k_graph_name'],
+                'USERNAME' => $username,
+                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'NOTES' => $kpi_row['k_notes'],
+            ];
+            $kpis[] = $kpi;
+        }
+
+        return do_template('KPI_SCREEN', [
+            'TITLE' => $this->title,
+            'GRAPHS' => $graphs,
+            'KPIS' => $kpis,
+        ]);
+    }
+
+    /**
+     * Standard crud_module table function.
+     *
+     * @param  array $url_map Details to go to build_url for link to the next screen
+     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     */
+    public function create_selection_list_choose_table($url_map)
+    {
+        require_code('templates_results_table');
+
+        list($rows, $max_rows) = $this->get_entry_rows();
+
+        $hr = [
+            do_lang_tempcode('TITLE'),
+            do_lang_tempcode('BLOCK_main_staff_stats_graph_PARAM_param_TITLE'),
+            do_lang_tempcode('USERNAME'),
+            do_lang_tempcode('ADDED'),
+            do_lang_tempcode('TARGET'),
+            do_lang_tempcode('ACTIONS'),
+        ];
+        $header_row = results_header_row($hr);
+
+        $result_entries = new Tempcode();
+
+        $_kpis = gather_kpis();
+        foreach ($_kpis as $_kpi) {
+            list($kpi_row, , , , , , $edit_url, , , , ) = $_kpi;
+
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+
+            $fr = [
+                $kpi_row['k_title'],
+                $kpi_row['k_graph_name'],
+                $username,
+                get_timezoned_date($kpi_row['k_added']),
+                ($kpi_row['k_target'] === null) ? do_lang_tempcode('NONE_EM') : protect_from_escaping(escape_html(float_format($kpi_row['k_target'], 4, true))),
+                protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, $kpi_row['k_title'])),
+            ];
+
+            $result_entries->attach(results_entry($fr, true));
+        }
+
+        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries), false];
+    }
+
+    /**
+     * Get Tempcode for an adding form.
+     *
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function get_form_fields_for_add()
+    {
+        return $this->get_form_fields();
+    }
+
+    /**
+     * Get Tempcode for adding/editing form.
+     *
+     * @param  ?integer $id ID (null: new)
+     * @param  array $filters Filter settings
+     * @param  ?ID_TEXT $pivot Pivot value (null: default)
+     * @param  ?float $target Target (null: none)
+     * @param  ?SHORT_TEXT $title Title (null: auto-generate)
+     * @param  LONG_TEXT $notes Staff notes
+     * @return array A tuple: The input fields, Hidden fields, ...
+     */
+    public function get_form_fields($id = null, $filters = [], $pivot = null, $target = null, $title = null, $notes = '')
+    {
+        $fields = new Tempcode();
+        $hidden = new Tempcode();
+
+        if ($id === null) {
+            $graph_name = get_param_string('graph_name');
+
+            $filters = json_decode(get_param_string('filters', '[]', INPUT_FILTER_GET_COMPLEX), true);
+            $pivot = get_param_string('pivot', null);
+        } else {
+            $graph_name = $GLOBALS['SITE_DB']->query_select_value('stats_kpis', 'k_graph_name', ['id' => $id]);
+        }
+        $hook_ob = null;
+        $graph_details = null;
+        $_graph_fields = stats_generate_graph_form_fields($graph_name, $hook_ob, $graph_details, $filters, $pivot, true);
+
+        $hidden->attach(form_input_hidden('graph_name', $graph_name));
+
+        if ($title === null) {
+            $title = $graph_details['label'];
+        }
+
+        $message = do_lang_tempcode('KPI_CONFIGURING_FOR', $graph_details['label']);
+        if ($id === null) {
+            $this->add_text = $message;
+        } else {
+            $this->edit_text = $message;
+        }
+
+        if ($_graph_fields !== null) {
+            list($graph_fields, $hidden_fields) = $_graph_fields;
+            $fields->attach($graph_fields);
+            $hidden->attach($hidden_fields);
+        }
+
+        $fields->attach(form_input_float(do_lang_tempcode('TARGET'), do_lang_tempcode('DESCRIPTION_KPI_TARGET'), 'target', $target, false));
+
+        $fields->attach(form_input_line(do_lang_tempcode('TITLE'), do_lang_tempcode('DESCRIPTION_TITLE'), 'title', $title, true));
+
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['SECTION_HIDDEN' => $notes == '', 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false));
+
+        return [$fields, $hidden];
+    }
+
+    /**
+     * Standard crud_module submitter getter.
+     *
+     * @param  ID_TEXT $id The entry for which the submitter is sought
+     * @return array The submitter, and the time of submission (null submission time implies no known submission time)
+     */
+    public function get_submitter($id)
+    {
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_added_by', 'k_added'], ['id' => intval($id)], '', 1);
+        if (!array_key_exists(0, $rows)) {
+            return [null, null];
+        }
+        return [$rows[0]['k_added_by'], $rows[0]['k_added']];
+    }
+
+    /**
+     * Standard crud_module edit form filler.
+     *
+     * @param  ID_TEXT $id The entry being edited
+     * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
+     */
+    public function fill_in_edit_form($id)
+    {
+        $rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['*'], ['id' => intval($id)], '', 1);
+        if (!array_key_exists(0, $rows)) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'kpi'));
+        }
+        $myrow = $rows[0];
+
+        $filters = unserialize($myrow['k_filters']);
+        $pivot = ($myrow['k_pivot'] == '') ? null : $myrow['k_pivot'];
+        return $this->get_form_fields(intval($id), $filters, $pivot, $myrow['k_target'], $myrow['k_title'], $myrow['k_notes']);
+    }
+
+    /**
+     * Standard crud_module add actualiser.
+     *
+     * @return array A pair: The entry added, description about usage
+     */
+    public function add_actualisation()
+    {
+        $graph_name = post_param_string('graph_name');
+        $_target = post_param_string('target', '');
+        $target = ($_target == '') ? null : floatval($_target);
+        $title = post_param_string('title');
+        $notes = post_param_string('notes');
+
+        list(, $graph_details) = stats_find_graph_details($graph_name, true);
+        $filters = null;
+        $pivot = null;
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
+
+        $id = $GLOBALS['SITE_DB']->query_insert('stats_kpis', [
+            'k_graph_name' => $graph_name,
+            'k_pivot' => ($pivot === null) ? '' : $pivot,
+            'k_filters' => serialize($filters),
+            'k_target' => $target,
+            'k_title' => $title,
+            'k_added' => time(),
+            'k_added_by' => get_member(),
+            'k_notes' => $notes,
+        ], true);
+
+        log_it('ADD_KPI', strval($id), $title);
+
+        return [strval($id), null];
+    }
+
+    /**
+     * Standard crud_module edit actualiser.
+     *
+     * @param  ID_TEXT $id The entry being edited
+     * @return ?Tempcode Description about usage (null: none)
+     */
+    public function edit_actualisation($id)
+    {
+        $graph_name = post_param_string('graph_name');
+        $_target = post_param_string('target', '');
+        $target = ($_target == '') ? null : floatval($_target);
+        $title = post_param_string('title');
+        $notes = post_param_string('notes');
+
+        list(, $graph_details) = stats_find_graph_details($graph_name, true);
+        $filters = null;
+        $pivot = null;
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, true);
+
+        $GLOBALS['SITE_DB']->query_update('stats_kpis', [
+            'k_graph_name' => $graph_name,
+            'k_pivot' => ($pivot === null) ? '' : $pivot,
+            'k_filters' => serialize($filters),
+            'k_target' => $target,
+            'k_title' => $title,
+            'k_notes' => $notes,
+        ], [
+            'id' => intval($id),
+        ], '', 1);
+
+        log_it('EDIT_KPI', strval($id), $title);
+
+        return null;
+    }
+
+    /**
+     * Standard crud_module delete actualiser.
+     *
+     * @param  ID_TEXT $id The entry being deleted
+     */
+    public function delete_actualisation($id)
+    {
+        $title = $GLOBALS['SITE_DB']->query_select_value('stats_kpis', 'k_title', ['id' => intval($id)]);
+
+        $GLOBALS['SITE_DB']->query_delete('stats_kpis', [
+            'id' => intval($id),
+        ], '', 1);
+
+        log_it('DELETE_KPI', strval($id), $title);
+    }
+
+    /**
+     * The do-next manager for after banner content management (banners only).
+     *
+     * @param  Tempcode $title The title (output of get_screen_title)
+     * @param  Tempcode $description Some description to show, saying what happened
+     * @param  ?ID_TEXT $id The ID of whatever we are working with (null: deleted)
+     * @return Tempcode The UI
+     */
+    public function do_next_manager($title, $description, $id = null)
+    {
+        require_code('templates_donext');
+
+        $install_actions = [];
+        $category_actions = [];
+        $kpi_actions = [];
+
+        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
+        if ($test === null) {
+            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
+        }
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $id => $graph_details) {
+                    $label = do_lang_tempcode($graph_details['label_lang_string']);
+                    $label->attach(' (' . escape_html(integer_format(1)) . ')');
+                    $category_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'redirect', 'id' => $id], '_SELF'], protect_from_escaping($label)];
+                }
+            }
+        }
+
+        $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
+        foreach ($hooks as $ob) {
+            $info = $ob->info();
+            if ($info !== null) {
+                foreach ($info as $graph_name => $graph_details) {
+                    if ($graph_details['category'] === null) {
+                        $label = $graph_details['label'];
+                        $label->attach(' (' . escape_html(integer_format(1)) . ')');
+                        $category_actions[] = [$graph_details['icon'], ['_SELF', ['type' => 'graph', 'id' => $graph_name], '_SELF'], protect_from_escaping($label)];
+                    }
+                }
+            }
+        }
+
+        $categories = stats_find_graph_categories();
+        foreach ($categories as $category_name => $category) {
+            $graphs = stats_find_graphs_in_category($category_name);
+            $label = do_lang_tempcode($category['label_lang_string']);
+            $label->attach(' (' . escape_html(integer_format(count($graphs))) . ')');
+            $category_actions[] = [$category['icon'], ['_SELF', ['type' => 'category', 'id' => $category_name], '_SELF'], protect_from_escaping($label)];
+        }
+
+        $kpi_actions[] = ['admin/view_archive', ['_SELF', ['type' => 'kpis'], '_SELF'], do_lang('VIEW')];
+
+        $kpi_actions[] = ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_KPI')];
+
+        return do_next_manager(
+            get_screen_title('MODULE_TRANS_NAME_admin_stats'),
+            $description,
+            $install_actions,
+            do_lang('SETUP'),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $category_actions,
+            $kpi_actions,
+            [],
+            null,
+            null,
+            do_lang('CATEGORIES'),
+            do_lang('KPIS')
+        );
     }
 }

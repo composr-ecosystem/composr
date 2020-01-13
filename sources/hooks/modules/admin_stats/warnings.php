@@ -47,9 +47,10 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('cns_warnings')) {
             return null;
@@ -64,16 +65,16 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
                 'label' => do_lang_tempcode('WARNINGS'),
                 'category' => 'moderation',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('recorded_punishments__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('recorded_punishments__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()),
+                    'recorded_punishments__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishments__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'recorded_punishments__country' => new CMSStatsListFilter('recorded_punishments__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()),
                 ],
-                'pivot' => new CMSStatsDatePivot('moderation__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('moderation__pivot', $this->get_date_pivots(!$for_kpi)),
             ],
             'recorded_punishment_countries' => [
                 'label' => do_lang_tempcode('_COUNTRIES', do_lang_tempcode('WARNINGS')),
                 'category' => 'moderation',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('recorded_punishments_countries__month_range', do_lang_tempcode('DATE_RANGE')),
+                    'recorded_punishments_countries__month_range' => new CMSStatsDateMonthRangeFilter('recorded_punishments_countries__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
                 'pivot' => null,
             ],

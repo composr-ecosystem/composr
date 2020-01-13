@@ -19,25 +19,87 @@
  */
 
 /**
+ * Gather details on all active KPIs.
+ *
+ * @param  ?integer $pivot_filter Filter only to this pivot (null: no filter)
+ * @return array List of details tuples
+ */
+function gather_kpis($pivot_filter = null)
+{
+    $where = [];
+    if ($pivot_filter !== null) {
+        $where['k_pivot'] = $pivot_filter;
+    }
+    $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['*'], $where, 'ORDER BY k_title');
+
+    $kpis = [];
+    foreach ($kpi_rows as $kpi_row) {
+        $graph_name = $kpi_row['k_graph_name'];
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, true/*Filters will be generated in KPI mode*/);
+        if ($hook_ob === null) {
+            continue;
+        }
+
+        $edit_url = build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $kpi_row['id']], '_SELF');
+
+        $kpi_method = $graph_details['support_kpis'];
+
+        $filters = json_decode($kpi_row['k_filters'], true);
+        $pivot = ($kpi_row['k_pivot'] == '') ? null : $kpi_row['k_pivot'];
+
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, true);
+
+        $target = $kpi_row['k_target'];
+        $current = array_pop($graph_final_details['data']);
+        if ($current === null) {
+            $hits_target = null;
+        } else {
+            if ($kpi_method == $hook_ob::KPI_HIGH_IS_GOOD) {
+                $hits_target = ($current >= $target);
+            } else {
+                $hits_target = ($current <= $target);
+            }
+        }
+
+        $kpis[] = [
+            $kpi_row,
+            $hook_ob,
+            $graph_details,
+            $graph_final_details,
+            $filters,
+            $pivot,
+            $edit_url,
+            $kpi_method,
+            $target,
+            $current,
+            $hits_target,
+        ];
+    }
+
+    return $kpis;
+}
+
+/**
  * Generate stats data.
  *
  * @param  string $graph_name Graph name
- * @param  array $filters Filter settings to take precedence / final ones used returned by reference
- * @param  ?mixed $pivot Pivot value to take precedence / final ones used returned by reference (null: none)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
  * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
  * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return ?array Graph data in standard map format (null: unknown)
  */
-function stats_generate_data($graph_name, &$filters = [], &$pivot = null, &$hook_ob = null, &$graph_details = null)
+function stats_generate_data($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, $for_kpi = false)
 {
     if (($hook_ob === null) || ($graph_details === null)) {
-        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
     }
 
     if ($hook_ob instanceof CMSStatsProvider) {
         require_code('temporal2');
 
-        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot);
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, false/*Can only generate data with dates converted to absolute first*/);
         return $hook_ob->generate_final_data($graph_name, ($pivot === null) ? '' : $pivot, $filters);
     }
 
@@ -52,26 +114,32 @@ function stats_generate_data($graph_name, &$filters = [], &$pivot = null, &$hook
  * @param  ?mixed $pivot Pivot value to take precedence (null: none)
  * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
  * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
- * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name)
+ * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph
  */
-function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null)
+function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null, $for_kpi = false)
 {
     if (($hook_ob === null) || ($graph_details === null)) {
-        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
-    }
-
-    if ($graph_final_details === null) {
-        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details);
-    }
-
-    if ($graph_final_details === null) {
-        if ($hook_ob instanceof CMSStatsBlob) {
-            return $hook_ob->generate($graph_name, $filters);
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
+        if ($hook_ob === null) {
+            return paragraph(do_lang_tempcode('MISSING_RESOURCE'), 'red-alert');
         }
-
-        return new Tempcode();
     }
+
+    if ($hook_ob instanceof CMSStatsBlob) {
+        list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, false/*Can only generate data with dates converted to absolute first*/);
+        return $hook_ob->generate($graph_name, $filters);
+    }
+
+    if ($graph_final_details === null) {
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, $for_kpi);
+        if ($graph_final_details === null) {
+            return new Tempcode();
+        }
+    }
+
+    list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot, $for_kpi);
 
     require_code('graphs');
 
@@ -107,6 +175,15 @@ function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_
                     'datapoints' => array_fill(0, count($keys), $average),
                 ];
             }
+            if (isset($graph_details['support_kpis'])) {
+                $kpi_rows = $GLOBALS['SITE_DB']->query_select('stats_kpis', ['k_title', 'k_target'], ['k_graph_name' => $graph_name, 'k_pivot' => $pivot]);
+                foreach ($kpi_rows as $kpi_row) {
+                    $_values[] = [
+                        'label' => do_lang('KPI') . ': ' . $kpi_row['k_title'],
+                        'datapoints' => array_fill(0, count($keys), $kpi_row['k_target']),
+                    ];
+                }
+            }
             $graph_rendered = graph_line_chart($_values, $keys, $x_axis_label, $y_axis_label, false, false);
             break;
 
@@ -125,7 +202,7 @@ function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_
                 $_data = @array_slice($data, 0, $num_bars, true);
                 if (count($_data) < count($data)) {
                     $other = 0;
-                    $_remaining_data = @array_slice($data, $num_bars, true);
+                    $_remaining_data = @array_slice($data, $num_bars);
                     foreach ($_remaining_data as $val) {
                         $other += $val;
                     }
@@ -151,20 +228,67 @@ function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_
  * @param  string $graph_name Graph name
  * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
  * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph filter form
  */
-function stats_generate_graph_form($graph_name, &$hook_ob = null, &$graph_details = null)
+function stats_generate_graph_form($graph_name, &$hook_ob = null, &$graph_details = null, $filters = [], $pivot = null, $for_kpi = false)
+{
+    $_fields = stats_generate_graph_form_fields($graph_name, $hook_ob, $graph_details, $filters, $pivot, $for_kpi);
+    if ($_fields === null) {
+        return new Tempcode();
+    }
+    list($fields, $hidden) = $_fields;
+
+    $graph_form = do_template('FORM', [
+        'SKIP_WEBSTANDARDS' => true,
+        'FIELDS' => $fields,
+        'GET' => true,
+        'URL' => get_self_url(true) . '#graph_' . $graph_name,
+        'SUBMIT_ICON' => 'buttons/filter',
+        'SUBMIT_NAME' => do_lang_tempcode('FILTER'),
+        'HIDDEN' => $hidden,
+        'TEXT' => '',
+    ]);
+
+    return $graph_form;
+}
+
+/**
+ * Generate a stats graph filter form.
+ *
+ * @param  string $graph_name Graph name
+ * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
+ * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
+ * @param  array $filters Filter settings to take precedence
+ * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
+ * @return ?array A pair: Graph filter fields, Hidden fields (null: could not generate anything)
+ */
+function stats_generate_graph_form_fields($graph_name, &$hook_ob = null, &$graph_details = null, $filters = [], $pivot = null, $for_kpi = false)
 {
     if (($hook_ob === null) || ($graph_details === null)) {
-        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
     }
 
     if (!$hook_ob instanceof CMSStatsProvider) {
-        return new Tempcode();
+        return null;
     }
 
     if ((empty($graph_details['filters'])) && ($graph_details['pivot'] === null)) {
-        return new Tempcode();
+        return null;
+    }
+
+    foreach ($graph_details['filters'] as $filter_name => $filter) {
+        if ($filter !== null) {
+            if (array_key_exists($filter_name, $filters)) {
+                $filter->set_default($filters[$filter_name]);
+            }
+        }
+    }
+    if ($pivot !== null) {
+        $graph_details['pivot']->set_default($pivot);
     }
 
     require_code('form_templates');
@@ -180,18 +304,8 @@ function stats_generate_graph_form($graph_name, &$hook_ob = null, &$graph_detail
     if ($graph_details['pivot'] !== null) {
         $graph_fields->attach($graph_details['pivot']->ui_component($hidden));
     }
-    $graph_form = do_template('FORM', [
-        'SKIP_WEBSTANDARDS' => true,
-        'FIELDS' => $graph_fields,
-        'GET' => true,
-        'URL' => get_self_url(true) . '#graph_' . $graph_name,
-        'SUBMIT_ICON' => 'buttons/filter',
-        'SUBMIT_NAME' => do_lang_tempcode('FILTER'),
-        'HIDDEN' => $hidden,
-        'TEXT' => '',
-    ]);
 
-    return $graph_form;
+    return [$graph_fields, $hidden];
 }
 
 /**
@@ -202,17 +316,18 @@ function stats_generate_graph_form($graph_name, &$hook_ob = null, &$graph_detail
  * @param  ?mixed $pivot Pivot value to take precedence (null: none)
  * @param  ?object $hook_ob Hook object (null: look it up using $graph_name)
  * @param  ?array $graph_details Graph details (null: look it up using $graph_name)
- * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name)
+ * @param  ?array $graph_final_details Graph data (null: look it up using $graph_name etc)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return Tempcode Graph
  */
-function stats_generate_results_table($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null)
+function stats_generate_results_table($graph_name, $filters = [], $pivot = null, &$hook_ob = null, &$graph_details = null, &$graph_final_details = null, $for_kpi = false)
 {
     if (($hook_ob === null) || ($graph_details === null)) {
-        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name);
+        list($hook_ob, $graph_details) = stats_find_graph_details($graph_name, $for_kpi);
     }
 
     if ($graph_final_details === null) {
-        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details);
+        $graph_final_details = stats_generate_data($graph_name, $filters, $pivot, $hook_ob, $graph_details, $for_kpi);
     }
 
     if ($graph_final_details === null) {
@@ -308,6 +423,8 @@ function stats_generate_spreadsheet($spreadsheet_graph_name, &$filename = null, 
         list($hook_ob, $graph_details) = stats_find_graph_details($spreadsheet_graph_name);
     }
 
+    require_code('temporal2');
+
     list($filters, $pivot) = _stats_get_graph_context($graph_details, $filters, $pivot);
     $graph_final_details = $hook_ob->generate_final_data($spreadsheet_graph_name, ($pivot === null) ? '' : $pivot, $filters);
 
@@ -332,18 +449,19 @@ function stats_generate_spreadsheet($spreadsheet_graph_name, &$filename = null, 
  * @param  array $graph_details Map of graph details
  * @param  array $filters Filter settings to take precedence
  * @param  ?mixed $pivot Pivot value to take precedence (null: none)
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return array A pair: filters, pivot
  */
-function _stats_get_graph_context($graph_details, $filters = [], $pivot = null)
+function _stats_get_graph_context($graph_details, $filters = [], $pivot = null, $for_kpi = false)
 {
     if (($pivot === null) && ($graph_details['pivot'] !== null)) {
-        $pivot = $graph_details['pivot']->read_value();
+        $pivot = $graph_details['pivot']->read_value($for_kpi);
     }
     foreach ($graph_details['filters'] as $filter) {
         if ($filter !== null) {
             $filter_name = $filter->filter_name;
             if (!isset($filters[$filter_name])) {
-                $filters[$filter_name] = $filter->read_value();
+                $filters[$filter_name] = $filter->read_value($for_kpi);
             }
         }
     }
@@ -398,15 +516,16 @@ function stats_find_graphs_in_category($category_name = null)
  * Find all the graphs in a stats category.
  *
  * @param  string $graph_name The graph name
+ * @param  boolean $for_kpi Whether this is for setting up a KPI
  * @return ?array A pair: graph object and graph details (null: could not find graph)
  */
-function stats_find_graph_details($graph_name)
+function stats_find_graph_details($graph_name, $for_kpi = false)
 {
     $graphs = [];
 
     $hooks = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
     foreach ($hooks as $ob) {
-        $info = $ob->info();
+        $info = $ob->info($for_kpi);
         if ($info !== null) {
             if (array_key_exists($graph_name, $info)) {
                 return [$ob, $info[$graph_name]];
@@ -449,9 +568,10 @@ abstract class CMSStatsHookBase
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    abstract public function info();
+    abstract public function info($for_kpi = false);
 }
 
 /**
@@ -464,6 +584,9 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
     const GRAPH_LINE_CHART = 1;
     const GRAPH_PIE_CHART = 2;
     const GRAPH_BAR_CHART = 3;
+
+    const KPI_HIGH_IS_GOOD = 1;
+    const KPI_LOW_IS_GOOD = 2;
 
     /**
      * Find all the feedback type codes. Useful for creating filters that are filtering by feedback type code.
@@ -567,9 +690,11 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      * Preprocess raw data in the database into something we can efficiently draw graphs/conclusions from.
      * This is for flat and timeless data.
      *
+     * @param  TIME $start_time Start timestamp
+     * @param  TIME $end_time End timestamp
      * @param  array $data_buckets Map of data buckets; a map of bucket name to nested maps
      */
-    public function preprocess_raw_data_flat(&$data_buckets)
+    public function preprocess_raw_data_flat($start_time, $end_time, &$data_buckets)
     {
     }
 
@@ -623,6 +748,8 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
      */
     protected function fill_data_by_date_pivots($pivot, $start_month, $end_month)
     {
+        $pivot_value = mixed();
+
         $data = [];
         switch ($pivot) {
             case 'hour_of_day':
@@ -837,7 +964,18 @@ abstract class CMSStatsFilter
      */
     public function read_value()
     {
-        return get_param_string($this->filter_name, $this->default);
+        return either_param_string($this->filter_name, $this->default);
+    }
+
+    /**
+     * Set the default. Useful when defaults are saved, rather than in the GET environment.
+     *
+     * @param  mixed $default The new default
+     * @param  ?boolean $for_kpi Whether this is a setting for a KPI (null: as object was initiated)
+     */
+    public function set_default($default, $for_kpi = null)
+    {
+        $this->default = $default;
     }
 }
 
@@ -917,7 +1055,7 @@ class CMSStatsTickFilter extends CMSStatsFilter
      */
     public function read_value()
     {
-        return get_param_integer($this->filter_name, 1) == 1;
+        return either_param_integer($this->filter_name, 1) == 1;
     }
 }
 
@@ -971,24 +1109,32 @@ class CMSStatsListFilter extends CMSStatsFilter
  */
 class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 {
+    protected $for_kpi = false;
+
     /**
      * Constructor.
      *
      * @param  string $filter_name Filter name
      * @param  Tempcode $label Label
-     * @param  ?array $default Default (null: past year)
+     * @param  ?mixed $default Default (null: past year)
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      */
-    public function __construct($filter_name, $label, $default = null)
+    public function __construct($filter_name, $label, $default = null, $for_kpi = false)
     {
         if ($default === null) {
-            list($min_month, $max_month) = find_known_stats_date_month_bounds();
-            $min_month = max($min_month, $max_month - 12);
-            $default = [$min_month, $max_month];
+            if ($for_kpi) {
+                $default = 12; // 12 months back
+            } else {
+                list($min_month, $max_month) = find_known_stats_date_month_bounds();
+                $min_month = max($min_month, $max_month - 12);
+                $default = [$min_month, $max_month];
+            }
         }
 
         $this->filter_name = $filter_name;
         $this->label = $label;
         $this->default = $default;
+        $this->for_kpi = $for_kpi;
     }
 
     /**
@@ -999,11 +1145,33 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
      */
     public function ui_component(&$hidden)
     {
-        list($min_month, $max_month) = find_known_stats_date_month_bounds();
-
         require_code('form_templates');
 
         require_lang('dates');
+
+        $value = $this->read_value();
+
+        if ($this->for_kpi) {
+            $_options = [
+                1 => do_lang_tempcode('MONTHS', integer_format(1)),
+                3 => do_lang_tempcode('MONTHS', integer_format(3)),
+                6 => do_lang_tempcode('MONTHS', integer_format(6)),
+                12 => do_lang_tempcode('YEARS', integer_format(1)),
+                24 => do_lang_tempcode('YEARS', integer_format(2)),
+                36 => do_lang_tempcode('YEARS', integer_format(3)),
+                60 => do_lang_tempcode('YEARS', integer_format(5)),
+            ];
+
+            $options = new Tempcode();
+            foreach ($_options as $option_key => $option_label) {
+                $options->attach(form_input_list_entry($option_key, $value == $option_key, $option_label));
+            }
+
+            return form_input_list($this->label, new Tempcode(), $this->filter_name, $options, null, false, true);
+        }
+
+        list($min_month, $max_month) = find_known_stats_date_month_bounds();
+
         $month_array = [
             'JANUARY',
             'FEBRUARY',
@@ -1029,8 +1197,6 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
 
         $tabindex = get_form_field_tabindex();
 
-        $value = $this->read_value();
-
         $input = do_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
             'TABINDEX' => strval($tabindex),
             'NAME' => $this->filter_name,
@@ -1043,15 +1209,61 @@ class CMSStatsDateMonthRangeFilter extends CMSStatsFilter
     }
 
     /**
+     * Set the default. Useful when defaults are saved, rather than in the GET environment.
+     *
+     * @param  mixed $default The new default
+     * @param  ?boolean $for_kpi Whether this is a setting for a KPI (null: as object was initiated)
+     */
+    public function set_default($default, $for_kpi = null)
+    {
+        if ($for_kpi !== null) {
+            if (($for_kpi) && (!$this->for_kpi)) {
+                $current_month = get_stats_month_for_timestamp(time());
+                $this->default = [$current_month - $default - 1, $current_month];
+                return;
+            } elseif ((!$for_kpi) && ($this->for_kpi)) {
+                list($start, $end) = $default;
+                $this->default = ($end - $start) + 1;
+                return;
+            }
+        }
+
+        $this->default = $default;
+    }
+
+    /**
      * Read the current filter value.
      *
+     * @param  ?boolean $for_kpi Whether this is for setting up a KPI (null: as object was initiated)
      * @return mixed The filter value
      */
-    public function read_value()
+    public function read_value($for_kpi = null)
     {
-        $start = get_param_integer($this->filter_name . '__start', $this->default[0]);
-        $end = get_param_integer($this->filter_name . '__end', $this->default[1]);
-        return [$start, $end];
+        $ret = mixed();
+
+        if ($this->for_kpi) {
+            $ret = either_param_integer($this->filter_name, $this->default);
+
+            $wants_for_non_kpi = ($for_kpi !== null) && (!$for_kpi);
+            if ($wants_for_non_kpi) {
+                $current_month = get_stats_month_for_timestamp(time());
+                $ret = [$current_month - $ret - 1, $current_month];
+            }
+
+            return $ret;
+        }
+
+        $start = either_param_integer($this->filter_name . '__start', $this->default[0]);
+        $end = either_param_integer($this->filter_name . '__end', $this->default[1]);
+
+        $wants_for_kpi = ($for_kpi !== null) && ($for_kpi);
+        if ($wants_for_kpi) {
+            $ret = ($end - $start) + 1;
+        } else {
+            $ret = [$start, $end];
+        }
+
+        return $ret;
     }
 }
 
@@ -1159,6 +1371,8 @@ function has_geolocation_data()
  */
 function log_contact_form_stats($form_name)
 {
+    require_code('locations');
+
     $country_code = geolocate_ip();
     $GLOBALS['SITE_DB']->query_insert('stats_contact_forms', [
         'form_name' => $form_name,

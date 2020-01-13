@@ -26,9 +26,10 @@ class Hook_admin_stats_invites extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('recommend')) {
             return null;
@@ -41,18 +42,20 @@ class Hook_admin_stats_invites extends CMSStatsProvider
             'label' => do_lang_tempcode((get_option('is_on_invites') === '1') ? 'INVITATIONS_MADE' : 'RECOMMENDATIONS_MADE'),
             'category' => 'referrers_and_referrals',
             'filters' => [
-                new CMSStatsDateMonthRangeFilter('invites__month_range', do_lang_tempcode('DATE_RANGE')),
+                'invites__month_range' => new CMSStatsDateMonthRangeFilter('invites__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
             ],
-            'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots()),
+            'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots(!$for_kpi)),
+            'support_kpis' => self::KPI_HIGH_IS_GOOD,
         ];
         if ((get_option('is_on_invites') === '1') && (get_forum_type() == 'cns')) {
             $ret['invites_taken'] = [
                 'label' => do_lang_tempcode('INVITATIONS_ACCEPTED'),
                 'category' => 'referrers_and_referrals',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('invites_sent__month_range', do_lang_tempcode('DATE_RANGE')),
+                    'invites_sent__month_range' => new CMSStatsDateMonthRangeFilter('invites_sent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ];
         }
         return $ret;

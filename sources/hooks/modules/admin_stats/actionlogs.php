@@ -26,9 +26,10 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('actionlog')) {
             return null;
@@ -60,10 +61,11 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
                 'label' => do_lang_tempcode('MODULE_TRANS_NAME_admin_actionlog'),
                 'category' => 'content_growth',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('actionlog_growth__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('actionlog_growth__the_type', do_lang_tempcode('ACTION'), $_action_type_list),
+                    'actionlog_growth__month_range' => new CMSStatsDateMonthRangeFilter('actionlog_growth__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'actionlog_growth__the_type' => new CMSStatsListFilter('actionlog_growth__the_type', do_lang_tempcode('ACTION'), $_action_type_list),
                 ],
-                'pivot' => new CMSStatsDatePivot('actionlog_growth__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('actionlog_growth__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

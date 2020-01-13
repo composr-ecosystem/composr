@@ -129,6 +129,8 @@ class Hook_addon_registry_stats
             'sources/hooks/modules/admin_stats_redirects/.htaccess',
             'sources/hooks/modules/admin_stats_redirects/index.html',
             'themes/default/templates/STATS_SCREEN.tpl',
+            'themes/default/templates/STATS_GRAPH.tpl',
+            'themes/default/templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl',
             'adminzone/pages/modules/admin_stats.php',
             'themes/default/css/stats.css',
             'data/modules/admin_stats/index.html',
@@ -143,7 +145,13 @@ class Hook_addon_registry_stats
             'sources/blocks/main_staff_stats_graph.php',
             'sources/hooks/systems/cron/stats_preprocess_raw_data.php',
             'sources/hooks/systems/block_ui_renderers/stats.php',
-            'themes/default/templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl',
+
+            'sources/hooks/systems/resource_meta_aware/kpi.php',
+            'themes/default/templates/KPI_SCREEN.tpl',
+            'sources/hooks/blocks/main_staff_checklist/kpis.php',
+            'sources/hooks/systems/notifications/kpis.php',
+            'themes/default/text/KPI_UPDATE_MAIL.txt',
+            'sources/hooks/systems/actionlog/kpis.php',
 
             'sources/hooks/modules/admin_stats/emails.php',
             'sources/hooks/modules/admin_stats/sitemap.php',
@@ -165,6 +173,8 @@ class Hook_addon_registry_stats
     {
         return [
             'templates/STATS_SCREEN.tpl' => 'administrative__stats_screen',
+            'templates/STATS_GRAPH.tpl' => 'administrative__stats_screen',
+            'templates/KPI_SCREEN.tpl' => 'administrative__kpi_screen',
             'templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl' => 'administrative__form_screen_input_stats_date_range_screen',
         ];
     }
@@ -178,6 +188,13 @@ class Hook_addon_registry_stats
      */
     public function tpl_preview__administrative__stats_screen()
     {
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
         $graphs = [];
         $graphs[] = [
             'GRAPH_NAME' => lorem_word(),
@@ -185,6 +202,8 @@ class Hook_addon_registry_stats
             'GRAPH_FORM' => placeholder_form(),
             'GRAPH_RENDERED' => lorem_chunk_html(),
             'RESULTS_TABLE' => placeholder_table(),
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => placeholder_url(),
         ];
 
         return [
@@ -202,15 +221,85 @@ class Hook_addon_registry_stats
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
+    public function tpl_preview__administrative__kpi_screen()
+    {
+        $existing_kpis = [];
+        $existing_kpis[] = [
+            'KPI_ID' => placeholder_id(),
+            'KPI_TITLE' => lorem_phrase(),
+            'KPI_EDIT_URL' => placeholder_url(),
+        ];
+
+        $graphs = [];
+        $graphs[] = [
+            'GRAPH_NAME' => lorem_word(),
+            'GRAPH_LABEL' => lorem_phrase(),
+            'GRAPH_RENDERED' => lorem_chunk_html(),
+            'GRAPH_FORM' => placeholder_form(),
+            'RESULTS_TABLE' => placeholder_table(),
+            'EXISTING_KPIS' => $existing_kpis,
+            'KPI_ADD_URL' => placeholder_url(),
+            'SPREADSHEET_URL' => placeholder_url(),
+        ];
+
+        $kpis = [];
+        $kpis[] = [
+            'TITLE' => lorem_phrase(),
+            'CURRENT' => placeholder_number(),
+            'HITS_TARGET' => true,
+            'TARGET' => placeholder_number(),
+            'KPI_EDIT_URL' => placeholder_url(),
+            'GRAPH_NAME' => lorem_word(),
+        ];
+
+        return [
+            lorem_globalise(do_lorem_template('KPI_SCREEN', [
+                'TITLE' => lorem_title(),
+                'GRAPHS' => $graphs,
+                'KPIS' => $kpis,
+            ]), null, '', true)
+        ];
+    }
+
+    /**
+     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
+     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
+     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
+     *
+     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
+     */
     public function tpl_preview__administrative__form_screen_input_stats_date_range_screen()
     {
+        $field = do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
+            'TABINDEX' => placeholder_number(),
+            'NAME' => lorem_word(),
+            'MONTHS' => ['10' => lorem_phrase()],
+            'START' => '10',
+            'END' => '10',
+        ]);
+
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+            'REQUIRED' => true,
+            'SKIP_LABEL' => false,
+            'NAME' => lorem_name(),
+            'PRETTY_NAME' => lorem_word(),
+            'DESCRIPTION' => lorem_sentence_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $field,
+            'COMCODE' => '',
+        ]));
+
         return [
-            lorem_globalise(do_lorem_template('FORM_SCREEN_INPUT_STATS_DATE_RANGE', [
-                'TABINDEX' => placeholder_number(),
-                'NAME' => placeholder_id(),
-                'MONTHS' => ['10' => lorem_phrase()],
-                'START' => '10',
-                'END' => '10',
+            lorem_globalise(do_lorem_template('FORM', [
+                'GET' => null,
+                'SKIP_WEBSTANDARDS' => true,
+                'HIDDEN' => '',
+                'TITLE' => lorem_title(),
+                'URL' => placeholder_url(),
+                'FIELDS' => $fields,
+                'SUBMIT_ICON' => 'buttons/proceed',
+                'SUBMIT_NAME' => lorem_word(),
+                'TEXT' => lorem_sentence_html(),
             ]), null, '', true)
         ];
     }

@@ -32,8 +32,10 @@ global $FORCE_INVISIBLE_GUEST;
 $FORCE_INVISIBLE_GUEST = false;
 global $EXTERNAL_CALL;
 $EXTERNAL_CALL = false;
-global $STATIC_CACHE_ENABLED;
-$STATIC_CACHE_ENABLED = true;
+if ((empty($_SERVER['HTTP_USER_AGENT'])) || (stripos($_SERVER['HTTP_USER_AGENT'], 'itunes') === false)) {
+    global $STATIC_CACHE_ENABLED;
+    $STATIC_CACHE_ENABLED = true;
+}
 global $IN_SELF_ROUTING_SCRIPT;
 $IN_SELF_ROUTING_SCRIPT = true;
 if (!is_file($FILE_BASE . '/sources/global.php')) {

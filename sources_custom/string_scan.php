@@ -114,6 +114,20 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        ADD_KPI
+        EDIT_KPI
+        _EDIT_KPI
+        DELETE_KPI
+        KPIS
+        KPI
+        DESCRIPTION_KPI
+        DESCRIPTION_KPI_TARGET
+        KPI_CONFIGURING_FOR
+        MONTHS
+        YEARS
+        REACH_KPI_TARGETS
+        NOTIFICATION_TYPE_kpis
+        TEXT_KPI_UPDATE_MAIL
         TOP_MEMBERS_BY_VISITS
         TOP_MEMBERS_BY_FORUM_POSTS
         TOP_MEMBERS_BY_POINTS

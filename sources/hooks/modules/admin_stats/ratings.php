@@ -26,17 +26,18 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         return [
             'ratings' => [
                 'label' => do_lang_tempcode('RATINGS'),
                 'category' => 'feedback_and_engagement',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('ratings__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('ratings__rating_for_type', do_lang_tempcode('CONTENT_TYPE'), $this->find_all_feedback_type_codes()),
+                    'ratings__month_range' => new CMSStatsDateMonthRangeFilter('ratings__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'ratings__rating_for_type' => new CMSStatsListFilter('ratings__rating_for_type', do_lang_tempcode('CONTENT_TYPE'), $this->find_all_feedback_type_codes()),
                 ],
                 'pivot' => null,
             ],
@@ -44,10 +45,11 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
                 'label' => do_lang_tempcode('AVERAGE_RATING'),
                 'category' => 'feedback_and_engagement',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('average_rating__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('average_rating__rating_for_type', do_lang_tempcode('CONTENT_TYPE'), $this->find_all_feedback_type_codes()),
+                    'average_rating__month_range' => new CMSStatsDateMonthRangeFilter('average_rating__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'average_rating__rating_for_type' => new CMSStatsListFilter('average_rating__rating_for_type', do_lang_tempcode('CONTENT_TYPE'), $this->find_all_feedback_type_codes()),
                 ],
-                'pivot' => new CMSStatsDatePivot('average_rating__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('average_rating__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

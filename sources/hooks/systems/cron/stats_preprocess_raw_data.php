@@ -63,14 +63,13 @@ class Hook_cron_stats_preprocess_raw_data
         list($year, $month, $day) = array_map('intval', explode('-', $today));
         $end_time = mktime(0, 0, 0, $month, $day, $year) - 1;
         $end_time = tz_time($end_time, $server_timezone);
-$start_time = 0; // TODO
-$end_time = time(); // TODO
 
         if ($end_time > $start_time) {
             push_query_limiting(false);
             disable_php_memory_limit();
 
             require_code('stats');
+            require_lang('stats');
 
             $hook_obs = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
             foreach ($hook_obs as $hook_name => $hook_ob) {
@@ -167,6 +166,51 @@ $end_time = time(); // TODO
             }
 
             set_value('stats__last_day_processed', $today, true);
+
+            // Send KPI notifications...
+
+            $series = [ // Runs day after a period ends
+                'year_series' => (date('m-d') == '01-01'),
+                'quarter_series' => (date('d') == '01') && (in_array(date('m'), ['01', '04', '07', '10'])),
+                'month_series' => (date('d') == '01'),
+                'day_series' => true,
+            ];
+
+            $kpis = [];
+            foreach ($series as $pivot => $send_today) {
+                if ($send_today) {
+                    $_kpis = gather_kpis($pivot);
+                    $kpis = array_merge($kpis, $_kpis);
+                }
+            }
+
+            if (!empty($kpis)) {
+                $kpis_for_tpl = [];
+                foreach ($kpis as $kpi) {
+                    list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
+                    $graph_name = $kpi_row['k_graph_name'];
+                    $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
+                    $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);
+                    $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+                    $kpis_for_tpl[] = [
+                        'TITLE' => $kpi_row['k_title'],
+                        'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                        'HITS_TARGET' => $hits_target,
+                        'TARGET' => ($target === null) ? null : float_format($target, 4, true),
+                        'EDIT_URL' => $edit_url,
+                        'VIEW_URL' => $view_url,
+                        'GRAPH_NAME' => $kpi_row['k_graph_name'],
+                        'USERNAME' => $username,
+                        'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                        'NOTES' => $kpi_row['k_notes'],
+                    ];
+                }
+                require_code('notifications');
+                $mail = do_notification_template('KPI_UPDATE_MAIL', [
+                    'KPIS' => $kpis_for_tpl,
+                ], null, false, null, '.txt', 'text');
+                dispatch_notification('kpis', '', do_lang('NOTIFICATION_TYPE_kpis'), $mail->evaluate(get_site_default_lang()));
+            }
 
             pop_query_limiting();
         }

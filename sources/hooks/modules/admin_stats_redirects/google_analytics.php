@@ -26,9 +26,10 @@ class Hook_admin_stats_redirects_google_analytics extends CMSStatsRedirect
     /**
      * Find metadata about stats icons that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (get_option('google_analytics') == '') {
             return null;

@@ -21,9 +21,10 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('google_search_console')) {
             return null;
@@ -42,8 +43,8 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
                 'label' => do_lang_tempcode('GOOGLE_KEYWORDS_HITS'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('google_keywords_hits__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month]),
-                    new CMSStatsTextFilter('google_keywords_hits__keyword', do_lang_tempcode('KEYWORD')),
+                    'google_keywords_hits__month_range' => new CMSStatsDateMonthRangeFilter('google_keywords_hits__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month], $for_kpi),
+                    'google_keywords_hits__keyword' => new CMSStatsTextFilter('google_keywords_hits__keyword', do_lang_tempcode('KEYWORD')),
                 ],
                 'pivot' => null,
             ],
@@ -51,8 +52,8 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
                 'label' => do_lang_tempcode('GOOGLE_KEYWORDS_IMPRESSIONS'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('google_keywords_impressions__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month]),
-                    new CMSStatsTextFilter('google_keywords_impressions__keyword', do_lang_tempcode('KEYWORD')),
+                    'google_keywords_impressions__month_range' => new CMSStatsDateMonthRangeFilter('google_keywords_impressions__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month], $for_kpi),
+                    'google_keywords_impressions__keyword' => new CMSStatsTextFilter('google_keywords_impressions__keyword', do_lang_tempcode('KEYWORD')),
                 ],
                 'pivot' => null,
             ],
@@ -60,8 +61,8 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
                 'label' => do_lang_tempcode('GOOGLE_KEYWORDS_CTR'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('google_keywords_ctr__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month]),
-                    new CMSStatsTextFilter('google_keywords_ctr__keyword', do_lang_tempcode('KEYWORD')),
+                    'google_keywords_ctr__month_range' => new CMSStatsDateMonthRangeFilter('google_keywords_ctr__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month], $for_kpi),
+                    'google_keywords_ctr__keyword' => new CMSStatsTextFilter('google_keywords_ctr__keyword', do_lang_tempcode('KEYWORD')),
                 ],
                 'pivot' => null,
             ],
@@ -69,8 +70,8 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
                 'label' => do_lang_tempcode('GOOGLE_KEYWORDS_POSITIONS'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('google_keywords_positions__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month]),
-                    new CMSStatsTextFilter('google_keywords_positions__keyword', do_lang_tempcode('KEYWORD')),
+                    'google_keywords_positions__month_range' => new CMSStatsDateMonthRangeFilter('google_keywords_positions__month_range', do_lang_tempcode('DATE_RANGE'), [$max_month - 12, $max_month], $for_kpi),
+                    'google_keywords_positions__keyword' => new CMSStatsTextFilter('google_keywords_positions__keyword', do_lang_tempcode('KEYWORD')),
                 ],
                 'pivot' => null,
             ],
@@ -110,7 +111,6 @@ class Hook_admin_stats_google_keywords extends CMSStatsProvider
         $access_token = refresh_oauth2_token('google_search_console', false);
 
         $base_url = get_base_url();
-$base_url = 'https://compo.sr/';//TODO
         $url = 'https://www.googleapis.com/webmasters/v3/sites/' . rawurlencode($base_url) . '/searchAnalytics/query?access_token=' . urlencode($access_token);
 
         $start_year = 1970 + intval(round(floatval($_start_month) / 12.0));

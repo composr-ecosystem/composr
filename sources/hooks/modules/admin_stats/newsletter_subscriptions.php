@@ -26,9 +26,10 @@ class Hook_admin_stats_newsletter_subscriptions extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -41,9 +42,10 @@ class Hook_admin_stats_newsletter_subscriptions extends CMSStatsProvider
                 'label' => do_lang_tempcode('NEWSLETTER_SUBSCRIPTIONS'),
                 'category' => 'conversions',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('newsletter_subscriptions__month_range', do_lang_tempcode('DATE_RANGE')),
+                    'newsletter_subscriptions__month_range' => new CMSStatsDateMonthRangeFilter('newsletter_subscriptions__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('newsletter_subscriptions__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('newsletter_subscriptions__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

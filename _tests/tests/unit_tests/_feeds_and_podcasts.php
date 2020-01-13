@@ -156,19 +156,25 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue(strpos($data, 'itunes:') === false);
 
-        $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&filter=podcast';
+        $tags = [
+            '<itunes:author>',
+            '<itunes:owner>',
+            '<itunes:name>',
+            '<itunes:email>',
+            '<itunes:image',
+            '<itunes:category',
+            '<itunes:keywords>',
+            '<itunes:summary>',
+            '<itunes:author>',
+            '<itunes:image',
+            '<itunes:duration>',
+        ];
+
+        $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=podcast';
         $data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'ua' => 'iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)', 'cookies' => [get_session_cookie() => $this->session_id]]);
-        $this->assertTrue(strpos($data, '<itunes:author>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:owner>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:name>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:email>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:image') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:category') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:keywords>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:summary>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:author>') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:image') !== false, 'Failed on ' . $url);
-        $this->assertTrue(strpos($data, '<itunes:duration>') !== false, 'Failed on ' . $url);
+        foreach ($tags as $tag) {
+            $this->assertTrue(strpos($data, '<itunes:author>') !== false, 'Failed on ' . $url . ' [' . $tag . ']');
+        }
     }
 
     public function tearDown()

@@ -46,9 +46,10 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (get_forum_type() != 'cns') {
             return null;
@@ -62,17 +63,18 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 'label' => do_lang_tempcode('JOINING'),
                 'category' => 'conversions',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('members__month_range', do_lang_tempcode('DATE_RANGE')),
-                    has_geolocation_data() ? new CMSStatsListFilter('members__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()) : null,
+                    'members__month_range' => new CMSStatsDateMonthRangeFilter('members__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'members__country' => has_geolocation_data() ? new CMSStatsListFilter('members__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()) : null,
                 ],
-                'pivot' => new CMSStatsDatePivot('members__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('members__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
             'demographics' => [
                 'label' => do_lang_tempcode('AGE_RANGE'),
                 'category' => 'audience_demographics',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('demographics__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsTextFilter('demographics__age_brackets', do_lang_tempcode('AGE_RANGE'), implode(',', $this->default_age_brackets)),
+                    'demographics__month_range' => new CMSStatsDateMonthRangeFilter('demographics__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'demographics__age_brackets' => new CMSStatsTextFilter('demographics__age_brackets', do_lang_tempcode('AGE_RANGE'), implode(',', $this->default_age_brackets)),
                 ],
                 'pivot' => null,
             ],

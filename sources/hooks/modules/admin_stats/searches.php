@@ -26,9 +26,10 @@ class Hook_admin_stats_searches extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('search')) {
             return null;
@@ -41,8 +42,8 @@ class Hook_admin_stats_searches extends CMSStatsProvider
                 'label' => do_lang_tempcode('SEARCHES'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('internal_searches__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsTextFilter('internal_searches__term', do_lang_tempcode('SEARCH')),
+                    'internal_searches__month_range' => new CMSStatsDateMonthRangeFilter('internal_searches__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'internal_searches__term' => new CMSStatsTextFilter('internal_searches__term', do_lang_tempcode('SEARCH')),
                 ],
                 'pivot' => null,
             ],
@@ -50,8 +51,8 @@ class Hook_admin_stats_searches extends CMSStatsProvider
                 'label' => do_lang_tempcode('KEYWORDS'),
                 'category' => 'search_traffic',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('internal_keywords__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsTextFilter('internal_searches__term', do_lang_tempcode('KEYWORD')),
+                    'internal_keywords__month_range' => new CMSStatsDateMonthRangeFilter('internal_keywords__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'internal_searches__term' => new CMSStatsTextFilter('internal_searches__term', do_lang_tempcode('KEYWORD')),
                 ],
                 'pivot' => null,
             ],

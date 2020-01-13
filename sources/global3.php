@@ -3301,8 +3301,8 @@ function browser_matches($code, $comcode = null)
         return $browser_matches_cache[$code];
     }
 
-    $browser = get_browser_string();
-    $os = get_os_string();
+    $browser = strtolower(get_browser_string());
+    $os = strtolower(get_os_string());
     $is_safari = strpos($browser, 'applewebkit') !== false;
     $is_chrome = strpos($browser, 'chrome/') !== false;
     $is_gecko = (strpos($browser, 'gecko') !== false) && !$is_safari;

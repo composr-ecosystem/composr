@@ -26,9 +26,10 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -52,19 +53,21 @@ class Hook_admin_stats_transactions extends CMSStatsProvider
                 'label' => do_lang_tempcode('TRANSACTIONS'),
                 'category' => 'economic_activity',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('transaction_quantity__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('transaction_quantity__product_name', do_lang_tempcode('PRODUCT'), $type_codes),
+                    'transaction_quantity__month_range' => new CMSStatsDateMonthRangeFilter('transaction_quantity__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'transaction_quantity__product_name' => new CMSStatsListFilter('transaction_quantity__product_name', do_lang_tempcode('PRODUCT'), $type_codes),
                 ],
-                'pivot' => new CMSStatsDatePivot('transaction_quantity__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('transaction_quantity__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
             'transaction_income' => [
                 'label' => do_lang_tempcode('INCOME'),
                 'category' => 'economic_activity',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('transaction_income__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsListFilter('transaction_income__product_name', do_lang_tempcode('PRODUCT'), $type_codes),
+                    'transaction_income__month_range' => new CMSStatsDateMonthRangeFilter('transaction_income__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'transaction_income__product_name' => new CMSStatsListFilter('transaction_income__product_name', do_lang_tempcode('PRODUCT'), $type_codes),
                 ],
-                'pivot' => new CMSStatsDatePivot('transaction_income__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('transaction_income__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }

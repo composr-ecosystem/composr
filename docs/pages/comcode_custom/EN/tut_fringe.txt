@@ -84,12 +84,13 @@ body, .email-body, textarea, input, td, th {
 
 [title="3"]Images[/title]
 
-The advice here is simple: use PNG, JPEG or GIF formats, but never other formats, such as BMP. Remember that renaming a file is not akin to changing its format: the file internally must actually be in the format its file extension specifies.
+The advice here is simple: use PNG, JPEG, GIF, or SVG formats, but never other formats, such as BMP. Remember that renaming a file is not akin to changing its format: the file internally must actually be in the format its file extension specifies.
 
 Usually you should always use PNG.
-There are two exceptional cases though:
+There are three exceptional cases though:
 1) If you need animation, use GIF (soon will be able to do animation using [url="APNG"]http://caniuse.com/#feat=apng[/url] though)
 2) If you do not need transparency, and don't mind some quality loss, use JPEG
+3) If you have vector art (saves images as lines instead of pixels), use SVG
 
 [title="3"]Sound and Video[/title]
 
@@ -170,6 +171,10 @@ You may also wish to have a presence on question and answer sites, such as:
  - Stack Exchange
 
 We have built a spreadsheet [url="tracking how Composr can integrate"]https://docs.google.com/spreadsheets/d/1_yaJeGzDIsxq33I7Wg9I-lTBDk3YS22WPBwJ971v5tI/[/url] with different 3rd party websites.
+
+[concepts
+ 1_key="SVG"       1_value="Scalable Vector Graphics, a file format for storing vector images (line-based images, as opposed to pixel-based images)."
+]Concepts[/concepts]
 
 [title="2"]See also[/title]
 

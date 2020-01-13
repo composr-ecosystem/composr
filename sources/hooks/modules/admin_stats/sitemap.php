@@ -26,9 +26,10 @@ class Hook_admin_stats_sitemap extends CMSStatsProvider
     /**
      * Find metadata about stats graphs that are provided by this stats hook.
      *
+     * @param  boolean $for_kpi Whether this is for setting up a KPI
      * @return ?array Map of metadata (null: hook is disabled)
      */
-    public function info()
+    public function info($for_kpi = false)
     {
         require_lang('zones');
 
@@ -37,10 +38,11 @@ class Hook_admin_stats_sitemap extends CMSStatsProvider
                 'label' => do_lang_tempcode('SITEMAP'),
                 'category' => 'content_growth',
                 'filters' => [
-                    new CMSStatsDateMonthRangeFilter('sitemap_growth__month_range', do_lang_tempcode('DATE_RANGE')),
-                    new CMSStatsTextFilter('sitemap_growth__page_link', do_lang_tempcode('PAGE_LINK')),
+                    'sitemap_growth__month_range' => new CMSStatsDateMonthRangeFilter('sitemap_growth__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'sitemap_growth__page_link' => new CMSStatsTextFilter('sitemap_growth__page_link', do_lang_tempcode('PAGE_LINK')),
                 ],
-                'pivot' => new CMSStatsDatePivot('sitemap_growth__pivot', $this->get_date_pivots()),
+                'pivot' => new CMSStatsDatePivot('sitemap_growth__pivot', $this->get_date_pivots(!$for_kpi)),
+                'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
     }
