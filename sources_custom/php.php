@@ -963,7 +963,7 @@ function test_fail_php_type_check($type, $function_name, $name, $value, $echo = 
             }
             break;
         case 'TIME':
-            if ((!is_integer($value)) || ($value > time() + 500000000) || ($value < 1000)) {
+            if ((!is_integer($value)) || ($value > time() + 500000000)) {
                 _fail_php_type_check($type, $function_name, $name, $value, $echo);
             }
             break;

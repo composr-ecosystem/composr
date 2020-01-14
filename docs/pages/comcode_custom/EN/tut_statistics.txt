@@ -62,6 +62,8 @@ Most of the graphs under the 'Hits' category only show hits from user agents tha
 
 The 'Unique views' graph only counts hits to the website once for any particular user, even if they have viewed multiple pages. A 'user' is defined by member ID for logged in users, or by IP address for non-logged-in users. As the web is inherently transactional, and we do not use tracking cookies in Composr, the unique measurement algorithm will never be completely imperfect. For example, a user may be on a connection that has changing IP addresses.
 
+The 'Alexa links' graph shows the number of inbound links as measured by Amazon's Alexa web analytics service (different from the Alexa personal assistant).
+
 [title="3"]Demographics[/title]
 
 Demographics graphs give you an idea who your users are. It may help you have an idea who you need to work harder for -- be that attracting new audiences, or doubling down on what you now understand as your core audience.
@@ -77,6 +79,8 @@ There are various graphs that will tell you about user sessions. These are telli
 There are various graphs that show referrers to your website, broken down in different ways. A referrer is a web page from another website that is linking to you.
 
 Such data is invaluable in finding out what advertising is working (and conversely which advertising schemes aren't working), potential partners, the nature of your traffic, etc.
+
+The 'Alexa ranking' graph shows the world ranking of the website by traffic as measured by Amazon's Alexa web analytics service (different from the Alexa personal assistant).
 
 [title="3"]Activity[/title]
 

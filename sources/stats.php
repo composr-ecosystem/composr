@@ -1311,12 +1311,16 @@ class CMSStatsDatePivot extends CMSStatsFilter
 /**
  * Function to find Alexa details of the site.
  *
- * @param  string $url The URL of the site which you want to find out information on.)
+ * @param  ?string $url The URL of the site which you want to find out information on.) (null: base URL)
  * @return array Returns a pair with the rank, and the amount of links
  */
-function get_alexa_rank($url)
+function get_alexa_rank($url = null)
 {
-    $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24 * 5, true);
+    if ($url === null) {
+        $url = get_base_url() . '/';
+    }
+
+    $test = get_value_newer_than('alexa__' . md5($url), time() - 60 * 60 * 24, true);
     if ($test !== null) {
         return unserialize($test);
     }
@@ -1324,19 +1328,19 @@ function get_alexa_rank($url)
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
     $result = http_get_contents($_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0]);
     if ($result === null) {
-        return ['', ''];
+        return [null, null];
     }
 
     $matches = [];
     if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Alexa Traffic Rank#s', $result, $matches) != 0) {
-        $rank = integer_format(intval(str_replace(',', '', $matches[1])));
+        $rank = intval(str_replace(',', '', $matches[1]));
     } else {
-        $rank = '';
+        $rank = null;
     }
     if (preg_match('#([\d,]+)\s*</a>\s*</div>\s*<div class="label">Sites Linking In#s', $result, $matches) != 0) {
-        $links = integer_format(intval(str_replace(',', '', $matches[1])));
+        $links = intval(str_replace(',', '', $matches[1]));
     } else {
-        $links = '';
+        $links = null;
     }
 
     // we would like, but cannot get (without an API key)...
@@ -1391,5 +1395,167 @@ function cleanup_stats()
         $where = 'date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time')));
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_contact_forms WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+    }
+}
+
+/**
+ * Function to find Alexa details of the site.
+ *
+ * @param  string $hook_name The hook name to preprocess data in
+ * @param  TIME $start_time Start time
+ * @param  ?TIME $end_time End time (null: now)
+ */
+function preprocess_raw_data_for($hook_name, $start_time = 0, $end_time = null)
+{
+    if ($end_time === null) {
+        $end_time = time();
+    }
+
+    require_code('hooks/modules/admin_stats/' . filter_naughty($hook_name));
+    $hook_ob = object_factory('Hook_admin_stats_' . $hook_name, true);
+    if ($hook_ob === null) {
+        return;
+    }
+
+    $info = $hook_ob->info();
+    if ($info === null) {
+        return;
+    }
+
+    if (!$hook_ob instanceof CMSStatsProvider) {
+        return;
+    }
+
+    // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
+
+    $months = [];
+    for ($timestamp = $start_time; $timestamp < $end_time; $timestamp += 60 * 60 * 24 * 28) {
+        $month = get_stats_month_for_timestamp($timestamp);
+        $months[$month] = true;
+    }
+
+    $data_buckets = [];
+    foreach (array_keys($info) as $bucket) {
+        $data_buckets[$bucket] = [];
+
+        foreach (array_keys($months) as $month) {
+            $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_pivot', 'p_data'], [
+                'p_bucket' => $bucket,
+                'p_month' => $month,
+            ]);
+            foreach ($data_rows as $row) {
+                $pivot = $row['p_pivot'];
+                $data_buckets[$bucket][$month][$pivot] = @unserialize($row['p_data']);
+                if ($data_buckets[$bucket][$month][$pivot] === false) {
+                    $data_buckets[$bucket][$month][$pivot] = [];
+                }
+            }
+        }
+    }
+
+    // Preprocess new data...
+
+    $hook_ob->preprocess_raw_data($start_time, $end_time, $data_buckets);
+
+    // Re-save into the database...
+
+    foreach ($data_buckets as $bucket => $_) {
+        foreach ($_ as $month => $__) {
+            foreach ($__ as $pivot => $data) {
+                $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed', [
+                    'p_data' => serialize($data),
+                ], [
+                    'p_bucket' => $bucket,
+                    'p_month' => $month,
+                    'p_pivot' => $pivot,
+                ]);
+            }
+        }
+    }
+
+    // Now for flat data...
+
+    // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
+
+    $data_buckets = [];
+    foreach (array_keys($info) as $bucket) {
+        $data_buckets[$bucket] = [];
+
+        $data_row = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
+            'p_bucket' => $bucket,
+        ]);
+        if ($data_row !== null) {
+            $data_buckets[$bucket] = @unserialize($data_row['p_data']);
+            if ($data_buckets[$bucket] === false) {
+                $data_buckets[$bucket] = [];
+            }
+        } else {
+            $data_buckets[$bucket] = [];
+        }
+    }
+
+    // Preprocess new data...
+
+    $hook_ob->preprocess_raw_data_flat($start_time, $end_time, $data_buckets);
+
+    // Re-save into the database...
+
+    foreach ($data_buckets as $bucket => $data) {
+        $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed_flat', [
+            'p_data' => serialize($data),
+        ], [
+            'p_bucket' => $bucket,
+        ]);
+    }
+}
+
+/**
+ * Send out KPI notifications, as appropriate based on today's date.
+ */
+function send_kpi_notifications()
+{
+    $series = [ // Runs day after a period ends
+        'year_series' => (date('m-d') == '01-01'),
+        'quarter_series' => (date('d') == '01') && (in_array(date('m'), ['01', '04', '07', '10'])),
+        'month_series' => (date('d') == '01'),
+        'day_series' => true,
+    ];
+
+    $kpis = [];
+    foreach ($series as $pivot => $send_today) {
+        if ($send_today) {
+            $_kpis = gather_kpis($pivot);
+            $kpis = array_merge($kpis, $_kpis);
+        }
+    }
+
+    if (!empty($kpis)) {
+        $kpis_for_tpl = [];
+        foreach ($kpis as $kpi) {
+            list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
+            $graph_name = $kpi_row['k_graph_name'];
+            $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
+            $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
+            $kpis_for_tpl[] = [
+                'TITLE' => $kpi_row['k_title'],
+                'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
+                'HITS_TARGET' => $hits_target,
+                'TARGET' => ($target === null) ? null : float_format($target, 4, true),
+                'EDIT_URL' => $edit_url,
+                'VIEW_URL' => $view_url,
+                'GRAPH_NAME' => $kpi_row['k_graph_name'],
+                'USERNAME' => $username,
+                'ADDED' => get_timezoned_date($kpi_row['k_added']),
+                'NOTES' => $kpi_row['k_notes'],
+            ];
+        }
+
+        require_code('notifications');
+        $mail = do_notification_template('KPI_UPDATE_MAIL', [
+            'KPIS' => $kpis_for_tpl,
+        ], null, false, null, '.txt', 'text');
+
+        dispatch_notification('kpis', '', do_lang('NOTIFICATION_TYPE_kpis'), $mail->evaluate(get_site_default_lang()));
     }
 }

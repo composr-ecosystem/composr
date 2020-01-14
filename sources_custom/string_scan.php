@@ -114,6 +114,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
     ];
 
     $lang_strings_admin_initial = array_map('trim', explode("\n", trim('
+        ALEXA_RANKING
+        ALEXA_LINKS
         ADD_KPI
         EDIT_KPI
         _EDIT_KPI

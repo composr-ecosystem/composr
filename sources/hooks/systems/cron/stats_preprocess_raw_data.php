@@ -71,146 +71,16 @@ class Hook_cron_stats_preprocess_raw_data
             require_code('stats');
             require_lang('stats');
 
-            $hook_obs = find_all_hook_obs('modules', 'admin_stats', 'Hook_admin_stats_');
-            foreach ($hook_obs as $hook_name => $hook_ob) {
-                $info = $hook_ob->info();
-                if ($info === null) {
-                    continue;
-                }
-
-                if (!$hook_ob instanceof CMSStatsProvider) {
-                    continue;
-                }
-
-                // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
-
-                $months = [];
-                for ($timestamp = $start_time; $timestamp < $end_time; $timestamp += 60 * 60 * 24 * 28) {
-                    $month = get_stats_month_for_timestamp($timestamp);
-                    $months[$month] = true;
-                }
-
-                $data_buckets = [];
-                foreach (array_keys($info) as $bucket) {
-                    $data_buckets[$bucket] = [];
-
-                    foreach (array_keys($months) as $month) {
-                        $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_pivot', 'p_data'], [
-                            'p_bucket' => $bucket,
-                            'p_month' => $month,
-                        ]);
-                        foreach ($data_rows as $row) {
-                            $pivot = $row['p_pivot'];
-                            $data_buckets[$bucket][$month][$pivot] = @unserialize($row['p_data']);
-                            if ($data_buckets[$bucket][$month][$pivot] === false) {
-                                $data_buckets[$bucket][$month][$pivot] = [];
-                            }
-                        }
-                    }
-                }
-
-                // Preprocess new data...
-
-                $hook_ob->preprocess_raw_data($start_time, $end_time, $data_buckets);
-
-                // Re-save into the database...
-
-                foreach ($data_buckets as $bucket => $_) {
-                    foreach ($_ as $month => $__) {
-                        foreach ($__ as $pivot => $data) {
-                            $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed', [
-                                'p_data' => serialize($data),
-                            ], [
-                                'p_bucket' => $bucket,
-                                'p_month' => $month,
-                                'p_pivot' => $pivot,
-                            ]);
-                        }
-                    }
-                }
-
-                // Now for flat data...
-
-                // First we need to load up any data we already processed for any months within the time range, so anything new will MERGE into that...
-
-                $data_buckets = [];
-                foreach (array_keys($info) as $bucket) {
-                    $data_buckets[$bucket] = [];
-
-                    $data_row = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_preprocessed_flat', 'p_data', [
-                        'p_bucket' => $bucket,
-                    ]);
-                    if ($data_row !== null) {
-                        $data_buckets[$bucket] = @unserialize($data_row['p_data']);
-                        if ($data_buckets[$bucket] === false) {
-                            $data_buckets[$bucket] = [];
-                        }
-                    } else {
-                        $data_buckets[$bucket] = [];
-                    }
-                }
-
-                // Preprocess new data...
-
-                $hook_ob->preprocess_raw_data_flat($start_time, $end_time, $data_buckets);
-
-                // Re-save into the database...
-
-                foreach ($data_buckets as $bucket => $data) {
-                    $GLOBALS['SITE_DB']->query_insert_or_replace('stats_preprocessed_flat', [
-                        'p_data' => serialize($data),
-                    ], [
-                        'p_bucket' => $bucket,
-                    ]);
-                }
+            $hook_obs = find_all_hooks('modules', 'admin_stats');
+            foreach (array_keys($hook_obs) as $hook_name) {
+                preprocess_raw_data_for($hook_name, $start_time, $end_time);
             }
 
             set_value('stats__last_day_processed', $today, true);
 
             // Send KPI notifications...
 
-            $series = [ // Runs day after a period ends
-                'year_series' => (date('m-d') == '01-01'),
-                'quarter_series' => (date('d') == '01') && (in_array(date('m'), ['01', '04', '07', '10'])),
-                'month_series' => (date('d') == '01'),
-                'day_series' => true,
-            ];
-
-            $kpis = [];
-            foreach ($series as $pivot => $send_today) {
-                if ($send_today) {
-                    $_kpis = gather_kpis($pivot);
-                    $kpis = array_merge($kpis, $_kpis);
-                }
-            }
-
-            if (!empty($kpis)) {
-                $kpis_for_tpl = [];
-                foreach ($kpis as $kpi) {
-                    list($kpi_row, , , , , , $edit_url, , $target, $current, $hits_target) = $kpi;
-                    $graph_name = $kpi_row['k_graph_name'];
-                    $edit_url = build_url(['page' => 'admin_stats', 'type' => '_edit', 'id' => $kpi_row['id']], get_module_zone('admin_stats'));
-                    $view_url = build_url(['page' => 'admin_stats', 'type' => 'kpis'], get_module_zone('admin_stats'), [], false, false, false, 'graph_' . $graph_name);
-                    $username = $GLOBALS['FORUM_DRIVER']->get_username($kpi_row['k_added_by'], true);
-                    $kpis_for_tpl[] = [
-                        'TITLE' => $kpi_row['k_title'],
-                        'CURRENT' => ($current === null) ? null : (is_integer($current) ? integer_format($current) : float_format($current, 4, true)),
-                        'HITS_TARGET' => $hits_target,
-                        'TARGET' => ($target === null) ? null : float_format($target, 4, true),
-                        'EDIT_URL' => $edit_url,
-                        'VIEW_URL' => $view_url,
-                        'GRAPH_NAME' => $kpi_row['k_graph_name'],
-                        'USERNAME' => $username,
-                        'ADDED' => get_timezoned_date($kpi_row['k_added']),
-                        'NOTES' => $kpi_row['k_notes'],
-                    ];
-                }
-                require_code('notifications');
-                $mail = do_notification_template('KPI_UPDATE_MAIL', [
-                    'KPIS' => $kpis_for_tpl,
-                ], null, false, null, '.txt', 'text');
-                dispatch_notification('kpis', '', do_lang('NOTIFICATION_TYPE_kpis'), $mail->evaluate(get_site_default_lang()));
-            }
+            send_kpi_notifications();
 
             pop_query_limiting();
         }

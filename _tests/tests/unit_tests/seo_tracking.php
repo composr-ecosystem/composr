@@ -24,7 +24,7 @@ class seo_tracking_test_set extends cms_test_case
 
         $alexa = get_alexa_rank('http://yahoo.com');
         list($rank, $links) = $alexa;
-        $this->assertTrue($rank != '');
-        //$this->assertTrue($links != ''); Alexa seem not to provide anymore
+        $this->assertTrue($rank !== null);
+        //$this->assertTrue($links !== null); Alexa seem not to provide anymore
     }
 }

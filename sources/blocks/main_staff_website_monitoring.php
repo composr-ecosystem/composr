@@ -145,13 +145,17 @@ PHP;
         $sites_being_watched = [];
         $grid_data = [];
         foreach ($rows as $r) {
-            list($rank, $links) = get_alexa_rank(($r['site_url']));
+            list($_rank, $_links) = get_alexa_rank(($r['site_url']));
 
-            if ($rank == '') {
+            if ($_rank === null) {
                 $rank = do_lang('NA');
+            } else {
+                $rank = integer_format($_rank);
             }
-            if ($links == '') {
+            if ($_links === null) {
                 $links = '?';
+            } else {
+                $links = integer_format($_links);
             }
 
             $sites_being_watched[$r['site_url']] = $r['site_name'];
