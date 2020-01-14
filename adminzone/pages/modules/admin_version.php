@@ -1091,9 +1091,7 @@ class Module_admin_version
                     'c_enabled' => 1,
                 ]);
             }
-        }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 18)) { // LEGACY
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('smart_topic_notification');
 
             rename_config_option('imap_folder', 'mail_folder');
@@ -1120,6 +1118,12 @@ class Module_admin_version
                 delete_value('timezone');
             }
 
+            $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
+
+            $GLOBALS['SITE_DB']->drop_table_if_exists('staff_website_monitoring');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 18)) {
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences2', ['a_id']);
             $GLOBALS['SITE_DB']->create_index('member_privileges', 'active_until', ['active_until']);
             $GLOBALS['SITE_DB']->create_index('member_zone_access', 'active_until', ['active_until']);
@@ -1129,7 +1133,6 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('f_group_member_timeouts', 'expiring_timeouts', ['timeout']);
             $GLOBALS['SITE_DB']->create_index('group_privileges', 'by_privilege', ['privilege']);
 
-            $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category']);
         }
     }

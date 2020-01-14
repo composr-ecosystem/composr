@@ -446,7 +446,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_dashboard_links
         CONFIG_OPTION_dashboard_new_version
         CONFIG_OPTION_dashboard_tips
-        CONFIG_OPTION_dashboard_website_monitoring
         CONFIG_OPTION_hc_cpu_normative_threshold
         CONFIG_OPTION_hc_io_mbs
         CONFIG_OPTION_list_unsubscribe_target
@@ -463,7 +462,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DASHBOARD_LINKS
         DASHBOARD_NEW_VERSION
         DASHBOARD_TIPS
-        DASHBOARD_WEBSITE_MONITORING
         DATABASE_UPDATE_QUERY
         DELETE_ADDON_TAR
         DELETE_LOG
@@ -789,7 +787,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_privacy_policy_auto_DESCRIPTION
         BLOCK_main_privacy_policy_auto_USE
         BLOCK_TRANS_NAME_top_search
-        BLOCK_TRANS_NAME_main_staff_website_monitoring
         BLOCK_top_language_DESCRIPTION
         BLOCK_top_language_USE
         BLOCK_TRANS_NAME_top_personal_stats
@@ -1840,8 +1837,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_staff_new_version_USE
         BLOCK_main_staff_tips_DESCRIPTION
         BLOCK_main_staff_tips_USE
-        BLOCK_main_staff_website_monitoring_DESCRIPTION
-        BLOCK_main_staff_website_monitoring_USE
         BLOCK_main_top_sites_DESCRIPTION
         BLOCK_main_top_sites_PARAM_param
         BLOCK_main_top_sites_PARAM_param_TITLE
