@@ -42,7 +42,7 @@ class Hook_admin_stats_invites extends CMSStatsProvider
             'label' => do_lang_tempcode((get_option('is_on_invites') === '1') ? 'INVITATIONS_MADE' : 'RECOMMENDATIONS_MADE'),
             'category' => 'referrers_and_referrals',
             'filters' => [
-                'invites__month_range' => new CMSStatsDateMonthRangeFilter('invites__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                'invites_sent__month_range' => new CMSStatsDateMonthRangeFilter('invites_sent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
             ],
             'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots(!$for_kpi)),
             'support_kpis' => self::KPI_HIGH_IS_GOOD,
@@ -52,9 +52,9 @@ class Hook_admin_stats_invites extends CMSStatsProvider
                 'label' => do_lang_tempcode('INVITATIONS_ACCEPTED'),
                 'category' => 'referrers_and_referrals',
                 'filters' => [
-                    'invites_sent__month_range' => new CMSStatsDateMonthRangeFilter('invites_sent__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'invites_taken__month_range' => new CMSStatsDateMonthRangeFilter('invites_taken__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
                 ],
-                'pivot' => new CMSStatsDatePivot('invites_sent__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('invites_taken__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ];
         }
