@@ -31,6 +31,10 @@ class Hook_admin_stats_ratings extends CMSStatsProvider
      */
     public function info($for_kpi = false)
     {
+        if (get_option('is_on_rating') == '0') {
+            return null;
+        }
+
         return [
             'ratings' => [
                 'label' => do_lang_tempcode('RATINGS'),

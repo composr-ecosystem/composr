@@ -57,6 +57,10 @@ class Hook_admin_stats_comments extends CMSStatsProvider
             return null;
         }
 
+        if (get_option('is_on_comments') == '0') {
+            return null;
+        }
+
         $forum = get_option('comments_forum_name');
         if (!is_integer($forum)) {
             $forum_id = $GLOBALS['FORUM_DRIVER']->forum_id_from_name($forum);
