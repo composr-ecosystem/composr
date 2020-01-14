@@ -146,11 +146,12 @@ One limitation to the pre-computation is that it does limit the amount of filter
 All times are calculated/shown in the configured website time zone, regardless of the time zone of visitors or the time zone your own account is configured to. This is a necessary limitation based on how statistics are pre-computed.
 Some graphs allow showing hour-by-hour stats and also filtering by country, in which case you may get an idea for the local times by manually considering any local time zone differences.
 
-[title="2"]Other statistics[/title]
+[title="2"]Accessing other statistics[/title]
+
+[title="3"]View counts[/title]
 
 [media width="150" description="View statistics are shown for various forms of content" float="right"]data_custom/images/docs/tut_statistics/statistics_news_item_stats.png[/media]
-Apart from page view statistics, the Composr stats system doesn't tell you what content specifically is most popular. For example, it won't tell you what gallery images are most popular.
-This information can, however, be found from regular view counts presented throughout Composr. All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
+All content will automatically store download/view statistics as appropriate, which will usually be displayed on the respective entry screen.
 An example of this would be news entries: each news entry records how many times it is viewed, and displays this number on its view screen.
 
 The [tt]main_multi_content[/tt] block can also be used to draw out content based on popularity.

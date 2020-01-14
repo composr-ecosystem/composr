@@ -278,7 +278,9 @@ class Module_admin_stats extends Standard_crud_module
 
         $type = get_param_string('type', 'browse');
 
-        set_helper_panel_tutorial('tut_statistics');
+        if ($type == 'browse') {
+            set_helper_panel_tutorial('tut_statistics');
+        }
 
         if ($type == 'category') {
             $categories = stats_find_graph_categories();

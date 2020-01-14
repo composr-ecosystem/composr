@@ -606,9 +606,32 @@ abstract class CMSStatsProvider extends CMSStatsHookBase
             }
         }
 
-        asort($feedback_type_codes);
+        asort($feedback_type_codes, SORT_FLAG_CASE);
 
         return $feedback_type_codes;
+    }
+
+    /**
+     * Find all the content types. Useful for creating filters that are filtering by content types.
+     *
+     * @return array Content types
+     */
+    protected function find_all_content_types()
+    {
+        require_code('content');
+
+        $cma_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
+        $content_types = [];
+        foreach ($cma_hooks as $content_type => $hook_ob) {
+            $info = $hook_ob->info();
+            if (($info !== null) && ($info['views_field'] !== null) && (is_string($info['id_field'])) && ($info['title_field'] !== null) && (strpos($info['title_field'], 'CALL:') === false)) {
+                $content_types[$content_type] = do_lang($info['content_type_label']);
+            }
+        }
+
+        asort($content_types, SORT_FLAG_CASE);
+
+        return $content_types;
     }
 
     /**
