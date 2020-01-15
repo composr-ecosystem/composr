@@ -376,6 +376,11 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
                     if ($has_action) {
                         $url = html_entity_decode($matches_action[1], ENT_QUOTES);
+
+                        if ($url == '#') {
+                            continue;
+                        }
+
                         $is_absolute_url = (strpos($url, '://') !== false);
                         $this->assertTrue($is_absolute_url, do_lang('FORM_ACTION_RELATIVE_PROBLEM'));
 
