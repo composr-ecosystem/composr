@@ -148,7 +148,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     }
 
     // Close
-    $blob = '</urlset>';
+    $blob = '</urlset>'. "\n";
     fwrite($sitemaps_out_file, $blob);
     fclose($sitemaps_out_file);
     @unlink($sitemaps_out_path);
@@ -214,7 +214,7 @@ function rebuild_sitemap_index()
     }
 
     // Close
-    $blob = '</sitemapindex>';
+    $blob = '</sitemapindex>' . "\n";
     fwrite($sitemaps_out_file, $blob);
     fclose($sitemaps_out_file);
     @unlink($sitemaps_out_path);
