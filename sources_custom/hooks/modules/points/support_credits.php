@@ -38,11 +38,11 @@ class Hook_points_support_credits
 
         $_credits = $GLOBALS['SITE_DB']->query_select_value('credit_purchases', 'SUM(num_credits)', ['member_id' => $member_id, 'purchase_validated' => 1]);
         $credits = @intval($_credits);
-    
+
         if ($timestamp !== null) {
             $credits -= intval($GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(num_credits) FROM ' . get_table_prefix() . 'credit_purchases WHERE date_and_time>' . strval($timestamp) . ' AND member_id=' . strval($member_id)));
         }
-    
+
         return $credits * 50;
     }
 
@@ -64,9 +64,9 @@ class Hook_points_support_credits
         $points_gained_credits = @intval($_points_gained_credits);
 
         return [
-            'LABEL' => do_lang('customers:SPECIAL_CPF__cms_support_credits'), 
-            'COUNT' => integer_format($points_gained_credits), 
-            'POINTS_EACH' => integer_format(50), 
+            'LABEL' => do_lang('customers:SPECIAL_CPF__cms_support_credits'),
+            'COUNT' => integer_format($points_gained_credits),
+            'POINTS_EACH' => integer_format(50),
             'POINTS_TOTAL' => integer_format($points_gained_credits * 50)
         ];
     }

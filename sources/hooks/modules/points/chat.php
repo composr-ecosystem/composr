@@ -36,7 +36,7 @@ class Hook_points_chat
         if (!addon_installed('chat')) {
             return 0;
         }
-        
+
         $points_gained_chat = isset($point_info['points_gained_chat']) ? $point_info['points_gained_chat'] : 0;
         $points_chat = intval(get_option('points_chat'));
 
@@ -69,9 +69,9 @@ class Hook_points_chat
         $points_chat_posting = intval($_points_chat);
 
         return [
-            'LABEL' => do_lang('chat:COUNT_CHATPOSTS'), 
-            'COUNT' => integer_format($chat_post_count), 
-            'POINTS_EACH' => integer_format($points_chat_posting), 
+            'LABEL' => do_lang('chat:COUNT_CHATPOSTS'),
+            'COUNT' => integer_format($chat_post_count),
+            'POINTS_EACH' => integer_format($points_chat_posting),
             'POINTS_TOTAL' => integer_format($chat_post_count * $points_chat_posting)
         ];
     }

@@ -65,9 +65,9 @@ class Hook_points_daily
         $days_joined = intval(floor(floatval(time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id_of)) / (60.0 * 60.0 * 24.0)));
 
         return [
-            'LABEL' => do_lang('MEMBERSHIP_LENGTH'), 
-            'COUNT' => integer_format($days_joined), 
-            'POINTS_EACH' => integer_format($points_per_day), 
+            'LABEL' => do_lang('MEMBERSHIP_LENGTH'),
+            'COUNT' => integer_format($days_joined),
+            'POINTS_EACH' => integer_format($points_per_day),
             'POINTS_TOTAL' => integer_format($days_joined * $points_per_day)
         ];
     }

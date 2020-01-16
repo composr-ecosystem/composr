@@ -69,9 +69,9 @@ class Hook_points_wiki
         $points_wiki_posting = intval($_points_wiki_posting);
 
         return [
-            'LABEL' => do_lang('wiki:WIKI_POSTS'), 
-            'COUNT' => integer_format($wiki_post_count), 
-            'POINTS_EACH' => integer_format($points_wiki_posting), 
+            'LABEL' => do_lang('wiki:WIKI_POSTS'),
+            'COUNT' => integer_format($wiki_post_count),
+            'POINTS_EACH' => integer_format($points_wiki_posting),
             'POINTS_TOTAL' => integer_format($wiki_post_count * $points_wiki_posting)
         ];
     }

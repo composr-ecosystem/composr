@@ -63,9 +63,9 @@ class Hook_points_joining
         $points_joining = intval(get_option('points_joining'));
 
         return [
-            'LABEL' => do_lang('JOINING'), 
-            'COUNT' => integer_format(1), 
-            'POINTS_EACH' => integer_format($points_joining), 
+            'LABEL' => do_lang('JOINING'),
+            'COUNT' => integer_format(1),
+            'POINTS_EACH' => integer_format($points_joining),
             'POINTS_TOTAL' => integer_format($points_joining)
         ];
     }

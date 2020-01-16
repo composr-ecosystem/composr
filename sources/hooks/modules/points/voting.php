@@ -65,9 +65,9 @@ class Hook_points_voting
         $points_voting = intval(get_option('points_voting'));
 
         return [
-            'LABEL' => do_lang('COUNT_VOTINGS'), 
-            'COUNT' => integer_format($points_gained_voting), 
-            'POINTS_EACH' => integer_format($points_voting), 
+            'LABEL' => do_lang('COUNT_VOTINGS'),
+            'COUNT' => integer_format($points_gained_voting),
+            'POINTS_EACH' => integer_format($points_voting),
             'POINTS_TOTAL' => integer_format($points_gained_voting * $points_voting)
         ];
     }

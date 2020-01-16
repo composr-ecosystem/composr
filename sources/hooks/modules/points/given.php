@@ -39,7 +39,7 @@ class Hook_points_given
 
         $points_gained_given = isset($point_info['points_gained_given']) ? $point_info['points_gained_given'] : 0;
 
-        if ($timestamp !== null)  {
+        if ($timestamp !== null) {
             $_points_gained_given = $GLOBALS['SITE_DB']->query_value_if_there('SELECT SUM(amount) FROM ' . get_table_prefix() . 'gifts WHERE date_and_time>' . strval($timestamp) . ' AND gift_to=' . strval($member_id));
             $points_gained_given -= min($points_gained_given, @intval($_points_gained_given));
         }

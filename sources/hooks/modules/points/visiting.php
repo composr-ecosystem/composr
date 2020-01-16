@@ -61,9 +61,9 @@ class Hook_points_visiting
         $points_per_daily_visit = intval(get_option('points_per_daily_visit'));
 
         return [
-            'LABEL' => do_lang('COUNT_VISITS'), 
-            'COUNT' => integer_format($points_gained_visiting), 
-            'POINTS_EACH' => integer_format($points_per_daily_visit), 
+            'LABEL' => do_lang('COUNT_VISITS'),
+            'COUNT' => integer_format($points_gained_visiting),
+            'POINTS_EACH' => integer_format($points_per_daily_visit),
             'POINTS_TOTAL' => integer_format($points_gained_visiting * $points_per_daily_visit)
         ];
     }
