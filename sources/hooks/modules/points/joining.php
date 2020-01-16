@@ -33,10 +33,6 @@ class Hook_points_joining
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
-        if (!addon_installed('points')) {
-            return 0;
-        }
-
         $points_joining = intval(get_option('points_joining'));
 
         if ($timestamp !== null && $timestamp < $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) {
@@ -56,10 +52,6 @@ class Hook_points_joining
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
-        if (!addon_installed('points')) {
-            return null;
-        }
-
         $points_joining = intval(get_option('points_joining'));
 
         return [

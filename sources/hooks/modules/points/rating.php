@@ -33,10 +33,6 @@ class Hook_points_rating
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
-        if (!addon_installed('points')) {
-            return 0;
-        }
-
         $points_gained_rating = isset($point_info['points_gained_rating']) ? $point_info['points_gained_rating'] : 0;
         $points_rating = intval(get_option('points_rating'));
 
@@ -57,10 +53,6 @@ class Hook_points_rating
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
-        if (!addon_installed('points')) {
-            return null;
-        }
-
         $points_gained_rating = array_key_exists('points_gained_rating', $point_info) ? $point_info['points_gained_rating'] : 0;
         $points_rating = intval(get_option('points_rating'));
 

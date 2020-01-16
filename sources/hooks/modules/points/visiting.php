@@ -33,10 +33,6 @@ class Hook_points_visiting
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
-        if (!addon_installed('points')) {
-            return 0;
-        }
-
         $points_gained_visiting = isset($point_info['points_gained_visiting']) ? $point_info['points_gained_visiting'] : 0;
         $points_visiting = intval(get_option('points_per_daily_visit'));
 
@@ -53,10 +49,6 @@ class Hook_points_visiting
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
-        if (!addon_installed('points')) {
-            return null;
-        }
-
         $points_gained_visiting = array_key_exists('points_gained_visiting', $point_info) ? $point_info['points_gained_visiting'] : 0;
         $points_per_daily_visit = intval(get_option('points_per_daily_visit'));
 

@@ -33,10 +33,6 @@ class Hook_points_daily
      */
     public function total_points($member_id, $timestamp, $point_info)
     {
-        if (!addon_installed('points')) {
-            return 0;
-        }
-
         $points_per_day = intval(get_option('points_per_day'));
         $points_gained_auto = intval(floor(floatval(time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id)) / floatval(60 * 60 * 24)));
 
@@ -57,10 +53,6 @@ class Hook_points_daily
      */
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
-        if (!addon_installed('points')) {
-            return null;
-        }
-
         $points_per_day = intval(get_option('points_per_day'));
         $days_joined = intval(floor(floatval(time() - $GLOBALS['FORUM_DRIVER']->get_member_join_timestamp($member_id_of)) / (60.0 * 60.0 * 24.0)));
 
