@@ -68,7 +68,6 @@ class Module_admin_version
         $GLOBALS['SITE_DB']->drop_table_if_exists('url_title_cache');
         $GLOBALS['SITE_DB']->drop_table_if_exists('review_supplement');
         $GLOBALS['SITE_DB']->drop_table_if_exists('logged_mail_messages');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
         $GLOBALS['SITE_DB']->drop_table_if_exists('incoming_uploads');
         $GLOBALS['SITE_DB']->drop_table_if_exists('f_group_member_timeouts');
         $GLOBALS['SITE_DB']->drop_table_if_exists('temp_block_permissions');
@@ -378,14 +377,6 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'recentmessages', ['m_date_and_time']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'queued', ['m_queued']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'combo', ['m_date_and_time', 'm_queued']); // Used for number-sent-within querying
-
-            $GLOBALS['SITE_DB']->create_table('link_tracker', [
-                'id' => '*AUTO',
-                'c_date_and_time' => 'TIME',
-                'c_member_id' => 'MEMBER',
-                'c_ip_address' => 'IP',
-                'c_url' => 'URLPATH',
-            ]);
 
             $GLOBALS['SITE_DB']->create_table('incoming_uploads', [
                 'id' => '*AUTO',
@@ -984,8 +975,6 @@ class Module_admin_version
 
             $GLOBALS['SITE_DB']->create_index('cache', 'cached_forf', ['cached_for', 'identifier', 'the_theme', 'lang', 'staff_status', 'the_member'/*, 'the_groups'So key is not too long*/, 'is_bot'/*, 'timezone'So key is not too long*/]);
 
-            $GLOBALS['SITE_DB']->create_index('link_tracker', 'c_url', ['c_url']);
-
             $GLOBALS['SITE_DB']->create_table('post_tokens', [
                 'token' => '*ID_TEXT',
                 'generation_time' => 'TIME',
@@ -1000,7 +989,6 @@ class Module_admin_version
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
             $GLOBALS['SITE_DB']->create_index('digestives_tin', 'from_member_id', ['d_from_member_id']);
             $GLOBALS['SITE_DB']->create_index('cache', 'the_member', ['the_member']);
-            $GLOBALS['SITE_DB']->create_index('link_tracker', 'member_id', ['c_member_id']);
             $GLOBALS['SITE_DB']->create_index('logged_mail_messages', 'm_as', ['m_as']);
             $GLOBALS['SITE_DB']->create_index('rating', 'rating_member', ['rating_member']);
             $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences', ['r_referer_type', 'r_referer_id']);
@@ -1121,6 +1109,8 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
 
             $GLOBALS['SITE_DB']->drop_table_if_exists('staff_website_monitoring');
+
+            $GLOBALS['SITE_DB']->drop_table_if_exists('link_tracker');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 18)) {
@@ -1133,7 +1123,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('f_group_member_timeouts', 'expiring_timeouts', ['timeout']);
             $GLOBALS['SITE_DB']->create_index('group_privileges', 'by_privilege', ['privilege']);
 
-            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category']);
+            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', ['l_member_id', 'l_notification_code', 'l_code_category(10)']);
         }
     }
 

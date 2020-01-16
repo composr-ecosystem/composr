@@ -444,6 +444,11 @@ class Module_newsletter
             if ($old_confirm === null) {
                 add_newsletter_subscriber($email, time(), $code_confirm, ratchet_hash($password, $salt), $salt, $language, $forename, $surname);
 
+                if (addon_installed('stats')) {
+                    require_code('stats');
+                    log_stats_event('newsletter:__NEWSLETTER_JOIN');
+                }
+
                 $this->_send_confirmation($email, $code_confirm, $password, $forename, $surname);
             } else {
                 $id = $GLOBALS['SITE_DB']->query_select_value('newsletter_subscribers', 'id', ['email' => $email]);

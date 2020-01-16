@@ -35,6 +35,8 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
             return null;
         }
 
+        require_code('locations');
+
         require_lang('downloads');
 
         return [
@@ -43,6 +45,7 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
                 'category' => 'feedback_and_engagement',
                 'filters' => [
                     'downloads__month_range' => new CMSStatsDateMonthRangeFilter('downloads__month_range', do_lang_tempcode('DATE_RANGE'), null, $for_kpi),
+                    'downloads__country' => has_geolocation_data() ? new CMSStatsListFilter('downloads__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()) : null,
                 ],
                 'pivot' => new CMSStatsDatePivot('downloads__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
@@ -66,7 +69,7 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
 
         $date_pivots = $this->get_date_pivots();
 
-        $query = 'SELECT MIN(date_and_time) AS date_and_time FROM ' . get_table_prefix() . 'download_logging WHERE ';
+        $query = 'SELECT MIN(date_and_time) AS date_and_time,ip FROM ' . get_table_prefix() . 'download_logging WHERE ';
         $query .= 'date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'date_and_time<=' . strval($end_time);
         $query .= ' GROUP BY id,member_id,ip ORDER BY date_and_time';
@@ -78,13 +81,15 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
 
                 $month = get_stats_month_for_timestamp($timestamp);
 
+                $country_code = geolocate_ip($row['ip']);
+
                 foreach (array_keys($date_pivots) as $pivot) {
                     $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                    if (!isset($data_buckets['downloads'][$month][$pivot][$pivot_value])) {
-                        $data_buckets['downloads'][$month][$pivot][$pivot_value] = 0;
+                    if (!isset($data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code])) {
+                        $data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code] = 0;
                     }
-                    $data_buckets['downloads'][$month][$pivot][$pivot_value]++;
+                    $data_buckets['downloads'][$month][$pivot][$pivot_value][$country_code]++;
                 }
             }
 
@@ -114,10 +119,19 @@ class Hook_admin_stats_downloads extends CMSStatsProvider
         $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data'], $where, $extra);
         foreach ($data_rows as $data_row) {
             $_data = @unserialize($data_row['p_data']);
-            foreach ($_data as $pivot_value => $num_downloads) {
+            foreach ($_data as $pivot_value => $_) {
                 $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                $data[$pivot_value] = $num_downloads;
+                foreach ($_ as $country => $num_downloads) {
+                    if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
+                        continue;
+                    }
+
+                    if (!isset($data[$pivot_value])) {
+                        $data[$pivot_value] = 0;
+                    }
+                    $data[$pivot_value] += $num_downloads;
+                }
             }
         }
 

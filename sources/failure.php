@@ -1292,7 +1292,7 @@ function get_html_trace()
     $post = [];
     if (count($_POST) < 200) {
         foreach ($_POST as $key => $val) {
-            if (stripos($key, 'password') !== false) {
+            if (is_password_field($key)) {
                 continue;
             }
 

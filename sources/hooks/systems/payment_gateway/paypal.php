@@ -488,7 +488,7 @@ class Hook_payment_gateway_paypal
                 if ($silent_fail) {
                     return null;
                 }
-                fatal_ipn_exit(do_lang('IPN_UNVERIFIED') . ' - ' . $res . ' - ' . flatten_slashed_array($pure_post, true), strpos($res, '<html') !== false);
+                fatal_ipn_exit(do_lang('IPN_UNVERIFIED') . ' - ' . $res . ' - ' . json_encode($pure_post), strpos($res, '<html') !== false);
             }
         }
 

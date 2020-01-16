@@ -173,7 +173,6 @@ function get_table_purpose_flags()
         'ecom_invoices' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'ip_country' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__AUTOGEN_STATIC,
         'leader_board' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
-        'link_tracker' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'logged_mail_messages' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'match_key_messages' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'member_category_access' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__SUBDATA/*under <content>*/,
@@ -229,6 +228,14 @@ function get_table_purpose_flags()
         'staff_tips_dismissed' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE,
         'staff_links' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'stats' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
+        'stats_events' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
+        'stats_preprocessed' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_preprocessed_flat' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_kpis' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_known_events' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_known_tracking' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_known_links' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
+        'stats_link_tracker' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
         'ecom_subscriptions' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__SUBDATA/*under f_members*/,
         'task_queue' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE | TABLE_PURPOSE__MISC_NO_MERGE/*ephemeral*/,
         'temp_block_permissions' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__NO_BACKUPS | TABLE_PURPOSE__FLUSHABLE,
@@ -261,10 +268,6 @@ function get_table_purpose_flags()
         'wordfilter' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__AS_COMMANDER_FS_EXTENDED_CONFIG,
         'zones' => TABLE_PURPOSE__NORMAL,
         'ecom_sales_expecting' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE | TABLE_PURPOSE__MISC_NO_MERGE/*too-site-tied*/,
-        'stats_contact_forms' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
-        'stats_preprocessed' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
-        'stats_preprocessed_flat' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
-        'stats_kpis' => TABLE_PURPOSE__NORMAL | TABLE_PURPOSE__FLUSHABLE_AGGRESSIVE,
     ];
 }
 
@@ -323,7 +326,6 @@ function get_table_descriptions()
         'group_zone_access' => 'defines what groups may access what zones',
         'https_pages' => 'lists pages that the webmaster has decided need to run over SSL',
         'incoming_uploads' => 'temporary storage of uploaded files, before main form submission',
-        'link_tracker' => 'outgoing click tracking (not really used much)',
         'logged_mail_messages' => 'logged emails (so you can check incorrect emails aren\'t going out) / email queuing',
         'member_category_access' => 'defines what members may access what categories (rarely used, no admin UI)',
         'member_page_access' => 'defines what members may access what pages (rarely used, no admin UI)',
@@ -356,10 +358,15 @@ function get_table_descriptions()
         'webstandards_checked_once' => 'this is used by the inbuilt XHTML checker to know what markup it has already checked, so it doesn\'t waste a lot of time re-checking the same stuff; it uses a hash-signature-check so it doesn\'t need to store all data in the table',
         'zones' => 'details of all zones on the website',
         'ecom_sales_expecting' => 'stores details of an in-progress purchase',
-        'stats_contact_forms' => 'stores statistics of contact forms',
+        'stats' => 'stores basic hit logging',
+        'stats_events' => 'stores statistics of events that have happened such as contact forms being filled in',
         'stats_kpis' => 'configured stats KPIs and targets',
         'stats_preprocessed' => 'stores long-term data for quick processing of statistics',
         'stats_preprocessed_flat' => 'stores long-term data for quick processing of statistics, for data where no dates are involved',
+        'stats_known_events' => 'keeps a record of all the event (types) that have happened',
+        'stats_known_tracking' => 'keeps a record of all the tracking codes that have been seen',
+        'stats_known_links' => 'keeps a record of all the tracked links that have been seen',
+        'stats_link_tracker' => 'outgoing click tracking (not really used much)',
     ];
 }
 

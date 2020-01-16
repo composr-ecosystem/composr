@@ -2183,26 +2183,6 @@ function collapse_1d_complexity($key, $list)
 }
 
 /**
- * Turn an array into a humanely readable string.
- *
- * @param  array $array Array to convert
- * @param  boolean $already_stripped Whether PHP magic-quotes have already been cleaned out for the array
- * @return string A humanely readable version of the array
- */
-function flatten_slashed_array($array, $already_stripped = false)
-{
-    $ret = '';
-    foreach ($array as $key => $val) {
-        if (is_array($val)) {
-            $val = flatten_slashed_array($val);
-        }
-
-        $ret .= '<param>' . (is_integer($key) ? strval($key) : $key) . '=' . $val . '</param>' . "\n"; // $key may be integer, due to recursion line for list fields, above
-    }
-    return $ret;
-}
-
-/**
  * Remove any duplication inside the list of rows (each row being a map). Duplication is defined by rows with corresponding IDs.
  *
  * @param  array $rows The rows to remove duplication of
@@ -3171,6 +3151,39 @@ function is_invisible()
     global $SESSION_CACHE;
     $s = get_session_id();
     return (isset($SESSION_CACHE[$s])) && ($SESSION_CACHE[$s]['session_invisible'] == 1);
+}
+
+/**
+ * Find the session tracking codes, most relevant first.
+ *
+ * @param  ?EMAIL $email_address A new user's e-mail address, to be used to track an inviter/recommender (null: N/A)
+ * @return array The tracking codes
+ */
+function find_session_tracking_codes($email_address = null)
+{
+    $tracking_codes = [];
+
+    $tracking_code = get_param_string('_t', '');
+    if ($tracking_code != '') {
+        $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code));
+    }
+
+    if (addon_installed('stats')) {
+        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
+        foreach ($tracking_code_rows as $tracking_code_row) {
+            $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code_row['tracking_code']));
+        }
+    }
+
+    if ((addon_installed('recommend')) && (!empty($email_address))) {
+        // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
+        $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time DESC');
+        if ($inviter !== null) {
+            $tracking_codes[] = strval($inviter);
+        }
+    }
+
+    return array_unique($tracking_codes);
 }
 
 /**
@@ -4285,17 +4298,42 @@ function has_interesting_post_fields()
 }
 
 /**
+ * Find if a POST field is a password field.
+ *
+ * @param  string $field_name Field to check
+ * @return boolean If it's a password field
+ */
+function is_password_field($field_name)
+{
+    $password_fields = [
+        'password',
+        'confirm_password',
+        'password_confirm',
+        'edit_password',
+        'decrypt',
+    ];
+    return in_array($field_name, $password_fields);
+}
+
+/**
  * Find if a POST field is some kind of special control field rather than interesting standalone data.
  *
  * @param  string $field_name Field to check
  * @param  boolean $include_email_metafields Consider e-mail metafields as control fields
  * @param  boolean $include_login_fields Consider login fields as control fields
  * @param  array $extra_boring_fields Additional boring fields to skip
+ * @param  boolean $include_password_fields Consider password fields as control fields
  * @return boolean If it's a control field
  */
-function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [])
+function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [], $include_password_fields = false)
 {
     // NB: Keep this function synced with the copy of it in static_export.php
+
+    if ($include_password_fields) {
+        if (is_password_field($field_name)) {
+            return true;
+        }
+    }
 
     $boring_fields = [
         // Passed through metadata
@@ -4313,11 +4351,6 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         // Image buttons send these
         'x',
         'y',
-
-        // Password fields
-        'password',
-        'confirm_password',
-        'edit_password',
 
         // Relating to uploads/attachments
         'MAX_FILE_SIZE',

@@ -209,18 +209,6 @@ class Hook_privacy_core extends Hook_privacy_base
                     'removal_default_handle_method' => PRIVACY_METHOD__DELETE,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
-                'link_tracker' => [
-                    'timestamp_field' => 'c_date_and_time',
-                    'retention_days' => intval(get_option('website_activity_store_time')),
-                    'retention_handle_method' => PRIVACY_METHOD__ANONYMISE,
-                    'member_id_fields' => ['c_member_id'],
-                    'ip_address_fields' => ['c_ip_address'],
-                    'email_fields' => [],
-                    'additional_anonymise_fields' => [],
-                    'extra_where' => null,
-                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
-                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
-                ],
                 'failedlogins' => [
                     'timestamp_field' => 'date_and_time',
                     'retention_days' => intval(get_option('website_activity_store_time')),

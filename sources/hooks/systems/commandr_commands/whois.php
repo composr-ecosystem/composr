@@ -51,15 +51,15 @@ class Hook_commandr_command_whois
             $sort_order = (array_key_exists('o', $options)) ? $options['o'] : 'DESC';
             $sort_order = (array_key_exists('order', $options)) ? $options['order'] : 'DESC';
 
-            $name = null;
-            $id = null;
+            $username = null;
+            $member_id = null;
             $ip = null;
-            $rows = lookup_member_page($parameters[0], $name, $id, $ip);
-            if ($name === null) {
-                $name = do_lang('UNKNOWN');
+            $known_ip_addresses = lookup_user($parameters[0], $username, $member_id, $ip);
+            if ($username === null) {
+                $username = do_lang('UNKNOWN');
             }
-            if ($id === null) {
-                $id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+            if ($member_id === null) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
             }
             if ($ip === null) {
                 $ip = '';
@@ -72,15 +72,15 @@ class Hook_commandr_command_whois
             }
 
             $ip_list = new Tempcode();
-            foreach ($rows as $row) {
+            foreach ($known_ip_addresses as $row) {
                 $date = get_timezoned_date_time($row['date_and_time']);
                 $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
                 $ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', ['_GUID' => '01e74a2a146dab9a407b23c40f4555ad', 'LOOKUP_URL' => $lookup_url, 'DATE' => $date, '_DATE' => strval($row['date_and_time']), 'IP' => $row['ip'], 'BANNED' => in_array($row['ip'], $all_banned)]));
             }
 
-            $stats = get_stats_track($id, $ip, $start, $max, $sortable, $sort_order);
+            $stats = find_page_stats_for($member_id, $ip, $start, $max, $sortable, $sort_order);
 
-            return ['', commandr_make_normal_html_visible(do_template('COMMANDR_WHOIS', ['_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05', 'STATS' => $stats, 'IP_LIST' => $ip_list, 'ID' => strval($id), 'IP' => $ip, 'NAME' => $name])), '', ''];
+            return ['', commandr_make_normal_html_visible(do_template('COMMANDR_WHOIS', ['_GUID' => 'f315a705e9a2a2fb50b78ae3a8fc6a05', 'STATS' => $stats, 'IP_LIST' => $ip_list, 'MEMBER_ID' => strval($member_id), 'IP' => $ip, 'USERNAME' => $username])), '', ''];
         }
     }
 }

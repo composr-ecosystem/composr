@@ -443,7 +443,7 @@ class Module_warnings extends Standard_crud_module
         $_history_url = build_url(['page' => '_SELF', 'type' => 'history', 'id' => $member_id], '_SELF');
         $history_url = $_history_url->evaluate();
         if (((!is_guest($member_id)) || ($ip_address !== null)) && (addon_installed('securitylogging'))) {
-            $lookup_url = build_url(['page' => 'admin_lookup', 'param' => is_guest($member_id) ? $member_id : $ip_address], 'adminzone');
+            $lookup_url = build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => is_guest($member_id) ? $member_id : $ip_address], 'adminzone');
         } else {
             $lookup_url = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
         }

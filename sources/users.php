@@ -418,6 +418,21 @@ function get_session_id($ignore_static_cache = false)
 }
 
 /**
+ * Get the current session ID, or if there is none something that can roughly differentiate a session. Used by stats code.
+ * Use very carefully, we don't want the output of this function to bias static cached pages in any way.
+ *
+ * @return ID_TEXT The current pseudo session ID
+ */
+function get_pseudo_session_id()
+{
+    $session_id = get_session_id();
+    if ($session_id == '') {
+        $session_id = get_ip_address();
+    }
+    return $session_id;
+}
+
+/**
  * Find whether the current member is logged in via httpauth.
  *
  * @return boolean Whether the current member is logged in via httpauth

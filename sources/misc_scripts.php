@@ -181,27 +181,6 @@ function gd_text_script()
 }
 
 /**
- * Script to track clicks to external sites.
- * This is not tied in by default, because it might be used by hackers somehow.
- *
- * @ignore
- */
-function simple_tracker_script()
-{
-    $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
-
-    $GLOBALS['SITE_DB']->query_insert('link_tracker', [
-        'c_date_and_time' => time(),
-        'c_member_id' => get_member(),
-        'c_ip_address' => get_ip_address(),
-        'c_url' => cms_mb_substr($url, 0, 255),
-    ]);
-
-    require_code('site2');
-    redirect_exit($url);
-}
-
-/**
  * Script to show previews of content being added/edited.
  *
  * @ignore
@@ -517,26 +496,6 @@ function iframe_script()
 }
 
 /**
- * Redirect the browser to where a page_link specifies.
- *
- * @ignore
- */
-function page_link_redirect_script()
-{
-    $page_link = get_param_string('id');
-    $tpl = symbol_tempcode('PAGE_LINK', [$page_link]);
-
-    $x = $tpl->evaluate();
-
-    if ((strpos($x, "\n") !== false) || (strpos($x, "\r") !== false)) {
-        log_hack_attack_and_exit('HEADER_SPLIT_HACK');
-    }
-
-    require_code('site2');
-    redirect_exit($x);
-}
-
-/**
  * Outputs the page-link chooser pop-up.
  *
  * @ignore
@@ -636,6 +595,31 @@ function emoticons_script()
 }
 
 /**
+ * Outputs a modal question dialog.
+ *
+ * @ignore
+ */
+function question_ui_script()
+{
+    $title = get_param_string('window_title', false, INPUT_FILTER_GET_COMPLEX);
+    $_message = nl2br(escape_html(get_param_string('message', false, INPUT_FILTER_GET_COMPLEX)));
+    if (function_exists('ocp_mark_as_escaped')) {
+        ocp_mark_as_escaped($_message);
+    }
+    $button_set = explode(',', get_param_string('button_set', false, INPUT_FILTER_GET_COMPLEX));
+    $_image_set = get_param_string('image_set', false, INPUT_FILTER_GET_COMPLEX);
+    $image_set = ($_image_set == '') ? [] : explode(',', $_image_set);
+    $message = do_template('QUESTION_UI_BUTTONS', ['_GUID' => '0c5a1efcf065e4281670426c8fbb2769', 'TITLE' => $title, 'IMAGES' => $image_set, 'BUTTONS' => $button_set, 'MESSAGE' => $_message]);
+
+    require_code('site');
+    attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
+
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '8d72daa4c9f922656b190b643a6fe61d', 'TITLE' => escape_html($title), 'POPUP' => true, 'CONTENT' => $message]);
+    $echo->handle_symbol_preprocessing();
+    $echo->evaluate_echo();
+}
+
+/**
  * Allows conversion of a URL to a thumbnail via a simple script.
  *
  * @ignore
@@ -667,28 +651,23 @@ function thumb_script()
 }
 
 /**
- * Outputs a modal question dialog.
+ * Redirect the browser to where a page_link specifies.
  *
  * @ignore
  */
-function question_ui_script()
+function page_link_redirect_script()
 {
-    $title = get_param_string('window_title', false, INPUT_FILTER_GET_COMPLEX);
-    $_message = nl2br(escape_html(get_param_string('message', false, INPUT_FILTER_GET_COMPLEX)));
-    if (function_exists('ocp_mark_as_escaped')) {
-        ocp_mark_as_escaped($_message);
+    $page_link = get_param_string('id');
+    $tpl = symbol_tempcode('PAGE_LINK', [$page_link]);
+
+    $x = $tpl->evaluate();
+
+    if ((strpos($x, "\n") !== false) || (strpos($x, "\r") !== false)) {
+        log_hack_attack_and_exit('HEADER_SPLIT_HACK');
     }
-    $button_set = explode(',', get_param_string('button_set', false, INPUT_FILTER_GET_COMPLEX));
-    $_image_set = get_param_string('image_set', false, INPUT_FILTER_GET_COMPLEX);
-    $image_set = ($_image_set == '') ? [] : explode(',', $_image_set);
-    $message = do_template('QUESTION_UI_BUTTONS', ['_GUID' => '0c5a1efcf065e4281670426c8fbb2769', 'TITLE' => $title, 'IMAGES' => $image_set, 'BUTTONS' => $button_set, 'MESSAGE' => $_message]);
 
-    require_code('site');
-    attach_to_screen_header('<meta name="robots" content="noindex" />'); // XHTMLXHTML
-
-    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '8d72daa4c9f922656b190b643a6fe61d', 'TITLE' => escape_html($title), 'POPUP' => true, 'CONTENT' => $message]);
-    $echo->handle_symbol_preprocessing();
-    $echo->evaluate_echo();
+    require_code('site2');
+    redirect_exit($x);
 }
 
 /**

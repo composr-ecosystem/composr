@@ -363,7 +363,7 @@ To do split testing well you need to be willing to put the time in, and be willi
 
 You can split test things you might never have thought about, even outside the scope of [i]Google Analytics[/i]. For example:
  - give a different phone number extension for different randomised versions of copy, and record performance externally
- - pass through a different Composr [tt]keep_referrer[/tt] parameter to the [tt]join[/tt] module, e.g. [page=":join:keep_referrer=2"]a[/page] or [page=":join:keep_referrer=3"]b[/page]. In this case make sure '2' and '3' are the IDs of admin accounts. You can then use the non-bundled [tt]referrals[/tt] addon to track the referrals these accounts make.
+ - pass through a different Composr [tt]_t[/tt] parameter to the [tt]join[/tt] module, e.g. [page=":join:_t=abc1"]a[/page] or [page=":join:_t=abc2"]b[/page]. You can then track conversions against those tracking codes.
 
 [title="2"]Creating events (advanced)[/title]
 

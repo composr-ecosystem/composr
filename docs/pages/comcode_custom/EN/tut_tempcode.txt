@@ -1514,6 +1514,14 @@ where:
 			<td>{$STAFF_TOOLTIPS_URL_PATTERNS_JSON}</td>
 			<td>JSON object of staff URL patterns to apply Comcode tooltips to.</td>
 		</tr>
+		<tr style="background: #DDDDFF">
+			<td>{$LOG_STATS_EVENT,event}</td>
+			<td>Log a stats event as having happened. This is useful if the successful display of some template evidences some important stats event has happened. You can create whatever event codes you like.</td>
+		</tr>
+		<tr style="background: #DDDDFF">
+			<td>{$STATS_TRACK_URL,URL,event}</td>
+			<td>Track clicks to a URL, with an optional event parameter as well. This works via a redirect: the user is sent to a Composr script first, which logs the click/event, and that script redirects to the destination URL.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]

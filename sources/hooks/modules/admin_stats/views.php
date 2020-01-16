@@ -632,14 +632,17 @@ class Hook_admin_stats_views extends CMSStatsProvider
 
             $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time');
             foreach ($rows as $row) {
-                list($zone, $attributes) = page_link_decode($row['page_link']);
-                $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
-                $page_link = $zone . ':' . $page;
-
                 $timestamp = $row['date_and_time'];
+                if ($timestamp < $start_time) {
+                    continue;
+                }
                 $timestamp = tz_time($timestamp, $server_timezone);
 
                 $month = get_stats_month_for_timestamp($timestamp);
+
+                list($zone, $attributes) = page_link_decode($row['page_link']);
+                $page = isset($attributes['page']) ? $attributes['page'] : DEFAULT_ZONE_PAGE_NAME;
+                $page_link = $zone . ':' . $page;
 
                 if ($first_page_link === null) {
                     $first_page_link = $page_link;
@@ -1417,7 +1420,7 @@ class Hook_admin_stats_views extends CMSStatsProvider
     }
 
     /**
-     * Make a sesson duration range more readable.
+     * Make a speed range more readable.
      *
      * @param  string $bracket Bracket
      * @return string Readable bracket

@@ -7,11 +7,8 @@
 ; if a notification is to be sent out to the staff if someone signed up but was not referred by anyone in any way
 notify_if_join_but_no_referral=0
 
-; if the referrer field at signup is visible (as opposed to hidden, relying on cookies/URL referrer)
+; if the referrer field at signup is visible (as opposed to hidden, relying on URL/session tracking)
 visible_referrer_field=1
-
-; Track referrals using cookies; this might have legal issues in the EU
-referrer_cookies=1
 
 ;; ==================
 ;; PARTICULAR SCHEMES

@@ -146,7 +146,7 @@ PHP;
 
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_contact_form_stats($catalogue_name);
+                log_stats_event('FORM: ' . $catalogue_name);
             }
 
             // Send e-mail

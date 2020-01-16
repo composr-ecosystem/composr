@@ -153,10 +153,10 @@ function give_submit_points($type, $member_id = null)
 }
 
 /**
- * Find a member from their IP address. Unlike plain $GLOBALS['FORUM_DRIVER']->probe_ip, it has the benefit of looking in the actionlogs table also.
+ * Find a member from their IP address. Unlike plain $GLOBALS['FORUM_DRIVER']->probe_ip, it has the benefit of looking in the actionlogs and stats tables also.
  *
  * @param  IP $ip The IP address to probe
- * @return array The members found
+ * @return array The member IDs found
  */
 function wrap_probe_ip($ip)
 {
@@ -165,20 +165,24 @@ function wrap_probe_ip($ip)
     } else {
         $a = $GLOBALS['SITE_DB']->query_select('actionlogs', ['DISTINCT member_id AS id'], ['ip' => $ip]);
     }
-    $b = $GLOBALS['FORUM_DRIVER']->probe_ip($ip);
-    $r = [];
+
+    if (addon_installed('stats')) {
+        $b = $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT member_id AS id'], ['ip' => $ip]);
+    } else {
+        $b = [];
+    }
+
+    $c = $GLOBALS['FORUM_DRIVER']->probe_ip($ip);
+
     $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-    foreach ($a as $x) {
-        if ((!in_array($x, $r)) && ($x['id'] != $guest_id)) {
-            $r[] = $x;
+
+    $member_ids = [];
+    foreach (array_unique(array_merge($a, $b, $c)) as $x) {
+        if ($x['id'] != $guest_id) {
+            $member_ids[] = $x;
         }
     }
-    foreach ($b as $x) {
-        if ((!in_array($x, $r)) && ($x['id'] != $guest_id)) {
-            $r[] = $x;
-        }
-    }
-    return $r;
+    return $member_ids;
 }
 
 /**

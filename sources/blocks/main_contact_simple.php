@@ -93,7 +93,7 @@ class Block_main_contact_simple
 
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_contact_form_stats(get_page_name());
+                log_stats_event('FORM: ' . get_page_name());
             }
 
             // Send e-mail

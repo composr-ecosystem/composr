@@ -61,8 +61,12 @@ class Module_admin_stats extends Standard_crud_module
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats');
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed');
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_preprocessed_flat');
-        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_contact_forms');
         $GLOBALS['SITE_DB']->drop_table_if_exists('stats_kpis');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_events');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_link_tracker');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_events');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_tracking');
+        $GLOBALS['SITE_DB']->drop_table_if_exists('stats_known_links');
         $GLOBALS['SITE_DB']->drop_table_if_exists('usersonline_track');
         $GLOBALS['SITE_DB']->drop_table_if_exists('ip_country');
     }
@@ -84,11 +88,12 @@ class Module_admin_stats extends Standard_crud_module
                 'referer' => 'URLPATH',
                 'ip' => 'IP',
                 'member_id' => 'MEMBER',
-                'session_id' => 'ID_TEXT',
+                'session_id' => 'ID_TEXT', // May not be a literal session, as we don't always assign sessions to users (when operating from static caching) - might be an IP address for example
                 'browser' => 'SHORT_TEXT',
                 'operating_system' => 'SHORT_TEXT',
                 'requested_language' => 'ID_TEXT',
                 'milliseconds' => 'INTEGER',
+                'tracking_code' => 'ID_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('stats', 'date_and_time', ['date_and_time']);
 
@@ -163,6 +168,7 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->delete_table_field('stats', 'title');
 
             $GLOBALS['SITE_DB']->add_table_field('stats', 'requested_language', 'LANGUAGE_NAME');
+            $GLOBALS['SITE_DB']->add_table_field('stats', 'tracking_code', 'ID_TEXT');
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 10)) { // LEGACY
@@ -178,14 +184,15 @@ class Module_admin_stats extends Standard_crud_module
                 'p_data' => 'LONG_TEXT',
             ]);
 
-            $GLOBALS['SITE_DB']->create_table('stats_contact_forms', [
+            $GLOBALS['SITE_DB']->create_table('stats_events', [ // This table is not about tracking individual users, 'stats' does that - it's for trend analysis
                 'id' => '*AUTO',
-                'form_name' => 'SHORT_TEXT',
-                'date_and_time' => 'TIME',
-                'country_code' => 'ID_TEXT',
+                'e_event' => 'ID_TEXT',
+                'e_date_and_time' => 'TIME',
+                'e_country_code' => 'ID_TEXT',
+                'e_session_id' => 'ID_TEXT',
             ]);
-            $GLOBALS['SITE_DB']->create_index('stats_contact_forms', 'form_name', ['form_name']);
-            $GLOBALS['SITE_DB']->create_index('stats_contact_forms', 'date_and_time', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('stats_events', 'e_event', ['e_event', 'e_date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('stats_events', 'e_date_and_time', ['e_date_and_time']);
 
             $GLOBALS['SITE_DB']->create_table('stats_kpis', [
                 'id' => '*AUTO',
@@ -199,6 +206,38 @@ class Module_admin_stats extends Standard_crud_module
                 'k_notes' => 'LONG_TEXT',
             ]);
             $GLOBALS['SITE_DB']->create_index('stats_kpis', 'k_graph_name', ['k_graph_name']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_link_tracker', [
+                'id' => '*AUTO',
+                'c_url' => 'URLPATH',
+                'c_date_and_time' => 'TIME',
+
+                // Unlike events, it is not possible to guess a link happened by looking at the stats table, so we gather more
+                'c_member_id' => 'MEMBER',
+                'c_ip_address' => 'IP',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_link_tracker', 'c_url', ['c_url']);
+            $GLOBALS['SITE_DB']->create_index('stats_link_tracker', 'c_date_and_time', ['c_date_and_time']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_events', [
+                'e_event' => '*ID_TEXT',
+                'e_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_events', 'e_times_seen', ['e_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_tracking', [
+                't_tracking_code' => '*ID_TEXT',
+                't_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_tracking', 't_times_seen', ['t_times_seen']);
+
+            $GLOBALS['SITE_DB']->create_table('stats_known_links', [
+                'id' => '*AUTO',
+                'l_url' => 'URLPATH',
+                'l_times_seen' => 'INTEGER',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
+            $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_times_seen', ['l_times_seen']);
         }
     }
 

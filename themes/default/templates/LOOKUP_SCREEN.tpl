@@ -11,14 +11,14 @@
 	<tbody>
 		<tr>
 			<th>{!USERNAME}</th>
-			<td>{NAME*}</td>
+			<td>{USERNAME*}</td>
 		</tr>
 
-		{+START,IF,{$NOT,{$IS_GUEST,{ID}}}}
+		{+START,IF,{$NOT,{$IS_GUEST,{MEMBER_ID}}}}
 			<tr>
 				<th>{!MEMBER_ID}</th>
 				<td>
-					#<strong>{ID*}</strong>
+					#<strong>{MEMBER_ID*}</strong>
 
 					<div class="mini-indent">
 						<div><em>{!MEMBER_BANNED}, {$LCASE,{MEMBER_BANNED*}}</em>{+START,IF_PASSED,MEMBER_BAN_LINK} {MEMBER_BAN_LINK}{+END}</div>
@@ -38,7 +38,7 @@
 						<div><em>{!BANNED}, {$LCASE,{IP_BANNED*}}</em>{+START,IF_PASSED,IP_BAN_LINK} {IP_BAN_LINK}{+END}</div>
 
 						{+START,IF_NON_EMPTY,{$CONFIG_OPTION,stopforumspam_api_key}{$CONFIG_OPTION,tornevall_api_username}}
-							<div><span class="associated-link"><a href="{$PAGE_LINK*,_SEARCH:admin_ip_ban:syndicate_ip_ban:ip={IP}:member_id={ID}:reason={!MANUAL}:redirect={$SELF_URL&}}">{!SYNDICATE_TO_STOPFORUMSPAM}</a></span></div>
+							<div><span class="associated-link"><a href="{$PAGE_LINK*,_SEARCH:admin_ip_ban:syndicate_ip_ban:ip={IP}:member_id={MEMBER_ID}:reason={!MANUAL}:redirect={$SELF_URL&}}">{!SYNDICATE_TO_STOPFORUMSPAM}</a></span></div>
 						{+END}
 					</div>
 				</td>
@@ -110,7 +110,7 @@
 	</p>
 {+END}
 
-<h2>{!VIEWS}{+START,IF,{$IS_GUEST,{ID}}} ({!IP_ADDRESS}){+END}</h2>
+<h2>{!VIEWS}{+START,IF,{$IS_GUEST,{MEMBER_ID}}} ({!IP_ADDRESS}){+END}</h2>
 
 {STATS}
 

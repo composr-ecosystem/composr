@@ -2203,12 +2203,14 @@ function log_stats($page_link, $pg_time)
         $page_link = get_current_page_link();
     }
 
-    if (get_option('super_logging') == '1') {
-        $post2 = $_POST;
-        unset($post2['password']);
-        unset($post2['password_confirm']);
-        unset($post2['decrypt']);
-        $post = flatten_slashed_array($post2);
+    if ((get_option('super_logging') == '1') && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
+        $post2 = [];
+        foreach ($_POST as $key => $val) {
+            if (!is_password_field($key)) {
+                $post2[$key] = $val;
+            }
+        }
+        $post = json_encode($post2);
     } else {
         $post = '';
     }
@@ -2216,7 +2218,6 @@ function log_stats($page_link, $pg_time)
     $ip = get_ip_address();
     global $IS_ACTUALLY;
     $member_id = ($IS_ACTUALLY === null) ? get_member() : $IS_ACTUALLY;
-    $session_id = get_session_id();
 
     $GLOBALS['SITE_DB']->query_insert('stats', [
         'date_and_time' => $time,
@@ -2225,11 +2226,12 @@ function log_stats($page_link, $pg_time)
         'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
         'ip' => $ip,
         'member_id' => $member_id,
-        'session_id' => $session_id,
+        'session_id' => get_pseudo_session_id(),
         'browser' => cms_mb_substr(get_browser_string(), 0, 255),
         'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
         'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
         'milliseconds' => intval($pg_time),
+        'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
     ], false, true); // Errors suppressed in case DB write access broken
 
     if (mt_rand(0, 100) == 1) {

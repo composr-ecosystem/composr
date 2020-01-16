@@ -54,7 +54,7 @@ class Hook_cleanup_page_stats
         $GLOBALS['SITE_DB']->query_delete('stats');
         $GLOBALS['SITE_DB']->query_delete('stats_preprocessed');
         $GLOBALS['SITE_DB']->query_delete('usersonline_track');
-        $GLOBALS['SITE_DB']->query_delete('stats_contact_forms');
+        $GLOBALS['SITE_DB']->query_delete('stats_events');
 
         return new Tempcode();
     }

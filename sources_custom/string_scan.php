@@ -118,6 +118,15 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTENT_VIEWS
         ALEXA_RANKING
         ALEXA_LINKS
+        BLOCK_TRANS_NAME_main_staff_stats_graph
+        CONVERSION_RATES
+        LINK_TRACKING
+        STATS_EVENT
+        TRACKING_CODE
+        TRACKING_CODE_CONVERSION_RATES
+        TRACKING_CODE_USAGE
+        VIEW_REQUEST
+        __NEWSLETTER_JOIN
         ADD_KPI
         EDIT_KPI
         _EDIT_KPI
@@ -164,7 +173,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CALENDAR_QUARTER
         CLEANUP_PAGE_MISC_TOOLS
         COMMENT_ENGAGEMENT
-        CONTACT_FORM_SUBMISSIONS
+        STATS_EVENTS
         COUNTRY
         DESCRIPTION_GATHERED_STATISTICS
         GATHERED_STATISTICS
@@ -182,6 +191,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         REFERRER_TYPES
         REFERRER_URLS
         REQUESTED_LANGUAGES
+        REQUESTED_LANGUAGE
         SEARCHES
         SESSION_BOUNCE_RATES
         SESSION_DURATIONS

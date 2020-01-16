@@ -19,6 +19,41 @@
  */
 
 /**
+ * Script to track clicks to sites.
+ *
+ * @ignore
+ */
+function tracked_redirect_script()
+{
+    $url = get_param_string('url', null, INPUT_FILTER_URL_GENERAL);
+
+    if (!is_our_server(parse_url($url, PHP_URL_HOST))) {
+        $hash = get_param_string('hash', false, INPUT_FILTER_GET_COMPLEX);
+        require_code('crypt');
+        if (!ratchet_hash_verify($url, get_site_salt(), $hash)) {
+            fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+    }
+
+    $GLOBALS['SITE_DB']->query_insert('stats_link_tracker', [
+        'c_date_and_time' => time(),
+        'c_member_id' => get_member(),
+        'c_ip_address' => get_ip_address(),
+        'c_url' => cms_mb_substr($url, 0, 255),
+    ]);
+
+    if (addon_installed('stats')) {
+        $event = get_param_string('event', null);
+        if ($event !== null) {
+            log_stats_event($event);
+        }
+    }
+
+    require_code('site2');
+    redirect_exit($url);
+}
+
+/**
  * Gather details on all active KPIs.
  *
  * @param  ?integer $pivot_filter Filter only to this pivot (null: no filter)
@@ -1392,19 +1427,24 @@ function has_geolocation_data()
 }
 
 /**
- * Log a contact form fill.
+ * Log a stats event.
  *
- * @param  string $form_name The form name
+ * @param  string $event The event
  */
-function log_contact_form_stats($form_name)
+function log_stats_event($event)
 {
+    if ((get_option('site_closed') == '1') && (get_option('stats_when_closed') == '0')) {
+        return;
+    }
+
     require_code('locations');
 
     $country_code = geolocate_ip();
-    $GLOBALS['SITE_DB']->query_insert('stats_contact_forms', [
-        'form_name' => $form_name,
-        'date_and_time' => time(),
-        'country_code' => ($country_code == '') ? '' : $country_code,
+    $GLOBALS['SITE_DB']->query_insert('stats_events', [
+        'e_event' => $event,
+        'e_date_and_time' => time(),
+        'e_country_code' => ($country_code == '') ? '' : $country_code,
+        'e_session_id' => get_session_id(),
     ]);
 }
 
@@ -1415,14 +1455,21 @@ function log_contact_form_stats($form_name)
 function cleanup_stats()
 {
     if (!$GLOBALS['SITE_DB']->table_is_locked('stats')) {
-        $where = 'date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time')));
+        $cutoff = strval(time() - 60 * 60 * 24 * intval(get_option('stats_store_time')));
+
+        $where = 'date_and_time<' . $cutoff;
         $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
-        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_contact_forms WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+
+        $where = 'e_date_and_time<' . $cutoff;
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_events WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+
+        $where = 'c_date_and_time<' . $cutoff;
+        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'stats_link_tracker WHERE ' . $where, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
     }
 }
 
 /**
- * Function to find Alexa details of the site.
+ * Pre-process raw data for a stats hook.
  *
  * @param  string $hook_name The hook name to preprocess data in
  * @param  TIME $start_time Start time

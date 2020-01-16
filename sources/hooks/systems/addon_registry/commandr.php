@@ -480,9 +480,9 @@ class Hook_addon_registry_commandr
             lorem_globalise(do_lorem_template('COMMANDR_WHOIS', [
                 'STATS' => lorem_phrase(),
                 'IP_LIST' => placeholder_list_item(),
-                'ID' => placeholder_id(),
+                'MEMBER_ID' => placeholder_id(),
                 'IP' => placeholder_ip(),
-                'NAME' => lorem_word(),
+                'USERNAME' => lorem_word(),
             ]), null, '', true)
         ];
     }

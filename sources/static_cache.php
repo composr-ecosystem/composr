@@ -368,6 +368,7 @@ function static_cache($mode)
             }
 
             echo $contents;
+            cms_flush_safe();
 
             // Add to stats
             if (addon_installed('stats')) {
@@ -405,11 +406,12 @@ function static_cache($mode)
                     'referer' => cms_mb_substr($_SERVER['HTTP_REFERER'], 0, 255),
                     'ip' => get_ip_address(),
                     'member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                    'session_id' => '',
+                    'session_id' => get_pseudo_session_id(),
                     'browser' => cms_mb_substr(get_browser_string(), 0, 255),
                     'operating_system' => cms_mb_substr(get_os_string(), 0, 255),
                     'requested_language' => substr(preg_replace('#[,;].*$#', '', $_SERVER['HTTP_ACCEPT_LANGUAGE']), 0, 10),
                     'milliseconds' => 0,
+                    'tracking_code' => cms_mb_substr(get_param_string('_t', ''), 0, 80),
                 ], false, true);
             }
 

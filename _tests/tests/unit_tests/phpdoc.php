@@ -86,6 +86,7 @@ class phpdoc_test_set extends cms_test_case
             'Find all the graphs in a stats category.',
             'Find metadata about stats graphs that are provided by this stats hook.',
             'Generate final data from preprocessed data.',
+            'Generate a stats graph filter form.',
         ];
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

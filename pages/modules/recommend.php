@@ -142,14 +142,14 @@ class Module_recommend
             inform_non_canonical_parameter('page_title', false);
             inform_non_canonical_parameter('subject', false);
             inform_non_canonical_parameter('s_message', false);
-            inform_non_canonical_parameter('from', false);
-            inform_non_canonical_parameter('title', false);
+            inform_non_canonical_parameter('from_url', false);
+            inform_non_canonical_parameter('from_title', false);
             inform_non_canonical_parameter('cms', false);
         }
 
         if (($type == 'browse') || ($type == 'gui2')) {
             $page_title = get_param_string('page_title', null, INPUT_FILTER_GET_COMPLEX);
-            if (get_param_string('from', null, INPUT_FILTER_URL_INTERNAL) !== null) {
+            if (get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL) !== null) {
                 if ($page_title === null) {
                     $this->title = get_screen_title('RECOMMEND_LINK');
                 } else {
@@ -282,42 +282,12 @@ class Module_recommend
                 $fields->attach(form_input_tick(do_lang_tempcode('USE_INVITE'), do_lang_tempcode('USE_INVITE_DESCRIPTION', $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? do_lang('NA_EM') : integer_format($invites)), 'invite', $invite));
             }
         }
-        $message = post_param_string('message', null);
-        $subject = get_param_string('subject', do_lang('RECOMMEND_MEMBER_SUBJECT', get_site_name()), INPUT_FILTER_GET_COMPLEX);
-        if ($message === null) {
-            $message = get_param_string('s_message', '', INPUT_FILTER_GET_COMPLEX);
-            if ($message == '') {
-                $from = get_param_string('from', null, INPUT_FILTER_URL_INTERNAL);
-                if ($from !== null) {
-                    $resource_title = get_param_string('title', '', INPUT_FILTER_GET_COMPLEX);
-                    if ($resource_title == '') { // Auto download it
-                        $downloaded_at_link = http_get_contents($from, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 3000]);
-                        if (is_string($downloaded_at_link)) {
-                            $matches = [];
-                            if (cms_preg_match_safe('#\s*<title[^>]*\s*>\s*(.*)\s*\s*<\s*/title\s*>#mi', $downloaded_at_link, $matches) != 0) {
-                                $resource_title = trim(str_replace('&ndash;', '-', str_replace('&mdash;', '-', @html_entity_decode($matches[1], ENT_QUOTES))));
-                                $resource_title = preg_replace('#^' . preg_quote(get_site_name(), '#') . ' - #', '', $resource_title);
-                                $resource_title = cms_preg_replace_safe('#\s+[^\d\s][^\d\s]?[^\d\s]?\s+' . preg_quote(get_site_name(), '#') . '$#i', '', $resource_title);
-                            }
-                        }
-                    }
-                    if ($resource_title == '') {
-                        $resource_title = do_lang('THIS'); // Could not find at all, so say 'this'
-                    } else {
-                        $subject = get_param_string('subject', do_lang('RECOMMEND_MEMBER_SUBJECT_SPECIFIC', get_site_name(), $resource_title), INPUT_FILTER_GET_COMPLEX);
-                    }
 
-                    $message = do_lang('FOUND_THIS_ON', get_site_name(), comcode_escape($from), comcode_escape($resource_title));
-                }
-            }
-            if (get_param_integer('cms', 0) == 1) {
-                $message = do_lang('RECOMMEND_COMPOSR', brand_name(), get_brand_base_url());
-            }
-        }
+        list($subject, $message) = $this->generate_default_message();
 
         $text = ($page_title === null) ? do_lang_tempcode('RECOMMEND_SITE_TEXT', escape_html(get_site_name())) : new Tempcode();
 
-        if (get_param_string('from', null, INPUT_FILTER_URL_INTERNAL) !== null) {
+        if (get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL) !== null) {
             $submit_name = do_lang_tempcode('SEND');
             $text = do_lang_tempcode('RECOMMEND_AUTO_TEXT', get_site_name());
             $need_message = true;
@@ -360,6 +330,62 @@ class Module_recommend
     }
 
     /**
+     * Generate a default recommendation subject & message from passed data.
+     *
+     * @return array A pair: default subject, default message
+     */
+    protected function generate_default_message()
+    {
+        $subject = get_param_string('subject', do_lang('RECOMMEND_MEMBER_SUBJECT', get_site_name()), INPUT_FILTER_GET_COMPLEX);
+
+        // Recommend Composr-itself
+        if (get_param_integer('cms', 0) == 1) {
+            $message = do_lang('RECOMMEND_COMPOSR', brand_name(), get_brand_base_url());
+            return [$subject, $message];
+        }
+
+        // POST-back
+        $message = post_param_string('message', '');
+        if ($message != '') {
+            return [$subject, $message];
+        }
+
+        // Message passed by URL
+        $message = get_param_string('s_message', '', INPUT_FILTER_GET_COMPLEX);
+        if ($message != '') {
+            return [$subject, $message];
+        }
+
+        // Recommending a URL
+        $from_url = get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL);
+        if ($from_url !== null) {
+            // Generate subject
+            $resource_title = get_param_string('from_title', '', INPUT_FILTER_GET_COMPLEX);
+            if ($resource_title == '') { // Auto download it
+                $downloaded_at_link = http_get_contents($from_url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 3000]);
+                if (is_string($downloaded_at_link)) {
+                    $matches = [];
+                    if (cms_preg_match_safe('#\s*<title[^>]*\s*>\s*(.*)\s*\s*<\s*/title\s*>#mi', $downloaded_at_link, $matches) != 0) {
+                        $resource_title = trim(str_replace('&ndash;', '-', str_replace('&mdash;', '-', @html_entity_decode($matches[1], ENT_QUOTES))));
+                        $resource_title = preg_replace('#^' . preg_quote(get_site_name(), '#') . ' - #', '', $resource_title);
+                        $resource_title = cms_preg_replace_safe('#\s+[^\d\s][^\d\s]?[^\d\s]?\s+' . preg_quote(get_site_name(), '#') . '$#i', '', $resource_title);
+                    }
+                }
+            }
+            if ($resource_title == '') {
+                $resource_title = do_lang('THIS'); // Could not find at all, so say 'this'
+            } else {
+                $subject = get_param_string('subject', do_lang('RECOMMEND_MEMBER_SUBJECT_SPECIFIC', get_site_name(), $resource_title), INPUT_FILTER_GET_COMPLEX);
+            }
+
+            // Generate message
+            $message = do_lang('FOUND_THIS_ON', get_site_name(), comcode_escape($from_url), comcode_escape($resource_title));
+        }
+
+        return [$subject, $message];
+    }
+
+    /**
      * The UI for the second stage of recommending the site - when spreadsheet file is posted.
      *
      * @return Tempcode The UI
@@ -393,7 +419,7 @@ class Module_recommend
         $text = do_lang_tempcode('RECOMMEND_SITE_TEXT_CHOOSE_CONTACTS', escape_html(get_site_name()));
 
         $page_title = get_param_string('page_title', null, INPUT_FILTER_GET_COMPLEX);
-        if (get_param_string('from', null, INPUT_FILTER_URL_INTERNAL) === null) {
+        if (get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL) === null) {
             $hidden->attach(form_input_hidden('wrap_message', '1'));
         }
 
@@ -598,8 +624,20 @@ class Module_recommend
                     $_lead_source_description = (isset($METADATA['real_page']) ? $METADATA['real_page'] : get_page_name()) . ' (' . get_self_url_easy() . ')';
                 }
 
-                $referring_username = is_guest() ? null : get_member();
-                $_url = (post_param_integer('invite', 0) == 1) ? build_url(['page' => 'join', 'email' => $email_address, '_lead_source_description' => $_lead_source_description, 'keep_referrer' => $referring_username], get_module_zone('join')) : build_url(['page' => '', 'keep_referrer' => $referring_username], '');
+                $referrer = 'recommend';
+                if (!is_guest()) {
+                    $referrer .= ',' . strval(get_member());
+                }
+                $from_url = get_param_string('from_url', null, INPUT_FILTER_URL_INTERNAL);
+                if ($from_url !== null) {
+                    $from_page_link = url_to_page_link($from_url);
+                    $referrer .= ',' . $from_page_link;
+                }
+                if (post_param_integer('invite', 0) == 1) {
+                    $_url = build_url(['page' => 'join', 'email' => $email_address, '_lead_source_description' => $_lead_source_description, '_t' => $referrer], get_module_zone('join'));
+                } else {
+                    $_url = build_url(['page' => '', '_t' => $referrer], '');
+                }
                 $url = $_url->evaluate();
                 $join_url = $GLOBALS['FORUM_DRIVER']->join_url();
                 $_message = do_lang((post_param_integer('invite', 0) == 1) ? 'INVITE_MEMBER_MESSAGE' : 'RECOMMEND_MEMBER_MESSAGE', $name, $url, [get_site_name(), $join_url]) . $message;
@@ -619,11 +657,12 @@ class Module_recommend
 
                 $invite = true;
             } elseif ((get_option('is_on_invites') == '0') && (get_forum_type() == 'cns')) {
-                $GLOBALS['FORUM_DB']->query_insert('f_invites', [ // Used for referral tracking
-                    'i_inviter' => get_member(),
-                    'i_email_address' => $email_address,
+                $GLOBALS['FORUM_DB']->query_insert_or_replace('f_invites', [ // Used for referral tracking
                     'i_time' => time(),
                     'i_taken' => 0,
+                ], [
+                    'i_inviter' => get_member(),
+                    'i_email_address' => $email_address,
                 ]);
             }
 

@@ -102,7 +102,7 @@ class Hook_profiles_tabs_about
         }
         if ((addon_installed('securitylogging')) && (has_actual_page_access($member_id_viewing, 'admin_lookup'))) {
             require_lang('lookup');
-            $modules[] = ['audit', do_lang_tempcode('INVESTIGATE_USER'), build_url(['page' => 'admin_lookup', 'param' => $member_id_of], get_module_zone('admin_lookup')), 'menu/adminzone/tools/users/investigate_user'];
+            $modules[] = ['audit', do_lang_tempcode('INVESTIGATE_USER'), build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $member_id_of], get_module_zone('admin_lookup')), 'menu/adminzone/tools/users/investigate_user'];
         }
         if ((addon_installed('securitylogging')) && (has_actual_page_access($member_id_viewing, 'admin_security'))) {
             require_lang('security');

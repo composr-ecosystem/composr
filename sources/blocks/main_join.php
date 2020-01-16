@@ -98,6 +98,11 @@ class Block_main_join
             $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
 
             if (post_param_integer('_send_document', 0) == 1) {
+                if (addon_installed('stats')) {
+                    require_code('stats');
+                    log_stats_event('cns:DOWNLOAD_WHITEPAPER');
+                }
+
                 $email_sent = $this->send_email($map, $email_address);
             } else {
                 $email_sent = false;

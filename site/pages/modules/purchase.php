@@ -1404,6 +1404,13 @@ class Module_purchase
 
         // We know success at this point...
 
+        if (($subtype == 'ipn_return') || ($subtype == 'local_payment')) {
+            if (addon_installed('stats')) {
+                require_code('stats');
+                log_stats_event($type_code);
+            }
+        }
+
         if (($subtype == 'ipn_return') && (has_interesting_post_fields())) { // Alternative to IPN, *if* posted fields sent here
             handle_ipn_transaction_script(); // This is just in case the IPN doesn't arrive somehow, we still know success because the gateway sent us here on success
         }

@@ -315,6 +315,11 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
         }
     }
 
+    if (addon_installed('stats')) {
+        require_code('stats');
+        log_stats_event('_JOIN');
+    }
+
     // Add member
     $email_validation = (get_option_with_overrides('email_confirm_join', $adjusted_config_options) == '1');
     require_code('crypt');

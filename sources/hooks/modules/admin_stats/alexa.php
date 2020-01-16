@@ -62,7 +62,7 @@ class Hook_admin_stats_alexa extends CMSStatsProvider
      */
     public function preprocess_raw_data($start_time, $end_time, &$data_buckets)
     {
-        list($rank, $links) = get_alexa_rank('https://www.compo.sr/'/*TODO*/);
+        list($rank, $links) = get_alexa_rank();
 
         $month = get_stats_month_for_timestamp(time());
 
@@ -92,7 +92,7 @@ class Hook_admin_stats_alexa extends CMSStatsProvider
         $data_rows = $GLOBALS['SITE_DB']->query_select('stats_preprocessed', ['p_data', 'p_month'], $where, $extra);
         foreach ($data_rows as $data_row) {
             $month = $data_row['p_month'];
-            $pivotish_value = $this->make_date_pivot_value_nice('month_series', $month);;
+            $pivotish_value = $this->make_date_pivot_value_nice('month_series', $month);
 
             $value = @unserialize($data_row['p_data']);
             $data[$pivotish_value] = $value;

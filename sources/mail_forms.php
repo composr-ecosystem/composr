@@ -41,7 +41,7 @@ function form_to_email_entry_script()
 
     if (addon_installed('stats')) {
         require_code('stats');
-        log_contact_form_stats(post_param_string('form_name', parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH)));
+        log_stats_event('FORM: ' . post_param_string('form_name', parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH)));
     }
 
     form_to_email();
