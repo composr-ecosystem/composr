@@ -1085,7 +1085,6 @@ class Hook_addon_registry_core
             'data/index.html',
             'data/modules/index.html',
             'data/page_link_redirect.php',
-            'data/quash_referer.php',
             'data/sheet.php',
             'data/script.php',
             'data/sitemap.php',
