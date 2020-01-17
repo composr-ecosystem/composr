@@ -1150,6 +1150,20 @@ function save_static_caching($out, $mime_type = 'text/html')
 
     // Initial assessments of whether we can cache...
 
+    // We cannot cache if there's a redirect
+    $headers_sent = headers_list();
+    foreach ($headers_sent as $header) {
+        if (preg_match('#^Location:#i', $header) != 0) {
+            if ($debugging) {
+                if (php_function_allowed('error_log')) {
+                    @error_log('SC save: redirect is present');
+                }
+            }
+
+            return false;
+        }
+    }
+
     global $HTTP_STATUS_CODE;
     if (($HTTP_STATUS_CODE != 200) && ($mime_type != 'text/html')) {
         if ($debugging) {
