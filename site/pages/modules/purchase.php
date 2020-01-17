@@ -1407,7 +1407,7 @@ class Module_purchase
         if (($subtype == 'ipn_return') || ($subtype == 'local_payment')) {
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_stats_event($type_code);
+                log_stats_event(do_lang('ECOMMERCE', null, null, null, get_site_default_lang()) . '-' . $type_code);
             }
         }
 

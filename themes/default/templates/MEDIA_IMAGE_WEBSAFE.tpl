@@ -17,7 +17,7 @@
 
 			<div class="attachment-details">
 				{+START,IF,{THUMB}}<a
-					{+START,IF,{$NOT,{$INLINE_STATS}}} data-click-ga-track="{ category: '{!IMAGE;^*}', action: '{FILENAME;^*}' }"{+END}
+					{+START,IF,{$NOT,{$INLINE_STATS}}} data-click-stats-event-track="{ category: '{!IMAGE;^*}', action: '{FILENAME;^*}', nativeTracking: false }"{+END}
 					target="_blank"
 					title="{!LINK_NEW_WINDOW}"
 					{+START,IF_PASSED,CLICK_URL}href="{CLICK_URL*}"{+END}

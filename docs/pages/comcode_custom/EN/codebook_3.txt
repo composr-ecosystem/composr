@@ -783,9 +783,6 @@ The following aren't 'keep' parameters, but are still useful and otherwise behav
  - [tt]kfsXX[/tt] -- this isn't useful for manual editing but people ask what it's for; it's to preserve the browse positions in forumviews, such that when returning, the browse positions are remembered
  - Tracking:
   - [tt]_t[/tt] -- used for tracking referral codes, useful for marketing campaigns, split testing, and referral schemes
-   - numeric values are for member IDs (referral schemes)
-   - other values mean whatever you like and can be invented on whim as long as they are no longer than 80 characters (practically though, keep them very short because of comma-separation as described below)
-   - multiple values may be passed together split by commas (for example, to track that a hit came because a [i]member[/i] used the [i]recommend[/i] module from a [i]particular page[/i])
   - [tt]_lead_source_description[/tt] -- used for tracking where a lead came from [i]within Composr[/i], when it's going to be sent off to an external CRM (via some non-bundled addon)
 
 [title="4"]Extra _config.php settings[/title]

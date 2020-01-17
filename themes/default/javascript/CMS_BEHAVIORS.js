@@ -679,16 +679,16 @@
         }
     };
 
-    // Implementation for [data-click-ga-track]
-    $cms.behaviors.clickGaTrack = {
+    // Implementation for [data-click-stats-event-track]
+    $cms.behaviors.clickStatsEventTrack = {
         attach: function (context) {
-            var els = $util.once($dom.$$$(context, '[data-click-ga-track]'), 'behavior.clickGaTrack');
+            var els = $util.once($dom.$$$(context, '[data-click-stats-event-track]'), 'behavior.clickStatsEventTrack');
 
             els.forEach(function (el) {
                 $dom.on(el, 'click', function (e) {
-                    var options = objVal($dom.data(el, 'clickGaTrack'));
+                    var options = objVal($dom.data(el, 'clickStatsEventTrack'));
 
-                    $cms.gaTrack(el, options.category, options.action, e);
+                    $cms.statsEventTrack(el, options.category, options.action, e, options.nativeTracking);
                 });
             });
         }

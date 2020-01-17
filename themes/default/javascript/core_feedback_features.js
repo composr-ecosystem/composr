@@ -175,7 +175,7 @@
 
             if (params.analyticEventCategory) {
                 e.preventDefault();
-                $cms.gaTrack(null, params.analyticEventCategory).then(function () {
+                $cms.statsEventTrack(null, params.analyticEventCategory).then(function () {
                     $dom.submit(form);
                 });
             }

@@ -101,7 +101,7 @@ class Block_main_contact_us
 
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_stats_event('FORM: ' . $type);
+                log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . $type);
             }
 
             list($subject, $body, , , $from_email, $from_name) = _form_to_email([], $subject_prefix, $subject_suffix, $body_prefix, $body_suffix);

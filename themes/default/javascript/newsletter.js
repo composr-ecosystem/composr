@@ -69,7 +69,7 @@
             $cms.ui.disableFormButtons(form);
 
             // Tracking
-            $cms.gaTrack(null, '{!newsletter:NEWSLETTER_JOIN;}').then(function () {
+            $cms.statsEventTrack(null, '{!newsletter:__NEWSLETTER_JOIN;}').then(function () {
                 $dom.submit(form);
             });
         });

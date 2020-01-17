@@ -54,7 +54,7 @@
 			{+START,IF_NON_PASSED,LICENCE}
 				<li><a href="{URL*}">{!MORE_INFO}</a></li>
 				{+START,IF,{MAY_DOWNLOAD}}
-					<li><a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-ga-track="{ category: '{!DOWNLOAD;^*}', action: '{ORIGINAL_FILENAME;^*}' }"{+END} title="{!DOWNLOAD_NOW}: {FILE_SIZE*}" href="{DOWNLOAD_URL*}">{!DOWNLOAD_NOW}</a></li>
+					<li><a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-stats-event-track="{ category: '{!DOWNLOAD;^*}', action: '{ORIGINAL_FILENAME;^*}', nativeTracking: false }"{+END} title="{!DOWNLOAD_NOW}: {FILE_SIZE*}" href="{DOWNLOAD_URL*}">{!DOWNLOAD_NOW}</a></li>
 				{+END}
 			{+END}
 		</ul>

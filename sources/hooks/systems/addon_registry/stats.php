@@ -146,9 +146,14 @@ class Hook_addon_registry_stats
             'sources/blocks/main_staff_stats_graph.php',
             'sources/hooks/systems/cron/stats_preprocess_raw_data.php',
             'sources/hooks/systems/block_ui_renderers/stats.php',
+            'data/tracked_redirect.php',
+            'sources/hooks/systems/snippets/stats_event.php',
+
             'sources/hooks/systems/symbols/LOG_STATS_EVENT.php',
             'sources/hooks/systems/symbols/STATS_TRACK_URL.php',
-            'data/tracked_redirect.php',
+            'sources/hooks/systems/symbols/SET_TRACKING_CODE.php',
+            'sources/hooks/systems/symbols/SPLIT_TEST.php',
+            'sources/hooks/systems/symbols/HAS_TRACKING_CODE.php',
 
             'sources/hooks/systems/resource_meta_aware/kpi.php',
             'themes/default/templates/KPI_SCREEN.tpl',

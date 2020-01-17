@@ -106,6 +106,244 @@ If web pages are taking seconds to just generate, you have a problem.
 
 Most of the filters where you enter text for filtering support the [tt]?[/tt] and [tt]*[/tt] wildcards.
 
+[title="2"]Events[/title]
+
+You can track arbitrary events of your choosing, and also some events are automatically tracked (such as members joining).
+A 'conversion' can generally be considered a special kind of event that has value to you.
+There is a graph that lets you see how many of each events happen, and also graphs showing the percentage rates of events happening for sessions, and the percentage rates of events happening for sessions originating from any tracking code.
+
+There are a number of ways to record events happening:[list]
+[*] The inbuilt events are recorded automatically.
+[*] You can use the [tt]{$LOG_STATS_EVENT,event}[/tt] symbol to track an event from within your templates (i.e. when the template is shown, the event is recorded).
+[*] You can use the JavaScript [tt]$cms.statsEventTrack[/tt] function to track an event from within JavaScript code.
+[*] You can use add [tt]data-click-stats-event-track="{ category: 'some event', nativeTracking: true }"[/tt] on HTML [tt]<a>[/tt] elements. This is actually a wrapper around the above.
+[*] You can wrap URLs in links with the [tt]{$STATS_TRACK_URL,URL,event}[/tt] symbol.
+E.g. [tt]<a href="{$STATS_TRACK_URL,http://example.com/,Example.com Link clicked}">Click me</a>[/tt]
+This handles the event recording within a redirection script, so does not depend on JavaScript. It also will track the external URL as having been viewed regardless of the event (the event parameter is actually optional).
+[/list]
+
+Note that '3' and '4' also integrate with events within Google Analytics. Google Analytics integration is all about JavaScript code.
+
+Here are the inbuilt events...
+{|
+! Event description
+! Event name
+! Event parameter
+! Event origin
+! Used with Google Analytics
+! Used with inbuilt stats system (by default)
+|-
+| Form filled in
+| [tt]Form[/tt]
+| [tt]<formName>[/tt]
+| Server-side
+| No
+| Yes
+|-
+| Purchase
+| [tt]eCommerce[/tt]
+| [tt]<productName>[/tt]
+| Server-side
+| No
+| Yes
+|-
+| Newsletter signup
+| [tt]Join newsletter[/tt]
+|
+| [i]Depends[/i]
+| Yes
+| Yes
+|-
+| Click banner
+| [tt]Banner[/tt]
+| [tt]<bannerCodename>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Click Comcode link
+| [tt]URL[/tt]
+| [tt]<url>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Click system links put out for many things (the [tt]HYPERLINK.tpl[/tt] template)
+| [tt]URL[/tt]
+| [tt]<url>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Download a download
+| [tt]Download[/tt]
+| [tt]<filename>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Download an attachment
+| [tt]Attachment[/tt]
+| [tt]<filename>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Play attachment audio
+| [tt]Audio[/tt]
+| [tt]<url>[/tt]
+| JavaScript
+| Yes
+| Yes
+|-
+| Play attachment video
+| [tt]Video[/tt]
+| [tt]<url>[/tt]
+| JavaScript
+| Yes
+| Yes
+|-
+| Open attachment overlay
+| [tt]Image[/tt]
+| [tt]<filename>[/tt]
+| JavaScript
+| Yes
+| No
+|-
+| Create support ticket
+| [tt]Create support ticket[/tt]
+|
+| JavaScript
+| Yes
+| No
+|-
+| Send contact message
+| [tt]<catalogueName>[/tt]
+|
+| JavaScript
+| Yes
+| No
+|-
+| Send contact message
+| [tt]Contact Us[/tt]
+|
+| JavaScript
+| Yes
+| No
+|-
+| Join
+| [tt]Join[/tt]
+|
+| [i]Depends[/i]
+| Yes
+| Yes
+|-
+| Do a social interaction (e.g. a like or a share)
+| [tt]social__facebook_like[/tt]
+[tt]social__facebook[/tt]
+[tt]social__twitter[/tt]
+[tt]social__linkedin[/tt]
+[tt]social__pinterest[/tt]
+[tt]social__tumblr[/tt]
+[tt]social__vk[/tt]
+[tt]social__sina_weibo[/tt]
+[tt]social__tencent_weibo[/tt]
+[tt]social__qzone[/tt]
+|
+| JavaScript
+| Yes
+| Yes
+|-
+| Print the page
+| [tt]Print this[/tt]
+|
+| JavaScript
+| Yes
+| Yes
+|-
+| Bookmark the page
+| [tt]Add to favorites[/tt]
+|
+| JavaScript
+| Yes
+| Yes
+|-
+| Standard tracking via [tt]_t[/tt] URL parameter
+| [tt]tracking__<parameterValue>[/tt]
+|
+| JavaScript
+| Yes
+| No
+|-
+| Get whitepaper from join block
+| [tt]Download whitepaper[/tt]
+|
+| [i]Depends[/i]
+| Yes
+| Yes
+|}
+
+Note there are some discrepancies:
+1) To reduce noise within Composr's inbuilt stats, not every trivial event is logged. 
+2) For better reliability some events for Composr's inbuilt stats are recorded server-side while for Google Analytics they are activated in JavaScript (these are noted as 'Depends').
+3) Some Composr inbuilt stats events are described as forms being filled in, while the Google Analytics events may be more specific (e.g. a support ticket being submitted). This is because a broader range of form events are captured for Composr's inbuilt events.
+
+[title="2"]Tracking & Referrals[/title]
+
+Tracking is useful for many things, including:
+ - Evaluating the success of marketing campaigns
+ - Split testing different page versions to see which performs best (when combined with events)
+ - Rewarding users for referring new members to the website
+
+Tracking codes are codes associated with a session that help you identify what caused the user behind that session to visit the site, or what split testing is associated with that user. Note that there may be [i]multiple[/i] tracking codes associated with a session.
+
+Composr has broadly integrated referral tracking integration:
+1) The [tt]_t[/tt] URL parameter may contain any tracking code you want to invent (*) and this is automatically registered by the stats addon when the URL is launched by a user.
+2) The bundled [tt]recommend[/tt] addon automatically includes tracking codes in the mailed URL for: the recommend module itself, the member doing the referral (if applicable), and the page being referred from (if applicable).
+3) When a member joins, if they were referred by a member then that member will automatically be given points ([tt]points[/tt] bundled addon) and made a friend ([tt]chat[/tt] bundled addon).
+4) The non-bundled [tt]referrals[/tt] addon allows manually inputting tracking codes on joining and creates a system of referrer rewards.
+5) The stats addon can draw graph of tracking codes, including measuring conversion rates against them.
+6) The user lookup tool (in the bundled [tt]securitylogging[/tt] addon) allows easily seeing if that user accessed via a tracking code.
+7) Tracking is integrated with Tempcode. You can inject a tracking code of your choice in Tempcode by using the Tempcode [tt]{$SET_TRACKING_CODE,some code}[/tt] or [tt]{$SPLIT_TEST,some code,some other code}[/tt] symbol. You can use the [tt]{$HAS_TRACKING_CODE,some code}[/tt] symbol to see if a tracking code is active for the user session.
+
+* Tracking codes are structured as follows:
+ - Numeric values are for member IDs (referral schemes)
+ - Other values mean whatever you like and can be invented on whim as long as they are no longer than 80 characters (practically though, keep them very short because of comma-separation as described below)
+ - Multiple values may be passed together split by commas (for example, to track that a hit came because a [i]member[/i] used the [i]recommend[/i] module from a [i]particular page[/i])
+
+[title="2"]Split testing[/title]
+
+Split testing is a technique to try out different versions of pages and then use statistics to see which performs best. It is also (basically) known as A/B testing and multivariate testing.
+
+You can perform split testing by combining tracking codes and events. The easiest way is to use Tempcode to:
+1) Choose a random tracking code from a set and make it an active tracking code for the user session.
+2) Generate different output based on the tracking code.
+
+For example, your home page might contain:
+[code="Tempcode"]
+{$SPLIT_TEST,a,b}
+{+START,IF,{$HAS_TRACKING_CODE,a}}
+	<a href="{$PAGE_LINK*,:join}">Join our website</a>! Free goodies.
+{+END}
+{+START,IF,{$HAS_TRACKING_CODE,b}}
+	We really wish you would <a href="{$PAGE_LINK*,:join}">join</a> our website.
+{+END}
+[/code]
+
+You can then measure event success rates based on your tracking codes. Either inbuilt events, or new events you've created.
+
+It's as simple as that!
+
+When we are split testing tiny differences like the above we can be even more concise:
+[code="Tempcode"]
+{+START,CASES,{$SPLIT_TEST,a,b}}
+a=<a href="{$PAGE_LINK*,:join}">Join our website</a>! Free goodies.
+b=We really wish you would <a href="{$PAGE_LINK*,:join}">join</a> our website.
+{+END}
+[/code]
+
+Even simpler!
+
 [title="2"]KPIs[/title]
 
 Most time-series graphs allow you to add that graph as a [concept]KPI[/concept]. KPIs are special because:[list="1"]
@@ -174,9 +412,12 @@ It is a good way to visualise how people are using the site. This works best whe
 [/surround]
 
 [concepts
- 1_key="Referrer"       1_value="A page of a 3rd-party website linking to a page on your website."
- 2_key="Geo-location"   2_value="The process of using some type of individually-identifiable information to find out where in the world somebody is."
- 3_key="KPI"            3_value="Key Performance Indicator, a measurement that has been chosen for marketing purposes."
+ 1_key="Referrer"                1_value="A page of a 3rd-party website linking to a page on your website."
+ 2_key="Geo-location"            2_value="The process of using some type of individually-identifiable information to find out where in the world somebody is."
+ 3_key="KPI"                     3_value="Key Performance Indicator, a measurement that has been chosen for marketing purposes."
+ 3_key="Multivariate testing"		4_value="An analytical technique to see which of multiple variations performs best."
+ 4_key="Split testing"				5_value="The same as Multivariate testing. A more conversational way of putting it."
+ 5_key="A/B testing"					6_value="Multivariate testing with exactly two versions (original version and 1 variation)."
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

@@ -3169,7 +3169,10 @@ function find_session_tracking_codes($email_address = null)
     }
 
     if (addon_installed('stats')) {
-        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
+        static $tracking_code_rows = null;
+        if ($tracking_code_rows === null) {
+            $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code'], ['session_id' => get_session_id()], ' AND ' . db_string_not_equal_to('tracking_code', '') . ' ORDER BY date_and_time DESC');
+        }
         foreach ($tracking_code_rows as $tracking_code_row) {
             $tracking_codes = array_merge($tracking_codes, explode(',', $tracking_code_row['tracking_code']));
         }
@@ -3177,7 +3180,10 @@ function find_session_tracking_codes($email_address = null)
 
     if ((addon_installed('recommend')) && (!empty($email_address))) {
         // This is not strictly a tracking code (it won't come up in the stats system for example), but we roll it into this function for simplicity
-        $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time DESC');
+        static $inviter = false;
+        if ($inviter === false) {
+            $inviter = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_invites', 'i_inviter', ['i_email_address' => $email_address], 'ORDER BY i_time DESC');
+        }
         if ($inviter !== null) {
             $tracking_codes[] = strval($inviter);
         }

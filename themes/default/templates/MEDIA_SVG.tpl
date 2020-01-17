@@ -16,7 +16,7 @@
 			{$PARAGRAPH,{DESCRIPTION}}
 
 			<div class="attachment-details">
-				<a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-ga-track="{ category: '{!IMAGE;^*}', action: '{FILENAME;^*}' }"{+END} rel="lightbox" target="_blank" title="{+START,IF_NON_EMPTY,{DESCRIPTION}}{DESCRIPTION*}: {+END}{!LINK_NEW_WINDOW}" href="{URL*}">{$TRIM,{$GET,media}}</a>
+				<a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-stats-event-track="{ category: '{!IMAGE;^*}', action: '{FILENAME;^*}', nativeTracking: false }"{+END} rel="lightbox" target="_blank" title="{+START,IF_NON_EMPTY,{DESCRIPTION}}{DESCRIPTION*}: {+END}{!LINK_NEW_WINDOW}" href="{URL*}">{$TRIM,{$GET,media}}</a>
 
 				{$,Uncomment for a download link \{+START,INCLUDE,MEDIA__DOWNLOAD_LINK\}\{+END\}}
 			</div>

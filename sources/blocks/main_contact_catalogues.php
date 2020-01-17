@@ -146,7 +146,7 @@ PHP;
 
             if (addon_installed('stats')) {
                 require_code('stats');
-                log_stats_event('FORM: ' . $catalogue_name);
+                log_stats_event(do_lang('FORM', null, null, null, get_site_default_lang()) . '-' . $catalogue_name);
             }
 
             // Send e-mail

@@ -856,7 +856,7 @@
                 success: function (media) {
                     if (!$cms.configOption('show_inline_stats')) {
                         media.addEventListener('play', function () {
-                            $cms.gaTrack(null, '{!VIDEO;}', url);
+                            $cms.statsEventTrack(null, '{!VIDEO;}', url, true);
                         });
                     }
 
@@ -923,7 +923,7 @@
 
                     if (!$cms.configOption('show_inline_stats')) {
                         media.addEventListener('play', function () {
-                            $cms.gaTrack(null, '{!VIDEO;}', url);
+                            $cms.statsEventTrack(null, '{!VIDEO;}', url, true);
                         });
                     }
 

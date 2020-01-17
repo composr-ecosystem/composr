@@ -1514,11 +1514,39 @@ where:
 			<td>{$STAFF_TOOLTIPS_URL_PATTERNS_JSON}</td>
 			<td>JSON object of staff URL patterns to apply Comcode tooltips to.</td>
 		</tr>
-		<tr style="background: #DDDDFF">
+	</tbody>
+</table>
+[/html]
+
+[title="3"]Tracking and events[/title]
+
+[html]
+<table class="columned-table results-table wide-table autosized-table">
+	<thead>
+		<tr>
+			<th>Symbol name / example</th>
+			<th>Purpose</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr style="background: #DDFFDD">
+			<td>{$SET_TRACKING_CODE,a}</td>
+			<td>Set a tracking code as being active.</td>
+		</tr>
+		<tr style="background: #DDFFDD">
+			<td>{$SPLIT_TEST,a,b}</td>
+			<td>Pick a tracking code as being active from the provided parameters ([tt]a[/tt] or [tt]b[/tt] in our example). If one of these tracking codes is already active in the session then it will be re-used. The symbol will return the picked tracking code.</td>
+		</tr>
+		<tr style="background: #DDFFDD">
+			<td>{$HAS_TRACKING_CODE,a}</td>
+			<td>Find whether a tracking code is active in the session.</td>
+		</tr>
+		<tr style="background: #DDFFDD">
 			<td>{$LOG_STATS_EVENT,event}</td>
 			<td>Log a stats event as having happened. This is useful if the successful display of some template evidences some important stats event has happened. You can create whatever event codes you like.</td>
 		</tr>
-		<tr style="background: #DDDDFF">
+		<tr style="background: #DDFFDD">
 			<td>{$STATS_TRACK_URL,URL,event}</td>
 			<td>Track clicks to a URL, with an optional event parameter as well. This works via a redirect: the user is sent to a Composr script first, which logs the click/event, and that script redirects to the destination URL.</td>
 		</tr>

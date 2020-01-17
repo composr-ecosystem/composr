@@ -14,7 +14,7 @@
 		{+START,IF,{$NOT,{EMAIL_SENT}}}
 			{+START,IF,{HAS_EMAIL_TO_SEND}}
 				{+START,IF_NON_EMPTY,{EMAIL_ADDRESS}}
-					<form action="{$SELF_URL*}" method="post" class="js-submit-ga-track-dl-whitepaper">
+					<form action="{$SELF_URL*}" method="post" class="js-submit-stats-event-track-dl-whitepaper">
 						{$INSERT_SPAMMER_BLACKHOLE}
 						<input type="hidden" name="_send_document" value="1" />
 
