@@ -24,7 +24,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
 
         set_option('yeehaw', '0');
 
-        // Flush main caches
+        // Flush main caches after changing yeehaw option (if test fails try refreshing, there are internal caches that are not cleared here)
         require_code('caches3');
         erase_persistent_cache();
         erase_cached_language();

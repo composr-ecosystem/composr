@@ -148,7 +148,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     }
 
     // Close
-    $blob = '</urlset>'. "\n";
+    $blob = '</urlset>' . "\n";
     fwrite($sitemaps_out_file, $blob);
     fclose($sitemaps_out_file);
     @unlink($sitemaps_out_path);

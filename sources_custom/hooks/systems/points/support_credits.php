@@ -22,7 +22,7 @@ class Hook_points_support_credits
      * Get total points earned for support credits in the specified member's account; some of these will probably have been spent already.
      *
      * @param  MEMBER $member_id The ID of the member we are getting points for
-     * @param  TIME $timestamp Time to get for (null: now)
+     * @param  TIME $timestamp Time to get for
      * @return integer the number of points the member has for support credits
      */
     public function total_points($member_id, $timestamp)

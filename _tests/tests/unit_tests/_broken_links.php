@@ -165,7 +165,7 @@ class _broken_links_test_set extends cms_test_case
         }*/
 
         $docs_stub =  get_brand_base_url() . '/docs' . strval(cms_version()) . '/';
-        if ((substr($url, strlen($docs_stub)) == $docs_stub) && (cms_version_branch_status() == VERSION_ALPHA)) {
+        if ((substr($url, 0, strlen($docs_stub)) == $docs_stub) && (cms_version_branch_status() == VERSION_ALPHA)) {
             return;
         }
 
@@ -185,10 +185,7 @@ class _broken_links_test_set extends cms_test_case
         if (preg_match('#^http://december\.com/html/4/element/#', $url) != 0) {
             return;
         }
-        if (preg_match('#^http://shareddemo\.composr\.info/#', $url) != 0) {
-            return;
-        }
-        if (preg_match('#^http://compo\.sr/docs\d+/#', $url) != 0) {
+        if (preg_match('#^https?://shareddemo\.composr\.info/#', $url) != 0) {
             return;
         }
         if (in_array($url, [ // These just won't check from a bot guest user

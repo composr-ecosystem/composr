@@ -981,7 +981,7 @@ function get_webservice_result($error_message)
 
     require_code('version2');
     require_code('http');
-    $url = 'http://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
+    $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
     list($http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {

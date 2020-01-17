@@ -27,7 +27,7 @@ class Hook_points_given
      * Get number of points given as gift transaction; some of these will probably have been spent already.
      *
      * @param  MEMBER $member_id The ID of the member we are getting points for
-     * @param  TIME $timestamp Time to get for (null: now)
+     * @param  TIME $timestamp Time to get for
      * @param  array $point_info The map containing the members point info (fields as enumerated in description) from point_info()
      * @return integer the number of points the member has
      */
