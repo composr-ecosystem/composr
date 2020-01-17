@@ -312,13 +312,17 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $fields->attach(form_input_list(do_lang('AUTOFILL_TYPE'), do_lang('DESCRIPTION_AUTOFILL_TYPE'), 'autofill_type', $autofill_types_option_list, null, false, false));
 
-        require_lang('ecommerce');
-
         $possible_autofill_hints =  [
             '' => do_lang('NA'),
-            'shipping' => do_lang('SHIPPING'),
-            'billing' => do_lang('BILLING'),
         ];
+
+        if (addon_installed('ecommerce')) {
+            require_lang('ecommerce');
+            $possible_autofill_hints =  [
+                'shipping' => do_lang('SHIPPING'),
+                'billing' => do_lang('BILLING'),
+            ];
+        }
 
         $autofill_hints_option_list = new Tempcode();
 

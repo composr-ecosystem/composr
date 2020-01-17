@@ -62,6 +62,7 @@ class file_naming_test_set extends cms_test_case
             '_tests/codechecker/codechecker.app/',
             'test-a',
             'themes/default/templates_cached/EN/',
+            'themes/admin/templates_cached/EN/',
             '_tests/codechecker/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst',
             '_tests/codechecker/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',

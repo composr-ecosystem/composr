@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    core_cns
+ * @package    cns_forum
  */
 
 /**
@@ -34,6 +34,10 @@ class Hook_points_posts
     public function total_points($member_id, $timestamp, $point_info)
     {
         if (get_forum_type() != 'cns') {
+            return 0;
+        }
+
+        if (!addon_installed('cns_forum')) {
             return 0;
         }
 
@@ -58,6 +62,10 @@ class Hook_points_posts
     public function points_profile($member_id_of, $member_id_viewing, $point_info)
     {
         if (get_forum_type() != 'cns') {
+            return null;
+        }
+
+        if (!addon_installed('cns_forum')) {
             return null;
         }
 

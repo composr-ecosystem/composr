@@ -183,10 +183,6 @@ class modularisation_test_set extends cms_test_case
             return false;
         }
 
-        if (strpos($data, 'cms_permissions_scanner') === false) {
-            return false;
-        }
-
-        return !should_ignore_file($path, IGNORE_SHIPPED_VOLATILE);
+        return true;
     }
 }

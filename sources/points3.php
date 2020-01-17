@@ -50,7 +50,7 @@ function points_profile($member_id_of, $member_id_viewing)
     $additional_fields = [];
 
     // Run points hooks
-    $hook_obs = find_all_hook_obs('modules', 'points', 'Hook_points_');
+    $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
     foreach ($hook_obs as $hook_ob) {
         $_array = $hook_ob->points_profile($member_id_of, $member_id_viewing, $point_info);
         if (!is_null($_array)) {

@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    points
+ * @package    cns_forum
  */
 
 /**
@@ -42,7 +42,7 @@ class Hook_config_points_posting
 
             'public' => false,
 
-            'addon' => 'points',
+            'addon' => 'cns_forum',
         ];
     }
 
@@ -53,10 +53,10 @@ class Hook_config_points_posting
      */
     public function get_default()
     {
-        if (!addon_installed('points')) {
+        if (!addon_installed('cns_forum')) {
             return null;
         }
 
-        return '5';
+        return addon_installed('points') ? '5' : null;
     }
 }

@@ -631,6 +631,7 @@ function should_ignore_file($path, $bitmask = 0)
 
         // Composr testing platform
         'codechecker.ini' => '_tests/codechecker',
+        'checker.ini' => '_tests/codechecker', // LEGACY
     ];
 
     $ignore_extensions = [ // Case insensitive, define in lower case
@@ -643,6 +644,7 @@ function should_ignore_file($path, $bitmask = 0)
         'css' => 'themes/[^/]*/templates_cached/.*',
         'js' => 'themes/[^/]*/templates_cached/.*',
         'gz' => '(themes/[^/]*/templates_cached/.*|caches/static)',
+        'br' => '(themes/[^/]*/templates_cached/.*|caches/static)',
 
         // Log files
         'log' => '.*',
@@ -656,6 +658,10 @@ function should_ignore_file($path, $bitmask = 0)
         'bak' => '.*',
         'old' => '.*',
         'cms' => '.*', // Installers and upgraders
+
+        // Build files
+        'class' => '.*',
+        'lst' => '.*',
 
         // IDE projects
         'clpprj' => '.*', // Code Lobster

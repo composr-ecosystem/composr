@@ -69,7 +69,7 @@ function total_points($member_id, $timestamp = null)
     $points = 0;
 
     // Run points hooks
-    $hook_obs = find_all_hook_obs('modules', 'points', 'Hook_points_');
+    $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
     foreach ($hook_obs as $hook_ob) {
         $points += $hook_ob->total_points($member_id, $timestamp, $point_info);
     }

@@ -128,6 +128,7 @@ class Hook_addon_registry_stats
             'sources_custom/hooks/modules/admin_stats/index.html',
             'sources/hooks/modules/admin_stats_redirects/.htaccess',
             'sources/hooks/modules/admin_stats_redirects/index.html',
+            'sources/stats.php',
             'themes/default/templates/STATS_SCREEN.tpl',
             'themes/default/templates/STATS_GRAPH.tpl',
             'themes/default/templates/FORM_SCREEN_INPUT_STATS_DATE_RANGE.tpl',

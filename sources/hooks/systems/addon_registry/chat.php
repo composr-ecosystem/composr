@@ -217,6 +217,7 @@ class Hook_addon_registry_chat
             'sources/hooks/systems/commandr_fs_extended_member/chat_friends.php',
             'sources/hooks/systems/commandr_fs_extended_member/chat_sound_effects.php',
             'sources/hooks/systems/actionlog/chat.php',
+            'sources/hooks/systems/points/chat.php',
         ];
     }
 

@@ -9,6 +9,7 @@
 /vendor
 /composer.lock
 /_tests/codechecker/codechecker.ini
+/_tests/codechecker/checker.ini
 /Icon?
 /cgi-bin
 *.bak

@@ -572,7 +572,6 @@ class Hook_addon_registry_core
             'sources/hooks/systems/symbols/REGION.php',
             'lang/EN/locations.ini',
             'data/geocode.php',
-            'sources/stats.php',
             'exports/backups/index.html',
             'sources/hooks/systems/spam_heuristics/.htaccess',
             'sources/hooks/systems/spam_heuristics/index.html',
