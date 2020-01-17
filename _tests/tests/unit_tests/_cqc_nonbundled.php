@@ -22,6 +22,8 @@ class _cqc_nonbundled_test_set extends cms_test_case
     {
         cms_disable_time_limit();
 
+        require_code('third_party_code');
+
         $to_scan = [];
 
         $hooks = find_all_hooks('systems', 'addon_registry');
@@ -39,44 +41,14 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 foreach ($files as $file) {
                     if (substr($file, -4) == '.php') {
                         // Exceptions
-                        $no_go_dirs = [
-                            'sources_custom/aws',
-                            'sources_custom/swift_mailer',
-                            'tracker',
-                            'vendor',
-                            'sources_custom/spout',
-                            'sources_custom/geshi',
-                            'sources_custom/getid3',
-                            'sources_custom/ILess',
-                            'sources_custom/Transliterator',
-                            'sources_custom/sabredav',
-                            'sources_custom/photobucket',
-                            'sources_custom/programe',
-                            '_tests/simpletest',
-                            'mobiquo/lib',
-                            'mobiquo/smartbanner',
-                            '_tests/codechecker',
-                            'sources_custom/Cloudinary',
-                            'sources_custom/facebook',
-                            'data_custom/upload-crop',
-                            'exports',
-                            'sources_custom/composr_mobile_sdk/ios/ApnsPHP',
-                        ];
-                        if (preg_match('#^(' . implode('|', $no_go_dirs) . ')/#', $file) != 0) {
+                        $exceptions = list_untouchable_third_party_directories();
+                        if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $file) != 0) {
                             continue;
                         }
-                        if (in_array($file, [
-                            'sources_custom/sugar_crm_lib.php',
-                            'sources_custom/curl.php',
-                            'sources_custom/geshi.php',
-                            '_tests/libs/mf_parse.php',
-                            'data_custom/errorlog.php',
-                            'data_custom/execute_temp.php',
-                            'sources_custom/browser_detect.php',
-                            'sources_custom/twitter.php',
-                            '_config.php',
+                        $exceptions = array_merge(list_untouchable_third_party_files(), [
                             'sources_custom/hooks/systems/startup/tapatalk.php',
-                        ])) {
+                        ]);
+                        if (in_array($file, $exceptions)) {
                             continue;
                         }
 

@@ -1107,7 +1107,7 @@ This section is not designed as primary documentation for the tools. Those tools
 | [tt]testing_platform[/tt]
 | Command-line via Bash
 |-
-| [tt]line_count.sh[/tt]
+| [tt]line_count.php[/tt]
 | Count the number of lines of code, excluding third-party code.
 | [tt]meta_toolkit[/tt]
 | Command-line via Bash

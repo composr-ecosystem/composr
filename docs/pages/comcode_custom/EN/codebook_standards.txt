@@ -2805,11 +2805,10 @@ Provide addon screenshots
 [color="red"]Properly index 3rd-party code[/color]
 | Legal, ethics, maintainability, communication, stability
 | Product development only
-| Manually, Automated test ([tt]external_code_considerations.php[/tt])
+| Manually
 | If you include some third party code you must update:
  - [tt]licence.txt[/tt] (this file is shown when users install)
- - [tt]line_count.sh[/tt] (excludes the code from our line counting)
- - [tt].editorconfig[/tt] (the part for automatic PhpStorm formatting)
+ - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
  - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)
  - [tt]maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
  - https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0 (notes about merging in external bug fixing)

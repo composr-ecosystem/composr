@@ -52,5 +52,3 @@
 		<ignore>sources/minikernel.php</ignore>
 	</files>
 </phpdoc>
-
-<!-- Remember to update .editorconfig and line_count.sh and licence.txt and https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0 and automated test skipping and maintenance_sheet.csv too (as appropriate). -->

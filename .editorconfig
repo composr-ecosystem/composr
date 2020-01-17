@@ -54,39 +54,8 @@ quote_type = single
 tab_width = 3
 
 
-# Some files should not be reformatted (NB: Max .editorconfig line length is 200)...
-# git checkout -- _tests/simpletest sources/diff.php sources/firephp.php sources/jsmin.php \
-#  sources/lang_stemmer_EN.php sources_custom/swift_mailer sources_custom/facebook sources_custom/geshi.php sources_custom/geshi sources_custom/getid3 \
-#  sources_custom/photobucket sources_custom/programe sources_custom/sabredav \
-#  themes/default/css_custom/confluence.css \
-#  sources_custom/Transliterator sources/mail_dkim.php \
-#  sources_custom/Cloudinary sources_custom/ILess sources_custom/spout sources_custom/twitter.php data/ckeditor data_custom/ckeditor data/ace \
-#  sources_custom/aws sources_custom/Transliterator sources_custom/sugar_crm_lib.php sources_custom/curl.php \
-#  themes/default/javascript_custom/confluence.js themes/default/javascript_custom/confluence2.js \
-#  themes/default/javascript/widget_color.js themes/default/javascript/widget_date.js \
-#  themes/default/javascript/mediaelement-and-player.js themes/default/css/mediaelementplayer.css themes/default/javascript/sound.js \
-#  themes/default/javascript/charts.js themes/default/javascript/modernizr.js themes/default/javascript/select2.js \
-#  themes/default/javascript_custom/skitter.js themes/default/javascript_custom/sortable_tables.js themes/default/javascript_custom/unslider.js \
-#  themes/default/javascript/plupload.js themes/default/javascript_custom/columns.js \
-#  themes/default/javascript_custom/jquery_flip.js themes/default/javascript_custom/tag_cloud.js \
-#  themes/default/javascript_custom/base64.js mobiquo/smartbanner mobiquo/lib sources_custom/composr_mobile_sdk/ios/ApnsPHP \
-#  data_custom/errorlog.php data_custom/execute_temp.php _tests/libs/mf_parse.php \
-#  uploads _config.php sources_custom/browser_detect.php tracker _old _tests/html_dump _tests/screens_tested \
-#  docs/api docs/composr-api-template data_custom/upload-crop caches exports imports nbproject \
-#  themes/default/templates_cached/EN themes/admin/templates_cached/EN \
-#  _tests/codechecker/codechecker.app _tests/codechecker/target \
-#  temp themes/default/javascript/xsl_mopup.js data/modules/admin_stats/IP_Country.txt docs \
-#  themes/default/css_custom/skitter.css \
-#  themes/default/css_custom/unslider.css themes/default/css_custom/sortable_tables.css themes/default/css_custom/google_search.css \
-#  themes/default/css_custom/columns.css themes/default/css_custom/flip.css
-# (ends)
-# Remember to also update, as appropriate:
-#  - line_count.sh
-#  - licence.txt
-#  - phpdoc.dist.xml
-#  - https://docs.google.com/spreadsheets/d/1Im6ICITZmzoBVMizD0CkM7N0kXH5Rb-NQJzD1hk49cU/edit#gid=0
-#  - automated test skipping
-#  - maintenance_sheet.csv
+# Some files should not be reformatted, call the following for a list:
+# `php -r "include('sources_custom/third_party_code.php'); echo implode(chr(10), array_merge(list_untouchable_third_party_directories(), list_untouchable_third_party_files()));"`
 
 # PHPStorm settings (.idea/codeStyleSettings.xml)...
 
