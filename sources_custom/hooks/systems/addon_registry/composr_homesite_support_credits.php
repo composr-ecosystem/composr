@@ -182,6 +182,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'themes/default/templates_custom/SUPPORT_CREDITS_OUTSTANDING_SCREEN.tpl',
             'themes/default/javascript_custom/composr_homesite_support_credits.js',
             'sources_custom/hooks/systems/actionlog/composr_homesite_support_credits.php',
+            'sources_custom/hooks/systems/points/support_credits.php',
 
             'tracker/.editorconfig',
             'tracker/account_delete.php',
