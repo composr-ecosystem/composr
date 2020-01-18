@@ -74,14 +74,23 @@ class Hook_fields_long_trans
      *
      * @param  array $field The field details
      * @param  mixed $ev The raw value
+     * @param  integer $i Position in fieldset
+     * @param  ?array $only_fields List of fields the output is being limited to (null: N/A)
+     * @param  ?ID_TEXT $table The table we store in (null: N/A)
+     * @param  ?AUTO_LINK $id The ID of the row in the table (null: N/A)
+     * @param  ?ID_TEXT $id_field Name of the ID field in the table (null: N/A)
+     * @param  ?ID_TEXT $field_id_field Name of the field ID field in the table (null: N/A)
+     * @param  ?ID_TEXT $url_field Name of the URL field in the table (null: N/A)
+     * @param  ?MEMBER $submitter Submitter (null: current member)
+     * @param  ?mixed $ev_pure The 'pure' form of the raw value, meaning Comcode is not pre-parsed and string conversion has not been performed (null: unknown)
      * @return mixed Rendered field (Tempcode or string)
      */
-    public function render_field_value($field, $ev)
+    public function render_field_value(&$field, $ev, $i, $only_fields, $table = null, $id = null, $id_field = null, $field_id_field = null, $url_field = null, $submitter = null, $ev_pure = null)
     {
         if (is_object($ev)) {
             return $ev;
         }
-        return comcode_to_tempcode($ev);
+        return comcode_to_tempcode($ev, $submitter);
     }
 
     // ======================
