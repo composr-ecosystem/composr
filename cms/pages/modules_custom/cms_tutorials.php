@@ -113,6 +113,74 @@ class Module_cms_tutorials extends Standard_crud_module
     }
 
     /**
+     * Standard crud_module table function.
+     *
+     * @param  array $url_map Details to go to build_url for link to the next screen.
+     * @return array A quartet: The choose table, Whether reordering is supported from this screen, Search URL, Archive URL.
+     */
+    public function create_selection_list_choose_table($url_map)
+    {
+        require_code('templates_results_table');
+
+        $current_ordering = get_param_string('sort', 't_add_date DESC', true);
+        if (strpos($current_ordering, ' ') === false) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+        list($sortable, $sort_order) = explode(' ', $current_ordering, 2);
+        $sortables = array(
+            't_title' => do_lang_tempcode('TITLE'),
+            't_author' => do_lang_tempcode('AUTHOR'),
+            't_submitter' => do_lang_tempcode('SUBMITTER'),
+            't_media_type' => do_lang_tempcode('MEDIA'),
+            't_add_date' => do_lang_tempcode('DATE'),
+            't_pinned' => do_lang_tempcode('cns:PINNED'),
+        );
+        if (((strtoupper($sort_order) != 'ASC') && (strtoupper($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
+            log_hack_attack_and_exit('ORDERBY_HACK');
+        }
+
+        $fh = array(
+            do_lang_tempcode('TITLE'),
+            do_lang_tempcode('URL'),
+            do_lang_tempcode('MEDIA'),
+            do_lang_tempcode('AUTHOR'),
+            do_lang_tempcode('USERNAME'),
+            do_lang_tempcode('DATE'),
+        );
+        $fh[] = do_lang_tempcode('ACTIONS');
+
+        $header_row = results_field_title($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
+
+        $fields = new Tempcode();
+
+        require_code('form_templates');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        foreach ($rows as $row) {
+            $edit_link = build_url($url_map + array('id' => $row['id']), '_SELF');
+
+            $username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($row['t_submitter'], false, '', false);
+
+            $map = array(
+                $row['t_title'],
+                $row['t_url'],
+                $row['t_media_type'],
+                $row['t_author'],
+                protect_from_escaping($username),
+                get_timezoned_date($row['t_add_date']),
+            );
+
+            $map[] = protect_from_escaping(hyperlink($edit_link, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])));
+
+            $fields->attach(results_entry($map, true));
+        }
+
+        $search_url = null;
+        $archive_url = null;
+
+        return array(results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', get_param_integer('max', 20), 'max', $max_rows, $header_row, $fields, $sortables, $sortable, $sort_order), false, $search_url, $archive_url);
+    }
+
+    /**
      * Get Tempcode for an external tutorial adding/editing form.
      *
      * @param  ?AUTO_LINK $id ID (null: not added yet)
@@ -277,6 +345,13 @@ class Module_cms_tutorials extends Standard_crud_module
         }
 
         log_it('ADD_TUTORIAL', strval($id), $title);
+
+        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
+
+        require_code('notifications');
+        $subject = 'New tutorial added, ' . $title;
+        $mail = 'A new tutorial, [url="' . $title . '"]' . $url . '[/url], has been added by ' . $username . '.';
+        dispatch_notification('tutorial_added', null, $subject, $mail);
 
         @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
 
