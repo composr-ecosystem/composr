@@ -32,7 +32,7 @@ class Hook_snippet_stats_event
     {
         require_code('stats');
 
-        log_stats_event(get_param_string('event', false, INPUT_FILTER_URL_INTERNAL));
+        log_stats_event(get_param_string('event', false, INPUT_FILTER_GET_COMPLEX));
 
         return new Tempcode();
     }

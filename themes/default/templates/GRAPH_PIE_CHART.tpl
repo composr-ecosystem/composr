@@ -1,6 +1,8 @@
 {$REQUIRE_JAVASCRIPT,charts}
 
-<canvas id="chart_{ID%}"{+START,IF_NON_EMPTY,{WIDTH}} width="{WIDTH*}"{+END}{+START,IF_NON_EMPTY,{HEIGHT}} height="{HEIGHT*}"{+END}></canvas>
+<div style="{+START,IF_NON_EMPTY,{WIDTH}}width: {WIDTH*}{+START,IF_NON_EMPTY,{HEIGHT}}; {+END}{+END}{+START,IF_NON_EMPTY,{HEIGHT}}height: {HEIGHT*}{+END}">
+	<canvas id="chart_{ID%}"></canvas>
+</div>
 
 <script {$CSP_NONCE_HTML}>
 	window.addEventListener('load',function () {
@@ -34,7 +36,8 @@
 
 		var options = {
 			{+START,IF_NON_EMPTY,{WIDTH}{HEIGHT}}
-				responsive: false,
+				responsive: true,
+				maintainAspectRatio: false,
 			{+END}
 			tooltips: {
 				callbacks: {

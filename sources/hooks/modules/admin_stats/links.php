@@ -35,7 +35,7 @@ class Hook_admin_stats_links extends CMSStatsProvider
             return $urls;
         }
         $urls = [];
-        $url_rows = $GLOBALS['SITE_DB']->query_select('stats_known_links', ['l_url'], [], 'ORDER BY l_times_seen DESC', 50);
+        $url_rows = $GLOBALS['SITE_DB']->query_select('stats_known_links', ['*'], [], 'ORDER BY l_times_seen DESC', 50);
         foreach ($url_rows as $url_row) {
             $urls[$url_row['l_url']] = $url_row['l_url'] . ' (' . integer_format($url_row['l_times_seen']) . ')';
         }
@@ -92,19 +92,19 @@ class Hook_admin_stats_links extends CMSStatsProvider
         $urls_seen = [];
 
         $query = 'SELECT * FROM ' . get_table_prefix() . 'stats_link_tracker WHERE ';
-        $query .= 'l_date_and_time>=' . strval($start_time) . ' AND ';
-        $query .= 'l_date_and_time<=' . strval($end_time);
-        $query .= ' ORDER BY l_date_and_time';
+        $query .= 'c_date_and_time>=' . strval($start_time) . ' AND ';
+        $query .= 'c_date_and_time<=' . strval($end_time);
+        $query .= ' ORDER BY c_date_and_time';
         do {
             $rows = $GLOBALS['SITE_DB']->query($query, $max, $start);
             foreach ($rows as $link_row) {
-                $timestamp = $link_row['l_date_and_time'];
+                $timestamp = $link_row['c_date_and_time'];
                 $timestamp = tz_time($timestamp, $server_timezone);
 
                 $month = get_stats_month_for_timestamp($timestamp);
 
-                $country_code = geolocate_ip($link_row['l_ip_address']);
-                $url = $link_row['l_url'];
+                $country_code = geolocate_ip($link_row['c_ip_address']);
+                $url = $link_row['c_url'];
 
                 if (!isset($urls_seen[$url])) {
                     $urls_seen[$url] = 0;
@@ -125,14 +125,14 @@ class Hook_admin_stats_links extends CMSStatsProvider
         } while (!empty($rows));
 
         foreach ($urls_seen as $url => $times_seen) {
-            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_link_tracker', 'l_times_seen', ['l_url' => $url]);
+            $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_links', 'l_times_seen', ['l_url' => $url]);
             if ($times_seen_before === null) {
-                $GLOBALS['SITE_DB']->query_insert('stats_link_tracker', [
+                $GLOBALS['SITE_DB']->query_insert('stats_known_links', [
                     'l_url' => $url,
                     'l_times_seen' => $times_seen,
                 ]);
             } else {
-                $GLOBALS['SITE_DB']->query_update('stats_link_tracker', [
+                $GLOBALS['SITE_DB']->query_update('stats_known_links', [
                     'l_times_seen' => $times_seen + $times_seen_before,
                 ], [
                     'l_url' => $url,

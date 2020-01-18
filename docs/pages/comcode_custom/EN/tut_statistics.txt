@@ -109,8 +109,9 @@ Most of the filters where you enter text for filtering support the [tt]?[/tt] an
 [title="2"]Events[/title]
 
 You can track arbitrary events of your choosing, and also some events are automatically tracked (such as members joining).
-A 'conversion' can generally be considered a special kind of event that has value to you.
 There is a graph that lets you see how many of each events happen, and also graphs showing the percentage rates of events happening for sessions, and the percentage rates of events happening for sessions originating from any tracking code.
+
+Other software may use terms such as 'goals' or 'conversions': these are roughly equivalent to Composr 'events'.
 
 There are a number of ways to record events happening:[list]
 [*] The inbuilt events are recorded automatically.

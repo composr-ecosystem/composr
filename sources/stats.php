@@ -219,11 +219,11 @@ function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_
                     ];
                 }
             }
-            $graph_rendered = graph_line_chart($_values, $keys, $x_axis_label, $y_axis_label, false, false);
+            $graph_rendered = graph_line_chart($_values, $keys, $x_axis_label, $y_axis_label, false, false, [], '100%', '500px');
             break;
 
         case CMSStatsProvider::GRAPH_PIE_CHART:
-            $graph_rendered = graph_pie_chart($data);
+            $graph_rendered = graph_pie_chart($data, true, [], null, '100%', '500px');
             break;
 
         case CMSStatsProvider::GRAPH_BAR_CHART:
@@ -247,7 +247,7 @@ function stats_generate_graph($graph_name, $filters = [], $pivot = null, &$hook_
                 }
                 $data = $_data;
             }
-            $graph_rendered = graph_bar_chart($data, $x_axis_label, $y_axis_label);
+            $graph_rendered = graph_bar_chart($data, $x_axis_label, $y_axis_label, true, true, [], null, '100%', '500px');
             break;
 
         default:

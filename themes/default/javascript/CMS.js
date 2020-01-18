@@ -866,7 +866,7 @@
         nativeTracking = nativeTracking || false;
         var useGA = $cms.configOption('google_analytics') && !$cms.isStaff() && !$cms.isAdmin(),
             $ADDON_INSTALLED_stats = boolVal('{$ADDON_INSTALLED,stats}'),
-            promises;
+            promises = [];
 
         promises.push(new Promise(function (resolve) {
             category = strVal(category) || '{!URL;^}';

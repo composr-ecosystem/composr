@@ -18,6 +18,8 @@
  * @package    stats
  */
 
+// File also covers tracking codes
+
 /**
  * Hook class.
  */
@@ -35,7 +37,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
             return $events;
         }
         $events = [];
-        $event_rows = $GLOBALS['SITE_DB']->query_select('stats_known_events', ['e_event'], [], 'ORDER BY e_times_seen DESC', 50);
+        $event_rows = $GLOBALS['SITE_DB']->query_select('stats_known_events', ['*'], [], 'ORDER BY e_times_seen DESC', 50);
         foreach ($event_rows as $event_row) {
             $event_label = do_lang($event_row['e_event'], null, null, null, null, false);
             if ($event_label === null) {
@@ -59,7 +61,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
             return $tracking_codes;
         }
         $tracking_codes = [];
-        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats_known_tracking', ['t_tracking_code'], [], 'ORDER BY t_times_seen DESC', 50);
+        $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats_known_tracking', ['*'], [], 'ORDER BY t_times_seen DESC', 50);
         foreach ($tracking_code_rows as $tracking_code_row) {
             $tracking_codes[$tracking_code_row['t_tracking_code']] = $tracking_code_row['t_tracking_code'] . ' (' . integer_format($tracking_code_row['t_times_seen']) . ')';
         }
@@ -112,7 +114,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     'conversion_rates__country' => new CMSStatsListFilter('conversion_rates__country', do_lang_tempcode('VISITOR_COUNTRY'), find_countries()),
                     'conversion_rates__event' => new CMSStatsListFilter('conversion_rates__event', do_lang_tempcode('STATS_EVENT'), $top_events),
                 ],
-                'pivot' => new CMSStatsDatePivot('tracking_code_usage__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('conversion_rates__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
             'tracking_code_conversion_rates' => [
@@ -124,7 +126,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     'tracking_code_conversion_rates__event' => new CMSStatsListFilter('tracking_code_conversion_rates__event', do_lang_tempcode('STATS_EVENT'), $top_events),
                     'tracking_code_conversion_rates_usage__event' => new CMSStatsListFilter('tracking_code_conversion_rates_usage__tracking_code', do_lang_tempcode('TRACKING_CODE'), $top_tracking_codes),
                 ],
-                'pivot' => new CMSStatsDatePivot('tracking_code_usage__pivot', $this->get_date_pivots(!$for_kpi)),
+                'pivot' => new CMSStatsDatePivot('tracking_code_conversion_rates__pivot', $this->get_date_pivots(!$for_kpi)),
                 'support_kpis' => self::KPI_HIGH_IS_GOOD,
             ],
         ];
@@ -147,6 +149,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
         require_code('locations');
 
         $top_events = $this->get_top_events();
+        $top_tracking_codes = $this->get_top_tracking_codes();
 
         $date_pivots = $this->get_date_pivots();
 
@@ -190,6 +193,8 @@ class Hook_admin_stats_events extends CMSStatsProvider
         // Processing of tracking codes...
 
         $tracking_codes_seen = [];
+
+        $start = 0;
 
         // Find sessions
         $query_sessions = 'SELECT session_id,MIN(date_and_time) AS date_and_time FROM ' . get_table_prefix() . 'stats WHERE ';
@@ -243,12 +248,10 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 }
 
                 // Find events for this session
-                $events_for_session = collapse_2d_complexity('e_event', 'e_event', $GLOBALS['SITE_DB']->query_select('stats_events', ['e_event'], ['session_id' => $session_id]));
+                $events_for_session = collapse_2d_complexity('e_event', 'e_event', $GLOBALS['SITE_DB']->query_select('stats_events', ['e_event'], ['e_session_id' => $session_id]));
 
                 // Each combination of event wrt session
-                foreach ($top_events as $event) {
-                    $event = $event_row['e_event'];
-
+                foreach (array_keys($top_events) as $event) {
                     foreach (array_keys($date_pivots) as $pivot) {
                         $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
@@ -264,13 +267,20 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 }
 
                 // Each combination of event tracking code wrt session
-                foreach ($tracking_codes as $tracking_code) {
-                    $data_buckets['tracking_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code] = []; // We need this as we need to know tracking codes with no events
-                    foreach ($events_for_session as $event) {
+                foreach (array_keys($top_tracking_codes) as $tracking_code) {
+                    $data_buckets['tracking_code_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code] = []; // We need this as we need to know tracking codes with no events
+                    foreach (array_keys($top_events) as $event) {
                         foreach (array_keys($date_pivots) as $pivot) {
                             $pivot_value = $this->calculate_date_pivot_value($pivot, $timestamp);
 
-                            $data_buckets['tracking_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code][$event] = true;
+                            if (!isset($data_buckets['tracking_code_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code][$event])) {
+                                $data_buckets['tracking_code_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code][$event] = [0, 0];
+                            }
+
+                            $data_buckets['tracking_code_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code][$event][0]++;
+                            if (isset($events_for_session[$event])) {
+                                $data_buckets['tracking_code_conversion_rates'][$month][$pivot][$pivot_value][$session_id][$tracking_code][$event][1]++;
+                            }
                         }
                     }
                 }
@@ -342,13 +352,13 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     foreach ($_data as $pivot_value => $_) {
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                        foreach ($_ as $country => $__) {
-                            if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
+                        foreach ($_ as $event => $__) {
+                            if ((!empty($filters[$bucket . '__event'])) && ($filters[$bucket . '__event'] != $event)) {
                                 continue;
                             }
 
-                            foreach ($__ as $event => $value) {
-                                if ((!empty($filters[$bucket . '__event'])) && ($filters[$bucket . '__event'] != $event)) {
+                            foreach ($__ as $country => $value) {
+                                if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
                                     continue;
                                 }
 
@@ -374,13 +384,13 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     foreach ($_data as $pivot_value => $_) {
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                        foreach ($_ as $country => $__) {
-                            if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
+                        foreach ($_ as $tracking_code => $__) {
+                            if ((!empty($filters[$bucket . '__tracking_code'])) && ($filters[$bucket . '__tracking_code'] != $tracking_code)) {
                                 continue;
                             }
 
-                            foreach ($__ as $tracking_code => $value) {
-                                if ((!empty($filters[$bucket . '__tracking_code'])) && ($filters[$bucket . '__tracking_code'] != $tracking_code)) {
+                            foreach ($__ as $country => $value) {
+                                if ((!empty($filters[$bucket . '__country'])) && ($filters[$bucket . '__country'] != $country)) {
                                     continue;
                                 }
 
@@ -417,7 +427,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
                             $num_conversions += $__[1];
                         }
 
-                        $data[$pivot_value] = 100.0 * floatval($num_conversions) / floatval($num_sessions);
+                        if ($num_sessions > 0) {
+                            $data[$pivot_value] = 100.0 * floatval($num_conversions) / floatval($num_sessions);
+                        }
                     }
                 }
 
@@ -434,8 +446,8 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     foreach ($_data as $pivot_value => $_) {
                         $pivot_value = $this->make_date_pivot_value_nice($pivot, $pivot_value);
 
-                        $num_conversions = 0;
                         $num_tracking_code_sessions = 0;
+                        $num_conversions = 0;
                         foreach ($_ as $session_id => $__) {
                             foreach ($__ as $tracking_code => $___) {
                                 if ((!empty($filters[$bucket . '__tracking_code'])) && ($filters[$bucket . '__tracking_code'] != $tracking_code)) {
@@ -443,22 +455,20 @@ class Hook_admin_stats_events extends CMSStatsProvider
                                 }
 
                                 $has_conversion = false;
-                                foreach ($___ as $event => $value) {
+                                foreach ($___ as $event => $____) {
                                     if ((!empty($filters[$bucket . '__event'])) && ($filters[$bucket . '__event'] != $event)) {
                                         continue;
                                     }
 
-                                    $has_conversion = true;
+                                    $num_tracking_code_sessions += $____[0];
+                                    $num_conversions += $____[1];
                                 }
-
-                                if ($has_conversion) {
-                                    $num_conversions++;
-                                }
-                                $num_tracking_code_sessions++;
                             }
                         }
 
-                        $data[$pivot_value] = 100.0 * floatval($num_conversions) / floatval($num_tracking_code_sessions);
+                        if ($num_tracking_code_sessions > 0) {
+                            $data[$pivot_value] = 100.0 * floatval($num_conversions) / floatval($num_tracking_code_sessions);
+                        }
                     }
                 }
 
