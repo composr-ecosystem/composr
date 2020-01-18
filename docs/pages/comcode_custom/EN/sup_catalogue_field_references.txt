@@ -1,0 +1,89 @@
+[title sub="Written by ocProducts"]Composr Supplementary: Catalogue field references[/title]
+
+This tutorial shows some advanced usage of catalogue field references. It will show you how to create a reference from one catalogue to another, and then extract individual fields for display.
+
+[contents]decimal,lower-alpha[/contents]
+
+[box="Warning"]
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
+Composr has some fairly advanced functionality within the catalogue system. That said, the following important caveat always remains -- catalogues are not always a substitute for custom coding. Before committing too hard to catalogues, make sure catalogues really can provide all the features you need in a clean and user-friendly way that will provide the performance and stability you need. It is not always a substitute for professional database design and software engineering.
+[/box]
+
+[title="2"]Forward references[/title]
+
+The following steps show you how to setup two catalogues, with one referencing the other -- and then to use custom catalogue templating to extract an unrelated field from the referenced catalogue entry.
+
+1) We set up our catalogue being referenced. We're create a standard title field and a picture field (which is what we'll be extracting). This is what the catalogue is set up like:
+
+[img]data_custom/images/docs/sup_catalogue_field_references/referenced_catalogue.png[/img]
+
+2) We add an entry to this referenced catalogue. This is what it is set up as:
+
+[img]data_custom/images/docs/sup_catalogue_field_references/referenced_entry.png[/img]
+
+3) We set up our catalogue doing the referencing. This is what the catalogue is set up like:
+
+[img]data_custom/images/docs/sup_catalogue_field_references/referencing_catalogue.png[/img]
+
+Note that we are using an "A reference to a catalogue entry in ..." field, not a "Multiple references to a catalogue entry in ..." field. Handling multiple reference fields is a lot more complicated.
+
+4) We add an entry to this referencing catalogue. This is what it is set up as:
+
+[img]data_custom/images/docs/sup_catalogue_field_references/referencing_entry.png[/img]
+
+5) We then override the entry screen template for the referencing catalogue by creating a [tt]CATALOGUE_catalogue-with-references_ENTRY_SCREEN.tpl[/tt] template. I just overrode it with the basic Tempcode needed to achieve our objective:
+[code="Tempcode"]
+<a href="{$PAGE_LINK*,_SEARCH:catalogues:entry:{_FIELD_58_PLAIN}}">{$CATALOGUE_ENTRY_FIELD_VALUE,{_FIELD_58_PLAIN},0}</a>
+<a href="{$PAGE_LINK*,_SEARCH:catalogues:entry:{_FIELD_58_PLAIN}}">{$CATALOGUE_ENTRY_FIELD_VALUE,{_FIELD_58_PLAIN},1}</a>
+[/code]
+
+Here we are using the [tt]CATALOGUE_ENTRY_FIELD_VALUE[/tt] symbol to extract the fields from our referenced catalogue.
+[tt]0[/tt] references the 1st field in the referenced catalogue, as in computing we often count from zero. It is the title in our referenced catalogue. [tt]1[/tt] references the 2nd field, which is the image.
+
+[tt]58[/tt] is the ID of the reference field on my test site. You can actually see that in the screenshot for '3' above.
+
+The [tt]PAGE_LINK[/tt] symbol is being used to create hyperlinks to the referenced catalogue entry.
+
+And this is what it looks like when we view the test entry in our referencing catalogue:
+
+[media]data_custom/images/docs/sup_catalogue_field_references/working_referencing.png[/media]
+
+As you can see it is rendering the image field as a thumbnail right out of the box.
+
+If we wish we could get the URL to the image instead, by using the [tt]CATALOGUE_ENTRY_FIELD_VALUE_PLAIN[/tt] symbol instead. We could then render out the image in any way we want.
+
+[title="2"]Backward references[/title]
+
+What if we want entries in our referenced catalogue to show which entries are referencing them?
+
+We can do this too, although it is a little more complex.
+
+To do it we need to use the [tt]CATALOGUE_ENTRY_BACKREFS[/tt] symbol.
+
+Here is an example of the entry screen template overrode for the referenced catalogue, [tt]CATALOGUE_catalogue-with-picture-field_ENTRY_SCREEN.tpl[/tt]:
+[code="Tempcode"]
+Entries referencing this:
+<ul>
+{+START,LOOP,{$CATALOGUE_ENTRY_BACKREFS,{ID},,,58}}
+	<li>
+		<a href="{$PAGE_LINK*,_SEARCH:catalogues:entry:{_loop_var}}">{$CATALOGUE_ENTRY_FIELD_VALUE,{_loop_var},0}</a>
+	</li>
+{+END}
+</ul>
+[/code]
+
+The [tt]58[/tt] locks it down to only extract references within field ID #58 (this is the field we made in our referencing catalogue). We don't strictly need to lock it down like this, but if we don't we cannot assume what fields may exist in the catalogue entries doing the referencing (as they could be from all kinds of different catalogues).
+
+We use a loop as there may be [i]multiple[/i] entries with back-references. The [tt]CATALOGUE_ENTRY_BACKREFS[/tt] symbol returns a comma-delimited list, which [tt]LOOP[/tt] will iterate over.
+
+We then use [tt]PAGE_LINK[/tt] and [tt]CATALOGUE_ENTRY_FIELD_VALUE[/tt] in a very similar way to how we did before, except now the catalogue entry ID is in [tt]{_loop_var}[/tt] instead of [tt]{_FIELD_58_PLAIN}[/tt].
+
+[media]data_custom/images/docs/sup_catalogue_field_references/working_referenced.png[/media]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_fields"]Custom fields[/page]
+ - [page="_SEARCH:tut_catalogues"]Custom structured content (via catalogues)[/page]
+
+{$SET,tutorial_tags,Catalogues,core_fields,catalogues,Content,expert}{$SET,tutorial_add_date,Jan 2020}{$SET,tutorial_summary,This tutorial shows some advanced usage of catalogue field references. It will show you how to create a reference from one catalogue to another, and then extract individual fields for display.}[block]main_tutorial_rating[/block]
+
