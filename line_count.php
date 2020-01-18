@@ -50,11 +50,43 @@ require($FILE_BASE . '/sources/global.php');
 require_code('third_party_code');
 require_code('files2');
 
+disable_php_memory_limit();
+
+$mode = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 'reasonable';
+
+// Config
+$debug_output = true;
+switch ($mode) {
+    case 'overestimate':
+        $include_third_party_etc = true;
+        $include_txt = true;
+        $include_blank_lines = true;
+        $include_duplicate_lines = true;
+        break;
+
+    case 'underestimate':
+        $include_third_party_etc = false;
+        $include_txt = false;
+        $include_blank_lines = false;
+        $include_duplicate_lines = false;
+        break;
+
+    case 'reasonable':
+    default:
+        $include_third_party_etc = false;
+        $include_txt = true;
+        $include_blank_lines = true;
+        $include_duplicate_lines = true;
+        break;
+}
+
 $file_extensions = [
     'bat',
     'config',
     'css',
     'htaccess',
+    'htm',
+    'html',
     'ini',
     'java',
     'js',
@@ -62,26 +94,87 @@ $file_extensions = [
     'sh',
     'sh',
     'tpl',
-    'txt',
     'xml',
 ];
-
-$lines = 0;
-
-$_files = get_directory_contents(get_file_base(), '', IGNORE_ACCESS_CONTROLLERS, true, true, $file_extensions);
-$files = [];
-foreach ($_files as $file) {
-    // Exceptions
-    $exceptions = list_untouchable_third_party_directories();
-    if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $file) != 0) {
-        continue;
-    }
-    $exceptions = list_untouchable_third_party_files();
-    if (in_array($file, $exceptions)) {
-        continue;
-    }
-
-    $lines += substr_count(file_get_contents(get_file_base() . '/' . $file), "\n");
+if ($include_txt) {
+    $file_extensions = array_merge($file_extensions, [
+        'txt',
+    ]);
 }
 
-echo integer_format($lines) . "\n";
+$exceptions_directories = array_merge(list_untouchable_third_party_directories(), [
+    'data_custom/sitemaps'
+]);
+$exceptions_files = array_merge(list_untouchable_third_party_files(), [
+    'aps/APP-META.xml',
+    'text/unbannable_ips.txt',
+]);
+
+$total_lines = 0;
+
+$lines = [];
+
+$found = [];
+
+$_files = get_directory_contents(get_file_base(), '', IGNORE_ACCESS_CONTROLLERS | IGNORE_EDITFROM_FILES | IGNORE_REVISION_FILES | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, $file_extensions);
+foreach ($_files as $file) {
+    if (!$include_third_party_etc) {
+        if (preg_match('#^(' . implode('|', $exceptions_directories) . ')/#', $file) != 0) {
+            continue;
+        }
+        if (in_array($file, $exceptions_files)) {
+            continue;
+        }
+    }
+
+    $c = file_get_contents(get_file_base() . '/' . $file);
+
+    if ($include_duplicate_lines) {
+        if ($include_blank_lines) {
+            $line_count = substr_count($c, "\n");
+        } else {
+            $_lines = explode("\n", $c);
+            $line_count = 0;
+            foreach ($_lines as $line) {
+                if (trim($line) != '') {
+                    $line_count++;
+                }
+            }
+        }
+
+        $total_lines += $line_count;
+    } else {
+        $line_count = substr_count($c, "\n"); // Just for finding large files, we don't really use this
+
+        $_lines = explode("\n", $c);
+        foreach ($_lines as $line) {
+            if (($include_blank_lines) || (trim($line) != '')) {
+                $lines[$line] = true;
+            }
+        }
+    }
+
+    $ext = get_file_extension($file);
+
+    if (!isset($found[$ext])) {
+        $found[$ext] = [];
+    }
+    $found[$ext][$file] = $line_count;
+}
+
+if (!$include_duplicate_lines) {
+    $total_lines = count($lines);
+}
+
+if ($debug_output) {
+    ksort($found);
+    foreach ($found as $ext => $files) {
+        arsort($files);
+        $found[$ext] = array_slice($files, 0, 100);
+    }
+
+    echo "Longest files by file type...\n";
+    var_dump($found);
+}
+
+echo integer_format($total_lines) . "\n";
