@@ -1600,6 +1600,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'docs/league_standings__example_addon.zip',
             'docs/making_a_theme.pdf',
             'docs/standards-checklist.xls',
+            'sources_custom/hooks/systems/notifications/tutorial_added.php',
         );
     }
 }
