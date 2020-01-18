@@ -43,7 +43,7 @@ class Hook_symbol_STATS_TRACK_URL
                 $url .= '&event=' . urlencode($param[1]);
             }
             require_code('crypt');
-            $url .= '&hash=' . urlencode(ratchet_hash($url, get_site_salt()));
+            $url .= '&hash=' . urlencode(ratchet_hash($param[0], get_site_salt()));
             $url .= $keep->evaluate();
             $value = $url;
         }

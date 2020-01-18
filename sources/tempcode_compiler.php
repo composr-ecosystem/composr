@@ -1021,6 +1021,10 @@ function tc_is_all_static($_opener_params)
         return false;
     }
 
+    if (strpos($_opener_params, 'ecv(') !== false) {
+        return false;
+    }
+
     if (strpos($_opener_params, 'ecv_') !== false) {
         return false;
     }

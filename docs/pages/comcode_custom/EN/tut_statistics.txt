@@ -118,7 +118,7 @@ There are a number of ways to record events happening:[list]
 [*] You can use the JavaScript [tt]$cms.statsEventTrack[/tt] function to track an event from within JavaScript code.
 [*] You can use add [tt]data-click-stats-event-track="{ category: 'some event', nativeTracking: true }"[/tt] on HTML [tt]<a>[/tt] elements. This is actually a wrapper around the above.
 [*] You can wrap URLs in links with the [tt]{$STATS_TRACK_URL,URL,event}[/tt] symbol.
-E.g. [tt]<a href="{$STATS_TRACK_URL,http://example.com/,Example.com Link clicked}">Click me</a>[/tt]
+E.g. [tt]<a href="{$STATS_TRACK_URL*,http://example.com/,Example.com Link clicked}">Click me</a>[/tt]
 This handles the event recording within a redirection script, so does not depend on JavaScript. It also will track the external URL as having been viewed regardless of the event (the event parameter is actually optional).
 [/list]
 
@@ -321,11 +321,10 @@ You can perform split testing by combining tracking codes and events. The easies
 
 For example, your home page might contain:
 [code="Tempcode"]
-{$SPLIT_TEST,a,b}
-{+START,IF,{$HAS_TRACKING_CODE,a}}
+{+START,IF,{$EQ,{$SPLIT_TEST,a,b},a}}
 	<a href="{$PAGE_LINK*,:join}">Join our website</a>! Free goodies.
 {+END}
-{+START,IF,{$HAS_TRACKING_CODE,b}}
+{+START,IF,{$EQ,{$SPLIT_TEST,a,b},b}}
 	We really wish you would <a href="{$PAGE_LINK*,:join}">join</a> our website.
 {+END}
 [/code]
@@ -335,11 +334,13 @@ You can then measure event success rates based on your tracking codes. Either in
 It's as simple as that!
 
 When we are split testing tiny differences like the above we can be even more concise:
-[code="Tempcode"]
+[code="Comcode"]
+[semihtml]
 {+START,CASES,{$SPLIT_TEST,a,b}}
 a=<a href="{$PAGE_LINK*,:join}">Join our website</a>! Free goodies.
 b=We really wish you would <a href="{$PAGE_LINK*,:join}">join</a> our website.
 {+END}
+[/semihtml]
 [/code]
 
 Even simpler!
