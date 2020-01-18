@@ -892,6 +892,8 @@ class Module_admin_stats extends Standard_crud_module
         $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
         if ($test === null) {
             $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
+        } else {
+            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('REINSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
         }
 
         $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');

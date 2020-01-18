@@ -44,7 +44,7 @@ Once the geo-location data is installed, all the extra statistics can be used.
 
 [title="2"]Categories and Graphs[/title]
 
-The statistics module splits up the graphs into a number of categories. The exact categories and graphs available depend what addons you have installed, and to some extent your configuration.
+The statistics module splits up the graphs into a number of categories. The exact categories and graphs available depend what addons you have installed, and to some extent your configuration -- at the time of writing the complete total is 69.
 
 There are a large number of different graphs available for viewing, and most of them function in an obvious way. This documentation section will highlight some specifics that are not so obvious.
 

@@ -5557,6 +5557,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSTALL_AND_UNINSTALL
         INSTALL_COMPLETE
         INSTALL_GEOLOCATION_DATA
+        REINSTALL_GEOLOCATION_DATA
         INSTALL_LOG
         INSTALL_LOG_BELOW
         INSTALL_SLOW_SERVER

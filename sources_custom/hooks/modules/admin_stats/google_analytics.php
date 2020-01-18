@@ -73,6 +73,8 @@ class Hook_admin_stats_google_analytics extends CMSStatsBlob
             $ret['google_analytics__' . $metric_name] = [
                 'label' => make_string_tempcode($metric_label),
                 'category' => 'google_analytics',
+                'filters' => [],
+                'pivot' => null,
             ];
         }
 
