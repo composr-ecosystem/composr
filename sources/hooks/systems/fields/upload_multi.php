@@ -121,7 +121,7 @@ class Hook_fields_upload_multi
                 $download_url = (url_is_local($ev) ? (get_custom_base_url() . '/') : '') . $ev;
             }
 
-            $ret->attach(paragraph(hyperlink($download_url, $original_filename, true, true)));
+            $ret->attach(paragraph(hyperlink($download_url, $original_filename, true, true), 'upload_multi'));
         }
         return $ret;
     }

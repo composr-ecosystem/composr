@@ -127,7 +127,7 @@ class Hook_fields_content_link_multi
         $ret = new Tempcode();
         foreach ($out as $o) {
             list($title, $url) = $o;
-            $ret->attach(paragraph(hyperlink(build_url($map, $zone), $title, false, true)));
+            $ret->attach(paragraph(hyperlink(build_url($map, $zone), $title, false, true), 'content_link_multi'));
         }
 
         return $ret;
